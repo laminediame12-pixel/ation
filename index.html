@@ -415,6 +415,11 @@ function toggleAutoTestXOR() {
     ca.lignes.forEach(function(l) {
       html += '<div class="kv" style="font-size:11px; color:' + (l.meme ? '#4ade80' : '#94a3b8') + ';">' + FL[l.fig] + ' — actuel: ' + FL[l.actuel] + (l.meme ? ' (= complément)' : ', complément: ' + FL[l.complement]) + '</div>';
     });
+    var tt = autoTestTablesLegacyVsV7();
+    html += '<div class="kv" style="margin-top:8px; font-size:12px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>🗂️ Tables legacy vs V7 (ELEMENTS/BINOMES/ANTAGONISTES/MAISON_ELEM) :</b> ' + (tt.ok ? '<span class="good">✅ identiques, aucune divergence</span>' : '<span class="bad">❌ ' + tt.mismatches.length + ' divergence(s)</span>') + '</div>';
+    if (!tt.ok) {
+      tt.mismatches.forEach(function(m) { html += '<div class="kv" style="font-size:11px; color:#f87171;">' + m + '</div>'; });
+    }
     panel.innerHTML = html;
     panel.style.display = 'block';
   } else {
@@ -441,12 +446,6 @@ function signalConvergenceNul(theme) {
   var r1 = order[0], r7 = order[6];
   var distR = hammingDistance(theme[r1], theme[r7]);
   var miroirR = (distR === 0);
-  var count = (jugeNul ? 1 : 0) + (campMuet ? 1 : 0) + (miroirR ? 1 : 0);
-  var criteres = [
-    (jugeNul ? '✅' : '❌') + ' Juge annonce nul possible (' + jr.recit + ')',
-    (campMuet ? '✅' : '❌') + ' Camp dominant muet (' + cd.reason + ')',
-    (miroirR ? '✅' : '❌') + ' Miroir R1=R7 (distance Hamming ' + distR + '/4)'
-  ];
   // CORRECTION (10/07/26) : jugeNul (le Juge annonce un nul possible) s'est
   // avéré être le critère le plus trompeur — présent dans 6 des 7 erreurs
   // de nul_suspecte sur l'archive, absent dans l'unique cas juste. Testé :
@@ -454,14 +453,25 @@ function signalConvergenceNul(theme) {
   // compter jugeNul) fait passer vfOk de 48% à 62% sur l'archive (+4 net :
   // 5 thèmes gagnés — Argentine/Egypte, Chelsea/Barcelone, Dortmund/Roma,
   // Ferencvárosi/Qarabag, Potosi — contre 1 perdu, Roma/Chelsea).
+  // CORRECTION (revue contradictions) : jugeNul reste calculé et affiché à
+  // titre de contexte, mais n'a plus jamais compté dans "count" ni dans le
+  // texte de résumé — avant, l'UI affichait un score "X/3 critères" qui
+  // laissait croire que les 3 critères pesaient dans la décision, alors que
+  // seuls campMuet et miroirR décidaient réellement (converge ci-dessous).
+  var count = (campMuet ? 1 : 0) + (miroirR ? 1 : 0);
+  var criteres = [
+    (jugeNul ? '✅' : '❌') + ' Juge annonce nul possible (' + jr.recit + ') — contextuel, non déterminant',
+    (campMuet ? '✅' : '❌') + ' Camp dominant muet (' + cd.reason + ') — déterminant',
+    (miroirR ? '✅' : '❌') + ' Miroir R1=R7 (distance Hamming ' + distR + '/4) — déterminant'
+  ];
   var converge = campMuet && miroirR;
   return {
     converge: converge,
     count: count,
     criteres: criteres,
     resume: converge
-      ? '⚠️ Signal de convergence nul (' + count + '/3 critères) — 📚 étude : la hiérarchie élémentaire (rang 2) ne devrait probablement pas trancher seule ici.'
-      : 'Convergence nul : ' + count + '/3 critères (sous le seuil).'
+      ? '⚠️ Signal de convergence nul (' + count + '/2 critères déterminants) — 📚 étude : la hiérarchie élémentaire (rang 2) ne devrait probablement pas trancher seule ici.'
+      : 'Convergence nul : ' + count + '/2 critères déterminants (sous le seuil).'
   };
 }
 
@@ -1125,6 +1135,32 @@ const MAISON_ELEM_V7 = {
   1:'feu',2:'air',3:'eau',4:'terre',5:'feu',6:'air',7:'eau',8:'terre',
   9:'feu',10:'air',11:'eau',12:'terre',13:'feu',14:'air',15:'eau',16:'terre'
 };
+
+// ═══════════════════════════════════════════════════════════════
+// AUTO-TEST TABLES LEGACY vs V7 (revue contradictions) — ELEMENTS/
+// BINOMES/ANTAGONISTES/MAISON_ELEM et leurs équivalents _V7 sont deux
+// tables distinctes qui doivent rester identiques (elles le sont
+// aujourd'hui, vérifié valeur par valeur). Rien ne garantissait qu'une
+// future modification de l'une seule des deux ne les fasse silencieusement
+// diverger — ce self-test le détecte au chargement, dans le même esprit
+// qu'autoTestMoteurXOR.
+// ═══════════════════════════════════════════════════════════════
+function autoTestTablesLegacyVsV7() {
+  var mismatches = [];
+  FIGS.forEach(function(f) {
+    if (ELEMENTS[f] !== ELEMENTS_V7[f]) mismatches.push('ELEMENTS/' + f + ' : ' + ELEMENTS[f] + ' ≠ ' + ELEMENTS_V7[f]);
+    if (BINOMES[f] !== BINOMES_V7[f]) mismatches.push('BINOMES/' + f + ' : ' + BINOMES[f] + ' ≠ ' + BINOMES_V7[f]);
+    if (ANTAGONISTES[f] !== ANTAGONISTES_V7[f]) mismatches.push('ANTAGONISTES/' + f + ' : ' + ANTAGONISTES[f] + ' ≠ ' + ANTAGONISTES_V7[f]);
+  });
+  for (var p = 1; p <= 16; p++) {
+    if (MAISON_ELEM[p] !== MAISON_ELEM_V7[p]) mismatches.push('MAISON_ELEM/M' + p + ' : ' + MAISON_ELEM[p] + ' ≠ ' + MAISON_ELEM_V7[p]);
+  }
+  return { ok: mismatches.length === 0, mismatches: mismatches };
+}
+(function() {
+  var t = autoTestTablesLegacyVsV7();
+  if (!t.ok) { console.warn('⚠️ Tables legacy/V7 désynchronisées :', t.mismatches); }
+})();
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -2093,48 +2129,16 @@ function duelEmprisonnementV7(posA, posB, theme) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// RÈGLE AVANTAGE — auto-référence binôme/antagoniste
+// RÈGLE AVANTAGE — SUPPRIMÉE (revue contradictions)
+// Cette règle cherchait deux cas : (a) le binôme d'une figure est aussi
+// son antagoniste, (b) l'antagoniste du binôme d'une figure est ce même
+// binôme. Or BINOMES_V7 est toujours le décalage +2 dans FIGS_V7 et
+// ANTAGONISTES_V7 toujours le décalage -3 : (a) demanderait +2≡-3 (mod 16)
+// et (b) demanderait -1≡0 (mod 16), deux égalités fausses pour les 16
+// figures sans exception. "avantage" valait donc TOUJOURS false, rendant
+// ce départage totalement inerte (jamais consulté dans verdictCamp malgré
+// son branchement) — supprimé plutôt que laissé comme code mort trompeur.
 // ═══════════════════════════════════════════════════════════════
-
-/**
- * Avantage si :
- * (a) le binôme de la figure est aussi l'antagoniste de cette même figure (contradiction interne)
- * (b) le binôme de la figure a un antagoniste qui est exactement ce même binôme (auto-référence)
- */
-function analyseAvantageV7(fig, pos, theme) {
-  var binFig = BINOMES_V7[fig];
-  var antFig = ANTAGONISTES_V7[fig];
-
-  var cas_a = (binFig === antFig); // le binôme est aussi l'antagoniste -> contradiction
-  var antDuBinFig = ANTAGONISTES_V7[binFig];
-  var cas_b = (antDuBinFig === binFig); // l'antagoniste du binôme = le binôme lui-même (auto-réf, structurellement rare mais on vérifie)
-
-  // Présence dans le thème pour valider l'avantage concrètement
-  var binPresent = trouverFigV7(binFig, theme).length > 0;
-
-  var avantage = (cas_a || cas_b) && binPresent;
-
-  return {
-    fig: fig, pos: pos, binFig: binFig, antFig: antFig,
-    cas_a: cas_a, cas_b: cas_b, binPresent: binPresent,
-    avantage: avantage
-  };
-}
-
-function duelAvantageV7(posA, posB, theme) {
-  var figA = theme[posA], figB = theme[posB];
-  var a = analyseAvantageV7(figA, posA, theme);
-  var b = analyseAvantageV7(figB, posB, theme);
-
-  var winner = 'Nul';
-  var reasons = [];
-
-  if (a.avantage && !b.avantage) { winner = 'A'; reasons.push('✓ Avantage ' + FL[figA] + ' (binôme/antagoniste auto-référent)'); }
-  else if (b.avantage && !a.avantage) { winner = 'B'; reasons.push('✓ Avantage ' + FL[figB] + ' (binôme/antagoniste auto-référent)'); }
-  else if (a.avantage && b.avantage) { reasons.push('Avantage partagé des deux côtés -> neutre'); }
-
-  return {a: a, b: b, winner: winner, reasons: reasons};
-}
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -3039,17 +3043,15 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   // ─── Camp M : duel complet M1 vs M7 (facteurs secondaires) ───
   var duelM      = duelV7(1, 7, theme, ctx);
   var duelEmpM   = duelEmprisonnementV7(1, 7, theme);
-  var duelAvtM   = duelAvantageV7(1, 7, theme);
   var duelCycM   = duelCyclesV7(1, 7, theme);
 
   // ─── Camp R : même procédé pour R1 vs R7 ───
   var duelR      = duelV7(r1, r7, theme, ctx);
   var duelEmpR   = duelEmprisonnementV7(r1, r7, theme);
-  var duelAvtR   = duelAvantageV7(r1, r7, theme);
   var duelCycR   = duelCyclesV7(r1, r7, theme);
 
   // ─── Verdict partiel camp M ───
-  function verdictCamp(duel, duelEmp, duelAvt, duelCyc, label) {
+  function verdictCamp(duel, duelEmp, duelCyc, label) {
     var toTeam = function(w) { return w==='A'?'M1':w==='B'?'M7':'Nul'; };
     var w = toTeam(duel.winner);
     var reasons = [].concat(duel.reasons);
@@ -3068,17 +3070,11 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
       else { reasons.push('['+label+'] Emprisonnement confirme'); }
     }
 
-    var wAvt = toTeam(duelAvt.winner);
-    if (w === 'Nul' && wAvt !== 'Nul') {
-      w = wAvt;
-      reasons.push('['+label+'] Avantage decisif -> '+w);
-    }
-
     return {winner: w, reasons: reasons};
   }
 
-  var vcM = verdictCamp(duelM, duelEmpM, duelAvtM, duelCycM, 'M');
-  var vcR = verdictCamp(duelR, duelEmpR, duelAvtR, duelCycR, 'R');
+  var vcM = verdictCamp(duelM, duelEmpM, duelCycM, 'M');
+  var vcR = verdictCamp(duelR, duelEmpR, duelCycR, 'R');
 
   // ─── MOTEUR PRINCIPAL prioritaire : confrontation des blocs ───
   var toTeamBlocs = function(w) { return w==='A'?'M1':w==='B'?'M7':'Nul'; };
@@ -3309,14 +3305,14 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
     scoreMain:goalM1+'-'+goalM7, corrected:finalCorrected,
     scoreAlt:winner==='M1'?Math.min(5,goalM1+1)+'-'+goalM7:goalM1+'-'+Math.min(5,goalM7+1),
     duelM:duelM, duelR:duelR, r1:r1, r7:r7,
-    duelEmpM:duelEmpM, duelAvtM:duelAvtM, duelCycM:duelCycM,
-    duelEmpR:duelEmpR, duelAvtR:duelAvtR, duelCycR:duelCycR,
+    duelEmpM:duelEmpM, duelCycM:duelCycM,
+    duelEmpR:duelEmpR, duelCycR:duelCycR,
     vcM:vcM, vcR:vcR,
     pm5:pm5, pm11:pm11, goalCap:goalCap,
     htWinner:htWinner, htReasons:htReasons, penalty:penalty, reasons:reasons,
     planM1:planM1, planM7:planM7, concPlanetes:concPlanetes,
     // compat aliases for display
-    duelEmp:duelEmpM, duelAvt:duelAvtM, duelCyc:duelCycM
+    duelEmp:duelEmpM, duelCyc:duelCycM
   , conflitChaine: conflitChaine};
 }
 
@@ -3428,10 +3424,21 @@ function analyzeJugeRecit(theme){
 // Règle : figure de M1 (ou M7) comptée en base + résultantes;
 // si >= 3 occurrences ET présence au Juge M15 (base ou résultante)
 // -> camp dominant, il gagne. Si les deux camps dominants : le compte
-// le plus élevé l'emporte. PRIORITAIRE sur le verdict élémentaire.
+// le plus élevé l'emporte.
 // Validation rétrospective 8/8 (juil. 2026) dont correction des 2
 // échecs élémentaires (M8: Amissio x4>Via x3; M17: F.Major x3 J✓).
-// ⚠️ Règle construite a posteriori — statut: à confirmer en aveugle.
+// ⚠️ Règle construite a posteriori — a ÉCHOUÉ en aveugle depuis (cf.
+// commentaire de verdictFinal : "les signaux d'étude [dont dominant] ne
+// participent PLUS au verdict"). CORRECTION (revue contradictions) :
+// cette fonction n'est PLUS prioritaire sur le verdict élémentaire — ce
+// commentaire le prétendait à tort, en désaccord avec verdictFinal qui
+// n'appelle jamais campDominant().winner pour trancher M1/M7. Le seul
+// usage restant dans la chaîne officielle est indirect et étroit : la
+// règle "Juge Acquisitio" (verdictFinal) réutilise uniquement le COMPTE
+// (c1.count+c7.count >= 6) pour détecter un nul, jamais .winner. Ailleurs,
+// .winner ne sert qu'aux statistiques de rejeu (combinedWinner dans
+// replayEntry) à titre de comparaison historique — pas au verdict affiché
+// à l'utilisateur.
 // ═══════════════════════════════════════════════════════════════
 function campDominant(theme){
   const res = {};
@@ -3470,8 +3477,9 @@ function campDominant(theme){
 // VERDICT FINAL — hiérarchie unique et validée (03/07/26)
 // Ordre : détruit/invalide → abstention | profil du nul → NUL |
 // MIROIRS → le Juge décide (Populus=nul, Conjunctio=victoire à l'usure,
-// F.Major/Minor=favori) | juge-favori | guerre civile (trahison > état
-// des chefs > duel des binômes) | inter-boucles (chaos armé > hiérarchie).
+// F.Major/Minor=favori) | juge-favori | guerre civile (attaques effectives
+// > état des chefs > égalité de boucle) | inter-boucles (chaos armé >
+// hiérarchie).
 // Les signaux d'étude (dominant, chambres, alignements, nœuds) ne
 // participent PLUS au verdict (échecs en aveugle) — affichés à part.
 // ═══════════════════════════════════════════════════════════════
@@ -3485,14 +3493,26 @@ function campDominant(theme){
 //    de la parole confirmée, étendue au thème entier).
 // Hauteur de parole (rang affiché avec chaque verdict) :
 //   5 = souveraine : nul par entre-blocage confirmé, juge-favori à
-//       parole saine, chef chez lui, chaîne de repos souveraine
-//   4 = haute : état des chefs, trahison, attaques effectives,
+//       parole saine, chef chez lui (état des chefs tranché par un chef
+//       en repos absolu), chaîne de repos souveraine
+//   4 = haute : état des chefs (hors chef chez lui), attaques effectives,
 //       miroir par concordance
-//   3 = moyenne : duel des binômes, chaos armé
+//   3 = moyenne : guerre civile — égalité de boucle (premier de boucle),
+//       chaos armé
 //   2 = basse : hiérarchie élémentaire (dernier recours)
 //   1 = récit seul / indécis
 // À égalité d'étage : le premier tirage lie. STATUT : protocole
 // provisoire, à éprouver sur des paires réelles de l'archive.
+// CORRECTION (revue contradictions) : "trahison" et "duel des binômes"
+// ont été retirés de cette hiérarchie. La trahison directe a été
+// désactivée du calcul le 10/07/26 (gcU.winner n'est plus consulté dans
+// verdictElementaire, seul gcU.applicable sert de porte — cf. commentaire
+// "BRANCHEMENT TESTÉ ET RETIRÉ"), et le duel des binômes
+// (duelBinomesDirects) n'a jamais été branché dans verdictFinal : il ne
+// sert qu'au vote de convergence des statistiques de rejeu (replayEntry),
+// jamais à un verdict affiché. Les textes "trahison"/"Duel des binômes"
+// n'apparaissent donc plus jamais dans un vf.reason réel — rangParole ne
+// les cherche plus, pour ne pas laisser croire que ces étages sont actifs.
 // ═══════════════════════════════════════════════════════════════
 function rangParole(vf){
   const r = (vf.reason||'')+' '+(vf.label||'');
@@ -3500,13 +3520,12 @@ function rangParole(vf){
   if(vf.type==='nul_suspecte') return {rang:4, etage:'convergence nul (promu 07/07/26)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('juge')>=0 && r.indexOf('favori')>=0 || r.indexOf('FAVORI')>=0) return {rang:5, etage:'juge-favori à parole saine'};
-  if(r.indexOf('CHEF CHEZ LUI')>=0) return {rang:5, etage:'chef chez lui'};
+  if(r.indexOf('état des chefs')>=0 && r.indexOf('CHEZ LUI (domine)')>=0) return {rang:5, etage:'chef chez lui'};
   if(r.indexOf('SOUVERAINE')>=0) return {rang:5, etage:'chaîne de repos souveraine'};
   if(r.indexOf('ÉTAT DES CHEFS')>=0 || r.indexOf('état des chefs')>=0) return {rang:4, etage:'état des chefs'};
-  if(r.indexOf('trahison')>=0 || r.indexOf('TRAHISON')>=0 || r.indexOf('trahi')>=0) return {rang:4, etage:'trahison'};
   if(r.indexOf('attaques effectives')>=0) return {rang:4, etage:'attaques effectives'};
   if(r.indexOf('miroir')>=0 || r.indexOf('Camps-miroirs')>=0) return {rang:4, etage:'miroir par concordance'};
-  if(r.indexOf('Duel des binômes')>=0 || r.indexOf('duel des binômes')>=0) return {rang:3, etage:'duel des binômes'};
+  if(r.indexOf('PREMIER de la boucle')>=0) return {rang:3, etage:'guerre civile — égalité de boucle'};
   if(r.indexOf('ARMÉ')>=0 || r.indexOf('chaos')>=0) return {rang:3, etage:'chaos armé'};
   if(r.indexOf('hiérarchie')>=0) return {rang:2, etage:'hiérarchie élémentaire'};
   return {rang:1, etage:'récit / indécis'};
@@ -4935,6 +4954,15 @@ function replayEntry(entry){
   var ecartButs = Math.abs(predM1-g1) + Math.abs(predM7-g7);
   var scoreOk = ecartButs <= 1;
 
+  // ── Suivi CONFLIT MOTEURS (revue contradictions) — le commentaire de
+  // verdictV7 promettait de basculer la priorité vers la "nouvelle chaîne"
+  // si les stats confirmaient sur 10+ conflits, mais conflitChaine n'était
+  // jamais relu nulle part : la promesse ne pouvait jamais être évaluée.
+  // On l'agrège ici pour de vrai, sur l'archive rejouée.
+  var conflict = v7Replay.conflitChaine;
+  var conflictV7Ok = conflict ? (conflict.v7 === realWinner) : null;
+  var conflictChaineOk = conflict ? (conflict.chaine === realWinner) : null;
+
   // ── Convergence des signaux d'etude (08/07/26) — uniquement quand
   // verdictFinal ne tranche pas (indecis/abstention/victoire_ouverte).
   // Ne pese sur AUCUN verdict, juste un compteur diagnostique.
@@ -4988,7 +5016,13 @@ function replayEntry(entry){
     complementM1M7: oc.actif,
     enginesDivergent: enginesDivergent,
     binomeM1M7: sb.actif,
-    superpositionCount: asr.count
+    superpositionCount: asr.count,
+    hasConflict: !!conflict,
+    conflictV7: conflict ? conflict.v7 : null,
+    conflictChaineWinner: conflict ? conflict.chaine : null,
+    conflictSource: conflict ? conflict.source : null,
+    conflictV7Ok: conflictV7Ok,
+    conflictChaineOk: conflictChaineOk
   };
 }
 
@@ -5021,12 +5055,26 @@ function renderStatsTab(){
   if(!valides.length){
     h += '<div class="muted" style="margin-top:8px;">Aucun thème valide avec score réel. Saisis les scores réels dans l onglet Historique (champ "Score reel") pour alimenter les statistiques.</div>';
   } else {
-    h += '<div class="kv" style="margin-top:8px;"><b>🏆 Vainqueur combiné (dominant &gt; élémentaire) :</b> '+rate(valides,'combinedOk')+'</div>';
+    h += '<div class="kv" style="margin-top:8px;"><b>🏆 Vainqueur combiné (dominant &gt; élémentaire, comparaison historique) :</b> '+rate(valides,'combinedOk')+'</div>';
     h += '<div class="kv"><b>👑 Camp dominant seul :</b> '+rate(valides,'cdOk')+'</div>';
     h += '<div class="kv"><b>🔥 Verdict élémentaire seul :</b> '+rate(valides,'veOk')+'</div>';
+    h += '<div class="muted" style="font-size:11px; margin-top:-2px; margin-bottom:6px;">Les 3 taux ci-dessus ne reflètent PAS la chaîne réellement utilisée pour le verdict affiché à l utilisateur (voir ⚡ Chaîne verdictFinal ci-dessous) — camp dominant a échoué en aveugle et ne tranche plus M1/M7 dans verdictFinal, ces taux sont conservés à titre de comparaison historique uniquement.</div>';
     h += '<div class="kv"><b>⚖️ Juge — question nul/victoire :</b> '+rate(valides,'jugeOk')+'</div>';
-    h += '<div class="kv" style="margin-top:10px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>⚡ Chaîne verdictFinal (toute étages confondus) :</b> '+rate(valides,'vfOk')+'</div>';
+    h += '<div class="kv" style="margin-top:10px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>⚡ Chaîne verdictFinal (toute étages confondus, verdict réellement affiché) :</b> '+rate(valides,'vfOk')+'</div>';
     h += '<div class="kv" style="border:1px solid #60a5fa; border-radius:8px; padding:6px; margin-top:6px;"><b>⚽ Score (calculerButsCamp rejoué, écart ≤1 but) :</b> '+rate(valides,'scoreOk')+'</div>';
+    // ── CONFLITS MOTEURS V7 vs nouvelle chaîne (revue contradictions) ──
+    // verdictV7 promet de basculer la priorité vers la "nouvelle chaîne"
+    // si les stats confirment sur 10+ conflits (commentaire du 02/07/26,
+    // jamais suivi jusqu ici faute de compteur). On l évalue ici pour de
+    // vrai sur l archive rejouée à chaque ouverture de l onglet.
+    var conflits = valides.filter(function(r){ return r.hasConflict; });
+    if(conflits.length){
+      var seuilAtteint = conflits.length >= 10;
+      h += '<div class="kv" style="margin-top:8px; border:1px solid #a78bfa; border-radius:8px; padding:6px;"><b>⚔️ Conflits moteurs (V7 vs nouvelle chaîne) :</b> '+conflits.length+' conflit(s) observé(s) — V7 correct '+rate(conflits,'conflictV7Ok')+', nouvelle chaîne correcte '+rate(conflits,'conflictChaineOk')+'</div>';
+      h += '<div class="muted" style="font-size:11px;">'+(seuilAtteint
+        ? '✅ Seuil de 10+ conflits atteint — comparer les deux taux ci-dessus pour décider si la priorité doit basculer vers la nouvelle chaîne (actuellement V7 reste maître, cf. verdictV7).'
+        : '⏳ Seuil de 10+ conflits pas encore atteint ('+conflits.length+'/10) — priorité laissée à V7 en attendant.')+'</div>';
+    }
     var nonApplicableVf = valides.filter(function(r){return r.vfWinner===null || r.vfWinner===undefined;}).length;
     if(nonApplicableVf){
       h += '<div class="kv" style="border:1px dashed #a78bfa; border-radius:8px; padding:6px; margin-top:4px;"><b>🔍 Convergence des signaux d étude sur ces '+nonApplicableVf+' thème(s) indécis :</b> '+rate(valides,'convergenceOk')+'</div>';
