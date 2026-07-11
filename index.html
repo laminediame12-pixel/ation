@@ -4757,7 +4757,8 @@ function verdictElementaire(theme){
 //    → incident contre le camp visé. Validé : Albus (antag. M1)
 //    chaotique en M9 → rouge contre M1 à la 64e (USA-Bosnie 02/07/26).
 // 3. Rubeus en M11 (règle V7 historique, eau/eau/eau).
-// 4. Fortuna Major en M12, et Caput Draconis en M12 (mesure moindre).
+// 4. Fortuna Major en M12, Caput Draconis en M12 (mesure moindre), et
+//    Rubeus en M12 (position secondaire à la règle 3, signalé 11/07/26).
 // 5. Puer en M6.
 // 6. Figures très négatives simultanément en M6 ET M12 (maisons opposées) :
 //    Rubeus, Cauda Draconis, Amissio, Carcer, Tristitia (+ Puer en M6,
@@ -4798,9 +4799,12 @@ function detectIncidentChaotique(theme, campA, campB){
   // 3. Rubeus en M11
   if (theme[11]==='rubeus') signals.push({pos:11, fig:'rubeus', label:'Rubeus en M11 (eau/eau/eau) : penalty/rouge probable'});
 
-  // 4. Fortuna Major ou Caput Draconis en M12
+  // 4. Fortuna Major, Caput Draconis ou Rubeus en M12
   if (theme[12]==='fortuna_major') signals.push({pos:12, fig:'fortuna_major', label:'Fortuna Major en M12 : risque penalty/rouge composite'});
   if (theme[12]==='caput_draconis') signals.push({pos:12, fig:'caput_draconis', label:'Caput Draconis en M12 : risque penalty/rouge (mesure moindre)'});
+  // AJOUTÉ (signalé par l'utilisateur) : Rubeus en M12, à distinguer de la
+  // règle 3 (Rubeus en M11) — position secondaire, même figure.
+  if (theme[12]==='rubeus') signals.push({pos:12, fig:'rubeus', label:'Rubeus en M12 : risque penalty/rouge (position secondaire, hors M11)'});
 
   // 5. Puer en M6
   if (theme[6]==='puer') signals.push({pos:6, fig:'puer', label:'Puer en M6 : impulsivité, risque penalty/rouge'});
