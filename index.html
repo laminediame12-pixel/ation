@@ -4523,6 +4523,18 @@ function verdictElementaire(theme){
   // solidité de tout l'aval : « la solidité de l'autre le rend solide »).
   // Validé 8/8 rétrospectif sur toutes les guerres civiles (FIFA 4-3,
   // M2, M14, 2-4, 1écart, 3-1, 4-2, FMCaput). Assemblée rétrospectivement.
+  // ÉCART NON RÉSOLU (revue du verdict élémentaire) : ce bloc "guerre
+  // civile" (M1/M7 dans le même cycle binôme) est prioritaire et court-
+  // circuite TOUJOURS la doctrine "ARMEMENT DU CHAOS" (armementChaos,
+  // validée 5/5 puis 4/5) plus bas dans cette fonction — même quand M1 ou
+  // M7 a le rôle élémentaire Chaotique. Les deux règles ont été validées
+  // séparément, sur des échantillons qui ne se recoupent apparemment pas,
+  // et aucun commentaire ne dit laquelle devrait l'emporter en cas de
+  // recouvrement. Mesuré sur 50 000 thèmes aléatoires : 44% déclenchent
+  // "guerre civile", et parmi eux 39% ont aussi un camp Chaotique — soit
+  // ~17% de TOUS les thèmes où la doctrine du chaos armé est simplement
+  // ignorée sans que ce soit documenté ni testé. Pas corrigé ici faute de
+  // données pour trancher lequel doit primer — à trancher sur l'archive.
   const gcU = detecteurGuerreCivile(theme);
   if(gcU.applicable){
     // Distingue "antagoniste absent du theme" (aucune information, pas un 0
@@ -4536,6 +4548,18 @@ function verdictElementaire(theme){
       const chef = theme[cp];
       if(FIGS_V7[cp-1]===chef) return 0; // chez lui, voilé — immune (vrai 0)
       const a = ANTAGONISTES_V7[chef];
+      // CORRECTION (revue du verdict élémentaire) : a==='populus' est un
+      // non-danger STRUCTUREL (cas trivial de Caput Draconis, toujours
+      // vrai — cf. le même principe déjà appliqué dans etatC ci-dessous)
+      // même si Populus n'apparaît nulle part dans le thème. Avant cette
+      // correction, ce cas retournait null ("antagoniste absent, aucune
+      // information") exactement comme un vrai antagoniste non tiré,
+      // alors que etatC traite déjà ce même cas comme sûr (antTrivial) —
+      // les deux fonctions donnaient des réponses différentes pour le
+      // même état réel, forçant à tort l'abandon de la comparaison la
+      // plus fiable (attaques effectives) au profit du repli plus faible
+      // (état des chefs, voire premier de boucle).
+      if(a==='populus') return 0;
       const sieges = positionsBaseEtResultantes(a, theme).map(x=>parseInt(x.replace('M','').replace('r','')));
       if(!sieges.length) return null; // antagoniste ABSENT : aucune information, pas un 0
       if(BINOMES_V7[a]!=='populus' && positionsBaseEtResultantes(BINOMES_V7[a], theme).length===0) return 0; // affamé (faim réelle) : vrai 0
