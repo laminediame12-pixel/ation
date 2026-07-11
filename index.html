@@ -3190,15 +3190,28 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   }
 
   var finalCorrected = false;
-  if (winner==='M1') { var rM1=enforceScoreMargin(goalM1, goalM7); goalM1=rM1[0]; goalM7=rM1[1]; finalCorrected=rM1[2]; }
-  else if (winner==='M7') { var rM7=enforceScoreMargin(goalM7, goalM1); goalM7=rM7[0]; goalM1=rM7[1]; finalCorrected=rM7[2]; }
+  // CORRECTION (vérification impact piliers M1/M8/M9/M12/M15) : ce garde-fou
+  // final utilisait toujours minGap=1 (valeur par défaut d'enforceScoreMargin),
+  // sans jamais consulter piliersReposCount(theme) — alors que buildScoreFromCamps
+  // (utilisé par duelV7 pour calculer duelM.goalA/goalB et duelR.goalA/goalB
+  // séparément) applique correctement minGap=3 quand 2+ piliers sont en repos.
+  // Le Math.max() ci-dessus qui fusionne Camp M et Camp R peut détruire l'écart
+  // de 3 déjà établi dans chacun séparément, et ce garde-fou final le
+  // reconstruisait ensuite avec un écart minimum de seulement 1, pas 3.
+  // Vérifié exhaustivement sur les 65 536 tirages de mères possibles : parmi
+  // les 3089 thèmes avec verrou piliers actif ET un vainqueur M1/M7 tranché,
+  // 1913 (62%) se retrouvaient avec un écart final < 3, violant la règle que
+  // le système affiche pourtant comme active pour ces thèmes.
+  var minGapFinal = piliersReposCount(theme) >= 2 ? 3 : 1;
+  if (winner==='M1') { var rM1=enforceScoreMargin(goalM1, goalM7, minGapFinal); goalM1=rM1[0]; goalM7=rM1[1]; finalCorrected=rM1[2]; }
+  else if (winner==='M7') { var rM7=enforceScoreMargin(goalM7, goalM1, minGapFinal); goalM7=rM7[0]; goalM1=rM7[1]; finalCorrected=rM7[2]; }
   else {
     goalM1=Math.min(5,Math.max(0,goalM1));
     goalM7=Math.min(5,Math.max(0,goalM7));
     if (winner==='Nul' && goalCap===null) { var g2=Math.max(goalM1,goalM7,1); goalM1=g2; goalM7=g2; }
   }
   if (finalCorrected) {
-    reasons.push('⚠️ Score final ajusté : les buts bruts (max de Camp M et Camp R) ne donnaient pas d\'écart net pour '+winner+' — marge minimale forcée (+1). Désaccord interne entre doctrine et calcul de buts, à surveiller.');
+    reasons.push('⚠️ Score final ajusté : les buts bruts (max de Camp M et Camp R) ne donnaient pas d\'écart net pour '+winner+' — marge minimale forcée (+'+minGapFinal+'). Désaccord interne entre doctrine et calcul de buts, à surveiller.');
   }
 
   // ─── BUT PREMIERE MI-TEMPS ───
@@ -3608,6 +3621,18 @@ function verdictFinal(theme, favoriteOverride){
   // contre 22-36% sinon — aucune regle de nul ne peut se declencher dans
   // ce cas, meme si profilNulStructurel/Conjunctio/symetrie/Acquisitio le
   // suggereraient autrement.
+  // VÉRIFICATION D'IMPACT (revue des piliers) : condition mesurée de façon
+  // EXHAUSTIVE sur les 65 536 combinaisons de mères possibles (pas un
+  // échantillon) — 3096 thèmes (4,72%) ont 2+ piliers en repos ; 5 piliers
+  // simultanés est structurellement IMPOSSIBLE (0 occurrence sur les
+  // 65 536). Parmi ces 3096 thèmes verrouillés, 163 (5,3% d'entre eux, soit
+  // 0,25% de TOUS les thèmes possibles) auraient été détectés NUL par
+  // l'entre-blocage de profilNulStructurel — la règle de nul la MIEUX
+  // validée du système (17/17 empirique) — si ce verrou construit sur 4
+  // cas archivés ne les bloquait pas. Pas corrigé (l'un ou l'autre
+  // échantillon peut être le bon, aucune donnée ici pour trancher), mais
+  // à garder en tête : un verrou à 4 cas neutralise une règle à 17 cas
+  // dans ces 163 configurations précises.
   const nulVerrouille = piliersReposCount(theme) >= 2;
   if (!nulVerrouille) {
     const pn = profilNulStructurel(theme);
