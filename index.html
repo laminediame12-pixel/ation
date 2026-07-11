@@ -3470,18 +3470,38 @@ function campDominant(theme){
 // Minor ET que le favori du match est renseigné, le Juge désigne
 // directement le vainqueur. Validé 3/3 pour F.Major (Belgique 3-2;
 // Real 4-1; favori M7 4-0 contre TOUS les autres moteurs).
-// PRIORITÉ : juge-favori > dominant > élémentaire. Le favori est une
-// donnée du monde réel — ne JAMAIS le déduire des figures du thème.
+// PRIORITÉ : juge-favori > élémentaire. Le favori est une donnée du
+// monde réel — ne JAMAIS le déduire des figures du thème.
+// CORRECTION (revue des principes du juge-favori) : ce commentaire disait
+// "juge-favori > dominant > élémentaire" — campDominant ne participe plus
+// au verdict affiché (cf. son propre commentaire, corrigé séparément) et
+// n'intervient jamais entre juge-favori et verdictElementaire dans
+// verdictFinal ; la mention "dominant" ici était un résidu du même
+// oubli.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
 // VERDICT FINAL — hiérarchie unique et validée (03/07/26)
 // Ordre : détruit/invalide → abstention | profil du nul → NUL |
-// MIROIRS → le Juge décide (Populus=nul, Conjunctio=victoire à l'usure,
-// F.Major/Minor=favori) | juge-favori | guerre civile (attaques effectives
-// > état des chefs > égalité de boucle) | inter-boucles (chaos armé >
-// hiérarchie).
+// MIROIRS (M1=M7) → concordance élémentaire départage (ÉTAPE 2 RÉVISÉE,
+// 04/07/26 — remplace l'ancienne doctrine "le Juge décide" décrite plus
+// bas dans une version antérieure de ce commentaire, jamais mise à jour ;
+// voir CORRECTION ci-dessous) | juge-favori | guerre civile (attaques
+// effectives > état des chefs > égalité de boucle) | inter-boucles
+// (chaos armé > hiérarchie).
 // Les signaux d'étude (dominant, chambres, alignements, nœuds) ne
 // participent PLUS au verdict (échecs en aveugle) — affichés à part.
+// CORRECTION (revue des principes du juge-favori) : ce commentaire disait
+// "MIROIRS → le Juge décide (Populus=nul, Conjunctio=victoire à l'usure,
+// F.Major/Minor=favori)". Le code réel du cas miroir (theme[1]===theme[7],
+// cf. "ÉTAPE 2 RÉVISÉE" plus bas) ne regarde JAMAIS la figure du Juge
+// (M15) et n'appelle jamais verdictJugeFavori — il tranche uniquement par
+// la concordance élémentaire de la figure partagée. Concrètement : si un
+// thème tombe en miroir (M1=M7) ET que le Juge est Fortuna Major/Minor
+// avec un favori renseigné, la règle juge-favori ne s'applique PAS (le
+// miroir est vérifié avant, à la ligne du "if(theme[1]===theme[7])").
+// C'est un choix délibéré et validé pour le cas miroir testé (M6 Populus
+// → réel 3-1 M1), pas un bug — mais l'écart avec l'ancienne doctrine
+// documentée ici n'avait jamais été signalé.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
 // PROTOCOLE DES TIRAGES MULTIPLES (04/07/26)
@@ -3525,6 +3545,19 @@ function campDominant(theme){
 // jamais à un verdict affiché. Les textes "trahison"/"Duel des binômes"
 // n'apparaissent donc plus jamais dans un vf.reason réel — rangParole ne
 // les cherche plus, pour ne pas laisser croire que ces étages sont actifs.
+// CORRECTION (revue des principes du juge-favori) : le test du palier
+// "juge-favori à parole saine" cherchait 'juge' en minuscule ET 'favori',
+// ou 'FAVORI' en majuscules — mais le texte réellement généré par
+// verdictJugeFavori commence toujours par 'Juge' (J majuscule, ex. "Juge
+// Fortuna Major + favori renseigné → ..."), et 'FAVORI' tout en
+// majuscules n'apparaît nulle part. Résultat : LA règle présentée partout
+// ailleurs comme la plus sûre du système ("PRIORITÉ : juge-favori en
+// tête", "1000 chances de gagner, jamais démenti" en rang 5) retombait en
+// réalité systématiquement au rang 1 "récit / indécis", le niveau le plus
+// bas — un second tirage tranchant par la simple hiérarchie élémentaire
+// (rang 2) aurait pu supplanter à tort un verdict juge-favori validé.
+// Remplacé par la recherche du marqueur 'favori renseigné', unique aux
+// deux textes réels de verdictJugeFavori (Fortuna Major/Minor).
 // ═══════════════════════════════════════════════════════════════
 function rangParole(vf){
   const r = (vf.reason||'')+' '+(vf.label||'');
@@ -3533,7 +3566,7 @@ function rangParole(vf){
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
   if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
-  if(r.indexOf('juge')>=0 && r.indexOf('favori')>=0 || r.indexOf('FAVORI')>=0) return {rang:5, etage:'juge-favori à parole saine'};
+  if(r.indexOf('favori renseigné')>=0) return {rang:5, etage:'juge-favori à parole saine'};
   if(r.indexOf('état des chefs')>=0 && r.indexOf('CHEZ LUI (domine)')>=0) return {rang:5, etage:'chef chez lui'};
   if(r.indexOf('SOUVERAINE')>=0) return {rang:5, etage:'chaîne de repos souveraine'};
   if(r.indexOf('ÉTAT DES CHEFS')>=0 || r.indexOf('état des chefs')>=0) return {rang:4, etage:'état des chefs'};
