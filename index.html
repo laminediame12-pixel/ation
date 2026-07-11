@@ -4958,6 +4958,12 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride) {
   var corners = estimerCornersV7(theme, goalA, goalB);
   var btts = goalA > 0 && goalB > 0;
 
+  // AJOUTÉ (demande utilisateur) : équipe à plus grande capacité de
+  // marquage brute — campA.total/campB.total AVANT la correction de marge
+  // finale (buildScoreFromCamps), donc potentiellement différent du
+  // vainqueur doctrinal si la marge a dû être forcée.
+  var capaciteWinner = campA.total > campB.total ? 'A' : campB.total > campA.total ? 'B' : 'egal';
+
   return {
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
     scoreMain: scoreMain, scoreAlt: scoreAlt,
@@ -4966,7 +4972,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride) {
     btts: btts,
     corners: corners,
     domPctA: domPct, domPctB: 100 - domPct,
-    domA: domA, domB: domB
+    domA: domA, domB: domB,
+    capaciteA: campA.total, capaciteB: campB.total, capaciteWinner: capaciteWinner
   };
 }
 
@@ -4986,6 +4993,8 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo) {
   if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
   html += '<div class="kv"><b>Penalty/Rouge :</b> ' + (card.penaltyRouge ? 'Oui' : 'Non') + '</div>';
   html += '<div class="kv"><b>Cartons jaunes (estimé) :</b> ' + card.cartonsJaunes + '</div>';
+  var capaciteLabel = card.capaciteWinner === 'A' ? teamA : card.capaciteWinner === 'B' ? teamB : 'Égalité';
+  html += '<div class="kv"><b>Plus grande capacité de marquage :</b> ' + capaciteLabel + ' (' + card.capaciteA + ' vs ' + card.capaciteB + ')</div>';
   html += '<div class="kv"><b>Les deux marquent (BTTS) :</b> ' + (card.btts ? 'Oui' : 'Non') + '</div>';
   html += '<div class="kv"><b>Corners :</b> ' + card.corners.ht1 + ' (1MT) + ' + card.corners.ht2 + ' (2MT) = ' + card.corners.total + ' — match ' + (card.corners.ouvert ? 'ouvert' : 'fermé') + '</div>';
   if (htInfo) {
