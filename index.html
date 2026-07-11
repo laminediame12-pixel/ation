@@ -2835,9 +2835,16 @@ function calculerButsCamp(figTete, theme, ctx) {
 
     var planeteFig = PLANETES_V7[fig];
     var concPlan = concordancePlanetaire(planeteFig, planeteJour);
-    // Seules les figures dont la planete est identique ou en alliance avec la planete
-    // du jour sont actives ; les autres restent endormies (contribution nulle).
-    if (concPlan.type !== 'identique' && concPlan.type !== 'alliance') return;
+    // CORRECTION (revue du calcul de buts, validée sur 4 matchs réels) : la
+    // porte binaire d'origine ("identique/alliance = actif, sinon endormie
+    // = 0") faisait tomber le total à 0 dans la majorité des cas — sur
+    // 7 planètes, seules 2 relations sur 6 possibles (identique, alliance)
+    // laissaient une figure marquer, les 4 autres (neutre/opposition la
+    // plupart du temps) l'excluaient totalement. Remplacé par une
+    // réduction graduée réutilisant l'échelle déjà définie dans
+    // concordancePlanetaire (identique=100, alliance=80, neutre=50,
+    // opposition=20) au lieu de la jeter après un simple test booléen.
+    var planetFactor = concPlan.score / 100;
 
     // ── Impact de l'antagoniste : reduit la capacite reelle de marquage ──
     var antag = ANTAGONISTES_V7[fig];
@@ -2852,8 +2859,9 @@ function calculerButsCamp(figTete, theme, ctx) {
     facteurReduction = Math.max(plancherReduction, facteurReduction); // jamais en dessous du plancher du potentiel
 
     // Contribution = capacite max (pas interpolee par sa propre concordance, mais
-    // plafonnee par l'attaque subie) -> Puella seule peut donner pile sa capacite fixe
-    var contribBrut = Math.round(b.max * facteurReduction);
+    // plafonnee par l'attaque subie et par l'alignement planetaire du jour) ->
+    // Puella seule peut donner pile sa capacite fixe (min=max) quand alignee
+    var contribBrut = Math.round(b.max * facteurReduction * planetFactor);
     // ACTIVATION (revue des figures marquantes) : `min` n'etait jamais lu —
     // une figure a min>0 (ex. Puella min=max=2) pouvait tomber sous son
     // propre plancher documente. `concede` (Puer, Amissio) est l'exception
