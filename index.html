@@ -3227,19 +3227,34 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   }
 
   // ─── BUT PREMIERE MI-TEMPS ───
-  // Regle : si (M1 ouverte OU M7 ouverte) ET (M5 active OU ouverte) ET M10 ouverte
-  // -> les deux marquent en premiere mi-temps (htWinner='both')
-  // Signaux forts : Caput Draconis ou Via en M5, M1, ou M7
+  // CORRECTION (revue "but première mi-temps") : la version d'origine
+  // testait "M1 ouverte OU M7 ouverte" (au moins une des deux) mais
+  // tranchait TOUJOURS 'both' (les deux marquent) dès que la condition
+  // passait — même quand une seule des deux était réellement ouverte.
+  // Doctrine précisée par l'utilisateur : M1/M7 ouverte OU mobile (pas
+  // seulement ouverte) ; M5 ouverte ; M10 ouverte ; ET dans cette
+  // configuration, SI UNE SEULE des deux (M1/M7) est ouverte/mobile,
+  // c'est l'AUTRE (celle fermée) qui encaisse — 'both' ne s'applique que
+  // si LES DEUX sont ouvertes/mobiles à la fois.
   var figM1 = theme[1], figM7 = theme[7], figM5 = theme[5], figM10 = theme[10];
-  var m1OuM7Ouverte = isOuverte(figM1) || isOuverte(figM7);
+  var m1OuvOuMobile = isOuverte(figM1) || isMobile(figM1);
+  var m7OuvOuMobile = isOuverte(figM7) || isMobile(figM7);
   var m5ActifOuOuvert = isActive(figM5) || isOuverte(figM5);
   var m10Ouverte = isOuverte(figM10);
   var htWinner = null;
   var htReasons = [];
 
-  if (m1OuM7Ouverte && m5ActifOuOuvert && m10Ouverte) {
-    htWinner = 'both';
-    htReasons.push('M1/M7 ouverte + M5 active/ouverte + M10 ouverte -> but des deux cotes en 1ere mi-temps');
+  if (m5ActifOuOuvert && m10Ouverte && (m1OuvOuMobile || m7OuvOuMobile)) {
+    if (m1OuvOuMobile && m7OuvOuMobile) {
+      htWinner = 'both';
+      htReasons.push('M1 et M7 ouvertes/mobiles + M5 active/ouverte + M10 ouverte -> but des deux cotes en 1ere mi-temps');
+    } else if (m1OuvOuMobile) {
+      htWinner = 'M1';
+      htReasons.push('M1 ouverte/mobile, M7 fermee + M5 active/ouverte + M10 ouverte -> M7 (fermee) encaisse en 1ere mi-temps');
+    } else {
+      htWinner = 'M7';
+      htReasons.push('M7 ouverte/mobile, M1 fermee + M5 active/ouverte + M10 ouverte -> M1 (fermee) encaisse en 1ere mi-temps');
+    }
   } else {
     // Fallback : ancienne logique de concordance binome pour determiner un seul scorer HT
     var checkHT = function(pos, side) {
