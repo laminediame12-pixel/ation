@@ -2299,6 +2299,28 @@ function checkFortunaMajorM12Penalty(theme) {
 // Meute 2 : boucle binôme de l'antagoniste de M1
 // Meute 3 : boucle binôme de M7
 // Meute 4 : boucle binôme de l'antagoniste de M7
+// REVUE (principes des attaques effectives / meute vs meute) : contrairement
+// à presque toutes les autres règles du fichier, ce moteur — bien que
+// présenté dans verdictV7 comme "MOTEUR PRINCIPAL prioritaire" — n'a AUCUNE
+// validation empirique citée nulle part (pas de "validé X/Y", pas de cas
+// réel nommé) pour ses formules (forceMeute : concordance×atténuation+15
+// si présent ; pouvoirDestructeur ; seuil "écart≤10→Nul" de duelMeutes ;
+// seuils "faiblesse≥1.5"/"écart≤40" du départage final). Il pèse pourtant
+// sur des sorties réellement affichées à l'utilisateur (premier buteur en
+// 1ère mi-temps via v7.winner, carte "Verdict R1/R7" jamais recouverte par
+// la doctrine, export image — ce dernier corrigé ci-dessous pour utiliser
+// le verdict doctrinal plutôt que v7.winner brut).
+// CAS PARTICULIER : quand M1 et M7 partagent la MÊME boucle binôme (mesuré
+// 50,1% des thèmes aléatoires), Meute1 et Meute3 seraient la boucle
+// EXACTEMENT IDENTIQUE (parcourue depuis un point de départ différent) —
+// comparer "Meute1 vs Meute2" ne distinguerait donc pas M1 de M7. Le code
+// le reconnaît et bascule vers un mécanisme différent (répartition de la
+// boucle partagée en deux camps, cf. plus bas) — choix structurel
+// nécessaire, pas un bug. Mais duelM1side/duelM7side sont alors gelés à
+// {winner:'Nul', scoreA:0, scoreB:0} (jamais calculés), et les mêmes
+// champs meute1..meute4 restent peuplés dans l'objet retourné : à première
+// vue on pourrait croire qu'un vrai duel de meutes a eu lieu et a donné un
+// score nul, alors qu'aucun calcul n'a eu lieu.
 // ═══════════════════════════════════════════════════════════════
 
 /**
@@ -5941,12 +5963,22 @@ function exportThemeImage() {
   var dateStr = matchDate ? matchDate + (matchTime ? ' ' + matchTime : '') : '';
   ctx.fillText(dateStr, CW/2, 40);
 
-  // Verdict
+  // Verdict — CORRECTION (revue des attaques effectives / moteur 4 meutes) :
+  // affichait v7.winner/v7.scoreMain (moteur V7 brut, piloté à 50% des thèmes
+  // par le repli "signaux" du moteur 4 meutes, jamais validé empiriquement),
+  // alors que la carte "Verdict M1/M7" principale de l'app affiche le verdict
+  // DOCTRINAL (verdictFinal, via buildVerdictCard). Les deux pouvaient donc
+  // légitimement diverger, et l'image exportée ne donnait aucune indication
+  // qu'elle utilisait une source différente et moins validée. Recalculé ici
+  // exactement comme la carte principale pour rester cohérent avec ce que
+  // l'utilisateur voit à l'écran.
   var v7 = currentAnalysis.v7;
-  var winnerLabel = v7.winner==='M1' ? team1 : v7.winner==='M7' ? team2 : 'Nul';
+  var vfExport = verdictFinal(currentTheme);
+  var carteExport = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, vfExport.winner);
+  var winnerLabel = carteExport.winner==='M1' ? team1 : carteExport.winner==='M7' ? team2 : 'Nul';
   ctx.font = 'bold 13px Arial';
   ctx.fillStyle = '#4ade80';
-  ctx.fillText('Verdict : ' + winnerLabel + '   Prédit : ' + v7.scoreMain, CW/2, 54);
+  ctx.fillText('Verdict : ' + winnerLabel + '   Prédit : ' + carteExport.scoreMain, CW/2, 54);
 
   // ── GRILLE DU THÈME ──
   // Positions originales : 700×480, on scale à CW-20 largeur centrée
