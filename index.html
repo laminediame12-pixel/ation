@@ -3496,11 +3496,23 @@ function campDominant(theme){
 //       parole saine, chef chez lui (état des chefs tranché par un chef
 //       en repos absolu), chaîne de repos souveraine
 //   4 = haute : état des chefs (hors chef chez lui), attaques effectives,
-//       miroir par concordance
+//       miroir par concordance, nul — juge spécifique confirmé par binôme
+//       (Conjunctio/Acquisitio, 75% empirique chacun)
 //   3 = moyenne : guerre civile — égalité de boucle (premier de boucle),
-//       chaos armé
+//       chaos armé, nul — symétrie mères/filles (67% empirique, échantillon
+//       le plus petit des règles de nul)
 //   2 = basse : hiérarchie élémentaire (dernier recours)
 //   1 = récit seul / indécis
+// CORRECTION (revue des principes du nul) : avant cette correction, les
+// nuls "Juge Conjunctio"/"symétrie mères-filles"/"Juge Acquisitio"
+// (calculés dans verdictFinal, cf. plus bas) ne matchaient AUCUNE branche
+// de rangParole et retombaient tous au rang 1 "récit / indécis" — le même
+// niveau qu'une absence totale de signal, alors que ce sont des règles de
+// nul validées empiriquement (67-75%). Un second tirage ne parlant que
+// par hiérarchie élémentaire (rang 2) aurait pu, à tort, supplanter un
+// premier tirage avec un vrai nul Juge Acquisitio (rang 4 après
+// correction). Rangs assignés par confiance empirique décroissante,
+// cohérents avec nul_suspecte (rang 4) et entre-blocage (rang 5, 100%).
 // À égalité d'étage : le premier tirage lie. STATUT : protocole
 // provisoire, à éprouver sur des paires réelles de l'archive.
 // CORRECTION (revue contradictions) : "trahison" et "duel des binômes"
@@ -3519,6 +3531,8 @@ function rangParole(vf){
   if(vf.type==='abstention') return {rang:0, etage:'abstention'};
   if(vf.type==='nul_suspecte') return {rang:4, etage:'convergence nul (promu 07/07/26)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
+  if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
+  if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
   if(r.indexOf('juge')>=0 && r.indexOf('favori')>=0 || r.indexOf('FAVORI')>=0) return {rang:5, etage:'juge-favori à parole saine'};
   if(r.indexOf('état des chefs')>=0 && r.indexOf('CHEZ LUI (domine)')>=0) return {rang:5, etage:'chef chez lui'};
   if(r.indexOf('SOUVERAINE')>=0) return {rang:5, etage:'chaîne de repos souveraine'};
@@ -3553,6 +3567,24 @@ function verdictFinal(theme, favoriteOverride){
   if (!nulVerrouille && theme[15]==='conjunctio' && positionsBaseEtResultantes('cauda_draconis', theme).length>0) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (Juge Conjunctio) : Juge Conjunctio confirmé par son binôme Cauda Draconis présent → NUL (3/4 empirique, indépendant de l entre-blocage général).'};
   }
+  // JUGE ACQUISITIO — logique propre au juge (10/07/26) : resonance totale
+  // des figures de tete (combien de fois la figure de M1, et celle de M7,
+  // reapparaissent dans tout le theme en base+resultante — meme comptage
+  // que campDominant). Somme ≥6 → 75% nul empirique (3/4) contre 0% (0/5)
+  // en dessous — plus net que la simple presence binome/antagoniste
+  // d'Acquisitio, qui ne separait rien.
+  // ORDRE (revue des principes du nul) : testée AVANT la symétrie
+  // mères/filles ci-dessous — cette règle est à la fois plus fiable (75%
+  // sur n=4) et plus spécifique (conditionnée au Juge Acquisitio). Avant
+  // cette correction, la symétrie mères/filles (67%, n=3, générique)
+  // était testée en premier et pouvait couper court avant même d'atteindre
+  // ce test, si un thème remplissait les deux conditions à la fois.
+  if (!nulVerrouille && theme[15]==='acquisitio') {
+    const cd0 = campDominant(theme);
+    if ((cd0.M1.count + cd0.M7.count) >= 6) {
+      return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (Juge Acquisitio) : résonance totale M1+M7 = '+(cd0.M1.count+cd0.M7.count)+' (≥6) → NUL (75% empirique, 3/4).'};
+    }
+  }
   // SYMÉTRIE MÈRES/FILLES (10/07/26) — quand {M1,M2,M3,M4} et {M5,M6,M7,M8}
   // partagent 3 figures sur 4 (une seule differe), gradient empirique net :
   // 3 communes=67% nul, 2=29%, 1=27%, 0=8% (echantillons 3/7/11/12). Seul le
@@ -3563,18 +3595,6 @@ function verdictFinal(theme, favoriteOverride){
     const communesN = meresF.filter(f=>fillesF.indexOf(f)>=0).length;
     if (communesN === 3) {
       return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (symétrie mères/filles) : {M1-M4} et {M5-M8} partagent 3 figures sur 4 → NUL (67% empirique, 2/3).'};
-    }
-  }
-  // JUGE ACQUISITIO — logique propre au juge (10/07/26) : resonance totale
-  // des figures de tete (combien de fois la figure de M1, et celle de M7,
-  // reapparaissent dans tout le theme en base+resultante — meme comptage
-  // que campDominant). Somme ≥6 → 75% nul empirique (3/4) contre 0% (0/5)
-  // en dessous — plus net que la simple presence binome/antagoniste
-  // d'Acquisitio, qui ne separait rien.
-  if (!nulVerrouille && theme[15]==='acquisitio') {
-    const cd0 = campDominant(theme);
-    if ((cd0.M1.count + cd0.M7.count) >= 6) {
-      return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (Juge Acquisitio) : résonance totale M1+M7 = '+(cd0.M1.count+cd0.M7.count)+' (≥6) → NUL (75% empirique, 3/4).'};
     }
   }
   // ═══ ÉTAPE 2 RÉVISÉE (04/07/26) — CAMPS-MIROIRS ═══
@@ -4220,22 +4240,28 @@ function dangerAgresseurLibre(theme){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PROFIL DU NUL STRUCTUREL (03/07/26) — la zone aveugle historique
-// Le nul = ÉQUILIBRE DES DESTRUCTIONS, mesurable par trois conditions :
-//   1. Aucun agresseur FORT-ET-LIBRE contre aucun chef (toutes les
-//      frappes sont entravées — personne ne peut finir l'autre)
-//   2. Duel des binômes quasi égal (gap ≤ 1.5 : les soutiens se valent)
-//   3. Juge de symétrie : Populus (le miroir) ou Acquisitio en repos
-//      absolu (le Gain — équilibré, il se conjugue au PLURIEL : les
-//      deux camps gagnent leur compte, ex. 3-3).
-// Les victoires à juge Acquisitio ont toutes un gap ≥ 4 (1-0, 7-0, 3-0):
-// le déséquilibre singularise le gain. Les victoires à petit gap ont
-// des juges asymétriques (Amissio: qqn perd; Via: le flux tranche).
-// Validé rétrospectivement : 3/3 nuls capturés (3-3 miroir, 3-3, nul),
-// 0 faux positif sur 13 victoires. ⚠️ Seuil 1.5 calé sur 3 cas —
-// STATUT : signal informatif, à confirmer sur les futurs nuls.
+// PROFIL DU NUL STRUCTUREL — la zone aveugle historique
+// CORRECTION (revue des principes du nul) : la version d'origine du
+// 03/07/26 décrivait une doctrine à 3 conditions (entre-blocage + duel
+// des binômes gap≤1.5 + juge Populus/Acquisitio EN REPOS ABSOLU) — mais
+// cette doctrine a été remplacée dès le lendemain par "ÉTAPE 1 RÉVISÉE"
+// (04/07/26, cf. fonction ci-dessous) sans que ce commentaire d'en-tête
+// soit mis à jour : il décrivait donc une règle que le code n'exécute
+// plus depuis longtemps. Ce que la fonction teste RÉELLEMENT aujourd'hui :
+//   1. ENTRE-BLOCAGE : aucune figure "forte-libre" (présente + son
+//      binôme présent + son antagoniste absent) en base ou résultante —
+//      aucune force ne peut conclure le match.
+//   2. LE JUGE CONSTATE (ne crée pas le nul) : M15 doit être l'une de
+//      Conjunctio/Via/Carcer/Populus/Acquisitio, ET son binôme doit être
+//      présent dans le thème (parole confirmée) — pas de condition de
+//      "repos absolu" sur le juge, ni de duel des binômes chiffré.
+// Le duel des binômes (gap≤1.5) et le "repos absolu" du juge de la
+// version d'origine ne sont plus vérifiés nulle part dans cette fonction.
+// Validation (04/07/26) : 17/17 sur l'archive (2 nuls capturés, 0 faux
+// positif) — assemblée rétrospectivement, à confirmer en aveugle.
 // L'énergie du thème (Déclencheurs+Amplificateurs+Chaotiques) dit si
-// le nul MARQUE (≥6 : type 2-2/3-3) ou se ferme (0-0/1-1).
+// le nul MARQUE (≥6 : type 2-2/3-3) ou se ferme (testé <6 = 0/3, pas
+// assez fiable pour conclure "se ferme", donc simplement pas de verdict).
 // ═══════════════════════════════════════════════════════════════
 function profilNulStructurel(theme){
   // ═══ ÉTAPE 1 RÉVISÉE (04/07/26) — doctrine complète du NUL ═══
