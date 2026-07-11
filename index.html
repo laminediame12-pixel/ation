@@ -4610,9 +4610,21 @@ function verdictElementaire(theme){
       const f = theme[cp];
       if(FIGS_V7[cp-1]===f) return {rang:4, absent:false}; // chez lui : rang suprême
       const nourri = BINOMES_V7[f]==='populus' ? true : positionsBaseEtResultantes(BINOMES_V7[f], theme).length>0;
-      const antTrivial = ANTAGONISTES_V7[f]==='populus';
-      const antAbsent = !antTrivial && positionsBaseEtResultantes(ANTAGONISTES_V7[f], theme).length===0;
-      const attaque = antTrivial ? false : !antAbsent;
+      const antFig = ANTAGONISTES_V7[f];
+      const antTrivial = antFig==='populus';
+      const antAbsent = !antTrivial && positionsBaseEtResultantes(antFig, theme).length===0;
+      // CORRECTION (revue des attaques effectives) : attEff() ci-dessus
+      // traite déjà un antagoniste présent mais AFFAMÉ (son propre binôme
+      // absent) comme une menace nulle (return 0, "affamé, faim réelle").
+      // etatC() ignorait ce cas et le comptait comme une vraie attaque dès
+      // que l'antagoniste était simplement présent — les deux fonctions
+      // donnaient donc des réponses opposées pour le même antagoniste
+      // affamé (attEff: sûr / etatC: attaqué), rétrogradant à tort le
+      // rang (FORTE-LIBRE→entravé, voire affamé-libre→mort) dans le repli
+      // "état des chefs". Vérifié sur 135 936 thèmes en guerre civile :
+      // 21 711 (16%) présentaient ce désaccord précis.
+      const antAffame = !antTrivial && !antAbsent && BINOMES_V7[antFig]!=='populus' && positionsBaseEtResultantes(BINOMES_V7[antFig], theme).length===0;
+      const attaque = (antTrivial || antAbsent || antAffame) ? false : true;
       const rang = nourri&&!attaque?3 : nourri?2 : !attaque?1 : 0;
       return {rang, absent: antAbsent};
     };
