@@ -2841,10 +2841,21 @@ function calculerButsCamp(figTete, theme, ctx) {
     // 7 planètes, seules 2 relations sur 6 possibles (identique, alliance)
     // laissaient une figure marquer, les 4 autres (neutre/opposition la
     // plupart du temps) l'excluaient totalement. Remplacé par une
-    // réduction graduée réutilisant l'échelle déjà définie dans
-    // concordancePlanetaire (identique=100, alliance=80, neutre=50,
-    // opposition=20) au lieu de la jeter après un simple test booléen.
-    var planetFactor = concPlan.score / 100;
+    // réduction graduée.
+    // AJUSTEMENT (2e passe, même revue) : le premier jeu de coefficients
+    // réutilisait tel quel l'échelle de concordancePlanetaire (100/80/50/20),
+    // mais donnait une erreur cumulée de 18 sur les 4 matchs réels connus —
+    // identique à la porte binaire d'origine. Passage à 100/70/35/10 (plus
+    // prudent sur neutre/opposition) : erreur cumulée 12 sur les mêmes 4 cas.
+    // Testé aussi 60/25/5 et plus bas : aucun gain supplémentaire sur cet
+    // échantillon, donc pas de raison de descendre plus. Coefficients
+    // propres à cette fonction, PAS l'échelle générale de
+    // concordancePlanetaire (qui reste 100/80/50/20 ailleurs).
+    // ⚠️ Calé sur seulement 4 matchs réels — à recontre-tester à mesure que
+    // l'archive grossit, comme les autres règles "assemblées rétrospectivement"
+    // de ce fichier.
+    var PLANET_FACTOR_BUTS = {identique:1.0, alliance:0.7, neutre:0.35, opposition:0.1};
+    var planetFactor = PLANET_FACTOR_BUTS[concPlan.type];
 
     // ── Impact de l'antagoniste : reduit la capacite reelle de marquage ──
     var antag = ANTAGONISTES_V7[fig];
@@ -2867,7 +2878,17 @@ function calculerButsCamp(figTete, theme, ctx) {
     // propre plancher documente. `concede` (Puer, Amissio) est l'exception
     // volontaire : ces figures cedent plutot que de garantir un minimum,
     // donc elles ne beneficient PAS de ce plancher.
-    var contrib = b.concede ? contribBrut : Math.max(b.min, contribBrut);
+    // CORRECTION (ajustement des pourcentages planetaires) : le plancher
+    // `min` etait applique en absolu (Math.max(b.min, contribBrut)), ce qui
+    // ANNULAIT completement l'effet du facteur planetaire pour toute figure
+    // a min>0 des qu'elle etait presente et peu attaquee -> Puella (et les
+    // autres) gardaient leur plancher meme en opposition totale avec la
+    // planete du jour, rendant plusieurs jeux de coefficients planetaires
+    // strictement equivalents en pratique. Le plancher est desormais lui
+    // aussi mis a l'echelle par planetFactor, pour rester coherent avec la
+    // doctrine graduee plutot que de la contourner silencieusement.
+    var plancherMin = Math.round(b.min * planetFactor);
+    var contrib = b.concede ? contribBrut : Math.max(plancherMin, contribBrut);
     if (contrib > 0) {
       contributions.push({fig:fig, contrib:contrib, force:pres.bestScore, planete:planeteFig, concPlan:concPlan.type, forceAttaque:forceAttaque, facteurReduction:facteurReduction, instable:!!b.instable, destructeur:!!b.destructeur});
       total += contrib;
