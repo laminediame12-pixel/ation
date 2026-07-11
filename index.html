@@ -2845,18 +2845,30 @@ function calculerButsCamp(figTete, theme, ctx) {
     var forceAttaque = presAntag.present ? presAntag.bestScore : 0;
     // Facteur de reduction : 0 attaque = 100% de la capacite ; attaque forte (100) = capacite minimale
     var facteurReduction = 1 - (forceAttaque / 100) * 0.7; // attaque max reduit de 70% au plus
-    facteurReduction = Math.max(0.3, facteurReduction); // jamais en dessous de 30% du potentiel
+    // ACTIVATION (revue des figures marquantes) : `fragile` (Fortuna Minor)
+    // s'effondre plus bas que les autres sous pression (plancher 0.15 au lieu
+    // de 0.3) — flag jusqu'ici jamais lu nulle part dans le fichier.
+    var plancherReduction = b.fragile ? 0.15 : 0.3;
+    facteurReduction = Math.max(plancherReduction, facteurReduction); // jamais en dessous du plancher du potentiel
 
     // Contribution = capacite max (pas interpolee par sa propre concordance, mais
     // plafonnee par l'attaque subie) -> Puella seule peut donner pile sa capacite fixe
-    var contrib = Math.round(b.max * facteurReduction);
+    var contribBrut = Math.round(b.max * facteurReduction);
+    // ACTIVATION (revue des figures marquantes) : `min` n'etait jamais lu —
+    // une figure a min>0 (ex. Puella min=max=2) pouvait tomber sous son
+    // propre plancher documente. `concede` (Puer, Amissio) est l'exception
+    // volontaire : ces figures cedent plutot que de garantir un minimum,
+    // donc elles ne beneficient PAS de ce plancher.
+    var contrib = b.concede ? contribBrut : Math.max(b.min, contribBrut);
     if (contrib > 0) {
-      contributions.push({fig:fig, contrib:contrib, force:pres.bestScore, planete:planeteFig, concPlan:concPlan.type, forceAttaque:forceAttaque, facteurReduction:facteurReduction});
+      contributions.push({fig:fig, contrib:contrib, force:pres.bestScore, planete:planeteFig, concPlan:concPlan.type, forceAttaque:forceAttaque, facteurReduction:facteurReduction, instable:!!b.instable, destructeur:!!b.destructeur});
       total += contrib;
     }
   });
   if (attaqueVivante) total = Math.round(total * 0.79);
-  return {total:total, contributions:contributions, planeteJour:planeteJour, attaqueVivante:attaqueVivante};
+  var hasInstable = contributions.some(function(c){ return c.instable; });
+  var hasDestructeur = contributions.some(function(c){ return c.destructeur; });
+  return {total:total, contributions:contributions, planeteJour:planeteJour, attaqueVivante:attaqueVivante, hasInstable:hasInstable, hasDestructeur:hasDestructeur};
 }
 
 /**
@@ -4750,10 +4762,16 @@ function verdictElementaire(theme){
 // 6. Figures très négatives simultanément en M6 ET M12 (maisons opposées) :
 //    Rubeus, Cauda Draconis, Amissio, Carcer, Tristitia (+ Puer en M6,
 //    FM/Caput en M12 déjà couverts par 4 et 5).
+// 7. AJOUTÉ (revue des figures marquantes) : Rubeus (`instable` dans
+//    BUTS_FIGURE) ou Fortuna Major, identifiés comme BUTEURS ACTIFS par
+//    calculerButsCamp — pas seulement quand ils sont assis en M11/M12
+//    (règles 3-4, positionnelles). Nécessite campA/campB en paramètres
+//    optionnels ; ignoré si absents (rétrocompatible). Ne double-compte
+//    pas avec 3/4 quand la figure est À LA FOIS en M11/M12 ET buteuse.
 // ═══════════════════════════════════════════════════════════════
 const FIGURES_TRES_NEGATIVES = ['rubeus','cauda_draconis','amissio','carcer','tristitia'];
 
-function detectIncidentChaotique(theme){
+function detectIncidentChaotique(theme, campA, campB){
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   const antag = (typeof ANTAGONISTES_V7!=='undefined') ? ANTAGONISTES_V7 : ANTAGONISTES;
   const signals = [];
@@ -4791,6 +4809,19 @@ function detectIncidentChaotique(theme){
   const negM6 = FIGURES_TRES_NEGATIVES.includes(theme[6]);
   const negM12 = FIGURES_TRES_NEGATIVES.includes(theme[12]);
   if (negM6 && negM12) signals.push({pos:0, fig:theme[6], label:'Figures très négatives en M6 ('+FL[theme[6]]+') ET M12 ('+FL[theme[12]]+') opposées : facteur d incident fort'});
+
+  // 7. Rubeus / Fortuna Major buteurs actifs (hors M11/M12, déjà couverts par 3-4)
+  [campA, campB].forEach(function(camp){
+    if (!camp || !camp.contributions) return;
+    camp.contributions.forEach(function(c){
+      if (c.fig==='rubeus' && theme[11]!=='rubeus') {
+        signals.push({pos:0, fig:'rubeus', label:'Rubeus buteur actif ('+c.contrib+' but(s) prévu(s)) : risque penalty/rouge même hors M11'});
+      }
+      if (c.fig==='fortuna_major' && theme[12]!=='fortuna_major') {
+        signals.push({pos:0, fig:'fortuna_major', label:'Fortuna Major buteur actif ('+c.contrib+' but(s) prévu(s)) : risque penalty/rouge composite même hors M12'});
+      }
+    });
+  });
 
   // Dédoublonnage simple (même pos + même label)
   const seen = new Set();
@@ -4839,8 +4870,8 @@ function estimerCornersV7(theme, goalA, goalB) {
 // Règle Ellemine (08/07/26) : chaque signal distinct de
 // detectIncidentChaotique = 1 carton jaune potentiel (même doctrine
 // que Rouge/Pénalty, comptée au lieu d'être aplatie en oui/non).
-function estimerCartonsJaunesV7(theme) {
-  var inc = detectIncidentChaotique(theme);
+function estimerCartonsJaunesV7(theme, campA, campB) {
+  var inc = detectIncidentChaotique(theme, campA, campB);
   return { count: inc.signals.length, signals: inc.signals };
 }
 
@@ -4862,24 +4893,28 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride) {
   var sc = buildScoreFromCamps(campA, campB, scWinnerCode, undefined, theme);
   var goalA = sc.goalA, goalB = sc.goalB;
   var scoreMain = goalA + '-' + goalB;
-  var scoreAlt = scWinnerCode === 'A' ? Math.max(0, goalA - 1) + '-' + goalB
-    : scWinnerCode === 'B' ? goalA + '-' + Math.max(0, goalB - 1)
-    : Math.max(0, goalA - 1) + '-' + Math.max(0, goalB - 1);
+  // ACTIVATION (revue des figures marquantes) : `instable` (Rubeus) élargit
+  // l'écart affiché entre score principal et score alternatif (±2 au lieu
+  // de ±1) — jusqu'ici jamais lu, ce flag ne changeait rien à l'affichage.
+  var ecartAlt = (campA.hasInstable || campB.hasInstable) ? 2 : 1;
+  var scoreAlt = scWinnerCode === 'A' ? Math.max(0, goalA - ecartAlt) + '-' + goalB
+    : scWinnerCode === 'B' ? goalA + '-' + Math.max(0, goalB - ecartAlt)
+    : Math.max(0, goalA - ecartAlt) + '-' + Math.max(0, goalB - ecartAlt);
 
   var domA = Math.max(0, duel.a.scoreNet || 0), domB = Math.max(0, duel.b.scoreNet || 0);
   var domPct = (domA + domB) > 0 ? Math.round(100 * domA / (domA + domB)) : 50;
 
-  var inc = estimerCartonsJaunesV7(theme);
+  // Calcul unique (avant : detectIncidentChaotique tournait deux fois de
+  // suite sur le même thème via estimerCartonsJaunesV7 puis incidentDetect).
+  var incidentDetect = detectIncidentChaotique(theme, campA, campB);
   var corners = estimerCornersV7(theme, goalA, goalB);
   var btts = goalA > 0 && goalB > 0;
-
-  var incidentDetect = detectIncidentChaotique(theme);
 
   return {
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
     scoreMain: scoreMain, scoreAlt: scoreAlt,
     penaltyRouge: incidentDetect.hasSignal,
-    cartonsJaunes: inc.count,
+    cartonsJaunes: incidentDetect.signals.length,
     btts: btts,
     corners: corners,
     domPctA: domPct, domPctB: 100 - domPct,
