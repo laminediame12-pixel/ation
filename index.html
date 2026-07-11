@@ -3724,10 +3724,34 @@ function verdictJugeFavori(theme, favoriteOverride){
 //   Déclencheur > Stabilisateur (1/1 : renversement 1-2)
 //   Absorbeur > Dissonant (1/1 : 7-0)
 //   Échec : Adaptateur vs Chaotique — indécis (1 fois dans chaque sens)
-// Règle muette si M1 et M7 portent la même figure (camps-miroirs)
-// ou le même rôle → dans ce cas c'est le Juge seul qui décide.
+// CORRECTION (revue de la hiérarchie élémentaire) : les 2 cas impliquant
+// "Chaotique" (Amplificateur>Chaotique, Adaptateur vs Chaotique) ne
+// testent PAS cette hiérarchie linéaire — un rôle Chaotique déclenche
+// TOUJOURS le branchement dédié "ARMEMENT DU CHAOS" plus bas (qui a sa
+// propre validation séparée, 5/5 puis 4/5) avant même d'atteindre
+// ROLE_HIERARCHY.indexOf(). L'échantillon réel qui teste cette hiérarchie
+// linéaire est donc 2/2 (Déclencheur>Stabilisateur, Absorbeur>Dissonant),
+// pas 4/5 — même preuve comptée deux fois sous deux mécanismes différents.
+// "Règle muette si... même rôle" (ligne suivante à l'origine) décrivait
+// un cas qui ne peut PAS se produire dans le code actuel : les maisons
+// M1 (feu) et M7 (eau) sont fixes, donc roleM1 ne peut être que
+// Déclencheur/Amplificateur/Chaotique/Absorbeur et roleM7 que
+// Chaotique/Dissonant/Adaptateur/Stabilisateur — les deux ensembles ne se
+// recoupent que sur "Chaotique", qui est toujours intercepté avant cette
+// ligne (cf. ARMEMENT DU CHAOS, dont le résultat "neutre" est lui-même
+// mort — voir commentaire sur armementChaos). Aucune égalité de rôle
+// n'est donc atteignable ici (vérifié sur 200 000 thèmes aléatoires :
+// 0 occurrence) — mais winner:'muet' n'a jamais été codé nulle part dans
+// verdictElementaire, alors que 6+ appelants ailleurs dans le fichier
+// testent encore `ve.winner !== 'muet'` comme si c'était un cas réel.
+// Inoffensif (la condition est juste toujours vraie), mais aucun de ces
+// appelants ne recevra jamais réellement 'muet'.
 // ═══════════════════════════════════════════════════════════════
 const ROLE_HIERARCHY = ['Déclencheur','Amplificateur','Adaptateur','Stabilisateur','Absorbeur','Dissonant','Chaotique','Blocage'];
+// NOTE : ROLE_HIERARCHY n'est utilisé qu'à un seul endroit (comparaison
+// finale roleM1/roleM7 dans verdictElementaire, cf. plus bas), où M1/M7
+// sont toujours en maison feu/eau. "Blocage" (air-terre) n'est donc
+// jamais atteignable ici — sa position en dernier rang est décorative.
 
 // ═══════════════════════════════════════════════════════════════
 // ARMEMENT DU CHAOS — doctrine du binôme (validée 5/5, juil. 2026)
@@ -3752,7 +3776,15 @@ function armementChaos(campPos, theme){
   const inEnemy = positions.filter(p=>enemy.indexOf(p)>=0);
   if(inOwn.length) return {etat:'armé', bin, detail:'binôme '+FL[bin]+' en M'+inOwn.join(',M')+' (son camp) → chaos armé, se déchaîne en attaque'};
   if(inEnemy.length) return {etat:'capturé', bin, detail:'binôme '+FL[bin]+' en M'+inEnemy.join(',M')+' (camp ennemi) → chaos retourné contre le porteur'};
-  return {etat:'neutre', bin, detail:'binôme '+FL[bin]+' hors camps (M15/M16 selon partition) → indéterminé'};
+  // MORT (revue de la hiérarchie élémentaire) : CAMP1=[1,2,3,4,9,10,13,16]
+  // et CAMP2=[5,6,7,8,11,12,14,15] couvrent ensemble les 16 maisons sans
+  // aucun trou — M15 est dans CAMP2, M16 dans CAMP1, il n'existe PAS de
+  // maison "hors camps". Donc si positions.length>0 (testé juste
+  // au-dessus), inOwn ou inEnemy est nécessairement non vide : ce return
+  // n'est jamais atteint. Le commentaire "M15/M16 selon partition" qui le
+  // justifiait était basé sur une prémisse fausse. Laissé en place pour
+  // ne pas retirer un garde-fou défensif, mais ce n'est pas un vrai cas.
+  return {etat:'neutre', bin, detail:'binôme '+FL[bin]+' hors camps (cas normalement impossible, CAMP1∪CAMP2 couvre les 16 maisons) → indéterminé'};
 }
 
 // ═══════════════════════════════════════════════════════════════
