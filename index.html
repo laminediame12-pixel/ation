@@ -4711,6 +4711,68 @@ function detecteurGuerreCivile(theme){
 }
 
 // ═══════════════════════════════════════════════════════════════
+// GUERRE DES 16 (12/07/26, doctrine utilisateur) — le cas complémentaire
+// exact de la guerre civile : quand M1 et M7 sont dans des boucles de
+// binôme OPPOSÉES (pas la même), chaque camp (CAMP1 vs CAMP2) attaque
+// l'autre via le réseau ANTAGONISTES, indépendamment dans les deux sens.
+// Vérifié sur les tables réelles (12/07/26) :
+//  • ANTAGONISTES[fig] EST le "4e figure derrière" (offset -3 dans
+//    FIGS, en comptant fig lui-même comme 1er) — formule confirmée
+//    sur les 16 figures.
+//  • le double-antagoniste (ANTAGONISTES[ANTAGONISTES[fig]]) retombe
+//    TOUJOURS dans sa propre boucle — vérifié universellement. Le
+//    réseau d'attaque est donc interconnecté (chaque figure présente
+//    attaque indépendamment), pas une simple paire figée attaque/contre.
+// Pour chaque figure présente dans les maisons d'un camp, on regarde si
+// son antagoniste occupe une maison de l'autre camp : ça compte comme
+// une attaque effective. Le camp qui porte le plus d'attaques gagne —
+// miroir exact des "attaques effectives" de la guerre civile, mais
+// entre les deux boucles au lieu de l'intérieur d'une seule boucle
+// partagée.
+// STATUT : nouvelle règle, non encore validée empiriquement sur
+// l'archive — insérée en dernier recours (après guerre civile, après
+// Chaotique/armementChaos déjà validés), avant le repli générique par
+// hiérarchie élémentaire. Voir renderStatsTab pour son suivi avant
+// éventuelle promotion à une priorité plus haute.
+// ═══════════════════════════════════════════════════════════════
+function detecteurGuerreDes16(theme){
+  const f1=theme[1], f7=theme[7];
+  const cycleOf = f => (FIGS_V7.indexOf(f)%2===0)?'impair':'pair';
+  if(f1===f7 || cycleOf(f1)===cycleOf(f7)) return {applicable:false};
+  function attaques(campSource, campCible){
+    const liste=[];
+    campSource.forEach(hs=>{
+      const figSource = theme[hs];
+      const cible = ANTAGONISTES_V7[figSource];
+      campCible.forEach(hc=>{
+        if(theme[hc]===cible) liste.push({source:'M'+hs, fig:figSource, cibleFig:cible, cibleMaison:'M'+hc});
+      });
+    });
+    return liste;
+  }
+  const attA = attaques(CAMP1, CAMP2);
+  const attB = attaques(CAMP2, CAMP1);
+  let winner=null, reason;
+  if(attA.length !== attB.length){
+    winner = attA.length > attB.length ? 'M1' : 'M7';
+    reason = '💥 GUERRE DES 16 — M1 porte '+attA.length+' attaque(s) effective(s) vs M7 '+attB.length+' → '+winner+' favorisé (camp le plus résistant, le moins attaqué en net)';
+  } else {
+    reason = '💥 GUERRE DES 16 — attaques égales ('+attA.length+'-'+attB.length+') → indécis, se référer à la hiérarchie élémentaire.';
+  }
+  return {applicable:true, winner, reason, attA, attB};
+}
+// Buts additionnels (étude, 12/07/26, doctrine utilisateur) : maisons
+// M4/M10 (camp M1) et M5/M11 (camp M7), désignées comme liées au score
+// dans ce scénario. Somme des BUTS_FIGURE.max des deux figures par camp
+// — pas encore mêlée au calcul principal (calculerButsCamp), exposée
+// séparément pour suivi avant intégration.
+function butsGuerreDes16(theme){
+  const bA = (BUTS_FIGURE[theme[4]]||{max:0}).max + (BUTS_FIGURE[theme[10]]||{max:0}).max;
+  const bB = (BUTS_FIGURE[theme[5]]||{max:0}).max + (BUTS_FIGURE[theme[11]]||{max:0}).max;
+  return {campA:bA, campB:bB, detail:'M4('+FL[theme[4]]+')+M10('+FL[theme[10]]+')='+bA+' vs M5('+FL[theme[5]]+')+M11('+FL[theme[11]]+')='+bB};
+}
+
+// ═══════════════════════════════════════════════════════════════
 // DUEL DES BINÔMES DIRECTS — départage des guerres civiles (03/07/26)
 // Leçon du match "un but d'écart" (Laetitia vs Albus) : quand les deux
 // chefs sont frappés, c'est la SANTÉ comparée de leurs soutiens directs
@@ -4925,10 +4987,18 @@ function verdictElementaire(theme){
     if (arm.etat==='désarmé' || arm.etat==='capturé') return {winner:other, roleM1, roleM7,
       reason:self+' Chaotique '+arm.etat+' ('+arm.detail+') → '+other+' favorisé'};
   }
+  // GUERRE DES 16 (12/07/26) : quand M1/M7 sont en boucles opposées et
+  // qu'aucun camp Chaotique n'a déjà tranché ci-dessus, le comptage
+  // d'attaques effectives entre les deux boucles antagonistes prend le
+  // relais avant le repli générique par hiérarchie élémentaire pure.
+  const g16 = detecteurGuerreDes16(theme);
+  if (g16.applicable && g16.winner) {
+    return {winner: g16.winner, roleM1, roleM7, guerreDes16: g16, reason: g16.reason};
+  }
   const r1 = ROLE_HIERARCHY.indexOf(roleM1), r7 = ROLE_HIERARCHY.indexOf(roleM7);
   const winner = r1 < r7 ? 'M1' : 'M7';
-  return {winner, roleM1, roleM7,
-    reason: roleM1+' (M1) vs '+roleM7+' (M7) → '+winner+' favorisé par la hiérarchie élémentaire'};
+  return {winner, roleM1, roleM7, guerreDes16: g16.applicable ? g16 : undefined,
+    reason: (g16.applicable ? g16.reason+' — ' : '') + roleM1+' (M1) vs '+roleM7+' (M7) → '+winner+' favorisé par la hiérarchie élémentaire'};
 }
 
 // ═══════════════════════════════════════════════════════════════
