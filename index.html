@@ -4896,6 +4896,29 @@ function verdictElementaire(theme){
     // figure qui aurait pu l'attaquer n'apparait nulle part dans le thème —
     // ex. Liverpool vs Lombardia (predit M7 pour "0 attaque subie", reel M1
     // 7-3 : l'antagoniste de Populus etait simplement absent, pas neutralise).
+    // BOUCLIER CONCORDANT (12/07/26, doctrine utilisateur) : l'agresseur
+    // d'un chef peut être neutralisé si SON PROPRE antagoniste (le
+    // bouclier) est présent ET positionné dans la maison de son binôme
+    // (résonance de position, pas juste présence brute) — ex. Fortuna
+    // Major en résultante M14, dont la figure de repos est justement
+    // Puella (binôme de Fortuna Major) : le bouclier est « chez son
+    // binôme », donc pleinement actif. Distinct du concept "bouclier"
+    // déjà présent (mais jamais appelé nulle part) dans effondrementVital,
+    // qui se contentait d'une simple présence sans exiger cette
+    // concordance de position.
+    // Validé sur 1 cas réel (Anderlecht vs Roma, 12/07/26) : sans ce
+    // check, attEff donnait M7 (faux, réel M1 8-7) ; avec, l'attaque sur
+    // M1 tombe à 0, égalité totale, et le tiebreak "premier de boucle"
+    // déjà existant tranche correctement pour M1. À confirmer sur
+    // davantage de cas avant de considérer ce correctif pleinement établi.
+    const bouclierActif = agresseur => {
+      const bouclier = ANTAGONISTES_V7[agresseur];
+      const binomeBouclier = BINOMES_V7[bouclier];
+      return positionsBaseEtResultantes(bouclier, theme).some(s => {
+        const h = parseInt(s.replace('M','').replace('r',''));
+        return FIGS_V7[h-1] === binomeBouclier;
+      });
+    };
     const attEff = cp => {
       const chef = theme[cp];
       if(FIGS_V7[cp-1]===chef) return 0; // chez lui, voilé — immune (vrai 0)
@@ -4915,6 +4938,7 @@ function verdictElementaire(theme){
       const sieges = positionsBaseEtResultantes(a, theme).map(x=>parseInt(x.replace('M','').replace('r','')));
       if(!sieges.length) return null; // antagoniste ABSENT : aucune information, pas un 0
       if(BINOMES_V7[a]!=='populus' && positionsBaseEtResultantes(BINOMES_V7[a], theme).length===0) return 0; // affamé (faim réelle) : vrai 0
+      if(a!=='populus' && bouclierActif(a)) return 0; // bouclier concordant : vrai 0
       let n=0; sieges.forEach(p=>{ n += (p===cp?3:1); });
       return n;
     };
@@ -4944,7 +4968,10 @@ function verdictElementaire(theme){
       // "état des chefs". Vérifié sur 135 936 thèmes en guerre civile :
       // 21 711 (16%) présentaient ce désaccord précis.
       const antAffame = !antTrivial && !antAbsent && BINOMES_V7[antFig]!=='populus' && positionsBaseEtResultantes(BINOMES_V7[antFig], theme).length===0;
-      const attaque = (antTrivial || antAbsent || antAffame) ? false : true;
+      // Même bouclier concordant qu'attEff ci-dessus (12/07/26) : gardé
+      // cohérent entre les deux fonctions, comme pour antAffame.
+      const antBouclier = !antTrivial && !antAbsent && !antAffame && bouclierActif(antFig);
+      const attaque = (antTrivial || antAbsent || antAffame || antBouclier) ? false : true;
       const rang = nourri&&!attaque?3 : nourri?2 : !attaque?1 : 0;
       return {rang, absent: antAbsent};
     };
