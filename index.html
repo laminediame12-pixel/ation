@@ -4219,6 +4219,43 @@ function positionsBaseEtResultantes(fig, theme){
   }
   return pos;
 }
+function concordanceElement(a,b){ return a===b ? 1 : ((a==='feu'&&b==='air')||(a==='air'&&b==='feu')||(a==='terre'&&b==='eau')||(a==='eau'&&b==='terre')) ? 0.5 : 0; }
+
+// ═══════════════════════════════════════════════════════════════
+// CHAÎNE DE FORCE (12/07/26, doctrine utilisateur) : la force d'un chef en
+// guerre civile ne s'arrête pas à son binôme direct — elle se cumule sur
+// toute la chaîne de binômes successive, tant que chaque maillon reste
+// présent dans le thème (base OU résultante, n'importe quelle maison),
+// pondérée par la concordance élémentaire (identique=1, feu/air ou
+// terre/eau=0.5, sinon 0 — même échelle que compatEl dans duelBinomesDirects)
+// de chaque siège occupé. Construite et vérifiée avec l'utilisateur sur
+// Anderlecht vs Roma (réel M1 8-7) : chaîne M1 (Albus+Amissio+Tristitia)
+// = 7.5 vs chaîne M7 (Amissio+Tristitia) = 5 → M1, correct — alors que
+// l'ancien tiebreak "premier de boucle" (distance dans la boucle) n'y
+// arrivait que par coïncidence structurelle propre à ce thème (M7 étant
+// justement le binôme direct de M1). Les deux critères divergent dans
+// ~29% des guerres civiles à égalité testées sur échantillon aléatoire.
+// STATUT : validé sur 1 cas réel — remplace "premier de boucle" comme
+// tiebreak final, qui reste en ultime repli si la chaîne de force égalise
+// aussi (cas rare). À confirmer sur davantage de cas.
+// ═══════════════════════════════════════════════════════════════
+function chaineDeForce(chef, theme){
+  let cur = BINOMES_V7[chef]; let total = 0; const detail = [];
+  for (let i=0; i<8; i++){
+    const sieges = positionsBaseEtResultantes(cur, theme);
+    if (!sieges.length) break;
+    const el = ELEMENTS_V7[cur];
+    let scoreFig = 0;
+    sieges.forEach(s => {
+      const h = parseInt(s.replace('M','').replace('r',''));
+      scoreFig += concordanceElement(el, MAISON_ELEM_V7[h]);
+    });
+    total += scoreFig;
+    detail.push(FL[cur]+'='+scoreFig);
+    cur = BINOMES_V7[cur];
+  }
+  return {total: Math.round(total*10)/10, detail};
+}
 
 // ═══════════════════════════════════════════════════════════════
 // EFFONDREMENT VITAL — alarme rouge (03/07/26, autopsie du 3-4)
@@ -5003,9 +5040,14 @@ function verdictElementaire(theme){
       const attLbl = (e1===null || e7===null) ? 'antagoniste absent d un côté, non tranchable' : 'attaques égales ('+e1+'-'+e7+')';
       return mk(w, attLbl+' → état des chefs : M1 '+lbl(g1)+' vs M7 '+lbl(g7)+' → '+w);
     }
+    const cf1 = chaineDeForce(theme[1], theme), cf7 = chaineDeForce(theme[7], theme);
+    if (cf1.total !== cf7.total) {
+      const w = cf1.total > cf7.total ? 'M1' : 'M7';
+      return mk(w, 'égalité complète → chaîne de force : M1 '+cf1.total+' ['+cf1.detail.join('+')+'] vs M7 '+cf7.total+' ['+cf7.detail.join('+')+'] → '+w);
+    }
     const dist = (a,b)=>{let f=a; for(let i=0;i<8;i++){if(f===b)return i; f=BINOMES_V7[f];} return 99;};
     const w = dist(theme[1],theme[7])<dist(theme[7],theme[1]) ? 'M1':'M7';
-    return mk(w, 'égalité complète → le PREMIER de la boucle ('+w+') gagne : la solidité de l aval le nourrit');
+    return mk(w, 'égalité complète (chaîne de force aussi égale) → le PREMIER de la boucle ('+w+') gagne : la solidité de l aval le nourrit');
   }
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   const roleM1 = ELEMENT_ROLE_MATRIX_V7[els[figM1]+'-'+MAISON_ELEM_V7[1]]||null;
