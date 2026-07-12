@@ -3816,9 +3816,29 @@ function rangParole(vf){
   return {rang:1, etage:'récit / indécis'};
 }
 
+function themeInvalidite(theme){
+  const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
+  const axeT = combineMany([theme[3],theme[5],theme[11],theme[15]]);
+  const binM1 = BINOMES[theme[1]];
+  const present = fig => positionsBaseEtResultantes(fig, theme).length>0;
+  const manquants = [];
+  if (!present(axeC)) manquants.push('Axe Cardinal (M1+M4+M7+M10 = '+FL[axeC]+', absent du thème)');
+  if (!present(axeT)) manquants.push('Axe Temporel (M3+M5+M11+M15 = '+FL[axeT]+', absent du thème)');
+  if (!present(binM1)) manquants.push('binôme de M1 ('+FL[binM1]+', absent du thème)');
+  if (!manquants.length) return null;
+  return '⛔ THÈME INVALIDE : '+manquants.join(' ; ')+' — protocole de validité structurelle (même critère que celui utilisé pour exclure les thèmes invalides des statistiques rétrospectives, maintenant appliqué en direct).';
+}
 function verdictFinal(theme, favoriteOverride){
   const td = themeDetruit(theme);
   if(td) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème détruit', reason:td};
+  // VALIDITÉ STRUCTURELLE (12/07/26, demande utilisateur) : Axe Cardinal,
+  // Axe Temporel et binôme de M1 doivent tous exister dans le thème (base
+  // ou résultante). Ce protocole existait déjà (isThemeValideStrict) mais
+  // ne servait qu'à exclure les thèmes invalides des statistiques
+  // rétrospectives (replayEntry) — jamais appliqué au verdict affiché en
+  // direct. Mesuré : ~31% des thèmes aléatoires échouent ce contrôle.
+  const inv = themeInvalidite(theme);
+  if(inv) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème invalide', reason:inv};
   // VERROU PILIERS (10/07/26) : quand 2+ des 5 maisons-piliers (M1,M8,M9,
   // M12,M15) sont en repos absolu, 0% de vrai nul sur l'archive (0/4),
   // contre 22-36% sinon — aucune regle de nul ne peut se declencher dans
