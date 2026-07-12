@@ -3805,6 +3805,14 @@ function rangParole(vf){
   if(r.indexOf('PREMIER de la boucle')>=0) return {rang:3, etage:'guerre civile — égalité de boucle'};
   if(r.indexOf('ARMÉ')>=0 || r.indexOf('chaos')>=0) return {rang:3, etage:'chaos armé'};
   if(r.indexOf('hiérarchie')>=0) return {rang:2, etage:'hiérarchie élémentaire'};
+  // GUERRE DES 16 (12/07/26) : atteint ce point seulement quand décisive
+  // (pas d'égalité — le cas égalité contient aussi 'hiérarchie' et est déjà
+  // classé ci-dessus). Rang provisoire aligné sur la hiérarchie élémentaire
+  // qu'elle remplace (rang 2), PAS sur la guerre civile (rang 4, validée
+  // 8/8) — la guerre des 16 est neuve et son bilan réel est encore trop
+  // maigre (2/3 après correction du sens d'attaque, 12/07/26) pour
+  // mériter une confiance plus haute. À réévaluer avec plus de données.
+  if(r.indexOf('GUERRE DES 16')>=0) return {rang:2, etage:'guerre des 16 (non validé, n=3)'};
   return {rang:1, etage:'récit / indécis'};
 }
 
