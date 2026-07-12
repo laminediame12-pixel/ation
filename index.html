@@ -292,7 +292,7 @@ const CAMP1=[1,2,3,4,9,10,13,16];
 const CAMP2=[5,6,7,8,11,12,14,15];
 const housePositions={1:{left:560,top:0},2:{left:480,top:0},3:{left:400,top:0},4:{left:320,top:0},5:{left:240,top:0},6:{left:160,top:0},7:{left:80,top:0},8:{left:0,top:0},9:{left:520,top:94},10:{left:360,top:94},11:{left:200,top:94},12:{left:40,top:94},13:{left:440,top:188},14:{left:120,top:188},15:{left:280,top:282},16:{left:440,top:322}};
 const sumSlots=['sumHouse1','sumHouse2','sumHouse3','sumHouse4','sumHouse5','sumHouse6','sumHouse7','sumHouse8'];
-let currentTheme=null; let currentAnalysis=null; let currentQuestionContext=null; let houseResultTimeouts={}; let showHouseLabels=true; let selectedHouse=1; let themeCastAt=null;
+let currentTheme=null; let currentAnalysis=null; let currentQuestionContext=null; let houseResultTimeouts={}; let showHouseLabels=true; let selectedHouse=1; let themeCastAt=null; let lastLaunchWasBlind=false;
 function populateSelect(id){const el=document.getElementById(id); if(el) el.innerHTML=FIGS.map(f=>`<option value="${f}">${FL[f]}</option>`).join('');}
 function populateHouseSelect(id,p='M'){const el=document.getElementById(id); if(el) el.innerHTML=`<option value="">— Non sélectionné —</option>`+Array.from({length:16},(_,i)=>`<option value="${i+1}">${p}${i+1}</option>`).join('');}
 function updateSumHouseLabels(){const mode=document.getElementById('sumModeBottom').value; const prefix=mode==='rotation'?'R':'M'; sumSlots.forEach(slot=>{const id=`${slot}Bottom`; var __el=document.getElementById(id); var v=(__el?__el.value:'')||''; populateHouseSelect(id,prefix); document.getElementById(id).value=v;});}
@@ -5179,7 +5179,13 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
 document.getElementById('theme-validation').innerHTML=''; /* maisons rendues par adjustThemeScale/renderThemeWithSize */ renderHouseInsight(selectedHouse); document.getElementById('rotation-analysis').innerHTML=''; document.getElementById('dual-verdicts').innerHTML='';
 
 document.getElementById('first-half').innerHTML=''; document.getElementById('structural-summary').innerHTML=''; document.getElementById('final-conclusion').innerHTML=''; document.getElementById('house-analysis').innerHTML=''; document.getElementById('full-draw').textContent=''; addToHistory(); updatePlaneteJourIndicator(); setTimeout(adjustThemeScale, 0);}
-function launchTheme(randomMode){themeCastAt=new Date().toISOString(); clearInterpretationText(); currentQuestionContext=buildQuestionContext(); renderQuestionContext(currentQuestionContext); const [m1,m2,m3,m4]=getCurrentMotherValues(); currentTheme=buildThemeFromMothers(randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m1, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m2, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m3, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m4); renderTheme();}
+// AJOUTÉ (démarche du tirage aveugle, demande utilisateur) : "Lancer
+// aléatoire" EST déjà un tirage aveugle (mères choisies sans biais
+// possible) — on le marque désormais explicitement (lastLaunchWasBlind)
+// pour que l'historique et les statistiques distinguent les tirages
+// aveugles (test du moteur, aucune influence possible) des tirages
+// manuels (usage réel/divinatoire), au lieu de tout mélanger.
+function launchTheme(randomMode){themeCastAt=new Date().toISOString(); clearInterpretationText(); lastLaunchWasBlind=!!randomMode; currentQuestionContext=buildQuestionContext(); renderQuestionContext(currentQuestionContext); const [m1,m2,m3,m4]=getCurrentMotherValues(); currentTheme=buildThemeFromMothers(randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m1, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m2, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m3, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m4); renderTheme();}
 
 // ═══════════════════════════════════════════════════════════════
 // COLORATION DES MAISONS — binôme vert / antagoniste rouge au clic
@@ -5340,7 +5346,8 @@ function replayEntry(entry){
     conflictChaineWinner: conflict ? conflict.chaine : null,
     conflictSource: conflict ? conflict.source : null,
     conflictV7Ok: conflictV7Ok,
-    conflictChaineOk: conflictChaineOk
+    conflictChaineOk: conflictChaineOk,
+    blindTest: !!entry.blindTest
   };
 }
 
@@ -5380,6 +5387,18 @@ function renderStatsTab(){
     h += '<div class="kv"><b>⚖️ Juge — question nul/victoire :</b> '+rate(valides,'jugeOk')+'</div>';
     h += '<div class="kv" style="margin-top:10px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>⚡ Chaîne verdictFinal (toute étages confondus, verdict réellement affiché) :</b> '+rate(valides,'vfOk')+'</div>';
     h += '<div class="kv" style="border:1px solid #60a5fa; border-radius:8px; padding:6px; margin-top:6px;"><b>⚽ Score (calculerButsCamp rejoué, écart ≤1 but) :</b> '+rate(valides,'scoreOk')+'</div>';
+    // ── Tirages aveugles (démarche intégrée le 12/07/26) : "Lancer aléatoire" ──
+    // ── constitue un tirage sans biais possible (mères tirées au hasard, ──
+    // ── aucune influence de l utilisateur) — on isole sa fiabilité de celle ──
+    // ── des tirages manuels pour valider le moteur honnêtement, sans avoir ──
+    // ── à refaire ce travail à la main à chaque match comme avant. ──
+    var blindEntries = valides.filter(function(r){ return r.blindTest; });
+    var manualEntries = valides.filter(function(r){ return !r.blindTest; });
+    if (blindEntries.length) {
+      h += '<div class="kv" style="margin-top:10px; border:1px solid #34d399; border-radius:8px; padding:6px;"><b>🎲 Tirages aveugles (' + blindEntries.length + ') — verdict :</b> ' + rate(blindEntries, 'vfOk') + (manualEntries.length ? ' <span class="muted" style="font-size:11px;">(vs manuels : ' + rate(manualEntries, 'vfOk') + ')</span>' : '') + '</div>';
+      h += '<div class="kv" style="font-size:12px;"><b>🎲 Tirages aveugles — score :</b> ' + rate(blindEntries, 'scoreOk') + '</div>';
+      h += '<div class="muted" style="font-size:11px; margin-top:4px;">Un tirage aveugle élimine tout biais de sélection des mères — c est le test le plus honnête du moteur. Si son taux diverge fortement du taux manuel, ça peut aussi révéler un biais de choix des mères en usage réel.</div>';
+    }
     // ── CONFLITS MOTEURS V7 vs nouvelle chaîne (revue contradictions) ──
     // verdictV7 promet de basculer la priorité vers la "nouvelle chaîne"
     // si les stats confirment sur 10+ conflits (commentaire du 02/07/26,
@@ -5542,6 +5561,7 @@ function addToHistory() {
     interpretation: getInterpretationText(),
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
     realFirstGoal: (document.getElementById('realFirstGoal')||{}).value || '',
+    blindTest: lastLaunchWasBlind,
     verdict: { winner:vf.winner, vfType:vf.type, vfLabel:vf.label, winnerRaw:v7.winner, goalM1:v7.goalM1, goalM7:v7.goalM7, scoreMain:v7.scoreMain, htWinner:v7.htWinner, penalty:v7.penalty, corrected:v7.corrected }
   };
   list.unshift(entry);
@@ -5577,6 +5597,7 @@ function saveManuel() {
     interpretation: getInterpretationText(),
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
     realFirstGoal: (document.getElementById('realFirstGoal')||{}).value || '',
+    blindTest: lastLaunchWasBlind,
     verdict: { winner:vf.winner, vfType:vf.type, vfLabel:vf.label, winnerRaw:v7.winner, goalM1:v7.goalM1, goalM7:v7.goalM7, scoreMain:v7.scoreMain, htWinner:v7.htWinner, penalty:v7.penalty, corrected:v7.corrected }
   };
   list.unshift(entry);
