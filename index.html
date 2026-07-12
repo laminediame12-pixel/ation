@@ -4722,44 +4722,52 @@ function detecteurGuerreCivile(theme){
 //  • le double-antagoniste (ANTAGONISTES[ANTAGONISTES[fig]]) retombe
 //    TOUJOURS dans sa propre boucle — vérifié universellement. Le
 //    réseau d'attaque est donc interconnecté (chaque figure présente
-//    attaque indépendamment), pas une simple paire figée attaque/contre.
-// Pour chaque figure présente dans les maisons d'un camp, on regarde si
-// son antagoniste occupe une maison de l'autre camp : ça compte comme
-// une attaque effective. Le camp qui porte le plus d'attaques gagne —
-// miroir exact des "attaques effectives" de la guerre civile, mais
-// entre les deux boucles au lieu de l'intérieur d'une seule boucle
-// partagée.
-// STATUT : nouvelle règle, non encore validée empiriquement sur
-// l'archive — insérée en dernier recours (après guerre civile, après
-// Chaotique/armementChaos déjà validés), avant le repli générique par
-// hiérarchie élémentaire. Voir renderStatsTab pour son suivi avant
-// éventuelle promotion à une priorité plus haute.
+//    est attaquée indépendamment), pas une simple paire figée attaque/contre.
+// SENS D'ATTAQUE (corrigé 12/07/26 après 2 échecs réels 0/2) : ANTAGONISTES[X]=Y
+// signifie que Y est l'antagoniste de X, donc Y ATTAQUE X — pas l'inverse.
+// Vérifié contre le code déjà validé de la guerre civile (cibleDe dans
+// detecteurGuerreCivile, qui utilise déjà ce sens) et confirmé par
+// l'utilisateur sur un cas concret (Rubeus attaque Carcer, pas l'inverse).
+// La 1ère version de cette fonction avait le sens inversé et s'est trompée
+// sur ses 2 seuls tests réels (Fenerbahçe-Lombardia, Man City-Real Madrid) —
+// recalculé avec le bon sens, les deux auraient été corrects.
+// Pour chaque figure présente dans les maisons d'un camp, on regarde si SON
+// PROPRE antagoniste (celui qui l'attaque) occupe une maison de l'autre
+// camp : ça compte comme une attaque effective SUBIE par ce camp. Le camp
+// qui SUBIT le moins d'attaques gagne — miroir exact des "attaques
+// effectives" de la guerre civile, mais entre les deux boucles au lieu de
+// l'intérieur d'une seule boucle partagée.
+// STATUT : nouvelle règle, corrigée mais toujours non validée
+// empiriquement sur l'archive — insérée en dernier recours (après guerre
+// civile, après Chaotique/armementChaos déjà validés), avant le repli
+// générique par hiérarchie élémentaire. Voir renderStatsTab pour son
+// suivi avant éventuelle promotion à une priorité plus haute.
 // ═══════════════════════════════════════════════════════════════
 function detecteurGuerreDes16(theme){
   const f1=theme[1], f7=theme[7];
   const cycleOf = f => (FIGS_V7.indexOf(f)%2===0)?'impair':'pair';
   if(f1===f7 || cycleOf(f1)===cycleOf(f7)) return {applicable:false};
-  function attaques(campSource, campCible){
+  function attaquesSubies(campVictime, campAttaquant){
     const liste=[];
-    campSource.forEach(hs=>{
-      const figSource = theme[hs];
-      const cible = ANTAGONISTES_V7[figSource];
-      campCible.forEach(hc=>{
-        if(theme[hc]===cible) liste.push({source:'M'+hs, fig:figSource, cibleFig:cible, cibleMaison:'M'+hc});
+    campVictime.forEach(hv=>{
+      const figVictime = theme[hv];
+      const attaquant = ANTAGONISTES_V7[figVictime]; // qui attaque cette figure
+      campAttaquant.forEach(ha=>{
+        if(theme[ha]===attaquant) liste.push({attaquant:'M'+ha, fig:attaquant, victimeFig:figVictime, victimeMaison:'M'+hv});
       });
     });
     return liste;
   }
-  const attA = attaques(CAMP1, CAMP2);
-  const attB = attaques(CAMP2, CAMP1);
+  const subiesA = attaquesSubies(CAMP1, CAMP2); // attaques subies par M1, venant de M7
+  const subiesB = attaquesSubies(CAMP2, CAMP1); // attaques subies par M7, venant de M1
   let winner=null, reason;
-  if(attA.length !== attB.length){
-    winner = attA.length > attB.length ? 'M1' : 'M7';
-    reason = '💥 GUERRE DES 16 — M1 porte '+attA.length+' attaque(s) effective(s) vs M7 '+attB.length+' → '+winner+' favorisé (camp le plus résistant, le moins attaqué en net)';
+  if(subiesA.length !== subiesB.length){
+    winner = subiesA.length < subiesB.length ? 'M1' : 'M7';
+    reason = '💥 GUERRE DES 16 — M1 subit '+subiesA.length+' attaque(s) effective(s) vs M7 '+subiesB.length+' → '+winner+' favorisé (camp le plus résistant, le moins attaqué en net)';
   } else {
-    reason = '💥 GUERRE DES 16 — attaques égales ('+attA.length+'-'+attB.length+') → indécis, se référer à la hiérarchie élémentaire.';
+    reason = '💥 GUERRE DES 16 — attaques subies égales ('+subiesA.length+'-'+subiesB.length+') → indécis, se référer à la hiérarchie élémentaire.';
   }
-  return {applicable:true, winner, reason, attA, attB};
+  return {applicable:true, winner, reason, attA: subiesA, attB: subiesB};
 }
 // Buts additionnels (étude, 12/07/26, doctrine utilisateur) : maisons
 // M4/M10 (camp M1) et M5/M11 (camp M7), désignées comme liées au score
