@@ -4933,29 +4933,36 @@ function verdictElementaire(theme){
     // figure qui aurait pu l'attaquer n'apparait nulle part dans le thème —
     // ex. Liverpool vs Lombardia (predit M7 pour "0 attaque subie", reel M1
     // 7-3 : l'antagoniste de Populus etait simplement absent, pas neutralise).
-    // BOUCLIER CONCORDANT (12/07/26, doctrine utilisateur) : l'agresseur
-    // d'un chef peut être neutralisé si SON PROPRE antagoniste (le
-    // bouclier) est présent ET positionné dans la maison de son binôme
-    // (résonance de position, pas juste présence brute) — ex. Fortuna
-    // Major en résultante M14, dont la figure de repos est justement
-    // Puella (binôme de Fortuna Major) : le bouclier est « chez son
-    // binôme », donc pleinement actif. Distinct du concept "bouclier"
-    // déjà présent (mais jamais appelé nulle part) dans effondrementVital,
-    // qui se contentait d'une simple présence sans exiger cette
-    // concordance de position.
-    // Validé sur 1 cas réel (Anderlecht vs Roma, 12/07/26) : sans ce
-    // check, attEff donnait M7 (faux, réel M1 8-7) ; avec, l'attaque sur
-    // M1 tombe à 0, égalité totale, et le tiebreak "premier de boucle"
-    // déjà existant tranche correctement pour M1. À confirmer sur
-    // davantage de cas avant de considérer ce correctif pleinement établi.
-    const bouclierActif = agresseur => {
+    // FORCE DU BOUCLIER (12/07/26, doctrine utilisateur, v2) : remplace la
+    // v1 (concordance stricte "chez son binôme", 12/07/26 plus tôt) —
+    // testée sur un 2e cas réel (Galatasaray vs Bayer 04), elle échouait
+    // car aucun des deux boucliers n'y satisfaisait cette concordance
+    // stricte alors qu'un des deux devait quand même neutraliser l'attaque.
+    // Le vrai critère : ce n'est pas la concordance de position qui
+    // compte, c'est la FORCE BRUTE du bouclier — présence en BASE (poids
+    // 1) pèse plus qu'une présence en seule résultante (poids 0,5), qui
+    // pèse elle-même plus qu'une absence totale (0). Le camp dont le
+    // bouclier est comparativement le plus fort (face au bouclier de
+    // l'AUTRE camp, pas dans l'absolu) voit son attaque neutralisée.
+    // Validé sur 2 cas réels : Anderlecht vs Roma (bouclier M1=0,5
+    // résultante seule > bouclier M7=0 absent → M1 protégé, réel M1 8-7)
+    // et Galatasaray vs Bayer 04 (bouclier M1=0,5 résultante seule <
+    // bouclier M7=1,5 base+résultante → M7 protégé, réel M7 8-6). La v1
+    // (concordance stricte) échouait sur ce 2e cas : aucun bouclier n'y
+    // était "concordant", donc rien n'était neutralisé, et attEff brut
+    // donnait M1 (faux). STATUT : validée sur 2 cas — à confirmer sur
+    // davantage de données avant de la considérer pleinement établie.
+    const forceBouclier = agresseur => {
+      if (agresseur === 'populus') return 0;
       const bouclier = ANTAGONISTES_V7[agresseur];
-      const binomeBouclier = BINOMES_V7[bouclier];
-      return positionsBaseEtResultantes(bouclier, theme).some(s => {
-        const h = parseInt(s.replace('M','').replace('r',''));
-        return FIGS_V7[h-1] === binomeBouclier;
+      let score = 0;
+      positionsBaseEtResultantes(bouclier, theme).forEach(s => {
+        score += s.indexOf('r') === -1 ? 1 : 0.5;
       });
+      return score;
     };
+    const aM1 = ANTAGONISTES_V7[figM1], aM7 = ANTAGONISTES_V7[figM7];
+    const fbM1 = forceBouclier(aM1), fbM7 = forceBouclier(aM7);
     const attEff = cp => {
       const chef = theme[cp];
       if(FIGS_V7[cp-1]===chef) return 0; // chez lui, voilé — immune (vrai 0)
@@ -4975,7 +4982,8 @@ function verdictElementaire(theme){
       const sieges = positionsBaseEtResultantes(a, theme).map(x=>parseInt(x.replace('M','').replace('r','')));
       if(!sieges.length) return null; // antagoniste ABSENT : aucune information, pas un 0
       if(BINOMES_V7[a]!=='populus' && positionsBaseEtResultantes(BINOMES_V7[a], theme).length===0) return 0; // affamé (faim réelle) : vrai 0
-      if(a!=='populus' && bouclierActif(a)) return 0; // bouclier concordant : vrai 0
+      const monBouclier = cp===1 ? fbM1 : fbM7, autreBouclier = cp===1 ? fbM7 : fbM1;
+      if(monBouclier > autreBouclier) return 0; // bouclier comparativement plus fort : vrai 0
       let n=0; sieges.forEach(p=>{ n += (p===cp?3:1); });
       return n;
     };
@@ -5005,9 +5013,10 @@ function verdictElementaire(theme){
       // "état des chefs". Vérifié sur 135 936 thèmes en guerre civile :
       // 21 711 (16%) présentaient ce désaccord précis.
       const antAffame = !antTrivial && !antAbsent && BINOMES_V7[antFig]!=='populus' && positionsBaseEtResultantes(BINOMES_V7[antFig], theme).length===0;
-      // Même bouclier concordant qu'attEff ci-dessus (12/07/26) : gardé
-      // cohérent entre les deux fonctions, comme pour antAffame.
-      const antBouclier = !antTrivial && !antAbsent && !antAffame && bouclierActif(antFig);
+      // Même force de bouclier comparative qu'attEff ci-dessus (12/07/26) :
+      // gardé cohérent entre les deux fonctions, comme pour antAffame.
+      const monBouclierC = cp===1 ? fbM1 : fbM7, autreBouclierC = cp===1 ? fbM7 : fbM1;
+      const antBouclier = !antTrivial && !antAbsent && !antAffame && monBouclierC > autreBouclierC;
       const attaque = (antTrivial || antAbsent || antAffame || antBouclier) ? false : true;
       const rang = nourri&&!attaque?3 : nourri?2 : !attaque?1 : 0;
       return {rang, absent: antAbsent};
