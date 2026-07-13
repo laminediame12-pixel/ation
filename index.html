@@ -707,41 +707,14 @@ function toggleForceReposPanel() {
 // Échantillon minuscule — 📚 étude, à recontre-tester à mesure que
 // l'archive grossit avant toute promotion en règle décisionnelle.
 // ═══════════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════════
-// DOUBLE CONCORDANCE PAR CAMP (13/07/26, doctrine utilisateur) : dans
-// chaque maison, si la figure de base ET sa résultante (base combinée
-// à la figure de repos de la maison) sont TOUTES LES DEUX concordantes
-// avec l'élément de la maison (identique=1 ou palier feu/air, terre/eau
-// =0,5 — jamais 0), la maison compte comme "doublement concordante"
-// pour le camp auquel elle appartient (CAMP1 ou CAMP2). Le camp qui en
-// compte le plus serait favorisé.
-// Validé sur les 3 seuls matchs réels décortiqués en détail cette
-// session (12-13/07/26) : Anderlecht vs Roma (camp1=4 vs camp2=2, réel
-// Anderlecht/camp1 gagne), Galatasaray vs Bayer 04 (camp1=0 vs camp2=1,
-// réel Bayer04/camp2 gagne), Man City vs Real Madrid (camp1=0 vs
-// camp2=2, réel Real Madrid/camp2 gagne) — 3/3, mais échantillon
-// minuscule. Signal d'étude uniquement, ne tranche AUCUN verdict pour
-// l'instant — à suivre dans les statistiques avant toute promotion.
-// ═══════════════════════════════════════════════════════════════
-function signalDoubleConcordance(theme) {
-  var camp1Count = 0, camp2Count = 0;
-  for (var h = 1; h <= 16; h++) {
-    var fig = theme[h];
-    var concBase = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[h]);
-    var res = combine(fig, FIGS_V7[h-1]);
-    var concRes = concordanceElement(ELEMENTS_V7[res], MAISON_ELEM_V7[h]);
-    if (concBase > 0 && concRes > 0) {
-      if (CAMP1.indexOf(h) >= 0) camp1Count++; else camp2Count++;
-    }
-  }
-  var winner = camp1Count !== camp2Count ? (camp1Count > camp2Count ? 'M1' : 'M7') : null;
-  return {
-    winner: winner, camp1Count: camp1Count, camp2Count: camp2Count,
-    resume: winner
-      ? '📚 étude — double concordance (base+résultante) : camp M1='+camp1Count+' vs camp M7='+camp2Count+' → '+winner+' favorisé (piste, 3/3 sur échantillon minuscule).'
-      : null
-  };
-}
+// RETIRÉ (13/07/26) : "double concordance par camp" (base+résultante
+// concordantes avec la maison, camp avec le plus de maisons l'emporte).
+// Construite le 12-13/07/26, validée 3/3 sur les 3 seuls matchs
+// décortiqués manuellement, puis retestée sur 2 nouveaux matchs réels
+// en aveugle (sans être retouchée) : 2 échecs consécutifs, taux tombé
+// à 3/5 (60%). Retirée à la demande de l'utilisateur plutôt que
+// laissée en signal d'étude — la dérive rapide (100%→75%→60% en 5 cas)
+// ne justifiait pas de continuer à la suivre.
 function signalBinomeM1M7(theme) {
   var b1 = BINOMES_V7[theme[1]];
   var b7 = BINOMES_V7[theme[7]];
@@ -5586,7 +5559,6 @@ function replayEntry(entry){
   var enginesDivergent = distinctOpinions.length > 1;
   var sb = signalBinomeM1M7(theme);
   var asr = analyseSuperpositionReseaux(theme);
-  var dc = signalDoubleConcordance(theme);
 
   // ── Replay du score de buts (08/07/26, porté depuis l'autre lignée) avec
   // le contexte d'epoque (date -> planete, competition) au lieu du DOM courant.
@@ -5665,9 +5637,7 @@ function replayEntry(entry){
     conflictSource: conflict ? conflict.source : null,
     conflictV7Ok: conflictV7Ok,
     conflictChaineOk: conflictChaineOk,
-    blindTest: !!entry.blindTest,
-    doubleConcordanceWinner: dc.winner,
-    doubleConcordanceOk: dc.winner ? dc.winner===realWinner : null
+    blindTest: !!entry.blindTest
   };
 }
 
@@ -5831,16 +5801,6 @@ function renderStatsTab(){
       h += '<div class="kv" style="margin-top:10px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px; font-size:12px;"><b>📚 étude — M1↔M7 binômes (pas antagonistes) :</b></div>';
       h += '<div class="kv" style="font-size:12px; color:'+(pctBin<50?'#f87171':'#fbbf24')+';">'+okBin+'/'+binOui.length+' ('+pctBin+'%) quand M1 et M7 sont binômes l\'un de l\'autre.</div>';
       h += '<div class="muted" style="font-size:11px; margin-top:4px;">Si ce taux reste bas et que la vraie issue est souvent Nul dans ces cas, ça confirme l\'hypothèse née du cas Suisse-Colombie (0-0) : l\'agressivité se déplace hors de l\'axe M1-M7 au lieu de trancher.</div>';
-    }
-    // ── Double concordance par camp (13/07/26) : le camp avec le plus de ──
-    // ── maisons "base ET résultante concordantes" gagnerait plus souvent. ──
-    var dcOui = valides.filter(function(r){ return r.doubleConcordanceWinner; });
-    if (dcOui.length) {
-      var okDc = dcOui.filter(function(r){return r.doubleConcordanceOk===true;}).length;
-      var pctDc = Math.round(100*okDc/dcOui.length);
-      h += '<div class="kv" style="margin-top:10px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px; font-size:12px;"><b>📚 étude — Double concordance par camp (base+résultante) :</b></div>';
-      h += '<div class="kv" style="font-size:12px; color:'+(pctDc<50?'#f87171':pctDc<70?'#fbbf24':'#4ade80')+';">'+okDc+'/'+dcOui.length+' ('+pctDc+'%) — le camp avec le plus de maisons doublement concordantes gagne-t-il vraiment ?</div>';
-      h += '<div class="muted" style="font-size:11px; margin-top:4px;">Validé 3/3 sur les seuls matchs décortiqués manuellement (Anderlecht, Galatasaray, Man City/Real Madrid) — échantillon minuscule, ne tranche aucun verdict pour l\'instant.</div>';
     }
     // ── Superposition réseaux M1↔M7 (07/07/26) : compte de maisons ──
     // ── partagées entre les réseaux antagoniste/binôme de M1 et M7. ──
