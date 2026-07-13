@@ -3811,6 +3811,14 @@ function rangParole(vf){
   if(r.indexOf('ÉTAT DES CHEFS')>=0 || r.indexOf('état des chefs')>=0) return {rang:4, etage:'état des chefs'};
   if(r.indexOf('attaques effectives')>=0) return {rang:4, etage:'attaques effectives'};
   if(r.indexOf('miroir')>=0 || r.indexOf('Camps-miroirs')>=0) return {rang:4, etage:'miroir par concordance'};
+  // CHAÎNE DE FORCE (13/07/26) : oubliée lors de son ajout, tombait par
+  // défaut au rang 1 ("récit/indécis") faute de branche dédiée — repérée
+  // sur l'export statistiques réel de l'utilisateur (match Anderlecht).
+  // Même rang que l'ancien "PREMIER de la boucle" qu'elle remplace comme
+  // tiebreak final (doit être vérifiée AVANT, car son texte ne contient
+  // pas "PREMIER de la boucle" sauf dans le repli ultime où elle égalise
+  // aussi — ce cas-là reste correctement classé par la ligne suivante).
+  if(r.indexOf('chaîne de force')>=0) return {rang:3, etage:'guerre civile — chaîne de force'};
   if(r.indexOf('PREMIER de la boucle')>=0) return {rang:3, etage:'guerre civile — égalité de boucle'};
   if(r.indexOf('ARMÉ')>=0 || r.indexOf('chaos')>=0) return {rang:3, etage:'chaos armé'};
   if(r.indexOf('hiérarchie')>=0) return {rang:2, etage:'hiérarchie élémentaire'};
