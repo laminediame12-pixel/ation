@@ -4256,7 +4256,23 @@ function positionsBaseEtResultantes(fig, theme){
   }
   return pos;
 }
-function concordanceElement(a,b){ return a===b ? 1 : ((a==='feu'&&b==='air')||(a==='air'&&b==='feu')||(a==='terre'&&b==='eau')||(a==='eau'&&b==='terre')) ? 0.5 : 0; }
+// CORRIGÉ (13/07/26, doctrine utilisateur) : roue classique des 4 éléments
+// (feu=chaud/sec, air=chaud/humide, eau=froid/humide, terre=froid/sec),
+// organisée en 2 trigones (feu+air = actif/masculin, eau+terre = passif/
+// féminin). 4 paliers, pas 2 : identique=1 ; même trigone (feu-air ou
+// eau-terre, partagent en plus la polarité active/passive)=0,5 ; trigones
+// opposés mais qualité physique partagée (eau-air partagent humide,
+// terre-feu partagent sec)=0,25 ; opposition totale, aucune qualité
+// partagée (feu-eau, air-terre)=0. Avant cette correction, seuls feu-air
+// et terre-eau avaient 0,5, tout le reste (y compris eau-air et terre-feu,
+// qui ont une vraie concordance partielle) tombait à 0 comme feu-eau et
+// air-terre — traitait à tort 6 paires différentes comme équivalentes.
+function concordanceElement(a,b){
+  if (a===b) return 1;
+  if ((a==='feu'&&b==='air')||(a==='air'&&b==='feu')||(a==='eau'&&b==='terre')||(a==='terre'&&b==='eau')) return 0.5;
+  if ((a==='eau'&&b==='air')||(a==='air'&&b==='eau')||(a==='feu'&&b==='terre')||(a==='terre'&&b==='feu')) return 0.25;
+  return 0; // feu-eau, air-terre : opposition totale
+}
 
 // ═══════════════════════════════════════════════════════════════
 // CHAÎNE DE FORCE (12/07/26, doctrine utilisateur) : la force d'un chef en
@@ -4883,7 +4899,9 @@ function butsGuerreDes16(theme){
 // ═══════════════════════════════════════════════════════════════
 function duelBinomesDirects(theme){
   const cycleOf = f => (FIGS_V7.indexOf(f)%2===0)?'i':'p';
-  const compatEl = (a,b) => a===b ? 1 : ((a==='feu'&&b==='air')||(a==='air'&&b==='feu')||(a==='terre'&&b==='eau')||(a==='eau'&&b==='terre')) ? 0.5 : 0;
+  // Réutilise concordanceElement (corrigé 13/07/26, roue classique à 4
+  // paliers) au lieu d'une copie locale de l'ancienne échelle à 2 paliers.
+  const compatEl = concordanceElement;
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   function sieges(fig){
     const P=[];
