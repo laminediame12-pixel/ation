@@ -3162,6 +3162,43 @@ function verrouM16Feu(theme){
   return positionsBaseEtResultantes(binM16, theme).some(function(p){ return p.indexOf('r')<0; });
 }
 
+// ═══════════════════════════════════════════════════════════════
+// DOUBLE NEUTRALISATION DES BINÔMES + FUSION (14/07/26, doctrine
+// utilisateur, cas Roma-Napoli 3-3) : le binôme direct d'un chef est
+// "neutralisé" si son propre antagoniste est présent dans le thème,
+// ANCRÉ (chez lui en maison de repos, sur un pilier, ou sur un point
+// stratégique de parité), ET soutenu par son propre binôme (présent
+// lui aussi). Quand les binômes de M1 ET de M7 sont TOUS LES DEUX
+// neutralisés ainsi, ET qu'il y a en plus une FUSION (l'antagoniste de
+// M1 EST le binôme de M7, ou l'inverse — la même figure joue double
+// rôle dans les deux camps), le match est nul.
+// Validé sur les 27 matchs archivés : 0 faux positif (0/25 matchs
+// décisifs), capture 1 des 2 vrais nuls (Roma vs Napoli — l'autre,
+// FK Jenis vs Astana, n'a pas la fusion). Échantillon minuscule (n=1
+// capturé) mais précision parfaite — à recontre-tester à mesure que
+// l'archive grossit.
+// ═══════════════════════════════════════════════════════════════
+function figureAncree(fig, positions){
+  var piliers = [1,8,9,12,15];
+  var maisonsStrat = [2,4,6,8,10,12,14,16];
+  return positions.some(function(p){
+    var h = parseInt(p.replace('M','').replace('r',''));
+    return FIGS[h-1]===fig || piliers.indexOf(h)>=0 || maisonsStrat.indexOf(h)>=0;
+  });
+}
+function binomeNeutralise(chef, theme){
+  var binome = BINOMES[chef];
+  var attaquant = ANTAGONISTES[binome];
+  var posAttaquant = positionsBaseEtResultantes(attaquant, theme);
+  if (!posAttaquant.length) return false;
+  if (!figureAncree(attaquant, posAttaquant)) return false;
+  return positionsBaseEtResultantes(BINOMES[attaquant], theme).length > 0;
+}
+function doubleNeutralisationFusion(theme){
+  if (!binomeNeutralise(theme[1], theme) || !binomeNeutralise(theme[7], theme)) return false;
+  return ANTAGONISTES[theme[1]] === BINOMES[theme[7]] || ANTAGONISTES[theme[7]] === BINOMES[theme[1]];
+}
+
 function buildScoreFromCamps(campA, campB, winner, competitionOverride, theme) {
   var compConfig = (typeof getCompetitionConfig === 'function') ? getCompetitionConfig(competitionOverride) : {multButs:1.0, label:'?'};
   var goalA = Math.round(campA.total * compConfig.multButs);
@@ -3889,6 +3926,7 @@ function rangParole(vf){
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
   if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
+  if(r.indexOf('double neutralisation')>=0) return {rang:3, etage:'nul — double neutralisation + fusion (14/07/26, n=1)'};
   if(r.indexOf('favori renseigné')>=0) return {rang:5, etage:'juge-favori à parole saine'};
   if(r.indexOf('état des chefs')>=0 && r.indexOf('CHEZ LUI (domine)')>=0) return {rang:5, etage:'chef chez lui'};
   if(r.indexOf('SOUVERAINE')>=0) return {rang:5, etage:'chaîne de repos souveraine'};
@@ -4035,6 +4073,10 @@ function verdictFinal(theme, favoriteOverride){
     if (communesN === 3) {
       return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (symétrie mères/filles) : {M1-M4} et {M5-M8} partagent 3 figures sur 4 → NUL (67% empirique, 2/3).'};
     }
+  }
+  // DOUBLE NEUTRALISATION + FUSION (14/07/26) — voir doubleNeutralisationFusion.
+  if (!nulVerrouille && doubleNeutralisationFusion(theme)) {
+    return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (double neutralisation + fusion) : les binômes directs de M1 et M7 sont tous les deux neutralisés par un antagoniste ancré et soutenu, avec fusion (même figure jouant double rôle dans les deux camps) → NUL (0 faux positif sur 27 matchs archivés, 1 cas capturé).'};
   }
   // ═══ ÉTAPE 2 RÉVISÉE (04/07/26) — CAMPS-MIROIRS ═══
   // « M1 = M7 : celui qui a plus de concordance prend l'avantage. »
