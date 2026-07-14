@@ -3802,6 +3802,11 @@ function rangParole(vf){
   const r = (vf.reason||'')+' '+(vf.label||'');
   if(vf.type==='abstention') return {rang:0, etage:'abstention'};
   if(vf.type==='nul_suspecte') return {rang:4, etage:'convergence nul (promu 07/07/26)'};
+  // VERDICT ROTATION (14/07/26) : nouveau verdict prioritaire (voir
+  // verdictFinal). Rang provisoire — validé 4/5 sur désaccord avec 8
+  // matchs réels, mais échantillon encore petit ; pas au niveau des
+  // règles à rang 5 (17/17 ou "jamais démenti").
+  if(r.indexOf('VERDICT ROTATION')>=0) return {rang:3, etage:'rotation prioritaire (14/07/26, n=8, 4/5 sur désaccord)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
   if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
@@ -3856,6 +3861,38 @@ function verdictFinal(theme, favoriteOverride){
   // direct. Mesuré : ~31% des thèmes aléatoires échouent ce contrôle.
   const inv = themeInvalidite(theme);
   if(inv) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème invalide', reason:inv};
+  // ═══ VERDICT ROTATION PRIORITAIRE (14/07/26, doctrine utilisateur) ═══
+  // Sur 8 matchs réels comparés (mode fixe M1/M7 vs mode rotation R1/R7,
+  // R1 = maison de repos naturelle de M1, R7 = 6 crans plus loin dans la
+  // même rotation), la rotation a été juste 4 fois sur 8 (50%) contre 1
+  // fois sur 8 pour le fixe (12.5%). Détail : sur les 5 cas de désaccord
+  // entre les deux modes, rotation juste 4/5, fixe juste 1/5 ; sur les 3
+  // cas d'ACCORD (même camp donné par les deux), les deux se trompaient
+  // à chaque fois (0/3) — l'accord n'est donc pas un gage de fiabilité ici.
+  // Échantillon petit (n=8) mais direction nette, et cohérente avec un
+  // balayage aléatoire de 20000 thèmes : désaccord dans 62% des tirages,
+  // rotation Nul seulement 11% du temps (contre 23% pour le fixe).
+  // PLACÉE AVANT LES RÈGLES DE NUL (décision explicite de l'utilisateur,
+  // 14/07/26) : le premier essai plaçait la rotation seulement après les
+  // 4 règles de nul (entre-blocage, Juge Conjunctio, Juge Acquisitio,
+  // symétrie mères/filles), et la règle Juge Conjunctio a préempté à tort
+  // un cas réel (Al-Fateh vs Al-Okhdood, victoire nette 2-1) que la
+  // rotation aurait correctement appelé M1 — cassant le score de 4/8 à
+  // 3/8. Remontée ici pour que la rotation tranche AVANT même les règles
+  // de nul quand elle donne un camp net (R1 ou R7, jamais Nul) ; les
+  // règles de nul ne servent plus que de repli quand la rotation est
+  // elle-même indécise (Nul).
+  const orderRot = getRotationOrderFromRepos(theme[1]);
+  const carteRot = buildVerdictCard(orderRot[0], orderRot[6], 'R1', 'R7', theme, null);
+  if (carteRot.winner === 'R1' || carteRot.winner === 'R7') {
+    const wRot = carteRot.winner === 'R1' ? 'M1' : 'M7';
+    const vfRot = {type:'verdict', winner:wRot, label:'🏆 VAINQUEUR : '+wRot, reason:'🔄 VERDICT ROTATION (R1=M'+orderRot[0]+' '+FL[theme[orderRot[0]]]+', R7=M'+orderRot[6]+' '+FL[theme[orderRot[6]]]+') → '+wRot+' favorisé (score '+carteRot.scoreMain+') — prioritaire sur le mode fixe et sur les règles de nul (validé 4/5 sur désaccord, 8 matchs réels, 14/07/26).'};
+    const scn0 = signalConvergenceNul(theme);
+    if(scn0.converge){
+      return {type:'nul_suspecte', winner:'Nul', label:'⚖️ NUL PROBABLE (convergence, rotation suspendue)', reason: scn0.resume+' Verdict brut aurait été : '+vfRot.winner+' — '+vfRot.reason};
+    }
+    return vfRot;
+  }
   // VERROU PILIERS (10/07/26) : quand 2+ des 5 maisons-piliers (M1,M8,M9,
   // M12,M15) sont en repos absolu, 0% de vrai nul sur l'archive (0/4),
   // contre 22-36% sinon — aucune regle de nul ne peut se declencher dans
