@@ -3082,6 +3082,20 @@ function piliersReposCount(theme){
   piliers.forEach(function(p){ if (theme[p]===FIGS_V7[p-1]) n++; });
   return n;
 }
+// VERROU M16=FEU + BINÔME EN BASE (14/07/26, doctrine utilisateur) : quand
+// la figure en M16 (Réconciliation) est de nature feu ET que son binôme
+// occupe au moins une maison en BASE (pas seulement en résultante) quelque
+// part dans le thème, le match ne finit jamais nul. Validé 6/6 sur les 27
+// matchs archivés (0 contre-exemple) ; le seul cas M16=feu qui a donné un
+// vrai nul (FK Jenis vs Astana, 2-2) avait son binôme UNIQUEMENT en
+// résultante (jamais en base) — configuration qui ne satisfait donc pas ce
+// verrou et reste soumise aux règles de nul normales.
+function verrouM16Feu(theme){
+  var m16 = theme[16];
+  if (ELEMENTS[m16] !== 'feu') return false;
+  var binM16 = BINOMES[m16];
+  return positionsBaseEtResultantes(binM16, theme).some(function(p){ return p.indexOf('r')<0; });
+}
 
 function buildScoreFromCamps(campA, campB, winner, competitionOverride, theme) {
   var compConfig = (typeof getCompetitionConfig === 'function') ? getCompetitionConfig(competitionOverride) : {multButs:1.0, label:'?'};
@@ -3910,7 +3924,10 @@ function verdictFinal(theme, favoriteOverride){
   // échantillon peut être le bon, aucune donnée ici pour trancher), mais
   // à garder en tête : un verrou à 4 cas neutralise une règle à 17 cas
   // dans ces 163 configurations précises.
-  const nulVerrouille = piliersReposCount(theme) >= 2;
+  // VERROU M16=FEU + BINÔME EN BASE (14/07/26, ajouté au verrou piliers ci-
+  // dessus) : voir verrouM16Feu — validé 6/6 sans contre-exemple sur les 27
+  // matchs archivés.
+  const nulVerrouille = piliersReposCount(theme) >= 2 || verrouM16Feu(theme);
   if (!nulVerrouille) {
     const pn = profilNulStructurel(theme);
     if(pn) return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:pn.resume};
