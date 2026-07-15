@@ -4075,10 +4075,10 @@ function verdictFinal(theme, favoriteOverride){
   if (carteRot.winner === 'R1' || carteRot.winner === 'R7') {
     const wRot = carteRot.winner === 'R1' ? 'M1' : 'M7';
     const vfRot = {type:'verdict', winner:wRot, label:'🏆 VAINQUEUR : '+wRot, reason:'🔄 VERDICT ROTATION (R1=M'+orderRot[0]+' '+FL[theme[orderRot[0]]]+', R7=M'+orderRot[6]+' '+FL[theme[orderRot[6]]]+') → '+wRot+' favorisé (score '+carteRot.scoreMain+') — prioritaire sur le mode fixe et sur les règles de nul (validé 4/5 sur désaccord, 8 matchs réels, 14/07/26).'};
-    const scn0 = signalConvergenceNul(theme);
-    if(scn0.converge){
-      return {type:'nul_suspecte', winner:'Nul', label:'⚖️ NUL PROBABLE (convergence, rotation suspendue)', reason: scn0.resume+' Verdict brut aurait été : '+vfRot.winner+' — '+vfRot.reason};
-    }
+    // CONVERGENCE NUL RETIRÉE ICI (15/07/26) : suspendait la rotation
+    // (notre signal le mieux validé) sur la foi d'un critère jamais
+    // confirmé en dehors de son archive d'origine — voir le retrait
+    // complet plus bas dans cette fonction pour le détail.
     return vfRot;
   }
   // VERROU PILIERS (10/07/26) : quand 2+ des 5 maisons-piliers (M1,M8,M9,
@@ -4178,21 +4178,18 @@ function verdictFinal(theme, favoriteOverride){
       }
     }
   }
-  // ═══ CONVERGENCE NUL (07/07/26) ═══
-  // Signal empirique : 4/4 sans contre-exemple sur l'archive de référence
-  // (juge=nul-probable + campDominant muet + [miroir R1=R7 optionnel]).
-  // Ne s'applique qu'aux verdicts de rang ≤4 — jamais testé contre le rang 5
-  // ("1000 chances de gagner, jamais démenti"), donc on ne le laisse PAS
-  // écraser chef-chez-lui / chaîne souveraine / juge-favori à parole saine.
-  if(vfBase.type==='verdict'){
-    const scn = signalConvergenceNul(theme);
-    if(scn.converge){
-      const rangBase = rangParole(vfBase).rang;
-      if(rangBase <= 4){
-        return {type:'nul_suspecte', winner:'Nul', label:'⚖️ NUL PROBABLE (convergence, rang '+rangBase+' suspendu)', reason: scn.resume+' Verdict brut aurait été : '+vfBase.winner+' — '+vfBase.reason};
-      }
-    }
-  }
+  // ═══ CONVERGENCE NUL — RETIRÉE (15/07/26) ═══
+  // Signal empirique d'origine : 4/4 sans contre-exemple sur l'archive de
+  // référence (juge=nul-probable + campDominant muet + [miroir R1=R7
+  // optionnel]). Mais le code lui-même avertissait : "jamais testé contre
+  // le rang 5" — et sur le premier vrai test de rotation ajouté depuis
+  // (PSV Eindhoven vs Bayern Munich, réel M1 5-3), elle a suspendu à tort
+  // un verdict correct pour donner Nul. 0/1 sur son seul test hors
+  // archive d'origine → retirée comme override de verdict, dans le même
+  // esprit que le retrait de "double concordance par camp" (13/07/26) :
+  // une dérive sur un nouveau cas en aveugle ne justifie pas de la garder
+  // active. signalConvergenceNul() reste disponible pour inspection mais
+  // ne tranche plus rien ici.
   return vfBase;
 }
 
