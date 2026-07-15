@@ -3930,18 +3930,19 @@ function rangParole(vf){
   if(r.indexOf('favori renseigné')>=0) return {rang:5, etage:'juge-favori à parole saine'};
   if(r.indexOf('état des chefs')>=0 && r.indexOf('CHEZ LUI (domine)')>=0) return {rang:5, etage:'chef chez lui'};
   if(r.indexOf('SOUVERAINE')>=0) return {rang:5, etage:'chaîne de repos souveraine'};
+  // IMPASSE TOTALE DE BOUCLE (14/07/26) : doit être vérifiée AVANT
+  // 'attaques effectives' et 'état des chefs', car son texte contient ces
+  // deux expressions ("attaques effectives et force de boucle toutes
+  // deux à égalité", "ÉTAT DES CHEFS" n'y figure pas mais la prudence
+  // s'impose vu l'expérience du même piège avec 'chaîne de force').
+  if(r.indexOf('IMPASSE TOTALE DE BOUCLE')>=0) return {rang:4, etage:'guerre civile — impasse totale, nul (14/07/26)'};
   if(r.indexOf('ÉTAT DES CHEFS')>=0 || r.indexOf('état des chefs')>=0) return {rang:4, etage:'état des chefs'};
   if(r.indexOf('attaques effectives')>=0) return {rang:4, etage:'attaques effectives'};
   if(r.indexOf('miroir')>=0 || r.indexOf('Camps-miroirs')>=0) return {rang:4, etage:'miroir par concordance'};
   // CHAÎNE DE FORCE (13/07/26) : oubliée lors de son ajout, tombait par
   // défaut au rang 1 ("récit/indécis") faute de branche dédiée — repérée
   // sur l'export statistiques réel de l'utilisateur (match Anderlecht).
-  // Même rang que l'ancien "PREMIER de la boucle" qu'elle remplace comme
-  // tiebreak final (doit être vérifiée AVANT, car son texte ne contient
-  // pas "PREMIER de la boucle" sauf dans le repli ultime où elle égalise
-  // aussi — ce cas-là reste correctement classé par la ligne suivante).
   if(r.indexOf('chaîne de force')>=0) return {rang:3, etage:'guerre civile — chaîne de force'};
-  if(r.indexOf('PREMIER de la boucle')>=0) return {rang:3, etage:'guerre civile — égalité de boucle'};
   if(r.indexOf('ARMÉ')>=0 || r.indexOf('chaos')>=0) return {rang:3, etage:'chaos armé'};
   if(r.indexOf('hiérarchie')>=0) return {rang:2, etage:'hiérarchie élémentaire'};
   // GUERRE DES 16 (12/07/26) : atteint ce point seulement quand décisive
@@ -5282,9 +5283,14 @@ function verdictElementaire(theme){
       const w = cf1.total > cf7.total ? 'M1' : 'M7';
       return mk(w, 'égalité complète → chaîne de force : M1 '+cf1.total+' ['+cf1.detail.join('+')+'] vs M7 '+cf7.total+' ['+cf7.detail.join('+')+'] → '+w);
     }
-    const dist = (a,b)=>{let f=a; for(let i=0;i<8;i++){if(f===b)return i; f=BINOMES_V7[f];} return 99;};
-    const w = dist(theme[1],theme[7])<dist(theme[7],theme[1]) ? 'M1':'M7';
-    return mk(w, 'égalité complète (chaîne de force aussi égale) → le PREMIER de la boucle ('+w+') gagne : la solidité de l aval le nourrit');
+    // NUL PAR IMPASSE TOTALE (14/07/26, cas Olympiacos-West Ham 7-7 réel) :
+    // remplace l'ancien tiebreak "PREMIER de la boucle" (aucune validation
+    // citée, 0/27 déclenchements sur l'archive, et faux sur le seul cas réel
+    // observé — prédisait M1 alors que le match était nul). Quand attaques
+    // effectives ET chaîne de force sont toutes deux à égalité parfaite,
+    // c'est une vraie impasse structurelle plutôt qu'un signal à départager
+    // arbitrairement par l'ordre de parcours de la boucle.
+    return mk('Nul', 'IMPASSE TOTALE DE BOUCLE (attaques effectives et force de boucle toutes deux à égalité) → NUL');
   }
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   const roleM1 = ELEMENT_ROLE_MATRIX_V7[els[figM1]+'-'+MAISON_ELEM_V7[1]]||null;
