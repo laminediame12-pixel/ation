@@ -4049,6 +4049,25 @@ function verdictFinal(theme, favoriteOverride){
   // direct. Mesuré : ~31% des thèmes aléatoires échouent ce contrôle.
   const inv = themeInvalidite(theme);
   if(inv) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème invalide', reason:inv};
+  // ═══ IMPASSE TOTALE DE BOUCLE — PRIORITAIRE MÊME SUR LA ROTATION (15/07/26) ═══
+  // La guerre civile (verdictElementaire) peut elle-même conclure à un nul
+  // quand attaques effectives ET chaîne de force sont toutes deux à
+  // égalité parfaite (règle ajoutée le 14/07/26, remplace l'ancien
+  // "PREMIER de la boucle"). Mais la rotation, placée avant elle dans la
+  // cascade, l'empêchait de s'exprimer. Cas réel (15/07/26) : match FIFA
+  // Caput Draconis/Amissio/Caput Draconis/Laetitia, réel NUL 4-4 —
+  // verdictElementaire donnait déjà "IMPASSE TOTALE DE BOUCLE" → Nul,
+  // mais la rotation avait déjà tranché M7 avant, à tort. Remontée ici
+  // pour qu'une vraie impasse structurelle (validée 2/2 : Olympiacos vs
+  // West Ham 7-7, ce match 4-4) prime même sur la rotation. Testé sans
+  // aucun changement ni régression sur les 27 matchs archivés (16/27
+  // avant et après).
+  if (piliersReposCount(theme) < 2 && !verrouM16Feu(theme)) {
+    const veImpasse = verdictElementaire(theme);
+    if (veImpasse.winner === 'Nul' && (veImpasse.reason||'').indexOf('IMPASSE TOTALE')>=0) {
+      return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:veImpasse.reason+' (détectée avant la rotation — validée 2/2 en réel, 15/07/26)'};
+    }
+  }
   // ═══ VERDICT ROTATION PRIORITAIRE (14/07/26, doctrine utilisateur) ═══
   // Sur 8 matchs réels comparés (mode fixe M1/M7 vs mode rotation R1/R7,
   // R1 = maison de repos naturelle de M1, R7 = 6 crans plus loin dans la
