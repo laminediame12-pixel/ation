@@ -4453,9 +4453,21 @@ function concordanceElement(a,b){
 // tiebreak final, qui reste en ultime repli si la chaîne de force égalise
 // aussi (cas rare). À confirmer sur davantage de cas.
 // ═══════════════════════════════════════════════════════════════
-function chaineDeForce(chef, theme){
+// CORRECTIF BIAIS BINÔME ADVERSE (14/07/26, cas Olympiacos-West Ham 7-7
+// réel, prédit M1 à tort) : quand le chef adverse EST le binôme direct du
+// chef évalué (ex. M7=Amissio est le binôme direct de M1=Albus), la
+// chaîne de M1 démarre pile sur M7 et crédite sa propre force (le terme
+// "Amissio=1.75" observé) — un bonus que la chaîne de M7 ne peut
+// structurellement jamais recevoir en retour (elle démarre à SON binôme,
+// pas à elle-même). Ce n'était pas un vrai signal de supériorité, juste
+// un artefact de calcul qui a fait perdre l'égalité réelle. `chefAdverse`
+// (optionnel) fait sauter ce maillon si rencontré, pour une comparaison
+// symétrique entre les deux chaînes.
+function chaineDeForce(chef, theme, chefAdverse){
   let cur = BINOMES_V7[chef]; let total = 0; const detail = [];
   for (let i=0; i<8; i++){
+    if (cur === chef) break;
+    if (chefAdverse && cur === chefAdverse){ cur = BINOMES_V7[cur]; continue; }
     const sieges = positionsBaseEtResultantes(cur, theme);
     if (!sieges.length) break;
     const el = ELEMENTS_V7[cur];
@@ -5265,7 +5277,7 @@ function verdictElementaire(theme){
       const attLbl = (e1===null || e7===null) ? 'antagoniste absent d un côté, non tranchable' : 'attaques égales ('+e1+'-'+e7+')';
       return mk(w, attLbl+' → état des chefs : M1 '+lbl(g1)+' vs M7 '+lbl(g7)+' → '+w);
     }
-    const cf1 = chaineDeForce(theme[1], theme), cf7 = chaineDeForce(theme[7], theme);
+    const cf1 = chaineDeForce(theme[1], theme, theme[7]), cf7 = chaineDeForce(theme[7], theme, theme[1]);
     if (cf1.total !== cf7.total) {
       const w = cf1.total > cf7.total ? 'M1' : 'M7';
       return mk(w, 'égalité complète → chaîne de force : M1 '+cf1.total+' ['+cf1.detail.join('+')+'] vs M7 '+cf7.total+' ['+cf7.detail.join('+')+'] → '+w);
