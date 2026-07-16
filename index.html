@@ -6069,10 +6069,16 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   };
 }
 
-function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo) {
+function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPriority) {
   var el = document.getElementById(containerId);
   if (!el) return;
-  var isPriority = containerId === 'carte-verdict-r';
+  // CORRIGÉ (16/07/26) : isPriority déduit avant de la card 'carte-verdict-r'
+  // en dur — devenu faux dès que la décoration "prioritaire" a commencé à
+  // basculer dynamiquement (mode fixe vs rotation, voir renderTheme), la
+  // taille de police restait figée sur la carte rotation même quand
+  // c'était la carte M1/M7 qui portait le badge. Passé en paramètre
+  // explicite désormais, calculé une seule fois par l'appelant.
+  isPriority = !!isPriority;
   var winnerName = card.winner === card.labelA ? teamA : card.winner === card.labelB ? teamB : 'Nul';
   var html = '<h3 style="text-align:center;">' + titre + '</h3>';
   html += '<div style="display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:8px;">';
@@ -6090,6 +6096,12 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo) {
     var htLabel = htInfo.htWinner === 'M1' ? teamA : htInfo.htWinner === 'M7' ? teamB : htInfo.htWinner === 'both' ? 'Les deux' : 'Indéterminé';
     html += '<div class="kv"><b>Premier but (mi-temps) :</b> ' + htLabel + '</div>';
     html += '<div class="kv"><b>But 1ère mi-temps fiable :</b> ' + (htInfo.htWinner === 'M1' || htInfo.htWinner === 'M7' || htInfo.htWinner === 'both' ? 'Oui' : 'Non') + '</div>';
+    // AJOUTÉ (16/07/26, demande utilisateur) : buts prévus en 1ère mi-temps,
+    // intégrés directement dans le verdict affiché plutôt que caché derrière
+    // le bouton "🕐 But par mi-temps". Théorie gardée active (M1/M7 gouverne
+    // la 1ère mi-temps, R1/R7 la 2e) : le score de CETTE carte (M1/M7)
+    // représente donc directement le score prévu à la mi-temps.
+    html += '<div class="kv" style="color:#93c5fd;"><b>⏱️ Buts prévus 1ère mi-temps (théorie M1/M7) :</b> ' + card.scoreMain + '</div>';
   }
   html += '</div>';
   html += '<div style="text-align:center; margin-top:10px;">';
@@ -6238,8 +6250,20 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     const vfM = verdictFinal(currentTheme);
     const _domCtx = currentQuestionContext && currentQuestionContext.domicile;
     const _domicileCode = _domCtx === 'team1' ? 'A' : _domCtx === 'team2' ? 'B' : undefined;
+    // BASCULE DYNAMIQUE DE LA CARTE PRIORITAIRE (16/07/26) : avant, la carte
+    // rotation était TOUJOURS décorée "prioritaire" (bordure + grande police),
+    // même quand verdictFinal avait en réalité choisi le mode fixe (plus
+    // grand écart de dominance, 16/07/26) — contradiction visuelle directe
+    // entre le badge et le vrai verdict (constatée par l'utilisateur :
+    // Manchester City vs Napoli, verdictFinal=M1 via mode fixe, mais la
+    // carte rotation affichait M7 en grand). Calculé UNE FOIS ici, avant le
+    // rendu des deux cartes, et passé explicitement à renderCarteVerdict
+    // (7e paramètre) pour que la taille de police suive elle aussi — pas
+    // seulement la bordure/badge comme dans le premier correctif.
+    const usedFixe = (vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0;
+    const usedRotation = (vfM.reason||'').indexOf('VERDICT ROTATION') >= 0;
     const carteM = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, vfM.winner, _domicileCode);
-    renderCarteVerdict('carte-verdict-m', carteM, team1, team2, '⚔️ Verdict M1 / M7', {htWinner: a.v7.htWinner});
+    renderCarteVerdict('carte-verdict-m', carteM, team1, team2, '⚔️ Verdict M1 / M7', {htWinner: a.v7.htWinner}, usedFixe);
     renderQuestionAnswers(currentQuestionContext, vfM, carteM, a.v7.htWinner);
     var _an = signalAutoNourriture(currentTheme);
     if (_an.length) {
@@ -6248,19 +6272,9 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     }
     const orderR = getRotationOrderFromRepos(currentTheme[1]);
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, null);
-    renderCarteVerdict('carte-verdict-r', carteR, team1, team2, '🔄 Verdict R1 / R7 (rotation)');
-    // BASCULE DYNAMIQUE DE LA CARTE PRIORITAIRE (16/07/26) : avant, la carte
-    // rotation était TOUJOURS décorée "prioritaire", même quand verdictFinal
-    // avait en réalité choisi le mode fixe (plus grand écart de dominance,
-    // 16/07/26) — contradiction visuelle directe entre le badge et le vrai
-    // verdict (constatée par l'utilisateur : Manchester City vs Napoli,
-    // verdictFinal=M1 via mode fixe, mais la carte rotation affichait M7).
-    // La décoration suit maintenant le mode réellement utilisé par
-    // verdictFinal, avec le bon libellé (attr data-priority-label, voir CSS).
+    renderCarteVerdict('carte-verdict-r', carteR, team1, team2, '🔄 Verdict R1 / R7 (rotation)', null, usedRotation);
     const elR = document.getElementById('carte-verdict-r');
     const elM = document.getElementById('carte-verdict-m');
-    const usedFixe = (vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0;
-    const usedRotation = (vfM.reason||'').indexOf('VERDICT ROTATION') >= 0;
     if (elR && elM) {
       elR.classList.remove('verdict-priority'); elM.classList.remove('verdict-priority');
       if (usedFixe) {
