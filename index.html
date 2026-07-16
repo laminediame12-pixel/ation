@@ -4249,6 +4249,22 @@ function verdictFinal(theme, favoriteOverride){
   // PLACÉE AVANT LES RÈGLES DE NUL (inchangé, décision utilisateur du
   // 14/07/26) : ne tranche que si au moins une des deux cartes donne un
   // camp net (jamais Nul) ; sert de repli aux règles de nul sinon.
+  //
+  // TENTATIVE DE CORRECTIF ESSAYÉE ET ABANDONNÉE (16/07/26, cas Suisse vs
+  // Colombie réel 0-0, M1=Carcer/M7=Fortuna Major binômes) : ce match
+  // régresse avec cette règle — le mode fixe donne à tort M1 (décisif),
+  // écrasant "Juge Conjunctio" qui aurait correctement conclu Nul plus
+  // bas dans la cascade. Remonter TOUTES les règles de nul spécifiques
+  // (Juge Conjunctio, Juge Acquisitio, symétrie, entre-blocage) avant ce
+  // bloc a été testé : ça répare Suisse-Colombie mais casse 4 AUTRES cas
+  // archivés que ce bloc corrigeait à juste titre en écrasant de FAUX
+  // positifs de ces mêmes règles de nul (Argentine-Égypte, Club Atlético-
+  // Napoli, Fenerbahçe-Galatasaray, Côte d'Ivoire-Norvège) — score retombé
+  // à 16/27. Le signal "M1/M7 binômes directs" pris isolément n'est pas
+  // fiable non plus (1/1 sur ce nul mais 0/3 sur des victoires nettes,
+  // cf. signalBinomeM1M7 plus bas — étude jamais promue). Revert : Suisse-
+  // Colombie reste un échec connu et documenté plutôt que de dégrader
+  // l'ensemble pour le corriger seul.
   const orderRot = getRotationOrderFromRepos(theme[1]);
   const carteRot = buildVerdictCard(orderRot[0], orderRot[6], 'R1', 'R7', theme, null);
   const carteFixe = buildVerdictCard(1, 7, 'M1', 'M7', theme, null);
