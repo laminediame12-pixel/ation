@@ -1051,12 +1051,27 @@ function chaineDualite(chef, theme) {
   const liberation = voieOuverte(liberateur, assaillant, theme);
   const offensive = voieOuverte(chef, victime, theme);
   const ancre = BINOMES_V7[chef];
+  // Structure complète (17/07/26, doctrine utilisateur exhaustive) : 8
+  // figures, pas 5. Le binôme de l'assaillant (son bouclier) et le binôme
+  // de la victime (son bouclier) sont déjà utilisés À L'INTÉRIEUR de
+  // voieOuverte() pour décider si une attaque passe, mais leur force de
+  // position PROPRE n'était jusqu'ici jamais comptée dans forceMaisons.
+  // Exemple utilisateur complet (fortuna_minor) : chef=fortuna_minor,
+  // ancre=conjunctio, victime=fortuna_major, binôme(victime)=puella,
+  // assaillant=amissio, binôme(assaillant)=tristitia, libérateur=
+  // caput_draconis, binôme(libérateur)=via — les 8 figures nommées.
+  const binAssaillant = BINOMES_V7[assaillant];
+  const binLiberateur = BINOMES_V7[liberateur];
+  const binVictime = BINOMES_V7[victime];
   const frChef = forceRelationnelleFigure(chef, theme);
   const frAssaillant = forceRelationnelleFigure(assaillant, theme);
   const frLiberateur = forceRelationnelleFigure(liberateur, theme);
   const frVictime = forceRelationnelleFigure(victime, theme);
   const frAncre = forceRelationnelleFigure(ancre, theme);
-  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total + frAncre.total;
+  const frBinAssaillant = forceRelationnelleFigure(binAssaillant, theme);
+  const frBinLiberateur = forceRelationnelleFigure(binLiberateur, theme);
+  const frBinVictime = forceRelationnelleFigure(binVictime, theme);
+  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total + frAncre.total + frBinAssaillant.total + frBinLiberateur.total + frBinVictime.total;
   const libere = !menace.ouverte || liberation.ouverte;
   const domine = offensive.ouverte && libere;
   let resume = !menace.ouverte
@@ -1067,17 +1082,22 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, forceMaisons, libere, domine, resume };
+  return { chef, assaillant, liberateur, victime, ancre, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frBinAssaillant, frBinLiberateur, frBinVictime, forceMaisons, libere, domine, resume };
 }
 // Verdict opérationnel de la chaîne de dualité (17/07/26) : extrait de
 // l'ancien panneau d'inspection pour être réellement exploitable par
 // verdictFinal, pas seulement affiché. Domine = voie offensive ouverte
 // ET (pas de menace réelle OU menace neutralisée par le libérateur).
 // Départage double-domination/aucune-domination par la force des maisons.
-// VALIDÉ SEUL sur l'archive des 27 matchs : 16/27 (59%), contre 20/27
-// (74%) pour "plus grand écart de dominance" déjà en place — donc NON
-// promu comme mécanisme principal. Mais sur ces 27 matchs, l'écart de
-// dominance tranche TOUJOURS (27/27, 0 cas de repli) : la chaîne de
+// VALIDÉ SEUL sur l'archive des 27 matchs : 17/27 (63%) avec la structure
+// complète à 8 figures (chef/ancre/assaillant/libérateur/victime + les 3
+// binômes correspondants — 5 figures seules ne faisaient que 16/27),
+// contre 20/27 (74%) pour "plus grand écart de dominance" déjà en place —
+// donc NON promu comme mécanisme principal. Formules alternatives
+// essayées et rejetées (moins bonnes que la simple somme) : pondération
+// par forceCle des voies (17/27, égal), force nette propre−adverse
+// (12/27, pire). Mais sur ces 27 matchs, l'écart de dominance tranche
+// TOUJOURS (27/27, 0 cas de repli) : la chaîne de
 // dualité est câblée dans verdictFinal UNIQUEMENT pour les thèmes où
 // l'écart de dominance ne tranche pas (aucun cas connu dans l'archive,
 // mais possible ailleurs) — ne peut donc jamais dégrader le score mesuré.
@@ -4420,9 +4440,9 @@ function rangParole(vf){
   // (17/17 ou "jamais démenti").
   if(r.indexOf('VERDICT ROTATION')>=0 || r.indexOf('VERDICT MODE FIXE')>=0) return {rang:3, etage:'plus grand écart de dominance (16/07/26, 20/27 sur archive)'};
   // VERDICT CHAÎNE DE DUALITÉ (17/07/26) : repli quand l'écart de
-  // dominance ci-dessus ne tranche pas. Validée seule à 16/27 (59%),
+  // dominance ci-dessus ne tranche pas. Validée seule à 17/27 (63%),
   // plus faible que l'écart de dominance — rang inférieur en conséquence.
-  if(r.indexOf('CHAÎNE DE DUALITÉ')>=0) return {rang:2, etage:'chaîne de dualité — repli (17/07/26, 16/27 seul sur archive)'};
+  if(r.indexOf('CHAÎNE DE DUALITÉ')>=0) return {rang:2, etage:'chaîne de dualité — repli (17/07/26, 17/27 seul sur archive)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
   if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
@@ -4553,14 +4573,15 @@ function verdictFinal(theme, favoriteOverride){
   // deux cartes duelV7 donnent Nul) — sur l'archive des 27 matchs,
   // l'écart de dominance ci-dessus tranche 27/27, donc ce repli n'y est
   // jamais sollicité et ne peut pas dégrader le score mesuré (20/27).
-  // Validée seule à 16/27 (59%) sur l'archive — plus faible que l'écart
-  // de dominance, d'où son rôle de simple repli et non de mécanisme
-  // principal. Comble un vrai trou de la cascade (sinon ces thèmes
-  // tombent directement sur les règles de nul, alors qu'un vainqueur net
-  // au sens de la chaîne de dualité peut exister).
+  // Validée seule à 17/27 (63%, structure complète à 8 figures) sur
+  // l'archive — plus faible que l'écart de dominance, d'où son rôle de
+  // simple repli et non de mécanisme principal. Comble un vrai trou de la
+  // cascade (sinon ces thèmes tombent directement sur les règles de nul,
+  // alors qu'un vainqueur net au sens de la chaîne de dualité peut
+  // exister).
   const vcd = verdictChaineDualite(theme);
   if (vcd.winner) {
-    return {type:'verdict', winner:vcd.winner, label:'🏆 VAINQUEUR : '+vcd.winner, reason:'⚖️ VERDICT CHAÎNE DE DUALITÉ ('+vcd.mode+', M1='+FL[theme[1]]+' vs M7='+FL[theme[7]]+') → '+vcd.winner+' favorisé — repli quand rotation et mode fixe sont tous deux indécis (validé seul 16/27 sur l\'archive, 17/07/26).'};
+    return {type:'verdict', winner:vcd.winner, label:'🏆 VAINQUEUR : '+vcd.winner, reason:'⚖️ VERDICT CHAÎNE DE DUALITÉ ('+vcd.mode+', M1='+FL[theme[1]]+' vs M7='+FL[theme[7]]+') → '+vcd.winner+' favorisé — repli quand rotation et mode fixe sont tous deux indécis (validé seul 17/27 sur l\'archive, 17/07/26).'};
   }
   // VERROU PILIERS (10/07/26) : quand 2+ des 5 maisons-piliers (M1,M8,M9,
   // M12,M15) sont en repos absolu, 0% de vrai nul sur l'archive (0/4),
