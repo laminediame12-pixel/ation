@@ -4149,11 +4149,14 @@ function rangParole(vf){
   const r = (vf.reason||'')+' '+(vf.label||'');
   if(vf.type==='abstention') return {rang:0, etage:'abstention'};
   if(vf.type==='nul_suspecte') return {rang:4, etage:'convergence nul (promu 07/07/26)'};
-  // VERDICT ROTATION (14/07/26) : nouveau verdict prioritaire (voir
-  // verdictFinal). Rang provisoire — validé 4/5 sur désaccord avec 8
-  // matchs réels, mais échantillon encore petit ; pas au niveau des
-  // règles à rang 5 (17/17 ou "jamais démenti").
-  if(r.indexOf('VERDICT ROTATION')>=0) return {rang:3, etage:'rotation prioritaire (14/07/26, n=8, 4/5 sur désaccord)'};
+  // VERDICT ROTATION / MODE FIXE (16/07/26) : depuis le 16/07, ce n'est
+  // plus la rotation qui est toujours prioritaire — c'est la carte
+  // (fixe ou rotation) avec le plus grand écart de dominance qui
+  // tranche (validé 20/27 sur l'archive complète, contre 14/27 pour
+  // l'ancienne règle "rotation toujours prioritaire" sur ce même
+  // échantillon). Rang provisoire, pas au niveau des règles à rang 5
+  // (17/17 ou "jamais démenti").
+  if(r.indexOf('VERDICT ROTATION')>=0 || r.indexOf('VERDICT MODE FIXE')>=0) return {rang:3, etage:'plus grand écart de dominance (16/07/26, 20/27 sur archive)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
   if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
@@ -4229,37 +4232,39 @@ function verdictFinal(theme, favoriteOverride){
       return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:veImpasse.reason+' (détectée avant la rotation — validée 2/2 en réel, 15/07/26)'};
     }
   }
-  // ═══ VERDICT ROTATION PRIORITAIRE (14/07/26, doctrine utilisateur) ═══
-  // Sur 8 matchs réels comparés (mode fixe M1/M7 vs mode rotation R1/R7,
-  // R1 = maison de repos naturelle de M1, R7 = 6 crans plus loin dans la
-  // même rotation), la rotation a été juste 4 fois sur 8 (50%) contre 1
-  // fois sur 8 pour le fixe (12.5%). Détail : sur les 5 cas de désaccord
-  // entre les deux modes, rotation juste 4/5, fixe juste 1/5 ; sur les 3
-  // cas d'ACCORD (même camp donné par les deux), les deux se trompaient
-  // à chaque fois (0/3) — l'accord n'est donc pas un gage de fiabilité ici.
-  // Échantillon petit (n=8) mais direction nette, et cohérente avec un
-  // balayage aléatoire de 20000 thèmes : désaccord dans 62% des tirages,
-  // rotation Nul seulement 11% du temps (contre 23% pour le fixe).
-  // PLACÉE AVANT LES RÈGLES DE NUL (décision explicite de l'utilisateur,
-  // 14/07/26) : le premier essai plaçait la rotation seulement après les
-  // 4 règles de nul (entre-blocage, Juge Conjunctio, Juge Acquisitio,
-  // symétrie mères/filles), et la règle Juge Conjunctio a préempté à tort
-  // un cas réel (Al-Fateh vs Al-Okhdood, victoire nette 2-1) que la
-  // rotation aurait correctement appelé M1 — cassant le score de 4/8 à
-  // 3/8. Remontée ici pour que la rotation tranche AVANT même les règles
-  // de nul quand elle donne un camp net (R1 ou R7, jamais Nul) ; les
-  // règles de nul ne servent plus que de repli quand la rotation est
-  // elle-même indécise (Nul).
+  // ═══ PLUS GRAND ÉCART DE DOMINANCE (16/07/26, remplace "rotation
+  // toujours prioritaire") ═══
+  // L'ancienne règle (rotation toujours prioritaire dès qu'elle tranche)
+  // était validée à 4/5 sur désaccord... mais seulement sur un échantillon
+  // de 8 matchs. Retestée sur les 27 matchs de l'archive complète : sur
+  // les 18 cas de désaccord entre mode fixe et rotation, c'est 9/18 pour
+  // le fixe contre 8/18 pour la rotation — quasi 50/50, la priorité
+  // automatique à la rotation n'est plus justifiée empiriquement.
+  // Nouvel angle testé : comparer l'écart de dominance (domPctA-domPctB)
+  // des DEUX cartes et faire confiance à celle qui affiche le plus grand
+  // écart (la plus "confiante"), plutôt que de toujours privilégier la
+  // rotation. Résultat sur les 27 matchs : 20/27 (74%) — contre 14/27
+  // (52%) pour la rotation seule et 15/27 (56%) pour le fixe seul. Nette
+  // amélioration, mesurée sur le même échantillon que l'ancienne règle.
+  // PLACÉE AVANT LES RÈGLES DE NUL (inchangé, décision utilisateur du
+  // 14/07/26) : ne tranche que si au moins une des deux cartes donne un
+  // camp net (jamais Nul) ; sert de repli aux règles de nul sinon.
   const orderRot = getRotationOrderFromRepos(theme[1]);
   const carteRot = buildVerdictCard(orderRot[0], orderRot[6], 'R1', 'R7', theme, null);
-  if (carteRot.winner === 'R1' || carteRot.winner === 'R7') {
-    const wRot = carteRot.winner === 'R1' ? 'M1' : 'M7';
-    const vfRot = {type:'verdict', winner:wRot, label:'🏆 VAINQUEUR : '+wRot, reason:'🔄 VERDICT ROTATION (R1=M'+orderRot[0]+' '+FL[theme[orderRot[0]]]+', R7=M'+orderRot[6]+' '+FL[theme[orderRot[6]]]+') → '+wRot+' favorisé (score '+carteRot.scoreMain+') — prioritaire sur le mode fixe et sur les règles de nul (validé 4/5 sur désaccord, 8 matchs réels, 14/07/26).'};
-    // CONVERGENCE NUL RETIRÉE ICI (15/07/26) : suspendait la rotation
-    // (notre signal le mieux validé) sur la foi d'un critère jamais
-    // confirmé en dehors de son archive d'origine — voir le retrait
-    // complet plus bas dans cette fonction pour le détail.
-    return vfRot;
+  const carteFixe = buildVerdictCard(1, 7, 'M1', 'M7', theme, null);
+  const rotDecisif = carteRot.winner === 'R1' || carteRot.winner === 'R7';
+  const fixeDecisif = carteFixe.winner === 'M1' || carteFixe.winner === 'M7';
+  if (rotDecisif || fixeDecisif) {
+    const gapRot = Math.abs(carteRot.domPctA - carteRot.domPctB);
+    const gapFixe = Math.abs(carteFixe.domPctA - carteFixe.domPctB);
+    const choisirRotation = rotDecisif && (!fixeDecisif || gapRot >= gapFixe);
+    if (choisirRotation) {
+      const wRot = carteRot.winner === 'R1' ? 'M1' : 'M7';
+      return {type:'verdict', winner:wRot, label:'🏆 VAINQUEUR : '+wRot, reason:'🔄 VERDICT ROTATION (R1=M'+orderRot[0]+' '+FL[theme[orderRot[0]]]+', R7=M'+orderRot[6]+' '+FL[theme[orderRot[6]]]+') → '+wRot+' favorisé (score '+carteRot.scoreMain+', écart dominance '+gapRot+'% vs '+gapFixe+'% côté fixe) — plus grand écart de dominance (validé 20/27 sur l\'archive, 16/07/26).'};
+    } else {
+      const wFixe = carteFixe.winner;
+      return {type:'verdict', winner:wFixe, label:'🏆 VAINQUEUR : '+wFixe, reason:'⚔️ VERDICT MODE FIXE (M1='+FL[theme[1]]+', M7='+FL[theme[7]]+') → '+wFixe+' favorisé (score '+carteFixe.scoreMain+', écart dominance '+gapFixe+'% vs '+gapRot+'% côté rotation) — plus grand écart de dominance (validé 20/27 sur l\'archive, 16/07/26).'};
+    }
   }
   // VERROU PILIERS (10/07/26) : quand 2+ des 5 maisons-piliers (M1,M8,M9,
   // M12,M15) sont en repos absolu, 0% de vrai nul sur l'archive (0/4),
