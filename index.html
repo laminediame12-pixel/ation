@@ -5751,9 +5751,13 @@ function verdictElementaire(theme){
 // 2. Antagoniste de M1 ou M7 présent en rôle Chaotique n'importe où
 //    → incident contre le camp visé. Validé : Albus (antag. M1)
 //    chaotique en M9 → rouge contre M1 à la 64e (USA-Bosnie 02/07/26).
-// 3. Rubeus en M11 (règle V7 historique, eau/eau/eau).
-// 4. Fortuna Major en M12, Caput Draconis en M12 (mesure moindre), et
-//    Rubeus en M12 (position secondaire à la règle 3, signalé 11/07/26).
+// 3-4. Rubeus en M11, M12 ou M7, ou Fortuna Major en M12 (16/07/26,
+//    doctrine révisée) — signal SEULEMENT si leur binôme (Fortuna Minor
+//    pour Rubeus, Puella pour Fortuna Major) est présent dans le thème ;
+//    la confrontation du binôme avec sa propre maison détermine la
+//    nature : rupture directe (concordance 0, Chaotique ou Blocage) →
+//    rouge, Dissonant (concordance 0,25) → penalty. Caput Draconis en
+//    M12 reste une règle séparée, non révisée (mesure moindre).
 // 5. Puer en M6.
 // 6. Figures très négatives simultanément en M6 ET M12 (maisons opposées) :
 //    Rubeus, Cauda Draconis, Amissio, Carcer, Tristitia (+ Puer en M6,
@@ -5766,6 +5770,26 @@ function verdictElementaire(theme){
 //    pas avec 3/4 quand la figure est À LA FOIS en M11/M12 ET buteuse.
 // ═══════════════════════════════════════════════════════════════
 const FIGURES_TRES_NEGATIVES = ['rubeus','cauda_draconis','amissio','carcer','tristitia'];
+
+// RUBEUS / FORTUNA MAJOR + BINÔME (16/07/26, doctrine utilisateur) —
+// Rubeus en M11, M12 ou M7, ou Fortuna Major en M12, ne signale un
+// danger QUE SI leur binôme (Fortuna Minor pour Rubeus, Puella pour
+// Fortuna Major) est présent dans le thème. La confrontation à regarder
+// n'est PAS figure-vs-binôme, mais le binôme lui-même face à la/les
+// maison(s) qu'il occupe (via ELEMENT_ROLE_MATRIX_V7, déjà en place) :
+// concordance 0 = "rupture directe" (rôle Chaotique feu/eau OU Blocage
+// air/terre — les deux comptent) → CARTON ROUGE ; rôle Dissonant
+// (air/eau, concordance 0,25) → PENALTY. Exemple de référence : Fortuna
+// Minor (binôme de Rubeus) en M15 = feu/eau = Chaotique = rupture directe
+// = rouge.
+function confrontationBinome(binome, theme){
+  const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
+  const sieges = positionsBaseEtResultantes(binome, theme).map(s => parseInt(s.replace('M','').replace('r','')));
+  const resultats = sieges.map(h => ({maison:h, role: ELEMENT_ROLE_MATRIX_V7[els[binome]+'-'+MAISON_ELEM_V7[h]]}));
+  const rouge = resultats.find(r => r.role==='Chaotique' || r.role==='Blocage');
+  const penalty = resultats.find(r => r.role==='Dissonant');
+  return {present: sieges.length>0, resultats, nature: rouge ? 'rouge' : (penalty ? 'penalty' : null), detail: rouge || penalty || null};
+}
 
 function detectIncidentChaotique(theme, campA, campB){
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -5791,15 +5815,22 @@ function detectIncidentChaotique(theme, campA, campB){
     }
   });
 
-  // 3. Rubeus en M11
-  if (theme[11]==='rubeus') signals.push({pos:11, fig:'rubeus', label:'Rubeus en M11 (eau/eau/eau) : penalty/rouge probable'});
-
-  // 4. Fortuna Major, Caput Draconis ou Rubeus en M12
-  if (theme[12]==='fortuna_major') signals.push({pos:12, fig:'fortuna_major', label:'Fortuna Major en M12 : risque penalty/rouge composite'});
+  // 3-4. Rubeus en M11, M12 ou M7, ou Fortuna Major en M12 — voir
+  // confrontationBinome() ci-dessus : le signal n'existe QUE SI le
+  // binôme est présent dans le thème, et sa nature (rouge/penalty) suit
+  // la confrontation du binôme avec sa propre maison.
+  [[11,'rubeus'],[12,'rubeus'],[7,'rubeus'],[12,'fortuna_major']].forEach(([pos,fig]) => {
+    if (theme[pos] !== fig) return;
+    const binome = BINOMES_V7[fig];
+    const conf = confrontationBinome(binome, theme);
+    if (!conf.present) return;
+    if (conf.nature === 'rouge') {
+      signals.push({pos, fig, label: FL[fig]+' en M'+pos+', binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : CARTON ROUGE probable'});
+    } else if (conf.nature === 'penalty') {
+      signals.push({pos, fig, label: FL[fig]+' en M'+pos+', binôme '+FL[binome]+' dissonant en M'+conf.detail.maison+' : PENALTY probable'});
+    }
+  });
   if (theme[12]==='caput_draconis') signals.push({pos:12, fig:'caput_draconis', label:'Caput Draconis en M12 : risque penalty/rouge (mesure moindre)'});
-  // AJOUTÉ (signalé par l'utilisateur) : Rubeus en M12, à distinguer de la
-  // règle 3 (Rubeus en M11) — position secondaire, même figure.
-  if (theme[12]==='rubeus') signals.push({pos:12, fig:'rubeus', label:'Rubeus en M12 : risque penalty/rouge (position secondaire, hors M11)'});
 
   // 5. Puer en M6
   if (theme[6]==='puer') signals.push({pos:6, fig:'puer', label:'Puer en M6 : impulsivité, risque penalty/rouge'});
