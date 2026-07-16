@@ -5861,15 +5861,11 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo) {
   html += '<div style="background:#0f172a; border:2px solid #4ade80; border-radius:10px; padding:' + (isPriority ? '12px 22px' : '8px 16px') + '; text-align:center;"><div class="muted" style="font-size:11px;">Victoire</div><div style="font-size:' + (isPriority ? '30px' : '20px') + '; font-weight:900; color:#4ade80;' + (isPriority ? ' text-shadow:0 0 16px rgba(74,222,128,.55);' : '') + '">' + winnerName + '</div></div>';
   html += '<div style="background:#0f172a; border:1px solid #60a5fa; border-radius:10px; padding:' + (isPriority ? '12px 22px' : '8px 16px') + '; text-align:center;"><div class="muted" style="font-size:11px;">Score</div><div style="font-size:' + (isPriority ? '30px' : '20px') + '; font-weight:900;' + (isPriority ? ' text-shadow:0 0 16px rgba(96,165,250,.45);' : '') + '">' + card.scoreMain + '</div><div class="muted" style="font-size:11px;">alt: ' + card.scoreAlt + '</div></div>';
   html += '</div>';
-  html += (card.source === 'doctrine'
-    ? '<div class="kv" style="text-align:center; color:#4ade80; font-size:12px; margin-bottom:6px;"><b>✓ Vainqueur doctrinal (verdictFinal a tranché)</b></div>'
-    : '<div class="kv" style="text-align:center; color:#fbbf24; font-size:12px; margin-bottom:6px;"><b>⚠️ Estimation moteur V7 (non validé — verdictFinal indécis/muet sur ce niveau, aucune règle validée ne tranche ici)</b></div>');
-  html += '<div style="text-align:center;">';
-  if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
+  html += '<div style="text-align:left; margin-left:24px;">';
   html += '<div class="kv"><b>Penalty/Rouge :</b> ' + (card.penaltyRouge ? 'Oui' : 'Non') + '</div>';
   html += '<div class="kv"><b>Cartons jaunes (estimé) :</b> ' + card.cartonsJaunes + '</div>';
   var capaciteLabel = card.capaciteWinner === 'A' ? teamA : card.capaciteWinner === 'B' ? teamB : 'Égalité';
-  html += '<div class="kv"><b>Plus grande capacité de marquage :</b> ' + capaciteLabel + ' (' + card.capaciteA + ' vs ' + card.capaciteB + ')</div>';
+  html += '<div class="kv"><b>Puissance de marquage :</b> ' + capaciteLabel + ' (' + card.capaciteA + ' vs ' + card.capaciteB + ')</div>';
   html += '<div class="kv"><b>Les deux marquent (BTTS) :</b> ' + (card.btts ? 'Oui' : 'Non') + '</div>';
   html += '<div class="kv"><b>Corners :</b> ' + card.corners.ht1 + ' (1MT) + ' + card.corners.ht2 + ' (2MT) = ' + card.corners.total + ' — match ' + (card.corners.ouvert ? 'ouvert' : 'fermé') + '</div>';
   if (htInfo) {
@@ -5877,7 +5873,13 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo) {
     html += '<div class="kv"><b>Premier but (mi-temps) :</b> ' + htLabel + '</div>';
     html += '<div class="kv"><b>But 1ère mi-temps fiable :</b> ' + (htInfo.htWinner === 'M1' || htInfo.htWinner === 'M7' || htInfo.htWinner === 'both' ? 'Oui' : 'Non') + '</div>';
   }
-  html += '<div class="kv" style="margin-top:8px;"><b>Domination / fiabilité :</b></div>';
+  html += '</div>';
+  html += '<div style="text-align:center; margin-top:10px;">';
+  html += (card.source === 'doctrine'
+    ? '<div class="kv" style="color:#4ade80; font-size:12px; margin-bottom:4px;"><b>✓ Vainqueur doctrinal (verdictFinal a tranché)</b></div>'
+    : '<div class="kv" style="color:#fbbf24; font-size:12px; margin-bottom:4px;"><b>⚠️ Estimation moteur V7 (non validé — verdictFinal indécis/muet sur ce niveau, aucune règle validée ne tranche ici)</b></div>');
+  if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
+  html += '<div class="kv" style="margin-top:6px;"><b>Domination / fiabilité :</b></div>';
   html += '</div>';
   html += '<div style="display:flex; height:22px; border-radius:6px; overflow:hidden; border:1px solid #334155; max-width:480px; margin:0 auto;">';
   html += '<div style="width:' + card.domPctA + '%; background:#4ade80; display:flex; align-items:center; justify-content:center; font-size:11px; color:#022c22;">' + teamA + ' ' + card.domPctA + '%</div>';
