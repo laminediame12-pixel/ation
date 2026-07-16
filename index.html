@@ -1019,13 +1019,29 @@ function victimeDe(fig) {
   const i = FIGS_V7.indexOf(fig);
   return FIGS_V7[(i + 3) % 16];
 }
-function engendreCompagnon(fig, theme) {
-  const bin = BINOMES_V7[fig];
-  const sieges = [];
-  for (let p = 1; p <= 16; p++) {
-    if (theme[p] === fig && getResultant(fig, p) === bin) sieges.push('M' + p);
-  }
-  return { compagnon: bin, sieges, actif: sieges.length > 0 };
+// Force relationnelle d'une figure sur les maisons qu'elle occupe réellement
+// dans le thème (base ET résultante, via trouverFigV7) — réutilise l'arsenal
+// déjà bâti et validé pour scoreV7 plutôt que de réinventer un critère isolé :
+// forceMaisonV7 (élément figure/résultante × élément maison, ou repos),
+// checkAutoConstruction (résultante = binôme propre, table AUTO_CONSTRUCT_HOUSE),
+// checkAutoDestruction (résultante = antagoniste propre, table AUTO_DESTRUCT_HOUSE),
+// checkMaisonDoubleConcordance (figure ET résultante du même élément que la maison).
+function forceRelationnelleFigure(fig, theme) {
+  const sieges = trouverFigV7(fig, theme);
+  let total = 0;
+  const detail = sieges.map(function(s) {
+    const fm = forceMaisonV7(fig, s.pos);
+    const ac = checkAutoConstruction(fig, s.pos);
+    const ad = checkAutoDestruction(fig, s.pos);
+    const dc = checkMaisonDoubleConcordance(fig, s.pos);
+    let apport = fm.force;
+    if (ac) apport += 25;
+    if (ad) apport -= 30;
+    if (dc.match) apport += 20;
+    total += apport;
+    return { pos: s.pos, hidden: s.hidden, force: fm.force, role: fm.role, autoConstruct: ac, autoDestruct: ad, doubleConc: dc.match, apport: apport };
+  });
+  return { fig, sieges: sieges.map(function(s){return s.pos;}), total, detail };
 }
 function chaineDualite(chef, theme) {
   const assaillant = ANTAGONISTES_V7[chef];
@@ -1034,11 +1050,11 @@ function chaineDualite(chef, theme) {
   const menace = voieOuverte(assaillant, chef, theme);
   const liberation = voieOuverte(liberateur, assaillant, theme);
   const offensive = voieOuverte(chef, victime, theme);
-  const compChef = engendreCompagnon(chef, theme);
-  const compAssaillant = engendreCompagnon(assaillant, theme);
-  const compLiberateur = engendreCompagnon(liberateur, theme);
-  const compVictime = engendreCompagnon(victime, theme);
-  const forceMaisons = [compChef, compAssaillant, compLiberateur, compVictime].filter(c => c.actif).length;
+  const frChef = forceRelationnelleFigure(chef, theme);
+  const frAssaillant = forceRelationnelleFigure(assaillant, theme);
+  const frLiberateur = forceRelationnelleFigure(liberateur, theme);
+  const frVictime = forceRelationnelleFigure(victime, theme);
+  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total;
   const libere = !menace.ouverte || liberation.ouverte;
   const domine = offensive.ouverte && libere;
   let resume = !menace.ouverte
@@ -1049,7 +1065,7 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre: BINOMES_V7[chef], menace, liberation, offensive, compChef, compAssaillant, compLiberateur, compVictime, forceMaisons, libere, domine, resume };
+  return { chef, assaillant, liberateur, victime, ancre: BINOMES_V7[chef], menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, forceMaisons, libere, domine, resume };
 }
 function toggleChaineDualitePanel() {
   var panel = document.getElementById('chaine-dualite-panel');
@@ -1060,14 +1076,29 @@ function toggleChaineDualitePanel() {
     var cM1 = chaineDualite(theme[1], theme);
     var cM7 = chaineDualite(theme[7], theme);
     var html = '<h3>⚖️ Chaîne de dualité (assaillant / libérateur / victime)</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque chef : assaillant = qui l\'attaque, libérateur = qui attaque l\'assaillant (le libère), victime = qui il attaque lui-même. Chaque lien dépend de la voie ouverte (loi du binôme). "Compagnon engendré" = la figure occupe une maison dont la résultante est son propre binôme.</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque chef : assaillant = qui l\'attaque, libérateur = qui attaque l\'assaillant (le libère), victime = qui il attaque lui-même. Chaque lien dépend de la voie ouverte (loi du binôme). "Force maisons" = somme, sur les maisons réellement occupées (base + résultante) par chef/assaillant/libérateur/victime, de forceMaisonV7 + bonus auto-construction (+25) − pénalité auto-destruction (−30) + bonus double concordance (+20).</div>';
     [{ label: 'M1', c: cM1 }, { label: 'M7', c: cM7 }].forEach(function(x) {
       var c = x.c;
       html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
       html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Compagnon engendré — ' + x.label + ' : ' + (c.compChef.actif ? '✓ (' + c.compChef.sieges.join(',') + ')' : '✗') + ' | assaillant : ' + (c.compAssaillant.actif ? '✓ (' + c.compAssaillant.sieges.join(',') + ')' : '✗') + ' | libérateur : ' + (c.compLiberateur.actif ? '✓ (' + c.compLiberateur.sieges.join(',') + ')' : '✗') + ' | victime : ' + (c.compVictime.actif ? '✓ (' + c.compVictime.sieges.join(',') + ')' : '✗') + ' → force maisons ' + c.forceMaisons + '/4</div>';
+      var frLine = [
+        { lbl: x.label, fr: c.frChef },
+        { lbl: 'assaillant', fr: c.frAssaillant },
+        { lbl: 'libérateur', fr: c.frLiberateur },
+        { lbl: 'victime', fr: c.frVictime }
+      ].map(function(o) {
+        var flags = o.fr.detail.map(function(d) {
+          var tags = [];
+          if (d.autoConstruct) tags.push('AC');
+          if (d.autoDestruct) tags.push('AD');
+          if (d.doubleConc) tags.push('DC');
+          return 'M' + d.pos + (d.hidden ? 'r' : '') + '(' + d.apport + (tags.length ? ' ' + tags.join('+') : '') + ')';
+        }).join(',') || '—';
+        return o.lbl + ': ' + o.fr.total + ' [' + flags + ']';
+      }).join(' | ');
+      html += '<div class="kv" style="font-size:11px;">Force maisons — ' + frLine + '</div>';
       html += '<div class="kv" style="color:' + (c.domine ? '#4ade80' : '#f87171') + ';">' + c.resume + '</div>';
-      html += '<div class="kv" style="font-weight:600; color:' + (c.domine ? '#4ade80' : '#f87171') + ';">→ ' + (c.domine ? 'DOMINE (libre + offensif)' : (c.libere ? 'libre mais offensive bloquée' : 'entravé')) + '</div>';
+      html += '<div class="kv" style="font-weight:600; color:' + (c.domine ? '#4ade80' : '#f87171') + ';">→ ' + (c.domine ? 'DOMINE (libre + offensif)' : (c.libere ? 'libre mais offensive bloquée' : 'entravé')) + ' — total force maisons : ' + c.forceMaisons + '</div>';
     });
     var mo = 'ÉQUILIBRE / INDÉTERMINÉ';
     if (cM1.domine && !cM7.domine) mo = 'M1 DOMINE — match plutôt ouvert côté M1';
