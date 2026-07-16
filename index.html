@@ -1069,6 +1069,30 @@ function chaineDualite(chef, theme) {
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
   return { chef, assaillant, liberateur, victime, ancre, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, forceMaisons, libere, domine, resume };
 }
+// Verdict opérationnel de la chaîne de dualité (17/07/26) : extrait de
+// l'ancien panneau d'inspection pour être réellement exploitable par
+// verdictFinal, pas seulement affiché. Domine = voie offensive ouverte
+// ET (pas de menace réelle OU menace neutralisée par le libérateur).
+// Départage double-domination/aucune-domination par la force des maisons.
+// VALIDÉ SEUL sur l'archive des 27 matchs : 16/27 (59%), contre 20/27
+// (74%) pour "plus grand écart de dominance" déjà en place — donc NON
+// promu comme mécanisme principal. Mais sur ces 27 matchs, l'écart de
+// dominance tranche TOUJOURS (27/27, 0 cas de repli) : la chaîne de
+// dualité est câblée dans verdictFinal UNIQUEMENT pour les thèmes où
+// l'écart de dominance ne tranche pas (aucun cas connu dans l'archive,
+// mais possible ailleurs) — ne peut donc jamais dégrader le score mesuré.
+function verdictChaineDualite(theme) {
+  var cM1 = chaineDualite(theme[1], theme);
+  var cM7 = chaineDualite(theme[7], theme);
+  var winner = null, mode = '';
+  if (cM1.domine && !cM7.domine) { winner = 'M1'; mode = 'domination nette'; }
+  else if (cM7.domine && !cM1.domine) { winner = 'M7'; mode = 'domination nette'; }
+  else if (cM1.forceMaisons !== cM7.forceMaisons) {
+    winner = cM1.forceMaisons > cM7.forceMaisons ? 'M1' : 'M7';
+    mode = (cM1.domine && cM7.domine ? 'double domination' : 'aucune domination') + ' tranchée par la force des maisons';
+  }
+  return { winner: winner, mode: mode, cM1: cM1, cM7: cM7 };
+}
 function toggleChaineDualitePanel() {
   var panel = document.getElementById('chaine-dualite-panel');
   if (!panel) return;
@@ -4395,6 +4419,10 @@ function rangParole(vf){
   // échantillon). Rang provisoire, pas au niveau des règles à rang 5
   // (17/17 ou "jamais démenti").
   if(r.indexOf('VERDICT ROTATION')>=0 || r.indexOf('VERDICT MODE FIXE')>=0) return {rang:3, etage:'plus grand écart de dominance (16/07/26, 20/27 sur archive)'};
+  // VERDICT CHAÎNE DE DUALITÉ (17/07/26) : repli quand l'écart de
+  // dominance ci-dessus ne tranche pas. Validée seule à 16/27 (59%),
+  // plus faible que l'écart de dominance — rang inférieur en conséquence.
+  if(r.indexOf('CHAÎNE DE DUALITÉ')>=0) return {rang:2, etage:'chaîne de dualité — repli (17/07/26, 16/27 seul sur archive)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
   if(r.indexOf('symétrie mères/filles')>=0) return {rang:3, etage:'nul — symétrie mères/filles'};
@@ -4519,6 +4547,20 @@ function verdictFinal(theme, favoriteOverride){
       const wFixe = carteFixe.winner;
       return {type:'verdict', winner:wFixe, label:'🏆 VAINQUEUR : '+wFixe, reason:'⚔️ VERDICT MODE FIXE (M1='+FL[theme[1]]+', M7='+FL[theme[7]]+') → '+wFixe+' favorisé (score '+carteFixe.scoreMain+', écart dominance '+gapFixe+'% vs '+gapRot+'% côté rotation) — plus grand écart de dominance (validé 20/27 sur l\'archive, 16/07/26).'};
     }
+  }
+  // ═══ REPLI : CHAÎNE DE DUALITÉ (17/07/26) ═══
+  // N'est atteint que si NI la rotation NI le mode fixe ne tranchent (les
+  // deux cartes duelV7 donnent Nul) — sur l'archive des 27 matchs,
+  // l'écart de dominance ci-dessus tranche 27/27, donc ce repli n'y est
+  // jamais sollicité et ne peut pas dégrader le score mesuré (20/27).
+  // Validée seule à 16/27 (59%) sur l'archive — plus faible que l'écart
+  // de dominance, d'où son rôle de simple repli et non de mécanisme
+  // principal. Comble un vrai trou de la cascade (sinon ces thèmes
+  // tombent directement sur les règles de nul, alors qu'un vainqueur net
+  // au sens de la chaîne de dualité peut exister).
+  const vcd = verdictChaineDualite(theme);
+  if (vcd.winner) {
+    return {type:'verdict', winner:vcd.winner, label:'🏆 VAINQUEUR : '+vcd.winner, reason:'⚖️ VERDICT CHAÎNE DE DUALITÉ ('+vcd.mode+', M1='+FL[theme[1]]+' vs M7='+FL[theme[7]]+') → '+vcd.winner+' favorisé — repli quand rotation et mode fixe sont tous deux indécis (validé seul 16/27 sur l\'archive, 17/07/26).'};
   }
   // VERROU PILIERS (10/07/26) : quand 2+ des 5 maisons-piliers (M1,M8,M9,
   // M12,M15) sont en repos absolu, 0% de vrai nul sur l'archive (0/4),
