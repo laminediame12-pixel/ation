@@ -3713,10 +3713,17 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   // tranchait TOUJOURS 'both' (les deux marquent) dès que la condition
   // passait — même quand une seule des deux était réellement ouverte.
   // Doctrine précisée par l'utilisateur : M1/M7 ouverte OU mobile (pas
-  // seulement ouverte) ; M5 ouverte ; M10 ouverte ; ET dans cette
-  // configuration, SI UNE SEULE des deux (M1/M7) est ouverte/mobile,
-  // c'est l'AUTRE (celle fermée) qui encaisse — 'both' ne s'applique que
-  // si LES DEUX sont ouvertes/mobiles à la fois.
+  // seulement ouverte) ; M5 ouverte ; M10 ouverte.
+  //
+  // CORRECTION 2 (16/07/26, cas France vs Espagne réel) : la branche
+  // "une seule des deux ouverte/mobile -> l'AUTRE (fermée) encaisse"
+  // prédisait M1(France) marque / M7(Espagne, fermée) encaisse. Réel :
+  // mi-temps 0-1 Espagne — c'est l'inverse exact. La branche 'both' (les
+  // deux ouvertes/mobiles à la fois), elle, a été confirmée sur USA vs
+  // Belgique (htWinner='both', réel 2-1, les deux ont bien marqué).
+  // Donc seule la branche 'both' reste fiable ; la branche à un seul
+  // côté est rétrogradée en 'indéterminé' plutôt que d'affirmer un
+  // camp précis qui s'est avéré faux sur son seul vrai test.
   var figM1 = theme[1], figM7 = theme[7], figM5 = theme[5], figM10 = theme[10];
   var m1OuvOuMobile = isOuverte(figM1) || isMobile(figM1);
   var m7OuvOuMobile = isOuverte(figM7) || isMobile(figM7);
@@ -3730,11 +3737,9 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
       htWinner = 'both';
       htReasons.push('M1 et M7 ouvertes/mobiles + M5 active/ouverte + M10 ouverte -> but des deux cotes en 1ere mi-temps');
     } else if (m1OuvOuMobile) {
-      htWinner = 'M1';
-      htReasons.push('M1 ouverte/mobile, M7 fermee + M5 active/ouverte + M10 ouverte -> M7 (fermee) encaisse en 1ere mi-temps');
+      htReasons.push('M1 ouverte/mobile, M7 fermee + M5 active/ouverte + M10 ouverte -> signal ancien "M7 encaisse" CONTREDIT sur France-Espagne reel (mi-temps 0-1 Espagne) -> indetermine');
     } else {
-      htWinner = 'M7';
-      htReasons.push('M7 ouverte/mobile, M1 fermee + M5 active/ouverte + M10 ouverte -> M1 (fermee) encaisse en 1ere mi-temps');
+      htReasons.push('M7 ouverte/mobile, M1 fermee + M5 active/ouverte + M10 ouverte -> signal ancien "M1 encaisse" CONTREDIT sur France-Espagne reel (mi-temps 0-1 Espagne) -> indetermine');
     }
   } else {
     // Fallback : ancienne logique de concordance binome pour determiner un seul scorer HT
