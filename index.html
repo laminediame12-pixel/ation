@@ -1050,11 +1050,13 @@ function chaineDualite(chef, theme) {
   const menace = voieOuverte(assaillant, chef, theme);
   const liberation = voieOuverte(liberateur, assaillant, theme);
   const offensive = voieOuverte(chef, victime, theme);
+  const ancre = BINOMES_V7[chef];
   const frChef = forceRelationnelleFigure(chef, theme);
   const frAssaillant = forceRelationnelleFigure(assaillant, theme);
   const frLiberateur = forceRelationnelleFigure(liberateur, theme);
   const frVictime = forceRelationnelleFigure(victime, theme);
-  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total;
+  const frAncre = forceRelationnelleFigure(ancre, theme);
+  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total + frAncre.total;
   const libere = !menace.ouverte || liberation.ouverte;
   const domine = offensive.ouverte && libere;
   let resume = !menace.ouverte
@@ -1065,7 +1067,7 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre: BINOMES_V7[chef], menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, forceMaisons, libere, domine, resume };
+  return { chef, assaillant, liberateur, victime, ancre, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, forceMaisons, libere, domine, resume };
 }
 function toggleChaineDualitePanel() {
   var panel = document.getElementById('chaine-dualite-panel');
@@ -1076,13 +1078,14 @@ function toggleChaineDualitePanel() {
     var cM1 = chaineDualite(theme[1], theme);
     var cM7 = chaineDualite(theme[7], theme);
     var html = '<h3>⚖️ Chaîne de dualité (assaillant / libérateur / victime)</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque chef : assaillant = qui l\'attaque, libérateur = qui attaque l\'assaillant (le libère), victime = qui il attaque lui-même. Chaque lien dépend de la voie ouverte (loi du binôme). "Force maisons" = somme, sur les maisons réellement occupées (base + résultante) par chef/assaillant/libérateur/victime, de forceMaisonV7 + bonus auto-construction (+25) − pénalité auto-destruction (−30) + bonus double concordance (+20).</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque chef : ancre = son binôme, assaillant = qui l\'attaque, libérateur = qui attaque l\'assaillant (le libère), victime = qui il attaque lui-même. Chaque lien dépend de la voie ouverte (loi du binôme). "Force maisons" = somme, sur les maisons réellement occupées (base + résultante) par chef/ancre/assaillant/libérateur/victime, de forceMaisonV7 + bonus auto-construction (+25) − pénalité auto-destruction (−30) + bonus double concordance (+20).</div>';
     [{ label: 'M1', c: cM1 }, { label: 'M7', c: cM7 }].forEach(function(x) {
       var c = x.c;
       html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
       html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
       var frLine = [
         { lbl: x.label, fr: c.frChef },
+        { lbl: 'ancre', fr: c.frAncre },
         { lbl: 'assaillant', fr: c.frAssaillant },
         { lbl: 'libérateur', fr: c.frLiberateur },
         { lbl: 'victime', fr: c.frVictime }
