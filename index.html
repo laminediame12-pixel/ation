@@ -5416,6 +5416,31 @@ function verdictElementaire(theme){
     // effectives ET chaîne de force sont toutes deux à égalité parfaite,
     // c'est une vraie impasse structurelle plutôt qu'un signal à départager
     // arbitrairement par l'ordre de parcours de la boucle.
+    //
+    // LIMITE CONNUE, NON RÉSOLUE (16/07/26, cas France vs Espagne 0-2 réel,
+    // mères Fortuna Minor/Albus/Amissio/Via) : cette égalité 0-0 aux attaques
+    // effectives peut être un artefact — les deux chefs partagent la même
+    // boucle donc la chaîne de force est structurellement condamnée à
+    // toujours être égale (cf commentaire chaineDeForce). Ici M1 (Fortuna
+    // Minor) engendre par sa PROPRE résultante (M1r) la figure Tristitia, qui
+    // est à la fois (a) le binôme de l'antagoniste de M1 (Amissio, qu'elle
+    // nourrit) et (b) l'antagoniste du binôme de M1 (Conjunctio, qu'elle
+    // attaque) — un auto-empoisonnement complet depuis la propre résultante
+    // du chef. Le frein naturel de Tristitia est Via, binôme direct de M7 —
+    // mais Via reste fidèle à M7 (loyauté divisée), donc NE neutralise PAS
+    // Tristitia. Ce n'est pourtant pas un abandon : le maillon SUIVANT de la
+    // même chaîne M7 (Caput→Via→Rubeus) est précisément l'antagoniste de
+    // Carcer, le binôme/soutien de Tristitia — la chaîne de M7 délègue et
+    // démantèle le poison de M1 un cran plus loin, sans que Via ait besoin
+    // d'agir directement. Réel : M7 gagne nettement (0-2), pas un nul.
+    // Signal "bouclier libre" (ajouté le 16/07 pour Liverpool-ManCity)
+    // NE capture PAS ce cas (aucun des deux camps n'a de bouclier libre ici
+    // au sens strict). Mécanisme compris et vérifié maison par maison, mais
+    // PAS ENCORE généralisé en code — motif à 5 maillons (résultante propre
+    // → binôme de l'antagoniste ET antagoniste du binôme → antagoniste de
+    // CE binôme = binôme du binôme adverse), trop spécifique pour être
+    // codé sans risquer de sur-ajuster sur un seul cas. À surveiller sur de
+    // prochains matchs avant toute tentative de généralisation.
     return mk('Nul', 'IMPASSE TOTALE DE BOUCLE (attaques effectives et force de boucle toutes deux à égalité) → NUL');
   }
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
