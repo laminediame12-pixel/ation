@@ -5837,6 +5837,24 @@ function detectIncidentChaotique(theme, campA, campB){
   });
   if (theme[12]==='caput_draconis') signals.push({pos:12, fig:'caput_draconis', label:'Caput Draconis en M12 : risque penalty/rouge (mesure moindre)'});
 
+  // PUER + BINÔME (16/07/26, doctrine utilisateur, n=1 réel confirmé) —
+  // Puer chaotique en M7 (feu/eau, toujours vrai dès que theme[7]='puer')
+  // + son binôme (Caput Draconis) présent et SANS rupture directe (bien
+  // placé, ex. Amplificateur) → PENALTY. Logique inverse de Rubeus/
+  // Fortuna Major (où c'était la rupture qui déclenchait) : ici c'est
+  // l'ABSENCE de rupture qui confirme le penalty. Cas de référence :
+  // mères Caput Draconis/Via/Acquisitio/Fortuna Major — Puer en M7
+  // chaotique, Caput Draconis (binôme) en M1 (Amplificateur) et M2r
+  // (Amplificateur) → réel penalty pour M1. Positions M11/M12 de Puer
+  // pas encore testées, à déterminer (comme Rubeus/Fortuna Major).
+  if (theme[7]==='puer') {
+    const binomePuer = BINOMES_V7['puer'];
+    const confPuer = confrontationBinome(binomePuer, theme);
+    if (confPuer.present && !confPuer.rupture) {
+      signals.push({pos:7, fig:'puer', label:'Puer en M7 (chaotique), binôme '+FL[binomePuer]+' bien placé (sans rupture) : PENALTY probable'});
+    }
+  }
+
   // 5. Puer en M6
   if (theme[6]==='puer') signals.push({pos:6, fig:'puer', label:'Puer en M6 : impulsivité, risque penalty/rouge'});
 
