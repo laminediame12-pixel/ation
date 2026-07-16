@@ -1037,6 +1037,8 @@ function chaineDualite(chef, theme) {
   const compChef = engendreCompagnon(chef, theme);
   const compAssaillant = engendreCompagnon(assaillant, theme);
   const compLiberateur = engendreCompagnon(liberateur, theme);
+  const compVictime = engendreCompagnon(victime, theme);
+  const forceMaisons = [compChef, compAssaillant, compLiberateur, compVictime].filter(c => c.actif).length;
   const libere = !menace.ouverte || liberation.ouverte;
   const domine = offensive.ouverte && libere;
   let resume = !menace.ouverte
@@ -1047,7 +1049,7 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre: BINOMES_V7[chef], menace, liberation, offensive, compChef, compAssaillant, compLiberateur, libere, domine, resume };
+  return { chef, assaillant, liberateur, victime, ancre: BINOMES_V7[chef], menace, liberation, offensive, compChef, compAssaillant, compLiberateur, compVictime, forceMaisons, libere, domine, resume };
 }
 function toggleChaineDualitePanel() {
   var panel = document.getElementById('chaine-dualite-panel');
@@ -1063,15 +1065,23 @@ function toggleChaineDualitePanel() {
       var c = x.c;
       html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
       html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Compagnon engendré — ' + x.label + ' : ' + (c.compChef.actif ? '✓ (' + c.compChef.sieges.join(',') + ')' : '✗') + ' | assaillant : ' + (c.compAssaillant.actif ? '✓ (' + c.compAssaillant.sieges.join(',') + ')' : '✗') + ' | libérateur : ' + (c.compLiberateur.actif ? '✓ (' + c.compLiberateur.sieges.join(',') + ')' : '✗') + '</div>';
+      html += '<div class="kv" style="font-size:11px;">Compagnon engendré — ' + x.label + ' : ' + (c.compChef.actif ? '✓ (' + c.compChef.sieges.join(',') + ')' : '✗') + ' | assaillant : ' + (c.compAssaillant.actif ? '✓ (' + c.compAssaillant.sieges.join(',') + ')' : '✗') + ' | libérateur : ' + (c.compLiberateur.actif ? '✓ (' + c.compLiberateur.sieges.join(',') + ')' : '✗') + ' | victime : ' + (c.compVictime.actif ? '✓ (' + c.compVictime.sieges.join(',') + ')' : '✗') + ' → force maisons ' + c.forceMaisons + '/4</div>';
       html += '<div class="kv" style="color:' + (c.domine ? '#4ade80' : '#f87171') + ';">' + c.resume + '</div>';
       html += '<div class="kv" style="font-weight:600; color:' + (c.domine ? '#4ade80' : '#f87171') + ';">→ ' + (c.domine ? 'DOMINE (libre + offensif)' : (c.libere ? 'libre mais offensive bloquée' : 'entravé')) + '</div>';
     });
     var mo = 'ÉQUILIBRE / INDÉTERMINÉ';
     if (cM1.domine && !cM7.domine) mo = 'M1 DOMINE — match plutôt ouvert côté M1';
     else if (cM7.domine && !cM1.domine) mo = 'M7 DOMINE — match plutôt ouvert côté M7';
-    else if (cM1.domine && cM7.domine) mo = 'DOUBLE DOMINATION — match ouvert des deux côtés';
-    else mo = 'AUCUNE DOMINATION — match plutôt fermé';
+    else if (cM1.domine && cM7.domine) {
+      if (cM1.forceMaisons > cM7.forceMaisons) mo = 'DOUBLE DOMINATION → tranché par la force des maisons : M1 (' + cM1.forceMaisons + ' vs ' + cM7.forceMaisons + ')';
+      else if (cM7.forceMaisons > cM1.forceMaisons) mo = 'DOUBLE DOMINATION → tranché par la force des maisons : M7 (' + cM7.forceMaisons + ' vs ' + cM1.forceMaisons + ')';
+      else mo = 'DOUBLE DOMINATION — match ouvert des deux côtés (force des maisons égale, ' + cM1.forceMaisons + ' vs ' + cM7.forceMaisons + ')';
+    }
+    else {
+      if (cM1.forceMaisons > cM7.forceMaisons) mo = 'AUCUNE DOMINATION → tranché par la force des maisons : M1 (' + cM1.forceMaisons + ' vs ' + cM7.forceMaisons + ')';
+      else if (cM7.forceMaisons > cM1.forceMaisons) mo = 'AUCUNE DOMINATION → tranché par la force des maisons : M7 (' + cM7.forceMaisons + ' vs ' + cM1.forceMaisons + ')';
+      else mo = 'AUCUNE DOMINATION — match plutôt fermé (force des maisons égale, ' + cM1.forceMaisons + ' vs ' + cM7.forceMaisons + ')';
+    }
     html += '<div class="kv" style="margin-top:10px; font-size:14px; font-weight:700;">' + mo + '</div>';
     panel.innerHTML = html;
     panel.style.display = 'block';
