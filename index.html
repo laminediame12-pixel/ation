@@ -5823,16 +5823,22 @@ function detectIncidentChaotique(theme, campA, campB){
   // confrontationBinome() ci-dessus : le signal n'existe QUE SI le
   // binôme est présent ET en rupture directe avec sa propre maison ;
   // la nature (rouge/penalty) suit alors la position du déclencheur :
-  // M12 (surface de réparation) → penalty, M11/M7 → rouge.
+  // M12 (surface de réparation) → penalty, M11/M7 → rouge. DIRECTION
+  // (16/07/26, 2/2 confirmé en réel) : M7, M11 et M12 appartiennent tous
+  // au camp M7 (CAMP2=[5,6,7,8,11,12,14,15]) — l'incident se produit
+  // dans le territoire de ce camp, donc c'est LUI qui concède (penalty/
+  // rouge CONTRE M7). Confirmé sur le cas Puer/M7 (pénalty pour M1) et
+  // sur ce thème-ci (Rubeus en M12, pénalty confirmé contre M7).
   [[11,'rubeus'],[12,'rubeus'],[7,'rubeus'],[12,'fortuna_major']].forEach(([pos,fig]) => {
     if (theme[pos] !== fig) return;
     const binome = BINOMES_V7[fig];
     const conf = confrontationBinome(binome, theme);
     if (!conf.present || !conf.rupture) return;
+    const contre = CAMP1.includes(pos) ? 'CONTRE l\'équipe 1' : 'CONTRE l\'équipe 2';
     if (pos === 12) {
-      signals.push({pos, fig, label: FL[fig]+' en M12 (surface de réparation), binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : PENALTY probable'});
+      signals.push({pos, fig, label: FL[fig]+' en M12 (surface de réparation), binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : PENALTY probable '+contre});
     } else {
-      signals.push({pos, fig, label: FL[fig]+' en M'+pos+', binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : CARTON ROUGE probable'});
+      signals.push({pos, fig, label: FL[fig]+' en M'+pos+', binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : CARTON ROUGE probable '+contre});
     }
   });
   if (theme[12]==='caput_draconis') signals.push({pos:12, fig:'caput_draconis', label:'Caput Draconis en M12 : risque penalty/rouge (mesure moindre)'});
@@ -5851,7 +5857,7 @@ function detectIncidentChaotique(theme, campA, campB){
     const binomePuer = BINOMES_V7['puer'];
     const confPuer = confrontationBinome(binomePuer, theme);
     if (confPuer.present && !confPuer.rupture) {
-      signals.push({pos:7, fig:'puer', label:'Puer en M7 (chaotique), binôme '+FL[binomePuer]+' bien placé (sans rupture) : PENALTY probable'});
+      signals.push({pos:7, fig:'puer', label:'Puer en M7 (chaotique), binôme '+FL[binomePuer]+' bien placé (sans rupture) : PENALTY probable CONTRE l\'équipe 2 (M7, CAMP2)'});
     }
   }
 
