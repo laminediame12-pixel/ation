@@ -6113,7 +6113,35 @@ function getRotationOrderFromRepos(m1Fig){const start=Math.max(0,FIGS.indexOf(m1
 function getRotationNumber(housePos,m1Fig){const start=Math.max(0,FIGS.indexOf(m1Fig))+1; return ((housePos-start+16)%16)+1;}
 function rollOneMother(){const rolls=Array.from({length:4},()=>Array.from({length:4},()=>randomDie())); const points=rolls.map(set=>oddEvenToPoint(set.reduce((a,b)=>a+b,0))); return {rolls,points,figure:figFromArray(points)};}
 function rollAllMothersFromDice(){const mothers=[rollOneMother(),rollOneMother(),rollOneMother(),rollOneMother()]; ['m1','m2','m3','m4'].forEach((id,idx)=>document.getElementById(id).value=mothers[idx].figure); document.getElementById('dice-output').innerHTML=mothers.map((m,idx)=>`<div class="kv"><b>Mère ${idx+1}</b> — lancers: ${m.rolls.map(r=>`[${r.join(', ')}]`).join(' ')} | points: ${m.points.join('-')} | figure: ${FL[m.figure]}</div>`).join(''); launchTheme(false);}
-function rollUntilValidDraw(){let attempts=0; do {rollAllMothersFromDice(); attempts+=1;} while(attempts<30 && !(currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid)); document.getElementById('dice-output').innerHTML += `<div class="kv"><b>Essais :</b> ${attempts}</div>`;}
+// RÉSONANCE AXES/JOUR (16/07/26, demande utilisateur) : pour éviter que
+// le thème "parle d'autre chose" (aucun lien avec les axes structurels
+// ni le climat du jour), le tirage بسم الله exige maintenant aussi que
+// au moins 2 des 3 figures suivantes soient présentes dans le thème :
+// Axe Cardinal (M1+M4+M7+M10), Axe Temporel (M3+M5+M11+M15), figure du
+// jour. Présence vérifiée en base uniquement, comme la validité axes
+// déjà en place (figureExistsBaseOnly). 📚 Piste utilisateur non encore
+// validée sur des matchs réels — à observer.
+function countAxesEtJourPresents(theme){
+  const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
+  const axeT = combineMany([theme[3],theme[5],theme[11],theme[15]]);
+  const fdj = figureDuJour();
+  const presentC = figureExistsBaseOnly(axeC, theme);
+  const presentT = figureExistsBaseOnly(axeT, theme);
+  const presentJ = figureExistsBaseOnly(fdj, theme);
+  const count = [presentC, presentT, presentJ].filter(Boolean).length;
+  return {axeC, axeT, fdj, presentC, presentT, presentJ, count};
+}
+function rollUntilValidDraw(){
+  let attempts=0;
+  let resonance;
+  do {
+    rollAllMothersFromDice();
+    attempts+=1;
+    resonance = currentTheme ? countAxesEtJourPresents(currentTheme) : {count:0};
+  } while(attempts<30 && !(currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid && resonance.count >= 2));
+  const detailRes = resonance.axeC ? `Axe Cardinal (${FL[resonance.axeC]}) ${resonance.presentC?'✓ présent':'✗ absent'} | Axe Temporel (${FL[resonance.axeT]}) ${resonance.presentT?'✓ présent':'✗ absent'} | Figure du jour (${FL[resonance.fdj]}) ${resonance.presentJ?'✓ présente':'✗ absente'} → ${resonance.count}/3` : '';
+  document.getElementById('dice-output').innerHTML += `<div class="kv"><b>Essais :</b> ${attempts}</div><div class="kv" style="font-size:11px;">${detailRes}</div>`;
+}
 function getCurrentMotherValues(){return ['m1','m2','m3','m4'].map(id=>document.getElementById(id).value||'via');}
 function themeHas(fig,theme){return Object.values(theme).includes(fig);} 
 function houseMatchesElement(pos,fig){return MAISON_ELEM[pos]===ELEMENTS[fig];}
