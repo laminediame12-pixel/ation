@@ -5753,11 +5753,17 @@ function verdictElementaire(theme){
 //    chaotique en M9 → rouge contre M1 à la 64e (USA-Bosnie 02/07/26).
 // 3-4. Rubeus en M11, M12 ou M7, ou Fortuna Major en M12 (16/07/26,
 //    doctrine révisée) — signal SEULEMENT si leur binôme (Fortuna Minor
-//    pour Rubeus, Puella pour Fortuna Major) est présent dans le thème ;
-//    la confrontation du binôme avec sa propre maison détermine la
-//    nature : rupture directe (concordance 0, Chaotique ou Blocage) →
-//    rouge, Dissonant (concordance 0,25) → penalty. Caput Draconis en
-//    M12 reste une règle séparée, non révisée (mesure moindre).
+//    pour Rubeus, Puella pour Fortuna Major) est présent dans le thème ET
+//    en rupture directe avec sa propre maison (concordance 0, rôle
+//    Chaotique ou Blocage — ex. Fortuna Minor en M15 = feu/eau =
+//    Chaotique). Une fois la rupture confirmée, la NATURE suit la
+//    position du déclencheur, pas la confrontation elle-même : M12 est
+//    la surface de réparation → PENALTY ; M11 ou M7, hors surface →
+//    CARTON ROUGE. (Le "Dissonant" envisagé un temps pour le penalty
+//    était en fait inatteignable : Fortuna Minor est feu et Puella est
+//    terre, aucune des deux ne peut former un Dissonant, air/eau
+//    uniquement — remplacé par ce critère de position.) Caput Draconis
+//    en M12 reste une règle séparée, non révisée (mesure moindre).
 // 5. Puer en M6.
 // 6. Figures très négatives simultanément en M6 ET M12 (maisons opposées) :
 //    Rubeus, Cauda Draconis, Amissio, Carcer, Tristitia (+ Puer en M6,
@@ -5774,21 +5780,19 @@ const FIGURES_TRES_NEGATIVES = ['rubeus','cauda_draconis','amissio','carcer','tr
 // RUBEUS / FORTUNA MAJOR + BINÔME (16/07/26, doctrine utilisateur) —
 // Rubeus en M11, M12 ou M7, ou Fortuna Major en M12, ne signale un
 // danger QUE SI leur binôme (Fortuna Minor pour Rubeus, Puella pour
-// Fortuna Major) est présent dans le thème. La confrontation à regarder
-// n'est PAS figure-vs-binôme, mais le binôme lui-même face à la/les
-// maison(s) qu'il occupe (via ELEMENT_ROLE_MATRIX_V7, déjà en place) :
-// concordance 0 = "rupture directe" (rôle Chaotique feu/eau OU Blocage
-// air/terre — les deux comptent) → CARTON ROUGE ; rôle Dissonant
-// (air/eau, concordance 0,25) → PENALTY. Exemple de référence : Fortuna
-// Minor (binôme de Rubeus) en M15 = feu/eau = Chaotique = rupture directe
-// = rouge.
+// Fortuna Major) est présent dans le thème ET en rupture directe avec
+// sa propre maison (concordance 0, rôle Chaotique feu/eau OU Blocage
+// air/terre — les deux comptent). Exemple de référence : Fortuna Minor
+// (binôme de Rubeus) en M15 = feu/eau = Chaotique = rupture directe.
+// La NATURE (rouge/penalty) suit ensuite la POSITION du déclencheur, pas
+// la confrontation : M12 = surface de réparation → PENALTY ; M11 ou M7,
+// hors surface → CARTON ROUGE.
 function confrontationBinome(binome, theme){
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   const sieges = positionsBaseEtResultantes(binome, theme).map(s => parseInt(s.replace('M','').replace('r','')));
   const resultats = sieges.map(h => ({maison:h, role: ELEMENT_ROLE_MATRIX_V7[els[binome]+'-'+MAISON_ELEM_V7[h]]}));
-  const rouge = resultats.find(r => r.role==='Chaotique' || r.role==='Blocage');
-  const penalty = resultats.find(r => r.role==='Dissonant');
-  return {present: sieges.length>0, resultats, nature: rouge ? 'rouge' : (penalty ? 'penalty' : null), detail: rouge || penalty || null};
+  const rupture = resultats.find(r => r.role==='Chaotique' || r.role==='Blocage');
+  return {present: sieges.length>0, resultats, rupture: !!rupture, detail: rupture || null};
 }
 
 function detectIncidentChaotique(theme, campA, campB){
@@ -5817,17 +5821,18 @@ function detectIncidentChaotique(theme, campA, campB){
 
   // 3-4. Rubeus en M11, M12 ou M7, ou Fortuna Major en M12 — voir
   // confrontationBinome() ci-dessus : le signal n'existe QUE SI le
-  // binôme est présent dans le thème, et sa nature (rouge/penalty) suit
-  // la confrontation du binôme avec sa propre maison.
+  // binôme est présent ET en rupture directe avec sa propre maison ;
+  // la nature (rouge/penalty) suit alors la position du déclencheur :
+  // M12 (surface de réparation) → penalty, M11/M7 → rouge.
   [[11,'rubeus'],[12,'rubeus'],[7,'rubeus'],[12,'fortuna_major']].forEach(([pos,fig]) => {
     if (theme[pos] !== fig) return;
     const binome = BINOMES_V7[fig];
     const conf = confrontationBinome(binome, theme);
-    if (!conf.present) return;
-    if (conf.nature === 'rouge') {
+    if (!conf.present || !conf.rupture) return;
+    if (pos === 12) {
+      signals.push({pos, fig, label: FL[fig]+' en M12 (surface de réparation), binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : PENALTY probable'});
+    } else {
       signals.push({pos, fig, label: FL[fig]+' en M'+pos+', binôme '+FL[binome]+' en rupture directe en M'+conf.detail.maison+' ('+conf.detail.role+') : CARTON ROUGE probable'});
-    } else if (conf.nature === 'penalty') {
-      signals.push({pos, fig, label: FL[fig]+' en M'+pos+', binôme '+FL[binome]+' dissonant en M'+conf.detail.maison+' : PENALTY probable'});
     }
   });
   if (theme[12]==='caput_draconis') signals.push({pos:12, fig:'caput_draconis', label:'Caput Draconis en M12 : risque penalty/rouge (mesure moindre)'});
