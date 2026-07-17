@@ -349,6 +349,33 @@ maisons paires en entier** (2 à 16) — Populus participe pleinement ici
 comme attaquant (collaborateur en M4), contrairement à son rôle neutre
 côté obstacle impair.
 
+### Constat 11 — L'antagoniste de l'obstacle (B-B-A) d'une figure est TOUJOURS son propre binôme
+
+Découvert sur Puer : antagoniste(Puer)=Puella → binôme(Puella)=Populus
+→ binôme(Populus)=**Laetitia** (= B-B-A de Puer, son obstacle, Constat
+1). Or **antagoniste(Laetitia)=Acquisitio**, et **binôme(Acquisitio)=
+Puer** — la figure qui attaque/neutralise l'obstacle de Puer
+(Acquisitio attaque Laetitia) est en même temps le binôme direct de
+Puer (donc son propre soutien). Attaque et soutien se rejoignent sur
+la même figure (Acquisitio) : elle combat l'obstacle ET renforce le
+chef simultanément.
+
+**Vérifié exhaustivement sur les 16 figures (16/16, jamais pris en
+défaut) — ce n'est pas une coïncidence isolée à Puer, c'est une
+identité algébrique garantie** : obstacle(X) = binôme²(antagoniste(X))
+= X+1 (décalages fixes −3+2+2) ; antagoniste(obstacle(X)) = X+1−3 =
+X−2 ; binôme(X−2) = X−2+2 = X. La boucle se referme toujours,
+peu importe la figure de départ.
+
+Distinct du "libérateur" déjà codé dans `chaineDualite`
+(`antagoniste(assaillant)` — pour Puer donne Conjunctio, pas
+Acquisitio) : ce sont deux mécanismes de libération différents et
+non-contradictoires, pas la même chose vue sous un autre angle.
+**Statut : identité structurelle prouvée (16/16), pas encore
+intégrée au verdict** — reste à déterminer si elle doit devenir une
+nouvelle règle de "libération de l'obstacle" à part entière, distincte
+du libérateur du chef déjà codé.
+
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
 Après les constats structurels (§6), tentative d'intégrer une règle
