@@ -310,3 +310,31 @@ Notable : M4 et M16 reviennent systématiquement ensemble en double
 concordance, portées par les 4 figures terre de la boucle paire
 (Tristitia, Carcer, Fortuna Major, Puella). L'auto-construction se
 concentre presque entièrement sur M2, M6 et M14.
+
+### Constat 10 — Table des moyens (collaborateurs) de la boucle paire, avec maisons
+
+Complète le Constat 4 avec les maisons. Pour chaque attaquant de la
+boucle paire : sa maison de repos, la maison de sa victime, et la
+maison de son collaborateur (B-B).
+
+| Attaquant | Maison | Victime | Maison | Collaborateur (B-B) | Maison |
+|---|---|---|---|---|---|
+| Laetitia | 2 | Via | 5 | Amissio | 6 |
+| Albus | 4 | Rubeus | 7 | Tristitia | 8 |
+| Amissio | 6 | Fortuna Minor | 9 | Carcer | 10 |
+| Tristitia | 8 | Conjunctio | 11 | Fortuna Major | 12 |
+| Carcer | 10 | Cauda Draconis | 13 | Puella | 14 |
+| Fortuna Major | 12 | Acquisitio | 15 | Populus | 16 |
+| Puella | 14 | Puer | 1 | Laetitia | 2 |
+| Populus | 16 | Caput Draconis | 3 | Albus | 4 |
+
+Deux régularités garanties algébriquement (identités, pas des
+observations) : maison(collaborateur) = maison(attaquant)+4 (bouclage
+16→4), maison(victime) = maison(attaquant)+3 (bouclage 16→3, comme
+`victimeDe`).
+
+Contrairement aux obstacles impairs (Constat 6, qui s'arrêtent à M14,
+Populus neutre exclu), les collaborateurs paires couvrent les **8
+maisons paires en entier** (2 à 16) — Populus participe pleinement ici
+comme attaquant (collaborateur en M4), contrairement à son rôle neutre
+côté obstacle impair.
