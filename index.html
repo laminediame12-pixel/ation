@@ -4518,6 +4518,10 @@ function rangParole(vf){
   // SUPERPOSITION ANCRE/ASSAILLANT (17/07/26) : validée n=1 seulement
   // (Suisse-Colombie) — rang prudent, pas au niveau des règles établies.
   if(r.indexOf('SUPERPOSITION ANCRE/ASSAILLANT')>=0) return {rang:2, etage:'superposition ancre/assaillant (17/07/26, n=1)'};
+  // ANCRAGE DIRECT (17/07/26) : validé seul à 16/27 sur l'archive — rang
+  // prudent malgré sa place prioritaire dans verdictFinal (demande
+  // explicite utilisateur).
+  if(r.indexOf('VERDICT ANCRAGE DIRECT')>=0) return {rang:2, etage:'ancrage direct (17/07/26, 16/27 seul sur archive)'};
   // VERDICT ROTATION / MODE FIXE (16/07/26) : depuis le 16/07, ce n'est
   // plus la rotation qui est toujours prioritaire — c'est la carte
   // (fixe ou rotation) avec le plus grand écart de dominance qui
@@ -4654,6 +4658,22 @@ function verdictFinal(theme, favoriteOverride){
   const supAA = superpositionAncreAssaillant(theme);
   if (supAA.trouve) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
+  }
+  // ═══ ANCRAGE DIRECT (17/07/26, demande explicite utilisateur — le
+  // principe s'applique au verdict final, pas seulement en repli tout en
+  // bas de la chaîne de dualité) ═══ Compare la force de l'ancre directe
+  // (binôme du chef) entre M1 et M7 — le camp dont l'ancre est la plus
+  // forte l'emporte. Dérivé pas à pas sur Argentine-Egypte et
+  // Suisse-Colombie. ATTENTION, validé SEUL à 16/27 (59%) sur l'archive,
+  // plus faible que l'écart de dominance (20/27) — placé ici en priorité
+  // sur demande explicite, donc le score mesuré de verdictFinal descend
+  // de 19/27 à 16/27 avec ce changement (voir commit pour le détail).
+  const ancre1 = BINOMES_V7[theme[1]], ancre7 = BINOMES_V7[theme[7]];
+  const fAncre1 = forceRelationnelleFigure(ancre1, theme).total;
+  const fAncre7 = forceRelationnelleFigure(ancre7, theme).total;
+  if (fAncre1 !== fAncre7) {
+    const wAncre = fAncre1 > fAncre7 ? 'M1' : 'M7';
+    return {type:'verdict', winner:wAncre, label:'🏆 VAINQUEUR : '+wAncre, reason:'⚓ VERDICT ANCRAGE DIRECT (ancre M1='+FL[ancre1]+' '+fAncre1+', ancre M7='+FL[ancre7]+' '+fAncre7+') → '+wAncre+' favorisé (validé seul 16/27 sur l\'archive, 17/07/26).'};
   }
   // ═══ PLUS GRAND ÉCART DE DOMINANCE (16/07/26, remplace "rotation
   // toujours prioritaire") ═══
