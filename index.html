@@ -1032,9 +1032,30 @@ function victimeDe(fig) {
 // testé : en verrou, l'archive passe de 17/27 à 19/27 ; en bonus additif
 // dans forceMaisons, elle RÉGRESSE à 16/27 (rejeté).
 function petitCalcul(fig) {
+  // Exception Acquisitio/Puella (constat 5, REPERES.md §6) : ce sont les
+  // pivots fixes de leur boucle (combine(acquisitio,acquisitio) et
+  // combine(puella,puella) donnent tous les deux Populus — un résultat
+  // dégénéré). Au lieu d'une seule figure, elles se rapportent à
+  // l'ENSEMBLE des figures que leur boucle génère pour les autres :
+  // Acquisitio (impair, jamais dans l'ensemble des sorties paires) → les
+  // 7 autres figures paires (Populus exclu, son propre résultat naturel).
+  // Puella (paire, appartient elle-même à cet ensemble) → les 6 autres
+  // figures paires (Populus ET elle-même exclus).
+  if (fig === 'acquisitio') return BINOME_CYCLE_2.filter(f => f !== 'populus');
+  if (fig === 'puella') return BINOME_CYCLE_2.filter(f => f !== 'populus' && f !== 'puella');
   const cycle = getBinomeCycle(fig);
   const pivot = cycle === 2 ? 'puella' : 'acquisitio';
   return combine(fig, pivot);
+}
+// Présence dans le thème d'un "bloc" de petitCalcul — gère à la fois le
+// cas normal (une seule figure) et l'exception Acquisitio/Puella (liste
+// de figures, présent si AU MOINS UNE d'entre elles est là).
+function blocPresent(bloc, theme) {
+  const figs = Array.isArray(bloc) ? bloc : [bloc];
+  return figs.some(f => positionsBaseEtResultantes(f, theme).length > 0);
+}
+function blocLabel(bloc) {
+  return Array.isArray(bloc) ? bloc.map(f => FL[f]).join(', ') : FL[bloc];
 }
 // Score net du petit calcul pour un chef (17/07/26, reconstruit depuis un
 // tableau exhaustif des 16 figures plutôt que deviné par essais-erreurs).
@@ -1056,8 +1077,8 @@ function scorePetitCalcul(chef, theme) {
   const assaillant = ANTAGONISTES_V7[chef];
   const blocChef = petitCalcul(chef);
   const blocAssaillant = petitCalcul(assaillant);
-  const presentChef = positionsBaseEtResultantes(blocChef, theme).length > 0;
-  const presentAssaillant = positionsBaseEtResultantes(blocAssaillant, theme).length > 0;
+  const presentChef = blocPresent(blocChef, theme);
+  const presentAssaillant = blocPresent(blocAssaillant, theme);
   const n = (presentChef ? 1 : 0) + (presentAssaillant ? 1 : 0);
   const signe = cycleChef === 2 ? 1 : -1;
   return { chef, cycleChef, assaillant, blocChef, blocAssaillant, presentChef, presentAssaillant, n, score: signe * n };
@@ -1189,7 +1210,7 @@ function toggleChaineDualitePanel() {
       var c = x.c;
       html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
       html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Petit calcul — chef (' + (c.pcScore.cycleChef === 2 ? 'pair' : 'impair') + ') : ' + FL[c.pcScore.blocChef] + ' ' + (c.pcScore.presentChef ? '✓ présent' : '✗ absent') + ' · assaillant : ' + FL[c.pcScore.blocAssaillant] + ' ' + (c.pcScore.presentAssaillant ? '✓ présent' : '✗ absent') + ' → score net ' + c.pcScore.score + '</div>';
+      html += '<div class="kv" style="font-size:11px;">Petit calcul — chef (' + (c.pcScore.cycleChef === 2 ? 'pair' : 'impair') + ') : ' + blocLabel(c.pcScore.blocChef) + ' ' + (c.pcScore.presentChef ? '✓ présent' : '✗ absent') + ' · assaillant : ' + blocLabel(c.pcScore.blocAssaillant) + ' ' + (c.pcScore.presentAssaillant ? '✓ présent' : '✗ absent') + ' → score net ' + c.pcScore.score + '</div>';
       var frLine = [
         { lbl: x.label, fr: c.frChef },
         { lbl: 'ancre', fr: c.frAncre },
