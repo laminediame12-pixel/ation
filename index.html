@@ -6459,7 +6459,28 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // marquage brute — campA.total/campB.total AVANT la correction de marge
   // finale (buildScoreFromCamps), donc potentiellement différent du
   // vainqueur doctrinal si la marge a dû être forcée.
-  var capaciteWinner = campA.total > campB.total ? 'A' : campB.total > campA.total ? 'B' : 'egal';
+  var capaciteA = campA.total, capaciteB = campB.total;
+  var capaciteWinner = capaciteA > capaciteB ? 'A' : capaciteB > capaciteA ? 'B' : 'egal';
+
+  // CORRIGÉ (17/07/26, demande utilisateur) : quand la doctrine
+  // (winnerOverride, ex. l'ancrage) contredit le vainqueur brut du moteur
+  // V7 (rawWinner), la domination% et la puissance de marquage affichées
+  // continuaient de refléter le moteur brut qu'on vient pourtant de
+  // contredire — contradiction visuelle directe (carte disant "Victoire
+  // Équipe 1" avec "Puissance de marquage : Équipe 2" juste en dessous).
+  // Dans ce cas, on recalcule ces deux stats à partir de la même chaîne
+  // de dualité (forceMaisons, chaineDualite) que celle qui a réellement
+  // tranché, pour que l'affichage reste cohérent avec la doctrine.
+  if (winnerOverride && winnerOverride !== rawWinner && winnerOverride !== 'Nul') {
+    var chA = chaineDualite(theme[posA], theme);
+    var chB = chaineDualite(theme[posB], theme);
+    if (chA.forceMaisons !== chB.forceMaisons) {
+      domA = chA.forceMaisons; domB = chB.forceMaisons;
+      domPct = Math.round(100 * domA / (domA + domB));
+      capaciteA = domA; capaciteB = domB;
+      capaciteWinner = domA > domB ? 'A' : 'B';
+    }
+  }
 
   return {
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
@@ -6470,7 +6491,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     corners: corners,
     domPctA: domPct, domPctB: 100 - domPct,
     domA: domA, domB: domB,
-    capaciteA: campA.total, capaciteB: campB.total, capaciteWinner: capaciteWinner
+    capaciteA: capaciteA, capaciteB: capaciteB, capaciteWinner: capaciteWinner
   };
 }
 
