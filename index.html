@@ -4668,9 +4668,30 @@ function verdictFinal(theme, favoriteOverride){
   // seulement l'ancre seule. Validé SEUL à 16/27 (59%) sur l'archive —
   // même score que l'ancre isolée, mais conforme à la demande explicite
   // de porter tout le principe, pas un fragment.
+  //
+  // ÉTENDU (17/07/26, demande utilisateur "retour en ancrage côté
+  // rotation") : le même principe est maintenant calculé aussi sur la
+  // paire R1/R7 (positions réelles de la rotation à partir de la maison
+  // de repos de M1, pas M1/M7 en dur — voir getRotationOrderFromRepos),
+  // pas seulement sur le mode fixe. Si les deux côtés sont décisifs
+  // (force totale différente des deux chefs), on retient celui dont
+  // l'écart de force est le plus grand — même logique de départage que
+  // "plus grand écart de dominance" utilisée plus bas pour fixe/rotation.
   const ancrageC1 = chaineDualite(theme[1], theme);
   const ancrageC7 = chaineDualite(theme[7], theme);
-  if (ancrageC1.forceMaisons !== ancrageC7.forceMaisons) {
+  const orderRotAncrage = getRotationOrderFromRepos(theme[1]);
+  const ancrageR1 = chaineDualite(theme[orderRotAncrage[0]], theme);
+  const ancrageR7 = chaineDualite(theme[orderRotAncrage[6]], theme);
+  const fixeAncrageDecisif = ancrageC1.forceMaisons !== ancrageC7.forceMaisons;
+  const rotAncrageDecisif = ancrageR1.forceMaisons !== ancrageR7.forceMaisons;
+  if (fixeAncrageDecisif || rotAncrageDecisif) {
+    const gapFixeAncrage = Math.abs(ancrageC1.forceMaisons - ancrageC7.forceMaisons);
+    const gapRotAncrage = Math.abs(ancrageR1.forceMaisons - ancrageR7.forceMaisons);
+    const choisirRotAncrage = rotAncrageDecisif && (!fixeAncrageDecisif || gapRotAncrage >= gapFixeAncrage);
+    if (choisirRotAncrage) {
+      const wRotAncrage = ancrageR1.forceMaisons > ancrageR7.forceMaisons ? 'M1' : 'M7';
+      return {type:'verdict', winner:wRotAncrage, label:'🏆 VAINQUEUR : '+wRotAncrage, reason:'⚓ VERDICT ANCRAGE — CHAÎNE COMPLÈTE (ROTATION) (force R1='+ancrageR1.forceMaisons+', force R7='+ancrageR7.forceMaisons+') → '+wRotAncrage+' favorisé (côté rotation, écart '+gapRotAncrage+' vs '+gapFixeAncrage+' côté fixe, 17/07/26).'};
+    }
     const wAncrage = ancrageC1.forceMaisons > ancrageC7.forceMaisons ? 'M1' : 'M7';
     return {type:'verdict', winner:wAncrage, label:'🏆 VAINQUEUR : '+wAncrage, reason:'⚓ VERDICT ANCRAGE — CHAÎNE COMPLÈTE (force M1='+ancrageC1.forceMaisons+', force M7='+ancrageC7.forceMaisons+') → '+wAncrage+' favorisé (validé seul 16/27 sur l\'archive, 17/07/26).'};
   }
@@ -6686,10 +6707,16 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     // rendu des deux cartes, et passé explicitement à renderCarteVerdict
     // (7e paramètre) pour que la taille de police suive elle aussi — pas
     // seulement la bordure/badge comme dans le premier correctif.
+    // ANCRAGE CÔTÉ ROTATION (17/07/26) : l'ancrage chaîne complète peut
+    // désormais trancher via R1/R7 plutôt que M1/M7 (voir verdictFinal) —
+    // il faut donc distinguer les deux cas pour savoir QUELLE carte porte
+    // le badge "prioritaire", sinon on retombe dans le même bug que celui
+    // corrigé le 16/07 (badge figé sur la mauvaise carte).
+    const usedAncrageRotation = (vfM.reason||'').indexOf('VERDICT ANCRAGE') >= 0 && (vfM.reason||'').indexOf('ROTATION') >= 0;
     const usedAncrage = (vfM.reason||'').indexOf('VERDICT ANCRAGE') >= 0;
-    const usedFixe = (vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0 || usedAncrage;
-    const usedRotation = (vfM.reason||'').indexOf('VERDICT ROTATION') >= 0;
-    const carteM = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, vfM.winner, _domicileCode);
+    const usedFixe = ((vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0) || (usedAncrage && !usedAncrageRotation);
+    const usedRotation = ((vfM.reason||'').indexOf('VERDICT ROTATION') >= 0 && !usedAncrage) || usedAncrageRotation;
+    const carteM = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, usedFixe ? vfM.winner : null, _domicileCode);
     renderCarteVerdict('carte-verdict-m', carteM, team1, team2, '⚔️ Verdict M1 / M7', {htWinner: a.v7.htWinner}, usedFixe);
     renderQuestionAnswers(currentQuestionContext, vfM, carteM, a.v7.htWinner);
     var _an = signalAutoNourriture(currentTheme);
@@ -6698,7 +6725,8 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
       if (_elM) _elM.innerHTML += _an.map(function(x){ return '<div class="kv muted" style="font-size:11px; text-align:center; margin-top:4px; color:'+(x.type==='nourrit'?'#4ade80':'#f87171')+';">'+x.txt+'</div>'; }).join('');
     }
     const orderR = getRotationOrderFromRepos(currentTheme[1]);
-    const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, null);
+    const rWinnerOverride = usedRotation ? (vfM.winner === 'M1' ? 'R1' : vfM.winner === 'M7' ? 'R7' : null) : null;
+    const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride);
     renderCarteVerdict('carte-verdict-r', carteR, team1, team2, '🔄 Verdict R1 / R7 (rotation)', null, usedRotation);
     const elR = document.getElementById('carte-verdict-r');
     const elM = document.getElementById('carte-verdict-m');
@@ -6709,7 +6737,7 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
         elM.setAttribute('data-priority-label', usedAncrage ? '⭐ VERDICT PRIORITAIRE — ANCRAGE' : '⭐ VERDICT PRIORITAIRE — MODE FIXE');
       } else if (usedRotation) {
         elR.classList.add('verdict-priority');
-        elR.setAttribute('data-priority-label', '⭐ VERDICT PRIORITAIRE — ROTATION');
+        elR.setAttribute('data-priority-label', usedAncrageRotation ? '⭐ VERDICT PRIORITAIRE — ANCRAGE' : '⭐ VERDICT PRIORITAIRE — ROTATION');
       }
       // sinon (règle de nul, abstention...) : aucune des deux cartes n'est
       // décorée "prioritaire", puisque ni l'une ni l'autre n'a tranché.
