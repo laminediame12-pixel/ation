@@ -143,3 +143,121 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   50%, bruit) — jamais promue.
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
   si de nouveaux vrais matchs avec penalty/rouge se présentent.
+
+## 6. Fonctionnement relationnel des 16 figures — constats (17/07/26)
+
+Exploration figure par figure, colonne par colonne, avant tout code.
+Colonnes : Repres (figure), M (maison de repos), B (binôme), B-B (binôme
+du binôme), A (antagoniste), B-A (binôme de l'antagoniste), B-B-A
+(binôme du binôme de l'antagoniste), A-A (antagoniste de l'antagoniste),
+B-A-A (binôme de l'antagoniste de l'antagoniste).
+
+**Boucle impair**
+
+| Repres | M | B | B-B | A | B-A | B-B-A | A-A | B-A-A |
+|---|---|---|---|---|---|---|---|---|
+| Puer | 1 | Caput Draconis | Via | Puella | Populus | Laetitia | Conjunctio | Cauda Draconis |
+| Caput Draconis | 3 | Via | Rubeus | Populus | Laetitia | Albus | Cauda Draconis | Acquisitio |
+| Via | 5 | Rubeus | Fortuna Minor | Laetitia | Albus | Amissio | Acquisitio | Puer |
+| Rubeus | 7 | Fortuna Minor | Conjunctio | Albus | Amissio | Tristitia | Puer | Caput Draconis |
+| Fortuna Minor | 9 | Conjunctio | Cauda Draconis | Amissio | Tristitia | Carcer | Caput Draconis | Via |
+| Conjunctio | 11 | Cauda Draconis | Acquisitio | Tristitia | Carcer | Fortuna Major | Via | Rubeus |
+| Cauda Draconis | 13 | Acquisitio | Puer | Carcer | Fortuna Major | Puella | Rubeus | Fortuna Minor |
+| Acquisitio | 15 | Puer | Caput Draconis | Fortuna Major | Puella | Populus | Fortuna Minor | Conjunctio |
+
+**Boucle pair**
+
+| Repres | M | B | B-B | A | B-A | B-B-A | A-A | B-A-A |
+|---|---|---|---|---|---|---|---|---|
+| Laetitia | 2 | Albus | Amissio | Acquisitio | Puer | Caput Draconis | Fortuna Major | Puella |
+| Albus | 4 | Amissio | Tristitia | Puer | Caput Draconis | Via | Puella | Populus |
+| Amissio | 6 | Tristitia | Carcer | Caput Draconis | Via | Rubeus | Populus | Laetitia |
+| Tristitia | 8 | Carcer | Fortuna Major | Via | Rubeus | Fortuna Minor | Laetitia | Albus |
+| Carcer | 10 | Fortuna Major | Puella | Rubeus | Fortuna Minor | Conjunctio | Albus | Amissio |
+| Fortuna Major | 12 | Puella | Populus | Fortuna Minor | Conjunctio | Cauda Draconis | Amissio | Tristitia |
+| Puella | 14 | Populus | Laetitia | Conjunctio | Cauda Draconis | Acquisitio | Tristitia | Carcer |
+| Populus | 16 | Laetitia | Albus | Cauda Draconis | Acquisitio | Puer | Carcer | Fortuna Major |
+
+### Constat 1 — maison(B-B-A) = maison(figure) + 1
+
+Vérifié exhaustivement 16/16, dans les deux boucles. Le B-B-A d'une
+figure est toujours exactement la figure de la maison suivante (avec
+bouclage 16→1). Conséquence algébrique directe : binôme+binôme+
+antagoniste = +2+2−3 = +1 sur `FIGS_V7`.
+
+### Constat 2 — "figure de front" = B-B, pas B-B-A (piste abandonnée)
+
+Exemples donnés (Laetitia→Amissio, Acquisitio→Caput Draconis,
+Puer→Via) correspondent tous à la colonne **B-B** (binôme du binôme,
+deux pas dans la même boucle), pas à B-B-A. Sujet mis de côté par
+l'utilisateur après vérification, gardé ici pour mémoire — ne pas
+reproposer B-B-A comme "figure de front" sans nouvel élément.
+
+### Constat 3 — Obstacles de la boucle impair (= `petitCalcul`)
+
+Pour 7 des 8 figures de la boucle impair, la "figure obstacle à
+contrôler pour faciliter l'attaque" correspond exactement à
+`petitCalcul(figure)` (déjà codé) :
+
+| Figure | Obstacle |
+|---|---|
+| Puer | Laetitia |
+| Caput Draconis | Albus |
+| Via | Amissio |
+| Rubeus | Tristitia |
+| Fortuna Minor | Carcer |
+| Conjunctio | Fortuna Major |
+| Cauda Draconis | Puella |
+| **Acquisitio** (exception, voir Constat 5) | Puella, Fortuna Major, Carcer, Tristitia, Amissio, Albus, Laetitia (7 figures, PAS Populus) |
+
+### Constat 4 — Moyens/collaboration de la boucle paire
+
+Dans la boucle paire, chaque figure attaque une victime directement
+(via `ANTAGONISTES_V7`) et a besoin de son **B-B** comme collaborateur
+pour que l'attaque fonctionne (et non d'un "obstacle" à détruire comme
+en boucle impaire — différence de vocabulaire/nature).
+
+| Attaquant | Victime attaquée | Collaborateur (B-B) |
+|---|---|---|
+| Laetitia | Via | Amissio |
+| Albus | Rubeus | Tristitia |
+| Amissio | Fortuna Minor | Carcer |
+| Tristitia | Conjunctio | Fortuna Major |
+| Carcer | Cauda Draconis | Puella |
+| Fortuna Major | Acquisitio | Populus |
+| **Puella** (exception, voir Constat 5) | Puer | Laetitia (cas général) — mais moyens = Fortuna Major, Carcer, Tristitia, Amissio, Albus, Laetitia (6 figures) |
+| Populus | Caput Draconis | Albus |
+
+### Constat 5 — Acquisitio et Puella sont les pivots fixes des deux boucles
+
+`petitCalcul(fig)` = `combine(fig, 'acquisitio')` si boucle impaire,
+`combine(fig, 'puella')` si boucle paire — Acquisitio et Puella sont
+donc les pivots fixes à travers lesquels tous les obstacles/moyens de
+leur boucle respective sont générés. Quand l'une de ces deux figures
+est elle-même le chef, elle ne se limite pas à SON résultat individuel
+(qui serait Populus dans les deux cas, `combine(acquisitio,acquisitio)
+= combine(puella,puella) = populus`) — elle a accès à l'ensemble des
+résultats qu'elle génère pour les autres figures de sa boucle :
+- **Acquisitio** (impair, ne peut jamais s'auto-référencer dans une
+  liste de figures paires) → 7 obstacles (tous les pair sauf Populus).
+- **Puella** (paire, fait partie de l'ensemble qu'elle génère) → 6
+  moyens (tous les pair sauf Populus ET Puella elle-même).
+
+**Populus est neutre**, ainsi que sa maison de repos (M16).
+
+### Constat 6 — Maisons concernées
+
+- Obstacles boucle impair (les 7 figures du Constat 3, hors
+  Acquisitio) → maisons **2, 4, 6, 8, 10, 12, 14** (paires, sauf M16).
+- Moyens de Puella (Constat 5) → maisons **2, 4, 6, 8, 10, 12** (paires,
+  sauf M14 = Puella elle-même et M16 = Populus).
+
+### Constat 7 — Loi du binôme reconfirmée (nouvel exemple)
+
+Si A attaque B, binôme(A) attaque binôme(B) — jamais l'inverse.
+Exemple : Puer attaque Albus (antagoniste d'Albus = Puer) ⟹
+binôme(Puer)=Caput Draconis attaque binôme(Albus)=Amissio (antagoniste
+d'Amissio = Caput Draconis). Vérifié que l'inverse est impossible :
+l'antagoniste de Puer est Puella (pas Albus), l'antagoniste de Caput
+Draconis est Populus (pas Amissio). Cohérent avec le principe déjà
+noté en §0.
