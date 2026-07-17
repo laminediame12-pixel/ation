@@ -1077,6 +1077,13 @@ function chaineDualite(chef, theme) {
   const assaillantEstPaire = getBinomeCycle(assaillant) === 2;
   const blocAssaillantSieges = positionsBaseEtResultantes(blocAssaillant, theme);
   const assaillantObstrue = !assaillantEstPaire && blocAssaillantSieges.length > 0;
+  // Symétrique côté pair (17/07/26, "soutien") : quand l'assaillant est du
+  // cycle pair et que son "petit calcul" est présent, l'assaillant est
+  // RENFORCÉ (l'inverse de l'obstacle) — donc le CHEF (pas l'assaillant)
+  // est affaibli par ce signal. Vérifié sur l'archive : en verrou combiné
+  // avec l'obstacle (favorise le camp opposé quand SON PROPRE assaillant
+  // est renforcé), 20/27 contre 19/27 avec l'obstacle seul.
+  const assaillantRenforce = assaillantEstPaire && blocAssaillantSieges.length > 0;
   // Structure complète (17/07/26, doctrine utilisateur exhaustive) : 8
   // figures, pas 5. Le binôme de l'assaillant (son bouclier) et le binôme
   // de la victime (son bouclier) sont déjà utilisés À L'INTÉRIEUR de
@@ -1108,25 +1115,27 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frBinAssaillant, frBinLiberateur, frBinVictime, forceMaisons, libere, domine, blocAssaillant, assaillantEstPaire, assaillantObstrue, resume };
+  return { chef, assaillant, liberateur, victime, ancre, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frBinAssaillant, frBinLiberateur, frBinVictime, forceMaisons, libere, domine, blocAssaillant, assaillantEstPaire, assaillantObstrue, assaillantRenforce, resume };
 }
 // Verdict opérationnel de la chaîne de dualité (17/07/26) : extrait de
 // l'ancien panneau d'inspection pour être réellement exploitable par
 // verdictFinal, pas seulement affiché. Domine = voie offensive ouverte
 // ET (pas de menace réelle OU menace neutralisée par le libérateur).
-// PRIORITÉ à l'obstacle de l'assaillant (petitCalcul, voir plus haut) s'il
-// est asymétrique entre M1 et M7 — traité en VERROU (pas en bonus additif
-// dans forceMaisons, testé et rejeté à 16/27) car la doctrine utilisateur
-// l'exprime comme une condition nécessaire ("il faut [figure]"), pas comme
-// une force graduelle. Sinon, départage double-domination/aucune-domination
-// par la force des maisons (8 figures : chef/ancre/assaillant/libérateur/
-// victime + leurs 3 binômes).
-// VALIDÉ SEUL sur l'archive des 27 matchs : 19/27 (70%) avec le verrou
-// d'obstacle — contre 17/27 sans lui (structure à 8 figures seule) et
-// 16/27 avec seulement 5 figures. Se rapproche de "plus grand écart de
-// dominance" (20/27, 74%) déjà en place, mais reste un cran en dessous —
-// gardé en repli, pas promu mécanisme principal. Sur ces 27 matchs,
-// l'écart de dominance tranche TOUJOURS (27/27, 0 cas de repli) : la
+// PRIORITÉ au verrou obstacle/renforcement du "petit calcul" (voir plus
+// haut) : un chef est favorisé si SON assaillant est obstrué (cycle
+// impair) OU si l'assaillant DE L'AUTRE chef est renforcé (cycle pair,
+// donc l'autre chef est affaibli) — traité en VERROU (pas en bonus
+// additif dans forceMaisons, testé et rejeté à 16/27) car la doctrine
+// utilisateur l'exprime comme une condition nécessaire ("il faut
+// [figure]"), pas comme une force graduelle. Sinon, départage double-
+// domination/aucune-domination par la force des maisons (8 figures :
+// chef/ancre/assaillant/libérateur/victime + leurs 3 binômes).
+// VALIDÉ SEUL sur l'archive des 27 matchs : 20/27 (74%) avec le verrou
+// combiné obstacle+renforcement — contre 19/27 avec l'obstacle seul,
+// 17/27 sans aucun verrou (structure à 8 figures seule) et 16/27 avec
+// seulement 5 figures. Égale "plus grand écart de dominance" (20/27, 74%)
+// déjà en place — reste en repli (pas promu mécanisme principal) car ce
+// dernier tranche TOUJOURS sur l'archive (27/27, 0 cas de repli) : la
 // chaîne de dualité est câblée dans verdictFinal UNIQUEMENT pour les
 // thèmes où l'écart de dominance ne tranche pas (aucun cas connu dans
 // l'archive, mais possible ailleurs) — ne peut donc jamais dégrader le
@@ -1135,8 +1144,10 @@ function verdictChaineDualite(theme) {
   var cM1 = chaineDualite(theme[1], theme);
   var cM7 = chaineDualite(theme[7], theme);
   var winner = null, mode = '';
-  if (cM1.assaillantObstrue && !cM7.assaillantObstrue) { winner = 'M1'; mode = 'assaillant adverse obstrué (petit calcul, verrou)'; }
-  else if (cM7.assaillantObstrue && !cM1.assaillantObstrue) { winner = 'M7'; mode = 'assaillant adverse obstrué (petit calcul, verrou)'; }
+  var favorsM1 = cM1.assaillantObstrue || cM7.assaillantRenforce;
+  var favorsM7 = cM7.assaillantObstrue || cM1.assaillantRenforce;
+  if (favorsM1 && !favorsM7) { winner = 'M1'; mode = 'verrou petit calcul (obstacle propre ou adversaire renforcé)'; }
+  else if (favorsM7 && !favorsM1) { winner = 'M7'; mode = 'verrou petit calcul (obstacle propre ou adversaire renforcé)'; }
   else if (cM1.domine && !cM7.domine) { winner = 'M1'; mode = 'domination nette'; }
   else if (cM7.domine && !cM1.domine) { winner = 'M7'; mode = 'domination nette'; }
   else if (cM1.forceMaisons !== cM7.forceMaisons) {
@@ -1159,7 +1170,7 @@ function toggleChaineDualitePanel() {
       var c = x.c;
       html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
       html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Petit calcul (assaillant, cycle ' + (c.assaillantEstPaire ? 'pair → soutien' : 'impair → obstacle') + ') : ' + FL[c.blocAssaillant] + (c.assaillantObstrue ? ' — présent → assaillant OBSTRUÉ' : ' — absent/sans effet') + '</div>';
+      html += '<div class="kv" style="font-size:11px;">Petit calcul (assaillant, cycle ' + (c.assaillantEstPaire ? 'pair → soutien' : 'impair → obstacle') + ') : ' + FL[c.blocAssaillant] + (c.assaillantObstrue ? ' — présent → assaillant OBSTRUÉ (favorise ' + x.label + ')' : c.assaillantRenforce ? ' — présent → assaillant RENFORCÉ (affaiblit ' + x.label + ')' : ' — absent/sans effet') + '</div>';
       var frLine = [
         { lbl: x.label, fr: c.frChef },
         { lbl: 'ancre', fr: c.frAncre },
