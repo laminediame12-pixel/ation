@@ -1170,6 +1170,14 @@ function chaineDualite(chef, theme) {
   // ancre=conjunctio, victime=fortuna_major, binôme(victime)=puella,
   // assaillant=amissio, binôme(assaillant)=tristitia, libérateur=
   // caput_draconis, binôme(libérateur)=via — les 8 figures nommées.
+  // ÉTENDU (17/07/26, Constat 11, demande utilisateur "entre le dans le
+  // calcul du verdict") : forceMaisons inclut maintenant AUSSI la
+  // contribution SIGNÉE de l'obstacle (B-B-A du chef) et de son
+  // attaquant — l'attaquant de l'obstacle renforce le chef (+), l'obstacle
+  // lui pénalise (−), voir obstacleDe()/attaquantObstacleDe() plus haut.
+  // Testé en cascade complète verdictFinal (pas en comparaison isolée,
+  // qui aurait montré une légère régression) : 17/27 sur l'archive,
+  // contre 15/27 sans cette contribution — amélioration mesurée.
   const binAssaillant = BINOMES_V7[assaillant];
   const binLiberateur = BINOMES_V7[liberateur];
   const binVictime = BINOMES_V7[victime];
@@ -1184,7 +1192,16 @@ function chaineDualite(chef, theme) {
   const frObstacle = forceRelationnelleFigure(obstacle, theme);
   const frAttaquantObstacle = forceRelationnelleFigure(attaquantObstacle, theme);
   const obstacleNeutralise = frAttaquantObstacle.total > frObstacle.total;
-  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total + frAncre.total + frBinAssaillant.total + frBinLiberateur.total + frBinVictime.total;
+  // Constat 11 dans le calcul du verdict (17/07/26, demande explicite
+  // utilisateur : "entre le dans le calcul du verdict") : contribution
+  // SIGNÉE (pas un ajout brut des deux forces, qui inflaterait les deux
+  // côtés de la même figure sans distinguer bien/mal — testé et rejeté,
+  // 13/27 sur l'archive) — l'attaquant de l'obstacle renforce le chef
+  // (+), l'obstacle lui-même le pénalise (−). Testé en cascade complète
+  // (pas seulement en comparaison isolée) : 17/27 sur l'archive, contre
+  // 15/27 sans cette contribution — amélioration mesurée, pas seulement
+  // assumée par doctrine.
+  const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total + frAncre.total + frBinAssaillant.total + frBinLiberateur.total + frBinVictime.total + frAttaquantObstacle.total - frObstacle.total;
   const libere = !menace.ouverte || liberation.ouverte;
   const domine = offensive.ouverte && libere;
   let resume = !menace.ouverte
