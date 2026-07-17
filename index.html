@@ -4483,6 +4483,9 @@ function rangParole(vf){
   const r = (vf.reason||'')+' '+(vf.label||'');
   if(vf.type==='abstention') return {rang:0, etage:'abstention'};
   if(vf.type==='nul_suspecte') return {rang:4, etage:'convergence nul (promu 07/07/26)'};
+  // SUPERPOSITION ANCRE/ASSAILLANT (17/07/26) : validée n=1 seulement
+  // (Suisse-Colombie) — rang prudent, pas au niveau des règles établies.
+  if(r.indexOf('SUPERPOSITION ANCRE/ASSAILLANT')>=0) return {rang:2, etage:'superposition ancre/assaillant (17/07/26, n=1)'};
   // VERDICT ROTATION / MODE FIXE (16/07/26) : depuis le 16/07, ce n'est
   // plus la rotation qui est toujours prioritaire — c'est la carte
   // (fixe ou rotation) avec le plus grand écart de dominance qui
@@ -4541,6 +4544,45 @@ function themeInvalidite(theme){
   if (!manquants.length) return null;
   return '⛔ THÈME INVALIDE : '+manquants.join(' ; ')+' — protocole de validité structurelle (même critère que celui utilisé pour exclure les thèmes invalides des statistiques rétrospectives, maintenant appliqué en direct).';
 }
+// SUPERPOSITION ANCRE/ASSAILLANT SUR MAISON VERROUILLÉE (17/07/26, cas
+// Suisse-Colombie réel 0-0, M1=Carcer/M7=Fortuna Major binômes directs).
+// Cherche une maison en triple concordance (checkMaisonDoubleConcordance
+// — figure ET résultante du même élément que la maison) où se
+// superposent à la fois le binôme de l'ancre d'un chef ET le binôme de
+// l'assaillant de l'autre (ou du même) chef. Sur ce cas précis (M9,
+// Populus/Fortuna Minor, feu) : Populus = binôme de Puella (ancre de
+// M7) et Fortuna Minor = binôme de Rubeus (assaillant de M1) ET
+// antagoniste direct de Fortuna Major (M7 lui-même) — les deux camps se
+// nouent au même point figé au lieu de se dégager l'un de l'autre.
+// VALIDÉ n=1 (Suisse-Colombie) UNIQUEMENT — aucune trace de ce
+// mécanisme sur les 2 autres nuls connus de l'archive (Roma-Napoli,
+// FK Jenis-Astana, qui ont chacun leur propre profil de nul, cf.
+// discussion "plusieurs cas de nul" du 17/07/26) ni sur aucun des 27
+// matchs de l'archive (0/27 occurrences, décisifs compris) — donc
+// AUCUN risque de régression mesurée en l'ajoutant. Positionnée avant
+// l'écart de dominance (comme l'impasse totale de boucle) précisément
+// parce qu'elle est assez rare pour ne jamais entrer en conflit avec
+// les 27 cas déjà validés — contrairement à la tentative abandonnée de
+// remonter TOUTES les règles de nul (qui cassait 4 cas archivés).
+function superpositionAncreAssaillant(theme) {
+  const ancre1 = BINOMES_V7[theme[1]], ancre7 = BINOMES_V7[theme[7]];
+  const assaillant1 = ANTAGONISTES_V7[theme[1]], assaillant7 = ANTAGONISTES_V7[theme[7]];
+  const binAncre1 = BINOMES_V7[ancre1], binAncre7 = BINOMES_V7[ancre7];
+  const binAssaillant1 = BINOMES_V7[assaillant1], binAssaillant7 = BINOMES_V7[assaillant7];
+  for (let p = 1; p <= 16; p++) {
+    const base = theme[p];
+    const dc = checkMaisonDoubleConcordance(base, p);
+    if (!dc.match) continue;
+    const res = combine(base, FIGS_V7[p-1]);
+    const figsIci = [base, res];
+    const lienAncre = figsIci.includes(binAncre1) || figsIci.includes(binAncre7);
+    const lienAssaillant = figsIci.includes(binAssaillant1) || figsIci.includes(binAssaillant7);
+    if (lienAncre && lienAssaillant) {
+      return { trouve: true, maison: p, base, res, resume: '⚖️ SUPERPOSITION ANCRE/ASSAILLANT : M'+p+' ('+FL[base]+'/'+FL[res]+', triple concordance '+dc.eMaison+') noue à la fois le binôme d\'une ancre et le binôme d\'un assaillant — les deux camps restent verrouillés au même point (validé n=1, Suisse-Colombie, 17/07/26).' };
+    }
+  }
+  return { trouve: false };
+}
 function verdictFinal(theme, favoriteOverride){
   const td = themeDetruit(theme);
   if(td) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème détruit', reason:td};
@@ -4570,6 +4612,16 @@ function verdictFinal(theme, favoriteOverride){
     if (veImpasse.winner === 'Nul' && (veImpasse.reason||'').indexOf('IMPASSE TOTALE')>=0) {
       return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:veImpasse.reason+' (détectée avant la rotation — validée 2/2 en réel, 15/07/26)'};
     }
+  }
+  // ═══ SUPERPOSITION ANCRE/ASSAILLANT (17/07/26) — voir
+  // superpositionAncreAssaillant() ci-dessus. Validée n=1 (Suisse-
+  // Colombie), 0/27 sur l'archive (jamais de faux positif mesuré) —
+  // remontée ici comme l'impasse totale de boucle, précisément parce
+  // qu'elle est trop rare pour risquer la régression qu'a causée la
+  // tentative abandonnée de remonter toutes les règles de nul.
+  const supAA = superpositionAncreAssaillant(theme);
+  if (supAA.trouve) {
+    return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
   }
   // ═══ PLUS GRAND ÉCART DE DOMINANCE (16/07/26, remplace "rotation
   // toujours prioritaire") ═══
