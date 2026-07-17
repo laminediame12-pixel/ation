@@ -261,3 +261,15 @@ d'Amissio = Caput Draconis). Vérifié que l'inverse est impossible :
 l'antagoniste de Puer est Puella (pas Albus), l'antagoniste de Caput
 Draconis est Populus (pas Amissio). Cohérent avec le principe déjà
 noté en §0.
+
+### Constat 8 — Une figure attaquée contre-attaque le B-B-B de son attaquant
+
+Si X attaque Y, alors Y attaque TOUJOURS B-B-B(X) (trois binômes
+d'affilée de X, dans sa propre boucle). Exemple : Amissio attaque
+Fortuna Minor ⟹ Fortuna Minor attaque Fortuna Major = B-B-B(Amissio)
+(Amissio→Tristitia→Carcer→Fortuna Major). **Vérifié exhaustivement
+16/16.** Preuve algébrique : "attaquer" = décalage +3 dans `FIGS_V7`
+(deux fois de X à Y à Z = +6), et B-B-B = trois binômes = +2+2+2 = +6
+également — les deux chemins tombent nécessairement au même endroit,
+ce n'est pas une observation statistique mais une identité garantie
+par la construction de `FIGS_V7`/`BINOMES_V7`/`ANTAGONISTES_V7`.
