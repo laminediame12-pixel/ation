@@ -35,7 +35,7 @@ spécifiques. Voir §1 pour le détail complet avec fonctions et scores.
 | 1 | Abstention | `themeDetruit`, `themeInvalidite` | ~31% des thèmes aléatoires invalides | Actif |
 | 2 | Impasse totale de boucle (nul) | `verdictElementaire` + `piliersReposCount<2` | 2/2 réel (Olympiacos-WestHam 7-7, FIFA 4-4) | Actif |
 | 2b | Superposition ancre/assaillant (nul) | `superpositionAncreAssaillant(theme)` | n=1 réel (Suisse-Colombie 0-0) | Actif, 0/27 sur l'archive (aucun risque de régression) |
-| 2c | **Ancrage (chaîne complète)** | `chaineDualite(chef,theme).forceMaisons` comparée M1/M7, dans `verdictFinal` | **16/27 (59%) seule** | **Actif, PRIORITAIRE sur l'écart de dominance** (demande explicite utilisateur, 17/07/26 — "l'ancrage doit constituer toute la chaîne", pas l'ancre isolée) — fait baisser le score mesuré de `verdictFinal` de 19/27 à **16/27** (assumé, documenté dans le commit) |
+| 2c | **Ancrage (chaîne complète)** | `chaineDualite(chef,theme).forceMaisons` comparée M1/M7, dans `verdictFinal` | **16/27 (59%) seule** sur l'archive, mais **1/1 HIT réel confirmé** (match virtuel Fortuna Minor/Albus, réel 8-1 M1 — le mode fixe classique se serait trompé de sens, scoreMain interne 1-4 pour M7) | **Actif, PRIORITAIRE sur l'écart de dominance** (demande explicite utilisateur, 17/07/26 — "l'ancrage doit constituer toute la chaîne", pas l'ancre isolée) — fait baisser le score mesuré de `verdictFinal` de 19/27 à **16/27** sur l'archive (assumé), mais rattrape au moins un cas réel où l'ancien mécanisme principal était franchement à côté |
 | 3 | Plus grand écart de dominance | bloc `carteRot`/`carteFixe` dans `verdictFinal` | 20/27 (74%) sur l'archive, seul | N'est plus le premier mécanisme consulté depuis l'ajout de l'ancrage (2c) — ne s'exprime que si l'ancrage ne tranche pas |
 | 4 | Chaîne de dualité (repli) | `verdictChaineDualite(theme)` | 19/27 (70%) seule | Repli, atteint seulement si ni l'ancrage ni l'écart de dominance ne tranchent |
 | 5 | Verrou piliers / verrou M16 feu | `piliersReposCount>=2`, `verrouM16Feu` | 0/4 nul réel quand verrouillé ; M16 feu 6/6 | Bloque les règles de nul suivantes |
@@ -105,6 +105,7 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 | Suisse vs Colombie | carcer/carcer/cauda_draconis/amissio | 0-0, **Nul** | MISS (mécanisme binaire, ne peut pas dire Nul) | **HIT (Nul), corrigé le 17/07/26 par `superpositionAncreAssaillant`** |
 | USA vs Belgique | via/caput_draconis/conjunctio/rubeus | 4-1 Belgique, **M7** | MISS (prédit M1) | — |
 | Argentine vs Egypte | carcer/amissio/carcer/puer | 3-2, **M1** | HIT (M1) | — |
+| (match virtuel, 05:30) M1=Fortuna Minor/M7=Albus | fortuna_minor/tristitia/conjunctio/acquisitio | 8-1, **M1** | — | **HIT (M1) via ancrage chaîne complète (force 1140 vs 570)** — le mode fixe classique (écart de dominance) se serait trompé : scoreMain interne 1-4 pour M7, sens opposé au réel |
 
 L'archive complète (27 matchs, dont 19 esport) est dans
 `/tmp/claude-0/-home-user-ation/43bdd8e4-4f60-5524-bd72-213622d663af/scratchpad/export_data.json`
