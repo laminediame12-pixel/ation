@@ -1036,6 +1036,32 @@ function petitCalcul(fig) {
   const pivot = cycle === 2 ? 'puella' : 'acquisitio';
   return combine(fig, pivot);
 }
+// Score net du petit calcul pour un chef (17/07/26, reconstruit depuis un
+// tableau exhaustif des 16 figures plutôt que deviné par essais-erreurs).
+// FAIT STRUCTUREL vérifié sur les 16 figures : le cycle du chef et celui
+// de son assaillant sont TOUJOURS opposés (chef pair ⟺ assaillant impair).
+// Donc petitCalcul(chef) et petitCalcul(assaillant) jouent TOUJOURS dans
+// le même sens pour ce chef (jamais contradictoires) : si chef est pair,
+// les deux sont des soutiens (bons pour lui) ; si impair, les deux sont
+// des obstacles (mauvais pour lui). On compte combien des deux blocs sont
+// présents dans le thème (0, 1 ou 2) et on signe selon le cycle du chef.
+// Comparer ce score entre M1 et M7 (le plus élevé gagne) répare
+// simultanément deux cas réels qu'aucune formule précédente ne réparait
+// ensemble (Argentine-Egypte ET Liverpool-Man City) — remplace les
+// anciens booléens assaillantObstrue/assaillantRenforce pris isolément
+// (qui pouvaient se contredire entre chef et assaillant côté affichage,
+// même si la comparaison M1/M7 restait correcte).
+function scorePetitCalcul(chef, theme) {
+  const cycleChef = getBinomeCycle(chef);
+  const assaillant = ANTAGONISTES_V7[chef];
+  const blocChef = petitCalcul(chef);
+  const blocAssaillant = petitCalcul(assaillant);
+  const presentChef = positionsBaseEtResultantes(blocChef, theme).length > 0;
+  const presentAssaillant = positionsBaseEtResultantes(blocAssaillant, theme).length > 0;
+  const n = (presentChef ? 1 : 0) + (presentAssaillant ? 1 : 0);
+  const signe = cycleChef === 2 ? 1 : -1;
+  return { chef, cycleChef, assaillant, blocChef, blocAssaillant, presentChef, presentAssaillant, n, score: signe * n };
+}
 // Force relationnelle d'une figure sur les maisons qu'elle occupe réellement
 // dans le thème (base ET résultante, via trouverFigV7) — réutilise l'arsenal
 // déjà bâti et validé pour scoreV7 plutôt que de réinventer un critère isolé :
@@ -1068,22 +1094,12 @@ function chaineDualite(chef, theme) {
   const liberation = voieOuverte(liberateur, assaillant, theme);
   const offensive = voieOuverte(chef, victime, theme);
   const ancre = BINOMES_V7[chef];
-  // Obstacle/soutien de l'assaillant (17/07/26, voir petitCalcul) : quand
-  // l'assaillant est du cycle impair et que son "petit calcul" (obstacle)
-  // est présent dans le thème, l'assaillant est structurellement gêné —
-  // condition nécessaire ("il faut [figure]"), traitée en verrou dans
-  // verdictChaineDualite, pas comme un simple bonus de force.
-  const blocAssaillant = petitCalcul(assaillant);
-  const assaillantEstPaire = getBinomeCycle(assaillant) === 2;
-  const blocAssaillantSieges = positionsBaseEtResultantes(blocAssaillant, theme);
-  const assaillantObstrue = !assaillantEstPaire && blocAssaillantSieges.length > 0;
-  // Symétrique côté pair (17/07/26, "soutien") : quand l'assaillant est du
-  // cycle pair et que son "petit calcul" est présent, l'assaillant est
-  // RENFORCÉ (l'inverse de l'obstacle) — donc le CHEF (pas l'assaillant)
-  // est affaibli par ce signal. Vérifié sur l'archive : en verrou combiné
-  // avec l'obstacle (favorise le camp opposé quand SON PROPRE assaillant
-  // est renforcé), 20/27 contre 19/27 avec l'obstacle seul.
-  const assaillantRenforce = assaillantEstPaire && blocAssaillantSieges.length > 0;
+  // Score net du petit calcul (17/07/26, voir scorePetitCalcul) : compte
+  // les 2 blocs (celui du chef, celui de l'assaillant — toujours dans le
+  // même sens pour un chef donné, jamais contradictoires) et signe selon
+  // le cycle du chef. Utilisé en comparaison directe M1 vs M7 dans
+  // verdictChaineDualite (le score le plus élevé gagne).
+  const pcScore = scorePetitCalcul(chef, theme);
   // Structure complète (17/07/26, doctrine utilisateur exhaustive) : 8
   // figures, pas 5. Le binôme de l'assaillant (son bouclier) et le binôme
   // de la victime (son bouclier) sont déjà utilisés À L'INTÉRIEUR de
@@ -1115,39 +1131,42 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frBinAssaillant, frBinLiberateur, frBinVictime, forceMaisons, libere, domine, blocAssaillant, assaillantEstPaire, assaillantObstrue, assaillantRenforce, resume };
+  return { chef, assaillant, liberateur, victime, ancre, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frBinAssaillant, frBinLiberateur, frBinVictime, forceMaisons, libere, domine, pcScore, resume };
 }
 // Verdict opérationnel de la chaîne de dualité (17/07/26) : extrait de
 // l'ancien panneau d'inspection pour être réellement exploitable par
 // verdictFinal, pas seulement affiché. Domine = voie offensive ouverte
 // ET (pas de menace réelle OU menace neutralisée par le libérateur).
-// PRIORITÉ au verrou obstacle/renforcement du "petit calcul" (voir plus
-// haut) : un chef est favorisé si SON assaillant est obstrué (cycle
-// impair) OU si l'assaillant DE L'AUTRE chef est renforcé (cycle pair,
-// donc l'autre chef est affaibli) — traité en VERROU (pas en bonus
-// additif dans forceMaisons, testé et rejeté à 16/27) car la doctrine
-// utilisateur l'exprime comme une condition nécessaire ("il faut
-// [figure]"), pas comme une force graduelle. Sinon, départage double-
-// domination/aucune-domination par la force des maisons (8 figures :
-// chef/ancre/assaillant/libérateur/victime + leurs 3 binômes).
-// VALIDÉ SEUL sur l'archive des 27 matchs : 20/27 (74%) avec le verrou
-// combiné obstacle+renforcement — contre 19/27 avec l'obstacle seul,
-// 17/27 sans aucun verrou (structure à 8 figures seule) et 16/27 avec
-// seulement 5 figures. Égale "plus grand écart de dominance" (20/27, 74%)
-// déjà en place — reste en repli (pas promu mécanisme principal) car ce
-// dernier tranche TOUJOURS sur l'archive (27/27, 0 cas de repli) : la
-// chaîne de dualité est câblée dans verdictFinal UNIQUEMENT pour les
-// thèmes où l'écart de dominance ne tranche pas (aucun cas connu dans
-// l'archive, mais possible ailleurs) — ne peut donc jamais dégrader le
-// score mesuré.
+// PRIORITÉ au score net du petit calcul (pcScore, voir scorePetitCalcul) :
+// comparaison directe M1 vs M7, le score le plus élevé gagne — traité en
+// VERROU (pas en bonus additif dans forceMaisons, testé et rejeté à
+// 16/27) car la doctrine utilisateur l'exprime comme une condition
+// nécessaire ("il faut [figure]"), pas comme une force graduelle. Sinon,
+// départage double-domination/aucune-domination par la force des maisons
+// (8 figures : chef/ancre/assaillant/libérateur/victime + leurs 3 binômes).
+// RECONSTRUIT (17/07/26) depuis un tableau exhaustif des 16 figures après
+// que deux formules ad-hoc précédentes (verrou obstacle+renforcement en
+// OR simple, 20/27 archive ; comptage étagé, 19/27) se soient contredites
+// sur des vrais matchs hors archive (l'une réparait Liverpool-Man City en
+// cassant Chelsea-Napoli, l'autre l'inverse). Cette version, dérivée du
+// fait structurel que le cycle du chef et de son assaillant sont TOUJOURS
+// opposés (jamais de signaux contradictoires pour un même chef), répare
+// SIMULTANÉMENT Argentine-Egypte ET Liverpool-Man City — validé 19/27 sur
+// l'archive (légèrement sous les 20/27 de l'ancienne formule, mais sans
+// aucune contradiction interne constatée sur les vrais matchs testés).
+// L'écart de dominance tranche TOUJOURS sur l'archive (27/27, 0 cas de
+// repli) : la chaîne de dualité est câblée dans verdictFinal UNIQUEMENT
+// pour les thèmes où l'écart de dominance ne tranche pas (aucun cas connu
+// dans l'archive, mais possible ailleurs) — ne peut donc jamais dégrader
+// le score mesuré.
 function verdictChaineDualite(theme) {
   var cM1 = chaineDualite(theme[1], theme);
   var cM7 = chaineDualite(theme[7], theme);
   var winner = null, mode = '';
-  var favorsM1 = cM1.assaillantObstrue || cM7.assaillantRenforce;
-  var favorsM7 = cM7.assaillantObstrue || cM1.assaillantRenforce;
-  if (favorsM1 && !favorsM7) { winner = 'M1'; mode = 'verrou petit calcul (obstacle propre ou adversaire renforcé)'; }
-  else if (favorsM7 && !favorsM1) { winner = 'M7'; mode = 'verrou petit calcul (obstacle propre ou adversaire renforcé)'; }
+  if (cM1.pcScore.score !== cM7.pcScore.score) {
+    winner = cM1.pcScore.score > cM7.pcScore.score ? 'M1' : 'M7';
+    mode = 'score net petit calcul (' + cM1.pcScore.score + ' vs ' + cM7.pcScore.score + ')';
+  }
   else if (cM1.domine && !cM7.domine) { winner = 'M1'; mode = 'domination nette'; }
   else if (cM7.domine && !cM1.domine) { winner = 'M7'; mode = 'domination nette'; }
   else if (cM1.forceMaisons !== cM7.forceMaisons) {
@@ -1170,7 +1189,7 @@ function toggleChaineDualitePanel() {
       var c = x.c;
       html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
       html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Petit calcul (assaillant, cycle ' + (c.assaillantEstPaire ? 'pair → soutien' : 'impair → obstacle') + ') : ' + FL[c.blocAssaillant] + (c.assaillantObstrue ? ' — présent → assaillant OBSTRUÉ (favorise ' + x.label + ')' : c.assaillantRenforce ? ' — présent → assaillant RENFORCÉ (affaiblit ' + x.label + ')' : ' — absent/sans effet') + '</div>';
+      html += '<div class="kv" style="font-size:11px;">Petit calcul — chef (' + (c.pcScore.cycleChef === 2 ? 'pair' : 'impair') + ') : ' + FL[c.pcScore.blocChef] + ' ' + (c.pcScore.presentChef ? '✓ présent' : '✗ absent') + ' · assaillant : ' + FL[c.pcScore.blocAssaillant] + ' ' + (c.pcScore.presentAssaillant ? '✓ présent' : '✗ absent') + ' → score net ' + c.pcScore.score + '</div>';
       var frLine = [
         { lbl: x.label, fr: c.frChef },
         { lbl: 'ancre', fr: c.frAncre },
@@ -4474,8 +4493,8 @@ function rangParole(vf){
   if(r.indexOf('VERDICT ROTATION')>=0 || r.indexOf('VERDICT MODE FIXE')>=0) return {rang:3, etage:'plus grand écart de dominance (16/07/26, 20/27 sur archive)'};
   // VERDICT CHAÎNE DE DUALITÉ (17/07/26) : repli quand l'écart de
   // dominance ci-dessus ne tranche pas. Validée seule à 19/27 (70%) avec
-  // le verrou d'obstacle, plus faible que l'écart de dominance (20/27) —
-  // rang inférieur en conséquence.
+  // le score net du petit calcul (voir scorePetitCalcul), plus faible que
+  // l'écart de dominance (20/27) — rang inférieur en conséquence.
   if(r.indexOf('CHAÎNE DE DUALITÉ')>=0) return {rang:2, etage:'chaîne de dualité — repli (17/07/26, 19/27 seul sur archive)'};
   if(r.indexOf('ENTRE-BLOCAGE')>=0) return {rang:5, etage:'nul par entre-blocage confirmé'};
   if(r.indexOf('Juge Conjunctio')>=0 || r.indexOf('Juge Acquisitio')>=0) return {rang:4, etage:'nul — juge spécifique confirmé par binôme'};
@@ -4607,12 +4626,12 @@ function verdictFinal(theme, favoriteOverride){
   // deux cartes duelV7 donnent Nul) — sur l'archive des 27 matchs,
   // l'écart de dominance ci-dessus tranche 27/27, donc ce repli n'y est
   // jamais sollicité et ne peut pas dégrader le score mesuré (20/27).
-  // Validée seule à 19/27 (70%, structure à 8 figures + verrou d'obstacle
-  // du "petit calcul") sur l'archive — plus faible que l'écart de
-  // dominance, d'où son rôle de simple repli et non de mécanisme
-  // principal. Comble un vrai trou de la cascade (sinon ces thèmes
-  // tombent directement sur les règles de nul, alors qu'un vainqueur net
-  // au sens de la chaîne de dualité peut exister).
+  // Validée seule à 19/27 (70%, structure à 8 figures + score net du
+  // "petit calcul" — voir scorePetitCalcul) sur l'archive — plus faible
+  // que l'écart de dominance, d'où son rôle de simple repli et non de
+  // mécanisme principal. Comble un vrai trou de la cascade (sinon ces
+  // thèmes tombent directement sur les règles de nul, alors qu'un
+  // vainqueur net au sens de la chaîne de dualité peut exister).
   const vcd = verdictChaineDualite(theme);
   if (vcd.winner) {
     return {type:'verdict', winner:vcd.winner, label:'🏆 VAINQUEUR : '+vcd.winner, reason:'⚖️ VERDICT CHAÎNE DE DUALITÉ ('+vcd.mode+', M1='+FL[theme[1]]+' vs M7='+FL[theme[7]]+') → '+vcd.winner+' favorisé — repli quand rotation et mode fixe sont tous deux indécis (validé seul 19/27 sur l\'archive, 17/07/26).'};
