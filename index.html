@@ -1194,6 +1194,17 @@ function verdictChaineDualite(theme) {
     winner = cM1.forceMaisons > cM7.forceMaisons ? 'M1' : 'M7';
     mode = (cM1.domine && cM7.domine ? 'double domination' : 'aucune domination') + ' tranchée par la force des maisons';
   }
+  // ANCRAGE DIRECT (17/07/26, dérivé pas à pas sur Argentine-Egypte et
+  // Suisse-Colombie) : dernier niveau de départage, quand même le score
+  // du petit calcul ET la force des maisons sont à égalité — compare la
+  // force de l'ancre directe (binôme du chef) entre M1 et M7. Validé
+  // n=2 en réel, 16/27 (59%) SEUL sur l'archive (plus faible que l'écart
+  // de dominance) — d'où sa place tout en bas de la cascade de repli,
+  // jamais avant les niveaux mieux validés ci-dessus.
+  else if (cM1.frAncre.total !== cM7.frAncre.total) {
+    winner = cM1.frAncre.total > cM7.frAncre.total ? 'M1' : 'M7';
+    mode = 'ancrage direct (n=2, ' + cM1.frAncre.total + ' vs ' + cM7.frAncre.total + ')';
+  }
   return { winner: winner, mode: mode, cM1: cM1, cM7: cM7 };
 }
 function toggleChaineDualitePanel() {
