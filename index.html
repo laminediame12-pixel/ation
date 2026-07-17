@@ -1275,15 +1275,24 @@ function toggleChaineDualitePanel() {
     var theme = currentTheme;
     var cM1 = chaineDualite(theme[1], theme);
     var cM7 = chaineDualite(theme[7], theme);
+    // ÉTENDU (17/07/26, demande utilisateur "applique ça au mode rotation ET
+    // mode fixe") : chaineDualite() est une fonction générique — le Constat
+    // 11 (obstacle/attaquant, déjà dans forceMaisons) s'applique donc DÉJÀ
+    // automatiquement aux deux modes dans le calcul. Ce panneau, lui, ne
+    // montrait jusqu'ici QUE M1/M7 (fixe) — ajout de R1/R7 (rotation) pour
+    // que l'affichage soit visible sur les deux modes, pas seulement le
+    // calcul interne.
+    var orderR = getRotationOrderFromRepos(theme[1]);
+    var cR1 = chaineDualite(theme[orderR[0]], theme);
+    var cR7 = chaineDualite(theme[orderR[6]], theme);
     var html = '<h3>⚖️ Chaîne de dualité (assaillant / libérateur / victime)</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque chef : ancre = son binôme, assaillant = qui l\'attaque, libérateur = qui attaque l\'assaillant (le libère), victime = qui il attaque lui-même. Chaque lien dépend de la voie ouverte (loi du binôme). "Force maisons" = somme, sur les maisons réellement occupées (base + résultante) par chef/ancre/assaillant/libérateur/victime, de forceMaisonV7 + bonus auto-construction (+25) − pénalité auto-destruction (−30) + bonus double concordance (+20).</div>';
-    [{ label: 'M1', c: cM1 }, { label: 'M7', c: cM7 }].forEach(function(x) {
-      var c = x.c;
-      html += '<div class="kv" style="margin-top:8px; font-weight:600;">' + x.label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Petit calcul — chef (' + (c.pcScore.cycleChef === 2 ? 'pair' : 'impair') + ') : ' + blocLabel(c.pcScore.blocChef) + ' ' + (c.pcScore.presentChef ? '✓ présent' : '✗ absent') + ' · assaillant : ' + blocLabel(c.pcScore.blocAssaillant) + ' ' + (c.pcScore.presentAssaillant ? '✓ présent' : '✗ absent') + ' → score net ' + c.pcScore.score + '</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque chef : ancre = son binôme, assaillant = qui l\'attaque, libérateur = qui attaque l\'assaillant (le libère), victime = qui il attaque lui-même. Chaque lien dépend de la voie ouverte (loi du binôme). "Force maisons" = somme, sur les maisons réellement occupées (base + résultante) par chef/ancre/assaillant/libérateur/victime, de forceMaisonV7 + bonus auto-construction (+25) − pénalité auto-destruction (−30) + bonus double concordance (+20) + contribution signée obstacle/attaquant (Constat 11).</div>';
+    function renderBlocChaine(label, c) {
+      var out = '<div class="kv" style="margin-top:8px; font-weight:600;">' + label + ' (' + FL[c.chef] + ') — ancre ' + FL[c.ancre] + '</div>';
+      out += '<div class="kv" style="font-size:11px;">Assaillant : ' + FL[c.assaillant] + ' · Libérateur : ' + FL[c.liberateur] + ' · Victime : ' + FL[c.victime] + '</div>';
+      out += '<div class="kv" style="font-size:11px;">Petit calcul — chef (' + (c.pcScore.cycleChef === 2 ? 'pair' : 'impair') + ') : ' + blocLabel(c.pcScore.blocChef) + ' ' + (c.pcScore.presentChef ? '✓ présent' : '✗ absent') + ' · assaillant : ' + blocLabel(c.pcScore.blocAssaillant) + ' ' + (c.pcScore.presentAssaillant ? '✓ présent' : '✗ absent') + ' → score net ' + c.pcScore.score + '</div>';
       var frLine = [
-        { lbl: x.label, fr: c.frChef },
+        { lbl: label, fr: c.frChef },
         { lbl: 'ancre', fr: c.frAncre },
         { lbl: 'assaillant', fr: c.frAssaillant },
         { lbl: 'libérateur', fr: c.frLiberateur },
@@ -1298,14 +1307,21 @@ function toggleChaineDualitePanel() {
         }).join(',') || '—';
         return o.lbl + ': ' + o.fr.total + ' [' + flags + ']';
       }).join(' | ');
-      html += '<div class="kv" style="font-size:11px;">Force maisons — ' + frLine + '</div>';
-      html += '<div class="kv" style="font-size:11px;">Obstacle (B-B-A, Constat 11) : ' + FL[c.obstacle] + ' (force ' + c.frObstacle.total + ') vs son attaquant ' + FL[c.attaquantObstacle] + ' (force ' + c.frAttaquantObstacle.total + ') → <span style="color:' + (c.obstacleNeutralise ? '#4ade80' : '#f87171') + ';">' + (c.obstacleNeutralise ? 'obstacle neutralisé' : 'obstacle non neutralisé') + '</span></div>';
-      html += '<div class="kv" style="color:' + (c.domine ? '#4ade80' : '#f87171') + ';">' + c.resume + '</div>';
-      html += '<div class="kv" style="font-weight:600; color:' + (c.domine ? '#4ade80' : '#f87171') + ';">→ ' + (c.domine ? 'DOMINE (libre + offensif)' : (c.libere ? 'libre mais offensive bloquée' : 'entravé')) + ' — total force maisons : ' + c.forceMaisons + '</div>';
-    });
+      out += '<div class="kv" style="font-size:11px;">Force maisons — ' + frLine + '</div>';
+      out += '<div class="kv" style="font-size:11px;">Obstacle (B-B-A, Constat 11) : ' + FL[c.obstacle] + ' (force ' + c.frObstacle.total + ') vs son attaquant ' + FL[c.attaquantObstacle] + ' (force ' + c.frAttaquantObstacle.total + ') → <span style="color:' + (c.obstacleNeutralise ? '#4ade80' : '#f87171') + ';">' + (c.obstacleNeutralise ? 'obstacle neutralisé' : 'obstacle non neutralisé') + '</span></div>';
+      out += '<div class="kv" style="color:' + (c.domine ? '#4ade80' : '#f87171') + ';">' + c.resume + '</div>';
+      out += '<div class="kv" style="font-weight:600; color:' + (c.domine ? '#4ade80' : '#f87171') + ';">→ ' + (c.domine ? 'DOMINE (libre + offensif)' : (c.libere ? 'libre mais offensive bloquée' : 'entravé')) + ' — total force maisons : ' + c.forceMaisons + '</div>';
+      return out;
+    }
+    html += '<div class="kv" style="font-weight:600; margin-top:4px;">— Mode fixe —</div>';
+    html += renderBlocChaine('M1', cM1) + renderBlocChaine('M7', cM7);
+    html += '<div class="kv" style="font-weight:600; margin-top:12px;">— Mode rotation (R1=M' + orderR[0] + ', R7=M' + orderR[6] + ') —</div>';
+    html += renderBlocChaine('R1', cR1) + renderBlocChaine('R7', cR7);
     var vcdPanel = verdictChaineDualite(theme);
-    var mo = vcdPanel.winner ? (vcdPanel.winner + ' — ' + vcdPanel.mode) : 'ÉQUILIBRE / INDÉTERMINÉ (force des maisons égale, ' + cM1.forceMaisons + ' vs ' + cM7.forceMaisons + ')';
-    html += '<div class="kv" style="margin-top:10px; font-size:14px; font-weight:700;">' + mo + '</div>';
+    var moFixe = vcdPanel.winner ? (vcdPanel.winner + ' — ' + vcdPanel.mode) : 'ÉQUILIBRE / INDÉTERMINÉ (force des maisons égale, ' + cM1.forceMaisons + ' vs ' + cM7.forceMaisons + ')';
+    var moRot = cR1.forceMaisons !== cR7.forceMaisons ? ((cR1.forceMaisons > cR7.forceMaisons ? 'R1' : 'R7') + ' — force maisons (' + cR1.forceMaisons + ' vs ' + cR7.forceMaisons + ')') : 'ÉQUILIBRE / INDÉTERMINÉ (force des maisons égale, ' + cR1.forceMaisons + ' vs ' + cR7.forceMaisons + ')';
+    html += '<div class="kv" style="margin-top:10px; font-size:14px; font-weight:700;">Fixe : ' + moFixe + '</div>';
+    html += '<div class="kv" style="font-size:14px; font-weight:700;">Rotation : ' + moRot + '</div>';
     panel.innerHTML = html;
     panel.style.display = 'block';
   } else {
