@@ -1019,6 +1019,38 @@ function victimeDe(fig) {
   const i = FIGS_V7.indexOf(fig);
   return FIGS_V7[(i + 3) % 16];
 }
+// Constat 11 (17/07/26, REPERES.md §6, CORRIGÉ après erreur de calcul
+// initiale) : l'obstacle (B-B-A, Constat 1) d'une figure est attaqué par
+// une figure distincte de son ancre — CE N'EST PAS l'ancre elle-même
+// (X+2 ≠ X-2 en général, seule confusion : dans l'exemple Puer,
+// antagoniste(obstacle)=Acquisitio, qui n'a l'air de "boucler" que parce
+// que binôme(Acquisitio)=Puer, PAS parce qu'Acquisitio=ancre(Puer)).
+// Identité algébrique réelle, vérifiée sur les 16 figures (16/16, voir
+// preuveConstat11()) : binôme(attaquantObstacleDe(fig)) === fig — la
+// figure qui attaque l'obstacle de X est TOUJOURS celle dont X est le
+// binôme (décalages fixes : obstacle=-3+2+2=+1, antagoniste(obstacle)=
+// +1-3=-2, donc attaquantObstacle(X)=X-2 ; binôme(X-2)=X-2+2=X, retour
+// exact). C'est un décalage fixe de -2, distinct de tous les autres
+// champs déjà nommés dans chaineDualite (assaillant=-3, libérateur=-6,
+// victime=+3, ancre=+2, binAssaillant=-1, binLiberateur=-4,
+// binVictime=+5) — une vraie 9e figure, pas une redite.
+function obstacleDe(fig) {
+  return BINOMES_V7[BINOMES_V7[ANTAGONISTES_V7[fig]]];
+}
+function attaquantObstacleDe(fig) {
+  return ANTAGONISTES_V7[obstacleDe(fig)];
+}
+function preuveConstat11() {
+  const rows = FIGS_V7.map(f => {
+    const obstacle = obstacleDe(f);
+    const attaquantObstacle = attaquantObstacleDe(f);
+    const binAttaquant = BINOMES_V7[attaquantObstacle];
+    const matches = binAttaquant === f;
+    return { figure: f, obstacle, attaquantObstacle, binAttaquant, matches };
+  });
+  const total = rows.filter(r => r.matches).length;
+  return { rows, total, n: rows.length };
+}
 // "Petit calcul" (17/07/26, doctrine utilisateur) : pour une figure F,
 // combine(F, puella) si F est du cycle pair (BINOME_CYCLE_2), sinon
 // combine(F, acquisitio) si F est du cycle impair (BINOME_CYCLE_1).
@@ -1115,6 +1147,14 @@ function chaineDualite(chef, theme) {
   const liberation = voieOuverte(liberateur, assaillant, theme);
   const offensive = voieOuverte(chef, victime, theme);
   const ancre = BINOMES_V7[chef];
+  // Constat 11 (17/07/26, REPERES.md §6, voir obstacleDe()/
+  // attaquantObstacleDe()) : l'obstacle (B-B-A) du chef est attaqué par une
+  // figure DISTINCTE de l'ancre (décalage -2, pas +2 — CORRIGÉ après une
+  // première version qui confondait les deux). N'entre PAS dans
+  // forceMaisons (pas encore validé comme mécanisme de verdict, simple
+  // champ d'observation pour l'instant).
+  const obstacle = obstacleDe(chef);
+  const attaquantObstacle = attaquantObstacleDe(chef);
   // Score net du petit calcul (17/07/26, voir scorePetitCalcul) : compte
   // les 2 blocs (celui du chef, celui de l'assaillant — toujours dans le
   // même sens pour un chef donné, jamais contradictoires) et signe selon
@@ -1141,6 +1181,9 @@ function chaineDualite(chef, theme) {
   const frBinAssaillant = forceRelationnelleFigure(binAssaillant, theme);
   const frBinLiberateur = forceRelationnelleFigure(binLiberateur, theme);
   const frBinVictime = forceRelationnelleFigure(binVictime, theme);
+  const frObstacle = forceRelationnelleFigure(obstacle, theme);
+  const frAttaquantObstacle = forceRelationnelleFigure(attaquantObstacle, theme);
+  const obstacleNeutralise = frAttaquantObstacle.total > frObstacle.total;
   const forceMaisons = frChef.total + frAssaillant.total + frLiberateur.total + frVictime.total + frAncre.total + frBinAssaillant.total + frBinLiberateur.total + frBinVictime.total;
   const libere = !menace.ouverte || liberation.ouverte;
   const domine = offensive.ouverte && libere;
@@ -1152,7 +1195,7 @@ function chaineDualite(chef, theme) {
   resume += ' ' + (offensive.ouverte
     ? FL[chef] + ' atteint sa cible ' + FL[victime] + ' (voie ouverte) → capacité offensive active.'
     : FL[chef] + ' n\'atteint pas ' + FL[victime] + ' (voie fermée) → capacité offensive bloquée.');
-  return { chef, assaillant, liberateur, victime, ancre, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frBinAssaillant, frBinLiberateur, frBinVictime, forceMaisons, libere, domine, pcScore, resume };
+  return { chef, assaillant, liberateur, victime, ancre, obstacle, attaquantObstacle, binAssaillant, binLiberateur, binVictime, menace, liberation, offensive, frChef, frAssaillant, frLiberateur, frVictime, frAncre, frObstacle, frAttaquantObstacle, frBinAssaillant, frBinLiberateur, frBinVictime, obstacleNeutralise, forceMaisons, libere, domine, pcScore, resume };
 }
 // Verdict opérationnel de la chaîne de dualité (17/07/26) : extrait de
 // l'ancien panneau d'inspection pour être réellement exploitable par
@@ -1239,6 +1282,7 @@ function toggleChaineDualitePanel() {
         return o.lbl + ': ' + o.fr.total + ' [' + flags + ']';
       }).join(' | ');
       html += '<div class="kv" style="font-size:11px;">Force maisons — ' + frLine + '</div>';
+      html += '<div class="kv" style="font-size:11px;">Obstacle (B-B-A, Constat 11) : ' + FL[c.obstacle] + ' (force ' + c.frObstacle.total + ') vs son attaquant ' + FL[c.attaquantObstacle] + ' (force ' + c.frAttaquantObstacle.total + ') → <span style="color:' + (c.obstacleNeutralise ? '#4ade80' : '#f87171') + ';">' + (c.obstacleNeutralise ? 'obstacle neutralisé' : 'obstacle non neutralisé') + '</span></div>';
       html += '<div class="kv" style="color:' + (c.domine ? '#4ade80' : '#f87171') + ';">' + c.resume + '</div>';
       html += '<div class="kv" style="font-weight:600; color:' + (c.domine ? '#4ade80' : '#f87171') + ';">→ ' + (c.domine ? 'DOMINE (libre + offensif)' : (c.libere ? 'libre mais offensive bloquée' : 'entravé')) + ' — total force maisons : ' + c.forceMaisons + '</div>';
     });
@@ -1291,6 +1335,20 @@ function togglePreuveStructurellePanel() {
     html += '<table style="width:100%; border-collapse:collapse; font-size:11px;"><thead><tr style="text-align:left; color:#94a3b8;"><th>Figure</th><th>Binôme</th><th>Antagoniste</th><th>Ant(Bin)</th><th>Bin(Ant)</th><th>Commute</th><th>Ant²</th><th>Bin⁵</th><th>OK</th></tr></thead><tbody>';
     p.rows.forEach(function(r) {
       html += '<tr><td>' + FL[r.figure] + '</td><td>' + FL[r.bin] + '</td><td>' + FL[r.ant] + '</td><td>' + FL[r.lhs] + '</td><td>' + FL[r.rhs] + '</td><td style="color:' + (r.commute ? '#4ade80' : '#f87171') + ';">' + (r.commute ? '✓' : '✗') + '</td><td>' + FL[r.antAnt] + '</td><td>' + FL[r.b5] + '</td><td style="color:' + (r.shiftOk ? '#4ade80' : '#f87171') + ';">' + (r.shiftOk ? '✓' : '✗') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    // Constat 11 (17/07/26, REPERES.md §6) : l'attaquant de l'obstacle
+    // (B-B-A) d'une figure est TOUJOURS la figure dont elle est le binôme
+    // (sens inverse — CE N'EST PAS l'ancre, erreur initiale corrigée le
+    // même jour) — même style de preuve exhaustive, ajoutée dans le même
+    // panneau.
+    var c11 = preuveConstat11();
+    html += '<h3 style="margin-top:14px;">🧮 Preuve structurelle (Constat 11 — attaquant de l\'obstacle)</h3>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Pour chaque figure X : son obstacle (B-B-A, Constat 1) est attaqué par une figure Y distincte de l\'ancre — Y est toujours celle DONT X est le binôme (binôme(Y)=X, sens inverse). Identité algébrique (décalages fixes -3+2+2=+1 sur l\'obstacle, puis -3 pour trouver Y=X-2, puis +2 pour revenir à X), pas une observation limitée à un exemple.</div>';
+    html += '<div class="kv" style="font-weight:600; color:' + (c11.total === c11.n ? '#4ade80' : '#f87171') + '; margin-bottom:6px;">binôme(attaquant obstacle) = figure de départ : ' + c11.total + '/' + c11.n + '</div>';
+    html += '<table style="width:100%; border-collapse:collapse; font-size:11px;"><thead><tr style="text-align:left; color:#94a3b8;"><th>Figure</th><th>Obstacle (B-B-A)</th><th>Attaquant de l\'obstacle</th><th>Binôme(attaquant)</th><th>OK</th></tr></thead><tbody>';
+    c11.rows.forEach(function(r) {
+      html += '<tr><td>' + FL[r.figure] + '</td><td>' + FL[r.obstacle] + '</td><td>' + FL[r.attaquantObstacle] + '</td><td>' + FL[r.binAttaquant] + '</td><td style="color:' + (r.matches ? '#4ade80' : '#f87171') + ';">' + (r.matches ? '✓' : '✗') + '</td></tr>';
     });
     html += '</tbody></table>';
     panel.innerHTML = html;

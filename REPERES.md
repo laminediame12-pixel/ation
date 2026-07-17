@@ -349,32 +349,45 @@ maisons paires en entier** (2 à 16) — Populus participe pleinement ici
 comme attaquant (collaborateur en M4), contrairement à son rôle neutre
 côté obstacle impair.
 
-### Constat 11 — L'antagoniste de l'obstacle (B-B-A) d'une figure est TOUJOURS son propre binôme
+### Constat 11 — L'attaquant de l'obstacle (B-B-A) d'une figure est TOUJOURS celle dont elle est le binôme (CORRIGÉ)
+
+*Correction (17/07/26, même jour) : la première version de cette note
+disait "l'antagoniste de l'obstacle = le binôme direct de la figure"
+(donc = ancre) — FAUX, contredit par le calcul algébrique lui-même
+juste en dessous (X−2 ≠ X+2). L'erreur venait de l'exemple isolé
+(Acquisitio "a l'air" de boucler sur Puer) sans vérifier le sens de la
+relation. Codé une première fois avec ce bug (`preuveConstat11()`
+donnait 0/16 au lieu de 16/16), corrigé dans la foulée.*
 
 Découvert sur Puer : antagoniste(Puer)=Puella → binôme(Puella)=Populus
 → binôme(Populus)=**Laetitia** (= B-B-A de Puer, son obstacle, Constat
 1). Or **antagoniste(Laetitia)=Acquisitio**, et **binôme(Acquisitio)=
-Puer** — la figure qui attaque/neutralise l'obstacle de Puer
-(Acquisitio attaque Laetitia) est en même temps le binôme direct de
-Puer (donc son propre soutien). Attaque et soutien se rejoignent sur
-la même figure (Acquisitio) : elle combat l'obstacle ET renforce le
-chef simultanément.
+Puer** — la figure qui attaque l'obstacle de Puer (Acquisitio attaque
+Laetitia) n'est PAS l'ancre de Puer (Caput Draconis) : c'est la figure
+dont Puer lui-même est le binôme (relation inverse). Attaque et
+soutien se rejoignent quand même sur Acquisitio, mais via le sens
+inverse du binôme, pas le binôme direct.
 
 **Vérifié exhaustivement sur les 16 figures (16/16, jamais pris en
 défaut) — ce n'est pas une coïncidence isolée à Puer, c'est une
 identité algébrique garantie** : obstacle(X) = binôme²(antagoniste(X))
-= X+1 (décalages fixes −3+2+2) ; antagoniste(obstacle(X)) = X+1−3 =
-X−2 ; binôme(X−2) = X−2+2 = X. La boucle se referme toujours,
-peu importe la figure de départ.
+= X+1 (décalages fixes −3+2+2) ; attaquantObstacle(X) =
+antagoniste(obstacle(X)) = X+1−3 = X−2 ; binôme(attaquantObstacle(X))
+= X−2+2 = X. La boucle se referme toujours sur X, mais en passant par
+X−2 (l'attaquant), pas X+2 (l'ancre) — les deux sont des figures
+différentes.
 
 Distinct du "libérateur" déjà codé dans `chaineDualite`
 (`antagoniste(assaillant)` — pour Puer donne Conjunctio, pas
 Acquisitio) : ce sont deux mécanismes de libération différents et
 non-contradictoires, pas la même chose vue sous un autre angle.
-**Statut : identité structurelle prouvée (16/16), pas encore
-intégrée au verdict** — reste à déterminer si elle doit devenir une
-nouvelle règle de "libération de l'obstacle" à part entière, distincte
-du libérateur du chef déjà codé.
+**Statut : identité structurelle prouvée (16/16), codée dans
+`obstacleDe()`/`attaquantObstacleDe()`/`preuveConstat11()` (panneau
+🧮 Preuve structurelle) et exposée comme champs d'observation
+(`obstacle`, `attaquantObstacle`, `frObstacle`, `frAttaquantObstacle`,
+`obstacleNeutralise`) dans `chaineDualite()` — n'entre PAS encore dans
+`forceMaisons` ni dans le verdict, simple champ d'observation en
+attente de validation sur des vrais matchs.**
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
