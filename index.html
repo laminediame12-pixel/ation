@@ -4612,6 +4612,7 @@ function rangParole(vf){
   // ANCRAGE DIRECT (17/07/26) : validé seul à 16/27 sur l'archive — rang
   // prudent malgré sa place prioritaire dans verdictFinal (demande
   // explicite utilisateur).
+  if(r.indexOf('VERDICT MAX 4 FORCES')>=0) return {rang:2, etage:'max des 4 forces M1/M7/R1/R7 (17/07/26, 18/27 en priorité sur archive)'};
   if(r.indexOf('VERDICT ANCRAGE')>=0) return {rang:2, etage:'ancrage chaîne complète (17/07/26, 16/27 seul sur archive)'};
   // VERDICT ROTATION / MODE FIXE (16/07/26) : depuis le 16/07, ce n'est
   // plus la rotation qui est toujours prioritaire — c'est la carte
@@ -4749,6 +4750,35 @@ function verdictFinal(theme, favoriteOverride){
   const supAA = superpositionAncreAssaillant(theme);
   if (supAA.trouve) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
+  }
+  // ═══ COMPARAISON MAX DES 4 FORCES M1/M7/R1/R7 (17/07/26, demande
+  // explicite utilisateur : "instaure le mode fixe, on teste ça... par
+  // comparaison si M1>M7 et R1 et R7 équipe 1 gagne, si M7>M1 et R1 et R7
+  // équipe 2 gagne, si R1>R7 et M1 et M7 équipe 1 gagne, si R7>R1 et M1 et
+  // M7 équipe 2 gagne") ═══ Au lieu de comparer seulement le côté fixe
+  // (M1 vs M7) OU le côté rotation (R1 vs R7) séparément puis choisir
+  // celui avec le plus grand écart (logique ancrage ci-dessous), on
+  // prend directement la plus grande des 4 forces (chaineDualite().
+  // forceMaisons de M1, M7, R1, R7) — le camp auquel appartient ce
+  // maximum absolu gagne (M1 ou R1 → Équipe 1 ; M7 ou R7 → Équipe 2). Ne
+  // tranche PAS si le maximum est partagé entre les deux camps (ex. M1 et
+  // M7 tous deux au max) — repli sur l'ancrage classique juste en dessous
+  // dans ce cas. Testé en priorité (avec repli complet sur la cascade
+  // existante si indécis) : 18/27 sur l'archive, contre 17/27 sans cette
+  // règle — nouvelle amélioration mesurée.
+  const orderRotMax = getRotationOrderFromRepos(theme[1]);
+  const fM1max = chaineDualite(theme[1], theme).forceMaisons;
+  const fM7max = chaineDualite(theme[7], theme).forceMaisons;
+  const fR1max = chaineDualite(theme[orderRotMax[0]], theme).forceMaisons;
+  const fR7max = chaineDualite(theme[orderRotMax[6]], theme).forceMaisons;
+  const maxForce4 = Math.max(fM1max, fM7max, fR1max, fR7max);
+  const equipe1Max = (fM1max === maxForce4) || (fR1max === maxForce4);
+  const equipe2Max = (fM7max === maxForce4) || (fR7max === maxForce4);
+  if (equipe1Max && !equipe2Max) {
+    return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:'🔀 VERDICT MAX 4 FORCES (M1='+fM1max+', M7='+fM7max+', R1='+fR1max+', R7='+fR7max+') → M1 favorisé (maximum absolu côté Équipe 1, validé 18/27 sur l\'archive, 17/07/26).'};
+  }
+  if (equipe2Max && !equipe1Max) {
+    return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:'🔀 VERDICT MAX 4 FORCES (M1='+fM1max+', M7='+fM7max+', R1='+fR1max+', R7='+fR7max+') → M7 favorisé (maximum absolu côté Équipe 2, validé 18/27 sur l\'archive, 17/07/26).'};
   }
   // ═══ ANCRAGE — CHAÎNE COMPLÈTE (17/07/26, demande explicite
   // utilisateur : "l'ancrage doit constituer toute la chaîne", pas
@@ -6608,12 +6638,24 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // carte R1/R7 alignée dessus : la chaîne de dualité de R1/R7 elle-même
   // peut très bien pointer dans le sens opposé, ce n'est pas elle qui a
   // décidé). Le recalcul ci-dessus peut donc, dans ce cas précis,
-  // "corriger" vers des chiffres qui contredisent QUAND MÊME le
-  // vainqueur affiché. On le détecte ici plutôt que de le cacher :
-  // statsFiables=false signale à l'affichage de ne pas présenter domA/domB
-  // comme une explication du vainqueur (aucune donnée n'a été inventée,
-  // on affiche juste moins pour ne pas induire en erreur).
-  var statsFiables = scWinnerCode === 'Nul' || (scWinnerCode === 'A' ? domA >= domB : domB >= domA);
+  // "corriger" vers des chiffres qui contredisent QUAND MÊME le vainqueur
+  // affiché. On le détecte ici plutôt que de le cacher.
+  //
+  // ÉTENDU (17/07/26, trouvé en testant la règle "max des 4 forces") :
+  // domA/domB et capaciteA/capaciteB sont DEUX calculs indépendants
+  // (duel.scoreNet ou chaineDualite.forceMaisons pour l'un, calculerButsCamp
+  // pour l'autre) — ils ne sont recalculés/harmonisés ENSEMBLE que dans le
+  // bloc ci-dessus, qui ne se déclenche que si winnerOverride≠rawWinner.
+  // Quand winnerOverride===rawWinner (le moteur brut de CETTE paire tombe
+  // par coïncidence sur le bon vainqueur) mais que le mécanisme qui a
+  // VRAIMENT décidé est ailleurs, capaciteA/B restent la capacité de but
+  // brute (calculerButsCamp) et peuvent contredire le vainqueur alors même
+  // que domA/domB, eux, sont d'accord — deux drapeaux de fiabilité
+  // séparés, pas un seul, sinon l'un des deux peut rester silencieusement
+  // faux (constaté : "Victoire Équipe B" + "Puissance de marquage :
+  // Équipe A" alors que la barre de domination, elle, donnait bien B).
+  var domFiable = scWinnerCode === 'Nul' || (scWinnerCode === 'A' ? domA >= domB : domB >= domA);
+  var capaciteFiable = scWinnerCode === 'Nul' || capaciteWinner === 'egal' || capaciteWinner === scWinnerCode;
 
   return {
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
@@ -6625,7 +6667,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     domPctA: domPct, domPctB: 100 - domPct,
     domA: domA, domB: domB,
     capaciteA: capaciteA, capaciteB: capaciteB, capaciteWinner: capaciteWinner,
-    statsFiables: statsFiables
+    domFiable: domFiable, capaciteFiable: capaciteFiable
   };
 }
 
@@ -6648,15 +6690,14 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
   html += '<div style="text-align:left; margin-left:24px;">';
   html += '<div class="kv"><b>Penalty/Rouge :</b> ' + (card.penaltyRouge ? 'Oui' : 'Non') + '</div>';
   html += '<div class="kv"><b>Cartons jaunes (estimé) :</b> ' + card.cartonsJaunes + '</div>';
-  // CORRIGÉ (17/07/26) : quand statsFiables=false, la force propre de CETTE
-  // paire (posA/posB) pointe dans le sens opposé au vainqueur affiché — le
-  // vainqueur vient d'un AUTRE mécanisme (ex. ancrage fixe qui décide alors
-  // qu'on affiche la carte rotation alignée dessus). Montrer "Puissance de
-  // marquage : [équipe perdante]" juste sous "Victoire : [équipe gagnante]"
-  // serait une contradiction visuelle directe — les chiffres restent
-  // affichés (rien d'inventé), mais sans les présenter comme l'explication
-  // du vainqueur.
-  if (card.statsFiables) {
+  // CORRIGÉ (17/07/26) : quand capaciteFiable=false, la capacité de but
+  // brute de CETTE paire (posA/posB, calculerButsCamp — calcul INDÉPENDANT
+  // de domA/domB) pointe dans le sens opposé au vainqueur affiché. Montrer
+  // "Puissance de marquage : [équipe perdante]" juste sous "Victoire :
+  // [équipe gagnante]" serait une contradiction visuelle directe — les
+  // chiffres restent affichés (rien d'inventé), mais sans les présenter
+  // comme l'explication du vainqueur.
+  if (card.capaciteFiable) {
     var capaciteLabel = card.capaciteWinner === 'A' ? teamA : card.capaciteWinner === 'B' ? teamB : 'Égalité';
     html += '<div class="kv"><b>Puissance de marquage :</b> ' + capaciteLabel + ' (' + card.capaciteA + ' vs ' + card.capaciteB + ')</div>';
   } else {
@@ -6684,7 +6725,7 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
     : '<div class="kv" style="color:#fbbf24; font-size:12px; margin-bottom:4px;"><b>⚠️ Estimation moteur V7 (non validé — verdictFinal indécis/muet sur ce niveau, aucune règle validée ne tranche ici)</b></div>');
   if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
   html += '<div class="kv" style="margin-top:6px;"><b>Domination / fiabilité :</b></div>';
-  if (!card.statsFiables) html += '<div class="kv muted" style="font-size:11px;">⚠️ cette barre reflète la force propre de cette paire, pas nécessairement le mécanisme qui a désigné le vainqueur</div>';
+  if (!card.domFiable) html += '<div class="kv muted" style="font-size:11px;">⚠️ cette barre reflète la force propre de cette paire, pas nécessairement le mécanisme qui a désigné le vainqueur</div>';
   html += '</div>';
   html += '<div style="display:flex; height:22px; border-radius:6px; overflow:hidden; border:1px solid #334155; max-width:480px; margin:0 auto;">';
   html += '<div style="width:' + card.domPctA + '%; background:#4ade80; display:flex; align-items:center; justify-content:center; font-size:11px; color:#022c22;">' + teamA + ' ' + card.domPctA + '%</div>';
@@ -6840,10 +6881,17 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     // il faut donc distinguer les deux cas pour savoir QUELLE carte porte
     // le badge "prioritaire", sinon on retombe dans le même bug que celui
     // corrigé le 16/07 (badge figé sur la mauvaise carte).
-    const usedAncrageRotation = (vfM.reason||'').indexOf('VERDICT ANCRAGE') >= 0 && (vfM.reason||'').indexOf('ROTATION') >= 0;
-    const usedAncrage = (vfM.reason||'').indexOf('VERDICT ANCRAGE') >= 0;
-    const usedFixe = ((vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0) || (usedAncrage && !usedAncrageRotation);
-    const usedRotation = ((vfM.reason||'').indexOf('VERDICT ROTATION') >= 0 && !usedAncrage) || usedAncrageRotation;
+    // CORRIGÉ (17/07/26) : la détection par sous-chaîne du texte de
+    // `reason` cassait silencieusement à chaque nouveau mécanisme ajouté à
+    // la cascade (ex. "VERDICT MAX 4 FORCES" n'était reconnu ni comme
+    // fixe ni comme rotation ni comme ancrage → aucun badge affiché,
+    // alors que verdictFinal avait bien tranché). Depuis que la carte
+    // M1/M7 a été retirée (une seule carte affichée, toujours alignée sur
+    // vfM.winner), le badge "prioritaire" n'a plus besoin de distinguer
+    // le mécanisme — il suffit de savoir si verdictFinal a tranché un
+    // vainqueur net (type 'verdict' avec winner M1/M7), peu importe LEQUEL
+    // des mécanismes de la cascade l'a décidé.
+    const dejaTranche = vfM.type === 'verdict' && (vfM.winner === 'M1' || vfM.winner === 'M7');
     // ALIGNEMENT DE LA CARTE NON-PRIORITAIRE (17/07/26, "corrige la carte
     // non-prioritaire") : avant, la carte qui n'avait pas décidé retombait
     // sur son estimation brute INDÉPENDANTE (moteur V7 sur sa propre paire
@@ -6885,7 +6933,7 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
       elR.classList.remove('verdict-priority');
-      if (usedFixe || usedRotation) {
+      if (dejaTranche) {
         elR.classList.add('verdict-priority');
         elR.setAttribute('data-priority-label', '⭐ VERDICT FINAL');
       }
