@@ -6665,7 +6665,8 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     // rendu des deux cartes, et passé explicitement à renderCarteVerdict
     // (7e paramètre) pour que la taille de police suive elle aussi — pas
     // seulement la bordure/badge comme dans le premier correctif.
-    const usedFixe = (vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0;
+    const usedAncrage = (vfM.reason||'').indexOf('VERDICT ANCRAGE') >= 0;
+    const usedFixe = (vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0 || usedAncrage;
     const usedRotation = (vfM.reason||'').indexOf('VERDICT ROTATION') >= 0;
     const carteM = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, vfM.winner, _domicileCode);
     renderCarteVerdict('carte-verdict-m', carteM, team1, team2, '⚔️ Verdict M1 / M7', {htWinner: a.v7.htWinner}, usedFixe);
@@ -6684,7 +6685,7 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
       elR.classList.remove('verdict-priority'); elM.classList.remove('verdict-priority');
       if (usedFixe) {
         elM.classList.add('verdict-priority');
-        elM.setAttribute('data-priority-label', '⭐ VERDICT PRIORITAIRE — MODE FIXE');
+        elM.setAttribute('data-priority-label', usedAncrage ? '⭐ VERDICT PRIORITAIRE — ANCRAGE' : '⭐ VERDICT PRIORITAIRE — MODE FIXE');
       } else if (usedRotation) {
         elR.classList.add('verdict-priority');
         elR.setAttribute('data-priority-label', '⭐ VERDICT PRIORITAIRE — ROTATION');
