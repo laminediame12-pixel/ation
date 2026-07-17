@@ -6919,6 +6919,33 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     // htInfo (théorie "M1/M7 gouverne la 1ère mi-temps") n'est PAS passé
     // ici : ce texte est spécifique au duel M1/M7, pas à R1/R7 — reste
     // consultable via son propre panneau (🕐 But par mi-temps).
+    // MAUVAIS THÈME → PAS DE CARTE ESTIMÉE (17/07/26, demande explicite
+    // utilisateur : "affiche le verdict Mauvaise thème, refait encore")
+    // — avant, une abstention (thème détruit/invalide) affichait quand
+    // même une carte complète avec un vainqueur et un score, juste
+    // annotée en petit "estimation non validée" au milieu des détails :
+    // trop facile à lire comme un vrai verdict au premier coup d'œil.
+    // Remplacé par un message explicite qui empêche toute lecture d'un
+    // faux vainqueur/score sur un thème que verdictFinal a lui-même
+    // rejeté.
+    const elRAbstention = document.getElementById('carte-verdict-r');
+    if (vfM.type === 'abstention') {
+      if (elRAbstention) {
+        elRAbstention.classList.remove('verdict-priority');
+        elRAbstention.innerHTML = '<h3 style="text-align:center;">🏆 Verdict du match</h3>'
+          + '<div style="text-align:center; padding:18px 12px;">'
+          + '<div style="font-size:26px; font-weight:900; color:#f87171;">⛔ MAUVAIS THÈME</div>'
+          + '<div style="font-size:16px; color:#fbbf24; margin-top:6px;">Refais un tirage</div>'
+          + '<div class="muted" style="font-size:12px; margin-top:10px; max-width:520px; margin-left:auto; margin-right:auto;">' + vfM.reason + '</div>'
+          + '</div>';
+      }
+      document.getElementById('theme-validation').innerHTML='';
+      renderHouseInsight(selectedHouse);
+      document.getElementById('rotation-analysis').innerHTML='';
+      document.getElementById('dual-verdicts').innerHTML='';
+      document.getElementById('first-half').innerHTML=''; document.getElementById('structural-summary').innerHTML=''; document.getElementById('final-conclusion').innerHTML=''; document.getElementById('house-analysis').innerHTML=''; document.getElementById('full-draw').textContent=''; addToHistory(); updatePlaneteJourIndicator(); setTimeout(adjustThemeScale, 0);
+      return;
+    }
     const globalWinner = (vfM.winner === 'M1' || vfM.winner === 'M7') ? vfM.winner : null;
     const orderR = getRotationOrderFromRepos(currentTheme[1]);
     const rWinnerOverride = globalWinner === 'M1' ? 'R1' : globalWinner === 'M7' ? 'R7' : null;
