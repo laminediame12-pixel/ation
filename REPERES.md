@@ -273,3 +273,40 @@ Fortuna Minor ⟹ Fortuna Minor attaque Fortuna Major = B-B-B(Amissio)
 également — les deux chemins tombent nécessairement au même endroit,
 ce n'est pas une observation statistique mais une identité garantie
 par la construction de `FIGS_V7`/`BINOMES_V7`/`ANTAGONISTES_V7`.
+
+### Constat 9 — Configurations maison/figure fortes ou destructrices
+
+Les maisons obstacle (2,4,6,8,10,12,14, voir Constat 6) sont le siège de
+configurations où une figure se confond très fortement avec elle-même
+(auto-construction) ou triple-concorde en élément — déjà codées
+(`AUTO_CONSTRUCT_HOUSE`, `checkMaisonDoubleConcordance`, utilisées dans
+`forceRelationnelleFigure`, bonus +25 et +20). Table complète des 16
+figures, vérifiée exhaustivement :
+
+| Figure | Maison repos | Auto-construction (résultante=binôme) | Double concordance (élément×3) | Auto-destruction (résultante=antagoniste) |
+|---|---|---|---|---|
+| Puer | 1 | M6 → Caput Draconis | M1 | M11 |
+| Laetitia | 2 | M6 → Albus | — | M1 |
+| Caput Draconis | 3 | M2 → Via | — | M3 |
+| Albus | 4 | M2 → Amissio | — | M5 |
+| Via | 5 | M14 → Rubeus | M15 | M3 |
+| Amissio | 6 | M14 → Tristitia | M7, M15 | M1 |
+| Rubeus | 7 | M2 → Fortuna Minor | — | M11 |
+| Tristitia | 8 | M2 → Carcer | M4, M16 | M13 |
+| Fortuna Minor | 9 | M6 → Conjunctio | M9 | M11 |
+| Carcer | 10 | M6 → Fortuna Major | M4, M16 | M1 |
+| Conjunctio | 11 | M2 → Cauda Draconis | — | M3 |
+| Fortuna Major | 12 | M2 → Puella | M4, M16 | M5 |
+| Cauda Draconis | 13 | M14 → Acquisitio | M7 | M3 |
+| Puella | 14 | M14 → Populus | M4, M16 | M1 |
+| Acquisitio | 15 | M2 → Puer | — | M11 |
+| Populus | 16 | M2 → Laetitia | M1, M9 | M13 |
+
+Exemple vérifié : Carcer en M4 est terre/terre ET sa résultante (Puella)
+est aussi terre — triple concordance. Acquisitio en M2 résulte Puer, son
+propre binôme — auto-construction.
+
+Notable : M4 et M16 reviennent systématiquement ensemble en double
+concordance, portées par les 4 figures terre de la boucle paire
+(Tristitia, Carcer, Fortuna Major, Puella). L'auto-construction se
+concentre presque entièrement sur M2, M6 et M14.
