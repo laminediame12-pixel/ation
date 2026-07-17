@@ -33,6 +33,7 @@ spécifiques. Voir §1 pour le détail complet avec fonctions et scores.
 |---|---|---|---|---|
 | 1 | Abstention | `themeDetruit`, `themeInvalidite` | ~31% des thèmes aléatoires invalides | Actif |
 | 2 | Impasse totale de boucle (nul) | `verdictElementaire` + `piliersReposCount<2` | 2/2 réel (Olympiacos-WestHam 7-7, FIFA 4-4) | Actif |
+| 2b | Superposition ancre/assaillant (nul) | `superpositionAncreAssaillant(theme)` | n=1 réel (Suisse-Colombie 0-0) | Actif, 0/27 sur l'archive (aucun risque de régression) |
 | 3 | **Plus grand écart de dominance** | bloc `carteRot`/`carteFixe` dans `verdictFinal` | **20/27 (74%) sur l'archive** | **Mécanisme principal**, tranche 27/27 sur l'archive (aucun repli sollicité) |
 | 4 | **Chaîne de dualité (repli)** | `verdictChaineDualite(theme)` | **19/27 (70%) seule** | Repli, atteint seulement si l'étage 3 ne tranche pas (0 cas dans l'archive, 114-148/20000 sur thèmes aléatoires) |
 | 5 | Verrou piliers / verrou M16 feu | `piliersReposCount>=2`, `verrouM16Feu` | 0/4 nul réel quand verrouillé ; M16 feu 6/6 | Bloque les règles de nul suivantes |
@@ -94,14 +95,14 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 
 ## 3. Table de référence des vrais matchs analysés (hors archive `export_data.json`)
 
-| Match | Mères (M1→M4) | Réel | Chaîne de dualité (version actuelle) |
-|---|---|---|---|
-| Liverpool vs Man City | caput_draconis/amissio/via/caput_draconis | 9-10, **M7** | HIT (M7) |
-| Chelsea vs Atlético | caput_draconis/albus/amissio/via | 0-5, **M7** | MISS (prédit M1) |
-| France vs Espagne | fortuna_minor/albus/amissio/via | 0-2, **M7** (MT 0-1) | HIT (M7) |
-| Suisse vs Colombie | carcer/carcer/cauda_draconis/amissio | 0-0, **Nul** | MISS (prédit M1 — un Nul ne peut jamais sortir de ce mécanisme binaire) |
-| USA vs Belgique | via/caput_draconis/conjunctio/rubeus | 4-1 Belgique, **M7** (MT 2-1) | MISS (prédit M1) |
-| Argentine vs Egypte | carcer/amissio/carcer/puer | 3-2, **M1** | HIT (M1) |
+| Match | Mères (M1→M4) | Réel | Chaîne de dualité | `verdictFinal` complet |
+|---|---|---|---|---|
+| Liverpool vs Man City | caput_draconis/amissio/via/caput_draconis | 9-10, **M7** | HIT (M7) | — |
+| Chelsea vs Atlético | caput_draconis/albus/amissio/via | 0-5, **M7** | MISS (prédit M1) | — |
+| France vs Espagne | fortuna_minor/albus/amissio/via | 0-2, **M7** (MT 0-1) | HIT (M7) | — |
+| Suisse vs Colombie | carcer/carcer/cauda_draconis/amissio | 0-0, **Nul** | MISS (mécanisme binaire, ne peut pas dire Nul) | **HIT (Nul), corrigé le 17/07/26 par `superpositionAncreAssaillant`** |
+| USA vs Belgique | via/caput_draconis/conjunctio/rubeus | 4-1 Belgique, **M7** | MISS (prédit M1) | — |
+| Argentine vs Egypte | carcer/amissio/carcer/puer | 3-2, **M1** | HIT (M1) | — |
 
 L'archive complète (27 matchs, dont 19 esport) est dans
 `/tmp/claude-0/-home-user-ation/43bdd8e4-4f60-5524-bd72-213622d663af/scratchpad/export_data.json`
@@ -135,10 +136,15 @@ L'archive complète (27 matchs, dont 19 esport) est dans
 - Le Nul reste structurellement hors de portée de `verdictChaineDualite`
   (mécanisme binaire M1/M7) — envisager un signal d'égalité explicite si
   `pcScore` M1 = M7 ET `domine` égal des deux côtés.
-- Réexaminer les 3 échecs du §3 (Chelsea-Atlético, Suisse-Colombie,
-  USA-Belgique) à la main, figure par figure, comme fait pour
-  carcer/rubeus — voir si une pièce de la doctrine manque encore
-  (victime ? libérateur lui-même a-t-il son propre petit calcul ?).
+- Suisse-Colombie est CORRIGÉ (17/07/26, `superpositionAncreAssaillant`,
+  voir §7) — ne plus le lister comme échec connu. Reste à réexaminer à
+  la main : Chelsea-Atlético, USA-Belgique (voir §7 pour la méthode qui
+  a fonctionné sur Argentine-Egypte et Suisse-Colombie).
+- IMPORTANT (méthodologie, 17/07/26) : dériver une règle à la main sur UN
+  match dont on connaît déjà le score peut presque toujours "réussir"
+  après coup (trop de figures disponibles à chaque étape) — ça ne prouve
+  rien tant que la règle n'est pas figée AVANT de regarder d'autres cas,
+  puis testée à l'aveugle. Voir §7 pour le détail de cette leçon.
 - Guerre civile R1/R7 (`guerreCivileR1R7`) reste display-only (54% vs
   50%, bruit) — jamais promue.
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
@@ -338,3 +344,50 @@ Populus neutre exclu), les collaborateurs paires couvrent les **8
 maisons paires en entier** (2 à 16) — Populus participe pleinement ici
 comme attaquant (collaborateur en M4), contrairement à son rôle neutre
 côté obstacle impair.
+
+## 7. Analyse match par match (17/07/26) — méthode et résultat codé
+
+Après les constats structurels (§6), tentative d'intégrer une règle
+"qui gagne" à partir de la force des ancres/assaillants — plusieurs
+formules testées, TOUTES rejetées comme mécanisme général (aucune ne
+dépasse 16/27 sur l'archive, certaines se contredisent sur leur propre
+exemple source, voir historique complet dans l'échange du 17/07/26).
+
+**Leçon méthodologique retenue** : dériver une chaîne de raisonnement à
+la main sur un match dont le score réel est déjà connu peut presque
+toujours "marcher" après coup — il y a trop de figures disponibles à
+chaque étape (assaillant, libérateur, ancre, victime, B-B...) pour ne
+pas en trouver une qui colle. Ce n'est une preuve de rien tant que la
+règle n'est pas figée AVANT de regarder d'autres cas, puis testée à
+l'aveugle.
+
+**Ce qui a été gardé, parce que assez spécifique pour ne jamais risquer
+de régression** : `superpositionAncreAssaillant(theme)`, trouvée en
+analysant Suisse-Colombie (réel 0-0) figure par figure :
+- Rubeus (assaillant de Carcer/M1) fait presque le poids face à Carcer
+  lui-même (170 contre 210) — Carcer s'auto-affaiblit en plus en M1
+  (résultante = son propre antagoniste Rubeus, auto-destruction).
+- M9 (maison pilier) est verrouillé par une triple concordance parfaite
+  (Populus/Fortuna Minor/feu).
+- À ce point verrouillé se superposent le binôme de l'ancre de M7
+  (Populus = binôme de Puella) ET le binôme de l'assaillant de M1
+  (Fortuna Minor = binôme de Rubeus), Fortuna Minor étant aussi
+  l'antagoniste direct de Fortuna Major (M7 lui-même).
+
+Codée et validée : n=1 (Suisse-Colombie) réel, **0/27 sur l'archive**
+(jamais de faux positif, décisifs compris) — placée avant l'écart de
+dominance dans `verdictFinal` (comme l'impasse totale de boucle),
+précisément parce que sa rareté élimine tout risque de régression, à
+la différence de la tentative abandonnée (16/07/26) de remonter
+TOUTES les règles de nul.
+
+**Rappel important (17/07/26, décision utilisateur)** : "il y a
+plusieurs cas de nul" — en géomancie, à part le calcul algébrique pur
+(binôme, antagoniste, preuve structurelle), rien n'est une loi
+universelle unique. Chaque règle de nul du système (Juge Conjunctio,
+Juge Acquisitio, symétrie mères/filles, impasse totale de boucle,
+superposition ancre/assaillant) couvre son propre "cas" distinct, sur
+un échantillon souvent réduit (n=1 à 4) — ce n'est pas un défaut, c'est
+la nature du domaine. Ne pas chercher une formule unique qui expliquerait
+tous les nuls à la fois ; ajouter des règles spécifiques une par une,
+tant qu'elles ne créent aucune régression mesurée.
