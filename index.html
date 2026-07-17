@@ -4521,7 +4521,7 @@ function rangParole(vf){
   // ANCRAGE DIRECT (17/07/26) : validé seul à 16/27 sur l'archive — rang
   // prudent malgré sa place prioritaire dans verdictFinal (demande
   // explicite utilisateur).
-  if(r.indexOf('VERDICT ANCRAGE DIRECT')>=0) return {rang:2, etage:'ancrage direct (17/07/26, 16/27 seul sur archive)'};
+  if(r.indexOf('VERDICT ANCRAGE')>=0) return {rang:2, etage:'ancrage chaîne complète (17/07/26, 16/27 seul sur archive)'};
   // VERDICT ROTATION / MODE FIXE (16/07/26) : depuis le 16/07, ce n'est
   // plus la rotation qui est toujours prioritaire — c'est la carte
   // (fixe ou rotation) avec le plus grand écart de dominance qui
@@ -4659,21 +4659,20 @@ function verdictFinal(theme, favoriteOverride){
   if (supAA.trouve) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
   }
-  // ═══ ANCRAGE DIRECT (17/07/26, demande explicite utilisateur — le
-  // principe s'applique au verdict final, pas seulement en repli tout en
-  // bas de la chaîne de dualité) ═══ Compare la force de l'ancre directe
-  // (binôme du chef) entre M1 et M7 — le camp dont l'ancre est la plus
-  // forte l'emporte. Dérivé pas à pas sur Argentine-Egypte et
-  // Suisse-Colombie. ATTENTION, validé SEUL à 16/27 (59%) sur l'archive,
-  // plus faible que l'écart de dominance (20/27) — placé ici en priorité
-  // sur demande explicite, donc le score mesuré de verdictFinal descend
-  // de 19/27 à 16/27 avec ce changement (voir commit pour le détail).
-  const ancre1 = BINOMES_V7[theme[1]], ancre7 = BINOMES_V7[theme[7]];
-  const fAncre1 = forceRelationnelleFigure(ancre1, theme).total;
-  const fAncre7 = forceRelationnelleFigure(ancre7, theme).total;
-  if (fAncre1 !== fAncre7) {
-    const wAncre = fAncre1 > fAncre7 ? 'M1' : 'M7';
-    return {type:'verdict', winner:wAncre, label:'🏆 VAINQUEUR : '+wAncre, reason:'⚓ VERDICT ANCRAGE DIRECT (ancre M1='+FL[ancre1]+' '+fAncre1+', ancre M7='+FL[ancre7]+' '+fAncre7+') → '+wAncre+' favorisé (validé seul 16/27 sur l\'archive, 17/07/26).'};
+  // ═══ ANCRAGE — CHAÎNE COMPLÈTE (17/07/26, demande explicite
+  // utilisateur : "l'ancrage doit constituer toute la chaîne", pas
+  // seulement l'ancre isolée) ═══ Compare la force de TOUTE la chaîne de
+  // dualité (chef, ancre, assaillant, libérateur, victime + leurs 3
+  // binômes — voir chaineDualite().forceMaisons, déjà utilisée comme
+  // départage interne de la chaîne de dualité) entre M1 et M7, pas
+  // seulement l'ancre seule. Validé SEUL à 16/27 (59%) sur l'archive —
+  // même score que l'ancre isolée, mais conforme à la demande explicite
+  // de porter tout le principe, pas un fragment.
+  const ancrageC1 = chaineDualite(theme[1], theme);
+  const ancrageC7 = chaineDualite(theme[7], theme);
+  if (ancrageC1.forceMaisons !== ancrageC7.forceMaisons) {
+    const wAncrage = ancrageC1.forceMaisons > ancrageC7.forceMaisons ? 'M1' : 'M7';
+    return {type:'verdict', winner:wAncrage, label:'🏆 VAINQUEUR : '+wAncrage, reason:'⚓ VERDICT ANCRAGE — CHAÎNE COMPLÈTE (force M1='+ancrageC1.forceMaisons+', force M7='+ancrageC7.forceMaisons+') → '+wAncrage+' favorisé (validé seul 16/27 sur l\'archive, 17/07/26).'};
   }
   // ═══ PLUS GRAND ÉCART DE DOMINANCE (16/07/26, remplace "rotation
   // toujours prioritaire") ═══
