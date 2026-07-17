@@ -6438,7 +6438,7 @@ function estimerCartonsJaunesV7(theme, campA, campB) {
  * winnerOverride : si fourni (ex. verdictFinal pour M1/M7), sert de
  * vainqueur officiel ; sinon le duel brut (posA/posB) tranche.
  */
-function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, domicileCode) {
+function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, domicileCode, isPriorityCard) {
   var campA = calculerButsCamp(theme[posA], theme);
   var campB = calculerButsCamp(theme[posB], theme);
   // AJOUTÉ (demande utilisateur, "avantage du terrain") — 📚 étude, jamais
@@ -6451,9 +6451,16 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   else if (domicileCode === 'B') campB.total = Math.round(campB.total * 1.15);
   var duel = duelV7(posA, posB, theme);
   var rawWinner = duel.winner === 'A' ? labelA : duel.winner === 'B' ? labelB : 'Nul';
-  // source: 'doctrine' si verdictFinal a tranché (winnerOverride non vide), sinon
-  // repli silencieux vers le moteur V7 legacy -> on le rend visible au lieu de le cacher.
-  var source = winnerOverride ? 'doctrine' : 'moteur_v7';
+  // source: 'doctrine' si CETTE carte est celle qui a réellement tranché
+  // verdictFinal (isPriorityCard) ; 'aligne' si un winnerOverride est
+  // fourni mais que ce n'est PAS cette carte qui a décidé (17/07/26,
+  // "corrige la carte non-prioritaire" — avant, dans ce cas la carte
+  // retombait sur son estimation brute indépendante, pouvant afficher un
+  // vainqueur et un score en contradiction frontale avec le verdict
+  // affiché juste à côté, ex. carte fixe M1 4-1 / carte rotation R7 4-5
+  // sur le même thème) ; sinon repli silencieux vers le moteur V7 legacy
+  // -> on le rend visible au lieu de le cacher.
+  var source = !winnerOverride ? 'moteur_v7' : (isPriorityCard ? 'doctrine' : 'aligne');
   var winner = winnerOverride || rawWinner;
   var scWinnerCode = winner === labelA ? 'A' : winner === labelB ? 'B' : 'Nul';
   var sc = buildScoreFromCamps(campA, campB, scWinnerCode, undefined, theme);
@@ -6553,7 +6560,9 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
   html += '</div>';
   html += '<div style="text-align:center; margin-top:10px;">';
   html += (card.source === 'doctrine'
-    ? '<div class="kv" style="color:#4ade80; font-size:12px; margin-bottom:4px;"><b>✓ Vainqueur doctrinal (verdictFinal a tranché)</b></div>'
+    ? '<div class="kv" style="color:#4ade80; font-size:12px; margin-bottom:4px;"><b>✓ Vainqueur doctrinal (verdictFinal a tranché ici)</b></div>'
+    : card.source === 'aligne'
+    ? '<div class="kv" style="color:#60a5fa; font-size:12px; margin-bottom:4px;"><b>↔️ Aligné sur le verdict final (ce niveau seul ne tranche pas — voir la carte prioritaire)</b></div>'
     : '<div class="kv" style="color:#fbbf24; font-size:12px; margin-bottom:4px;"><b>⚠️ Estimation moteur V7 (non validé — verdictFinal indécis/muet sur ce niveau, aucune règle validée ne tranche ici)</b></div>');
   if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
   html += '<div class="kv" style="margin-top:6px;"><b>Domination / fiabilité :</b></div>';
@@ -6716,7 +6725,23 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     const usedAncrage = (vfM.reason||'').indexOf('VERDICT ANCRAGE') >= 0;
     const usedFixe = ((vfM.reason||'').indexOf('VERDICT MODE FIXE') >= 0) || (usedAncrage && !usedAncrageRotation);
     const usedRotation = ((vfM.reason||'').indexOf('VERDICT ROTATION') >= 0 && !usedAncrage) || usedAncrageRotation;
-    const carteM = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, usedFixe ? vfM.winner : null, _domicileCode);
+    // ALIGNEMENT DE LA CARTE NON-PRIORITAIRE (17/07/26, "corrige la carte
+    // non-prioritaire") : avant, la carte qui n'avait pas décidé retombait
+    // sur son estimation brute INDÉPENDANTE (moteur V7 sur sa propre paire
+    // de figures), pouvant afficher un vainqueur et un score en
+    // contradiction frontale avec le verdict retenu juste à côté (constaté
+    // par l'utilisateur : carte fixe M1 4-1 / carte rotation R7 4-5 sur le
+    // même thème). Les deux cartes reçoivent maintenant le même
+    // winnerOverride (l'équipe réellement retenue par verdictFinal, mappée
+    // sur les labels propres à chaque carte), donc affichent TOUJOURS la
+    // même équipe gagnante. `isPriorityCard` (8e argument) distingue quand
+    // même dans buildVerdictCard/renderCarteVerdict quelle carte a
+    // réellement tranché ('doctrine') de celle qui suit seulement
+    // ('aligne') — le score/les stats de la carte alignée restent les
+    // siens propres (recalculés depuis sa propre chaîne de dualité quand
+    // son moteur brut contredit), pas une copie de l'autre carte.
+    const globalWinner = (vfM.winner === 'M1' || vfM.winner === 'M7') ? vfM.winner : null;
+    const carteM = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, globalWinner, _domicileCode, usedFixe);
     renderCarteVerdict('carte-verdict-m', carteM, team1, team2, '⚔️ Verdict M1 / M7', {htWinner: a.v7.htWinner}, usedFixe);
     renderQuestionAnswers(currentQuestionContext, vfM, carteM, a.v7.htWinner);
     var _an = signalAutoNourriture(currentTheme);
@@ -6725,8 +6750,8 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
       if (_elM) _elM.innerHTML += _an.map(function(x){ return '<div class="kv muted" style="font-size:11px; text-align:center; margin-top:4px; color:'+(x.type==='nourrit'?'#4ade80':'#f87171')+';">'+x.txt+'</div>'; }).join('');
     }
     const orderR = getRotationOrderFromRepos(currentTheme[1]);
-    const rWinnerOverride = usedRotation ? (vfM.winner === 'M1' ? 'R1' : vfM.winner === 'M7' ? 'R7' : null) : null;
-    const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride);
+    const rWinnerOverride = globalWinner === 'M1' ? 'R1' : globalWinner === 'M7' ? 'R7' : null;
+    const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, undefined, usedRotation);
     renderCarteVerdict('carte-verdict-r', carteR, team1, team2, '🔄 Verdict R1 / R7 (rotation)', null, usedRotation);
     const elR = document.getElementById('carte-verdict-r');
     const elM = document.getElementById('carte-verdict-m');
