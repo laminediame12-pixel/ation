@@ -6587,6 +6587,19 @@ function estimerCartonsJaunesV7(theme, campA, campB) {
 function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, domicileCode, isPriorityCard) {
   var campA = calculerButsCamp(theme[posA], theme);
   var campB = calculerButsCamp(theme[posB], theme);
+  // VIA EN M4 -> CAMP A NE MARQUE PAS (18/07/26, demande explicite
+  // utilisateur "intègre ça et le verdict doit le suivre") : M4 est la
+  // maison "camp M1" désignée (voir butsGuerreDes16) ; posA porte
+  // toujours ce camp par convention de buildVerdictCard (carte fixe OU
+  // rotation, labelA='M1'/'R1' = team1 dans les deux cas). Via en M4
+  // (force 60, rôle "Absorbeur") coïncide EXACTEMENT avec les 3 seuls
+  // vrais matchs BTTS=false liés à M4 dans l'archive (Chelsea-Atlético
+  // 0-5, France-Espagne 0-2, LA Galaxy 3-0) et n'apparaît dans AUCUN des
+  // 5 BTTS=true — split parfait 3/3 vs 0/5, base rate 5,6% sur 3000
+  // thèmes aléatoires (P≈1% sous hasard pur). n=9 seulement, à confirmer
+  // sur de nouveaux vrais matchs — voir REPERES.md §5.
+  var viaEnM4 = theme[4] === 'via';
+  if (viaEnM4) { campA.total = 0; }
   // AJOUTÉ (demande utilisateur, "avantage du terrain") — 📚 étude, jamais
   // validé sur un match réel : léger boost du VOLUME de buts du camp à
   // domicile (+15%), n'affecte QUE la magnitude du score affiché, jamais
@@ -6608,6 +6621,14 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // -> on le rend visible au lieu de le cacher.
   var source = !winnerOverride ? 'moteur_v7' : (isPriorityCard ? 'doctrine' : 'aligne');
   var winner = winnerOverride || rawWinner;
+  // "LE VERDICT DOIT LE SUIVRE" (18/07/26, demande explicite utilisateur) :
+  // avec campA.total forcé à 0 ci-dessus, un winner=labelA (ou 'Nul')
+  // serait incohérent (vainqueur ou nul affiché avec une capacité de
+  // marquage nulle) — corrigé vers labelB, MÊME si winnerOverride (donc
+  // verdictFinal) disait labelA, tant que campB peut effectivement
+  // marquer. Ne modifie PAS verdictFinal lui-même (trop tôt, n=9) — la
+  // correction reste locale à cette carte, visible via card.viaEnM4.
+  if (viaEnM4 && winner !== labelB && campB.total > 0) { winner = labelB; }
   var scWinnerCode = winner === labelA ? 'A' : winner === labelB ? 'B' : 'Nul';
   var sc = buildScoreFromCamps(campA, campB, scWinnerCode, undefined, theme);
   var goalA = sc.goalA, goalB = sc.goalB;
@@ -6692,7 +6713,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     domPctA: domPct, domPctB: 100 - domPct,
     domA: domA, domB: domB,
     capaciteA: capaciteA, capaciteB: capaciteB, capaciteWinner: capaciteWinner,
-    domFiable: domFiable, capaciteFiable: capaciteFiable
+    domFiable: domFiable, capaciteFiable: capaciteFiable,
+    viaEnM4: viaEnM4
   };
 }
 
@@ -6749,6 +6771,7 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
     ? '<div class="kv" style="color:#60a5fa; font-size:12px; margin-bottom:4px;"><b>↔️ Aligné sur le verdict final (ce niveau seul ne tranche pas — voir la carte prioritaire)</b></div>'
     : '<div class="kv" style="color:#fbbf24; font-size:12px; margin-bottom:4px;"><b>⚠️ Estimation moteur V7 (non validé — verdictFinal indécis/muet sur ce niveau, aucune règle validée ne tranche ici)</b></div>');
   if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
+  if (card.viaEnM4) html += '<div class="kv" style="color:#fbbf24; font-size:11px;">🚫 Via en M4 → ' + teamA + ' ne marque pas (piste n=9, 3/3 vs 0/5 sur l\'archive, non encore validée à grande échelle)</div>';
   html += '<div class="kv" style="margin-top:6px;"><b>Domination / fiabilité :</b></div>';
   if (!card.domFiable) html += '<div class="kv muted" style="font-size:11px;">⚠️ cette barre reflète la force propre de cette paire, pas nécessairement le mécanisme qui a désigné le vainqueur</div>';
   html += '</div>';

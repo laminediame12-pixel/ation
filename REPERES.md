@@ -185,9 +185,27 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   porte le signal. PRUDENCE MÉTHODOLOGIQUE (voir §5, note sur les règles
   dérivées à la main) : n=9 seulement, et plusieurs hypothèses ont été
   testées ce jour-là (comparaisons multiples) — un résultat propre sur
-  un aussi petit échantillon peut encore être un coup de chance. Pas
-  câblé dans le moteur, à confirmer sur de nouveaux vrais matchs avant
-  toute intégration.
+  un aussi petit échantillon peut encore être un coup de chance.
+  **INTÉGRÉ le 18/07/26 (demande explicite utilisateur "intègre ça et
+  le verdict doit le suivre")** dans `buildVerdictCard` : quand
+  `theme[4]==='via'`, `campA.total` (capacité de but du camp 1, quelle
+  que soit la carte fixe/rotation affichée) est forcé à 0, ET le
+  `winner` de LA CARTE est corrigé vers labelB si besoin (jamais
+  "vainqueur"/"nul" affiché avec 0 de capacité) — MÊME quand
+  `winnerOverride` (donc `verdictFinal`) disait le contraire. Le
+  correctif reste LOCAL à `buildVerdictCard` (affichage score/BTTS/
+  winner de la carte) : `verdictFinal` lui-même (le cascade qui décide
+  le "vainqueur doctrinal" utilisé pour le suivi archive 18/27 ou 19/27)
+  n'est PAS modifié — trop tôt pour l'y intégrer avec seulement n=9.
+  Vérifié : les 3 cas Via-M4 (Chelsea, France-Espagne, LA Galaxy)
+  affichent désormais BTTS=Non et le bon vainqueur ; les 5 matchs
+  BTTS=true et le cas Suisse-Colombie (déjà expliqué par paralysie
+  M5/M11) restent inchangés (viaEnM4=false chez eux) ; 0 crash sur 800
+  thèmes aléatoires (54 avec Via en M4, ~6,75%, cohérent avec le base
+  rate mesuré). Note "🚫 Via en M4..." affichée sur la carte quand le
+  correctif s'applique, pour transparence. À confirmer sur de nouveaux
+  vrais matchs avant d'envisager une intégration dans `verdictFinal`
+  lui-même.
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
   si de nouveaux vrais matchs avec penalty/rouge se présentent. Sur
   LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
