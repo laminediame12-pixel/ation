@@ -7714,7 +7714,7 @@ function renderThemeWithSize(hSize) {
     return '<div class="house'+(isHLPos(pos)?' highlight':'')+'" data-pos="'+pos+'" onclick="showHouseResult('+pos+')"'
       +' style="left:'+x+'px;top:'+y+'px;width:'+cellW+'px;min-height:'+cellH+'px;'
       +'border-top:3px solid '+figColor+';border-bottom:3px solid '+maisonColor+';padding:3px;box-sizing:border-box;">'
-      +rotDot+num+'<div style="display:flex;align-items:center;justify-content:center;gap:'+Math.max(2,Math.round(cellW*0.05))+'px;">'+battHtml+dotHtml+'</div></div>';
+      +rotDot+num+'<div style="display:flex;align-items:center;justify-content:center;gap:'+Math.max(2,Math.round(cellW*0.05))+'px;">'+battHtml+'<div style="display:flex;flex-direction:column;">'+dotHtml+'</div></div></div>';
   }).join('');
 
   drawThemeLines(selectedHouse);
