@@ -6423,9 +6423,14 @@ function confrontationBinome(binome, theme){
 // retenu) venaient du mode ROTATION (R1/R7, des maisons différentes,
 // ex. maison 5/11 sur LA Galaxy-Los Angeles FC) — incohérence entre le
 // mode qui tranche le vainqueur et le mode qui explique l'incident.
-// posA/posB (les vraies maisons de la carte en cours, transmis par
-// buildVerdictCard) remplacent désormais les littéraux 1/7 pour CES DEUX
-// checks uniquement. Le bloc Rubeus/Fortuna Major (§3-4, M11/M12/M7) et
+// COMBINÉ (18/07/26, demande explicite utilisateur "combine les deux",
+// après avoir mesuré qu'un remplacement pur et simple faisait perdre le
+// signal validé en mode fixe sur LA Galaxy-Los Angeles FC) : ces deux
+// checks tournent maintenant sur M1/M7 (fixe) ET posA/posB (les vraies
+// maisons de la carte affichée, identiques à M1/M7 en mode fixe) —
+// aucun signal n'est donc plus perdu, et le doublon (mode fixe = mode
+// affiché) est naturellement absorbé par le dédoublonnage pos+label en
+// fin de fonction. Le bloc Rubeus/Fortuna Major (§3-4, M11/M12/M7) et
 // les témoins/Juge (§1, M13/M14/M15) restent volontairement sur leurs
 // maisons fixes : ce sont des positions structurelles validées comme
 // telles (16/07/26, "2/2 confirmé en réel" sur M11/M12/M7 précisément),
@@ -6436,23 +6441,27 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   const antag = (typeof ANTAGONISTES_V7!=='undefined') ? ANTAGONISTES_V7 : ANTAGONISTES;
   const signals = [];
   const roleAt = pos => ELEMENT_ROLE_MATRIX_V7[els[theme[pos]]+'-'+MAISON_ELEM_V7[pos]];
+  const ancresEquipe1 = posA === 1 ? [1] : [1, posA];
+  const ancresEquipe2 = posB === 7 ? [7] : [7, posB];
 
-  // 1. Chaotique sur positions clés
+  // 1. Chaotique sur positions clés (fixe M1/M7 + mode affiché posA/posB, combinés)
   const check = (pos, label) => { if (roleAt(pos)==='Chaotique') signals.push({pos, fig:theme[pos], label}); };
-  check(posA, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)');
-  check(posB, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)');
+  ancresEquipe1.forEach(pos => check(pos, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)'));
+  ancresEquipe2.forEach(pos => check(pos, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)'));
   check(13, 'incident dans la phase de synthèse (témoin droit)');
   check(14, 'incident dans la phase de synthèse (témoin gauche)');
   check(15, 'JUGE Chaotique : issue du match par un incident décisif (penalty, rouge, CSC, accident)');
 
-  // 2. Antagoniste de l'ancre équipe 1/équipe 2 (posA/posB) présent en rôle Chaotique n'importe où
-  [[posA,'équipe 1'],[posB,'équipe 2']].forEach(([p,label])=>{
-    const ennemi = antag[theme[p]];
-    for (let pos=1; pos<=16; pos++){
-      if (theme[pos]===ennemi && roleAt(pos)==='Chaotique'){
-        signals.push({pos, fig:ennemi, label:'antagoniste de '+label+' en chaos → incident CONTRE l '+label});
+  // 2. Antagoniste de l'ancre équipe 1/équipe 2 (fixe + mode affiché, combinés) présent en rôle Chaotique n'importe où
+  [[ancresEquipe1,'équipe 1'],[ancresEquipe2,'équipe 2']].forEach(([positions,label])=>{
+    positions.forEach(p => {
+      const ennemi = antag[theme[p]];
+      for (let pos=1; pos<=16; pos++){
+        if (theme[pos]===ennemi && roleAt(pos)==='Chaotique'){
+          signals.push({pos, fig:ennemi, label:'antagoniste de '+label+' en chaos → incident CONTRE l '+label});
+        }
       }
-    }
+    });
   });
 
   // 3-4. Rubeus en M11, M12 ou M7, ou Fortuna Major en M12 — voir
