@@ -182,6 +182,22 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   quoique construites à la main, restent mieux calées sur ce cas d'usage.
   0 crash sur les 4 variantes testées, restauration des tables originales
   vérifiée après chaque test.
+- **Sélecteur de mode fixe/rotation par résultante(M1,M7)+binôme présents
+  dans le thème → REJETÉ (18/07/26)**. Piste utilisateur : calculer
+  `combine(M1,M7)` (résultante de la combinaison des deux chefs) ; si
+  cette résultante ET son binôme sont tous les deux présents dans le
+  thème (base ou résultante), analyser en mode fixe (M1 vs M7) ; sinon
+  refaire le même test avec R1/R7 et analyser en mode rotation si ça
+  matche. Testé sur l'archive complète (27 matchs, 25 avec un vainqueur
+  réel non-nul) : **11/17 (65%)** applicable, avec **4 matchs sur 25
+  laissés sans réponse** (ni fixe ni rotation validés par la condition).
+  Comparé à deux repères : comparer M1 vs M7 directement SANS aucune
+  sélection de mode donne 15/22 (68%, meilleure couverture ET meilleur
+  taux) ; le mécanisme déjà en place ("max des 4 forces", qui compare
+  simultanément M1/M7/R1/R7 et prend le maximum absolu) donne 18/25
+  (72%, toujours décisif). La condition résultante+binôme n'apporte
+  donc rien par rapport à une comparaison directe, et reste nettement
+  sous le mécanisme actuel — pas de raison de la préférer. 0 crash.
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
