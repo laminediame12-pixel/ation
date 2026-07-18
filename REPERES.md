@@ -227,6 +227,29 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
   signal spécifique N'A PAS déclenché (`rupture:false`) — ne compte pas
   comme confirmation de cette règle précise malgré la présence de Rubeus.
+  Sur via/acquisitio/caput/caput (18/07/26), la règle Rubeus-M12 A bien
+  déclenché ET dans le bon sens ("PENALTY CONTRE l'équipe 2" = penalty
+  pour R1/équipe 1, confirmé par l'utilisateur) — 1ère confirmation
+  réelle propre de cette règle précise (condition de rupture remplie
+  cette fois).
+- **INTÉGRÉ (18/07/26, doctrine utilisateur explicite : "cauda,
+  tristitia, carcer, amissio en m12 ou m6 font partie de ce qui
+  provoque la pénalité... laetitia lui il évite la pénalité lorsqu'il
+  est en m12 ou m6")** dans `detectIncidentChaotique` : Cauda Draconis,
+  Tristitia, Carcer, Amissio en M12 OU M6 ajoutent désormais un signal
+  d'incident (sans condition de rupture, contrairement à Rubeus/Fortuna
+  Major — présence seule suffit selon la doctrine donnée). Laetitia est
+  volontairement ABSENTE de cette liste (aucun signal ajouté pour elle
+  en M12/M6), reflétant son rôle protecteur annoncé — sans pour autant
+  annuler d'autres signaux indépendants déjà présents ailleurs dans le
+  thème. Explique directement, pour la première fois via une règle
+  nommée plutôt que le seul signal élémentaire générique, le carton
+  rouge confirmé sur amissio/amissio/carcer/laetitia (Cauda Draconis en
+  M12). Vérifié : 0 crash sur 400 thèmes aléatoires, le nouveau signal
+  apparaît bien sur ce cas et n'apparaît PAS sur via/tristitia/carcer/
+  populus (M6=laetitia, comme attendu). Direction du "évite" côté
+  Laetitia pas encore testée sur un vrai match confirmé sans incident
+  (n=0 pour ce sens précis) — à surveiller.
 - Signal `detectIncidentChaotique` / `check` sur l'ancre équipe 1/équipe 2
   (figure en rôle "Chaotique" — combinaison élément figure × élément
   maison, table `ELEMENT_ROLE_MATRIX_V7`, ex. eau-feu ou feu-eau) :

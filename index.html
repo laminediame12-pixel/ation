@@ -6488,6 +6488,27 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   });
   if (theme[12]==='caput_draconis') signals.push({pos:12, fig:'caput_draconis', label:'Caput Draconis en M12 : risque penalty/rouge (mesure moindre)'});
 
+  // FIGURES PROVOQUANT LE PENALTY/CARTON EN M12 OU M6 (18/07/26, doctrine
+  // utilisateur explicite : "cauda, tristitia, carcer, amissio en m12 ou
+  // m6 font partie de ce qui provoque la pénalité") — contrairement à
+  // Rubeus/Fortuna Major ci-dessus, pas de condition de rupture de binôme
+  // exigée : la simple présence suffit selon la doctrine utilisateur.
+  // Explique directement le carton rouge confirmé sur le thème
+  // amissio/amissio/carcer/laetitia (Cauda Draconis en M12, sinon
+  // inexpliqué par aucune autre règle de ce fichier).
+  // LAETITIA FAIT L'INVERSE (même demande utilisateur, même message) :
+  // "laetitia lui il évite la pénalité lorsqu'il est en m12 ou m6" — donc
+  // volontairement ABSENTE de la liste ci-dessous (aucun signal ajouté
+  // pour elle), sans pour autant annuler d'autres signaux indépendants
+  // (ex. élémentaires) déjà détectés ailleurs dans le thème.
+  var FIGURES_PENALITE_M12_M6 = ['cauda_draconis','tristitia','carcer','amissio'];
+  [12, 6].forEach(function(pos) {
+    if (FIGURES_PENALITE_M12_M6.indexOf(theme[pos]) >= 0) {
+      var contre = CAMP1.includes(pos) ? 'CONTRE l\'équipe 1' : 'CONTRE l\'équipe 2';
+      signals.push({pos: pos, fig: theme[pos], label: FL[theme[pos]]+' en M'+pos+' : figure qui provoque le penalty/carton (doctrine utilisateur, 18/07/26) '+contre});
+    }
+  });
+
   // PUER + BINÔME (16/07/26, doctrine utilisateur, n=1 réel confirmé) —
   // Puer chaotique en M7 (feu/eau, toujours vrai dès que theme[7]='puer')
   // + son binôme (Caput Draconis) présent et SANS rupture directe (bien
