@@ -198,6 +198,27 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   (72%, toujours décisif). La condition résultante+binôme n'apporte
   donc rien par rapport à une comparaison directe, et reste nettement
   sous le mécanisme actuel — pas de raison de la préférer. 0 crash.
+- **Force = compatibilité résultante-maison seule (`forceMaisonV7`) au
+  lieu de la chaîne complète → PAS ADOPTÉ, égalité de précision mais
+  couverture moindre (18/07/26)**. Piste utilisateur : "le résultante
+  détermine la force du fig de base" — au lieu de `forceMaisons`
+  (somme sur 8 figures de la chaîne de dualité), comparer juste
+  `forceMaisonV7(M1,1).force` vs `forceMaisonV7(M7,7).force` (la
+  compatibilité élémentaire résultante×maison de la SEULE maison
+  d'ancrage). Testé sur l'archive (27 matchs, 25 avec vainqueur réel) :
+  **13/18 (72%)** — EXACTEMENT le taux du mécanisme actuel (max des 4
+  forces, 18/25, 72%), mais avec 7 matchs sur 25 laissés sans réponse
+  (égalités — l'échelle `forceMaisonV7` n'a que 8 valeurs possibles :
+  20/25/40/60/70/90/95/100, donc les égalités sont fréquentes). Étendu à
+  R1/R7 (même principe que "max des 4 forces" mais avec cette mesure
+  simple) : s'effondre à 7/15 (47%) — le signal ne généralise pas à la
+  rotation. Somme sur toutes les maisons occupées par la figure (variant
+  B) : 11/23 (48%), niveau du hasard. Conclusion : précision égale au
+  mécanisme actuel sur le sous-ensemble où cette mesure simple tranche,
+  mais couverture nettement moindre et ne s'étend pas à la rotation —
+  pas de raison de remplacer le mécanisme actuel, mais assez propre pour
+  mériter un second regard si l'archive grandit (pas classé comme
+  rejeté au même titre que les pistes clairement pires ci-dessus).
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
