@@ -7712,7 +7712,7 @@ function renderThemeWithSize(hSize) {
     // interne de chaque case.
     var energyVal = energyAtHouse(fig, pos);
     var battHtml = batteryHtmlCompact(energyVal, battW, battH);
-    return '<div class="house'+(isHLPos(pos)?' highlight':'')+'" data-pos="'+pos+'" onclick="showHouseResult('+pos+')"'
+    return '<div class="house'+(isHLRotation(rotationNumber)?' highlight':'')+'" data-pos="'+pos+'" onclick="showHouseResult('+pos+')"'
       +' style="left:'+x+'px;top:'+y+'px;width:'+cellW+'px;min-height:'+cellH+'px;'
       +'border-top:3px solid '+figColor+';border-bottom:3px solid '+maisonColor+';padding:3px;box-sizing:border-box;">'
       +rotDot+num+'<div style="display:flex;align-items:center;justify-content:center;gap:'+Math.max(2,Math.round(cellW*0.05))+'px;">'+battHtml+'<div style="display:flex;flex-direction:column;">'+dotHtml+'</div></div></div>';
@@ -7720,7 +7720,12 @@ function renderThemeWithSize(hSize) {
 
   drawThemeLines(selectedHouse);
 }
-function isHLPos(pos){ return pos===1||pos===7; }
+// CORRIGÉ (17/07/26, demande utilisateur "colore R1 et R7, enlève celui
+// M1 et M7") : le surlignage (bordure/fond bleu) de la grille suivait le
+// mode fixe (M1/M7 en dur) — remplacé par la rotation (R1/R7, déjà
+// utilisée pour le petit point bleu rotDot juste à côté), cohérent avec
+// le reste de l'app qui n'affiche plus que le verdict rotation.
+function isHLRotation(rotationNumber){ return rotationNumber===1||rotationNumber===7; }
 // ÉNERGIE D'UNE FIGURE (17/07/26, demande explicite utilisateur : "varie
 // selon la position de la figure, selon la position du binôme de la
 // figure, selon le nombre de figure comme binôme dans le thème, selon
