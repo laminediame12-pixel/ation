@@ -139,6 +139,25 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   nécessaire ("il faut [figure]"), pas comme force graduelle.
 - Antagoniste² comme signal prédictif indépendant → chance pure (6% sur
   3000 thèmes aléatoires, conforme au hasard 1/16).
+- **"Antagonisme direct M1/M7 + force du chef seule (frChef) décide" →
+  REJETÉ (18/07/26)**, malgré un départ très prometteur. Piste utilisateur :
+  quand M1 et M7 sont dans une relation d'antagonisme direct (l'un attaque
+  l'autre, `ANTAGONISTES_V7`), comparer seulement `frChef` (force propre du
+  chef, sans le reste de la chaîne — assaillant/libérateur/victime/ancre)
+  plutôt que `forceMaisons` complet. Sur les 3 vrais matchs examinés
+  ensemble (Argentine-Egypte, amissio/amissio/carcer/laetitia, San Diego
+  vs Montréal) : **3/3**, un résultat net et propre. MAIS testé ensuite
+  sur l'archive complète des 27 matchs (`export_data.json`) : la condition
+  s'applique à 7 matchs (pas 3), et frChef n'y est correct que **4/7
+  (57%, à peine mieux que le hasard)**. Pire, en priorité par-dessus le
+  moteur actuel, l'effet net est NÉGATIF : répare Argentine-Egypte (M7→M1
+  correct) mais casse Olympique Lyonnais-Real Madrid et Dortmund-Lombardia
+  (M7 correct → M1 faux) — score global 18/25 → **17/25**, pire
+  qu'aujourd'hui. Le 3/3 initial était un pur effet de petit échantillon
+  (les 3 cas examinés n'étaient pas représentatifs de l'ensemble). Leçon
+  méthodologique reconfirmée (voir §5) : toujours tester une piste sur
+  l'archive complète avant intégration, pas seulement sur les cas qui ont
+  motivé l'hypothèse.
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
