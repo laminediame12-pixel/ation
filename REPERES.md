@@ -219,6 +219,22 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   pas de raison de remplacer le mécanisme actuel, mais assez propre pour
   mériter un second regard si l'archive grandit (pas classé comme
   rejeté au même titre que les pistes clairement pires ci-dessus).
+- **Le résultante "juge" (confirme/nie) la figure de base selon sa
+  polarité → PAS ADOPTÉ, même profil que la piste précédente
+  (18/07/26)**. Piste utilisateur : "le résultante confirme ou nie la
+  figure de base par rapport à ce que le résultante exprime" — comparer
+  la polarité (`FIGURE_MEANINGS_PERSO`, favorable/défavorable/mixte/
+  neutre) de la figure de base à celle de son résultante en M1/M7 :
+  même polarité (favorable+favorable ou défavorable+défavorable) =
+  "confirme" (+1) ; polarité opposée = "nie" (−1) ; mixte/neutre
+  impliqué = "ambigu" (0, pas de verdict net). Comparer le score net
+  M1 vs M7. Testé sur l'archive (27 matchs) : **12/18 (67%)**,
+  cohérent avec le mécanisme actuel mais pas meilleur. Étendu à R1/R7
+  (somme des jugements M+R) : **10/18 (56%)**, pire — même schéma que
+  la piste précédente (les signaux simples sur maison unique tiennent
+  à peu près, mais s'effondrent dès qu'on les étend à la rotation).
+  Pas intégré, même statut que la piste précédente (pas rejeté
+  franchement, juste pas meilleur que l'existant).
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
