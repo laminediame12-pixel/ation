@@ -7777,6 +7777,16 @@ function batteryHtmlCompact(value, w, h) {
 // coordonnées EXACTES déjà calculées pour chaque maison (housePixelPos),
 // avec un point de contrôle décalé perpendiculairement au segment plutôt
 // qu'au travers d'une maison intermédiaire.
+// ROUTAGE "CIRCUIT IMPRIMÉ" (17/07/26, demande explicite utilisateur,
+// schéma fourni : "pas de passer au-dessus ni au-dessous des maisons...
+// comme un circuit et les lignes ne doivent pas se superposer") —
+// remplace les courbes par un tracé à angles droits STRICT (comme des
+// pistes de circuit) : chaque liaison sort d'une maison par un segment
+// VERTICAL, emprunte un "couloir" horizontal dans l'espace VIDE entre
+// deux rangs, et entre dans la maison cible par un autre segment
+// vertical. Quand PLUSIEURS liaisons empruntent le même couloir, chacune
+// reçoit sa propre "voie" (léger décalage vertical constant), comme des
+// pistes parallèles sur un circuit — jamais superposées.
 function drawThemeLines(pos) {
   var svg = document.getElementById('theme-lines');
   if (!svg) return;
@@ -7793,17 +7803,6 @@ function drawThemeLines(pos) {
     }
     return res;
   }
-  // CORRIGÉ (17/07/26, demande utilisateur : "les liaisons ne doivent pas
-  // traverser les maisons mais suivent les espaces entre les maisons
-  // jusqu'à la maison concernée") — l'ancienne version reliait seulement
-  // par les BORDS des deux maisons concernées, mais une courbe entre deux
-  // rangs NON adjacents (ex. M1, rang 0, vers M15/Juge, rang 4.5) pouvait
-  // quand même traverser en plein les maisons des rangs intermédiaires
-  // (Nièces, Témoins) si leur position X coïncidait avec la trajectoire.
-  // Nouvelle version : construit la liste de TOUTES les maisons par rang,
-  // et fait passer le tracé par le MILIEU de chaque rang intermédiaire à
-  // une abscisse explicitement vérifiée libre (décalée si elle tombe sur
-  // une maison), rang par rang, jusqu'à la maison cible.
   var rowHouses = {}, rowBand = {};
   Object.keys(housePixelPos).forEach(function(p) {
     var hp = housePixelPos[p];
@@ -7824,43 +7823,74 @@ function drawThemeLines(pos) {
     var leftX = hit.x - pad, rightX = hit.x + hit.w + pad;
     return Math.abs(desiredX-leftX) <= Math.abs(desiredX-rightX) ? leftX : rightX;
   }
+  // Un "couloir" = l'espace vide entre deux rangs consécutifs (ou
+  // au-dessus/en dessous de la première/dernière rangée pour les liaisons
+  // au sein d'un même rang). Chaque couloir a ses propres voies (lanes) —
+  // compteur partagé par TOUTES les liaisons tracées dans cet appel, pour
+  // qu'aucune ne se superpose à une autre dans le même couloir.
+  var LANE_STEP = 5;
+  var laneUsage = {};
+  function gutterKey(rA, rB) { return rA+'|'+rB; }
+  function nextLaneY(key, baseY) {
+    var n = laneUsage[key] || 0;
+    laneUsage[key] = n + 1;
+    var mag = Math.ceil(n/2) * LANE_STEP;
+    return baseY + (n % 2 === 0 ? -mag : mag);
+  }
+  function gutterMidY(rA, rB) { return (rowBand[rA].yBottom + rowBand[rB].yTop) / 2; }
+
   function addLine(targetPos, color) {
     var a = housePixelPos[pos], b = housePixelPos[targetPos];
     if (!a || !b) return;
     var sameRow = Math.abs(a.row - b.row) < 0.01;
-    var d;
+    var pts;
     if (sameRow) {
       var ax = a.x + a.w/2, bx = b.x + b.w/2;
-      var y = Math.min(a.y, b.y) - 4;
-      var bow = Math.min(36, Math.abs(bx-ax)*0.25 + 12);
-      var cy = y - bow;
-      d = 'M '+ax+' '+y+' C '+ax+' '+cy+', '+bx+' '+cy+', '+bx+' '+y;
+      var rowIdx = sortedRows.indexOf(a.row);
+      var belowRow = rowIdx < sortedRows.length-1 ? sortedRows[rowIdx+1] : null;
+      var aboveRow = rowIdx > 0 ? sortedRows[rowIdx-1] : null;
+      var key, baseY, exitY, enterY;
+      if (belowRow != null) {
+        key = gutterKey(a.row, belowRow); baseY = gutterMidY(a.row, belowRow);
+        exitY = a.y + a.h; enterY = b.y + b.h;
+      } else if (aboveRow != null) {
+        key = gutterKey(aboveRow, a.row); baseY = gutterMidY(aboveRow, a.row);
+        exitY = a.y; enterY = b.y;
+      } else {
+        key = 'top-fallback'; baseY = Math.min(a.y,b.y) - 20; exitY = a.y; enterY = b.y;
+      }
+      var busY = nextLaneY(key, baseY);
+      pts = [{x:ax,y:exitY}, {x:ax,y:busY}, {x:bx,y:busY}, {x:bx,y:enterY}];
     } else {
       var srcFirst = a.row < b.row;
       var src = srcFirst ? a : b, dst = srcFirst ? b : a;
       var sx = src.x+src.w/2, sy = src.y+src.h;
       var tx = dst.x+dst.w/2, ty = dst.y;
       var rowsBetween = sortedRows.filter(function(r){ return r > src.row && r < dst.row; });
-      var pts = [{x:sx, y:sy}];
+      var chain = [src.row].concat(rowsBetween).concat([dst.row]);
+      pts = [{x:sx, y:sy}];
       var curX = sx;
-      rowsBetween.forEach(function(r) {
-        var safeX = findSafeX(curX, rowHouses[r]);
-        pts.push({x:safeX, y:rowBand[r].yTop-4});
-        pts.push({x:safeX, y:rowBand[r].yBottom+4});
-        curX = safeX;
-      });
+      for (var i=0;i<chain.length-1;i++) {
+        var rA = chain[i], rB = chain[i+1];
+        var isLast = (i === chain.length-2);
+        var laneY = nextLaneY(gutterKey(rA,rB), gutterMidY(rA,rB));
+        var exitX = isLast ? tx : findSafeX(curX, rowHouses[rB]);
+        pts.push({x:curX, y:laneY});
+        pts.push({x:exitX, y:laneY});
+        curX = exitX;
+      }
       pts.push({x:tx, y:ty});
-      d = 'M '+pts[0].x+' '+pts[0].y;
-      for (var i=1;i<pts.length;i++) d += ' L '+pts[i].x+' '+pts[i].y;
     }
+    var d = 'M '+pts[0].x+' '+pts[0].y;
+    for (var i=1;i<pts.length;i++) d += ' L '+pts[i].x+' '+pts[i].y;
     var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     p.setAttribute('d', d);
     p.setAttribute('fill', 'none');
     p.setAttribute('stroke', color);
     p.setAttribute('stroke-width', '2');
-    p.setAttribute('opacity', '0.85');
-    p.setAttribute('stroke-linecap', 'round');
-    p.setAttribute('stroke-linejoin', 'round');
+    p.setAttribute('opacity', '0.9');
+    p.setAttribute('stroke-linecap', 'square');
+    p.setAttribute('stroke-linejoin', 'miter');
     svg.appendChild(p);
   }
   findAll(binFig).forEach(function(p) { addLine(p, '#22c55e'); });
