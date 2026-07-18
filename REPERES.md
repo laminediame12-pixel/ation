@@ -154,6 +154,22 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   puis testée à l'aveugle. Voir §7 pour le détail de cette leçon.
 - Guerre civile R1/R7 (`guerreCivileR1R7`) reste display-only (54% vs
   50%, bruit) — jamais promue.
+- `paralysieV7(pos, theme)` sur M5/M11 (BTTS) : mécanisme déjà câblé
+  dans `calculerButsCamp` ("M5+M11 paralysees -> max 1 but") mais jamais
+  documenté ni testé contre l'archive avant ce jour. Vérifié le
+  18/07/26 (demande utilisateur "prends seulement les vrais matchs où
+  les deux équipes ont marqué... porte ton attention sur ces maisons") :
+  sur les 9 vrais matchs, **aucun** des 5 BTTS n'a de paralysie en M5
+  OU M11 (5/5), et sur les 2 cas où la paralysie apparaît (Chelsea-
+  Atlético M5, Suisse-Colombie M11), le match n'est JAMAIS BTTS (2/2).
+  Condition **suffisante** pour "au moins un camp à 0" jamais contredite
+  sur l'archive actuelle, mais pas nécessaire : France-Espagne (0-2) et
+  LA Galaxy (3-0) finissent sans BTTS sans paralysie détectée en M5/M11
+  — d'autres mécanismes expliquent ces deux cas. n=9 dont seulement 2
+  déclenchements, à réévaluer à mesure que l'archive grandit. Aucune
+  autre commonalité trouvée en M3/M4/M9/M10 (figure, rôle élémentaire,
+  ouverture, mobilité) sur les 5 matchs BTTS — testé, rien au-delà du
+  bruit.
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
   si de nouveaux vrais matchs avec penalty/rouge se présentent. Sur
   LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
