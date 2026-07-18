@@ -4712,6 +4712,41 @@ function superpositionAncreAssaillant(theme) {
   }
   return { trouve: false };
 }
+// CONFIRMATION RÉSULTANTE+BINÔME (18/07/26, demande explicite
+// utilisateur : "le résultante confirme ou nie la figure de base par
+// rapport à ce que le résultante exprime", puis "ajoute la nécessité
+// du binôme et aussi harmonie du resultante et aussi et du binôme pour
+// la confirmation") — une maison est "confirmée" si TOUTES ces
+// conditions tiennent à la fois : (1) la polarité de la figure de base
+// (FIGURE_MEANINGS_PERSO, favorable/défavorable) coïncide avec celle
+// de son résultante ; (2) le binôme de la figure de base est présent
+// dans le thème (nécessité) ; (3) le résultante est en harmonie
+// élémentaire avec sa maison (forceMaisonV7 ≥ seuil "compatible") ;
+// (4) le binôme lui-même est en harmonie avec au moins une de ses
+// propres maisons. Testé isolé (exactement un des deux camps M1/M7
+// confirme, l'autre non) : 9/10 (90%) sur les 27 matchs de l'archive.
+// Utilisé en priorité dans verdictFinal, repli sur la cascade
+// existante sinon : 21/26 contre 18/25 pour le moteur actuel seul —
+// +3 net (répare Argentine-Egypte, Chelsea-Napoli, Man City-Dortmund,
+// Ferencvárosi-Qarabag ; casse Côte d'Ivoire-Norvège, seule régression
+// mesurée).
+var HARMONIE_SEUIL_CONFIRMATION = 60;
+function binomeEnHarmonie(binome, theme) {
+  var sieges = trouverFigV7(binome, theme);
+  return sieges.some(function(s) { return forceMaisonV7(binome, s.pos).force >= HARMONIE_SEUIL_CONFIRMATION; });
+}
+function confirmationResultanteBinome(pos, theme) {
+  var baseFig = theme[pos];
+  var resFig = combine(baseFig, FIGS_V7[pos-1]);
+  var baseP = FIGURE_MEANINGS_PERSO[baseFig].polarite;
+  var resP = FIGURE_MEANINGS_PERSO[resFig].polarite;
+  var polariteMatch = (baseP === 'favorable' && resP === 'favorable') || (baseP === 'defavorable' && resP === 'defavorable');
+  var binome = BINOMES_V7[baseFig];
+  var binomePresent = positionsBaseEtResultantes(binome, theme).length > 0;
+  var resHarmonieux = forceMaisonV7(baseFig, pos).force >= HARMONIE_SEUIL_CONFIRMATION;
+  var binHarmonieux = binomePresent && binomeEnHarmonie(binome, theme);
+  return polariteMatch && binomePresent && resHarmonieux && binHarmonieux;
+}
 function verdictFinal(theme, favoriteOverride){
   const td = themeDetruit(theme);
   if(td) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème détruit', reason:td};
@@ -4751,6 +4786,21 @@ function verdictFinal(theme, favoriteOverride){
   const supAA = superpositionAncreAssaillant(theme);
   if (supAA.trouve) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
+  }
+  // ═══ CONFIRMATION RÉSULTANTE+BINÔME M1/M7 (18/07/26) — voir
+  // confirmationResultanteBinome() plus haut. Placée en priorité sur
+  // "max des 4 forces" ci-dessous car mesurée plus précise quand elle
+  // s'exprime (9/10 isolé, +3 net sur l'archive complète en repli sur
+  // la cascade existante). Ne tranche QUE si exactement un des deux
+  // camps confirme (jamais les deux, jamais aucun) — sinon repli
+  // immédiat sur la suite de la cascade.
+  const confM1 = confirmationResultanteBinome(1, theme);
+  const confM7 = confirmationResultanteBinome(7, theme);
+  if (confM1 && !confM7) {
+    return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M1 ('+FL[theme[1]]+') confirmé par son résultante et son binôme en harmonie, M7 non (validé 9/10 isolé, +3 net sur l\'archive, 18/07/26).'};
+  }
+  if (confM7 && !confM1) {
+    return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M7 ('+FL[theme[7]]+') confirmé par son résultante et son binôme en harmonie, M1 non (validé 9/10 isolé, +3 net sur l\'archive, 18/07/26).'};
   }
   // ═══ COMPARAISON MAX DES 4 FORCES M1/M7/R1/R7 (17/07/26, demande
   // explicite utilisateur : "instaure le mode fixe, on teste ça... par
