@@ -1398,7 +1398,7 @@ function toggleMatchFermeOuvertPanel() {
     if (!currentTheme) { panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>'; panel.style.display = 'block'; return; }
     var mf = matchFermeOuvert(currentTheme);
     var html = '<h3>🔒 Match fermé / ouvert</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Compte les figures "fermée" (table de doctrine existante) sur les 16 maisons de base. Piste récente (16/07/26), validée sur 6 vrais matchs seulement (hors esport) — pas encore une règle du moteur.</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:6px;">Compte les figures "fermée" (table de doctrine existante) sur les 16 maisons de base. RÉVISÉ (18/07/26) : mesuré sur 9 vrais matchs (hors esport) → 5/9 (56%), à peine au-dessus du hasard — sur les 6 premiers matchs connus au 16/07/26 c\'était 5/6 (83%), mais les 3 cas réels ajoutés depuis ont tous raté. Affichage purement informatif, PAS une règle du moteur, ne pas utiliser pour un pronostic BTTS.</div>';
     html += '<div class="kv" style="font-size:16px; font-weight:600; color:' + (mf.ferme ? '#f87171' : '#4ade80') + ';">' + mf.label + '</div>';
     html += '<div class="kv" style="font-size:12px; margin-top:6px;">' + mf.detail.join(', ') + '</div>';
     panel.innerHTML = html;

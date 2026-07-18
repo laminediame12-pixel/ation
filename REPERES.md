@@ -177,6 +177,25 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   Fortuna Major-M12 (restés fixes intentionnellement, voir plus haut) —
   à enrichir séparément si de nouveaux cas se présentent, ne pas
   fusionner les deux compteurs.
+- `matchFermeOuvert(theme)` (panneau "🔒 Match fermé/ouvert") : compte les
+  maisons dont la figure est classée "fermée" (table `OUVERTURE_FIGURE`,
+  8 figures ouvertes / 8 fermées, doctrine fixe) sur les 16 maisons de
+  base, prédit FERMÉ (risque qu'un camp reste à 0) si n≥7. RÉVISÉ
+  (18/07/26, vérification demandée par l'utilisateur "vérifie match
+  fermé ou ouverte") : le panneau affichait "validé sur 6 vrais matchs"
+  sans taux — mesuré sur les 9 vrais matchs de l'archive §3, le score
+  réel est **5/9 (56%), à peine au-dessus du hasard**. Sur les 6 premiers
+  matchs connus au 16/07/26 c'était bien 5/6 (83%, HIT sur Liverpool-Man
+  City, Chelsea-Atlético, France-Espagne, Suisse-Colombie, USA-Belgique ;
+  MISS sur Argentine-Egypte), mais les 3 cas réels ajoutés depuis (match
+  virtuel 8-1, St Louis City 3-2, LA Galaxy 3-0) ont TOUS raté — la
+  revendication "6 matchs" du panneau était devenue fausse par
+  obsolescence (jamais remise à jour), pas par erreur de calcul (la
+  formule fait exactement ce qu'elle dit). Texte du panneau corrigé pour
+  afficher le taux réel 5/9 au lieu de la revendication périmée. Reste
+  display-only, jamais câblé dans `verdictFinal` ni dans le calcul du
+  score — à ne pas promouvoir en signal fiable sans un échantillon plus
+  large qui dépasse nettement le hasard.
 
 ## 6. Fonctionnement relationnel des 16 figures — constats (17/07/26)
 
