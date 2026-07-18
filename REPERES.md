@@ -165,11 +165,29 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   Condition **suffisante** pour "au moins un camp à 0" jamais contredite
   sur l'archive actuelle, mais pas nécessaire : France-Espagne (0-2) et
   LA Galaxy (3-0) finissent sans BTTS sans paralysie détectée en M5/M11
-  — d'autres mécanismes expliquent ces deux cas. n=9 dont seulement 2
-  déclenchements, à réévaluer à mesure que l'archive grandit. Aucune
-  autre commonalité trouvée en M3/M4/M9/M10 (figure, rôle élémentaire,
-  ouverture, mobilité) sur les 5 matchs BTTS — testé, rien au-delà du
-  bruit.
+  — voir ci-dessous, un autre marqueur (Via en M4) explique ces deux cas.
+  n=9 dont seulement 2 déclenchements pour paralysie M5/M11, à
+  réévaluer à mesure que l'archive grandit. Aucune autre commonalité
+  trouvée en M3/M9 (figure, rôle élémentaire, ouverture, mobilité) sur
+  les 5 matchs BTTS — testé, rien au-delà du bruit.
+- **Via en M4 → BTTS=false, piste forte** (18/07/26, demande utilisateur
+  "cherche si m4 et m10 expliquent ces deux cas") : sur les 9 vrais
+  matchs, Via en M4 (force 60, rôle "Absorbeur" via `forceMaisonV7`)
+  apparaît dans EXACTEMENT les 3 matchs BTTS=false qui ont M4 comme
+  maison camp1 concernée (Chelsea-Atlético 0-5, France-Espagne 0-2, LA
+  Galaxy 3-0) et dans AUCUN des 5 matchs BTTS=true — split parfait 3/3
+  vs 0/5. Base rate mesurée sur 3000 thèmes aléatoires : Via en M4
+  n'apparaît que dans 5,6% des thèmes — avoir 3/9 dans l'archive réelle
+  (33%) est net (P≈1% sous hasard pur, binomiale n=9 p=0,056). M10 ne
+  suit PAS le même schéma (Chelsea et France-Espagne partagent
+  M10=Acquisitio, mais LA Galaxy a M10=Laetitia — pas de figure commune
+  aux 3), donc c'est spécifiquement M4=Via, pas la paire M4+M10, qui
+  porte le signal. PRUDENCE MÉTHODOLOGIQUE (voir §5, note sur les règles
+  dérivées à la main) : n=9 seulement, et plusieurs hypothèses ont été
+  testées ce jour-là (comparaisons multiples) — un résultat propre sur
+  un aussi petit échantillon peut encore être un coup de chance. Pas
+  câblé dans le moteur, à confirmer sur de nouveaux vrais matchs avant
+  toute intégration.
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
   si de nouveaux vrais matchs avec penalty/rouge se présentent. Sur
   LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
