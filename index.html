@@ -7679,6 +7679,7 @@ function renderThemeWithSize(hSize) {
   housePixelPos = {};
   var battW = Math.max(3, Math.round(cellW*0.09));
   var battH = Math.max(16, Math.round(cellH*0.6));
+  computeThemeEnergyRange(currentTheme);
 
   layout.innerHTML = Object.keys(positions).map(function(k) {
     var pos = Number(k);
@@ -7720,22 +7721,45 @@ function renderThemeWithSize(hSize) {
   drawThemeLines(selectedHouse);
 }
 function isHLPos(pos){ return pos===1||pos===7; }
-// Énergie d'une figure à UNE maison précise (17/07/26) : même formule que
-// forceRelationnelleFigure (force de base + bonus auto-construction +25,
-// auto-destruction -30, double concordance +20), appliquée à un seul
-// siège plutôt que sommée sur tout le thème.
-var ENERGY_MIN_V7 = -30, ENERGY_MAX_V7 = 145;
-function energyAtHouse(fig, pos) {
-  var fm = forceMaisonV7(fig, pos);
-  var v = fm.force;
-  if (checkAutoConstruction(fig, pos)) v += 25;
-  if (checkAutoDestruction(fig, pos)) v -= 30;
-  if (checkMaisonDoubleConcordance(fig, pos).match) v += 20;
+// ÉNERGIE D'UNE FIGURE (17/07/26, demande explicite utilisateur : "varie
+// selon la position de la figure, selon la position du binôme de la
+// figure, selon le nombre de figure comme binôme dans le thème, selon
+// antagoniste direct de la figure le nombre et aussi sa santé détermine
+// force attaque et selon binôme du antagoniste") — reprend EXACTEMENT
+// chaineDualite(fig, theme).forceMaisons, déjà la brique de calcul
+// utilisée par le verdict (ancrage, max des 4 forces) : somme la force
+// relationnelle (position + nombre d'occurrences base/résultante, via
+// forceRelationnelleFigure/trouverFigV7) du chef LUI-MÊME, de son ancre
+// (binôme), de son assaillant (antagoniste direct), du binôme de
+// l'assaillant, du libérateur et de son binôme, de la victime et de son
+// binôme, plus la contribution signée obstacle/attaquant (Constat 11).
+// "Sa santé détermine force d'attaque" = cd.libere (menacé mais pas
+// libéré → pénalité, cf. chaineDualite) : appliqué comme facteur -15%.
+// Normalisé par thème (min/max des 16 sièges) plutôt que sur une plage
+// fixe, pour rester lisible quelle que soit l'amplitude du thème.
+var themeEnergyMin = 0, themeEnergyMax = 1;
+function rawEnergyOf(fig, theme) {
+  var cd = chaineDualite(fig, theme);
+  var v = cd.forceMaisons;
+  if (!cd.libere) v = Math.round(v * 0.85);
   return v;
 }
-function energyColorV7(v) { return v < 40 ? '#f87171' : v < 90 ? '#fbbf24' : '#4ade80'; }
+function computeThemeEnergyRange(theme) {
+  var vals = [];
+  for (var p = 1; p <= 16; p++) vals.push(rawEnergyOf(theme[p], theme));
+  themeEnergyMin = Math.min.apply(null, vals);
+  themeEnergyMax = Math.max.apply(null, vals);
+  if (themeEnergyMax === themeEnergyMin) themeEnergyMax = themeEnergyMin + 1;
+}
+function energyAtHouse(fig, pos) {
+  return rawEnergyOf(fig, currentTheme);
+}
+function energyColorV7(v) {
+  var pct = (v - themeEnergyMin) / (themeEnergyMax - themeEnergyMin);
+  return pct < 0.35 ? '#f87171' : pct < 0.7 ? '#fbbf24' : '#4ade80';
+}
 function batteryHtmlCompact(value, w, h) {
-  var pct = Math.max(0, Math.min(1, (value - ENERGY_MIN_V7) / (ENERGY_MAX_V7 - ENERGY_MIN_V7)));
+  var pct = Math.max(0, Math.min(1, (value - themeEnergyMin) / (themeEnergyMax - themeEnergyMin)));
   var fillH = Math.round(pct * h);
   return '<div title="Énergie: '+value+'" style="flex-shrink:0;width:'+w+'px;height:'+h+'px;background:#1e293b;border:1px solid #334155;border-radius:1px;position:relative;overflow:hidden;">'
     +'<div style="position:absolute;bottom:0;left:0;right:0;height:'+fillH+'px;background:'+energyColorV7(value)+';"></div></div>';
@@ -7764,10 +7788,37 @@ function drawThemeLines(pos) {
     }
     return res;
   }
-  // Sort par le bord (haut/bas/côté) de la case, pas par son centre —
-  // même principe que le bouclier : la courbe emprunte l'espace ENTRE les
-  // maisons (rowGap vertical, ou l'arche au-dessus d'une même rangée),
-  // jamais le centre d'une maison intermédiaire.
+  // CORRIGÉ (17/07/26, demande utilisateur : "les liaisons ne doivent pas
+  // traverser les maisons mais suivent les espaces entre les maisons
+  // jusqu'à la maison concernée") — l'ancienne version reliait seulement
+  // par les BORDS des deux maisons concernées, mais une courbe entre deux
+  // rangs NON adjacents (ex. M1, rang 0, vers M15/Juge, rang 4.5) pouvait
+  // quand même traverser en plein les maisons des rangs intermédiaires
+  // (Nièces, Témoins) si leur position X coïncidait avec la trajectoire.
+  // Nouvelle version : construit la liste de TOUTES les maisons par rang,
+  // et fait passer le tracé par le MILIEU de chaque rang intermédiaire à
+  // une abscisse explicitement vérifiée libre (décalée si elle tombe sur
+  // une maison), rang par rang, jusqu'à la maison cible.
+  var rowHouses = {}, rowBand = {};
+  Object.keys(housePixelPos).forEach(function(p) {
+    var hp = housePixelPos[p];
+    if (!rowHouses[hp.row]) { rowHouses[hp.row] = []; rowBand[hp.row] = {yTop:hp.y, yBottom:hp.y+hp.h}; }
+    rowHouses[hp.row].push({x:hp.x, w:hp.w});
+    rowBand[hp.row].yTop = Math.min(rowBand[hp.row].yTop, hp.y);
+    rowBand[hp.row].yBottom = Math.max(rowBand[hp.row].yBottom, hp.y+hp.h);
+  });
+  var sortedRows = Object.keys(rowHouses).map(Number).sort(function(a,b){return a-b;});
+  function findSafeX(desiredX, houses) {
+    var pad = 6;
+    var hit = null;
+    for (var i=0;i<houses.length;i++) {
+      var h = houses[i];
+      if (desiredX >= h.x-pad && desiredX <= h.x+h.w+pad) { hit = h; break; }
+    }
+    if (!hit) return desiredX;
+    var leftX = hit.x - pad, rightX = hit.x + hit.w + pad;
+    return Math.abs(desiredX-leftX) <= Math.abs(desiredX-rightX) ? leftX : rightX;
+  }
   function addLine(targetPos, color) {
     var a = housePixelPos[pos], b = housePixelPos[targetPos];
     if (!a || !b) return;
@@ -7780,12 +7831,22 @@ function drawThemeLines(pos) {
       var cy = y - bow;
       d = 'M '+ax+' '+y+' C '+ax+' '+cy+', '+bx+' '+cy+', '+bx+' '+y;
     } else {
-      var upperIsA = a.row < b.row;
-      var uH = upperIsA ? a : b, lH = upperIsA ? b : a;
-      var ux = uH.x + uH.w/2, uy = uH.y + uH.h;
-      var lx = lH.x + lH.w/2, ly = lH.y;
-      var ctrl = Math.max(6, Math.min(16, (ly-uy)*0.35));
-      d = 'M '+ux+' '+uy+' C '+ux+' '+(uy+ctrl)+', '+lx+' '+(ly-ctrl)+', '+lx+' '+ly;
+      var srcFirst = a.row < b.row;
+      var src = srcFirst ? a : b, dst = srcFirst ? b : a;
+      var sx = src.x+src.w/2, sy = src.y+src.h;
+      var tx = dst.x+dst.w/2, ty = dst.y;
+      var rowsBetween = sortedRows.filter(function(r){ return r > src.row && r < dst.row; });
+      var pts = [{x:sx, y:sy}];
+      var curX = sx;
+      rowsBetween.forEach(function(r) {
+        var safeX = findSafeX(curX, rowHouses[r]);
+        pts.push({x:safeX, y:rowBand[r].yTop-4});
+        pts.push({x:safeX, y:rowBand[r].yBottom+4});
+        curX = safeX;
+      });
+      pts.push({x:tx, y:ty});
+      d = 'M '+pts[0].x+' '+pts[0].y;
+      for (var i=1;i<pts.length;i++) d += ' L '+pts[i].x+' '+pts[i].y;
     }
     var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     p.setAttribute('d', d);
@@ -7794,6 +7855,7 @@ function drawThemeLines(pos) {
     p.setAttribute('stroke-width', '2');
     p.setAttribute('opacity', '0.85');
     p.setAttribute('stroke-linecap', 'round');
+    p.setAttribute('stroke-linejoin', 'round');
     svg.appendChild(p);
   }
   findAll(binFig).forEach(function(p) { addLine(p, '#22c55e'); });
