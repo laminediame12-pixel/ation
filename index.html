@@ -7839,13 +7839,25 @@ function drawThemeLines(pos) {
   }
   function gutterMidY(rA, rB) { return (rowBand[rA].yBottom + rowBand[rB].yTop) / 2; }
 
+  // CORRIGÉ (17/07/26, demande utilisateur : "ne les fais pas sortir du
+  // maison du même côté pour éviter la confusion ou la fusion de deux
+  // lignes") — quand une même maison est reliée à la fois par le binôme
+  // (vert) ET l'antagoniste (rouge) — possible si sa base est l'un et sa
+  // résultante l'autre — les deux traits sortaient du même point central,
+  // se touchant/se confondant au bord de la maison. Chaque couleur a
+  // maintenant son propre point d'ancrage fixe (vert vers la gauche du
+  // bord, rouge vers la droite), jamais le même pixel.
+  function edgeX(house, color) {
+    var frac = color === '#22c55e' ? 0.32 : 0.68;
+    return house.x + house.w * frac;
+  }
   function addLine(targetPos, color) {
     var a = housePixelPos[pos], b = housePixelPos[targetPos];
     if (!a || !b) return;
     var sameRow = Math.abs(a.row - b.row) < 0.01;
     var pts;
     if (sameRow) {
-      var ax = a.x + a.w/2, bx = b.x + b.w/2;
+      var ax = edgeX(a, color), bx = edgeX(b, color);
       var rowIdx = sortedRows.indexOf(a.row);
       var belowRow = rowIdx < sortedRows.length-1 ? sortedRows[rowIdx+1] : null;
       var aboveRow = rowIdx > 0 ? sortedRows[rowIdx-1] : null;
@@ -7864,8 +7876,8 @@ function drawThemeLines(pos) {
     } else {
       var srcFirst = a.row < b.row;
       var src = srcFirst ? a : b, dst = srcFirst ? b : a;
-      var sx = src.x+src.w/2, sy = src.y+src.h;
-      var tx = dst.x+dst.w/2, ty = dst.y;
+      var sx = edgeX(src, color), sy = src.y+src.h;
+      var tx = edgeX(dst, color), ty = dst.y;
       var rowsBetween = sortedRows.filter(function(r){ return r > src.row && r < dst.row; });
       var chain = [src.row].concat(rowsBetween).concat([dst.row]);
       pts = [{x:sx, y:sy}];
