@@ -158,6 +158,30 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   méthodologique reconfirmée (voir §5) : toujours tester une piste sur
   l'archive complète avant intégration, pas seulement sur les cas qui ont
   motivé l'hypothèse.
+- **Tables classiques de géomancie (Inversion/Reversion/Conversion) en
+  remplacement de BINOMES_V7/ANTAGONISTES_V7 → REJETÉ (18/07/26)**,
+  recherche demandée par l'utilisateur ("creuse sur tiktok et youtube...
+  pour récupérer des données outils à notre système"). Recherche web
+  (WebFetch bloqué à 100% dans cet environnement — même example.com
+  échoue en 403 ; TikTok/YouTube hors de portée, contenu vidéo
+  inaccessible ; uniquement WebSearch/résumés utilisés) a trouvé un vrai
+  système classique (Cattan/Fludd, XVIe siècle) : 3 opérations fixes sur
+  les 16 figures (Inversion, Reversion, Conversion), chacune formant 8
+  paires mutuelles stables — vérifié auto-cohérent (48 relations
+  recoupées dans les deux sens). Confirmé structurellement DIFFÉRENT de
+  nos tables actuelles (décalage fixe +2/-3 dans l'ordre `FIGS_V7`, un
+  système propre à l'utilisateur, pas une reprise de la doctrine
+  classique). Testé sur l'archive complète (27 matchs), tables
+  substituées temporairement en mémoire puis restaurées (aucun fichier
+  modifié) : **toutes les variantes sont pires que l'actuel (18/27,
+  67%)** — swap complet (antagoniste=Reversion, binôme=Conversion) 13/27
+  (48%) ; antagoniste=Reversion seul 17/27 (63%) ; antagoniste=Inversion
+  seul 15/27 (56%) ; binôme=Conversion seul 14/27 (52%). Cohérent avec le
+  fait que ces relations classiques visent la divination personnelle
+  (mariage, voyage, santé), pas le football — nos tables actuelles,
+  quoique construites à la main, restent mieux calées sur ce cas d'usage.
+  0 crash sur les 4 variantes testées, restauration des tables originales
+  vérifiée après chaque test.
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
