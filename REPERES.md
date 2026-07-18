@@ -250,6 +250,18 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   populus (M6=laetitia, comme attendu). Direction du "évite" côté
   Laetitia pas encore testée sur un vrai match confirmé sans incident
   (n=0 pour ce sens précis) — à surveiller.
+- **INTÉGRÉ (18/07/26, demande explicite utilisateur "intègre tout")**,
+  complétant la doctrine Rubeus/Puer restée partielle : **Rubeus en M8**
+  ajouté au même groupe rupture-conditionné que M11/M7 (`[[11,'rubeus'],
+  [12,'rubeus'],[7,'rubeus'],[8,'rubeus'],[12,'fortuna_major']]`), suite
+  à "rubeus en m11,7,8 pénalité" — n=0 réel confirmé pour M8
+  spécifiquement, mécanisme identique à M11/M7 par cohérence. **Puer en
+  M1** ajouté en signal simple/inconditionnel (même style que Puer-M6,
+  PAS la condition binôme du cas M7) suite à "puer en m7,1" — n=0 réel
+  confirmé pour M1 spécifiquement. Vérifié : aucune régression sur les
+  13 thèmes déjà archivés (vainqueur/BTTS/penalty identiques avant/
+  après, aucun des deux ne concernait ces thèmes), 0 crash sur 600
+  thèmes aléatoires.
 - Signal `detectIncidentChaotique` / `check` sur l'ancre équipe 1/équipe 2
   (figure en rôle "Chaotique" — combinaison élément figure × élément
   maison, table `ELEMENT_ROLE_MATRIX_V7`, ex. eau-feu ou feu-eau) :

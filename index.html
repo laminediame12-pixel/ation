@@ -6464,17 +6464,21 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
     });
   });
 
-  // 3-4. Rubeus en M11, M12 ou M7, ou Fortuna Major en M12 — voir
+  // 3-4. Rubeus en M11, M12, M7 ou M8, ou Fortuna Major en M12 — voir
   // confrontationBinome() ci-dessus : le signal n'existe QUE SI le
   // binôme est présent ET en rupture directe avec sa propre maison ;
   // la nature (rouge/penalty) suit alors la position du déclencheur :
-  // M12 (surface de réparation) → penalty, M11/M7 → rouge. DIRECTION
-  // (16/07/26, 2/2 confirmé en réel) : M7, M11 et M12 appartiennent tous
-  // au camp M7 (CAMP2=[5,6,7,8,11,12,14,15]) — l'incident se produit
+  // M12 (surface de réparation) → penalty, M11/M7/M8 → rouge. DIRECTION
+  // (16/07/26, 2/2 confirmé en réel) : M7, M8, M11 et M12 appartiennent
+  // tous au camp M7 (CAMP2=[5,6,7,8,11,12,14,15]) — l'incident se produit
   // dans le territoire de ce camp, donc c'est LUI qui concède (penalty/
   // rouge CONTRE M7). Confirmé sur le cas Puer/M7 (pénalty pour M1) et
   // sur ce thème-ci (Rubeus en M12, pénalty confirmé contre M7).
-  [[11,'rubeus'],[12,'rubeus'],[7,'rubeus'],[12,'fortuna_major']].forEach(([pos,fig]) => {
+  // M8 AJOUTÉ (18/07/26, demande explicite utilisateur : "rubeus en
+  // m11,7,8 pénalité") — même mécanisme que M11/M7, pas encore de cas
+  // réel confirmé pour M8 spécifiquement (n=0), doctrine utilisateur
+  // directe.
+  [[11,'rubeus'],[12,'rubeus'],[7,'rubeus'],[8,'rubeus'],[12,'fortuna_major']].forEach(([pos,fig]) => {
     if (theme[pos] !== fig) return;
     const binome = BINOMES_V7[fig];
     const conf = confrontationBinome(binome, theme);
@@ -6529,6 +6533,14 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
 
   // 5. Puer en M6
   if (theme[6]==='puer') signals.push({pos:6, fig:'puer', label:'Puer en M6 : impulsivité, risque penalty/rouge'});
+
+  // Puer en M1 (18/07/26, demande explicite utilisateur : "puer en
+  // m7,1" — confirmé par l'utilisateur comme "un feu agressif
+  // chaotique" en accord avec l'explication élémentaire donnée) : même
+  // traitement simple/inconditionnel que M6 (pas la condition binôme
+  // du cas M7 ci-dessus, qui repose sur un mécanisme différent). n=0
+  // réel confirmé pour M1 spécifiquement.
+  if (theme[1]==='puer') signals.push({pos:1, fig:'puer', label:'Puer en M1 : impulsivité, risque penalty/rouge (doctrine utilisateur, 18/07/26)'});
 
   // 6. Figures très négatives simultanément en M6 ET M12 (maisons opposées)
   const negM6 = FIGURES_TRES_NEGATIVES.includes(theme[6]);
