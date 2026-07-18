@@ -111,6 +111,7 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 | St. Louis City SC vs Sporting Kansas City | conjunctio/via/puella/puer | 3-2, **M1** | — | **HIT (M1) via ancrage chaîne complète (force M1=820, force M7=710)** — le `scoreMain` affiché par `buildVerdictCard` pour ce thème est **3-2**, exactement le score réel (mécanisme distinct : ancrage tranche le vainqueur, `buildScoreFromCamps` estime le score, coïncidence exacte à noter mais pas encore généralisable sur un seul cas) |
 | LA Galaxy vs Los Angeles FC | via/albus/caput_draconis/via | 3-0, **M7** (2e but sur penalty, 1re MT) | ÉGALITÉ TOTALE (M1=M7=875 — même figure Via aux deux ancres, chaîne isolée incapable de départager) | **HIT (M7) via VERDICT MAX 4 FORCES (M1=875, M7=875, R1=645, R7=895)** — seul mécanisme ayant pu trancher ce thème, le mode fixe classique étant dans l'incapacité totale de départager. `Penalty/Rouge` prédit **Oui** et **confirmé** (LA Galaxy concède, Los Angeles FC transforme) — via `check(1)` (Via/eau en M1/feu → rôle "Chaotique"). Ce signal ne se retrouvait PAS en mode rotation seul (R1=maison 5=carcer=Absorbeur, R7=maison 11=albus=Adaptateur, aucun Chaotique) : `detectIncidentChaotique` COMBINE désormais les deux modes (18/07/26, demande explicite utilisateur "combine les deux", après un essai de remplacement pur qui avait fait perdre ce signal) — check(1)/check(7) fixes ET check(posA)/check(posB) du mode réellement affiché tournent tous les deux, dédoublonnés automatiquement (pos+label identiques) quand les deux modes coïncident. Le signal Rubeus-en-M12 (`[12,'rubeus']`, resté fixe intentionnellement) N'A PAS déclenché (`confrontationBinome` renvoie `rupture:false`) — c'est bien le combo Via/feu/M1 qui explique l'incident. Score prédit 2-3 (BTTS oui) faux face au 3-0 clean sheet réel — seuls le vainqueur et le signal penalty se confirment |
 | (match, 18/07/26) M1=Caput Draconis/M7=Puer | caput_draconis/via/acquisitio/fortuna_major | 2-1, **M1** | — | **MISS du nul (impasse totale de boucle, "guerre civile" à 2/2 avant ce cas → 2/3 maintenant)** — `verdictFinal` avait tranché **Nul** ("impasse totale de boucle"), mais le match n'était PAS nul (2-1 Équipe 1). La carte affichée (estimation moteur V7, `verdictFinal` étant muet sur le vainqueur) donnait "Équipe 1, 3-2" — **vainqueur correct** malgré un score exact faux. `BTTS` prédit **Oui** et **confirmé** (2-1, les deux marquent) — Via N'ÉTAIT PAS en M4 (M4=fortuna_major) donc le correctif Via-M4 (18/07/26) ne s'applique pas ici, cohérent avec le résultat réel |
+| (match, 18/07/26) M1=Amissio/M7=Fortuna Minor | amissio/amissio/carcer/laetitia | 4-0, **M1** | — | **HIT (M1) via VERDICT MAX 4 FORCES (M1=1395, M7=710, R1=925, R7=960)** — 2e confirmation réelle de ce mécanisme (après LA Galaxy). `Penalty/Rouge` prédit **Oui** et **confirmé** (carton rouge réel). `BTTS` prédit **Oui** mais **FAUX** — réel 4-0, Équipe 2 totalement muette. Score exact aussi faux (2-1 prédit vs 4-0 réel). Via N'ÉTAIT PAS en M4 (M4=laetitia) donc le correctif Via-M4 ne s'applique pas — mais **Via est présent EN MÊME TEMPS EN M5 ET M11** (les deux maisons "camp M7"/attaque désignées par `butsGuerreDes16`), et c'est justement le camp M7 qui reste à 0 — parallèle structurel frappant avec Via-M4 (même logique, côté opposé), mais **n=1 seulement** dans l'archive actuelle (aucun autre thème connu n'a Via en M5 ET M11 à la fois) : piste notée en §5, PAS intégrée (Via en M5 SEUL, lui, apparaît aussi sur Suisse-Colombie et Argentine-Egypte sans direction cohérente — c'est la conjonction M5+M11 qui semble spécifique, à confirmer) |
 
 L'archive complète (27 matchs, dont 19 esport) est dans
 `/tmp/claude-0/-home-user-ation/43bdd8e4-4f60-5524-bd72-213622d663af/scratchpad/export_data.json`
@@ -207,6 +208,19 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   correctif s'applique, pour transparence. À confirmer sur de nouveaux
   vrais matchs avant d'envisager une intégration dans `verdictFinal`
   lui-même.
+- **Via en M5 ET M11 (les deux à la fois) → camp M7 muet, piste n=1
+  SEULEMENT** (18/07/26, match amissio/amissio/carcer/laetitia, réel
+  4-0 Équipe 1, Équipe 2 à 0) : parallèle structurel exact au
+  correctif Via-M4 (même logique, camp opposé — M5/M11 sont les
+  maisons "camp M7" désignées par `butsGuerreDes16`, comme M4/M10 le
+  sont pour camp M1), mais un SEUL cas connu jusqu'ici, contre 3 pour
+  Via-M4 avant intégration. Via en M5 SEUL (sans M11) apparaît aussi
+  sur Suisse-Colombie (0-0) et Argentine-Egypte (3-2, BTTS=true) sans
+  direction cohérente — c'est bien la conjonction M5+M11 qui semble
+  spécifique, pas M5 seul. PAS intégré, à observer sur de nouveaux
+  vrais matchs avant même d'envisager quoi que ce soit (n=1 est
+  strictement insuffisant, contrairement à Via-M4 qui avait 3
+  confirmations propres avant intégration).
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
   si de nouveaux vrais matchs avec penalty/rouge se présentent. Sur
   LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
