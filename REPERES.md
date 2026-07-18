@@ -109,6 +109,7 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 | Argentine vs Egypte | carcer/amissio/carcer/puer | 3-2, **M1** | HIT (M1) | — |
 | (match virtuel, 05:30) M1=Fortuna Minor/M7=Albus | fortuna_minor/tristitia/conjunctio/acquisitio | 8-1, **M1** | — | **HIT (M1) via ancrage chaîne complète (force 1140 vs 570)** — le mode fixe classique (écart de dominance) se serait trompé : scoreMain interne 1-4 pour M7, sens opposé au réel |
 | St. Louis City SC vs Sporting Kansas City | conjunctio/via/puella/puer | 3-2, **M1** | — | **HIT (M1) via ancrage chaîne complète (force M1=820, force M7=710)** — le `scoreMain` affiché par `buildVerdictCard` pour ce thème est **3-2**, exactement le score réel (mécanisme distinct : ancrage tranche le vainqueur, `buildScoreFromCamps` estime le score, coïncidence exacte à noter mais pas encore généralisable sur un seul cas) |
+| LA Galaxy vs Los Angeles FC | via/albus/caput_draconis/via | 3-0, **M7** (2e but sur penalty, 1re MT) | ÉGALITÉ TOTALE (M1=M7=875 — même figure Via aux deux ancres, chaîne isolée incapable de départager) | **HIT (M7) via VERDICT MAX 4 FORCES (M1=875, M7=875, R1=645, R7=895)** — seul mécanisme ayant pu trancher ce thème, le mode fixe classique étant dans l'incapacité totale de départager. `Penalty/Rouge` prédit **Oui** et **confirmé** — mais via un mécanisme précis à noter : `detectIncidentChaotique` a signalé `check(1)` (Via en M1, élément eau, maison élément feu → rôle "Chaotique" dans `ELEMENT_ROLE_MATRIX_V7['eau-feu']`) → "incident probable CONTRE l'équipe 1", confirmé (LA Galaxy concède le penalty, Los Angeles FC le transforme). Le signal Rubeus-en-M12 (`[12,'rubeus']` dans `detectIncidentChaotique`) N'A PAS déclenché sur ce thème (`confrontationBinome` renvoie `rupture:false`) — l'incident réel s'explique entièrement par le signal Via/feu en M1, pas par Rubeus/M12 malgré sa présence dans le thème. Score prédit 2-3 (BTTS oui) faux face au 3-0 clean sheet réel — seuls le vainqueur et le signal penalty se confirment, pas le score ni le BTTS |
 
 L'archive complète (27 matchs, dont 19 esport) est dans
 `/tmp/claude-0/-home-user-ation/43bdd8e4-4f60-5524-bd72-213622d663af/scratchpad/export_data.json`
@@ -154,7 +155,19 @@ L'archive complète (27 matchs, dont 19 esport) est dans
 - Guerre civile R1/R7 (`guerreCivileR1R7`) reste display-only (54% vs
   50%, bruit) — jamais promue.
 - Rubeus/Fortuna Major/Puer penalty-rouge : n=1-2 seulement, à enrichir
-  si de nouveaux vrais matchs avec penalty/rouge se présentent.
+  si de nouveaux vrais matchs avec penalty/rouge se présentent. Sur
+  LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
+  signal spécifique N'A PAS déclenché (`rupture:false`) — ne compte pas
+  comme confirmation de cette règle précise malgré la présence de Rubeus.
+- Signal `detectIncidentChaotique` / `check(1)`/`check(7)` (figure en
+  rôle "Chaotique" — combinaison élément figure × élément maison, table
+  `ELEMENT_ROLE_MATRIX_V7`, ex. eau-feu ou feu-eau — sur M1 ou M7) :
+  n=1 réel confirmé (LA Galaxy vs Los Angeles FC, Via/eau en M1/feu →
+  "incident CONTRE l'équipe 1" → penalty concédé par LA Galaxy, transformé
+  par Los Angeles FC, exact). Mécanisme distinct de Rubeus-M11/M12 et
+  Fortuna Major-M12 (ceux-là passent par `confrontationBinome`/rupture,
+  celui-ci par la matrice élémentaire seule) — à enrichir séparément si
+  de nouveaux cas se présentent, ne pas fusionner les deux compteurs.
 
 ## 6. Fonctionnement relationnel des 16 figures — constats (17/07/26)
 
