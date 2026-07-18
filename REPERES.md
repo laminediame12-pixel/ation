@@ -109,7 +109,7 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 | Argentine vs Egypte | carcer/amissio/carcer/puer | 3-2, **M1** | HIT (M1) | — |
 | (match virtuel, 05:30) M1=Fortuna Minor/M7=Albus | fortuna_minor/tristitia/conjunctio/acquisitio | 8-1, **M1** | — | **HIT (M1) via ancrage chaîne complète (force 1140 vs 570)** — le mode fixe classique (écart de dominance) se serait trompé : scoreMain interne 1-4 pour M7, sens opposé au réel |
 | St. Louis City SC vs Sporting Kansas City | conjunctio/via/puella/puer | 3-2, **M1** | — | **HIT (M1) via ancrage chaîne complète (force M1=820, force M7=710)** — le `scoreMain` affiché par `buildVerdictCard` pour ce thème est **3-2**, exactement le score réel (mécanisme distinct : ancrage tranche le vainqueur, `buildScoreFromCamps` estime le score, coïncidence exacte à noter mais pas encore généralisable sur un seul cas) |
-| LA Galaxy vs Los Angeles FC | via/albus/caput_draconis/via | 3-0, **M7** (2e but sur penalty, 1re MT) | ÉGALITÉ TOTALE (M1=M7=875 — même figure Via aux deux ancres, chaîne isolée incapable de départager) | **HIT (M7) via VERDICT MAX 4 FORCES (M1=875, M7=875, R1=645, R7=895)** — seul mécanisme ayant pu trancher ce thème, le mode fixe classique étant dans l'incapacité totale de départager. `Penalty/Rouge` prédit **Oui** et **confirmé** — mais via un mécanisme précis à noter : `detectIncidentChaotique` a signalé `check(1)` (Via en M1, élément eau, maison élément feu → rôle "Chaotique" dans `ELEMENT_ROLE_MATRIX_V7['eau-feu']`) → "incident probable CONTRE l'équipe 1", confirmé (LA Galaxy concède le penalty, Los Angeles FC le transforme). Le signal Rubeus-en-M12 (`[12,'rubeus']` dans `detectIncidentChaotique`) N'A PAS déclenché sur ce thème (`confrontationBinome` renvoie `rupture:false`) — l'incident réel s'explique entièrement par le signal Via/feu en M1, pas par Rubeus/M12 malgré sa présence dans le thème. Score prédit 2-3 (BTTS oui) faux face au 3-0 clean sheet réel — seuls le vainqueur et le signal penalty se confirment, pas le score ni le BTTS |
+| LA Galaxy vs Los Angeles FC | via/albus/caput_draconis/via | 3-0, **M7** (2e but sur penalty, 1re MT) | ÉGALITÉ TOTALE (M1=M7=875 — même figure Via aux deux ancres, chaîne isolée incapable de départager) | **HIT (M7) via VERDICT MAX 4 FORCES (M1=875, M7=875, R1=645, R7=895)** — seul mécanisme ayant pu trancher ce thème, le mode fixe classique étant dans l'incapacité totale de départager. `Penalty/Rouge` : en mode fixe (M1/M7), `check(1)` détecte Via (eau) en M1 (feu) → rôle "Chaotique" → "incident CONTRE l'équipe 1", ce qui **correspond** au réel (LA Galaxy concède, Los Angeles FC transforme). MAIS la carte réellement **affichée** à l'utilisateur est toujours la carte rotation (R1=maison 5=carcer, R7=maison 11=albus, doctrine "affichage rotation seule" du 17/07/26) — depuis la correction du 18/07/26 (`detectIncidentChaotique` prend désormais posA/posB dynamiques au lieu de M1/M7 en dur, demande explicite utilisateur "le verdict porte sur la rotation... pourquoi analyse m1 et m7"), cette carte rotation ne déclenche **aucun** signal (carcer=terre-feu=Absorbeur, albus=eau-eau=Adaptateur, ni l'un ni l'autre Chaotique) → **la carte affichée montre désormais "Penalty/Rouge : Non", un MISS sur ce cas précis**, alors qu'avant la correction elle affichait "Oui" (HIT, par coïncidence de mode plutôt que par cohérence). Le signal Rubeus-en-M12 (`[12,'rubeus']`, resté fixe intentionnellement, non affecté par cette correction) N'A PAS déclenché non plus (`confrontationBinome` renvoie `rupture:false`). Score prédit 2-3 (BTTS oui) faux face au 3-0 clean sheet réel — seul le vainqueur se confirme sur la carte affichée après correction |
 
 L'archive complète (27 matchs, dont 19 esport) est dans
 `/tmp/claude-0/-home-user-ation/43bdd8e4-4f60-5524-bd72-213622d663af/scratchpad/export_data.json`
@@ -159,15 +159,25 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   LA Galaxy vs Los Angeles FC (18/07/26), Rubeus ÉTAIT en M12 mais ce
   signal spécifique N'A PAS déclenché (`rupture:false`) — ne compte pas
   comme confirmation de cette règle précise malgré la présence de Rubeus.
-- Signal `detectIncidentChaotique` / `check(1)`/`check(7)` (figure en
+- Signal `detectIncidentChaotique` / `check(posA)`/`check(posB)` (figure en
   rôle "Chaotique" — combinaison élément figure × élément maison, table
-  `ELEMENT_ROLE_MATRIX_V7`, ex. eau-feu ou feu-eau — sur M1 ou M7) :
-  n=1 réel confirmé (LA Galaxy vs Los Angeles FC, Via/eau en M1/feu →
-  "incident CONTRE l'équipe 1" → penalty concédé par LA Galaxy, transformé
-  par Los Angeles FC, exact). Mécanisme distinct de Rubeus-M11/M12 et
-  Fortuna Major-M12 (ceux-là passent par `confrontationBinome`/rupture,
-  celui-ci par la matrice élémentaire seule) — à enrichir séparément si
-  de nouveaux cas se présentent, ne pas fusionner les deux compteurs.
+  `ELEMENT_ROLE_MATRIX_V7`, ex. eau-feu ou feu-eau — sur l'ancre équipe 1
+  / équipe 2) : CORRIGÉ le 18/07/26 (demande explicite utilisateur) pour
+  suivre les VRAIES maisons du mode qui a tranché le verdict (R1/R7 si
+  rotation, M1/M7 si fixe) au lieu d'être toujours câblé sur M1/M7 en
+  dur — avant, la carte affichée (toujours en mode rotation depuis le
+  17/07/26) montrait un signal calculé sur des maisons différentes de
+  celles qu'elle affichait réellement. Coût mesuré sur le seul cas réel
+  connu (LA Galaxy vs Los Angeles FC) : le signal Via/M1/feu qui
+  confirmait le penalty réel EN MODE FIXE ne se retrouve PAS en mode
+  rotation sur ce thème (carcer=M5=Absorbeur, albus=M11=Adaptateur,
+  aucun Chaotique) → la carte affichée passe de "Oui" (HIT, par
+  coïncidence de mode) à "Non" (MISS, mais cohérent avec le mode
+  réellement utilisé). Mécanisme distinct de Rubeus-M11/M12 et Fortuna
+  Major-M12 (restés fixes intentionnellement, voir plus haut) — à
+  enrichir séparément si de nouveaux cas se présentent, ne pas fusionner
+  les deux compteurs. n=1 réel, direction à reconfirmer sur d'autres
+  matchs avant de la considérer validée en mode rotation.
 
 ## 6. Fonctionnement relationnel des 16 figures — constats (17/07/26)
 

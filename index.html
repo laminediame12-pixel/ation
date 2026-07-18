@@ -6416,7 +6416,22 @@ function confrontationBinome(binome, theme){
   return {present: sieges.length>0, resultats, rupture: !!rupture, detail: rupture || null};
 }
 
-function detectIncidentChaotique(theme, campA, campB){
+// posA/posB (17/07/26, demande explicite utilisateur : "le verdict porte
+// sur la rotation non pourquoi analyse m1 et m7 pour les deux marques")
+// — check(1)/check(7) et leur bloc antagoniste (§2) comparaient TOUJOURS
+// les maisons FIXES M1/M7, même quand la carte affichée (et le vainqueur
+// retenu) venaient du mode ROTATION (R1/R7, des maisons différentes,
+// ex. maison 5/11 sur LA Galaxy-Los Angeles FC) — incohérence entre le
+// mode qui tranche le vainqueur et le mode qui explique l'incident.
+// posA/posB (les vraies maisons de la carte en cours, transmis par
+// buildVerdictCard) remplacent désormais les littéraux 1/7 pour CES DEUX
+// checks uniquement. Le bloc Rubeus/Fortuna Major (§3-4, M11/M12/M7) et
+// les témoins/Juge (§1, M13/M14/M15) restent volontairement sur leurs
+// maisons fixes : ce sont des positions structurelles validées comme
+// telles (16/07/26, "2/2 confirmé en réel" sur M11/M12/M7 précisément),
+// pas des ancres d'équipe à faire suivre le mode.
+function detectIncidentChaotique(theme, campA, campB, posA, posB){
+  posA = posA || 1; posB = posB || 7;
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   const antag = (typeof ANTAGONISTES_V7!=='undefined') ? ANTAGONISTES_V7 : ANTAGONISTES;
   const signals = [];
@@ -6424,14 +6439,14 @@ function detectIncidentChaotique(theme, campA, campB){
 
   // 1. Chaotique sur positions clés
   const check = (pos, label) => { if (roleAt(pos)==='Chaotique') signals.push({pos, fig:theme[pos], label}); };
-  check(1, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)');
-  check(7, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)');
+  check(posA, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)');
+  check(posB, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)');
   check(13, 'incident dans la phase de synthèse (témoin droit)');
   check(14, 'incident dans la phase de synthèse (témoin gauche)');
   check(15, 'JUGE Chaotique : issue du match par un incident décisif (penalty, rouge, CSC, accident)');
 
-  // 2. Antagoniste de M1/M7 présent en rôle Chaotique n'importe où
-  [['1','équipe 1'],['7','équipe 2']].forEach(([p,label])=>{
+  // 2. Antagoniste de l'ancre équipe 1/équipe 2 (posA/posB) présent en rôle Chaotique n'importe où
+  [[posA,'équipe 1'],[posB,'équipe 2']].forEach(([p,label])=>{
     const ennemi = antag[theme[p]];
     for (let pos=1; pos<=16; pos++){
       if (theme[pos]===ennemi && roleAt(pos)==='Chaotique'){
@@ -6601,7 +6616,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
 
   // Calcul unique (avant : detectIncidentChaotique tournait deux fois de
   // suite sur le même thème via estimerCartonsJaunesV7 puis incidentDetect).
-  var incidentDetect = detectIncidentChaotique(theme, campA, campB);
+  var incidentDetect = detectIncidentChaotique(theme, campA, campB, posA, posB);
   var corners = estimerCornersV7(theme, goalA, goalB);
   var btts = goalA > 0 && goalB > 0;
 
