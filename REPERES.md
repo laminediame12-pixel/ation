@@ -1226,6 +1226,36 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     Populus en M3 (voir plus haut). Rejeté, aucun changement de code —
     le gap M12/Carcer reste donc ouvert, cette piste précise ne
     l'explique pas.
+  - **Piste testée : M6 sur Vitesse-AEK (19/07/26, "teste m6")** — sur
+    ce thème, `forceMaisonV7('tristitia', 6)` renvoie **`level:
+    'blocage'`, `role: 'Blocage'`** (incompatibilité élémentaire
+    terre/air, force=20) — contrairement au cas M12/Carcer ci-dessus,
+    ce n'est pas une coïncidence de texte : c'est le vrai palier
+    "blocage" déjà codé dans `forceMaisonV7` (concordance élémentaire
+    §2420). Testé sur l'archive complète (27 matchs) si ce niveau
+    `level==='blocage'` corrèle avec moins de buts :
+    - **`level==='blocage'` sur M6 précisément** : n=8, moyenne **5,5
+      buts**, contre **7,16 buts** pour les 19 matchs sans blocage sur
+      M6 — écart réel, dans le bon sens.
+    - **`level==='blocage'` sur M12** : n=4, moyenne **10,25 buts**
+      contre 6,04 sans — dans le sens INVERSE, confirme que ce n'est
+      pas un effet symétrique de l'axe M6↔M12, seulement M6.
+    - **`level==='blocage'` sur les maisons de capacité de marquage
+      (M4/M5/M10/M11)** : n=10, 6,0 buts contre 7,06 sans — léger écart
+      dans le bon sens, plus faible que M6 seul.
+    - **Corrélation globale (nombre total de maisons en blocage, toutes
+      maisons confondues, vs buts totaux) : r=0,056** — quasi nulle,
+      confirme que l'effet n'est PAS un effet générique du blocage
+      partout, seulement localisé sur M6.
+    **Conclusion : signal réel mais faible, spécifique à M6, non
+    intégrable en l'état** (échantillon modeste 8 vs 19, archive
+    dominée par de l'esport à score élevé) — nettement plus solide que
+    la piste M12/Carcer (qui allait dans le mauvais sens), mais pas
+    assez net pour trancher le gap Vitesse-AEK à lui seul (Vitesse-AEK
+    a M6 en blocage ET reste à 0-0, cohérent avec la direction du
+    signal, mais un seul cas réel ne suffit pas). Aucun changement de
+    code — piste à garder en tête pour de futurs vrais matchs avec M6
+    en blocage.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
