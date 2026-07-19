@@ -4838,6 +4838,22 @@ function verdictFinal(theme, favoriteOverride){
   if (supAA.trouve) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
   }
+  // ═══ M2+M8 DISSONANTS SIMULTANÉMENT (19/07/26) — voir Constat 12
+  // (cartographie des 16 maisons). M2 et M8 sont l'axe d'opposition le
+  // plus "pur" algébriquement (M8 : loi à 1 seul décalage, 16/16 ; M2 :
+  // loi à 2 décalages, 8/8) mais de paliers différents. Testé le
+  // croisement harmonie(M2)×harmonie(M8) sur l'archive : quand les DEUX
+  // sont dissonants en même temps (force<60 dans M2 ET M8), M1 gagne
+  // 3/3 des cas décisifs (n=4 dont 1 Nul) — testé en priorité absolue
+  // sur la cascade complète : 22/25 contre 21/25 baseline, +1 net, ZÉRO
+  // régression (corrige Arsenal-Barcelone, seul match dont la
+  // prédiction change). ⚠️ ÉCHANTILLON TRÈS PETIT (n=4, 3 décisifs) —
+  // intégré sur demande explicite utilisateur ("intègre-le, avec la
+  // mise en garde sur l'échantillon") mais à surveiller de très près
+  // sur les prochains vrais matchs avant de lui faire confiance.
+  if (forceMaisonV7(theme[2], 2).force < 60 && forceMaisonV7(theme[8], 8).force < 60) {
+    return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:'⚠️ M2+M8 DISSONANTS SIMULTANÉMENT — les deux maisons de l\'axe d\'opposition le plus pur (Constat 12) sont en désaccord élémentaire avec leur propre maison → M1 favorisé (3/3 décisifs sur l\'archive, ÉCHANTILLON TRÈS PETIT n=4, à confirmer sur d\'autres vrais matchs, 19/07/26).'};
+  }
   // ═══ TRAHISON DIRECTE — GUERRE CIVILE (19/07/26) — voir
   // detecteurGuerreCivile() plus haut. Détecte quand le binôme protecteur
   // d'un chef attaque en réalité une figure qui protège le camp ADVERSE
