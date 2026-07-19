@@ -2257,7 +2257,32 @@ quatuor de figures à risque de blocage.
 palier 8-voies), cohérent avec ses 8 magnitudes de décalage
 différentes. 0 "blocage".
 
-*(Suite prévue : M14, M15... jusqu'à M16, à la demande de l'utilisateur.)*
+**M14 (figure naturelle = Puella)** :
+
+| Fig-Base | R-M14 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Conjunctio | Caput Draconis | Puella | — | — | compatible_90 | 90 |
+| Laetitia | Fortuna Major | Albus | Acquisitio | — | — | blocage | 20 |
+| Caput Draconis | Fortuna Minor | Via | Populus | — | — | compatible_70 | 70 |
+| Albus | Carcer | Amissio | Puer | — | — | blocage | 20 |
+| Via | Rubeus | Rubeus | Laetitia | — | ✅ | compatible_90 | 90 |
+| Amissio | Tristitia | Tristitia | Caput Draconis | — | ✅ | blocage | 20 |
+| Rubeus | Via | Fortuna Minor | Albus | — | — | semi_compatible | 60 |
+| Tristitia | Amissio | Carcer | Via | — | — | semi_compatible | 60 |
+| Fortuna Minor | Caput Draconis | Conjunctio | Amissio | — | — | compatible_90 | 90 |
+| Carcer | Albus | Fortuna Major | Rubeus | — | — | semi_compatible | 60 |
+| Conjunctio | Puer | Cauda Draconis | Tristitia | — | — | compatible_70 | 70 |
+| Fortuna Major | Laetitia | Puella | Fortuna Minor | — | — | compatible_70 | 70 |
+| Cauda Draconis | Acquisitio | Acquisitio | Carcer | — | ✅ | compatible_90 | 90 |
+| Puella | Populus | Populus | Conjunctio | — | ✅ | repos_faible | 25 |
+| Acquisitio | Cauda Draconis | Puer | Fortuna Major | — | — | semi_compatible | 60 |
+| Populus | Puella | Laetitia | Cauda Draconis | — | — | blocage | 20 |
+
+**0 O-D, 4 O-C** (Via, Amissio, Cauda Draconis, Puella). **4 cas
+"blocage" — EXACTEMENT le même ensemble que M10** (Laetitia, Albus,
+Amissio, Populus) — le partenaire de M10 trouvé.
+
+*(Suite prévue : M15, M16 avec les colonnes O-D/O-C, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
