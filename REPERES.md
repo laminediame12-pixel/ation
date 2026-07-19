@@ -1245,6 +1245,28 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   avec la loi de parité déjà établie (décalage pair reste dans sa
   boucle de binôme, impair traverse) : l'involution de M15 respecte
   strictement cette même partition en deux groupes de 8.
+
+  **Table complète des 16 figures (19/07/26, "donnes le tableau
+  complet")** :
+
+  | Figure | Élément | Points | Parité | Possible en M15 ? | Binôme | Antagoniste | Résultante M15 | BUTS_FIGURE | Sens |
+  |---|---|---|---|---|---|---|---|---|---|
+  | Puer | feu | [1,1,2,1] (3) | impaire | ❌ jamais | Caput Draconis | Puella | Laetitia | 1-2 (concède) | Énergie impulsive, action rapide |
+  | Laetitia | feu | [1,2,2,2] (1) | impaire | ❌ jamais | Albus | Acquisitio | Puer | 2-3 | Joie, succès, bonne santé |
+  | Caput Draconis | air | [2,1,1,1] (3) | impaire | ❌ jamais | Via | Populus | Albus | 0-1 | Début, nouvelle opportunité |
+  | Albus | eau | [2,2,1,2] (1) | impaire | ❌ jamais | Amissio | Puer | Caput Draconis | 2-4 | Calme, réflexion, sagesse |
+  | Rubeus | air | [2,1,2,2] (1) | impaire | ❌ jamais | Fortuna Minor | Albus | Tristitia | 1-3 (instable) | Tension, désordre, passion incontrôlée |
+  | Tristitia | terre | [2,2,2,1] (1) | impaire | ❌ jamais | Carcer | Via | Rubeus | 0-1 | Tristesse, perte profonde |
+  | Cauda Draconis | eau | [1,1,1,2] (3) | impaire | ❌ jamais | Acquisitio | Carcer | Puella | 1-2 (destructeur) | Fin, rupture, dissolution |
+  | Puella | terre | [1,2,1,1] (3) | impaire | ❌ jamais | Populus | Conjunctio | Cauda Draconis | 2 | Harmonie, douceur, charme |
+  | Via | eau | [1,1,1,1] (4) | paire | ✅ oui | Rubeus | Laetitia | Amissio | 0-1 | Mouvement, changement |
+  | Amissio | eau | [1,2,1,2] (2) | paire | ✅ oui | Tristitia | Caput Draconis | Via | 0-1 (concède) | Perte, séparation |
+  | Fortuna Minor | feu | [1,1,2,2] (2) | paire | ✅ oui | Conjunctio | Amissio | Carcer | 1-2 (fragile) | Chance rapide mais changeante |
+  | Carcer | terre | [1,2,2,1] (2) | paire | ✅ oui | Fortuna Major | Rubeus | Fortuna Minor | 0-0 | Blocage, restriction |
+  | Conjunctio | air | [2,1,1,2] (2) | paire | ✅ oui | Cauda Draconis | Tristitia | Fortuna Major | 0-1 | Union, rencontre |
+  | Fortuna Major | terre | [2,2,1,1] (2) | paire | ✅ oui | Puella | Fortuna Minor | Conjunctio | 3-5 | Réussite solide et méritée |
+  | Acquisitio | air | [2,1,2,1] (2) | paire | ✅ oui | Puer | Fortuna Major | Populus | 2-3 | Gain, acquisition |
+  | Populus | feu | [2,2,2,2] (0) | paire | ✅ oui | Laetitia | Cauda Draconis | Acquisitio | 0-0 | Influence du groupe |
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
