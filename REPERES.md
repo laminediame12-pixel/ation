@@ -1057,6 +1057,51 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   **seul M2+M8 a montré un gain net propre (+1, zéro régression)** —
   déjà intégré. Aucune autre paire de maisons ne mérite d'être ajoutée
   à la cascade en l'état des données actuelles.
+- **Reformulation utilisateur des axes (19/07/26)** : "je crois que axe
+  m12,6 est lié aux incidents, axe m3,9 est lié aux rythme du match,
+  axe m5,11 a la Capacité de marquages". Vérification : M6/M12
+  (incidents) correspond déjà à `detectIncidentChaotique` (Cauda
+  Draconis/Tristitia/Carcer/Amissio en M6 OU M12 comme signal
+  incident/penalty) — doctrine DÉJÀ établie et intégrée. M5/M11
+  (capacité de marquage) correspond déjà à `paralysieV7` sur M5/M11 qui
+  fixe le `goalCap` utilisé dans `calculerButsCamp`/verdictV7 — doctrine
+  DÉJÀ établie et intégrée. Les deux intuitions étaient donc déjà
+  couvertes par du code existant, sans rien à ajouter. Reste M3+M9
+  (rythme) comme piste réellement nouvelle, testée ci-dessous.
+- **M3+M9 comme prédicteur du "rythme" du match (19/07/26) — REJETÉ,
+  motif contredit par les données réelles.** Rythme défini par
+  l'utilisateur comme "pression attaque par contre-attaque, beaucoup
+  d'occasions de corner, pas d'arrêts de jeu" — aucune donnée aussi
+  granulaire n'existe dans l'archive JSON ni dans le code (pas de
+  tracking corner/pressing/stoppage-time par minute). Faute de mieux,
+  testé le nombre de buts total comme proxy grossier du rythme :
+  - **Archive complète** : corrélation harmonie(M3)+harmonie(M9) vs
+    buts totaux = **r=0,176** — faible/non concluant à lui seul.
+  - **4 vrais matchs avec données minute-par-minute fournies par
+    l'utilisateur**, testés comme validation supplémentaire :
+
+    | Match | Thème | M3 | M9 | Catégorie | Buts réels | Timing |
+    |---|---|---|---|---|---|---|
+    | St. Louis vs Sporting KC | conjunctio/via/puella/puer | Puella (40, dissonant) | Carcer (70, harmonieux) | dis+harm | 3-2 (5 buts) | serré (15',30',43',75',86'+pen) |
+    | USA vs Belgique | via/caput_draconis/conjunctio/rubeus | Conjunctio (70, harm) | Laetitia (70, harm) | **harm+harm** | 1-4 (5 buts) | serré (15',30',30',60',75') |
+    | France vs Espagne | fortuna_minor/albus/amissio/via | Amissio (40, dis) | Cauda Draconis (40, dis) | dis+dis | 0-2 (2 buts) | espacé (20',60', écart 40mn) |
+    | Vitesse vs AEK Athènes | carcer/fortuna_major/populus/puer | Populus (60, harm) | Amissio (70, harm) | **harm+harm** | 0-0 (0 but, 22 tirs) | — |
+
+    Sur les 3 premiers cas, un motif semblait émerger (dis+dis = rythme
+    bas/espacé, harm+harm et dis+harm = rythme élevé/serré). Le 4e cas
+    (Vitesse-AEK) **contredit directement** ce motif : même catégorie
+    exacte "harm+harm" que USA-Belgique, mais résultat opposé (0 but vs
+    5 buts) malgré un volume de tirs élevé (22) qui montre que le match
+    n'était pas "fermé" en soi — juste inefficace/mal fini. Deux cas
+    harm+harm ne peuvent pas prédire à la fois 5 buts et 0 but : le
+    motif ne tient pas.
+  - **Conclusion** : M3+M9 en l'état (harmonie/dissonance simple,
+    proxy = nombre de buts) **ne prédit pas le rythme du match** — piste
+    **REJETÉE**, cohérent avec la faible corrélation archive (r=0,176).
+    Ne pas retester cette opérationnalisation précise sans un nouvel
+    angle : soit une vraie donnée de rythme (corners/tirs par tranche de
+    temps, arrêts de jeu réels) plutôt que le nombre de buts comme proxy,
+    soit une définition différente de ce que M3/M9 pourraient représenter.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
