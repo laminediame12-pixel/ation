@@ -1154,6 +1154,23 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     d'opposition testé à ce jour — seule la loi M8 (16/16, un seul
     décalage constant, voir Constat 12) est une véritable identité
     algébrique. Rejeté, aucun changement de code.
+  - **⚠️ GAP OUVERT identifié (19/07/26, "il y a blocage quelque part")
+    sur Vitesse-AEK — NON RÉSOLU, thème gardé pour y revenir.** En
+    revérifiant ce thème (carcer/fortuna_major/populus/puer) contre la
+    cascade actuelle : `verdictFinal` prédit **5-3** (score exact),
+    réel **0-0** malgré 22 tirs — miss net sur le vainqueur ET sur le
+    volume de buts. Aucun mécanisme de blocage existant ne s'est
+    déclenché pour expliquer ce silence total : `figureBloqueeParAntagonisteV7`
+    = false sur M4/M5/M10/M11, `figureBloqueeIncompatibiliteMaisonV7` =
+    false partout, `paralysieV7` = non paralysée sur M5 ET M11. Le
+    calcul brut `calculerButsCamp` donne même 5 vs 2 (bien au-dessus du
+    réel). **Conclusion : il existe un vrai trou de doctrine — un
+    thème peut rester à 0-0 malgré un volume de tirs élevé sans qu'aucun
+    signal de blocage actuel ne le capture.** Piste explicitement mise
+    en pause par l'utilisateur ("garde ce thème, on y revient") — pas
+    encore de maison/mécanisme candidat identifié, à reprendre plus tard
+    (explorer les 16 maisons du thème complet, ou une maison précise si
+    l'utilisateur en a une en tête).
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
