@@ -4787,6 +4787,33 @@ function verdictFinal(theme, favoriteOverride){
   if (supAA.trouve) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:supAA.resume};
   }
+  // ═══ TRAHISON DIRECTE — GUERRE CIVILE (19/07/26) — voir
+  // detecteurGuerreCivile() plus haut. Détecte quand le binôme protecteur
+  // d'un chef attaque en réalité une figure qui protège le camp ADVERSE
+  // (trahison structurelle, pas une simple comparaison de forces). Ce
+  // signal (gcU.winner) existait déjà mais n'avait jamais été branché
+  // dans la décision : testé en priorité absolue le 10/07/26 sur
+  // verdictElementaire seul, il faisait reculer 61%→57% (17/28→16/28).
+  // Retesté ici le 19/07/26 sur la cascade actuelle complète (avec
+  // Confirmation résultante+binôme déjà intégrée) : NEUTRE sur les 27
+  // matchs archivés (21/25 identique, 0 flip — ne s'applique qu'à 1 seul
+  // match de l'archive, où il se trompe déjà comme verdictFinal, donc
+  // aucune régression possible). Corrige en revanche un miss réel hors
+  // archive (match FIFA laetitia/laetitia/carcer/conjunctio, réel M7
+  // 10-2, prédit M1 à tort par la Confirmation résultante+binôme
+  // ci-dessous) : Albus (binôme de M1) protège en fait Carcer (ancre de
+  // M7) au lieu d'attaquer le camp adverse. Branché sur demande explicite
+  // ("branche-le, si ça ne change pas les résultantes de 21 matchs") —
+  // statut : neutre validé sur l'archive, 1/2 en usage réel isolé
+  // (1 archive miss + 1 nouveau hit), à surveiller sur les prochains
+  // matchs avant de le considérer pleinement établi.
+  const gcTrahison = detecteurGuerreCivile(theme);
+  if (gcTrahison.applicable && gcTrahison.winner === 'M1') {
+    return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:gcTrahison.reason+' (branché 19/07/26, neutre sur l\'archive 21/25).'};
+  }
+  if (gcTrahison.applicable && gcTrahison.winner === 'M7') {
+    return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:gcTrahison.reason+' (branché 19/07/26, neutre sur l\'archive 21/25).'};
+  }
   // ═══ CONFIRMATION RÉSULTANTE+BINÔME M1/M7 (18/07/26) — voir
   // confirmationResultanteBinome() plus haut. Placée en priorité sur
   // "max des 4 forces" ci-dessous car mesurée plus précise quand elle
