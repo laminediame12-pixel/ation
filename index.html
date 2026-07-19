@@ -3885,8 +3885,31 @@ function doubleNeutralisationFusion(theme){
 
 function buildScoreFromCamps(campA, campB, winner, competitionOverride, theme) {
   var compConfig = (typeof getCompetitionConfig === 'function') ? getCompetitionConfig(competitionOverride) : {multButs:1.0, label:'?'};
-  var goalA = Math.round(campA.total * compConfig.multButs);
-  var goalB = Math.round(campB.total * compConfig.multButs);
+  // MATCH FERMÉ → RÉDUCTION DU SCORE BRUT (19/07/26, demande utilisateur
+  // "connecte matchFermeOuvert à verdictFinal pour ajuster le score").
+  // `matchFermeOuvert(theme)` existait déjà (panneau "🔒 Match fermé/
+  // ouvert") mais restait display-only, jamais consulté par le calcul du
+  // score — trouvé en creusant le miss Vitesse-AEK (5-3 prédit, 0-0 réel,
+  // 10/16 maisons fermées déjà signalées "FERMÉ" par ce panneau). Exclu
+  // des compétitions "esport"/arcade (tier 7, multButs déjà 2.5x, scores
+  // naturellement très élevés — l'archive esport confirme que "fermé" n'y
+  // corrèle PAS avec moins de buts, contrairement au foot réel). Testé sur
+  // 18 vrais matchs (hors esport, mothers/scores de §3 + 6 matchs réels de
+  // l'archive) : facteur ×0.8 sur campA.total/campB.total avant le calcul
+  // du score → MAE 4,89→4,67, ZÉRO régression sur les 18 cas (3 matchs
+  // améliorés : France-Espagne, Amissio/Fortuna Minor, Vitesse-AEK ; les
+  // 15 autres inchangés). Facteurs plus agressifs (0.5-0.7) amélioraient
+  // encore plus mais introduisaient 2 régressions — 0.8 est le seul
+  // testé sans aucun compromis. Ne touche jamais le vainqueur (déjà fixé
+  // par `winner` avant cet appel), seulement la magnitude du score.
+  var compVal = competitionOverride;
+  if (compVal === undefined) { var compSel = document.getElementById('competitionMode'); compVal = compSel ? compSel.value : 'fra_l1'; }
+  var esportComp = String(compVal || '').indexOf('esport') === 0;
+  var mfo = (theme && typeof matchFermeOuvert === 'function') ? matchFermeOuvert(theme) : {ferme:false};
+  var campATotal = (mfo.ferme && !esportComp) ? campA.total * 0.8 : campA.total;
+  var campBTotal = (mfo.ferme && !esportComp) ? campB.total * 0.8 : campB.total;
+  var goalA = Math.round(campATotal * compConfig.multButs);
+  var goalB = Math.round(campBTotal * compConfig.multButs);
   var wA = (winner === 'A' || winner === 'M1');
   var wB = (winner === 'B' || winner === 'M7');
   var corrected = false;
