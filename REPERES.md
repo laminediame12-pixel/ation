@@ -1187,6 +1187,33 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   Juge, verdict final") : une résultante sans ambiguïté de degré,
   contrairement aux paliers 4-voies/8-voies. Aucun changement de code
   — résultat structurel/documentaire.
+- **CERTAINES FIGURES NE SONT JAMAIS EN M15 (19/07/26, remarque
+  utilisateur "certaines ne sont jamais en m15")** — vérifié
+  exhaustivement sur les **65 536 thèmes possibles** (16⁴ combinaisons
+  de mères, via `buildThemeFromMothers`) : **exactement 8 des 16
+  figures ne peuvent JAMAIS apparaître comme figure de BASE en M15**,
+  0 cas sur 65 536. Les 8 autres apparaissent chacune exactement
+  8192/65536 fois (réparties également).
+  - **Jamais en M15** : Puer, Laetitia, Caput Draconis, Albus, Rubeus,
+    Tristitia, Cauda Draconis, Puella.
+  - **Toujours possibles en M15** : Via, Amissio, Fortuna Minor, Carcer,
+    Conjunctio, Fortuna Major, Acquisitio, Populus.
+
+  **Explication trouvée** : ça correspond exactement à la distinction
+  classique en géomancie entre figures **paires** et **impaires**
+  (nombre de points simples dans `MAP_GEO`, valeur `1`) — les 8 figures
+  "jamais en M15" ont TOUTES un nombre IMPAIR de points simples (Puer=3,
+  Laetitia=1, Caput Draconis=3, Albus=1, Rubeus=1, Tristitia=1, Cauda
+  Draconis=3, Puella=3), les 8 "toujours possibles" ont TOUTES un
+  nombre PAIR (Via=4, Amissio=2, Fortuna Minor=2, Carcer=2,
+  Conjunctio=2, Fortuna Major=2, Acquisitio=2, Populus=0). **M15 (Le
+  Juge) ne peut structurellement recevoir qu'une figure PAIRE comme
+  base, jamais une impaire** — cohérent avec son rôle de verdict final :
+  seul un sous-ensemble stable des 16 figures peut y siéger. Aucun
+  changement de code — résultat structurel/documentaire, mais utile
+  à garder en tête si une future doctrine veut s'appuyer sur "quelle
+  figure siège en M15" (la moitié des 16 figures est structurellement
+  exclue d'office).
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
