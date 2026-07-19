@@ -1292,6 +1292,23 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     du tableau (1 à 10 buts, majorité ≤7), mais West Ham-Liverpool (10
     buts) casse la tendance — cohérent avec un signal réel mais pas
     assez net pour être fiable seul.
+  - **Piste testée : M4 (19/07/26, "teste m4")** — sur Vitesse-AEK, M4
+    N'EST PAS en blocage : base Puer, `forceMaisonV7` renvoie `level:
+    'compatible_70'`, rôle "Stabilisateur" (contrairement à M6, en vrai
+    blocage terre/air). M4 n'ajoute donc rien pour expliquer le 0-0 sur
+    CE match précis. Mais testé archive-wide par cohérence avec M6 :
+    - **`level==='blocage'` sur M4** : n=6, moyenne **5,5 buts** contre
+      **7,0** sans (n=21) — même magnitude d'écart que M6 (5,5 vs
+      7,16), dans le même sens.
+    - **Puer précisément en M4** (juste la figure de base réelle de
+      Vitesse-AEK, sans rapport au blocage) : n=3, 7,0 buts contre
+      6,625 sans — aucun signal, plutôt l'inverse.
+    **Conclusion** : le "blocage élémentaire" (terre/air) montre un
+    effet modeste et cohérent à la fois sur M4 et M6 (même magnitude),
+    ce qui renforce un peu la piste générale "blocage → moins de buts"
+    sur les maisons de capacité de marquage — mais sur Vitesse-AEK
+    spécifiquement, seul M6 se déclenche, pas M4. N'explique pas
+    entièrement le 0-0 à lui seul. Aucun changement de code.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
