@@ -345,6 +345,14 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   algébrique (M8/M16) et l'observation harmonie/dissonance restent
   valides et intéressantes en elles-mêmes, mais n'apportent aucune
   amélioration nette une fois injectées dans la cascade réelle.
+  **ANCRAGE BINÔME TESTÉ (19/07/26, "vérifiez leur ancrage binôme")** :
+  le binôme de la base réelle de M8 (présent ET harmonieux sur au moins
+  un de ses propres sièges) est ancré dans **10/10 cas, sans exception**
+  — aucun pouvoir discriminant, ce filtre ne sépare rien (pas de groupe
+  "non ancré" pour comparer). N'explique pas les cas harmonieux qui
+  ratent quand même (Man City-Dortmund, Ferencvárosi-Qarabag). La vraie
+  ligne de partage reste l'harmonie élémentaire de la base DANS M8
+  elle-même, pas l'ancrage de son binôme ailleurs dans le thème.
 
 - **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
   l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
