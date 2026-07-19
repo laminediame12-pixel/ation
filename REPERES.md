@@ -1206,6 +1206,26 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     encore de maison/mécanisme candidat identifié, à reprendre plus tard
     (explorer les 16 maisons du thème complet, ou une maison précise si
     l'utilisateur en a une en tête).
+  - **Piste testée pour combler le gap : M12=Carcer sur Vitesse-AEK
+    (19/07/26, "teste sur un match pour voir impact")** — suite à la
+    découverte de la règle de direction du palier binaire de M12
+    (ci-dessus), calcul concret sur Vitesse-AEK : base M12 = **Carcer**
+    (sens doctrinal `FIGURE_MEANINGS_PERSO` : *"Blocage, restriction,
+    retard ou enfermement"*, littéralement), résultante = **Amissio**
+    ("Perte, séparation, ce qui s'en va"). Les deux figures ont un
+    `BUTS_FIGURE` quasi nul (Carcer 0-0, Amissio 0-1 avec `concede`) —
+    coïncidence narrative séduisante avec le 0-0 réel. **Mais rejetée
+    sur l'archive complète** : Carcer précisément en M12 n'apparaît que
+    sur **2 matchs archive, tous deux à FORT volume de buts (7 et 10)**
+    — l'inverse de l'hypothèse. Figure "incident" (Cauda Draconis/
+    Tristitia/Carcer/Amissio, déjà doctrine `detectIncidentChaotique`)
+    en base M12 : n=7, 5,57 buts contre 7,05 sans — léger, mais déjà
+    couvert par le mécanisme existant, rien de neuf. **Base ET
+    résultante toutes deux à 0 but garanti (situation exacte de
+    Vitesse-AEK) : 0 cas dans l'archive** — intestable, même limite que
+    Populus en M3 (voir plus haut). Rejeté, aucun changement de code —
+    le gap M12/Carcer reste donc ouvert, cette piste précise ne
+    l'explique pas.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
