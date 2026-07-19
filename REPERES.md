@@ -1256,6 +1256,42 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     signal, mais un seul cas réel ne suffit pas). Aucun changement de
     code — piste à garder en tête pour de futurs vrais matchs avec M6
     en blocage.
+    **Table complète des 27 matchs (triés par buts croissants)** :
+
+    | Match | Score réel | Buts | M6 blocage ? | Maisons en blocage |
+    |---|---|---|---|---|
+    | Ferencvárosi vs Qarabag | 1-0 | 1 | non | M8 |
+    | Ferencvárosi vs Qarabag | 1-0 | 1 | **OUI** | M6 |
+    | Autriche vs Espagne | 0-3 | 3 | non | M4 |
+    | Côte d'Ivoire vs Norvège | 1-2 | 3 | non | M4 |
+    | FK Jenis vs Astana | 2-2 | 4 | **OUI** | M2, M6, M8, M10 |
+    | Argentine vs Egypte | 3-2 | 5 | **OUI** | M6 |
+    | Manchester City F.C. vs Napoli | 3-2 | 5 | **OUI** | M2, M4, M6, M8 |
+    | Chelsea vs Napoli | 2-3 | 5 | non | M4, M8 |
+    | Dorussia Dortmund vs Roma | 3-2 | 5 | non | — |
+    | Lombardia vs Borussia Dortmund | 1-5 | 6 | non | M10 |
+    | Chelsea F.C. vs Barcelone | 4-2 | 6 | **OUI** | M2, M6 |
+    | Roma vs Napoli | 3-3 | 6 | **OUI** | M6 |
+    | Lombardia vs Roma | 6-1 | 7 | non | M14, M16 |
+    | Fenerbahçe S.K. vs Galatasaray S.K. | 5-2 | 7 | **OUI** | M4, M6 |
+    | Bayern Munich vs Fenerbahçe | 5-2 | 7 | non | — |
+    | Real Madrid vs Club Atlético de Madrid | 5-2 | 7 | non | M2, M8, M10 |
+    | Manchester City vs Borussia Dortmund | 4-3 | 7 | non | M2, M16 |
+    | Arsenal vs Barcelone | 4-3 | 7 | non | M2, M8 |
+    | Club Atlético de Madrid vs Napoli | 5-3 | 8 | non | M8 |
+    | PSV Eindhoven vs Bayern Munich | 5-3 | 8 | non | M8, M12, M16 |
+    | Dorussia Dortmund vs Lombardia | 2-6 | 8 | non | — |
+    | Fenerbahçe S.K. vs Napoli | 4-6 | 10 | non | M8, M12, M16 |
+    | Liverpool F.C. vs Lombardia | 7-3 | 10 | non | M16 |
+    | West Ham United vs Liverpool | 4-6 | 10 | **OUI** | M2, M4, M6 |
+    | Wolverhampton vs Arsenal | 4-6 | 10 | non | M10, M12, M14 |
+    | Olympique Lyonnais vs Real Madrid | 4-7 | 11 | non | — |
+    | Manchester City F.C. vs Juventus FC | 5-8 | 13 | non | M12 |
+
+    Lecture : les 8 matchs "M6 blocage" se concentrent plutôt en haut
+    du tableau (1 à 10 buts, majorité ≤7), mais West Ham-Liverpool (10
+    buts) casse la tendance — cohérent avec un signal réel mais pas
+    assez net pour être fiable seul.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
