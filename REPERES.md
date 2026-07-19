@@ -321,6 +321,30 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   conclure quoi que ce soit, et 57% reste à peine au-dessus du hasard.
   NI validé ni rejeté — juste pas assez de données pour trancher. Pas
   intégré.
+  **PRÉCISION (19/07/26, "je parle du tableau")** : le filtre pertinent
+  n'est pas l'harmonie de F dans SA PROPRE position (M1/M7/R1/R7,
+  ci-dessus), mais l'harmonie de la BASE RÉELLE de M8 dans M8 lui-même
+  (`forceMaisonV7(theme[8], 8)`) — sur les 16 paires possibles, 12 sont
+  harmonieuses (force≥60) et 4 sont dissonantes (force=20 pile, dont
+  l'exemple de départ Cauda Draconis→Acquisitio). Retesté sur les 10 cas
+  archive où M8 pointe vers une des 4 positions : **base harmonieuse
+  5/7 (71%)** suit correctement le camp pointé, **base dissonante 0/3
+  (0%)** se trompe TOUJOURS — sur les 2 cas dissonants à vainqueur net
+  (hors le Nul), inverser la prédiction donnerait 2/2. Signal directionnel
+  net et intéressant en isolé. **Testé en effet net sur la cascade
+  complète `verdictFinal`** (règle combinée : harmonieux→suit,
+  dissonant→inverse) : en PRIORITÉ ABSOLUE, **19/25 — net négatif**
+  (casse 2 matchs déjà corrects sans en réparer aucun, `applicable`
+  inchangé à 25/27). En REPLI (seulement sur les thèmes où `verdictFinal`
+  n'a AUCUNE opinion) : les 2 seuls cas concernés sont tous les deux des
+  **ABSTENTIONS** (thème détruit/invalide), pas des indécisions — utiliser
+  ce signal reviendrait à outrepasser une abstention volontaire (contraire
+  au principe même de l'abstention, §0), et même ainsi le résultat n'est
+  que 1 hit / 1 miss sur ces 2 cas. **REJETÉ comme mécanisme de décision**
+  malgré un signal isolé réel et propre (5/7 vs 0/3) — la découverte
+  algébrique (M8/M16) et l'observation harmonie/dissonance restent
+  valides et intéressantes en elles-mêmes, mais n'apportent aucune
+  amélioration nette une fois injectées dans la cascade réelle.
 
 - **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
   l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
