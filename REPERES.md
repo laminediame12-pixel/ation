@@ -2348,10 +2348,31 @@ terre/air) :
   décalage impair (qui traversent toujours) n'en produisent jamais.
 
 Exactement **3 groupes de 4 figures**, couvrant 12 des 16 figures,
-répartis sur 8 des 16 maisons (celles à décalage pair). Piste à tester
-plus tard : est-ce que cette classification en 3 groupes de figures a
-un sens exploitable pour le verdict (au-delà du signal faible déjà
-mesuré pour M6 spécifiquement) ?
+répartis sur 8 des 16 maisons (celles à décalage pair).
+
+**Testé si ça pèse sur le verdict (19/07/26, "teste si ça pèse sur le
+verdict")** — pour chaque groupe, compte le nombre de maisons du
+groupe en blocage sur l'archive, corrélé aux buts réels ET au
+vainqueur réel :
+
+| Groupe | Buts moy. (présent) | Buts moy. (absent) | M1 gagne (présent) | M1 gagne (absent) |
+|---|---|---|---|---|
+| **A (M2/M6)** | 5,91 (n=11) | 7,19 (n=16) | **73%** | **44%** |
+| B (M4/M8/M12/M16) | 6,94 (n=18) | 6,11 (n=9) | 56% | 56% |
+| C (M10/M14) | 6,80 (n=5) | 6,64 (n=22) | 40% | 59% |
+
+**Le Groupe A (M2/M6) montre le signal isolé le plus net de toute
+cette exploration** — double effet (moins de buts ET M1 favorisé,
+73% contre 44%), plus net que M6 seul déjà connu. Mais **testé en
+priorité absolue sur `verdictFinal`** ("Groupe A présent → M1") :
+**21/27, contre 22/27 de base** (2 flips) — légèrement EN DESSOUS du
+score actuel, donc ne passe pas la barre du gain net malgré un signal
+isolé prometteur. Groupes B et C : aucun signal exploitable (B quasi
+plat 56%/56% ; C trop petit n=5 et dans le mauvais sens). **Conclusion :
+même le meilleur candidat de cette cartographie (Groupe A) reste
+net-négatif en cascade — pas intégré, cohérent avec la discipline
+établie cette session (isolé ≠ suffisant, seul le gain net cascade
+compte).** Aucun changement de code.
 
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
