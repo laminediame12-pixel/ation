@@ -2043,7 +2043,36 @@ d'O-D est plus faible qu'en M1/M3 (2 au lieu de 4) puisque M5 a 8
 magnitudes de décalage différentes au lieu de 2 — moins de chances de
 tomber pile sur la relation antagoniste par hasard. 0 "blocage".
 
-*(Suite prévue : M6, M7... jusqu'à M16, à la demande de l'utilisateur.)*
+**M6 (figure naturelle = Amissio)** :
+
+| Fig-Base | R-M6 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Caput Draconis | Caput Draconis | Puella | — | ✅ | compatible_90 | 90 |
+| Laetitia | Albus | Albus | Acquisitio | — | ✅ | semi_compatible | 60 |
+| Caput Draconis | Puer | Via | Populus | — | — | compatible_70 | 70 |
+| Albus | Laetitia | Amissio | Puer | — | — | compatible_70 | 70 |
+| Via | Acquisitio | Rubeus | Laetitia | — | — | compatible_90 | 90 |
+| Amissio | Populus | Tristitia | Caput Draconis | — | — | repos_moyen | 50 |
+| Rubeus | Cauda Draconis | Fortuna Minor | Albus | — | — | semi_compatible | 60 |
+| Tristitia | Puella | Carcer | Via | — | — | blocage | 20 |
+| Fortuna Minor | Conjunctio | Conjunctio | Amissio | — | ✅ | compatible_90 | 90 |
+| Carcer | Fortuna Major | Fortuna Major | Rubeus | — | ✅ | blocage | 20 |
+| Conjunctio | Fortuna Minor | Cauda Draconis | Tristitia | — | — | compatible_70 | 70 |
+| Fortuna Major | Carcer | Puella | Fortuna Minor | — | — | blocage | 20 |
+| Cauda Draconis | Rubeus | Acquisitio | Carcer | — | — | compatible_90 | 90 |
+| Puella | Tristitia | Populus | Conjunctio | — | — | blocage | 20 |
+| Acquisitio | Via | Puer | Fortuna Major | — | — | semi_compatible | 60 |
+| Populus | Amissio | Laetitia | Cauda Draconis | — | — | semi_compatible | 60 |
+
+**0 O-D, 4 O-C** (Puer, Laetitia, Fortuna Minor, Carcer). **4 cas
+"blocage" — EXACTEMENT les mêmes 4 figures qu'en M2** (Tristitia,
+Carcer, Fortuna Major, Puella). Confirme directement ce qui avait été
+trouvé sur Vitesse-AEK (M2=Fortuna Major et M6=Tristitia, les deux en
+blocage sur ce match, voir plus haut) : ce n'était pas une coïncidence
+isolée — M2 et M6 partagent EXACTEMENT le même ensemble de 4 figures
+"à risque de blocage".
+
+*(Suite prévue : M7, M8... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
