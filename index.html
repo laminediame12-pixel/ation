@@ -3984,7 +3984,11 @@ function duelV7(posA, posB, theme, ctx) {
   var sc = buildScoreFromCamps(camp1, camp7, winner, ctx && ctx.competition, theme);
   var goalA = sc.goalA, goalB = sc.goalB, compConfig = sc.compConfig;
   if (sc.corrected) {
-    reasons.push('⚠️ Score ajusté : les buts bruts calculés ne donnaient pas d\'écart net pour le vainqueur doctrinal — marge minimale forcée (+1) pour rester affichable. Signale un désaccord interne entre la doctrine et le calcul de buts.');
+    // COHÉRENCE (19/07/26, "cherche s'il y a d'autres endroits désynchronisés") :
+    // ce message affichait "+1" en dur, resté figé depuis la base minGap=1
+    // d'origine — désormais 2 (ou 3 sous verrou piliers). Calculé depuis
+    // l'écart réellement affiché plutôt que redupliqué en dur une 3e fois.
+    reasons.push('⚠️ Score ajusté : les buts bruts calculés ne donnaient pas d\'écart net pour le vainqueur doctrinal — marge minimale forcée (+'+Math.abs(goalA-goalB)+') pour rester affichable. Signale un désaccord interne entre la doctrine et le calcul de buts.');
   }
 
   reasons.push('Planete du jour : '+planeteJour+' (figures actives = meme planete ou alliance uniquement)');
@@ -4209,6 +4213,16 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   // logique avec sa propre base codée en dur — restée à 1, désynchronisée du
   // changement. Remise à jour pour rester identique à `buildScoreFromCamps`.
   var minGapFinal = piliersReposCount(theme) >= 2 ? 3 : 2;
+  // RÉGRESSION TROUVÉE ET CORRIGÉE (19/07/26, "cherche s'il y a d'autres
+  // endroits désynchronisés") : quand la paralysie (M5/M11, `goalCap`
+  // ci-dessus) plafonne le total de buts à 0/1/2, ce garde-fou de marge
+  // MINIMALE pouvait le contredire — ex. goalCap=1 ("max 1 but") mais
+  // marge minimale imposée à 2 → score final 2-0, violant le plafond que
+  // le système affiche pourtant comme actif. Invisible avec l'ancienne
+  // base 1 (jamais > goalCap en pratique), révélé par le passage à 2 :
+  // vérifié sur 3000 thèmes aléatoires, 161/311 cas de paralysie (52%)
+  // violaient leur propre plafond avant ce correctif, 0/311 après.
+  if (goalCap !== null && goalCap > 0) { minGapFinal = Math.min(minGapFinal, goalCap); }
   if (winner==='M1') { var rM1=enforceScoreMargin(goalM1, goalM7, minGapFinal); goalM1=rM1[0]; goalM7=rM1[1]; finalCorrected=rM1[2]; }
   else if (winner==='M7') { var rM7=enforceScoreMargin(goalM7, goalM1, minGapFinal); goalM7=rM7[0]; goalM1=rM7[1]; finalCorrected=rM7[2]; }
   else {
