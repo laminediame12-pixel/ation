@@ -4778,6 +4778,26 @@ function confirmationResultanteBinome(pos, theme) {
   var binHarmonieux = binomePresent && binomeEnHarmonie(binome, theme);
   return polariteMatch && binomePresent && resHarmonieux && binHarmonieux;
 }
+
+// CONVERGENCE FIXE/ROTATION (19/07/26, demande utilisateur "indique si les
+// deux côtés du verdict se pointe une seule équipe") : compare le camp
+// favorisé par le mode fixe (M1 vs M7, chaineDualite().forceMaisons) au
+// camp favorisé par la rotation (R1 vs R7, mêmes positions que "Max des
+// 4 forces" ci-dessous) — indépendamment de QUEL mécanisme a réellement
+// tranché verdictFinal. Signal de confiance affiché à l'utilisateur, PAS
+// un nouvel étage de décision (verdictFinal reste inchangé).
+function convergenceFixeRotation(theme) {
+  var orderRot = getRotationOrderFromRepos(theme[1]);
+  var fM1 = chaineDualite(theme[1], theme).forceMaisons;
+  var fM7 = chaineDualite(theme[7], theme).forceMaisons;
+  var fR1 = chaineDualite(theme[orderRot[0]], theme).forceMaisons;
+  var fR7 = chaineDualite(theme[orderRot[6]], theme).forceMaisons;
+  var wFixe = fM1 === fM7 ? null : (fM1 > fM7 ? 'M1' : 'M7');
+  var wRotation = fR1 === fR7 ? null : (fR1 > fR7 ? 'M1' : 'M7');
+  var convergent = wFixe !== null && wRotation !== null && wFixe === wRotation;
+  var divergent = wFixe !== null && wRotation !== null && wFixe !== wRotation;
+  return { wFixe: wFixe, wRotation: wRotation, fM1: fM1, fM7: fM7, fR1: fR1, fR7: fR7, convergent: convergent, divergent: divergent };
+}
 function verdictFinal(theme, favoriteOverride){
   const td = themeDetruit(theme);
   if(td) return {type:'abstention', winner:null, label:'⛔ ABSTENTION — thème détruit', reason:td};
@@ -7153,6 +7173,16 @@ function renderTheme(){if(!currentTheme) return; clearHouseRelationColors(); cur
     if (_an.length) {
       var _elR2 = document.getElementById('carte-verdict-r');
       if (_elR2) _elR2.innerHTML += _an.map(function(x){ return '<div class="kv muted" style="font-size:11px; text-align:center; margin-top:4px; color:'+(x.type==='nourrit'?'#4ade80':'#f87171')+';">'+x.txt+'</div>'; }).join('');
+    }
+    // CONVERGENCE FIXE/ROTATION (19/07/26) — voir convergenceFixeRotation().
+    var _cvr = convergenceFixeRotation(currentTheme);
+    var _elCvr = document.getElementById('carte-verdict-r');
+    if (_elCvr && (_cvr.convergent || _cvr.divergent)) {
+      var _teamOf = function(w){ return w==='M1' ? team1 : w==='M7' ? team2 : '?'; };
+      var _cvrHtml = _cvr.convergent
+        ? '<div class="kv" style="font-size:12px; text-align:center; margin-top:6px; color:#4ade80;">✅ Fixe ET rotation pointent tous les deux vers <b>'+_teamOf(_cvr.wFixe)+'</b> ('+_cvr.fM1+'/'+_cvr.fM7+' vs '+_cvr.fR1+'/'+_cvr.fR7+')</div>'
+        : '<div class="kv" style="font-size:12px; text-align:center; margin-top:6px; color:#fbbf24;">⚠️ Fixe et rotation divergent — fixe favorise '+_teamOf(_cvr.wFixe)+', rotation favorise '+_teamOf(_cvr.wRotation)+'</div>';
+      _elCvr.innerHTML += _cvrHtml;
     }
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
