@@ -1881,29 +1881,39 @@ d'harmonie systématique, en commençant par M1.
 
 **M1 (le chef, figure naturelle = Puer)** :
 
-| Figure de base | Élément | Points/Parité | Résultante M1 | Niveau | Rôle | Force |
-|---|---|---|---|---|---|---|
-| Puer | feu | 3/impaire | Populus | repos_forte | Déclencheur | 100 |
-| Laetitia | feu | 1/impaire | Acquisitio | compatible_70 | Amplificateur | 70 |
-| Caput Draconis | air | 3/impaire | Amissio | chaotique | Chaotique | 40 |
-| Albus | eau | 1/impaire | Via | chaotique | Chaotique | 40 |
-| Via | eau | 4/paire | Albus | chaotique | Chaotique | 40 |
-| Amissio | eau | 2/paire | Caput Draconis | compatible_70 | Amplificateur | 70 |
-| Rubeus | air | 1/impaire | Carcer | semi_compatible | Absorbeur | 60 |
-| Tristitia | terre | 1/impaire | Fortuna Minor | compatible_90 | Déclencheur | 90 |
-| Fortuna Minor | feu | 2/paire | Tristitia | semi_compatible | Absorbeur | 60 |
-| Carcer | terre | 2/paire | Rubeus | compatible_70 | Amplificateur | 70 |
-| Conjunctio | air | 2/paire | Puella | semi_compatible | Absorbeur | 60 |
-| Fortuna Major | terre | 2/paire | Cauda Draconis | chaotique | Chaotique | 40 |
-| Cauda Draconis | eau | 3/impaire | Fortuna Major | semi_compatible | Absorbeur | 60 |
-| Puella | terre | 3/impaire | Conjunctio | compatible_70 | Amplificateur | 70 |
-| Acquisitio | air | 2/paire | Laetitia | compatible_90 | Déclencheur | 90 |
-| Populus | feu | 0/paire | Puer | compatible_90 | Déclencheur | 90 |
+**Légende des colonnes ajoutées (19/07/26, demande utilisateur)** :
+**O-D** (Auto-Destruction) = la résultante coïncide avec l'antagoniste
+de la figure de base ; **O-C** (Auto-Construction) = la résultante
+coïncide avec le binôme de la figure de base. Fig-Base = figure de
+base, R-M1 = résultante en M1.
+
+| Fig-Base | R-M1 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Populus | Caput Draconis | Puella | — | — | repos_forte | 100 |
+| Laetitia | Acquisitio | Albus | Acquisitio | ✅ | — | compatible_70 | 70 |
+| Caput Draconis | Amissio | Via | Populus | — | — | chaotique | 40 |
+| Albus | Via | Amissio | Puer | — | — | chaotique | 40 |
+| Via | Albus | Rubeus | Laetitia | — | — | chaotique | 40 |
+| Amissio | Caput Draconis | Tristitia | Caput Draconis | ✅ | — | compatible_70 | 70 |
+| Rubeus | Carcer | Fortuna Minor | Albus | — | — | semi_compatible | 60 |
+| Tristitia | Fortuna Minor | Carcer | Via | — | — | compatible_90 | 90 |
+| Fortuna Minor | Tristitia | Conjunctio | Amissio | — | — | semi_compatible | 60 |
+| Carcer | Rubeus | Fortuna Major | Rubeus | ✅ | — | compatible_70 | 70 |
+| Conjunctio | Puella | Cauda Draconis | Tristitia | — | — | semi_compatible | 60 |
+| Fortuna Major | Cauda Draconis | Puella | Fortuna Minor | — | — | chaotique | 40 |
+| Cauda Draconis | Fortuna Major | Acquisitio | Carcer | — | — | semi_compatible | 60 |
+| Puella | Conjunctio | Populus | Conjunctio | ✅ | — | compatible_70 | 70 |
+| Acquisitio | Laetitia | Puer | Fortuna Major | — | — | compatible_90 | 90 |
+| Populus | Puer | Laetitia | Cauda Draconis | — | — | compatible_90 | 90 |
 
 Répartition des niveaux : 1 repos_forte, 4 compatible_70, 4 chaotique,
 4 semi_compatible, 3 compatible_90 — **aucun niveau "blocage" possible
 en M1** (M1 est feu ; le blocage vient d'une incompatibilité terre/air,
 jamais présente ici, contrairement à M6/M2 sur Vitesse-AEK).
+**4 cas O-D** (Laetitia, Amissio, Carcer, Puella), **0 cas O-C**. Fait
+notable à vérifier sur les autres maisons : les 4 O-D sont
+EXACTEMENT les 4 figures classées "compatible_70", rien d'autre —
+possible coïncidence ou vrai motif structurel, à confirmer.
 
 **Conséquence** (déjà établie plus haut, "M1 et M7 testés directement") :
 harmonie de M1 (force≥60, couvre 12/16 figures — tout sauf les 4
