@@ -1379,6 +1379,24 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   (M13 ET M14 nient, le cas majoritaire à 16/27) reste néanmoins le
   statu quo le plus probable, cohérent avec le fait que le Juge lui-même
   (leur synthèse) ne confirme jamais.
+  **Extension à M16 "La Réconciliation" (19/07/26, "teste m16 aussi les
+  témoignages")** — `calcTheme` construit M16 comme `combine(t[15],
+  t[1])` (Réconciliation = combinaison du Juge et du chef M1).
+  Contrairement à M15, **M16 PEUT confirmer**. Raison structurelle :
+  M16 a un décalage nul (loi triviale déjà trouvée, `combine(X,
+  Populus)=X`) — sa résultante est TOUJOURS égale à sa propre base,
+  donc la condition de polarité de `confirmationResultanteBinome` se
+  réduit à une seule question : la figure atterrissant en M16 est-elle
+  elle-même franchement favorable ou défavorable (pas mixte/neutre) ?
+  Testé exhaustivement sur les 8×16=128 combinaisons possibles (M15 ×
+  M1) : **88/128 (69%) ont une polarité qui matche** — conditionnel à
+  la figure qui atterrit, pas structurellement impossible comme M15.
+  Sur Vitesse-AEK : M16 nie. Sur l'archive : **M16 confirme** (8/27) →
+  M1: 4, M7: 3, Nul: 1 (50%, quasi pile) ; **M16 nie** (19/27) → M1:
+  11, M7: 7, Nul: 1 (58%, proche du taux de base). **Même conclusion
+  que M13/M14** : M16 peut témoigner (contrairement au Juge, structurel
+  -lement muet), mais son témoignage ne corrèle pas avec le vainqueur
+  réel. Aucun changement de code.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
