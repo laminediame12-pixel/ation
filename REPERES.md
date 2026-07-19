@@ -1925,7 +1925,37 @@ inverse observé sur les maisons satellites (M2-M15, voir plus haut).
 Cohérent avec le rôle de M1 comme chef décisionnel plutôt que maison
 d'observation.
 
-*(Suite prévue : M2, M3... jusqu'à M16, à la demande de l'utilisateur.)*
+**M2 (figure naturelle = Laetitia)** :
+
+| Fig-Base | R-M2 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Acquisitio | Caput Draconis | Puella | — | — | compatible_90 | 90 |
+| Laetitia | Populus | Albus | Acquisitio | — | — | repos_moyen_fort | 75 |
+| Caput Draconis | Via | Via | Populus | — | ✅ | semi_compatible | 60 |
+| Albus | Amissio | Amissio | Puer | — | ✅ | semi_compatible | 60 |
+| Via | Caput Draconis | Rubeus | Laetitia | — | — | compatible_90 | 90 |
+| Amissio | Albus | Tristitia | Caput Draconis | — | — | semi_compatible | 60 |
+| Rubeus | Fortuna Minor | Fortuna Minor | Albus | — | ✅ | compatible_70 | 70 |
+| Tristitia | Carcer | Carcer | Via | — | ✅ | blocage | 20 |
+| Fortuna Minor | Rubeus | Conjunctio | Amissio | — | — | compatible_90 | 90 |
+| Carcer | Tristitia | Fortuna Major | Rubeus | — | — | blocage | 20 |
+| Conjunctio | Cauda Draconis | Cauda Draconis | Tristitia | — | ✅ | semi_compatible | 60 |
+| Fortuna Major | Puella | Puella | Fortuna Minor | — | ✅ | blocage | 20 |
+| Cauda Draconis | Conjunctio | Acquisitio | Carcer | — | — | compatible_90 | 90 |
+| Puella | Fortuna Major | Populus | Conjunctio | — | — | blocage | 20 |
+| Acquisitio | Puer | Puer | Fortuna Major | — | ✅ | compatible_70 | 70 |
+| Populus | Laetitia | Laetitia | Cauda Draconis | — | ✅ | compatible_70 | 70 |
+
+**Inversion frappante par rapport à M1** : **0 O-D, mais 8 O-C**
+(exactement la moitié). Directement expliqué par la loi de M2 déjà
+établie (§6, "Extension à M2") : M2 a un décalage de magnitude ±1 dans
+sa boucle de binôme — un décalage de "+1" dans cette boucle EST
+littéralement le binôme lui-même. La moitié des figures (côté "+1")
+tombe donc automatiquement en O-C, l'autre moitié (côté "-1", inverse
+du binôme) ne matche jamais l'antagoniste non plus (0 O-D). 4 cas
+"blocage" (Tristitia, Carcer, Fortuna Major, Puella), contre 0 en M1.
+
+*(Suite prévue : M3, M4... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
