@@ -960,6 +960,26 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   **16/25** (baseline 21/25) ; M9 → **14/25**, le pire résultat de
   toute la série testée aujourd'hui. Même conclusion que M4/M10 :
   rejeté, aucun signal de maison satellite ne bat la cascade actuelle.
+- **M5 et M11 testés (19/07/26, "M5-M11")** — dernier axe, boucle la
+  couverture complète des 6 axes d'opposition. Même camp (CAMP2),
+  0/16 auto-construction chacune. Signal plus faible et moins net que
+  les autres axes : **M5** harmonieux→M7 53% (quasi hasard), dissonant→
+  M1 80% (n=10, c'est le côté dissonant qui porte le signal, motif
+  inhabituel) — cascade priorité **15/25**. **M11** harmonieux→M7 45%
+  (aucun signal), dissonant→M1 80% (n=5) — cascade priorité **13/25**,
+  presque aussi mauvais que M9 (14/25, le pire de la série).
+  **Couverture complète des 6 axes terminée** : sur 12 maisons
+  satellites testées (M2 à M15, hors M1/M7 eux-mêmes et M16 triviale),
+  AUCUNE ne bat la cascade `verdictFinal` actuelle en usage "toujours
+  actif" — seuls des sous-échantillons isolés (souvent le groupe
+  harmonieux OU dissonant, jamais les deux de façon cohérente) montrent
+  un écart par rapport au taux de base, mais jamais assez large ni
+  assez stable pour survivre au test en conditions réelles de cascade.
+  Conclusion générale de cette exploration (19/07/26) : la structure
+  algébrique des maisons (Constat 12) est réelle et solide, mais
+  n'apporte, à ce stade, AUCUNE amélioration mesurable de `verdictFinal`
+  — reste un corpus de connaissance structurelle utile, pas encore un
+  levier de décision.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
