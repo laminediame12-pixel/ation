@@ -975,6 +975,22 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   décalages bruts {4,12}, mais précise qu'elles sont inversées l'une
   par rapport à l'autre plutôt qu'identiques. Aucun changement de
   code — résultat structurel/documentaire.
+- **Extension à M10 (19/07/26, "teste m10")** — M10 est aussi classée
+  "binaire" dans la table complète (décalages bruts {6,10}) mais avec
+  un jeu DIFFÉRENT de M4/M12. Vérifié exhaustivement sur les 16
+  figures : **M10 ne suit PAS la même magnitude que M4/M12** —
+  résultante(M10) est toujours à **±3** dans la boucle de binôme (pas
+  ±2), toujours 8/8 split. Donc pas "binôme(binôme(base))" mais
+  "binôme³(base)" (ou son inverse) : Puer→Rubeus en M10 =
+  binôme(binôme(binôme(Puer))). Sur Vitesse-AEK, M10 = Puer (comme
+  M4), résultante = Rubeus, `forceMaisonV7` renvoie `level:
+  'compatible_90'`, rôle "Amplificateur" — **pas de blocage non plus**,
+  comme M4. Donc sur ce match précis, seul M6 est en blocage parmi les
+  maisons testées jusqu'ici (M4, M6, M10, M12). Aucun changement de
+  code — résultat structurel/documentaire, confirme que le palier
+  "binaire" n'implique pas toujours la même magnitude de décalage
+  (M2/M4/M12 semblent ±2, M10 est ±3 — reste à vérifier M2, M7, M15
+  si utile).
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
