@@ -1357,6 +1357,28 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   le plus sophistiqué ne peut structurellement jamais s'activer pour
   cette maison. Aucun changement de code — résultat structurel/
   documentaire.
+  **Piste des Témoins M13/M14 (19/07/26, remarque utilisateur "m15 elle
+  est impartiale mais à travers des témoignages elle va trancher")** —
+  intuition juste et bien fondée : `calcTheme` construit littéralement
+  M15 comme `combine(t[13], t[14])` (le Juge = combinaison des deux
+  Témoins). Testé si M13/M14, individuellement, PEUVENT confirmer via
+  `confirmationResultanteBinome` (contrairement à M15 qui ne peut
+  JAMAIS confirmer, voir ci-dessus) : **oui, elles peuvent** — M13
+  confirme 5/27 fois sur l'archive, M14 confirme 7/27 fois (pas de
+  contrainte structurelle équivalente à celle de M15). Sur Vitesse-AEK :
+  M13 nie, M14 confirme — témoignages contradictoires. **Mais aucune
+  corrélation utile avec le vainqueur réel** : M13 confirme → M1 gagne
+  60% (3/5) ; M13 nie → 55% (12/22) ; M14 confirme → 57% (4/7) ; M14
+  nie → 55% (11/20) ; les deux nient ensemble (16/27, cas le plus
+  fréquent) → 56% — toutes ces valeurs restent proches du taux de base
+  archive (~56% M1), échantillons trop petits (5 et 7) pour espérer un
+  signal exploitable de toute façon. Rejeté, pas testé en cascade
+  (signal trop plat pour justifier l'effort). Aucun changement de code
+  — mais confirme que les Témoins, contrairement au Juge, ne sont pas
+  structurellement condamnés à l'impartialité : leur silence collectif
+  (M13 ET M14 nient, le cas majoritaire à 16/27) reste néanmoins le
+  statu quo le plus probable, cohérent avec le fait que le Juge lui-même
+  (leur synthèse) ne confirme jamais.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
