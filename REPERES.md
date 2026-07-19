@@ -1141,6 +1141,19 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     des thèmes avant d'être crue être une loi (comme pour M8/M16) —
     le taux de base "hasard" pour ce type de test est 1/16 (6,25%), à
     garder en tête comme seuil de comparaison.
+  - **Élargissement à l'axe M5↔M11 (19/07/26, demande utilisateur)** :
+    mêmes relations testées sur cet axe (capacité de marquage,
+    `paralysieV7`), dans les deux sens possibles (4 variantes :
+    résultante(M11)=antagoniste(reverseBinôme(baseM5)),
+    résultante(M5)=antagoniste(baseM11), et les 2 variantes inverses).
+    **Résultat identique sur les 65 536 thèmes : les 4 variantes
+    tombent toutes exactement à 4096/65536 = 6,3% = 1/16**, le même
+    taux de pur hasard que sur M3↔M9. Confirme et généralise la
+    conclusion : ce type de relation croisée résultante↔antagoniste↔
+    binôme-inverse n'est structurellement vraie sur AUCUN axe
+    d'opposition testé à ce jour — seule la loi M8 (16/16, un seul
+    décalage constant, voir Constat 12) est une véritable identité
+    algébrique. Rejeté, aucun changement de code.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
