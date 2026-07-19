@@ -937,6 +937,21 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   décision, même verdict que tous les autres signaux de maison testés
   ce jour — un bon signal isolé ne suffit toujours pas à améliorer la
   vraie cascade.
+- **M4 et M10 testés (19/07/26, "teste M4 et M10 aussi")** : les deux
+  appartiennent à CAMP1 (comme M2), aucune figure ne s'auto-construit
+  dans l'une ou l'autre (0/16 chacune, cohérent avec leur palier
+  binaire). Harmonie corrélée à M1 (leur camp) : **M4 harmonieux 68%
+  vs dissonant 33%** (n=19/6) ; **M10 harmonieux 64% vs dissonant 33%**
+  (n=22/3, dissonant trop mince). Sens intuitif, comme M1/M7, PAS le
+  paradoxe inverse de M2 (pourtant même camp CAMP1) — la direction du
+  paradoxe n'est donc pas systématique par camp. **Testé comme règle
+  "toujours active" (harmonieux→M1, dissonant→M7) sur l'archive
+  complète, en priorité absolue** : M4 → **16/25** (contre 21/25
+  baseline, casse 7 corrects pour en réparer 2) ; M10 → **15/25**
+  (casse 7, répare 1) — rejet net et plus marqué que les autres
+  maisons testées ce jour, le groupe "harmonieux" étant trop large
+  (19-22 matchs sur 27) et trop proche du taux de base pour battre
+  une cascade déjà affinée.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
