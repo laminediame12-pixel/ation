@@ -1295,6 +1295,19 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   au-delà de l'involution directe déjà connue (il faut déjà savoir
   dans quelle boucle est X pour savoir si la formule s'applique, ce
   qui revient à déjà connaître la moitié de la réponse).
+  **Impact sur le verdict testé (19/07/26, "mais à quoi ça pèse sur le
+  verdict") : AUCUN.** M15 harmonieux (force≥60, 18/27 cas archive) →
+  M1 gagne seulement **50%** ; M15 dissonant (9/27) → M1 gagne **67%**
+  (plutôt l'inverse de l'intuition). Testé en priorité absolue sur
+  `verdictFinal` complet : le score **chute de 22/27 à 17/27** (7
+  vainqueurs changés, tous vers le pire) — nettement destructeur.
+  Cohérent avec la conclusion déjà établie plus haut (§6, "Couverture
+  complète des 6 axes terminée") : sur les 12 maisons satellites
+  testées (M2 à M15), aucune ne bat la cascade actuelle en usage isolé.
+  Toute l'exploration algébrique de M15 aujourd'hui (involution,
+  contrainte de parité, discriminant boucle) reste un corpus de
+  connaissance structurelle solide, mais ne pèse pas sur le verdict —
+  pas intégré, aucun changement de code.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
