@@ -2374,6 +2374,60 @@ net-négatif en cascade — pas intégré, cohérent avec la discipline
 établie cette session (isolé ≠ suffisant, seul le gain net cascade
 compte).** Aucun changement de code.
 
+### Le "carré logique" et la relation "subalterne" (19/07/26)
+
+L'utilisateur a fourni un diagramme manuscrit ("carré logique") censé
+donner une compréhension conceptuelle de la cartographie des maisons.
+Photos trop floues/pivotées pour être lues avec précision numérique —
+compréhension construite via les clarifications verbales de
+l'utilisateur plutôt que la lecture directe de l'image.
+
+Deux structures confirmées/introduites :
+- **Rouge = boucle impaire, bleu = boucle paire** : confirme exactement
+  la règle de parité déjà établie (maisons à décalage impair traversent
+  toujours l'autre cycle binôme, maisons à décalage pair restent dans
+  leur propre cycle).
+- **Relation "opposé"** : correspond aux axes Constat 12 déjà connus
+  (M1↔M7, M2↔M8, M3↔M9, M4↔M10, M5↔M11, M6↔M12).
+- **Relation "subalterne" (NOUVEAU)** : relie deux axes d'opposition en
+  une famille à 4 maisons partageant une "énergie commune" doctrinale :
+  {M2,M6,M8,M12} via M2-subalterne-M6 et M8-subalterne-M12 (liant les
+  axes M2↔M8 et M6↔M12) ; {M3,M5,M9,M11} via M11-subalterne-M3 et
+  M9-subalterne-M5 (liant les axes M3↔M9 et M5↔M11). M1↔M7 et M4↔M10
+  restent des axes opposé isolés, sans partenaire subalterne mentionné.
+
+Énergies doctrinales données par l'utilisateur : M6/M12 = "incidents"
+(déjà couvert par `detectIncidentChaotique`, Cauda Draconis/Tristitia/
+Carcer/Amissio en M6 ou M12) ; M5/M11 = "capacité de marquage" (déjà
+couvert par `paralysieV7`/`goalCap`) ; **M2/M8 = "ressource pour les
+équipes"**, précisé comme "profondeur d'effectif / rotations
+(remplaçants)" — thème neuf, pas encore codé.
+
+**Test exploratoire M2/M8 vs profondeur d'effectif (19/07/26)** : seuls
+4 matchs réels de cette session disposent de données minute par minute
+permettant d'observer un but tardif (proxy approximatif d'un effet
+"banc/rotation") :
+
+| Match | M2 | M8 | Dissonants ensemble ? | But tardif réel |
+|---|---|---|---|---|
+| St Louis | Via (90) | Caput Draconis (blocage, 20) | ❌ | ✅ (75', 86') |
+| USA-Belgique | Caput Draconis (60) | Fortuna Minor (60) | ❌ | ✅ (75') |
+| France-Espagne | Albus (60) | Tristitia (100) | ❌ | ❌ |
+| Vitesse-AEK | Fortuna Major (blocage, 20) | Puer (60) | ❌ | ❌ |
+
+**Aucun des 4 matchs ne satisfait la condition "M2 ET M8 dissonants
+ensemble"** (le déclencheur exact déjà utilisé ailleurs dans
+`verdictFinal` pour d'autres paires) — impossible de tester
+rigoureusement cette condition précise avec les données disponibles.
+Un pattern faible et non fiable a été repéré (M2 plus fort — force 90,
+60 — dans les 2 matchs AVEC but tardif, contre plus faible — force 60,
+blocage 20 — dans les 2 SANS) mais **n=4, à prendre avec de très
+grandes pincettes, ne permet aucune conclusion**. Aucun changement de
+code. Piste laissée en attente : soit accumuler plus de matchs réels
+avec données minute par minute, soit trouver une autre façon de tester
+l'hypothèse "ressource d'équipe" (question posée à l'utilisateur, sans
+réponse à ce stade).
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
