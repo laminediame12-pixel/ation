@@ -1308,6 +1308,21 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   contrainte de parité, discriminant boucle) reste un corpus de
   connaissance structurelle solide, mais ne pèse pas sur le verdict —
   pas intégré, aucun changement de code.
+  **Ancrage complet de M15 testé aussi (19/07/26, "regarde ancrage
+  binôme et antagoniste [...] de m15")** — pas seulement l'harmonie
+  simple ci-dessus, mais le mécanisme d'ancrage COMPLET
+  (`chaineDualite(theme[15], theme)`, qui traite la figure de M15
+  comme un "chef" avec sa propre ancre=binôme, assaillant=antagoniste,
+  libérateur, victime, etc. — exactement la mécanique déjà utilisée
+  pour M1/M7). M15 appartient à CAMP2 (Constat 12, groupe M7). Résultat
+  archive : **M15 "domine" (15/27) → M7 gagne 47%** (quasi hasard) ;
+  **M15 pas "domine" (12/27) → M7 gagne seulement 25%** (plutôt
+  l'inverse de l'attendu pour une maison CAMP2) ; force M15 plus proche
+  de M7 que de M1 → M7 gagne aussi seulement 25%. Testé en priorité
+  absolue sur `verdictFinal` complet : **22/27 → 16/27**, destructeur.
+  Même conclusion : l'ancrage complet de M15 (avec binôme et
+  antagoniste, pas seulement l'harmonie de base) ne pèse pas plus sur
+  le verdict. Aucun changement de code.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
