@@ -828,6 +828,53 @@ légère régression à 15/27) : **17/27 sur l'archive, contre 15/27 sans
 cette contribution** — première extension de la chaîne qui améliore le
 score mesuré au lieu de le faire baisser.**
 
+### Constat 12 — Axes d'opposition des maisons (19/07/26, doctrine utilisateur)
+
+Table donnée directement par l'utilisateur, maison N ↔ maison N+6 (même
+principe que l'axe classique 1-7 déjà central au système M1/M7) :
+
+| Axe | Maisons | Camps (CAMP1=[1,2,3,4,9,10,13,16], CAMP2=[5,6,7,8,11,12,14,15]) |
+|---|---|---|
+| 1 | M1 ↔ M7 | camps différents |
+| 2 | M2 ↔ M8 | camps différents |
+| 3 | M3 ↔ M9 | **même camp** (CAMP1) |
+| 4 | M4 ↔ M10 | **même camp** (CAMP1) |
+| 5 | M5 ↔ M11 | **même camp** (CAMP2) |
+| 6 | M6 ↔ M12 | **même camp** (CAMP2) |
+
+Seuls M1↔M7 et M2↔M8 opposent deux camps différents ; les 4 autres axes
+opposent deux maisons du MÊME camp — asymétrie structurelle notable,
+pas encore expliquée.
+
+En creusant l'axe M2↔M8 (demande utilisateur, exemple concret
+Acquisitio/Rubeus en M8 quand M7=Cauda Draconis, "leur union dans cette
+maison n'est pas inutile") : `combine(X, figureNaturelleDeLaMaison)` se
+réduit à un décalage FIXE (mod 16) sur l'index de `FIGS_V7`, pour TOUTE
+figure X, dans exactement 2 des 16 maisons — **M8** (décalage +8) et
+**M16** (décalage 0, Populus = élément neutre de `combine()`). Élargi à
+tout l'axe d'opposition (M2/M6/M8/M12/M14/M16, "ce que M6 est à M2, M12
+l'est à M8") : les décalages sont TOUJOURS symétriques autour de 8,
+avec 3 niveaux de précision —
+
+| Maison | Figure naturelle | Décalages | Précision |
+|---|---|---|---|
+| M8 | Tristitia | {8} | 16/16 — loi pure |
+| M16 | Populus | {0} | 16/16 — loi pure |
+| M2 | Laetitia | {2, 14} | 8/8 — loi binaire |
+| M12 | Fortuna Major | {4, 12} | 8/8 — loi binaire |
+| M6 | Amissio | {2, 6, 10, 14} | 4/4/4/4 — loi à 4 voies |
+| M14 | Puella | {2, 6, 10, 14} | 4/4/4/4 — loi à 4 voies |
+
+M2 et M12 sont structurellement IDENTIQUES (même type binaire) ; M6 et
+M14 aussi (même type 4 voies) ; M8 et M16 aussi (loi pure). Testé comme
+signal directionnel de verdict pour M8 (base M8 = binôme d'un chef
+M1/M7/R1/R7) et M2 (auto-construction, `AUTO_CONSTRUCT_HOUSE`) : signaux
+isolés réels mais REJETÉS comme mécanismes de décision une fois testés
+en effet net sur `verdictFinal` (voir §5, entrées "M8 — VÉRIFICATION..."
+et "M2 — MAISON D'AUTO-CONSTRUCTION..."). M6 et M12 pas encore testés
+empiriquement en détail (M12 : aucune figure ne s'auto-construit ni ne
+s'auto-détruit, 0/16 — contrairement à M2/M6/M14).
+
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
 Après les constats structurels (§6), tentative d'intégrer une règle
