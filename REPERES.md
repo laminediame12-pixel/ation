@@ -1267,6 +1267,21 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   | Fortuna Major | terre | [2,2,1,1] (2) | paire | ✅ oui | Puella | Fortuna Minor | Conjunctio | 3-5 | Réussite solide et méritée |
   | Acquisitio | air | [2,1,2,1] (2) | paire | ✅ oui | Puer | Fortuna Major | Populus | 2-3 | Gain, acquisition |
   | Populus | feu | [2,2,2,2] (0) | paire | ✅ oui | Laetitia | Cauda Draconis | Acquisitio | 0-0 | Influence du groupe |
+- **Hypothèse testée : "résultante(M15) = binôme(antagoniste(X))"
+  (19/07/26, remarque utilisateur "conséquence du figure en m15 donne
+  binôme de son antagoniste") — REJETÉE.** Testé exhaustivement sur les
+  16 figures : la formule ne tient que **8/16 (50%)**, pas une loi
+  universelle comme l'involution M15 elle-même (16/16). Le motif est
+  net : dans chaque paire de l'involution (Via↔Amissio, Puer↔Laetitia,
+  Fortuna Minor↔Carcer, Conjunctio↔Fortuna Major, Acquisitio↔Populus,
+  Caput Draconis↔Albus, Rubeus↔Tristitia, Cauda Draconis↔Puella), la
+  formule est vraie pour UN SEUL des deux membres, fausse pour l'autre
+  (ex. `binôme(antagoniste(Amissio))=Via` ✅, mais
+  `binôme(antagoniste(Via))=Albus≠Amissio` ❌). Autres variantes testées
+  (`antagoniste(binôme(X))`, et leurs versions avec lookup inverse du
+  binôme/antagoniste) : soit le même 8/16, soit 0/16. Rejeté, aucun
+  changement de code — l'involution M15 pure (résultante directe via
+  `combine`) reste la seule loi propre trouvée pour cette maison.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
