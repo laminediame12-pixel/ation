@@ -980,6 +980,28 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   n'apporte, à ce stade, AUCUNE amélioration mesurable de `verdictFinal`
   — reste un corpus de connaissance structurelle utile, pas encore un
   levier de décision.
+  **PROLONGEMENT (19/07/26, demande utilisateur "il y a une chose qu'on
+  a raté... 5 maison piliers c'est impossible, M8 et M16 tout ça pèse
+  sur le verdict")** : deux vérifications de plus avant de clore. (1)
+  **Vote consensus** (chaque maison, sur les 14 non-M8/M16, vote M1 ou
+  M7 selon l'harmonie apprise de l'archive) : dégénère en "prédire M1
+  systématiquement" (13/14 maisons apprennent la même direction, reflet
+  du taux de base 60%, pas un signal caché) — pire que la cascade
+  (14/24 contre 21/25). (2) **Identité algébrique nouvelle et exacte,
+  vérifiée 16/16** : `combine(X, X) = Populus`, pour TOUTE figure X —
+  explique structurellement pourquoi une maison "au repos absolu"
+  (base = sa propre figure naturelle) produit TOUJOURS Populus comme
+  résultante cachée, quelle que soit la maison. Testé si généraliser
+  `piliersReposCount` (limité aux 5 piliers [1,8,9,12,15]) à un compte
+  sur les 16 maisons donnait un signal plus fort sur l'écart réel :
+  **NON** — corrélation piliers actuels r=0.389 contre r=0.108 sur les
+  16 maisons. **Les 5 piliers ne sont pas arbitraires : ils captent près
+  de 4× plus de signal que la moyenne des 16** — la loi algébrique
+  explique le MÉCANISME (pourquoi le repos compte) mais ne se généralise
+  pas également ; le choix des 5 piliers reste spécifiquement le bon.
+  Résultat qui VALIDE le système existant plutôt que d'en réviser un
+  nouveau — pas de changement de code, juste une explication structurelle
+  plus profonde d'un mécanisme déjà intégré et déjà correct.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
