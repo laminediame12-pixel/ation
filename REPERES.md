@@ -871,9 +871,27 @@ signal directionnel de verdict pour M8 (base M8 = binôme d'un chef
 M1/M7/R1/R7) et M2 (auto-construction, `AUTO_CONSTRUCT_HOUSE`) : signaux
 isolés réels mais REJETÉS comme mécanismes de décision une fois testés
 en effet net sur `verdictFinal` (voir §5, entrées "M8 — VÉRIFICATION..."
-et "M2 — MAISON D'AUTO-CONSTRUCTION..."). M6 et M12 pas encore testés
-empiriquement en détail (M12 : aucune figure ne s'auto-construit ni ne
-s'auto-détruit, 0/16 — contrairement à M2/M6/M14).
+et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
+(taux de base archive : M1 60% (15/25), M7 40% (10/25)) :
+- **M6 auto-construction** (groupe des 4, Puer/Laetitia/Fortuna Minor/
+  Carcer) : seulement **n=3** dans l'archive (rareté attendue, 4/16),
+  M7 2/2 (hors 1 Nul) — trop peu pour conclure, même limite que la
+   1ère estimation.
+- **M6 harmonie** (force≥60 de la base réelle dans M6) : harmonieux
+  M1=9/16 (56%), dissonant M1=6/9 décisifs (67%) — les deux proches du
+  taux de base (60%), **aucun signal net**, contrairement à M8 où le
+  même test donnait un vrai écart (71% vs 0%).
+- **M12 harmonie** : harmonieux M1=14/21 décisifs (67%, au-dessus du
+  taux de base), dissonant M1=1/4 décisifs (25%, en-dessous) — direction
+  intéressante et cohérente avec le paradoxe déjà vu sur M2 (l'harmonie/
+  auto-construction d'une maison semble favoriser le camp OPPOSÉ à celui
+  de la maison, pas le sien), mais échantillon dissonant minuscule
+  (n=4) — à confirmer, pas assez solide pour tester en cascade.
+- **Conclusion provisoire** : ni M6 ni M12 n'égalent la solidité de M8
+  (5/7 vs 0/3, écart net) ou même de M2 (43% vs 69%, écart net sur bon
+  échantillon) — cohérent avec leur position plus basse dans la
+  hiérarchie de précision (M6/M14 = 4 voies, la moins précise des 3
+  paliers ; M12 = binaire mais sans base d'auto-construction comme M2).
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
