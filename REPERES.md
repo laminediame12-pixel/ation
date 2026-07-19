@@ -1160,6 +1160,33 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   — **pas en blocage**. Archive-wide, blocage sur M15 : **0 cas**. La
   carte des 16 maisons de Vitesse-AEK reste stable : seules M2 et M6.
   Aucun changement de code — résultat structurel.
+- **TABLE COMPLÈTE M15 "LE JUGE" (19/07/26, "m15 juge fait un teste avec
+  tout les 16. le tableau")** — balayage exhaustif des 16 figures de
+  base possibles en M15 : révèle une loi **encore plus précise** que le
+  simple "traverse toujours" noté ci-dessus. **M15 forme une involution
+  parfaite** — chaque figure a un "jumeau" FIXE dans l'autre boucle de
+  binôme, et résultante(résultante(X)) = X toujours (appliquer la règle
+  deux fois ramène à la figure de départ) :
+
+  | Base | Résultante M15 | Base | Résultante M15 |
+  |---|---|---|---|
+  | Puer | Laetitia | Laetitia | Puer |
+  | Caput Draconis | Albus | Albus | Caput Draconis |
+  | Via | Amissio | Amissio | Via |
+  | Rubeus | Tristitia | Tristitia | Rubeus |
+  | Fortuna Minor | Carcer | Carcer | Fortuna Minor |
+  | Conjunctio | Fortuna Major | Fortuna Major | Conjunctio |
+  | Cauda Draconis | Puella | Puella | Cauda Draconis |
+  | Acquisitio | Populus | Populus | Acquisitio |
+
+  Plus propre que M7/M11 (qui traversent aussi vers l'autre boucle mais
+  à des écarts variables selon la position) : M15 apparie chaque figure
+  avec exactement UNE contrepartie fixe, jamais une autre — une
+  identité algébrique déterministe et symétrique (16/16), cohérente
+  avec le rôle de M15 dans les consultations personnelles ("XV — Le
+  Juge, verdict final") : une résultante sans ambiguïté de degré,
+  contrairement aux paliers 4-voies/8-voies. Aucun changement de code
+  — résultat structurel/documentaire.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
