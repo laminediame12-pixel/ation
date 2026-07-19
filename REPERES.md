@@ -2180,7 +2180,32 @@ des deux paires déjà vues (M2/M6 = Tristitia/Carcer/Fortuna Major/
 Puella ; M4/M8 = Caput Draconis/Rubeus/Conjunctio/Acquisitio). Pas de
 partenaire connu pour l'instant.
 
-*(Suite prévue : M11, M12... jusqu'à M16, à la demande de l'utilisateur.)*
+**M11 (figure naturelle = Conjunctio)** :
+
+| Fig-Base | R-M11 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Puella | Caput Draconis | Puella | ✅ | — | compatible_70 | 70 |
+| Laetitia | Cauda Draconis | Albus | Acquisitio | — | — | compatible_90 | 90 |
+| Caput Draconis | Tristitia | Via | Populus | — | — | compatible_70 | 70 |
+| Albus | Rubeus | Amissio | Puer | — | — | semi_compatible | 60 |
+| Via | Carcer | Rubeus | Laetitia | — | — | compatible_70 | 70 |
+| Amissio | Fortuna Minor | Tristitia | Caput Draconis | — | — | chaotique | 40 |
+| Rubeus | Albus | Fortuna Minor | Albus | ✅ | — | compatible_90 | 90 |
+| Tristitia | Caput Draconis | Carcer | Via | — | — | semi_compatible | 60 |
+| Fortuna Minor | Amissio | Conjunctio | Amissio | ✅ | — | compatible_90 | 90 |
+| Carcer | Via | Fortuna Major | Rubeus | — | — | compatible_90 | 90 |
+| Conjunctio | Populus | Cauda Draconis | Tristitia | — | — | repos_moyen | 50 |
+| Fortuna Major | Acquisitio | Puella | Fortuna Minor | — | — | semi_compatible | 60 |
+| Cauda Draconis | Laetitia | Acquisitio | Carcer | — | — | chaotique | 40 |
+| Puella | Puer | Populus | Conjunctio | — | — | chaotique | 40 |
+| Acquisitio | Fortuna Major | Puer | Fortuna Major | ✅ | — | compatible_70 | 70 |
+| Populus | Conjunctio | Laetitia | Cauda Draconis | — | — | semi_compatible | 60 |
+
+**4 O-D** (Puer, Rubeus, Fortuna Minor, Acquisitio), **0 O-C** —
+cohérent avec le palier 4-voies à décalage impair de M11 (traverse
+toujours, comme M1/M3/M9). 0 "blocage".
+
+*(Suite prévue : M12, M13... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
