@@ -311,6 +311,16 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   chef réellement "actif"/dominant du thème) donnerait un résultat
   différent — pas testé, faute de méthode encore claire pour trancher
   QUEL chef privilégier quand plusieurs positions sont candidates.
+  **FILTRE HARMONIE TESTÉ (19/07/26, demande utilisateur "vérifiez
+  lesquelles sont solides harmonieuses avec la maison")** : parmi les 10
+  cas où M8 pointe vers une des 4 positions, restreint aux cas où le
+  chef concerné (F) est lui-même en harmonie avec SA PROPRE maison
+  (`forceMaisonV7(F, sa_position).force >= 60`) : **4/7 (57%)** contre
+  **1/3 (33%)** pour les cas disharmonieux — dans le bon sens (harmonie
+  aide un peu) mais échantillon bien trop petit (7 et 3 cas) pour
+  conclure quoi que ce soit, et 57% reste à peine au-dessus du hasard.
+  NI validé ni rejeté — juste pas assez de données pour trancher. Pas
+  intégré.
 
 - **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
   l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
