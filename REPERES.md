@@ -1124,6 +1124,35 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   l'idée que M6 reste le seul signal fiable trouvé dans cette série de
   tests. Carte des 16 maisons de Vitesse-AEK toujours stable : seules
   M2 et M6. Aucun changement de code — résultat structurel.
+- **Extension à M16 (19/07/26, "teste m16") — DERNIÈRE MAISON, CARTE
+  COMPLÈTE DES 16 MAISONS DE VITESSE-AEK TERMINÉE.** M16 (l'autre
+  palier "pur") donne un décalage **toujours 0** (16/16) : résultante
+  (M16) = base, systématiquement — cohérent avec Populus (figure
+  naturelle de M16) comme élément neutre de `combine()` (`combine(X,
+  Populus)=X`, symétrique de l'identité `combine(X,X)=Populus` déjà
+  établie), et confirme ce que ce document notait déjà comme "M16
+  triviale". Sur Vitesse-AEK : M16 = Via, résultante = Via (identique),
+  `level:'compatible_70'` — **pas en blocage**. Archive-wide, blocage
+  sur M16 : n=5, moyenne **8,4 buts** contre 6,27 sans — mauvais sens
+  (comme M12/M14).
+
+  **BILAN FINAL des 16 maisons de Vitesse-AEK (carcer/fortuna_major/
+  populus/puer)** — seules **M2 et M6** sont en `level:'blocage'`,
+  les 14 autres compatibles/semi-compatibles/repos normal. Sur les 6
+  maisons dont le blocage a été testé archive-wide (M2, M4, M6, M8,
+  M10, M12, M14, M16 — les maisons à décalage pair, seules capables
+  d'atteindre le niveau blocage terre/air de façon récurrente dans
+  l'archive), **seul M6 montre un signal net dans le bon sens** (5,5
+  vs 7,16 buts) ; M4/M8/M10 montrent un signal modeste dans le bon
+  sens mais ne se déclenchent pas sur ce match ; M2/M12/M14/M16 vont
+  soit dans le mauvais sens soit sont neutres. **Conclusion de toute
+  cette série d'exploration (M1 à M16) : le gap Vitesse-AEK (0-0 réel
+  contre 5-3 prédit) reste partiellement expliqué par M6 en blocage,
+  mais aucune maison individuelle ne l'explique entièrement — le
+  0-0 est probablement le produit d'une combinaison de facteurs
+  (M6 blocage + finition inefficace malgré 22 tirs) plutôt que d'un
+  signal unique manquant à la doctrine.** Aucun changement de code sur
+  l'ensemble de cette série — résultat structurel/documentaire.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
