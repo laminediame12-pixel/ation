@@ -1102,6 +1102,21 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     angle : soit une vraie donnée de rythme (corners/tirs par tranche de
     temps, arrêts de jeu réels) plutôt que le nombre de buts comme proxy,
     soit une définition différente de ce que M3/M9 pourraient représenter.
+  - **Piste dérivée testée (19/07/26) : Populus en M3 spécifiquement**
+    (figure "vide/neutre" — Vitesse-AEK avait M3=Populus et 0 but).
+    **Intestable sur l'archive : 0/27 matchs archive n'ont Populus en
+    M3** — Vitesse-AEK reste le seul cas connu, aucune comparaison
+    possible. Élargi à "Populus n'importe où dans le thème (16
+    positions)" : 16/27 matchs l'ont, moyenne **7,06 buts** contre
+    **6,09 buts** pour les 11/27 qui ne l'ont pas — légèrement
+    l'INVERSE de l'hypothèse (à nuancer : archive dominée par de
+    l'esport à score élevé). Note pour mémoire : `BUTS_FIGURE` traite
+    déjà Populus comme `{min:0, max:0}` (aucune capacité de marquage
+    garantie) mais cette table s'applique aux maisons de capacité de
+    marquage M4/M5/M10/M11, pas à M3/M9 — doctrine déjà en place,
+    rien à étendre à M3/M9 sans données supplémentaires. Rejeté par
+    absence de données exploitables, pas retesté sans nouveaux vrais
+    matchs avec Populus en M3.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
