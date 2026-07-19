@@ -2282,7 +2282,80 @@ différentes. 0 "blocage".
 "blocage" — EXACTEMENT le même ensemble que M10** (Laetitia, Albus,
 Amissio, Populus) — le partenaire de M10 trouvé.
 
-*(Suite prévue : M15, M16 avec les colonnes O-D/O-C, à la demande de l'utilisateur.)*
+**M15 (figure naturelle = Acquisitio, "Le Juge" — déjà couvert en
+détail plus haut, table O-D/O-C ajoutée ici par cohérence)** :
+
+| Fig-Base | R-M15 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Laetitia | Caput Draconis | Puella | — | — | chaotique | 40 |
+| Laetitia | Puer | Albus | Acquisitio | — | — | chaotique | 40 |
+| Caput Draconis | Albus | Via | Populus | — | — | compatible_90 | 90 |
+| Albus | Caput Draconis | Amissio | Puer | — | — | semi_compatible | 60 |
+| Via | Amissio | Rubeus | Laetitia | — | — | compatible_90 | 90 |
+| Amissio | Via | Tristitia | Caput Draconis | — | — | compatible_90 | 90 |
+| Rubeus | Tristitia | Fortuna Minor | Albus | — | — | compatible_70 | 70 |
+| Tristitia | Rubeus | Carcer | Via | — | — | semi_compatible | 60 |
+| Fortuna Minor | Carcer | Conjunctio | Amissio | — | — | compatible_70 | 70 |
+| Carcer | Fortuna Minor | Fortuna Major | Rubeus | — | — | chaotique | 40 |
+| Conjunctio | Fortuna Major | Cauda Draconis | Tristitia | — | — | compatible_70 | 70 |
+| Fortuna Major | Conjunctio | Puella | Fortuna Minor | — | — | semi_compatible | 60 |
+| Cauda Draconis | Puella | Acquisitio | Carcer | — | — | compatible_70 | 70 |
+| Puella | Cauda Draconis | Populus | Conjunctio | — | — | compatible_90 | 90 |
+| Acquisitio | Populus | Puer | Fortuna Major | — | — | repos_moyen | 50 |
+| Populus | Acquisitio | Laetitia | Cauda Draconis | — | — | semi_compatible | 60 |
+
+0 O-D, 0 O-C, 0 blocage.
+
+**M16 (figure naturelle = Populus, "La Réconciliation")** :
+
+| Fig-Base | R-M16 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Puer | Caput Draconis | Puella | — | — | semi_compatible | 60 |
+| Laetitia | Laetitia | Albus | Acquisitio | — | — | semi_compatible | 60 |
+| Caput Draconis | Caput Draconis | Via | Populus | — | — | blocage | 20 |
+| Albus | Albus | Amissio | Puer | — | — | compatible_70 | 70 |
+| Via | Via | Rubeus | Laetitia | — | — | compatible_70 | 70 |
+| Amissio | Amissio | Tristitia | Caput Draconis | — | — | compatible_70 | 70 |
+| Rubeus | Rubeus | Fortuna Minor | Albus | — | — | blocage | 20 |
+| Tristitia | Tristitia | Carcer | Via | — | — | compatible_90 | 90 |
+| Fortuna Minor | Fortuna Minor | Conjunctio | Amissio | — | — | semi_compatible | 60 |
+| Carcer | Carcer | Fortuna Major | Rubeus | — | — | compatible_90 | 90 |
+| Conjunctio | Conjunctio | Cauda Draconis | Tristitia | — | — | blocage | 20 |
+| Fortuna Major | Fortuna Major | Puella | Fortuna Minor | — | — | compatible_90 | 90 |
+| Cauda Draconis | Cauda Draconis | Acquisitio | Carcer | — | — | compatible_70 | 70 |
+| Puella | Puella | Populus | Conjunctio | — | — | compatible_90 | 90 |
+| Acquisitio | Acquisitio | Puer | Fortuna Major | — | — | blocage | 20 |
+| Populus | Populus | Laetitia | Cauda Draconis | — | — | repos_moyen | 50 |
+
+0 O-D, 0 O-C (attendu : base=résultante toujours, et aucune figure
+n'est son propre binôme ni antagoniste dans ces permutations). **4 cas
+"blocage" — encore le même ensemble que M4/M8/M12** (Caput Draconis,
+Rubeus, Conjunctio, Acquisitio). Quatrième maison à rejoindre ce
+groupe.
+
+### Récapitulatif : les 3 groupes de blocage sur les 16 maisons
+
+Après avoir couvert les 16 maisons, un motif net émerge pour le
+niveau "blocage" (`forceMaisonV7`, incompatibilité élémentaire
+terre/air) :
+- **{M2, M6}** partagent {Tristitia, Carcer, Fortuna Major, Puella}
+- **{M4, M8, M12, M16}** partagent {Caput Draconis, Rubeus, Conjunctio,
+  Acquisitio}
+- **{M10, M14}** partagent {Laetitia, Albus, Amissio, Populus}
+- **M1, M3, M5, M7, M9, M11, M13, M15 n'ont jamais de blocage** (0 cas
+  partout) — uniquement les maisons à décalage PAIR (qui restent dans
+  leur boucle de binôme) peuvent produire du blocage ; les maisons à
+  décalage impair (qui traversent toujours) n'en produisent jamais.
+
+Exactement **3 groupes de 4 figures**, couvrant 12 des 16 figures,
+répartis sur 8 des 16 maisons (celles à décalage pair). Piste à tester
+plus tard : est-ce que cette classification en 3 groupes de figures a
+un sens exploitable pour le verdict (au-delà du signal faible déjà
+mesuré pour M6 spécifiquement) ?
+
+*(Première passe des 16 maisons terminée. Prochaine étape possible :
+approfondir un groupe précis, tester l'impact verdict des autres
+paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
