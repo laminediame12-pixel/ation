@@ -1102,6 +1102,14 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   "Amplificateur" — **pas en blocage**. Archive-wide, blocage sur M9 :
   **0 cas**. Carte des 16 maisons de Vitesse-AEK toujours stable :
   seules M2 et M6. Aucun changement de code — résultat structurel.
+- **Extension à M13 (19/07/26, "teste m13")** — deuxième maison du
+  palier "8-voies" (avec M5), décalages tous impairs {1,3,5,7,9,11,
+  13,15} : traverse aussi **toujours**, cohérent avec la règle de
+  parité. Sur Vitesse-AEK : M13 = Caput Draconis, résultante = Carcer,
+  `level:'semi_compatible'`, rôle "Absorbeur" — **pas en blocage**.
+  Archive-wide, blocage sur M13 : **0 cas**. Carte des 16 maisons de
+  Vitesse-AEK toujours stable : seules M2 et M6. Aucun changement de
+  code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
