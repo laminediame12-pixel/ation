@@ -2128,7 +2128,32 @@ figures qu'en M4** (Caput Draconis, Rubeus, Conjunctio, Acquisitio).
 Troisième paire de maisons (après M2/M6) à partager le même ensemble
 exact de figures à risque de blocage.
 
-*(Suite prévue : M9, M10... jusqu'à M16, à la demande de l'utilisateur.)*
+**M9 (figure naturelle = Fortuna Minor)** :
+
+| Fig-Base | R-M9 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Tristitia | Caput Draconis | Puella | — | — | semi_compatible | 60 |
+| Laetitia | Rubeus | Albus | Acquisitio | — | — | compatible_70 | 70 |
+| Caput Draconis | Puella | Via | Populus | — | — | semi_compatible | 60 |
+| Albus | Cauda Draconis | Amissio | Puer | — | — | chaotique | 40 |
+| Via | Fortuna Major | Rubeus | Laetitia | — | — | semi_compatible | 60 |
+| Amissio | Conjunctio | Tristitia | Caput Draconis | — | — | compatible_70 | 70 |
+| Rubeus | Laetitia | Fortuna Minor | Albus | — | — | compatible_90 | 90 |
+| Tristitia | Puer | Carcer | Via | — | — | compatible_90 | 90 |
+| Fortuna Minor | Populus | Conjunctio | Amissio | — | — | repos_forte | 100 |
+| Carcer | Acquisitio | Fortuna Major | Rubeus | — | — | compatible_70 | 70 |
+| Conjunctio | Amissio | Cauda Draconis | Tristitia | — | — | chaotique | 40 |
+| Fortuna Major | Via | Puella | Fortuna Minor | — | — | chaotique | 40 |
+| Cauda Draconis | Albus | Acquisitio | Carcer | — | — | chaotique | 40 |
+| Puella | Caput Draconis | Populus | Conjunctio | — | — | compatible_70 | 70 |
+| Acquisitio | Carcer | Puer | Fortuna Major | — | — | semi_compatible | 60 |
+| Populus | Fortuna Minor | Laetitia | Cauda Draconis | — | — | compatible_90 | 90 |
+
+**0 O-D, 0 O-C** — comme M4/M7/M8, décalages de M9 ({5,7,9,11}) ne
+coïncident ni avec le binôme ni avec l'antagoniste d'aucune figure. 0
+"blocage" aussi.
+
+*(Suite prévue : M10, M11... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
