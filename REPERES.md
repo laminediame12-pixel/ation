@@ -266,6 +266,30 @@ L'archive complète (27 matchs, dont 19 esport) est dans
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
+- **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
+  l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
+  la marge prédite (`buildScoreFromCamps`) était systématiquement trop
+  faible (+1 prédit à chaque fois, réel +1/+1/+6). Vérifié que ce n'était
+  pas une anecdote : sur les 21 matchs archivés où `verdictFinal` a le bon
+  vainqueur, la marge réelle moyenne (2.24) dépasse déjà nettement la
+  marge prédite moyenne (1.71) — biais systématique de sous-estimation,
+  erreur absolue moyenne de 1.00 but. Testé plusieurs pistes sur
+  l'archive complète avant de choisir : relever le plafond de score
+  (`Math.min(5,...)` dans `enforceScoreMargin`) au-delà de 5 ne change
+  RIEN ou dégrade (les totaux bruts de `calculerButsCamp` dépassent
+  rarement 5 dans l'archive, donc le plafond n'est pas le vrai goulot) ;
+  bonifier l'écart minimum selon l'écart de force de la cascade
+  (`chaineDualite`) n'aide pas non plus. Ce qui marche : relever
+  l'écart minimum de BASE dans `buildScoreFromCamps` de 1 à 2 (le
+  verrou piliers reste à 3, le plafond reste à 5) — meilleure config
+  testée (2/3/4/5 pour la base, 3/4/5 pour le palier piliers, 5/6/7/8/9/10
+  pour le plafond) : erreur absolue moyenne 1.00 → **0.857** (-14%),
+  aucun impact sur le taux de victoire (21/25 inchangé, cette valeur ne
+  touche que la marge affichée, pas le vainqueur décidé plus haut dans
+  la cascade). Intégré dans `buildScoreFromCamps`. Reste imparfait sur
+  les écarts extrêmes (le cas 8-2 réel restait à seulement 3-5 prédit
+  même après ce correctif) — pas de solution validée pour les vrais
+  blowouts, à revisiter si plus de données réelles s'accumulent.
 - Améliorer la chaîne de dualité au-delà de 19/27 sans réintroduire de
   contradiction (voir §2, tableau des versions).
 - Le Nul reste structurellement hors de portée de `verdictChaineDualite`

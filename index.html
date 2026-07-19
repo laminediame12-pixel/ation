@@ -3893,7 +3893,18 @@ function buildScoreFromCamps(campA, campB, winner, competitionOverride, theme) {
   // TEST 10/07/26 : quand 2+ des 5 maisons-piliers (M1,M8,M9,M12,M15) sont
   // en repos absolu, l'ecart reel moyen archive est 3.25 contre 1.28-1.55
   // sinon (4 cas, tous ecart>=3) -> ecart minimum impose 3 au lieu de 1.
-  var minGap = (theme && piliersReposCount(theme) >= 2) ? 3 : 1;
+  // AJUSTEMENT (19/07/26, demande utilisateur "améliore l'ampleur du score") :
+  // sur 3 vrais matchs récents hors archive, l'écart RÉEL moyen (2.24, mesuré
+  // sur les 21 matchs archivés où verdictFinal a le bon vainqueur) dépassait
+  // systématiquement l'écart minimum imposé de 1. Testé plusieurs valeurs
+  // (2/3/4/5) et plusieurs plafonds (5/6/7/8/9/10) sur l'archive complète :
+  // écart minimum de base 2 (piliers reste à 3, plafond reste à 5) donne la
+  // MEILLEURE erreur absolue moyenne (0.86 contre 1.00 avec l'ancien 1) —
+  // relever le plafond au-delà de 5, ou l'écart piliers au-delà de 3, ou
+  // l'écart de base au-delà de 2, dégradait systématiquement le résultat.
+  // Ne change PAS le taux de victoire (le vainqueur est décidé ailleurs,
+  // cette valeur ne touche que la marge du score affiché).
+  var minGap = (theme && piliersReposCount(theme) >= 2) ? 3 : 2;
   if (wA) { var rW=enforceScoreMargin(goalA, goalB, minGap); goalA=rW[0]; goalB=rW[1]; corrected=rW[2]; }
   else if (wB) { var rW2=enforceScoreMargin(goalB, goalA, minGap); goalB=rW2[0]; goalA=rW2[1]; corrected=rW2[2]; }
   else {
