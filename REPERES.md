@@ -1050,6 +1050,17 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   — **pas en blocage**. Archive-wide, blocage sur M15 : **0 cas**. La
   carte des 16 maisons de Vitesse-AEK reste stable : seules M2 et M6.
   Aucun changement de code — résultat structurel.
+- **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
+  décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
+  l'autre boucle de binôme, cohérent avec la règle de parité (déjà
+  vérifiée sur M7, M11, M15). Sur Vitesse-AEK : M3 = Populus,
+  résultante = Caput Draconis, `level:'semi_compatible'`, rôle
+  "Dissonant" — **pas en blocage**. Archive-wide, blocage sur M3 :
+  **0 cas**. La règle de parité tient désormais sur 7 maisons testées
+  (M2/M4/M10/M12 pairs → restent dans leur boucle ; M3/M7/M11/M15
+  impairs → traversent toujours), et la carte des 16 maisons de
+  Vitesse-AEK reste stable : toujours seulement M2 et M6 en blocage.
+  Aucun changement de code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
