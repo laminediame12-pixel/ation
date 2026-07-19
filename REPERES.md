@@ -2015,7 +2015,35 @@ M1/M3, qui donne du O-D) — un écart de 2 ne coïncide ni avec le binôme
 cycle de 16 distinct). 4 cas "blocage" (Caput Draconis, Rubeus,
 Conjunctio, Acquisitio).
 
-*(Suite prévue : M5, M6... jusqu'à M16, à la demande de l'utilisateur.)*
+**M5 (figure naturelle = Via, palier "8 voies" le moins prévisible)** :
+
+| Fig-Base | R-M5 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Albus | Caput Draconis | Puella | — | — | chaotique | 40 |
+| Laetitia | Caput Draconis | Albus | Acquisitio | — | — | compatible_70 | 70 |
+| Caput Draconis | Laetitia | Via | Populus | — | — | compatible_90 | 90 |
+| Albus | Puer | Amissio | Puer | ✅ | — | compatible_90 | 90 |
+| Via | Populus | Rubeus | Laetitia | — | — | repos_faible | 25 |
+| Amissio | Acquisitio | Tristitia | Caput Draconis | — | — | compatible_70 | 70 |
+| Rubeus | Puella | Fortuna Minor | Albus | — | — | semi_compatible | 60 |
+| Tristitia | Cauda Draconis | Carcer | Via | — | — | chaotique | 40 |
+| Fortuna Minor | Fortuna Major | Conjunctio | Amissio | — | — | semi_compatible | 60 |
+| Carcer | Conjunctio | Fortuna Major | Rubeus | — | — | compatible_70 | 70 |
+| Conjunctio | Carcer | Cauda Draconis | Tristitia | — | — | semi_compatible | 60 |
+| Fortuna Major | Fortuna Minor | Puella | Fortuna Minor | ✅ | — | compatible_90 | 90 |
+| Cauda Draconis | Tristitia | Acquisitio | Carcer | — | — | semi_compatible | 60 |
+| Puella | Rubeus | Populus | Conjunctio | — | — | compatible_70 | 70 |
+| Acquisitio | Amissio | Puer | Fortuna Major | — | — | chaotique | 40 |
+| Populus | Via | Laetitia | Cauda Draconis | — | — | chaotique | 40 |
+
+**2 O-D** (Albus, Fortuna Major), **0 O-C** — cohérent avec le palier
+"8 voies" de M5 (décalages tous impairs, traverse toujours la boucle
+comme M1/M3, donc O-C structurellement impossible), mais le nombre
+d'O-D est plus faible qu'en M1/M3 (2 au lieu de 4) puisque M5 a 8
+magnitudes de décalage différentes au lieu de 2 — moins de chances de
+tomber pile sur la relation antagoniste par hasard. 0 "blocage".
+
+*(Suite prévue : M6, M7... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
