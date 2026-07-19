@@ -991,6 +991,22 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   "binaire" n'implique pas toujours la même magnitude de décalage
   (M2/M4/M12 semblent ±2, M10 est ±3 — reste à vérifier M2, M7, M15
   si utile).
+- **Extension à M2 (19/07/26, "teste m2")** — vérifié exhaustivement
+  sur les 16 figures : **M2 a sa PROPRE magnitude, ±1** dans la boucle
+  de binôme (ni ±2 comme M4/M12, ni ±3 comme M10) — troisième magnitude
+  distincte trouvée parmi les maisons "binaires" (8/8 split, toujours
+  cohérent). **Sur Vitesse-AEK, M2 EST en blocage** : base Fortuna
+  Major, résultante Puella, `forceMaisonV7` renvoie `level:'blocage'`,
+  force=20 — un DEUXIÈME foyer de blocage sur ce match, en plus de M6.
+  Table complète des 16 maisons de Vitesse-AEK (calcul direct) :
+  seules **M2 et M6** sont en blocage, les 14 autres sont compatibles/
+  semi-compatibles/repos normal. Mais testé archive-wide, **le blocage
+  sur M2 ne montre AUCUN signal** : 6,57 buts (n=7) contre 6,70 sans
+  (n=20) — quasiment identique, contrairement à M6 (5,5 vs 7,16, un
+  vrai écart, voir plus haut). **Conclusion : le blocage sur M2 semble
+  être du bruit sur ce match, pas un vrai contributeur — renforce
+  l'idée que c'est M6 spécifiquement qui porte le signal, pas "le
+  blocage" en tant que concept général.** Aucun changement de code.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
