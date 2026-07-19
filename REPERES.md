@@ -2428,6 +2428,38 @@ avec données minute par minute, soit trouver une autre façon de tester
 l'hypothèse "ressource d'équipe" (question posée à l'utilisateur, sans
 réponse à ce stade).
 
+**Observation utilisateur (19/07/26) : "même boucle" M2/M8.** Sur les 4
+matchs ci-dessus, l'utilisateur a remarqué que M2 et M8 partagent la
+même boucle de binôme (`BINOMES_V7`, cycle Puer-A ou Laetitia-B) dans
+les 3 premiers matchs (St Louis, USA-Belgique, France-Espagne), et sont
+dans deux boucles différentes uniquement sur le dernier (Vitesse-AEK :
+Fortuna Major=B, Puer=A). **Vérifié par calcul : observation exacte**
+(appartenance de boucle = parité de l'index dans `FIGS_V7`).
+
+Contrairement au test "dissonants ensemble" (limité aux 4 matchs à
+données minute par minute), "même boucle vs boucles différentes" ne
+dépend que du thème — testable sur l'**archive complète (27 matchs)**.
+Testé en deux temps :
+- D'abord avec le champ `verdict.winner` stocké dans l'archive
+  (calculé au moment de la sauvegarde, donc potentiellement obsolète
+  par rapport à la cascade actuelle) : 69% (11/16) même boucle contre
+  55% (6/11) boucles différentes — écart trompeur.
+- **Recalculé en direct avec `verdictFinal()` de la cascade actuelle**
+  (via Playwright, `file://index.html`, appel direct de la fonction
+  sur chaque thème archivé) : **81% (13/16) même boucle contre 82%
+  (9/11) boucles différentes — aucun écart réel**, l'écart précédent
+  n'était qu'un artefact du verdict obsolète stocké dans l'archive.
+- Buts moyens et écart de score moyen également quasi identiques entre
+  les deux groupes (6,75 buts/1,88 écart même boucle vs 6,55 buts/2,36
+  écart boucles différentes) — pas de signal exploitable ici non plus.
+
+**Conclusion : le partage de boucle M2/M8 est une observation
+structurelle exacte, mais ne corrèle avec aucun résultat mesurable
+(ni précision du vainqueur, ni buts, ni écart) sur l'archive complète.**
+Aucun changement de code. Reste une piste ouverte si une autre variable
+à tester est proposée (l'angle "profondeur d'effectif" lui-même n'a
+pas encore de proxy fiable, voir ci-dessus).
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
