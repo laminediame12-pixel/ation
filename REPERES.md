@@ -1955,7 +1955,38 @@ tombe donc automatiquement en O-C, l'autre moitié (côté "-1", inverse
 du binôme) ne matche jamais l'antagoniste non plus (0 O-D). 4 cas
 "blocage" (Tristitia, Carcer, Fortuna Major, Puella), contre 0 en M1.
 
-*(Suite prévue : M3, M4... jusqu'à M16, à la demande de l'utilisateur.)*
+**M3 (figure naturelle = Caput Draconis)** :
+
+| Fig-Base | R-M3 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Amissio | Caput Draconis | Puella | — | — | compatible_90 | 90 |
+| Laetitia | Via | Albus | Acquisitio | — | — | compatible_90 | 90 |
+| Caput Draconis | Populus | Via | Populus | ✅ | — | repos_moyen | 50 |
+| Albus | Acquisitio | Amissio | Puer | — | — | semi_compatible | 60 |
+| Via | Laetitia | Rubeus | Laetitia | ✅ | — | chaotique | 40 |
+| Amissio | Puer | Tristitia | Caput Draconis | — | — | chaotique | 40 |
+| Rubeus | Fortuna Major | Fortuna Minor | Albus | — | — | compatible_70 | 70 |
+| Tristitia | Conjunctio | Carcer | Via | — | — | semi_compatible | 60 |
+| Fortuna Minor | Puella | Conjunctio | Amissio | — | — | compatible_70 | 70 |
+| Carcer | Cauda Draconis | Fortuna Major | Rubeus | — | — | compatible_90 | 90 |
+| Conjunctio | Tristitia | Cauda Draconis | Tristitia | ✅ | — | compatible_70 | 70 |
+| Fortuna Major | Rubeus | Puella | Fortuna Minor | — | — | semi_compatible | 60 |
+| Cauda Draconis | Carcer | Acquisitio | Carcer | ✅ | — | compatible_70 | 70 |
+| Puella | Fortuna Minor | Populus | Conjunctio | — | — | chaotique | 40 |
+| Acquisitio | Albus | Puer | Fortuna Major | — | — | compatible_90 | 90 |
+| Populus | Caput Draconis | Laetitia | Cauda Draconis | — | — | semi_compatible | 60 |
+
+**Motif proche de M1** : 4 O-D (Caput Draconis, Via, Conjunctio, Cauda
+Draconis), 0 O-C — cohérent avec le fait que M3, comme M1, est du
+palier à décalage impair (traverse toujours vers l'autre boucle de
+binôme, ce qui rend O-C impossible dans cette configuration). 0
+"blocage" (M3=air, aucune résultante terre incompatible dans cette
+liste). Cas particulier : Caput Draconis est à la fois "au repos"
+(base=figure naturelle) ET en O-D (coïncidence : au repos, résultante
+=Populus toujours par l'identité déjà établie, et antagoniste(Caput
+Draconis)=Populus aussi).
+
+*(Suite prévue : M4, M5... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
