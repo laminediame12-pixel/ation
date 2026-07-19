@@ -125,7 +125,7 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 | (match, 19/07/26) M1=Via/M7=Fortuna Minor | via/amissio/rubeus/rubeus | 5-4, **M1** | — | **HIT (Équipe 1) via Max des 4 forces.** M1=920, maximum absolu des 4 valeurs (M7=645, R1=645, R7=435), fixe et rotation d'accord. Réel 5-4 M1 — score estimé 3-2, même écart net +1 que le réel (+1), magnitude sous-estimée comme sur les 2 cas précédents. Signal incident notable : Rubeus en M12 (surface) avec binôme Fortuna Minor en rupture Chaotique en M7 → penalty prédit contre l'Équipe 2 (non confirmé/infirmé par l'utilisateur). **6e vrai match hors archive pour ce palier : 5/6** |
 | (match, 19/07/26) M1=Tristitia/M7=Acquisitio | tristitia/albus/fortuna_minor/conjunctio | 8-2, **M7** | — | **HIT (Équipe 2) via Max des 4 forces.** M7=865, maximum absolu des 4 valeurs (R7=815, M1=660, R1=585), fixe et rotation d'accord. Réel **8-2 M7** — score estimé 4-5 (écart net +1) : vainqueur correct mais magnitude très sous-estimée (écart réel +6 contre +1 prédit). Aucun signal incident/carton spécifique sur ce thème (juste des notes génériques "buteur actif"). **7e vrai match hors archive pour ce palier : 6/7** — 3 HIT consécutifs mais avec un écart de score de plus en plus large par rapport à la prédiction, à surveiller |
 | Ventura County vs Los Angeles II (19/07/26) — **TIRAGE NON-RADICAL** | fortuna_minor/rubeus/conjunctio/albus (tirage aléatoire, mères non fournies par l'utilisateur) | 2-0, **M1 (Ventura County)** | — | **MISS complet, mais tirage fait PENDANT le match (pas avant le coup d'envoi)** — radicalité déjà signalée comme faible au moment du tirage, donc **non comptabilisé dans le track record du palier Max des 4 forces (reste 6/7)**. `verdictFinal` avait prédit **M7 (Los Angeles II) 3-4** via Max des 4 forces (R7=1385 max) ; réel M1 2-0 — vainqueur ET score totalement inversés. Le signal incident/carton (Cauda Draconis en M6, prédit CONTRE l'équipe 2) s'est aussi trompé de camp : le carton rouge réel a touché M1, pas M7. Ce cas illustre concrètement pourquoi la radicalité du tirage compte — à garder comme référence si d'autres tirages non-radicaux sont testés |
-| Vitesse vs AEK Athènes (19/07/26) | carcer/fortuna_major/populus/puer | 0-0 (22 tirs) | — | **MISS NET (score) — `verdictFinal` prédit 5-3 Équipe 1** via convergence fixe+rotation (M1=750 vs M7=1150 en fixe... voir détail carte : fixe ET rotation pointaient tous deux Équipe 2 en fait, 750/1150 vs 785/825 — la carte affichée nuance déjà "marge ajustée, désaccord doctrine/buts bruts"). **ANALYSE COMPLÈTE menée le 19/07/26** (demande utilisateur "fais une analyse complète") après une longue série de tests maison par maison (M1 à M16, voir §6) : (1) seules **M2 et M6** sont en `level:'blocage'` sur les 16 maisons, mais seul M6 montre un vrai signal archive-wide (5,5 vs 7,16 buts, n=8/19) ; (2) **4 des 16 maisons portent une figure `BUTS_FIGURE` à 0-0 garanti** (Carcer×3 en M1/M5/M12, Populus en M3) — surreprésentation notable de figures "vides" ; (3) **`matchFermeOuvert` donne 10/16 maisons fermées → "FERMÉ, risque qu'un camp reste à 0" — signal JUSTE** (voir §5, track record réel désormais 6/10), mais ce détecteur reste display-only et n'est jamais consulté par `verdictFinal` pour modérer son estimation de score, d'où l'incohérence 5-3 prédit vs signal interne "fermé" ignoré. **Conclusion : le 0-0 n'était pas invisible à la doctrine — plusieurs signaux convergents existaient (M6 blocage, 4 figures 0-0, matchFermeOuvert=FERMÉ) mais aucun n'était câblé dans le calcul du score final.** Pistes rejetées en cours de route : M3+M9 "rythme" (contredit par ce match précis, voir §6), Populus en M3 (intestable), Carcer en M12 = "Blocage" par coïncidence de texte (rejeté, archive va dans le sens inverse). **CORRIGÉ le 19/07/26** : `matchFermeOuvert` connecté à `buildScoreFromCamps` (voir §5, "MATCH FERMÉ → RÉDUCTION DU SCORE") — score prédit sur ce thème passe de **5-3 à 4-2** (réduction ×0.8 appliquée), toujours pas 0-0 exact (le facteur ×0.8 est volontairement conservateur, zéro-régression sur 18 vrais matchs testés) mais l'écart net avec le réel se réduit (7→6 d'erreur absolue) |
+| Vitesse vs AEK Athènes (19/07/26) | carcer/fortuna_major/populus/puer | 0-0 (22 tirs) | — | **MISS NET (score) — `verdictFinal` prédit 5-3 Équipe 1** via convergence fixe+rotation (M1=750 vs M7=1150 en fixe... voir détail carte : fixe ET rotation pointaient tous deux Équipe 2 en fait, 750/1150 vs 785/825 — la carte affichée nuance déjà "marge ajustée, désaccord doctrine/buts bruts"). **ANALYSE COMPLÈTE menée le 19/07/26** (demande utilisateur "fais une analyse complète") après une longue série de tests maison par maison (M1 à M16, voir §6) : (1) seules **M2 et M6** sont en `level:'blocage'` sur les 16 maisons, mais seul M6 montre un vrai signal archive-wide (5,5 vs 7,16 buts, n=8/19) ; (2) **4 des 16 maisons portent une figure `BUTS_FIGURE` à 0-0 garanti** (Carcer×3 en M1/M5/M12, Populus en M3) — surreprésentation notable de figures "vides" ; (3) **`matchFermeOuvert` donne 10/16 maisons fermées → "FERMÉ, risque qu'un camp reste à 0" — signal JUSTE** (voir §5, track record réel désormais 6/10), mais ce détecteur reste display-only et n'est jamais consulté par `verdictFinal` pour modérer son estimation de score, d'où l'incohérence 5-3 prédit vs signal interne "fermé" ignoré. **Conclusion : le 0-0 n'était pas invisible à la doctrine — plusieurs signaux convergents existaient (M6 blocage, 4 figures 0-0, matchFermeOuvert=FERMÉ) mais aucun n'était câblé dans le calcul du score final.** Pistes rejetées en cours de route : M3+M9 "rythme" (contredit par ce match précis, voir §6), Populus en M3 (intestable), Carcer en M12 = "Blocage" par coïncidence de texte (rejeté, archive va dans le sens inverse). **CORRIGÉ le 19/07/26** : `matchFermeOuvert` connecté à `buildScoreFromCamps` (voir §5, "MATCH FERMÉ → RÉDUCTION DU SCORE"). **MAIS vérifié en direct sur la carte réellement affichée (`carte-verdict-r`, qui utilise les positions de ROTATION R1/R7, pas M1/M7 fixe) : le score reste 5-3, INCHANGÉ.** Diagnostic : sur les positions de rotation de ce thème (R1=M10=Puer, R7=M16=Via), le calcul brut de capacité donne campA(R1)=3 < campB(R7)=5 — la doctrine (`verdictFinal`) tranche pourtant R1 vainqueur, contradiction déjà signalée par "⚠️ marge ajustée". `enforceScoreMargin` (appelé APRÈS la réduction ×0.8) pousse alors le vainqueur vers le plafond (5) et recalcule le perdant à partir de ce plafond, peu importe la valeur d'entrée — la réduction ferme est donc totalement absorbée/invisible dans ce cas précis. Voir §5 pour le détail complet de cette limite découverte |
 
 L'archive complète (27 matchs, dont 19 esport) est dans
 `/tmp/claude-0/-home-user-ation/43bdd8e4-4f60-5524-bd72-213622d663af/scratchpad/export_data.json`
@@ -628,13 +628,41 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   (Acquisitio/Acquisitio et Via/Fortuna Minor, +2 d'erreur chacun) —
   écarté au profit de ×0.8, cohérent avec la discipline de cette
   session (préférer un gain net PROPRE, zéro régression, à un gain plus
-  gros mais avec compromis). **Vérifié en live sur le code réel** (pas
-  seulement en monkey-patch de test) : Chelsea-Atlético 3-5→2-4,
-  France-Espagne 5-5→4-4, Vitesse-AEK 5-2→4-2, etc. — cohérent avec les
-  prédictions de test. **Vérifié que le taux de victoire de
-  `verdictFinal` sur l'archive reste inchangé** (22/27, identique à
-  avant le changement) — confirme que seule la magnitude du score est
-  touchée, jamais le vainqueur. ⚠️ Échantillon de calibration limité
+  gros mais avec compromis). **Vérifié en appel direct** (posA=1/posB=7,
+  mode fixe) : Chelsea-Atlético 3-5→2-4, France-Espagne 5-5→4-4,
+  Vitesse-AEK 5-2→4-2, etc. — cohérent avec les prédictions de test.
+  **Vérifié que le taux de victoire de `verdictFinal` sur l'archive
+  reste inchangé** (22/27, identique à avant le changement) — confirme
+  que seule la magnitude du score est touchée, jamais le vainqueur.
+
+  **⚠️ LIMITE DÉCOUVERTE (19/07/26, demande utilisateur "teste
+  vitesse-aek en direct pour vérifier") : le fix reste invisible sur la
+  carte RÉELLEMENT AFFICHÉE dans certains cas.** `carte-verdict-r`
+  (la carte priorité affichée à l'écran) utilise les positions de
+  ROTATION (R1/R7, `getRotationOrderFromRepos`), pas M1/M7 fixe comme
+  testé ci-dessus. Sur Vitesse-AEK, testé en direct sur le vrai code :
+  la carte affichée reste **5-3, INCHANGÉE malgré le fix**. Cause :
+  en rotation, campA(R1=Puer)=3 < campB(R7=Via)=5, alors que
+  `verdictFinal` tranche R1 vainqueur — contradiction déjà signalée par
+  "⚠️ marge ajustée (désaccord doctrine/buts bruts)". `enforceScoreMargin`
+  (appelé APRÈS la réduction ×0.8) pousse alors le vainqueur vers le
+  plafond (5) et reconstruit le perdant à partir de ce plafond
+  (`goalL = goalW - minGap`) — indépendamment de la valeur d'entrée
+  réduite. **Conclusion : le fix fonctionne et est correctement testé
+  UNIQUEMENT quand les totaux bruts (campA/campB) sont déjà cohérents
+  avec le vainqueur doctrinal — dès que `enforceScoreMargin` doit
+  "corriger" un désaccord doctrine/buts bruts, sa logique de plafond
+  écrase toute réduction en amont, quelle que soit sa magnitude.** Pas
+  de code changé pour corriger ça (demande de clarification à
+  l'utilisateur restée sans réponse suite à une erreur technique de
+  l'outil de question — décision prise de documenter la limite plutôt
+  que de modifier `enforceScoreMargin`, fonction partagée par tous les
+  appels de score de la cascade, sans validation explicite au préalable
+  vu son caractère plus invasif). Prochaine étape possible si
+  confirmée utile : faire tenir compte du ferme aussi dans le plafond/
+  plancher d'`enforceScoreMargin`, mais ça demande son propre test
+  archive complet avant d'être sûr que ça n'aggrave rien ailleurs dans
+  la cascade. ⚠️ Échantillon de calibration limité
   (18 vrais matchs, dont seulement 3 où le facteur change effectivement
   le résultat) — à surveiller sur les prochains vrais matchs avant de
   pousser plus loin (facteur plus agressif, ou fusion avec d'autres
