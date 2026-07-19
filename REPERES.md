@@ -1234,7 +1234,17 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   exclues — cohérent avec le fait que M15 (Le Juge) penche
   structurellement plutôt vers des figures neutres/défensives que vers
   des figures franchement offensives (seules 2 des 8 — Fortuna Major et
-  Acquisitio — sont "favorable").
+  Acquisitio — sont "favorable"). **Précision (19/07/26, "donne les
+  resultante dans le tableau") : l'involution de M15 ne mélange JAMAIS
+  les deux groupes de parité.** La résultante d'une figure paire est
+  toujours une autre figure paire (Via↔Amissio, Fortuna Minor↔Carcer,
+  Conjunctio↔Fortuna Major, Acquisitio↔Populus — 4 paires internes,
+  fermées sur elles-mêmes), et il en va de même pour les 8 figures
+  impaires (jamais en M15) entre elles (Puer↔Laetitia, Caput
+  Draconis↔Albus, Rubeus↔Tristitia, Cauda Draconis↔Puella). Cohérent
+  avec la loi de parité déjà établie (décalage pair reste dans sa
+  boucle de binôme, impair traverse) : l'involution de M15 respecte
+  strictement cette même partition en deux groupes de 8.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
