@@ -1866,6 +1866,57 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     spécifiquement, seul M6 se déclenche, pas M4. N'explique pas
     entièrement le 0-0 à lui seul. Aucun changement de code.
 
+### Cartographie complète des 16 figures × 16 maisons (19/07/26, projet en cours)
+
+Demande utilisateur : "il faut qu'on analyse bien la cartographie
+totale des 16 figures dans toutes les maisons un par un, et d'en
+déduire la conséquence. on va travailler sur un tableau." Objectif :
+pour CHAQUE maison (M1 à M16), documenter les 16 résultantes possibles
+(une par figure de base), leur niveau d'harmonie (`forceMaisonV7`), et
+en déduire toute conséquence exploitable (déjà connue ou nouvelle).
+Beaucoup de maisons individuelles ont déjà été couvertes plus haut
+dans ce §6 (lois de décalage, blocage, involutions...) — cette section
+consolide/complète la démarche maison par maison avec le niveau
+d'harmonie systématique, en commençant par M1.
+
+**M1 (le chef, figure naturelle = Puer)** :
+
+| Figure de base | Élément | Points/Parité | Résultante M1 | Niveau | Rôle | Force |
+|---|---|---|---|---|---|---|
+| Puer | feu | 3/impaire | Populus | repos_forte | Déclencheur | 100 |
+| Laetitia | feu | 1/impaire | Acquisitio | compatible_70 | Amplificateur | 70 |
+| Caput Draconis | air | 3/impaire | Amissio | chaotique | Chaotique | 40 |
+| Albus | eau | 1/impaire | Via | chaotique | Chaotique | 40 |
+| Via | eau | 4/paire | Albus | chaotique | Chaotique | 40 |
+| Amissio | eau | 2/paire | Caput Draconis | compatible_70 | Amplificateur | 70 |
+| Rubeus | air | 1/impaire | Carcer | semi_compatible | Absorbeur | 60 |
+| Tristitia | terre | 1/impaire | Fortuna Minor | compatible_90 | Déclencheur | 90 |
+| Fortuna Minor | feu | 2/paire | Tristitia | semi_compatible | Absorbeur | 60 |
+| Carcer | terre | 2/paire | Rubeus | compatible_70 | Amplificateur | 70 |
+| Conjunctio | air | 2/paire | Puella | semi_compatible | Absorbeur | 60 |
+| Fortuna Major | terre | 2/paire | Cauda Draconis | chaotique | Chaotique | 40 |
+| Cauda Draconis | eau | 3/impaire | Fortuna Major | semi_compatible | Absorbeur | 60 |
+| Puella | terre | 3/impaire | Conjunctio | compatible_70 | Amplificateur | 70 |
+| Acquisitio | air | 2/paire | Laetitia | compatible_90 | Déclencheur | 90 |
+| Populus | feu | 0/paire | Puer | compatible_90 | Déclencheur | 90 |
+
+Répartition des niveaux : 1 repos_forte, 4 compatible_70, 4 chaotique,
+4 semi_compatible, 3 compatible_90 — **aucun niveau "blocage" possible
+en M1** (M1 est feu ; le blocage vient d'une incompatibilité terre/air,
+jamais présente ici, contrairement à M6/M2 sur Vitesse-AEK).
+
+**Conséquence** (déjà établie plus haut, "M1 et M7 testés directement") :
+harmonie de M1 (force≥60, couvre 12/16 figures — tout sauf les 4
+"chaotique" Caput Draconis/Albus/Via/Fortuna Major) corrélée à SA
+PROPRE victoire dans le sens intuitif — M1 harmonieux → M1 gagne 65%
+(13/20 archive) contre 40% si dissonant. C'est la seule maison, avec
+M7, où l'harmonie se lit dans le sens attendu plutôt que le paradoxe
+inverse observé sur les maisons satellites (M2-M15, voir plus haut).
+Cohérent avec le rôle de M1 comme chef décisionnel plutôt que maison
+d'observation.
+
+*(Suite prévue : M2, M3... jusqu'à M16, à la demande de l'utilisateur.)*
+
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
 Après les constats structurels (§6), tentative d'intégrer une règle
