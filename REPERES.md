@@ -1070,6 +1070,17 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   règle de parité tient désormais sur 8 maisons testées, et la carte
   des 16 maisons de Vitesse-AEK reste stable : toujours seulement M2
   et M6 en blocage. Aucun changement de code — résultat structurel.
+- **Extension à M5 (19/07/26, "teste m5")** — M5 est le palier
+  "8 voies" (le moins prévisible du système, décalages
+  {1,3,5,7,9,11,13,15} — TOUS impairs). Vérifié : traverse lui aussi
+  **toujours** vers l'autre boucle de binôme (16/16), cohérent avec la
+  règle de parité même sur ce palier le moins structuré. **La règle de
+  parité tient désormais sur les 4 paliers de précision (pur, binaire,
+  4-voies, 8-voies).** Sur Vitesse-AEK : M5 = Carcer, résultante =
+  Conjunctio, `level:'compatible_70'`, rôle "Amplificateur" — **pas en
+  blocage**. Archive-wide, blocage sur M5 : **0 cas**. Carte des 16
+  maisons de Vitesse-AEK toujours stable : seules M2 et M6. Aucun
+  changement de code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
