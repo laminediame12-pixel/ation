@@ -296,6 +296,21 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   solide et vérifiée, indépendante de tout match réel. À retester dès
   que d'autres vrais matchs présentent cette configuration précise
   (base M8 = binôme du chef en M7, ou base M16 = binôme du chef en M1).
+  **GÉNÉRALISATION TESTÉE ET REJETÉE (19/07/26, remarque utilisateur "là
+  où il penche n'est pas uniquement M7... ça dépend de la figure en M1
+  ou M7 ou en R1 ou R7")** : l'identité algébrique elle-même est
+  agnostique de la position (elle ne dépend que de la figure F, pas
+  d'où F se trouve) — donc M8 pourrait en théorie "pointer" vers M1, M7,
+  R1 OU R7 selon lequel de ces quatre chefs a pour binôme la base réelle
+  de M8 dans un thème donné. Testé sur l'archive (10/27 matchs où M8
+  pointe vers l'un des 4) : **5/10 (50%)**, exactement le niveau du
+  hasard — aucun signal. REJETÉ sous cette forme simple (une seule
+  correspondance parmi 4 positions, sans pondération). Reste néanmoins
+  une piste : peut-être qu'une version plus fine (ex. pondérer par la
+  force du chef concerné, ou ne compter que la correspondance avec le
+  chef réellement "actif"/dominant du thème) donnerait un résultat
+  différent — pas testé, faute de méthode encore claire pour trancher
+  QUEL chef privilégier quand plusieurs positions sont candidates.
 
 - **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
   l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
