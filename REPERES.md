@@ -1061,6 +1061,15 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   impairs → traversent toujours), et la carte des 16 maisons de
   Vitesse-AEK reste stable : toujours seulement M2 et M6 en blocage.
   Aucun changement de code — résultat structurel.
+- **Extension à M1 (19/07/26, "teste m1")** — M1 (palier 4-voies,
+  décalages IMPAIRS {1,3,13,15}) traverse lui aussi **toujours** vers
+  l'autre boucle de binôme, cohérent avec la règle de parité. Sur
+  Vitesse-AEK : M1 = Carcer (l'ancre du match, camp Équipe 1),
+  résultante = Rubeus, `level:'compatible_70'`, rôle "Amplificateur" —
+  **pas en blocage**. Archive-wide, blocage sur M1 : **0 cas**. La
+  règle de parité tient désormais sur 8 maisons testées, et la carte
+  des 16 maisons de Vitesse-AEK reste stable : toujours seulement M2
+  et M6 en blocage. Aucun changement de code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
