@@ -1110,6 +1110,20 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   Archive-wide, blocage sur M13 : **0 cas**. Carte des 16 maisons de
   Vitesse-AEK toujours stable : seules M2 et M6. Aucun changement de
   code — résultat structurel.
+- **Extension à M14 (19/07/26, "teste m14")** — M14 (palier 4-voies,
+  décalages bruts PAIRS {2,6,10,14}) : confirme qu'il **reste bien
+  dans sa boucle** (cohérent avec la règle : décalage pair → reste,
+  impair → traverse), mais avec **4 offsets différents cette fois (1,
+  3, 5, 7, chacun 4/16)** plutôt qu'un split binaire à 2 valeurs comme
+  M2/M4/M10/M12 — cohérent avec son palier "4 voies" (4 issues
+  possibles au lieu de 2). Sur Vitesse-AEK : M14 = Tristitia,
+  résultante = Amissio, `level:'semi_compatible'`, rôle "Dissonant" —
+  **pas en blocage**. Archive-wide, blocage sur M14 : n=2 (échantillon
+  minuscule), moyenne **8,5 buts** contre 6,52 sans — va dans le
+  MAUVAIS sens (comme M12), pas dans le bon sens comme M6. Renforce
+  l'idée que M6 reste le seul signal fiable trouvé dans cette série de
+  tests. Carte des 16 maisons de Vitesse-AEK toujours stable : seules
+  M2 et M6. Aucun changement de code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
