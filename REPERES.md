@@ -267,6 +267,36 @@ L'archive complète (27 matchs, dont 19 esport) est dans
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
+- **SUPERPOSITION BASE+RÉSULTANTE — M8 ET M16 SONT "LINÉAIRES" (19/07/26,
+  demande utilisateur, exemple concret Acquisitio/Rubeus en M8)** :
+  l'utilisateur a remarqué que quand M7=Cauda Draconis, avoir Acquisitio
+  (binôme de Cauda Draconis) comme figure de base en M8 donne TOUJOURS
+  Rubeus comme résultante (= antagoniste(antagoniste(Cauda Draconis))),
+  malgré un mauvais accord élémentaire (air/terre) — "leur union dans
+  cette maison n'est pas inutile". Vérifié EXHAUSTIVEMENT (16/16 figures
+  possibles pour le chef en M7) : c'est une vraie loi algébrique, pas une
+  coïncidence liée à Cauda Draconis. En cherchant plus loin (demande "règle
+  générale à chercher") : sur les 16 maisons, `combine(X, figureNaturelle
+  DeLaMaison)` se réduit à un DÉCALAGE FIXE (mod 16) sur l'index de
+  `FIGS_V7`, pour TOUTE figure X, dans EXACTEMENT 2 maisons : **M8**
+  (décalage +8, ce qui donne précisément antagoniste²(chef) quand la base
+  est binôme(chef)) et **M16** (décalage 0 — Populus est l'élément neutre
+  de `combine()`, donc résultante=base toujours en M16, propriété déjà
+  connue indépendamment). Les 14 autres maisons n'ont AUCUNE loi aussi
+  propre (2, 4 ou 8 décalages distincts selon la figure de départ — pas
+  un simple décalage universel). M8 appartient à CAMP2 (camp M7),
+  M16 à CAMP1 (camp M1) — symétrie structurelle nette. Testé comme
+  hypothèse de verdict sur l'archive : "M8 spécial (base M8=binôme(chef
+  M7)) favorise M7" → **0/2** ; "M16 spécial (base M16=binôme(chef M1))
+  favorise M1" → **0/1**. Échantillon bien trop petit pour trancher un
+  sens (2 et 1 cas seulement dans l'archive de 27 matchs, cette
+  configuration est rare) — NI validé NI rejeté, contrairement aux autres
+  pistes rejetées du §4 qui avaient un échantillon plus solide. La
+  découverte algébrique elle-même (M8/M16 uniques) est en revanche
+  solide et vérifiée, indépendante de tout match réel. À retester dès
+  que d'autres vrais matchs présentent cette configuration précise
+  (base M8 = binôme du chef en M7, ou base M16 = binôme du chef en M1).
+
 - **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
   l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
   la marge prédite (`buildScoreFromCamps`) était systématiquement trop
