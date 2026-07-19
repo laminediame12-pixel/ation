@@ -1213,7 +1213,28 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   changement de code — résultat structurel/documentaire, mais utile
   à garder en tête si une future doctrine veut s'appuyer sur "quelle
   figure siège en M15" (la moitié des 16 figures est structurellement
-  exclue d'office).
+  exclue d'office). **Table complète des 8 figures possibles (19/07/26,
+  "fais le tableau des 8 figures possibles en m15")** :
+
+  | Figure | Élément | Points | Polarité | Binôme | Antagoniste | Résultante M15 | BUTS_FIGURE | Sens |
+  |---|---|---|---|---|---|---|---|---|
+  | Via | eau | [1,1,1,1] | mixte | Rubeus | Laetitia | Amissio | 0-1 | Mouvement, changement, transition en cours |
+  | Amissio | eau | [1,2,1,2] | défavorable | Tristitia | Caput Draconis | Via | 0-1 (concède) | Perte, séparation, ce qui s'en va ou échappe |
+  | Fortuna Minor | feu | [1,1,2,2] | mixte | Conjunctio | Amissio | Carcer | 1-2 (fragile) | Chance rapide mais changeante, aide extérieure passagère |
+  | Carcer | terre | [1,2,2,1] | défavorable | Fortuna Major | Rubeus | Fortuna Minor | 0-0 | Blocage, restriction, retard ou enfermement |
+  | Conjunctio | air | [2,1,1,2] | neutre | Cauda Draconis | Tristitia | Fortuna Major | 0-1 | Union, rencontre, lien qui se crée ou se renforce |
+  | Fortuna Major | terre | [2,2,1,1] | favorable | Puella | Fortuna Minor | Conjunctio | 3-5 | Réussite solide et méritée, protection durable |
+  | Acquisitio | air | [2,1,2,1] | favorable | Puer | Fortuna Major | Populus | 2-3 | Gain, acquisition, croissance matérielle |
+  | Populus | feu | [2,2,2,2] | neutre | Laetitia | Cauda Draconis | Acquisitio | 0-0 | Influence du groupe ou de l'entourage |
+
+  À noter : sur ces 8 figures, seule **Fortuna Major** est franchement
+  favorable avec un vrai potentiel offensif (3-5 buts) ; **Carcer et
+  Populus** sont les deux seules figures 0-0 garanties de tout le
+  système (`BUTS_FIGURE`) et sont TOUJOURS possibles en M15, jamais
+  exclues — cohérent avec le fait que M15 (Le Juge) penche
+  structurellement plutôt vers des figures neutres/défensives que vers
+  des figures franchement offensives (seules 2 des 8 — Fortuna Major et
+  Acquisitio — sont "favorable").
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
