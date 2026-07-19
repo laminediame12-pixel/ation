@@ -1095,6 +1095,13 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   M6 (5,5 vs 7,16). Carte des 16 maisons de Vitesse-AEK toujours
   stable : seules M2 et M6. Aucun changement de code — résultat
   structurel.
+- **Extension à M9 (19/07/26, "teste m9")** — M9 (palier 4-voies,
+  décalages impairs {5,7,9,11}) traverse aussi **toujours** vers
+  l'autre boucle, cohérent avec la règle de parité. Sur Vitesse-AEK :
+  M9 = Amissio, résultante = Conjunctio, `level:'compatible_70'`, rôle
+  "Amplificateur" — **pas en blocage**. Archive-wide, blocage sur M9 :
+  **0 cas**. Carte des 16 maisons de Vitesse-AEK toujours stable :
+  seules M2 et M6. Aucun changement de code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
