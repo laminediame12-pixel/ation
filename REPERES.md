@@ -952,6 +952,14 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   maisons testées ce jour, le groupe "harmonieux" étant trop large
   (19-22 matchs sur 27) et trop proche du taux de base pour battre
   une cascade déjà affinée.
+- **M3 et M9 testés (19/07/26, "teste M3 et M9 aussi")** : même camp
+  (CAMP1), 0/16 auto-construction chacune, direction intuitive
+  (harmonieux favorise M1) : **M3 harmonieux 71% vs dissonant 38%**
+  (n=17/8) ; **M9 harmonieux 63% vs dissonant 50%** (n=19/6, plus
+  faible). En règle "toujours active" sur l'archive complète : M3 →
+  **16/25** (baseline 21/25) ; M9 → **14/25**, le pire résultat de
+  toute la série testée aujourd'hui. Même conclusion que M4/M10 :
+  rejeté, aucun signal de maison satellite ne bat la cascade actuelle.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
