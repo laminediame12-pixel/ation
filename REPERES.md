@@ -905,6 +905,38 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   bon échantillon (43% vs 69%) ; M6/M12/M14 restent tous sous le seuil
   d'un signal exploitable, cohérent avec leur rang plus bas dans la
   hiérarchie de précision algébrique.
+- **TABLE COMPLÈTE DES 16 MAISONS (19/07/26, demande utilisateur "refais
+  le tableau avec toute les maisons")** : balayage exhaustif de
+  `combine(X, figureNaturelleDeLaMaison)` pour les 16 maisons — révèle
+  **4 paliers, pas 3** :
+  - **Pur (1 décalage, 16/16)** : M8 (+8), M16 (+0).
+  - **Binaire (2 décalages, 8/8)** : M2 ({2,14}), M4 ({4,12}), M7
+    ({7,9}), M10 ({6,10}), M12 ({4,12}), M15 ({1,15}).
+  - **4 voies (4 décalages, 4/4/4/4)** : M1 ({1,3,13,15}), M3
+    ({3,5,11,13}), M6 ({2,6,10,14}), M9 ({5,7,9,11}), M11
+    ({3,5,11,13}), M14 ({2,6,10,14}).
+  - **8 voies (8 décalages, 2×8)** : M5 ({1,3,5,7,9,11,13,15}), M13
+    (idem) — les deux maisons les MOINS prévisibles du système.
+  Fait notable : **M1 et M7 (les deux chefs qui décident tout le
+  verdict) ne sont PAS dans le palier pur** — seulement "4 voies", le
+  3e niveau sur 4. Sur les 6 axes d'opposition (Constat 12), seuls
+  M1↔M7, M3↔M9 et M4↔M10 ont leurs deux maisons au MÊME palier ;
+  M2↔M8, M5↔M11 et M6↔M12 ont des paliers différents entre les deux
+  maisons opposées.
+- **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
+  aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
+  cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
+  propre maison) corrélée à SA PROPRE victoire — sens INTUITIF cette
+  fois, pas le paradoxe inverse des maisons satellites : M1 harmonieux
+  → M1 gagne 13/20 (65%, vs 40% dissonant) ; M7 harmonieux → M7 gagne
+  10/21 (48%, vs 0/4 dissonant). Signal combiné isolé (harmonieux d'un
+  côté ET non de l'autre) : **7/10 (70%)**, le meilleur ratio isolé de
+  toute l'exploration du jour. **Testé en effet net sur `verdictFinal`
+  complet** : priorité absolue → **20/25, encore net négatif** (casse
+  Dortmund-Roma sans rien réparer de solide). REJETÉ comme mécanisme de
+  décision, même verdict que tous les autres signaux de maison testés
+  ce jour — un bon signal isolé ne suffit toujours pas à améliorer la
+  vraie cascade.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
