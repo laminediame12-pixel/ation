@@ -113,7 +113,7 @@ l'écart de dominance (20/27) — reste un repli, pas le mécanisme principal.
 | USA vs Belgique | via/caput_draconis/conjunctio/rubeus | 4-1 Belgique, **M7** | MISS (prédit M1) | — |
 | Argentine vs Egypte | carcer/amissio/carcer/puer | 3-2, **M1** | HIT (M1) | — |
 | (match virtuel, 05:30) M1=Fortuna Minor/M7=Albus | fortuna_minor/tristitia/conjunctio/acquisitio | 8-1, **M1** | — | **HIT (M1) via ancrage chaîne complète (force 1140 vs 570)** — le mode fixe classique (écart de dominance) se serait trompé : scoreMain interne 1-4 pour M7, sens opposé au réel |
-| St. Louis City SC vs Sporting Kansas City | conjunctio/via/puella/puer | 3-2, **M1** | — | **HIT (M1) via ancrage chaîne complète (force M1=820, force M7=710)** — le `scoreMain` affiché par `buildVerdictCard` pour ce thème est **3-2**, exactement le score réel (mécanisme distinct : ancrage tranche le vainqueur, `buildScoreFromCamps` estime le score, coïncidence exacte à noter mais pas encore généralisable sur un seul cas) |
+| St. Louis City SC vs Sporting Kansas City | conjunctio/via/puella/puer | 3-2, **M1** (MT 2-1, penalty M1 86e) | — | **HIT (M1) via ancrage chaîne complète (force M1=820, force M7=710)** — le `scoreMain` affiché par `buildVerdictCard` pour ce thème est **3-2**, exactement le score réel (mécanisme distinct : ancrage tranche le vainqueur, `buildScoreFromCamps` estime le score, coïncidence exacte à noter mais pas encore généralisable sur un seul cas). **Mi-temps donnée le 19/07/26** : 2-1 M1 = les deux camps marquent en 1ère mi-temps (`htWinner` réel = 'both'), voir §5 "BUT PAR MI-TEMPS" pour le MISS du mécanisme sur ce point précis |
 | LA Galaxy vs Los Angeles FC | via/albus/caput_draconis/via | 3-0, **M7** (2e but sur penalty, 1re MT) | ÉGALITÉ TOTALE (M1=M7=875 — même figure Via aux deux ancres, chaîne isolée incapable de départager) | **HIT (M7) via VERDICT MAX 4 FORCES (M1=875, M7=875, R1=645, R7=895)** — seul mécanisme ayant pu trancher ce thème, le mode fixe classique étant dans l'incapacité totale de départager. `Penalty/Rouge` prédit **Oui** et **confirmé** (LA Galaxy concède, Los Angeles FC transforme) — via `check(1)` (Via/eau en M1/feu → rôle "Chaotique"). Ce signal ne se retrouvait PAS en mode rotation seul (R1=maison 5=carcer=Absorbeur, R7=maison 11=albus=Adaptateur, aucun Chaotique) : `detectIncidentChaotique` COMBINE désormais les deux modes (18/07/26, demande explicite utilisateur "combine les deux", après un essai de remplacement pur qui avait fait perdre ce signal) — check(1)/check(7) fixes ET check(posA)/check(posB) du mode réellement affiché tournent tous les deux, dédoublonnés automatiquement (pos+label identiques) quand les deux modes coïncident. Le signal Rubeus-en-M12 (`[12,'rubeus']`, resté fixe intentionnellement) N'A PAS déclenché (`confrontationBinome` renvoie `rupture:false`) — c'est bien le combo Via/feu/M1 qui explique l'incident. Score prédit 2-3 (BTTS oui) faux face au 3-0 clean sheet réel — seuls le vainqueur et le signal penalty se confirment |
 | (match, 18/07/26) M1=Caput Draconis/M7=Puer | caput_draconis/via/acquisitio/fortuna_major | 2-1, **M1** | — | **MISS du nul (impasse totale de boucle, "guerre civile" à 2/2 avant ce cas → 2/3 maintenant)** — `verdictFinal` avait tranché **Nul** ("impasse totale de boucle"), mais le match n'était PAS nul (2-1 Équipe 1). La carte affichée (estimation moteur V7, `verdictFinal` étant muet sur le vainqueur) donnait "Équipe 1, 3-2" — **vainqueur correct** malgré un score exact faux. `BTTS` prédit **Oui** et **confirmé** (2-1, les deux marquent) — Via N'ÉTAIT PAS en M4 (M4=fortuna_major) donc le correctif Via-M4 (18/07/26) ne s'applique pas ici, cohérent avec le résultat réel |
 | (match, 18/07/26) M1=Amissio/M7=Fortuna Minor | amissio/amissio/carcer/laetitia | 4-0, **M1** | — | **HIT (M1) via VERDICT MAX 4 FORCES (M1=1395, M7=710, R1=925, R7=960)** — 2e confirmation réelle de ce mécanisme (après LA Galaxy). `Penalty/Rouge` prédit **Oui** et **confirmé** (carton rouge réel). `BTTS` prédit **Oui** mais **FAUX** — réel 4-0, Équipe 2 totalement muette. Score exact aussi faux (2-1 prédit vs 4-0 réel). Via N'ÉTAIT PAS en M4 (M4=laetitia) donc le correctif Via-M4 ne s'applique pas — mais **Via est présent EN MÊME TEMPS EN M5 ET M11** (les deux maisons "camp M7"/attaque désignées par `butsGuerreDes16`), et c'est justement le camp M7 qui reste à 0 — parallèle structurel frappant avec Via-M4 (même logique, côté opposé), mais **n=1 seulement** dans l'archive actuelle (aucun autre thème connu n'a Via en M5 ET M11 à la fois) : piste notée en §5, PAS intégrée (Via en M5 SEUL, lui, apparaît aussi sur Suisse-Colombie et Argentine-Egypte sans direction cohérente — c'est la conjonction M5+M11 qui semble spécifique, à confirmer) |
@@ -969,6 +969,26 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   inhabituel) — cascade priorité **15/25**. **M11** harmonieux→M7 45%
   (aucun signal), dissonant→M1 80% (n=5) — cascade priorité **13/25**,
   presque aussi mauvais que M9 (14/25, le pire de la série).
+- **BUT PAR MI-TEMPS (M1/M7/M5/M10, + tentative M4) — 3e cas réel testé
+  (19/07/26)** : le mécanisme `htWinner` (§0 code, "BUT PREMIERE MI-
+  TEMPS") exige M5 active/ouverte ET M10 ouverte pour trancher, sinon
+  repli sur une comparaison de concordance binôme M1/M7 individuelle.
+  3 vrais cas connus au total : **USA-Belgique** (M5/M10 actives, HIT
+  'both') ; **France-Espagne** (M5/M10 actives mais M1/M7 en désaccord,
+  correctement rétrogradé "indéterminé" après avoir été contredit une
+  1ère fois) ; **St. Louis City SC vs Sporting Kansas City (nouveau,
+  19/07/26, mi-temps 2-1 M1 donnée par l'utilisateur = réel 'both')** :
+  ICI M5 (Caput Draconis, ni actif ni ouvert) ET M10 (Conjunctio, fermé)
+  échouent TOUS LES DEUX, donc le mécanisme reste muet (`htWinner=null`)
+  alors que le réel était 'both' — un vrai MISS PAR SILENCE (pas une
+  mauvaise réponse, mais une occasion manquée). **Tentative d'ajouter
+  M4 à la condition, testée sur les 3 cas** : M4 est ouvert+mobile dans
+  LES 3 CAS SANS EXCEPTION (Rubeus, Via, Puer), quel que soit le résultat
+  réel (both/single/both) — **M4 ne discrimine rien, confirmé sur 3/3**,
+  abandonné comme piste de raffinement. Conclusion : le verrou M5+M10
+  semble trop restrictif (rate un vrai cas "both"), mais 3 cas restent
+  insuffisants pour le desserrer sans risquer d'inventer une règle sur
+  mesure — à revoir avec un 4e cas réel.
   **Couverture complète des 6 axes terminée** : sur 12 maisons
   satellites testées (M2 à M15, hors M1/M7 eux-mêmes et M16 triviale),
   AUCUNE ne bat la cascade `verdictFinal` actuelle en usage "toujours
