@@ -1117,6 +1117,30 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
     rien à étendre à M3/M9 sans données supplémentaires. Rejeté par
     absence de données exploitables, pas retesté sans nouveaux vrais
     matchs avec Populus en M3.
+  - **Piste dérivée testée (19/07/26) : relation algébrique croisée
+    M3↔M9 repérée sur Vitesse-AEK, hypothèse utilisateur** — "M9 son
+    résultante Conjunctio est antagoniste direct de la figure que
+    Populus a binômée [par lookup inverse dans `BINOMES_V7`, soit
+    Puella], et résultante M3 est antagoniste direct de la figure de
+    base M9 [Amissio]". **Les deux relations sont exactes pour ce
+    thème précis** (vérifié : résultante(M3)=Caput Draconis=
+    antagoniste(Amissio) ; résultante(M9)=Conjunctio=
+    antagoniste(Puella)). Mais testées comme identité générale sur
+    les **65 536 thèmes possibles** (16⁴ combinaisons de mères, via
+    `buildThemeFromMothers`) : chacune des deux relations n'est vraie
+    que sur **4096/65536 = 6,3%** des cas — exactement **1/16**, le
+    taux attendu par pur hasard (résultante = une figure parmi 16,
+    coïncidence de tomber juste). Les deux relations en même temps :
+    1,6%. Contrairement à la loi M8 (`résultante(M8) =
+    antagoniste(antagoniste(binôme(base)))`, validée 16/16 = 100% —
+    voir §6 Constat 12), **ceci n'est PAS une identité algébrique
+    cachée** — c'est une coïncidence propre à Vitesse-AEK, pas une loi
+    généralisable. Rejeté, aucun changement de code. Leçon
+    méthodologique : une relation combine/antagoniste/binôme repérée
+    sur UN thème doit systématiquement être testée sur l'espace complet
+    des thèmes avant d'être crue être une loi (comme pour M8/M16) —
+    le taux de base "hasard" pour ce type de test est 1/16 (6,25%), à
+    garder en tête comme seuil de comparaison.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
