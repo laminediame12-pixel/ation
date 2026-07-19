@@ -4202,7 +4202,13 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   // les 3089 thèmes avec verrou piliers actif ET un vainqueur M1/M7 tranché,
   // 1913 (62%) se retrouvaient avec un écart final < 3, violant la règle que
   // le système affiche pourtant comme active pour ces thèmes.
-  var minGapFinal = piliersReposCount(theme) >= 2 ? 3 : 1;
+  // COHÉRENCE (19/07/26, demande utilisateur "ça fonctionne avec le verdict
+  // final qui affiche pour les deux côtés") : la base de `buildScoreFromCamps`
+  // est passée de 1 à 2 (voir plus haut, amélioration validée sur l'archive,
+  // erreur moyenne 1.00→0.857) mais CE garde-fou final dupliquait la même
+  // logique avec sa propre base codée en dur — restée à 1, désynchronisée du
+  // changement. Remise à jour pour rester identique à `buildScoreFromCamps`.
+  var minGapFinal = piliersReposCount(theme) >= 2 ? 3 : 2;
   if (winner==='M1') { var rM1=enforceScoreMargin(goalM1, goalM7, minGapFinal); goalM1=rM1[0]; goalM7=rM1[1]; finalCorrected=rM1[2]; }
   else if (winner==='M7') { var rM7=enforceScoreMargin(goalM7, goalM1, minGapFinal); goalM7=rM7[0]; goalM1=rM7[1]; finalCorrected=rM7[2]; }
   else {
