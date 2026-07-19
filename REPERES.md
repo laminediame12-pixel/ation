@@ -1007,6 +1007,25 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   être du bruit sur ce match, pas un vrai contributeur — renforce
   l'idée que c'est M6 spécifiquement qui porte le signal, pas "le
   blocage" en tant que concept général.** Aucun changement de code.
+- **Extension à M11 (19/07/26, "teste m11")** — résultat DIFFÉRENT de
+  toute la famille M2/M4/M10/M12 : sur les 16 figures testées, la
+  résultante(M11) **traverse TOUJOURS vers l'autre boucle de binôme**,
+  jamais dans la même boucle que la base — donc aucune loi "±N dans sa
+  propre boucle" ne s'applique à M11. **Explication structurelle** :
+  les deux boucles de binôme séparent exactement les figures d'index
+  PAIR (Puer, Caput Draconis, Via...) et IMPAIR (Laetitia, Albus,
+  Amissio...) dans `FIGS_V7`. M2/M4/M10/M12 ont des décalages bruts
+  PAIRS ({2,14},{4,12},{6,10}) → restent dans leur boucle. M11, palier
+  "4 voies" avec décalages IMPAIRS ({3,5,11,13}) → traverse toujours
+  vers l'autre boucle. Confirme pourquoi seuls les paliers binaires à
+  décalage pair suivent la loi "±N dans sa propre boucle" — les
+  paliers à décalage impair (M11, et probablement M7/M15 qui ont aussi
+  des décalages impairs {7,9}/{1,15}) ne peuvent structurellement pas
+  la suivre. Sur Vitesse-AEK : M11 = Laetitia, résultante = Cauda
+  Draconis, `level:'compatible_90'` — **pas en blocage**, confirme le
+  tableau des 16 maisons déjà établi (seules M2 et M6). Archive-wide,
+  blocage sur M11 : **0 cas** — intestable, même limite que Populus-M3
+  et Carcer-M12. Aucun changement de code — résultat structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
