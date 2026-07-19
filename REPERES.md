@@ -2205,7 +2205,34 @@ partenaire connu pour l'instant.
 cohérent avec le palier 4-voies à décalage impair de M11 (traverse
 toujours, comme M1/M3/M9). 0 "blocage".
 
-*(Suite prévue : M12, M13... jusqu'à M16, à la demande de l'utilisateur.)*
+**M12 (figure naturelle = Fortuna Major)** :
+
+| Fig-Base | R-M12 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Cauda Draconis | Caput Draconis | Puella | — | — | compatible_70 | 70 |
+| Laetitia | Puella | Albus | Acquisitio | — | — | compatible_90 | 90 |
+| Caput Draconis | Rubeus | Via | Populus | — | — | blocage | 20 |
+| Albus | Tristitia | Amissio | Puer | — | — | compatible_90 | 90 |
+| Via | Fortuna Minor | Rubeus | Laetitia | — | — | semi_compatible | 60 |
+| Amissio | Carcer | Tristitia | Caput Draconis | — | — | compatible_90 | 90 |
+| Rubeus | Caput Draconis | Fortuna Minor | Albus | — | — | blocage | 20 |
+| Tristitia | Albus | Carcer | Via | — | — | compatible_70 | 70 |
+| Fortuna Minor | Via | Conjunctio | Amissio | — | — | compatible_70 | 70 |
+| Carcer | Amissio | Fortuna Major | Rubeus | — | — | compatible_70 | 70 |
+| Conjunctio | Acquisitio | Cauda Draconis | Tristitia | — | — | blocage | 20 |
+| Fortuna Major | Populus | Puella | Fortuna Minor | — | — | repos_forte | 100 |
+| Cauda Draconis | Puer | Acquisitio | Carcer | — | — | semi_compatible | 60 |
+| Puella | Laetitia | Populus | Conjunctio | — | — | semi_compatible | 60 |
+| Acquisitio | Conjunctio | Puer | Fortuna Major | — | — | blocage | 20 |
+| Populus | Fortuna Major | Laetitia | Cauda Draconis | — | — | compatible_90 | 90 |
+
+**0 O-D, 0 O-C** — cohérent avec la magnitude ±2 déjà connue de M12
+(miroir exact de M4). **4 cas "blocage" — EXACTEMENT le même ensemble
+que M4 ET M8** (Caput Draconis, Rubeus, Conjunctio, Acquisitio). Ces
+trois maisons (M4, M8, M12) partagent désormais toutes le même
+quatuor de figures à risque de blocage.
+
+*(Suite prévue : M13, M14... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
