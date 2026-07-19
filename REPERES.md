@@ -924,6 +924,41 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   M1↔M7, M3↔M9 et M4↔M10 ont leurs deux maisons au MÊME palier ;
   M2↔M8, M5↔M11 et M6↔M12 ont des paliers différents entre les deux
   maisons opposées.
+- **Règle de direction pour le palier binaire de M12 (19/07/26,
+  hypothèse utilisateur "pair/impair")** — M12 est classée "binaire"
+  (2 décalages {4,12} en 8/8, voir table ci-dessus), mais QUELLE figure
+  de base reçoit quel décalage restait non expliqué. Hypothèse testée :
+  "si la figure de base est dans la boucle de binôme paire (celle qui
+  commence par Laetitia), résultante(M12) = binôme(binôme(base)) ; si
+  elle est dans la boucle impaire (celle qui commence par Puer),
+  résultante(M12) = le 5e élément derrière elle dans sa boucle".
+  `BINOMES_V7` forme exactement deux boucles de 8 figures : boucle
+  "paire" = Laetitia→Albus→Amissio→Tristitia→Carcer→Fortuna Major→
+  Puella→Populus→(retour Laetitia) ; boucle "impaire" = Puer→Caput
+  Draconis→Via→Rubeus→Fortuna Minor→Conjunctio→Cauda Draconis→
+  Acquisitio→(retour Puer). **Vérifié sur les 16 figures de base
+  possibles (calcul direct, exhaustif) : les 2 exemples fournis par
+  l'utilisateur sont exacts (Fortuna Major→Populus, Puer→Cauda
+  Draconis), et la conclusion structurelle est confirmée — résultante
+  (M12) est TOUJOURS exactement à ±2 positions dans la boucle de
+  binôme de la figure de base, jamais un autre écart (cohérent à
+  100% avec le palier binaire 8/8).** Mais la règle telle
+  qu'énoncée ("toute la boucle paire → +2, toute la boucle impaire →
+  -2") ne tient que sur 8 des 16 cas — l'appartenance à une boucle ne
+  détermine PAS la direction. Le vrai facteur est la **position à
+  l'intérieur de la boucle** : en numérotant chaque boucle à partir de
+  son point de départ (1=Laetitia/Puer), les positions 1, 4, 5, 8
+  donnent toujours -2 (Laetitia, Tristitia, Carcer, Populus / Puer,
+  Rubeus, Fortuna Minor, Acquisitio) et les positions 2, 3, 6, 7
+  donnent toujours +2 (Albus, Amissio, Fortuna Major, Puella / Caput
+  Draconis, Via, Conjunctio, Cauda Draconis) — motif en bloc de 4
+  (-2,+2,+2,-2) IDENTIQUE dans les deux boucles, indépendant de
+  laquelle des deux boucles on regarde. Les 2 exemples de l'utilisateur
+  tombaient chacun du bon côté par coïncidence de position (Fortuna
+  Major = position 6 → +2 ; Puer = position 1 → -2), pas par
+  appartenance à la boucle paire/impaire. Aucun changement de code —
+  résultat purement structurel/documentaire, aucun mécanisme de
+  verdict ne dépend de M12 seule à ce jour.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
