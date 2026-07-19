@@ -2153,7 +2153,34 @@ exact de figures à risque de blocage.
 coïncident ni avec le binôme ni avec l'antagoniste d'aucune figure. 0
 "blocage" aussi.
 
-*(Suite prévue : M10, M11... jusqu'à M16, à la demande de l'utilisateur.)*
+**M10 (figure naturelle = Carcer)** :
+
+| Fig-Base | R-M10 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Rubeus | Caput Draconis | Puella | — | — | compatible_90 | 90 |
+| Laetitia | Tristitia | Albus | Acquisitio | — | — | blocage | 20 |
+| Caput Draconis | Cauda Draconis | Via | Populus | — | — | semi_compatible | 60 |
+| Albus | Puella | Amissio | Puer | — | — | blocage | 20 |
+| Via | Conjunctio | Rubeus | Laetitia | — | — | compatible_90 | 90 |
+| Amissio | Fortuna Major | Tristitia | Caput Draconis | — | — | blocage | 20 |
+| Rubeus | Puer | Fortuna Minor | Albus | — | — | compatible_70 | 70 |
+| Tristitia | Laetitia | Carcer | Via | — | — | compatible_70 | 70 |
+| Fortuna Minor | Acquisitio | Conjunctio | Amissio | — | — | compatible_90 | 90 |
+| Carcer | Populus | Fortuna Major | Rubeus | — | — | repos_faible | 25 |
+| Conjunctio | Via | Cauda Draconis | Tristitia | — | — | semi_compatible | 60 |
+| Fortuna Major | Amissio | Puella | Fortuna Minor | — | — | semi_compatible | 60 |
+| Cauda Draconis | Caput Draconis | Acquisitio | Carcer | — | — | compatible_90 | 90 |
+| Puella | Albus | Populus | Conjunctio | — | — | semi_compatible | 60 |
+| Acquisitio | Fortuna Minor | Puer | Fortuna Major | — | — | compatible_70 | 70 |
+| Populus | Carcer | Laetitia | Cauda Draconis | — | — | blocage | 20 |
+
+**0 O-D, 0 O-C** — même famille que M4/M7/M8/M9. **4 cas "blocage"
+(Laetitia, Albus, Amissio, Populus) — un ENSEMBLE NOUVEAU**, différent
+des deux paires déjà vues (M2/M6 = Tristitia/Carcer/Fortuna Major/
+Puella ; M4/M8 = Caput Draconis/Rubeus/Conjunctio/Acquisitio). Pas de
+partenaire connu pour l'instant.
+
+*(Suite prévue : M11, M12... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
