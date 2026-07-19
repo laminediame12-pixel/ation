@@ -2072,7 +2072,35 @@ blocage sur ce match, voir plus haut) : ce n'était pas une coïncidence
 isolée — M2 et M6 partagent EXACTEMENT le même ensemble de 4 figures
 "à risque de blocage".
 
-*(Suite prévue : M7, M8... jusqu'à M16, à la demande de l'utilisateur.)*
+**M7 (l'autre chef, figure naturelle = Rubeus)** :
+
+| Fig-Base | R-M7 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Carcer | Caput Draconis | Puella | — | — | compatible_70 | 70 |
+| Laetitia | Fortuna Minor | Albus | Acquisitio | — | — | chaotique | 40 |
+| Caput Draconis | Fortuna Major | Via | Populus | — | — | compatible_70 | 70 |
+| Albus | Conjunctio | Amissio | Puer | — | — | semi_compatible | 60 |
+| Via | Puella | Rubeus | Laetitia | — | — | compatible_70 | 70 |
+| Amissio | Cauda Draconis | Tristitia | Caput Draconis | — | — | compatible_90 | 90 |
+| Rubeus | Populus | Fortuna Minor | Albus | — | — | repos_moyen | 50 |
+| Tristitia | Acquisitio | Carcer | Via | — | — | semi_compatible | 60 |
+| Fortuna Minor | Laetitia | Conjunctio | Amissio | — | — | chaotique | 40 |
+| Carcer | Puer | Fortuna Major | Rubeus | — | — | chaotique | 40 |
+| Conjunctio | Albus | Cauda Draconis | Tristitia | — | — | compatible_90 | 90 |
+| Fortuna Major | Caput Draconis | Puella | Fortuna Minor | — | — | semi_compatible | 60 |
+| Cauda Draconis | Amissio | Acquisitio | Carcer | — | — | compatible_90 | 90 |
+| Puella | Via | Populus | Conjunctio | — | — | compatible_90 | 90 |
+| Acquisitio | Tristitia | Puer | Fortuna Major | — | — | compatible_70 | 70 |
+| Populus | Rubeus | Laetitia | Cauda Draconis | — | — | semi_compatible | 60 |
+
+**ZÉRO O-D et ZÉRO O-C** — comme M4, mais pour une raison différente :
+M7 traverse aussi toujours la boucle de binôme (décalages impairs
+{7,9}, donc O-C structurellement impossible comme M1/M3/M5), mais
+contrairement à eux, sa magnitude de décalage (7 ou 9) ne coïncide
+avec l'antagoniste d'aucune figure — donc 0 O-D aussi, pas seulement 0
+O-C. 0 "blocage" (M7 est air).
+
+*(Suite prévue : M8, M9... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
