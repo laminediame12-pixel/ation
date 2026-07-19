@@ -2232,7 +2232,32 @@ que M4 ET M8** (Caput Draconis, Rubeus, Conjunctio, Acquisitio). Ces
 trois maisons (M4, M8, M12) partagent désormais toutes le même
 quatuor de figures à risque de blocage.
 
-*(Suite prévue : M13, M14... jusqu'à M16, à la demande de l'utilisateur.)*
+**M13 (figure naturelle = Cauda Draconis, deuxième palier "8 voies" avec M5)** :
+
+| Fig-Base | R-M13 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Fortuna Major | Caput Draconis | Puella | — | — | semi_compatible | 60 |
+| Laetitia | Conjunctio | Albus | Acquisitio | — | — | compatible_70 | 70 |
+| Caput Draconis | Carcer | Via | Populus | — | — | semi_compatible | 60 |
+| Albus | Fortuna Minor | Amissio | Puer | — | — | compatible_90 | 90 |
+| Via | Tristitia | Rubeus | Laetitia | — | — | semi_compatible | 60 |
+| Amissio | Rubeus | Tristitia | Caput Draconis | — | — | compatible_70 | 70 |
+| Rubeus | Amissio | Fortuna Minor | Albus | — | — | chaotique | 40 |
+| Tristitia | Via | Carcer | Via | ✅ | — | chaotique | 40 |
+| Fortuna Minor | Albus | Conjunctio | Amissio | — | — | chaotique | 40 |
+| Carcer | Caput Draconis | Fortuna Major | Rubeus | — | — | compatible_70 | 70 |
+| Conjunctio | Laetitia | Cauda Draconis | Tristitia | — | — | compatible_90 | 90 |
+| Fortuna Major | Puer | Puella | Fortuna Minor | — | — | compatible_90 | 90 |
+| Cauda Draconis | Populus | Acquisitio | Carcer | — | — | repos_faible | 25 |
+| Puella | Acquisitio | Populus | Conjunctio | — | — | compatible_70 | 70 |
+| Acquisitio | Puella | Puer | Fortuna Major | — | — | semi_compatible | 60 |
+| Populus | Cauda Draconis | Laetitia | Cauda Draconis | ✅ | — | chaotique | 40 |
+
+**2 O-D** (Tristitia, Populus), **0 O-C** — même profil que M5 (l'autre
+palier 8-voies), cohérent avec ses 8 magnitudes de décalage
+différentes. 0 "blocage".
+
+*(Suite prévue : M14, M15... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
