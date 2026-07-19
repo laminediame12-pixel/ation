@@ -1040,6 +1040,23 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   seules ne l'était — à garder en tête pour d'éventuelles autres
   interactions à tester (M4+M10, M3+M9, M5+M11, M6+M12) si de nouvelles
   données réelles justifient d'y revenir.
+- **M4+M10 (déjà rejeté ci-dessus, voir plus haut) + les 3 derniers axes
+  testés (19/07/26, "revenons aux tests des maisons")** : couverture
+  complète des interactions à 2 maisons désormais terminée.
+  - **M3+M9 dissonants→M7** (isolé 3/4, 75%) : cascade **21/25, net -1**
+    (casse Arsenal-Barcelone). Rejeté.
+  - **M5+M11 (dissonant+harmonieux)→M1** (isolé 6/7, 86%) : cascade
+    **22/25, INCHANGÉ, 0 flip** — la règle est entièrement redondante
+    avec la cascade actuelle sur ces 7 cas, n'apporte rien de neuf.
+    Neutre mais inutile, pas intégré.
+  - **M6+M12 (harmonieux+dissonant)→M7** (isolé 3/4, 75%) : cascade
+    **22/25 au total mais 2 flips qui s'annulent** (répare Fenerbahçe-
+    Napoli, casse PSV-Bayern) — pas un gain net propre, rejeté malgré
+    le compteur stable.
+  **Conclusion** : sur les 6 axes d'opposition testés en interaction,
+  **seul M2+M8 a montré un gain net propre (+1, zéro régression)** —
+  déjà intégré. Aucune autre paire de maisons ne mérite d'être ajoutée
+  à la cascade en l'état des données actuelles.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
