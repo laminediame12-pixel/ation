@@ -1282,6 +1282,19 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   binôme/antagoniste) : soit le même 8/16, soit 0/16. Rejeté, aucun
   changement de code — l'involution M15 pure (résultante directe via
   `combine`) reste la seule loi propre trouvée pour cette maison.
+  **Discriminant trouvé (19/07/26, "c'est quoi la conséquence de cette
+  variation")** : la variation n'est pas du bruit — vérifié 16/16, la
+  formule `binôme(antagoniste(X))` est vraie EXACTEMENT quand X
+  appartient à la boucle de binôme "Laetitia" (Cycle B), et fausse
+  EXACTEMENT quand X appartient à la boucle "Puer" (Cycle A) — aucune
+  exception. Même partition en deux groupes de 8 que la règle de
+  parité pair/impair déjà établie (les deux boucles de binôme
+  correspondent exactement aux deux classes de parité). Donc la
+  formule EST une loi complète, mais conditionnelle à la boucle
+  d'appartenance plutôt qu'universelle — reste sans utilité pratique
+  au-delà de l'involution directe déjà connue (il faut déjà savoir
+  dans quelle boucle est X pour savoir si la formule s'applique, ce
+  qui revient à déjà connaître la moitié de la réponse).
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
