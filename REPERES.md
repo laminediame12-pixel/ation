@@ -1986,7 +1986,36 @@ liste). Cas particulier : Caput Draconis est à la fois "au repos"
 =Populus toujours par l'identité déjà établie, et antagoniste(Caput
 Draconis)=Populus aussi).
 
-*(Suite prévue : M4, M5... jusqu'à M16, à la demande de l'utilisateur.)*
+**M4 (figure naturelle = Albus)** :
+
+| Fig-Base | R-M4 | Binôme | Antagoniste | O-D | O-C | Niveau | Force |
+|---|---|---|---|---|---|---|---|
+| Puer | Via | Caput Draconis | Puella | — | — | compatible_70 | 70 |
+| Laetitia | Amissio | Albus | Acquisitio | — | — | compatible_70 | 70 |
+| Caput Draconis | Acquisitio | Via | Populus | — | — | blocage | 20 |
+| Albus | Populus | Amissio | Puer | — | — | repos_moyen_fort | 75 |
+| Via | Puer | Rubeus | Laetitia | — | — | semi_compatible | 60 |
+| Amissio | Laetitia | Tristitia | Caput Draconis | — | — | semi_compatible | 60 |
+| Rubeus | Conjunctio | Fortuna Minor | Albus | — | — | blocage | 20 |
+| Tristitia | Fortuna Major | Carcer | Via | — | — | compatible_90 | 90 |
+| Fortuna Minor | Cauda Draconis | Conjunctio | Amissio | — | — | compatible_70 | 70 |
+| Carcer | Puella | Fortuna Major | Rubeus | — | — | compatible_90 | 90 |
+| Conjunctio | Rubeus | Cauda Draconis | Tristitia | — | — | blocage | 20 |
+| Fortuna Major | Tristitia | Puella | Fortuna Minor | — | — | compatible_90 | 90 |
+| Cauda Draconis | Fortuna Minor | Acquisitio | Carcer | — | — | semi_compatible | 60 |
+| Puella | Carcer | Populus | Conjunctio | — | — | compatible_90 | 90 |
+| Acquisitio | Caput Draconis | Puer | Fortuna Major | — | — | blocage | 20 |
+| Populus | Albus | Laetitia | Cauda Draconis | — | — | compatible_70 | 70 |
+
+**ZÉRO O-D et ZÉRO O-C** — premier cas de la série. Cohérent avec la
+loi déjà établie : M4 a une magnitude de décalage ±2 dans sa boucle de
+binôme (ni ±1 comme M2, qui donne du O-C, ni le "traverse toujours" de
+M1/M3, qui donne du O-D) — un écart de 2 ne coïncide ni avec le binôme
+(écart 1) ni avec l'antagoniste (permutation totalement différente,
+cycle de 16 distinct). 4 cas "blocage" (Caput Draconis, Rubeus,
+Conjunctio, Acquisitio).
+
+*(Suite prévue : M5, M6... jusqu'à M16, à la demande de l'utilisateur.)*
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
