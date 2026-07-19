@@ -959,6 +959,22 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   appartenance à la boucle paire/impaire. Aucun changement de code —
   résultat purement structurel/documentaire, aucun mécanisme de
   verdict ne dépend de M12 seule à ce jour.
+- **Même vérification étendue à M4 (19/07/26, "m4 vérifie si fig
+  résulte binôme du binôme")** — M4 partage déjà le même jeu de
+  décalages bruts {4,12} que M12 dans la table complète (même palier
+  binaire). Vérifié exhaustivement sur les 16 figures de base
+  possibles : **M4 suit exactement la même structure que M12** —
+  résultante(M4) est toujours à ±2 dans la boucle de binôme de la
+  figure de base (8/8 split, jamais un autre écart). La vérification
+  précise de l'utilisateur est confirmée : Puer en M4 (le cas réel de
+  Vitesse-AEK) donne bien résultante=Via=binôme(binôme(Puer)). **Fait
+  notable en bonus : M4 et M12 donnent des décalages EXACTEMENT
+  OPPOSÉS, figure par figure** — Puer donne +2 en M4 mais -2 en M12 ;
+  Caput Draconis donne -2 en M4 mais +2 en M12 ; et ainsi de suite sur
+  les 16 figures, miroir parfait. Cohérent avec leur même jeu de
+  décalages bruts {4,12}, mais précise qu'elles sont inversées l'une
+  par rapport à l'autre plutôt qu'identiques. Aucun changement de
+  code — résultat structurel/documentaire.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
