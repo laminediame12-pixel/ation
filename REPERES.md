@@ -246,6 +246,17 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   binôme, harmonie du résultante ET du binôme) étaient la pièce
   manquante — la simple comparaison de polarité seule (ci-dessus)
   n'était pas assez sélective.
+- "Résultante contestée" (antagoniste de la résultante — pas de la
+  figure de base — plus fortement ancré `forceMaisonV7` que son propre
+  binôme ⇒ résultante fragilisée ⇒ camp opposé favorisé) — piste testée
+  après le miss réel du match laetitia/laetitia/carcer/conjunctio
+  (10-2 pour M7, alors que R7=Fortuna Major avait un antagoniste
+  Fortuna Minor très ancré, force 100 en siège caché M9, contre
+  binôme Puella à 20/90 — écart -40 en défaveur de la résultante M7 ;
+  côté M1, écart de seulement +7,5). Semblait prometteur sur ce cas
+  isolé. Testé sur l'archive complète (27 matchs) : **10/24 (42%)**,
+  pire que le hasard. REJETÉ franchement — l'asymétrie observée sur ce
+  match était une coïncidence, pas une loi généralisable.
 
 ## 5. Pistes ouvertes / prochaines étapes possibles
 
