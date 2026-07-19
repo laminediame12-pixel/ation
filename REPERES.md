@@ -353,6 +353,29 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   ratent quand même (Man City-Dortmund, Ferencvárosi-Qarabag). La vraie
   ligne de partage reste l'harmonie élémentaire de la base DANS M8
   elle-même, pas l'ancrage de son binôme ailleurs dans le thème.
+- **M2 — MAISON D'AUTO-CONSTRUCTION LA PLUS FRÉQUENTE (19/07/26, demande
+  utilisateur "M2 s'oppose à M8", puis observation "fig avec son binôme
+  c'est fréquent en m2", exemples Amissio/Albus, Fortuna Major/Puella,
+  Acquisitio/Puer, Rubeus/Fortuna Minor)** : confirmé directement dans la
+  table déjà existante `AUTO_CONSTRUCT_HOUSE` (résultante = binôme
+  propre) — répartition sur les 16 figures : **M2 : 8 figures**
+  (Caput Draconis, Albus, Rubeus, Tristitia, Conjunctio, Fortuna Major,
+  Acquisitio, Populus), M6 : 4 (Puer, Laetitia, Fortuna Minor, Carcer),
+  M14 : 4 (Via, Amissio, Cauda Draconis, Puella). M2 concentre bien la
+  moitié des 16 figures, largement devant M6/M14 — observation exacte.
+  Testé sur l'archive : base M2 dans le groupe des 8 (auto-construit) →
+  M1 gagne **6/14 (43%)**, PAS auto-construit → M1 gagne **9/13 (69%)**
+  (taux de base M1 sur l'archive : 60%) — signal réel mais dans le sens
+  CONTRE-INTUITIF (l'auto-construction en M2 est associée à MOINS de
+  victoires M1, pas plus). **Testé en effet net sur la cascade complète**
+  (règle : pas auto-construit→M1, auto-construit→M7) : en PRIORITÉ
+  ABSOLUE, **17/25 — net négatif** (casse 5 matchs corrects, n'en répare
+  qu'1). En REPLI (thèmes où `verdictFinal` est indécis) : les 2 seuls
+  cas concernés sont encore des ABSTENTIONS (même limite que pour M8),
+  et cette fois les 2 résolutions sont FAUSSES (21/27, aucun gain).
+  **REJETÉ comme mécanisme de décision**, même verdict que pour M8 :
+  signal isolé réel (43% vs 69%, sens contre-intuitif) mais aucune
+  amélioration nette une fois injecté dans la vraie cascade.
 
 - **AMPLEUR DU SCORE — AMÉLIORÉ (19/07/26, demande utilisateur "améliore
   l'ampleur du score")** : sur les 3 derniers vrais matchs hors archive,
