@@ -1323,6 +1323,40 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   Même conclusion : l'ancrage complet de M15 (avec binôme et
   antagoniste, pas seulement l'harmonie de base) ne pèse pas plus sur
   le verdict. Aucun changement de code.
+  **LE JUGE NE CONFIRME JAMAIS (19/07/26, "quand dit on le juge
+  confirme ou nie") — preuve structurelle, pas seulement empirique.**
+  `confirmationResultanteBinome(pos, theme)` (mécanisme déjà intégré
+  pour M1/M7, voir §0/§1) est une fonction générique testable sur
+  n'importe quelle position. Appliquée à M15 : **0/27 sur l'archive,
+  et `false` sur Vitesse-AEK** — le Juge "nie" (`confirme=false`)
+  SYSTÉMATIQUEMENT, jamais une seule confirmation. **Raison
+  structurelle trouvée** : `confirmationResultanteBinome` exige que la
+  polarité (`FIGURE_MEANINGS_PERSO`) de la base ET de sa résultante
+  soient toutes deux "favorable" ou toutes deux "défavorable". Or sur
+  les 8 figures possibles en M15, l'involution (voir plus haut) apparie
+  toujours une figure avec une autre dont la polarité est "mixte" ou
+  "neutre" — jamais deux figures franchement tranchées du même bord :
+
+  | Base | Polarité | Résultante | Polarité |
+  |---|---|---|---|
+  | Via | mixte | Amissio | défavorable |
+  | Amissio | défavorable | Via | mixte |
+  | Fortuna Minor | mixte | Carcer | défavorable |
+  | Carcer | défavorable | Fortuna Minor | mixte |
+  | Conjunctio | neutre | Fortuna Major | favorable |
+  | Fortuna Major | favorable | Conjunctio | neutre |
+  | Acquisitio | favorable | Populus | neutre |
+  | Populus | neutre | Acquisitio | favorable |
+
+  **Conclusion : `confirmationResultanteBinome(15, theme)` est
+  mathématiquement IMPOSSIBLE à être vraie, pas juste rare dans
+  l'archive** — une garantie structurelle, pas une tendance
+  probabiliste. Le Juge nie toujours, pour n'importe quel thème
+  possible. Cohérent avec le fait que M15 ne pèse déjà pas sur le
+  verdict (voir entrées ci-dessus) : même son mécanisme de confirmation
+  le plus sophistiqué ne peut structurellement jamais s'activer pour
+  cette maison. Aucun changement de code — résultat structurel/
+  documentaire.
 - **Extension à M3 (19/07/26, "teste m3")** — M3 (palier 4-voies,
   décalages IMPAIRS {3,5,11,13}) traverse lui aussi **toujours** vers
   l'autre boucle de binôme, cohérent avec la règle de parité (déjà
