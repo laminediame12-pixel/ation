@@ -1081,6 +1081,20 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   blocage**. Archive-wide, blocage sur M5 : **0 cas**. Carte des 16
   maisons de Vitesse-AEK toujours stable : seules M2 et M6. Aucun
   changement de code — résultat structurel.
+- **Extension à M8 (19/07/26, "teste m8")** — **résultat le plus propre
+  de toute la cartographie.** M8 est le palier "pur" (16/16, un seul
+  décalage brut {8}) — vérifié en termes de boucle de binôme :
+  résultante(M8) = base décalée d'**exactement +4, TOUJOURS, sans
+  aucune exception** (16/16, aucun split 8/8 contrairement à
+  M2/M4/M10/M12). Cohérent avec le fait que M8 n'a qu'un seul décalage
+  brut possible, contrairement aux paliers binaires (2 options) ou
+  4/8-voies. Sur Vitesse-AEK : M8 = Puer, résultante = Fortuna Minor,
+  `level:'semi_compatible'`, rôle "Absorbeur" — **pas en blocage**.
+  Archive-wide, blocage sur M8 : n=9, moyenne **6,11 buts** contre
+  **6,94** sans (n=18) — léger écart dans le bon sens, plus faible que
+  M6 (5,5 vs 7,16). Carte des 16 maisons de Vitesse-AEK toujours
+  stable : seules M2 et M6. Aucun changement de code — résultat
+  structurel.
 - **M1 et M7 testés directement (19/07/26, "teste M7 et M1 aussi")** :
   aucune figure ne s'auto-construit dans l'une ou l'autre (0/16 chacune,
   cohérent avec leurs paliers). Harmonie propre (force≥60 avec sa
