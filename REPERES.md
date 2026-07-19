@@ -1372,13 +1372,28 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   nie → 55% (11/20) ; les deux nient ensemble (16/27, cas le plus
   fréquent) → 56% — toutes ces valeurs restent proches du taux de base
   archive (~56% M1), échantillons trop petits (5 et 7) pour espérer un
-  signal exploitable de toute façon. Rejeté, pas testé en cascade
-  (signal trop plat pour justifier l'effort). Aucun changement de code
-  — mais confirme que les Témoins, contrairement au Juge, ne sont pas
-  structurellement condamnés à l'impartialité : leur silence collectif
-  (M13 ET M14 nient, le cas majoritaire à 16/27) reste néanmoins le
-  statu quo le plus probable, cohérent avec le fait que le Juge lui-même
-  (leur synthèse) ne confirme jamais.
+  signal exploitable de toute façon. **Testé quand même en cascade
+  complète (19/07/26, "teste m13 et m14 en cascade quand même")** :
+  toutes les variantes DÉGRADENT le score, aucune n'aide.
+
+  | Règle testée | Score | Flips |
+  |---|---|---|
+  | Base (`verdictFinal` actuel) | **22/27** | — |
+  | M13 confirme → M1 (priorité) | 21/27 | 1 flip, vers faux |
+  | M14 confirme → M1 (priorité) | 20/27 | 2 flips, tous vers faux |
+  | M13 OU M14 confirme → M1 (priorité) | 19/27 | 3 flips, tous vers faux |
+  | M13 ET M14 confirment → M1 (priorité) | 22/27 (neutre) | 0 flip (n=1 trop rare) |
+
+  Chaque flip forcé va dans le mauvais sens, zéro amélioration —
+  contrairement à M2+M8 qui avait passé ce même test avec succès,
+  M13/M14 n'a aucune valeur en cascade : pas juste "plat" en isolé,
+  mais activement nuisible dès qu'on force la priorité. **Rejeté
+  définitivement, aucun changement de code** — mais confirme que les
+  Témoins, contrairement au Juge, ne sont pas structurellement
+  condamnés à l'impartialité : leur silence collectif (M13 ET M14
+  nient, le cas majoritaire à 16/27) reste néanmoins le statu quo le
+  plus probable, cohérent avec le fait que le Juge lui-même (leur
+  synthèse) ne confirme jamais.
   **Extension à M16 "La Réconciliation" (19/07/26, "teste m16 aussi les
   témoignages")** — `calcTheme` construit M16 comme `combine(t[15],
   t[1])` (Réconciliation = combinaison du Juge et du chef M1).
