@@ -316,6 +316,22 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   correctif s'applique, pour transparence. À confirmer sur de nouveaux
   vrais matchs avant d'envisager une intégration dans `verdictFinal`
   lui-même.
+  **BUG CORRIGÉ (19/07/26, demande utilisateur "vérifiez bien si le
+  verdict final suis la logique")** : le correctif écrasait le
+  `winner` affiché "MÊME quand `winnerOverride` disait le contraire"
+  (voir plus haut) — ce qui semblait raisonnable au moment de
+  l'écrire s'est avéré être une vraie incohérence : dès que Via était
+  en M4, la carte pouvait afficher un vainqueur contraire à ce que
+  `verdictFinal` avait réellement décidé, MÊME quand `verdictFinal`
+  avait tranché via un mécanisme validé (Confirmation résultante+
+  binôme, Max des 4 forces, Ancrage...). Détecté sur 32/2000 thèmes
+  aléatoires (sondage de cohérence winner carte vs `verdictFinal`).
+  Corrigé : la correction du `winner` ne s'applique plus que quand
+  `winnerOverride` est ABSENT (le duel brut propre à cette carte, pas
+  la doctrine) — ne touche plus jamais un vainqueur déjà tranché par
+  `verdictFinal`. Revérifié : 0/2000 incohérences après correctif,
+  archive toujours 21/25, les 3 vrais matchs Via-M4 toujours corrects
+  (BTTS=Non, bon vainqueur).
 - **Via en M5 ET M11 (les deux à la fois) → camp M7 muet, piste n=1
   SEULEMENT** (18/07/26, match amissio/amissio/carcer/laetitia, réel
   4-0 Équipe 1, Équipe 2 à 0) : parallèle structurel exact au

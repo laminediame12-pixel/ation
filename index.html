@@ -6707,11 +6707,19 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // "LE VERDICT DOIT LE SUIVRE" (18/07/26, demande explicite utilisateur) :
   // avec campA.total forcé à 0 ci-dessus, un winner=labelA (ou 'Nul')
   // serait incohérent (vainqueur ou nul affiché avec une capacité de
-  // marquage nulle) — corrigé vers labelB, MÊME si winnerOverride (donc
-  // verdictFinal) disait labelA, tant que campB peut effectivement
-  // marquer. Ne modifie PAS verdictFinal lui-même (trop tôt, n=9) — la
-  // correction reste locale à cette carte, visible via card.viaEnM4.
-  if (viaEnM4 && winner !== labelB && campB.total > 0) { winner = labelB; }
+  // marquage nulle) — corrigé vers labelB tant que campB peut
+  // effectivement marquer.
+  // CORRIGÉ (19/07/26, "vérifiez bien si le verdict final suis la
+  // logique") : cette correction écrasait AUSSI winnerOverride quand il
+  // était présent — donc le vainqueur AFFICHÉ pouvait contredire
+  // verdictFinal lui-même dès que Via était en M4, même quand
+  // verdictFinal avait tranché labelA via un mécanisme validé
+  // (Confirmation résultante+binôme, Max des 4 forces, Ancrage...).
+  // Détecté sur 32/2000 thèmes aléatoires (0 avant ce correctif serait
+  // attendu). Restreint désormais au cas SANS winnerOverride (le duel
+  // brut de cette seule carte, pas la doctrine) — ne touche plus jamais
+  // un vainqueur déjà tranché par verdictFinal.
+  if (viaEnM4 && !winnerOverride && winner !== labelB && campB.total > 0) { winner = labelB; }
   var scWinnerCode = winner === labelA ? 'A' : winner === labelB ? 'B' : 'Nul';
   var sc = buildScoreFromCamps(campA, campB, scWinnerCode, undefined, theme);
   var goalA = sc.goalA, goalB = sc.goalB;
