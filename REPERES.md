@@ -892,6 +892,19 @@ et "M2 — MAISON D'AUTO-CONSTRUCTION..."). **M6 et M12 testés le 19/07/26**
   échantillon) — cohérent avec leur position plus basse dans la
   hiérarchie de précision (M6/M14 = 4 voies, la moins précise des 3
   paliers ; M12 = binaire mais sans base d'auto-construction comme M2).
+- **M14 testé (19/07/26)**, complète la famille : auto-construction
+  (groupe des 4, Via/Amissio/Cauda Draconis/Puella) M1=3/4 décisifs
+  (75%, au-dessus du taux de base 60%, mais n=4 minuscule) ; harmonie
+  quasi au taux de base (61% harmonieux, dissonant n=2 seulement,
+  inexploitable). Direction de l'auto-construction cohérente avec le
+  paradoxe M2/M12 (favorise le camp OPPOSÉ à la maison — M14 est CAMP2,
+  et c'est M1 qui est favorisé), mais échantillon bien trop petit pour
+  rien en tirer. **Famille des 6 maisons désormais entièrement testée**
+  (M2, M6, M8, M12, M14 empiriquement ; M16 triviale) : seul M8 montre
+  un signal isolé net (5/7 vs 0/3) et seul M2 un signal isolé net sur
+  bon échantillon (43% vs 69%) ; M6/M12/M14 restent tous sous le seuil
+  d'un signal exploitable, cohérent avec leur rang plus bas dans la
+  hiérarchie de précision algébrique.
 
 ## 7. Analyse match par match (17/07/26) — méthode et résultat codé
 
