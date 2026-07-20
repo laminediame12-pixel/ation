@@ -2824,6 +2824,57 @@ appliquer à d'autres maisons/figures si besoin, et à surveiller sur les
 prochains vrais matchs (notamment si M1 ou M7 se retrouve occupée par
 son propre B-M).
 
+### Confirmation résultante+binôme : fixe vs rotation (19/07/26)
+
+Objection utilisateur directe : "je ne peux pas comprendre le pourquoi
+tu confronte m1 et m7 pour déterminer le vainqueur. je t'ai dit la
+confrontation des deux équipes se fait à partir de la rotation. raison
+pour laquelle tu fausse dès fois" — rappel d'un principe déjà énoncé
+le 17/07/26 ("le verdict porte sur la rotation non pourquoi analyse m1
+et m7"), mais `confirmationResultanteBinome(pos, theme)` (le palier
+le plus prioritaire de la cascade après la trahison directe) est
+appelé en dur sur `pos=1` et `pos=7` (voir `verdictFinal`, lignes
+~4954-4955) — jamais sur R1/R7.
+
+**Vérifié sur les 3 vrais MISS récents** : en recalculant la
+confirmation aux positions de ROTATION (R1/R7) au lieu des positions
+fixes, **aucun des deux camps ne confirme dans les 3 cas** (Laetitia/
+Tristitia, St. Louis, Laetitia/Albus) — la version fixe produisait un
+faux positif confiant là où la version rotation aurait correctement
+reconnu l'indécision et laissé la cascade continuer vers le palier
+suivant. Le principe de l'utilisateur est donc directement confirmé
+sur ces 3 cas.
+
+**Mais testé rigoureusement sur l'archive complète (27 matchs, en
+patchant réellement `confirmationResultanteBinome` dans le moteur
+pour comparer 4 variantes)** :
+
+| Variante | Score archive |
+|---|---|
+| Fixe (M1/M7), actuel | **22/27** |
+| Rotation seule (R1/R7) | **17/27** (-5) |
+| ET (fixe ET rotation doivent confirmer le même camp) | 18/27 (-4) |
+| OU (fixe OU rotation confirme) | 22/27 (=, mais ne change RIEN sur les 3 cas réels, car rotation n'y confirme jamais) |
+
+**Aucune des 3 alternatives ne fait mieux que le fixe actuel sur
+l'archive, et la seule à égalité (OU) n'aide pas non plus sur les 3
+cas réels.** Remplacer purement et simplement par la rotation casse 5
+matchs archive déjà corrects (Argentine-Egypte, Liverpool-Lombardia,
+Chelsea-Napoli, Man City-Dortmund, Ferencvárosi-Qarabag) sans regagner
+aucun cas dans cette configuration précise. **Tension réelle, non
+résolue** : le principe "la confrontation se fait par rotation" est
+valable et déjà appliqué ailleurs dans la cascade (Max des 4 forces,
+Ancrage — tous deux comparent déjà M1/M7 ET R1/R7 combinés), mais
+`confirmationResultanteBinome` semble être une exception qui, sur ce
+palier précis, fonctionne mieux en fixe sur l'archive tout en se
+trompant plus souvent en réel. Aucun changement de code appliqué —
+remplacer romprait l'archive sans garantie de réparer le réel ; garder
+casse le réel sans toucher l'archive. Décision à prendre avec
+l'utilisateur : soit accepter le compromis actuel (fixe, meilleur sur
+le plus grand échantillon disponible), soit accumuler plus de vrais
+matchs pour trancher, soit chercher une 3e forme de combinaison non
+encore testée.
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
