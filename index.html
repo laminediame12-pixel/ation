@@ -4379,6 +4379,26 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
     fmM12.facteurs.forEach(function(f) { penalty.reasons.push('  • ' + f); });
   }
 
+  // Cas spécial : provocateur Caput Draconis / mouvement Via (19/07/26,
+  // doctrine utilisateur "le provocateur ce qui déclenche. caput en est
+  // un via mouvement étant binôme de caput leur mouvement avec rubeus
+  // dans le thème suscite quelque chose") — Caput Draconis = figure
+  // "provocateur", son binôme Via = "mouvement". Quand Via est en BASE
+  // M1 (pas seulement présente ailleurs) et que Caput Draconis et
+  // Rubeus sont tous deux présents dans le thème, le mouvement du
+  // provocateur croise Rubeus -> pénalty contre M1. Vérifié 2/2 sur les
+  // vrais matchs confirmés (LA Galaxy vs Los Angeles FC, Via/Acquisitio/
+  // Caput Draconis/Caput Draconis) — n=2, une condition parmi plusieurs
+  // (demande utilisateur "il existe d'autres conditions indiquant le
+  // carton"), à surveiller sur de nouveaux vrais matchs.
+  var provocateurCaputViaRubeus = (theme[1] === 'via'
+    && figureExistsInTheme('caput_draconis', theme)
+    && figureExistsInTheme('rubeus', theme));
+  if (provocateurCaputViaRubeus) {
+    penalty.hasPen = true;
+    penalty.reasons.push('Via en base M1 (mouvement, binôme de Caput Draconis) croisant Rubeus dans le thème -> pénalty probable contre M1 (doctrine provocateur, 2/2 en réel)');
+  }
+
   // ─── QUI ENCAISSE LE PENALTY/ROUGE ───
   // Priorite 1 : si le declenchement vient du check M6/M12, ces maisons appartiennent
   // structurellement a un camp fixe (CAMP1/CAMP2) -> attribution directe et fiable.
@@ -4387,7 +4407,10 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   var rubeusEnM11 = (rubeusM11.actif === true);
   var fmEnM12 = (fmM12.actif === true);
   penalty.encaisseur = null;
-  if (penalty.hasPen && vulnerableCamp) {
+  if (penalty.hasPen && provocateurCaputViaRubeus) {
+    penalty.encaisseur = 'M1';
+    penalty.reasons.push('Camp M1 encaisse (Via/mouvement en base M1 croisant Rubeus, doctrine provocateur Caput Draconis, 2/2 en réel)');
+  } else if (penalty.hasPen && vulnerableCamp) {
     penalty.encaisseur = vulnerableCamp;
     penalty.reasons.push('Camp '+vulnerableCamp+' encaisse (figure vulnerable en maison structurelle de son camp)');
   } else if (penalty.hasPen) {
