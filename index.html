@@ -4973,6 +4973,33 @@ function verdictFinal(theme, favoriteOverride){
   if (confM7 && !confM1) {
     return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M7 ('+FL[theme[7]]+') confirmé par son résultante et son binôme en harmonie (fixe ET rotation), M1 non (validé 18/27 archive, 3/4 réel, 19/07/26).'};
   }
+  // ═══ MIROIR M1=M7 — CONCORDANCE PROPRE (19/07/26, demande utilisateur
+  // "si les deux sont identiques la différence c'est la concordance dans
+  // leur maisons qu'elles occupent") ═══ Quand M1 et M7 portent la MÊME
+  // figure de base, `chaineDualite` (donc "max des 4 forces" ci-dessous)
+  // est TOUJOURS à égalité parfaite entre M1 et M7 (le réseau relationnel
+  // ne dépend que de la figure, pas de la maison) — la seule vraie
+  // différence entre les deux camps est alors l'harmonie élémentaire de
+  // CETTE figure avec CHAQUE maison (`forceMaisonV7`), pas son réseau de
+  // figures liées. Testé sur les 4 cas miroir connus (2 réels + 2
+  // archive) : Acquisitio (deux fois, réel M1 les deux fois, concordance
+  // M1=90 > M7=70 les deux fois), Populus (archive, réel M1 5-3,
+  // concordance M1=90 > M7=60), Cauda Draconis (archive, réel NUL,
+  // concordance M7=90 > M1=60 — n'est jamais atteint dans ce cas précis
+  // car le thème est une ABSTENTION "thème détruit" tranchée bien avant
+  // dans la cascade, donc aucun risque d'écraser une abstention) — 3/3
+  // cas tranchables, 0 contre-exemple.
+  if (theme[1] === theme[7]) {
+    const fmMirrorM1 = forceMaisonV7(theme[1], 1).force;
+    const fmMirrorM7 = forceMaisonV7(theme[7], 7).force;
+    if (fmMirrorM1 > fmMirrorM7) {
+      return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:'🪞 MIROIR M1=M7 ('+FL[theme[1]]+') — concordance élémentaire propre plus forte en M1 ('+fmMirrorM1+' contre '+fmMirrorM7+' en M7), validé 3/3 sur les cas miroir connus, 19/07/26.'};
+    }
+    if (fmMirrorM7 > fmMirrorM1) {
+      return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:'🪞 MIROIR M1=M7 ('+FL[theme[7]]+') — concordance élémentaire propre plus forte en M7 ('+fmMirrorM7+' contre '+fmMirrorM1+' en M1), validé 3/3 sur les cas miroir connus, 19/07/26.'};
+    }
+    // égalité parfaite même en concordance -> repli sur la suite de la cascade
+  }
   // ═══ COMPARAISON MAX DES 4 FORCES M1/M7/R1/R7 (17/07/26, demande
   // explicite utilisateur : "instaure le mode fixe, on teste ça... par
   // comparaison si M1>M7 et R1 et R7 équipe 1 gagne, si M7>M1 et R1 et R7
