@@ -2824,6 +2824,23 @@ appliquer à d'autres maisons/figures si besoin, et à surveiller sur les
 prochains vrais matchs (notamment si M1 ou M7 se retrouve occupée par
 son propre B-M).
 
+**1er cas réel pour A-M (19/07/26, thème Laetitia/Rubeus/Cauda
+Draconis/Laetitia, réel 7-3 M7)** : M1=Laetitia n'est ni B-M(M1) ni
+A-M(M1) — sa force brute (70, compatible_70) vient uniquement de la
+coïncidence O-D déjà connue et déjà rejetée comme protection fiable
+(Laetitia-en-M1 : 2/2 archive mais 0/2 réel, voir plus haut). M7=Albus
+est en revanche exactement **A-M(M7)** — la position "plancher" jamais
+en dessous de semi_compatible (16/16). Fait notable : la force brute
+affichée de M7 (60) est même INFÉRIEURE à celle de M1 (70), et
+pourtant M7 gagne nettement en réel (7-3) — cohérent avec l'hypothèse
+que la NATURE de la force (une garantie structurelle A-M vs une
+coïncidence O-D non protectrice) compte davantage que sa seule
+magnitude brute. **n=1 seulement pour cette lecture précise**, mais
+premier indice concret reliant la loi B-M/A-M au problème Laetitia-M1
+qui a lancé toute cette direction de recherche. Aucun changement de
+code — à re-tester sur les prochains vrais matchs, en particulier tout
+cas où M1 et M7 diffèrent sur leur statut B-M/A-M/ni-l'un-ni-l'autre.
+
 ### Confirmation résultante+binôme : fixe vs rotation (19/07/26)
 
 Objection utilisateur directe : "je ne peux pas comprendre le pourquoi
