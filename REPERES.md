@@ -457,10 +457,16 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   (27 matchs) : **0 cas** où `theme[1]==='via'` ET Caput Draconis ET
   Rubeus co-présents — la règle précise (Via en base M1 spécifiquement,
   pas seulement présente) n'a donc aucun contre-exemple archive à
-  craindre, mais reste validée sur seulement 2 cas réels. Pas encore
-  codé — hypothèse de règle à confirmer : "Via en base M1 + Caput
-  Draconis présent + Rubeus présent → incident confirmé, encaisseur
-  M1" — en attente de validation utilisateur avant intégration.
+  craindre, mais reste validée sur seulement 2 cas réels. **INTÉGRÉ
+  (19/07/26, demande utilisateur "c'est une condition pour le carton
+  rouge, il existe d'autres conditions indiquant le carton")** : ajouté
+  à `verdictV7` comme condition supplémentaire (pas exclusive) au
+  `penalty` — "Via en base M1 + Caput Draconis présent + Rubeus présent
+  → `hasPen=true`, `encaisseur='M1'`". Vérifié : reproduit correctement
+  `hasPen=true`/`encaisseur=M1` sur les 2 vrais matchs confirmés (LA
+  Galaxy, Via/Acquisitio), 0 crash sur l'archive de 27 matchs, condition
+  n'y déclenche jamais donc 0 régression sur `verdictFinal`. n=2 en
+  réel — à surveiller sur les prochains vrais matchs.
 - **M2 — MAISON D'AUTO-CONSTRUCTION LA PLUS FRÉQUENTE (19/07/26, demande
   utilisateur "M2 s'oppose à M8", puis observation "fig avec son binôme
   c'est fréquent en m2", exemples Amissio/Albus, Fortuna Major/Puella,
