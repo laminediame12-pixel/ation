@@ -27,6 +27,11 @@ supprimer ni résumer :
   boucle M2/M8) — méthode de comparaison ligne à ligne du tableau
   O-D/O-C entre deux maisons d'une même famille subalterne, pour en
   déduire leurs points communs/divergences.
+- **Cartographie transposée par figure** (§6, "Cartographie transposée :
+  le comportement de chaque figure à travers les 16 maisons") — les
+  16 figures classées par force moyenne/niveau sur les 16 maisons ;
+  Cycle A hétérogène et déterminé par l'élément (Feu/Eau forts, Air
+  toujours faible), Cycle B homogène quel que soit l'élément.
 
 ## 0. Principes déterminateurs du verdict (le fond, pas les matchs)
 
@@ -2571,6 +2576,83 @@ structurelle exacte, mais ne corrèle avec aucun résultat mesurable
 Aucun changement de code. Reste une piste ouverte si une autre variable
 à tester est proposée (l'angle "profondeur d'effectif" lui-même n'a
 pas encore de proxy fiable, voir ci-dessus).
+
+### Cartographie transposée : le comportement de chaque figure à travers les 16 maisons (19/07/26)
+
+Demande utilisateur : "je veux qu'on comprenne vraiment la cartographie
+des 16 figures dans les 16 maisons ça nous aidera bien de comportement
+des figures dans les 16 maisons." Les tableaux M1-M16 ci-dessus sont
+organisés PAR MAISON (16 figures de base × 1 maison). Cette section les
+transpose : PAR FIGURE (16 maisons × 1 figure), calculé exhaustivement
+via `forceMaisonV7(fig, pos)` pour les 256 combinaisons (pas d'échantillon,
+calcul direct sur le moteur réel).
+
+| Figure | Cycle | Élément | Force moy. | Blocage | Chaotique | Semi | Compat.70 | Compat.90 | Repos |
+|---|---|---|---|---|---|---|---|---|---|
+| Puer | A | feu | 71.9 | 0 | 2 | 4 | 4 | 5 | 1 |
+| Fortuna Minor | A | feu | 71.9 | 0 | 2 | 4 | 4 | 5 | 1 |
+| Via | A | eau | 67.2 | 0 | 2 | 4 | 4 | 5 | 1 |
+| Cauda Draconis | A | eau | 67.2 | 0 | 2 | 4 | 4 | 5 | 1 |
+| Caput Draconis | A | air | 54.4 | 4 | 1 | 4 | 4 | 2 | 1 |
+| Rubeus | A | air | 54.4 | 4 | 1 | 4 | 4 | 2 | 1 |
+| Conjunctio | A | air | 54.4 | 4 | 1 | 4 | 4 | 2 | 1 |
+| Acquisitio | A | air | 54.4 | 4 | 1 | 4 | 4 | 2 | 1 |
+| Laetitia | B | feu | 64.1 | 2 | 2 | 2 | 5 | 4 | 1 |
+| Tristitia | B | terre | 63.8 | 2 | 2 | 5 | 2 | 4 | 1 |
+| Fortuna Major | B | terre | 63.8 | 2 | 2 | 5 | 2 | 4 | 1 |
+| Amissio | B | eau | 62.5 | 2 | 2 | 2 | 5 | 4 | 1 |
+| Albus | B | eau | 62.2 | 2 | 2 | 5 | 2 | 4 | 1 |
+| Carcer | B | terre | 60.9 | 2 | 2 | 2 | 5 | 4 | 1 |
+| Puella | B | terre | 60.9 | 2 | 2 | 2 | 5 | 4 | 1 |
+| Populus | B | feu | 60.6 | 2 | 2 | 5 | 2 | 4 | 1 |
+
+**Découverte majeure : les deux boucles de binôme (Cycle A = boucle
+Puer/"impaire", Cycle B = boucle Laetitia/"paire") ont un comportement
+radicalement différent, et cette différence est intégralement
+expliquée par l'élément.**
+
+- **Cycle A est HÉTÉROGÈNE (écart 54,4 à 71,9, amplitude 17,5) et le
+  classement suit EXACTEMENT l'élément** : les 2 figures Feu (Puer,
+  Fortuna Minor) sont les plus fortes de tout le système (71,9, **0
+  blocage**) ; les 2 figures Eau (Via, Cauda Draconis) sont juste
+  derrière (67,2, **0 blocage**) ; les 4 figures Air (Caput Draconis,
+  Rubeus, Conjunctio, Acquisitio) sont les PLUS FAIBLES de tout le
+  système (54,4, **4 blocage chacune** — le maximum observé). **Cycle A
+  ne contient AUCUNE figure Terre.**
+- **Cycle B est HOMOGÈNE (écart 60,6 à 64,1, amplitude 3,4 seulement,
+  5× plus resserré que Cycle A) et l'élément n'explique presque rien** :
+  les 8 figures (Laetitia, Albus, Amissio, Tristitia, Carcer, Fortuna
+  Major, Puella, Populus) ont TOUTES exactement 2 blocage et 2
+  chaotique, quel que soit leur élément (Feu, Eau ou Terre mélangés
+  sans effet visible sur la force moyenne). **Cycle B ne contient AUCUNE
+  figure Air.**
+- **Recoupement à 3 niveaux, découvert indépendamment à 3 moments
+  différents de cette session, qui convergent enfin ici** : les 4
+  figures Air (Caput Draconis, Rubeus, Conjunctio, Acquisitio) sont (1)
+  le Groupe B de blocage sur les MAISONS {M4,M8,M12,M16} (§6,
+  récapitulatif des 3 groupes), (2) les 4 figures structurellement les
+  plus faibles quand on les prend comme FIGURE DE BASE n'importe où
+  (ci-dessus), et (3) le seul élément totalement absent de Cycle B —
+  l'air est donc, dans tout le système, l'élément "à risque" par
+  excellence, aussi bien côté maison que côté figure.
+- **Conséquence pratique** : une figure de Cycle A (Puer, Fortuna
+  Minor, Via, Cauda Draconis, Caput Draconis, Rubeus, Conjunctio,
+  Acquisitio) est "à haut risque/haute récompense" — son élément dit
+  tout de suite si elle sera très forte ou très fragile selon la
+  maison où elle tombe. Une figure de Cycle B est "régulière" — ni
+  franchement dominante ni franchement dangereuse quelle que soit la
+  maison, l'élément n'y change presque rien.
+- **Sous-motif secondaire dans Cycle B (non expliqué par l'élément)** :
+  les 8 figures se scindent en 2 quartets selon le ratio
+  semi_compatible/compatible_70 (identique par ailleurs) — {Laetitia,
+  Amissio, Carcer, Puella} (semi=2, compat_70=5) contre {Albus,
+  Tristitia, Fortuna Major, Populus} (semi=5, compat_70=2). Coïncide
+  avec l'indice pair/impair (mod 4) dans `FIGS_V7`, pas avec l'élément
+  (chaque quartet mélange Feu/Eau/Terre) — motif réel mais non encore
+  relié à une conséquence doctrinale connue, à explorer si besoin.
+
+Aucun changement de code (exploration structurelle pure). Référence à
+garder avec les 3 autres blocs durables (voir index en tête de fichier).
 
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
