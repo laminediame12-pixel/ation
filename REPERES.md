@@ -2908,6 +2908,62 @@ correction directe de ce palier (Laetitia/Tristitia et Laetitia/Albus
 restent hors de portée de ce palier précis, gérés ou non par d'autres
 mécanismes de la cascade).
 
+### Miroir M1=M7 : concordance propre remplace l'ancienne règle par élément brut (19/07/26)
+
+Sur le thème M1=M7=Acquisitio (réel 7-5 M1, `verdictFinal` prédisait
+M7 via Max des 4 forces — MISS), demande utilisateur : "si les deux
+sont identiques la différence c'est la concordance dans leur maisons
+qu'elles occupent." Diagnostic : quand M1 et M7 portent la MÊME figure
+de base, `chaineDualite` (donc Max des 4 forces) est TOUJOURS à
+égalité parfaite entre M1 et M7 — le réseau relationnel ne dépend que
+de la figure, pas de la maison où elle siège.
+
+**Ajouté** : un palier dédié comparant `forceMaisonV7(figure, 1)` vs
+`forceMaisonV7(figure, 7)` — l'harmonie élémentaire propre de la
+figure avec CHAQUE maison. Testé avant intégration sur les cas
+miroir connus : Acquisitio (2 vrais matchs, M1=90 > M7=70, réel M1
+les deux fois), Populus (archive, M1=90 > M7=60, réel M1 5-3), Cauda
+Draconis (archive, M7=90 > M1=60, réel NUL — non discriminant mais
+pas contradictoire). **INTÉGRÉ** : 0 régression sur l'archive (18/27
+inchangé), les 2 vrais matchs miroir corrigés.
+
+**DÉCOUVERTE EN DOCUMENTANT LE CHANGEMENT** : il existait déjà une
+règle "camps-miroirs" plus bas dans `verdictFinal` (04/07/26, "ÉTAPE 2
+RÉVISÉE"), qui tranchait aussi `theme[1]===theme[7]` mais par
+l'ÉLÉMENT PROPRE de la base (feu/air→M1, eau/terre→M7), sans passer
+par `combine()`. Mon nouveau palier, placé plus tôt dans la cascade,
+la rendait inatteignable. Comparaison sur les 16 figures possibles :
+les deux règles s'accordent sur 12/16 mais **divergent sur 4**
+(Caput Draconis, Tristitia, Carcer, Conjunctio) — aucune donnée
+réelle/archive ne couvrait ces 4 cas pour trancher a priori.
+
+**Cause de la divergence identifiée (demande utilisateur "regarde
+pourquoi elles divergent sur ces 4 figures")** : `forceMaisonV7` ne
+regarde jamais l'élément propre de la base — il regarde l'élément de
+la RÉSULTANTE (`combine(base, figure naturelle de la maison)`), qui
+peut différer radicalement de l'élément de la base à cause de la
+transformation :
+
+| Figure | Résultante en M1 | Résultante en M7 |
+|---|---|---|
+| Caput Draconis (air) | Amissio (eau) vs feu → 40 chaotique | Fortuna Major (terre) vs eau → 70 |
+| Tristitia (terre) | Fortuna Minor (feu) vs feu → 90 parfait | Acquisitio (air) vs eau → 60 |
+| Carcer (terre) | Rubeus (air) vs feu → 70 | Puer (feu) vs eau → 40 chaotique |
+| Conjunctio (air) | Puella (terre) vs feu → 60 | Albus (eau) vs eau → 90 parfait |
+
+Sur ces 4 figures, la transformation `combine()` inverse complètement
+la prédiction que donnerait l'élément brut — l'ancienne règle n'était
+juste que par coïncidence sur les 12 figures où la transformation ne
+change pas la tendance. **DÉCISION : gardé le nouveau palier
+(`forceMaisonV7`, cohérent avec tout le reste du moteur et la
+cartographie M1-M16 de cette session), retiré l'ancien branchement
+`if(theme[1]===theme[7])` devenu du code mort**, mis à jour le résumé
+de hiérarchie en tête de `verdictFinal` (resté périmé depuis plusieurs
+semaines de changements, ne mentionnait ni la trahison directe, ni la
+confirmation résultante+binôme, ni max des 4 forces). Vérifié après
+nettoyage : 18/27 archive inchangé, 2 vrais matchs miroir toujours
+corrects, 0 crash sur 300 thèmes aléatoires.
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
