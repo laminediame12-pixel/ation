@@ -377,6 +377,32 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   ratent quand même (Man City-Dortmund, Ferencvárosi-Qarabag). La vraie
   ligne de partage reste l'harmonie élémentaire de la base DANS M8
   elle-même, pas l'ancrage de son binôme ailleurs dans le thème.
+  **PISTE "M8 = MORT" TESTÉE (19/07/26, doctrine utilisateur "M8 est liée
+  à la mort")** : M8 appartient structurellement à CAMP2/camp M7 (déjà
+  noté). Hypothèse : la loi linéaire (résultante = décalage+8) ne
+  "tuerait" vraiment que quand elle pointe vers le chef NATIF de M8
+  (M7/R7), pas vers le chef "emprunté" (M1/R1) — testé sur les 10 cas
+  archive avec deux proxys réels disponibles (pas de carton rouge réel
+  dans l'archive, seulement le score) : défaite et écrasement (score du
+  camp pointé à 0, ou écart ≥3). Résultat : **M7 seul (fixe) : 2/2
+  défaites dont 1/2 score à 0** ; **M7+R7 combiné : 3/5 défaites (60%),
+  1/5 à 0 (20%)** contre **M1+R1 combiné : 1/5 défaite (20%), 0/5 à 0**
+  — asymétrie dans le sens attendu par la doctrine (le camp natif de M8
+  souffre plus que le camp emprunté), mais **n=2 et n=5, bien trop petit
+  pour conclure ou intégrer**. Aucun écrasement net (+3) observé dans
+  aucun groupe — la "mort" ne se lit pas comme une déroute massive sur
+  cet échantillon, plutôt comme une défaite simple ou un score nul côté
+  camp M7. Lien à noter avec la doctrine déjà intégrée "Rubeus en M8 →
+  pénalité" (`[[11,'rubeus'],[12,'rubeus'],[7,'rubeus'],[8,'rubeus'],
+  [12,'fortuna_major']]`, §5) : l'exemple de départ de cette section
+  (Acquisitio en base M8 → résultante Rubeus) tombe justement sur la
+  figure surveillée par cette doctrine, mais celle-ci contrôle la BASE
+  de M8 (`theme[8]==='rubeus'`), pas la résultante — deux signaux
+  distincts qui se recoupent seulement pour ce cas précis (Acquisitio en
+  base). Aucun changement de code. Piste ouverte : soit accumuler plus
+  de vrais matchs avec cette configuration (M8 pointe M7/R7), soit
+  redéfinir "mort" autrement que défaite/écrasement (carton rouge non
+  vérifiable faute de données réelles dans l'archive actuelle).
 - **M2 — MAISON D'AUTO-CONSTRUCTION LA PLUS FRÉQUENTE (19/07/26, demande
   utilisateur "M2 s'oppose à M8", puis observation "fig avec son binôme
   c'est fréquent en m2", exemples Amissio/Albus, Fortuna Major/Puella,
