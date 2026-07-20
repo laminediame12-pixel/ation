@@ -6,6 +6,28 @@ consulter avant de proposer une nouvelle piste (éviter de retester une
 hypothèse déjà rejetée) et avant de modifier `verdictFinal` (connaître
 l'ordre exact de la cascade et le score de chaque étage).
 
+**Repères structurels à conserver durablement** (demande explicite
+utilisateur, 19/07/26 : "garde dans le référent... on aura forcément
+les besoins après") — ces 4 blocs sont la base de travail de toute
+future exploration sur la cartographie des maisons, à ne jamais
+supprimer ni résumer :
+- **Tableau O-D/O-C des 16 maisons** (§6, "Cartographie complète des
+  16 figures × 16 maisons") — pour chaque maison M1 à M16, les 16
+  résultantes possibles avec Fig-Base/R-M(n)/Binôme/Antagoniste/
+  O-D/O-C/Niveau/Force.
+- **Les 3 groupes de blocage A/B/C** (§6, "Récapitulatif : les 3
+  groupes de blocage sur les 16 maisons") — Groupe A {M2,M6}, Groupe B
+  {M4,M8,M12,M16}, Groupe C {M10,M14}, déduits du tableau ci-dessus.
+- **Le "carré logique" et la disposition des maisons** (§6, "Le carré
+  logique et la relation subalterne") — axes opposé (Constat 12) et
+  familles subalterne {M2,M6,M8,M12} / {M3,M5,M9,M11}, avec leur
+  énergie doctrinale commune (incidents pour M6/M12, capacité de
+  marquage pour M5/M11, ressource d'équipe pour M2/M8).
+- **Comparaisons de maisons sur le tableau** (§6, tests M8/M12 et
+  boucle M2/M8) — méthode de comparaison ligne à ligne du tableau
+  O-D/O-C entre deux maisons d'une même famille subalterne, pour en
+  déduire leurs points communs/divergences.
+
 ## 0. Principes déterminateurs du verdict (le fond, pas les matchs)
 
 Ce sont les mécanismes géomantiques eux-mêmes — la logique qui décide qui
