@@ -2964,6 +2964,23 @@ confirmation résultante+binôme, ni max des 4 forces). Vérifié après
 nettoyage : 18/27 archive inchangé, 2 vrais matchs miroir toujours
 corrects, 0 crash sur 300 thèmes aléatoires.
 
+**GÉNÉRALISATION TESTÉE (19/07/26, demande utilisateur "la
+cartographie j'insiste là-dessus seule peut nous aider")** : la
+"concordance propre" (`forceMaisonV7(theme[1],1)` vs
+`forceMaisonV7(theme[7],7)`) marche pour le cas miroir — testé aussi
+en comparaison GÉNÉRALE (même quand M1≠M7) sur l'archive complète :
+**13/18 (72%) quand décisif** (décisif sur 18/25 matchs à vainqueur
+net, 7 égalités non tranchables). Correct mais pas exceptionnel — en
+dessous des paliers déjà intégrés (confirmation résultante+binôme
+9/10 isolé, guerre civile, etc.). **Testé comme repli final (quand
+`verdictFinal` est "indécis")** : **0 cas indécis dans l'archive
+actuelle** — la cascade actuelle tranche toujours par un autre moyen
+avant d'atteindre ce point, donc aucune place utile pour l'insérer
+pour l'instant. Aucun changement de code — signal réel mais déjà
+couvert ailleurs pour les cas non-miroir ; reste la meilleure option
+spécifiquement pour le cas miroir (où c'est le SEUL signal
+discriminant, `chaineDualite` étant toujours à égalité).
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
