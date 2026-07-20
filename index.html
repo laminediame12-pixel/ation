@@ -4618,28 +4618,18 @@ function campDominant(theme){
 // oubli.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
-// VERDICT FINAL — hiérarchie unique et validée (03/07/26)
-// Ordre : détruit/invalide → abstention | profil du nul → NUL |
-// MIROIRS (M1=M7) → concordance élémentaire départage (ÉTAPE 2 RÉVISÉE,
-// 04/07/26 — remplace l'ancienne doctrine "le Juge décide" décrite plus
-// bas dans une version antérieure de ce commentaire, jamais mise à jour ;
-// voir CORRECTION ci-dessous) | juge-favori | guerre civile (attaques
-// effectives > état des chefs > égalité de boucle) | inter-boucles
-// (chaos armé > hiérarchie).
+// VERDICT FINAL — hiérarchie unique et validée (03/07/26, dernière
+// révision de ce résumé le 19/07/26)
+// Ordre réel dans le code (haut en bas de la fonction) : détruit/invalide
+// → abstention | profil du nul → NUL | trahison directe (guerre civile,
+// M1/M7 même boucle) | confirmation résultante+binôme (fixe ET rotation,
+// depuis le 19/07/26) | MIROIRS (M1=M7) → concordance propre via
+// `forceMaisonV7` (remplace le 19/07/26 l'ancienne règle par élément brut
+// de la figure, devenue fausse sur 4/16 figures — voir REPERES.md §6) |
+// max des 4 forces (M1/M7/R1/R7) | ancrage chaîne complète | juge-favori
+// | verdictElementaire | récit du Juge (indécis).
 // Les signaux d'étude (dominant, chambres, alignements, nœuds) ne
 // participent PLUS au verdict (échecs en aveugle) — affichés à part.
-// CORRECTION (revue des principes du juge-favori) : ce commentaire disait
-// "MIROIRS → le Juge décide (Populus=nul, Conjunctio=victoire à l'usure,
-// F.Major/Minor=favori)". Le code réel du cas miroir (theme[1]===theme[7],
-// cf. "ÉTAPE 2 RÉVISÉE" plus bas) ne regarde JAMAIS la figure du Juge
-// (M15) et n'appelle jamais verdictJugeFavori — il tranche uniquement par
-// la concordance élémentaire de la figure partagée. Concrètement : si un
-// thème tombe en miroir (M1=M7) ET que le Juge est Fortuna Major/Minor
-// avec un favori renseigné, la règle juge-favori ne s'applique PAS (le
-// miroir est vérifié avant, à la ligne du "if(theme[1]===theme[7])").
-// C'est un choix délibéré et validé pour le cas miroir testé (M6 Populus
-// → réel 3-1 M1), pas un bug — mais l'écart avec l'ancienne doctrine
-// documentée ici n'avait jamais été signalé.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
 // PROTOCOLE DES TIRAGES MULTIPLES (04/07/26)
@@ -5198,22 +5188,24 @@ function verdictFinal(theme, favoriteOverride){
   if (!nulVerrouille && doubleNeutralisationFusion(theme)) {
     return {type:'nul', winner:'Nul', label:'⚖️ MATCH NUL probable', reason:'⚖️ PROFIL DU NUL (double neutralisation + fusion) : les binômes directs de M1 et M7 sont tous les deux neutralisés par un antagoniste ancré et soutenu, avec fusion (même figure jouant double rôle dans les deux camps) → NUL (0 faux positif sur 27 matchs archivés, 1 cas capturé).'};
   }
-  // ═══ ÉTAPE 2 RÉVISÉE (04/07/26) — CAMPS-MIROIRS ═══
-  // « M1 = M7 : celui qui a plus de concordance prend l'avantage. »
-  // La même figure loge en M1 (feu) et M7 (eau) — sa concordance diffère
-  // toujours : feu → parfaite en M1 ; air → nourricière en M1 ;
-  // eau → parfaite en M7 ; terre → nourricière en M7. Règle déterministe.
-  // Validé : M6 (Populus, feu → M1) réel 3-1 M1 ✓. Le profil du nul
-  // (étape 1) parle AVANT : un miroir en entre-blocage + juge de nul
-  // confirmé reste un nul.
+  // ═══ ÉTAPE 2 (04/07/26, camps-miroirs) — RETIRÉE le 19/07/26 ═══
+  // L'ancien branchement `if(theme[1]===theme[7])` ci-dessous tranchait le
+  // cas miroir par l'élément PROPRE de la figure de base (feu/air→M1,
+  // eau/terre→M7), sans passer par `combine()`. Devenu du code mort : le
+  // palier "MIROIR M1=M7 — CONCORDANCE PROPRE" plus haut dans cette
+  // fonction (basé sur `forceMaisonV7`, donc sur la résultante réelle
+  // après transformation, pas l'élément brut) tranche désormais TOUS les
+  // cas miroir avant d'atteindre ce point. Comparaison sur les 16 figures
+  // possibles : les deux règles s'accordaient sur 12/16, mais divergeaient
+  // sur 4 (Caput Draconis, Tristitia, Carcer, Conjunctio) — dans les 4
+  // cas, l'élément de la RÉSULTANTE (celle que `forceMaisonV7` utilise
+  // réellement) diverge de l'élément propre de la base à cause de la
+  // transformation `combine()`, rendant l'ancienne heuristique fausse sur
+  // ces figures précises (aucune donnée réelle/archive ne couvrait ces 4
+  // cas pour le vérifier avant ce jour). Retirée en faveur du palier basé
+  // sur `forceMaisonV7`, cohérent avec le reste du moteur.
   var vfBase;
-  if(theme[1]===theme[7]){
-    const els9 = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
-    const e = els9[theme[1]];
-    const w = (e==='feu'||e==='air') ? 'M1' : 'M7';
-    const cc = e==='feu' ? 'parfaite (feu/feu) en M1' : e==='air' ? 'nourricière (air en feu) en M1' : e==='eau' ? 'parfaite (eau/eau) en M7' : 'nourricière (terre en eau) en M7';
-    vfBase = {type:'verdict', winner:w, label:'🏆 VAINQUEUR : '+w, reason:'Camps-miroirs ('+FL[theme[1]]+' des deux côtés) : la concordance départage les jumeaux — '+cc+' → '+w+' prend l avantage'};
-  } else {
+  {
     const jf = verdictJugeFavori(theme, favoriteOverride);
     if(jf.winner){
       vfBase = {type:'verdict', winner:jf.winner, label:'🏆 VAINQUEUR : '+jf.winner, reason:jf.reason};
