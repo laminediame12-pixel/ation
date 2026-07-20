@@ -428,6 +428,39 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   maisons plus variées (témoins compris). Aucun changement de code —
   signal réel mais non conclusif, à retester sur davantage de vrais
   matchs avec cette configuration précise.
+  **CAMP ENCAISSEUR RÉEXAMINÉ SUR LES 5 VRAIS CARTONS CONFIRMÉS (19/07/26,
+  demande utilisateur "c'est toi qui dois faire la comparaison par les
+  matchs déjà ont carton rouge")** : recalcul des thèmes complets des 5
+  matchs réels à carton confirmé (§3 : LA Galaxy, Amissio×2/Carcer/
+  Laetitia, Via/Acquisitio/CaputD/CaputD, San Diego, Ventura). Attribution
+  directe (maison structurelle du déclencheur, CAMP1/CAMP2) correcte
+  3/5. Sur les 2 échecs (Via/Acquisitio, Ventura), la "faille dans une
+  autre maison" (`confrontationBinome` sur le binôme OU l'antagoniste du
+  déclencheur) corrige les 2/2 — mais pas de règle unique pour choisir
+  entre binôme et antagoniste quand les deux se contredisent (constaté
+  sur Via/Acquisitio : binôme→mauvais camp, antagoniste→bon camp ;
+  Ventura : seul le binôme se confirme, lui donne le bon camp).
+  **PROVOCATEUR PRÉCISÉ (19/07/26, demande utilisateur "le provocateur
+  ce qui déclenche. caput en est un via mouvement étant binôme de caput
+  leur mouvement avec rubeus dans le thème suscite quelque chose")** :
+  doctrine utilisateur — **Caput Draconis = figure "provocateur"**, son
+  binôme **Via = "mouvement"** ; la co-présence de Via et Rubeus dans le
+  thème (le "mouvement" du provocateur croisant Rubeus) suscite
+  l'incident. Vérifié sur les 5 vrais cartons confirmés : la combinaison
+  **Caput Draconis + Via + Rubeus co-présents** n'apparaît que dans
+  **2/5** (LA Galaxy, Via/Acquisitio) — et dans les DEUX cas, **Via est
+  littéralement en base M1** (pas seulement présente ailleurs), et
+  **l'encaisseur réel est M1 dans les deux cas (2/2)**. Absente des 3
+  autres cartons confirmés (Amissio×2, San Diego, Ventura), qui
+  s'expliquent par d'autres mécanismes déjà connus — donc piste
+  complémentaire, pas universelle. Recherché sur l'archive complète
+  (27 matchs) : **0 cas** où `theme[1]==='via'` ET Caput Draconis ET
+  Rubeus co-présents — la règle précise (Via en base M1 spécifiquement,
+  pas seulement présente) n'a donc aucun contre-exemple archive à
+  craindre, mais reste validée sur seulement 2 cas réels. Pas encore
+  codé — hypothèse de règle à confirmer : "Via en base M1 + Caput
+  Draconis présent + Rubeus présent → incident confirmé, encaisseur
+  M1" — en attente de validation utilisateur avant intégration.
 - **M2 — MAISON D'AUTO-CONSTRUCTION LA PLUS FRÉQUENTE (19/07/26, demande
   utilisateur "M2 s'oppose à M8", puis observation "fig avec son binôme
   c'est fréquent en m2", exemples Amissio/Albus, Fortuna Major/Puella,
