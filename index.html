@@ -4951,13 +4951,27 @@ function verdictFinal(theme, favoriteOverride){
   // la cascade existante). Ne tranche QUE si exactement un des deux
   // camps confirme (jamais les deux, jamais aucun) — sinon repli
   // immédiat sur la suite de la cascade.
-  const confM1 = confirmationResultanteBinome(1, theme);
-  const confM7 = confirmationResultanteBinome(7, theme);
+  // EXIGENCE FIXE ET ROTATION (19/07/26, demande explicite utilisateur
+  // "rotation et fixe le même mode d'analyse... celui qui capte plus du
+  // vrai resultats") — cette confirmation était calculée uniquement sur
+  // M1/M7 fixes, jamais sur R1/R7, contrairement au principe déjà
+  // énoncé le 17/07/26 ("le verdict porte sur la rotation"). Sur les 3
+  // vrais MISS connus (Laetitia/Tristitia, St. Louis, Laetitia/Albus),
+  // la confirmation en rotation ne confirmait jamais alors que la
+  // confirmation fixe confirmait à tort. Remplacer entièrement le fixe
+  // par la rotation casse 5 matchs archive (22/27→17/27) sans réparer
+  // Laetitia/Albus. Exiger l'ACCORD des deux (fixe ET rotation
+  // confirment le même camp) répare St. Louis sur le réel (2/4→3/4)
+  // pour un coût moindre sur l'archive (22/27→18/27) que la rotation
+  // seule (17/27) — retenu comme meilleur compromis testé.
+  const orderRConf = getRotationOrderFromRepos(theme[1]);
+  const confM1 = confirmationResultanteBinome(1, theme) && confirmationResultanteBinome(orderRConf[0], theme);
+  const confM7 = confirmationResultanteBinome(7, theme) && confirmationResultanteBinome(orderRConf[6], theme);
   if (confM1 && !confM7) {
-    return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M1 ('+FL[theme[1]]+') confirmé par son résultante et son binôme en harmonie, M7 non (validé 9/10 isolé, +3 net sur l\'archive, 18/07/26).'};
+    return {type:'verdict', winner:'M1', label:'🏆 VAINQUEUR : M1', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M1 ('+FL[theme[1]]+') confirmé par son résultante et son binôme en harmonie (fixe ET rotation), M7 non (validé 18/27 archive, 3/4 réel, 19/07/26).'};
   }
   if (confM7 && !confM1) {
-    return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M7 ('+FL[theme[7]]+') confirmé par son résultante et son binôme en harmonie, M1 non (validé 9/10 isolé, +3 net sur l\'archive, 18/07/26).'};
+    return {type:'verdict', winner:'M7', label:'🏆 VAINQUEUR : M7', reason:'✅ CONFIRMATION RÉSULTANTE+BINÔME — M7 ('+FL[theme[7]]+') confirmé par son résultante et son binôme en harmonie (fixe ET rotation), M1 non (validé 18/27 archive, 3/4 réel, 19/07/26).'};
   }
   // ═══ COMPARAISON MAX DES 4 FORCES M1/M7/R1/R7 (17/07/26, demande
   // explicite utilisateur : "instaure le mode fixe, on teste ça... par
