@@ -403,6 +403,31 @@ L'archive complète (27 matchs, dont 19 esport) est dans
   de vrais matchs avec cette configuration (M8 pointe M7/R7), soit
   redéfinir "mort" autrement que défaite/écrasement (carton rouge non
   vérifiable faute de données réelles dans l'archive actuelle).
+  **MÉCANISME "FAILLE DANS UNE AUTRE MAISON" APPLIQUÉ (19/07/26, demande
+  utilisateur "avec le carton trouve une faille on passe dans une autre
+  maison")** : le mécanisme déjà codé `confrontationBinome(binome,
+  theme)` (utilisé aujourd'hui uniquement pour Rubeus/Fortuna Major en
+  M7/M8/M11/M12, §5) cherche le binôme d'une figure ailleurs dans le
+  thème et vérifie s'IL est en rupture (Chaotique/Blocage) avec SA
+  PROPRE maison — la "faille" ne se situe jamais dans la maison de
+  départ mais toujours "dans une autre maison". Généralisé ici à
+  N'IMPORTE QUELLE figure de base en M8 (pas seulement Rubeus) : sur les
+  10 cas où la loi linéaire de M8 pointe vers un chef, le binôme de la
+  base réelle de M8 est TOUJOURS présent ailleurs dans le thème
+  (10/10), mais en rupture avec sa propre maison seulement **4/10** —
+  ManCity-Napoli (faille M13, Chaotique), ManCity-Juventus (faille M10,
+  Blocage), Dortmund-Roma (faille M9, Chaotique), Ferencvárosi-Qarabag
+  (faille M6, Blocage). Comparaison : **faille confirmée → 1/4 scores à
+  0** (Ferencvárosi-Qarabag) **contre 0/6 sans faille** — distinction
+  réelle mais sur un échantillon bien trop petit (4 et 6 cas) pour
+  conclure ; le taux de défaite lui-même ne se démarque pas nettement
+  (2/4 avec faille contre 2/6 sans). Fait notable : les "autres maisons"
+  où la faille apparaît (M13, M10, M9, M6) ne sont PAS concentrées sur
+  M6/M12 comme la doctrine Rubeus/Fortuna Major existante — la
+  généralisation à toute figure de M8 déplace la faille vers des
+  maisons plus variées (témoins compris). Aucun changement de code —
+  signal réel mais non conclusif, à retester sur davantage de vrais
+  matchs avec cette configuration précise.
 - **M2 — MAISON D'AUTO-CONSTRUCTION LA PLUS FRÉQUENTE (19/07/26, demande
   utilisateur "M2 s'oppose à M8", puis observation "fig avec son binôme
   c'est fréquent en m2", exemples Amissio/Albus, Fortuna Major/Puella,
