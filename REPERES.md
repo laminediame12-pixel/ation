@@ -2654,6 +2654,47 @@ expliquée par l'élément.**
 Aucun changement de code (exploration structurelle pure). Référence à
 garder avec les 3 autres blocs durables (voir index en tête de fichier).
 
+**SENS PRATIQUE POUR LE VERDICT TESTÉ (19/07/26, demande utilisateur
+"creuse le sens pratique pour le verdict")** : hypothèse — un chef
+(base M1 ou M7) d'élément Air (Caput Draconis, Rubeus, Conjunctio,
+Acquisitio) devrait être structurellement désavantagé. Testé sur les 25
+matchs archive à vainqueur net (hors nuls) :
+
+| Configuration | n | M1 gagne |
+|---|---|---|
+| M1 est Air | 3 | **0/3 (0%)** |
+| M1 n'est PAS Air | 22 | 15/22 (68%) |
+| M7 est Air | 5 | 4/5 (80%, donc Air perd 4/5) |
+| **Exactement un des deux est Air (le camp Air, quel qu'il soit)** | **8** | **Air perd 7/8 (87,5%)** |
+| Aucun des deux Air | 17 | 11/17 (65%) |
+
+**Signal isolé net et propre (7/8, 87,5%)** — nettement au-dessus du
+taux de base (65% quand aucun camp n'est Air). Seul raté : West Ham vs
+Liverpool (Caput Draconis en M7, real M7 gagne 6-4) — pas d'explication
+secondaire trouvée (force de Caput Draconis en M7 = 70/compatible_70,
+pas dramatiquement différente des cas où Air perd quand même malgré une
+force encore meilleure : Conjunctio en M7 = 90/compatible_90 sur 2
+matchs où Air perd quand même). **Testé en cascade complète sur
+`verdictFinal`** : en PRIORITÉ ABSOLUE (écrase le verdict actuel quand
+un seul camp est Air) → 22/27, neutre en score brut mais pour de
+MAUVAISES raisons — le seul "gain" vient d'écraser une ABSTENTION
+volontaire (thème invalide, Lombardia-Roma), contraire au principe
+d'abstention (§0, déjà invoqué pour rejeter un cas similaire sur M8),
+et la "neutralité" cache aussi la casse d'un match déjà correct (West
+Ham-Liverpool, le raté ci-dessus). **En REPLI (seulement quand
+`verdictFinal` n'a AUCUNE opinion)** : le seul cas où `winner:null`
+existe dans l'archive EST justement cette même abstention volontaire —
+**0 cas de vraie indécision (hors abstention) où la règle pourrait
+s'appliquer proprement**. **REJETÉ comme mécanisme de décision** malgré
+un signal isolé réel et fort (7/8) — aucune position dans la cascade ne
+permet de l'exploiter sans soit outrepasser une abstention volontaire,
+soit ne rien changer. Aucun changement de code. Le signal reste
+intéressant en lui-même (confirme que la fragilité structurelle de
+l'Air, découverte ci-dessus sur les maisons/figures, se lit aussi
+directement dans les résultats réels des chefs M1/M7) — à retester si
+de nouveaux vrais matchs avec indécision réelle (pas abstention)
+apparaissent.
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
