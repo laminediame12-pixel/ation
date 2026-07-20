@@ -32,6 +32,13 @@ supprimer ni résumer :
   16 figures classées par force moyenne/niveau sur les 16 maisons ;
   Cycle A hétérogène et déterminé par l'élément (Feu/Eau forts, Air
   toujours faible), Cycle B homogène quel que soit l'élément.
+- **Loi B-M/A-M (maisons d'occupation)** (§6, "Maisons d'occupation :
+  spécificité d'une maison occupée par une figure donnée") — quand une
+  maison est occupée par la figure qui EST le binôme de sa propre
+  figure naturelle (B-M), l'harmonie est TOUJOURS plafonnée à
+  semi_compatible (60), 16/16 sans exception ; l'antagoniste de la
+  figure naturelle (A-M) a au contraire toujours un plancher ≥60,
+  16/16. Table complète des 16 maisons incluse.
 
 ## 0. Principes déterminateurs du verdict (le fond, pas les matchs)
 
@@ -2756,6 +2763,66 @@ d'occupation (spécifique à Laetitia-M1, ou à une autre logique encore
 non testée) explique le renversement — piste ouverte, question posée
 à l'utilisateur sur quelle forme de "spécificité d'occupation" creuser
 ensuite (voir chat, 19/07/26).
+
+**2e candidat (choisi par l'utilisateur) : relation binôme/antagoniste
+AVEC LA MAISON ELLE-MÊME**, pas avec la figure de base dans le thème.
+Pour une maison H de figure naturelle N=`FIGS_V7[H-1]`, on définit
+**B-M(H) = binôme(N)** (la figure qui EST le binôme de la figure
+naturelle de H) et **A-M(H) = antagoniste(N)**. Concrètement, B-M(H)
+est toujours la figure naturelle de la maison H+2, et A-M(H) toujours
+celle d'une maison H-4 (avec enroulement) — une résonance structurelle
+entre maisons, indépendante de tout thème particulier.
+
+**LOI UNIVERSELLE DÉCOUVERTE (19/07/26, 16/16, calcul exhaustif)** :
+quand une maison H est occupée par SA PROPRE figure B-M(H), le niveau
+d'harmonie (`forceMaisonV7`) est TOUJOURS plafonné à semi_compatible
+(60) au mieux — jamais compatible_70/90, jamais repos. Répartition sur
+les 16 maisons : 6 chaotique (M1,M3,M7,M9,M11,M15), 2 blocage (M6,M14),
+8 semi_compatible (le reste) — **0 cas au-dessus de 60, 16/16 sans
+exception**. À l'inverse, **A-M(H) (antagoniste de la figure naturelle)
+a un PLANCHER symétrique** : toujours ≥60 (semi_compatible à
+compatible_70), **jamais chaotique ni blocage, 16/16 sans exception**
+non plus. Une figure occupant sa propre maison "B-M" est donc
+structurellement plafonnée en faiblesse ; une figure occupant sa
+propre maison "A-M" est structurellement protégée d'un effondrement,
+sans pour autant briller.
+
+**Table complète (Maison | B-M | Force/Niveau B-M-en-H | A-M | Force/Niveau A-M-en-H)** :
+M1 caput_draconis 40/chaotique — puella 70/compatible_70 ;
+M2 albus 60/semi — acquisitio 70/compatible_70 ;
+M3 via 40/chaotique — populus 60/semi ;
+M4 amissio 60/semi — puer 70/compatible_70 ;
+M5 rubeus 60/semi — laetitia 70/compatible_70 ;
+M6 tristitia 20/blocage — caput_draconis 70/compatible_70 ;
+M7 fortuna_minor 40/chaotique — albus 60/semi ;
+M8 carcer 60/semi — via 70/compatible_70 ;
+M9 conjunctio 40/chaotique — amissio 70/compatible_70 ;
+M10 fortuna_major 60/semi — rubeus 70/compatible_70 ;
+M11 cauda_draconis 40/chaotique — tristitia 60/semi ;
+M12 puella 60/semi — fortuna_minor 70/compatible_70 ;
+M13 acquisitio 60/semi — carcer 70/compatible_70 ;
+M14 populus 20/blocage — conjunctio 70/compatible_70 ;
+M15 puer 40/chaotique — fortuna_major 60/semi ;
+M16 laetitia 60/semi — cauda_draconis 70/compatible_70.
+
+**Testé sur l'archive (M1/M7 seulement, les positions décisives)** :
+B-M(M1)=Caput Draconis, B-M(M7)=Fortuna Minor — 4 matchs archive où
+exactement un des deux camps a son chef occupé par sa propre figure
+B-M : **le camp B-M perd 4/4**, un signal isolé parfait mais petit
+(n=4, un 5e cas est un nul non tranchable). **Testé en cascade
+complète** (écrase `verdictFinal` quand applicable) : **22/27, neutre**
+— aucun flip réel, car `verdictFinal` classait déjà ces 4 cas
+correctement par d'autres mécanismes (le signal est confirmé mais
+redondant sur cet archive précis, pas un gain net incrémental).
+**Ne résout pas directement le cas Laetitia-M1** (Laetitia ≠
+B-M(M1)=Caput Draconis), mais confirme que "la spécificité de la
+maison occupée" est une vraie direction : c'est la 1ère loi structurelle
+100% exhaustive (16/16, sans une seule exception) trouvée sur ce thème
+précis cette session. Aucun changement de code pour l'instant (pas de
+gain net à intégrer), mais loi consignée comme référence durable — à
+appliquer à d'autres maisons/figures si besoin, et à surveiller sur les
+prochains vrais matchs (notamment si M1 ou M7 se retrouve occupée par
+son propre B-M).
 
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
