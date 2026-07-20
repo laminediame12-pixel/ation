@@ -2731,6 +2731,32 @@ victoire sur l'archive (7/8), mais sa traduction exacte en magnitude
 de score réel reste à confirmer sur davantage de cas avant toute
 tentative d'intégration.
 
+### Maisons d'occupation : spécificité d'une maison occupée par une figure donnée (19/07/26)
+
+Demande utilisateur, suite au problème Laetitia-M1 : "pour mieux
+appréhender le problème on va orienter notre recherche vers les
+maisons d'occupation. C'est-à-dire détecter la spécificité de la
+maison quand elle est occupée par une telle figure." Objectif :
+comprendre POURQUOI une occupation précise (maison + figure) a un
+comportement propre, au-delà du simple Niveau/Force déjà tabulé.
+
+**Premier candidat testé : le flag O-D (auto-destruction, résultante
+= antagoniste de la base) comme indicateur de fragilité d'occupation.**
+Laetitia en M1 a précisément O-D=✅ (voir tableau M1, §6) — hypothèse :
+l'auto-destruction structurelle expliquerait la fragilité réelle
+malgré une force apparente élevée. **Testé sur les 3 autres figures
+O-D en M1** (Amissio, Carcer, Puella, les 4 seules figures O-D pour
+cette maison) **sur l'archive complète** : Laetitia 2/2, Amissio 4/4,
+Carcer 3/4, Puella 1/2 — **total 10/12 (83%) de victoires M1 pour le
+groupe O-D-en-M1**, un taux ÉLEVÉ, pas bas. **REJETÉ comme explication
+générale** : O-D ne corrèle pas avec la fragilité sur l'archive, donc
+ne peut pas à lui seul expliquer le renversement réel de Laetitia.
+Aucun changement de code. Reste à identifier quelle autre propriété
+d'occupation (spécifique à Laetitia-M1, ou à une autre logique encore
+non testée) explique le renversement — piste ouverte, question posée
+à l'utilisateur sur quelle forme de "spécificité d'occupation" creuser
+ensuite (voir chat, 19/07/26).
+
 *(Première passe des 16 maisons terminée. Prochaine étape possible :
 approfondir un groupe précis, tester l'impact verdict des autres
 paliers, ou une nouvelle direction à la demande de l'utilisateur.)*
