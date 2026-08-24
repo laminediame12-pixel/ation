@@ -976,6 +976,114 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
      line-height orphelin, accolades du bloc <style> déséquilibrées) */
   .pcard.rel-dim{opacity:0.35;}
 
+  /* ═══════════════════════════════════════════════════════════════
+     MATRICES DES DEUX BOUCLES (24/08/26)
+     Tables de composition des boucles paire et impaire sous combine().
+     Les 128 cellules sont calculées au chargement par le moteur
+     combine() lui-même — rien n'est écrit en dur, donc rien ne peut
+     diverger de la doctrine.
+     ═══════════════════════════════════════════════════════════════ */
+  .bl-section{margin:26px 0 8px;}
+  .bl-facts{
+    display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px;
+    font-size:0.68rem;
+  }
+  .bl-facts span{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 9px; border:1px solid var(--line);
+    border-radius:3px; background:var(--ink-2);
+  }
+  .bl-facts b{color:var(--gold); font-weight:700;}
+
+  .bl-grid{
+    display:grid; grid-template-columns:1fr; gap:16px;
+  }
+  @media(min-width:900px){ .bl-grid{grid-template-columns:1fr 1fr;} }
+
+  .bl-card{
+    border:1px solid var(--line); border-radius:6px;
+    background:var(--ink-2); padding:12px; overflow-x:auto;
+  }
+  .bl-card h3{
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-weight:600; font-size:1.15rem; color:var(--gold);
+    margin:0 0 3px;
+  }
+  .bl-card .bl-cap{
+    color:var(--parchment-dim); font-size:0.66rem;
+    margin:0 0 11px; letter-spacing:0.02em; line-height:1.5;
+  }
+
+  .bl-tab{
+    display:grid; grid-template-columns:auto repeat(8,minmax(0,1fr));
+    gap:2px; min-width:290px;
+    font-family:'JetBrains Mono', monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  .bl-h,.bl-c{
+    display:flex; align-items:center; justify-content:center;
+    aspect-ratio:1/1; font-size:0.62rem; border-radius:3px;
+  }
+  .bl-h{font-weight:700; background:var(--ink); color:var(--parchment-dim);}
+  .bl-h.bl-corner{background:transparent; opacity:.45;}
+  .bl-h.bl-lit{background:var(--gold-dim); color:var(--ink);}
+
+  .bl-c{
+    border:1px solid transparent; background:transparent;
+    font-family:inherit; font-variant-numeric:tabular-nums;
+    font-weight:700; cursor:pointer; padding:0;
+    color:var(--parchment);
+    transition:background-color .12s ease, border-color .12s ease;
+  }
+  .bl-c:focus-visible{outline:2px solid var(--gold); outline-offset:1px;}
+  .bl-c.bl-diag{background:rgba(233,223,200,.09);}
+  .bl-c.bl-lit{background:rgba(199,161,67,.13);}
+  .bl-c.bl-mirror{border-color:currentColor; background:rgba(199,161,67,.26);}
+
+  /* Une teinte par figure. Elles sont attribuées PAR POSITION, donc une
+     figure impaire porte la teinte de sa voisine paire : la couleur
+     encode l'écart constant d'Acquisitio entre les deux boucles. */
+  .bl-f1,.bl-f2{color:#E8AE3B;}
+  .bl-f3,.bl-f4{color:#4E9FE8;}
+  .bl-f5,.bl-f6{color:#D96BC4;}
+  .bl-f7,.bl-f8{color:#9182E8;}
+  .bl-f9,.bl-f10{color:#E8614D;}
+  .bl-f11,.bl-f12{color:#5FBF7A;}
+  .bl-f13,.bl-f14{color:#A8CC48;}
+  .bl-f15,.bl-f16{color:var(--parchment);}
+
+  .bl-read{
+    margin:10px 0 0; min-height:1.4em; text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:0.63rem;
+    color:var(--parchment-dim); line-height:1.5;
+  }
+  .bl-read b{color:var(--parchment); font-weight:700;}
+
+  .bl-corr{
+    margin:16px 0 0; border:1px solid var(--line);
+    border-radius:6px; background:var(--ink-2); padding:12px;
+  }
+  .bl-corr h3{
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-weight:600; font-size:1.15rem; color:var(--gold); margin:0 0 3px;
+  }
+  .bl-corr .bl-cap{color:var(--parchment-dim); font-size:0.66rem; margin:0 0 11px; line-height:1.5;}
+  .bl-pairs{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+    gap:6px; font-size:0.68rem;
+  }
+  .bl-pairs div{
+    display:flex; align-items:center; gap:6px;
+    padding:5px 8px; border:1px solid var(--line);
+    border-radius:3px; background:var(--ink);
+  }
+  .bl-pairs .bl-n{
+    font-family:'JetBrains Mono', monospace; font-weight:700;
+    min-width:17px; text-align:right;
+  }
+  .bl-pairs .bl-nm{font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.85rem;}
+  .bl-pairs .bl-lk{color:var(--parchment-dim); font-size:0.62rem;}
+
 </style>
 <div id="geomtx-root">
 
@@ -1007,6 +1115,131 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 <div class="note">
   Base : ta table maison de repos + binômes/antagonistes validés. Chaque case affiche 3 niveaux : (1) tier de résidence R/B/A/· en haut, (2) résultante (figure ⊕ figure de repos de la maison) colorée selon sa relation — or=boucle sur elle-même, vert=binôme, rouge=antagoniste, teal=figure de repos elle-même, beige=autre, (3) distance de chasse en bas. M1/M7 en bleu/orange foncé (fixe), R1/R7 en anneau tournant.
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MATRICES DES DEUX BOUCLES (24/08/26)
+     Placées juste après la matrice 16×16 des figures dans les maisons.
+     Le contenu des deux tables est calculé au chargement par combine(),
+     jamais écrit en dur : la doctrine reste l'unique source.
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="bl-section" id="boucles-matrices">
+  <h1>Matrices des deux boucles</h1>
+  <p class="sub">Tables de composition des 8 figures paires et des 8 figures impaires sous l'opération combine. Une même grille intérieure sert aux deux — seuls les en-têtes changent.</p>
+
+  <div class="bl-facts">
+    <span>Boucle paire <b>close</b> — neutre <b>16 Populus</b></span>
+    <span>Boucle impaire <b>non close</b> — résultats toujours pairs</span>
+    <span>Écart constant entre les deux : <b>15 Acquisitio</b></span>
+    <span>Grilles identiques : <b>64/64 cellules</b></span>
+  </div>
+
+  <div class="bl-grid">
+    <div class="bl-card">
+      <h3>Boucle paire</h3>
+      <p class="bl-cap">Ensemble clos : combiner deux figures paires en redonne une troisième. Populus (16) est le neutre — il occupe la diagonale, car toute figure combinée à elle-même donne Populus.</p>
+      <div class="bl-tab" id="bl-tab-paire"></div>
+      <p class="bl-read" id="bl-read-paire">Touche une case pour la lire.</p>
+    </div>
+
+    <div class="bl-card">
+      <h3>Boucle impaire</h3>
+      <p class="bl-cap">Ensemble non clos : combiner deux figures impaires donne toujours une figure paire. Aucun neutre à l'intérieur — Populus est pair. Acquisitio (15) y tient le rôle d'ancre : sa ligne recopie l'en-tête.</p>
+      <div class="bl-tab" id="bl-tab-impaire"></div>
+      <p class="bl-read" id="bl-read-impaire">Touche une case pour la lire.</p>
+    </div>
+  </div>
+
+  <div class="bl-corr">
+    <h3>La correspondance</h3>
+    <p class="bl-cap">Chaque figure impaire et sa voisine paire diffèrent toujours du même écart, Acquisitio — d'où l'identité des deux grilles. Les deux figures d'un couple partagent leur teinte.</p>
+    <div class="bl-pairs" id="bl-pairs"></div>
+  </div>
+</div>
+
+<script>
+/* Rendu des deux matrices de boucle. Calculé au chargement à partir de
+   FIGS_V7 + combine() (moteur global défini plus bas dans le fichier) :
+   DOMContentLoaded garantit que ce script s'exécute après. */
+(function(){
+  function render(){
+    if(typeof combine !== 'function' || typeof FIGS_V7 === 'undefined') return;
+
+    var PAIRES  = [2,4,6,8,10,12,14,16];
+    var IMPAIRS = [1,3,5,7,9,11,13,15];
+    function fig(n){ return FIGS_V7[n-1]; }
+    function num(f){ return FIGS_V7.indexOf(f)+1; }
+    function nom(n){ return (typeof FL!=='undefined' && FL[fig(n)]) ? FL[fig(n)] : fig(n); }
+
+    function build(hostId, readId, axe){
+      var host = document.getElementById(hostId);
+      var read = document.getElementById(readId);
+      if(!host) return;
+
+      var html = '<div class="bl-h bl-corner">+</div>';
+      axe.forEach(function(c){
+        html += '<div class="bl-h bl-f'+c+'" data-col="'+c+'">'+c+'</div>';
+      });
+      axe.forEach(function(r){
+        html += '<div class="bl-h bl-f'+r+'" data-row="'+r+'">'+r+'</div>';
+        axe.forEach(function(c){
+          var v = num(combine(fig(r), fig(c)));
+          html += '<button type="button" class="bl-c bl-f'+v+(r===c?' bl-diag':'')+'"'
+               +  ' data-row="'+r+'" data-col="'+c+'" data-val="'+v+'"'
+               +  ' aria-label="'+r+' combiné '+c+' égale '+v+'">'+v+'</button>';
+        });
+      });
+      host.innerHTML = html;
+
+      function clear(){
+        var on = host.querySelectorAll('.bl-lit,.bl-mirror');
+        for(var i=0;i<on.length;i++){ on[i].classList.remove('bl-lit','bl-mirror'); }
+      }
+      function show(cell){
+        clear();
+        var r = cell.getAttribute('data-row'),
+            c = cell.getAttribute('data-col'),
+            v = cell.getAttribute('data-val');
+        var same = host.querySelectorAll('[data-row="'+r+'"],[data-col="'+c+'"]');
+        for(var i=0;i<same.length;i++){ same[i].classList.add('bl-lit'); }
+        cell.classList.add('bl-mirror');
+        var mir = host.querySelector('.bl-c[data-row="'+c+'"][data-col="'+r+'"]');
+        if(mir) mir.classList.add('bl-mirror');
+        if(read){
+          read.innerHTML = '<b>'+r+'</b> '+nom(r)+' &nbsp;+&nbsp; <b>'+c+'</b> '+nom(c)
+                         + ' &nbsp;=&nbsp; <b>'+v+'</b> '+nom(v);
+        }
+      }
+      function pick(e){
+        var t = e.target;
+        var cell = (t && t.closest) ? t.closest('.bl-c') : null;
+        if(cell) show(cell);
+      }
+      host.addEventListener('click', pick);
+      host.addEventListener('mouseover', pick);
+      host.addEventListener('focusin', pick);
+    }
+
+    build('bl-tab-paire',   'bl-read-paire',   PAIRES);
+    build('bl-tab-impaire', 'bl-read-impaire', IMPAIRS);
+
+    var pairs = document.getElementById('bl-pairs');
+    if(pairs){
+      var h = '';
+      IMPAIRS.forEach(function(n){
+        h += '<div class="bl-f'+n+'"><span class="bl-n">'+n+'</span>'
+          +  '<span class="bl-nm">'+nom(n)+'</span>'
+          +  '<span class="bl-lk">&#8596;</span>'
+          +  '<span class="bl-n">'+(n+1)+'</span>'
+          +  '<span class="bl-nm">'+nom(n+1)+'</span></div>';
+      });
+      pairs.innerHTML = h;
+    }
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
+  else render();
+})();
+</script>
 
 <div class="carre-geo-wrap">
   <h1 style="font-size:22px;">Carré géomantique (construction classique à 3 carrés)</h1>
