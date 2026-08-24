@@ -1702,7 +1702,13 @@ window.carreGeoClickHouse = function(m){
 };
 function quadsCenterX(m){ return ({13:150,14:250,15:150,16:250})[m] || 200; }
 
-function renderTheme(theme){
+// RENOMMÉ (correctif redéclaration) : cette fonction s'appelait renderTheme(theme)
+// et était écrasée silencieusement par la fonction renderTheme() (sans paramètre,
+// pipeline verdict complet) déclarée plus bas dans le script suivant — ses effets
+// (surlignage matrice, widget M1/M7, carré géomantique, sync UI de référence,
+// fermeture auto du panneau force planétaire) n'étaient donc plus jamais exécutés.
+// Renommée et appelée explicitement depuis renderTheme() pour restaurer ces effets.
+function renderThemeLegacyWidgets(theme){
   clearThemeHighlights();
   for(let m=1;m<=16;m++){
     const figName = theme[m];
@@ -1790,11 +1796,23 @@ function convertHostTheme(hostTheme){
 }
 
 window.__geomtxOnHostTheme = function(hostTheme){
-  if(!hostTheme) return;
+  // Garde de réentrance (correctif) : renderTheme() notifie elle-même
+  // __geomtxOnHostTheme après chaque rendu (voir le crochet plus bas dans
+  // le fichier) — sans ce garde-fou, hôte -> renderTheme() -> hôte -> ...
+  // bouclerait indéfiniment (Maximum call stack size exceeded).
+  if(!hostTheme || window.__geomtxSyncing) return;
   try{
-    renderTheme(convertHostTheme(hostTheme));
+    window.__geomtxSyncing = true;
+    // CORRIGÉ (redéclaration renderTheme) : renderTheme() n'accepte plus de
+    // paramètre depuis la réécriture du pipeline verdict — elle lit
+    // désormais currentTheme. On l'alimente donc explicitement avant de
+    // déclencher le rendu complet.
+    currentTheme = convertHostTheme(hostTheme);
+    renderTheme();
   }catch(err){
     console.error('geomtx: erreur de conversion du theme hote', err);
+  }finally{
+    window.__geomtxSyncing = false;
   }
 };
 
@@ -2406,7 +2424,7 @@ function toggleAutoTestXOR() {
     }
     panel.innerHTML = html;
     panel.style.display = 'block';
-    try { renderBouclesAntagonistesR1R7(currentTheme || null); } catch(e) {}
+    try { renderBouclesAntagonistesR1R7Panel(currentTheme || null); } catch(e) {}
   } else {
     panel.style.display = 'none';
   }
@@ -2576,7 +2594,11 @@ function comparerBouclesAntagonistesR1R7(theme){
     winner:s1>s7?'R1':s7>s1?'R7':'Égalité'
   };
 }
-function renderBouclesAntagonistesR1R7(theme){
+// RENOMMÉ (correctif redéclaration) : cette version écrit directement dans
+// #r1r7-boucles-protocole et était écrasée silencieusement par la version
+// plus bas (même nom, qui RETOURNE une chaîne HTML) — l'appel de
+// toggleAutoTestXOR() ci-dessous devenait alors sans effet observable.
+function renderBouclesAntagonistesR1R7Panel(theme){
   const p=document.getElementById('r1r7-boucles-protocole');if(!p)return;const q=comparerBouclesAntagonistesR1R7(theme);
   if(!q.applicable){p.innerHTML='<div class="muted" style="font-size:11px;">⚖️ Protocole R1/R7 non activé : '+q.reason+'</div>';return;}
   const f=n=>Number(n).toFixed(2).replace('.',',');
@@ -12067,6 +12089,12 @@ function analyzeTheme(theme){
 }
 function renderTheme(){
   if(!currentTheme) return;
+  // CORRIGÉ (redéclaration renderTheme) : ces effets (surlignage matrice,
+  // widget M1/M7, carré géomantique, sync UI de référence, fermeture auto
+  // du panneau force planétaire) vivaient dans une ancienne renderTheme(theme)
+  // totalement écrasée par cette fonction-ci — isolé pour ne jamais bloquer
+  // le pipeline verdict principal en cas d'erreur.
+  try { renderThemeLegacyWidgets(currentTheme); } catch(e) { console.error('renderThemeLegacyWidgets error', e); }
   clearHouseRelationColors();
   const team1=document.getElementById('team1').value||'Équipe 1';
   const team2=document.getElementById('team2').value||'Équipe 2';
@@ -14160,7 +14188,10 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
     var _geomtxOrigRenderTheme = renderTheme;
     renderTheme = function(){
       _geomtxOrigRenderTheme();
-      if(typeof currentTheme !== 'undefined' && currentTheme){
+      // Garde de réentrance (correctif) : évite la boucle renderTheme() ->
+      // __geomtxOnHostTheme -> renderTheme() -> ... quand c'est
+      // __geomtxOnHostTheme elle-même qui a déclenché ce rendu.
+      if(typeof currentTheme !== 'undefined' && currentTheme && !window.__geomtxSyncing){
         window.__geomtxOnHostTheme(currentTheme);
       }
     };
