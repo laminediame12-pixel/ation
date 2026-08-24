@@ -3566,6 +3566,72 @@ function couleurToScore(couleur) {
   }
 }
 
+// ─── LECTURE DES SIÈGES R1/R7 (24/08/26, doctrine Ellemine_D) ───
+// Découverte sur le cas réel Conjunctio/Rubeus/Cauda/Acquisitio (6-1) :
+// le verdict était écrit noir sur blanc dans la maison de chaque chef,
+// alors que TOUTES les couches agrégées se trompaient.
+//   M11 = siège de R1 (Puer)        -> 🟧 « buts élevés · victoire A possible »  -> 6 buts
+//   M1  = siège de R7 (Conjunctio)  -> 🟨 « buts modérés · nul/bascule »         -> 1 but
+// Le score de résidence donnait pourtant R7 (8 vs 4,5), et la Structure du
+// Nul suspendait tout. La lecture directe des deux sièges, elle, donnait
+// le bon camp ET le bon sens de score.
+//
+// CHOIX DE CONCEPTION : on décide sur `couleur`, pas sur `resultat`.
+// `resultat` est du texte libre (76 valeurs distinctes sur 256 entrées :
+// « nul/bascule », « avantage léger A », « victoire A possible »...) —
+// le parser par mots-clés serait de la devinette et casserait au premier
+// libellé nouveau. `couleur` est un enum fermé à 5 valeurs, déjà doté
+// d'un barème utilisé ailleurs dans le moteur (couleurToScore). `buts`
+// sert de départage : c'est une échelle ordinale nette.
+// 📚 Doctrine posée sur n=1 — à contre-tester dès que d'autres résultats
+// réels seront disponibles.
+var BUTS_ECHELLE_SIEGE = {
+  'très élevés': 3, 'élevés/précoces': 2.5, 'élevés': 2, 'potentiel élevé': 2,
+  'modérés/élevés': 1.5, 'modérés': 1, 'possibles': 0.5, 'faibles à modérés': 0.5,
+  'faibles/modérés': 0.5, 'variables': 0, 'indirect': 0, 'irréguliers': 0,
+  'possibles tardivement': 0, 'tardifs': 0,
+  'bas': -1, 'faible': -1.5, 'faibles': -1.5, 'très faibles': -2
+};
+function butsScoreSiege(buts) {
+  var v = BUTS_ECHELLE_SIEGE[buts];
+  return typeof v === 'number' ? v : 0;
+}
+
+function lectureSiegesR1R7(theme) {
+  if (!theme || !theme[1]) return {applicable: false, reason: 'Thème non disponible.'};
+  var rot = getRotationCombat(theme);
+  var iR1 = getInterpretationFootball(theme[rot.hR1], rot.hR1);
+  var iR7 = getInterpretationFootball(theme[rot.hR7], rot.hR7);
+  if (!iR1 || !iR7) return {applicable: false, hR1: rot.hR1, hR7: rot.hR7,
+    reason: 'Interprétation absente pour l\'un des deux sièges.'};
+
+  var cR1 = couleurToScore(iR1.couleur), cR7 = couleurToScore(iR7.couleur);
+  var bR1 = butsScoreSiege(iR1.buts),    bR7 = butsScoreSiege(iR7.buts);
+
+  var winner = null, motif;
+  if (cR1 !== cR7) {
+    winner = cR1 > cR7 ? 'R1' : 'R7';
+    motif = 'couleur du siège (' + iR1.couleur + ' ' + cR1 + ' contre ' + iR7.couleur + ' ' + cR7 + ')';
+  } else if (bR1 !== bR7) {
+    winner = bR1 > bR7 ? 'R1' : 'R7';
+    motif = 'couleurs égales (' + iR1.couleur + ') — départage par les buts (' + iR1.buts + ' contre ' + iR7.buts + ')';
+  } else {
+    motif = 'sièges strictement équivalents (' + iR1.couleur + ', buts ' + iR1.buts + ') — aucun départage';
+  }
+
+  return {
+    applicable: true, winner: winner, motif: motif,
+    hR1: rot.hR1, hR7: rot.hR7, figR1: rot.figR1, figR7: rot.figR7,
+    interpR1: iR1, interpR7: iR7,
+    couleurScoreR1: cR1, couleurScoreR7: cR7,
+    butsScoreR1: bR1, butsScoreR7: bR7,
+    synthese: 'Siège R1 (M' + rot.hR1 + ', ' + FL[rot.figR1] + ') ' + iR1.couleur
+      + ' « buts ' + iR1.buts + ' · ' + iR1.resultat + ' » contre siège R7 (M' + rot.hR7 + ', '
+      + FL[rot.figR7] + ') ' + iR7.couleur + ' « buts ' + iR7.buts + ' · ' + iR7.resultat + ' » — '
+      + (winner ? 'avantage ' + winner : 'égalité') + ' par ' + motif + '.'
+  };
+}
+
 // Parcourt fig et sa chaîne de binômes (jusqu'à profondeur crans), et pour
 // chaque membre trouvé actif dans le thème (base ou résultante), prend sa
 // MEILLEURE interprétation (position qui donne le score le plus favorable
@@ -3612,6 +3678,21 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
   }
   return { total: total, detail: detail };
 }
+
+// ─── DÉSACTIVÉE COMME MÉCANISME DÉCISIF (24/08/26, demande Ellemine_D) ───
+// Doctrine corrigée par le cas réel Conjunctio/Rubeus/Cauda/Acquisitio :
+// M13=Carcer et M14=Conjunctio formaient une paire d'équilibre, la
+// Structure du Nul s'est donc déclenchée et a SUSPENDU tout le protocole
+// R1/R7 + le Réseau d'ancrage. Score réel : 6-1 — le résultat le plus
+// tranché possible, sur un thème que le système déclarait nul.
+// Règle posée par Ellemine_D : « même il peut avoir un thème de structure
+// nul sans que le résultat réel soit un nul » — la signature structurelle
+// M13/M14 décrit une configuration, PAS une issue.
+// Cohérent avec la mesure déjà notée dans ce fichier : précision 23%,
+// contre 24% de taux de base — le signal n'apportait aucune information.
+// Le calcul et le panneau de diagnostic restent en place (lecture utile) ;
+// seul son pouvoir de décision est retiré via ce drapeau.
+var STRUCTURE_NUL_DECISIVE = false;
 
 function structureDuNul(theme) {
   const juge1 = theme[13], juge2 = theme[14];
@@ -9934,18 +10015,13 @@ function verdictFamilialEngine(theme){
     };
   }
 
-  // STRUCTURE DU NUL — BRANCHÉ AU VERDICT (04/08/26, demande explicite
-  // Ellemine_D : "branchez-les aux verdicts"). Vérifié en second : si
-  // M13=M14 (identité) ou M13/M14 forment une paire d'équilibre
-  // (opposition) SUR LE THÈME PRINCIPAL (pas dérivé), le verdict est Nul.
-  // ⚠️ STATUT (mis à jour 05/08/26) : contre-testé depuis sur l'archive —
-  // précision 23%, quasiment IDENTIQUE au taux de base (24%). Ce signal
-  // n'apporte donc PAS d'information réelle, contrairement à l'Axe
-  // Succédent ci-dessus. Laissé actif par prudence (pas encore de
-  // décision de retrait), mais à considérer comme candidat au retrait —
-  // en discuter avant de le faire.
+  // STRUCTURE DU NUL — DÉBRANCHÉE DU VERDICT (24/08/26, décision
+  // Ellemine_D après le cas réel 6-1 ; voir STRUCTURE_NUL_DECISIVE plus
+  // haut pour le raisonnement complet). Le calcul reste, le pouvoir de
+  // décision est retiré : un thème peut porter la signature structurelle
+  // du nul sans que le résultat réel soit un nul.
   const sdn = structureDuNul(theme);
-  if (sdn.nulDetecte) {
+  if (STRUCTURE_NUL_DECISIVE && sdn.nulDetecte) {
     const raison = sdn.nulParIdentite
       ? 'Juge 1 (M13='+FL[sdn.juge1]+') = Juge 2 (M14='+FL[sdn.juge2]+') — nul par identité'
       : 'Juge 1 (M13='+FL[sdn.juge1]+') et Juge 2 (M14='+FL[sdn.juge2]+') forment une paire d\'équilibre — nul par opposition';
@@ -12099,11 +12175,28 @@ function getVerdictAfficheReel(theme, favorite) {
   var protocoleR1R7 = comparerBouclesAntagonistesR1R7(theme);
   var structureNul = structureDuNul(theme);
   var nulAxe = (typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(theme) : null;
-  var nulActif = !!(structureNul.nulDetecte || (nulAxe && nulAxe.confirmed));
+  // Structure du Nul débranchée du verdict (24/08/26) — cf.
+  // STRUCTURE_NUL_DECISIVE. Seul l'Axe Succédent peut encore imposer le nul.
+  var nulActif = !!((STRUCTURE_NUL_DECISIVE && structureNul.nulDetecte) || (nulAxe && nulAxe.confirmed));
   var protocoleWinner = protocoleR1R7.applicable && !nulActif
     ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
     : null;
-  var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, protocoleWinner, undefined, true);
+  // ALIGNÉ SUR L'AFFICHAGE (24/08/26) : cette fonction doit renvoyer CE QUI
+  // EST MONTRÉ À L'ÉCRAN — c'est elle qui alimente addToHistory() et
+  // compareWithReality(). Depuis que la lecture des sièges est le moteur
+  // décisif de renderTheme(), elle doit primer ici aussi, sinon l'archive
+  // et l'auto-validation porteraient sur un verdict que l'utilisateur n'a
+  // jamais vu (exactement le bug d'archive corrigé le 20/08/26).
+  // Repli identique à renderTheme : réseau, puis protocole.
+  var sieges = lectureSiegesR1R7(theme);
+  var siegesWinner = !nulActif && sieges.applicable && sieges.winner ? sieges.winner : null;
+  var reseauAff = null;
+  try {
+    var rz = analyserReseauAncrageV2(theme);
+    reseauAff = !nulActif && rz.winner && rz.winner !== 'Nul' ? rz.winner : null;
+  } catch(e) { reseauAff = null; }
+  var winnerOverride = siegesWinner || reseauAff || protocoleWinner;
+  var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
   // (voir commentaire "VIA EN M4" plus haut) -> goals[0]=camp M1, goals[1]=camp M7.
@@ -12225,9 +12318,14 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   .tek{font-family:inherit;color:#e5e7eb}.tek *{box-sizing:border-box}.tek-head{font-size:25px;font-weight:900;text-align:center;margin:0 0 6px;color:#dbeafe}.tek-head span{font-size:12px;color:#a78bfa}.tek-sub{text-align:center;color:#94a3b8;font-size:11px;margin-bottom:12px}.tek-hero{display:grid;grid-template-columns:1.02fr .98fr;gap:12px}.tek-winner{border:1px solid #22c55e;border-radius:13px;padding:16px;background:linear-gradient(135deg,rgba(20,83,45,.28),rgba(7,17,31,.96));text-align:center}.tek-winner.warn{border-color:#f59e0b}.tek-cap{font-size:12px;font-weight:900;color:#4ade80;letter-spacing:.08em}.tek-name{font-size:29px;line-height:1.08;font-weight:950;color:#4ade80;margin:6px 0}.tek-winner.warn .tek-name{color:#fbbf24}.tek-score{font-size:20px;font-weight:900;color:#dbeafe}.tek-stats{border:1px solid #334155;border-radius:13px;background:#07111f;padding:12px}.tek-stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgba(148,163,184,.11);font-size:12px}.tek-stat:last-of-type{border-bottom:0}.tek-note{color:#7dd3fc;font-size:12px;font-weight:800;margin-top:8px}.tek-credit{margin-top:10px;border:1px solid #22c55e;border-radius:10px;padding:8px;text-align:center}.tek-credit .num{font-size:28px;font-weight:950;color:#4ade80}.tek-section{margin-top:11px;border:1px solid #243b63;border-radius:13px;background:rgba(2,8,23,.58);padding:11px}.tek-title{font-size:17px;font-weight:950;text-align:center;color:#c4b5fd;margin-bottom:10px}.tek-camps{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tek-camp{border:1px solid #2563eb;border-radius:11px;background:#06101d;padding:11px}.tek-camp.r7{border-color:#b45309}.tek-camp h4{margin:0 0 5px;font-size:16px;color:#60a5fa}.tek-camp.r7 h4{color:#fb923c}.tek-meta{font-size:11px;color:#cbd5e1;line-height:1.55}.tek-bigscore{font-size:27px;font-weight:950;text-align:center;margin:8px 0;color:#60a5fa}.tek-camp.r7 .tek-bigscore{color:#fb923c}.tek-progress{height:22px;border:1px solid #334155;border-radius:6px;display:flex;overflow:hidden;margin-top:9px}.tek-progress div{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}.tek-tables{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.tek-tablebox{border:1px solid #1e4f83;border-radius:10px;overflow:hidden;background:#06101d}.tek-tablebox.r7{border-color:#7c4a13}.tek-tablebox h5{margin:0;padding:9px;color:#60a5fa;font-size:14px}.tek-tablebox.r7 h5{color:#fb923c}.tek-table{width:100%;border-collapse:collapse;font-size:10.5px}.tek-table th,.tek-table td{padding:6px 5px;border-bottom:1px solid rgba(148,163,184,.13);text-align:left}.tek-table th{color:#93c5fd}.tek-tablebox.r7 th{color:#fb923c}.tek-table td:last-child,.tek-table th:last-child{text-align:right}.tek-total{display:flex;justify-content:space-between;padding:9px;font-size:17px;font-weight:950}.tek-verdict{margin-top:10px;border:1px solid #475569;border-radius:11px;background:linear-gradient(90deg,rgba(30,41,59,.78),rgba(15,23,42,.9));padding:12px}.tek-verdictgrid{display:grid;grid-template-columns:145px 1fr;gap:12px;align-items:center}.tek-scale{text-align:center}.tek-scale .symbol{font-size:38px}.tek-scale b{font-size:13px}.tek-final{font-size:22px;font-weight:950;color:#4ade80}.tek-gap{color:#facc15;font-weight:900;margin-top:3px}.tek-list{font-size:10.5px;line-height:1.5;margin:7px 0 0 18px}.tek-null{border-color:#334155}.tek-null-grid{display:grid;grid-template-columns:.9fr 1.35fr .75fr;gap:9px}.tek-box{border:1px solid #334155;border-radius:9px;background:#08111f;padding:9px}.tek-box h5{margin:0 0 7px;color:#c4b5fd;font-size:13px}.tek-kv{display:flex;justify-content:space-between;gap:7px;padding:6px 2px;border-bottom:1px solid rgba(148,163,184,.1);font-size:10.5px}.tek-kv:last-child{border-bottom:0}.tek-nullstatus{height:100%;min-height:125px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid '+nullColor+';border-radius:9px;color:'+nullColor+'}.tek-nullstatus .ico{font-size:32px}.tek-nullstatus b{font-size:15px}.tek-bottom{display:grid;grid-template-columns:120px 1fr 1.35fr;gap:9px;align-items:stretch}.tek-bottom .box{border:1px solid #334155;border-radius:9px;padding:10px;background:#08111f}.tek-bottom .big{font-size:31px;font-weight:950;color:#4ade80;text-align:center}.tek-bottom p{margin:0;font-size:11px;line-height:1.5}.tek-mobile-only{display:none}@media(max-width:700px){.tek-hero,.tek-camps,.tek-tables,.tek-null-grid,.tek-bottom,.tek-verdictgrid{grid-template-columns:1fr}.tek-head{font-size:21px}.tek-name{font-size:25px}.tek-tables{display:grid}.tek-mobile-only{display:block}.tek-table{font-size:10px}.tek-table th,.tek-table td{padding:5px}.tek-nullstatus{min-height:105px}}\
   </style>';
   html+='<div class="tek" data-protocole-r1r7="1">';
-  html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— Basé sur le Réseau d\'ancrage V2</span></div>';
+  html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Réseau d\'ancrage V2')+'</span></div>';
+  if (card && card.siegesSynthese) {
+    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#0d2b1f; border:1px solid #22c55e; font-size:12px; color:#e2e8f0;">🪑 <b>Lecture des sièges (décisif)</b> : '+esc(card.siegesSynthese)+'</div>';
+  }
   if (card && card.reseauSynthese) {
-    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#241a33; border:1px solid #8E5FC7; font-size:12px; color:#e2e8f0;">🕸️ <b>Réseau d\'ancrage (décisif)</b> : '+card.reseauSynthese+'</div>';
+    var reseauRole = card.siegesWinner ? 'comparaison' : 'décisif — repli';
+    var reseauAccord = card.accordReseau ? ' — <span style="color:#4ade80;">accord ✅</span>' : card.desaccordReseau ? ' — <span style="color:#f87171;">désaccord ⚠️</span>' : '';
+    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#241a33; border:1px solid #8E5FC7; font-size:12px; color:#e2e8f0;">🕸️ <b>Réseau d\'ancrage ('+reseauRole+')</b> : '+card.reseauSynthese+reseauAccord+'</div>';
     if (card.protocoleWinnerCompare) {
       html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#111a2e; border:1px solid #334155; font-size:11.5px; color:#94a3b8;">📋 Protocole officiel (comparaison) : <b>'+esc(card.protocoleWinnerCompare)+'</b>'+(card.accordProtocole?' — <span style="color:#4ade80;">accord ✅</span>' : card.desaccordProtocole?' — <span style="color:#f87171;">désaccord ⚠️</span>' : '')+'</div>';
     }
@@ -12639,7 +12737,9 @@ function renderTheme(){
     const protocoleR1R7 = comparerBouclesAntagonistesR1R7(currentTheme);
     const structureNulTop = structureDuNul(currentTheme);
     const nulAxeTop = (typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(currentTheme) : null;
-    const nulActifTop = !!(structureNulTop.nulDetecte || (nulAxeTop && nulAxeTop.confirmed));
+    // Structure du Nul débranchée du verdict (24/08/26) — cf.
+    // STRUCTURE_NUL_DECISIVE. Elle ne suspend plus le protocole ni le réseau.
+    const nulActifTop = !!((STRUCTURE_NUL_DECISIVE && structureNulTop.nulDetecte) || (nulAxeTop && nulAxeTop.confirmed));
     const protocoleWinner = protocoleR1R7.applicable && !nulActifTop
       ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
       : null;
@@ -12655,20 +12755,34 @@ function renderTheme(){
     const reseauWinnerTop = !nulActifTop && reseauTop.winner && reseauTop.winner !== 'Nul'
       ? reseauTop.winner
       : null;
-    const nulActifReseauTop = nulActifTop || reseauTop.winner === 'Nul';
-    // CORRIGÉ (21/08/26) : le réseau d'ancrage V2 est désormais le
-    // moteur DÉCISIF du panneau principal (demande explicite
-    // Ellemine_D). Le protocole officiel reste calculé et affiché juste
-    // en dessous comme repli/comparaison, mais ne pilote plus le
-    // vainqueur affiché en tête.
-    const rWinnerOverride = reseauWinnerTop;
+    // ─── RÈGLE ELLEMINE (24/08/26) : LECTURE DES SIÈGES = MOTEUR DÉCISIF ───
+    // Le Réseau d'ancrage cède la priorité à la lecture directe des deux
+    // sièges R1/R7 (cf. lectureSiegesR1R7). Motif : sur le cas réel 6-1,
+    // le réseau donnait R7 sur son score de résidence (8 contre 4,5) alors
+    // que les sièges annonçaient R1 avec « buts élevés · victoire A
+    // possible » contre « buts modérés · nul/bascule ». Le score de
+    // résidence mesure l'installation d'une figure, pas l'issue du match.
+    // Le réseau reste calculé et affiché juste en dessous, en comparaison,
+    // et sert de repli quand les deux sièges sont strictement équivalents
+    // (~10% des thèmes).
+    const siegesTop = lectureSiegesR1R7(currentTheme);
+    const siegesWinnerTop = !nulActifTop && siegesTop.applicable && siegesTop.winner
+      ? siegesTop.winner
+      : null;
+    const nulActifReseauTop = nulActifTop || (!siegesWinnerTop && reseauTop.winner === 'Nul');
+    const rWinnerOverride = siegesWinnerTop || reseauWinnerTop;
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
-    carteR.sourceDecisive = 'Réseau d\'ancrage V2';
+    carteR.siegesSynthese = siegesTop.applicable ? siegesTop.synthese : null;
+    carteR.siegesWinner = siegesWinnerTop;
+    carteR.reseauWinnerCompare = reseauWinnerTop;
+    carteR.accordReseau = !!(siegesWinnerTop && reseauWinnerTop && siegesWinnerTop === reseauWinnerTop);
+    carteR.desaccordReseau = !!(siegesWinnerTop && reseauWinnerTop && siegesWinnerTop !== reseauWinnerTop);
+    carteR.sourceDecisive = siegesWinnerTop ? 'Lecture des sièges R1/R7' : 'Réseau d\'ancrage V2 (repli — sièges équivalents)';
     carteR.reseauSynthese = reseauTop.synthese;
     carteR.nulActifReseau = nulActifReseauTop;
     carteR.protocoleWinnerCompare = protocoleWinner;
-    carteR.accordProtocole = !!(protocoleWinner && reseauWinnerTop && protocoleWinner === reseauWinnerTop);
-    carteR.desaccordProtocole = !!(protocoleWinner && reseauWinnerTop && protocoleWinner !== reseauWinnerTop);
+    carteR.accordProtocole = !!(protocoleWinner && rWinnerOverride && protocoleWinner === rWinnerOverride);
+    carteR.desaccordProtocole = !!(protocoleWinner && rWinnerOverride && protocoleWinner !== rWinnerOverride);
     // SUPPRIMÉ (21/08/26, focalisation sur un seul moteur) : la bannière
     // de contradiction contre jugementReseauR1R7 (Réseau d'ancrage V1,
     // supprimé) faisait doublon avec accordProtocole/desaccordProtocole
