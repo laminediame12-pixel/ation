@@ -4443,6 +4443,70 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // dimensions (profilFigureMaison), et X est pesée pour savoir de quel
 // côté elle penche.
 // ═══════════════════════════════════════════════════════════════
+// ─── RÈGLE ELLEMINE (24/08/26) : LA SOLIDITÉ DE LA CHAÎNE PRIME ───
+// « la solidité de la chaîne prime sur la force d'installation ».
+// La force d'installation (concordance, déplacement, multiplicité) dit à
+// quel point une figure est bien LOGÉE. Elle ne dit rien de ce qu'elle
+// produit : sur le cas réel 6-1, Conjunctio était la mieux installée et
+// Puer a gagné. Ce qui distinguait vraiment les deux camps, c'est que la
+// chaîne de protection de Puer tenait EN BASE aux deux maillons, quand
+// celle de Conjunctio avait son front en résultante.
+//
+// Les deux maillons alliés de la chaîne sont exactement les deux autres
+// pôles de la doctrine : le PROTECTEUR (neutralise l'antagoniste direct)
+// et la FIGURE DE FRONT (protège le protecteur de sa propre menace).
+// Un maillon en base est ancré ; en résultante seule il est fragile ;
+// absent, la chaîne est percée.
+// ⚠️ Barème proposé, calé sur un seul cas réel — à revoir dès qu'un
+// résultat le contredit.
+// Barème : la présence EN BASE est catégoriquement plus forte qu'en
+// résultante — deux résultantes ne valent jamais une base. Les
+// occurrences supplémentaires ne font qu'épaissir un ancrage déjà acquis.
+// Le FRONT pèse plus que le protecteur : c'est le maillon le plus avancé,
+// celui qui reçoit la menace avant qu'elle ne se propage vers le chef —
+// et c'est lui qu'Ellemine_D a singularisé en énonçant la règle
+// (« fig de front, son absence pénalise la fig qui elle devrait être
+// front »). Sur les deux cas réels connus, le camp dont le FRONT tient en
+// base a gagné, y compris quand les deux chaînes étaient par ailleurs
+// des images miroir (thème Puella/Via/Conjonctio/Via).
+// ⚠️ Calé sur n = 2. Deux points de données pour deux paramètres : ce
+// réglage peut n'être qu'une coïncidence, à réviser au prochain résultat.
+var POIDS_CHAINE_V7 = {
+  ancre: 3,          // maillon présent en base : ancrage acquis
+  renfort: 1,        // chaque base supplémentaire
+  resultante: 0.5,   // appoint d'une résultante quand la base est déjà là
+  resSeule: 1,       // maillon présent en résultante seulement
+  maillonAbsent: -3, // maillon manquant — chaîne percée
+  poidsFront: 1.5    // le front pèse plus que le protecteur
+};
+
+function soliditeChaineV7(fig, theme) {
+  if (!fig) return null;
+  function maillon(f, role, poids) {
+    const occ = f ? trouverFigV7(f, theme) : [];
+    const nbBase = occ.filter(function(o){ return !o.hidden; }).length;
+    const nbRes  = occ.filter(function(o){ return  o.hidden; }).length;
+    let brut;
+    if (nbBase) brut = POIDS_CHAINE_V7.ancre + (nbBase - 1) * POIDS_CHAINE_V7.renfort + nbRes * POIDS_CHAINE_V7.resultante;
+    else if (nbRes) brut = POIDS_CHAINE_V7.resSeule + (nbRes - 1) * POIDS_CHAINE_V7.resultante;
+    else brut = POIDS_CHAINE_V7.maillonAbsent;
+    return {role: role, fig: f, nbBase: nbBase, nbResultante: nbRes,
+      present: occ.length > 0, enBase: nbBase > 0,
+      brut: Math.round(brut * 100) / 100, score: Math.round(brut * poids * 100) / 100};
+  }
+  const mProt  = maillon(PROTECTEURS_V7[fig], 'protecteur', 1);
+  const mFront = maillon(FRONT_V7[fig], 'front', POIDS_CHAINE_V7.poidsFront);
+  const total = Math.round((mProt.score + mFront.score) * 100) / 100;
+  return {
+    fig: fig, maillons: [mProt, mFront],
+    total: total,
+    toutEnBase: mProt.enBase && mFront.enBase,
+    perce: !mProt.present || !mFront.present,
+    resume: 'protecteur ' + (mProt.present ? (mProt.nbBase + ' base / ' + mProt.nbResultante + ' rés.') : 'ABSENT')
+      + ' · front ' + (mFront.present ? (mFront.nbBase + ' base / ' + mFront.nbResultante + ' rés.') : 'ABSENT')
+  };
+}
+
 function penchantFigureX(X, figR1, figR7, theme) {
   if (!X) return {X: null, penche: null, raisons: []};
   const raisons = [];
@@ -4494,20 +4558,43 @@ function analyseAncrageDeveloppe(theme) {
 
   const penchantX = penchantFigureX(X, figR1, figR7, theme);
 
-  // Bilan de camp : chaque chef porte son propre profil, plus le soutien
-  // de son binôme, moins la pression de son antagoniste. Les profils sont
-  // ceux de la meilleure position occupée (0 si la figure est absente).
+  // ─── HIÉRARCHIE DE DÉPARTAGE (24/08/26, règle Ellemine_D) ───
+  // « la solidité de la chaîne prime sur la force d'installation ».
+  // 1. Solidité de chaîne (protecteur + front, base > résultante)
+  // 2. À égalité seulement : force d'installation, chef + binôme −
+  //    antagoniste, sur les six dimensions du profil.
+  // La force d'installation reste calculée et exposée — elle n'est plus
+  // décisive, elle départage.
+  const chaineR1 = soliditeChaineV7(figR1, theme);
+  const chaineR7 = soliditeChaineV7(figR7, theme);
+
   function val(m) { return m && m.soi && m.soi.meilleur ? m.soi.meilleur.total : 0; }
-  const bilanR1 = val(membres.R1) + val(membres.binomeR1) - val(membres.antagoR1);
-  const bilanR7 = val(membres.R7) + val(membres.binomeR7) - val(membres.antagoR7);
+  const installR1 = val(membres.R1) + val(membres.binomeR1) - val(membres.antagoR1);
+  const installR7 = val(membres.R7) + val(membres.binomeR7) - val(membres.antagoR7);
+
+  let avantage = null, critere;
+  if (chaineR1.total !== chaineR7.total) {
+    avantage = chaineR1.total > chaineR7.total ? 'R1' : 'R7';
+    critere = 'solidité de chaîne (' + chaineR1.total + ' contre ' + chaineR7.total + ')';
+  } else if (installR1 !== installR7) {
+    avantage = installR1 > installR7 ? 'R1' : 'R7';
+    critere = 'chaînes équivalentes (' + chaineR1.total + ') — départage par la force d\'installation ('
+      + Math.round(installR1 * 10) / 10 + ' contre ' + Math.round(installR7 * 10) / 10 + ')';
+  } else {
+    critere = 'chaînes et installations équivalentes — aucun départage';
+  }
 
   return {
     applicable: true,
     hR1: rot.hR1, hR7: rot.hR7, figR1: figR1, figR7: figR7, X: X,
     membres: membres, penchantX: penchantX,
-    bilanR1: Math.round(bilanR1 * 100) / 100,
-    bilanR7: Math.round(bilanR7 * 100) / 100,
-    avantage: bilanR1 > bilanR7 ? 'R1' : bilanR7 > bilanR1 ? 'R7' : null
+    chaineR1: chaineR1, chaineR7: chaineR7,
+    installR1: Math.round(installR1 * 100) / 100,
+    installR7: Math.round(installR7 * 100) / 100,
+    avantage: avantage, critere: critere,
+    synthese: 'R1 ' + FL[figR1] + ' — chaîne ' + chaineR1.total + ' (' + chaineR1.resume + ') · '
+      + 'R7 ' + FL[figR7] + ' — chaîne ' + chaineR7.total + ' (' + chaineR7.resume + ') → '
+      + (avantage ? 'avantage ' + avantage : 'égalité') + ' par ' + critere + '.'
   };
 }
 
