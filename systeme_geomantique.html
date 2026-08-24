@@ -1796,23 +1796,23 @@ function convertHostTheme(hostTheme){
 }
 
 window.__geomtxOnHostTheme = function(hostTheme){
-  // Garde de réentrance (correctif) : renderTheme() notifie elle-même
-  // __geomtxOnHostTheme après chaque rendu (voir le crochet plus bas dans
-  // le fichier) — sans ce garde-fou, hôte -> renderTheme() -> hôte -> ...
-  // bouclerait indéfiniment (Maximum call stack size exceeded).
-  if(!hostTheme || window.__geomtxSyncing) return;
+  // CORRIGÉ (régression du 24/08/26) : un précédent correctif faisait
+  // pointer cet appel sur currentTheme + la renderTheme() globale du
+  // pipeline verdict (script suivant) — celle-ci attend des codes en
+  // minuscules ('puer', 'fortuna_minor', ...), alors que
+  // convertHostTheme() traduit vers la convention capitalisée propre à
+  // CE panneau (GLYPHS, MAP_GEO locaux : "Puer", "Fortuna minor", ...).
+  // Injecter le thème converti dans currentTheme cassait donc le verdict
+  // principal (FL[...] undefined, "Cannot read properties of undefined
+  // (reading '0')") à chaque rendu, puisque le crochet plus bas dans le
+  // fichier appelle déjà window.__geomtxOnHostTheme(currentTheme) après
+  // CHAQUE renderTheme(). Restauré : on alimente uniquement le panneau
+  // de référence local (renderThemeLegacyWidgets), jamais currentTheme.
+  if(!hostTheme) return;
   try{
-    window.__geomtxSyncing = true;
-    // CORRIGÉ (redéclaration renderTheme) : renderTheme() n'accepte plus de
-    // paramètre depuis la réécriture du pipeline verdict — elle lit
-    // désormais currentTheme. On l'alimente donc explicitement avant de
-    // déclencher le rendu complet.
-    currentTheme = convertHostTheme(hostTheme);
-    renderTheme();
+    renderThemeLegacyWidgets(convertHostTheme(hostTheme));
   }catch(err){
     console.error('geomtx: erreur de conversion du theme hote', err);
-  }finally{
-    window.__geomtxSyncing = false;
   }
 };
 
@@ -12089,12 +12089,6 @@ function analyzeTheme(theme){
 }
 function renderTheme(){
   if(!currentTheme) return;
-  // CORRIGÉ (redéclaration renderTheme) : ces effets (surlignage matrice,
-  // widget M1/M7, carré géomantique, sync UI de référence, fermeture auto
-  // du panneau force planétaire) vivaient dans une ancienne renderTheme(theme)
-  // totalement écrasée par cette fonction-ci — isolé pour ne jamais bloquer
-  // le pipeline verdict principal en cas d'erreur.
-  try { renderThemeLegacyWidgets(currentTheme); } catch(e) { console.error('renderThemeLegacyWidgets error', e); }
   clearHouseRelationColors();
   const team1=document.getElementById('team1').value||'Équipe 1';
   const team2=document.getElementById('team2').value||'Équipe 2';
@@ -14188,10 +14182,7 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
     var _geomtxOrigRenderTheme = renderTheme;
     renderTheme = function(){
       _geomtxOrigRenderTheme();
-      // Garde de réentrance (correctif) : évite la boucle renderTheme() ->
-      // __geomtxOnHostTheme -> renderTheme() -> ... quand c'est
-      // __geomtxOnHostTheme elle-même qui a déclenché ce rendu.
-      if(typeof currentTheme !== 'undefined' && currentTheme && !window.__geomtxSyncing){
+      if(typeof currentTheme !== 'undefined' && currentTheme){
         window.__geomtxOnHostTheme(currentTheme);
       }
     };
