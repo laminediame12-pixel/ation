@@ -4221,6 +4221,23 @@ function analyserResistanceV7(X, theme) {
   const protecteurPresent = protecteurOcc.length > 0;
   const protecteurEnBase = protecteurOcc.some(function(o){ return !o.hidden; });
   const protecteurEnResultanteSeule = protecteurPresent && !protecteurEnBase;
+
+  // TROISIÈME PÔLE — FIGURE DE FRONT (24/08/26, doctrine Ellemine_D, voir
+  // FRONT_V7 ci-dessous pour la chaîne complète). Le protecteur a lui-même
+  // un antagoniste — une seconde menace, cette fois sur le protecteur. La
+  // figure de front (antagoniste de cette seconde menace, = FRONT_V7[X])
+  // neutralise cette menace et sécurise la chaîne de protection jusqu'au
+  // bout. Sans elle, si la menace sur le protecteur est présente dans le
+  // thème, le protecteur peut lui-même être détruit — la voie A n'est
+  // donc fiable que si cette seconde menace est absente OU neutralisée
+  // par le front. Exemple : Puer ← Puella (menace) ← Conjonctio
+  // (protecteur) ← Tristitia (menace sur le protecteur) ← Via (front).
+  const menaceProtecteur = protecteur ? ANTAGONISTES_V7[protecteur] : null;
+  const front = FRONT_V7[X];
+  const menaceProtecteurPresent = menaceProtecteur ? trouverFigV7(menaceProtecteur, theme).length > 0 : false;
+  const frontPresent = front ? trouverFigV7(front, theme).length > 0 : false;
+  const protecteurMenace = menaceProtecteurPresent && !frontPresent;
+
   const reposHouse = FIGS_V7.indexOf(X) + 1;
   const enRepos = theme[reposHouse] === X;
   const bin1 = BINOMES_V7[X];
@@ -4228,13 +4245,19 @@ function analyserResistanceV7(X, theme) {
   const bin1Present = trouverFigV7(bin1, theme).length > 0;
   const bin2Present = trouverFigV7(bin2, theme).length > 0;
   const voieB = enRepos && bin1Present && bin2Present;
-  const voieA = antagonistePresent && protecteurPresent;
+  const voieA = antagonistePresent && protecteurPresent && !protecteurMenace;
   const libre = !antagonistePresent;
   const statut = libre ? 'libre' : (voieA || voieB) ? 'protégé' : 'vulnérable';
-  const voieActive = voieA && voieB ? 'A+B' : voieA ? 'A (protecteur' + (protecteurEnResultanteSeule ? ', en résultante seule' : '') + ')' : voieB ? 'B (repos+binômes)' : null;
+  const voieALabel = 'A (protecteur'
+    + (protecteurEnResultanteSeule ? ', en résultante seule' : '')
+    + (menaceProtecteurPresent ? ', sécurisé par la figure de front' : '')
+    + ')';
+  const voieActive = voieA && voieB ? voieALabel + '+B' : voieA ? voieALabel : voieB ? 'B (repos+binômes)' : null;
   return {fig: X, antagoniste: antagoniste, protecteur: protecteur,
     antagonistePresent: antagonistePresent, protecteurPresent: protecteurPresent,
     protecteurEnResultanteSeule: protecteurEnResultanteSeule,
+    menaceProtecteur: menaceProtecteur, menaceProtecteurPresent: menaceProtecteurPresent,
+    front: front, frontPresent: frontPresent, protecteurMenace: protecteurMenace,
     enRepos: enRepos, bin1: bin1, bin2: bin2, bin1Present: bin1Present, bin2Present: bin2Present,
     voieA: voieA, voieB: voieB, voieActive: voieActive, statut: statut};
 }
@@ -4446,12 +4469,23 @@ function renderReseauAncrageV2(theme) {
   const a = analyserReseauAncrageV2(theme);
 
   function ligneResistance(label, r, couleur) {
+    // La figure de front n'est affichée que quand elle est pertinente :
+    // le protecteur est présent mais sa propre menace (antagoniste du
+    // protecteur) l'est aussi — c'est le seul cas où le front peut faire
+    // basculer voieA (protégé si front présent, vulnérable sinon).
+    const frontTxt = r.protecteurPresent && r.menaceProtecteurPresent
+      ? ' · figure de front ' + FL[r.front] + (r.frontPresent
+          ? ' (présente — sécurise ' + FL[r.protecteur] + ' contre ' + FL[r.menaceProtecteur] + ')'
+          : ' (ABSENTE — ' + FL[r.menaceProtecteur] + ' menace ' + FL[r.protecteur] + ' sans opposition)')
+      : '';
     const voieTxt = r.statut === 'libre' ? 'rien ne la menace'
       : r.statut === 'protégé' ? 'protégée — voie ' + r.voieActive
+      : r.protecteurMenace ? 'vulnérable — protecteur présent mais menacé, figure de front absente'
       : 'vulnérable, aucune voie de résistance active';
     return '<div style="font-size:11px; margin-bottom:3px;">'
       + '<b style="color:' + couleur + ';">' + label + ' (' + FL[r.fig] + ')</b> — antagoniste ' + FL[r.antagoniste] + (r.antagonistePresent ? ' (présent)' : ' (absent)')
       + ' · protecteur ' + FL[r.protecteur] + (r.protecteurPresent ? ' (présent)' : ' (absent)')
+      + frontTxt
       + ' · repos ' + (r.enRepos ? 'oui' : 'non') + ' · binômes ' + FL[r.bin1] + '/' + FL[r.bin2] + ' ' + (r.bin1Present && r.bin2Present ? '(chaîne complète)' : '(incomplète)')
       + ' → <b>' + voieTxt + '</b></div>';
   }
@@ -4461,7 +4495,7 @@ function renderReseauAncrageV2(theme) {
   const j = a.filtreJuge;
 
   el.innerHTML = '<h3 style="margin-bottom:2px;">🕸️ Réseau d\'ancrage — analyse complète</h3>'
-    + '<div class="muted" style="font-size:11px; margin-bottom:10px;">Doctrine complète Ellemine_D (21/08/26) : résistance par chaîne, confrontation directe, pivot de neutralisation, filtre M15/M16. 📚 étude, non validée, aucun poids sur verdictFinal.</div>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:10px;">Doctrine complète Ellemine_D (21/08/26, figure de front ajoutée le 24/08/26) : résistance par chaîne (protecteur + figure de front), confrontation directe, pivot de neutralisation, filtre M15/M16. 📚 étude, moteur décisif du panneau principal (cf. renderTheme).</div>'
     + '<div style="font-size:12px; margin-bottom:8px;">Mode : <b>' + (a.memeBoucle ? 'MÊME BOUCLE' : 'BOUCLES DIFFÉRENTES') + '</b></div>'
     + '<div style="border:1px solid #334155; border-radius:8px; padding:10px; margin-bottom:10px;">'
       + '<div style="font-weight:700; font-size:12px; margin-bottom:6px; color:#f1f5f9;">① Résistance des deux ancrages</div>'
@@ -5600,6 +5634,35 @@ FIGS_V7.forEach(function(fig, i) {
 const PROTECTEURS_V7 = {};
 FIGS_V7.forEach(function(fig, i) {
   PROTECTEURS_V7[fig] = FIGS_V7[(i + 10) % 16];
+});
+
+// ─── RÈGLE ELLEMINE (24/08/26) : FIGURE DE FRONT — TROISIÈME PÔLE ───
+// Doctrine utilisateur, donnée sous forme de chaîne causale (« qui détruit
+// qui ») : X a un antagoniste direct qui le menace ; le protecteur de X
+// (antagoniste de cet antagoniste) neutralise cette menace ; mais le
+// protecteur a lui-même un antagoniste — une seconde menace, cette fois
+// sur le protecteur ; la FIGURE DE FRONT (antagoniste de cette seconde
+// menace) neutralise CETTE menace, ce qui sécurise la chaîne jusqu'au
+// bout. Exemple donné (chaîne « détruit ») : Via détruit Tristitia,
+// Tristitia détruit Conjonctio, Conjonctio détruit Puella, Puella détruit
+// Puer — donc Puer ← Puella (menace) ← Conjonctio (protecteur) ←
+// Tristitia (menace sur le protecteur) ← Via (figure de front).
+// Formule (chaîne à 4 crans d'antagonisme, vérifiée sur les exemples ET
+// sur les 16 figures) : front(X) = antagoniste⁴(X) = protecteur(protecteur(X)) = X + 4.
+// Comme 4 est pair, le front reste TOUJOURS dans la même boucle. Les 16
+// figures se répartissent en 4 quatuors fermés sous cette relation, un
+// par élément : le front occupe toujours une maison de repos du MÊME
+// élément que X (le protecteur occupe l'élément OPPOSÉ — feu↔eau,
+// air↔terre, cf. neutralisationElementaireR1R7).
+// Utilisée par analyserResistanceV7 ci-dessous : la voie A (protection
+// par le protecteur) n'est fiable que si la seconde menace sur le
+// protecteur est neutralisée par le front — voir ce commentaire pour le
+// câblage réel dans le Réseau d'ancrage V2.
+// 📚 Doctrine nouvelle, vérifiée structurellement sur les 16 figures —
+// pas encore contre-testée sur l'archive de résultats réels.
+const FRONT_V7 = {};
+FIGS_V7.forEach(function(fig, i) {
+  FRONT_V7[fig] = FIGS_V7[(i + 4) % 16];
 });
 
 const ELEMENTS_V7 = {
@@ -9727,6 +9790,14 @@ function renderElementaireR1R7(theme){
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
+// RETIRÉ (24/08/26) : un premier essai avait branché la figure de front
+// comme pénalité additive dans verdictFamilialEngine, avec un panneau
+// dédié (renderPolesR1R7). Erreur d'aiguillage — verdictFamilialEngine ne
+// pilote plus le vainqueur affiché depuis le 21/08/26 (Réseau d'ancrage V2
+// est le moteur décisif, cf. plus bas). Retiré ; la doctrine est câblée
+// à la bonne place dans analyserResistanceV7 (voie A), affichée dans le
+// panneau existant renderReseauAncrageV2 — pas de panneau séparé.
+
 // ═══════════════════════════════════════════════════════════════
 // PROCÉDURE OFFICIELLE R1/R7 — NIVEAUX + SIGNATURE + NEUTRALISATION
 // Cette couche transforme l'analyse élémentaire en procédure opérationnelle.
@@ -9928,6 +9999,11 @@ function verdictFamilialEngine(theme){
   // réellement au verdict principal, et n'est plus seulement informative.
   const elemR1 = puissanceElementaireR1R7(figR1, hR1, theme);
   const elemR7 = puissanceElementaireR1R7(figR7, hR7, theme);
+  // (24/08/26) La doctrine « trois pôles / figure de front » (FRONT_V7,
+  // cf. ci-dessus) n'est PAS branchée ici : verdictFamilialEngine ne
+  // pilote plus le vainqueur affiché à l'écran depuis le 21/08/26 — c'est
+  // le Réseau d'ancrage V2 (analyserReseauAncrageV2 → analyserResistanceV7)
+  // qui est le moteur décisif. La figure de front y est câblée à la place.
   const netR1 = famR1.net + duelR1.ecart + comparaisonScoreR1 + resR1.score + elemR1.powerScore + relationR1R7.r1.score;
   const netR7 = famR7.net + duelR7.ecart + comparaisonScoreR7 + resR7.score + elemR7.powerScore + relationR1R7.r7.score;
 
