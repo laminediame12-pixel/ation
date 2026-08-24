@@ -1391,8 +1391,16 @@ function renderVerdictM1M7(theme){
   const fig1 = theme[1], fig7 = theme[7];
 
   // R1/R7 = rotation ouverte par la maison de repos naturelle de la figure en M1.
-  // Exemple : Caput Draconis en M1 -> repos M3 -> R1=M3, R7=M9.
-  const orderRot = getRotationOrderFromRepos(fig1);
+  // Exemple : Caput Draconis en M1 -> repos M3 -> R1=M3, R9=M9.
+  // CORRIGÉ (24/08/26) : getRotationOrderFromRepos est le moteur GLOBAL du
+  // script suivant — il résout la maison de repos via FIGS_V7.indexOf(fig)
+  // et attend donc un code en minuscules ('populus'). On lui passait le nom
+  // local capitalisé ("Populus") : indexOf renvoyait -1, la maison de repos
+  // retombait sur 1, et la rotation était TRIVIALE (R1=M1, R7=M7) pour les
+  // 16 figures — vérifié 400/400 tirages. Le widget affichait donc en
+  // permanence « confondue avec M1 — rotation triviale » au lieu de la
+  // vraie rotation (Populus en M1 -> repos M16 -> R1=M16, R7=M6).
+  const orderRot = getRotationOrderFromRepos(OUR_TO_HOST[fig1] || fig1);
   const hR1 = orderRot[0], hR7 = orderRot[6];
   const figR1 = theme[hR1], figR7 = theme[hR7];
 
@@ -1403,7 +1411,7 @@ function renderVerdictM1M7(theme){
   const sR1 = TIER_SCORE[tierR1], sR7 = TIER_SCORE[tierR7];
 
   const baseWinner = s1 > s7 ? 'M1' : (s7 > s1 ? 'M7' : 'égalité');
-  const facteurPlanetaireR = comparerForcePlanetaireR1R7(theme);
+  const facteurPlanetaireR = comparerForcePlanetaireR1R7(theme, hR1, hR7);
   const scorePlanR1 = sR1 + facteurPlanetaireR.r1.facteur;
   const scorePlanR7 = sR7 + facteurPlanetaireR.r7.facteur;
   const resWinner = scorePlanR1 > scorePlanR7 ? 'R1' : (scorePlanR7 > scorePlanR1 ? 'R7' : 'égalité');
@@ -1793,6 +1801,56 @@ function convertHostTheme(hostTheme){
     t[m] = HOST_TO_OUR[code] || code;
   }
   return t;
+}
+
+// AJOUTÉ (24/08/26) : comparerForcePlanetaireR1R7 était appelée par
+// renderVerdictM1M7 mais n'existait NULLE PART dans le fichier — chaque
+// rendu du panneau de référence levait un ReferenceError, avalé par le
+// try/catch du pont geomtx, si bien que le widget M1/M7 restait vide en
+// permanence (panne silencieuse, jamais visible en console sans ouvrir
+// les outils de développement).
+// Elle relit la force planétaire du moteur principal
+// (calculerForcePlanetaireMaison) au lieu de dupliquer la doctrine ; il
+// faut donc retraduire le thème local (convention capitalisée "Puer",
+// "Fortuna minor") vers les codes attendus par ce moteur ('puer',
+// 'fortuna_minor').
+const OUR_TO_HOST = {};
+Object.keys(HOST_TO_OUR).forEach(function(code){ OUR_TO_HOST[HOST_TO_OUR[code]] = code; });
+
+function toHostTheme(theme){
+  const t = {};
+  for(let m=1;m<=16;m++){ t[m] = OUR_TO_HOST[theme[m]] || theme[m]; }
+  return t;
+}
+
+// Facteur borné, à l'échelle de TIER_SCORE (0..3) : la force planétaire
+// nuance le repérage sans le dominer. Seuils repris de
+// couleurForcePlanetaire (80/60/40) pour rester cohérent avec le panneau
+// "🪐 Force planétaire".
+function facteurDepuisForcePlanetaire(score){
+  if(score >= 80) return 2;
+  if(score >= 60) return 1;
+  if(score >= 40) return 0;
+  return -1;
+}
+
+// hR1/hR7 sont passées par l'appelant : le widget doit afficher la
+// planète des maisons qu'il désigne lui-même comme R1/R7, jamais d'une
+// rotation recalculée séparément qui pourrait diverger.
+function comparerForcePlanetaireR1R7(theme, hR1, hR7){
+  const vide = {planete:null, force:0, facteur:0};
+  if(typeof calculerForcePlanetaireMaison !== 'function') return {r1:vide, r7:vide};
+  const hostTheme = toHostTheme(theme);
+  function mesurer(h){
+    try{
+      const fp = calculerForcePlanetaireMaison(h, hostTheme);
+      if(!fp) return vide;
+      return {planete:fp.planete, force:fp.score, facteur:facteurDepuisForcePlanetaire(fp.score)};
+    }catch(err){
+      return vide;
+    }
+  }
+  return {r1:mesurer(hR1), r7:mesurer(hR7)};
 }
 
 window.__geomtxOnHostTheme = function(hostTheme){
@@ -9362,6 +9420,78 @@ function puissanceElementaireR1R7(fig, house, theme){
   x.powerScore = x.pouvoirExprime ? 30 : x.pouvoirPartiel ? 15 : x.pouvoirActiveSeul ? 5 : 0;
   x.powerLabel = x.pouvoirExprime ? 'POUVOIR EXPRIMÉ' : x.pouvoirPartiel ? 'POUVOIR ACTIVÉ PARTIELLEMENT' : x.pouvoirActiveSeul ? 'NATURE ACTIVE' : 'POUVOIR NON EXPRIMÉ';
   return x;
+}
+
+// AJOUTÉ (24/08/26) : renderElementaireR1R7 était appelée par renderTheme()
+// mais n'existait NULLE PART dans le fichier — ReferenceError à chaque
+// rendu, avalé par le try/catch de l'appelant (« elementaire R1/R7 error »
+// en console seulement). Son code de nettoyage avait pourtant survécu à la
+// suppression : la branche « abstention » retire encore
+// #sikidy-elementaire-panel, un élément que plus rien ne créait. La couche
+// est donc reconstruite sur ses moteurs existants
+// (puissanceElementaireR1R7 + neutralisationElementaireR1R7) et réinsérée
+// sous ce même id, ce qui redonne son sens au nettoyage existant.
+// Couche de confirmation traçable : elle n'entre PAS dans verdictFinal —
+// elle affiche seulement la lecture élémentaire déjà utilisée par le
+// moteur, à titre de diagnostic.
+function renderElementaireR1R7(theme){
+  const ancien = document.getElementById('sikidy-elementaire-panel');
+  if(ancien) ancien.remove();
+  if(!theme) return;
+
+  const hote = document.getElementById('carte-verdict-r');
+  if(!hote || !hote.parentNode) return;
+
+  const rot = getRotationCombat(theme);
+  const r1 = puissanceElementaireR1R7(rot.figR1, rot.hR1, theme);
+  const r7 = puissanceElementaireR1R7(rot.figR7, rot.hR7, theme);
+  const neutre = neutralisationElementaireR1R7(r1, r7);
+
+  const ELEM_COULEUR = {feu:'#ef4444', air:'#eab308', eau:'#3b82f6', terre:'#94a3b8'};
+  const teinte = e => ELEM_COULEUR[e] || '#94a3b8';
+  const puce = e => '<span style="color:' + teinte(e) + ';">' + (e || '—') + '</span>';
+
+  function colonne(x, titre, couleurTitre){
+    const accord = x.maisonAccordNature
+      ? '<span style="color:#4ade80;">accord figure/maison</span>'
+      : '<span class="muted">pas d\'accord figure/maison</span>';
+    const binome = x.binomePresent
+      ? '<span style="color:#4ade80;">binôme ' + (FL[x.binome] || x.binome) + ' présent</span>'
+      : '<span class="muted">binôme ' + (FL[x.binome] || x.binome || '—') + ' absent</span>';
+    const nature = x.natureActive
+      ? '<span style="color:#4ade80;">active</span>'
+      : (x.naturePassive ? '<span style="color:#fbbf24;">passive</span>' : '<span class="muted">indéterminée</span>');
+    return '<div>'
+      + '<b style="color:' + couleurTitre + ';">' + titre + ' = ' + (FL[x.fig] || x.fig) + ' en M' + x.house + '</b>'
+      + '<div style="margin-top:4px;">Élément figure : ' + puce(x.figureNature) + ' · maison : ' + puce(x.houseNature) + '</div>'
+      + '<div>Charge sur l\'élément de la maison : ' + nature + '</div>'
+      + '<div>' + accord + '</div>'
+      + '<div>' + binome + '</div>'
+      + '<div style="margin-top:4px;"><b>' + x.powerLabel + '</b> (+' + x.powerScore + ')</div>'
+      + '</div>';
+  }
+
+  const reliquat = (liste, camp) => liste.length
+    ? camp + ' conserve ' + liste.map(puce).join(', ')
+    : camp + ' entièrement neutralisé';
+
+  const panneau = document.createElement('div');
+  panneau.id = 'sikidy-elementaire-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #0e7490;';
+  panneau.innerHTML =
+    '<h3 style="margin-bottom:2px;">🜂 Couche élémentaire R1 / R7</h3>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:10px;">Diagnostic de concordance uniquement — cette lecture ne modifie pas le verdict, elle expose la composante élémentaire que le moteur utilise déjà.</div>'
+    + '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px; line-height:1.6;">'
+    + colonne(r1, 'R1', '#60a5fa')
+    + colonne(r7, 'R7', '#fb923c')
+    + '</div>'
+    + '<div style="margin-top:10px; padding:8px; border-top:1px solid rgba(148,163,184,.25); font-size:12px;">'
+    + '<b>Neutralisation croisée</b> (opposition feu↔eau, air↔terre) : '
+    + reliquat(neutre.restA, 'R1') + ' · ' + reliquat(neutre.restB, 'R7')
+    + '</div>';
+
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
 // ═══════════════════════════════════════════════════════════════
