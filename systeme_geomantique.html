@@ -12502,12 +12502,19 @@ function getVerdictAfficheReel(theme, favorite) {
   // Repli identique à renderTheme : réseau, puis protocole.
   var sieges = lectureSiegesR1R7(theme);
   var siegesWinner = !nulActif && sieges.applicable && sieges.winner ? sieges.winner : null;
+  // Même ordre de priorité que renderTheme (24/08/26) : solidité de chaîne
+  // d'abord, puis sièges, puis réseau, puis protocole.
+  var chaineAff = null;
+  try {
+    var anc = analyseAncrageDeveloppe(theme);
+    chaineAff = !nulActif && anc.applicable && anc.avantage ? anc.avantage : null;
+  } catch(e) { chaineAff = null; }
   var reseauAff = null;
   try {
     var rz = analyserReseauAncrageV2(theme);
     reseauAff = !nulActif && rz.winner && rz.winner !== 'Nul' ? rz.winner : null;
   } catch(e) { reseauAff = null; }
-  var winnerOverride = siegesWinner || reseauAff || protocoleWinner;
+  var winnerOverride = chaineAff || siegesWinner || reseauAff || protocoleWinner;
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
@@ -12631,8 +12638,17 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   </style>';
   html+='<div class="tek" data-protocole-r1r7="1">';
   html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Réseau d\'ancrage V2')+'</span></div>';
+  if (card && card.chaineSynthese) {
+    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#0d2b1f; border:1px solid #22c55e; font-size:12px; color:#e2e8f0;">⛓️ <b>Solidité de chaîne (décisif)</b> : '+esc(card.chaineSynthese)+'</div>';
+  }
   if (card && card.siegesSynthese) {
-    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#0d2b1f; border:1px solid #22c55e; font-size:12px; color:#e2e8f0;">🪑 <b>Lecture des sièges (décisif)</b> : '+esc(card.siegesSynthese)+'</div>';
+    var siegesRole = card.chaineWinner ? 'confirmation' : 'décisif — repli';
+    var siegesAccord = card.accordSieges ? ' — <span style="color:#4ade80;">accord ✅</span>'
+      : card.desaccordSieges ? ' — <span style="color:#f87171;">désaccord ⚠️</span>' : '';
+    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#13233a; border:1px solid #38bdf8; font-size:12px; color:#e2e8f0;">🪑 <b>Lecture des sièges ('+siegesRole+')</b> : '+esc(card.siegesSynthese)+siegesAccord+'</div>';
+  }
+  if (card && card.desaccordSieges) {
+    html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#3b1d1d; border:1px solid #f87171; font-size:12px; color:#fecaca;">⚠️ <b>Les deux lectures se contredisent</b> — la chaîne donne <b>'+esc(card.chaineWinner)+'</b>, les sièges <b>'+esc(card.siegesWinner)+'</b>. Cas à noter : leur hiérarchie n\'est pas encore tranchée par les résultats réels (elles divergent sur ~46% des thèmes).</div>';
   }
   if (card && card.reseauSynthese) {
     var reseauRole = card.siegesWinner ? 'comparaison' : 'décisif — repli';
@@ -13081,15 +13097,39 @@ function renderTheme(){
     const siegesWinnerTop = !nulActifTop && siegesTop.applicable && siegesTop.winner
       ? siegesTop.winner
       : null;
-    const nulActifReseauTop = nulActifTop || (!siegesWinnerTop && reseauTop.winner === 'Nul');
-    const rWinnerOverride = siegesWinnerTop || reseauWinnerTop;
+    // ─── RÈGLE ELLEMINE (24/08/26) : SOLIDITÉ DE CHAÎNE = MOTEUR DÉCISIF ───
+    // « branche la solidité de chaîne ». Elle passe devant la lecture des
+    // sièges, qui devient couche de confirmation.
+    // Bilan sur les cas réels connus : chaîne 3/3 sur le camp, dont une
+    // prédiction posée AVANT de connaître le résultat (Tristitia/Via/
+    // Conjonctio/Rubeus, annoncé R1, réel 7-0). Les sièges sont aussi 3/3.
+    // ⚠️ MESURE IMPORTANTE : sur 4000 thèmes tirés au hasard, chaîne et
+    // sièges donnent des vainqueurs DIFFÉRENTS dans 46% des cas. Les trois
+    // accords observés ne prouvent donc presque rien sur leur hiérarchie —
+    // le choix de priorité ci-dessous décide du verdict sur près d'un thème
+    // sur deux, et n'est PAS tranché par les données. Le désaccord est
+    // affiché explicitement sur la carte pour que les cas s'accumulent.
+    const ancrageTop = analyseAncrageDeveloppe(currentTheme);
+    const chaineWinnerTop = !nulActifTop && ancrageTop.applicable && ancrageTop.avantage
+      ? ancrageTop.avantage
+      : null;
+    const nulActifReseauTop = nulActifTop || (!chaineWinnerTop && !siegesWinnerTop && reseauTop.winner === 'Nul');
+    const rWinnerOverride = chaineWinnerTop || siegesWinnerTop || reseauWinnerTop;
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
+    carteR.chaineSynthese = ancrageTop.applicable ? ancrageTop.synthese : null;
+    carteR.chaineWinner = chaineWinnerTop;
+    carteR.chaineCritere = ancrageTop.applicable ? ancrageTop.critere : null;
     carteR.siegesSynthese = siegesTop.applicable ? siegesTop.synthese : null;
     carteR.siegesWinner = siegesWinnerTop;
+    carteR.accordSieges = !!(chaineWinnerTop && siegesWinnerTop && chaineWinnerTop === siegesWinnerTop);
+    carteR.desaccordSieges = !!(chaineWinnerTop && siegesWinnerTop && chaineWinnerTop !== siegesWinnerTop);
     carteR.reseauWinnerCompare = reseauWinnerTop;
-    carteR.accordReseau = !!(siegesWinnerTop && reseauWinnerTop && siegesWinnerTop === reseauWinnerTop);
-    carteR.desaccordReseau = !!(siegesWinnerTop && reseauWinnerTop && siegesWinnerTop !== reseauWinnerTop);
-    carteR.sourceDecisive = siegesWinnerTop ? 'Lecture des sièges R1/R7' : 'Réseau d\'ancrage V2 (repli — sièges équivalents)';
+    carteR.accordReseau = !!(rWinnerOverride && reseauWinnerTop && rWinnerOverride === reseauWinnerTop);
+    carteR.desaccordReseau = !!(rWinnerOverride && reseauWinnerTop && rWinnerOverride !== reseauWinnerTop);
+    carteR.sourceDecisive = nulActifTop ? 'Axe Succédent — nul imposé'
+      : chaineWinnerTop ? 'Solidité de chaîne R1/R7'
+      : siegesWinnerTop ? 'Lecture des sièges (repli — chaînes équivalentes)'
+      : 'Réseau d\'ancrage V2 (repli)';
     carteR.reseauSynthese = reseauTop.synthese;
     carteR.nulActifReseau = nulActifReseauTop;
     carteR.protocoleWinnerCompare = protocoleWinner;
