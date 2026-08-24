@@ -3743,6 +3743,28 @@ function structureDuNul(theme) {
 // Populus → identité; Carcer → L1/L4 impairs; Via → 4 niveaux impairs;
 // Conjunctio → L2/L3 impairs.
 // ═══════════════════════════════════════════════════════════════
+// ─── DÉSACTIVÉ COMME MÉCANISME DÉCISIF (24/08/26, demande Ellemine_D :
+// « les axes, désactive leur effet sur le verdict, ils troublent le
+// calcul ») ───
+// Contre-exemple qui a motivé la décision : thème Tristitia/Via/
+// Conjonctio/Rubeus. L'Axe Succédent s'est confirmé et a imposé le nul,
+// court-circuitant les trois autres couches — qui donnaient toutes R1.
+// Score réel : 7-0. Le nul le plus faux possible sur le match le plus
+// tranché du lot.
+// C'est le second effondrement d'une règle de nul selon le même motif :
+// la Structure du Nul avait imposé le nul sur un 6-1 (voir
+// STRUCTURE_NUL_DECISIVE). Les deux fois, la règle a écrasé des couches
+// qui avaient vu juste.
+// ⚠️ NUANCE À NE PAS PERDRE : contrairement à la Structure du Nul (23%
+// de précision, proche du taux de base de 24%), l'Axe Succédent était le
+// SEUL signal de nul du fichier à dépasser nettement ce taux — validé
+// sur 70 matchs archivés le 05/08/26. Il n'est donc pas retiré ni
+// supprimé : son calcul, son panneau et son diagnostic restent intacts.
+// Seul son pouvoir de décision est coupé, le temps de comprendre quand
+// le nul arrive réellement. Remettre ce drapeau à true restaure
+// exactement l'ancien comportement.
+var AXE_SUCCEDENT_DECISIF = false;
+
 function themeAxeSuccedent(theme) {
   return buildThemeFromMothers(theme[2], theme[5], theme[8], theme[11]);
 }
@@ -4459,6 +4481,53 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // absent, la chaîne est percée.
 // ⚠️ Barème proposé, calé sur un seul cas réel — à revoir dès qu'un
 // résultat le contredit.
+//
+// ═══════════════════════════════════════════════════════════════
+// CAS DE RÉFÉRENCE — RÉSULTATS RÉELS ARCHIVÉS (24/08/26, Ellemine_D)
+// Les trois seuls thèmes de cette session dont le score réel est connu.
+// Toute modification des règles de verdict doit être retestée contre eux.
+//
+//  A. Conjunctio · Rubeus · Cauda Draconis · Acquisitio      RÉEL 6-1 (R1)
+//     R1 = Puer (M11) · R7 = Conjunctio (M1) · même boucle
+//     chaîne 10 vs 9,25 → R1 ✅   sièges 🟧+3 vs 🟨 0 → R1 ✅
+//     réseau d'ancrage → R7 ✗ (installation 8 vs 4,5 : Conjunctio est
+//       mieux logée, Puer gagne le match — c'est ce cas qui a établi que
+//       la solidité de chaîne prime sur la force d'installation)
+//     Structure du Nul s'était déclenchée et imposait le nul ✗
+//
+//  B. Puella · Via · Conjunctio · Via                        RÉEL 3-2 (R1)
+//     R1 = Laetitia (M14) · R7 = Via (M4)
+//     chaîne 6 vs 5,25 → R1 ✅   sièges 🟦+15 vs 🟧+3 → R1 ✅
+//     réseau d'ancrage → R1 ✅
+//     Cas décisif sur DEUX points : (1) les deux chaînes sont des images
+//     miroir exactes (R1 protecteur en résultante + front en base ; R7
+//     l'inverse) — aucun barème symétrique ne les départage, d'où le
+//     poids supérieur du front ; (2) le siège de R1 est en M14, une
+//     maison dont le texte parle du camp B alors que R1 est le camp A —
+//     R1 ayant gagné, c'est L'OCCUPANT qui prime sur la maison dans la
+//     lecture des sièges.
+//
+//  C. Tristitia · Via · Conjunctio · Rubeus                  RÉEL 7-0 (R1)
+//     R1 = Fortuna Minor (M8) · R7 = Carcer (M14)
+//     chaîne 8 vs 7,25 → R1 ✅   sièges 🟧+3 vs 🟥−15 → R1 ✅
+//     réseau d'ancrage → R1 ✅
+//     ⭐ SEULE PRÉDICTION HORS ÉCHANTILLON : la chaîne a été calculée et
+//     annoncée AVANT que le score soit connu. C'est ce qui distingue ce
+//     cas des deux autres, sur lesquels le barème a été calé.
+//     L'Axe Succédent imposait le nul ✗ — motif du débranchement.
+//
+// BILAN : solidité de chaîne 3/3 · lecture des sièges 3/3 ·
+//         réseau d'ancrage 2/3 · règles de nul 0/2 (elles se sont
+//         déclenchées sur un 6-1 et un 7-0).
+// ⚠️ Chaîne et sièges concordent sur ces trois cas, mais divergent sur
+// 46% des thèmes tirés au hasard (mesuré sur 4000). Leur hiérarchie
+// n'est donc PAS établie : il faut des résultats réels sur des thèmes où
+// elles se contredisent. Le désaccord est signalé sur la carte.
+// ⚠️ Le SCORE reste faux sur les trois (5-3 / 4-2 / 4-2 contre 6-1 /
+// 3-2 / 7-0) : le camp est juste, le chiffre non. buildVerdictCard
+// surestime le total et comprime l'écart.
+// ═══════════════════════════════════════════════════════════════
+//
 // Barème : la présence EN BASE est catégoriquement plus forte qu'en
 // résultante — deux résultantes ne valent jamais une base. Les
 // occurrences supplémentaires ne font qu'épaissir un ancrage déjà acquis.
@@ -10306,11 +10375,12 @@ function verdictFamilialEngine(theme){
   // probablement JAMAIS produit un seul verdict réel en production.
   const procR1R7 = procedureR1R7(theme, figR1, hR1, figR7, hR7);
 
-  // AXE SUCCÉDENT — CONFIRMATION CONDITIONNÉE DU NUL.
-  // Une figure de nul sur M2/M5/M8/M11 doit être ancrée dans le thème
-  // initial, puis M15 commande la lecture de M13/M14.
+  // AXE SUCCÉDENT — DÉBRANCHÉ DU VERDICT (24/08/26, cf.
+  // AXE_SUCCEDENT_DECISIF). Le signal reste calculé et diagnostiqué,
+  // mais n'impose plus le nul : il court-circuitait des couches qui
+  // avaient vu juste (7-0 réel sur un thème déclaré nul).
   const asOpp = signalAxeSuccedentOpposition(theme);
-  if (asOpp.confirmed) {
+  if (AXE_SUCCEDENT_DECISIF && asOpp.confirmed) {
     const anc = asOpp.ancrages.map(a =>
       FL[a.fig]+' (M'+a.positions.join(',M')+')'
     ).join(' ; ');
@@ -12489,7 +12559,10 @@ function getVerdictAfficheReel(theme, favorite) {
   var nulAxe = (typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(theme) : null;
   // Structure du Nul débranchée du verdict (24/08/26) — cf.
   // STRUCTURE_NUL_DECISIVE. Seul l'Axe Succédent peut encore imposer le nul.
-  var nulActif = !!((STRUCTURE_NUL_DECISIVE && structureNul.nulDetecte) || (nulAxe && nulAxe.confirmed));
+  // Structure du Nul et Axe Succédent tous deux débranchés (24/08/26) —
+  // cf. STRUCTURE_NUL_DECISIVE et AXE_SUCCEDENT_DECISIF. Plus aucune règle
+  // de nul n'impose le verdict ; elles restent calculées et affichées.
+  var nulActif = !!((STRUCTURE_NUL_DECISIVE && structureNul.nulDetecte) || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
   var protocoleWinner = protocoleR1R7.applicable && !nulActif
     ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
     : null;
@@ -13067,7 +13140,9 @@ function renderTheme(){
     const nulAxeTop = (typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(currentTheme) : null;
     // Structure du Nul débranchée du verdict (24/08/26) — cf.
     // STRUCTURE_NUL_DECISIVE. Elle ne suspend plus le protocole ni le réseau.
-    const nulActifTop = !!((STRUCTURE_NUL_DECISIVE && structureNulTop.nulDetecte) || (nulAxeTop && nulAxeTop.confirmed));
+    // Structure du Nul et Axe Succédent tous deux débranchés (24/08/26) —
+    // cf. STRUCTURE_NUL_DECISIVE et AXE_SUCCEDENT_DECISIF.
+    const nulActifTop = !!((STRUCTURE_NUL_DECISIVE && structureNulTop.nulDetecte) || (AXE_SUCCEDENT_DECISIF && nulAxeTop && nulAxeTop.confirmed));
     const protocoleWinner = protocoleR1R7.applicable && !nulActifTop
       ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
       : null;
