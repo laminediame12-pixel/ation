@@ -4286,6 +4286,231 @@ function forceFigureMaisonV7(fig, house, theme) {
     concordance: concordanceC, natif: natif, deplacement: deplacement, multiplicite: multiplicite, score: score};
 }
 
+// ═══════════════════════════════════════════════════════════════
+// PROFIL COMPLET D'UNE FIGURE DANS UNE MAISON (24/08/26, révision
+// Ellemine_D de la méthode d'ancrage : « tu ignores des faits
+// importants »). forceFigureMaisonV7 ne retenait que 3 dimensions sur 6.
+// Les six exigées, dans l'ordre donné :
+//   concordance · multiplicité · environnement · déplacement ·
+//   cohabitation · niveau d'activation
+//
+// Trois viennent de forceFigureMaisonV7 avec leurs barèmes existants.
+// Les trois autres sont ajoutées ici :
+//   • environnement  = scoreEnvironnementInterpretation (chaîne de
+//     binômes sur 5 crans, chaque maillon pris à sa meilleure position,
+//     pondéré par concordance). Échelle large (±15 par maillon) donc
+//     ramené par un coefficient.
+//   • cohabitation   = dans la maison occupée, base et résultante
+//     tombent-elles dans deux boucles différentes, et la figure est-elle
+//     du côté le plus concordant à l'élément de la maison ?
+//   • activation     = ligne du glyphe correspondant à l'élément de la
+//     maison : 1 point simple = ACTIVE, 2 points = PASSIVE (même lecture
+//     que elementaireFigureMaison).
+// ⚠️ Les trois coefficients ci-dessous sont PROPOSÉS, pas validés sur
+// l'archive — exposés dans une constante pour être réglés d'un seul
+// endroit dès qu'un cas réel les contredit.
+// ═══════════════════════════════════════════════════════════════
+var POIDS_PROFIL_V7 = {
+  concordance: 10,     // existant (forceFigureMaisonV7)
+  multiplicite: 1.5,   // existant, plafonné à 4 occurrences
+  environnement: 0.3,  // ⚠️ proposé
+  cohabitation: 2,     // ⚠️ proposé
+  activation: 5        // ⚠️ proposé — active +5, passive −5
+};
+
+// Cohabitation vue depuis UNE figure dans UNE maison : neutre si la
+// maison ne croise pas les boucles (base et résultante dans la même),
+// sinon la figure domine la maison si son élément y est plus concordant
+// que celui de l'autre côté.
+function cohabitationFigureMaison(fig, house, theme) {
+  const base = theme[house];
+  const res = getResultant(base, house);
+  if (base === res) return {croise: false, statut: 'repos', score: 0};
+  const lb = loopOf(base), lr = loopOf(res);
+  if (!lb || !lr || lb === lr) return {croise: false, statut: 'même boucle', score: 0};
+  const cote = (fig === base) ? 'base' : (fig === res) ? 'résultante' : null;
+  if (!cote) return {croise: true, statut: 'croisée, figure absente de cette maison', score: 0};
+  const elemMaison = MAISON_ELEM_V7[house];
+  const concBase = concordanceElement(ELEMENTS_V7[base], elemMaison);
+  const concRes = concordanceElement(ELEMENTS_V7[res], elemMaison);
+  const concFig = cote === 'base' ? concBase : concRes;
+  const concAutre = cote === 'base' ? concRes : concBase;
+  let statut, score;
+  if (concFig > concAutre) { statut = 'domine la cohabitation'; score = 1; }
+  else if (concFig < concAutre) { statut = 'dominée dans la cohabitation'; score = -1; }
+  else { statut = 'cohabitation à égalité'; score = 0; }
+  return {croise: true, cote: cote, autre: cote === 'base' ? res : base,
+    concFig: concFig, concAutre: concAutre, statut: statut, score: score};
+}
+
+function profilFigureMaison(fig, house, theme) {
+  const base = forceFigureMaisonV7(fig, house, theme);
+  const elem = elementaireFigureMaison(fig, house);
+  const cohab = cohabitationFigureMaison(fig, house, theme);
+  let env = {total: 0, detail: []};
+  try { env = scoreEnvironnementInterpretation(fig, house, theme, 5); } catch (e) { env = {total: 0, detail: []}; }
+
+  const activation = elem.natureLevel.active ? 'active' : elem.natureLevel.passive ? 'passive' : 'indéterminée';
+  const scoreActivation = elem.natureLevel.active ? POIDS_PROFIL_V7.activation
+    : elem.natureLevel.passive ? -POIDS_PROFIL_V7.activation : 0;
+
+  const parts = {
+    concordance: base.concordance * POIDS_PROFIL_V7.concordance,
+    deplacement: DEPLACEMENT_BONUS_V7[base.deplacement],
+    multiplicite: Math.min(base.multiplicite, 4) * POIDS_PROFIL_V7.multiplicite,
+    environnement: env.total * POIDS_PROFIL_V7.environnement,
+    cohabitation: cohab.score * POIDS_PROFIL_V7.cohabitation,
+    activation: scoreActivation
+  };
+  const total = Object.keys(parts).reduce(function(s, k){ return s + parts[k]; }, 0);
+
+  return {
+    fig: fig, house: house,
+    elemFig: base.elemFig, elemMaison: base.elemMaison, natif: base.natif,
+    concordance: base.concordance,
+    multiplicite: base.multiplicite,
+    environnement: env.total,
+    environnementDetail: env.detail,
+    deplacement: base.deplacement,
+    cohabitation: cohab,
+    activation: activation,
+    parts: parts,
+    total: Math.round(total * 100) / 100,
+    forceSimple: base.score
+  };
+}
+
+// Profil d'une figure sur TOUT le thème : une entrée par maison occupée
+// (base ou résultante), plus la meilleure d'entre elles. Une figure
+// absente renvoie present:false — c'est un fait, pas une erreur.
+function profilFigureTheme(fig, theme, siegeImpose) {
+  if (!fig) return {fig: fig, present: false, occurrences: [], meilleur: null};
+  const occ = trouverFigV7(fig, theme);
+  if (siegeImpose && !occ.some(function(o){ return o.pos === siegeImpose; })) {
+    occ.push({pos: siegeImpose, hidden: false});
+  }
+  if (!occ.length) return {fig: fig, present: false, occurrences: [], meilleur: null};
+  const profils = occ.map(function(o){
+    const p = profilFigureMaison(fig, o.pos, theme);
+    p.enResultante = !!o.hidden;
+    return p;
+  });
+  let meilleurLibre = profils[0];
+  profils.forEach(function(p){ if (p.total > meilleurLibre.total) meilleurLibre = p; });
+
+  // CORRIGÉ (24/08/26) : quand un siège est imposé — c'est le cas de R1 et
+  // R7, que la rotation place en hR1/hR7 — c'est CE profil qui fait foi,
+  // pas le meilleur du thème. Sans ce garde-fou, Puer (R1, siège M11)
+  // était analysé en M5 et Conjunctio (R7, siège M1) en M14 : tout le
+  // réseau se construisait sur une position que le chef n'occupe pas au
+  // titre du duel. meilleurLibre reste exposé pour la lecture.
+  const siege = siegeImpose ? profils.filter(function(p){ return p.house === siegeImpose; })[0] : null;
+  const meilleur = siege || meilleurLibre;
+
+  return {fig: fig, present: true, occurrences: profils,
+    meilleur: meilleur, meilleurLibre: meilleurLibre, siege: siege,
+    nbBase: profils.filter(function(p){ return !p.enResultante; }).length,
+    nbResultante: profils.filter(function(p){ return p.enResultante; }).length};
+}
+
+// Réseau des trois pôles d'UNE figure, chaque pôle profilé à son tour.
+// C'est le « développe le réseau de chaque figure des trois pôles ».
+function reseauTroisPolesV7(fig, theme, siegeImpose) {
+  if (!fig) return null;
+  const antagoniste = ANTAGONISTES_V7[fig];
+  const protecteur = PROTECTEURS_V7[fig];
+  const front = FRONT_V7[fig];
+  const menace = protecteur ? ANTAGONISTES_V7[protecteur] : null;
+  return {
+    fig: fig,
+    soi: profilFigureTheme(fig, theme, siegeImpose),
+    antagoniste: {fig: antagoniste, profil: profilFigureTheme(antagoniste, theme)},
+    protecteur: {fig: protecteur, profil: profilFigureTheme(protecteur, theme)},
+    menaceProtecteur: {fig: menace, profil: profilFigureTheme(menace, theme)},
+    front: {fig: front, profil: profilFigureTheme(front, theme)},
+    resistance: analyserResistanceV7(fig, theme)
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ANCRAGE DÉVELOPPÉ (24/08/26, révision Ellemine_D de la méthode).
+// Sept figures clés, chacune avec son réseau à trois pôles entièrement
+// profilé : les deux chefs, leurs DEUX antagonistes, leurs DEUX binômes,
+// et la figure X = R1 + R7.
+// Reproche corrigé : l'ancienne méthode réduisait antagoniste et binôme
+// à un booléen présent/absent et ne profilait jamais X ni les pôles
+// eux-mêmes. Ici chaque figure du réseau est mesurée sur les six
+// dimensions (profilFigureMaison), et X est pesée pour savoir de quel
+// côté elle penche.
+// ═══════════════════════════════════════════════════════════════
+function penchantFigureX(X, figR1, figR7, theme) {
+  if (!X) return {X: null, penche: null, raisons: []};
+  const raisons = [];
+  let scoreR1 = 0, scoreR7 = 0;
+
+  // Lien structurel direct : l'antagoniste frappe, le binôme soutient.
+  if (X === ANTAGONISTES_V7[figR1]) { scoreR7 += 2; raisons.push('X est l\'antagoniste direct de R1 — elle frappe R1'); }
+  if (X === ANTAGONISTES_V7[figR7]) { scoreR1 += 2; raisons.push('X est l\'antagoniste direct de R7 — elle frappe R7'); }
+  if (X === BINOMES_V7[figR1] || X === figR1) { scoreR1 += 2; raisons.push('X est R1 elle-même ou son binôme — elle soutient R1'); }
+  if (X === BINOMES_V7[figR7] || X === figR7) { scoreR7 += 2; raisons.push('X est R7 elle-même ou son binôme — elle soutient R7'); }
+  if (X === PROTECTEURS_V7[figR1]) { scoreR1 += 1.5; raisons.push('X est le protecteur de R1'); }
+  if (X === PROTECTEURS_V7[figR7]) { scoreR7 += 1.5; raisons.push('X est le protecteur de R7'); }
+  if (X === FRONT_V7[figR1]) { scoreR1 += 1; raisons.push('X est la figure de front de R1'); }
+  if (X === FRONT_V7[figR7]) { scoreR7 += 1; raisons.push('X est la figure de front de R7'); }
+
+  // À défaut de lien direct, l'appartenance de boucle penche faiblement.
+  if (!raisons.length) {
+    const lX = loopOf(X), l1 = loopOf(figR1), l7 = loopOf(figR7);
+    if (lX && l1 && l7 && l1 !== l7) {
+      if (lX === l1) { scoreR1 += 0.5; raisons.push('X partage la boucle de R1 (lien faible)'); }
+      else if (lX === l7) { scoreR7 += 0.5; raisons.push('X partage la boucle de R7 (lien faible)'); }
+    }
+  }
+
+  const profil = profilFigureTheme(X, theme);
+  return {
+    X: X, present: profil.present, profil: profil,
+    scoreR1: scoreR1, scoreR7: scoreR7,
+    penche: scoreR1 > scoreR7 ? 'R1' : scoreR7 > scoreR1 ? 'R7' : null,
+    raisons: raisons
+  };
+}
+
+function analyseAncrageDeveloppe(theme) {
+  if (!theme || !theme[1]) return {applicable: false, reason: 'Thème non disponible.'};
+  const rot = getRotationCombat(theme);
+  const figR1 = rot.figR1, figR7 = rot.figR7;
+  const X = combine(figR1, figR7);
+
+  const membres = {
+    R1:          reseauTroisPolesV7(figR1, theme, rot.hR1),
+    R7:          reseauTroisPolesV7(figR7, theme, rot.hR7),
+    antagoR1:    reseauTroisPolesV7(ANTAGONISTES_V7[figR1], theme),
+    antagoR7:    reseauTroisPolesV7(ANTAGONISTES_V7[figR7], theme),
+    binomeR1:    reseauTroisPolesV7(BINOMES_V7[figR1], theme),
+    binomeR7:    reseauTroisPolesV7(BINOMES_V7[figR7], theme),
+    figX:        reseauTroisPolesV7(X, theme)
+  };
+
+  const penchantX = penchantFigureX(X, figR1, figR7, theme);
+
+  // Bilan de camp : chaque chef porte son propre profil, plus le soutien
+  // de son binôme, moins la pression de son antagoniste. Les profils sont
+  // ceux de la meilleure position occupée (0 si la figure est absente).
+  function val(m) { return m && m.soi && m.soi.meilleur ? m.soi.meilleur.total : 0; }
+  const bilanR1 = val(membres.R1) + val(membres.binomeR1) - val(membres.antagoR1);
+  const bilanR7 = val(membres.R7) + val(membres.binomeR7) - val(membres.antagoR7);
+
+  return {
+    applicable: true,
+    hR1: rot.hR1, hR7: rot.hR7, figR1: figR1, figR7: figR7, X: X,
+    membres: membres, penchantX: penchantX,
+    bilanR1: Math.round(bilanR1 * 100) / 100,
+    bilanR7: Math.round(bilanR7 * 100) / 100,
+    avantage: bilanR1 > bilanR7 ? 'R1' : bilanR7 > bilanR1 ? 'R7' : null
+  };
+}
+
 function analyserResistanceV7(X, theme) {
   // CORRIGÉ (21/08/26, demande Ellemine_D "faut pas ignorer les
   // résultantes") : figureExistsBaseOnly ne regardait que les figures de
