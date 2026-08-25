@@ -10909,6 +10909,92 @@ function lectureDeuxMarquentV7(theme) {
   };
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// DOCTRINE ELLEMINE (25/08/26) — OUVERTURE DES SIÈGES ET FIGURES À BUTS
+//
+// Énoncé : « Maison 1 (équipe A) : une figure ouverte ou active ici =
+// cette équipe marque. Maison 7 (équipe B) : idem = l'autre marque aussi.
+// Si M1 et M7 ont toutes les deux une figure ouverte/active → BTTS très
+// probable. » Plus une liste de figures fortes pour les buts, et un bonus
+// si Via, Acquisitio ou Fortuna Minor occupe M5 ou M8.
+//
+// ⚠️ CONFLIT DE VOCABULAIRE À TRANCHER. La table OUVERTURE_FIGURE, déjà
+// dans le fichier, classe FERMÉES trois des sept figures à buts :
+// Fortuna Minor, Caput Draconis et Fortuna Major. « Figure ouverte » et
+// « figure forte pour les buts » sont donc deux ensembles DIFFÉRENTS ici.
+// Les deux critères sont gardés séparés tant qu'Ellemine_D n'a pas dit
+// lequel prime — aucun n'est écrasé par l'autre.
+//
+// ⚠️ LE CADRE COMPTE PLUS QUE LE DÉTAIL. Mesuré sur les 5 cas réels :
+//   · lue sur les maisons FIXES M1/M7 ......... 3/5 (rate A et E)
+//   · lue sur les SIÈGES R1/R7 de la rotation . 4/5 (rate A seul), 47% de oui
+// Même règle, même définition d'« ouverte ou active », seul le cadre
+// change. Le moteur travaillant en R1/R7 partout ailleurs, c'est cette
+// lecture qui est retenue ici — et c'est elle qui marche le mieux.
+//
+// ⚠️ LE BONUS M5/M8 EST LE SEUL MORCEAU À PREUVE NÉGATIVE. Ajouter « ou
+// bien Via/Acquisitio/Fortuna Minor en 5 ou 8 » fait TOMBER le score dans
+// les deux cadres (3/5 → 2/5 en fixe, 4/5 → 3/5 en rotation) : il
+// transforme C (7-0) et D (0-1) en faux « les deux marquent ». Il est donc
+// calculé et AFFICHÉ, mais volontairement exclu du verdict de la règle.
+//
+// STATUT : cette règle n'a PAS été ajustée sur les 5 cas — elle vient de
+// l'expérience d'Ellemine_D. Son 4/5 vaut donc plus que le 5/5 de
+// lectureDeuxMarquentV7, qui a été construite en les regardant.
+// ═══════════════════════════════════════════════════════════════
+
+// Les sept figures qu'Ellemine_D donne comme les plus fortes pour les buts.
+var FIGURES_BUTS_V7 = {
+  via: 1, acquisitio: 1, fortuna_minor: 1, laetitia: 1,
+  caput_draconis: 1, puer: 1, fortuna_major: 1
+};
+// Le trio cité pour le bonus M5/M8.
+var TRIO_BUTS_V7 = { via: 1, acquisitio: 1, fortuna_minor: 1 };
+
+// « ouverte ou active » : ouverte au sens de la table OUVERTURE_FIGURE, ou
+// active au sens élémentaire — la figure charge l'élément de sa maison.
+function siegeOuvertOuActifV7(fig, house) {
+  if (!fig) return { ouvert: false, ouverture: null, active: false };
+  const ouverture = OUVERTURE_FIGURE[fig] || null;
+  let active = false;
+  try { active = !!elementaireFigureMaison(fig, house).natureLevel.active; } catch (e) { active = false; }
+  return {
+    fig: fig, house: house, ouverture: ouverture, active: active,
+    figureDeButs: !!FIGURES_BUTS_V7[fig],
+    ouvert: ouverture === 'ouverte' || active
+  };
+}
+
+function lectureOuvertureButsV7(theme) {
+  if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
+  const rot = getRotationCombat(theme);
+  const s1 = siegeOuvertOuActifV7(theme[rot.hR1], rot.hR1);
+  const s7 = siegeOuvertOuActifV7(theme[rot.hR7], rot.hR7);
+  // Le bonus est calculé sur les 5e et 8e crans de l'anneau de rotation,
+  // pour rester dans le même cadre que les sièges.
+  const h5 = rot.order[4], h8 = rot.order[7];
+  const bonus = [];
+  if (TRIO_BUTS_V7[theme[h5]]) bonus.push(FL[theme[h5]] + ' en M' + h5 + ' (5e cran)');
+  if (TRIO_BUTS_V7[theme[h8]]) bonus.push(FL[theme[h8]] + ' en M' + h8 + ' (8e cran)');
+
+  const lesDeuxMarquent = s1.ouvert && s7.ouvert;
+  function dire(s, nom) {
+    return nom + ' ' + FL[s.fig] + ' en M' + s.house + ' — ' + (s.ouverture || '?')
+      + (s.active ? ', active' : ', inactive')
+      + (s.figureDeButs ? ', figure à buts' : '')
+      + ' → ' + (s.ouvert ? 'marque' : 'muet');
+  }
+  return {
+    applicable: true, R1: s1, R7: s7,
+    lesDeuxMarquent: lesDeuxMarquent,
+    bonusM5M8: bonus,
+    synthese: dire(s1, 'R1') + ' · ' + dire(s7, 'R7')
+      + ' → ' + (lesDeuxMarquent ? 'LES DEUX MARQUENT' : 'UN SEUL MARQUE')
+      + (bonus.length ? ' · bonus signalé : ' + bonus.join(', ') + ' (affiché, non compté)' : '')
+  };
+}
+
 function renderDeuxMarquentPanel(theme) {
   const ancien = document.getElementById('deux-marquent-panel');
   if (ancien) ancien.remove();
@@ -10958,6 +11044,45 @@ function renderDeuxMarquentPanel(theme) {
     + route(d.chainePerdantPercee, 'Chaîne du perdant',
         (d.chainePerdant !== null ? 'total ' + d.chainePerdant + ' — ' : '')
         + (d.chainePerdantPercee ? 'percée' : 'intacte'));
+
+  // ── Seconde lecture : la doctrine d'ouverture des sièges ──
+  // Les deux règles ne s'accordent que sur la moitié des thèmes : elles ne
+  // regardent pas la même chose. Le désaccord est montré, pas masqué —
+  // même traitement que chaîne contre sièges pour le verdict.
+  const o = lectureOuvertureButsV7(theme);
+  if (o.applicable) {
+    const co = o.lesDeuxMarquent ? vert : rouge;
+    const accord = o.lesDeuxMarquent === d.lesDeuxMarquent;
+    function siege(s, nom, coul) {
+      return '<div style="display:flex; gap:6px; align-items:baseline; margin-top:3px;">'
+        + '<span style="color:' + (s.ouvert ? vert : rouge) + '; font-size:11px;">'
+        + (s.ouvert ? '⚽' : '·') + '</span>'
+        + '<span style="flex:1;"><b style="font-size:11px; color:' + coul + ';">' + nom + '</b> '
+        + FL[s.fig] + ' <span class="muted" style="font-size:10.5px;">M' + s.house
+        + ' — ' + (s.ouverture || '?') + (s.active ? ', active' : ', inactive')
+        + (s.figureDeButs ? ', figure à buts' : '') + '</span></span></div>';
+    }
+    panneau.innerHTML +=
+      '<div style="margin-top:11px; padding-top:9px; border-top:1px solid rgba(148,163,184,.25);">'
+      + '<div style="font-size:12px; font-weight:700; color:' + co + ';">'
+      + (o.lesDeuxMarquent ? '⚽⚽ Les deux marquent' : '⚽ Un seul marque')
+      + ' <span class="muted" style="font-weight:400; font-size:10.5px;">— lecture par l\'ouverture des sièges</span></div>'
+      + siege(o.R1, 'R1', '#60a5fa') + siege(o.R7, 'R7', '#fb923c')
+      + (o.bonusM5M8.length
+          ? '<div class="muted" style="font-size:10px; margin-top:4px;">Bonus signalé : '
+            + o.bonusM5M8.join(', ') + ' — <b>affiché, non compté</b> : ajouté au verdict il fait '
+            + 'tomber le score sur les cas réels (il rend C 7-0 et D 0-1 faussement positifs).</div>'
+          : '')
+      + '<div style="margin-top:6px; padding:5px 7px; border-radius:5px; font-size:10.5px; background:'
+      + (accord ? 'rgba(34,197,94,.10)' : 'rgba(248,113,113,.10)') + '; border:1px solid '
+      + (accord ? 'rgba(34,197,94,.35)' : 'rgba(248,113,113,.35)') + ';">'
+      + (accord
+          ? '✅ Les deux lectures concordent.'
+          : '⚠️ <b>Les deux lectures se contredisent.</b> Elles ne s\'accordent que sur 50% des thèmes — '
+            + 'elles ne mesurent pas la même chose. Sur les 5 cas réels : ouverture des sièges 4/5 '
+            + '(non ajustée), perdant muet 5/5 (ajustée sur ces cas, donc moins probante).')
+      + '</div></div>';
+  }
 
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
