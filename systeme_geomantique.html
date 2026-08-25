@@ -4529,6 +4529,12 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     maison dont le texte parle du camp B alors que R1 est le camp A —
 //     R1 ayant gagné, c'est L'OCCUPANT qui prime sur la maison dans la
 //     lecture des sièges.
+//     Troisième point, réglé le 25/08 : ici R1 (Laetitia) EST l'antagoniste
+//     direct de R7 (Via), et Acquisitio est à la fois antagoniste de R1 et
+//     protecteur de R7. Ce cumul de rôles est NORMAL (cf. rolesDeLaFigureV7)
+//     et n'annule aucun des deux : toutes les dimensions chiffrées donnaient
+//     R7, R1 a gagné. Lecture retenue — être attaqué n'empêche pas de
+//     frapper, un pôle tenu garde son plein effet.
 //
 //  C. Tristitia · Via · Conjunctio · Rubeus                  RÉEL 7-0 (R1)
 //     R1 = Fortuna Minor (M8) · R7 = Carcer (M14)
@@ -6320,6 +6326,44 @@ const FRONT_V7 = {};
 FIGS_V7.forEach(function(fig, i) {
   FRONT_V7[fig] = FIGS_V7[(i + 4) % 16];
 });
+
+// ─── RÈGLE ELLEMINE (25/08/26) : UNE FIGURE TIENT QUATRE RÔLES À LA FOIS ───
+// Énoncé de l'utilisateur, mot pour mot : « une figure peut jouer un rôle de
+// binôme pour une figure x et en même temps antagoniste pour une figure y,
+// en même temps aussi elle peut être une figure de front d'une figure x et
+// figure de protecteur pour une figure y, ou même elle peut être R1 ou R7 ».
+// Ce n'est pas une exception, c'est la structure : les quatre relations sont
+// des bijections du cycle des 16, donc CHAQUE figure X est, toujours et
+// simultanément :
+//     binôme     de X−2      antagoniste de X+3
+//     protecteur de X−10     front       de X−4
+// et rien n'empêche X d'être en plus R1 ou R7 du thème.
+// Vérifié sur les 16 figures : le rôle d'antagoniste porte 16/16 sur l'AUTRE
+// boucle (décalage impair), les trois rôles alliés 48/48 sur la MÊME boucle
+// (décalages pairs +2, +10, +4). Un rôle hostile hors boucle et trois rôles
+// alliés en boucle ne se contredisent donc jamais : ils ne s'adressent pas
+// aux mêmes figures.
+// Exemple qui a motivé la règle (cas B) : Acquisitio est protecteur de Via
+// (boucle A, la sienne) ET antagoniste de Laetitia (boucle B) — normal, pas
+// contradictoire. Elle est en outre binôme de Cauda Draconis et front de
+// Conjonctio.
+// ⚠️ CONSÉQUENCE DE DOCTRINE : l'hypothèse « une figure n'a qu'une action à
+// la fois, donc celle qui attaque ne protège plus » est ÉCARTÉE. Aucun
+// calcul ne doit désactiver un rôle parce que la figure en tient un autre.
+// C'est aussi ce que la mesure disait déjà : toute pénalité sur les pôles
+// tenus (×0,75 / ×0,50 / ×0,25 / ×0) casse le cas B ; seul ×1,00 garde 3/3.
+function rolesDeLaFigureV7(fig) {
+  const i = FIGS_V7.indexOf(fig);
+  if (i < 0) return null;
+  const a = function (d) { return FIGS_V7[(i + d + 16) % 16]; };
+  return {
+    figure: fig,
+    // ce que la figure SUBIT (ses propres pôles)
+    binome: a(2), antagoniste: a(-3), protecteur: a(10), front: a(4),
+    // ce que la figure EXERCE sur les autres — les quatre rôles simultanés
+    binomeDe: a(-2), antagonisteDe: a(3), protecteurDe: a(-10), frontDe: a(-4)
+  };
+}
 
 const ELEMENTS_V7 = {
   puer:'feu',puella:'terre',albus:'eau',rubeus:'air',via:'eau',amissio:'eau',
