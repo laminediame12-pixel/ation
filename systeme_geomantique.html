@@ -72,6 +72,35 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
   0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
   50% { box-shadow: 0 0 16px 5px rgba(245,158,11,.9); }
 }
+/* FRONT ET PROTECTEUR AU CLIC SUR UNE MAISON (25/08/26, demande
+   Ellemine_D) : la figure de front de l'occupante clignote en OR, son
+   protecteur en VERT, et trois fois plus vite que R1/R7 — 1,1s ÷ 3 =
+   0,37s. Un marqueur F ou P en coin lève toute ambiguïté avec le vert
+   statique du binôme et l'orange de R7. */
+.house-front { border-color:#FFD700 !important; background:#2e2405;
+  animation: theme-blink-or .37s ease-in-out infinite; z-index:4; }
+.house-protecteur { border-color:#10b981 !important; background:#052e22;
+  animation: theme-blink-vert .37s ease-in-out infinite; z-index:4; }
+.house-front.house-protecteur { border-color:#FFD700 !important;
+  animation: theme-blink-or .37s ease-in-out infinite; }
+@keyframes theme-blink-or {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+  50% { box-shadow: 0 0 16px 5px rgba(255,215,0,.95); }
+}
+@keyframes theme-blink-vert {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  50% { box-shadow: 0 0 16px 5px rgba(16,185,129,.95); }
+}
+.pole-mark { position:absolute; top:3px; left:5px; font-size:9px;
+  font-weight:800; z-index:5; pointer-events:none; text-shadow:0 0 3px #000; }
+/* Si la maison est en même temps R1 ou R7, l'or ou le vert prend la
+   bordure — c'est ce qui a été demandé — mais l'identité R1/R7 doit
+   survivre. Un liseré intérieur la garde visible : outline n'entre pas en
+   conflit avec le box-shadow que porte l'animation. */
+.house-front.highlight-r1, .house-protecteur.highlight-r1 {
+  outline:2px solid #3b82f6; outline-offset:-4px; }
+.house-front.highlight-r7, .house-protecteur.highlight-r7 {
+  outline:2px solid #f59e0b; outline-offset:-4px; }
 .result-flash { border-color:#f59e0b !important; background:#3a2a05 !important; }
 .sum-section { max-width: 900px; margin: 24px auto 0 auto; }
 #sum-result { text-align: center; }
@@ -16660,7 +16689,10 @@ function clearHouseRelationColors() {
   for (var p = 1; p <= 16; p++) {
     var el = document.querySelector('.house[data-pos="' + p + '"]');
     if (el) {
-      el.classList.remove('house-binome', 'house-antagoniste', 'house-selected');
+      el.classList.remove('house-binome', 'house-antagoniste', 'house-selected',
+                          'house-front', 'house-protecteur');
+      var _pm = el.querySelector('.pole-mark');
+      if (_pm) _pm.remove();
       el.style.boxShadow = '';
     }
   }
@@ -16686,8 +16718,8 @@ function showRelationArrows(pos) {
   function findAll(targetFig) {
     var res = [];
     for (var p = 1; p <= 16; p++) {
-      if (currentTheme[p] === targetFig) res.push({pos:p, hidden:false});
-      else if (combine(currentTheme[p], FIGS[p-1]) === targetFig) res.push({pos:p, hidden:true});
+      if (_tA[p] === targetFig) res.push({pos:p, hidden:false});
+      else if (combine(_tA[p], FIGS[p-1]) === targetFig) res.push({pos:p, hidden:true});
     }
     return res;
   }
@@ -16718,6 +16750,39 @@ function showRelationArrows(pos) {
       el.style.boxShadow = '0 0 0 3px rgba(239,68,68,' + intensity + ') inset, 0 0 10px rgba(239,68,68,' + intensity + ')';
     }
   });
+
+  // ─── FRONT (or) ET PROTECTEUR (vert) — demande Ellemine_D (25/08/26) ───
+  // « la figure qui occupe la maison, son figure de front si elle existe
+  // dans le thème en base ou en résultante doit se clignoter en couleur or,
+  // et 3 fois plus vite que R1 et R7, et aussi son protecteur en couleur
+  // verte ». findAll couvre déjà la base ET la résultante.
+  // Le clignotement est posé par les classes .house-front / .house-protecteur
+  // (0,37s contre 1,1s pour R1/R7). Un marqueur F ou P est ajouté en coin :
+  // sans lui, le vert du protecteur se confondrait avec celui du binôme et
+  // l'or avec l'orange de R7.
+  var frontFig = (typeof FRONT_V7 !== 'undefined') ? FRONT_V7[fig] : null;
+  var protFig  = (typeof PROTECTEURS_V7 !== 'undefined') ? PROTECTEURS_V7[fig] : null;
+
+  function marquerPole(cibleFig, classe, lettre, couleur) {
+    if (!cibleFig) return;
+    findAll(cibleFig).forEach(function (o) {
+      if (o.pos === pos) return;
+      var el = document.querySelector('.house[data-pos="' + o.pos + '"]');
+      if (!el) return;
+      el.classList.add(classe);
+      if (!el.querySelector('.pole-mark')) {
+        var m = document.createElement('span');
+        m.className = 'pole-mark';
+        m.style.color = couleur;
+        // minuscule = présente seulement en résultante
+        m.textContent = o.hidden ? lettre.toLowerCase() : lettre;
+        m.title = (o.hidden ? 'en résultante' : 'en base');
+        el.appendChild(m);
+      }
+    });
+  }
+  marquerPole(frontFig, 'house-front', 'F', '#FFD700');
+  marquerPole(protFig, 'house-protecteur', 'P', '#10b981');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -16739,7 +16804,13 @@ function themeAffiche() {
   try { return getDisplayTheme() || currentTheme; } catch (e) { return currentTheme; }
 }
 
-function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; renderHouseInsight(pos); showRelationArrows(pos); const house=document.querySelector(`.house[data-pos="${pos}"]`); if(!house) return; const result=getResultant(themeAffiche()[pos],pos); const resConcPct=concordanceFigureMaisonV7(result, pos).force; const numbering=showHouseLabels?`<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:9px;"><b>M${pos}</b><span style="color:#93c5fd;">${resConcPct}%</span></div>`:''; const hp=housePixelPos[pos]||{w:64,h:58}; const resEnergy=energyAtHouse(result,pos); const resBatt=batteryHtmlCompact(resEnergy, Math.max(3,Math.round(hp.w*0.09)), Math.max(16,Math.round(hp.h*0.6))); house.classList.add('result-flash'); house.innerHTML=`${numbering}<div style="display:flex;align-items:center;justify-content:center;gap:4px;">${resBatt}<div style="text-align:center;">${symb(result)}</div></div>`; if(houseResultTimeouts[pos]) clearTimeout(houseResultTimeouts[pos]); houseResultTimeouts[pos]=setTimeout(()=>{if(currentTheme) adjustThemeScale();},3000);}
+function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; renderHouseInsight(pos); showRelationArrows(pos); const house=document.querySelector(`.house[data-pos="${pos}"]`); if(!house) return; const result=getResultant(themeAffiche()[pos],pos); const resConcPct=concordanceFigureMaisonV7(result, pos).force; const numbering=showHouseLabels?`<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:9px;"><b>M${pos}</b><span style="color:#93c5fd;">${resConcPct}%</span></div>`:''; const hp=housePixelPos[pos]||{w:64,h:58}; const resEnergy=energyAtHouse(result,pos); const resBatt=batteryHtmlCompact(resEnergy, Math.max(3,Math.round(hp.w*0.09)), Math.max(16,Math.round(hp.h*0.6))); house.classList.add('result-flash'); house.innerHTML=`${numbering}<div style="display:flex;align-items:center;justify-content:center;gap:4px;">${resBatt}<div style="text-align:center;">${symb(result)}</div></div>`; if(houseResultTimeouts[pos]) clearTimeout(houseResultTimeouts[pos]); houseResultTimeouts[pos]=setTimeout(()=>{ if(!currentTheme) return; adjustThemeScale();
+  // adjustThemeScale redessine toute la grille et effacerait le clignotement
+  // du front et du protecteur au bout de 3 secondes. On le réapplique sur la
+  // maison sélectionnée pour que la lecture reste à l'écran tant qu'on n'a
+  // pas cliqué ailleurs.
+  setTimeout(()=>{ try { if(currentTheme) showRelationArrows(pos); } catch(e){} }, 0);
+},3000);}
 function calculateHouseSum(){if(!currentTheme){document.getElementById('sum-result').innerHTML='<div class="bad">Lance le theme d abord.</div>'; return;} const mode=document.getElementById('sumModeBottom').value; const selected=sumSlots.map(slot=>{const raw=document.getElementById(`${slot}Bottom`).value; return raw===''?null:Number(raw);}).filter(Boolean); if(!selected.length){document.getElementById('sum-result').innerHTML='<div class="warn">Sélectionne au moins une maison.</div>'; return;} let figs=[],labels=[]; if(mode==='fixed'){figs=selected.map(h=>currentTheme[h]); labels=selected.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=selected.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${selected[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Mode :</b> ${mode==='fixed'?'fixe':'rotation'}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
 function applyPresetSum(name){const presets={'1D':[13,14,15,16],'2D':[1,4,7,10],'3D':[2,3,11,8,9,14],'4D':[9,12,13,10,5,14,6,7,8,15,13,11,16],'3B':[13,8,4,6],'Yes':[2,7,12,10],'V-1':[1,2,3,4,9,10,13,15],'V-2':[5,6,7,8,11,12,14,16]}; if(!currentTheme || !presets[name]) return; const mode=document.getElementById('sumModeBottom').value; const houses=presets[name]; let figs=[],labels=[]; if(mode==='fixed'){figs=houses.map(h=>currentTheme[h]); labels=houses.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=houses.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${houses[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Preset :</b> ${name}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
 function compareWithReality(){
