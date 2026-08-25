@@ -11232,7 +11232,7 @@ function lectureLieuxMarquageV7(theme) {
 // Le mécanisme n'est pas neuf — themeAxeSuccedent le faisait déjà pour le
 // seul Axe Succédent, dont le signal de nul (opposition M13/M14 sur le
 // dérivé) est le mieux validé du fichier : 43% de précision contre 24% de
-// taux de base, sur 70 matchs archivés. On l'étend aux quatre axes et on
+// taux de base, sur 70 matchs archivés. On l'étend aux trois axes et on
 // remonte le verdict complet, pas seulement le signal de nul.
 //
 // ⚠️ AUCUN EFFET SUR LE VERDICT PRINCIPAL. Les axes ont déjà écrasé deux
@@ -11275,7 +11275,7 @@ function lectureUnAxeV7(theme, axe) {
   // FIABILITÉ (25/08/26, demande Ellemine_D : « pour avoir la fiabilité des
   // thèmes des axes il faut en même temps vérifier les conditions de
   // validation d'un thème »). Le thème dérivé passe le même protocole de
-  // validité que le thème principal : ses quatre axes doivent exister dans
+  // validité que le thème principal : ses trois axes doivent exister dans
   // ce thème dérivé. Un dérivé non valide ne mérite pas qu'on le croie.
   let validite = null;
   try { validite = analyzeValidation(derive); } catch (e) { validite = null; }
@@ -11395,7 +11395,7 @@ function renderAxesPanel(theme) {
   panneau.className = 'card';
   panneau.style.cssText = 'margin-top:10px; border:1px solid #a16207;';
   if (!d.applicable) {
-    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Les quatre axes</h3>'
+    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Les trois axes du carré</h3>'
       + '<div class="muted" style="font-size:11.5px;">' + d.raison + '</div>';
     hote.parentNode.insertBefore(panneau, hote.nextSibling);
     return;
@@ -11437,6 +11437,29 @@ function renderAxesPanel(theme) {
         + '<div><b>Les deux marquent :</b> ' + (a.lesDeuxMarquent === null ? '—' : (a.lesDeuxMarquent ? 'oui' : 'non')) + '</div>'
         + '<div><b>Témoins M13/M14 :</b> ' + nom(a.temoins.m13) + ' / ' + nom(a.temoins.m14) + ' — '
         + (a.temoins.opposes ? 'opposés' : a.temoins.identiques ? 'identiques' : 'ni l\'un ni l\'autre') + '</div>'
+        + '<div style="margin-top:6px;"><b>Les 16 maisons du thème dérivé</b>'
+        + '<div class="muted" style="font-size:9.5px;">figure de base · <span style="color:#f59e0b;">résultante</span> '
+        + '= figure combinée à la figure de repos de sa maison, exactement comme sur le thème principal.</div>'
+        + '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin-top:4px;">'
+        + (function () {
+            let cases = '';
+            for (let h = 1; h <= 16; h++) {
+              const f = a.derive[h];
+              const r = getResultant(f, h);
+              const estSiege = (h === a.hR1 || h === a.hR7);
+              cases += '<div style="border:1px solid ' + (estSiege ? 'rgba(161,98,7,.55)' : 'rgba(148,163,184,.18)')
+                + '; border-radius:3px; padding:3px 4px; font-size:9px; line-height:1.35;'
+                + (estSiege ? ' background:rgba(161,98,7,.10);' : '') + '">'
+                + '<div class="muted" style="font-size:8px;">M' + h
+                + (h === a.hR1 ? ' <b style="color:#60a5fa;">R1</b>' : '')
+                + (h === a.hR7 ? ' <b style="color:#fb923c;">R7</b>' : '')
+                + (FIGS[h - 1] === f ? ' <b style="color:#4ade80;">repos</b>' : '') + '</div>'
+                + '<div>' + (FL[f] || f) + '</div>'
+                + '<div style="color:#f59e0b;">' + (FL[r] || r) + '</div></div>';
+            }
+            return cases;
+          })()
+        + '</div></div>'
         + '<div><b>Validité du dérivé :</b> ' + (a.valide
             ? '<span style="color:#4ade80;">les 4 axes existent dans ce thème dérivé</span>'
             : '<span style="color:#f87171;">' + a.axesTenus + '/4 — manque ' + a.axesManquants.join(', ') + '</span>') + '</div>'
@@ -11449,9 +11472,9 @@ function renderAxesPanel(theme) {
 
   const cd = d.domination === 'R1' ? bleu : d.domination === 'R7' ? orange : '#94a3b8';
   panneau.innerHTML =
-    '<h3 style="margin-bottom:2px;">🧭 Les quatre axes</h3>'
+    '<h3 style="margin-bottom:2px;">🧭 Les trois axes du carré</h3>'
     + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.5;">'
-    + 'Chaque axe a quatre maisons. Leurs figures deviennent quatre nouvelles mères, et le thème dérivé '
+    + 'Chacun des trois axes a quatre maisons. Leurs figures deviennent quatre nouvelles mères, et le thème dérivé '
     + 'passe par <b>exactement les mêmes couches</b> que le thème principal — ancrage, sièges, ouverture. '
     + 'Aucune règle spéciale. Touche un axe pour le déplier, puis « Charger ce thème dérivé » pour que tout '
     + 'le fichier bascule dessus.<br>'
@@ -11484,9 +11507,9 @@ function renderAxesPanel(theme) {
     + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
     + '<div class="muted" style="font-size:9.5px;">Signal de nul — témoins opposés</div>'
     + '<b style="font-size:16px; color:' + (d.nulSignaux.length ? '#fbbf24' : '#94a3b8') + ';">'
-    + d.nulSignaux.length + ' / 4</b>'
+    + d.nulSignaux.length + ' / 3</b>'
     + '<div class="muted" style="font-size:9.5px;">' + (d.nulSignaux.length ? d.nulSignaux.join(', ') : 'aucun axe')
-    + ' · ' + d.axesAncres + '/4 axes ancrés</div></div></div>'
+    + ' · ' + d.axesAncres + '/3 axes ancrés</div></div></div>'
     + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:7px;">'
     + d.axes.map(carte).join('') + '</div>'
     + '<div class="muted" style="font-size:10px; margin-top:8px; line-height:1.5;">'
@@ -15266,7 +15289,7 @@ function renderTheme(){
     try { renderDeuxMarquentPanel(currentTheme); } catch(e) { console.log('deux marquent error', e); }
     // Lieux de marquage : instrument d'observation, rien n'est branché.
     try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
-    // Les quatre axes comme thèmes dérivés : observation, aucun effet sur le verdict.
+    // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
     try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
