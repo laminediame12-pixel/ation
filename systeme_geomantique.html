@@ -4577,6 +4577,19 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     C'est le contre-exemple le plus utile de l'archive : la chaîne de
 //     R7 y est PERCÉE (total −1) et R7 gagne quand même.
 //
+//  F. Fortuna Minor · Amissio · Carcer · Carcer     LES DEUX ONT MARQUÉ
+//     R1 = R7 = Conjonctio (M9 et M15) — cas où les deux sièges portent la
+//     MÊME figure (5,1% des thèmes). Score exact non communiqué.
+//     ⭐ PREMIER TEST EN AVEUGLE de la règle d'ouverture depuis son
+//     branchement, et elle le RATE : lue sur la rotation elle annonce
+//     « un seul marque » (R1 Conjonctio en M9 fermée et inactive), alors
+//     que les deux ont marqué. La lecture FIXE, elle, voit juste :
+//     M1 Fortuna Minor fermée mais ACTIVE → marque, M7 Rubeus OUVERTE →
+//     marque. La seconde lecture (perdant muet) rate aussi.
+//     CONSÉQUENCE : le compte passe de 4/5 contre 3/5 en faveur de la
+//     rotation à 4/6 PARTOUT — les deux cadres sont à égalité et le choix
+//     n'est plus soutenu par les données. Voir BTTS_CADRE.
+//
 //  E. Fortuna Minor · Acquisitio · Carcer · Albus            RÉEL 1-1 (nul)
 //     R1 = Carcer (M10) · R7 = Fortuna Major (M4)
 //     Retrouvé le 25/08 dans renderRegressionReference, où la clé portait
@@ -4598,9 +4611,11 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // ouverte ou active aux DEUX SIÈGES R1/R7 = les deux marquent.
 //   avant : 3/5, et « oui » sur 91% des thèmes (soit un oui constant)
 //   après : 4/5, et « oui » sur 47% — proche du taux réel du BTTS
-// La même règle lue sur les maisons FIXES M1/M7 ne donne que 3/5 : c'est
-// le cadre de rotation qui la fait marcher, orientation confirmée par
-// Ellemine_D (« oriente sur la rotation »).
+// ⚠️ RÉVISÉ APRÈS LE CAS F : le cadre de rotation menait 4/5 contre 3/5,
+// c'est ce qui avait motivé « oriente sur la rotation ». Le cas F, premier
+// test en aveugle, a inversé le compte : 4/6 pour les deux cadres. Le
+// choix n'est plus soutenu par les données, et les deux cadres divergent
+// sur 40% des thèmes. Les deux sont désormais affichés à chaque thème.
 // Débranchées du verdict, toujours affichées : BTTS 100% et défavorisé
 // (M4/M10), 1/3 là où elles tirent sur les cas réels ; interrupteur
 // BTTS_DOCTRINE_M4M10_DECISIVE pour les rebrancher.
@@ -10989,14 +11004,19 @@ function siegeOuvertOuActifV7(fig, house) {
   };
 }
 
-function lectureOuvertureButsV7(theme) {
+// cadre : 'rotation' (sièges R1/R7) ou 'fixe' (maisons M1/M7). Par défaut
+// celui de BTTS_CADRE.
+function lectureOuvertureButsV7(theme, cadre) {
   if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
   const rot = getRotationCombat(theme);
-  const s1 = siegeOuvertOuActifV7(theme[rot.hR1], rot.hR1);
-  const s7 = siegeOuvertOuActifV7(theme[rot.hR7], rot.hR7);
+  const enFixe = (cadre || BTTS_CADRE) === 'fixe';
+  const h1 = enFixe ? 1 : rot.hR1;
+  const h7 = enFixe ? 7 : rot.hR7;
+  const s1 = siegeOuvertOuActifV7(theme[h1], h1);
+  const s7 = siegeOuvertOuActifV7(theme[h7], h7);
   // Le bonus est calculé sur les 5e et 8e crans de l'anneau de rotation,
   // pour rester dans le même cadre que les sièges.
-  const h5 = rot.order[4], h8 = rot.order[7];
+  const h5 = enFixe ? 5 : rot.order[4], h8 = enFixe ? 8 : rot.order[7];
   const bonus = [];
   if (TRIO_BUTS_V7[theme[h5]]) bonus.push(FL[theme[h5]] + ' en M' + h5 + ' (5e cran)');
   if (TRIO_BUTS_V7[theme[h8]]) bonus.push(FL[theme[h8]] + ' en M' + h8 + ' (8e cran)');
@@ -11010,9 +11030,10 @@ function lectureOuvertureButsV7(theme) {
   }
   return {
     applicable: true, R1: s1, R7: s7,
+    cadre: enFixe ? 'fixe' : 'rotation',
     lesDeuxMarquent: lesDeuxMarquent,
     bonusM5M8: bonus,
-    synthese: dire(s1, 'R1') + ' · ' + dire(s7, 'R7')
+    synthese: dire(s1, enFixe ? 'M1' : 'R1') + ' · ' + dire(s7, enFixe ? 'M7' : 'R7')
       + ' → ' + (lesDeuxMarquent ? 'LES DEUX MARQUENT' : 'UN SEUL MARQUE')
       + (bonus.length ? ' · bonus signalé : ' + bonus.join(', ') + ' (affiché, non compté)' : '')
   };
@@ -11074,6 +11095,7 @@ function renderDeuxMarquentPanel(theme) {
   // regardent pas la même chose. Le désaccord est montré, pas masqué —
   // même traitement que chaîne contre sièges pour le verdict.
   const o = lectureOuvertureButsV7(theme);
+  const oAutre = lectureOuvertureButsV7(theme, o.cadre === 'fixe' ? 'rotation' : 'fixe');
   if (o.applicable) {
     const co = o.lesDeuxMarquent ? vert : rouge;
     const accord = o.lesDeuxMarquent === d.lesDeuxMarquent;
@@ -11096,6 +11118,19 @@ function renderDeuxMarquentPanel(theme) {
           ? '<div class="muted" style="font-size:10px; margin-top:4px;">Bonus signalé : '
             + o.bonusM5M8.join(', ') + ' — <b>affiché, non compté</b> : ajouté au verdict il fait '
             + 'tomber le score sur les cas réels (il rend C 7-0 et D 0-1 faussement positifs).</div>'
+          : '')
+      // Le cadre n'est PAS tranché : les deux se valent sur les cas réels et
+      // divergent sur 40% des thèmes. On montre systématiquement l'autre
+      // lecture pour que chaque nouveau résultat réel départage.
+      + (oAutre.applicable
+          ? '<div style="margin-top:6px; padding:5px 7px; border-radius:5px; font-size:10.5px; background:rgba(148,163,184,.08); border:1px solid rgba(148,163,184,.28);">'
+            + '<b>Autre cadre — ' + (oAutre.cadre === 'fixe' ? 'maisons fixes M1/M7' : 'sièges R1/R7 de la rotation') + ' :</b> '
+            + '<span style="color:' + (oAutre.lesDeuxMarquent ? vert : rouge) + ';">'
+            + (oAutre.lesDeuxMarquent ? 'les deux marquent' : 'un seul marque') + '</span>'
+            + (oAutre.lesDeuxMarquent === o.lesDeuxMarquent
+                ? ' — même conclusion.'
+                : ' — <b>conclusion opposée.</b> Les deux cadres sont à égalité (4/6 chacun) et divergent sur 40% des thèmes : le choix n\'est pas tranché. Interrupteur BTTS_CADRE.')
+            + '<div class="muted" style="margin-top:2px;">' + oAutre.synthese + '</div></div>'
           : '')
       + '<div style="margin-top:6px; padding:5px 7px; border-radius:5px; font-size:10.5px; background:'
       + (accord ? 'rgba(34,197,94,.10)' : 'rgba(248,113,113,.10)') + '; border:1px solid '
@@ -13282,6 +13317,16 @@ function estBienPlaceV7(fig, theme) {
 // priorité aux règles M4/M10 (BTTS 100% et défavorisé). Mesurées 1/3 là
 // où elles tirent sur les cas réels — laissées à false, mais toujours
 // calculées et affichées.
+// BTTS_CADRE : sur quels deux sièges la règle d'ouverture se lit.
+// 'rotation' = les sièges R1/R7 · 'fixe' = les maisons M1/M7.
+// ⚠️ LES DEUX SONT À ÉGALITÉ, 4/6 sur les cas réels, et ils divergent sur
+// 40% des thèmes — le choix pèse donc lourd et n'est PAS tranché.
+// Historique : le 25/08 la rotation menait 4/5 contre 3/5 et Ellemine_D a
+// dit « oriente sur la rotation ». Le cas F, premier test en aveugle
+// depuis, a inversé le compte : la lecture FIXE y voit juste, la rotation
+// non. Les deux lectures sont désormais calculées et affichées à chaque
+// thème pour que les cas s'accumulent.
+var BTTS_CADRE = 'rotation';
 var BTTS_ROTATION_DECISIF = true;
 var BTTS_DOCTRINE_M4M10_DECISIVE = false;
 
