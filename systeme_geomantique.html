@@ -4233,8 +4233,13 @@ function analyserProtectionV7(theme) {
   return FIGS_V7.map(function(fig) {
     const antagoniste = ANTAGONISTES_V7[fig];
     const protecteur = PROTECTEURS_V7[fig];
-    const antagonistePresent = figureExistsBaseOnly(antagoniste, theme);
-    const protecteurPresent = figureExistsBaseOnly(protecteur, theme);
+    // CORRIGÉ (25/08/26) : exactement l'oubli qu'Ellemine_D avait déjà fait
+    // corriger le 21/08 dans analyserResistanceV7 (« faut pas ignorer les
+    // résultantes ») — cette fonction-ci avait été manquée. Une figure
+    // présente uniquement en résultante n'était vue ni comme antagoniste
+    // menaçant ni comme protecteur disponible.
+    const antagonistePresent = trouverFigV7(antagoniste, theme).length > 0;
+    const protecteurPresent = trouverFigV7(protecteur, theme).length > 0;
     const reposProtecteur = FIGS_V7.indexOf(protecteur) + 1;
     const protecteurEnRepos = theme[reposProtecteur] === protecteur;
     let statut, couleur;
@@ -11259,7 +11264,12 @@ function lectureUnAxeV7(theme, axe) {
   let figureAxe = null, ancree = false;
   try {
     figureAxe = combineMany(meres);
-    ancree = figureExistsBaseOnly(figureAxe, theme);
+    // CORRIGÉ (25/08/26, Ellemine_D : « quand tu vérifies la validation des
+    // axes prends en compte les résultantes »). J'avais laissé
+    // figureExistsBaseOnly ici alors que les trois fonctions de validité
+    // comptent base ET résultante depuis leur alignement. Un axe dont la
+    // figure n'existe qu'en résultante était compté comme non ancré.
+    ancree = positionsBaseEtResultantes(figureAxe, theme).length > 0;
   } catch (e) { figureAxe = null; }
 
   // FIABILITÉ (25/08/26, demande Ellemine_D : « pour avoir la fiabilité des
@@ -14452,7 +14462,8 @@ function rollAllMothersFromDice(){const mothers=[rollOneMother(),rollOneMother()
 // au moins 2 des 3 figures suivantes soient présentes dans le thème :
 // Axe Cardinal (M1+M4+M7+M10), Axe Cadent (M3+M6+M9+M12), figure du
 // jour. Présence vérifiée en base uniquement, comme la validité axes
-// déjà en place (figureExistsBaseOnly). 📚 Piste utilisateur non encore
+// déjà en place. ALIGNÉ le 25/08/26 sur base+résultante, comme les trois
+// fonctions de validité. 📚 Piste utilisateur non encore
 // validée sur des matchs réels — à observer.
 function countAxesEtJourPresents(theme){
   const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
@@ -14461,9 +14472,10 @@ function countAxesEtJourPresents(theme){
   // en est un — la règle reste « au moins 2 sur 3 ».
   const axeT = combineMany([theme[3],theme[6],theme[9],theme[12]]);
   const fdj = figureDuJour();
-  const presentC = figureExistsBaseOnly(axeC, theme);
-  const presentT = figureExistsBaseOnly(axeT, theme);
-  const presentJ = figureExistsBaseOnly(fdj, theme);
+  const pres = fig => positionsBaseEtResultantes(fig, theme).length > 0;
+  const presentC = pres(axeC);
+  const presentT = pres(axeT);
+  const presentJ = pres(fdj);
   const count = [presentC, presentT, presentJ].filter(Boolean).length;
   return {axeC, axeT, fdj, presentC, presentT, presentJ, count};
 }
