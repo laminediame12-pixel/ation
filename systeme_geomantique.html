@@ -4337,8 +4337,27 @@ var POIDS_PROFIL_V7 = {
   multiplicite: 1.5,   // existant, plafonné à 4 occurrences
   environnement: 0.3,  // ⚠️ proposé
   cohabitation: 2,     // ⚠️ proposé
-  activation: 5        // ⚠️ proposé — active +5, passive −5
+  activation: 5,       // ⚠️ proposé — active +5, passive −5
+  maisonNatale: 6      // ⚠️ proposé — allié chez soi +6, ennemi chez soi −6
 };
+
+// ─── ÉTAT DE LA MAISON NATALE (25/08/26, doctrine Ellemine_D) ───
+// « Il est favorable que la maison d'une figure X soit occupée par son
+// allié, pas par son ennemi. » Dimension indépendante des cinq autres :
+// elle ne regarde pas où la figure SE TROUVE, mais qui occupe SA PROPRE
+// maison de repos pendant ce temps. Un binôme qui garde la maison est un
+// appui ; un antagoniste installé chez vous est une prise adverse.
+function etatMaisonNatale(fig, theme) {
+  const maison = FIGS_V7.indexOf(fig) + 1;
+  if (maison < 1) return { maison: null, occupant: null, statut: 'inconnue', score: 0 };
+  const occupant = theme[maison];
+  let statut, score;
+  if (occupant === fig) { statut = 'chez elle'; score = 0; }          // déjà compté par le déplacement
+  else if (BINOMES_V7[fig] === occupant || BINOMES_V7[occupant] === fig) { statut = 'tenue par son binôme'; score = 1; }
+  else if (ANTAGONISTES_V7[fig] === occupant || ANTAGONISTES_V7[occupant] === fig) { statut = 'tenue par son antagoniste'; score = -1; }
+  else { statut = 'occupée par une neutre'; score = 0; }
+  return { maison: maison, occupant: occupant, statut: statut, score: score };
+}
 
 // Cohabitation vue depuis UNE figure dans UNE maison : neutre si la
 // maison ne croise pas les boucles (base et résultante dans la même),
@@ -4376,13 +4395,16 @@ function profilFigureMaison(fig, house, theme) {
   const scoreActivation = elem.natureLevel.active ? POIDS_PROFIL_V7.activation
     : elem.natureLevel.passive ? -POIDS_PROFIL_V7.activation : 0;
 
+  const natale = etatMaisonNatale(fig, theme);
+
   const parts = {
     concordance: base.concordance * POIDS_PROFIL_V7.concordance,
     deplacement: DEPLACEMENT_BONUS_V7[base.deplacement],
     multiplicite: Math.min(base.multiplicite, 4) * POIDS_PROFIL_V7.multiplicite,
     environnement: env.total * POIDS_PROFIL_V7.environnement,
     cohabitation: cohab.score * POIDS_PROFIL_V7.cohabitation,
-    activation: scoreActivation
+    activation: scoreActivation,
+    maisonNatale: natale.score * POIDS_PROFIL_V7.maisonNatale
   };
   const total = Object.keys(parts).reduce(function(s, k){ return s + parts[k]; }, 0);
 
@@ -4396,6 +4418,7 @@ function profilFigureMaison(fig, house, theme) {
     deplacement: base.deplacement,
     cohabitation: cohab,
     activation: activation,
+    maisonNatale: natale,
     parts: parts,
     total: Math.round(total * 100) / 100,
     forceSimple: base.score
@@ -4586,8 +4609,9 @@ var POIDS_CHAINE_V7 = {
 // ⚠️ Doctrine nouvelle, non contre-testée sur l'archive.
 // ═══════════════════════════════════════════════════════════════
 
-// Seuil de concordance à partir duquel une figure « tient » sa maison.
-var SEUIL_SOLIDITE_V7 = 0.5;
+// Seuil de PROFIL à partir duquel une figure « tient » sa maison. Le
+// repos court-circuite ce seuil (forte par nature). ⚠️ valeur proposée.
+var SEUIL_SOLIDITE_V7 = 0;
 
 // Une figure est solide si l'une au moins de ses occurrences est en
 // repos, ou concorde assez avec l'élément de sa maison. Absente = jamais
@@ -4603,21 +4627,35 @@ function figureSolideV7(fig, theme, siegeImpose) {
     const auSiege = occ.filter(function (o) { return o.pos === siegeImpose; });
     occ = auSiege.length ? auSiege : [{ pos: siegeImpose, hidden: false }];
   }
-  let meilleure = null;
+
+  // RÉVISÉ (25/08/26, Ellemine_D) : la solidité ne se juge plus sur un
+  // test binaire (repos ou concordance ≥ 0,5) mais sur TOUS les niveaux —
+  // déplacement, environnement, multiplicité, concordance, cohabitation,
+  // activation, plus l'état de la maison natale. C'est exactement ce que
+  // profilFigureMaison calcule déjà : on s'en sert plutôt que de garder
+  // une seconde définition parallèle qui divergerait.
+  // « Mais dans leur maison elles sont de nature forte, direct, car elles
+  // sont chez elles » : le repos rend solide sans passer par le score.
+  let meilleur = null;
   occ.forEach(function (o) {
-    const enRepos = (FIGS_V7[o.pos - 1] === fig);
-    const conc = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[o.pos]);
-    const note = enRepos ? 2 : conc;
-    if (!meilleure || note > meilleure.note) {
-      meilleure = { pos: o.pos, enResultante: !!o.hidden, enRepos: enRepos, concordance: conc, note: note };
-    }
+    const pr = profilFigureMaison(fig, o.pos, theme);
+    pr.enResultante = !!o.hidden;
+    pr.enRepos = (FIGS_V7[o.pos - 1] === fig);
+    if (!meilleur || pr.total > meilleur.total) meilleur = pr;
   });
-  const solide = meilleure.enRepos || meilleure.concordance >= SEUIL_SOLIDITE_V7;
+
+  const enRepos = occ.some(function (o) { return FIGS_V7[o.pos - 1] === fig; });
+  const solide = enRepos || meilleur.total >= SEUIL_SOLIDITE_V7;
+
   return {
-    solide: solide, present: true, meilleure: meilleure,
-    raison: meilleure.enRepos ? 'en repos en M' + meilleure.pos
-      : solide ? 'concordance ' + meilleure.concordance + ' en M' + meilleure.pos
-      : 'présente mais discordante (concordance ' + meilleure.concordance + ')'
+    solide: solide, present: true, meilleure: meilleur, enRepos: enRepos,
+    total: meilleur.total,
+    raison: enRepos ? 'en repos en M' + meilleur.house + ' (forte par nature)'
+      : solide ? 'profil ' + meilleur.total + ' en M' + meilleur.house
+        + ' (concordance ' + meilleur.concordance + ', ' + meilleur.deplacement
+        + ', ' + meilleur.activation + ', maison natale ' + meilleur.maisonNatale.statut + ')'
+      : 'profil trop faible (' + meilleur.total + ' en M' + meilleur.house + ' — '
+        + meilleur.deplacement + ', ' + meilleur.activation + ')'
   };
 }
 
