@@ -306,7 +306,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
     <div id="heuresPlanetairesContent" class="history-list"></div>
   </div>
 </div>
-<div class="topbar-shell"><div class="topbar"><div class="topbar-title"><h1>Système géomantique</h1><div style="display:flex; gap:10px; align-items:center;"><button id="historyBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#7c3aed;" onclick="openSavedPanel()">💾 Thèmes sauvegardés</button><button id="toggleResultantsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleResultants()">🔄 Afficher résultantes</button><button id="toggleTopbarBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleTopbarContent()">Masquer</button></div></div><div id="topbarContent" class="topbar-grid"><div class="topbar-panel"><h3>Match</h3><div class="row"><div class="field"><label>Date</label><input id="matchDate" type="date" onchange="updatePlaneteJourIndicator()" /></div><div class="field" id="kickoff-time-field"><label>Heure</label><input id="matchTime" type="time" /></div><div class="field" id="live-match-fields" style="display:none; gap:10px;"><div><label>Temps écoulé (minutes)</label><input id="matchElapsedMinutes" type="number" min="0" max="130" placeholder="ex: 45" /></div><div><label>Score actuel</label><input id="matchLiveScore" type="text" placeholder="ex: 1-0" /></div></div><div class="field"><label>Fuseau horaire du match (UTC)</label><select id="matchTimezone" onchange="updatePlaneteJourIndicator()"><option value="-12">UTC-12</option><option value="-11">UTC-11</option><option value="-10">UTC-10 (Hawaï)</option><option value="-9">UTC-9 (Alaska)</option><option value="-8">UTC-8 (Los Angeles)</option><option value="-7">UTC-7 (Denver)</option><option value="-6">UTC-6 (Mexico, Chicago)</option><option value="-5">UTC-5 (New York, Bogotá)</option><option value="-4">UTC-4 (Santiago)</option><option value="-3">UTC-3 (Buenos Aires, São Paulo)</option><option value="-2">UTC-2</option><option value="-1">UTC-1</option><option value="0" selected>UTC+0 (Dakar, Londres, Accra)</option><option value="1">UTC+1 (Paris, Lagos, Alger)</option><option value="2">UTC+2 (Le Caire, Johannesburg)</option><option value="3">UTC+3 (Moscou, Nairobi, Riyad)</option><option value="4">UTC+4 (Dubaï)</option><option value="5">UTC+5</option><option value="5.5">UTC+5:30 (Inde)</option><option value="6">UTC+6</option><option value="7">UTC+7 (Bangkok)</option><option value="8">UTC+8 (Pékin, Singapour)</option><option value="9">UTC+9 (Tokyo, Séoul)</option><option value="9.5">UTC+9:30 (Adélaïde)</option><option value="10">UTC+10 (Sydney)</option><option value="11">UTC+11</option><option value="12">UTC+12 (Auckland)</option><option value="13">UTC+13</option><option value="14">UTC+14</option></select></div><div class="field"><label>Équipe 1</label><input id="team1" value="Équipe 1" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value); updateEquipe1QuestionLabel(this.value);" /></div><div class="field"><label>Équipe 2</label><input id="team2" value="Équipe 2" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value)" /></div><datalist id="team-suggestions"></datalist><div class="field"><label>Région / Pays</label><select id="competitionRegion" onchange="updateCompetitionList()"></select></div><div class="field"><label>Championnat</label><select id="competitionMode"></select></div><div class="field"><label>Lieu</label><input id="stadium" /></div><div class="field"><label>Code postal</label><input id="postalCode" /></div><div class="field"><label>Favori du match</label><select id="matchFavorite"><option value="none">Aucun favori net</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field"><label>Équipe à domicile</label><select id="matchDomicile"><option value="none">Terrain neutre / inconnu</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field" style="grid-column:1/-1;"><label>Questions à traiter <span style="color:#94a3b8; font-weight:normal;">(optionnel)</span></label><div id="userQuestionGroup" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;"><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="nul_ou_victoire" /> Nul ou victoire ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="penalty_ou_rouge" /> Il y aura-t-il penalty ou rouge ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="domicile_gagne" /> L'équipe à domicile va-t-elle gagner ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="premier_but" /> Qui va marquer en premier ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="equipe1_gagne" /> <span id="q-equipe1-label">Équipe 1</span> va-t-il gagner ce match ?</label></div><div class="hint">Aucune sélection requise — coche uniquement les questions qui t'intéressent.</div><div style="margin-top:10px;"><label for="userQuestionText">Ta question <span style="color:#94a3b8; font-weight:normal;">(texte libre, optionnel)</span></label><textarea id="userQuestionText" rows="2" placeholder="Écris ici la question précise que tu veux poser au thème…" style="width:100%; margin-top:4px; resize:vertical;"></textarea></div></div></div></div><div class="topbar-panel"><h3>Tirage des mères</h3><div class="row"><div class="field"><label>Mode de tirage</label><select id="drawMode" onchange="toggleDrawMode()"><option value="manual">Manuel</option><option value="dice">4 dés</option><option value="live">Live (match en cours)</option></select></div></div><div class="topbar-mini" id="planeteJourIndicator" style="margin-top:6px; color:#a78bfa;">🪐 Planète gouvernante du tirage : calcul en cours...</div><button class="btn-secondary" style="width:auto; padding:6px 12px; margin-top:6px; font-size:12px;" onclick="openHeuresPlanetairesPanel()">🕐 Table des 24 heures planétaires</button><div id="manual-mothers" class="row" style="margin-top:10px;"><div class="field"><label>Mère 1</label><select id="m1"></select></div><div class="field"><label>Mère 2</label><select id="m2"></select></div><div class="field"><label>Mère 3</label><select id="m3"></select></div><div class="field"><label>Mère 4</label><select id="m4"></select></div></div><div id="dice-mothers" style="display:none; margin-top:10px;"><div class="row"><button class="btn-primary" onclick="rollAllMothersFromDice()">Tirer les 4 mères</button><button class="btn-secondary" onclick="rollUntilValidDraw()" style="font-size:16px;">بسم الله</button></div><div id="dice-output" class="topbar-mini">Aucun tirage de dés pour le moment.</div></div><div style="margin-top:12px;"><h3>Actions</h3><div class="topbar-actions"><button class="btn-primary" onclick="launchTheme(false)">Lancer le thème</button><button class="btn-secondary" onclick="launchTheme(true)">Lancer aléatoire</button></div><div class="topbar-mini">Verdict fixe + verdict rotation + dualité des camps.</div></div><div style="margin-top:12px;"><h3>🔮 Consultation personnelle</h3><div class="row"><div class="field" style="grid-column:1/-1;"><label>Domaine de la question</label><select id="domainePerso"><option value="general">Vue générale (les 16 maisons)</option><optgroup label="Domaines de vie (I-XII)"><option value="1">I — La Vie (moi-même)</option><option value="2">II — La Richesse (argent)</option><option value="3">III — Les Frères (entourage)</option><option value="4">IV — Le Foyer (famille)</option><option value="5">V — Les Enfants</option><option value="6">VI — La Maladie (santé)</option><option value="7">VII — Le Mariage (union)</option><option value="8">VIII — La Mort (pertes)</option><option value="9">IX — La Religion (voyages)</option><option value="10">X — La Royauté (carrière)</option><option value="11">XI — Les Amis</option><option value="12">XII — Les Ennemis cachés</option></optgroup><optgroup label="Figures de synthèse (XIII-XVI)"><option value="13">XIII — Témoin de droite</option><option value="14">XIV — Témoin de gauche</option><option value="15">XV — Le Juge (verdict final)</option><option value="16">XVI — La Réconciliation</option></optgroup></select></div></div><div class="topbar-actions" style="margin-top:8px;"><button class="btn-secondary" onclick="lancerConsultationPersonnelle()">Interpréter avec les mères ci-dessus</button><button class="btn-secondary" id="toggleConsultationBtn" onclick="toggleConsultationOutput()" style="display:none;">👁️ Afficher l'interprétation</button></div><div class="topbar-mini">Utilise les mêmes 4 mères que le tirage, lues selon les 12 maisons classiques (indépendant du moteur football).</div></div></div></div></div></div>
+<div class="topbar-shell"><div class="topbar"><div class="topbar-title"><h1>Système géomantique</h1><div style="display:flex; gap:10px; align-items:center;"><button id="historyBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#7c3aed;" onclick="openSavedPanel()">💾 Thèmes sauvegardés</button><button id="toggleResultantsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleResultants()">🔄 Afficher résultantes</button><button id="importImageBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#0e7490;" onclick="document.getElementById('themeImageInput').click()">📷 Importer une image</button><input type="file" id="themeImageInput" accept="image/*" style="display:none" onchange="importerThemeDepuisImage(this)" /><button id="toggleTopbarBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleTopbarContent()">Masquer</button></div></div><div id="topbarContent" class="topbar-grid"><div class="topbar-panel"><h3>Match</h3><div class="row"><div class="field"><label>Date</label><input id="matchDate" type="date" onchange="updatePlaneteJourIndicator()" /></div><div class="field" id="kickoff-time-field"><label>Heure</label><input id="matchTime" type="time" /></div><div class="field" id="live-match-fields" style="display:none; gap:10px;"><div><label>Temps écoulé (minutes)</label><input id="matchElapsedMinutes" type="number" min="0" max="130" placeholder="ex: 45" /></div><div><label>Score actuel</label><input id="matchLiveScore" type="text" placeholder="ex: 1-0" /></div></div><div class="field"><label>Fuseau horaire du match (UTC)</label><select id="matchTimezone" onchange="updatePlaneteJourIndicator()"><option value="-12">UTC-12</option><option value="-11">UTC-11</option><option value="-10">UTC-10 (Hawaï)</option><option value="-9">UTC-9 (Alaska)</option><option value="-8">UTC-8 (Los Angeles)</option><option value="-7">UTC-7 (Denver)</option><option value="-6">UTC-6 (Mexico, Chicago)</option><option value="-5">UTC-5 (New York, Bogotá)</option><option value="-4">UTC-4 (Santiago)</option><option value="-3">UTC-3 (Buenos Aires, São Paulo)</option><option value="-2">UTC-2</option><option value="-1">UTC-1</option><option value="0" selected>UTC+0 (Dakar, Londres, Accra)</option><option value="1">UTC+1 (Paris, Lagos, Alger)</option><option value="2">UTC+2 (Le Caire, Johannesburg)</option><option value="3">UTC+3 (Moscou, Nairobi, Riyad)</option><option value="4">UTC+4 (Dubaï)</option><option value="5">UTC+5</option><option value="5.5">UTC+5:30 (Inde)</option><option value="6">UTC+6</option><option value="7">UTC+7 (Bangkok)</option><option value="8">UTC+8 (Pékin, Singapour)</option><option value="9">UTC+9 (Tokyo, Séoul)</option><option value="9.5">UTC+9:30 (Adélaïde)</option><option value="10">UTC+10 (Sydney)</option><option value="11">UTC+11</option><option value="12">UTC+12 (Auckland)</option><option value="13">UTC+13</option><option value="14">UTC+14</option></select></div><div class="field"><label>Équipe 1</label><input id="team1" value="Équipe 1" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value); updateEquipe1QuestionLabel(this.value);" /></div><div class="field"><label>Équipe 2</label><input id="team2" value="Équipe 2" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value)" /></div><datalist id="team-suggestions"></datalist><div class="field"><label>Région / Pays</label><select id="competitionRegion" onchange="updateCompetitionList()"></select></div><div class="field"><label>Championnat</label><select id="competitionMode"></select></div><div class="field"><label>Lieu</label><input id="stadium" /></div><div class="field"><label>Code postal</label><input id="postalCode" /></div><div class="field"><label>Favori du match</label><select id="matchFavorite"><option value="none">Aucun favori net</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field"><label>Équipe à domicile</label><select id="matchDomicile"><option value="none">Terrain neutre / inconnu</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field" style="grid-column:1/-1;"><label>Questions à traiter <span style="color:#94a3b8; font-weight:normal;">(optionnel)</span></label><div id="userQuestionGroup" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;"><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="nul_ou_victoire" /> Nul ou victoire ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="penalty_ou_rouge" /> Il y aura-t-il penalty ou rouge ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="domicile_gagne" /> L'équipe à domicile va-t-elle gagner ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="premier_but" /> Qui va marquer en premier ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="equipe1_gagne" /> <span id="q-equipe1-label">Équipe 1</span> va-t-il gagner ce match ?</label></div><div class="hint">Aucune sélection requise — coche uniquement les questions qui t'intéressent.</div><div style="margin-top:10px;"><label for="userQuestionText">Ta question <span style="color:#94a3b8; font-weight:normal;">(texte libre, optionnel)</span></label><textarea id="userQuestionText" rows="2" placeholder="Écris ici la question précise que tu veux poser au thème…" style="width:100%; margin-top:4px; resize:vertical;"></textarea></div></div></div></div><div class="topbar-panel"><h3>Tirage des mères</h3><div class="row"><div class="field"><label>Mode de tirage</label><select id="drawMode" onchange="toggleDrawMode()"><option value="manual">Manuel</option><option value="dice">4 dés</option><option value="live">Live (match en cours)</option></select></div></div><div class="topbar-mini" id="planeteJourIndicator" style="margin-top:6px; color:#a78bfa;">🪐 Planète gouvernante du tirage : calcul en cours...</div><button class="btn-secondary" style="width:auto; padding:6px 12px; margin-top:6px; font-size:12px;" onclick="openHeuresPlanetairesPanel()">🕐 Table des 24 heures planétaires</button><div id="manual-mothers" class="row" style="margin-top:10px;"><div class="field"><label>Mère 1</label><select id="m1"></select></div><div class="field"><label>Mère 2</label><select id="m2"></select></div><div class="field"><label>Mère 3</label><select id="m3"></select></div><div class="field"><label>Mère 4</label><select id="m4"></select></div></div><div id="dice-mothers" style="display:none; margin-top:10px;"><div class="row"><button class="btn-primary" onclick="rollAllMothersFromDice()">Tirer les 4 mères</button><button class="btn-secondary" onclick="rollUntilValidDraw()" style="font-size:16px;">بسم الله</button></div><div id="dice-output" class="topbar-mini">Aucun tirage de dés pour le moment.</div></div><div style="margin-top:12px;"><h3>Actions</h3><div class="topbar-actions"><button class="btn-primary" onclick="launchTheme(false)">Lancer le thème</button><button class="btn-secondary" onclick="launchTheme(true)">Lancer aléatoire</button></div><div class="topbar-mini">Verdict fixe + verdict rotation + dualité des camps.</div></div><div style="margin-top:12px;"><h3>🔮 Consultation personnelle</h3><div class="row"><div class="field" style="grid-column:1/-1;"><label>Domaine de la question</label><select id="domainePerso"><option value="general">Vue générale (les 16 maisons)</option><optgroup label="Domaines de vie (I-XII)"><option value="1">I — La Vie (moi-même)</option><option value="2">II — La Richesse (argent)</option><option value="3">III — Les Frères (entourage)</option><option value="4">IV — Le Foyer (famille)</option><option value="5">V — Les Enfants</option><option value="6">VI — La Maladie (santé)</option><option value="7">VII — Le Mariage (union)</option><option value="8">VIII — La Mort (pertes)</option><option value="9">IX — La Religion (voyages)</option><option value="10">X — La Royauté (carrière)</option><option value="11">XI — Les Amis</option><option value="12">XII — Les Ennemis cachés</option></optgroup><optgroup label="Figures de synthèse (XIII-XVI)"><option value="13">XIII — Témoin de droite</option><option value="14">XIV — Témoin de gauche</option><option value="15">XV — Le Juge (verdict final)</option><option value="16">XVI — La Réconciliation</option></optgroup></select></div></div><div class="topbar-actions" style="margin-top:8px;"><button class="btn-secondary" onclick="lancerConsultationPersonnelle()">Interpréter avec les mères ci-dessus</button><button class="btn-secondary" id="toggleConsultationBtn" onclick="toggleConsultationOutput()" style="display:none;">👁️ Afficher l'interprétation</button></div><div class="topbar-mini">Utilise les mêmes 4 mères que le tirage, lues selon les 12 maisons classiques (indépendant du moteur football).</div></div></div></div></div></div>
 
 <div id="consultation-perso-output" style="display:none;"></div>
 
@@ -12904,6 +12904,289 @@ function rollUntilValidDraw(){
   document.getElementById('dice-output').innerHTML += `<div class="kv"><b>Essais :</b> ${attempts}</div><div class="kv" style="font-size:11px;">${detailRes}</div>`;
 }
 function getCurrentMotherValues(){return ['m1','m2','m3','m4'].map(id=>document.getElementById(id).value||'via');}
+
+// ═══════════════════════════════════════════════════════════════
+// IMPORT D'UNE IMAGE DE THÈME (25/08/26, demande Ellemine_D)
+// Lit une capture de bouclier géomantique et en extrait les 4 mères.
+// Tout se fait en local dans le navigateur : aucun réseau, aucune
+// bibliothèque — le fichier reste utilisable hors ligne.
+//
+// GARDE-FOU CENTRAL : une mère mal lue produirait un thème entièrement
+// faux, avec un verdict d'apparence normale et rien pour alerter. La
+// lecture est donc CONTRE-VÉRIFIÉE par l'arithmétique du moteur : les
+// 4 filles détectées dans l'image doivent être exactement celles que
+// calcTheme recalcule à partir des 4 mères détectées. Si un seul point
+// est mal lu, la concordance saute. Rien n'est lancé sans confirmation.
+// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// DÉTECTION DES FIGURES DANS UNE CAPTURE DE BOUCLIER GÉOMANTIQUE
+// Canvas + JS pur, aucune dépendance, fonctionne hors ligne.
+// Principe : une figure est 4 lignes de 1 ou 2 points. On repère tous
+// les points ronds de taille homogène, on les groupe en lignes puis en
+// colonnes, et on lit la bande du haut (8 figures : 4 mères + 4 filles).
+// ═══════════════════════════════════════════════════════════════
+function detecterBouclier(img, options) {
+  const opt = Object.assign({
+    largeurMax: 900,
+    seuilLuminance: 180,
+    toleranceTaille: 0.35,
+    minPointsParLigne: 6
+  }, options || {});
+
+  // ── 1. Rendu dans un canvas, réduit si l'image est très grande ──
+  const scale = Math.min(1, opt.largeurMax / img.width);
+  const w = Math.max(1, Math.round(img.width * scale));
+  const h = Math.max(1, Math.round(img.height * scale));
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(img, 0, 0, w, h);
+  const px = cx.getImageData(0, 0, w, h).data;
+
+  // ── 2. Binarisation sur la LUMINANCE, pas sur la couleur : les points
+  //      roses de l'application sont assez sombres face au fond blanc ──
+  const bin = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    const a = px[i * 4 + 3];
+    if (a < 128) { bin[i] = 0; continue; }
+    const lum = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+    bin[i] = lum < opt.seuilLuminance ? 1 : 0;
+  }
+
+  // ── 3. Composantes connexes (8-connexité), pile explicite ──
+  const vu = new Uint8Array(w * h);
+  const taches = [];
+  const pile = [];
+  for (let s = 0; s < w * h; s++) {
+    if (!bin[s] || vu[s]) continue;
+    let minX = w, maxX = 0, minY = h, maxY = 0, n = 0, sx = 0, sy = 0;
+    pile.push(s); vu[s] = 1;
+    while (pile.length) {
+      const p = pile.pop();
+      const x = p % w, y = (p - x) / w;
+      n++; sx += x; sy += y;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (!dx && !dy) continue;
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+          const q = ny * w + nx;
+          if (bin[q] && !vu[q]) { vu[q] = 1; pile.push(q); }
+        }
+      }
+    }
+    const bw = maxX - minX + 1, bh = maxY - minY + 1;
+    taches.push({ cx: sx / n, cy: sy / n, bw: bw, bh: bh, n: n,
+      rapport: bw / bh, remplissage: n / (bw * bh) });
+  }
+
+  // ── 4. Ne garder que ce qui ressemble à un point : à peu près carré de
+  //      boîte, bien rempli (un disque occupe ~78% de sa boîte), et de
+  //      taille proche de la médiane. Le texte et les icônes tombent. ──
+  let candidats = taches.filter(function (t) {
+    return t.rapport > 0.7 && t.rapport < 1.4 && t.remplissage > 0.6 && t.n >= 12;
+  });
+  if (candidats.length < 16) {
+    return { ok: false, raison: 'Trop peu de points détectés (' + candidats.length + ').' };
+  }
+  const tailles = candidats.map(function (t) { return t.bh; }).sort(function (a, b) { return a - b; });
+  const d = tailles[Math.floor(tailles.length / 2)]; // diamètre médian
+  const points = candidats.filter(function (t) {
+    return Math.abs(t.bh - d) <= d * opt.toleranceTaille;
+  });
+  if (points.length < 16) {
+    return { ok: false, raison: 'Points de taille trop irrégulière (' + points.length + ' retenus).' };
+  }
+
+  // ── 5. Regroupement en lignes horizontales ──
+  points.sort(function (a, b) { return a.cy - b.cy; });
+  const lignes = [];
+  points.forEach(function (p) {
+    const derniere = lignes[lignes.length - 1];
+    if (derniere && Math.abs(p.cy - derniere.y) < d * 0.7) {
+      derniere.pts.push(p);
+      derniere.y = derniere.pts.reduce(function (s, q) { return s + q.cy; }, 0) / derniere.pts.length;
+    } else {
+      lignes.push({ y: p.cy, pts: [p] });
+    }
+  });
+
+  // ── 6. La bande du haut = le premier groupe de 4 lignes RÉGULIÈREMENT
+  //      espacées. Le nombre de points ne suffit pas comme critère : dans
+  //      une capture réelle, le texte de la question produit une ligne de
+  //      8 « points » (les lettres rondes o, e, a, g passent le filtre de
+  //      forme). Ce qui distingue un bouclier, c'est que ses 4 lignes sont
+  //      à intervalle constant — le texte, lui, est isolé. ──
+  const peuplees = lignes.filter(function (l) { return l.pts.length >= opt.minPointsParLigne; });
+  let bande = [];
+  for (let i = 0; i + 3 < peuplees.length; i++) {
+    const g = [peuplees[i + 1].y - peuplees[i].y,
+               peuplees[i + 2].y - peuplees[i + 1].y,
+               peuplees[i + 3].y - peuplees[i + 2].y];
+    const mn = Math.min.apply(null, g), mx = Math.max.apply(null, g);
+    if (mx - mn <= mx * 0.25 && mx < d * 4) { bande = peuplees.slice(i, i + 4); break; }
+  }
+  if (bande.length < 4) {
+    return { ok: false, raison: 'Aucune bande de 4 lignes régulièrement espacées trouvée.' };
+  }
+
+  // ── 7. Colonnes : on coupe là où l'écart horizontal dépasse nettement
+  //      l'espacement de deux points d'une même case ──
+  const tous = bande.reduce(function (acc, l) { return acc.concat(l.pts); }, [])
+    .sort(function (a, b) { return a.cx - b.cx; });
+  const colonnes = [];
+  tous.forEach(function (p) {
+    const derniere = colonnes[colonnes.length - 1];
+    if (derniere && (p.cx - derniere.xMax) < d * 2.5) {
+      derniere.pts.push(p);
+      if (p.cx > derniere.xMax) derniere.xMax = p.cx;
+    } else {
+      colonnes.push({ xMin: p.cx, xMax: p.cx, pts: [p] });
+    }
+  });
+  if (colonnes.length !== 8) {
+    return { ok: false, raison: 'La bande du haut donne ' + colonnes.length + ' colonnes au lieu de 8.',
+      colonnes: colonnes.length };
+  }
+
+  // ── 8. Lecture : pour chaque colonne, compter les points de chaque ligne ──
+  const glyphes = colonnes.map(function (col) {
+    return bande.map(function (l) {
+      const n = col.pts.filter(function (p) { return Math.abs(p.cy - l.y) < d * 0.7; }).length;
+      return n >= 2 ? 2 : 1;
+    });
+  });
+
+  return { ok: true, diametre: d, nbPoints: points.length, glyphes: glyphes };
+}
+
+
+function figureDepuisGlyphe(g) {
+  const cle = g.join('');
+  return Object.keys(MAP_GEO).find(function (k) { return MAP_GEO[k].join('') === cle; }) || null;
+}
+
+function importerThemeDepuisImage(input) {
+  const fichier = input && input.files && input.files[0];
+  input.value = ''; // permet de réimporter la même image
+  if (!fichier) return;
+  const lecteur = new FileReader();
+  lecteur.onload = function (e) {
+    const img = new Image();
+    img.onload = function () {
+      let res;
+      try { res = detecterBouclier(img); }
+      catch (err) { res = { ok: false, raison: 'Erreur de lecture : ' + (err && err.message || err) }; }
+      afficherImportImage(res, e.target.result);
+    };
+    img.onerror = function () {
+      afficherImportImage({ ok: false, raison: 'Image illisible.' }, null);
+    };
+    img.src = e.target.result;
+  };
+  lecteur.readAsDataURL(fichier);
+}
+
+function afficherImportImage(res, dataUrl) {
+  let panneau = document.getElementById('import-image-panel');
+  if (!panneau) {
+    panneau = document.createElement('div');
+    panneau.id = 'import-image-panel';
+    panneau.className = 'card';
+    panneau.style.cssText = 'margin:0 8px 12px; border:1px solid #0e7490;';
+    const shell = document.querySelector('.topbar-shell');
+    if (shell && shell.parentNode) shell.parentNode.insertBefore(panneau, shell.nextSibling);
+    else document.body.insertBefore(panneau, document.body.firstChild);
+  }
+  panneau.style.display = 'block';
+
+  if (!res.ok) {
+    panneau.innerHTML = '<h3 style="margin-bottom:4px;">📷 Import d\'image</h3>'
+      + '<div style="color:#f87171; font-size:13px;">Lecture impossible : ' + String(res.raison).replace(/[<>]/g, '') + '</div>'
+      + '<div class="muted" style="font-size:11px; margin-top:8px;">Il faut une capture nette du bouclier, avec la rangée du haut entièrement visible. Les 4 mères sont les quatre figures de droite de cette rangée.</div>'
+      + '<div style="margin-top:10px;"><button class="btn-secondary" style="width:auto;padding:6px 12px;" onclick="fermerImportImage()">Fermer</button></div>';
+    return;
+  }
+
+  // Les 8 figures de la bande, lues de gauche à droite dans l'image.
+  const figs = res.glyphes.map(figureDepuisGlyphe);
+  if (figs.some(function (f) { return !f; })) {
+    panneau.innerHTML = '<h3>📷 Import d\'image</h3><div style="color:#f87171;font-size:13px;">Une des 8 figures lues ne correspond à aucune figure géomantique.</div>'
+      + '<div style="margin-top:10px;"><button class="btn-secondary" style="width:auto;padding:6px 12px;" onclick="fermerImportImage()">Fermer</button></div>';
+    return;
+  }
+
+  // Le bouclier se lit de DROITE à GAUCHE : mères d'abord, puis filles.
+  const droiteGauche = figs.slice().reverse();
+  const meres = droiteGauche.slice(0, 4);
+  const fillesLues = droiteGauche.slice(4, 8);
+
+  // Contre-vérification par le moteur.
+  const t = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]);
+  const fillesCalc = [t[5], t[6], t[7], t[8]];
+  const concordent = fillesLues.every(function (f, i) { return f === fillesCalc[i]; });
+
+  window.__importMeres = meres;
+
+  function pastille(f, role) {
+    const couleur = role === 'mere' ? '#0e7490' : '#334155';
+    return '<div style="border:1px solid ' + couleur + '; border-radius:8px; padding:6px 8px; text-align:center; background:#0b1220;">'
+      + '<div style="font-size:9px; letter-spacing:.08em; color:#94a3b8; text-transform:uppercase;">' + role + '</div>'
+      + '<div style="font-size:12px; font-weight:700; color:#e2e8f0; margin-top:2px;">' + FL[f] + '</div></div>';
+  }
+
+  let html = '<h3 style="margin-bottom:2px;">📷 Thème lu dans l\'image</h3>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:10px;">' + res.nbPoints + ' points détectés · rangée du haut lue de droite à gauche</div>';
+
+  html += '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:8px;">'
+    + meres.map(function (f) { return pastille(f, 'mère'); }).join('') + '</div>';
+  html += '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:10px;">'
+    + fillesLues.map(function (f) { return pastille(f, 'fille'); }).join('') + '</div>';
+
+  if (concordent) {
+    html += '<div style="padding:8px 10px; border-radius:8px; background:#052e1a; border:1px solid #22c55e; font-size:12px; color:#bbf7d0;">'
+      + '✅ <b>Lecture vérifiée</b> — les 4 filles lues dans l\'image correspondent exactement à celles que le moteur recalcule depuis ces 4 mères. Un seul point mal lu ferait échouer ce contrôle.</div>';
+  } else {
+    html += '<div style="padding:8px 10px; border-radius:8px; background:#3b1d1d; border:1px solid #f87171; font-size:12px; color:#fecaca;">'
+      + '⚠️ <b>Lecture douteuse</b> — les filles lues (' + fillesLues.map(function (f) { return FL[f]; }).join(', ') + ') ne correspondent pas à celles recalculées ('
+      + fillesCalc.map(function (f) { return FL[f]; }).join(', ') + '). Au moins un point a été mal lu : vérifie les mères avant de lancer.</div>';
+  }
+
+  html += '<div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">'
+    + '<button class="btn-primary" style="width:auto;padding:8px 14px;" onclick="appliquerMeresImportees(true)">Remplir et lancer le thème</button>'
+    + '<button class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="appliquerMeresImportees(false)">Remplir seulement</button>'
+    + '<button class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="fermerImportImage()">Annuler</button></div>';
+
+  if (dataUrl) {
+    html += '<details style="margin-top:10px;"><summary class="muted" style="font-size:11px; cursor:pointer;">Voir l\'image importée</summary>'
+      + '<img src="' + dataUrl + '" style="max-width:100%; margin-top:8px; border-radius:8px; border:1px solid #334155;" alt="Image du thème importée" /></details>';
+  }
+
+  panneau.innerHTML = html;
+  panneau.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function appliquerMeresImportees(lancer) {
+  const meres = window.__importMeres;
+  if (!meres) return;
+  ['m1', 'm2', 'm3', 'm4'].forEach(function (id, i) {
+    const el = document.getElementById(id);
+    if (el) el.value = meres[i];
+  });
+  const mode = document.getElementById('drawMode');
+  if (mode && mode.value !== 'manual') { mode.value = 'manual'; toggleDrawMode(); }
+  fermerImportImage();
+  if (lancer) launchTheme(false);
+}
+
+function fermerImportImage() {
+  const p = document.getElementById('import-image-panel');
+  if (p) p.style.display = 'none';
+}
 function themeHas(fig,theme){return Object.values(theme).includes(fig);} 
 function houseMatchesElement(pos,fig){return MAISON_ELEM[pos]===ELEMENTS[fig];}
 function campParameterScore(theme, houses){ let score=0; let firstHalfSignal=false; let pressionAntagoniste=0; let blocageAntagoniste=0; houses.forEach(pos=>{ const fig=theme[pos]; if(!fig) return; const sameElement=houseMatchesElement(pos, fig); const binome=BINOMES[fig]; const antagoniste=ANTAGONISTES[fig]; const binomeVisible=themeHas(binome, theme); const antagonisteVisible=themeHas(antagoniste, theme); if(sameElement) score += 2; if(binomeVisible) score += 2; if(sameElement && binomeVisible) score += 3; if(ELEMENTS[fig]==='terre' && MAISON_ELEM[pos]==='terre' && binomeVisible){ const feuBinomeHouse = houses.some(h => MAISON_ELEM[h]==='feu' && theme[h]===binome); if(feuBinomeHouse){ score += 4; if(pos===1 || pos===7) firstHalfSignal = true; } } if((pos===1 || pos===7) && sameElement && binomeVisible) firstHalfSignal = true; if(antagonisteVisible){ if(ELEMENTS[fig]==='feu' && MAISON_ELEM[pos]==='feu'){ pressionAntagoniste += 4; score -= 4; } if(ELEMENTS[fig]==='terre' && MAISON_ELEM[pos]==='terre'){ blocageAntagoniste += 4; score -= 4; } } }); return { score, firstHalfSignal, pressionAntagoniste, blocageAntagoniste, destruction: pressionAntagoniste + blocageAntagoniste }; }
