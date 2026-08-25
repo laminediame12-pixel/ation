@@ -4545,16 +4545,28 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     cas des deux autres, sur lesquels le barème a été calé.
 //     L'Axe Succédent imposait le nul ✗ — motif du débranchement.
 //
-// MISE À JOUR 25/08 — LES RÔLES EXERCÉS SONT BRANCHÉS (scoreRolesRecusV7).
-// L'ancrage décisif est désormais chaîne + rôles reçus. Effet sur les cas :
-//   A 6-1 : rôles à égalité (1,5 / 1,5) — marge inchangée 0,75 → R1 ✅
-//   B 3-2 : rôles favorables à R7 (1 / 1,5) — marge 0,75 → 0,25 → R1 ✅
-//   C 7-0 : rôles favorables à R1 (2,5 / 1,5) — marge 0,75 → 1,75 → R1 ✅
-// Les rôles ÉLARGISSENT donc la seule prédiction hors échantillon et
-// RÉTRÉCISSENT le cas qui contredit déjà toutes les dimensions chiffrées.
-// Sur 4000 thèmes, l'ajout renverse 4,2% des verdicts que la chaîne seule
-// décidait, et réduit les égalités de 264 à 236.
-// ⚠️ Les rôles SEULS ne donneraient que 1/3 — ils complètent la chaîne.
+// MISE À JOUR 25/08 — LES DEUX CÔTÉS DES RÔLES SONT BRANCHÉS.
+// ancrage = solidité de chaîne + rôles REÇUS + rôles EXERCÉS.
+//   reçus   : scoreRolesRecusV7   — les 4 pôles du chef (X+10, X+4, X+2, X−3)
+//   exercés : scoreRolesExercesV7 — ce que le chef fait à X−10, X−4, X−2, X+3
+// Les deux ensembles sont DISJOINTS : 0 figure commune sur 64 (vérifié sur
+// les 16 figures). Peser les reçus ne disait donc rien du côté actif — c'est
+// la correction signalée par Ellemine_D (« tu ne l'as pas branché »).
+//
+// Effet cumulé sur les trois cas, marge de R1 :
+//   A 6-1 : 0,75 → 0,75 (reçus à égalité) → 0,63 (exercés) → R1 ✅
+//   B 3-2 : 0,75 → 0,25 (reçus contre R1)  → 1,00 (exercés) → R1 ✅
+//   C 7-0 : 0,75 → 1,75 (reçus pour R1)    → 1,75 (exercés à égalité) → R1 ✅
+// Le côté actif RÉPARE le cas B, que le côté reçu avait ramené à 0,25.
+//
+// ⚠️ Ce que la mesure a écarté : compter les rôles exercés sur N'IMPORTE
+// QUI donne 1/3 — dans les cas A et B, R7 exerce plus de rôles effectifs
+// que R1, et R1 a gagné les deux. Cela ne mesurait que la population du
+// thème. Seuls les rôles touchant le camp adverse comptent, et le barème
+// tient 3/3 pour tout k de 0,5 à 1,5 — c'est le réglage le plus stable
+// des cinq essayés.
+// ⚠️ Les rôles reçus SEULS donneraient 1/3 : les trois couches se
+// complètent, aucune ne remplace les autres.
 //
 // BILAN : solidité de chaîne 3/3 · lecture des sièges 3/3 ·
 //         réseau d'ancrage 2/3 · règles de nul 0/2 (elles se sont
@@ -4872,8 +4884,14 @@ function analyseAncrageDeveloppe(theme) {
   const chaineR7 = soliditeChaineV7(figR7, theme);
   const rolesR1 = scoreRolesRecusV7(figR1, theme, rot.hR1);
   const rolesR7 = scoreRolesRecusV7(figR7, theme, rot.hR7);
-  const ancrageR1 = Math.round((chaineR1.total + rolesR1.total) * 100) / 100;
-  const ancrageR7 = Math.round((chaineR7.total + rolesR7.total) * 100) / 100;
+  // ─── CÔTÉ ACTIF (25/08/26) : « tu ne l'as pas branché » ───
+  // Les rôles REÇUS visent les quatre pôles du chef — les mêmes figures que
+  // la chaîne. Les rôles EXERCÉS visent quatre figures entièrement
+  // différentes : aucune n'est commune aux deux côtés (vérifié 0/64).
+  const exercesR1 = scoreRolesExercesV7(figR1, figR7, theme, rot.hR1);
+  const exercesR7 = scoreRolesExercesV7(figR7, figR1, theme, rot.hR7);
+  const ancrageR1 = Math.round((chaineR1.total + rolesR1.total + exercesR1.total) * 100) / 100;
+  const ancrageR7 = Math.round((chaineR7.total + rolesR7.total + exercesR7.total) * 100) / 100;
 
   function val(m) { return m && m.soi && m.soi.meilleur ? m.soi.meilleur.total : 0; }
   const installR1 = val(membres.R1) + val(membres.binomeR1) - val(membres.antagoR1);
@@ -4884,7 +4902,8 @@ function analyseAncrageDeveloppe(theme) {
     avantage = ancrageR1 > ancrageR7 ? 'R1' : 'R7';
     critere = 'ancrage ' + ancrageR1 + ' contre ' + ancrageR7
       + ' (chaîne ' + chaineR1.total + '/' + chaineR7.total
-      + ' + rôles reçus ' + rolesR1.total + '/' + rolesR7.total + ')';
+      + ' + rôles reçus ' + rolesR1.total + '/' + rolesR7.total
+      + ' + rôles exercés ' + exercesR1.total + '/' + exercesR7.total + ')';
   } else if (installR1 !== installR7) {
     avantage = installR1 > installR7 ? 'R1' : 'R7';
     critere = 'ancrages équivalents (' + ancrageR1 + ') — départage par la force d\'installation ('
@@ -4899,14 +4918,17 @@ function analyseAncrageDeveloppe(theme) {
     membres: membres, penchantX: penchantX,
     chaineR1: chaineR1, chaineR7: chaineR7,
     rolesR1: rolesR1, rolesR7: rolesR7,
+    exercesR1: exercesR1, exercesR7: exercesR7,
     ancrageR1: ancrageR1, ancrageR7: ancrageR7,
     installR1: Math.round(installR1 * 100) / 100,
     installR7: Math.round(installR7 * 100) / 100,
     avantage: avantage, critere: critere,
     synthese: 'R1 ' + FL[figR1] + ' — ancrage ' + ancrageR1 + ' (chaîne ' + chaineR1.total
-      + ' : ' + chaineR1.resume + ' · rôles ' + rolesR1.total + ' : ' + rolesR1.resume + ') · '
+      + ' · rôles reçus ' + rolesR1.total + ' · rôles exercés ' + exercesR1.total
+      + ' : ' + exercesR1.resume + ') · '
       + 'R7 ' + FL[figR7] + ' — ancrage ' + ancrageR7 + ' (chaîne ' + chaineR7.total
-      + ' : ' + chaineR7.resume + ' · rôles ' + rolesR7.total + ' : ' + rolesR7.resume + ') → '
+      + ' · rôles reçus ' + rolesR7.total + ' · rôles exercés ' + exercesR7.total
+      + ' : ' + exercesR7.resume + ') → '
       + (avantage ? 'avantage ' + avantage : 'égalité') + ' par ' + critere + '.'
   };
 }
@@ -10624,9 +10646,14 @@ function rolesExercesTheme(theme) {
     l.chef = !estTete ? null : (memeChef ? 'R1 · R7' : (f === figR1 ? 'R1' : 'R7'));
     l.siege = siege || null;
     l.siegeSecond = memeChef && estTete ? rot.hR7 : null;
-    // Ce qui intéresse le verdict : un rôle dont le destinataire est un chef.
+    // Ce qui intéresse le verdict : un rôle dont le destinataire est un chef,
+    // et — pour les deux chefs eux-mêmes — un rôle qui touche le camp d'en
+    // face, seul cas où scoreRolesExercesV7 le compte.
+    const campAdverse = !estTete ? []
+      : campDuChefV7(memeChef ? figR7 : (f === figR1 ? figR7 : figR1));
     l.roles.forEach(function (ro) {
       ro.surChef = ro.dest === figR1 ? 'R1' : (ro.dest === figR7 ? 'R7' : null);
+      ro.compte = campAdverse.indexOf(ro.dest) >= 0;
     });
     return l;
   }).filter(Boolean);
@@ -10688,6 +10715,83 @@ function scoreRolesRecusV7(chef, theme, siegeImpose) {
     }).join(' · ')};
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// RÔLES EXERCÉS PAR UN CHEF — le côté ACTIF (25/08/26, correction
+// signalée par Ellemine_D : « tu ne l'as pas branché »).
+//
+// scoreRolesRecusV7 ci-dessus pèse ce qu'on fait À un chef : ses quatre
+// pôles, X+10 / X+4 / X+2 / X−3. Ce sont EXACTEMENT les figures que la
+// chaîne regardait déjà. Le tableau des rôles exercés vise l'autre côté :
+//     X est binôme de X−2 · protecteur de X−10 · front de X−4
+//     · antagoniste de X+3
+// Vérifié sur les 16 figures : les deux ensembles n'ont AUCUNE figure en
+// commun (0/64). Peser les rôles reçus ne disait donc rien du côté actif.
+//
+// Ce que le côté actif mesure : un chef n'est pas seulement bien gardé,
+// il agit. Il frappe quelqu'un, il sert d'appui à trois autres. Un chef
+// dont les quatre rôles sont « à vide » est isolé — personne à frapper,
+// personne à soutenir — même si sa propre garde est parfaite.
+//
+// Doctrine de la frappe (Ellemine_D, cascade) : « le chef puer détruit
+// direct la binôme de R7 (Laetitia) ». Ce qui compte n'est pas seulement
+// de frapper, c'est de frapper DANS LE CAMP ADVERSE — le chef d'en face
+// ou l'un de ses trois pôles alliés. D'où le multiplicateur campAdverse,
+// appliqué au seul rôle hostile.
+// ═══════════════════════════════════════════════════════════════
+
+var POIDS_ROLES_EXERCES_V7 = {
+  antagonisteDe: 1.5, frontDe: 1, protecteurDe: 0.75, binomeDe: 0.75
+};
+
+// Le camp d'un chef : lui-même et les trois figures qui le soutiennent —
+// son protecteur, son front, son binôme. Les trois sont dans sa boucle.
+function campDuChefV7(chef) {
+  if (!chef) return [];
+  return [chef, PROTECTEURS_V7[chef], FRONT_V7[chef], BINOMES_V7[chef]];
+}
+
+// ─── CE QUI COMPTE, C'EST CE QUI TOUCHE LE CAMP D'EN FACE ───
+// Premier essai (écarté) : compter les quatre rôles exercés sur n'importe
+// qui. Mesuré 1/3 sur les cas réels — cela ne mesurait que la population
+// du thème, pas l'issue du duel : dans les cas A et B, R7 exerçait plus de
+// rôles effectifs que R1, et c'est R1 qui a gagné les deux.
+// Retenu : seuls comptent les rôles dont le DESTINATAIRE appartient au camp
+// adverse — le chef d'en face ou l'un de ses trois pôles alliés.
+//   · frapper ce camp RAPPORTE   (c'est la cascade : « le chef puer détruit
+//     direct la binôme de R7 »)
+//   · le servir COÛTE            (être binôme, protecteur ou front d'une
+//     figure du camp adverse, c'est renforcer l'adversaire)
+// Un rôle qui ne touche pas le camp adverse ne compte ni pour ni contre.
+// Mesuré : actif sur 81,3% des thèmes, écart non nul sur 74%. Au plus
+// 3 des 4 rôles touchent le camp adverse — jamais 4.
+function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
+  if (!chef) return null;
+  const rx = rolesExercesFigureV7(chef, theme, siegeImpose);
+  if (!rx) return null;
+  const campAdverse = campDuChefV7(adverse);
+  const detail = rx.roles.map(function (ro) {
+    const vise = campAdverse.indexOf(ro.dest) >= 0;
+    const poids = POIDS_ROLES_EXERCES_V7[ro.cle] || 0;
+    const coef = POIDS_ROLES_V7.portee[ro.portee] || 0;
+    // hostile sur le camp adverse : gain. Service au camp adverse : perte.
+    const signe = ro.hostile ? 1 : -1;
+    return {role: ro.libelle, cle: ro.cle, dest: ro.dest, portee: ro.portee,
+      viseCampAdverse: vise, hostile: ro.hostile, etat: ro.etat.libelle,
+      score: vise ? Math.round(poids * coef * signe * 100) / 100 : 0};
+  });
+  const total = Math.round(detail.reduce(function (s, d) { return s + d.score; }, 0) * 100) / 100;
+  const touchants = detail.filter(function (d) { return d.viseCampAdverse; });
+  return {chef: chef, solide: rx.solide, detail: detail, total: total,
+    nbTouchants: touchants.length,
+    resume: touchants.length
+      ? touchants.map(function (d) {
+          return d.role + ' ' + (FL[d.dest] || d.dest) + ' ' + d.portee
+            + ' (' + (d.hostile ? 'gain' : 'sert l\'adverse') + ' ' + d.score + ')';
+        }).join(' · ')
+      : 'aucun rôle ne touche le camp adverse'};
+}
+
 function renderRolesExercesPanel(theme) {
   const ancien = document.getElementById('roles-exerces-panel');
   if (ancien) ancien.remove();
@@ -10716,6 +10820,11 @@ function renderRolesExercesPanel(theme) {
       + '<span class="muted" style="font-size:10px; min-width:62px;">' + ro.libelle + '</span>'
       + '<span style="flex:1;"><span style="color:' + c + ';">' + nom(ro.dest) + '</span>'
       + (ro.surChef ? ' ' + badge(ro.surChef) : '')
+      + (ro.compte
+          ? '<span style="font-size:9px; padding:0 3px; border-radius:2px; margin-left:3px; background:'
+            + (ro.hostile ? '#166534' : '#7f1d1d') + '; color:#fff;">'
+            + (ro.hostile ? 'frappe le camp adverse' : 'sert le camp adverse') + '</span>'
+          : '')
       + '<span class="muted" style="font-size:10px;"> — ' + ro.etat.libelle + '</span>'
       + ' <span style="color:' + c + '; font-size:10px;">' + ro.portee + '</span></span></div>';
   }
@@ -10751,8 +10860,11 @@ function renderRolesExercesPanel(theme) {
     + '<span style="color:#fbbf24;">affaibli</span> (exerçante fragile) · '
     + '<span style="color:#38bdf8;">contrée</span> (frappe sur une cible à son repos, qui résiste) · '
     + '<span style="color:#64748b;">à vide</span> (destinataire absent). '
-    + '<b>Branché au verdict depuis le 25/08 :</b> les rôles reçus par R1 et R7 — protecteur, front, '
-    + 'binôme, moins la frappe subie — s\'ajoutent à la solidité de chaîne pour former l\'ancrage décisif. '
+    + '<b>Branché au verdict depuis le 25/08.</b> Pour R1 et R7, deux comptes s\'ajoutent à la solidité '
+    + 'de chaîne : les rôles <b>reçus</b> (protecteur, front, binôme, moins la frappe subie), et les rôles '
+    + '<b>exercés</b> — dont seuls comptent ceux qui touchent le camp d\'en face, signalés ici : '
+    + '<span style="background:#166534; color:#fff; padding:0 3px; border-radius:2px; font-size:9px;">frappe le camp adverse</span> rapporte, '
+    + '<span style="background:#7f1d1d; color:#fff; padding:0 3px; border-radius:2px; font-size:9px;">sert le camp adverse</span> coûte. '
     + 'Les autres figures restent en lecture.</div>'
     + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:7px; font-size:11.5px; line-height:1.5;">'
     + d.lignes.map(carte).join('')
