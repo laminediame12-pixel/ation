@@ -10490,6 +10490,175 @@ function renderElementaireR1R7(theme){
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
+// ═══════════════════════════════════════════════════════════════
+// PANNEAU DES RÔLES EXERCÉS (25/08/26, demande Ellemine_D)
+// Le système savait répondre à « qui protège Puer ? ». Il ne savait pas
+// répondre à « Acquisitio, dans CE thème, qui sert-elle et qui frappe-t-elle ? ».
+// C'est le côté EXERCÉ des quatre relations, celui que rolesDeLaFigureV7
+// expose et que rien n'affichait.
+// ⚠️ AFFICHAGE SEUL — aucun de ces chiffres n'entre dans le verdict.
+// La pondération viendra après, une fois la lecture faite.
+// ═══════════════════════════════════════════════════════════════
+
+// Statut d'un destinataire dans le thème : absent, en résultante seule,
+// en base, ou chez lui (maison de repos). Même hiérarchie que la chaîne :
+// base > résultante > absent, et le repos domine tout.
+function etatDestinataireV7(dest, theme) {
+  if (!dest) return {fig: null, present: false, libelle: '—', rang: 0};
+  const occ = trouverFigV7(dest, theme);
+  if (!occ.length) return {fig: dest, present: false, libelle: 'absente', rang: 0};
+  const base = occ.filter(function (o) { return !o.hidden; });
+  const res  = occ.filter(function (o) { return  o.hidden; });
+  const repos = occ.filter(function (o) { return FIGS_V7[o.pos - 1] === dest; });
+  const maisons = function (liste) { return liste.map(function (o) { return 'M' + o.pos; }).join(' '); };
+  if (repos.length) return {fig: dest, present: true, rang: 3,
+    libelle: 'chez elle en ' + maisons(repos)};
+  if (base.length) return {fig: dest, present: true, rang: 2,
+    libelle: 'en base ' + maisons(base) + (res.length ? ' (+' + res.length + ' rés.)' : '')};
+  return {fig: dest, present: true, rang: 1, libelle: 'résultante ' + maisons(res)};
+}
+
+// Les quatre rôles qu'une figure exerce, avec l'état de chaque destinataire.
+// Un rôle n'a d'effet que s'il y a quelqu'un à servir ou à frapper ET si
+// celui qui l'exerce tient debout — d'où les trois portées possibles.
+function rolesExercesFigureV7(fig, theme, siegeImpose) {
+  const r = rolesDeLaFigureV7(fig);
+  if (!r) return null;
+  const sol = figureSolideV7(fig, theme, siegeImpose);
+  const soi = etatDestinataireV7(fig, theme);
+  // La portée d'un rôle croise DEUX ancrages : celui qui l'exerce et celui
+  // qui le reçoit. Un destinataire seulement en résultante n'est qu'un
+  // potentiel — le rôle est latent, pas exercé.
+  // Cas particulier du rôle hostile : « dans leur maison elles sont de
+  // nature forte, direct, car elles sont chez elles » (Ellemine_D). Une
+  // cible à son repos résiste, la frappe est CONTRÉE. Règle tirée de la
+  // doctrine déjà posée, pas ajoutée pour l'occasion.
+  function role(cle, dest, hostile, libelle) {
+    const etat = etatDestinataireV7(dest, theme);
+    let portee;
+    if (!etat.present)          portee = 'à vide';
+    else if (etat.rang === 1)   portee = 'latent';
+    else if (!sol.solide)       portee = 'affaibli';
+    else if (hostile && etat.rang === 3) portee = 'contrée';
+    else                        portee = 'effectif';
+    return {cle: cle, libelle: libelle, dest: dest, hostile: hostile,
+      etat: etat, portee: portee};
+  }
+  return {
+    fig: fig, etatSoi: soi, solide: !!sol.solide,
+    scoreSoi: sol.meilleur ? Math.round(sol.meilleur.total * 10) / 10 : null,
+    roles: [
+      role('antagonisteDe', r.antagonisteDe, true,  'frappe'),
+      role('binomeDe',      r.binomeDe,      false, 'binôme de'),
+      role('protecteurDe',  r.protecteurDe,  false, 'protège'),
+      role('frontDe',       r.frontDe,       false, 'front de')
+    ]
+  };
+}
+
+// Toutes les figures présentes dans le thème, R1 et R7 en tête.
+function rolesExercesTheme(theme) {
+  if (!theme || !theme[1]) return {applicable: false, lignes: []};
+  const rot = getRotationCombat(theme);
+  const figR1 = rot.figR1, figR7 = rot.figR7;
+  const presentes = FIGS_V7.filter(function (f) { return trouverFigV7(f, theme).length > 0; });
+  // R1 et R7 sont la même figure sur 5,4% des thèmes (mesuré sur 4000) :
+  // une seule ligne alors, portant les deux titres et les deux sièges.
+  const memeChef = figR1 === figR7;
+  const tetes = memeChef ? [figR1] : [figR1, figR7];
+  const ordre = tetes.concat(presentes.filter(function (f) {
+    return f !== figR1 && f !== figR7;
+  }));
+  const lignes = ordre.map(function (f, rang) {
+    const estTete = rang < tetes.length;
+    const siege = !estTete ? undefined
+      : (memeChef ? rot.hR1 : (f === figR1 ? rot.hR1 : rot.hR7));
+    const l = rolesExercesFigureV7(f, theme, siege);
+    if (!l) return null;
+    l.chef = !estTete ? null : (memeChef ? 'R1 · R7' : (f === figR1 ? 'R1' : 'R7'));
+    l.siege = siege || null;
+    l.siegeSecond = memeChef && estTete ? rot.hR7 : null;
+    // Ce qui intéresse le verdict : un rôle dont le destinataire est un chef.
+    l.roles.forEach(function (ro) {
+      ro.surChef = ro.dest === figR1 ? 'R1' : (ro.dest === figR7 ? 'R7' : null);
+    });
+    return l;
+  }).filter(Boolean);
+  return {applicable: true, figR1: figR1, figR7: figR7,
+    hR1: rot.hR1, hR7: rot.hR7, lignes: lignes};
+}
+
+function renderRolesExercesPanel(theme) {
+  const ancien = document.getElementById('roles-exerces-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  const hote = document.getElementById('sikidy-elementaire-panel')
+            || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  const d = rolesExercesTheme(theme);
+  if (!d.applicable) return;
+
+  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
+  const COUL = {effectif: '#4ade80', affaibli: '#fbbf24', latent: '#818cf8',
+                'contrée': '#38bdf8', 'à vide': '#64748b'};
+  const badge = function (t) {
+    return '<span style="font-size:9px; padding:1px 4px; border-radius:2px; background:'
+      + (t === 'R1' ? '#1d4ed8' : t === 'R7' ? '#c2410c' : '#6d28d9')
+      + '; color:#fff;">' + t + '</span>';
+  };
+
+  // Une carte par figure plutôt qu'un tableau à cinq colonnes : à 430 px
+  // le tableau se coupait, et les rôles sont plus lisibles empilés.
+  function ligneRole(ro) {
+    const c = ro.portee === 'effectif' ? (ro.hostile ? '#f87171' : COUL.effectif) : COUL[ro.portee];
+    return '<div style="display:flex; gap:5px; align-items:baseline;">'
+      + '<span class="muted" style="font-size:10px; min-width:62px;">' + ro.libelle + '</span>'
+      + '<span style="flex:1;"><span style="color:' + c + ';">' + nom(ro.dest) + '</span>'
+      + (ro.surChef ? ' ' + badge(ro.surChef) : '')
+      + '<span class="muted" style="font-size:10px;"> — ' + ro.etat.libelle + '</span>'
+      + ' <span style="color:' + c + '; font-size:10px;">' + ro.portee + '</span></span></div>';
+  }
+
+  function carte(l) {
+    const sol = l.solide
+      ? '<span style="color:#4ade80;">solide</span>'
+      : '<span style="color:#fbbf24;">fragile</span>';
+    const etatSoi = l.etatSoi.libelle
+      + (l.siege ? ' · siège M' + l.siege + (l.siegeSecond ? ' et M' + l.siegeSecond : '') : '');
+    return '<div style="border:1px solid rgba(148,163,184,.22); border-radius:5px; padding:7px 8px;'
+      + (l.chef ? ' background:rgba(124,58,237,.08);' : '') + '">'
+      + '<div style="margin-bottom:4px;">' + (l.chef ? badge(l.chef) + ' ' : '')
+      + '<b>' + nom(l.fig) + '</b></div>'
+      + '<div class="muted" style="font-size:10px; margin-bottom:5px;">' + etatSoi + ' · ' + sol
+      + (l.scoreSoi !== null ? ' (' + l.scoreSoi + ')' : '') + '</div>'
+      + l.roles.map(ligneRole).join('')
+      + '</div>';
+  }
+
+  const panneau = document.createElement('div');
+  panneau.id = 'roles-exerces-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #7c3aed;';
+  panneau.innerHTML =
+    '<h3 style="margin-bottom:2px;">🎭 Rôles exercés par chaque figure</h3>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.55;">'
+    + 'Chaque figure tient les quatre rôles à la fois : elle <b>frappe</b> la figure placée trois crans plus loin, '
+    + 'et sert de <b>binôme</b>, de <b>protecteur</b> et de <b>front</b> à trois autres. Le rôle hostile porte toujours '
+    + 'sur l\'autre boucle, les trois rôles alliés sur la sienne. Portée d\'un rôle : '
+    + '<span style="color:#4ade80;">effectif</span> (destinataire ancré en base, exerçante debout) · '
+    + '<span style="color:#818cf8;">latent</span> (destinataire seulement en résultante) · '
+    + '<span style="color:#fbbf24;">affaibli</span> (exerçante fragile) · '
+    + '<span style="color:#38bdf8;">contrée</span> (frappe sur une cible à son repos, qui résiste) · '
+    + '<span style="color:#64748b;">à vide</span> (destinataire absent). '
+    + '<b>Lecture seule — rien de ceci n\'entre encore dans le verdict.</b></div>'
+    + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:7px; font-size:11.5px; line-height:1.5;">'
+    + d.lignes.map(carte).join('')
+    + '</div>';
+
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
 // RETIRÉ (24/08/26) : un premier essai avait branché la figure de front
 // comme pénalité additive dans verdictFamilialEngine, avec un panneau
 // dédié (renderPolesR1R7). Erreur d'aiguillage — verdictFamilialEngine ne
@@ -13755,6 +13924,10 @@ function renderTheme(){
     // (La couche Sikidy évoquée ici auparavant a été retirée le 20/08/26,
     // élagage demandé par Ellemine_D : code mort, jamais rendu à l'écran.)
     try { renderElementaireR1R7(currentTheme); } catch(e) { console.log('elementaire R1/R7 error', e); }
+    // Rôles exercés : lecture seule du côté ACTIF des quatre relations.
+    // Isolé comme les autres panneaux — une erreur ici ne doit jamais
+    // empêcher l'affichage du verdict.
+    try { renderRolesExercesPanel(currentTheme); } catch(e) { console.log('roles exerces error', e); }
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
       elR.classList.remove('verdict-priority');
