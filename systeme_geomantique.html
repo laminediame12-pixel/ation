@@ -11156,6 +11156,231 @@ function lectureLieuxMarquageV7(theme) {
   };
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// LES QUATRE AXES COMME THÈMES DÉRIVÉS (25/08/26, demande Ellemine_D :
+// « fais que le verdict suit les thèmes ; si on clique sur un axe, si le
+// thème change, le verdict suit la logique du thème »)
+//
+// Chaque axe a quatre maisons. On prend leurs quatre figures comme quatre
+// nouvelles mères et on reconstruit un thème complet — même moteur
+// buildThemeFromMothers. Puis on fait tourner sur ce thème dérivé
+// EXACTEMENT les mêmes couches que sur le thème principal : ancrage
+// R1/R7, lecture des sièges, ouverture des sièges pour le BTTS. Aucune
+// règle spéciale, aucun raccourci : c'est le verdict ordinaire appliqué
+// à un autre thème.
+//
+// Le mécanisme n'est pas neuf — themeAxeSuccedent le faisait déjà pour le
+// seul Axe Succédent, dont le signal de nul (opposition M13/M14 sur le
+// dérivé) est le mieux validé du fichier : 43% de précision contre 24% de
+// taux de base, sur 70 matchs archivés. On l'étend aux quatre axes et on
+// remonte le verdict complet, pas seulement le signal de nul.
+//
+// ⚠️ AUCUN EFFET SUR LE VERDICT PRINCIPAL. Les axes ont déjà écrasé deux
+// fois des couches qui voyaient juste (cf. AXE_SUCCEDENT_DECISIF), et
+// Ellemine_D les a débranchés pour cette raison. Ce panneau OBSERVE, il
+// ne décide pas.
+// ═══════════════════════════════════════════════════════════════
+
+var AXES_V7 = [
+  { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: [1, 4, 7, 10],  note: 'angulaire' },
+  { cle: 'temporel',  nom: 'Axe Temporel',  maisons: [3, 5, 11, 15], note: 'temporel' },
+  { cle: 'succedent', nom: 'Axe Succédent', maisons: [2, 5, 8, 11],  note: 'succédent — signal de nul validé' },
+  { cle: 'cadent',    nom: 'Axe Cadent',    maisons: [3, 6, 9, 12],  note: 'cadent' }
+];
+
+function lectureUnAxeV7(theme, axe) {
+  const meres = axe.maisons.map(function (h) { return theme[h]; });
+  let derive = null;
+  try { derive = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]); }
+  catch (e) { return { cle: axe.cle, nom: axe.nom, applicable: false, raison: 'Thème dérivé impossible.' }; }
+
+  // La figure de l'axe, telle que le panneau de validité la calcule :
+  // la combinaison des quatre maisons. Elle doit exister dans le thème
+  // initial pour que l'axe soit tenu pour « ancré ».
+  let figureAxe = null, ancree = false;
+  try {
+    figureAxe = combineMany(meres);
+    ancree = figureExistsBaseOnly(figureAxe, theme);
+  } catch (e) { figureAxe = null; }
+
+  const rot = getRotationCombat(derive);
+  let ancrage = null, sieges = null, btts = null;
+  try { ancrage = analyseAncrageDeveloppe(derive); } catch (e) { ancrage = null; }
+  try { sieges = lectureSiegesR1R7(derive); } catch (e) { sieges = null; }
+  try { btts = lectureOuvertureButsV7(derive); } catch (e) { btts = null; }
+
+  // Signal de nul : les témoins M13/M14 du thème DÉRIVÉ.
+  const m13 = derive[13], m14 = derive[14];
+  const temoinsOpposes = ANTAGONISTES_V7[m13] === m14 || ANTAGONISTES_V7[m14] === m13;
+  const temoinsIdentiques = m13 === m14;
+
+  return {
+    cle: axe.cle, nom: axe.nom, note: axe.note, applicable: true,
+    maisons: axe.maisons, meres: meres,
+    figureAxe: figureAxe, ancree: ancree,
+    derive: derive,
+    R1: rot.figR1, R7: rot.figR7, hR1: rot.hR1, hR7: rot.hR7,
+    avantage: ancrage && ancrage.applicable ? ancrage.avantage : null,
+    ancrageR1: ancrage ? ancrage.ancrageR1 : null,
+    ancrageR7: ancrage ? ancrage.ancrageR7 : null,
+    critere: ancrage ? ancrage.critere : null,
+    siegesWinner: sieges && sieges.applicable ? sieges.winner : null,
+    lesDeuxMarquent: btts && btts.applicable ? btts.lesDeuxMarquent : null,
+    temoins: { m13: m13, m14: m14, opposes: temoinsOpposes, identiques: temoinsIdentiques }
+  };
+}
+
+function lectureAxesV7(theme) {
+  if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
+  const axes = AXES_V7.map(function (a) { return lectureUnAxeV7(theme, a); });
+  const valides = axes.filter(function (a) { return a.applicable && a.avantage; });
+  const pourR1 = valides.filter(function (a) { return a.avantage === 'R1'; }).length;
+  const pourR7 = valides.filter(function (a) { return a.avantage === 'R7'; }).length;
+  const nulSignaux = axes.filter(function (a) { return a.applicable && a.temoins.opposes; });
+  const ancres = axes.filter(function (a) { return a.applicable && a.ancree; }).length;
+
+  let domination = null;
+  if (pourR1 > pourR7) domination = 'R1';
+  else if (pourR7 > pourR1) domination = 'R7';
+
+  return {
+    applicable: true, axes: axes,
+    pourR1: pourR1, pourR7: pourR7, domination: domination,
+    unanime: valides.length > 0 && (pourR1 === valides.length || pourR7 === valides.length),
+    axesAncres: ancres,
+    nulSignaux: nulSignaux.map(function (a) { return a.nom; }),
+    synthese: valides.length
+      ? ('Les axes donnent ' + pourR1 + ' à R1 contre ' + pourR7 + ' à R7'
+         + (domination ? ' → ' + domination + (pourR1 === valides.length || pourR7 === valides.length ? ' à l\'unanimité' : ' en majorité') : ' → partagés')
+         + ' · ' + nulSignaux.length + ' axe(s) sur 4 montrent des témoins opposés (signal de nul).')
+      : 'Aucun axe ne départage.'
+  };
+}
+
+
+// Quel axe est déplié — conservé d'un rendu à l'autre.
+var __axeDeplie = null;
+function basculerAxeV7(cle) {
+  __axeDeplie = (__axeDeplie === cle) ? null : cle;
+  try { renderAxesPanel(currentTheme); } catch (e) {}
+}
+
+// « si on clique sur un axe, si le thème change, le verdict suit la
+// logique du thème » : on charge les quatre figures de l'axe comme quatre
+// mères et on relance. Tout le fichier recalcule alors sur ce thème —
+// aucune couche n'est court-circuitée.
+function ouvrirThemeAxeV7(cle) {
+  const axe = AXES_V7.filter(function (a) { return a.cle === cle; })[0];
+  if (!axe || !currentTheme) return;
+  const meres = axe.maisons.map(function (h) { return currentTheme[h]; });
+  ['m1', 'm2', 'm3', 'm4'].forEach(function (id, i) {
+    const el = document.getElementById(id);
+    if (el) el.value = meres[i];
+  });
+  const mode = document.getElementById('drawMode');
+  if (mode && mode.value !== 'manual') { mode.value = 'manual'; toggleDrawMode(); }
+  __axeDeplie = null;
+  launchTheme(false);
+}
+
+function renderAxesPanel(theme) {
+  const ancien = document.getElementById('axes-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  const hote = document.getElementById('lieux-marquage-panel')
+            || document.getElementById('deux-marquent-panel')
+            || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  const d = lectureAxesV7(theme);
+  const panneau = document.createElement('div');
+  panneau.id = 'axes-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #a16207;';
+  if (!d.applicable) {
+    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Les quatre axes</h3>'
+      + '<div class="muted" style="font-size:11.5px;">' + d.raison + '</div>';
+    hote.parentNode.insertBefore(panneau, hote.nextSibling);
+    return;
+  }
+
+  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
+  const bleu = '#60a5fa', orange = '#fb923c';
+
+  function carte(a) {
+    if (!a.applicable) {
+      return '<div style="border:1px solid rgba(148,163,184,.22); border-radius:5px; padding:7px 9px;">'
+        + '<b>' + a.nom + '</b> <span class="muted" style="font-size:10px;">' + a.raison + '</span></div>';
+    }
+    const c = a.avantage === 'R1' ? bleu : a.avantage === 'R7' ? orange : '#94a3b8';
+    const ouvert = __axeDeplie === a.cle;
+    let h = '<div style="border:1px solid ' + (ouvert ? 'rgba(161,98,7,.6)' : 'rgba(148,163,184,.22)')
+      + '; border-radius:5px; overflow:hidden;">'
+      + '<button type="button" onclick="basculerAxeV7(\'' + a.cle + '\')" '
+      + 'style="width:100%; text-align:left; background:transparent; border:0; padding:7px 9px; cursor:pointer; color:inherit; font:inherit;">'
+      + '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:6px;">'
+      + '<span><b style="font-size:11.5px;">' + a.nom + '</b> '
+      + '<span class="muted" style="font-size:9.5px;">M' + a.maisons.join(' M') + '</span></span>'
+      + '<b style="color:' + c + '; font-size:12px;">' + (a.avantage || 'partagé') + '</b></div>'
+      + '<div class="muted" style="font-size:9.5px; margin-top:2px;">'
+      + 'R1 ' + nom(a.R1) + ' ' + a.ancrageR1 + ' · R7 ' + nom(a.R7) + ' ' + a.ancrageR7
+      + (a.temoins.opposes ? ' · <span style="color:#fbbf24;">témoins opposés — signal de nul</span>' : '')
+      + (a.ancree ? '' : ' · <span style="color:#64748b;">axe non ancré</span>')
+      + '</div></button>';
+    if (ouvert) {
+      h += '<div style="padding:0 9px 9px; font-size:10.5px; line-height:1.55;">'
+        + '<div class="muted">Quatre mères du thème dérivé : ' + a.meres.map(nom).join(' · ') + '</div>'
+        + '<div class="muted">Figure de l\'axe : ' + nom(a.figureAxe)
+        + (a.ancree ? ' — présente en base dans le thème initial' : ' — absente du thème initial') + '</div>'
+        + '<div style="margin-top:4px;"><b>Ancrage :</b> ' + (a.critere || '—') + '</div>'
+        + '<div><b>Sièges :</b> ' + (a.siegesWinner || 'aucun départage') + '</div>'
+        + '<div><b>Les deux marquent :</b> ' + (a.lesDeuxMarquent === null ? '—' : (a.lesDeuxMarquent ? 'oui' : 'non')) + '</div>'
+        + '<div><b>Témoins M13/M14 :</b> ' + nom(a.temoins.m13) + ' / ' + nom(a.temoins.m14) + ' — '
+        + (a.temoins.opposes ? 'opposés' : a.temoins.identiques ? 'identiques' : 'ni l\'un ni l\'autre') + '</div>'
+        + '<button type="button" class="btn-secondary" style="width:auto; padding:5px 10px; margin-top:7px; font-size:11px;" '
+        + 'onclick="ouvrirThemeAxeV7(\'' + a.cle + '\')">Charger ce thème dérivé</button>'
+        + '</div>';
+    }
+    return h + '</div>';
+  }
+
+  const cd = d.domination === 'R1' ? bleu : d.domination === 'R7' ? orange : '#94a3b8';
+  panneau.innerHTML =
+    '<h3 style="margin-bottom:2px;">🧭 Les quatre axes</h3>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.5;">'
+    + 'Chaque axe a quatre maisons. Leurs figures deviennent quatre nouvelles mères, et le thème dérivé '
+    + 'passe par <b>exactement les mêmes couches</b> que le thème principal — ancrage, sièges, ouverture. '
+    + 'Aucune règle spéciale. Touche un axe pour le déplier, puis « Charger ce thème dérivé » pour que tout '
+    + 'le fichier bascule dessus.<br>'
+    + '<b>Observation seule</b> — les axes ne décident pas du verdict, ils ont déjà écrasé deux fois des '
+    + 'couches qui voyaient juste.</div>'
+    + '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:9px;">'
+    + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
+    + '<div class="muted" style="font-size:9.5px;">Qui domine dans les axes</div>'
+    + '<b style="font-size:16px; color:' + cd + ';">' + (d.domination || 'partagés') + '</b>'
+    + '<div class="muted" style="font-size:9.5px;">' + d.pourR1 + ' pour R1 · ' + d.pourR7 + ' pour R7'
+    + (d.unanime ? ' — unanimes' : '') + '</div></div>'
+    + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
+    + '<div class="muted" style="font-size:9.5px;">Signal de nul — témoins opposés</div>'
+    + '<b style="font-size:16px; color:' + (d.nulSignaux.length ? '#fbbf24' : '#94a3b8') + ';">'
+    + d.nulSignaux.length + ' / 4</b>'
+    + '<div class="muted" style="font-size:9.5px;">' + (d.nulSignaux.length ? d.nulSignaux.join(', ') : 'aucun axe')
+    + ' · ' + d.axesAncres + '/4 axes ancrés</div></div></div>'
+    + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:7px;">'
+    + d.axes.map(carte).join('') + '</div>'
+    + '<div class="muted" style="font-size:10px; margin-top:8px; line-height:1.5;">'
+    + '<b>⚠️ Ce que la mesure dit déjà.</b> Sur les quatre cas réels au vainqueur connu, la majorité des axes '
+    + 'a raison <b>une fois</b> (A), tort <b>deux fois</b> (C 7-0 pour R1 alors que les axes donnent R7 ; '
+    + 'D où ils donnent R1 alors que R7 gagne), et reste partagée une fois (B). Elle s\'accorde avec le '
+    + 'verdict principal sur <b>52,5%</b> des thèmes — un pile ou face. '
+    + 'Côté nul : les témoins opposés se déclenchent sur ~10% des thèmes par axe, et sur le seul vrai nul '
+    + 'de l\'archive (E 1-1) <b>aucun</b> axe ne les montre. C\'est cet instrument qui doit accumuler les cas.'
+    + '</div>';
+
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
 function renderLieuxMarquagePanel(theme) {
   const ancien = document.getElementById('lieux-marquage-panel');
   if (ancien) ancien.remove();
@@ -14911,6 +15136,8 @@ function renderTheme(){
     try { renderDeuxMarquentPanel(currentTheme); } catch(e) { console.log('deux marquent error', e); }
     // Lieux de marquage : instrument d'observation, rien n'est branché.
     try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
+    // Les quatre axes comme thèmes dérivés : observation, aucun effet sur le verdict.
+    try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
       elR.classList.remove('verdict-priority');
