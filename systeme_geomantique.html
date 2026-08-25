@@ -5395,12 +5395,10 @@ function toggleValiditePanel() {
     if (!currentTheme) { panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>'; panel.style.display = 'block'; return; }
     var theme = currentTheme;
     var axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-    var axeT = combineMany([theme[3],theme[5],theme[11],theme[15]]);
     var axeS = combineMany([theme[2],theme[5],theme[8],theme[11]]);
     var axeCad = combineMany([theme[3],theme[6],theme[9],theme[12]]);
     var binM1 = BINOMES[theme[1]];
     var posAxeC = positionsBaseEtResultantes(axeC, theme);
-    var posAxeT = positionsBaseEtResultantes(axeT, theme);
     var posAxeS = positionsBaseEtResultantes(axeS, theme);
     var posAxeCad = positionsBaseEtResultantes(axeCad, theme);
     var posBinM1 = positionsBaseEtResultantes(binM1, theme);
@@ -5424,7 +5422,7 @@ function toggleValiditePanel() {
     }
 
     var html = '<h3 style="margin-bottom:2px;">🗓️ Validité du thème &amp; figure du jour</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Axe Cardinal (angulaire), Axe Temporel, Axe Succédent et Axe Cadent doivent tous exister dans le thème EN BASE pour qu\'il soit valide (le texte disait « base ou résultante » — faux, figureExistsBaseOnly ne parcourt que les 16 positions de base ; corrigé le 25/08) — protocole appliqué en direct au verdict. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Les TROIS axes du carré — Cardinal M1+M4+M7+M10 (angulaire), Succédent M2+M5+M8+M11, Cadent M3+M6+M9+M12 — doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide, protocole appliqué en direct au verdict. Il n\'en existe pas de quatrième : les douze maisons se partagent en exactement trois classes de pas 3, et prolonger un axe y ramène (4-7-10-1 = 1-4-7-10). L\'ancien « Axe Temporel » M3+M5+M11+M15 mélangeait deux classes et empruntait M15, un témoin hors du carré — retiré le 25/08/26 sur correction d\'Ellemine_D. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
 
     html += '<div style="border-radius:10px; padding:12px 16px; margin-bottom:14px; font-weight:600; text-align:center; '
       + (invalide ? 'background:#7f1d1d; color:#fecaca;' : 'background:#166534; color:#bbf7d0;') + '">'
@@ -5432,7 +5430,6 @@ function toggleValiditePanel() {
 
     html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:14px;">';
     html += condCard('Axe Cardinal (angulaire)', 'M1 + M4 + M7 + M10', axeC, posAxeC);
-    html += condCard('Axe Temporel', 'M3 + M5 + M11 + M15', axeT, posAxeT);
     html += condCard('Axe Succédent', 'M2 + M5 + M8 + M11', axeS, posAxeS);
     html += condCard('Axe Cadent', 'M3 + M6 + M9 + M12', axeCad, posAxeCad);
     html += condCard('Binôme de M1 (indicatif)', 'BINOMES[' + FL[theme[1]] + ']', binM1, posBinM1);
@@ -9864,12 +9861,29 @@ function figureExistsBaseOnly(fig,theme){
 }
 function analyzeValidation(theme){
   const checks=[
+    // ─── TROIS AXES, PAS QUATRE (25/08/26, correction Ellemine_D) ───
+    // Les douze maisons du carré géomantique se partagent EXACTEMENT en
+    // trois classes de pas 3, et il n'y en a pas de quatrième :
+    //   1-4-7-10 (angulaire) · 2-5-8-11 (succédent) · 3-6-9-12 (cadent)
+    // Prolonger un axe y ramène : 4-7-10-1 est le même ensemble que
+    // 1-4-7-10. Vérifié : ce sont les trois classes de restes modulo 3.
+    // L'ancien « Axe Temporel » M3+M5+M11+M15 n'était pas un axe : 3 et 5
+    // et 11 tombent dans deux classes différentes, et M15 est hors du
+    // carré des douze — c'est un des quatre témoins. Retiré.
     {label:'Axe Cardinal (M1 + M4 + M7 + M10)',houses:[1,4,7,10]},
-    {label:'Axe Temporel (M3 + M5 + M11 + M15)',houses:[3,5,11,15]},
     {label:'Axe Succédent (M2 + M5 + M8 + M11)',houses:[2,5,8,11]},
     {label:'Axe Cadent (M3 + M6 + M9 + M12)',houses:[3,6,9,12]}
   ];
-  const results=checks.map(check=>{const fig=combineMany(check.houses.map(h=>theme[h])); const exists=figureExistsBaseOnly(fig,theme); return {...check, fig, exists};});
+  // ALIGNÉ (25/08/26) : cette fonction cherchait les figures d'axe EN BASE
+  // SEULE (figureExistsBaseOnly), alors que themeInvalidite() et
+  // isThemeValideStrict() comptent base ET résultante — protocole confirmé
+  // par Ellemine_D le 10/07/26 et écrit dans le commentaire de
+  // isThemeValideStrict. Les trois fonctions se contredisaient : mesuré sur
+  // 3000 thèmes, 31,5% de valides ici contre 72,4% là, et elles ne
+  // s'accordaient que sur 59,2% des thèmes. Un même thème pouvait
+  // s'afficher valide dans un panneau et invalide dans un autre. C'est
+  // celle-ci qui était l'exception ; elle rejoint les deux autres.
+  const results=checks.map(check=>{const fig=combineMany(check.houses.map(h=>theme[h])); const exists=positionsBaseEtResultantes(fig,theme).length>0; return {...check, fig, exists};});
 
   // Condition binôme de M1 RETIRÉE (27/07/26, demande explicite Ellemine_D :
   // "on laisse les figures faire le choix") — on ne garde que les axes.
@@ -10139,7 +10153,8 @@ function rangParole(vf){
 
 function themeInvalidite(theme){
   const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-  const axeT = combineMany([theme[3],theme[5],theme[11],theme[15]]);
+  // Axe Temporel M3+M5+M11+M15 RETIRÉ le 25/08/26 : ce n'était pas un axe
+  // du carré (deux classes mélangées, et M15 hors des douze maisons).
   // AXES SUCCÉDENT/CADENT (03/08/26, demande utilisateur, doctrine
   // horaire classique angulaire/succédente/cadente importée) : M1+M4+M7+M10
   // sont déjà les maisons angulaires (= Axe Cardinal existant, aucun
@@ -10159,7 +10174,6 @@ function themeInvalidite(theme){
   const present = fig => positionsBaseEtResultantes(fig, theme).length>0;
   const manquants = [];
   if (!present(axeC)) manquants.push('Axe Cardinal (M1+M4+M7+M10 = '+FL[axeC]+', absent du thème)');
-  if (!present(axeT)) manquants.push('Axe Temporel (M3+M5+M11+M15 = '+FL[axeT]+', absent du thème)');
   if (!present(axeS)) manquants.push('Axe Succédent (M2+M5+M8+M11 = '+FL[axeS]+', absent du thème)');
   if (!present(axeCad)) manquants.push('Axe Cadent (M3+M6+M9+M12 = '+FL[axeCad]+', absent du thème)');
   if (!manquants.length) return null;
@@ -10857,6 +10871,46 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 
 
 // ═══════════════════════════════════════════════════════════════
+// LES TROIS AXES DU CARRÉ (25/08/26, correction Ellemine_D)
+// « hormis ces axes il n'existe pas une autre axe ; si on veut le
+// continuer on retombe sur le 1er axe, exemple 4-7-10-1 »
+//
+// Vérifié : les douze maisons du carré se partagent EXACTEMENT en trois
+// classes de pas 3, qui sont les classes de restes modulo 3.
+//     1-4-7-10  (reste 1) — angulaire
+//     2-5-8-11  (reste 2) — succédent
+//     3-6-9-12  (reste 0) — cadent
+// Il ne peut pas y en avoir de quatrième, et prolonger un axe y ramène :
+// 4-7-10-1 est le même ensemble que 1-4-7-10.
+//
+// L'ancien « Axe Temporel » M3+M5+M11+M15 n'en était pas un : 3 tombe
+// dans la classe 0, 5 et 11 dans la classe 2 — deux classes mélangées —
+// et M15 est hors du carré des douze, c'est le Juge. Retiré partout :
+// analyzeValidation, themeInvalidite, isThemeValideStrict, le panneau de
+// validité et AXES_V7. La validation passe de quatre conditions à trois.
+//
+// EFFET MESURÉ sur les six cas réels — la majorité des axes gagne un cas :
+//   avant (4 axes) : juste 1 fois (A), fausse 2 fois (C, D), partagée 1 (B)
+//   après (3 axes) : juste 2 fois (A, B), fausse 2 fois (C, D)
+// Le cas B, qui restait indécis à 2 contre 2, se décide maintenant à
+// 2 contre 1 et tombe juste. C et D restent faux.
+//
+// AU PASSAGE, UNE CONTRADICTION RÉSOLUE. Le fichier avait TROIS fonctions
+// de validité aux règles différentes : analyzeValidation cherchait les
+// figures d'axe EN BASE SEULE, themeInvalidite et isThemeValideStrict en
+// base ET résultante. Mesuré avant correction : 31,5% de thèmes valides
+// d'un côté, 72,4% de l'autre, un accord sur 59,2% seulement — un même
+// thème pouvait s'afficher valide dans un panneau et invalide dans un
+// autre. Le protocole base+résultante est celui qu'Ellemine_D a confirmé
+// le 10/07/26 et qui est écrit dans isThemeValideStrict ;
+// analyzeValidation était l'exception, elle a été alignée. Les trois
+// fonctions s'accordent désormais sur 100% des thèmes, à 71,3%.
+// ⚠️ J'avais « corrigé » la veille le texte du panneau de validité pour
+// dire « en base uniquement ». C'était faux : ce panneau utilise
+// themeInvalidite, qui compte les résultantes. Texte rétabli.
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
 // LIEUX DE MARQUAGE — ÉTUDE DU 25/08/26 (question d'Ellemine_D)
 // Maisons désignées : M1, M4, M5, M7, M8, M9, M10, plus les sièges R1/R7.
 // Question posée : les figures qui y siègent ont-elles, par leurs trois
@@ -11182,9 +11236,13 @@ function lectureLieuxMarquageV7(theme) {
 // ne décide pas.
 // ═══════════════════════════════════════════════════════════════
 
+// TROIS axes, pas quatre (25/08/26, correction Ellemine_D) : les douze
+// maisons se partagent en exactement trois classes de pas 3, et prolonger
+// un axe y ramène (4-7-10-1 = 1-4-7-10). L'ancien Axe Temporel
+// M3+M5+M11+M15 mélangeait deux classes et empruntait M15, qui est un
+// témoin, hors du carré des douze. Retiré partout, validation comprise.
 var AXES_V7 = [
   { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: [1, 4, 7, 10],  note: 'angulaire' },
-  { cle: 'temporel',  nom: 'Axe Temporel',  maisons: [3, 5, 11, 15], note: 'temporel' },
   { cle: 'succedent', nom: 'Axe Succédent', maisons: [2, 5, 8, 11],  note: 'succédent — signal de nul validé' },
   { cle: 'cadent',    nom: 'Axe Cadent',    maisons: [3, 6, 9, 12],  note: 'cadent' }
 ];
@@ -11394,11 +11452,12 @@ function renderAxesPanel(theme) {
           + (d.validiteTheme.valide ? 'rgba(34,197,94,.10)' : 'rgba(248,113,113,.10)') + '; border:1px solid '
           + (d.validiteTheme.valide ? 'rgba(34,197,94,.35)' : 'rgba(248,113,113,.35)') + ';">'
           + '<b>Thème principal : ' + (d.validiteTheme.valide ? 'VALIDE' : 'non valide')
-          + ' (' + d.validiteTheme.tenus + '/4 axes présents en base)</b>'
+          + ' (' + d.validiteTheme.tenus + '/3 axes présents)</b>'
           + (d.validiteTheme.manquants.length ? ' — manque ' + d.validiteTheme.manquants.join(', ') : '')
-          + '<div class="muted" style="margin-top:2px;">Seuls 21% des thèmes sont valides, et 22% des dérivés. '
-          + 'Attention : le protocole cherche les figures d\'axe <b>en base uniquement</b> — le texte du panneau '
-          + 'de validité disait « base ou résultante », c\'était faux, corrigé le 25/08.</div></div>'
+          + '<div class="muted" style="margin-top:2px;">Trois axes, pas quatre : les douze maisons se partagent '
+          + 'en exactement trois classes de pas 3, et prolonger un axe y ramène (4-7-10-1 = 1-4-7-10). '
+          + 'L\'ancien Axe Temporel M3+M5+M11+M15 mélangeait deux classes et empruntait M15, hors du carré — '
+          + 'retiré le 25/08. Les figures d\'axe comptent en base ou en résultante.</div></div>'
         : '')
     + '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:9px;">'
     + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
@@ -14391,13 +14450,16 @@ function rollAllMothersFromDice(){const mothers=[rollOneMother(),rollOneMother()
 // le thème "parle d'autre chose" (aucun lien avec les axes structurels
 // ni le climat du jour), le tirage بسم الله exige maintenant aussi que
 // au moins 2 des 3 figures suivantes soient présentes dans le thème :
-// Axe Cardinal (M1+M4+M7+M10), Axe Temporel (M3+M5+M11+M15), figure du
+// Axe Cardinal (M1+M4+M7+M10), Axe Cadent (M3+M6+M9+M12), figure du
 // jour. Présence vérifiée en base uniquement, comme la validité axes
 // déjà en place (figureExistsBaseOnly). 📚 Piste utilisateur non encore
 // validée sur des matchs réels — à observer.
 function countAxesEtJourPresents(theme){
   const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-  const axeT = combineMany([theme[3],theme[5],theme[11],theme[15]]);
+  // L'Axe Temporel a été retiré le 25/08/26 (ce n'était pas un axe du
+  // carré). Le troisième signal de résonance devient l'Axe Cadent, qui
+  // en est un — la règle reste « au moins 2 sur 3 ».
+  const axeT = combineMany([theme[3],theme[6],theme[9],theme[12]]);
   const fdj = figureDuJour();
   const presentC = figureExistsBaseOnly(axeC, theme);
   const presentT = figureExistsBaseOnly(axeT, theme);
@@ -14413,7 +14475,7 @@ function rollUntilValidDraw(){
     attempts+=1;
     resonance = currentTheme ? countAxesEtJourPresents(currentTheme) : {count:0};
   } while(attempts<30 && !(currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid && resonance.count >= 2));
-  const detailRes = resonance.axeC ? `Axe Cardinal (${FL[resonance.axeC]}) ${resonance.presentC?'✓ présent':'✗ absent'} | Axe Temporel (${FL[resonance.axeT]}) ${resonance.presentT?'✓ présent':'✗ absent'} | Figure du jour (${FL[resonance.fdj]}) ${resonance.presentJ?'✓ présente':'✗ absente'} → ${resonance.count}/3` : '';
+  const detailRes = resonance.axeC ? `Axe Cardinal (${FL[resonance.axeC]}) ${resonance.presentC?'✓ présent':'✗ absent'} | Axe Cadent (${FL[resonance.axeT]}) ${resonance.presentT?'✓ présent':'✗ absent'} | Figure du jour (${FL[resonance.fdj]}) ${resonance.presentJ?'✓ présente':'✗ absente'} → ${resonance.count}/3` : '';
   document.getElementById('dice-output').innerHTML += `<div class="kv"><b>Essais :</b> ${attempts}</div><div class="kv" style="font-size:11px;">${detailRes}</div>`;
 }
 function getCurrentMotherValues(){return ['m1','m2','m3','m4'].map(id=>document.getElementById(id).value||'via');}
@@ -15280,7 +15342,7 @@ function themeFingerprint(team1, team2, theme) {
 // ═══════════════════════════════════════════════════════════════
 function isThemeValideStrict(theme){
   const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-  const axeT = combineMany([theme[3],theme[5],theme[11],theme[15]]);
+  // Axe Temporel retiré le 25/08/26 — voir analyzeValidation().
   // AXES SUCCÉDENT/CADENT (03/08/26) — resynchronisé avec themeInvalidite()
   // et analyzeValidation() : cette fonction avait été oubliée lors de
   // l'ajout des 2 nouveaux axes, ce qui désynchronisait le gate live (UI)
@@ -15298,7 +15360,7 @@ function isThemeValideStrict(theme){
   // n'existe qu'en résultante (ex. Fortuna Minor en M10r/M11r, jamais en
   // base — validé par Ellemine_D le 10/07/26).
   function existsPresent(fig){ return positionsBaseEtResultantes(fig, theme).length>0; }
-  return existsPresent(axeC) && existsPresent(axeT) && existsPresent(axeS) && existsPresent(axeCad);
+  return existsPresent(axeC) && existsPresent(axeS) && existsPresent(axeCad);
 }
 
 function replayEntry(entry){
