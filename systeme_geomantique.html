@@ -4549,6 +4549,162 @@ var POIDS_CHAINE_V7 = {
   poidsFront: 1.5    // le front pèse plus que le protecteur
 };
 
+// ═══════════════════════════════════════════════════════════════
+// SOLIDITÉ ET LIBÉRATIONS EN CASCADE (25/08/26, doctrine Ellemine_D)
+//
+// Exemple fondateur donné par Ellemine_D (R1 = Puer, R7 = Laetitia),
+// vérifié intégralement contre ANTAGONISTES_V7 — 13 relations sur 13 :
+//
+//   Chaîne offensive, par le binôme :
+//     Caput Draconis (binôme de R1) détruit Amissio (front de R7)
+//       -> Fortuna Minor libérée   (Amissio la tenait)
+//         -> attaque Fortuna Major
+//           -> Acquisitio libérée  (Fortuna Major la tenait)
+//             -> détruit Laetitia = R7
+//     En parallèle : Puer détruit directement Albus, binôme de R7.
+//
+//   Chaîne défensive, conditionnée par l'échappement :
+//     Laetitia (R7) tient Via, le front de R1.
+//     Si Via échappe à Laetitia :
+//       Via détruit Tristitia
+//         -> Conjunctio (protecteur de R1) n'est plus contrainte
+//           -> Conjunctio détruit Puella, antagoniste direct de R1.
+//
+// PRINCIPE : ce n'est pas la PRÉSENCE d'un pôle qui compte, c'est sa
+// DISPONIBILITÉ. Une figure de front présente mais tenue par son propre
+// antagoniste est occupée à survivre : elle ne protège personne. Et
+// détruire un maillon adverse LIBÈRE la figure qu'il tenait, laquelle
+// libère la suivante — l'effet se propage le long du cycle.
+//
+// RÈGLES FIXÉES PAR ELLEMINE_D :
+//  1. Une figure ne tient sa cible que si elle est présente ET SOLIDE :
+//     dans sa maison de repos, ou concordante avec l'élément de la
+//     maison qu'elle occupe. « Une figure au repos est plus solide que
+//     celle qui déserte ou qui s'oppose à la maison occupée. »
+//  2. La cascade se propage dans toute la boucle, jusqu'au chef.
+//  3. Même hiérarchie que précédemment : la solidité prime.
+// ⚠️ Doctrine nouvelle, non contre-testée sur l'archive.
+// ═══════════════════════════════════════════════════════════════
+
+// Seuil de concordance à partir duquel une figure « tient » sa maison.
+var SEUIL_SOLIDITE_V7 = 0.5;
+
+// Une figure est solide si l'une au moins de ses occurrences est en
+// repos, ou concorde assez avec l'élément de sa maison. Absente = jamais
+// solide. Présente mais partout discordante = elle déserte.
+function figureSolideV7(fig, theme, siegeImpose) {
+  if (!fig) return { solide: false, present: false, raison: 'figure inconnue' };
+  let occ = trouverFigV7(fig, theme);
+  if (!occ.length) return { solide: false, present: false, raison: 'absente du thème' };
+  // Pour un chef, c'est le SIÈGE que la rotation lui assigne qui fait foi,
+  // pas sa meilleure position ailleurs dans le thème — même correctif que
+  // pour profilFigureTheme.
+  if (siegeImpose) {
+    const auSiege = occ.filter(function (o) { return o.pos === siegeImpose; });
+    occ = auSiege.length ? auSiege : [{ pos: siegeImpose, hidden: false }];
+  }
+  let meilleure = null;
+  occ.forEach(function (o) {
+    const enRepos = (FIGS_V7[o.pos - 1] === fig);
+    const conc = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[o.pos]);
+    const note = enRepos ? 2 : conc;
+    if (!meilleure || note > meilleure.note) {
+      meilleure = { pos: o.pos, enResultante: !!o.hidden, enRepos: enRepos, concordance: conc, note: note };
+    }
+  });
+  const solide = meilleure.enRepos || meilleure.concordance >= SEUIL_SOLIDITE_V7;
+  return {
+    solide: solide, present: true, meilleure: meilleure,
+    raison: meilleure.enRepos ? 'en repos en M' + meilleure.pos
+      : solide ? 'concordance ' + meilleure.concordance + ' en M' + meilleure.pos
+      : 'présente mais discordante (concordance ' + meilleure.concordance + ')'
+  };
+}
+
+// Résolution des libérations sur tout le cycle d'antagonisme.
+// X est TENUE si son antagoniste est présent, solide ET lui-même libre.
+// X est LIBRE si son antagoniste est absent, faible, ou tenu.
+// On part des figures dont l'antagoniste ne peut rien (ancres), puis on
+// propage jusqu'au point fixe. Un cycle sans aucune ancre reste
+// « indéterminé » — signalé plutôt que tranché arbitrairement.
+function resoudreLiberationsV7(theme) {
+  const etat = {};
+  const solidite = {};
+  FIGS_V7.forEach(function (f) { solidite[f] = figureSolideV7(f, theme); etat[f] = null; });
+
+  let change = true, tours = 0;
+  while (change && tours < 40) {
+    change = false; tours++;
+    FIGS_V7.forEach(function (f) {
+      if (etat[f] !== null) return;
+      const a = ANTAGONISTES_V7[f];
+      if (!solidite[a].solide) { etat[f] = 'libre'; change = true; return; }
+      if (etat[a] === 'tenue') { etat[f] = 'libre'; change = true; return; }
+      if (etat[a] === 'libre') { etat[f] = 'tenue'; change = true; return; }
+    });
+  }
+  const indetermines = FIGS_V7.filter(function (f) { return etat[f] === null; });
+  return { etat: etat, solidite: solidite, indetermines: indetermines, tours: tours };
+}
+
+// Rapport de cascade pour les deux chefs — DIAGNOSTIC UNIQUEMENT.
+// ⚠️ NON BRANCHÉ AU VERDICT, et c'est un choix mesuré : appliquer une
+// pénalité aux pôles tenus fait basculer le cas de référence B (réel 3-2
+// pour R1) du mauvais côté, quelle que soit la pondération essayée
+// (×0,75 / ×0,50 / ×0,25 / ×0). Seul l'absence de pénalité conserve le
+// 3/3. Sur ce cas, R1 a gagné alors que son front était tenu ET que son
+// propre antagoniste était libre et au repos — la doctrine de libération
+// et le résultat réel se contredisent frontalement. À éclaircir avant
+// tout branchement.
+function cascadeR1R7V7(theme) {
+  if (!theme || !theme[1]) return { applicable: false };
+  const rot = getRotationCombat(theme);
+  const L = resoudreLiberationsV7(theme);
+
+  function acteur(f, role) {
+    const cible = FIGS_V7.filter(function (x) { return ANTAGONISTES_V7[x] === f; })[0] || null;
+    return { role: role, fig: f, etat: L.etat[f], solide: L.solidite[f].solide,
+      raison: L.solidite[f].raison, detruit: cible };
+  }
+  function camp(chef, siege) {
+    const sol = figureSolideV7(chef, theme, siege);
+    return {
+      chef: chef, siege: siege, etatChef: L.etat[chef], soliditeChef: sol.raison,
+      antagoniste: acteur(ANTAGONISTES_V7[chef], 'antagoniste'),
+      protecteur: acteur(PROTECTEURS_V7[chef], 'protecteur'),
+      front: acteur(FRONT_V7[chef], 'front'),
+      binome: acteur(BINOMES_V7[chef], 'binôme')
+    };
+  }
+  const R1 = camp(rot.figR1, rot.hR1), R7 = camp(rot.figR7, rot.hR7);
+
+  // Un acteur d'un camp « atteint » l'autre camp s'il est libre, solide,
+  // et que ce qu'il détruit est un pôle adverse.
+  function offensives(campA, campB) {
+    const cibles = {};
+    cibles[campB.chef] = 'le chef';
+    cibles[campB.protecteur.fig] = 'le protecteur';
+    cibles[campB.front.fig] = 'la figure de front';
+    cibles[campB.binome.fig] = 'le binôme';
+    const out = [];
+    [ { role: 'chef', fig: campA.chef }, campA.binome, campA.protecteur, campA.front ].forEach(function (a) {
+      if (!a.fig) return;
+      const cible = FIGS_V7.filter(function (x) { return ANTAGONISTES_V7[x] === a.fig; })[0];
+      if (cible && cibles[cible] && L.etat[a.fig] === 'libre' && L.solidite[a.fig].solide) {
+        out.push({ acteur: a.fig, role: a.role, cible: cible, quoi: cibles[cible] });
+      }
+    });
+    return out;
+  }
+
+  return {
+    applicable: true, R1: R1, R7: R7,
+    offensivesR1: offensives(R1, R7),
+    offensivesR7: offensives(R7, R1),
+    indetermines: L.indetermines
+  };
+}
+
 function soliditeChaineV7(fig, theme) {
   if (!fig) return null;
   function maillon(f, role, poids) {
