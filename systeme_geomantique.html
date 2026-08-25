@@ -4568,6 +4568,23 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // ⚠️ Les rôles reçus SEULS donneraient 1/3 : les trois couches se
 // complètent, aucune ne remplace les autres.
 //
+//  D. Conjonctio · Fortuna Minor · Via · Albus              RÉEL 0-1 (M7)
+//     R1 = Laetitia (M11) · R7 = Conjonctio (M1)
+//     ⚠️ SEUL CAS OÙ LE SYSTÈME SE TROMPE DE CAMP : il annonce M1 4-2
+//     avec un ancrage écrasant (10,75 contre −0,25), le réel est 0-1 pour
+//     M7. Retrouvé le 25/08 dans un commentaire du fichier (« chaîne R1
+//     interceptée par la boucle de R7 »), il n'était pas consigné ici.
+//     C'est le contre-exemple le plus utile de l'archive : la chaîne de
+//     R7 y est PERCÉE (total −1) et R7 gagne quand même.
+//
+//  E. Fortuna Minor · Acquisitio · Carcer · Albus            RÉEL 1-1 (nul)
+//     R1 = Carcer (M10) · R7 = Fortuna Major (M4)
+//     Retrouvé le 25/08 dans renderRegressionReference, où la clé portait
+//     « aquisitio » au lieu d'« acquisitio » : la référence ne pouvait
+//     jamais se déclencher. Faute de frappe corrigée le 25/08.
+//     Seul vrai NUL de l'archive consignée — précieux pour l'étude de
+//     l'Axe Succédent, restée en suspens.
+//
 // BILAN : solidité de chaîne 3/3 · lecture des sièges 3/3 ·
 //         réseau d'ancrage 2/3 · règles de nul 0/2 (elles se sont
 //         déclenchées sur un 6-1 et un 7-0).
@@ -4575,6 +4592,14 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // 46% des thèmes tirés au hasard (mesuré sur 4000). Leur hiérarchie
 // n'est donc PAS établie : il faut des résultats réels sur des thèmes où
 // elles se contredisent. Le désaccord est signalé sur la carte.
+// ⚠️ SUR LES CINQ CAS, le camp est juste 4/5 — D est le seul raté.
+// ⚠️ « LES DEUX MARQUENT » (25/08) : la lecture BTTS actuelle répond oui
+// sur 91% des thèmes ; ses 3/5 sont exactement ce que donnerait un oui
+// constant. La règle BTTS 100% (M4/M10) tire sur C, D et E : juste une
+// fois sur trois. La règle « Via en M4 → camp A ne marque pas » est
+// fausse sur B (Via est en M4, réel 3-2). Piste proposée et NON branchée :
+// lectureDeuxMarquentV7, 5/5, taux de base 48/52 — voir son en-tête pour
+// la mise en garde sur l'ajustement.
 // ⚠️ Le SCORE reste faux sur les trois (5-3 / 4-2 / 4-2 contre 6-1 /
 // 3-2 / 7-0) : le camp est juste, le chiffre non. buildVerdictCard
 // surestime le total et comprime l'écart.
@@ -10792,6 +10817,151 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
       : 'aucun rôle ne touche le camp adverse'};
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// LES DEUX MARQUENT — PISTE (25/08/26, « on attaque les deux marquent »)
+//
+// Reformulation qui a débloqué la question : « les deux marquent » ne veut
+// PAS dire que le match est serré. Le cas A est un 6-1 et les deux ont
+// marqué ; le cas D est un 0-1 et un seul a marqué. Ce qui se demande,
+// c'est si le PERDANT garde la capacité de frapper une fois.
+//
+// Deux façons, et deux seulement, de la lui retirer :
+//   1. LE VAINQUEUR L'ANÉANTIT — sa frappe (rôle d'antagoniste) est
+//      « effectif » ET vise le camp du perdant : le chef adverse ou l'un
+//      de ses trois pôles alliés. Il coupe la source.
+//   2. LE PERDANT N'A PLUS D'APPUI — sa chaîne est percée : protecteur ou
+//      front absent du thème. Il ne tient plus debout assez longtemps.
+// Sinon, les deux marquent.
+//
+// Les deux routes réutilisent la machinerie déjà en place pour le verdict —
+// scoreRolesExercesV7 et soliditeChaineV7 — au lieu d'une table séparée.
+//
+// ⚠️ STATUT : PISTE, PAS RÈGLE. Lue sur les 5 cas réels, elle donne 5/5,
+// avec un taux de base de 48% « les deux marquent » / 52% « un seul » —
+// proche du taux réel du BTTS au football, ce qui est bon signe pour le
+// calibrage mais ne prouve rien. La règle a été CONSTRUITE en regardant
+// ces 5 cas, après avoir essayé une dizaine de candidats : une règle à
+// 50/50 a environ 3% de chances de faire 5/5 par hasard, donc ~26% sur dix
+// essais. Le 5/5 est suggestif, pas démonstratif. NON BRANCHÉE au verdict.
+//
+// ⚠️ CE QUI EST MESURÉ ET NE DÉPEND PAS DE CET AJUSTEMENT :
+//   · La lecture BTTS actuelle répond « les deux marquent » sur 91% des
+//     thèmes. Ses 3/5 sur les cas réels sont exactement ce que donnerait
+//     un « oui » constant — elle n'apporte donc aucune information.
+//   · La règle BTTS 100% (M4/M10) se déclenche sur 8,6% des thèmes ; sur
+//     nos 5 cas elle tire trois fois, juste une seule (E 1-1), fausse sur
+//     C 7-0 et D 0-1.
+//   · La règle « Via en M4 → camp A ne marque pas » est fausse sur le cas
+//     B (Via EST en M4, réel 3-2, les deux ont marqué). Elle était donnée
+//     3/3 sur l'ancienne archive — ce nouveau cas la contredit.
+//   · L'intuition de départ — « si les deux camps peuvent frapper, les
+//     deux marquent » — est ANTI-corrélée : 1/5. Piste morte.
+// ═══════════════════════════════════════════════════════════════
+function lectureDeuxMarquentV7(theme) {
+  if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
+  const rot = getRotationCombat(theme);
+  const anc = analyseAncrageDeveloppe(theme);
+  if (!anc.applicable || !anc.avantage) {
+    return { applicable: false, raison: 'Aucun avantage départagé — le perdant n\'est pas identifié.' };
+  }
+  const estR1 = anc.avantage === 'R1';
+  const vainqueur = estR1 ? rot.figR1 : rot.figR7;
+  const perdant   = estR1 ? rot.figR7 : rot.figR1;
+  const siegeV    = estR1 ? rot.hR1 : rot.hR7;
+
+  // Route 1 — la frappe du vainqueur atteint-elle le camp du perdant ?
+  const rx = rolesExercesFigureV7(vainqueur, theme, siegeV);
+  const frappe = rx ? rx.roles[0] : null;               // le rôle antagonisteDe
+  const campPerdant = campDuChefV7(perdant);
+  const viseCamp = !!(frappe && campPerdant.indexOf(frappe.dest) >= 0);
+  const aneantit = !!(frappe && frappe.portee === 'effectif' && viseCamp);
+
+  // Route 2 — la chaîne du perdant tient-elle encore ?
+  const chaine = soliditeChaineV7(perdant, theme);
+  const percee = !!(chaine && chaine.perce);
+
+  const lesDeuxMarquent = !aneantit && !percee;
+  const motifs = [];
+  if (aneantit) {
+    motifs.push('le vainqueur ' + FL[vainqueur] + ' frappe ' + FL[frappe.dest]
+      + ' — camp du perdant — et la frappe est effective');
+  }
+  if (percee) {
+    motifs.push('la chaîne du perdant ' + FL[perdant] + ' est percée ('
+      + chaine.resume + ')');
+  }
+
+  return {
+    applicable: true,
+    vainqueur: vainqueur, perdant: perdant,
+    lesDeuxMarquent: lesDeuxMarquent,
+    aneantiParLaFrappe: aneantit,
+    chainePerdantPercee: percee,
+    frappe: frappe ? { cible: frappe.dest, portee: frappe.portee, viseCamp: viseCamp } : null,
+    chainePerdant: chaine ? chaine.total : null,
+    motifs: motifs,
+    synthese: lesDeuxMarquent
+      ? 'Le perdant ' + FL[perdant] + ' garde sa frappe : la frappe du vainqueur ne l\'atteint pas '
+        + '(' + (frappe ? frappe.portee + (viseCamp ? ', camp adverse' : ', hors camp') : '—') + ') '
+        + 'et sa chaîne tient (' + (chaine ? chaine.total : '—') + ') → LES DEUX MARQUENT.'
+      : 'Le perdant ' + FL[perdant] + ' est muet : ' + motifs.join(' ; ') + ' → UN SEUL MARQUE.'
+  };
+}
+
+function renderDeuxMarquentPanel(theme) {
+  const ancien = document.getElementById('deux-marquent-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  const hote = document.getElementById('roles-exerces-panel')
+            || document.getElementById('sikidy-elementaire-panel')
+            || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  const d = lectureDeuxMarquentV7(theme);
+  const panneau = document.createElement('div');
+  panneau.id = 'deux-marquent-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #b45309;';
+
+  if (!d.applicable) {
+    panneau.innerHTML = '<h3 style="margin-bottom:2px;">⚽ Les deux marquent — piste</h3>'
+      + '<div class="muted" style="font-size:11.5px;">' + d.raison + '</div>';
+    hote.parentNode.insertBefore(panneau, hote.nextSibling);
+    return;
+  }
+
+  const vert = '#4ade80', rouge = '#f87171';
+  const c = d.lesDeuxMarquent ? vert : rouge;
+  function route(actif, titre, texte) {
+    return '<div style="display:flex; gap:6px; align-items:baseline; margin-top:3px;">'
+      + '<span style="color:' + (actif ? rouge : '#64748b') + '; font-size:11px;">'
+      + (actif ? '✗' : '·') + '</span>'
+      + '<span style="flex:1;"><b style="font-size:11px;">' + titre + '</b> '
+      + '<span class="muted" style="font-size:10.5px;">' + texte + '</span></span></div>';
+  }
+
+  panneau.innerHTML =
+    '<h3 style="margin-bottom:2px;">⚽ Les deux marquent — piste</h3>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:8px; line-height:1.5;">'
+    + 'La question n\'est pas si le match est serré — le cas réel 6-1 a vu les deux marquer. '
+    + 'Elle est de savoir si le <b>perdant garde la capacité de frapper une fois</b>. Deux façons de '
+    + 'la lui retirer : le vainqueur l\'anéantit, ou sa propre chaîne est percée. '
+    + '<b>Piste en lecture seule — le verdict BTTS affiché plus haut ne s\'en sert pas.</b></div>'
+    + '<div style="font-size:13px; font-weight:700; color:' + c + '; margin-bottom:6px;">'
+    + (d.lesDeuxMarquent ? '⚽⚽ Les deux marquent' : '⚽ Un seul marque') + '</div>'
+    + '<div class="muted" style="font-size:10.5px;">Vainqueur ' + FL[d.vainqueur]
+    + ' · perdant ' + FL[d.perdant] + '</div>'
+    + route(d.aneantiParLaFrappe, 'Frappe du vainqueur',
+        d.frappe ? (FL[d.frappe.cible] + ' — ' + d.frappe.portee
+          + (d.frappe.viseCamp ? ', camp du perdant' : ', hors du camp du perdant')) : '—')
+    + route(d.chainePerdantPercee, 'Chaîne du perdant',
+        (d.chainePerdant !== null ? 'total ' + d.chainePerdant + ' — ' : '')
+        + (d.chainePerdantPercee ? 'percée' : 'intacte'));
+
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
 function renderRolesExercesPanel(theme) {
   const ancien = document.getElementById('roles-exerces-panel');
   if (ancien) ancien.remove();
@@ -13238,7 +13408,7 @@ function renderRegressionReference(theme){
   const mothers=[theme[1],theme[2],theme[3],theme[4]];
   const key=mothers.join('|');
   const refs={
-    'fortuna_minor|aquisitio|carcer|albus':{date:'2026-08-18',time:'20:00',score:'1-1',verdict:'NUL'}
+    'fortuna_minor|acquisitio|carcer|albus':{date:'2026-08-18',time:'20:00',score:'1-1',verdict:'NUL'}
   };
   const r=refs[key];
   if(!r || d!==r.date || t!==r.time){ el.style.display='none'; el.innerHTML=''; return; }
@@ -14296,6 +14466,8 @@ function renderTheme(){
     // Isolé comme les autres panneaux — une erreur ici ne doit jamais
     // empêcher l'affichage du verdict.
     try { renderRolesExercesPanel(currentTheme); } catch(e) { console.log('roles exerces error', e); }
+    // Piste « les deux marquent » : lecture seule, ne touche pas le BTTS affiché.
+    try { renderDeuxMarquentPanel(currentTheme); } catch(e) { console.log('deux marquent error', e); }
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
       elR.classList.remove('verdict-priority');
