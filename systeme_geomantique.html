@@ -5424,7 +5424,7 @@ function toggleValiditePanel() {
     }
 
     var html = '<h3 style="margin-bottom:2px;">🗓️ Validité du thème &amp; figure du jour</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Axe Cardinal (angulaire), Axe Temporel, Axe Succédent et Axe Cadent doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide — protocole appliqué en direct au verdict. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Axe Cardinal (angulaire), Axe Temporel, Axe Succédent et Axe Cadent doivent tous exister dans le thème EN BASE pour qu\'il soit valide (le texte disait « base ou résultante » — faux, figureExistsBaseOnly ne parcourt que les 16 positions de base ; corrigé le 25/08) — protocole appliqué en direct au verdict. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
 
     html += '<div style="border-radius:10px; padding:12px 16px; margin-bottom:14px; font-weight:600; text-align:center; '
       + (invalide ? 'background:#7f1d1d; color:#fecaca;' : 'background:#166534; color:#bbf7d0;') + '">'
@@ -11204,6 +11204,14 @@ function lectureUnAxeV7(theme, axe) {
     ancree = figureExistsBaseOnly(figureAxe, theme);
   } catch (e) { figureAxe = null; }
 
+  // FIABILITÉ (25/08/26, demande Ellemine_D : « pour avoir la fiabilité des
+  // thèmes des axes il faut en même temps vérifier les conditions de
+  // validation d'un thème »). Le thème dérivé passe le même protocole de
+  // validité que le thème principal : ses quatre axes doivent exister dans
+  // ce thème dérivé. Un dérivé non valide ne mérite pas qu'on le croie.
+  let validite = null;
+  try { validite = analyzeValidation(derive); } catch (e) { validite = null; }
+
   const rot = getRotationCombat(derive);
   let ancrage = null, sieges = null, btts = null;
   try { ancrage = analyseAncrageDeveloppe(derive); } catch (e) { ancrage = null; }
@@ -11227,7 +11235,11 @@ function lectureUnAxeV7(theme, axe) {
     critere: ancrage ? ancrage.critere : null,
     siegesWinner: sieges && sieges.applicable ? sieges.winner : null,
     lesDeuxMarquent: btts && btts.applicable ? btts.lesDeuxMarquent : null,
-    temoins: { m13: m13, m14: m14, opposes: temoinsOpposes, identiques: temoinsIdentiques }
+    temoins: { m13: m13, m14: m14, opposes: temoinsOpposes, identiques: temoinsIdentiques },
+    valide: !!(validite && validite.valid),
+    axesTenus: validite ? validite.checks.filter(function (c) { return c.exists; }).length : 0,
+    axesManquants: validite ? validite.checks.filter(function (c) { return !c.exists; })
+      .map(function (c) { return c.label.replace(/ \(.*\)/, '') + ' = ' + (FL[c.fig] || c.fig); }) : []
   };
 }
 
@@ -11237,6 +11249,13 @@ function lectureAxesV7(theme) {
   const valides = axes.filter(function (a) { return a.applicable && a.avantage; });
   const pourR1 = valides.filter(function (a) { return a.avantage === 'R1'; }).length;
   const pourR7 = valides.filter(function (a) { return a.avantage === 'R7'; }).length;
+  // Le même décompte, restreint aux dérivés qui passent le protocole.
+  const fiables = axes.filter(function (a) { return a.applicable && a.avantage && a.valide; });
+  const fiableR1 = fiables.filter(function (a) { return a.avantage === 'R1'; }).length;
+  const fiableR7 = fiables.filter(function (a) { return a.avantage === 'R7'; }).length;
+  let dominationFiable = null;
+  if (fiableR1 > fiableR7) dominationFiable = 'R1';
+  else if (fiableR7 > fiableR1) dominationFiable = 'R7';
   const nulSignaux = axes.filter(function (a) { return a.applicable && a.temoins.opposes; });
   const ancres = axes.filter(function (a) { return a.applicable && a.ancree; }).length;
 
@@ -11247,6 +11266,15 @@ function lectureAxesV7(theme) {
   return {
     applicable: true, axes: axes,
     pourR1: pourR1, pourR7: pourR7, domination: domination,
+    nbFiables: fiables.length, fiableR1: fiableR1, fiableR7: fiableR7,
+    dominationFiable: dominationFiable,
+    validiteTheme: (function () {
+      try { const v = analyzeValidation(theme);
+        return { valide: v.valid, tenus: v.checks.filter(function (c) { return c.exists; }).length,
+          manquants: v.checks.filter(function (c) { return !c.exists; })
+            .map(function (c) { return c.label.replace(/ \(.*\)/, ''); }) };
+      } catch (e) { return null; }
+    })(),
     unanime: valides.length > 0 && (pourR1 === valides.length || pourR7 === valides.length),
     axesAncres: ancres,
     nulSignaux: nulSignaux.map(function (a) { return a.nom; }),
@@ -11327,6 +11355,9 @@ function renderAxesPanel(theme) {
       + 'R1 ' + nom(a.R1) + ' ' + a.ancrageR1 + ' · R7 ' + nom(a.R7) + ' ' + a.ancrageR7
       + (a.temoins.opposes ? ' · <span style="color:#fbbf24;">témoins opposés — signal de nul</span>' : '')
       + (a.ancree ? '' : ' · <span style="color:#64748b;">axe non ancré</span>')
+      + ' · ' + (a.valide
+          ? '<span style="color:#4ade80;">dérivé VALIDE</span>'
+          : '<span style="color:#f87171;">dérivé non valide ' + a.axesTenus + '/4</span>')
       + '</div></button>';
     if (ouvert) {
       h += '<div style="padding:0 9px 9px; font-size:10.5px; line-height:1.55;">'
@@ -11338,6 +11369,9 @@ function renderAxesPanel(theme) {
         + '<div><b>Les deux marquent :</b> ' + (a.lesDeuxMarquent === null ? '—' : (a.lesDeuxMarquent ? 'oui' : 'non')) + '</div>'
         + '<div><b>Témoins M13/M14 :</b> ' + nom(a.temoins.m13) + ' / ' + nom(a.temoins.m14) + ' — '
         + (a.temoins.opposes ? 'opposés' : a.temoins.identiques ? 'identiques' : 'ni l\'un ni l\'autre') + '</div>'
+        + '<div><b>Validité du dérivé :</b> ' + (a.valide
+            ? '<span style="color:#4ade80;">les 4 axes existent dans ce thème dérivé</span>'
+            : '<span style="color:#f87171;">' + a.axesTenus + '/4 — manque ' + a.axesManquants.join(', ') + '</span>') + '</div>'
         + '<button type="button" class="btn-secondary" style="width:auto; padding:5px 10px; margin-top:7px; font-size:11px;" '
         + 'onclick="ouvrirThemeAxeV7(\'' + a.cle + '\')">Charger ce thème dérivé</button>'
         + '</div>';
@@ -11355,12 +11389,29 @@ function renderAxesPanel(theme) {
     + 'le fichier bascule dessus.<br>'
     + '<b>Observation seule</b> — les axes ne décident pas du verdict, ils ont déjà écrasé deux fois des '
     + 'couches qui voyaient juste.</div>'
+    + (d.validiteTheme
+        ? '<div style="font-size:10.5px; margin-bottom:8px; padding:5px 8px; border-radius:5px; background:'
+          + (d.validiteTheme.valide ? 'rgba(34,197,94,.10)' : 'rgba(248,113,113,.10)') + '; border:1px solid '
+          + (d.validiteTheme.valide ? 'rgba(34,197,94,.35)' : 'rgba(248,113,113,.35)') + ';">'
+          + '<b>Thème principal : ' + (d.validiteTheme.valide ? 'VALIDE' : 'non valide')
+          + ' (' + d.validiteTheme.tenus + '/4 axes présents en base)</b>'
+          + (d.validiteTheme.manquants.length ? ' — manque ' + d.validiteTheme.manquants.join(', ') : '')
+          + '<div class="muted" style="margin-top:2px;">Seuls 21% des thèmes sont valides, et 22% des dérivés. '
+          + 'Attention : le protocole cherche les figures d\'axe <b>en base uniquement</b> — le texte du panneau '
+          + 'de validité disait « base ou résultante », c\'était faux, corrigé le 25/08.</div></div>'
+        : '')
     + '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:9px;">'
     + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
     + '<div class="muted" style="font-size:9.5px;">Qui domine dans les axes</div>'
     + '<b style="font-size:16px; color:' + cd + ';">' + (d.domination || 'partagés') + '</b>'
     + '<div class="muted" style="font-size:9.5px;">' + d.pourR1 + ' pour R1 · ' + d.pourR7 + ' pour R7'
     + (d.unanime ? ' — unanimes' : '') + '</div></div>'
+    + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
+    + '<div class="muted" style="font-size:9.5px;">Parmi les axes VALIDES seulement</div>'
+    + '<b style="font-size:16px; color:' + (d.dominationFiable === 'R1' ? bleu : d.dominationFiable === 'R7' ? orange : '#94a3b8') + ';">'
+    + (d.nbFiables ? (d.dominationFiable || 'partagés') : 'aucun') + '</b>'
+    + '<div class="muted" style="font-size:9.5px;">' + d.nbFiables + '/4 dérivés valides'
+    + (d.nbFiables ? ' · ' + d.fiableR1 + ' R1 · ' + d.fiableR7 + ' R7' : '') + '</div></div>'
     + '<div style="flex:1; min-width:130px; border:1px solid rgba(161,98,7,.4); border-radius:5px; padding:6px 9px;">'
     + '<div class="muted" style="font-size:9.5px;">Signal de nul — témoins opposés</div>'
     + '<b style="font-size:16px; color:' + (d.nulSignaux.length ? '#fbbf24' : '#94a3b8') + ';">'
@@ -11375,7 +11426,12 @@ function renderAxesPanel(theme) {
     + 'D où ils donnent R1 alors que R7 gagne), et reste partagée une fois (B). Elle s\'accorde avec le '
     + 'verdict principal sur <b>52,5%</b> des thèmes — un pile ou face. '
     + 'Côté nul : les témoins opposés se déclenchent sur ~10% des thèmes par axe, et sur le seul vrai nul '
-    + 'de l\'archive (E 1-1) <b>aucun</b> axe ne les montre. C\'est cet instrument qui doit accumuler les cas.'
+    + 'de l\'archive (E 1-1) <b>aucun</b> axe ne les montre.<br>'
+    + '<b>Et la validité ne les sauve pas.</b> En ne gardant que les dérivés valides, la majorité ne se '
+    + 'prononce plus que sur la moitié des cas réels — juste sur A, fausse sur C — et B et D n\'ont aucun '
+    + 'dérivé valide. À noter aussi : le seul cas où le verdict principal se trompe (D) a un thème '
+    + '<b>valide</b>, et le cas A, où il voit juste, un thème <b>non valide</b>. Sur ces six thèmes la '
+    + 'validité ne prédit donc pas la justesse. C\'est cet instrument qui doit accumuler les cas.'
     + '</div>';
 
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
