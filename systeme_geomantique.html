@@ -10857,6 +10857,49 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 
 
 // ═══════════════════════════════════════════════════════════════
+// LIEUX DE MARQUAGE — ÉTUDE DU 25/08/26 (question d'Ellemine_D)
+// Maisons désignées : M1, M4, M5, M7, M8, M9, M10, plus les sièges R1/R7.
+// Question posée : les figures qui y siègent ont-elles, par leurs trois
+// pôles, une capacité de marquage ?
+//
+// RÉPONSE MESURÉE SUR LES 5 THÈMES DONT LE SCORE EST CONNU
+// (D 0-1 · E 1-1 · B 3-2 · A 6-1 · C 7-0, soit 1, 2, 5, 7 et 7 buts) :
+//
+// 1. L'ÉTAT LIBRE/TENUE NE PRÉDIT RIEN. Nombre de figures « libres » parmi
+//    les 7 lieux : 3, 3, 5, 2, 5 pour 1, 2, 5, 7, 7 buts. Sur les paires
+//    départageantes : 4 dans le sens, 3 à contresens. Pile ou face.
+//    Le cas A est la réfutation la plus nette : 2 figures libres sur 7,
+//    et 7 buts. Le cas D : 3 libres, 1 but.
+//    Pour le BTTS, le meilleur découpage de camps donne 4/6 — exactement
+//    ce que donnerait un « oui » constant. Aucune information.
+//
+// 2. POURQUOI : L'INSTRUMENT N'EST PAS LOCAL. resoudreLiberationsV7 donne
+//    à chaque FIGURE un seul état pour tout le thème. Une figure présente
+//    dans trois maisons a une seule valeur libre/tenue. Dire « la figure
+//    en M5 est libre » ne dit donc rien sur M5. Pour une doctrine fondée
+//    sur les LIEUX, la lecture des pôles doit être localisée à la maison —
+//    c'est ce que fait profilFigureMaison, et lui montre quelque chose.
+//
+// 3. CE QUE MONTRE LA LECTURE LOCALISÉE — ET C'EST L'INVERSE DE L'ATTENDU.
+//    Somme des profils sur les 7 lieux : 79,6 · 52,6 · 100,4 · 32,7 · 51
+//    pour 1, 2, 5, 7, 7 buts → 2 paires dans le sens, 7 à CONTRESENS.
+//    Nombre de lieux à profil positif : 7 · 5 · 7 · 4 · 5 → 1 dans le
+//    sens, 6 à contresens.
+//    Autrement dit : MIEUX les figures sont installées dans les lieux de
+//    marquage, MOINS il y a de buts. Le thème le mieux installé (B, somme
+//    100,4) fait 5 buts ; le moins bien installé (A, 32,7) en fait 7 ;
+//    et D, bien installé à 79,6, n'en fait qu'un seul.
+//    Lecture possible : une figure bien installée TIENT sa maison au lieu
+//    d'agir. Les buts viendraient du déséquilibre, pas de la solidité —
+//    ce qui rejoint l'idée de match ouvert contre match fermé.
+//
+// ⚠️ PRUDENCE : 5 thèmes, 9 paires, 3 indicateurs essayés. Voir 7 paires
+// sur 9 à contresens a environ 9% de chances d'arriver par hasard sur un
+// seul indicateur, et ~25% quand on en essaie trois. C'est suggestif, pas
+// démontré. Rien n'est branché sur cette base.
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
 // LES DEUX MARQUENT — PISTE (25/08/26, « on attaque les deux marquent »)
 //
 // Reformulation qui a débloqué la question : « les deux marquent » ne veut
