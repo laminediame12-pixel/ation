@@ -11082,6 +11082,159 @@ function lectureOuvertureButsV7(theme, cadre) {
   };
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// PANNEAU DES LIEUX DE MARQUAGE (25/08/26, demande Ellemine_D)
+// Les sept maisons désignées — M1, M4, M5, M7, M8, M9, M10 — plus les
+// deux sièges R1/R7 quand ils tombent ailleurs. Pour chaque lieu : la
+// figure qui l'occupe, son installation LOCALE (profilFigureMaison, les
+// six niveaux lus dans CETTE maison), l'état de ses trois pôles, et son
+// ouverture.
+//
+// ⚠️ INSTRUMENT DE LECTURE, RIEN N'EST BRANCHÉ. L'étude du 25/08 (voir le
+// bloc « LIEUX DE MARQUAGE ») a mesuré, sur les 5 thèmes dont le score est
+// connu, que l'état libre/tenue des figures ne prédit NI les buts NI le
+// BTTS, et que l'installation locale va à CONTRESENS du nombre de buts :
+// mieux les figures sont installées dans ces lieux, moins il y a de buts
+// (7 paires sur 9 à contresens). Le panneau affiche donc les deux
+// totaux — somme des installations et nombre de lieux positifs — pour
+// que chaque nouveau résultat réel confirme ou casse ce renversement.
+// ═══════════════════════════════════════════════════════════════
+
+var LIEUX_MARQUAGE_V7 = [1, 4, 5, 7, 8, 9, 10];
+
+function lectureLieuxMarquageV7(theme) {
+  if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
+  const rot = getRotationCombat(theme);
+  let liberations = null;
+  try { liberations = resoudreLiberationsV7(theme); } catch (e) { liberations = null; }
+
+  // Les sièges R1/R7 s'ajoutent à la liste s'ils tombent hors des sept maisons.
+  const maisons = LIEUX_MARQUAGE_V7.slice();
+  [rot.hR1, rot.hR7].forEach(function (h) { if (maisons.indexOf(h) < 0) maisons.push(h); });
+
+  const lieux = maisons.map(function (h) {
+    const fig = theme[h];
+    const profil = profilFigureMaison(fig, h, theme);
+    function etatPole(x) {
+      if (!x) return { fig: null, libelle: '—', rang: 0 };
+      const occ = trouverFigV7(x, theme);
+      if (!occ.length) return { fig: x, libelle: 'absent', rang: 0 };
+      const base = occ.filter(function (o) { return !o.hidden; });
+      return { fig: x, rang: base.length ? 2 : 1,
+        libelle: base.length ? ('base ' + base.map(function (o) { return 'M' + o.pos; }).join(' '))
+                             : ('résultante ' + occ.length + '×') };
+    }
+    let active = false;
+    try { active = !!elementaireFigureMaison(fig, h).natureLevel.active; } catch (e) { active = false; }
+    return {
+      house: h, fig: fig,
+      estR1: h === rot.hR1, estR7: h === rot.hR7,
+      horsListe: LIEUX_MARQUAGE_V7.indexOf(h) < 0,
+      installation: Math.round(profil.total * 10) / 10,
+      ouverture: OUVERTURE_FIGURE[fig] || '?',
+      active: active,
+      figureDeButs: !!FIGURES_BUTS_V7[fig],
+      etat: liberations && liberations.etat ? (liberations.etat[fig] || '?') : '?',
+      antagoniste: etatPole(ANTAGONISTES_V7[fig]),
+      protecteur: etatPole(PROTECTEURS_V7[fig]),
+      front: etatPole(FRONT_V7[fig])
+    };
+  });
+
+  // Les deux totaux qui portent le renversement observé.
+  const surListe = lieux.filter(function (l) { return !l.horsListe; });
+  const somme = Math.round(surListe.reduce(function (s, l) { return s + l.installation; }, 0) * 10) / 10;
+  const positifs = surListe.filter(function (l) { return l.installation > 0; }).length;
+
+  return {
+    applicable: true, lieux: lieux,
+    sommeInstallation: somme, lieuxPositifs: positifs, nbLieux: surListe.length,
+    figuresDeButsPresentes: FIGS_V7.filter(function (f) {
+      return FIGURES_BUTS_V7[f] && trouverFigV7(f, theme).some(function (o) { return !o.hidden; });
+    })
+  };
+}
+
+function renderLieuxMarquagePanel(theme) {
+  const ancien = document.getElementById('lieux-marquage-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  const hote = document.getElementById('deux-marquent-panel')
+            || document.getElementById('roles-exerces-panel')
+            || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  const d = lectureLieuxMarquageV7(theme);
+  const panneau = document.createElement('div');
+  panneau.id = 'lieux-marquage-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #0d9488;';
+  if (!d.applicable) {
+    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🥅 Lieux de marquage</h3>'
+      + '<div class="muted" style="font-size:11.5px;">' + d.raison + '</div>';
+    hote.parentNode.insertBefore(panneau, hote.nextSibling);
+    return;
+  }
+
+  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
+  // Teintes NEUTRES quant aux buts : elles disent l'installation, pas une
+  // prédiction — l'étude dit justement que l'installation va à contresens.
+  function teinte(v) { return v >= 15 ? '#38bdf8' : v > 0 ? '#94a3b8' : '#fbbf24'; }
+
+  function pole(p, libelle) {
+    const c = p.rang === 2 ? '#4ade80' : p.rang === 1 ? '#818cf8' : '#64748b';
+    return '<div style="display:flex; gap:5px;">'
+      + '<span class="muted" style="font-size:9.5px; min-width:58px;">' + libelle + '</span>'
+      + '<span style="flex:1; font-size:10px;">' + nom(p.fig)
+      + ' <span style="color:' + c + ';">' + p.libelle + '</span></span></div>';
+  }
+
+  function carte(l) {
+    const badges = (l.estR1 ? '<span style="font-size:9px;padding:0 3px;border-radius:2px;background:#1d4ed8;color:#fff;margin-left:3px;">R1</span>' : '')
+      + (l.estR7 ? '<span style="font-size:9px;padding:0 3px;border-radius:2px;background:#c2410c;color:#fff;margin-left:3px;">R7</span>' : '')
+      + (l.figureDeButs ? '<span style="font-size:9px;padding:0 3px;border-radius:2px;background:#065f46;color:#fff;margin-left:3px;">figure à buts</span>' : '');
+    return '<div style="border:1px solid rgba(148,163,184,.22); border-radius:5px; padding:6px 8px;'
+      + (l.horsListe ? ' background:rgba(29,78,216,.07);' : '') + '">'
+      + '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:6px;">'
+      + '<span><b style="font-size:11.5px;">M' + l.house + '</b> ' + nom(l.fig) + badges + '</span>'
+      + '<b style="color:' + teinte(l.installation) + '; font-size:12px;">' + l.installation + '</b></div>'
+      + '<div class="muted" style="font-size:9.5px; margin:2px 0 4px;">'
+      + l.ouverture + (l.active ? ', active' : ', inactive') + ' · ' + l.etat
+      + (l.horsListe ? ' · siège hors liste' : '') + '</div>'
+      + pole(l.antagoniste, 'frappée par') + pole(l.protecteur, 'protecteur') + pole(l.front, 'front')
+      + '</div>';
+  }
+
+  panneau.innerHTML =
+    '<h3 style="margin-bottom:2px;">🥅 Lieux de marquage</h3>'
+    + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.5;">'
+    + 'Les sept maisons désignées — M1, M4, M5, M7, M8, M9, M10 — plus les sièges R1/R7 s\'ils tombent '
+    + 'ailleurs (fond bleuté). Le chiffre est l\'<b>installation locale</b> de la figure : les six niveaux '
+    + 'lus dans cette maison-là, pas dans tout le thème. En dessous, l\'état de ses trois pôles.<br>'
+    + '<b>Lecture seule.</b> Mesuré sur les 5 thèmes au score connu : l\'état libre/tenue ne prédit ni les '
+    + 'buts ni le BTTS, et l\'installation va à <b>contresens</b> du nombre de buts — mieux les figures sont '
+    + 'installées ici, moins il y a de buts (7 paires sur 9). Les deux totaux ci-dessous sont là pour que '
+    + 'chaque nouveau score confirme ou casse ce renversement.</div>'
+    + '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:9px;">'
+    + '<div style="flex:1; min-width:120px; border:1px solid rgba(13,148,136,.4); border-radius:5px; padding:6px 9px;">'
+    + '<div class="muted" style="font-size:9.5px;">Somme des installations</div>'
+    + '<b style="font-size:16px; color:#2dd4bf;">' + d.sommeInstallation + '</b>'
+    + '<div class="muted" style="font-size:9.5px;">repères réels : 32,7 → 7 buts · 100,4 → 5 buts · 79,6 → 1 but</div></div>'
+    + '<div style="flex:1; min-width:120px; border:1px solid rgba(13,148,136,.4); border-radius:5px; padding:6px 9px;">'
+    + '<div class="muted" style="font-size:9.5px;">Lieux à installation positive</div>'
+    + '<b style="font-size:16px; color:#2dd4bf;">' + d.lieuxPositifs + ' / ' + d.nbLieux + '</b>'
+    + '<div class="muted" style="font-size:9.5px;">repères réels : 4 → 7 buts · 7 → 1 but</div></div></div>'
+    + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(205px,1fr)); gap:7px;">'
+    + d.lieux.map(carte).join('') + '</div>'
+    + (d.figuresDeButsPresentes.length
+        ? '<div class="muted" style="font-size:10px; margin-top:7px;">Figures à buts présentes en base dans le thème : '
+          + d.figuresDeButsPresentes.map(nom).join(', ') + '</div>'
+        : '<div class="muted" style="font-size:10px; margin-top:7px;">Aucune figure à buts présente en base.</div>');
+
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
 function renderDeuxMarquentPanel(theme) {
   const ancien = document.getElementById('deux-marquent-panel');
   if (ancien) ancien.remove();
@@ -14756,6 +14909,8 @@ function renderTheme(){
     try { renderRolesExercesPanel(currentTheme); } catch(e) { console.log('roles exerces error', e); }
     // Piste « les deux marquent » : lecture seule, ne touche pas le BTTS affiché.
     try { renderDeuxMarquentPanel(currentTheme); } catch(e) { console.log('deux marquent error', e); }
+    // Lieux de marquage : instrument d'observation, rien n'est branché.
+    try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
       elR.classList.remove('verdict-priority');
