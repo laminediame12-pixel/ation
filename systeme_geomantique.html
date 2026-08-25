@@ -4545,6 +4545,17 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     cas des deux autres, sur lesquels le barème a été calé.
 //     L'Axe Succédent imposait le nul ✗ — motif du débranchement.
 //
+// MISE À JOUR 25/08 — LES RÔLES EXERCÉS SONT BRANCHÉS (scoreRolesRecusV7).
+// L'ancrage décisif est désormais chaîne + rôles reçus. Effet sur les cas :
+//   A 6-1 : rôles à égalité (1,5 / 1,5) — marge inchangée 0,75 → R1 ✅
+//   B 3-2 : rôles favorables à R7 (1 / 1,5) — marge 0,75 → 0,25 → R1 ✅
+//   C 7-0 : rôles favorables à R1 (2,5 / 1,5) — marge 0,75 → 1,75 → R1 ✅
+// Les rôles ÉLARGISSENT donc la seule prédiction hors échantillon et
+// RÉTRÉCISSENT le cas qui contredit déjà toutes les dimensions chiffrées.
+// Sur 4000 thèmes, l'ajout renverse 4,2% des verdicts que la chaîne seule
+// décidait, et réduit les égalités de 264 à 236.
+// ⚠️ Les rôles SEULS ne donneraient que 1/3 — ils complètent la chaîne.
+//
 // BILAN : solidité de chaîne 3/3 · lecture des sièges 3/3 ·
 //         réseau d'ancrage 2/3 · règles de nul 0/2 (elles se sont
 //         déclenchées sur un 6-1 et un 7-0).
@@ -4829,28 +4840,57 @@ function analyseAncrageDeveloppe(theme) {
 
   // ─── HIÉRARCHIE DE DÉPARTAGE (24/08/26, règle Ellemine_D) ───
   // « la solidité de la chaîne prime sur la force d'installation ».
-  // 1. Solidité de chaîne (protecteur + front, base > résultante)
+  // 1. Ancrage = solidité de chaîne + rôles reçus
   // 2. À égalité seulement : force d'installation, chef + binôme −
   //    antagoniste, sur les six dimensions du profil.
   // La force d'installation reste calculée et exposée — elle n'est plus
   // décisive, elle départage.
+  //
+  // ─── BRANCHEMENT DES RÔLES EXERCÉS (25/08/26, demande Ellemine_D) ───
+  // La chaîne ne comptait que la PRÉSENCE du protecteur et du front. Les
+  // rôles reçus ajoutent la qualité du service : un protecteur fragile
+  // protège mal, une frappe sur un chef à son repos est contrée. Les
+  // acteurs sont les mêmes quatre pôles — c'est la portée qui est neuve.
+  // Somme simple, sans coefficient : k = 1.
+  //
+  // ⚠️ CE QUE LA MESURE DIT, ET CE QU'ELLE NE DIT PAS.
+  // Balayage du coefficient k sur les trois cas réels + 2000 thèmes :
+  //   k=0      3/3 · marges 0,75 / 0,75 / 0,75 · 0 % de renversement
+  //   k=0,5    3/3 · marges 0,75 / 0,50 / 1,25 · 2,6 %
+  //   k=1      3/3 · marges 0,75 / 0,25 / 1,75 · 3,9 %   ← retenu
+  //   k=1,25   3/3 · marges 0,75 / 0,13 / 2,00 · 5,4 %
+  //   k=1,5    2/3 · le cas B bascule
+  // Donc : tout k dans [0 ; 1,25] garde 3/3. Les données NE TRANCHENT PAS
+  // entre eux — k=1 est choisi parce qu'il est la somme sans artifice, pas
+  // parce qu'il serait démontré. Le cas B ne tient qu'à 0,25 : c'est le
+  // cas où toutes les dimensions chiffrées donnaient R7 et où R1 a gagné.
+  // À l'inverse les rôles ÉLARGISSENT la marge du cas C (0,75 → 1,75),
+  // seule prédiction posée avant de connaître le score.
+  // Les rôles seuls donneraient 1/3 : ils complètent la chaîne, ils ne la
+  // remplacent pas.
   const chaineR1 = soliditeChaineV7(figR1, theme);
   const chaineR7 = soliditeChaineV7(figR7, theme);
+  const rolesR1 = scoreRolesRecusV7(figR1, theme, rot.hR1);
+  const rolesR7 = scoreRolesRecusV7(figR7, theme, rot.hR7);
+  const ancrageR1 = Math.round((chaineR1.total + rolesR1.total) * 100) / 100;
+  const ancrageR7 = Math.round((chaineR7.total + rolesR7.total) * 100) / 100;
 
   function val(m) { return m && m.soi && m.soi.meilleur ? m.soi.meilleur.total : 0; }
   const installR1 = val(membres.R1) + val(membres.binomeR1) - val(membres.antagoR1);
   const installR7 = val(membres.R7) + val(membres.binomeR7) - val(membres.antagoR7);
 
   let avantage = null, critere;
-  if (chaineR1.total !== chaineR7.total) {
-    avantage = chaineR1.total > chaineR7.total ? 'R1' : 'R7';
-    critere = 'solidité de chaîne (' + chaineR1.total + ' contre ' + chaineR7.total + ')';
+  if (ancrageR1 !== ancrageR7) {
+    avantage = ancrageR1 > ancrageR7 ? 'R1' : 'R7';
+    critere = 'ancrage ' + ancrageR1 + ' contre ' + ancrageR7
+      + ' (chaîne ' + chaineR1.total + '/' + chaineR7.total
+      + ' + rôles reçus ' + rolesR1.total + '/' + rolesR7.total + ')';
   } else if (installR1 !== installR7) {
     avantage = installR1 > installR7 ? 'R1' : 'R7';
-    critere = 'chaînes équivalentes (' + chaineR1.total + ') — départage par la force d\'installation ('
+    critere = 'ancrages équivalents (' + ancrageR1 + ') — départage par la force d\'installation ('
       + Math.round(installR1 * 10) / 10 + ' contre ' + Math.round(installR7 * 10) / 10 + ')';
   } else {
-    critere = 'chaînes et installations équivalentes — aucun départage';
+    critere = 'ancrages et installations équivalents — aucun départage';
   }
 
   return {
@@ -4858,11 +4898,15 @@ function analyseAncrageDeveloppe(theme) {
     hR1: rot.hR1, hR7: rot.hR7, figR1: figR1, figR7: figR7, X: X,
     membres: membres, penchantX: penchantX,
     chaineR1: chaineR1, chaineR7: chaineR7,
+    rolesR1: rolesR1, rolesR7: rolesR7,
+    ancrageR1: ancrageR1, ancrageR7: ancrageR7,
     installR1: Math.round(installR1 * 100) / 100,
     installR7: Math.round(installR7 * 100) / 100,
     avantage: avantage, critere: critere,
-    synthese: 'R1 ' + FL[figR1] + ' — chaîne ' + chaineR1.total + ' (' + chaineR1.resume + ') · '
-      + 'R7 ' + FL[figR7] + ' — chaîne ' + chaineR7.total + ' (' + chaineR7.resume + ') → '
+    synthese: 'R1 ' + FL[figR1] + ' — ancrage ' + ancrageR1 + ' (chaîne ' + chaineR1.total
+      + ' : ' + chaineR1.resume + ' · rôles ' + rolesR1.total + ' : ' + rolesR1.resume + ') · '
+      + 'R7 ' + FL[figR7] + ' — ancrage ' + ancrageR7 + ' (chaîne ' + chaineR7.total
+      + ' : ' + chaineR7.resume + ' · rôles ' + rolesR7.total + ' : ' + rolesR7.resume + ') → '
       + (avantage ? 'avantage ' + avantage : 'égalité') + ' par ' + critere + '.'
   };
 }
@@ -10496,8 +10540,10 @@ function renderElementaireR1R7(theme){
 // répondre à « Acquisitio, dans CE thème, qui sert-elle et qui frappe-t-elle ? ».
 // C'est le côté EXERCÉ des quatre relations, celui que rolesDeLaFigureV7
 // expose et que rien n'affichait.
-// ⚠️ AFFICHAGE SEUL — aucun de ces chiffres n'entre dans le verdict.
-// La pondération viendra après, une fois la lecture faite.
+// BRANCHÉ AU VERDICT le 25/08 via scoreRolesRecusV7 : la portée des rôles
+// reçus par R1 et R7 entre dans l'ancrage décisif. Le panneau reste la
+// lecture complète — toutes les figures — dont le calcul ne retient que
+// les deux chefs.
 // ═══════════════════════════════════════════════════════════════
 
 // Statut d'un destinataire dans le thème : absent, en résultante seule,
@@ -10588,6 +10634,60 @@ function rolesExercesTheme(theme) {
     hR1: rot.hR1, hR7: rot.hR7, lignes: lignes};
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// RÔLES REÇUS PAR UN CHEF — branchement des rôles exercés au calcul
+// (25/08/26, demande Ellemine_D : « branche les rôles exercés »)
+//
+// Les quatre figures qui exercent un rôle SUR X sont exactement les
+// quatre pôles de X : X+10 le protège, X+4 lui sert de front, X+2 est
+// son binôme, X−3 le frappe. Rien de nouveau de ce côté-là.
+// Ce qui est nouveau, c'est la PORTÉE : soliditeChaineV7 ne regarde que
+// la présence des maillons ; ici on regarde aussi si celui qui rend le
+// service tient debout, et si celui qui frappe frappe pour de bon.
+// Un protecteur présent mais fragile protège mal. Une frappe sur un chef
+// à son repos est contrée. C'est exactement ce que le panneau affiche.
+//
+// Hypothèse retenue et NON pénalisante (25/08/26) : « être attaqué
+// n'empêche pas de frapper ». Une figure qui tient plusieurs rôles les
+// tient tous à plein — aucun coefficient ne les divise. Mesuré : toute
+// pénalité sur les pôles occupés casse le cas B.
+// ═══════════════════════════════════════════════════════════════
+
+// Un seul endroit pour régler le barème.
+var POIDS_ROLES_V7 = {
+  protecteur: 1, front: 1.5, binome: 1, antagoniste: -2,
+  portee: {effectif: 1, 'contrée': 0.5, affaibli: 0.5, latent: 0.25, 'à vide': 0}
+};
+
+function scoreRolesRecusV7(chef, theme, siegeImpose) {
+  if (!chef) return null;
+  const cibles = [
+    {fig: PROTECTEURS_V7[chef], cle: 'protecteurDe', role: 'protecteur', poids: POIDS_ROLES_V7.protecteur},
+    {fig: FRONT_V7[chef],       cle: 'frontDe',      role: 'front',      poids: POIDS_ROLES_V7.front},
+    {fig: BINOMES_V7[chef],     cle: 'binomeDe',     role: 'binôme',     poids: POIDS_ROLES_V7.binome},
+    {fig: ANTAGONISTES_V7[chef],cle: 'antagonisteDe',role: 'antagoniste',poids: POIDS_ROLES_V7.antagoniste}
+  ];
+  const detail = cibles.map(function (c) {
+    const rx = rolesExercesFigureV7(c.fig, theme);
+    const ro = rx ? rx.roles.filter(function (r) { return r.cle === c.cle; })[0] : null;
+    // Sécurité : le rôle doit bien viser le chef. Si la table et
+    // rolesDeLaFigureV7 divergeaient un jour, on le verrait ici.
+    const vise = ro && ro.dest === chef;
+    const portee = vise ? ro.portee : 'à vide';
+    const coef = POIDS_ROLES_V7.portee[portee] || 0;
+    return {role: c.role, acteur: c.fig, portee: portee,
+      acteurSolide: rx ? rx.solide : false,
+      etat: ro ? ro.etat.libelle : 'absente',
+      score: Math.round(c.poids * coef * 100) / 100};
+  });
+  const total = Math.round(detail.reduce(function (s, d) { return s + d.score; }, 0) * 100) / 100;
+  return {chef: chef, detail: detail, total: total,
+    resume: detail.map(function (d) {
+      return d.role + ' ' + (FL[d.acteur] || d.acteur) + ' ' + d.portee;
+    }).join(' · ')};
+}
+
 function renderRolesExercesPanel(theme) {
   const ancien = document.getElementById('roles-exerces-panel');
   if (ancien) ancien.remove();
@@ -10651,7 +10751,9 @@ function renderRolesExercesPanel(theme) {
     + '<span style="color:#fbbf24;">affaibli</span> (exerçante fragile) · '
     + '<span style="color:#38bdf8;">contrée</span> (frappe sur une cible à son repos, qui résiste) · '
     + '<span style="color:#64748b;">à vide</span> (destinataire absent). '
-    + '<b>Lecture seule — rien de ceci n\'entre encore dans le verdict.</b></div>'
+    + '<b>Branché au verdict depuis le 25/08 :</b> les rôles reçus par R1 et R7 — protecteur, front, '
+    + 'binôme, moins la frappe subie — s\'ajoutent à la solidité de chaîne pour former l\'ancrage décisif. '
+    + 'Les autres figures restent en lecture.</div>'
     + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:7px; font-size:11.5px; line-height:1.5;">'
     + d.lignes.map(carte).join('')
     + '</div>';
