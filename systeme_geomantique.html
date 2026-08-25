@@ -4593,13 +4593,24 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // n'est donc PAS établie : il faut des résultats réels sur des thèmes où
 // elles se contredisent. Le désaccord est signalé sur la carte.
 // ⚠️ SUR LES CINQ CAS, le camp est juste 4/5 — D est le seul raté.
-// ⚠️ « LES DEUX MARQUENT » (25/08) : la lecture BTTS actuelle répond oui
-// sur 91% des thèmes ; ses 3/5 sont exactement ce que donnerait un oui
-// constant. La règle BTTS 100% (M4/M10) tire sur C, D et E : juste une
-// fois sur trois. La règle « Via en M4 → camp A ne marque pas » est
-// fausse sur B (Via est en M4, réel 3-2). Piste proposée et NON branchée :
-// lectureDeuxMarquentV7, 5/5, taux de base 48/52 — voir son en-tête pour
-// la mise en garde sur l'ajustement.
+// ⚠️ « LES DEUX MARQUENT » — BRANCHÉ LE 25/08 SUR LA ROTATION.
+// Le BTTS est désormais rendu par lectureOuvertureButsV7 : une figure
+// ouverte ou active aux DEUX SIÈGES R1/R7 = les deux marquent.
+//   avant : 3/5, et « oui » sur 91% des thèmes (soit un oui constant)
+//   après : 4/5, et « oui » sur 47% — proche du taux réel du BTTS
+// La même règle lue sur les maisons FIXES M1/M7 ne donne que 3/5 : c'est
+// le cadre de rotation qui la fait marcher, orientation confirmée par
+// Ellemine_D (« oriente sur la rotation »).
+// Débranchées du verdict, toujours affichées : BTTS 100% et défavorisé
+// (M4/M10), 1/3 là où elles tirent sur les cas réels ; interrupteur
+// BTTS_DOCTRINE_M4M10_DECISIVE pour les rebrancher.
+// Écarté sur preuve négative : le bonus « Via/Acquisitio/Fortuna Minor en
+// 5 ou 8 », qui rend C 7-0 et D 0-1 faussement positifs.
+// Toujours en place et fausse sur B : « Via en M4 → camp A ne marque pas ».
+// Seconde lecture affichée en comparaison : lectureDeuxMarquentV7 (le
+// perdant garde-t-il sa frappe), 5/5 mais AJUSTÉE sur ces cinq cas, donc
+// moins probante que le 4/5 de la règle d'ouverture, qui ne l'est pas.
+// Les deux ne s'accordent que sur 50% des thèmes.
 // ⚠️ Le SCORE reste faux sur les trois (5-3 / 4-2 / 4-2 contre 6-1 /
 // 3-2 / 7-0) : le camp est juste, le chiffre non. buildVerdictCard
 // surestime le total et comprime l'écart.
@@ -11033,7 +11044,8 @@ function renderDeuxMarquentPanel(theme) {
     + 'La question n\'est pas si le match est serré — le cas réel 6-1 a vu les deux marquer. '
     + 'Elle est de savoir si le <b>perdant garde la capacité de frapper une fois</b>. Deux façons de '
     + 'la lui retirer : le vainqueur l\'anéantit, ou sa propre chaîne est percée. '
-    + '<b>Piste en lecture seule — le verdict BTTS affiché plus haut ne s\'en sert pas.</b></div>'
+    + '<b>Seconde lecture</b> — depuis le 25/08 le verdict BTTS est rendu par l\'ouverture des '
+    + 'sièges (bloc du bas) ; celle-ci reste en comparaison.</div>'
     + '<div style="font-size:13px; font-weight:700; color:' + c + '; margin-bottom:6px;">'
     + (d.lesDeuxMarquent ? '⚽⚽ Les deux marquent' : '⚽ Un seul marque') + '</div>'
     + '<div class="muted" style="font-size:10.5px;">Vainqueur ' + FL[d.vainqueur]
@@ -11066,7 +11078,7 @@ function renderDeuxMarquentPanel(theme) {
       '<div style="margin-top:11px; padding-top:9px; border-top:1px solid rgba(148,163,184,.25);">'
       + '<div style="font-size:12px; font-weight:700; color:' + co + ';">'
       + (o.lesDeuxMarquent ? '⚽⚽ Les deux marquent' : '⚽ Un seul marque')
-      + ' <span class="muted" style="font-weight:400; font-size:10.5px;">— lecture par l\'ouverture des sièges</span></div>'
+      + ' <span class="muted" style="font-weight:400; font-size:10.5px;">— ouverture des sièges R1/R7 · <b>c\'est elle qui rend le verdict</b></span></div>'
       + siege(o.R1, 'R1', '#60a5fa') + siege(o.R7, 'R7', '#fb923c')
       + (o.bonusM5M8.length
           ? '<div class="muted" style="font-size:10px; margin-top:4px;">Bonus signalé : '
@@ -13250,6 +13262,17 @@ function estBienPlaceV7(fig, theme) {
   });
 }
 
+// ─── INTERRUPTEURS BTTS (25/08/26) ───
+// BTTS_ROTATION_DECISIF : la lecture par l'ouverture des sièges R1/R7
+// (lectureOuvertureButsV7, doctrine Ellemine_D) décide du BTTS. 4/5 sur
+// les cas réels, 47% de « oui ».
+// BTTS_DOCTRINE_M4M10_DECISIVE : remettre à true pour redonner la
+// priorité aux règles M4/M10 (BTTS 100% et défavorisé). Mesurées 1/3 là
+// où elles tirent sur les cas réels — laissées à false, mais toujours
+// calculées et affichées.
+var BTTS_ROTATION_DECISIF = true;
+var BTTS_DOCTRINE_M4M10_DECISIVE = false;
+
 function detecterBTTS100V7(theme) {
   var figM4 = theme[4], figM10 = theme[10];
 
@@ -13379,8 +13402,35 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // tous les cas, y compris les cartes M1/M7.
   var rotCorners = getRotationOrderFromRepos(theme[1]);
   var corners = estimerCornersV7(theme, goalA, goalB, theme[rotCorners[0]], theme[rotCorners[6]]);
+  // ─── RÈGLE ELLEMINE (25/08/26) : « oriente sur la rotation » ───
+  // Le BTTS se lit désormais sur les SIÈGES R1/R7 de la rotation, par
+  // l'ouverture : une figure ouverte ou active aux deux sièges = les deux
+  // marquent. Mesuré sur les 5 cas réels : 4/5, et 47% de « oui ».
+  //
+  // Ce qui est remplacé, et pourquoi :
+  //   · L'ancien calcul par défaut (goalA>0 && goalB>0) répondait « oui »
+  //     sur 91% des thèmes. Ses 3/5 étaient exactement ceux d'un « oui »
+  //     constant : il n'apportait aucune information.
+  //   · La règle BTTS 100% (M4/M10) et son pendant « défavorisé » tirent
+  //     sur 8,6% et 6,6% des thèmes. Sur les 5 cas réels elles tirent trois
+  //     fois et n'ont raison qu'une seule (E 1-1) ; elles imposaient « oui »
+  //     sur C 7-0 et D 0-1. Gardées en surcouche, elles annulaient
+  //     précisément les deux cas que la lecture par rotation redresse.
+  //     Elles sont donc DÉBRANCHÉES du verdict et restent AFFICHÉES —
+  //     même traitement que la Structure du Nul et l'Axe Succédent, à la
+  //     demande d'Ellemine_D (« désactive leur effets sur le verdict »).
+  //     Un seul interrupteur ci-dessous pour les rebrancher.
+  //   · La règle « Via en M4 → camp A ne marque pas » agit plus haut sur
+  //     campA.total et reste en place ; noter qu'elle est fausse sur le
+  //     cas B (Via EST en M4, réel 3-2, les deux ont marqué).
   var bttsDoctrine = detecterBTTS100V7(theme);
-  var btts = bttsDoctrine.applique ? true : (bttsDoctrine.defavorise ? false : (goalA > 0 && goalB > 0));
+  var bttsRotation = null;
+  try { bttsRotation = lectureOuvertureButsV7(theme); } catch (e) { bttsRotation = null; }
+  var btts;
+  if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
+  else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) btts = false;
+  else if (BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable) btts = bttsRotation.lesDeuxMarquent;
+  else btts = (goalA > 0 && goalB > 0);
 
   // AJOUTÉ (demande utilisateur) : équipe à plus grande capacité de
   // marquage brute — campA.total/campB.total AVANT la correction de marge
@@ -13449,6 +13499,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     btts: btts,
     bttsForce: bttsDoctrine.applique,
     bttsDefavorise: bttsDoctrine.defavorise,
+    bttsSource: (BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
+      ? 'doctrine M4/M10'
+      : ((BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable)
+          ? 'ouverture des sièges R1/R7' : 'calcul par défaut'),
+    bttsRotation: bttsRotation,
     bttsRaison: bttsDoctrine.raison,
     corners: corners,
     domPctA: domPct, domPctB: 100 - domPct,
@@ -13604,8 +13659,11 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var markLabel=card&&card.capaciteFiable?(card.capaciteWinner==='A'?teamA:card.capaciteWinner==='B'?teamB:'Égalité'):'—';
   var markA=card&&card.capaciteA!=null?card.capaciteA:'—', markB=card&&card.capaciteB!=null?card.capaciteB:'—';
   var bt=card&&card.btts?'Oui':'Non';
-  if (card && card.bttsForce) bt = 'Oui — 100% ✅ (' + (card.bttsRaison || 'règle M4/M10') + ')';
-  if (card && card.bttsDefavorise) bt = 'Non — défavorisé ⚠️ (' + (card.bttsRaison || 'M4 défavorable') + ')';
+  if (card && card.bttsSource) bt += ' — ' + card.bttsSource;
+  // La doctrine M4/M10 est signalée, plus imposée : elle est débranchée du
+  // verdict depuis le 25/08 (1/3 là où elle tire sur les cas réels).
+  if (card && card.bttsForce) bt += ' · M4/M10 aurait dit Oui 100%';
+  if (card && card.bttsDefavorise) bt += ' · M4/M10 aurait dit Non';
   var corners=card&&card.corners?card.corners:{ht1:'—',ht2:'—',total:'—',ouvert:false};
   // CORRIGÉ (20/08/26) : lisait card.penaltyRed / card.yellowCards, des
   // champs qui n'existent pas dans buildVerdictCard (les vrais champs
@@ -13715,8 +13773,13 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
     html += '<div class="kv muted" style="font-size:11px;"><b>Puissance de marquage (ce calcul seul) :</b> ' + card.capaciteA + ' vs ' + card.capaciteB + ' — ne détermine pas le vainqueur ici, tranché par un autre mécanisme</div>';
   }
   html += '<div class="kv"><b>Les deux marquent (BTTS) :</b> ' + (card.btts ? 'Oui' : 'Non') +
-    (card.bttsForce ? ' — <span style="color:#4ade80;font-weight:900;">100% ✅</span>' : '') +
-    (card.bttsDefavorise ? ' — <span style="color:#f87171;font-weight:900;">défavorisé ⚠️</span>' : '') + '</div>';
+    (card.bttsSource ? ' <span class="muted" style="font-size:11px;">— ' + card.bttsSource + '</span>' : '') +
+    (card.bttsForce ? ' <span style="color:#94a3b8;font-size:11px;">· M4/M10 aurait dit Oui 100% (signalé, non décisif)</span>' : '') +
+    (card.bttsDefavorise ? ' <span style="color:#94a3b8;font-size:11px;">· M4/M10 aurait dit Non (signalé, non décisif)</span>' : '') + '</div>';
+  if (card.bttsRotation && card.bttsRotation.applicable) {
+    html += '<div class="kv muted" style="font-size:11px;"><b>Ouverture des sièges :</b> '
+      + card.bttsRotation.synthese + '</div>';
+  }
   if ((card.bttsForce || card.bttsDefavorise) && card.bttsRaison) {
     html += '<div class="kv muted" style="font-size:11px;"><b>Doctrine BTTS :</b> ' + card.bttsRaison + '</div>';
   }
