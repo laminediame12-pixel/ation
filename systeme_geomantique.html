@@ -10640,7 +10640,19 @@ function rolesExercesFigureV7(fig, theme, siegeImpose) {
   function role(cle, dest, hostile, libelle) {
     const etat = etatDestinataireV7(dest, theme);
     let portee;
-    if (!etat.present)          portee = 'à vide';
+    // CORRIGÉ (25/08/26) : une figure ABSENTE du thème n'exerce aucun rôle.
+    // Avant ce correctif, elle était jugée « affaibli » — le cas d'une
+    // exerçante non solide — et pesait donc pour moitié. Mesuré : 3475 sur
+    // 3475 acteurs absents étaient comptés ainsi, soit 100%. Un chef dont
+    // le protecteur manque touchait quand même un demi-crédit de
+    // protection, et un chef dont l'antagoniste est absent subissait quand
+    // même une demi-frappe. soliditeChaineV7 traitait déjà l'absence pour
+    // ce qu'elle est (maillon absent = −3) : les deux couches se
+    // contredisaient. Trouvé en lisant le thème Fortuna Minor / Amissio /
+    // Carcer / Carcer, où Acquisitio est absente et tenait pourtant un
+    // rôle de front « affaibli ».
+    if (!soi.present)           portee = 'à vide';
+    else if (!etat.present)     portee = 'à vide';
     else if (etat.rang === 1)   portee = 'latent';
     else if (!sol.solide)       portee = 'affaibli';
     else if (hostile && etat.rang === 3) portee = 'contrée';
