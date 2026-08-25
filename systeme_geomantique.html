@@ -15334,7 +15334,7 @@ document.getElementById('first-half').innerHTML=''; document.getElementById('str
 // pour que l'historique et les statistiques distinguent les tirages
 // aveugles (test du moteur, aucune influence possible) des tirages
 // manuels (usage réel/divinatoire), au lieu de tout mélanger.
-function launchTheme(randomMode){themeCastAt=new Date().toISOString(); clearInterpretationText(); lastLaunchWasBlind=!!randomMode; currentQuestionContext=buildQuestionContext(); renderQuestionContext(currentQuestionContext); const [m1,m2,m3,m4]=getCurrentMotherValues(); currentTheme=buildThemeFromMothers(randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m1, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m2, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m3, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m4); themeVariants.principal=currentTheme; const _derives=calculerThemesDerives(currentTheme); themeVariants.superposition=_derives.superposition; themeVariants.phase=_derives.phase; themeVariantActif='principal'; renderTheme();}
+function launchTheme(randomMode){themeCastAt=new Date().toISOString(); clearInterpretationText(); lastLaunchWasBlind=!!randomMode; currentQuestionContext=buildQuestionContext(); renderQuestionContext(currentQuestionContext); const [m1,m2,m3,m4]=getCurrentMotherValues(); currentTheme=buildThemeFromMothers(randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m1, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m2, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m3, randomMode?FIGS[Math.floor(Math.random()*FIGS.length)]:m4); themeVariants.principal=currentTheme; const _derives=calculerThemesDerives(currentTheme); themeVariants.superposition=_derives.superposition; themeVariants.phase=_derives.phase; themeVariantActif='principal'; axisDisplayThemeKey='principal'; axisThemeBase=currentTheme; renderTheme();}
 
 // ═══════════════════════════════════════════════════════════════
 // COLORATION DES MAISONS — binôme vert / antagoniste rouge au clic
@@ -15900,6 +15900,9 @@ function renderStatsTab(){
 
 function addToHistory() {
   if (!currentTheme || !currentAnalysis) return;
+  // Un simple changement de thème actif (Principal / axes) ne doit rien
+  // archiver — cf. setAxisDisplayTheme.
+  if (typeof axisSansArchive !== 'undefined' && axisSansArchive) return;
   var team1 = (document.getElementById('team1')||{}).value || 'Equipe 1';
   var team2 = (document.getElementById('team2')||{}).value || 'Equipe 2';
   var matchDate = (document.getElementById('matchDate')||{}).value || '';
@@ -16199,24 +16202,54 @@ function getAxisThemeFromBase(baseTheme, axisKey){
 }
 var axisDisplayThemeKey='principal';
 var axisDisplayTheme=null;
-function getDisplayTheme(){
-  if(!currentTheme) return null;
-  return axisDisplayThemeKey==='principal' ? currentTheme : getAxisThemeFromBase(currentTheme,axisDisplayThemeKey);
-}
-function setAxisDisplayTheme(key){
-  axisDisplayThemeKey=key||'principal';
-  axisDisplayTheme=getDisplayTheme();
+// Le thème principal mémorisé : c'est toujours LUI qui sert de base aux
+// axes, sinon basculer d'un axe à l'autre dériverait en cascade.
+var axisThemeBase=null;
+// Neutralise l'écriture dans l'archive pendant un simple changement de
+// thème actif : renderTheme() appelle addToHistory(), et sans ce garde-fou
+// chaque clic sur un axe créerait une entrée d'historique.
+var axisSansArchive=false;
+
+// currentTheme EST désormais le thème affiché : basculer sur un axe le
+// remplace pour de bon, donc plus aucune couche ne peut lire autre chose
+// que ce qui est à l'écran.
+function getDisplayTheme(){ return currentTheme; }
+
+function majBoutonsAxe(){
   document.querySelectorAll('.axis-theme-btn').forEach(function(b){b.classList.toggle('active',b.dataset.axis===axisDisplayThemeKey);});
   var label=document.getElementById('axis-theme-current');
   if(label){
     var labels={principal:'Thème principal',meres:'Thème des 4 Mères',angulaire:'Thème Axe angulaire',succedent:'Thème Axe succédent',cadent:'Thème Axe cadent'};
     label.textContent=labels[axisDisplayThemeKey]||'Thème principal';
   }
+}
+
+// ─── CORRECTION ELLEMINE (25/08/26) ───
+// « quand on clique sur un axe le thème ne respecte pas l'ordre des figures
+// de repos ce qui donne des mauvaises résultantes »
+// Avant, ce sélecteur ne changeait QUE la grille : currentTheme restait le
+// thème principal. On voyait donc la figure de l'axe dans la case, mais
+// tout ce qui réagissait — le clic sur une maison, les flèches de relation,
+// les sommes de maisons, le verdict, tous les panneaux — répondait encore
+// sur la figure du thème principal. D'où des résultantes qui ne
+// correspondaient pas à ce qui était affiché.
+// Désormais le basculement remplace currentTheme et relance renderTheme :
+// le fichier entier recalcule sur le thème de l'axe, ce qui répond aussi à
+// la demande précédente (« si le thème change le verdict suit la logique du
+// thème »). « Principal » restaure le thème d'origine.
+function setAxisDisplayTheme(key){
+  var nouveau = key || 'principal';
+  if(currentTheme && (axisDisplayThemeKey==='principal' || !axisThemeBase)) axisThemeBase = currentTheme;
+  axisDisplayThemeKey = nouveau;
+  if(axisThemeBase){
+    currentTheme = (nouveau==='principal') ? axisThemeBase : getAxisThemeFromBase(axisThemeBase, nouveau);
+  }
+  axisDisplayTheme = currentTheme;
+  majBoutonsAxe();
   if(currentTheme){
-    var wrapper=document.querySelector('.theme-layout-wrapper');
-    var W=wrapper?wrapper.clientWidth:360;
-    var hs=Math.floor(W/8);
-    renderThemeWithSize(Math.max(30,Math.min(120,themeHouseSize>0?themeHouseSize:hs)));
+    axisSansArchive = true;
+    try { renderTheme(); } catch(e){ console.log('bascule axe', e); }
+    finally { axisSansArchive = false; }
   }
 }
 function initAxisThemeControls(theme){
@@ -16230,7 +16263,9 @@ function initAxisThemeControls(theme){
     '<button type="button" class="axis-theme-btn" data-axis="cadent">Axe cadent</button>'+
     '</div><div id="axis-theme-current" class="axis-theme-current"></div>';
   host.querySelectorAll('.axis-theme-btn').forEach(function(btn){btn.addEventListener('click',function(){setAxisDisplayTheme(btn.dataset.axis);});});
-  setAxisDisplayTheme(axisDisplayThemeKey);
+  // Peinture seule : initAxisThemeControls est appelée DEPUIS renderTheme,
+  // rappeler setAxisDisplayTheme ici provoquerait une récursion infinie.
+  majBoutonsAxe();
 }
 
 function renderThemeWithSize(hSize) {
@@ -16639,7 +16674,10 @@ function showRelationArrows(pos) {
   clearHouseRelationColors();
   drawThemeLines(pos);
 
-  var fig = currentTheme[pos];
+  // Le thème AFFICHÉ (cf. themeAffiche) : sur un axe, les relations doivent
+  // porter sur la figure qu'on voit dans la case, pas sur celle du principal.
+  var _tA = themeAffiche();
+  var fig = _tA[pos];
   var binFig = (typeof BINOMES_V7 !== 'undefined') ? BINOMES_V7[fig] : BINOMES[fig];
   var antFig = (typeof ANTAGONISTES_V7 !== 'undefined') ? ANTAGONISTES_V7[fig] : ANTAGONISTES[fig];
   var concFn = (typeof concordanceV7 === 'function') ? concordanceV7 : null;
@@ -16682,7 +16720,26 @@ function showRelationArrows(pos) {
   });
 }
 
-function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; renderHouseInsight(pos); showRelationArrows(pos); const house=document.querySelector(`.house[data-pos="${pos}"]`); if(!house) return; const result=getResultant(currentTheme[pos],pos); const resConcPct=concordanceFigureMaisonV7(result, pos).force; const numbering=showHouseLabels?`<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:9px;"><b>M${pos}</b><span style="color:#93c5fd;">${resConcPct}%</span></div>`:''; const hp=housePixelPos[pos]||{w:64,h:58}; const resEnergy=energyAtHouse(result,pos); const resBatt=batteryHtmlCompact(resEnergy, Math.max(3,Math.round(hp.w*0.09)), Math.max(16,Math.round(hp.h*0.6))); house.classList.add('result-flash'); house.innerHTML=`${numbering}<div style="display:flex;align-items:center;justify-content:center;gap:4px;">${resBatt}<div style="text-align:center;">${symb(result)}</div></div>`; if(houseResultTimeouts[pos]) clearTimeout(houseResultTimeouts[pos]); houseResultTimeouts[pos]=setTimeout(()=>{if(currentTheme) adjustThemeScale();},3000);}
+// ═══════════════════════════════════════════════════════════════
+// LE THÈME AFFICHÉ, PAS LE THÈME PRINCIPAL (25/08/26, correction
+// Ellemine_D : « quand on clique sur un axe le thème ne respecte pas
+// l'ordre des figures de repos ce qui donne des mauvaises résultantes »)
+//
+// Le sélecteur « Thème actif » (Principal / 4 Mères / Axe angulaire /
+// succédent / cadent) ne change QUE la grille : getDisplayTheme() est
+// utilisé par renderThemeWithSize, mais tout ce qui réagit au clic sur une
+// maison lisait encore currentTheme, resté sur le thème principal. On
+// voyait donc la figure de l'axe dans la case et la résultante de la
+// figure du thème principal en la touchant — deux figures différentes,
+// d'où les résultantes fausses.
+// La grille elle-même était juste : figures, numéros de rotation et
+// résultantes du mode « Afficher résultantes » ont été contrôlés case par
+// case contre getResultant, 16/16 conformes sur l'Axe Succédent.
+function themeAffiche() {
+  try { return getDisplayTheme() || currentTheme; } catch (e) { return currentTheme; }
+}
+
+function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; renderHouseInsight(pos); showRelationArrows(pos); const house=document.querySelector(`.house[data-pos="${pos}"]`); if(!house) return; const result=getResultant(themeAffiche()[pos],pos); const resConcPct=concordanceFigureMaisonV7(result, pos).force; const numbering=showHouseLabels?`<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:9px;"><b>M${pos}</b><span style="color:#93c5fd;">${resConcPct}%</span></div>`:''; const hp=housePixelPos[pos]||{w:64,h:58}; const resEnergy=energyAtHouse(result,pos); const resBatt=batteryHtmlCompact(resEnergy, Math.max(3,Math.round(hp.w*0.09)), Math.max(16,Math.round(hp.h*0.6))); house.classList.add('result-flash'); house.innerHTML=`${numbering}<div style="display:flex;align-items:center;justify-content:center;gap:4px;">${resBatt}<div style="text-align:center;">${symb(result)}</div></div>`; if(houseResultTimeouts[pos]) clearTimeout(houseResultTimeouts[pos]); houseResultTimeouts[pos]=setTimeout(()=>{if(currentTheme) adjustThemeScale();},3000);}
 function calculateHouseSum(){if(!currentTheme){document.getElementById('sum-result').innerHTML='<div class="bad">Lance le theme d abord.</div>'; return;} const mode=document.getElementById('sumModeBottom').value; const selected=sumSlots.map(slot=>{const raw=document.getElementById(`${slot}Bottom`).value; return raw===''?null:Number(raw);}).filter(Boolean); if(!selected.length){document.getElementById('sum-result').innerHTML='<div class="warn">Sélectionne au moins une maison.</div>'; return;} let figs=[],labels=[]; if(mode==='fixed'){figs=selected.map(h=>currentTheme[h]); labels=selected.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=selected.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${selected[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Mode :</b> ${mode==='fixed'?'fixe':'rotation'}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
 function applyPresetSum(name){const presets={'1D':[13,14,15,16],'2D':[1,4,7,10],'3D':[2,3,11,8,9,14],'4D':[9,12,13,10,5,14,6,7,8,15,13,11,16],'3B':[13,8,4,6],'Yes':[2,7,12,10],'V-1':[1,2,3,4,9,10,13,15],'V-2':[5,6,7,8,11,12,14,16]}; if(!currentTheme || !presets[name]) return; const mode=document.getElementById('sumModeBottom').value; const houses=presets[name]; let figs=[],labels=[]; if(mode==='fixed'){figs=houses.map(h=>currentTheme[h]); labels=houses.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=houses.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${houses[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Preset :</b> ${name}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
 function compareWithReality(){
