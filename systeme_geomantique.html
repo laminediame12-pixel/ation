@@ -13564,14 +13564,31 @@ function detecterBouclier(img, options) {
   cx.drawImage(img, 0, 0, w, h);
   const px = cx.getImageData(0, 0, w, h).data;
 
-  // ── 2. Binarisation sur la LUMINANCE, pas sur la couleur : les points
-  //      roses de l'application sont assez sombres face au fond blanc ──
+  // ── 2. Binarisation sur la LUMINANCE, pas sur la couleur.
+  //      POLARITÉ AUTOMATIQUE (25/08/26) : la première application donne
+  //      des points sombres sur fond blanc, une autre des points blancs sur
+  //      fond sombre. On ne peut pas choisir le sens à l'avance, alors on
+  //      le déduit : la luminance MÉDIANE de l'image est celle du fond
+  //      (c'est lui qui occupe la surface). Fond sombre → l'encre est
+  //      claire, fond clair → l'encre est sombre. Le seuil se place à
+  //      mi-chemin entre le fond et l'extrême opposé. ──
   const bin = new Uint8Array(w * h);
+  const lums = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    lums[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+  }
+  // Médiane par histogramme : bien plus rapide qu'un tri sur des millions
+  // de pixels, et la précision au niveau de gris suffit largement.
+  const histo = new Uint32Array(256);
+  for (let i = 0; i < w * h; i++) histo[Math.min(255, Math.max(0, lums[i] | 0))]++;
+  let cumul = 0, fond = 128;
+  for (let v = 0; v < 256; v++) { cumul += histo[v]; if (cumul >= (w * h) / 2) { fond = v; break; } }
+  const fondSombre = fond < 128;
+  const seuil = fondSombre ? (fond + 255) / 2 : fond / 2 + opt.seuilLuminance / 2;
   for (let i = 0; i < w * h; i++) {
     const a = px[i * 4 + 3];
     if (a < 128) { bin[i] = 0; continue; }
-    const lum = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
-    bin[i] = lum < opt.seuilLuminance ? 1 : 0;
+    bin[i] = (fondSombre ? lums[i] > seuil : lums[i] < seuil) ? 1 : 0;
   }
 
   // ── 3. Composantes connexes (8-connexité), pile explicite ──
@@ -13609,7 +13626,12 @@ function detecterBouclier(img, options) {
   //      boîte, bien rempli (un disque occupe ~78% de sa boîte), et de
   //      taille proche de la médiane. Le texte et les icônes tombent. ──
   let candidats = taches.filter(function (t) {
-    return t.rapport > 0.7 && t.rapport < 1.4 && t.remplissage > 0.6 && t.n >= 12;
+    // Le remplissage descend à 0,45 : la seconde application dessine des
+    // LOSANGES, pas des disques. Un losange n'occupe que la moitié de sa
+    // boîte (0,50) là où un disque en occupe 0,78. Le filtre de taille et
+    // la bande de 4 lignes régulières écartent le texte que ce seuil plus
+    // permissif laisse entrer.
+    return t.rapport > 0.7 && t.rapport < 1.4 && t.remplissage > 0.45 && t.n >= 12;
   });
   if (candidats.length < 16) {
     return { ok: false, raison: 'Trop peu de points détectés (' + candidats.length + ').' };
@@ -13655,23 +13677,41 @@ function detecterBouclier(img, options) {
     return { ok: false, raison: 'Aucune bande de 4 lignes régulièrement espacées trouvée.' };
   }
 
-  // ── 7. Colonnes : on coupe là où l'écart horizontal dépasse nettement
-  //      l'espacement de deux points d'une même case ──
+  // ── 7. Colonnes : on coupe aux SEPT PLUS GRANDS ÉCARTS horizontaux ──
+  //      Un seuil fixe ne marche pas d'une application à l'autre. Mesuré :
+  //      première appli, deux points d'une même case sont à ~27 px et deux
+  //      cases à ~56 px (d=18) ; seconde appli, ~20 px et ~35 px (d=14).
+  //      Aucun multiple de d ne sépare proprement les deux à la fois sans
+  //      marge dangereuse. Mais un bouclier a TOUJOURS 8 colonnes dans sa
+  //      bande du haut : il suffit donc de couper aux 7 écarts les plus
+  //      grands, et le seuil se calibre tout seul sur l'image.
   const tous = bande.reduce(function (acc, l) { return acc.concat(l.pts); }, [])
     .sort(function (a, b) { return a.cx - b.cx; });
+  if (tous.length < 8) {
+    return { ok: false, raison: 'La bande du haut ne contient que ' + tous.length + ' points.' };
+  }
+  const ecarts = [];
+  for (let i = 1; i < tous.length; i++) ecarts.push({ i: i, g: tous[i].cx - tous[i - 1].cx });
+  const coupures = ecarts.slice().sort(function (a, b) { return b.g - a.g; }).slice(0, 7)
+    .map(function (e) { return e.i; }).sort(function (a, b) { return a - b; });
   const colonnes = [];
-  tous.forEach(function (p) {
-    const derniere = colonnes[colonnes.length - 1];
-    if (derniere && (p.cx - derniere.xMax) < d * 2.5) {
-      derniere.pts.push(p);
-      if (p.cx > derniere.xMax) derniere.xMax = p.cx;
-    } else {
-      colonnes.push({ xMin: p.cx, xMax: p.cx, pts: [p] });
-    }
+  let debut = 0;
+  coupures.concat([tous.length]).forEach(function (fin) {
+    const pts = tous.slice(debut, fin);
+    if (pts.length) colonnes.push({ xMin: pts[0].cx, xMax: pts[pts.length - 1].cx, pts: pts });
+    debut = fin;
   });
   if (colonnes.length !== 8) {
     return { ok: false, raison: 'La bande du haut donne ' + colonnes.length + ' colonnes au lieu de 8.',
       colonnes: colonnes.length };
+  }
+  // Contrôle de vraisemblance : chaque case porte 4 lignes de 1 ou 2 points,
+  // donc entre 4 et 8 points. Hors de cette fourchette, le découpage est
+  // faux et mieux vaut le dire que de rendre des figures inventées.
+  const suspecte = colonnes.filter(function (c) { return c.pts.length < 4 || c.pts.length > 8; });
+  if (suspecte.length) {
+    return { ok: false, raison: 'Découpage douteux : ' + suspecte.length + ' colonne(s) hors de 4–8 points ('
+      + colonnes.map(function (c) { return c.pts.length; }).join(', ') + ').' };
   }
 
   // ── 8. Lecture : pour chaque colonne, compter les points de chaque ligne ──
@@ -13682,7 +13722,80 @@ function detecterBouclier(img, options) {
     });
   });
 
-  return { ok: true, diametre: d, nbPoints: points.length, glyphes: glyphes };
+  // yBande : ordonnée de la bande, ramenée à l'échelle de l'image d'origine.
+  // Sert à découper le texte qui se trouve AU-DESSUS du bouclier.
+  return { ok: true, diametre: d, nbPoints: points.length, glyphes: glyphes,
+    yBande: Math.round(bande[0].y / scale) };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DÉCOUPE DU TEXTE AU-DESSUS DU BOUCLIER (25/08/26)
+// Ellemine_D voulait que l'import récupère aussi les noms des équipes.
+// J'ai tenté la reconnaissance de caractères — gabarits rendus à la volée,
+// fusion des points sur les i, vote entre cinq piles de polices — et
+// mesuré ~60% de caractères justes sur la capture de référence :
+// « Qadisiah » sortait « Ood.:s.:ah ». Un nom d'équipe faux rempli en
+// silence est pire qu'un champ vide, donc la reconnaissance n'est pas
+// embarquée. À la place, on découpe la zone de texte et on l'affiche
+// juste au-dessus des champs à remplir : plus besoin de retourner à la
+// photo pour lire les noms.
+// ═══════════════════════════════════════════════════════════════
+function extraireTitreImage(img, yBande) {
+  try {
+    const W = img.width, H = img.height;
+    const yMax = Math.max(20, Math.min(H, (yBande || Math.round(H * 0.35)) - 8));
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = yMax;
+    const cx = cv.getContext('2d', { willReadFrequently: true });
+    cx.drawImage(img, 0, 0);
+    const px = cx.getImageData(0, 0, W, yMax).data;
+
+    // Même détection de polarité que le détecteur de points.
+    const histo = new Uint32Array(256);
+    const lum = new Float32Array(W * yMax);
+    for (let i = 0; i < W * yMax; i++) {
+      lum[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+      histo[Math.min(255, Math.max(0, lum[i] | 0))]++;
+    }
+    let cumul = 0, fond = 128;
+    for (let v = 0; v < 256; v++) { cumul += histo[v]; if (cumul >= (W * yMax) / 2) { fond = v; break; } }
+    const fondSombre = fond < 128;
+    const seuil = fondSombre ? (fond + 255) / 2 : (fond + 0) / 2 + 90;
+
+    // Lignes d'encre.
+    const encre = [];
+    for (let y = 0; y < yMax; y++) {
+      let n = 0;
+      for (let x = 0; x < W; x++) {
+        const l = lum[y * W + x];
+        if (fondSombre ? l > seuil : l < seuil) n++;
+      }
+      encre.push(n > Math.max(3, W * 0.006));
+    }
+    // Blocs de lignes séparés par un vide vertical net.
+    const blocs = [];
+    let debut = -1;
+    for (let y = 0; y <= yMax; y++) {
+      if (y < yMax && encre[y]) { if (debut < 0) debut = y; }
+      else if (debut >= 0) {
+        if (blocs.length && debut - blocs[blocs.length - 1].fin < 14) blocs[blocs.length - 1].fin = y;
+        else blocs.push({ debut: debut, fin: y });
+        debut = -1;
+      }
+    }
+    if (!blocs.length) return null;
+    // Le premier bloc est la barre d'état du téléphone (heure, batterie) :
+    // on part du deuxième s'il existe.
+    const utiles = blocs.length > 1 ? blocs.slice(1) : blocs;
+    const y0 = Math.max(0, utiles[0].debut - 6);
+    const y1 = Math.min(yMax, utiles[utiles.length - 1].fin + 6);
+    if (y1 - y0 < 12) return null;
+
+    const out = document.createElement('canvas');
+    out.width = W; out.height = y1 - y0;
+    out.getContext('2d').drawImage(img, 0, y0, W, y1 - y0, 0, 0, W, y1 - y0);
+    return out.toDataURL('image/png');
+  } catch (e) { return null; }
 }
 
 
@@ -13702,6 +13815,7 @@ function importerThemeDepuisImage(input) {
       let res;
       try { res = detecterBouclier(img); }
       catch (err) { res = { ok: false, raison: 'Erreur de lecture : ' + (err && err.message || err) }; }
+      if (res.ok) { try { res.titre = extraireTitreImage(img, res.yBande); } catch (e) { res.titre = null; } }
       afficherImportImage(res, e.target.result);
     };
     img.onerror = function () {
@@ -13777,6 +13891,31 @@ function afficherImportImage(res, dataUrl) {
       + fillesCalc.map(function (f) { return FL[f]; }).join(', ') + '). Au moins un point a été mal lu : vérifie les mères avant de lancer.</div>';
   }
 
+  // ─── Bloc match : la zone de texte de la capture, découpée et posée
+  //     juste au-dessus des champs. Les noms d'équipes ne sont PAS lus
+  //     automatiquement (cf. extraireTitreImage) — ils se recopient d'un
+  //     coup d'œil sans quitter le panneau ni rouvrir la photo. ───
+  html += '<div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(148,163,184,.25);">'
+    + '<div style="font-size:12px; font-weight:700; color:#e2e8f0; margin-bottom:6px;">Informations du match</div>';
+  if (res.titre) {
+    html += '<img src="' + res.titre + '" alt="Zone de texte de la capture" '
+      + 'style="width:100%; border-radius:6px; border:1px solid #334155; margin-bottom:8px; display:block;" />';
+  }
+  html += '<div class="muted" style="font-size:10.5px; margin-bottom:8px;">'
+    + 'Les noms ne sont pas lus automatiquement : la reconnaissance de caractères testée sur ce type de '
+    + 'capture ne dépasse pas ~60% de justesse, et un nom faux rempli en silence serait pire qu\'un champ '
+    + 'vide. Recopie-les ici — ils partiront dans le formulaire avec les mères.</div>'
+    + '<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">'
+    + '<div><label class="muted" style="font-size:10px;">Équipe 1</label>'
+    + '<input id="import-team1" type="text" placeholder="Équipe 1" style="width:100%; box-sizing:border-box;" /></div>'
+    + '<div><label class="muted" style="font-size:10px;">Équipe 2</label>'
+    + '<input id="import-team2" type="text" placeholder="Équipe 2" style="width:100%; box-sizing:border-box;" /></div>'
+    + '<div><label class="muted" style="font-size:10px;">Date</label>'
+    + '<input id="import-date" type="date" style="width:100%; box-sizing:border-box;" /></div>'
+    + '<div><label class="muted" style="font-size:10px;">Heure</label>'
+    + '<input id="import-heure" type="time" style="width:100%; box-sizing:border-box;" /></div>'
+    + '</div></div>';
+
   html += '<div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">'
     + '<button class="btn-primary" style="width:auto;padding:8px 14px;" onclick="appliquerMeresImportees(true)">Remplir et lancer le thème</button>'
     + '<button class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="appliquerMeresImportees(false)">Remplir seulement</button>'
@@ -13798,6 +13937,21 @@ function appliquerMeresImportees(lancer) {
     const el = document.getElementById(id);
     if (el) el.value = meres[i];
   });
+  // Les champs du match ne sont recopiés que s'ils ont été renseignés :
+  // un champ laissé vide ne doit pas écraser ce qui est déjà en place.
+  [['import-team1', 'team1'], ['import-team2', 'team2'],
+   ['import-date', 'matchDate'], ['import-heure', 'matchTime']].forEach(function (paire) {
+    const src = document.getElementById(paire[0]);
+    const dst = document.getElementById(paire[1]);
+    if (src && dst && String(src.value).trim()) {
+      dst.value = String(src.value).trim();
+      if (typeof dst.oninput === 'function') dst.oninput();
+    }
+  });
+  try { if (typeof updatePlaneteJourIndicator === 'function') updatePlaneteJourIndicator(); } catch (e) {}
+  try { if (typeof updateEquipe1QuestionLabel === 'function') {
+    const t1 = document.getElementById('team1'); if (t1) updateEquipe1QuestionLabel(t1.value);
+  } } catch (e) {}
   const mode = document.getElementById('drawMode');
   if (mode && mode.value !== 'manual') { mode.value = 'manual'; toggleDrawMode(); }
   fermerImportImage();
