@@ -11031,6 +11031,30 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //    résultante (M5r conc 0,25 · M10r conc 0). C'est là, dit Ellemine_D,
 //    que se joue « les deux marquent ou pas ».
 //
+// ─── TRANCHÉ LE 25/08 PAR ELLEMINE_D ───
+// « C'est par concordance des éléments. Feu-air sont compatibles, de même
+// que feu-feu, eau-terre, eau-eau, terre-terre. Ce qui ne le sont pas,
+// c'est feu-eau ou terre-air. »
+// Donc quand Ellemine_D dit « niveau d'élément actif », il faut lire la
+// CONCORDANCE, pas la ligne géomantique. Question ci-dessous close.
+//
+// Sa règle et le code disent EXACTEMENT la même chose — vérifié sur les
+// dix paires : tout ce qu'il appelle compatible a un score > 0 dans
+// concordanceElement, tout ce qu'il appelle incompatible vaut 0. Aucune
+// contradiction. Le code garde en plus un palier intermédiaire à 0,25 pour
+// eau-air et terre-feu, qu'Ellemine_D n'a pas citées — palier introduit le
+// 13/07 sur sa propre remarque qu'elles ont « une vraie concordance
+// partielle » (elles partagent une qualité : humide pour eau-air, sec pour
+// terre-feu). Rien à changer.
+//
+// ⚠️ CONSÉQUENCE À TRAITER : le critère « activation » de profilFigureMaison
+// (±5, le plus lourd en pratique) lit la LIGNE géomantique, pas la
+// concordance. Il ne correspond donc à rien dans la doctrine telle
+// qu'Ellemine_D vient de la formuler — il était d'ailleurs marqué
+// « ⚠️ proposé » dans POIDS_PROFIL_V7. À trancher avec lui : le retirer,
+// ou le garder comme dimension distincte de la concordance.
+//
+// ─── question d'origine, désormais close ───
 // ⚠️ UN POINT DE DOCTRINE À TRANCHER — « niveau d'élément ».
 // Ellemine_D écrit que le niveau d'élément AIR de Rubeus est actif en M5.
 // Le code lit autre chose : elementaireFigureMaison prend la ligne de la
