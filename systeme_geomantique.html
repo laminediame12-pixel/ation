@@ -4677,18 +4677,28 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     concordance 1, alignement 2, sa position la plus forte possible.
 //     Côté R7 le bouclier Puella TIENT (+1,75).
 //
-//  H. Rubeus · Tristitia · Laetitia · Via                   RÉSULTAT ATTENDU
+//  H. Rubeus · Tristitia · Laetitia · Via                    RÉEL 4-0 (R1)
 //     R1 = Tristitia (M7) · R7 = Albus (M13) — MÊME ROTATION QUE G.
 //     ⚠️ PREMIER CAS D'ARBITRAGE DE L'ARCHIVE : les couches se divisent.
 //         ancrage  R1 (9 contre 3,76)      duel du bouclier  R7 (−4,25 / +2)
 //         chaîne   R1 (9,25 contre 3)      sièges            R7 (🟥−15 / 🟦+15)
 //                                          axes              R7 (1 contre 2)
-//     Verdict affiché : M1 4-2, un seul marque (la chaîne a la priorité).
+//     Verdict affiché AVANT le score : M1 4-2, un seul marque.
+//     ⭐ TROISIÈME PRÉDICTION HORS ÉCHANTILLON, après C et G.
+//     Camp ✅ · « un seul marque » ✅ · le camp MUET ✅ (R7) ·
+//     et pour la première fois un CHIFFRE juste : M1 = 4, exactement.
+//     Le second chiffre reste faux (2 affiché, 0 réel).
 //
-//     POURQUOI CE THÈME COMPTE. Sur les cinq cas au score connu, ancrage,
-//     chaîne, duel et sièges font TOUS 4/5 — ils sont indiscernables. Ils
-//     n'ont jamais été mis en désaccord sur un cas réel. Ici ils le sont,
-//     2 contre 3. Le résultat tranchera, quel qu'il soit.
+//     CE QU'IL A TRANCHÉ. Sur les cinq cas précédents, ancrage, chaîne,
+//     duel et sièges faisaient TOUS 4/5 — indiscernables, jamais mis en
+//     désaccord sur un cas réel. Ici ils se divisaient 2 contre 3, et
+//     c'est le groupe minoritaire qui avait raison :
+//         ancrage 5/6 · chaîne 5/6 · duel CORRIGÉ 5/6
+//         duel brut 4/6 · sièges 4/6 · axes 3/6
+//     Les sièges et les axes, qui menaient encore 4/5, décrochent. Ils
+//     redisaient R7 par pur automatisme : les sièges de H sont ceux de G
+//     (M7 🟥, M13 🟦), et ils ne voient pas que la chaîne s'est inversée
+//     entre les deux thèmes. Leur signal est celui du siège, pas du camp.
 //
 //     C'est presque le miroir de G. Les sièges sont les mêmes (M7 🟥 et
 //     M13 🟦) donc sièges et axes redisent R7. Ce qui a changé, c'est la
@@ -4708,12 +4718,31 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     INVERSE ce thème-ci — R1 au lieu de R7. Non branchée en attendant
 //     le résultat, qui la tranchera aussi.
 //
-//     ⚠️ ET UNE CONTRADICTION INTERNE DU BTTS. Les deux lectures disent
-//     « un seul marque » mais désignent des muets OPPOSÉS :
+//     ⚠️ ET UNE CONTRADICTION INTERNE DU BTTS, TRANCHÉE. Les deux lectures
+//     disaient « un seul marque » en désignant des muets OPPOSÉS :
 //        lectureDeuxMarquentV7   → le muet est Albus (R7)
 //        lectureOuvertureButsV7  → le muet est Tristitia (R1)
-//     Elles ne peuvent pas avoir raison ensemble. Le score réel dira
-//     laquelle nomme le bon camp.
+//     Réel 4-0 pour R1 : c'est R7 qui est resté muet. La CHAÎNE avait
+//     raison. Sur les huit cas au BTTS connu, chaîne 7/8 contre rotation
+//     6/8 ; et sur les quatre cas à camp muet, nommer le bon muet donne
+//     chaîne 3/4 contre rotation 1/4. BTTS_CHAINE_DECISIF passe à true.
+//
+// ─── HYPOTHÈSE NÉE DE H, NON BRANCHÉE ───
+// Ancrage et duel corrigé sont tous deux à 5/6, et leurs erreurs sont
+// COMPLÉMENTAIRES : l'ancrage rate D, le duel rate A. Une règle les
+// réconcilie à 6/6 :
+//     « si les DEUX boucliers sont rompus, le duel décide ; sinon
+//       l'ancrage décide »
+//   A tenu/tenu → ancrage R1 ✓ · B tenu/rompu → ancrage R1 ✓
+//   C tenu/rompu → ancrage R1 ✓ · D ROMPU/ROMPU → duel R7 ✓
+//   G rompu/tenu → ancrage R7 ✓ · H ROMPU/ROMPU → duel R1 ✓
+// ⚠️ NE PAS LA BRANCHER EN L'ÉTAT. Elle ne se déclenche que sur D et H,
+// et sur H elle dit la même chose que l'ancrage. Son seul apport réel
+// sur l'échantillon est de corriger UN cas, D. Une règle trouvée en
+// regardant les six cas, confirmée par un seul, qui changerait 12,6 %
+// de tous les verdicts (elle se déclenche sur 32,5 % des thèmes) : c'est
+// la définition d'un surajustement. À tester sur des cas à venir où les
+// deux boucliers sont rompus.
 //
 //     Thème NON VALIDE : la résultante de l'axe Cadent (Populus) est
 //     absente. Cardinal et Succédent passent (Puer présent).
@@ -5022,11 +5051,24 @@ function duelBouclierV7(centrale, theme) {
   const A = forceAvecBinomeV7(assaillant, theme);
   const D = forceAvecBinomeV7(defenseur, theme);
   const marge = Math.round((D.total - A.total) * 100) / 100;
-  const tenu = marge >= 0;
+  // ─── CORRECTIF DU 26/08/26, RÉVÉLÉ ET VALIDÉ PAR LE CAS H ───
+  // On ne défend pas un bouclier qui n'est pas là. La première version
+  // comparait l'assaillant au front SANS vérifier que le bouclier existe :
+  // sur le cas H, le bouclier de R7 (Puella) est absent du thème et le
+  // duel était déclaré TENU (+2) parce que le front Tristitia battait
+  // l'assaillant Conjunctio. Défendre le vide.
+  // Un bouclier absent est rompu d'office, quelle que soit la marge.
+  // Mesuré : la correction ne change RIEN sur A, B, C, D, G (le cas ne se
+  // présentait qu'en G, où les deux versions concluent pareil) et INVERSE
+  // le cas H — R1 au lieu de R7. Réel 4-0 pour R1.
+  //     duel brut     4/6      duel corrigé  5/6
+  const boucliePresent = !!(trouverFigV7(bouclier, theme) || []).length;
+  const tenu = boucliePresent && marge >= 0;
   return {
     centrale: centrale, bouclier: bouclier,
     assaillant: assaillant, defenseur: defenseur,
     campAssaillant: A, campDefenseur: D, marge: marge, tenu: tenu,
+    bouclierPresent: boucliePresent,
     // Quand le bouclier tombe, l'antagoniste de la centrale est libéré :
     // c'est le double rôle d'Albus dans le 7-0 (bouclier de Carcer ET
     // antagoniste de Rubeus). Vérifié en table : antagoniste(X) = X−3 et
@@ -5036,7 +5078,9 @@ function duelBouclierV7(centrale, theme) {
     libere: ANTAGONISTES_V7[centrale],
     resume: (FL[defenseur] || defenseur) + ' ' + D.total + ' contre '
       + (FL[assaillant] || assaillant) + ' ' + A.total + ' — bouclier '
-      + (FL[bouclier] || bouclier) + (tenu ? ' tenu' : ' ROMPU')
+      + (FL[bouclier] || bouclier)
+      + (!boucliePresent ? ' ABSENT DU THÈME — rompu d\'office'
+        : (tenu ? ' tenu' : ' ROMPU'))
   };
 }
 
@@ -12147,6 +12191,7 @@ function renderDuelBouclierPanel(theme) {
       + camp(d.campDefenseur)
       + '<div style="margin-top:5px; font-size:11px; font-weight:700; color:' + coul + ';">'
       + (d.tenu ? 'BOUCLIER TENU' : 'BOUCLIER ROMPU') + ' (' + (d.marge > 0 ? '+' : '') + d.marge + ')'
+      + (d.bouclierPresent ? '' : ' — absent du thème, rompu d\'office')
       + '</div>'
       + (d.tenu ? '' : '<div style="font-size:9.5px; color:#fbbf24;">→ libère '
           + nom(d.libere) + ', l\'antagoniste de ' + nom(fig) + '</div>')
@@ -14535,6 +14580,21 @@ function estBienPlaceV7(fig, theme) {
 // non. Les deux lectures sont désormais calculées et affichées à chaque
 // thème pour que les cas s'accumulent.
 var BTTS_CADRE = 'rotation';
+// ─── BTTS_CHAINE_DECISIF (26/08/26, après le cas H) ───
+// Source prioritaire du BTTS : lectureDeuxMarquentV7, qui juge par la
+// CHAÎNE du perdant plutôt que par l'ouverture des sièges.
+// Mesuré sur les huit cas au BTTS connu :
+//     chaîne 7/8 · rotation 6/8 · score brut 4/8 (= « toujours oui »)
+// Sur les quatre cas à camp muet (C, D, G, H), nommer le BON muet :
+//     chaîne 3/4 · rotation 1/4
+// Le cas H tranche : les deux lectures disaient « un seul marque » en
+// désignant des muets OPPOSÉS — chaîne R7, rotation R1. Réel 4-0 pour
+// R1, donc R7 muet : la chaîne avait raison. La rotation avait été
+// rendue décisive le 25/08 sur 4/5 contre 3/5 ; l'échantillon a doublé
+// et l'ordre s'est inversé.
+// La rotation reste calculée, affichée, et redevient décisive si on
+// remet ce drapeau à false.
+var BTTS_CHAINE_DECISIF = true;
 var BTTS_ROTATION_DECISIF = true;
 var BTTS_DOCTRINE_M4M10_DECISIVE = false;
 
@@ -14688,12 +14748,27 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   //   · La règle « Via en M4 → camp A ne marque pas » agit plus haut sur
   //     campA.total et reste en place ; noter qu'elle est fausse sur le
   //     cas B (Via EST en M4, réel 3-2, les deux ont marqué).
+  // ─── RÉVISION DU 26/08/26, APRÈS LE CAS H (4-0) ───
+  // Troisième source ajoutée et rendue prioritaire : lectureDeuxMarquentV7,
+  // qui juge par la CHAÎNE du perdant. Mesuré sur les huit cas au BTTS
+  // connu (A,B,C,D,E,F,G,H) :
+  //     chaîne 7/8 · rotation 6/8 · score brut 4/8 (= « toujours oui »)
+  // Et surtout, sur les quatre cas où un camp est resté muet (C,D,G,H),
+  // NOMMER LE BON MUET : chaîne 3/4, rotation 1/4.
+  // Le cas H est ce qui tranche : les deux lectures disaient « un seul
+  // marque » en désignant des muets OPPOSÉS — la chaîne disait R7, la
+  // rotation disait R1. Réel 4-0 pour R1 : c'est bien R7 qui est resté
+  // muet. La rotation avait été rendue décisive le 25/08 sur un 4/5
+  // contre 3/5 ; l'échantillon a doublé et l'ordre s'est inversé.
   var bttsDoctrine = detecterBTTS100V7(theme);
   var bttsRotation = null;
   try { bttsRotation = lectureOuvertureButsV7(theme); } catch (e) { bttsRotation = null; }
+  var bttsChaine = null;
+  try { bttsChaine = lectureDeuxMarquentV7(theme); } catch (e) { bttsChaine = null; }
   var btts;
   if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
   else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) btts = false;
+  else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) btts = bttsChaine.lesDeuxMarquent;
   else if (BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable) btts = bttsRotation.lesDeuxMarquent;
   else btts = (goalA > 0 && goalB > 0);
 
@@ -14766,9 +14841,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsDefavorise: bttsDoctrine.defavorise,
     bttsSource: (BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
-      : ((BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable)
-          ? 'ouverture des sièges R1/R7' : 'calcul par défaut'),
-    bttsRotation: bttsRotation,
+      : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
+        ? 'chaîne du perdant'
+        : ((BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable)
+          ? 'ouverture des sièges (rotation)'
+          : 'score brut')),
     bttsRaison: bttsDoctrine.raison,
     corners: corners,
     domPctA: domPct, domPctB: 100 - domPct,
