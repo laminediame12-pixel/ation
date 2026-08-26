@@ -11002,6 +11002,51 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 // force élémentaire, binôme compris. Un attaquant en résultante seule peut
 // détruire, si celui qui devait l'arrêter est plus faible que lui.
 //
+// SUITE DE LA CHAÎNE (notes du 25/08, deuxième série) :
+//
+//  · ALBUS TIENT DEUX RÔLES À LA FOIS, et c'est le pivot du thème :
+//    bouclier(Carcer) = Albus, et antagoniste(Rubeus) = Albus. Le même
+//    Puer qui encercle Albus fait donc DEUX choses d'un coup : Carcer perd
+//    son bouclier, ET Rubeus — l'antagoniste de Carcer — est libéré de ce
+//    qui le retenait. C'est la doctrine des rôles simultanés en action.
+//
+//  · RUBEUS, une fois libre, frappe Carcer. Sa force : M4 air en terre
+//    conc 0 · M5 air en feu conc 0,5 · M16 air en terre conc 0. Il n'est
+//    concordant qu'en M5, comme le dit Ellemine_D.
+//
+//  · SON BINÔME FORTUNA MINOR est très fort : M1r feu en feu conc 1 ACTIF,
+//    M13 feu en feu conc 1 ACTIF, M8 feu en terre conc 0,25. Trois
+//    présences, concordance cumulée 2,25, deux niveaux actifs.
+//
+//  · CE QUI DEVRAIT ARRÊTER FORTUNA MINOR — son antagoniste Amissio — ne
+//    fait pas le poids : une seule présence, M12 eau en terre conc 0,5,
+//    niveau passif. Son binôme Tristitia n'aide pas (M1 conc 0,25 passif,
+//    M3r conc 0,5 passif). Et Amissio a elle-même son antagoniste Caput
+//    Draconis en face, air en air DEUX FOIS, conc 1 et niveau ACTIF les
+//    deux fois. Amissio est écrasée des deux côtés.
+//        Fortuna Minor : 3 présences · concordance 2,25 · 2 niveaux actifs
+//        Amissio       : 1 présence  · concordance 0,50 · 0 niveau actif
+//
+//  · RESTE LA RIPOSTE : le front de Carcer est Puella, qui n'existe qu'en
+//    résultante (M5r conc 0,25 · M10r conc 0). C'est là, dit Ellemine_D,
+//    que se joue « les deux marquent ou pas ».
+//
+// ⚠️ UN POINT DE DOCTRINE À TRANCHER — « niveau d'élément ».
+// Ellemine_D écrit que le niveau d'élément AIR de Rubeus est actif en M5.
+// Le code lit autre chose : elementaireFigureMaison prend la ligne de la
+// figure correspondant à l'élément de LA MAISON — pour Rubeus en M5, la
+// maison est feu, la ligne feu de Rubeus vaut 2, donc PASSIF.
+// Les deux lectures divergent sur 112 cas sur 256, soit 44%.
+// Fait décisif mesuré : la ligne correspondant à l'élément PROPRE d'une
+// figure est active sur 15 figures sur 16 — seule Populus fait exception.
+// Lue ainsi, la mention « niveau actif » serait donc presque toujours
+// vraie et ne distinguerait rien. La lecture par l'élément de la maison
+// est la seule qui discrimine, et c'est celle qu'Ellemine_D avait employée
+// le 24/08 sur Puer en M11 (« 3e ligne, eau, de puer est passif » — la
+// maison M11 est eau). Le code n'est donc pas modifié en attendant sa
+// réponse ; ce qui distingue bien Rubeus en M5 de M4 et M16 reste vrai
+// dans les deux lectures, c'est sa CONCORDANCE : 0,5 contre 0 et 0.
+//
 // (Remarques notées le 25/08 à la demande d'Ellemine_D — la conclusion
 // sur le 7-0 reste à écrire ensemble, elle n'est PAS tirée ici.)
 // ═══════════════════════════════════════════════════════════════
