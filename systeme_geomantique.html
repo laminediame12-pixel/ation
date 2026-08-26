@@ -5152,29 +5152,36 @@ function duelBouclierV7(centrale, theme) {
 }
 
 // Coefficient appliqué au maillon « bouclier » quand son duel est perdu.
-// LAISSÉ À 1 — NEUTRE — DÉLIBÉRÉMENT (26/08/26), et voici pourquoi :
+// BRANCHÉ LE 26/08/26 SUR DEMANDE EXPRESSE D'ELLEMINE_D — « tu ne l'as
+// pas encore branché au verdict ». Il valait 1, c'est-à-dire neutre :
+// le duel était calculé et affiché mais ne déplaçait pas un point.
+// Il vaut désormais 0,5 — un bouclier dont le duel est perdu ne compte
+// plus que pour moitié dans la chaîne.
 //
-//  · Balayé de 1 à −1 sur les quatre cas de référence : le verdict ne
-//    change JAMAIS, 3/4 partout. Les marges se creusent dans le bon sens
-//    sur Inter (0,25 → 3,25) et Milan (1,75 → 6,75), mais Napoli — déjà faux — empire
-//    (12,75 → 14,75). Aucune valeur n'est soutenue par les données.
+// CE QUE LA MESURE DIT, ET QU'IL FAUT GARDER SOUS LES YEUX :
+//  · Balayé de 1 à −2 sur les SEPT cas au score connu, AUCUNE valeur ne
+//    dépasse 5/7 — le même score que le neutre. Le branchement ne fait
+//    pas gagner un cas.
+//        1 → 5/7 · 0,75 → 5/7 · 0,5 → 5/7 · 0,25 → 4/7 · 0 → 4/7
+//        −0,25 → 5/7 · −0,5 → 5/7 · −1 → 5/7 · −2 → 5/7
+//  · 0,5 est la valeur la plus forte qui ne retourne AUCUN cas de
+//    référence : Juventus, Inter, Milan, Fiorentina et Atalanta restent
+//    justes, Napoli et Torino restent faux — exactement comme au neutre.
+//    Sous 0,5 c'est Atalanta qui bascule ; à −0,25 et au-delà, Atalanta
+//    devient faux et Torino juste, un simple échange.
+//  · Effet réel : le verdict change sur 5,9 % des thèmes (43 sur 1395 à
+//    0,75 ; 83 à 0,5 ; 166 à 0). Au moins un bouclier est rompu sur
+//    78,8 % des thèmes, donc le maillon est presque toujours touché ;
+//    c'est la marge de la chaîne qui absorbe le reste.
+//  · Ce que ça CREUSE : les marges d'Inter (0,3 → 1,8) et de Milan
+//    (1,8 → 4,3), les deux cas les plus serrés de l'archive. Ce que ça
+//    coûte : la marge de Fiorentina se resserre (−20,6 → −19,1) et
+//    celle de Napoli, déjà fausse, s'aggrave (12,8 → 13,8).
 //
-//  · Le duel PRIS SEUL comme critère de verdict fait aussi 3/4, mais sur
-//    un cas DIFFÉRENT : il gagne Napoli (que l'ancrage rate) et perd Juventus. Sur
-//    1237 thèmes, duel et ancrage désignent le même camp 54 % du temps —
-//    à peine mieux que pile ou face. Deux critères à 3/4 qui se
-//    contredisent une fois sur deux ne peuvent pas être départagés par
-//    quatre cas. Il en faut d'autres, réels.
-//
-//  · Comme critère de « les deux marquent », il est franchement MOINS
-//    bon : 3/6 contre 5/6 pour la lecture actuelle, et même moins bon
-//    que répondre toujours OUI (4/6). Le duel du bouclier EXPLIQUE le
-//    7-0 ; il ne prédit pas les buts. Il ne remplace donc rien.
-//
-// Le duel est calculé, exposé dans soliditeChaineV7().duelBouclier et
-// affiché par renderDuelBouclierPanel — mais il n'entre dans aucun
-// score tant que ce coefficient vaut 1.
-var COEF_BOUCLIER_ROMPU_V7 = 1;
+// Autrement dit : le branchement rend la lecture plus tranchée sans
+// rien démontrer de plus. Remettre 1 rétablit exactement le
+// comportement d'avant.
+var COEF_BOUCLIER_ROMPU_V7 = 0.5;
 
 function soliditeChaineV7(fig, theme) {
   if (!fig) return null;
@@ -12194,12 +12201,13 @@ function renderAxesPanel(theme) {
 // Rend visible le raisonnement qu'Ellemine_D fait à la main : qui attaque
 // le bouclier, qui doit l'arrêter, avec quelle force élémentaire, binôme
 // compris — et ce que la rupture libère.
-// ⚠️ Ce panneau N'INFLUENCE AUCUN VERDICT. COEF_BOUCLIER_ROMPU_V7 vaut 1,
-// le duel est calculé et montré, pas branché sur le score. Motif : mesuré
-// sur les cas de référence, il ne fait ni mieux ni pire que l'ancrage
-// (3/4 chacun) mais désigne un camp DIFFÉRENT une fois sur deux (54%
-// d'accord sur 1237 thèmes). Quatre cas ne peuvent pas arbitrer entre
-// deux critères à 3/4 qui se contredisent la moitié du temps.
+// BRANCHÉ AU VERDICT le 26/08/26 sur demande d'Ellemine_D : un bouclier
+// dont le duel est perdu ne pèse plus que la moitié dans la chaîne
+// (COEF_BOUCLIER_ROMPU_V7 = 0,5). Le panneau montre donc désormais une
+// grandeur qui entre dans le calcul. Voir le commentaire du coefficient
+// pour ce que la mesure autorise à en dire — en résumé : aucune valeur du
+// coefficient ne dépasse 5/7 sur les cas réels, 0,5 est la plus forte qui
+// n'en retourne aucun, et le verdict change sur 5,9% des thèmes.
 function renderDuelBouclierPanel(theme) {
   const ancien = document.getElementById('duel-bouclier-panel');
   if (ancien) ancien.remove();
@@ -12274,7 +12282,9 @@ function renderDuelBouclierPanel(theme) {
     + bloc('R1', anc.figR1) + bloc('R7', anc.figR7)
     + '</div>'
     + '<div class="hint" style="margin-top:7px; font-size:9.5px;">'
-    + 'Panneau de lecture seule : il n\'entre dans aucun verdict. '
+    + '<b>Branché au verdict</b> — un bouclier dont le duel est perdu ne '
+    + 'compte plus que pour moitié dans la chaîne (COEF_BOUCLIER_ROMPU_V7 = '
+    + COEF_BOUCLIER_ROMPU_V7 + '). '
     + 'Le bouclier d\'une figure est toujours l\'antagoniste de son antagoniste — '
     + 'le rompre libère donc toujours l\'assaut.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
