@@ -11767,13 +11767,44 @@ function campF4P4V7(fig, siege, theme) {
 // VERDICT : celui qui a le plus de pôles solides gagne.
 //
 // Seuils explicites, à régler sur les cas réels.
-var F4P4_SEUIL_ANCRAGE_V7 = 0.5;   // concordance + 0,5×alignement minimum
-var F4P4_SEUIL_RENFORT_V7 = 2;     // pôles de second niveau présents
+// Seuils réglés le 26/08/26 sur la RÉSOLUTION, pas sur le score.
+// Avec renfort 3 et ancrage 1, le compte de pôles solides se répartit
+// presque uniformément sur 1111 thèmes — 20,4 % à 0 pôle, 22,7 % à 1,
+// 20,7 % à 2, 18,6 % à 3, 17,6 % à 4 — contre 77,5 % concentrés sur
+// 3 et 4 avant la correction. C'est le réglage qui donne au critère le
+// plus de grain, indépendamment de ce qu'il prédit.
+var F4P4_SEUIL_ANCRAGE_V7 = 1;     // concordance + 0,5×alignement minimum
+var F4P4_SEUIL_RENFORT_V7 = 3;     // sous-pôles ANCRÉS (et non présents)
 
-// ⚠️⚠️ CE QUE LA MESURE DIT DE CETTE DÉMARCHE — À LIRE AVANT DE LA METTRE
-// AU VOLANT. Implémentée fidèlement, elle donne 1/7 sur les cas au score
-// connu, contre 5/7 pour la règle précédente. Ce n'est pas un détail de
-// réglage :
+// ─── CORRECTION DU 26/08 : L'ÉTAPE 4 COMPTE L'ANCRAGE ───
+// Elle comptait la simple PRÉSENCE des sous-pôles. Sur le thème Inter,
+// les DIX pôles des deux camps affichaient « réseau 4/4 » : le critère
+// était mort. Sur seize maisons, presque toute figure est présente
+// quelque part. Ellemine_D : « oui, compter leur ancrage. »
+// Effet mesuré, et il est réel : la répartition du nombre de pôles
+// solides passe de 77,5 % concentrés sur 3-4, à 20/23/21/19/18 % sur
+// 0/1/2/3/4. Les comptes égaux entre R1 et R7 tombent de 42,9 % à
+// 37,7 %. Le critère a retrouvé du grain.
+//
+// ⚠️⚠️ MAIS IL NE PRÉDIT TOUJOURS PAS, ET C'EST LE POINT DUR.
+// Quinze réglages balayés. Quand on isole les cas où le COMPTE DE PÔLES
+// tranche vraiment (par opposition aux départages), il a tort plus
+// souvent qu'il n'a raison :
+//     seuils 0,75/2 : il parle 7 fois sur 7 → juste 2 fois
+//     seuils 0,5/2  : il parle 6 fois sur 7 → juste 2 fois
+//     seuils 1,5/2  : il parle 6 fois sur 7 → juste 3 fois
+//     seuils 1/4    : il parle 4 fois sur 7 → juste 4 fois, mais rate
+//                     les 3 départages (total 4/7)
+// La seule configuration parfaite quand elle parle ne parle que dans
+// quatre cas, et quinze réglages ont été essayés : ce n'est pas un
+// résultat.
+// Le total le plus haut, 5/7 (seuils 2/4), l'obtient avec SIX égalités
+// sur sept — autrement dit c'est le départage par l'ancrage total qui
+// travaille, pas la doctrine.
+//
+// ⚠️ ÉTAT PRÉCÉDENT, CONSERVÉ POUR MÉMOIRE : avant la correction de
+// l'étape 4, la démarche donnait 1/7 contre 5/7 pour la règle
+// précédente. Autres faits alors mesurés, toujours valables :
 //   · 384 encodages balayés (définition de « solide », seuils d'ancrage
 //     de 0,5 à 3, renfort de 1 à 4, sens des deux branches). SIX
 //     atteignent 5/7, aucun ne dépasse. Six sur 384, c'est ce que le
@@ -11827,8 +11858,17 @@ function solidPoleV7(role, fig, theme) {
   if (!fig) return null;
   const a = analyseFigureV7(fig, theme);
   const sous = polesDeV7(fig).map(function (g) { return analyseFigureV7(g, theme); });
-  const renfort = sous.filter(function (x) { return x && x.present; }).length;
-  const renfortAncre = sous.filter(function (x) { return x && x.ancrage >= F4P4_SEUIL_ANCRAGE_V7; }).length;
+  const renfortPresence = sous.filter(function (x) { return x && x.present; }).length;
+  // ─── CORRECTION DU 26/08/26, sur constat d'Ellemine_D ───
+  // L'étape 4 comptait la simple PRÉSENCE des sous-pôles. Mesuré sur le
+  // thème Inter : « réseau 4/4 » pour les DIX pôles des deux camps —
+  // le critère ne discriminait rien. Sur un thème de seize maisons,
+  // presque toute figure est présente quelque part.
+  // Ellemine_D : « oui, compter leur ancrage ». Le renfort compte
+  // désormais les sous-pôles qui TIENNENT LEUR PLACE — concordance +
+  // 0,5 × alignement au-dessus du seuil — et non ceux qui figurent.
+  const renfort = sous.filter(function (x) { return x && x.ancrage >= F4P4_SEUIL_ANCRAGE_V7; }).length;
+  const renfortAncre = renfort;
   // Un pôle est SOLIDE s'il est là, s'il tient sa place (critères
   // d'analyse), et si son propre réseau le porte (étape 4).
   const solide = a.present && a.ancrage >= F4P4_SEUIL_ANCRAGE_V7 && renfort >= F4P4_SEUIL_RENFORT_V7;
@@ -11841,10 +11881,12 @@ function solidPoleV7(role, fig, theme) {
       { role: 'binôme', fig: BINOMES_V7[fig], a: sous[2] },
       { role: 'front du front', fig: frontDuFrontV7(fig), a: sous[3] }
     ],
-    renfort: renfort, renfortAncre: renfortAncre, solide: solide,
+    renfort: renfort, renfortAncre: renfortAncre,
+    renfortPresence: renfortPresence, solide: solide,
     motif: !a.present ? 'absente du thème'
       : a.ancrage < F4P4_SEUIL_ANCRAGE_V7 ? 'présente mais mal ancrée (' + a.ancrage + ')'
-      : renfort < F4P4_SEUIL_RENFORT_V7 ? 'ancrée mais son réseau ne suit pas (' + renfort + '/4)'
+      : renfort < F4P4_SEUIL_RENFORT_V7 ? 'ancrée mais son réseau ne suit pas ('
+          + renfort + '/4 ancrés, ' + renfortPresence + '/4 présents)'
       : 'solide — ancrage ' + a.ancrage + ', réseau ' + renfort + '/4'
   };
 }
