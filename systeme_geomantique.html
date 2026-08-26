@@ -11546,6 +11546,148 @@ function frontDuFrontV7(fig) {
   return fig ? FRONT_V7[FRONT_V7[fig]] : null;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// MOTEUR « FRONT 4 PÔLE 4 » (F4P4) — 26/08/26, demande d'Ellemine_D
+// « La démarche qu'on vient de faire, on doit la faire comme un moteur
+// d'analyse verdict. Comme ça on pourra vérifier le plus juste. »
+//
+// C'est la procédure menée à la main sur Amissio · Fortuna Minor · Albus
+// · Laetitia, rendue exécutable. Elle se lit en trois temps, pour chaque
+// camp :
+//
+//  1. LA CENTRALE À SON SIÈGE — sa concordance avec l'élément de la
+//     maison, son niveau d'alignement actif, puis ce qu'elle régénère :
+//     la résultante, sa position dans le réseau (décalage pair = réseau
+//     allié, impair = passage par l'antagoniste), le nombre de pas, et
+//     la tenue du nœud dans sa maison.
+//
+//  2. LES QUATRE PÔLES ET LEUR RÉSISTANCE — bouclier, front, binôme,
+//     front du front. Pour chacun : sa force avec son binôme, contre
+//     celle de son antagoniste avec le sien. Marge ≥ 0 → il TIENT.
+//     C'est exactement le duel du bouclier, généralisé aux quatre pôles.
+//
+//  3. LA CENTRALE ELLE-MÊME, jugée par la même mesure contre son propre
+//     antagoniste.
+//
+// Le verdict compare d'abord le NOMBRE de pôles tenus, puis, à égalité,
+// la somme des résistances. Le détail complet reste dans l'objet rendu :
+// ce moteur est fait pour être lu, pas seulement pour trancher.
+var F4P4_SEUIL_TENUE_V7 = 0;
+// Règle de verdict du moteur : 'defensif' = somme des marges du bouclier
+// et du front (5/7 sur les cas réels) · 'total' = tout le camp, pôles +
+// centrale + régénération (4/7) · 'poles' = nombre de pôles tenus (3/7).
+// Voir le commentaire dans moteurF4P4V7 pour les onze règles mesurées.
+var F4P4_VERDICT_V7 = 'defensif';
+
+function poleF4P4V7(nom, fig, theme) {
+  if (!fig) return null;
+  const moi = forceAvecBinomeV7(fig, theme);
+  const ant = ANTAGONISTES_V7[fig];
+  const lui = forceAvecBinomeV7(ant, theme);
+  const marge = Math.round((moi.total - lui.total) * 100) / 100;
+  return {
+    role: nom, fig: fig, binome: BINOMES_V7[fig],
+    antagoniste: ant, binomeAntagoniste: BINOMES_V7[ant],
+    present: moi.soi.present, occ: moi.occ, base: moi.base,
+    force: moi.total, forceAdverse: lui.total, marge: marge,
+    tient: marge >= F4P4_SEUIL_TENUE_V7,
+    resume: nom + ' ' + (FL[fig] || fig) + ' ' + moi.total + ' contre '
+      + (FL[ant] || ant) + ' ' + lui.total + ' → ' + (marge >= F4P4_SEUIL_TENUE_V7 ? 'TIENT' : 'CÈDE')
+      + ' (' + (marge > 0 ? '+' : '') + marge + ')'
+  };
+}
+
+function campF4P4V7(fig, siege, theme) {
+  if (!fig || !siege) return null;
+  const conc = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[siege]);
+  const align = alignementActifV7(fig, siege);
+  const regen = regenerationSiegeV7(fig, siege);
+  const poles = [
+    poleF4P4V7('bouclier', BOUCLIER_V7[fig], theme),
+    poleF4P4V7('front', FRONT_V7[fig], theme),
+    poleF4P4V7('binôme', BINOMES_V7[fig], theme),
+    poleF4P4V7('front du front', frontDuFrontV7(fig), theme)
+  ].filter(Boolean);
+  const centrale = poleF4P4V7('centrale', fig, theme);
+  const tenus = poles.filter(function (p) { return p.tient; }).length;
+  const sommeMarges = Math.round(poles.reduce(function (s, p) { return s + p.marge; }, 0) * 100) / 100;
+  return {
+    fig: fig, siege: siege,
+    concordance: conc, alignement: align.nb,
+    lignesCompatibles: align.actievesCompatibles,
+    regeneration: regen,
+    poles: poles, centrale: centrale,
+    polesTenus: tenus, polesTotal: poles.length,
+    sommeMarges: sommeMarges,
+    // Le score global du camp : les quatre pôles, la centrale, et ce que
+    // le siège régénère. Chaque terme est déjà dans la même unité
+    // (concordance + 0,5 × alignement).
+    total: Math.round((sommeMarges + centrale.marge + (regen ? regen.score : 0)) * 100) / 100,
+    resume: (FL[fig] || fig) + ' en M' + siege + ' — concordance ' + conc
+      + ', alignement ' + align.nb + ' · ' + tenus + '/' + poles.length + ' pôles tenus'
+      + ' · centrale ' + (centrale.tient ? 'tient' : 'cède') + ' (' + centrale.marge + ')'
+  };
+}
+
+function moteurF4P4V7(theme) {
+  if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
+  const rot = getRotationCombat(theme);
+  if (!rot || !rot.figR1 || !rot.figR7) return { applicable: false, raison: 'Rotation non applicable.' };
+  const R1 = campF4P4V7(rot.figR1, rot.hR1, theme);
+  const R7 = campF4P4V7(rot.figR7, rot.hR7, theme);
+  // ─── RÈGLE DE VERDICT ───
+  // Onze règles ont été mesurées sur les sept cas au score connu. Une
+  // seule atteint 5/7, le score de l'ancrage : la somme des marges du
+  // BOUCLIER et du FRONT seuls. Ajouter le binôme et le front du front
+  // à la somme fait retomber à 4/7.
+  //     bouclier + front seuls ............ 5/7
+  //     total complet ..................... 4/7
+  //     somme des quatre marges ........... 4/7
+  //     centrale seule .................... 4/7
+  //     centrale ×2 + somme des marges .... 4/7
+  //     meilleur pôle ..................... 4/7
+  //     pôles tenus puis total ............ 3/7
+  //     centrale puis pôles tenus ......... 3/7
+  //     pôles tenus + centrale (sur 5) .... 3/7
+  //     pire pôle le moins pire ........... 3/7
+  //     moins de pôles cédés .............. 2/7
+  // ⚠️ ONZE RÈGLES ESSAYÉES SUR SEPT CAS : qu'une atteigne 5/7 n'a rien
+  // d'improbable par hasard seul. Ce 5/7 n'est PAS une validation.
+  // Ce qui le rend un peu moins arbitraire : bouclier et front sont
+  // exactement les deux pôles du réseau à trois pôles, ceux que
+  // soliditeChaineV7 pèse déjà. La règle retenue n'est donc pas choisie
+  // seulement parce qu'elle gagne — elle est aussi la seule des onze qui
+  // corresponde à une doctrine déjà écrite.
+  // ⚠️ ET ELLE SE TROMPE AILLEURS QUE L'ANCRAGE : elle rattrape Napoli et
+  // Torino, que l'ancrage rate, et perd Inter et Atalanta, qu'il tient.
+  // Les deux moteurs sont à 5/7 sur des cas DIFFÉRENTS — c'est ce qui
+  // rend la comparaison utile.
+  const cle = {
+    defensif: function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; },
+    total:    function (c) { return c.total; },
+    poles:    function (c) { return c.polesTenus; }
+  }[F4P4_VERDICT_V7] || function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; };
+  const k1 = cle(R1), k7 = cle(R7);
+  let avantage = null, critere = '';
+  if (k1 !== k7) {
+    avantage = k1 > k7 ? 'R1' : 'R7';
+    critere = 'règle « ' + F4P4_VERDICT_V7 + ' » : ' + k1 + ' contre ' + k7;
+  } else if (R1.total !== R7.total) {
+    avantage = R1.total > R7.total ? 'R1' : 'R7';
+    critere = 'égalité sur la règle « ' + F4P4_VERDICT_V7 + ' » (' + k1
+      + ') — départage par le total ' + R1.total + ' contre ' + R7.total;
+  } else {
+    critere = 'égalité complète — aucun départage';
+  }
+  return {
+    applicable: true, hR1: rot.hR1, hR7: rot.hR7,
+    figR1: rot.figR1, figR7: rot.figR7,
+    R1: R1, R7: R7, avantage: avantage, critere: critere,
+    synthese: 'F4P4 — R1 ' + R1.resume + ' | R7 ' + R7.resume
+      + ' → ' + (avantage || 'nul') + ' (' + critere + ')'
+  };
+}
+
 // ─── CE QUI COMPTE, C'EST CE QUI TOUCHE LE CAMP D'EN FACE ───
 // Premier essai (écarté) : compter les quatre rôles exercés sur n'importe
 // qui. Mesuré 1/3 sur les cas réels — cela ne mesurait que la population
@@ -12475,6 +12617,92 @@ function renderAxesPanel(theme) {
 // pour ce que la mesure autorise à en dire — en résumé : aucune valeur du
 // coefficient ne dépasse 5/7 sur les cas réels, 0,5 est la plus forte qui
 // n'en retourne aucun, et le verdict change sur 5,9% des thèmes.
+// ═══════════════════════════════════════════════════════════════
+// PANNEAU DU MOTEUR F4P4 — la démarche d'Ellemine_D, rendue lisible.
+// Trois temps par camp : la centrale à son siège, ses quatre pôles avec
+// leur résistance, puis la centrale jugée par la même mesure.
+function renderF4P4Panel(theme) {
+  const ancien = document.getElementById('f4p4-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  const hote = document.getElementById('duel-bouclier-panel')
+            || document.getElementById('lieux-marquage-panel')
+            || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  const panneau = document.createElement('div');
+  panneau.id = 'f4p4-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #7c3aed;';
+
+  let m = null;
+  try { m = moteurF4P4V7(theme); } catch (e) { m = null; }
+  if (!m || !m.applicable) {
+    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
+      + '<div class="muted" style="font-size:11.5px;">' + ((m && m.raison) || 'Non applicable.') + '</div>';
+    hote.parentNode.insertBefore(panneau, hote.nextSibling);
+    return;
+  }
+  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
+
+  function colonne(cote, c) {
+    const g = c.regeneration;
+    let h = '<div style="flex:1; min-width:250px;">'
+      + '<div style="font-size:11.5px; font-weight:700; margin-bottom:4px;">'
+      + cote + ' · ' + nom(c.fig) + ' <span class="muted" style="font-weight:400;">en M' + c.siege + '</span></div>'
+      + '<div style="font-size:10px; margin-bottom:2px;">concordance <b>' + c.concordance
+      + '</b> · alignement <b>' + c.alignement + '</b>'
+      + (c.lignesCompatibles.length ? ' <span class="muted">(' + c.lignesCompatibles.join('+') + ')</span>' : '')
+      + '</div>';
+    if (g) {
+      h += '<div style="font-size:9.5px; color:' + (g.dansReseau ? '#4ade80' : '#f87171') + '; margin-bottom:6px;">'
+        + '↻ régénère <b>' + nom(g.resultante) + '</b> — ' + g.role
+        + (g.dansReseau ? ' · réseau, ' + g.pas + ' pas' : ' · HORS réseau')
+        + ' · nœud conc ' + g.concordance + ', align ' + g.alignement + '</div>';
+    }
+    c.poles.forEach(function (p) {
+      const col = p.tient ? '#4ade80' : '#f87171';
+      h += '<div style="font-size:10px; display:flex; gap:5px; align-items:baseline;">'
+        + '<span class="muted" style="min-width:78px; font-size:9px;">' + p.role + '</span>'
+        + '<span style="flex:1;">' + nom(p.fig)
+        + (p.present ? ' <span class="muted" style="font-size:9px;">' + p.occ + ' occ / ' + p.base + ' base</span>'
+                     : ' <span style="color:#f87171; font-size:9px;">ABSENTE</span>')
+        + '</span>'
+        + '<span style="color:' + col + '; font-weight:700;">' + (p.marge > 0 ? '+' : '') + p.marge + '</span>'
+        + '</div>'
+        + '<div class="muted" style="font-size:8.5px; margin:0 0 3px 83px;">contre '
+        + nom(p.antagoniste) + ' — ' + p.force + ' vs ' + p.forceAdverse + '</div>';
+    });
+    const cc = c.centrale.tient ? '#4ade80' : '#f87171';
+    h += '<div style="margin-top:5px; padding-top:4px; border-top:1px solid #334155; font-size:10px;">'
+      + '<b>centrale</b> contre ' + nom(c.centrale.antagoniste) + ' — '
+      + c.centrale.force + ' vs ' + c.centrale.forceAdverse
+      + ' <span style="color:' + cc + '; font-weight:700;">'
+      + (c.centrale.marge > 0 ? '+' : '') + c.centrale.marge + '</span></div>'
+      + '<div style="margin-top:4px; font-size:11px; font-weight:700;">'
+      + c.polesTenus + '/' + c.polesTotal + ' pôles tenus'
+      + ' <span class="muted" style="font-weight:400;">· total ' + c.total + '</span></div>'
+      + '</div>';
+    return h;
+  }
+
+  panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
+    + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
+    + 'Chaque pôle avec son binôme, contre son antagoniste avec le sien. '
+    + 'Marge ≥ 0 → il tient. Le 4e pôle est le front du front.</div>'
+    + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
+    + colonne('R1', m.R1) + colonne('R7', m.R7)
+    + '</div>'
+    + '<div style="margin-top:8px; font-size:11.5px; font-weight:700; color:#c4b5fd;">'
+    + 'Verdict F4P4 : ' + (m.avantage || 'nul') + '</div>'
+    + '<div class="muted" style="font-size:9.5px;">' + m.critere + '</div>'
+    + '<div class="hint" style="margin-top:6px; font-size:9px;">'
+    + 'Moteur séparé, à confronter aux autres — il n\'écrase aucun verdict. '
+    + '5/7 sur les cas réels, comme l\'ancrage, mais sur des cas différents : '
+    + 'il tient Napoli et Torino que l\'ancrage rate, et perd Inter et Atalanta.</div>';
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
 function renderDuelBouclierPanel(theme) {
   const ancien = document.getElementById('duel-bouclier-panel');
   if (ancien) ancien.remove();
@@ -16365,6 +16593,7 @@ function renderTheme(){
     // Lieux de marquage : instrument d'observation, rien n'est branché.
     try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
     try { renderDuelBouclierPanel(currentTheme); } catch(e) { console.log('duel bouclier error', e); }
+    try { renderF4P4Panel(currentTheme); } catch(e) { console.log('f4p4 error', e); }
     // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
     try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
     const elR = document.getElementById('carte-verdict-r');
