@@ -5274,43 +5274,69 @@ function duelBouclierV7(centrale, theme) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// RÉGÉNÉRATION AU SIÈGE (26/08/26) — branchement de la loi de la
-// résultante d'Ellemine_D, sur sa demande expresse.
+// RÉGÉNÉRATION AU SIÈGE — VERSION 2 (26/08/26)
 //
-// La résultante d'une figure dans une maison joue toujours un rôle
-// précis vis-à-vis d'elle : son binôme, son front, son bouclier, son
-// antagoniste, ou une composition sans nom. Ce rôle ne dépend que de
-// (index de la figure MODULO 8, maison) — vérifié sur les 256 couples.
-// Voir la note « LOI DE LA RÉSULTANTE » plus haut pour la démonstration.
+// ⚠️ LA VERSION 1 ÉTAIT FAUSSE, ET ELLEMINE_D L'A CORRIGÉE :
+// « comme tu analyses en se référant seulement aux figures résultantes,
+// ce n'est pas ça. Chaque figure a un RÉSEAU. Cette clarification sur les
+// résultantes, c'est juste pour comprendre la force des figures, comment
+// leur réseau est constitué. Ce n'est pas pour rien qu'on a établi les
+// critères d'analyse d'une figure. »
+// Son exemple : « Fortuna Major en M8 résulte Albus. Albus actif, son
+// élément eau en terre, c'est acceptable. Albus est de la même boucle que
+// Fortuna Major. Quelle est sa position par rapport aux trois pôles de
+// Fortuna Major ? Albus est la figure de front de la figure de front de
+// Fortuna Major. Cette configuration est FAVORABLE. »
 //
-// Ce qu'on branche ici : ce que la figure CENTRALE régénère à SON SIÈGE.
-//   · un pôle ALLIÉ (binôme +2, front +4, bouclier +10) → elle se
-//     renforce elle-même : bonus.
-//   · son ANTAGONISTE (+13) → elle produit ce qui la détruit : malus.
-//   · tout le reste → neutre.
-// Rappel de structure : par la loi de parité, le cas allié n'existe
-// qu'en maison PAIRE et le cas hostile qu'en maison IMPAIRE. Un siège
-// ne peut donc jamais recevoir les deux.
-// POIDS : 0,5, branché le 26/08/26 sur demande d'Ellemine_D.
-// ⚠️ CE QUE LA MESURE DIT, ET IL FAUT LE LIRE AVANT DE TOUCHER À CE POIDS.
-// Sur les sept cas au score connu, le critère est ACTIF quatre fois et
-// il pousse dans le MAUVAIS sens trois fois sur quatre :
-//     Juventus  R1 régénère son antagoniste, R7 celle qu'elle attaque
-//               → pousse R7 ✘ (réel R1)
-//     Inter     R1 régénère son bouclier     → pousse R1 ✔ (réel R1)
-//     Milan     R7 régénère son bouclier     → pousse R7 ✘ (réel R1)
-//     Torino    R7 régénère son antagoniste  → pousse R1 ✘ (réel R7)
-//     Napoli, Fiorentina, Atalanta : neutre, aucun siège nommé.
-// Balayage du poids : 0 → 5/7 · 0,25 → 5/7 · 0,5 → 5/7 · 0,75 → 4/7 ·
-// 1 → 4/7 · 2 → 4/7 · 3 → 4/7. À partir de 0,75 c'est Juventus qui casse.
-// 0,5 est donc le poids maximal qui ne retourne aucun cas — mais il
-// mange déjà l'essentiel de la marge de Juventus (0,63 → 0,13).
-// Le signe inverse ne sauve rien non plus : −0,25 à −1 restent à 5/7,
-// −2 casse Inter. Aucun réglage ne dépasse 5/7 ; le critère n'apporte
-// pas d'information sur cette archive, il ne fait que déplacer les marges.
-// Effet réel : actif sur 38,6 % des thèmes, change le verdict sur 2,4 %.
-// Mettre 0 le débranche entièrement.
+// La v1 ne regardait que les TROIS PÔLES DIRECTS (+2, +4, +10) et
+// classait tout le reste « neutre ». Elle déclarait donc neutre le +8 de
+// son exemple. C'est le contresens : +8 = front ∘ front, deux pas dans le
+// réseau ALLIÉ, sans jamais passer par l'antagoniste.
+//
+// ─── CE QUE LA CORRECTION ÉTABLIT, VÉRIFIÉ 16/16 ───
+// Le réseau allié — engendré par binôme (+2), front (+4), bouclier (+10) —
+// couvre EXACTEMENT les décalages PAIRS, et rien d'autre. Un décalage
+// impair exige au moins un pas par l'antagoniste (+13). Donc :
+//     résultante à décalage PAIR   → elle est DANS le réseau de la figure
+//     résultante à décalage IMPAIR → il a fallu passer par l'antagoniste
+// Distance dans le réseau allié : +2, +4, +10 sont à UN pas (les trois
+// pôles) ; +6, +8, +12, +14 sont à DEUX pas (compositions) ; +0 est la
+// figure elle-même. Tous les impairs sont à un pas hostile.
+//
+// C'est aussi la boucle : le réseau allié d'une figure = les huit figures
+// de sa boucle (loopOf). D'où la remarque d'Ellemine_D « il arrive même
+// que R1 et R7 aient le même réseau » — c'est le cas dès que leurs index
+// ont la même parité, soit une fois sur deux.
+//
+// ─── DEUXIÈME DIMENSION, EXIGÉE PAR LUI ───
+// « Albus ACTIF, son élément eau en terre, c'est acceptable. » La
+// résultante ne compte pas seulement par sa position dans le réseau :
+// elle doit elle-même tenir dans la maison où elle paraît. On la pèse
+// donc par les critères d'analyse d'une figure déjà en place —
+// concordance et alignement actif. Albus en M8 : eau en terre,
+// concordance 0,5, alignement 1 (ligne eau active et compatible).
+// Un nœud du réseau qui ne tient pas dans sa maison ne vaut rien.
+// POIDS 0,5. ⚠️ MESURÉ, ET TOUJOURS NON PRÉDICTIF — la v2 lit juste, elle
+// ne prédit pas mieux. Sur les sept cas au score connu, le critère est
+// désormais actif partout (plus aucun « neutre »), et il pousse dans le
+// bon sens 3 fois sur 7 :
+//   Juventus  ✘   Inter ✘   Milan ✔   Napoli ✔
+//   Fiorentina ✘  Atalanta ✔  Torino ✘
+// Balayage : 0 → 5/7 · 0,25 → 5/7 · 0,5 → 5/7 · 0,75 → 5/7 · 1 → 4/7.
+// À partir de 1 c'est Juventus qui casse. 0,75 tient encore mais laisse
+// Juventus à 0,07 de marge ; 0,5 le laisse à 0,25, c'est ce qui est retenu.
+// Le signe inverse ne fait pas mieux (5/7 jusqu'à −1, puis 4/7).
+// ⚠️ ET IL RESTE STRUCTURELLEMENT AVEUGLE sur Fiorentina et Atalanta :
+// mêmes sièges, mêmes centrales, donc même valeur — pour deux résultats
+// opposés. Aucun réglage ne peut les séparer par ce critère.
+// La v2 est néanmoins gardée sur la v1 parce qu'elle est DOCTRINALEMENT
+// juste là où la v1 était fausse : elle voit le réseau, pas seulement les
+// trois pôles directs. Mettre 0 la débranche.
 var POIDS_REGENERATION_V7 = 0.5;
+
+// Distance dans le réseau allié, par décalage (calculée une fois pour
+// toutes ; 99 = inatteignable sans passer par l'antagoniste).
+var PAS_RESEAU_ALLIE_V7 = {0: 0, 2: 1, 4: 1, 10: 1, 6: 2, 8: 2, 12: 2, 14: 2};
 
 function regenerationSiegeV7(fig, house) {
   if (!fig || !house) return null;
@@ -5319,23 +5345,38 @@ function regenerationSiegeV7(fig, house) {
   const j = FIGS_V7.indexOf(r);
   if (i < 0 || j < 0) return null;
   const d = (j - i + 16) % 16;
-  const NOMS = {
-    0: 'elle-même', 1: 'l\'antagoniste de son front', 2: 'son binôme',
-    3: 'celle qu\'elle attaque', 4: 'son front', 6: 'celle qu\'elle protège',
-    8: 'son opposée', 10: 'son bouclier', 12: 'celle dont elle est le front',
-    13: 'son antagoniste', 14: 'celle dont elle est le binôme',
-    15: 'le binôme de son antagoniste'
+  const CHEMIN = {
+    0: 'elle-même', 2: 'son binôme', 4: 'son front', 10: 'son bouclier',
+    6: 'le binôme de son front', 8: 'le front de son front',
+    12: 'le bouclier de son binôme', 14: 'le bouclier de son front',
+    13: 'son antagoniste', 1: 'le front de son antagoniste',
+    3: 'celle qu\'elle attaque', 5: 'le front de celle qu\'elle attaque',
+    7: 'le bouclier de son antagoniste', 9: 'le binôme de son antagoniste… + front',
+    11: 'l\'antagoniste de son binôme', 15: 'le binôme de son antagoniste'
   };
-  const allie = (d === 2 || d === 4 || d === 10);
-  const hostile = (d === 13);
+  const dansReseau = (d % 2 === 0);
+  const pas = dansReseau ? PAS_RESEAU_ALLIE_V7[d] : null;
+  // Le nœud tient-il dans la maison où il paraît ? (critères d'analyse
+  // d'une figure : concordance + alignement actif, exactement comme
+  // forceCampV7 les emploie ailleurs.)
+  const conc = concordanceElement(ELEMENTS_V7[r], MAISON_ELEM_V7[house]);
+  const align = alignementActifV7(r, house);
+  const qualite = Math.round((conc + align.nb * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100;
+  // Un pôle direct pèse plein, une composition à deux pas pèse moitié.
+  const portee = dansReseau ? (pas === 1 ? 1 : pas === 2 ? 0.5 : 0) : 1;
+  const signe = dansReseau ? (d === 0 ? 0 : 1) : -1;
   return {
     fig: fig, house: house, resultante: r, decalage: d,
-    role: NOMS[d] || ('décalage +' + d),
-    allie: allie, hostile: hostile,
-    score: Math.round((allie ? POIDS_REGENERATION_V7
-      : hostile ? -POIDS_REGENERATION_V7 : 0) * 100) / 100,
-    resume: (FL[fig] || fig) + ' en M' + house + ' régénère '
-      + (FL[r] || r) + ' — ' + (NOMS[d] || ('décalage +' + d))
+    role: CHEMIN[d] || ('décalage +' + d),
+    dansReseau: dansReseau, pas: pas,
+    concordance: conc, alignement: align.nb, qualite: qualite,
+    allie: dansReseau && d !== 0, hostile: !dansReseau,
+    score: Math.round(signe * portee * qualite * POIDS_REGENERATION_V7 * 100) / 100,
+    resume: (FL[fig] || fig) + ' en M' + house + ' régénère ' + (FL[r] || r)
+      + ' — ' + (CHEMIN[d] || ('décalage +' + d))
+      + (dansReseau ? ' (dans son réseau, ' + pas + ' pas)' : ' (hors réseau, par l\'antagoniste)')
+      + ' · ' + (FL[r] || r) + ' en M' + house + ' : concordance ' + conc
+      + ', alignement ' + align.nb
   };
 }
 
@@ -12470,8 +12511,14 @@ function renderDuelBouclierPanel(theme) {
           const c2 = g.allie ? '#4ade80' : g.hostile ? '#f87171' : '#94a3b8';
           return '<div style="margin-top:5px; font-size:10px; color:' + c2 + ';">'
             + '↻ à son siège M' + g.house + ' elle régénère <b>' + nom(g.resultante)
-            + '</b> — ' + g.role + (g.score ? ' (' + (g.score > 0 ? '+' : '') + g.score + ')' : '')
-            + '</div>';
+            + '</b> — ' + g.role
+            + (g.score ? ' (' + (g.score > 0 ? '+' : '') + g.score + ')' : '')
+            + '<br><span style="font-size:9px;">'
+            + (g.dansReseau
+                ? 'dans son réseau, ' + g.pas + ' pas — aucun passage par l\'antagoniste'
+                : 'hors réseau — le chemin passe par l\'antagoniste')
+            + ' · ' + nom(g.resultante) + ' en M' + g.house + ' : concordance '
+            + g.concordance + ', alignement ' + g.alignement + '</span></div>';
         })()
       + '</div>';
   }
