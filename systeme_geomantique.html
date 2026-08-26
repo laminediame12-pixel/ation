@@ -11577,7 +11577,27 @@ var F4P4_SEUIL_TENUE_V7 = 0;
 // et du front (5/7 sur les cas réels) · 'total' = tout le camp, pôles +
 // centrale + régénération (4/7) · 'poles' = nombre de pôles tenus (3/7).
 // Voir le commentaire dans moteurF4P4V7 pour les onze règles mesurées.
-var F4P4_VERDICT_V7 = 'defensif';
+// ─── RÈGLE PAR DÉFAUT : 'duel4' depuis le 26/08/26 ───
+// Ellemine_D : « on n'avait pas vu le 4e pôle de l'antagoniste direct de
+// R1 et R7 ; c'est après ça qu'on pourra déterminer réellement le
+// vainqueur. » Le camp de l'assaillant est désormais calculé, et 'duel4'
+// est la règle qui l'emploie : ma défense (bouclier + front) MOINS celle
+// de mon assaillant.
+// Mesuré sur les sept cas au résultat connu :
+//     defensif (ma défense seule) ..... 5/7
+//     duel4    (moins celle de l'assaillant) 5/7  ← retenu
+//     tenus4   (pôles tenus, différence) .... 4/7
+//     assaut   (l'assaillant seul) .......... 4/7
+//     total .................................. 4/7
+//     poles .................................. 2/7
+// ⚠️ duel4 ne fait PAS mieux que defensif sur l'échantillon : mêmes cinq
+// justes, mêmes deux ratés (Inter et Atalanta). Il est retenu parce
+// qu'il est doctrinalement complet — il tient compte de ce qui frappe,
+// pas seulement de ce qui encaisse — et parce qu'à égalité de score la
+// lecture la plus complète doit primer. Ce n'est pas un gain mesuré.
+// Il change tout de même le verdict sur 10,4 % des thèmes par rapport à
+// defensif : ce n'est pas un habillage.
+var F4P4_VERDICT_V7 = 'duel4';
 
 // ─── FUSION AVEC LE RÉSEAU D'ANCRAGE V2 (26/08/26, Ellemine_D :
 // « le réseau d'ancrage est similaire à F4P4, essaie de fusionner les
@@ -11666,6 +11686,27 @@ function campF4P4V7(fig, siege, theme) {
     poleF4P4V7('front du front', frontDuFrontV7(fig), theme)
   ].filter(Boolean);
   const centrale = poleF4P4V7('centrale', fig, theme);
+  // ─── LE CAMP DE L'ASSAILLANT (26/08/26, Ellemine_D : « on n'avait pas
+  // vu le 4e pôle de l'antagoniste direct de R1 et R7 ; c'est après ça
+  // qu'on pourra déterminer réellement le vainqueur ») ───
+  // Jusqu'ici chaque pôle était pesé contre son antagoniste + le binôme
+  // de celui-ci — deux figures. Mais l'antagoniste DIRECT de la centrale
+  // a lui aussi un bouclier, un front, un binôme et un front du front,
+  // et ces quatre-là décident si sa frappe est portée ou creuse.
+  // Une attaque menée par une figure dont le propre réseau est enfoncé
+  // n'est pas la même qu'une attaque menée par un camp intact.
+  const antagoniste = ANTAGONISTES_V7[fig];
+  const polesAssaillant = antagoniste ? [
+    poleF4P4V7('bouclier', BOUCLIER_V7[antagoniste], theme),
+    poleF4P4V7('front', FRONT_V7[antagoniste], theme),
+    poleF4P4V7('binôme', BINOMES_V7[antagoniste], theme),
+    poleF4P4V7('front du front', frontDuFrontV7(antagoniste), theme)
+  ].filter(Boolean) : [];
+  const assaillant = antagoniste ? poleF4P4V7('assaillant', antagoniste, theme) : null;
+  const assaillantTenus = polesAssaillant.filter(function (p) { return p.tient; }).length;
+  const assaillantSomme = Math.round(polesAssaillant.reduce(function (s, p) { return s + p.marge; }, 0) * 100) / 100;
+  const assaillantDefensif = polesAssaillant.length >= 2
+    ? Math.round((polesAssaillant[0].marge + polesAssaillant[1].marge) * 100) / 100 : 0;
   const tenus = poles.filter(function (p) { return p.tient; }).length;
   const sommeMarges = Math.round(poles.reduce(function (s, p) { return s + p.marge; }, 0) * 100) / 100;
   const sommeScores = Math.round(poles.reduce(function (s, p) { return s + p.score; }, 0) * 100) / 100;
@@ -11675,6 +11716,9 @@ function campF4P4V7(fig, siege, theme) {
     lignesCompatibles: align.actievesCompatibles,
     regeneration: regen,
     poles: poles, centrale: centrale,
+    antagoniste: antagoniste, assaillant: assaillant,
+    polesAssaillant: polesAssaillant, assaillantTenus: assaillantTenus,
+    assaillantSomme: assaillantSomme, assaillantDefensif: assaillantDefensif,
     polesTenus: tenus, polesTotal: poles.length,
     sommeMarges: sommeMarges, sommeScores: sommeScores,
     // Le score global du camp : les quatre pôles, la centrale, et ce que
@@ -11734,7 +11778,16 @@ function moteurF4P4V7(theme) {
   const cle = {
     defensif: function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; },
     total:    function (c) { return c.total; },
-    poles:    function (c) { return c.polesTenus; }
+    poles:    function (c) { return c.polesTenus; },
+    // Ma défense moins celle de mon assaillant : je gagne si je tiens
+    // mieux mes deux pôles avant que lui ne tient les siens.
+    duel4:    function (c) { return Math.round(((c.poles[0].marge + c.poles[1].marge)
+                 - c.assaillantDefensif) * 100) / 100; },
+    // Pôles tenus de mon côté moins pôles tenus de l'assaillant.
+    tenus4:   function (c) { return c.polesTenus - c.assaillantTenus; },
+    // L'assaillant seul : je gagne si le camp qui me frappe est le plus
+    // enfoncé des deux.
+    assaut:   function (c) { return -c.assaillantSomme; }
   }[F4P4_VERDICT_V7] || function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; };
   const k1 = cle(R1), k7 = cle(R7);
   let avantage = null, critere = '';
@@ -13048,6 +13101,19 @@ function renderF4P4Panel(theme) {
       + c.centrale.force + ' vs ' + c.centrale.forceAdverse
       + ' <span style="color:' + cc + '; font-weight:700;">'
       + (c.centrale.marge > 0 ? '+' : '') + c.centrale.marge + '</span></div>'
+      // le camp de celui qui frappe : sa frappe est-elle portée ou creuse ?
+      + '<div style="margin-top:5px; padding-top:4px; border-top:1px dashed #334155;">'
+      + '<div style="font-size:9.5px; color:#fb7185; margin-bottom:2px;">⚔ le camp de '
+      + nom(c.antagoniste) + ', qui la frappe — <b>' + c.assaillantTenus + '/4 pôles tenus</b>'
+      + ', défense ' + (c.assaillantDefensif > 0 ? '+' : '') + c.assaillantDefensif + '</div>'
+      + c.polesAssaillant.map(function (p) {
+          return '<div style="font-size:8.5px; color:#94a3b8; margin-left:6px;">'
+            + p.role + ' ' + nom(p.fig) + ' '
+            + '<span style="color:' + (p.tient ? '#4ade80' : '#f87171') + ';">'
+            + (p.marge > 0 ? '+' : '') + p.marge + '</span>'
+            + (p.statut ? ' · ' + p.statut : '') + '</div>';
+        }).join('')
+      + '</div>'
       + '<div style="margin-top:4px; font-size:11px; font-weight:700;">'
       + c.polesTenus + '/' + c.polesTotal + ' pôles tenus'
       + ' <span class="muted" style="font-weight:400;">· total ' + c.total + '</span></div>'
@@ -13060,7 +13126,9 @@ function renderF4P4Panel(theme) {
     + 'Chaque pôle en deux langues : la FORCE (son binôme contre '
     + 'l\'antagoniste et le sien) et la PRÉSENCE (libre, protégé par une '
     + 'voie, ou vulnérable) — le Réseau d\'ancrage V2 est fondu ici. '
-    + 'Le 4e pôle est le front du front.</div>'
+    + 'Le 4e pôle est le front du front. En bas de chaque colonne, les '
+    + 'quatre pôles de l\'ASSAILLANT : une frappe portée par un camp '
+    + 'enfoncé n\'est pas une frappe.</div>'
     + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
     + colonne('R1', m.R1) + colonne('R7', m.R7)
     + '</div>'
@@ -13068,9 +13136,11 @@ function renderF4P4Panel(theme) {
     + 'Verdict F4P4 : ' + (m.avantage || 'nul') + '</div>'
     + '<div class="muted" style="font-size:9.5px;">' + m.critere + '</div>'
     + '<div class="hint" style="margin-top:6px; font-size:9px;">'
-    + 'Moteur séparé, à confronter aux autres — il n\'écrase aucun verdict. '
-    + '5/7 sur les cas réels, comme l\'ancrage, mais sur des cas différents : '
-    + 'il tient Napoli et Torino que l\'ancrage rate, et perd Inter et Atalanta.</div>';
+    + '<b>Moteur principal</b> depuis le 26/08 — c\'est lui qui pilote le '
+    + 'VERDICT DU MATCH en haut. 5/7 sur les cas réels, comme l\'ancrage, '
+    + 'mais sur des cas différents : il tient Napoli et Torino que l\'ancrage '
+    + 'rate, et perd Inter et Atalanta. L\'ancrage reste affiché en '
+    + 'contre-lecture pour que les désaccords s\'accumulent.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
