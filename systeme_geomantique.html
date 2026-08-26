@@ -4871,7 +4871,7 @@ function soliditeChaineV7(fig, theme) {
       present: occ.length > 0, enBase: nbBase > 0,
       brut: Math.round(brut * 100) / 100, score: Math.round(brut * poids * 100) / 100};
   }
-  const mProt  = maillon(PROTECTEURS_V7[fig], 'protecteur', 1);
+  const mProt  = maillon(BOUCLIER_V7[fig], 'bouclier', 1);
   const mFront = maillon(FRONT_V7[fig], 'front', POIDS_CHAINE_V7.poidsFront);
   const total = Math.round((mProt.score + mFront.score) * 100) / 100;
   return {
@@ -4879,7 +4879,7 @@ function soliditeChaineV7(fig, theme) {
     total: total,
     toutEnBase: mProt.enBase && mFront.enBase,
     perce: !mProt.present || !mFront.present,
-    resume: 'protecteur ' + (mProt.present ? (mProt.nbBase + ' base / ' + mProt.nbResultante + ' rés.') : 'ABSENT')
+    resume: 'bouclier ' + (mProt.present ? (mProt.nbBase + ' base / ' + mProt.nbResultante + ' rés.') : 'ABSENT')
       + ' · front ' + (mFront.present ? (mFront.nbBase + ' base / ' + mFront.nbResultante + ' rés.') : 'ABSENT')
   };
 }
@@ -5367,7 +5367,7 @@ function renderProtectionChaineV7(theme) {
       + '<div>🟣 Protégées : <b>'+proteges.length+'</b></div>'
       + '<div>🔴 Vulnérables : <b>'+vulnerables.length+'</b></div>'
     + '</div>'
-    + (protecteursAbsents.length ? '<div style="font-size:11px; color:#f87171; margin-bottom:8px;">⚠️ Protecteurs absents du thème (base) : '+protecteursAbsents.map(function(a){return FL[a.protecteur];}).join(', ')+'</div>' : '')
+    + (protecteursAbsents.length ? '<div style="font-size:11px; color:#f87171; margin-bottom:8px;">⚠️ Boucliers absents du thème (base) : '+protecteursAbsents.map(function(a){return FL[a.protecteur];}).join(', ')+'</div>' : '')
     + '<details><summary style="cursor:pointer; font-size:12px;">Détail des 16 figures</summary>'
     + analyse.map(ligne).join('')
     + '</details>';
@@ -6474,6 +6474,44 @@ const FRONT_V7 = {};
 FIGS_V7.forEach(function(fig, i) {
   FRONT_V7[fig] = FIGS_V7[(i + 4) % 16];
 });
+
+// ═══════════════════════════════════════════════════════════════
+// LES TROIS PÔLES, REFORMULÉS (25/08/26, Ellemine_D)
+// « R1 ou R7 sera fig central ; le protecteur, antagoniste de
+// l'antagoniste du fig central, sera fig bouclier ; et le binôme du binôme
+// du fig central est fig de front, car la fig de front détruit la fig qui
+// attaque le fig du bouclier. »
+//
+//   FIGURE CENTRALE   X          — R1 ou R7, celle dont on lit le réseau
+//   FIGURE BOUCLIER   X + 10     — antagoniste(antagoniste(X))
+//   FIGURE DE FRONT   X + 4      — binôme(binôme(X))
+//
+// AUCUN CHIFFRE NE CHANGE. Le bouclier est l'ancien « protecteur »
+// (PROTECTEURS_V7, X+10) et le front reste FRONT_V7 (X+4) : seuls le nom
+// et la dérivation changent. Le front avait été introduit le 24/08 comme
+// antagoniste⁴(X) = protecteur(protecteur(X)) ; la dérivation par les
+// binômes donne le même résultat, et c'est la plus simple des trois :
+//     antagoniste⁴ = −3×4 = −12 ≡ +4 (mod 16)
+//     protecteur²  = +10+10 = +20 ≡ +4
+//     binôme²      = +2+2  =  +4
+//
+// LA RAISON EST VÉRIFIÉE, 16 FIGURES SUR 16. Avec la convention du fichier
+// — antagoniste(Y) = Y−3 est la figure qui DÉTRUIT Y :
+//     la figure qui attaque le bouclier est antagoniste(X+10) = X+7
+//     celle qui détruit X+7 est (X+7)−3 = X+4 = la figure de front
+// Le front défend donc bien le bouclier, qui défend le central.
+// Exemple, central = Puer : bouclier Conjonctio, attaqué par Tristitia,
+// que Via — le front de Puer — détruit.
+//
+// Les identifiants internes ne sont pas renommés (trop de sites, risque
+// pour rien) ; ces alias portent le vocabulaire dans le code, et
+// l'affichage, lui, dit bouclier.
+const BOUCLIER_V7 = PROTECTEURS_V7;
+const FIG_FRONT_V7 = FRONT_V7;
+function figureCentraleV7(theme, cote) {
+  const rot = getRotationCombat(theme);
+  return cote === 'R7' ? rot.figR7 : rot.figR1;
+}
 
 // ─── RÈGLE ELLEMINE (25/08/26) : UNE FIGURE TIENT QUATRE RÔLES À LA FOIS ───
 // Énoncé de l'utilisateur, mot pour mot : « une figure peut jouer un rôle de
@@ -10801,7 +10839,7 @@ var POIDS_ROLES_V7 = {
 function scoreRolesRecusV7(chef, theme, siegeImpose) {
   if (!chef) return null;
   const cibles = [
-    {fig: PROTECTEURS_V7[chef], cle: 'protecteurDe', role: 'protecteur', poids: POIDS_ROLES_V7.protecteur},
+    {fig: BOUCLIER_V7[chef], cle: 'protecteurDe', role: 'bouclier', poids: POIDS_ROLES_V7.protecteur},
     {fig: FRONT_V7[chef],       cle: 'frontDe',      role: 'front',      poids: POIDS_ROLES_V7.front},
     {fig: BINOMES_V7[chef],     cle: 'binomeDe',     role: 'binôme',     poids: POIDS_ROLES_V7.binome},
     {fig: ANTAGONISTES_V7[chef],cle: 'antagonisteDe',role: 'antagoniste',poids: POIDS_ROLES_V7.antagoniste}
@@ -11604,7 +11642,7 @@ function renderLieuxMarquagePanel(theme) {
       + '<div class="muted" style="font-size:9.5px; margin:2px 0 4px;">'
       + l.ouverture + (l.active ? ', active' : ', inactive') + ' · ' + l.etat
       + (l.horsListe ? ' · siège hors liste' : '') + '</div>'
-      + pole(l.antagoniste, 'frappée par') + pole(l.protecteur, 'protecteur') + pole(l.front, 'front')
+      + pole(l.antagoniste, 'frappée par') + pole(l.protecteur, 'bouclier') + pole(l.front, 'front')
       + '</div>';
   }
 
@@ -11805,7 +11843,7 @@ function renderRolesExercesPanel(theme) {
     '<h3 style="margin-bottom:2px;">🎭 Rôles exercés par chaque figure</h3>'
     + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.55;">'
     + 'Chaque figure tient les quatre rôles à la fois : elle <b>frappe</b> la figure placée trois crans plus loin, '
-    + 'et sert de <b>binôme</b>, de <b>protecteur</b> et de <b>front</b> à trois autres. Le rôle hostile porte toujours '
+    + 'et sert de <b>binôme</b>, de <b>bouclier</b> et de <b>front</b> à trois autres. Le rôle hostile porte toujours '
     + 'sur l\'autre boucle, les trois rôles alliés sur la sienne. Portée d\'un rôle : '
     + '<span style="color:#4ade80;">effectif</span> (destinataire ancré en base, exerçante debout) · '
     + '<span style="color:#818cf8;">latent</span> (destinataire seulement en résultante) · '
@@ -11813,7 +11851,7 @@ function renderRolesExercesPanel(theme) {
     + '<span style="color:#38bdf8;">contrée</span> (frappe sur une cible à son repos, qui résiste) · '
     + '<span style="color:#64748b;">à vide</span> (destinataire absent). '
     + '<b>Branché au verdict depuis le 25/08.</b> Pour R1 et R7, deux comptes s\'ajoutent à la solidité '
-    + 'de chaîne : les rôles <b>reçus</b> (protecteur, front, binôme, moins la frappe subie), et les rôles '
+    + 'de chaîne : les rôles <b>reçus</b> (bouclier, front, binôme, moins la frappe subie), et les rôles '
     + '<b>exercés</b> — dont seuls comptent ceux qui touchent le camp d\'en face, signalés ici : '
     + '<span style="background:#166534; color:#fff; padding:0 3px; border-radius:2px; font-size:9px;">frappe le camp adverse</span> rapporte, '
     + '<span style="background:#7f1d1d; color:#fff; padding:0 3px; border-radius:2px; font-size:9px;">sert le camp adverse</span> coûte. '
@@ -16782,7 +16820,7 @@ function showRelationArrows(pos) {
     });
   }
   marquerPole(frontFig, 'house-front', 'F', '#FFD700');
-  marquerPole(protFig, 'house-protecteur', 'P', '#10b981');
+  marquerPole(protFig, 'house-protecteur', 'B', '#10b981');
 }
 
 // ═══════════════════════════════════════════════════════════════
