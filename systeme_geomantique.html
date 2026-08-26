@@ -5201,6 +5201,11 @@ function cascadeR1R7V7(theme) {
 //     niveau d'alignement actif, binôme compris. Reproduite au chiffre
 //     près (camp Puer 2,75 contre camp Puella 0,25).
 var POIDS_ALIGNEMENT_CAMP_V7 = 0.5;   // conc + 0,5 × alignement actif
+// Quelle mesure de force ? 'profil' = les sept critères de
+// profilFigureMaison (concordance, déplacement, multiplicité,
+// environnement, cohabitation, alignement actif, maison natale).
+// 'brut' = l'ancienne, concordance + 0,5 × alignement seulement.
+var F4P4_MESURE_V7 = 'profil';
 
 function forceCampV7(fig, theme) {
   if (!fig) return {fig: null, present: false, conc: 0, align: 0, occ: 0, base: 0, total: 0, detail: []};
@@ -5214,9 +5219,28 @@ function forceCampV7(fig, theme) {
       libelle: 'M' + o.pos + (o.hidden ? 'r' : '') + ' ' + ELEMENTS_V7[fig]
         + ' en ' + MAISON_ELEM_V7[o.pos] + ' — conc ' + c + ', align ' + a.nb};
   });
+  // ─── CORRECTION DU 26/08/26 ───
+  // Même défaut que dans analyseFigureV7 : cette force ne pesait que la
+  // concordance et l'alignement — deux critères sur sept. Une figure
+  // CHEZ ELLE, ou en maison alliée, ou bien entourée, valait pareil
+  // qu'une figure de passage. F4P4_MESURE_V7 permet de comparer les deux
+  // barèmes ; 'profil' est celui des sept critères, retenu.
+  let profilSomme = 0, profilBest = 0;
+  occ.forEach(function (o) {
+    let pr = null;
+    try { pr = profilFigureMaison(fig, o.pos, theme); } catch (e) { pr = null; }
+    if (pr) { profilSomme += pr.total; if (pr.total > profilBest) profilBest = pr.total; }
+  });
+  const brut = Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100;
+  const total = (F4P4_MESURE_V7 === 'profil')
+    ? Math.round(profilSomme * 100) / 100
+    : brut;
   return {fig: fig, present: occ.length > 0, occ: occ.length, base: base,
     conc: Math.round(conc * 100) / 100, align: align,
-    total: Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100,
+    ancrageBrut: brut,
+    profilSomme: Math.round(profilSomme * 100) / 100,
+    profilMeilleur: Math.round(profilBest * 100) / 100,
+    total: total,
     detail: detail};
 }
 
@@ -11773,8 +11797,16 @@ function campF4P4V7(fig, siege, theme) {
 // 20,7 % à 2, 18,6 % à 3, 17,6 % à 4 — contre 77,5 % concentrés sur
 // 3 et 4 avant la correction. C'est le réglage qui donne au critère le
 // plus de grain, indépendamment de ce qu'il prédit.
-var F4P4_SEUIL_ANCRAGE_V7 = 1;     // concordance + 0,5×alignement minimum
-var F4P4_SEUIL_RENFORT_V7 = 3;     // sous-pôles ANCRÉS (et non présents)
+// ⚠️ L'ÉCHELLE A CHANGÉ le 26/08 : l'ancrage n'est plus « concordance +
+// 0,5 × alignement » (0 à 3) mais le PROFIL AUX SEPT CRITÈRES, qui va
+// d'environ −15 à +30. Les seuils sont refixés en conséquence.
+// Seuil 12 : un pôle est solide si sa meilleure position vaut au moins
+// 12 aux sept critères. Choisi sur un PLATEAU, pas sur un point — de 12
+// à 15 et de renfort 1 à 4, le score reste 5/7, ce qui veut dire que le
+// réglage ne tient pas à une valeur précise. En dessous de 12 il
+// s'effrite (8 → 3 ou 4/7 selon le renfort).
+var F4P4_SEUIL_ANCRAGE_V7 = 12;    // profil minimum aux sept critères
+var F4P4_SEUIL_RENFORT_V7 = 2;     // sous-pôles au-dessus du seuil
 
 // ─── CORRECTION DU 26/08 : L'ÉTAPE 4 COMPTE L'ANCRAGE ───
 // Elle comptait la simple PRÉSENCE des sous-pôles. Sur le thème Inter,
@@ -11822,27 +11854,66 @@ var F4P4_SEUIL_RENFORT_V7 = 3;     // sous-pôles ANCRÉS (et non présents)
 //     (Pour mémoire : R1 et R7 partagent la boucle 49,1 % du temps, donc
 //     la branche « même boucle » sert bien une fois sur deux.)
 //
-// C'est pourquoi F4P4_DEMARCHE_V7 vaut 'duel4' et non 'cinq_etapes' :
-// la démarche en cinq étapes est CALCULÉE et AFFICHÉE en entier, mais
-// elle ne pilote pas le verdict tant qu'on n'a pas compris pourquoi elle
-// échoue. Basculer la constante suffit à lui donner le volant.
-var F4P4_DEMARCHE_V7 = 'duel4';
+// ─── RÉSOLU LE 26/08 PAR LA CORRECTION DE LA MESURE ───
+// La démarche en cinq étapes échouait parce que sa mesure était aveugle,
+// pas parce qu'elle était fausse. Une fois les sept critères branchés
+// (voir analyseFigureV7), elle atteint 5/7 sur un PLATEAU de seuils —
+// 12 à 15, renfort 1 à 4 — et prend donc le volant.
+// Tableau des quatre combinaisons, mesuré :
+//     mesure brut   + duel4        5/7   (rate Inter et Atalanta)
+//     mesure brut   + cinq étapes  3/7
+//     mesure profil + duel4        3/7   ← duel4 ne supporte pas
+//                                          le changement d'échelle
+//     mesure profil + cinq étapes  5/7   (rate Inter et Napoli)  ← retenu
+// Les deux à 5/7 ratent des cas DIFFÉRENTS. Le couple retenu l'est parce
+// qu'il est le seul à la fois juste sur la mesure (les sept critères) et
+// fidèle à la démarche dictée par Ellemine_D, à score égal.
+var F4P4_DEMARCHE_V7 = 'cinq_etapes';
 
 // Étape 3 — les critères d'analyse d'une figure, appliqués partout.
+//
+// ⚠️ CORRECTION DU 26/08/26, sur constat d'Ellemine_D : « tu n'es pas
+// rigoureux… Carcer est dans sa propre maison, tu ne peux pas le voir ».
+// Il avait raison, et le défaut était grave : cette fonction ne pesait
+// que DEUX critères sur sept — concordance et alignement actif. Le
+// déplacement (chez soi +15, maison alliée +8, ennemie −8), la
+// multiplicité, l'environnement, la cohabitation et la maison natale ne
+// comptaient pour RIEN.
+// Effet mesuré sur son exemple : Carcer en M10, dans sa propre maison,
+// valait 17,38 aux sept critères (dont +15 pour le seul « chez elle »)
+// et 0,5 ici. Le pôle le plus fort de R1 était classé « mal ancré ».
+// profilFigureMaison porte les sept critères depuis toujours ; il
+// suffisait de l'appeler. C'est fait.
 function analyseFigureV7(fig, theme) {
   if (!fig) return null;
   const occ = trouverFigV7(fig, theme) || [];
-  let conc = 0, align = 0, base = 0;
+  let conc = 0, align = 0, base = 0, profilSomme = 0, meilleur = null;
   const positions = occ.map(function (o) {
     const c = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[o.pos]);
     const a = alignementActifV7(fig, o.pos);
     conc += c; align += a.nb; if (!o.hidden) base++;
-    return { pos: o.pos, resultante: !!o.hidden, conc: c, align: a.nb };
+    let pr = null;
+    try { pr = profilFigureMaison(fig, o.pos, theme); } catch (e) { pr = null; }
+    if (pr) {
+      profilSomme += pr.total;
+      if (!meilleur || pr.total > meilleur.total) meilleur = pr;
+    }
+    return { pos: o.pos, resultante: !!o.hidden, conc: c, align: a.nb,
+      profil: pr ? Math.round(pr.total * 100) / 100 : null,
+      deplacement: pr ? pr.deplacement : null };
   });
   return {
     fig: fig, present: occ.length > 0, occ: occ.length, base: base,
     conc: Math.round(conc * 100) / 100, align: align,
-    ancrage: Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100,
+    // ancien ancrage, conservé pour comparaison
+    ancrage2: Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100,
+    // les SEPT critères : meilleure position, et somme sur toutes
+    profil: meilleur ? Math.round(meilleur.total * 100) / 100 : 0,
+    profilSomme: Math.round(profilSomme * 100) / 100,
+    meilleure: meilleur ? meilleur.house : null,
+    deplacement: meilleur ? meilleur.deplacement : null,
+    // ancrage = la mesure retenue, désormais celle des sept critères
+    ancrage: meilleur ? Math.round(meilleur.total * 100) / 100 : 0,
     positions: positions
   };
 }
