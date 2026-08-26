@@ -4875,6 +4875,112 @@ function cascadeR1R7V7(theme) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// FORCE D'UN CAMP ET DUEL DU BOUCLIER (26/08/26)
+// Branchement de ce que l'étude du 7-0 a établi et vérifié :
+//
+//  1. « On ne juge pas un pôle présent ou absent, ni même solide ou
+//     fragile en soi. On suit la chaîne — qui attaque le bouclier, qui
+//     devrait arrêter cet attaquant, et avec quelle force élémentaire,
+//     binôme compris. Un attaquant en résultante seule peut détruire,
+//     si celui qui devait l'arrêter est plus faible que lui. »
+//     (Ellemine_D, 25/08.) soliditeChaineV7 comptait le bouclier en
+//     PRÉSENCES — exactement ce que cette remarque interdit.
+//
+//  2. Le défenseur du bouclier EST le front. Vérifié en table sur les
+//     16 : assaillant du bouclier = antagoniste(X+10) = X+7, et son
+//     antagoniste est X+4 = front(X). Le front et le défenseur du
+//     bouclier sont la même figure au même geste — d'où la formule
+//     d'Ellemine_D : « la fig de front détruit la fig qui attaque le
+//     fig du bouclier ».
+//
+//  3. La mesure de force employée est celle qu'il a faite à la main sur
+//     le 7-0 : concordance cumulée sur toutes les occurrences, plus le
+//     niveau d'alignement actif, binôme compris. Reproduite au chiffre
+//     près (camp Puer 2,75 contre camp Puella 0,25).
+var POIDS_ALIGNEMENT_CAMP_V7 = 0.5;   // conc + 0,5 × alignement actif
+
+function forceCampV7(fig, theme) {
+  if (!fig) return {fig: null, present: false, conc: 0, align: 0, occ: 0, base: 0, total: 0, detail: []};
+  const occ = trouverFigV7(fig, theme) || [];
+  let conc = 0, align = 0, base = 0;
+  const detail = occ.map(function (o) {
+    const c = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[o.pos]);
+    const a = alignementActifV7(fig, o.pos);
+    conc += c; align += a.nb; if (!o.hidden) base++;
+    return {pos: o.pos, resultante: !!o.hidden, conc: c, align: a.nb,
+      libelle: 'M' + o.pos + (o.hidden ? 'r' : '') + ' ' + ELEMENTS_V7[fig]
+        + ' en ' + MAISON_ELEM_V7[o.pos] + ' — conc ' + c + ', align ' + a.nb};
+  });
+  return {fig: fig, present: occ.length > 0, occ: occ.length, base: base,
+    conc: Math.round(conc * 100) / 100, align: align,
+    total: Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100,
+    detail: detail};
+}
+
+// Une figure et son binôme, pris ensemble : c'est ainsi qu'Ellemine_D a
+// pesé Puer+Caput contre Puella+Populus.
+function forceAvecBinomeV7(fig, theme) {
+  const a = forceCampV7(fig, theme), b = forceCampV7(BINOMES_V7[fig], theme);
+  return {fig: fig, binome: BINOMES_V7[fig], soi: a, appui: b,
+    occ: a.occ + b.occ, base: a.base + b.base,
+    conc: Math.round((a.conc + b.conc) * 100) / 100,
+    align: a.align + b.align,
+    total: Math.round((a.total + b.total) * 100) / 100};
+}
+
+// Le duel qui décide si le bouclier tient. Assaillant contre front.
+function duelBouclierV7(centrale, theme) {
+  if (!centrale) return null;
+  const bouclier = BOUCLIER_V7[centrale];
+  const assaillant = ANTAGONISTES_V7[bouclier];
+  const defenseur = FRONT_V7[centrale];      // === ANTAGONISTES_V7[assaillant]
+  const A = forceAvecBinomeV7(assaillant, theme);
+  const D = forceAvecBinomeV7(defenseur, theme);
+  const marge = Math.round((D.total - A.total) * 100) / 100;
+  const tenu = marge >= 0;
+  return {
+    centrale: centrale, bouclier: bouclier,
+    assaillant: assaillant, defenseur: defenseur,
+    campAssaillant: A, campDefenseur: D, marge: marge, tenu: tenu,
+    // Quand le bouclier tombe, l'antagoniste de la centrale est libéré :
+    // c'est le double rôle d'Albus dans le 7-0 (bouclier de Carcer ET
+    // antagoniste de Rubeus). Vérifié en table : antagoniste(X) = X−3 et
+    // bouclier(X) = X+10 ; le bouclier est l'antagoniste de X+13 = X−3.
+    // Le bouclier d'une figure est TOUJOURS l'antagoniste de son propre
+    // antagoniste. Neutraliser le bouclier libère donc toujours l'assaut.
+    libere: ANTAGONISTES_V7[centrale],
+    resume: (FL[defenseur] || defenseur) + ' ' + D.total + ' contre '
+      + (FL[assaillant] || assaillant) + ' ' + A.total + ' — bouclier '
+      + (FL[bouclier] || bouclier) + (tenu ? ' tenu' : ' ROMPU')
+  };
+}
+
+// Coefficient appliqué au maillon « bouclier » quand son duel est perdu.
+// LAISSÉ À 1 — NEUTRE — DÉLIBÉRÉMENT (26/08/26), et voici pourquoi :
+//
+//  · Balayé de 1 à −1 sur les quatre cas de référence : le verdict ne
+//    change JAMAIS, 3/4 partout. Les marges se creusent dans le bon sens
+//    sur B (0,25 → 3,25) et C (1,75 → 6,75), mais D — déjà faux — empire
+//    (12,75 → 14,75). Aucune valeur n'est soutenue par les données.
+//
+//  · Le duel PRIS SEUL comme critère de verdict fait aussi 3/4, mais sur
+//    un cas DIFFÉRENT : il gagne D (que l'ancrage rate) et perd A. Sur
+//    1237 thèmes, duel et ancrage désignent le même camp 54 % du temps —
+//    à peine mieux que pile ou face. Deux critères à 3/4 qui se
+//    contredisent une fois sur deux ne peuvent pas être départagés par
+//    quatre cas. Il en faut d'autres, réels.
+//
+//  · Comme critère de « les deux marquent », il est franchement MOINS
+//    bon : 3/6 contre 5/6 pour la lecture actuelle, et même moins bon
+//    que répondre toujours OUI (4/6). Le duel du bouclier EXPLIQUE le
+//    7-0 ; il ne prédit pas les buts. Il ne remplace donc rien.
+//
+// Le duel est calculé, exposé dans soliditeChaineV7().duelBouclier et
+// affiché par renderDuelBouclierPanel — mais il n'entre dans aucun
+// score tant que ce coefficient vaut 1.
+var COEF_BOUCLIER_ROMPU_V7 = 1;
+
 function soliditeChaineV7(fig, theme) {
   if (!fig) return null;
   function maillon(f, role, poids) {
@@ -4891,9 +4997,16 @@ function soliditeChaineV7(fig, theme) {
   }
   const mProt  = maillon(BOUCLIER_V7[fig], 'bouclier', 1);
   const mFront = maillon(FRONT_V7[fig], 'front', POIDS_CHAINE_V7.poidsFront);
+  // Le bouclier ne vaut pas ce qu'il pèse, il vaut ce qu'il tient.
+  const duel = duelBouclierV7(fig, theme);
+  if (duel && !duel.tenu && COEF_BOUCLIER_ROMPU_V7 !== 1) {
+    mProt.duelPerdu = true;
+    mProt.scoreAvantDuel = mProt.score;
+    mProt.score = Math.round(mProt.score * COEF_BOUCLIER_ROMPU_V7 * 100) / 100;
+  }
   const total = Math.round((mProt.score + mFront.score) * 100) / 100;
   return {
-    fig: fig, maillons: [mProt, mFront],
+    fig: fig, maillons: [mProt, mFront], duelBouclier: duel,
     total: total,
     toutEnBase: mProt.enBase && mFront.enBase,
     perce: !mProt.present || !mFront.present,
@@ -11881,6 +11994,96 @@ function renderAxesPanel(theme) {
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
+// ═══════════════════════════════════════════════════════════════
+// PANNEAU DU DUEL DU BOUCLIER (26/08/26)
+// Rend visible le raisonnement qu'Ellemine_D fait à la main : qui attaque
+// le bouclier, qui doit l'arrêter, avec quelle force élémentaire, binôme
+// compris — et ce que la rupture libère.
+// ⚠️ Ce panneau N'INFLUENCE AUCUN VERDICT. COEF_BOUCLIER_ROMPU_V7 vaut 1,
+// le duel est calculé et montré, pas branché sur le score. Motif : mesuré
+// sur les cas de référence, il ne fait ni mieux ni pire que l'ancrage
+// (3/4 chacun) mais désigne un camp DIFFÉRENT une fois sur deux (54%
+// d'accord sur 1237 thèmes). Quatre cas ne peuvent pas arbitrer entre
+// deux critères à 3/4 qui se contredisent la moitié du temps.
+function renderDuelBouclierPanel(theme) {
+  const ancien = document.getElementById('duel-bouclier-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  const hote = document.getElementById('lieux-marquage-panel')
+            || document.getElementById('deux-marquent-panel')
+            || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  const panneau = document.createElement('div');
+  panneau.id = 'duel-bouclier-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:10px; border:1px solid #a16207;';
+
+  let anc = null;
+  try { anc = analyseAncrageDeveloppe(theme); } catch (e) { anc = null; }
+  if (!anc || !anc.applicable) {
+    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🛡️ Duel du bouclier</h3>'
+      + '<div class="muted" style="font-size:11.5px;">Rotation non applicable sur ce thème.</div>';
+    hote.parentNode.insertBefore(panneau, hote.nextSibling);
+    return;
+  }
+  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
+
+  function camp(c) {
+    const ligne = function (x) {
+      if (!x.present) return '<div style="font-size:9.5px; color:#64748b;">'
+        + nom(x.fig) + ' — absente</div>';
+      return '<div style="font-size:9.5px;"><b>' + nom(x.fig) + '</b> '
+        + x.detail.map(function (o) {
+            return '<span style="color:' + (o.resultante ? '#94a3b8' : '#e2e8f0') + ';">'
+              + 'M' + o.pos + (o.resultante ? 'r' : '') + '</span> '
+              + '<span style="color:' + (o.conc >= 0.5 ? '#4ade80' : o.conc > 0 ? '#fbbf24' : '#f87171') + ';">'
+              + o.conc + '</span>'
+              + '<span style="color:#818cf8;">/' + o.align + '</span>';
+          }).join(' · ')
+        + '</div>';
+    };
+    return ligne(c.soi) + ligne(c.appui);
+  }
+
+  function bloc(cote, fig) {
+    const d = duelBouclierV7(fig, theme);
+    if (!d) return '';
+    const coul = d.tenu ? '#4ade80' : '#f87171';
+    return '<div style="flex:1; min-width:230px;">'
+      + '<div style="font-size:11px; font-weight:700; margin-bottom:3px;">'
+      + cote + ' · ' + nom(fig) + '</div>'
+      + '<div style="font-size:10px; color:#cbd5e1; margin-bottom:4px;">bouclier <b>'
+      + nom(d.bouclier) + '</b></div>'
+      + '<div style="font-size:10px; color:#f87171; margin-bottom:1px;">⚔ assaillant '
+      + nom(d.assaillant) + ' — <b>' + d.campAssaillant.total + '</b></div>'
+      + camp(d.campAssaillant)
+      + '<div style="font-size:10px; color:#38bdf8; margin:4px 0 1px;">🛡 défenseur (= front) '
+      + nom(d.defenseur) + ' — <b>' + d.campDefenseur.total + '</b></div>'
+      + camp(d.campDefenseur)
+      + '<div style="margin-top:5px; font-size:11px; font-weight:700; color:' + coul + ';">'
+      + (d.tenu ? 'BOUCLIER TENU' : 'BOUCLIER ROMPU') + ' (' + (d.marge > 0 ? '+' : '') + d.marge + ')'
+      + '</div>'
+      + (d.tenu ? '' : '<div style="font-size:9.5px; color:#fbbf24;">→ libère '
+          + nom(d.libere) + ', l\'antagoniste de ' + nom(fig) + '</div>')
+      + '</div>';
+  }
+
+  panneau.innerHTML = '<h3 style="margin-bottom:2px;">🛡️ Duel du bouclier</h3>'
+    + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
+    + 'Le défenseur du bouclier <b>est</b> la figure de front (vérifié 16/16). '
+    + 'Chiffres : concordance / niveaux alignés actifs, binôme compris. '
+    + 'Gris = résultante.</div>'
+    + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
+    + bloc('R1', anc.figR1) + bloc('R7', anc.figR7)
+    + '</div>'
+    + '<div class="hint" style="margin-top:7px; font-size:9.5px;">'
+    + 'Panneau de lecture seule : il n\'entre dans aucun verdict. '
+    + 'Le bouclier d\'une figure est toujours l\'antagoniste de son antagoniste — '
+    + 'le rompre libère donc toujours l\'assaut.</div>';
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
 function renderLieuxMarquagePanel(theme) {
   const ancien = document.getElementById('lieux-marquage-panel');
   if (ancien) ancien.remove();
@@ -15641,6 +15844,7 @@ function renderTheme(){
     try { renderDeuxMarquentPanel(currentTheme); } catch(e) { console.log('deux marquent error', e); }
     // Lieux de marquage : instrument d'observation, rien n'est branché.
     try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
+    try { renderDuelBouclierPanel(currentTheme); } catch(e) { console.log('duel bouclier error', e); }
     // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
     try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
     const elR = document.getElementById('carte-verdict-r');
