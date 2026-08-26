@@ -4559,10 +4559,20 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //
 // ═══════════════════════════════════════════════════════════════
 // CAS DE RÉFÉRENCE — RÉSULTATS RÉELS ARCHIVÉS (24/08/26, Ellemine_D)
+// ─── NOMS DES CAS DE RÉFÉRENCE (26/08/26, demande d'Ellemine_D) ───
+// Les cas portaient les lettres A à I. Remplacées par des noms de clubs
+// italiens, dans l'ordre d'entrée dans l'archive — les lettres seules
+// devenaient illisibles à neuf cas :
+//   Juventus = A · Inter = B · Milan = C · Napoli = D · Roma = E
+//   Lazio = F · Fiorentina = G · Atalanta = H · Torino = I
+// Ce sont des ÉTIQUETTES, sans rapport avec les équipes réelles des
+// matchs. Attention en relisant le code : « camp A », « équipe B »,
+// « boucle A/B », « voie A », « axe D », « Bloc B », « B-B-A » et
+// « F.Minor » gardent leur sens d'origine et n'ont pas été renommés.
 // Les trois seuls thèmes de cette session dont le score réel est connu.
 // Toute modification des règles de verdict doit être retestée contre eux.
 //
-//  A. Conjunctio · Rubeus · Cauda Draconis · Acquisitio      RÉEL 6-1 (R1)
+//  Juventus — Conjunctio · Rubeus · Cauda Draconis · Acquisitio      RÉEL 6-1 (R1)
 //     R1 = Puer (M11) · R7 = Conjunctio (M1) · même boucle
 //     chaîne 10 vs 9,25 → R1 ✅   sièges 🟧+3 vs 🟨 0 → R1 ✅
 //     réseau d'ancrage → R7 ✗ (installation 8 vs 4,5 : Conjunctio est
@@ -4570,7 +4580,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //       la solidité de chaîne prime sur la force d'installation)
 //     Structure du Nul s'était déclenchée et imposait le nul ✗
 //
-//  B. Puella · Via · Conjunctio · Via                        RÉEL 3-2 (R1)
+//  Inter — Puella · Via · Conjunctio · Via                        RÉEL 3-2 (R1)
 //     R1 = Laetitia (M14) · R7 = Via (M4)
 //     chaîne 6 vs 5,25 → R1 ✅   sièges 🟦+15 vs 🟧+3 → R1 ✅
 //     réseau d'ancrage → R1 ✅
@@ -4588,7 +4598,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     R7, R1 a gagné. Lecture retenue — être attaqué n'empêche pas de
 //     frapper, un pôle tenu garde son plein effet.
 //
-//  C. Tristitia · Via · Conjunctio · Rubeus                  RÉEL 7-0 (R1)
+//  Milan — Tristitia · Via · Conjunctio · Rubeus                  RÉEL 7-0 (R1)
 //     R1 = Fortuna Minor (M8) · R7 = Carcer (M14)
 //     chaîne 8 vs 7,25 → R1 ✅   sièges 🟧+3 vs 🟥−15 → R1 ✅
 //     réseau d'ancrage → R1 ✅
@@ -4606,13 +4616,13 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // la correction signalée par Ellemine_D (« tu ne l'as pas branché »).
 //
 // Effet cumulé sur les trois cas, marge de R1 :
-//   A 6-1 : 0,75 → 0,75 (reçus à égalité) → 0,63 (exercés) → R1 ✅
-//   B 3-2 : 0,75 → 0,25 (reçus contre R1)  → 1,00 (exercés) → R1 ✅
-//   C 7-0 : 0,75 → 1,75 (reçus pour R1)    → 1,75 (exercés à égalité) → R1 ✅
-// Le côté actif RÉPARE le cas B, que le côté reçu avait ramené à 0,25.
+//   Juventus 6-1 : 0,75 → 0,75 (reçus à égalité) → 0,63 (exercés) → R1 ✅
+//   Inter 3-2 : 0,75 → 0,25 (reçus contre R1)  → 1,00 (exercés) → R1 ✅
+//   Milan 7-0 : 0,75 → 1,75 (reçus pour R1)    → 1,75 (exercés à égalité) → R1 ✅
+// Le côté actif RÉPARE le cas Inter, que le côté reçu avait ramené à 0,25.
 //
 // ⚠️ Ce que la mesure a écarté : compter les rôles exercés sur N'IMPORTE
-// QUI donne 1/3 — dans les cas A et B, R7 exerce plus de rôles effectifs
+// QUI donne 1/3 — dans les cas Juventus et Inter, R7 exerce plus de rôles effectifs
 // que R1, et R1 a gagné les deux. Cela ne mesurait que la population du
 // thème. Seuls les rôles touchant le camp adverse comptent, et le barème
 // tient 3/3 pour tout k de 0,5 à 1,5 — c'est le réglage le plus stable
@@ -4620,7 +4630,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // ⚠️ Les rôles reçus SEULS donneraient 1/3 : les trois couches se
 // complètent, aucune ne remplace les autres.
 //
-//  D. Conjonctio · Fortuna Minor · Via · Albus              RÉEL 0-1 (M7)
+//  Napoli — Conjonctio · Fortuna Minor · Via · Albus              RÉEL 0-1 (M7)
 //     R1 = Laetitia (M11) · R7 = Conjonctio (M1)
 //     ⚠️ SEUL CAS OÙ LE SYSTÈME SE TROMPE DE CAMP : il annonce M1 4-2
 //     avec un ancrage écrasant (10,75 contre −0,25), le réel est 0-1 pour
@@ -4629,7 +4639,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     C'est le contre-exemple le plus utile de l'archive : la chaîne de
 //     R7 y est PERCÉE (total −1) et R7 gagne quand même.
 //
-//  F. Fortuna Minor · Amissio · Carcer · Carcer     LES DEUX ONT MARQUÉ
+//  Lazio — Fortuna Minor · Amissio · Carcer · Carcer     LES DEUX ONT MARQUÉ
 //     R1 = R7 = Conjonctio (M9 et M15) — cas où les deux sièges portent la
 //     MÊME figure (5,1% des thèmes). Score exact non communiqué.
 //     ⭐ PREMIER TEST EN AVEUGLE de la règle d'ouverture depuis son
@@ -4642,7 +4652,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     rotation à 4/6 PARTOUT — les deux cadres sont à égalité et le choix
 //     n'est plus soutenu par les données. Voir BTTS_CADRE.
 //
-//  E. Fortuna Minor · Acquisitio · Carcer · Albus            RÉEL 1-1 (nul)
+//  Roma — Fortuna Minor · Acquisitio · Carcer · Albus            RÉEL 1-1 (nul)
 //     R1 = Carcer (M10) · R7 = Fortuna Major (M4)
 //     Retrouvé le 25/08 dans renderRegressionReference, où la clé portait
 //     « aquisitio » au lieu d'« acquisitio » : la référence ne pouvait
@@ -4650,9 +4660,9 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     Seul vrai NUL de l'archive consignée — précieux pour l'étude de
 //     l'Axe Succédent, restée en suspens.
 //
-//  G. Rubeus · Puer · Fortuna Minor · Caput Draconis        RÉEL 0-2 (M7)
+//  Fiorentina — Rubeus · Puer · Fortuna Minor · Caput Draconis        RÉEL 0-2 (M7)
 //     R1 = Tristitia (M7) · R7 = Albus (M13)
-//     ⭐ DEUXIÈME PRÉDICTION HORS ÉCHANTILLON de tout le projet, après C.
+//     ⭐ DEUXIÈME PRÉDICTION HORS ÉCHANTILLON de tout le projet, après Milan.
 //     Analysé et annoncé AVANT qu'Ellemine_D donne le score.
 //     Camp ✅ · « un seul marque » ✅ · chiffres du score ✗ (2-4 affiché).
 //
@@ -4660,7 +4670,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     rôles reçus, rôles exercés, sièges, axes ET duel du bouclier
 //     donnent TOUS R7, sans une dissidence.
 //         ancrage −10,44 contre +10,13, soit un écart de 20,57 —
-//         plus du double du cas C (1,75), qui était déjà un 7-0.
+//         plus du double du cas Milan (1,75), qui était déjà un 7-0.
 //
 //     CE QUI LE REND SI NET — la chaîne de R1 n'existe pas. Ni Laetitia
 //     (son bouclier) ni Fortuna Major (son front) ne sont dans le thème,
@@ -4677,14 +4687,14 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     concordance 1, alignement 2, sa position la plus forte possible.
 //     Côté R7 le bouclier Puella TIENT (+1,75).
 //
-//  H. Rubeus · Tristitia · Laetitia · Via                    RÉEL 4-0 (R1)
-//     R1 = Tristitia (M7) · R7 = Albus (M13) — MÊME ROTATION QUE G.
+//  Atalanta — Rubeus · Tristitia · Laetitia · Via                    RÉEL 4-0 (R1)
+//     R1 = Tristitia (M7) · R7 = Albus (M13) — MÊME ROTATION QUE Fiorentina.
 //     ⚠️ PREMIER CAS D'ARBITRAGE DE L'ARCHIVE : les couches se divisent.
 //         ancrage  R1 (9 contre 3,76)      duel du bouclier  R7 (−4,25 / +2)
 //         chaîne   R1 (9,25 contre 3)      sièges            R7 (🟥−15 / 🟦+15)
 //                                          axes              R7 (1 contre 2)
 //     Verdict affiché AVANT le score : M1 4-2, un seul marque.
-//     ⭐ TROISIÈME PRÉDICTION HORS ÉCHANTILLON, après C et G.
+//     ⭐ TROISIÈME PRÉDICTION HORS ÉCHANTILLON, après Milan et Fiorentina.
 //     Camp ✅ · « un seul marque » ✅ · le camp MUET ✅ (R7) ·
 //     et pour la première fois un CHIFFRE juste : M1 = 4, exactement.
 //     Le second chiffre reste faux (2 affiché, 0 réel).
@@ -4696,13 +4706,13 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //         ancrage 5/6 · chaîne 5/6 · duel CORRIGÉ 5/6
 //         duel brut 4/6 · sièges 4/6 · axes 3/6
 //     Les sièges et les axes, qui menaient encore 4/5, décrochent. Ils
-//     redisaient R7 par pur automatisme : les sièges de H sont ceux de G
+//     redisaient R7 par pur automatisme : les sièges d'Atalanta sont ceux de Fiorentina
 //     (M7 🟥, M13 🟦), et ils ne voient pas que la chaîne s'est inversée
 //     entre les deux thèmes. Leur signal est celui du siège, pas du camp.
 //
-//     C'est presque le miroir de G. Les sièges sont les mêmes (M7 🟥 et
+//     C'est presque le miroir de Fiorentina. Les sièges sont les mêmes (M7 🟥 et
 //     M13 🟦) donc sièges et axes redisent R7. Ce qui a changé, c'est la
-//     chaîne : en G le bouclier ET le front de R1 étaient absents du
+//     chaîne : dans Fiorentina le bouclier ET le front de R1 étaient absents du
 //     thème (chaîne −7,5) ; ici les deux sont là (Laetitia M3 M16,
 //     Fortuna Major M5 M6r → chaîne 9,25). Et c'est R7 qui est percée,
 //     son bouclier Puella étant absent. Deux thèmes, mêmes sièges,
@@ -4714,7 +4724,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     absent du thème, et le duel est pourtant déclaré TENU (+2) — on
 //     défend un bouclier qui n'est pas là. Variante « bouclier absent =
 //     rompu d'office » : identique sur les cinq cas connus (4/5, le cas
-//     ne se présentait qu'en G où les deux concluent pareil), mais elle
+//     ne se présentait que dans Fiorentina, où les deux concluent pareil), mais elle
 //     INVERSE ce thème-ci — R1 au lieu de R7. Non branchée en attendant
 //     le résultat, qui la tranchera aussi.
 //
@@ -4727,7 +4737,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     6/8 ; et sur les quatre cas à camp muet, nommer le bon muet donne
 //     chaîne 3/4 contre rotation 1/4. BTTS_CHAINE_DECISIF passe à true.
 //
-//  I. Via · Rubeus · Via · Tristitia                        RÉEL 0-1 (R7)
+//  Torino — Via · Rubeus · Via · Tristitia                        RÉEL 0-1 (R7)
 //     R1 = Amissio (M5) · R7 = Rubeus (M11) — thème VALIDE (3 axes).
 //     ANNONCÉ M1, un seul marque, muet = R7. RÉEL : R7 GAGNE 1-0.
 //     Camp ✗ · « un seul marque » ✅ · camp muet ✗ (c'est R1 qui est muet).
@@ -4735,7 +4745,7 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     LE CAS QUI CASSE LA HIÉRARCHIE. Les trois couches à 5/6 — ancrage,
 //     chaîne, duel corrigé — disaient toutes R1. Les deux couches
 //     « faibles » — sièges et axes — disaient R7. Ce sont elles qui
-//     avaient raison. Après I, TOUT EST À ÉGALITÉ :
+//     avaient raison. Après Torino, TOUT EST À ÉGALITÉ :
 //         ancrage 5/7 · chaîne 5/7 · duel corrigé 5/7
 //         duel brut 5/7 · sièges 5/7 · axes 4/7
 //     ⚠️ 5/7 sur sept cas ne se distingue pas d'un tirage à pile ou face
@@ -4746,23 +4756,23 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     amputé de deux pôles sur trois — bouclier Puer et front Conjunctio
 //     tous deux ABSENTS du thème, binôme Fortuna Minor en résultante
 //     seule (M2r), chaîne −7,5. C'est la signature exacte du camp perdant
-//     du cas G (chaîne −7,5 lui aussi, réel 0-2). Ici le même profil a
+//     du cas Fiorentina (chaîne −7,5 lui aussi, réel 0-2). Ici le même profil a
 //     GAGNÉ. Une chaîne détruite ne suffit donc pas à faire perdre.
 //     R1 Amissio n'était guère mieux : front Carcer absent, bouclier
 //     Populus présent en M15 mais feu en eau, concordance 0, alignement
 //     0 — présent et inutile.
 //
 //     ⚠️ LA CORRECTION « BOUCLIER ABSENT = ROMPU » EST NEUTRALISÉE.
-//     Elle avait fait passer le duel de 4/6 à 5/6 en redressant H. Sur I
+//     Elle avait fait passer le duel de 4/6 à 5/6 en redressant Atalanta. Sur Torino
 //     elle fait l'inverse : le bouclier de R7 est absent, elle force donc
 //     le duel à R1, alors que le duel BRUT donnait R7 — le bon camp.
 //         duel brut 5/7   ·   duel corrigé 5/7
-//     Gain sur H, perte sur I, solde nul. Elle reste en place parce que
+//     Gain sur Atalanta, perte sur Torino, solde nul. Elle reste en place parce que
 //     l'argument de doctrine tient (on ne défend pas un bouclier absent)
 //     et qu'elle n'entre dans aucun verdict — COEF_BOUCLIER_ROMPU_V7
 //     vaut toujours 1 — mais elle n'est plus soutenue par les chiffres.
 //
-//     ⚠️ LE BTTS, LUI, TIENT. Sur I, chaîne NON et rotation OUI : la
+//     ⚠️ LE BTTS, LUI, TIENT. Sur Torino, chaîne NON et rotation OUI : la
 //     chaîne avait raison, un seul a marqué. Sur les neuf cas au BTTS
 //     connu : chaîne 8/9 · rotation 6/9 · « toujours oui » 4/9. C'est
 //     le seul endroit du système où l'écart au hasard est net.
@@ -4774,47 +4784,47 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //
 //     ⚠️ VÉRIFIÉ, IL N'Y A PAS DE BIAIS R1/R7. Sur 2114 thèmes tirés :
 //     ancrage 49,2/50,8 · chaîne 49,2/50,8 · duel 48,3/51,7 · sièges
-//     50,1/49,9. Les erreurs groupées sur R1 (D et I) sont un hasard
+//     50,1/49,9. Les erreurs groupées sur R1 (Napoli et Torino) sont un hasard
 //     d'échantillon, pas un penchant du calcul.
 //
-// ─── HYPOTHÈSE NÉE DE H, NON BRANCHÉE ───
+// ─── HYPOTHÈSE NÉE DE Atalanta, NON BRANCHÉE ───
 // Ancrage et duel corrigé sont tous deux à 5/6, et leurs erreurs sont
-// COMPLÉMENTAIRES : l'ancrage rate D, le duel rate A. Une règle les
+// COMPLÉMENTAIRES : l'ancrage rate Napoli, le duel rate Juventus. Une règle les
 // réconcilie à 6/6 :
 //     « si les DEUX boucliers sont rompus, le duel décide ; sinon
 //       l'ancrage décide »
-//   A tenu/tenu → ancrage R1 ✓ · B tenu/rompu → ancrage R1 ✓
-//   C tenu/rompu → ancrage R1 ✓ · D ROMPU/ROMPU → duel R7 ✓
-//   G rompu/tenu → ancrage R7 ✓ · H ROMPU/ROMPU → duel R1 ✓
-// ⚠️ NE PAS LA BRANCHER EN L'ÉTAT. Elle ne se déclenche que sur D et H,
-// et sur H elle dit la même chose que l'ancrage. Son seul apport réel
-// sur l'échantillon est de corriger UN cas, D. Une règle trouvée en
+//   Juventus tenu/tenu → ancrage R1 ✓ · Inter tenu/rompu → ancrage R1 ✓
+//   Milan tenu/rompu → ancrage R1 ✓ · Napoli ROMPU/ROMPU → duel R7 ✓
+//   Fiorentina rompu/tenu → ancrage R7 ✓ · Atalanta ROMPU/ROMPU → duel R1 ✓
+// ⚠️ NE PAS LA BRANCHER EN L'ÉTAT. Elle ne se déclenche que sur Napoli et Atalanta,
+// et sur Atalanta elle dit la même chose que l'ancrage. Son seul apport réel
+// sur l'échantillon est de corriger UN cas, Napoli. Une règle trouvée en
 // regardant les six cas, confirmée par un seul, qui changerait 12,6 %
 // de tous les verdicts (elle se déclenche sur 32,5 % des thèmes) : c'est
 // la définition d'un surajustement. À tester sur des cas à venir où les
 // deux boucliers sont rompus.
-// ── SUITE, CAS I (26/08) : elle s'est déclenchée, et elle a ÉCHOUÉ.
+// ── SUITE, CAS Torino (26/08) : elle s'est déclenchée, et elle a ÉCHOUÉ.
 // Les deux boucliers étaient rompus, elle a donc suivi le duel corrigé,
 // qui disait R1 — même réponse que l'ancrage, et R7 a gagné. Elle passe
 // à 6/7, toujours devant l'ancrage à 5/7, mais son unique cas
-// discriminant reste D, et elle vient d'encaisser son premier échec.
+// discriminant reste Napoli, et elle vient d'encaisser son premier échec.
 // Elle reste NON BRANCHÉE, et l'écart 6/7 contre 5/7 tient à un seul
 // cas — c'est du bruit, pas une preuve.
 //
 //     Thème NON VALIDE : la résultante de l'axe Cadent (Populus) est
 //     absente. Cardinal et Succédent passent (Puer présent).
 //
-// ─── CE QUE LE CAS G ARBITRE, ET CE QU'IL N'ARBITRE PAS ───
-//  · BTTS — la lecture actuelle passe à 6/7 (elle ne rate que F), contre
-//    4/7 pour « répondre toujours OUI ». Avant G le compte était 5/6
-//    contre 4/6, soit un avantage négligeable. G est le premier cas qui
+// ─── CE QUE LE CAS Fiorentina ARBITRE, ET CE QU'IL N'ARBITRE PAS ───
+//  · BTTS — la lecture actuelle passe à 6/7 (elle ne rate que Lazio), contre
+//    4/7 pour « répondre toujours OUI ». Avant Fiorentina le compte était 5/6
+//    contre 4/6, soit un avantage négligeable. Fiorentina est le premier cas qui
 //    creuse un écart réel : la lecture par la rotation vaut mieux que la
 //    constante. Le duel du bouclier en critère BTTS reste à 4/7.
 //  · CAMP — n'arbitre RIEN entre ancrage et duel du bouclier. Les deux
-//    passent à 4/5, et ils sont d'accord sur G. Ils continuent de se
-//    contredire sur A et D, chacun en gagnant un. COEF_BOUCLIER_ROMPU_V7
+//    passent à 4/5, et ils sont d'accord sur Fiorentina. Ils continuent de se
+//    contredire sur Juventus et Napoli, chacun en gagnant un. COEF_BOUCLIER_ROMPU_V7
 //    reste donc à 1.
-//  · SCORE — toujours 0/6 en exact. Sur G l'écart de buts affiché est
+//  · SCORE — toujours 0/6 en exact. Sur Fiorentina l'écart de buts affiché est
 //    juste (M7 +2, réel M7 +2) mais c'est sans valeur : le moteur rend
 //    ±2 sur les six cas, c'est une constante, pas une prédiction.
 //
@@ -4825,16 +4835,16 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // 46% des thèmes tirés au hasard (mesuré sur 4000). Leur hiérarchie
 // n'est donc PAS établie : il faut des résultats réels sur des thèmes où
 // elles se contredisent. Le désaccord est signalé sur la carte.
-// ⚠️ SUR LES SIX CAS, le camp affiché est juste 4/6 (D et E ratés).
-// L'ancrage seul, lui, est à 4/5 sur les cas départageables — D reste
-// son seul raté, G confirmant le camp au plus large écart de l'archive.
+// ⚠️ SUR LES SIX CAS, le camp affiché est juste 4/6 (Napoli et Roma ratés).
+// L'ancrage seul, lui, est à 4/5 sur les cas départageables — Napoli reste
+// son seul raté, Fiorentina confirmant le camp au plus large écart de l'archive.
 // ⚠️ « LES DEUX MARQUENT » — BRANCHÉ LE 25/08 SUR LA ROTATION.
 // Le BTTS est désormais rendu par lectureOuvertureButsV7 : une figure
 // ouverte ou active aux DEUX SIÈGES R1/R7 = les deux marquent.
 //   avant : 3/5, et « oui » sur 91% des thèmes (soit un oui constant)
 //   après : 4/5, et « oui » sur 47% — proche du taux réel du BTTS
-// ⚠️ RÉVISÉ APRÈS LE CAS F : le cadre de rotation menait 4/5 contre 3/5,
-// c'est ce qui avait motivé « oriente sur la rotation ». Le cas F, premier
+// ⚠️ RÉVISÉ APRÈS LE CAS Lazio : le cadre de rotation menait 4/5 contre 3/5,
+// c'est ce qui avait motivé « oriente sur la rotation ». Le cas Lazio, premier
 // test en aveugle, a inversé le compte : 4/6 pour les deux cadres. Le
 // choix n'est plus soutenu par les données, et les deux cadres divergent
 // sur 40% des thèmes. Les deux sont désormais affichés à chaque thème.
@@ -4842,8 +4852,8 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // (M4/M10), 1/3 là où elles tirent sur les cas réels ; interrupteur
 // BTTS_DOCTRINE_M4M10_DECISIVE pour les rebrancher.
 // Écarté sur preuve négative : le bonus « Via/Acquisitio/Fortuna Minor en
-// 5 ou 8 », qui rend C 7-0 et D 0-1 faussement positifs.
-// Toujours en place et fausse sur B : « Via en M4 → camp A ne marque pas ».
+// 5 ou 8 », qui rend Milan 7-0 et Napoli 0-1 faussement positifs.
+// Toujours en place et fausse sur Inter : « Via en M4 → camp A ne marque pas ».
 // Seconde lecture affichée en comparaison : lectureDeuxMarquentV7 (le
 // perdant garde-t-il sa frappe), 5/5 mais AJUSTÉE sur ces cinq cas, donc
 // moins probante que le 4/5 de la règle d'ouverture, qui ne l'est pas.
@@ -4989,7 +4999,7 @@ function resoudreLiberationsV7(theme) {
 
 // Rapport de cascade pour les deux chefs — DIAGNOSTIC UNIQUEMENT.
 // ⚠️ NON BRANCHÉ AU VERDICT, et c'est un choix mesuré : appliquer une
-// pénalité aux pôles tenus fait basculer le cas de référence B (réel 3-2
+// pénalité aux pôles tenus fait basculer le cas de référence Inter (réel 3-2
 // pour R1) du mauvais côté, quelle que soit la pondération essayée
 // (×0,75 / ×0,50 / ×0,25 / ×0). Seul l'absence de pénalité conserve le
 // 3/3. Sur ce cas, R1 a gagné alors que son front était tenu ET que son
@@ -5108,16 +5118,16 @@ function duelBouclierV7(centrale, theme) {
   const A = forceAvecBinomeV7(assaillant, theme);
   const D = forceAvecBinomeV7(defenseur, theme);
   const marge = Math.round((D.total - A.total) * 100) / 100;
-  // ─── CORRECTIF DU 26/08/26, RÉVÉLÉ ET VALIDÉ PAR LE CAS H ───
+  // ─── CORRECTIF DU 26/08/26, RÉVÉLÉ ET VALIDÉ PAR LE CAS Atalanta ───
   // On ne défend pas un bouclier qui n'est pas là. La première version
   // comparait l'assaillant au front SANS vérifier que le bouclier existe :
-  // sur le cas H, le bouclier de R7 (Puella) est absent du thème et le
+  // sur le cas Atalanta, le bouclier de R7 (Puella) est absent du thème et le
   // duel était déclaré TENU (+2) parce que le front Tristitia battait
   // l'assaillant Conjunctio. Défendre le vide.
   // Un bouclier absent est rompu d'office, quelle que soit la marge.
-  // Mesuré : la correction ne change RIEN sur A, B, C, D, G (le cas ne se
-  // présentait qu'en G, où les deux versions concluent pareil) et INVERSE
-  // le cas H — R1 au lieu de R7. Réel 4-0 pour R1.
+  // Mesuré : la correction ne change RIEN sur Juventus, Inter, Milan, Napoli, Fiorentina (le cas ne se
+  // présentait que dans Fiorentina, où les deux versions concluent pareil) et INVERSE
+  // le cas Atalanta — R1 au lieu de R7. Réel 4-0 pour R1.
   //     duel brut     4/6      duel corrigé  5/6
   const boucliePresent = !!(trouverFigV7(bouclier, theme) || []).length;
   const tenu = boucliePresent && marge >= 0;
@@ -5146,11 +5156,11 @@ function duelBouclierV7(centrale, theme) {
 //
 //  · Balayé de 1 à −1 sur les quatre cas de référence : le verdict ne
 //    change JAMAIS, 3/4 partout. Les marges se creusent dans le bon sens
-//    sur B (0,25 → 3,25) et C (1,75 → 6,75), mais D — déjà faux — empire
+//    sur Inter (0,25 → 3,25) et Milan (1,75 → 6,75), mais Napoli — déjà faux — empire
 //    (12,75 → 14,75). Aucune valeur n'est soutenue par les données.
 //
 //  · Le duel PRIS SEUL comme critère de verdict fait aussi 3/4, mais sur
-//    un cas DIFFÉRENT : il gagne D (que l'ancrage rate) et perd A. Sur
+//    un cas DIFFÉRENT : il gagne Napoli (que l'ancrage rate) et perd Juventus. Sur
 //    1237 thèmes, duel et ancrage désignent le même camp 54 % du temps —
 //    à peine mieux que pile ou face. Deux critères à 3/4 qui se
 //    contredisent une fois sur deux ne peuvent pas être départagés par
@@ -5272,12 +5282,12 @@ function analyseAncrageDeveloppe(theme) {
   //   k=0,5    3/3 · marges 0,75 / 0,50 / 1,25 · 2,6 %
   //   k=1      3/3 · marges 0,75 / 0,25 / 1,75 · 3,9 %   ← retenu
   //   k=1,25   3/3 · marges 0,75 / 0,13 / 2,00 · 5,4 %
-  //   k=1,5    2/3 · le cas B bascule
+  //   k=1,5    2/3 · le cas Inter bascule
   // Donc : tout k dans [0 ; 1,25] garde 3/3. Les données NE TRANCHENT PAS
   // entre eux — k=1 est choisi parce qu'il est la somme sans artifice, pas
-  // parce qu'il serait démontré. Le cas B ne tient qu'à 0,25 : c'est le
+  // parce qu'il serait démontré. Le cas Inter ne tient qu'à 0,25 : c'est le
   // cas où toutes les dimensions chiffrées donnaient R7 et où R1 a gagné.
-  // À l'inverse les rôles ÉLARGISSENT la marge du cas C (0,75 → 1,75),
+  // À l'inverse les rôles ÉLARGISSENT la marge du cas Milan (0,75 → 1,75),
   // seule prédiction posée avant de connaître le score.
   // Les rôles seuls donneraient 1/3 : ils complètent la chaîne, ils ne la
   // remplacent pas.
@@ -6845,7 +6855,7 @@ function figureCentraleV7(theme, cote) {
 // (décalages pairs +2, +10, +4). Un rôle hostile hors boucle et trois rôles
 // alliés en boucle ne se contredisent donc jamais : ils ne s'adressent pas
 // aux mêmes figures.
-// Exemple qui a motivé la règle (cas B) : Acquisitio est protecteur de Via
+// Exemple qui a motivé la règle (cas Inter) : Acquisitio est protecteur de Via
 // (boucle A, la sienne) ET antagoniste de Laetitia (boucle B) — normal, pas
 // contradictoire. Elle est en outre binôme de Cauda Draconis et front de
 // Conjonctio.
@@ -6853,7 +6863,7 @@ function figureCentraleV7(theme, cote) {
 // la fois, donc celle qui attaque ne protège plus » est ÉCARTÉE. Aucun
 // calcul ne doit désactiver un rôle parce que la figure en tient un autre.
 // C'est aussi ce que la mesure disait déjà : toute pénalité sur les pôles
-// tenus (×0,75 / ×0,50 / ×0,25 / ×0) casse le cas B ; seul ×1,00 garde 3/3.
+// tenus (×0,75 / ×0,50 / ×0,25 / ×0) casse le cas Inter ; seul ×1,00 garde 3/3.
 function rolesDeLaFigureV7(fig) {
   const i = FIGS_V7.indexOf(fig);
   if (i < 0) return null;
@@ -11189,7 +11199,7 @@ function rolesExercesTheme(theme) {
 // Hypothèse retenue et NON pénalisante (25/08/26) : « être attaqué
 // n'empêche pas de frapper ». Une figure qui tient plusieurs rôles les
 // tient tous à plein — aucun coefficient ne les divise. Mesuré : toute
-// pénalité sur les pôles occupés casse le cas B.
+// pénalité sur les pôles occupés casse le cas Inter.
 // ═══════════════════════════════════════════════════════════════
 
 // Un seul endroit pour régler le barème.
@@ -11265,7 +11275,7 @@ function campDuChefV7(chef) {
 // ─── CE QUI COMPTE, C'EST CE QUI TOUCHE LE CAMP D'EN FACE ───
 // Premier essai (écarté) : compter les quatre rôles exercés sur n'importe
 // qui. Mesuré 1/3 sur les cas réels — cela ne mesurait que la population
-// du thème, pas l'issue du duel : dans les cas A et B, R7 exerçait plus de
+// du thème, pas l'issue du duel : dans les cas Juventus et Inter, R7 exerçait plus de
 // rôles effectifs que R1, et c'est R1 qui a gagné les deux.
 // Retenu : seuls comptent les rôles dont le DESTINATAIRE appartient au camp
 // adverse — le chef d'en face ou l'un de ses trois pôles alliés.
@@ -11307,7 +11317,7 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 // ═══════════════════════════════════════════════════════════════
 // ÉTUDE DU 7-0 PAR LE RÉSEAU DES TROIS PÔLES (25/08/26, Ellemine_D :
 // « pour comprendre pourquoi R7 n'a pu marquer »)
-// Cas C — Tristitia · Via · Conjonctio · Rubeus — RÉEL 7-0 pour R1
+// Cas Milan — Tristitia · Via · Conjonctio · Rubeus — RÉEL 7-0 pour R1
 // centrale R1 = Fortuna Minor (M8) · centrale R7 = Carcer (M14)
 //
 // CE QUI N'EXPLIQUE PAS LE 7-0 — deux fausses pistes écartées :
@@ -11492,18 +11502,18 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //    marque pas », donc une règle pour « les deux marquent ». Testée
 //    sur les cinq cas au score connu, dix camps, dont deux à zéro but :
 //        cas camp centrale        buts | duel du front (front − assaillant)
-//         A  R1  Puer             6    |  0
-//         A  R7  Conjunctio       1    | +5,5
-//         B  R1  Laetitia         3    | +2
-//         B  R7  Via              2    | −0,5
-//         C  R1  Fortuna Minor    7    | +2,5
-//         C  R7  Carcer           0    | −4     ← le plus bas des dix
-//         D  R1  Laetitia         0    | −3
-//         D  R7  Conjunctio       1    | −0,5
-//         E  R1  Carcer           1    | −2,75
-//         E  R7  Fortuna Major    1    | −3,25
-//    Carcer en C est bien le duel le plus perdu de tout l'échantillon,
-//    ce qui soutient le mécanisme. Mais E donne DEUX camps à duel perdu
+//         Juventus  R1  Puer             6    |  0
+//         Juventus  R7  Conjunctio       1    | +5,5
+//         Inter  R1  Laetitia         3    | +2
+//         Inter  R7  Via              2    | −0,5
+//         Milan  R1  Fortuna Minor    7    | +2,5
+//         Milan  R7  Carcer           0    | −4     ← le plus bas des dix
+//         Napoli  R1  Laetitia         0    | −3
+//         Napoli  R7  Conjunctio       1    | −0,5
+//         Roma  R1  Carcer           1    | −2,75
+//         Roma  R7  Fortuna Major    1    | −3,25
+//    Carcer dans Milan est bien le duel le plus perdu de tout l'échantillon,
+//    ce qui soutient le mécanisme. Mais Roma donne DEUX camps à duel perdu
 //    (−2,75 et −3,25) qui ont marqué chacun un but. Le seuil n'existe
 //    pas : « front battu » n'implique pas « zéro but ».
 //    Cinq autres grandeurs testées (front seul, front en base, matière
@@ -11515,12 +11525,12 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //      pour caler un seuil ; il faut d'autres scores réels.
 // ═══════════════════════════════════════════════════════════════
 //
-// ⚠️ PISTE TESTÉE ET NON RETENUE — la PROFONDEUR de la frappe. Le cas C
+// ⚠️ PISTE TESTÉE ET NON RETENUE — la PROFONDEUR de la frappe. Le cas Milan
 // suggérait une hiérarchie : R1 frappe le BINÔME adverse (proche du cœur),
 // R7 seulement le FRONT (le plus avancé), donc frapper plus profond
 // gagnerait. Mesuré sur les six cas : 1/4 seulement, et la règle ne
 // départage que 23% des thèmes — sur les autres, les deux frappes sont
-// hors camp ou non effectives et s'égalisent. C'est le cas C qui l'a
+// hors camp ou non effectives et s'égalisent. C'est le cas Milan qui l'a
 // inspirée, il est donc normal qu'elle y marche ; elle ne généralise pas.
 // Non branchée.
 // ═══════════════════════════════════════════════════════════════
@@ -11545,10 +11555,10 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 // validité et AXES_V7. La validation passe de quatre conditions à trois.
 //
 // EFFET MESURÉ sur les six cas réels — la majorité des axes gagne un cas :
-//   avant (4 axes) : juste 1 fois (A), fausse 2 fois (C, D), partagée 1 (B)
-//   après (3 axes) : juste 2 fois (A, B), fausse 2 fois (C, D)
-// Le cas B, qui restait indécis à 2 contre 2, se décide maintenant à
-// 2 contre 1 et tombe juste. C et D restent faux.
+//   avant (4 axes) : juste 1 fois (Juventus), fausse 2 fois (Milan, Napoli), partagée 1 (Inter)
+//   après (3 axes) : juste 2 fois (Juventus, Inter), fausse 2 fois (Milan, Napoli)
+// Le cas Inter, qui restait indécis à 2 contre 2, se décide maintenant à
+// 2 contre 1 et tombe juste. Milan et Napoli restent faux.
 //
 // AU PASSAGE, UNE CONTRADICTION RÉSOLUE. Le fichier avait TROIS fonctions
 // de validité aux règles différentes : analyzeValidation cherchait les
@@ -11572,13 +11582,13 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 // pôles, une capacité de marquage ?
 //
 // RÉPONSE MESURÉE SUR LES 5 THÈMES DONT LE SCORE EST CONNU
-// (D 0-1 · E 1-1 · B 3-2 · A 6-1 · C 7-0, soit 1, 2, 5, 7 et 7 buts) :
+// (Napoli 0-1 · Roma 1-1 · Inter 3-2 · Juventus 6-1 · Milan 7-0, soit 1, 2, 5, 7 et 7 buts) :
 //
 // 1. L'ÉTAT LIBRE/TENUE NE PRÉDIT RIEN. Nombre de figures « libres » parmi
 //    les 7 lieux : 3, 3, 5, 2, 5 pour 1, 2, 5, 7, 7 buts. Sur les paires
 //    départageantes : 4 dans le sens, 3 à contresens. Pile ou face.
-//    Le cas A est la réfutation la plus nette : 2 figures libres sur 7,
-//    et 7 buts. Le cas D : 3 libres, 1 but.
+//    Le cas Juventus est la réfutation la plus nette : 2 figures libres sur 7,
+//    et 7 buts. Le cas Napoli : 3 libres, 1 but.
 //    Pour le BTTS, le meilleur découpage de camps donne 4/6 — exactement
 //    ce que donnerait un « oui » constant. Aucune information.
 //
@@ -11595,9 +11605,9 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //    Nombre de lieux à profil positif : 7 · 5 · 7 · 4 · 5 → 1 dans le
 //    sens, 6 à contresens.
 //    Autrement dit : MIEUX les figures sont installées dans les lieux de
-//    marquage, MOINS il y a de buts. Le thème le mieux installé (B, somme
-//    100,4) fait 5 buts ; le moins bien installé (A, 32,7) en fait 7 ;
-//    et D, bien installé à 79,6, n'en fait qu'un seul.
+//    marquage, MOINS il y a de buts. Le thème le mieux installé (Inter, somme
+//    100,4) fait 5 buts ; le moins bien installé (Juventus, 32,7) en fait 7 ;
+//    et Napoli, bien installé à 79,6, n'en fait qu'un seul.
 //    Lecture possible : une figure bien installée TIENT sa maison au lieu
 //    d'agir. Les buts viendraient du déséquilibre, pas de la solidité —
 //    ce qui rejoint l'idée de match ouvert contre match fermé.
@@ -11612,8 +11622,8 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 // LES DEUX MARQUENT — PISTE (25/08/26, « on attaque les deux marquent »)
 //
 // Reformulation qui a débloqué la question : « les deux marquent » ne veut
-// PAS dire que le match est serré. Le cas A est un 6-1 et les deux ont
-// marqué ; le cas D est un 0-1 et un seul a marqué. Ce qui se demande,
+// PAS dire que le match est serré. Le cas Juventus est un 6-1 et les deux ont
+// marqué ; le cas Napoli est un 0-1 et un seul a marqué. Ce qui se demande,
 // c'est si le PERDANT garde la capacité de frapper une fois.
 //
 // Deux façons, et deux seulement, de la lui retirer :
@@ -11640,10 +11650,10 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //     thèmes. Ses 3/5 sur les cas réels sont exactement ce que donnerait
 //     un « oui » constant — elle n'apporte donc aucune information.
 //   · La règle BTTS 100% (M4/M10) se déclenche sur 8,6% des thèmes ; sur
-//     nos 5 cas elle tire trois fois, juste une seule (E 1-1), fausse sur
-//     C 7-0 et D 0-1.
+//     nos 5 cas elle tire trois fois, juste une seule (Roma 1-1), fausse sur
+//     Milan 7-0 et Napoli 0-1.
 //   · La règle « Via en M4 → camp A ne marque pas » est fausse sur le cas
-//     B (Via EST en M4, réel 3-2, les deux ont marqué). Elle était donnée
+//     Inter (Via EST en M4, réel 3-2, les deux ont marqué). Elle était donnée
 //     3/3 sur l'ancienne archive — ce nouveau cas la contredit.
 //   · L'intuition de départ — « si les deux camps peuvent frapper, les
 //     deux marquent » — est ANTI-corrélée : 1/5. Piste morte.
@@ -11717,8 +11727,8 @@ function lectureDeuxMarquentV7(theme) {
 // lequel prime — aucun n'est écrasé par l'autre.
 //
 // ⚠️ LE CADRE COMPTE PLUS QUE LE DÉTAIL. Mesuré sur les 5 cas réels :
-//   · lue sur les maisons FIXES M1/M7 ......... 3/5 (rate A et E)
-//   · lue sur les SIÈGES R1/R7 de la rotation . 4/5 (rate A seul), 47% de oui
+//   · lue sur les maisons FIXES M1/M7 ......... 3/5 (rate Juventus et Roma)
+//   · lue sur les SIÈGES R1/R7 de la rotation . 4/5 (rate Juventus seul), 47% de oui
 // Même règle, même définition d'« ouverte ou active », seul le cadre
 // change. Le moteur travaillant en R1/R7 partout ailleurs, c'est cette
 // lecture qui est retenue ici — et c'est elle qui marche le mieux.
@@ -11726,7 +11736,7 @@ function lectureDeuxMarquentV7(theme) {
 // ⚠️ LE BONUS M5/M8 EST LE SEUL MORCEAU À PREUVE NÉGATIVE. Ajouter « ou
 // bien Via/Acquisitio/Fortuna Minor en 5 ou 8 » fait TOMBER le score dans
 // les deux cadres (3/5 → 2/5 en fixe, 4/5 → 3/5 en rotation) : il
-// transforme C (7-0) et D (0-1) en faux « les deux marquent ». Il est donc
+// transforme Milan (7-0) et Napoli (0-1) en faux « les deux marquent ». Il est donc
 // calculé et AFFICHÉ, mais volontairement exclu du verdict de la règle.
 //
 // STATUT : cette règle n'a PAS été ajustée sur les 5 cas — elle vient de
@@ -12164,15 +12174,15 @@ function renderAxesPanel(theme) {
     + d.axes.map(carte).join('') + '</div>'
     + '<div class="muted" style="font-size:10px; margin-top:8px; line-height:1.5;">'
     + '<b>⚠️ Ce que la mesure dit déjà.</b> Sur les quatre cas réels au vainqueur connu, la majorité des axes '
-    + 'a raison <b>une fois</b> (A), tort <b>deux fois</b> (C 7-0 pour R1 alors que les axes donnent R7 ; '
-    + 'D où ils donnent R1 alors que R7 gagne), et reste partagée une fois (B). Elle s\'accorde avec le '
+    + 'a raison <b>une fois</b> (Juventus), tort <b>deux fois</b> (Milan 7-0 pour R1 alors que les axes donnent R7 ; '
+    + 'Napoli où ils donnent R1 alors que R7 gagne), et reste partagée une fois (Inter). Elle s\'accorde avec le '
     + 'verdict principal sur <b>52,5%</b> des thèmes — un pile ou face. '
     + 'Côté nul : les témoins opposés se déclenchent sur ~10% des thèmes par axe, et sur le seul vrai nul '
-    + 'de l\'archive (E 1-1) <b>aucun</b> axe ne les montre.<br>'
+    + 'de l\'archive (Roma 1-1) <b>aucun</b> axe ne les montre.<br>'
     + '<b>Et la validité ne les sauve pas.</b> En ne gardant que les dérivés valides, la majorité ne se '
-    + 'prononce plus que sur la moitié des cas réels — juste sur A, fausse sur C — et B et D n\'ont aucun '
-    + 'dérivé valide. À noter aussi : le seul cas où le verdict principal se trompe (D) a un thème '
-    + '<b>valide</b>, et le cas A, où il voit juste, un thème <b>non valide</b>. Sur ces six thèmes la '
+    + 'prononce plus que sur la moitié des cas réels — juste sur Juventus, fausse sur Milan — et Inter et Napoli n\'ont aucun '
+    + 'dérivé valide. À noter aussi : le seul cas où le verdict principal se trompe (Napoli) a un thème '
+    + '<b>valide</b>, et le cas Juventus, où il voit juste, un thème <b>non valide</b>. Sur ces six thèmes la '
     + 'validité ne prédit donc pas la justesse. C\'est cet instrument qui doit accumuler les cas.'
     + '</div>';
 
@@ -12427,7 +12437,7 @@ function renderDeuxMarquentPanel(theme) {
       + (o.bonusM5M8.length
           ? '<div class="muted" style="font-size:10px; margin-top:4px;">Bonus signalé : '
             + o.bonusM5M8.join(', ') + ' — <b>affiché, non compté</b> : ajouté au verdict il fait '
-            + 'tomber le score sur les cas réels (il rend C 7-0 et D 0-1 faussement positifs).</div>'
+            + 'tomber le score sur les cas réels (il rend Milan 7-0 et Napoli 0-1 faussement positifs).</div>'
           : '')
       // Le cadre n'est PAS tranché : les deux se valent sur les cas réels et
       // divergent sur 40% des thèmes. On montre systématiquement l'autre
@@ -14632,19 +14642,19 @@ function estBienPlaceV7(fig, theme) {
 // ⚠️ LES DEUX SONT À ÉGALITÉ, 4/6 sur les cas réels, et ils divergent sur
 // 40% des thèmes — le choix pèse donc lourd et n'est PAS tranché.
 // Historique : le 25/08 la rotation menait 4/5 contre 3/5 et Ellemine_D a
-// dit « oriente sur la rotation ». Le cas F, premier test en aveugle
+// dit « oriente sur la rotation ». Le cas Lazio, premier test en aveugle
 // depuis, a inversé le compte : la lecture FIXE y voit juste, la rotation
 // non. Les deux lectures sont désormais calculées et affichées à chaque
 // thème pour que les cas s'accumulent.
 var BTTS_CADRE = 'rotation';
-// ─── BTTS_CHAINE_DECISIF (26/08/26, après le cas H) ───
+// ─── BTTS_CHAINE_DECISIF (26/08/26, après le cas Atalanta) ───
 // Source prioritaire du BTTS : lectureDeuxMarquentV7, qui juge par la
 // CHAÎNE du perdant plutôt que par l'ouverture des sièges.
 // Mesuré sur les huit cas au BTTS connu :
 //     chaîne 7/8 · rotation 6/8 · score brut 4/8 (= « toujours oui »)
-// Sur les quatre cas à camp muet (C, D, G, H), nommer le BON muet :
+// Sur les quatre cas à camp muet (Milan, Napoli, Fiorentina, Atalanta), nommer le BON muet :
 //     chaîne 3/4 · rotation 1/4
-// Le cas H tranche : les deux lectures disaient « un seul marque » en
+// Le cas Atalanta tranche : les deux lectures disaient « un seul marque » en
 // désignant des muets OPPOSÉS — chaîne R7, rotation R1. Réel 4-0 pour
 // R1, donc R7 muet : la chaîne avait raison. La rotation avait été
 // rendue décisive le 25/08 sur 4/5 contre 3/5 ; l'échantillon a doublé
@@ -14795,8 +14805,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   //     constant : il n'apportait aucune information.
   //   · La règle BTTS 100% (M4/M10) et son pendant « défavorisé » tirent
   //     sur 8,6% et 6,6% des thèmes. Sur les 5 cas réels elles tirent trois
-  //     fois et n'ont raison qu'une seule (E 1-1) ; elles imposaient « oui »
-  //     sur C 7-0 et D 0-1. Gardées en surcouche, elles annulaient
+  //     fois et n'ont raison qu'une seule (Roma 1-1) ; elles imposaient « oui »
+  //     sur Milan 7-0 et Napoli 0-1. Gardées en surcouche, elles annulaient
   //     précisément les deux cas que la lecture par rotation redresse.
   //     Elles sont donc DÉBRANCHÉES du verdict et restent AFFICHÉES —
   //     même traitement que la Structure du Nul et l'Axe Succédent, à la
@@ -14804,15 +14814,15 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   //     Un seul interrupteur ci-dessous pour les rebrancher.
   //   · La règle « Via en M4 → camp A ne marque pas » agit plus haut sur
   //     campA.total et reste en place ; noter qu'elle est fausse sur le
-  //     cas B (Via EST en M4, réel 3-2, les deux ont marqué).
-  // ─── RÉVISION DU 26/08/26, APRÈS LE CAS H (4-0) ───
+  //     cas Inter (Via EST en M4, réel 3-2, les deux ont marqué).
+  // ─── RÉVISION DU 26/08/26, APRÈS LE CAS Atalanta (4-0) ───
   // Troisième source ajoutée et rendue prioritaire : lectureDeuxMarquentV7,
   // qui juge par la CHAÎNE du perdant. Mesuré sur les huit cas au BTTS
-  // connu (A,B,C,D,E,F,G,H) :
+  // connu (Juventus,Inter,Milan,Napoli,Roma,Lazio,Fiorentina,Atalanta) :
   //     chaîne 7/8 · rotation 6/8 · score brut 4/8 (= « toujours oui »)
-  // Et surtout, sur les quatre cas où un camp est resté muet (C,D,G,H),
+  // Et surtout, sur les quatre cas où un camp est resté muet (Milan,Napoli,Fiorentina,Atalanta),
   // NOMMER LE BON MUET : chaîne 3/4, rotation 1/4.
-  // Le cas H est ce qui tranche : les deux lectures disaient « un seul
+  // Le cas Atalanta est ce qui tranche : les deux lectures disaient « un seul
   // marque » en désignant des muets OPPOSÉS — la chaîne disait R7, la
   // rotation disait R1. Réel 4-0 pour R1 : c'est bien R7 qui est resté
   // muet. La rotation avait été rendue décisive le 25/08 sur un 4/5
