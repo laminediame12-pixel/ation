@@ -10971,6 +10971,41 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //      Caput Draconis 1, Cauda Draconis 1, Conjonctio 2). Camp R7 : 3
 //      seulement (Carcer 1, Albus 1, Puella 0, Fortuna Major 1). Le double.
 //
+// ═══════════════════════════════════════════════════════════════
+// CORRECTION D'ELLEMINE_D (25/08/26) — « tu as mal interprété »
+// Mon analyse ci-dessus concluait que le bouclier de R7 était INTACT
+// parce que Puer, qui l'attaque, n'est pas en base. C'EST FAUX, et c'est
+// la troisième fois que le même oubli passe : les RÉSULTANTES comptent.
+//
+// LES REMARQUES D'ELLEMINE_D, TOUTES VÉRIFIÉES :
+//  · Albus est bien le bouclier de Carcer, et son antagoniste est Puer.
+//  · Puer est là, en résultante : M6r (feu en air, conc 0,5) et M8r
+//    (feu en terre, conc 0,25).
+//  · « Encerclé » est LITTÉRAL. Albus occupe M7r, et Puer tient M6 ET M8 —
+//    les deux voisines. Albus en M9r a encore Puer en M8. Le bouclier de
+//    Carcer est pris en tenaille par son propre antagoniste.
+//  · Mais avant de conclure à la destruction d'Albus, il faut regarder
+//    l'antagoniste de Puer : PUELLA. Est-elle assez forte pour arrêter
+//    Puer ? Non — et le calcul le confirme :
+//        Puer   M6r 0,5 + M8r 0,25                    = 0,75
+//        + son binôme Caput Draconis M2r 1 + M6 1      = 2,00
+//        → camp Puer  2,75
+//        Puella M5r 0,25 (terre en feu) + M10r 0 (terre en air) = 0,25
+//        + son binôme Populus M15r 0 (feu en eau)      = 0,00
+//        → camp Puella 0,25
+//    Onze fois moins. Caput Draconis est air en air DEUX FOIS, concordance
+//    parfaite ; Populus est feu en eau, opposition totale.
+//
+// CE QUE ÇA CHANGE DANS LA MÉTHODE : on ne juge pas un pôle présent ou
+// absent, ni même solide ou fragile en soi. On suit la chaîne — qui
+// attaque le bouclier, qui devrait arrêter cet attaquant, et avec quelle
+// force élémentaire, binôme compris. Un attaquant en résultante seule peut
+// détruire, si celui qui devait l'arrêter est plus faible que lui.
+//
+// (Remarques notées le 25/08 à la demande d'Ellemine_D — la conclusion
+// sur le 7-0 reste à écrire ensemble, elle n'est PAS tirée ici.)
+// ═══════════════════════════════════════════════════════════════
+//
 // ⚠️ PISTE TESTÉE ET NON RETENUE — la PROFONDEUR de la frappe. Le cas C
 // suggérait une hiérarchie : R1 frappe le BINÔME adverse (proche du cœur),
 // R7 seulement le FRONT (le plus avancé), donc frapper plus profond
