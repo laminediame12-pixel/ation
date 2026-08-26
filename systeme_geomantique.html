@@ -11962,8 +11962,51 @@ function solidPoleV7(role, fig, theme) {
   };
 }
 
+// ─── LA FRAPPE (26/08/26) — le sens OFFENSIF, branché sur demande ───
+// Jusqu'ici F4P4 ne lisait que la défense : chaque pôle contre celui qui
+// l'attaque. Il manquait l'autre sens, celui de la chaîne qu'Ellemine_D
+// a déroulée sur Puella·Via·Conjunctio·Via : Carcer, 4e pôle de R1 et
+// CHEZ ELLE en M10, frappe Cauda Draconis — qui est le 4e pôle de R7.
+// Un pôle ne fait pas que résister : il attaque, et ce qu'il atteint
+// compte, surtout si c'est un pôle d'en face.
+//
+// victime(X) = la figure dont X est l'antagoniste, soit X+3.
+// La frappe est EFFECTIVE si la cible appartient au camp adverse ; elle
+// PORTE si le profil de l'attaquant dépasse celui de la cible à sa
+// meilleure position. Les deux se mesurent aux sept critères.
+function victimeV7(fig) {
+  if (!fig) return null;
+  const i = FIGS_V7.indexOf(fig);
+  return i < 0 ? null : FIGS_V7[(i + 3) % 16];
+}
+
+function frappeV7(fig, campAdverse, theme) {
+  if (!fig) return null;
+  const cible = victimeV7(fig);
+  const a = analyseFigureV7(fig, theme);
+  const c = analyseFigureV7(cible, theme);
+  const viseCamp = campAdverse.indexOf(cible) >= 0;
+  const marge = Math.round(((a ? a.profil : 0) - (c ? c.profil : 0)) * 100) / 100;
+  return {
+    fig: fig, cible: cible, viseCamp: viseCamp,
+    profilAttaquant: a ? a.profil : 0, profilCible: c ? c.profil : 0,
+    cibleAbsente: !(c && c.present),
+    marge: marge,
+    // une frappe ne compte que si elle touche le camp d'en face ET qu'elle
+    // l'emporte sur ce qu'elle vise
+    effective: viseCamp && marge > 0,
+    resume: (FL[fig] || fig) + ' frappe ' + (FL[cible] || cible)
+      + (viseCamp ? ' — pôle adverse' : ' — hors camp')
+      + ' · ' + (a ? a.profil : 0) + ' contre ' + (c ? c.profil : 0)
+      + (marge > 0 ? ' → PORTE' : ' → repoussée')
+  };
+}
+
 // Étapes 2 à 5 pour un camp.
-function reseauF4P4V7(fig, siege, theme) {
+// figAdverse = la centrale D'EN FACE. Sans elle, la frappe se comparait
+// au camp de l'antagoniste et non au camp adverse : Carcer frappant
+// Cauda Draconis — le 4e pôle de R7 — était rangée « hors camp ».
+function reseauF4P4V7(fig, siege, theme, figAdverse) {
   if (!fig) return null;
   const centrale = solidPoleV7('centrale', fig, theme);
   const poles = [
@@ -11984,6 +12027,20 @@ function reseauF4P4V7(fig, siege, theme) {
   } : null;
   const solides = poles.filter(function (p) { return p.solide; }).length;
   const solidesAdverse = adverse ? adverse.poles.filter(function (p) { return p.solide; }).length : 0;
+  // Le sens offensif : ce que chacun de mes cinq membres frappe.
+  const campAdv = figAdverse
+    ? [figAdverse, BOUCLIER_V7[figAdverse], FRONT_V7[figAdverse],
+       BINOMES_V7[figAdverse], frontDuFrontV7(figAdverse)]
+    : [];
+  const frappes = [centrale].concat(poles).map(function (p) {
+    const f = frappeV7(p.fig, campAdv, theme);
+    if (f) f.role = p.role;
+    return f;
+  }).filter(Boolean);
+  const frappesEffectives = frappes.filter(function (f) { return f.effective; }).length;
+  const frappesSurCamp = frappes.filter(function (f) { return f.viseCamp; }).length;
+  const frappeSomme = Math.round(frappes.filter(function (f) { return f.viseCamp; })
+    .reduce(function (s2, f) { return s2 + f.marge; }, 0) * 100) / 100;
   return {
     fig: fig, siege: siege, boucle: loopOf(fig),
     concordance: concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[siege]),
@@ -11991,6 +12048,8 @@ function reseauF4P4V7(fig, siege, theme) {
     regeneration: regenerationSiegeV7(fig, siege),
     centrale: centrale, poles: poles,
     antagoniste: antagoniste, adverse: adverse,
+    frappes: frappes, frappesEffectives: frappesEffectives,
+    frappesSurCamp: frappesSurCamp, frappeSomme: frappeSomme,
     solides: solides, solidesAdverse: solidesAdverse,
     // la centrale compte comme cinquième appui, elle n'est plus ignorée
     solidesAvecCentrale: solides + (centrale && centrale.solide ? 1 : 0),
@@ -12008,8 +12067,8 @@ function moteurF4P4V7(theme) {
   const memeBoucle = loopOf(rot.figR1) === loopOf(rot.figR7);
 
   // ÉTAPES 2 à 5 — les deux réseaux complets.
-  const R1 = reseauF4P4V7(rot.figR1, rot.hR1, theme);
-  const R7 = reseauF4P4V7(rot.figR7, rot.hR7, theme);
+  const R1 = reseauF4P4V7(rot.figR1, rot.hR1, theme, rot.figR7);
+  const R7 = reseauF4P4V7(rot.figR7, rot.hR7, theme, rot.figR1);
 
   // Ancienne clé, conservée tant que la démarche en cinq étapes n'est pas
   // comprise (voir le bloc d'avertissement sur F4P4_DEMARCHE_V7).
@@ -12040,6 +12099,18 @@ function moteurF4P4V7(theme) {
     if (R1.solides !== R7.solides) {
       avantage = R1.solides > R7.solides ? 'R1' : 'R7';
       critere = lecture + ' — pôles solides ' + R1.solides + ' contre ' + R7.solides;
+    } else if (R1.frappeSomme !== R7.frappeSomme) {
+      // ─── LA FRAPPE, branchée le 26/08 sur demande d'Ellemine_D ───
+      // À défense égale, c'est ce que les pôles ATTEIGNENT dans le camp
+      // d'en face qui départage — le sens que la chaîne Carcer → Cauda
+      // Draconis a mis au jour. Mesuré : ce départage donne le même
+      // résultat que l'ancrage total sur les sept cas (5/7) ; il passe
+      // devant parce qu'il est doctrinal là où l'ancrage total n'est
+      // qu'une somme.
+      avantage = R1.frappeSomme > R7.frappeSomme ? 'R1' : 'R7';
+      critere = lecture + ' — ' + R1.solides + ' pôles solides de chaque côté, '
+        + 'départage par la FRAPPE sur le camp adverse : ' + R1.frappeSomme
+        + ' contre ' + R7.frappeSomme;
     } else if (R1.ancrageTotal !== R7.ancrageTotal) {
       avantage = R1.ancrageTotal > R7.ancrageTotal ? 'R1' : 'R7';
       critere = lecture + ' — ' + R1.solides + ' pôles solides de chaque côté, '
@@ -12056,6 +12127,10 @@ function moteurF4P4V7(theme) {
       avantage = R1.solidesAdverse < R7.solidesAdverse ? 'R1' : 'R7';
       critere = lecture + ' — assaillant de R1 ' + R1.solidesAdverse + ' pôles solides, '
         + 'assaillant de R7 ' + R7.solidesAdverse + ' : le plus attaqué est le plus fragile';
+    } else if (R1.frappeSomme !== R7.frappeSomme) {
+      avantage = R1.frappeSomme > R7.frappeSomme ? 'R1' : 'R7';
+      critere = lecture + ' — assaillants à égalité, départage par la FRAPPE : '
+        + R1.frappeSomme + ' contre ' + R7.frappeSomme;
     } else if (R1.solides !== R7.solides) {
       avantage = R1.solides > R7.solides ? 'R1' : 'R7';
       critere = lecture + ' — assaillants à égalité (' + R1.solidesAdverse
