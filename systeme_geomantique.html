@@ -12634,6 +12634,62 @@ function renderAxesPanel(theme) {
 // Aucun moteur n'est au-dessus de 6/7, et 5/7 sur sept cas ne se
 // distingue pas d'un tirage à pile ou face. Le tableau sert à ACCUMULER,
 // pas à conclure.
+// ═══════════════════════════════════════════════════════════════
+// DIAGNOSTIC D'ELLEMINE_D (26/08/26) : « je vois pourquoi le système a
+// du mal à raisonner — il y a trop de moteurs d'analyse. »
+// Vérifié. Et le problème est plus précis que le nombre.
+//
+// 1. UN SEUL MOTEUR DÉCIDE, LES HUIT AUTRES SONT DÉCORATIFS.
+//    Le verdict affiché suit une cascade : chaîne/ancrage, puis sièges,
+//    puis réseau V2, puis boucles. Mesuré sur 1111 thèmes :
+//    l'ancrage tranche en PREMIER dans 1111 cas sur 1111 — 100 %.
+//    La cascade ne descend JAMAIS d'un cran. Les six moteurs suivants
+//    sont calculés, affichés, discutés — et sans le moindre effet.
+//    C'est ça qui donne l'illusion d'une délibération : la réponse est
+//    déjà fixée avant que les autres parlent.
+//
+// 2. DEUX MOTEURS SONT LE MÊME.
+//    Ancrage et Solidité de chaîne s'accordent sur 91 % des thèmes —
+//    normal, l'ancrage EST la chaîne plus deux termes petits. Les faire
+//    voter tous les deux, c'est compter une voix deux fois.
+//    L'hypothèse « 2 boucliers rompus » est un mélange des trois
+//    premiers (88 % / 81 % / 81 %), pas une vue neuve.
+//
+// 3. CE QUI EST RÉELLEMENT DISTINCT — accord deux à deux sur 1111 thèmes
+//        ancrage ↔ chaîne ......... 91 %   (doublon)
+//        ancrage ↔ duel ........... 69 %
+//        duel ↔ F4P4 .............. 74 %
+//        ancrage ↔ F4P4 ........... 64 %
+//        sièges ↔ tout le reste ... 47–53 %
+//        axes ↔ tout le reste ..... 48–54 %
+//        réseau V2 ↔ tout ......... 50–61 %
+//    Trois familles seulement : (chaîne/ancrage), (duel/F4P4), et les
+//    témoins indépendants (sièges, axes, réseau, boucles).
+//
+// 4. ET LES MAUVAIS MOTEURS TIRENT LE VOTE VERS LE BAS.
+//    Vote à la majorité sur les sept cas au résultat connu :
+//        les 9 moteurs ......................... 5/7
+//        ancrage seul .......................... 5/7
+//        SANS Réseau V2 NI Boucles (7 moteurs) . 6/7
+//        ancrage + duel + F4P4 ................. 6/7
+//        ancrage + F4P4 + axes ................. 6/7
+//        duel + F4P4 seuls ..................... 3/7
+//    Retirer les deux moteurs à 3/7 fait passer le vote de 5/7 à 6/7.
+//    Ils ne sont pas neutres : ils votent, et ils votent mal.
+//    ⚠️ Neuf combinaisons essayées sur sept cas — trois atteignent 6/7,
+//    ce qui n'est pas improbable par hasard. Mais le retrait des deux
+//    plus faibles a été décidé AVANT de regarder le vote, sur leur seul
+//    score : ce n'est pas une pêche aux résultats.
+//
+// ─── CE QU'IL FAUDRAIT FAIRE, ET QUI RESTE À TRANCHER AVEC LUI ───
+//  · retirer Réseau d'ancrage V2 et Boucles antagonistes (3/7 chacun,
+//    sous le hasard, et jamais décisifs) ;
+//  · fusionner Ancrage et Chaîne en une seule voix ;
+//  · remplacer la cascade — qui ne descend jamais — par un vote entre
+//    les familles réellement distinctes.
+// Rien de tout cela n'est fait ici : ce bloc CONSTATE, il ne change pas
+// le calcul. Supprimer des moteurs est irréversible pour l'archive des
+// comparaisons ; c'est à Ellemine_D de le décider.
 var MOTEURS_V7 = [
   { cle: 'ancrage', nom: 'Ancrage développé', icone: '⚓', teinte: '#38bdf8',
     note: 'chaîne + rôles reçus + rôles exercés + régénération', juste: 5, total: 7,
