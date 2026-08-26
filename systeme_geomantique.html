@@ -4559,6 +4559,94 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //
 // ═══════════════════════════════════════════════════════════════
 // CAS DE RÉFÉRENCE — RÉSULTATS RÉELS ARCHIVÉS (24/08/26, Ellemine_D)
+// ═══════════════════════════════════════════════════════════════
+// LOI DE LA RÉSULTANTE (26/08/26) — analyse d'Ellemine_D sur M1 et M2,
+// vérifiée puis généralisée aux 16 maisons.
+//
+// ─── SON VOCABULAIRE, DÉCODÉ SANS AMBIGUÏTÉ ───
+// « figure maison X » = figure dont la MAISON DE REPOS est d'élément X.
+// Ses quatre listes de M2 le fixent exactement :
+//   maison feu   = Puer, Via, Fortuna Minor, Cauda Draconis   (repos M1,5,9,13)
+//   maison air   = Laetitia, Amissio, Carcer, Puella          (repos M2,6,10,14)
+//   maison eau   = Caput Draconis, Rubeus, Conjunctio, Acquisitio (repos M3,7,11,15)
+//   maison terre = Albus, Tristitia, Fortuna Major, Populus   (repos M4,8,12,16)
+// Autrement dit : les quatre groupes sont les classes de l'index de
+// repos MODULO 4. Ce n'est pas l'élément propre de la figure — les deux
+// découpages diffèrent sur 12 figures sur 16.
+//
+// ─── SES RÈGLES, VÉRIFIÉES 16/16 CHACUNE ───
+// M1 : feu → le binôme de son antagoniste (décalage −1 ; sa formulation
+//        « la figure dont elle est l'antagoniste du front » est le même
+//        décalage, les translations commutent)
+//      air → SON ANTAGONISTE          eau → celle dont elle est l'antagoniste
+//      terre → l'antagoniste de son front (décalage +1)
+// M2 : eau et terre  → SON BINÔME
+//      feu et air    → celle dont elle est le binôme
+// Les huit énoncés sont exacts, aucune exception.
+//
+// ─── CE QUE LA GÉNÉRALISATION AJOUTE, ET CORRIGE ───
+// Son découpage mod 4 est uniforme sur 8 maisons seulement :
+//   M1, M2, M7, M8, M9, M10, M15, M16.
+// Sur les huit autres (M3, M4, M5, M6, M11, M12, M13, M14) chaque groupe
+// se scinde en deux moitiés qui reçoivent des rôles différents.
+// L'invariant exact est MODULO 8, et il vaut sur les 16 maisons :
+//     le rôle de la résultante ne dépend que de (index mod 8, maison).
+//
+// ─── LA RACINE ALGÉBRIQUE ───
+// combine() est un OU EXCLUSIF ligne à ligne (impair = 1, pair = 0) —
+// vérifié 256/256 — et Populus en est le neutre, 16/16. Donc
+//     résultante(f, h) = f ⊕ figure de repos de h.
+// Et figure[i] ⊕ figure[i+8] = TRISTITIA pour les huit valeurs de i.
+// Tristitia est donc l'élément qui décale l'index de 8 : deux figures
+// distantes de 8 sur le cycle subissent le même décalage dans TOUTE
+// maison. C'est de là que vient la période 8, et rien d'autre.
+// (Les quatre relations, elles, ne sont PAS des ⊕ par une constante —
+// vérifié : aucune des quatre. Elles sont des translations de l'index,
+// ce qui est une structure différente. C'est cette double structure —
+// ⊕ pour la résultante, translation pour les rôles — qui produit toute
+// la richesse de la table.)
+//
+// ─── LOI DE PARITÉ, 256/256 ───
+// maison IMPAIRE → décalage IMPAIR · maison PAIRE → décalage PAIR.
+// Conséquence directe et forte :
+//   · une figure ne peut régénérer un pôle ALLIÉ — binôme (+2), front
+//     (+4), bouclier (+10) — QUE dans une maison PAIRE : M2, M4, M6,
+//     M10, M12, M14, huit figures chaque fois.
+//   · elle ne peut régénérer son ANTAGONISTE (+13) QUE dans une maison
+//     IMPAIRE : M1×4, M3×4, M5×2, M11×4, M13×2.
+// Les maisons paires régénèrent l'alliance, les impaires le conflit.
+//
+// ─── LES QUATRE MAISONS « PURES » ───
+// Huit figures sur seize y régénèrent le même pôle :
+//   M2  → SON BINÔME      M4  → SON FRONT
+//   M10 → SON BOUCLIER    M12 → SON FRONT
+// Le front ne se régénère QUE en M4 et M12, nulle part ailleurs.
+// ⚠️ CONVERGENCE À NOTER : la règle « BTTS 100 % » d'Ellemine_D, écrite
+// bien avant cette analyse, lit exactement M4 et M10 — c'est-à-dire la
+// maison du front et la maison du bouclier. Il avait trouvé les deux
+// maisons pures des pôles défensifs sans passer par la table.
+//
+// ─── POIDS SUR LE VERDICT : MESURÉ, ET NUL POUR L'INSTANT ───
+// Test direct : « la figure centrale régénère-t-elle un pôle allié à son
+// siège ? » Sur les sept cas au score connu — 1 juste, 2 faux, 4 muets.
+// ⚠️ Et il est AVEUGLE là où il faudrait qu'il voie : Fiorentina (0-2
+// pour R7) et Atalanta (4-0 pour R1) ont la MÊME rotation, les mêmes
+// centrales aux mêmes sièges — Tristitia M7 → +7 et Albus M13 → +5 dans
+// les deux cas. Le critère est rigoureusement identique sur deux thèmes
+// aux résultats opposés. Il ne peut donc pas les départager.
+// Fréquence : la centrale régénère un pôle allié sur 18,8 % des couples,
+// son antagoniste sur 6,3 %, rien de nommé sur 43,8 %.
+//
+// CE QUE CETTE LOI SERT VRAIMENT, EN L'ÉTAT : elle dit que la résultante
+// n'est PAS une information indépendante. résultante(h) = base(h) ⊕
+// repos(h) : pour qu'une figure X paraisse en résultante en h, il faut
+// et il suffit que la base de h soit X ⊕ repos(h) — une seule figure.
+// Compter « présence en base + en résultante » comme deux témoignages
+// revient donc à compter deux fois la même donnée sous deux angles.
+// C'est un point à trancher avec Ellemine_D avant d'y toucher : le
+// calcul actuel les additionne partout (soliditeChaineV7, forceCampV7,
+// les trois fonctions de validité).
+// ═══════════════════════════════════════════════════════════════
 // ─── NOMS DES CAS DE RÉFÉRENCE (26/08/26, demande d'Ellemine_D) ───
 // Les cas portaient les lettres A à I. Remplacées par des noms de clubs
 // italiens, dans l'ordre d'entrée dans l'archive — les lettres seules
