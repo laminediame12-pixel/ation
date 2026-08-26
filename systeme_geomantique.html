@@ -11137,6 +11137,84 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 //
 // (Remarques notées le 25/08 à la demande d'Ellemine_D — la conclusion
 // sur le 7-0 reste à écrire ensemble, elle n'est PAS tirée ici.)
+//
+// ═══════════════════════════════════════════════════════════════
+// LA RIPOSTE — réponse à « verras si la frappe de Rubeus sera une
+// destruction totale de Carcer ou ripostera avec sa figure de front »
+// (26/08, mesuré avec le critère d'alignement actif désormais branché)
+//
+// ① LE FAIT DE STRUCTURE QUI TRANCHE LA QUESTION.
+//    Le front de Carcer est PUELLA. L'assaillant du bouclier Albus est
+//    PUER. Or antagoniste(Puer) = Puella. Le front de Carcer et le
+//    défenseur de son bouclier SONT LA MÊME FIGURE, faisant le MÊME
+//    geste. C'est exactement la définition qu'Ellemine_D a donnée le
+//    25/08 : « la fig de front détruit la fig qui attaque le fig du
+//    bouclier ». Vérifié en table, pas seulement sur ce thème :
+//    front(X) = X+4 et antagoniste(bouclier(X)) = (X+10)−3 = X+7, dont
+//    l'antagoniste est X+4. Toujours le front.
+//
+//    CONSÉQUENCE : il n'y a pas d'ordre « le bouclier tombe, PUIS on
+//    verra si le front riposte ». Le front a déjà joué, et il a perdu,
+//    au moment même où le bouclier est tombé. Carcer ne peut pas
+//    riposter — non parce qu'elle est faible, mais parce que sa riposte
+//    était ce coup-là.
+//    Chiffres du duel, conc + 0,5 × alignement actif, binôme compris :
+//        camp PUER   : Puer 2 occ conc 0,75 align 3 · Caput Draconis
+//                      2 occ conc 2 align 2   →  conc 2,75 · align 5
+//        camp PUELLA : Puella 2 occ conc 0,25 align 2 · Populus 1 occ
+//                      conc 0 align 0         →  conc 0,25 · align 2
+//    Onze fois moins en concordance, et aucune des cinq présences du
+//    camp Puella n'est en base. Le rapport qu'Ellemine_D avait calculé
+//    à la main (2,75 contre 0,25) est retrouvé au chiffre près.
+//
+// ② NI L'UN NI L'AUTRE : PAS DE DESTRUCTION TOTALE NON PLUS.
+//    Le duel 2 pris brut ne donne PAS Carcer écrasée :
+//        camp RUBEUS  (Rubeus + Fortuna Minor) : 6 occ (5 base)
+//                      conc 2,75 · align 5
+//        camp CARCER  (Carcer + Albus + Fortuna Major) : 8 occ (3 base)
+//                      conc 3 · align 5
+//    Carcer a MOINS de base mais autant de matière. Elle-même tient :
+//    M12r terre en terre, concordance 1. Elle n'est pas anéantie.
+//    Mais retirer Albus — le bouclier neutralisé au ① — fait tomber son
+//    camp à 3 occ (2 base), conc 1,5, align 4. Albus portait 5 des
+//    8 présences. Le camp de Carcer, c'était Albus.
+//    LECTURE : Carcer survit, mais dépouillée et muette. C'est
+//    exactement un 7-0 : l'équipe existe encore, elle ne marque pas.
+//
+// ③ LE CONTRÔLE, CÔTÉ R1, MONTRE QUE L'ASYMÉTRIE EST STRUCTURELLE.
+//    Bouclier de Fortuna Minor = Caput Draconis, attaqué par POPULUS —
+//    présent une seule fois, M15r, conc 0, align 0. L'attaquant le plus
+//    faible possible. Le front de R1, Cauda Draconis, est en base (M9).
+//    Le réseau des trois pôles de R1 est intact de bout en bout, celui
+//    de R7 est rompu au bouclier. Un camp joue à trois pôles, l'autre à
+//    un seul.
+//
+// ④ CE QUE ÇA NE PROUVE PAS — mesuré, et négatif.
+//    Tentation immédiate : « le camp dont le front perd son duel ne
+//    marque pas », donc une règle pour « les deux marquent ». Testée
+//    sur les cinq cas au score connu, dix camps, dont deux à zéro but :
+//        cas camp centrale        buts | duel du front (front − assaillant)
+//         A  R1  Puer             6    |  0
+//         A  R7  Conjunctio       1    | +5,5
+//         B  R1  Laetitia         3    | +2
+//         B  R7  Via              2    | −0,5
+//         C  R1  Fortuna Minor    7    | +2,5
+//         C  R7  Carcer           0    | −4     ← le plus bas des dix
+//         D  R1  Laetitia         0    | −3
+//         D  R7  Conjunctio       1    | −0,5
+//         E  R1  Carcer           1    | −2,75
+//         E  R7  Fortuna Major    1    | −3,25
+//    Carcer en C est bien le duel le plus perdu de tout l'échantillon,
+//    ce qui soutient le mécanisme. Mais E donne DEUX camps à duel perdu
+//    (−2,75 et −3,25) qui ont marqué chacun un but. Le seuil n'existe
+//    pas : « front battu » n'implique pas « zéro but ».
+//    Cinq autres grandeurs testées (front seul, front en base, matière
+//    du camp, net camp − assaut, force de l'assaut) : aucune ne place
+//    les deux camps à zéro but en bas du classement. La meilleure,
+//    duelFront, les met aux rangs 1 et 3 sur 10.
+//    → Le duel du front EXPLIQUE le 7-0. Il ne PRÉDIT pas les buts.
+//      Deux zéros dans l'échantillon, c'est de toute façon trop peu
+//      pour caler un seuil ; il faut d'autres scores réels.
 // ═══════════════════════════════════════════════════════════════
 //
 // ⚠️ PISTE TESTÉE ET NON RETENUE — la PROFONDEUR de la frappe. Le cas C
