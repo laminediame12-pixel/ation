@@ -12943,6 +12943,55 @@ function renderAxesPanel(theme) {
 // n'en retourne aucun, et le verdict change sur 5,9% des thèmes.
 
 // ═══════════════════════════════════════════════════════════════
+// LES JUMEAUX — Fiorentina et Atalanta (26/08/26)
+// L'expérience la plus propre de l'archive : deux thèmes, MÊME rotation,
+// mêmes centrales aux mêmes sièges, résultats OPPOSÉS.
+//     Fiorentina : Rubeus · Puer · Fortuna Minor · Caput Draconis → 0-2 R7
+//     Atalanta   : Rubeus · Tristitia · Laetitia · Via            → 4-0 R1
+//     R1 = Tristitia (M7) · R7 = Albus (M13) dans les DEUX.
+// Tout ce qui est structural est donc tenu constant : ce qui les sépare
+// EST le discriminant. Sept maisons sur seize diffèrent.
+//
+// CE QUI LES SÉPARE, ET C'EST D'UNE SIMPLICITÉ BRUTALE :
+//   Fiorentina — R1 Tristitia a bouclier (Laetitia), front (Fortuna
+//     Major) et front du front (Populus) TOUS ABSENTS du thème. Seul son
+//     binôme Carcer est là. R7 Albus garde bouclier (Puella, 3 occ,
+//     ancrage 4) et front. → R7 gagne.
+//   Atalanta — R1 a bouclier ET front présents en base. R7 a son
+//     BOUCLIER absent (Puella, 0 occ). → R1 gagne.
+// Dans les deux cas, le camp dont le bouclier et le front sont dans le
+// thème l'emporte. Rien d'autre n'est nécessaire pour les départager.
+//
+// ⚠️ ET C'EST LÀ QUE ÇA SE COMPLIQUE. Toutes les règles de PRÉSENCE
+// séparent bien les jumeaux — et toutes s'effondrent ailleurs :
+//     4 pôles présents .................... 2/7
+//     bouclier + front présents ........... 2/7
+//     bouclier + front EN BASE ............ 3/7
+//     4 pôles pondérés (b2 f2 bi1 ff1) .... 3/7
+//     occurrences des 4 pôles ............. 3/7
+//     bouclier + front, occurrences ....... 2/7
+// Toutes justes sur Fiorentina et Atalanta, fausses presque partout
+// ailleurs.
+//
+// LA COMPLÉMENTARITÉ, RÉELLE ET INEXPLOITÉE :
+//     chaîne (présence) 5/7 — rate Napoli et Torino
+//     duel4  (force)    5/7 — rate Inter et Atalanta
+//   Leurs erreurs ne se recouvrent PAS : ensemble elles couvrent les
+//   sept cas. Un sélecteur parfait donnerait 7/7 — et ce serait un
+//   ajustement pur sur sept cas.
+//   Un sélecteur MOTIVÉ a été essayé : « comparer des forces n'a pas de
+//   sens quand un pôle n'est pas dans le thème → lire la présence dans
+//   ce cas, la force sinon ». Il se déclenche sur 41,5 % des thèmes.
+//   Résultat : 4/7 — MOINS BIEN que chacune des deux prises seule.
+//   L'hypothèse est donc réfutée, pas seulement non concluante.
+//
+// CE QUE ÇA LAISSE : le fait des jumeaux est solide et reproductible —
+// bouclier et front présents décident, sur cette paire. Aucun moyen
+// mesuré d'en faire une règle générale. Chercher d'autres sélecteurs sur
+// ces mêmes sept cas reviendrait à pêcher ; il faut d'autres jumeaux,
+// c'est-à-dire d'autres thèmes à rotation identique et résultat connu.
+// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // TABLEAU DE BORD DES MOTEURS (26/08/26, demande d'Ellemine_D)
 // « Pour chaque moteur créé, son propre affichage de résultats verdict
 // après analyse. Comme ça on pourra éliminer les moteurs qui se trompent
