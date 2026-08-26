@@ -4371,9 +4371,22 @@ var POIDS_PROFIL_V7 = {
   multiplicite: 1.5,   // existant, plafonné à 4 occurrences
   environnement: 0.3,  // ⚠️ proposé
   cohabitation: 2,     // ⚠️ proposé
-  activation: 5,       // ⚠️ proposé — active +5, passive −5
+  activation: 5,       // alignement actif : 0 ligne → −5, 1 → 0, 2 → +5
+                       // (doctrine Ellemine_D du 25/08, cf. alignementActifV7)
   maisonNatale: 6      // ⚠️ proposé — allié chez soi +6, ennemi chez soi −6
 };
+
+// Barème de l'alignement actif, indexé par le nombre de lignes actives
+// compatibles avec l'élément de la maison (0, 1 ou 2). Multiplié par
+// POIDS_PROFIL_V7.activation. Séparé du poids pour pouvoir tester la
+// FORME du barème (linéaire, conjonctif, binaire) sans toucher au reste.
+// Lecture CONJONCTIVE de la doctrine : « une figure qui aligne ces trois
+// est forte ». Aligner les deux lignes = force pleine (+1). N'en aligner
+// qu'une n'est pas une demi-force, c'est un alignement manqué : −0,5.
+// N'en aligner aucune : −1.
+// Mesuré sur les 4 cas de référence — linéaire (−1/0/+1) : 2/4 ;
+// conjonctif (−1/−0,5/+1) : 3/4, soit le score de l'ancien critère.
+var BAREME_ALIGNEMENT_V7 = [-1, -0.5, 1];
 
 // ─── ÉTAT DE LA MAISON NATALE (25/08/26, doctrine Ellemine_D) ───
 // « Il est favorable que la maison d'une figure X soit occupée par son
@@ -4425,9 +4438,13 @@ function profilFigureMaison(fig, house, theme) {
   let env = {total: 0, detail: []};
   try { env = scoreEnvironnementInterpretation(fig, house, theme, 5); } catch (e) { env = {total: 0, detail: []}; }
 
-  const activation = elem.natureLevel.active ? 'active' : elem.natureLevel.passive ? 'passive' : 'indéterminée';
-  const scoreActivation = elem.natureLevel.active ? POIDS_PROFIL_V7.activation
-    : elem.natureLevel.passive ? -POIDS_PROFIL_V7.activation : 0;
+  // ─── ALIGNEMENT ACTIF (25/08/26) — remplace l'ancienne « activation » ───
+  // Barème calé sur l'amplitude précédente (±5) : 0 ligne active compatible
+  // = −5, une = 0, deux = +5.
+  const align = alignementActifV7(fig, house);
+  const activation = align.nb === 2 ? 'alignée (2 lignes)'
+    : align.nb === 1 ? 'partielle (1 ligne)' : 'non alignée';
+  const scoreActivation = BAREME_ALIGNEMENT_V7[align.nb] * POIDS_PROFIL_V7.activation;
 
   const natale = etatMaisonNatale(fig, theme);
 
@@ -4452,6 +4469,7 @@ function profilFigureMaison(fig, house, theme) {
     deplacement: base.deplacement,
     cohabitation: cohab,
     activation: activation,
+    alignement: align,
     maisonNatale: natale,
     parts: parts,
     total: Math.round(total * 100) / 100,
@@ -10579,6 +10597,52 @@ function dualiteXAncrageR1R7(theme, hR1, hR7, figR1, figR7){
 //   à l'élément de la maison où elle se trouve.
 // ⚠️ À VALIDER PAR ELLEMINE_D — reconstruction de bonne foi à partir du
 // commentaire doctrinal existant, PAS une règle confirmée par toi.
+// ═══════════════════════════════════════════════════════════════
+// ALIGNEMENT ACTIF (25/08/26, doctrine Ellemine_D)
+// « Ce sont deux choses distinctes, et toutes deux par rapport à la maison
+// occupée. Une figure qui aligne ces trois est forte : le niveau d'élément
+// actif coïncide avec celui de la maison, ET la figure elle-même coïncide
+// avec l'élément de la maison. »
+// Exemples donnés, tous deux vérifiés :
+//   Puer en M1 (feu) — lignes 1121, actives feu, air, terre. Retenues :
+//   feu (conc 1) et air (conc 0,5). Terre est ÉCARTÉE bien qu'active,
+//   parce que feu-terre ne vaut que 0,25.
+//   Fortuna Major en M4 (terre) — lignes 2211, actives eau et terre, les
+//   deux compatibles (0,5 et 1).
+//
+// ⚠️ CE QUE CET EXEMPLE FIXE : « compatible » veut dire concordance ≥ 0,5.
+// Le palier 0,25 (feu-terre, eau-air) n'est PAS compatible ici, même s'il
+// n'est pas non plus une opposition. J'avais d'abord conclu « compatible =
+// score > 0 » d'après la liste seule ; l'exemple Puer le corrige.
+//
+// Le compte ne peut valoir que 0, 1 ou 2 : pour un élément de maison donné,
+// seuls deux éléments sont compatibles à ≥ 0,5 — lui-même et son partenaire
+// de trigone (feu↔air, eau↔terre).
+//
+// REMPLACE l'ancien critère « activation », qui ne regardait qu'UNE ligne,
+// celle de l'élément de la maison, et la disait active ou passive. Pour
+// Puer en M1 il comptait 1 là où la doctrine en compte 2 : il ne voyait pas
+// que la ligne air est active ET compatible.
+function alignementActifV7(fig, house) {
+  const ORDRE = ['feu', 'air', 'eau', 'terre'];
+  const bits = MAP_GEO[fig] || [2, 2, 2, 2];
+  const elemMaison = MAISON_ELEM_V7[house];
+  const actives = [], compatibles = [];
+  ORDRE.forEach(function (e, i) {
+    if (bits[i] !== 1) return;
+    actives.push(e);
+    if (concordanceElement(e, elemMaison) >= 0.5) compatibles.push(e);
+  });
+  return {
+    fig: fig, house: house, elemMaison: elemMaison,
+    lignesActives: actives, actievesCompatibles: compatibles,
+    nb: compatibles.length,          // 0, 1 ou 2
+    resume: compatibles.length
+      ? compatibles.join(' + ') + ' actives et compatibles avec ' + elemMaison
+      : (actives.length ? 'aucune ligne active compatible avec ' + elemMaison : 'aucune ligne active')
+  };
+}
+
 function elementaireFigureMaison(fig, house) {
   const ELEM_ORDER_LOCAL = ['feu','air','eau','terre'];
   const figureNature = ELEMENTS_V7[fig] || null;
