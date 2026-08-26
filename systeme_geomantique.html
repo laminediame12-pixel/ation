@@ -11509,9 +11509,41 @@ var POIDS_ROLES_EXERCES_V7 = {
 
 // Le camp d'un chef : lui-même et les trois figures qui le soutiennent —
 // son protecteur, son front, son binôme. Les trois sont dans sa boucle.
+// ─── LE 4e PÔLE : LE FRONT DU FRONT (26/08/26, Ellemine_D) ───
+// « Au lieu de 3 pôles, 4 : on y ajoute le front du front. Comme ça ça se
+// complète. » Vérifié, et il a raison sur le mot « complète » :
+//
+//  · front du front = décalage +8, constant sur les 16.
+//  · front⁴ = identité, 16/16 : le front partitionne les figures en
+//    QUATRE cycles de quatre. Le front du front est le point opposé du
+//    cycle. Puer → Via → Fortuna Minor → Cauda Draconis → Puer, etc.
+//  · CE QU'IL REFERME : sans lui, le front du camp n'avait aucun autre
+//    membre où aller, et le binôme n'était relié à rien. Avec lui :
+//        front(front)            = le front du front   ✔ dans le camp
+//        bouclier(front du front) = le BINÔME, 16/16    ✔ dans le camp
+//    Le 4e pôle est exactement le maillon qui relie le front au binôme.
+//  · bouclier² = front, 16/16. front du front = binôme⁴, 16/16.
+//    Tout est puissance du binôme : binôme +2, front +4, front du front
+//    +8, bouclier +10.
+//
+// ⚠️ CE QU'IL COÛTE, MESURÉ. Les camps deviennent poreux. Sur les 240
+// paires de centrales distinctes, membres en commun :
+//        camp à 4 : 0 ×128 · 1 ×32 · 2 ×80 · 3 ×0  · 4 ×0
+//        camp à 5 : 0 ×128 · 1 ×0  · 2 ×32 · 3 ×64 · 4 ×16
+// À quatre membres deux camps ne partageaient jamais plus de 2 figures ;
+// à cinq, 80 paires en partagent 3 ou 4. Cas extrême vérifié 16/16 : une
+// figure et son front du front partagent QUATRE membres sur cinq — seuls
+// leurs fronts diffèrent. C'est la situation exacte que décrit
+// Ellemine_D : « il arrive même que R1 et R7 aient le même réseau ».
 function campDuChefV7(chef) {
   if (!chef) return [];
-  return [chef, PROTECTEURS_V7[chef], FRONT_V7[chef], BINOMES_V7[chef]];
+  return [chef, PROTECTEURS_V7[chef], FRONT_V7[chef], BINOMES_V7[chef],
+          FRONT_V7[FRONT_V7[chef]]];
+}
+
+// Le 4e pôle isolé, pour les lectures qui le veulent à part.
+function frontDuFrontV7(fig) {
+  return fig ? FRONT_V7[FRONT_V7[fig]] : null;
 }
 
 // ─── CE QUI COMPTE, C'EST CE QUI TOUCHE LE CAMP D'EN FACE ───
