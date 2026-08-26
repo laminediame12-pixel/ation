@@ -12618,6 +12618,243 @@ function renderAxesPanel(theme) {
 // coefficient ne dépasse 5/7 sur les cas réels, 0,5 est la plus forte qui
 // n'en retourne aucun, et le verdict change sur 5,9% des thèmes.
 // ═══════════════════════════════════════════════════════════════
+// TABLEAU DE BORD DES MOTEURS (26/08/26, demande d'Ellemine_D)
+// « Pour chaque moteur créé, son propre affichage de résultats verdict
+// après analyse. Comme ça on pourra éliminer les moteurs qui se trompent
+// le plus souvent. »
+//
+// Chaque moteur est déclaré ici avec sa fonction de verdict et son score
+// sur les sept cas au résultat connu. Les scores sont MESURÉS, pas
+// estimés — ils sont à remettre à jour à chaque nouveau résultat réel.
+// Détail case par case au 26/08/26 (Juventus, Inter, Milan, Napoli,
+// Fiorentina, Atalanta, Torino) :
+//   ancrage   ✓✓✓✗✓✓✗   chaîne  ✓✓✓✗✓✓✗   duel   ✗✓✓✓✓✓✗
+//   F4P4      ✓✗✓✓✓✗✓   sièges  ✓✓✓✗✓✗✓   axes   ✓✓✗✓✗✗✓
+//   réseau V2 ✗✓✓✗✗✓✗   boucles —✓✓✗——✓   hypothèse ✓✓✓✓✓✓✗
+// Aucun moteur n'est au-dessus de 6/7, et 5/7 sur sept cas ne se
+// distingue pas d'un tirage à pile ou face. Le tableau sert à ACCUMULER,
+// pas à conclure.
+var MOTEURS_V7 = [
+  { cle: 'ancrage', nom: 'Ancrage développé', icone: '⚓', teinte: '#38bdf8',
+    note: 'chaîne + rôles reçus + rôles exercés + régénération', juste: 5, total: 7,
+    verdict: function (t) {
+      var a = analyseAncrageDeveloppe(t);
+      if (!a.applicable) return null;
+      return { camp: a.avantage, detail: a.ancrageR1 + ' contre ' + a.ancrageR7 };
+    } },
+  { cle: 'chaine', nom: 'Solidité de chaîne', icone: '⛓', teinte: '#818cf8',
+    note: 'bouclier et front, présence et poids', juste: 5, total: 7,
+    verdict: function (t) {
+      var a = analyseAncrageDeveloppe(t);
+      if (!a.applicable) return null;
+      var c = a.chaineR1.total > a.chaineR7.total ? 'R1'
+            : a.chaineR7.total > a.chaineR1.total ? 'R7' : null;
+      return { camp: c, detail: a.chaineR1.total + ' contre ' + a.chaineR7.total };
+    } },
+  { cle: 'duel', nom: 'Duel du bouclier', icone: '🛡', teinte: '#a16207',
+    note: 'assaillant du bouclier contre le front', juste: 5, total: 7,
+    verdict: function (t) {
+      var a = analyseAncrageDeveloppe(t);
+      if (!a.applicable) return null;
+      var x = duelBouclierV7(a.figR1, t), y = duelBouclierV7(a.figR7, t);
+      var n1 = x.bouclierPresent ? x.marge : -99, n7 = y.bouclierPresent ? y.marge : -99;
+      return { camp: n1 > n7 ? 'R1' : n7 > n1 ? 'R7' : null,
+               detail: (x.tenu ? 'tenu ' : 'rompu ') + x.marge + ' contre '
+                     + (y.tenu ? 'tenu ' : 'rompu ') + y.marge };
+    } },
+  { cle: 'f4p4', nom: 'Front 4 · Pôle 4', icone: '🧭', teinte: '#a78bfa',
+    note: 'les quatre pôles et leur résistance', juste: 5, total: 7,
+    verdict: function (t) {
+      var m = moteurF4P4V7(t);
+      if (!m.applicable) return null;
+      return { camp: m.avantage, detail: m.critere };
+    } },
+  { cle: 'sieges', nom: 'Lecture des sièges', icone: '🪑', teinte: '#f472b6',
+    note: 'couleur des sièges R1 et R7', juste: 5, total: 7,
+    verdict: function (t) {
+      var s = lectureSiegesR1R7(t);
+      if (!s.applicable) return null;
+      // slice brut coupait au milieu d'un emoji (🟥/🟦) : on coupe au mot.
+      var txt = (s.synthese || '').replace(/^Siège\s*/, '').replace(/\s—\s.*$/, '');
+      if (txt.length > 78) txt = txt.slice(0, 78).replace(/\s\S*$/, '') + '…';
+      return { camp: s.winner, detail: txt };
+    } },
+  { cle: 'axes', nom: 'Majorité des axes', icone: '✚', teinte: '#34d399',
+    note: 'Cardinal, Succédent, Cadent', juste: 4, total: 7,
+    verdict: function (t) {
+      var ax = lectureAxesV7(t), r1 = 0, r7 = 0;
+      (ax.axes || []).forEach(function (x) {
+        var w = x.avantage || x.winner;
+        if (w === 'R1') r1++; else if (w === 'R7') r7++;
+      });
+      return { camp: r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null, detail: r1 + ' contre ' + r7 };
+    } },
+  { cle: 'reseau', nom: 'Réseau d\'ancrage V2', icone: '🕸', teinte: '#94a3b8',
+    note: 'ancienne lecture, conservée pour comparaison', juste: 3, total: 7,
+    verdict: function (t) {
+      var r = analyserReseauAncrageV2(t);
+      if (!r || !r.winner || r.winner === 'Nul') return null;
+      return { camp: r.winner, detail: '' };
+    } },
+  { cle: 'boucles', nom: 'Boucles antagonistes', icone: '🔗', teinte: '#94a3b8',
+    note: 'protocole R1/R7 d\'origine', juste: 3, total: 7,
+    verdict: function (t) {
+      var p = comparerBouclesAntagonistesR1R7(t);
+      if (!p || !p.applicable || (p.winner !== 'R1' && p.winner !== 'R7')) return null;
+      return { camp: p.winner, detail: '' };
+    } },
+  { cle: 'hypo', nom: '2 boucliers rompus → duel', icone: '⚖', teinte: '#fbbf24',
+    note: '⚠ hypothèse non branchée — un seul cas la distingue', juste: 6, total: 7,
+    verdict: function (t) {
+      var a = analyseAncrageDeveloppe(t);
+      if (!a.applicable) return null;
+      var x = duelBouclierV7(a.figR1, t), y = duelBouclierV7(a.figR7, t);
+      if (x.tenu || y.tenu) return { camp: a.avantage, detail: 'règle inactive — l\'ancrage décide' };
+      var n1 = x.bouclierPresent ? x.marge : -99, n7 = y.bouclierPresent ? y.marge : -99;
+      return { camp: n1 > n7 ? 'R1' : n7 > n1 ? 'R7' : null,
+               detail: 'les deux boucliers rompus — le duel décide' };
+    } }
+];
+
+var MOTEURS_BTTS_V7 = [
+  { cle: 'btts_chaine', nom: 'BTTS · chaîne du perdant', icone: '⛓', teinte: '#4ade80',
+    juste: 8, total: 9, note: 'branché — source décisive',
+    verdict: function (t) {
+      var b = lectureDeuxMarquentV7(t);
+      if (!b.applicable) return null;
+      var a = analyseAncrageDeveloppe(t);
+      return { oui: b.lesDeuxMarquent,
+               detail: b.lesDeuxMarquent ? 'les deux marquent'
+                 : 'muet : ' + (b.perdant === a.figR1 ? 'R1 ' : 'R7 ') + (FL[b.perdant] || '') };
+    } },
+  { cle: 'btts_rotation', nom: 'BTTS · ouverture des sièges', icone: '🪑', teinte: '#94a3b8',
+    juste: 6, total: 9, note: 'calculé, plus décisif',
+    verdict: function (t) {
+      var o = lectureOuvertureButsV7(t);
+      if (!o.applicable) return null;
+      return { oui: o.lesDeuxMarquent, detail: o.lesDeuxMarquent ? 'les deux marquent' : 'un seul marque' };
+    } },
+  { cle: 'btts_score', nom: 'BTTS · « toujours oui »', icone: '➖', teinte: '#64748b',
+    juste: 4, total: 9, note: 'témoin — le hasard à battre',
+    verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
+];
+
+function renderMoteursPanel(theme) {
+  var ancien = document.getElementById('moteurs-panel');
+  if (ancien) ancien.remove();
+  if (!theme) return;
+  // Même chaîne d'accueil que les autres panneaux : la carte de verdict
+  // vit dans une grille à deux colonnes, s'y insérer directement fait
+  // chevaucher le tableau avec le formulaire (constaté à l'écran).
+  var hote = document.getElementById('f4p4-panel')
+          || document.getElementById('duel-bouclier-panel')
+          || document.getElementById('lieux-marquage-panel')
+          || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  var panneau = document.createElement('div');
+  panneau.id = 'moteurs-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:12px; border:1px solid #475569; '
+    + 'background:linear-gradient(160deg,#0b1220 0%,#111827 100%);';
+
+  // 1. verdicts de chaque moteur
+  var res = MOTEURS_V7.map(function (m) {
+    var v = null;
+    try { v = m.verdict(theme); } catch (e) { v = null; }
+    return { m: m, v: v };
+  });
+  var nR1 = res.filter(function (r) { return r.v && r.v.camp === 'R1'; }).length;
+  var nR7 = res.filter(function (r) { return r.v && r.v.camp === 'R7'; }).length;
+  var majorite = nR1 > nR7 ? 'R1' : nR7 > nR1 ? 'R7' : null;
+
+  // 2. noms d'équipe si disponibles
+  var t1 = 'R1', t7 = 'R7';
+  try {
+    var e1 = document.getElementById('team1'), e7 = document.getElementById('team2');
+    if (e1 && e1.value) t1 = e1.value;
+    if (e7 && e7.value) t7 = e7.value;
+  } catch (e) {}
+
+  function barre(juste, total, teinte) {
+    var pct = Math.round(100 * juste / total);
+    return '<div style="height:4px; border-radius:3px; background:#1e293b; overflow:hidden; margin-top:4px;">'
+      + '<div style="height:100%; width:' + pct + '%; background:' + teinte + ';"></div></div>';
+  }
+
+  function carte(r) {
+    var m = r.m, v = r.v;
+    var camp = v && v.camp;
+    var accord = majorite && camp && camp === majorite;
+    var coulCamp = camp === 'R1' ? '#38bdf8' : camp === 'R7' ? '#fb923c' : '#64748b';
+    return '<div style="border:1px solid '
+      + (accord ? '#334155' : '#475569') + '; border-left:3px solid ' + m.teinte + '; '
+      + 'border-radius:8px; padding:8px 10px; background:#0f172a;">'
+      + '<div style="display:flex; align-items:baseline; gap:6px;">'
+      + '<span style="font-size:13px;">' + m.icone + '</span>'
+      + '<span style="font-size:11px; font-weight:700; flex:1;">' + m.nom + '</span>'
+      + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';">'
+      + m.juste + '/' + m.total + '</span></div>'
+      + barre(m.juste, m.total, m.teinte)
+      + '<div style="margin-top:7px; font-size:17px; font-weight:800; color:' + coulCamp + '; letter-spacing:.5px;">'
+      + (camp ? (camp === 'R1' ? t1 : t7) : 'sans avis') + '</div>'
+      + (v && v.detail ? '<div class="muted" style="font-size:9px; line-height:1.35; margin-top:2px;">'
+          + v.detail + '</div>' : '')
+      + '<div class="muted" style="font-size:8.5px; margin-top:5px; opacity:.75;">' + m.note + '</div>'
+      + (majorite && camp && !accord
+          ? '<div style="font-size:8.5px; color:#fbbf24; margin-top:3px;">⚡ contre la majorité</div>' : '')
+      + '</div>';
+  }
+
+  var bttsRes = MOTEURS_BTTS_V7.map(function (m) {
+    var v = null; try { v = m.verdict(theme); } catch (e) { v = null; }
+    return { m: m, v: v };
+  });
+  function carteB(r) {
+    var m = r.m, v = r.v;
+    var oui = v && v.oui;
+    return '<div style="border:1px solid #334155; '
+      + 'border-left:3px solid ' + m.teinte + '; border-radius:8px; padding:7px 10px; background:#0f172a;">'
+      + '<div style="display:flex; align-items:baseline; gap:6px;">'
+      + '<span style="font-size:12px;">' + m.icone + '</span>'
+      + '<span style="font-size:10.5px; font-weight:700; flex:1;">' + m.nom + '</span>'
+      + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';">'
+      + m.juste + '/' + m.total + '</span></div>'
+      + barre(m.juste, m.total, m.teinte)
+      + '<div style="margin-top:6px; font-size:15px; font-weight:800; color:'
+      + (v ? (oui ? '#4ade80' : '#f87171') : '#64748b') + ';">'
+      + (v ? (oui ? 'LES DEUX' : 'UN SEUL') : 'sans avis') + '</div>'
+      + (v && v.detail ? '<div class="muted" style="font-size:9px;">' + v.detail + '</div>' : '')
+      + '<div class="muted" style="font-size:8.5px; margin-top:4px; opacity:.75;">' + m.note + '</div>'
+      + '</div>';
+  }
+
+  var ordre = res.slice().sort(function (a, b) { return (b.m.juste / b.m.total) - (a.m.juste / a.m.total); });
+
+  panneau.innerHTML =
+      '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:3px;">'
+    + '<h3 style="margin:0;">🏁 Les moteurs, un par un</h3>'
+    + '<span class="muted" style="font-size:10px;">classés par justesse sur les cas réels</span></div>'
+    + '<div style="font-size:11px; margin-bottom:9px;">'
+    + '<b style="color:#38bdf8;">' + t1 + '</b> ' + nR1 + '  ·  '
+    + '<b style="color:#fb923c;">' + t7 + '</b> ' + nR7
+    + (majorite ? '  →  <b>majorité ' + (majorite === 'R1' ? t1 : t7) + '</b>'
+                : '  →  <b>partagés</b>') + '</div>'
+    + '<div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill,minmax(215px,1fr));">'
+    + ordre.map(carte).join('') + '</div>'
+    + '<div style="margin:12px 0 5px; font-size:11px; font-weight:700; color:#94a3b8;">Les deux marquent</div>'
+    + '<div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill,minmax(215px,1fr));">'
+    + bttsRes.map(carteB).join('') + '</div>'
+    + '<div class="hint" style="margin-top:9px; font-size:9px;">'
+    + 'Les scores sont mesurés sur les sept cas au résultat connu, à remettre à jour '
+    + 'à chaque nouveau match. Aucun moteur ne dépasse 6/7, et 5/7 sur sept cas ne se '
+    + 'distingue pas d\'un tirage à pile ou face — ce tableau sert à accumuler, pas à conclure. '
+    + 'Un moteur « contre la majorité » n\'a pas tort pour autant : c\'est là que se gagnent '
+    + 'les départages.</div>';
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // PANNEAU DU MOTEUR F4P4 — la démarche d'Ellemine_D, rendue lisible.
 // Trois temps par camp : la centrale à son siège, ses quatre pôles avec
 // leur résistance, puis la centrale jugée par la même mesure.
@@ -16594,6 +16831,7 @@ function renderTheme(){
     try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
     try { renderDuelBouclierPanel(currentTheme); } catch(e) { console.log('duel bouclier error', e); }
     try { renderF4P4Panel(currentTheme); } catch(e) { console.log('f4p4 error', e); }
+    try { renderMoteursPanel(currentTheme); } catch(e) { console.log('moteurs error', e); }
     // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
     try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
     const elR = document.getElementById('carte-verdict-r');
