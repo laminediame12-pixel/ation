@@ -5273,6 +5273,72 @@ function duelBouclierV7(centrale, theme) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// RÉGÉNÉRATION AU SIÈGE (26/08/26) — branchement de la loi de la
+// résultante d'Ellemine_D, sur sa demande expresse.
+//
+// La résultante d'une figure dans une maison joue toujours un rôle
+// précis vis-à-vis d'elle : son binôme, son front, son bouclier, son
+// antagoniste, ou une composition sans nom. Ce rôle ne dépend que de
+// (index de la figure MODULO 8, maison) — vérifié sur les 256 couples.
+// Voir la note « LOI DE LA RÉSULTANTE » plus haut pour la démonstration.
+//
+// Ce qu'on branche ici : ce que la figure CENTRALE régénère à SON SIÈGE.
+//   · un pôle ALLIÉ (binôme +2, front +4, bouclier +10) → elle se
+//     renforce elle-même : bonus.
+//   · son ANTAGONISTE (+13) → elle produit ce qui la détruit : malus.
+//   · tout le reste → neutre.
+// Rappel de structure : par la loi de parité, le cas allié n'existe
+// qu'en maison PAIRE et le cas hostile qu'en maison IMPAIRE. Un siège
+// ne peut donc jamais recevoir les deux.
+// POIDS : 0,5, branché le 26/08/26 sur demande d'Ellemine_D.
+// ⚠️ CE QUE LA MESURE DIT, ET IL FAUT LE LIRE AVANT DE TOUCHER À CE POIDS.
+// Sur les sept cas au score connu, le critère est ACTIF quatre fois et
+// il pousse dans le MAUVAIS sens trois fois sur quatre :
+//     Juventus  R1 régénère son antagoniste, R7 celle qu'elle attaque
+//               → pousse R7 ✘ (réel R1)
+//     Inter     R1 régénère son bouclier     → pousse R1 ✔ (réel R1)
+//     Milan     R7 régénère son bouclier     → pousse R7 ✘ (réel R1)
+//     Torino    R7 régénère son antagoniste  → pousse R1 ✘ (réel R7)
+//     Napoli, Fiorentina, Atalanta : neutre, aucun siège nommé.
+// Balayage du poids : 0 → 5/7 · 0,25 → 5/7 · 0,5 → 5/7 · 0,75 → 4/7 ·
+// 1 → 4/7 · 2 → 4/7 · 3 → 4/7. À partir de 0,75 c'est Juventus qui casse.
+// 0,5 est donc le poids maximal qui ne retourne aucun cas — mais il
+// mange déjà l'essentiel de la marge de Juventus (0,63 → 0,13).
+// Le signe inverse ne sauve rien non plus : −0,25 à −1 restent à 5/7,
+// −2 casse Inter. Aucun réglage ne dépasse 5/7 ; le critère n'apporte
+// pas d'information sur cette archive, il ne fait que déplacer les marges.
+// Effet réel : actif sur 38,6 % des thèmes, change le verdict sur 2,4 %.
+// Mettre 0 le débranche entièrement.
+var POIDS_REGENERATION_V7 = 0.5;
+
+function regenerationSiegeV7(fig, house) {
+  if (!fig || !house) return null;
+  const i = FIGS_V7.indexOf(fig);
+  const r = getResultant(fig, house);
+  const j = FIGS_V7.indexOf(r);
+  if (i < 0 || j < 0) return null;
+  const d = (j - i + 16) % 16;
+  const NOMS = {
+    0: 'elle-même', 1: 'l\'antagoniste de son front', 2: 'son binôme',
+    3: 'celle qu\'elle attaque', 4: 'son front', 6: 'celle qu\'elle protège',
+    8: 'son opposée', 10: 'son bouclier', 12: 'celle dont elle est le front',
+    13: 'son antagoniste', 14: 'celle dont elle est le binôme',
+    15: 'le binôme de son antagoniste'
+  };
+  const allie = (d === 2 || d === 4 || d === 10);
+  const hostile = (d === 13);
+  return {
+    fig: fig, house: house, resultante: r, decalage: d,
+    role: NOMS[d] || ('décalage +' + d),
+    allie: allie, hostile: hostile,
+    score: Math.round((allie ? POIDS_REGENERATION_V7
+      : hostile ? -POIDS_REGENERATION_V7 : 0) * 100) / 100,
+    resume: (FL[fig] || fig) + ' en M' + house + ' régénère '
+      + (FL[r] || r) + ' — ' + (NOMS[d] || ('décalage +' + d))
+  };
+}
+
 // Coefficient appliqué au maillon « bouclier » quand son duel est perdu.
 // BRANCHÉ LE 26/08/26 SUR DEMANDE EXPRESSE D'ELLEMINE_D — « tu ne l'as
 // pas encore branché au verdict ». Il valait 1, c'est-à-dire neutre :
@@ -5430,8 +5496,13 @@ function analyseAncrageDeveloppe(theme) {
   // différentes : aucune n'est commune aux deux côtés (vérifié 0/64).
   const exercesR1 = scoreRolesExercesV7(figR1, figR7, theme, rot.hR1);
   const exercesR7 = scoreRolesExercesV7(figR7, figR1, theme, rot.hR7);
-  const ancrageR1 = Math.round((chaineR1.total + rolesR1.total + exercesR1.total) * 100) / 100;
-  const ancrageR7 = Math.round((chaineR7.total + rolesR7.total + exercesR7.total) * 100) / 100;
+  // Quatrième couche (26/08/26) : ce que la centrale régénère à son siège.
+  const regenR1 = regenerationSiegeV7(figR1, rot.hR1);
+  const regenR7 = regenerationSiegeV7(figR7, rot.hR7);
+  const ancrageR1 = Math.round((chaineR1.total + rolesR1.total + exercesR1.total
+    + (regenR1 ? regenR1.score : 0)) * 100) / 100;
+  const ancrageR7 = Math.round((chaineR7.total + rolesR7.total + exercesR7.total
+    + (regenR7 ? regenR7.score : 0)) * 100) / 100;
 
   function val(m) { return m && m.soi && m.soi.meilleur ? m.soi.meilleur.total : 0; }
   const installR1 = val(membres.R1) + val(membres.binomeR1) - val(membres.antagoR1);
@@ -5457,6 +5528,7 @@ function analyseAncrageDeveloppe(theme) {
     hR1: rot.hR1, hR7: rot.hR7, figR1: figR1, figR7: figR7, X: X,
     membres: membres, penchantX: penchantX,
     chaineR1: chaineR1, chaineR7: chaineR7,
+    regenR1: regenR1, regenR7: regenR7,
     rolesR1: rolesR1, rolesR7: rolesR7,
     exercesR1: exercesR1, exercesR7: exercesR7,
     ancrageR1: ancrageR1, ancrageR7: ancrageR7,
@@ -12392,6 +12464,15 @@ function renderDuelBouclierPanel(theme) {
       + '</div>'
       + (d.tenu ? '' : '<div style="font-size:9.5px; color:#fbbf24;">→ libère '
           + nom(d.libere) + ', l\'antagoniste de ' + nom(fig) + '</div>')
+      + (function () {
+          const g = regenerationSiegeV7(fig, cote === 'R1' ? anc.hR1 : anc.hR7);
+          if (!g) return '';
+          const c2 = g.allie ? '#4ade80' : g.hostile ? '#f87171' : '#94a3b8';
+          return '<div style="margin-top:5px; font-size:10px; color:' + c2 + ';">'
+            + '↻ à son siège M' + g.house + ' elle régénère <b>' + nom(g.resultante)
+            + '</b> — ' + g.role + (g.score ? ' (' + (g.score > 0 ? '+' : '') + g.score + ')' : '')
+            + '</div>';
+        })()
       + '</div>';
   }
 
