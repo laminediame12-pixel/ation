@@ -4727,6 +4727,56 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     6/8 ; et sur les quatre cas à camp muet, nommer le bon muet donne
 //     chaîne 3/4 contre rotation 1/4. BTTS_CHAINE_DECISIF passe à true.
 //
+//  I. Via · Rubeus · Via · Tristitia                        RÉEL 0-1 (R7)
+//     R1 = Amissio (M5) · R7 = Rubeus (M11) — thème VALIDE (3 axes).
+//     ANNONCÉ M1, un seul marque, muet = R7. RÉEL : R7 GAGNE 1-0.
+//     Camp ✗ · « un seul marque » ✅ · camp muet ✗ (c'est R1 qui est muet).
+//
+//     LE CAS QUI CASSE LA HIÉRARCHIE. Les trois couches à 5/6 — ancrage,
+//     chaîne, duel corrigé — disaient toutes R1. Les deux couches
+//     « faibles » — sièges et axes — disaient R7. Ce sont elles qui
+//     avaient raison. Après I, TOUT EST À ÉGALITÉ :
+//         ancrage 5/7 · chaîne 5/7 · duel corrigé 5/7
+//         duel brut 5/7 · sièges 5/7 · axes 4/7
+//     ⚠️ 5/7 sur sept cas ne se distingue pas d'un tirage à pile ou face
+//     (p ≈ 0,23). Le camp n'est PAS une capacité démontrée du système.
+//     Il faut le dire ainsi tant qu'on n'a pas beaucoup plus de cas.
+//
+//     CE QUE LE THÈME MONTRAIT, ET QUI ÉTAIT TROMPEUR. R7 Rubeus était
+//     amputé de deux pôles sur trois — bouclier Puer et front Conjunctio
+//     tous deux ABSENTS du thème, binôme Fortuna Minor en résultante
+//     seule (M2r), chaîne −7,5. C'est la signature exacte du camp perdant
+//     du cas G (chaîne −7,5 lui aussi, réel 0-2). Ici le même profil a
+//     GAGNÉ. Une chaîne détruite ne suffit donc pas à faire perdre.
+//     R1 Amissio n'était guère mieux : front Carcer absent, bouclier
+//     Populus présent en M15 mais feu en eau, concordance 0, alignement
+//     0 — présent et inutile.
+//
+//     ⚠️ LA CORRECTION « BOUCLIER ABSENT = ROMPU » EST NEUTRALISÉE.
+//     Elle avait fait passer le duel de 4/6 à 5/6 en redressant H. Sur I
+//     elle fait l'inverse : le bouclier de R7 est absent, elle force donc
+//     le duel à R1, alors que le duel BRUT donnait R7 — le bon camp.
+//         duel brut 5/7   ·   duel corrigé 5/7
+//     Gain sur H, perte sur I, solde nul. Elle reste en place parce que
+//     l'argument de doctrine tient (on ne défend pas un bouclier absent)
+//     et qu'elle n'entre dans aucun verdict — COEF_BOUCLIER_ROMPU_V7
+//     vaut toujours 1 — mais elle n'est plus soutenue par les chiffres.
+//
+//     ⚠️ LE BTTS, LUI, TIENT. Sur I, chaîne NON et rotation OUI : la
+//     chaîne avait raison, un seul a marqué. Sur les neuf cas au BTTS
+//     connu : chaîne 8/9 · rotation 6/9 · « toujours oui » 4/9. C'est
+//     le seul endroit du système où l'écart au hasard est net.
+//     En revanche NOMMER LE MUET reste faible, chaîne 3/5, et l'erreur
+//     est mécanique : lectureDeuxMarquentV7 déclare muet le PERDANT
+//     désigné par l'ancrage. Si le camp est faux, le muet l'est aussi.
+//     Les deux ne sont pas indépendants — le 8/9 porte sur « un seul
+//     marque », pas sur « lequel ».
+//
+//     ⚠️ VÉRIFIÉ, IL N'Y A PAS DE BIAIS R1/R7. Sur 2114 thèmes tirés :
+//     ancrage 49,2/50,8 · chaîne 49,2/50,8 · duel 48,3/51,7 · sièges
+//     50,1/49,9. Les erreurs groupées sur R1 (D et I) sont un hasard
+//     d'échantillon, pas un penchant du calcul.
+//
 // ─── HYPOTHÈSE NÉE DE H, NON BRANCHÉE ───
 // Ancrage et duel corrigé sont tous deux à 5/6, et leurs erreurs sont
 // COMPLÉMENTAIRES : l'ancrage rate D, le duel rate A. Une règle les
@@ -4743,6 +4793,13 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 // de tous les verdicts (elle se déclenche sur 32,5 % des thèmes) : c'est
 // la définition d'un surajustement. À tester sur des cas à venir où les
 // deux boucliers sont rompus.
+// ── SUITE, CAS I (26/08) : elle s'est déclenchée, et elle a ÉCHOUÉ.
+// Les deux boucliers étaient rompus, elle a donc suivi le duel corrigé,
+// qui disait R1 — même réponse que l'ancrage, et R7 a gagné. Elle passe
+// à 6/7, toujours devant l'ancrage à 5/7, mais son unique cas
+// discriminant reste D, et elle vient d'encaisser son premier échec.
+// Elle reste NON BRANCHÉE, et l'écart 6/7 contre 5/7 tient à un seul
+// cas — c'est du bruit, pas une preuve.
 //
 //     Thème NON VALIDE : la résultante de l'axe Cadent (Populus) est
 //     absente. Cardinal et Succédent passent (Puer présent).
