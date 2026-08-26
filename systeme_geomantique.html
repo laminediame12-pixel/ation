@@ -4677,6 +4677,47 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     concordance 1, alignement 2, sa position la plus forte possible.
 //     Côté R7 le bouclier Puella TIENT (+1,75).
 //
+//  H. Rubeus · Tristitia · Laetitia · Via                   RÉSULTAT ATTENDU
+//     R1 = Tristitia (M7) · R7 = Albus (M13) — MÊME ROTATION QUE G.
+//     ⚠️ PREMIER CAS D'ARBITRAGE DE L'ARCHIVE : les couches se divisent.
+//         ancrage  R1 (9 contre 3,76)      duel du bouclier  R7 (−4,25 / +2)
+//         chaîne   R1 (9,25 contre 3)      sièges            R7 (🟥−15 / 🟦+15)
+//                                          axes              R7 (1 contre 2)
+//     Verdict affiché : M1 4-2, un seul marque (la chaîne a la priorité).
+//
+//     POURQUOI CE THÈME COMPTE. Sur les cinq cas au score connu, ancrage,
+//     chaîne, duel et sièges font TOUS 4/5 — ils sont indiscernables. Ils
+//     n'ont jamais été mis en désaccord sur un cas réel. Ici ils le sont,
+//     2 contre 3. Le résultat tranchera, quel qu'il soit.
+//
+//     C'est presque le miroir de G. Les sièges sont les mêmes (M7 🟥 et
+//     M13 🟦) donc sièges et axes redisent R7. Ce qui a changé, c'est la
+//     chaîne : en G le bouclier ET le front de R1 étaient absents du
+//     thème (chaîne −7,5) ; ici les deux sont là (Laetitia M3 M16,
+//     Fortuna Major M5 M6r → chaîne 9,25). Et c'est R7 qui est percée,
+//     son bouclier Puella étant absent. Deux thèmes, mêmes sièges,
+//     chaînes inversées.
+//
+//     ⚠️ IL ARBITRE AUSSI UNE FAILLE DU DUEL DU BOUCLIER, repérée ici :
+//     duelBouclierV7 compare l'assaillant au front SANS VÉRIFIER QUE LE
+//     BOUCLIER EXISTE. Sur ce thème, le bouclier de R7 (Puella) est
+//     absent du thème, et le duel est pourtant déclaré TENU (+2) — on
+//     défend un bouclier qui n'est pas là. Variante « bouclier absent =
+//     rompu d'office » : identique sur les cinq cas connus (4/5, le cas
+//     ne se présentait qu'en G où les deux concluent pareil), mais elle
+//     INVERSE ce thème-ci — R1 au lieu de R7. Non branchée en attendant
+//     le résultat, qui la tranchera aussi.
+//
+//     ⚠️ ET UNE CONTRADICTION INTERNE DU BTTS. Les deux lectures disent
+//     « un seul marque » mais désignent des muets OPPOSÉS :
+//        lectureDeuxMarquentV7   → le muet est Albus (R7)
+//        lectureOuvertureButsV7  → le muet est Tristitia (R1)
+//     Elles ne peuvent pas avoir raison ensemble. Le score réel dira
+//     laquelle nomme le bon camp.
+//
+//     Thème NON VALIDE : la résultante de l'axe Cadent (Populus) est
+//     absente. Cardinal et Succédent passent (Puer présent).
+//
 // ─── CE QUE LE CAS G ARBITRE, ET CE QU'IL N'ARBITRE PAS ───
 //  · BTTS — la lecture actuelle passe à 6/7 (elle ne rate que F), contre
 //    4/7 pour « répondre toujours OUI ». Avant G le compte était 5/6
