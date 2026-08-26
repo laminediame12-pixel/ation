@@ -11579,21 +11579,78 @@ var F4P4_SEUIL_TENUE_V7 = 0;
 // Voir le commentaire dans moteurF4P4V7 pour les onze règles mesurées.
 var F4P4_VERDICT_V7 = 'defensif';
 
+// ─── FUSION AVEC LE RÉSEAU D'ANCRAGE V2 (26/08/26, Ellemine_D :
+// « le réseau d'ancrage est similaire à F4P4, essaie de fusionner les
+// deux dans la bonne logique ») ───
+//
+// Il a raison : les deux moteurs posent LA MÊME question — une figure
+// menacée par son antagoniste résiste-t-elle ? — mais ils y répondent
+// dans deux langues différentes, et aucune des deux ne suffit :
+//
+//   · analyserResistanceV7 (V2) répond en PRÉSENCE. Statut qualitatif —
+//     libre (l'antagoniste n'est pas dans le thème), protégé (une voie
+//     est ouverte), vulnérable (aucune). Deux voies : A, le protecteur
+//     neutralise la menace et n'est pas lui-même menacé — c'est déjà le
+//     duel du bouclier ; B, la figure est chez elle et sa chaîne
+//     binôme → binôme-du-binôme est entière.
+//     Ce que ça dit : Y A-T-IL une route. Ce que ça ignore : sa solidité.
+//
+//   · poleF4P4V7 répond en FORCE. Marge chiffrée du pôle avec son binôme
+//     contre l'antagoniste avec le sien.
+//     Ce que ça dit : COMBIEN pèse le rapport. Ce que ça ignore : qu'une
+//     figure sans antagoniste dans le thème n'a rien à repousser, et
+//     qu'un protecteur lui-même menacé ne protège personne.
+//
+// LA BONNE LOGIQUE est donc la conjonction, pas la moyenne :
+//     libre       → tient, quoi que dise la marge (rien ne l'attaque)
+//     protégé     → tient si la marge ne l'écrase pas
+//     vulnérable  → cède, sauf marge franchement positive
+// Une route sans force est un chemin de papier ; une force sans route
+// est une masse qui frappe à côté.
+var F4P4_MARGE_ECRASEMENT_V7 = -2;   // au-delà, même protégé cède
+var F4P4_MARGE_SURVIE_V7 = 2;        // en deçà, vulnérable ne se sauve pas
+var F4P4_BONUS_STATUT_V7 = { libre: 1, 'protégé': 0.5, vulnérable: -1 };
+
 function poleF4P4V7(nom, fig, theme) {
   if (!fig) return null;
   const moi = forceAvecBinomeV7(fig, theme);
   const ant = ANTAGONISTES_V7[fig];
   const lui = forceAvecBinomeV7(ant, theme);
   const marge = Math.round((moi.total - lui.total) * 100) / 100;
+  // Le versant PRÉSENCE, repris tel quel du Réseau d'ancrage V2.
+  let res = null;
+  try { res = analyserResistanceV7(fig, theme); } catch (e) { res = null; }
+  const statut = res ? res.statut : null;
+  let tient, motif;
+  if (statut === 'libre') {
+    tient = true; motif = 'libre — ' + (FL[ant] || ant) + ' absente du thème';
+  } else if (statut === 'protégé') {
+    tient = marge > F4P4_MARGE_ECRASEMENT_V7;
+    motif = tient ? 'protégé par la voie ' + (res.voieActive || '?')
+                  : 'protégé mais écrasé (' + marge + ')';
+  } else if (statut === 'vulnérable') {
+    tient = marge >= F4P4_MARGE_SURVIE_V7;
+    motif = tient ? 'aucune voie, mais la force suffit (' + marge + ')'
+                  : 'vulnérable — aucune voie' + (res && res.protecteurMenace
+                      ? ', et son protecteur est lui-même menacé' : '');
+  } else {
+    tient = marge >= F4P4_SEUIL_TENUE_V7; motif = 'force seule';
+  }
+  const bonus = (F4P4_BONUS_STATUT_V7[statut] || 0);
   return {
     role: nom, fig: fig, binome: BINOMES_V7[fig],
     antagoniste: ant, binomeAntagoniste: BINOMES_V7[ant],
     present: moi.soi.present, occ: moi.occ, base: moi.base,
     force: moi.total, forceAdverse: lui.total, marge: marge,
-    tient: marge >= F4P4_SEUIL_TENUE_V7,
+    statut: statut, voie: res ? res.voieActive : null,
+    protecteurMenace: res ? res.protecteurMenace : null,
+    tient: tient, motif: motif,
+    // Le score du pôle mêle les deux langues : la marge chiffrée, plus
+    // ce que le statut de présence ajoute ou retire.
+    score: Math.round((marge + bonus) * 100) / 100,
     resume: nom + ' ' + (FL[fig] || fig) + ' ' + moi.total + ' contre '
-      + (FL[ant] || ant) + ' ' + lui.total + ' → ' + (marge >= F4P4_SEUIL_TENUE_V7 ? 'TIENT' : 'CÈDE')
-      + ' (' + (marge > 0 ? '+' : '') + marge + ')'
+      + (FL[ant] || ant) + ' ' + lui.total + ' → ' + (tient ? 'TIENT' : 'CÈDE')
+      + ' (' + (marge > 0 ? '+' : '') + marge + ', ' + (statut || '—') + ')'
   };
 }
 
@@ -11611,6 +11668,7 @@ function campF4P4V7(fig, siege, theme) {
   const centrale = poleF4P4V7('centrale', fig, theme);
   const tenus = poles.filter(function (p) { return p.tient; }).length;
   const sommeMarges = Math.round(poles.reduce(function (s, p) { return s + p.marge; }, 0) * 100) / 100;
+  const sommeScores = Math.round(poles.reduce(function (s, p) { return s + p.score; }, 0) * 100) / 100;
   return {
     fig: fig, siege: siege,
     concordance: conc, alignement: align.nb,
@@ -11618,7 +11676,7 @@ function campF4P4V7(fig, siege, theme) {
     regeneration: regen,
     poles: poles, centrale: centrale,
     polesTenus: tenus, polesTotal: poles.length,
-    sommeMarges: sommeMarges,
+    sommeMarges: sommeMarges, sommeScores: sommeScores,
     // Le score global du camp : les quatre pôles, la centrale, et ce que
     // le siège régénère. Chaque terme est déjà dans la même unité
     // (concordance + 0,5 × alignement).
@@ -11662,6 +11720,17 @@ function moteurF4P4V7(theme) {
   // Torino, que l'ancrage rate, et perd Inter et Atalanta, qu'il tient.
   // Les deux moteurs sont à 5/7 sur des cas DIFFÉRENTS — c'est ce qui
   // rend la comparaison utile.
+  // ⚠️ MESURÉ APRÈS LA FUSION : mêler le statut de présence au score des
+  // pôles AMÉLIORE LA LECTURE mais DÉGRADE le verdict.
+  //     defensif sur les marges brutes ........ 5/7   ← retenu
+  //     defensif sur les scores fusionnés ..... 4/7
+  //     somme des quatre scores fusionnés ..... 4/7
+  //     total complet fusionné ................ 4/7
+  //     statut de la centrale puis scores ..... 4/7
+  //     pôles tenus (règle fusionnée) ......... 2/7
+  // La fusion sert donc à EXPLIQUER pourquoi un pôle tient — libre,
+  // protégé par telle voie, ou vulnérable avec son protecteur lui-même
+  // menacé — pas à trancher. Le verdict reste sur les marges.
   const cle = {
     defensif: function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; },
     total:    function (c) { return c.total; },
@@ -12719,7 +12788,7 @@ var MOTEURS_V7 = [
                      + (y.tenu ? 'tenu ' : 'rompu ') + y.marge };
     } },
   { cle: 'f4p4', nom: 'Front 4 · Pôle 4', icone: '🧭', teinte: '#a78bfa',
-    note: 'les quatre pôles et leur résistance', juste: 5, total: 7,
+    note: 'quatre pôles · force et présence — Réseau V2 fondu dedans', juste: 5, total: 7,
     verdict: function (t) {
       var m = moteurF4P4V7(t);
       if (!m.applicable) return null;
@@ -12745,13 +12814,16 @@ var MOTEURS_V7 = [
       });
       return { camp: r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null, detail: r1 + ' contre ' + r7 };
     } },
-  { cle: 'reseau', nom: 'Réseau d\'ancrage V2', icone: '🕸', teinte: '#94a3b8',
-    note: 'ancienne lecture, conservée pour comparaison', juste: 3, total: 7,
-    verdict: function (t) {
-      var r = analyserReseauAncrageV2(t);
-      if (!r || !r.winner || r.winner === 'Nul') return null;
-      return { camp: r.winner, detail: '' };
-    } },
+  // ─── Réseau d'ancrage V2 RETIRÉ du tableau le 26/08/26 ───
+  // Ellemine_D : « le réseau d'ancrage est similaire à F4P4, essaie de
+  // fusionner les deux dans la bonne logique. » C'est fait : son cœur,
+  // analyserResistanceV7 et ses deux voies de résistance, est appelé
+  // pour CHACUN des quatre pôles dans poleF4P4V7 — il en faisait moins,
+  // il ne jugeait que les deux centrales. Le garder comme voix séparée
+  // reviendrait à compter deux fois la même lecture, en moins bien
+  // (3/7 seul). Son code reste en place : il porte aussi la
+  // confrontation directe, le pivot du nul et le filtre M15/M16, qui ne
+  // sont pas des verdicts de camp et n'ont pas d'équivalent dans F4P4.
   { cle: 'boucles', nom: 'Boucles antagonistes', icone: '🔗', teinte: '#94a3b8',
     note: 'protocole R1/R7 d\'origine', juste: 3, total: 7,
     verdict: function (t) {
@@ -12964,7 +13036,11 @@ function renderF4P4Panel(theme) {
         + '<span style="color:' + col + '; font-weight:700;">' + (p.marge > 0 ? '+' : '') + p.marge + '</span>'
         + '</div>'
         + '<div class="muted" style="font-size:8.5px; margin:0 0 3px 83px;">contre '
-        + nom(p.antagoniste) + ' — ' + p.force + ' vs ' + p.forceAdverse + '</div>';
+        + nom(p.antagoniste) + ' — ' + p.force + ' vs ' + p.forceAdverse
+        + (p.statut ? ' · <span style="color:'
+            + (p.statut === 'libre' ? '#4ade80' : p.statut === 'protégé' ? '#38bdf8' : '#f87171')
+            + ';">' + p.statut + '</span>' : '')
+        + (p.motif ? ' — ' + p.motif : '') + '</div>';
     });
     const cc = c.centrale.tient ? '#4ade80' : '#f87171';
     h += '<div style="margin-top:5px; padding-top:4px; border-top:1px solid #334155; font-size:10px;">'
@@ -12981,8 +13057,10 @@ function renderF4P4Panel(theme) {
 
   panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
     + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
-    + 'Chaque pôle avec son binôme, contre son antagoniste avec le sien. '
-    + 'Marge ≥ 0 → il tient. Le 4e pôle est le front du front.</div>'
+    + 'Chaque pôle en deux langues : la FORCE (son binôme contre '
+    + 'l\'antagoniste et le sien) et la PRÉSENCE (libre, protégé par une '
+    + 'voie, ou vulnérable) — le Réseau d\'ancrage V2 est fondu ici. '
+    + 'Le 4e pôle est le front du front.</div>'
     + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
     + colonne('R1', m.R1) + colonne('R7', m.R7)
     + '</div>'
