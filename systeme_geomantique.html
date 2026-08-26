@@ -11731,84 +11731,244 @@ function campF4P4V7(fig, siege, theme) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// F4P4 — LA DÉMARCHE EN CINQ ÉTAPES (26/08/26, dictée par Ellemine_D
+// après qu'il ait constaté que la version précédente ne pesait que deux
+// pôles sur quatre : « d'abord la démarche d'analyse est mal exposée,
+// corrige »).
+//
+// 1. Déterminer R1 et R7, et REGARDER LEUR BOUCLE.
+//    · boucles DIFFÉRENTES → position d'opposition : le plus solide,
+//      après examen de tout son réseau à quatre pôles, gagne.
+//    · MÊME boucle → ce n'est plus leur solidité qui tranche mais le
+//      réseau d'ancrage de leur ANTAGONISTE DIRECT : il désigne le plus
+//      fragile, qui perd.
+//    (Rappel mesuré : deux figures partagent la boucle dès que leurs
+//    index ont la même parité — une fois sur deux.)
+//
+// 2. Les quatre pôles : front, front du front, bouclier (= protecteur),
+//    binôme. Et une identité qu'Ellemine_D formule ainsi : « le binôme
+//    de R1 est lui aussi le bouclier de la figure de front du front de
+//    R1 » — exemple Puer / Caput Draconis, Caput étant l'antagoniste de
+//    l'antagoniste de Fortuna Minor, elle-même front du front de Puer.
+//    Vérifié 16/16 : bouclier(front²(X)) = X+8+10 = X+2 = binôme(X).
+//    Les quatre pôles ne sont donc pas quatre satellites : ils se
+//    referment l'un sur l'autre.
+//
+// 3. Chaque pôle est examiné avec LES CRITÈRES D'ANALYSE D'UNE FIGURE —
+//    localisation, concordance, niveau d'alignement actif — et non par
+//    sa seule présence.
+//
+// 4. Chaque pôle est LUI-MÊME une figure centrale avec ses quatre
+//    pôles : c'est la solidité de ce second niveau qui renforce R1 ou R7.
+//
+// 5. La même analyse est menée sur l'antagoniste direct de R1 et de R7.
+//
+// VERDICT : celui qui a le plus de pôles solides gagne.
+//
+// Seuils explicites, à régler sur les cas réels.
+var F4P4_SEUIL_ANCRAGE_V7 = 0.5;   // concordance + 0,5×alignement minimum
+var F4P4_SEUIL_RENFORT_V7 = 2;     // pôles de second niveau présents
+
+// ⚠️⚠️ CE QUE LA MESURE DIT DE CETTE DÉMARCHE — À LIRE AVANT DE LA METTRE
+// AU VOLANT. Implémentée fidèlement, elle donne 1/7 sur les cas au score
+// connu, contre 5/7 pour la règle précédente. Ce n'est pas un détail de
+// réglage :
+//   · 384 encodages balayés (définition de « solide », seuils d'ancrage
+//     de 0,5 à 3, renfort de 1 à 4, sens des deux branches). SIX
+//     atteignent 5/7, aucun ne dépasse. Six sur 384, c'est ce que le
+//     hasard produit.
+//   · Les SIX exigent d'INVERSER la branche « même boucle » : elles font
+//     gagner le camp dont l'assaillant est le PLUS solide, l'inverse de
+//     ce qui est écrit. Je ne retourne pas une doctrine sur un résultat
+//     à 1,6 % — c'est à Ellemine_D de dire si j'ai mal lu sa phrase.
+//   · Cause probable, mesurée : LE COMPTE DE PÔLES SOLIDES SATURE.
+//     Sur 1111 thèmes, 77,5 % des camps ont 3 ou 4 pôles solides sur 4,
+//     et R1 et R7 ont le MÊME compte 42,9 % du temps. Presque un thème
+//     sur deux, le critère ne dit rien et ce sont les départages qui
+//     décident. Un critère à quatre valeurs dont deux concentrent les
+//     trois quarts des cas ne peut pas porter un verdict.
+//     (Pour mémoire : R1 et R7 partagent la boucle 49,1 % du temps, donc
+//     la branche « même boucle » sert bien une fois sur deux.)
+//
+// C'est pourquoi F4P4_DEMARCHE_V7 vaut 'duel4' et non 'cinq_etapes' :
+// la démarche en cinq étapes est CALCULÉE et AFFICHÉE en entier, mais
+// elle ne pilote pas le verdict tant qu'on n'a pas compris pourquoi elle
+// échoue. Basculer la constante suffit à lui donner le volant.
+var F4P4_DEMARCHE_V7 = 'duel4';
+
+// Étape 3 — les critères d'analyse d'une figure, appliqués partout.
+function analyseFigureV7(fig, theme) {
+  if (!fig) return null;
+  const occ = trouverFigV7(fig, theme) || [];
+  let conc = 0, align = 0, base = 0;
+  const positions = occ.map(function (o) {
+    const c = concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[o.pos]);
+    const a = alignementActifV7(fig, o.pos);
+    conc += c; align += a.nb; if (!o.hidden) base++;
+    return { pos: o.pos, resultante: !!o.hidden, conc: c, align: a.nb };
+  });
+  return {
+    fig: fig, present: occ.length > 0, occ: occ.length, base: base,
+    conc: Math.round(conc * 100) / 100, align: align,
+    ancrage: Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100,
+    positions: positions
+  };
+}
+
+// Étape 4 — un pôle est lui-même une centrale à quatre pôles.
+// Le second niveau ne se re-développe pas (sinon la récursion n'a pas de
+// fin) : on y compte simplement les pôles PRÉSENTS, c'est le « renfort ».
+function polesDeV7(fig) {
+  return fig ? [BOUCLIER_V7[fig], FRONT_V7[fig], BINOMES_V7[fig], frontDuFrontV7(fig)] : [];
+}
+
+function solidPoleV7(role, fig, theme) {
+  if (!fig) return null;
+  const a = analyseFigureV7(fig, theme);
+  const sous = polesDeV7(fig).map(function (g) { return analyseFigureV7(g, theme); });
+  const renfort = sous.filter(function (x) { return x && x.present; }).length;
+  const renfortAncre = sous.filter(function (x) { return x && x.ancrage >= F4P4_SEUIL_ANCRAGE_V7; }).length;
+  // Un pôle est SOLIDE s'il est là, s'il tient sa place (critères
+  // d'analyse), et si son propre réseau le porte (étape 4).
+  const solide = a.present && a.ancrage >= F4P4_SEUIL_ANCRAGE_V7 && renfort >= F4P4_SEUIL_RENFORT_V7;
+  return {
+    role: role, fig: fig, present: a.present, occ: a.occ, base: a.base,
+    conc: a.conc, align: a.align, ancrage: a.ancrage, positions: a.positions,
+    sousPoles: [
+      { role: 'bouclier', fig: BOUCLIER_V7[fig], a: sous[0] },
+      { role: 'front', fig: FRONT_V7[fig], a: sous[1] },
+      { role: 'binôme', fig: BINOMES_V7[fig], a: sous[2] },
+      { role: 'front du front', fig: frontDuFrontV7(fig), a: sous[3] }
+    ],
+    renfort: renfort, renfortAncre: renfortAncre, solide: solide,
+    motif: !a.present ? 'absente du thème'
+      : a.ancrage < F4P4_SEUIL_ANCRAGE_V7 ? 'présente mais mal ancrée (' + a.ancrage + ')'
+      : renfort < F4P4_SEUIL_RENFORT_V7 ? 'ancrée mais son réseau ne suit pas (' + renfort + '/4)'
+      : 'solide — ancrage ' + a.ancrage + ', réseau ' + renfort + '/4'
+  };
+}
+
+// Étapes 2 à 5 pour un camp.
+function reseauF4P4V7(fig, siege, theme) {
+  if (!fig) return null;
+  const centrale = solidPoleV7('centrale', fig, theme);
+  const poles = [
+    solidPoleV7('bouclier', BOUCLIER_V7[fig], theme),
+    solidPoleV7('front', FRONT_V7[fig], theme),
+    solidPoleV7('binôme', BINOMES_V7[fig], theme),
+    solidPoleV7('front du front', frontDuFrontV7(fig), theme)
+  ].filter(Boolean);
+  const antagoniste = ANTAGONISTES_V7[fig];
+  const adverse = antagoniste ? {
+    centrale: solidPoleV7('assaillant', antagoniste, theme),
+    poles: [
+      solidPoleV7('bouclier', BOUCLIER_V7[antagoniste], theme),
+      solidPoleV7('front', FRONT_V7[antagoniste], theme),
+      solidPoleV7('binôme', BINOMES_V7[antagoniste], theme),
+      solidPoleV7('front du front', frontDuFrontV7(antagoniste), theme)
+    ].filter(Boolean)
+  } : null;
+  const solides = poles.filter(function (p) { return p.solide; }).length;
+  const solidesAdverse = adverse ? adverse.poles.filter(function (p) { return p.solide; }).length : 0;
+  return {
+    fig: fig, siege: siege, boucle: loopOf(fig),
+    concordance: concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[siege]),
+    alignement: alignementActifV7(fig, siege).nb,
+    regeneration: regenerationSiegeV7(fig, siege),
+    centrale: centrale, poles: poles,
+    antagoniste: antagoniste, adverse: adverse,
+    solides: solides, solidesAdverse: solidesAdverse,
+    // la centrale compte comme cinquième appui, elle n'est plus ignorée
+    solidesAvecCentrale: solides + (centrale && centrale.solide ? 1 : 0),
+    ancrageTotal: Math.round((poles.reduce(function (s, p) { return s + p.ancrage; }, 0)
+      + (centrale ? centrale.ancrage : 0)) * 100) / 100
+  };
+}
+
 function moteurF4P4V7(theme) {
   if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
   const rot = getRotationCombat(theme);
   if (!rot || !rot.figR1 || !rot.figR7) return { applicable: false, raison: 'Rotation non applicable.' };
-  const R1 = campF4P4V7(rot.figR1, rot.hR1, theme);
-  const R7 = campF4P4V7(rot.figR7, rot.hR7, theme);
-  // ─── RÈGLE DE VERDICT ───
-  // Onze règles ont été mesurées sur les sept cas au score connu. Une
-  // seule atteint 5/7, le score de l'ancrage : la somme des marges du
-  // BOUCLIER et du FRONT seuls. Ajouter le binôme et le front du front
-  // à la somme fait retomber à 4/7.
-  //     bouclier + front seuls ............ 5/7
-  //     total complet ..................... 4/7
-  //     somme des quatre marges ........... 4/7
-  //     centrale seule .................... 4/7
-  //     centrale ×2 + somme des marges .... 4/7
-  //     meilleur pôle ..................... 4/7
-  //     pôles tenus puis total ............ 3/7
-  //     centrale puis pôles tenus ......... 3/7
-  //     pôles tenus + centrale (sur 5) .... 3/7
-  //     pire pôle le moins pire ........... 3/7
-  //     moins de pôles cédés .............. 2/7
-  // ⚠️ ONZE RÈGLES ESSAYÉES SUR SEPT CAS : qu'une atteigne 5/7 n'a rien
-  // d'improbable par hasard seul. Ce 5/7 n'est PAS une validation.
-  // Ce qui le rend un peu moins arbitraire : bouclier et front sont
-  // exactement les deux pôles du réseau à trois pôles, ceux que
-  // soliditeChaineV7 pèse déjà. La règle retenue n'est donc pas choisie
-  // seulement parce qu'elle gagne — elle est aussi la seule des onze qui
-  // corresponde à une doctrine déjà écrite.
-  // ⚠️ ET ELLE SE TROMPE AILLEURS QUE L'ANCRAGE : elle rattrape Napoli et
-  // Torino, que l'ancrage rate, et perd Inter et Atalanta, qu'il tient.
-  // Les deux moteurs sont à 5/7 sur des cas DIFFÉRENTS — c'est ce qui
-  // rend la comparaison utile.
-  // ⚠️ MESURÉ APRÈS LA FUSION : mêler le statut de présence au score des
-  // pôles AMÉLIORE LA LECTURE mais DÉGRADE le verdict.
-  //     defensif sur les marges brutes ........ 5/7   ← retenu
-  //     defensif sur les scores fusionnés ..... 4/7
-  //     somme des quatre scores fusionnés ..... 4/7
-  //     total complet fusionné ................ 4/7
-  //     statut de la centrale puis scores ..... 4/7
-  //     pôles tenus (règle fusionnée) ......... 2/7
-  // La fusion sert donc à EXPLIQUER pourquoi un pôle tient — libre,
-  // protégé par telle voie, ou vulnérable avec son protecteur lui-même
-  // menacé — pas à trancher. Le verdict reste sur les marges.
-  const cle = {
-    defensif: function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; },
-    total:    function (c) { return c.total; },
-    poles:    function (c) { return c.polesTenus; },
-    // Ma défense moins celle de mon assaillant : je gagne si je tiens
-    // mieux mes deux pôles avant que lui ne tient les siens.
-    duel4:    function (c) { return Math.round(((c.poles[0].marge + c.poles[1].marge)
-                 - c.assaillantDefensif) * 100) / 100; },
-    // Pôles tenus de mon côté moins pôles tenus de l'assaillant.
-    tenus4:   function (c) { return c.polesTenus - c.assaillantTenus; },
-    // L'assaillant seul : je gagne si le camp qui me frappe est le plus
-    // enfoncé des deux.
-    assaut:   function (c) { return -c.assaillantSomme; }
-  }[F4P4_VERDICT_V7] || function (c) { return Math.round((c.poles[0].marge + c.poles[1].marge) * 100) / 100; };
-  const k1 = cle(R1), k7 = cle(R7);
-  let avantage = null, critere = '';
-  if (k1 !== k7) {
-    avantage = k1 > k7 ? 'R1' : 'R7';
-    critere = 'règle « ' + F4P4_VERDICT_V7 + ' » : ' + k1 + ' contre ' + k7;
-  } else if (R1.total !== R7.total) {
-    avantage = R1.total > R7.total ? 'R1' : 'R7';
-    critere = 'égalité sur la règle « ' + F4P4_VERDICT_V7 + ' » (' + k1
-      + ') — départage par le total ' + R1.total + ' contre ' + R7.total;
-  } else {
-    critere = 'égalité complète — aucun départage';
+
+  // ÉTAPE 1 — la boucle décide de la LECTURE, avant tout chiffre.
+  const memeBoucle = loopOf(rot.figR1) === loopOf(rot.figR7);
+
+  // ÉTAPES 2 à 5 — les deux réseaux complets.
+  const R1 = reseauF4P4V7(rot.figR1, rot.hR1, theme);
+  const R7 = reseauF4P4V7(rot.figR7, rot.hR7, theme);
+
+  // Ancienne clé, conservée tant que la démarche en cinq étapes n'est pas
+  // comprise (voir le bloc d'avertissement sur F4P4_DEMARCHE_V7).
+  if (F4P4_DEMARCHE_V7 !== 'cinq_etapes') {
+    const anc = campF4P4V7(rot.figR1, rot.hR1, theme);
+    const anc7 = campF4P4V7(rot.figR7, rot.hR7, theme);
+    const k = function (c) {
+      return Math.round(((c.poles[0].marge + c.poles[1].marge) - c.assaillantDefensif) * 100) / 100;
+    };
+    const k1 = k(anc), k7 = k(anc7);
+    return {
+      applicable: true, hR1: rot.hR1, hR7: rot.hR7,
+      figR1: rot.figR1, figR7: rot.figR7, memeBoucle: memeBoucle,
+      lecture: 'règle duel4 (la démarche en cinq étapes est calculée mais ne pilote pas)',
+      R1: R1, R7: R7, marges: { R1: anc, R7: anc7 },
+      avantage: k1 > k7 ? 'R1' : k7 > k1 ? 'R7' : null,
+      critere: 'règle « duel4 » : ' + k1 + ' contre ' + k7
+        + ' · cinq étapes : ' + R1.solides + '/4 contre ' + R7.solides + '/4 pôles solides',
+      synthese: 'F4P4 — duel4 ' + k1 + ' contre ' + k7
+        + ' | cinq étapes ' + R1.solides + '/4 contre ' + R7.solides + '/4'
+    };
   }
+
+  let avantage = null, critere = '', lecture;
+  if (!memeBoucle) {
+    // Opposition de boucle : le plus solide gagne.
+    lecture = 'opposition de boucles (' + R1.boucle + ' contre ' + R7.boucle + ')';
+    if (R1.solides !== R7.solides) {
+      avantage = R1.solides > R7.solides ? 'R1' : 'R7';
+      critere = lecture + ' — pôles solides ' + R1.solides + ' contre ' + R7.solides;
+    } else if (R1.ancrageTotal !== R7.ancrageTotal) {
+      avantage = R1.ancrageTotal > R7.ancrageTotal ? 'R1' : 'R7';
+      critere = lecture + ' — ' + R1.solides + ' pôles solides de chaque côté, '
+        + 'départage par l\'ancrage total ' + R1.ancrageTotal + ' contre ' + R7.ancrageTotal;
+    } else {
+      critere = lecture + ' — égalité complète, aucun départage';
+    }
+  } else {
+    // Même boucle : ce sont les assaillants qui désignent le plus fragile.
+    // Le camp dont l'assaillant a le RÉSEAU LE PLUS SOLIDE est le plus
+    // fragile — il perd.
+    lecture = 'même boucle (' + R1.boucle + ') — ce sont les antagonistes directs qui tranchent';
+    if (R1.solidesAdverse !== R7.solidesAdverse) {
+      avantage = R1.solidesAdverse < R7.solidesAdverse ? 'R1' : 'R7';
+      critere = lecture + ' — assaillant de R1 ' + R1.solidesAdverse + ' pôles solides, '
+        + 'assaillant de R7 ' + R7.solidesAdverse + ' : le plus attaqué est le plus fragile';
+    } else if (R1.solides !== R7.solides) {
+      avantage = R1.solides > R7.solides ? 'R1' : 'R7';
+      critere = lecture + ' — assaillants à égalité (' + R1.solidesAdverse
+        + ') — départage par les pôles solides ' + R1.solides + ' contre ' + R7.solides;
+    } else if (R1.ancrageTotal !== R7.ancrageTotal) {
+      avantage = R1.ancrageTotal > R7.ancrageTotal ? 'R1' : 'R7';
+      critere = lecture + ' — départage par l\'ancrage total '
+        + R1.ancrageTotal + ' contre ' + R7.ancrageTotal;
+    } else {
+      critere = lecture + ' — égalité complète, aucun départage';
+    }
+  }
+
   return {
     applicable: true, hR1: rot.hR1, hR7: rot.hR7,
     figR1: rot.figR1, figR7: rot.figR7,
+    memeBoucle: memeBoucle, lecture: lecture,
     R1: R1, R7: R7, avantage: avantage, critere: critere,
-    synthese: 'F4P4 — R1 ' + R1.resume + ' | R7 ' + R7.resume
-      + ' → ' + (avantage || 'nul') + ' (' + critere + ')'
+    synthese: 'F4P4 — ' + lecture + ' · R1 ' + (FL[rot.figR1] || rot.figR1) + ' '
+      + R1.solides + '/4 pôles solides (assaillant ' + R1.solidesAdverse + '/4)'
+      + ' | R7 ' + (FL[rot.figR7] || rot.figR7) + ' '
+      + R7.solides + '/4 (assaillant ' + R7.solidesAdverse + '/4)'
+      + ' → ' + (avantage || 'nul')
   };
 }
+
 
 // ─── CE QUI COMPTE, C'EST CE QUI TOUCHE LE CAMP D'EN FACE ───
 // Premier essai (écarté) : compter les quatre rôles exercés sur n'importe
@@ -12739,6 +12899,7 @@ function renderAxesPanel(theme) {
 // pour ce que la mesure autorise à en dire — en résumé : aucune valeur du
 // coefficient ne dépasse 5/7 sur les cas réels, 0,5 est la plus forte qui
 // n'en retourne aucun, et le verdict change sur 5,9% des thèmes.
+
 // ═══════════════════════════════════════════════════════════════
 // TABLEAU DE BORD DES MOTEURS (26/08/26, demande d'Ellemine_D)
 // « Pour chaque moteur créé, son propre affichage de résultats verdict
