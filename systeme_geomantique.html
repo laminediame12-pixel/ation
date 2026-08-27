@@ -4654,7 +4654,15 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //   Juventus = A · Inter = B · Milan = C · Napoli = D · Roma = E
 //   Lazio = F · Fiorentina = G · Atalanta = H · Torino = I
 // Ce sont des ÉTIQUETTES, sans rapport avec les équipes réelles des
-// matchs. Attention en relisant le code : « camp A », « équipe B »,
+// matchs.
+//
+// ⚠️ 27/08/26 — CES CAS SONT MAINTENANT DES DONNÉES : CAS_REFERENCE_V7,
+// rejouées par bancMoteursV7() et affichées par renderBancPanel().
+// Les notes ci-dessous restent le journal du raisonnement, mais LES
+// CHIFFRES DE JUSTESSE QUI Y FIGURENT SONT DATÉS : seul le banc dit
+// l'état courant. Motif : le 26/08 un changement d'échelle dans
+// forceCampV7 a fait tomber chaîne, ancrage et duel de 5/7 à 3–4/7, et
+// les panneaux ont continué d'afficher 5/7 pendant deux commits. Attention en relisant le code : « camp A », « équipe B »,
 // « boucle A/B », « voie A », « axe D », « Bloc B », « B-B-A » et
 // « F.Minor » gardent leur sens d'origine et n'ont pas été renommés.
 // Les trois seuls thèmes de cette session dont le score réel est connu.
@@ -5232,9 +5240,26 @@ function forceCampV7(fig, theme) {
     if (pr) { profilSomme += pr.total; if (pr.total > profilBest) profilBest = pr.total; }
   });
   const brut = Math.round((conc + align * POIDS_ALIGNEMENT_CAMP_V7) * 100) / 100;
-  const total = (F4P4_MESURE_V7 === 'profil')
-    ? Math.round(profilSomme * 100) / 100
-    : brut;
+  // ─── FUITE D'ÉCHELLE CORRIGÉE LE 27/08/26 ───
+  // Le 26/08, F4P4_MESURE_V7 = 'profil' faisait basculer CE total sur
+  // l'échelle des sept critères (−20 à +30) alors que tous ses
+  // consommateurs sont calés sur l'échelle brute (0 à 3) :
+  //   duelBouclierV7 compare A.total et D.total pour dire tenu/rompu ;
+  //   soliditeChaineV7 divise la chaîne par deux quand le duel est perdu ;
+  //   poleF4P4V7 compare la marge à ±2.
+  // Changer l'échelle a donc changé QUELS boucliers sont rompus, et
+  // silencieusement déplacé la chaîne et l'ancrage — les deux moteurs
+  // calés sur Juventus, Inter et Milan.
+  // Mesuré au banc (bancMoteursV7) : la chaîne de R1 sur Juventus
+  // passait de 10 à 8 et le cas basculait de R1 à R7 ; sur Inter elle
+  // passait de 6 à 5,25, à égalité avec R7. Deux des trois cas de
+  // calibrage perdus par un effet de bord.
+  // La correction demandée par Ellemine_D (« Carcer est chez elle, tu ne
+  // peux pas le voir ») porte sur analyseFigureV7, qui EST le chemin
+  // actif de F4P4 et qui garde les sept critères. Elle ne portait pas
+  // sur forceCampV7, qui sert les moteurs d'avant.
+  // profilSomme et profilMeilleur restent exposés pour comparaison.
+  const total = brut;
   return {fig: fig, present: occ.length > 0, occ: occ.length, base: base,
     conc: Math.round(conc * 100) / 100, align: align,
     ancrageBrut: brut,
@@ -12045,6 +12070,15 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
     fig: fig, siege: siege, boucle: loopOf(fig),
     concordance: concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[siege]),
     alignement: alignementActifV7(fig, siege).nb,
+    // ─── CORRECTIF DU 27/08/26 — LE PANNEAU F4P4 NE S'AFFICHAIT JAMAIS ───
+    // renderF4P4Panel lit c.lignesCompatibles. campF4P4V7 le fournissait,
+    // reseauF4P4V7 — le chemin des cinq étapes, celui qui pilote le
+    // verdict depuis le 26/08 — ne le fournissait pas. Le panneau levait
+    // donc « Cannot read properties of undefined » sur 311 thèmes sur
+    // 311, soit 100 % : le moteur principal n'avait aucun affichage.
+    // Trouvé par le soak, jamais visible autrement — le rendu est
+    // enveloppé d'un try/catch qui écrivait dans la console.
+    lignesCompatibles: alignementActifV7(fig, siege).actievesCompatibles,
     regeneration: regenerationSiegeV7(fig, siege),
     centrale: centrale, poles: poles,
     antagoniste: antagoniste, adverse: adverse,
@@ -13210,6 +13244,120 @@ function renderAxesPanel(theme) {
 // Rien de tout cela n'est fait ici : ce bloc CONSTATE, il ne change pas
 // le calcul. Supprimer des moteurs est irréversible pour l'archive des
 // comparaisons ; c'est à Ellemine_D de le décider.
+// ═══════════════════════════════════════════════════════════════
+// LE BANC DE RÉFÉRENCE — les cas au résultat connu, en DONNÉES.
+//
+// Pourquoi ce bloc existe. Jusqu'au 27/08/26 l'archive vivait dans les
+// commentaires en tête de fichier, et la justesse de chaque moteur était
+// écrite EN DUR dans MOTEURS_V7 (juste: 5, total: 7). Un chiffre écrit à
+// la main ne bouge pas quand le code bouge.
+//
+// Ce qui est arrivé, et qui a motivé ce banc : le 26/08, en corrigeant la
+// mesure de F4P4, forceCampV7 a basculé d'échelle. duelBouclierV7 s'en
+// sert pour dire si un bouclier tient, et soliditeChaineV7 divise la
+// chaîne par deux quand il est rompu. Résultat : la chaîne de R1 sur
+// Juventus est passée de 10 à 8, le cas a basculé de R1 à R7, Inter est
+// tombé à égalité — et les panneaux ont continué d'afficher « 5/7 »
+// pendant que les moteurs faisaient 3/7. Personne ne pouvait le voir.
+//
+// Désormais les cas sont des données, le banc les rejoue à chaque appel,
+// et les cartes affichent la justesse MESURÉE. Toute modification de
+// doctrine est notée sur-le-champ.
+//
+// ⚠️ CE QUE LE BANC NE DIT PAS. Sept cas décisifs, c'est très peu :
+// 5/7 ne se distingue pas d'un tirage à pile ou face (p ≈ 0,23), et le
+// meilleur de huit moteurs sur sept cas est attendu haut par simple
+// sélection. Le banc sert à DÉTECTER LES RÉGRESSIONS, pas à couronner un
+// moteur.
+var CAS_REFERENCE_V7 = [
+  { nom: 'Juventus', meres: ['conjunctio','rubeus','cauda_draconis','acquisitio'],
+    score: '6-1', camp: 'R1', btts: true },
+  { nom: 'Inter', meres: ['puella','via','conjunctio','via'],
+    score: '3-2', camp: 'R1', btts: true },
+  { nom: 'Milan', meres: ['tristitia','via','conjunctio','rubeus'],
+    score: '7-0', camp: 'R1', btts: false,
+    note: 'première prédiction hors échantillon' },
+  { nom: 'Napoli', meres: ['conjunctio','fortuna_minor','via','albus'],
+    score: '0-1', camp: 'R7', btts: false },
+  { nom: 'Lazio', meres: ['fortuna_minor','amissio','carcer','carcer'],
+    score: null, camp: null, btts: true,
+    note: 'score exact non communiqué — ne compte que pour le BTTS' },
+  { nom: 'Roma', meres: ['fortuna_minor','acquisitio','carcer','albus'],
+    score: '1-1', camp: 'nul', btts: true,
+    note: 'seul vrai nul de l’archive' },
+  { nom: 'Fiorentina', meres: ['rubeus','puer','fortuna_minor','caput_draconis'],
+    score: '0-2', camp: 'R7', btts: false,
+    note: 'deuxième prédiction hors échantillon' },
+  { nom: 'Atalanta', meres: ['rubeus','tristitia','laetitia','via'],
+    score: '4-0', camp: 'R1', btts: false,
+    note: 'même rotation que Fiorentina, résultat opposé' },
+  { nom: 'Torino', meres: ['via','rubeus','via','tristitia'],
+    score: '0-1', camp: 'R7', btts: false,
+    note: 'casse la hiérarchie : les couches fortes disaient R1' }
+];
+
+// Rejoue tous les moteurs sur tous les cas. Mémoïsé : le banc ne dépend
+// pas du thème courant, seulement du code.
+var _bancCacheV7 = null;
+function bancMoteursV7(force) {
+  if (_bancCacheV7 && !force) return _bancCacheV7;
+  var themes = CAS_REFERENCE_V7.map(function (c) {
+    var t = null;
+    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); }
+    catch (e) { t = null; }
+    return t;
+  });
+  function passe(liste, champ, attendu) {
+    return liste.map(function (m) {
+      var juste = 0, total = 0;
+      var details = CAS_REFERENCE_V7.map(function (c, i) {
+        var reel = attendu(c);
+        if (reel === null || reel === undefined || !themes[i]) {
+          return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
+        }
+        var v = null;
+        try { v = m.verdict(themes[i]); } catch (e) { v = null; }
+        var dit = v ? v[champ] : null;
+        if (champ === 'oui' && v) dit = !!v.oui;
+        total++;
+        var ok = (dit !== null && dit !== undefined) && dit === reel;
+        if (ok) juste++;
+        return { cas: c.nom, dit: dit, reel: reel, compte: true, ok: ok };
+      });
+      return { cle: m.cle, nom: m.nom, icone: m.icone, teinte: m.teinte,
+        juste: juste, total: total, details: details };
+    });
+  }
+  _bancCacheV7 = {
+    camp: passe(MOTEURS_V7, 'camp', function (c) {
+      return (c.camp === 'R1' || c.camp === 'R7') ? c.camp : null;
+    }),
+    btts: passe(MOTEURS_BTTS_V7, 'oui', function (c) {
+      return (typeof c.btts === 'boolean') ? c.btts : null;
+    }),
+    cas: CAS_REFERENCE_V7
+  };
+  return _bancCacheV7;
+}
+
+// Justesse mesurée d'un moteur, par sa clé. Remplace les chiffres écrits
+// en dur : si aucun cas ne s'applique, on retombe sur eux.
+function justesseMoteurV7(m, famille) {
+  var b = bancMoteursV7();
+  var l = (famille === 'btts' ? b.btts : b.camp);
+  for (var i = 0; i < l.length; i++) {
+    if (l[i].cle === m.cle) {
+      if (l[i].total > 0) return { juste: l[i].juste, total: l[i].total, mesure: true };
+      break;
+    }
+  }
+  return { juste: m.juste, total: m.total, mesure: false };
+}
+
+// Les champs juste/total ci-dessous ne sont plus que des VALEURS DE
+// REPLI : justesseMoteurV7 les remplace par la justesse rejouée sur le
+// banc dès qu'un cas s'applique. Ils sont laissés tels quels, non mis à
+// jour, précisément pour qu'on cesse de s'y fier.
 var MOTEURS_V7 = [
   { cle: 'ancrage', nom: 'Ancrage développé', icone: '⚓', teinte: '#38bdf8',
     note: 'chaîne + rôles reçus + rôles exercés + régénération', juste: 5, total: 7,
@@ -13363,6 +13511,7 @@ function renderMoteursPanel(theme) {
 
   function carte(r) {
     var m = r.m, v = r.v;
+    var j = justesseMoteurV7(m, 'camp');
     var camp = v && v.camp;
     var accord = majorite && camp && camp === majorite;
     var coulCamp = camp === 'R1' ? '#38bdf8' : camp === 'R7' ? '#fb923c' : '#64748b';
@@ -13372,9 +13521,10 @@ function renderMoteursPanel(theme) {
       + '<div style="display:flex; align-items:baseline; gap:6px;">'
       + '<span style="font-size:13px;">' + m.icone + '</span>'
       + '<span style="font-size:11px; font-weight:700; flex:1;">' + m.nom + '</span>'
-      + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';">'
-      + m.juste + '/' + m.total + '</span></div>'
-      + barre(m.juste, m.total, m.teinte)
+      + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';"'
+      + ' title="' + (j.mesure ? 'justesse rejouée sur le banc' : 'chiffre consigné, non rejoué') + '">'
+      + j.juste + '/' + j.total + (j.mesure ? '' : ' ?') + '</span></div>'
+      + barre(j.juste, j.total, m.teinte)
       + '<div style="margin-top:7px; font-size:17px; font-weight:800; color:' + coulCamp + '; letter-spacing:.5px;">'
       + (camp ? (camp === 'R1' ? t1 : t7) : 'sans avis') + '</div>'
       + (v && v.detail ? '<div class="muted" style="font-size:9px; line-height:1.35; margin-top:2px;">'
@@ -13391,6 +13541,7 @@ function renderMoteursPanel(theme) {
   });
   function carteB(r) {
     var m = r.m, v = r.v;
+    var j = justesseMoteurV7(m, 'btts');
     var oui = v && v.oui;
     return '<div style="border:1px solid #334155; '
       + 'border-left:3px solid ' + m.teinte + '; border-radius:8px; padding:7px 10px; background:#0f172a;">'
@@ -13398,8 +13549,8 @@ function renderMoteursPanel(theme) {
       + '<span style="font-size:12px;">' + m.icone + '</span>'
       + '<span style="font-size:10.5px; font-weight:700; flex:1;">' + m.nom + '</span>'
       + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';">'
-      + m.juste + '/' + m.total + '</span></div>'
-      + barre(m.juste, m.total, m.teinte)
+      + j.juste + '/' + j.total + (j.mesure ? '' : ' ?') + '</span></div>'
+      + barre(j.juste, j.total, m.teinte)
       + '<div style="margin-top:6px; font-size:15px; font-weight:800; color:'
       + (v ? (oui ? '#4ade80' : '#f87171') : '#64748b') + ';">'
       + (v ? (oui ? 'LES DEUX' : 'UN SEUL') : 'sans avis') + '</div>'
@@ -13408,7 +13559,10 @@ function renderMoteursPanel(theme) {
       + '</div>';
   }
 
-  var ordre = res.slice().sort(function (a, b) { return (b.m.juste / b.m.total) - (a.m.juste / a.m.total); });
+  var ordre = res.slice().sort(function (a, b) {
+    var ja = justesseMoteurV7(a.m, 'camp'), jb = justesseMoteurV7(b.m, 'camp');
+    return (jb.juste / (jb.total || 1)) - (ja.juste / (ja.total || 1));
+  });
 
   panneau.innerHTML =
       '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:3px;">'
@@ -13425,11 +13579,102 @@ function renderMoteursPanel(theme) {
     + '<div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill,minmax(215px,1fr));">'
     + bttsRes.map(carteB).join('') + '</div>'
     + '<div class="hint" style="margin-top:9px; font-size:9px;">'
-    + 'Les scores sont mesurés sur les sept cas au résultat connu, à remettre à jour '
-    + 'à chaque nouveau match. Aucun moteur ne dépasse 6/7, et 5/7 sur sept cas ne se '
+    + 'Les scores sont désormais REJOUÉS à chaque affichage sur les cas de '
+    + 'CAS_REFERENCE_V7 (voir le banc, plus bas) — ils suivent le code au lieu d\'être '
+    + 'recopiés à la main. Aucun moteur ne dépasse 6/7, et 5/7 sur sept cas ne se '
     + 'distingue pas d\'un tirage à pile ou face — ce tableau sert à accumuler, pas à conclure. '
     + 'Un moteur « contre la majorité » n\'a pas tort pour autant : c\'est là que se gagnent '
     + 'les départages.</div>';
+  hote.parentNode.insertBefore(panneau, hote.nextSibling);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE BANC — la grille moteurs × cas, rejouée à chaque affichage.
+// C'est le garde-fou : si une modification de doctrine fait tomber un
+// moteur, la case devient rouge ici avant qu'on s'en aperçoive ailleurs.
+function renderBancPanel() {
+  var ancien = document.getElementById('banc-panel');
+  if (ancien) ancien.remove();
+  var hote = document.getElementById('moteurs-panel')
+          || document.getElementById('f4p4-panel')
+          || document.getElementById('carte-verdict-r');
+  if (!hote || !hote.parentNode) return;
+
+  // Sans forcer : le banc ne dépend pas du thème courant, seulement du
+  // code. Le recalculer à chaque rendu coûtait neuf thèmes × onze moteurs
+  // par affichage — mesuré, c'est ce qui faisait ramer le rendu.
+  var b;
+  try { b = bancMoteursV7(); } catch (e) { return; }
+
+  var panneau = document.createElement('div');
+  panneau.id = 'banc-panel';
+  panneau.className = 'card';
+  panneau.style.cssText = 'margin-top:12px; border:1px solid #0f766e; '
+    + 'background:linear-gradient(160deg,#04201d 0%,#0b1220 100%);';
+
+  function entete() {
+    return '<tr><th style="text-align:left; padding:4px 6px; font-size:10px; color:#94a3b8;">moteur</th>'
+      + b.cas.map(function (c) {
+          return '<th style="padding:4px 3px; font-size:9px; color:#94a3b8; white-space:nowrap;" title="'
+            + c.nom + (c.score ? ' — ' + c.score : '') + (c.note ? ' · ' + c.note : '') + '">'
+            + c.nom.slice(0, 4) + '</th>';
+        }).join('')
+      + '<th style="padding:4px 6px; font-size:10px; color:#94a3b8;">score</th></tr>';
+  }
+
+  function ligne(m) {
+    var pct = m.total ? m.juste / m.total : 0;
+    var coul = pct >= 0.85 ? '#4ade80' : pct >= 0.7 ? '#fbbf24' : '#f87171';
+    return '<tr style="border-top:1px solid #1e293b;">'
+      + '<td style="padding:4px 6px; font-size:10.5px; white-space:nowrap;">'
+      + (m.icone || '') + ' ' + m.nom + '</td>'
+      + m.details.map(function (d) {
+          if (!d.compte) return '<td style="text-align:center; color:#334155; font-size:11px;">·</td>';
+          var t = (d.dit === null || d.dit === undefined) ? '—'
+                : (d.dit === true ? 'oui' : d.dit === false ? 'non' : d.dit);
+          return '<td style="text-align:center; padding:3px 2px;" title="dit ' + t
+            + ' · réel ' + (d.reel === true ? 'oui' : d.reel === false ? 'non' : d.reel) + '">'
+            + '<span style="font-size:12px; color:' + (d.ok ? '#4ade80' : '#f87171') + ';">'
+            + (d.ok ? '✔' : '✘') + '</span>'
+            + '<div style="font-size:8px; color:#64748b; line-height:1;">' + t + '</div></td>';
+        }).join('')
+      + '<td style="text-align:center; padding:4px 6px; font-weight:800; font-size:11px; color:' + coul + ';">'
+      + m.juste + '/' + m.total + '</td></tr>';
+  }
+
+  var lignesCamp = b.camp.slice().sort(function (x, y) {
+    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
+  }).map(ligne).join('');
+  var lignesBtts = b.btts.slice().sort(function (x, y) {
+    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
+  }).map(ligne).join('');
+
+  var reel = '<tr style="border-top:2px solid #0f766e;">'
+    + '<td style="padding:4px 6px; font-size:10px; color:#5eead4; font-weight:700;">réel</td>'
+    + b.cas.map(function (c) {
+        return '<td style="text-align:center; padding:3px 2px; font-size:9px; color:#5eead4;">'
+          + (c.score || '—') + '<div style="font-size:8px; color:#64748b;">'
+          + (c.camp || '·') + '</div></td>';
+      }).join('')
+    + '<td></td></tr>';
+
+  panneau.innerHTML =
+      '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px;">'
+    + '<h3 style="margin:0; color:#5eead4;">🧪 Le banc — moteurs × cas réels</h3>'
+    + '<span class="muted" style="font-size:10px;">rejoué à chaque affichage, jamais recopié</span></div>'
+    + '<div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:520px;">'
+    + '<thead>' + entete() + '</thead><tbody>'
+    + lignesCamp + reel
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Les deux marquent</td></tr>'
+    + lignesBtts
+    + '</tbody></table></div>'
+    + '<div class="hint" style="margin-top:9px; font-size:9px;">'
+    + 'Un point gris = le cas ne compte pas pour ce moteur (Roma est un nul, Lazio n\'a pas de score connu). '
+    + 'Sept cas décisifs seulement : 5/7 ne se distingue pas du hasard (p ≈ 0,23), et le meilleur de huit '
+    + 'moteurs est attendu haut par simple sélection. Ce tableau sert à VOIR UNE RÉGRESSION, pas à couronner '
+    + 'un moteur. Il a été construit après en avoir manqué une : le 26/08, un changement d\'échelle dans '
+    + 'forceCampV7 a fait tomber chaîne, ancrage et duel de 5/7 à 3–4/7 sans que rien ne l\'affiche.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
@@ -13461,72 +13706,99 @@ function renderF4P4Panel(theme) {
   }
   const nom = function (f) { return f ? (FL[f] || f) : '—'; };
 
+  // ─── PANNEAU RÉÉCRIT LE 27/08/26 ───
+  // L'ancien affichage lisait la forme de campF4P4V7 (marge, tient,
+  // force, polesAssaillant) alors que moteurF4P4V7 renvoie, depuis le
+  // passage aux cinq étapes, la forme de reseauF4P4V7 (profil, réseau,
+  // solide, frappes). Il levait donc une exception à chaque rendu et
+  // n'affichait RIEN. Il montre maintenant ce que le moteur décide
+  // vraiment : les cinq étapes, dans l'ordre.
+  function pastille(ok, txt) {
+    return '<span style="font-size:8.5px; font-weight:700; padding:1px 5px; border-radius:6px; '
+      + 'background:' + (ok ? 'rgba(74,222,128,.14)' : 'rgba(248,113,113,.12)') + '; '
+      + 'color:' + (ok ? '#4ade80' : '#f87171') + ';">' + txt + '</span>';
+  }
+
+  function lignePole(p) {
+    if (!p) return '';
+    var maisons = (p.positions || []).map(function (o) {
+      return 'M' + o.pos + (o.resultante ? 'r' : '');
+    }).join(' ') || '—';
+    return '<div style="display:flex; gap:6px; align-items:baseline; font-size:10px; '
+      + 'padding:2px 0; border-bottom:1px solid rgba(51,65,85,.5);">'
+      + '<span class="muted" style="min-width:76px; font-size:8.5px;">' + p.role + '</span>'
+      + '<span style="flex:1;">' + nom(p.fig)
+      + ' <span class="muted" style="font-size:8.5px;">' + maisons + '</span></span>'
+      + '<span style="min-width:52px; text-align:right; font-weight:700; color:'
+      + (p.ancrage >= F4P4_SEUIL_ANCRAGE_V7 ? '#e2e8f0' : '#64748b') + ';">' + p.ancrage + '</span>'
+      + '<span style="min-width:30px; text-align:right; font-size:9px; color:'
+      + (p.renfort >= F4P4_SEUIL_RENFORT_V7 ? '#94a3b8' : '#64748b') + ';">' + p.renfort + '/4</span>'
+      + '<span style="min-width:52px; text-align:right;">' + pastille(p.solide, p.solide ? 'SOLIDE' : '—') + '</span>'
+      + '</div>'
+      + (p.solide ? '' : '<div class="muted" style="font-size:8px; margin:0 0 2px 82px;">' + (p.motif || '') + '</div>');
+  }
+
   function colonne(cote, c) {
     const g = c.regeneration;
-    let h = '<div style="flex:1; min-width:250px;">'
-      + '<div style="font-size:11.5px; font-weight:700; margin-bottom:4px;">'
-      + cote + ' · ' + nom(c.fig) + ' <span class="muted" style="font-weight:400;">en M' + c.siege + '</span></div>'
-      + '<div style="font-size:10px; margin-bottom:2px;">concordance <b>' + c.concordance
-      + '</b> · alignement <b>' + c.alignement + '</b>'
-      + (c.lignesCompatibles.length ? ' <span class="muted">(' + c.lignesCompatibles.join('+') + ')</span>' : '')
+    const teinte = cote === 'R1' ? '#38bdf8' : '#fb923c';
+    let h = '<div style="flex:1; min-width:270px;">'
+      // ÉTAPE 1 et 2 — la centrale à son siège, et sa boucle
+      + '<div style="font-size:12px; font-weight:700; margin-bottom:3px; color:' + teinte + ';">'
+      + cote + ' · ' + nom(c.fig)
+      + ' <span class="muted" style="font-weight:400; color:#94a3b8;">en M' + c.siege
+      + ' · boucle ' + c.boucle + '</span></div>'
+      + '<div style="font-size:9.5px; margin-bottom:4px; color:#94a3b8;">concordance <b>' + c.concordance
+      + '</b> · alignement <b>' + c.alignement + '/2</b>'
+      + ((c.lignesCompatibles || []).length
+          ? ' <span class="muted">(' + c.lignesCompatibles.join(' + ') + ')</span>' : '')
       + '</div>';
     if (g) {
-      h += '<div style="font-size:9.5px; color:' + (g.dansReseau ? '#4ade80' : '#f87171') + '; margin-bottom:6px;">'
+      h += '<div style="font-size:9px; color:' + (g.dansReseau ? '#4ade80' : '#f87171') + '; margin-bottom:6px;">'
         + '↻ régénère <b>' + nom(g.resultante) + '</b> — ' + g.role
-        + (g.dansReseau ? ' · réseau, ' + g.pas + ' pas' : ' · HORS réseau')
-        + ' · nœud conc ' + g.concordance + ', align ' + g.alignement + '</div>';
+        + (g.dansReseau ? ' · réseau, ' + g.pas + ' pas' : ' · HORS réseau') + '</div>';
     }
-    c.poles.forEach(function (p) {
-      const col = p.tient ? '#4ade80' : '#f87171';
-      h += '<div style="font-size:10px; display:flex; gap:5px; align-items:baseline;">'
-        + '<span class="muted" style="min-width:78px; font-size:9px;">' + p.role + '</span>'
-        + '<span style="flex:1;">' + nom(p.fig)
-        + (p.present ? ' <span class="muted" style="font-size:9px;">' + p.occ + ' occ / ' + p.base + ' base</span>'
-                     : ' <span style="color:#f87171; font-size:9px;">ABSENTE</span>')
-        + '</span>'
-        + '<span style="color:' + col + '; font-weight:700;">' + (p.marge > 0 ? '+' : '') + p.marge + '</span>'
-        + '</div>'
-        + '<div class="muted" style="font-size:8.5px; margin:0 0 3px 83px;">contre '
-        + nom(p.antagoniste) + ' — ' + p.force + ' vs ' + p.forceAdverse
-        + (p.statut ? ' · <span style="color:'
-            + (p.statut === 'libre' ? '#4ade80' : p.statut === 'protégé' ? '#38bdf8' : '#f87171')
-            + ';">' + p.statut + '</span>' : '')
-        + (p.motif ? ' — ' + p.motif : '') + '</div>';
-    });
-    const cc = c.centrale.tient ? '#4ade80' : '#f87171';
-    h += '<div style="margin-top:5px; padding-top:4px; border-top:1px solid #334155; font-size:10px;">'
-      + '<b>centrale</b> contre ' + nom(c.centrale.antagoniste) + ' — '
-      + c.centrale.force + ' vs ' + c.centrale.forceAdverse
-      + ' <span style="color:' + cc + '; font-weight:700;">'
-      + (c.centrale.marge > 0 ? '+' : '') + c.centrale.marge + '</span></div>'
-      // le camp de celui qui frappe : sa frappe est-elle portée ou creuse ?
-      + '<div style="margin-top:5px; padding-top:4px; border-top:1px dashed #334155;">'
-      + '<div style="font-size:9.5px; color:#fb7185; margin-bottom:2px;">⚔ le camp de '
-      + nom(c.antagoniste) + ', qui la frappe — <b>' + c.assaillantTenus + '/4 pôles tenus</b>'
-      + ', défense ' + (c.assaillantDefensif > 0 ? '+' : '') + c.assaillantDefensif + '</div>'
-      + c.polesAssaillant.map(function (p) {
-          return '<div style="font-size:8.5px; color:#94a3b8; margin-left:6px;">'
-            + p.role + ' ' + nom(p.fig) + ' '
-            + '<span style="color:' + (p.tient ? '#4ade80' : '#f87171') + ';">'
-            + (p.marge > 0 ? '+' : '') + p.marge + '</span>'
-            + (p.statut ? ' · ' + p.statut : '') + '</div>';
-        }).join('')
-      + '</div>'
-      + '<div style="margin-top:4px; font-size:11px; font-weight:700;">'
-      + c.polesTenus + '/' + c.polesTotal + ' pôles tenus'
-      + ' <span class="muted" style="font-weight:400;">· total ' + c.total + '</span></div>'
+    // ÉTAPES 3 et 4 — chaque pôle mesuré aux sept critères, puis son réseau
+    h += '<div style="display:flex; gap:6px; font-size:8px; color:#64748b; '
+      + 'border-bottom:1px solid #334155; padding-bottom:2px;">'
+      + '<span style="min-width:76px;">pôle</span><span style="flex:1;">figure et maisons</span>'
+      + '<span style="min-width:52px; text-align:right;">profil</span>'
+      + '<span style="min-width:30px; text-align:right;">réseau</span>'
+      + '<span style="min-width:52px; text-align:right;">étape 4</span></div>';
+    h += lignePole(c.centrale);
+    c.poles.forEach(function (p) { h += lignePole(p); });
+    h += '<div style="margin-top:5px; font-size:11px; font-weight:700;">'
+      + c.solides + '/4 pôles solides'
+      + ' <span class="muted" style="font-weight:400; font-size:9.5px;">· ancrage total '
+      + c.ancrageTotal + '</span></div>';
+    // LA FRAPPE — ce que ce camp atteint chez l'autre
+    var portees = (c.frappes || []).filter(function (f) { return f && f.viseCamp; });
+    h += '<div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155;">'
+      + '<div style="font-size:9.5px; color:#fb7185; margin-bottom:2px;">⚔ ce que ce camp frappe en face — '
+      + '<b>' + c.frappesEffectives + ' portée' + (c.frappesEffectives > 1 ? 's' : '') + '</b>'
+      + ' <span class="muted">· somme ' + c.frappeSomme + '</span></div>'
+      + (portees.length
+          ? portees.map(function (f) {
+              return '<div style="font-size:8.5px; margin-left:6px; color:'
+                + (f.effective ? '#4ade80' : '#94a3b8') + ';">' + f.resume + '</div>';
+            }).join('')
+          : '<div style="font-size:8.5px; margin-left:6px; color:#64748b;">aucune frappe n\'atteint le camp adverse</div>')
       + '</div>';
+    // ÉTAPE 5 — le réseau de l'assaillant direct
+    h += '<div style="margin-top:5px; padding-top:4px; border-top:1px solid #334155; font-size:9.5px;">'
+      + '<span class="muted">étape 5 · son assaillant direct</span> <b>' + nom(c.antagoniste) + '</b> — '
+      + pastille(c.solidesAdverse < 2, c.solidesAdverse + '/4 pôles solides')
+      + '</div></div>';
     return h;
   }
 
   panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
     + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
-    + 'Chaque pôle en deux langues : la FORCE (son binôme contre '
-    + 'l\'antagoniste et le sien) et la PRÉSENCE (libre, protégé par une '
-    + 'voie, ou vulnérable) — le Réseau d\'ancrage V2 est fondu ici. '
-    + 'Le 4e pôle est le front du front. En bas de chaque colonne, les '
-    + 'quatre pôles de l\'ASSAILLANT : une frappe portée par un camp '
-    + 'enfoncé n\'est pas une frappe.</div>'
+    + 'La démarche en cinq étapes, dans l\'ordre. <b>profil</b> = les sept '
+    + 'critères d\'analyse à la meilleure position (seuil ' + F4P4_SEUIL_ANCRAGE_V7 + ') ; '
+    + '<b>réseau</b> = combien des quatre pôles de ce pôle-là sont eux-mêmes ancrés '
+    + '(étape 4, seuil ' + F4P4_SEUIL_RENFORT_V7 + ') ; un pôle n\'est <b>SOLIDE</b> '
+    + 'que s\'il tient les deux. Le 4e pôle est le front du front, et le binôme est '
+    + 'toujours le bouclier de ce front du front.</div>'
     + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
     + colonne('R1', m.R1) + colonne('R7', m.R7)
     + '</div>'
@@ -13535,10 +13807,15 @@ function renderF4P4Panel(theme) {
     + '<div class="muted" style="font-size:9.5px;">' + m.critere + '</div>'
     + '<div class="hint" style="margin-top:6px; font-size:9px;">'
     + '<b>Moteur principal</b> depuis le 26/08 — c\'est lui qui pilote le '
-    + 'VERDICT DU MATCH en haut. 5/7 sur les cas réels, comme l\'ancrage, '
-    + 'mais sur des cas différents : il tient Napoli et Torino que l\'ancrage '
-    + 'rate, et perd Inter et Atalanta. L\'ancrage reste affiché en '
-    + 'contre-lecture pour que les désaccords s\'accumulent.</div>';
+    + 'VERDICT DU MATCH en haut. Justesse rejouée sur le banc : <b>'
+    + (function () {
+        try { var j = justesseMoteurV7({ cle: 'f4p4', juste: 0, total: 0 }, 'camp');
+          return j.juste + '/' + j.total; } catch (e) { return '—'; }
+      })()
+    + '</b>. Les colonnes suivent les cinq étapes : la centrale à son siège et sa '
+    + 'boucle, les quatre pôles mesurés aux sept critères (profil), le réseau de '
+    + 'chaque pôle (étape 4, seuil ' + F4P4_SEUIL_RENFORT_V7 + '/4), ce que le camp '
+    + 'frappe en face, puis le réseau de l\'assaillant direct.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
@@ -17475,6 +17752,7 @@ function renderTheme(){
     try { renderDuelBouclierPanel(currentTheme); } catch(e) { console.log('duel bouclier error', e); }
     try { renderF4P4Panel(currentTheme); } catch(e) { console.log('f4p4 error', e); }
     try { renderMoteursPanel(currentTheme); } catch(e) { console.log('moteurs error', e); }
+    try { renderBancPanel(); } catch(e) { console.log('banc error', e); }
     // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
     try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
     const elR = document.getElementById('carte-verdict-r');
