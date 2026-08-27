@@ -5528,7 +5528,39 @@ function penchantFigureX(X, figR1, figR7, theme) {
   };
 }
 
+// ─── MÉMO PAR THÈME (27/08/26) ───
+// Le vote appelle huit moteurs, dont QUATRE passent par
+// analyseAncrageDeveloppe (ancrage, chaîne, duel, « 2 boucliers ») et
+// deux par moteurF4P4V7. Mesuré : le verdict affiché est passé de 27 ms
+// à 82 ms par thème en branchant le vote, dont ~28 ms de recalculs
+// identiques. Ces deux fonctions ne lisent ni le DOM, ni l'heure, ni le
+// hasard — vérifié sur tout leur arbre d'appel — elles sont donc
+// mémoïsables sans risque. Cache de quatre thèmes, signature = les seize
+// maisons.
+var _memoThemeV7 = {};
+function _cleThemeV7(theme) {
+  if (!theme) return null;
+  var k = '';
+  for (var i = 1; i <= 16; i++) k += (theme[i] || '?') + ',';
+  return k;
+}
+function memoParThemeV7(nom, theme, calcul) {
+  var k = _cleThemeV7(theme);
+  if (!k) return calcul();
+  var e = _memoThemeV7[nom];
+  if (e && e.cle === k) return e.val;
+  var v = calcul();
+  _memoThemeV7[nom] = { cle: k, val: v };
+  return v;
+}
+
 function analyseAncrageDeveloppe(theme) {
+  return memoParThemeV7('ancrage', theme, function () {
+    return analyseAncrageDeveloppeBrut(theme);
+  });
+}
+
+function analyseAncrageDeveloppeBrut(theme) {
   if (!theme || !theme[1]) return {applicable: false, reason: 'Thème non disponible.'};
   const rot = getRotationCombat(theme);
   const figR1 = rot.figR1, figR7 = rot.figR7;
@@ -12093,6 +12125,12 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
 }
 
 function moteurF4P4V7(theme) {
+  return memoParThemeV7('f4p4', theme, function () {
+    return moteurF4P4V7Brut(theme);
+  });
+}
+
+function moteurF4P4V7Brut(theme) {
   if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
   const rot = getRotationCombat(theme);
   if (!rot || !rot.figR1 || !rot.figR7) return { applicable: false, raison: 'Rotation non applicable.' };
@@ -13393,8 +13431,22 @@ function bancMoteursV7(force) {
         juste: juste, total: total, details: details };
     });
   }
+  // Le VOTE est noté comme les autres, mais il ne siège pas dans
+  // MOTEURS_V7 : il voterait pour lui-même. Il est ajouté ici, à part,
+  // avec le départage réel (égalité → F4P4) — c'est ce qui pilote.
+  var moteurVote = {
+    cle: '_vote', nom: '⚑ VOTE DES MOTEURS (au volant)', icone: '', teinte: '#c4b5fd',
+    juste: 0, total: 0,
+    verdict: function (t) {
+      var v = voteMoteursV7(t);
+      if (v.camp) return { camp: v.camp, detail: v.resume };
+      var f = null;
+      try { var mf = moteurF4P4V7(t); f = mf && mf.avantage ? mf.avantage : null; } catch (e) { f = null; }
+      return { camp: f, detail: v.resume + ' — F4P4 départage' };
+    }
+  };
   _bancCacheV7 = {
-    camp: passe(MOTEURS_V7, 'camp', function (c) {
+    camp: passe([moteurVote].concat(MOTEURS_V7), 'camp', function (c) {
       return (c.camp === 'R1' || c.camp === 'R7') ? c.camp : null;
     }),
     btts: passe(MOTEURS_BTTS_V7, 'oui', function (c) {
@@ -13532,6 +13584,62 @@ var MOTEURS_BTTS_V7 = [
     juste: 4, total: 9, note: 'témoin — le hasard à battre',
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
 ];
+
+// ═══════════════════════════════════════════════════════════════
+// LE VOTE DES MOTEURS — au volant depuis le 27/08/26, choix d'Ellemine_D.
+//
+// Ce qui l'a motivé : sur le cas Inter (réel 3-2 pour R1), SEPT moteurs
+// sur huit disaient R1 et c'est F4P4, le huitième, qui pilotait — et
+// affichait R7. Le système voyait juste et montrait faux.
+//
+// ⚠️ CE QUE LA MESURE DIT VRAIMENT, ET QUE JE DOIS ÉCRIRE ICI.
+// Le « 7/7 » que j'avais annoncé à Ellemine_D était PÉRIMÉ : il datait
+// d'avant la correction de la fuite d'échelle de forceCampV7, quand
+// ancrage, chaîne et duel étaient cassés. Remesuré une fois réparés :
+//     vote seul ....................... 5/7   (Torino reste à égalité)
+//     vote, égalité → F4P4 ............ 6/7   ← retenu
+//     vote, égalité → ancrage ......... 5/7
+//     F4P4 seul (l'ancien) ............ 5/7
+// Le vote seul ne gagne donc RIEN sur le banc : il répare Inter et perd
+// Torino. C'est le départage à l'égalité qui fait la différence, et ce
+// départage est un choix binaire mesuré sur sept cas — une pièce lancée
+// en l'air en aurait choisi le bon une fois sur deux. 6/7 sur sept cas
+// n'est pas une preuve.
+//
+// Ce qui reste vrai sans statistique : le verdict ne dépend plus de
+// l'angle mort d'un seul moteur. C'est la raison de doctrine, pas la
+// raison chiffrée.
+//
+// ⚠️ ET LES VOTANTS NE SONT PAS INDÉPENDANTS. Accord mesuré par paires :
+//     ancrage ↔ chaîne .... 91 %      ancrage ↔ hypo .... 80 %
+//     chaîne ↔ hypo ....... 76 %      duel ↔ hypo ....... 74 %
+// Quatre moteurs sur huit lisent à peu près la même chose. Une majorité
+// de jumeaux n'est pas une majorité : le vote penche mécaniquement du
+// côté de la famille chaîne/ancrage. À garder en tête avant de conclure
+// quoi que ce soit d'un 6-2.
+var VERDICT_VOTE_V7 = true;
+
+function voteMoteursV7(theme) {
+  var r1 = 0, r7 = 0, muets = 0, detail = [];
+  if (!theme) return { applicable: false, camp: null, r1: 0, r7: 0, detail: [] };
+  MOTEURS_V7.forEach(function (m) {
+    var v = null;
+    try { v = m.verdict(theme); } catch (e) { v = null; }
+    var c = v && v.camp ? v.camp : null;
+    if (c === 'R1') r1++; else if (c === 'R7') r7++; else muets++;
+    detail.push({ cle: m.cle, nom: m.nom, icone: m.icone, camp: c });
+  });
+  var camp = r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null;
+  return {
+    applicable: (r1 + r7) > 0,
+    camp: camp, r1: r1, r7: r7, muets: muets, detail: detail,
+    egalite: !camp && (r1 + r7) > 0,
+    resume: r1 + ' pour R1 · ' + r7 + ' pour R7'
+      + (muets ? ' · ' + muets + ' sans avis' : '')
+      + (camp ? ' → ' + camp : ' → égalité, F4P4 départage')
+  };
+}
+
 
 function renderMoteursPanel(theme) {
   var ancien = document.getElementById('moteurs-panel');
@@ -13790,6 +13898,8 @@ function renderBancPanel() {
   }
 
   var lignesCamp = b.camp.slice().sort(function (x, y) {
+    if (x.cle === '_vote') return -1;
+    if (y.cle === '_vote') return 1;
     return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
   }).map(ligne).join('');
   var lignesBtts = b.btts.slice().sort(function (x, y) {
@@ -13974,8 +14084,9 @@ function renderF4P4Panel(theme) {
     + 'Verdict F4P4 : ' + (m.avantage || 'nul') + '</div>'
     + '<div class="muted" style="font-size:9.5px;">' + m.critere + '</div>'
     + '<div class="hint" style="margin-top:6px; font-size:9px;">'
-    + '<b>Moteur principal</b> depuis le 26/08 — c\'est lui qui pilote le '
-    + 'VERDICT DU MATCH en haut. Justesse rejouée sur le banc : <b>'
+    + 'Depuis le 27/08, F4P4 n\'est plus seul au volant : le VERDICT DU MATCH est '
+    + 'rendu par le <b>vote des huit moteurs</b>, et F4P4 ne départage qu\'en cas '
+    + 'd\'égalité (7 % des thèmes). Justesse rejouée sur le banc : <b>'
     + (function () {
         try { var j = justesseMoteurV7({ cle: 'f4p4', juste: 0, total: 0 }, 'camp');
           return j.juste + '/' + j.total; } catch (e) { return '—'; }
@@ -16779,7 +16890,16 @@ function getVerdictAfficheReel(theme, favorite) {
     var rz = analyserReseauAncrageV2(theme);
     reseauAff = !nulActif && rz.winner && rz.winner !== 'Nul' ? rz.winner : null;
   } catch(e) { reseauAff = null; }
-  var winnerOverride = f4p4Aff || chaineAff || siegesWinner || reseauAff || protocoleWinner;
+  // ─── LE VOTE PASSE DEVANT (27/08/26, choix d'Ellemine_D) ───
+  // Aucun moteur de MOTEURS_V7 n'appelle getVerdictAfficheReel — vérifié,
+  // y compris « Majorité des axes », qui lit l'ancrage et les sièges sur
+  // les thèmes dérivés. Pas de récursion.
+  var voteAff = null;
+  try {
+    var vt = VERDICT_VOTE_V7 ? voteMoteursV7(theme) : null;
+    voteAff = !nulActif && vt && vt.camp ? vt.camp : null;
+  } catch(e) { voteAff = null; }
+  var winnerOverride = voteAff || f4p4Aff || chaineAff || siegesWinner || reseauAff || protocoleWinner;
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
@@ -16905,16 +17025,47 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   .tek{font-family:inherit;color:#e5e7eb}.tek *{box-sizing:border-box}.tek-head{font-size:25px;font-weight:900;text-align:center;margin:0 0 6px;color:#dbeafe}.tek-head span{font-size:12px;color:#a78bfa}.tek-sub{text-align:center;color:#94a3b8;font-size:11px;margin-bottom:12px}.tek-hero{display:grid;grid-template-columns:1.02fr .98fr;gap:12px}.tek-winner{border:1px solid #22c55e;border-radius:13px;padding:16px;background:linear-gradient(135deg,rgba(20,83,45,.28),rgba(7,17,31,.96));text-align:center}.tek-winner.warn{border-color:#f59e0b}.tek-cap{font-size:12px;font-weight:900;color:#4ade80;letter-spacing:.08em}.tek-name{font-size:29px;line-height:1.08;font-weight:950;color:#4ade80;margin:6px 0}.tek-winner.warn .tek-name{color:#fbbf24}.tek-score{font-size:20px;font-weight:900;color:#dbeafe}.tek-stats{border:1px solid #334155;border-radius:13px;background:#07111f;padding:12px}.tek-stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgba(148,163,184,.11);font-size:12px}.tek-stat:last-of-type{border-bottom:0}.tek-note{color:#7dd3fc;font-size:12px;font-weight:800;margin-top:8px}.tek-credit{margin-top:10px;border:1px solid #22c55e;border-radius:10px;padding:8px;text-align:center}.tek-credit .num{font-size:28px;font-weight:950;color:#4ade80}.tek-section{margin-top:11px;border:1px solid #243b63;border-radius:13px;background:rgba(2,8,23,.58);padding:11px}.tek-title{font-size:17px;font-weight:950;text-align:center;color:#c4b5fd;margin-bottom:10px}.tek-camps{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tek-camp{border:1px solid #2563eb;border-radius:11px;background:#06101d;padding:11px}.tek-camp.r7{border-color:#b45309}.tek-camp h4{margin:0 0 5px;font-size:16px;color:#60a5fa}.tek-camp.r7 h4{color:#fb923c}.tek-meta{font-size:11px;color:#cbd5e1;line-height:1.55}.tek-bigscore{font-size:27px;font-weight:950;text-align:center;margin:8px 0;color:#60a5fa}.tek-camp.r7 .tek-bigscore{color:#fb923c}.tek-progress{height:22px;border:1px solid #334155;border-radius:6px;display:flex;overflow:hidden;margin-top:9px}.tek-progress div{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}.tek-tables{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.tek-tablebox{border:1px solid #1e4f83;border-radius:10px;overflow:hidden;background:#06101d}.tek-tablebox.r7{border-color:#7c4a13}.tek-tablebox h5{margin:0;padding:9px;color:#60a5fa;font-size:14px}.tek-tablebox.r7 h5{color:#fb923c}.tek-table{width:100%;border-collapse:collapse;font-size:10.5px}.tek-table th,.tek-table td{padding:6px 5px;border-bottom:1px solid rgba(148,163,184,.13);text-align:left}.tek-table th{color:#93c5fd}.tek-tablebox.r7 th{color:#fb923c}.tek-table td:last-child,.tek-table th:last-child{text-align:right}.tek-total{display:flex;justify-content:space-between;padding:9px;font-size:17px;font-weight:950}.tek-verdict{margin-top:10px;border:1px solid #475569;border-radius:11px;background:linear-gradient(90deg,rgba(30,41,59,.78),rgba(15,23,42,.9));padding:12px}.tek-verdictgrid{display:grid;grid-template-columns:145px 1fr;gap:12px;align-items:center}.tek-scale{text-align:center}.tek-scale .symbol{font-size:38px}.tek-scale b{font-size:13px}.tek-final{font-size:22px;font-weight:950;color:#4ade80}.tek-gap{color:#facc15;font-weight:900;margin-top:3px}.tek-list{font-size:10.5px;line-height:1.5;margin:7px 0 0 18px}.tek-null{border-color:#334155}.tek-null-grid{display:grid;grid-template-columns:.9fr 1.35fr .75fr;gap:9px}.tek-box{border:1px solid #334155;border-radius:9px;background:#08111f;padding:9px}.tek-box h5{margin:0 0 7px;color:#c4b5fd;font-size:13px}.tek-kv{display:flex;justify-content:space-between;gap:7px;padding:6px 2px;border-bottom:1px solid rgba(148,163,184,.1);font-size:10.5px}.tek-kv:last-child{border-bottom:0}.tek-nullstatus{height:100%;min-height:125px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid '+nullColor+';border-radius:9px;color:'+nullColor+'}.tek-nullstatus .ico{font-size:32px}.tek-nullstatus b{font-size:15px}.tek-bottom{display:grid;grid-template-columns:120px 1fr 1.35fr;gap:9px;align-items:stretch}.tek-bottom .box{border:1px solid #334155;border-radius:9px;padding:10px;background:#08111f}.tek-bottom .big{font-size:31px;font-weight:950;color:#4ade80;text-align:center}.tek-bottom p{margin:0;font-size:11px;line-height:1.5}.tek-mobile-only{display:none}@media(max-width:700px){.tek-hero,.tek-camps,.tek-tables,.tek-null-grid,.tek-bottom,.tek-verdictgrid{grid-template-columns:1fr}.tek-head{font-size:21px}.tek-name{font-size:25px}.tek-tables{display:grid}.tek-mobile-only{display:block}.tek-table{font-size:10px}.tek-table th,.tek-table td{padding:5px}.tek-nullstatus{min-height:105px}}\
   </style>';
   html+='<div class="tek" data-protocole-r1r7="1">';
-  html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Front 4 · Pôle 4')+'</span></div>';
+  html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Vote des moteurs')+'</span></div>';
+  // ─── LE VOTE, DÉTAILLÉ (27/08/26) ───
+  // On montre qui a voté quoi : un 8-0 et un 5-3 ne se lisent pas pareil,
+  // et le lecteur doit pouvoir voir tout de suite qui est minoritaire.
+  if (card && card.voteDetail && card.voteDetail.length) {
+    var pourR1 = card.voteDetail.filter(function(d){ return d.camp === 'R1'; });
+    var pourR7 = card.voteDetail.filter(function(d){ return d.camp === 'R7'; });
+    var muets  = card.voteDetail.filter(function(d){ return !d.camp; });
+    var puce = function (liste, coul) {
+      return liste.map(function (d) {
+        return '<span style="display:inline-block; margin:1px 4px 1px 0; padding:1px 6px; '
+          + 'border-radius:6px; background:rgba(148,163,184,.12); color:' + coul + '; font-size:10px;">'
+          + esc((d.icone || '') + ' ' + d.nom) + '</span>';
+      }).join('');
+    };
+    html += '<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; '
+      + 'background:#140f2b; border:1px solid #c4b5fd;">'
+      + '<div style="font-size:12px; font-weight:800; color:#ede9fe; margin-bottom:4px;">'
+      + '⚑ Vote des moteurs — <b>' + pourR1.length + '</b> pour R1, <b>' + pourR7.length + '</b> pour R7'
+      + (muets.length ? ' · ' + muets.length + ' sans avis' : '')
+      + (card.voteWinner ? '' : ' — <b>égalité, F4P4 départage</b>') + '</div>'
+      + '<div>' + puce(pourR1, '#7dd3fc') + '</div>'
+      + '<div>' + puce(pourR7, '#fdba74') + '</div>'
+      + (muets.length ? '<div>' + puce(muets, '#64748b') + '</div>' : '')
+      + '<div style="font-size:9.5px; color:#a5b4fc; margin-top:4px;">'
+      + 'Attention : ancrage et chaîne s\'accordent 91 % du temps, et « 2 boucliers » suit '
+      + 'l\'ancrage 80 % du temps. Une majorité de moteurs jumeaux n\'est pas une majorité.</div>'
+      + '</div>';
+  }
   if (card && card.f4p4Synthese) {
     html+='<div style="margin-bottom:10px; padding:10px 12px; border-radius:8px; '
       +'background:#1e1633; border:1px solid #a78bfa; font-size:12px; color:#ede9fe;">'
-      +'🧭 <b>Front 4 · Pôle 4 (moteur principal)</b> : '+esc(card.f4p4Critere||'')+'</div>';
+      +'🧭 <b>Front 4 · Pôle 4</b> '
+      +(card.voteWinner ? '<span style="color:#a5b4fc;">(un votant parmi huit)</span>'
+                        : '<span style="color:#fbbf24;">(départage — le vote est à égalité)</span>')
+      +' : '+esc(card.f4p4Critere||'')+'</div>';
   }
   if (card && card.desaccordF4P4Ancrage) {
-    html+='<div class="kv" style="font-size:11px;color:#fbbf24;">⚡ L\'ancrage développé dit l\'inverse ('
-      +esc(card.chaineWinner)+') — les deux moteurs sont à 5/7 sur les cas réels, '
-      +'le désaccord est signalé pour que le cas s\'accumule.</div>';
+    html+='<div class="kv" style="font-size:11px;color:#fbbf24;">⚡ F4P4 et l\'ancrage développé se contredisent ('
+      +esc(card.chaineWinner)+' pour l\'ancrage) — c\'est le vote qui tranche, '
+      +'le désaccord est signalé pour que le cas s\'accumule au banc.</div>';
   }
   if (card && card.chaineSynthese) {
     // Depuis le 26/08/26 la chaîne n'est plus décisive : F4P4 pilote.
@@ -17857,8 +18008,16 @@ function renderTheme(){
     const f4p4WinnerTop = !nulActifTop && f4p4Top && f4p4Top.applicable && f4p4Top.avantage
       ? f4p4Top.avantage
       : null;
-    const nulActifReseauTop = nulActifTop || (!f4p4WinnerTop && !chaineWinnerTop && !siegesWinnerTop && reseauTop.winner === 'Nul');
-    const rWinnerOverride = f4p4WinnerTop || chaineWinnerTop || siegesWinnerTop || reseauWinnerTop;
+    // ─── LE VOTE DES MOTEURS PREND LE VOLANT (27/08/26) ───
+    // Demande d'Ellemine_D après le cas Inter, où sept moteurs sur huit
+    // voyaient le bon camp et où le huitième, seul au volant, affichait
+    // l'autre. F4P4 reste le départage quand le vote est à égalité (7 %
+    // des thèmes) et reste affiché en entier dans son panneau.
+    let voteTop = null;
+    try { voteTop = VERDICT_VOTE_V7 ? voteMoteursV7(currentTheme) : null; } catch (e) { voteTop = null; }
+    const voteWinnerTop = !nulActifTop && voteTop && voteTop.camp ? voteTop.camp : null;
+    const nulActifReseauTop = nulActifTop || (!voteWinnerTop && !f4p4WinnerTop && !chaineWinnerTop && !siegesWinnerTop && reseauTop.winner === 'Nul');
+    const rWinnerOverride = voteWinnerTop || f4p4WinnerTop || chaineWinnerTop || siegesWinnerTop || reseauWinnerTop;
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
     carteR.chaineSynthese = ancrageTop.applicable ? ancrageTop.synthese : null;
     carteR.chaineWinner = chaineWinnerTop;
@@ -17875,8 +18034,12 @@ function renderTheme(){
     carteR.f4p4Synthese = f4p4Top && f4p4Top.applicable ? f4p4Top.synthese : null;
     carteR.accordF4P4Ancrage = !!(f4p4WinnerTop && chaineWinnerTop && f4p4WinnerTop === chaineWinnerTop);
     carteR.desaccordF4P4Ancrage = !!(f4p4WinnerTop && chaineWinnerTop && f4p4WinnerTop !== chaineWinnerTop);
+    carteR.voteWinner = voteWinnerTop;
+    carteR.voteResume = voteTop ? voteTop.resume : null;
+    carteR.voteDetail = voteTop ? voteTop.detail : null;
     carteR.sourceDecisive = nulActifTop ? 'Axe Succédent — nul imposé'
-      : f4p4WinnerTop ? 'Front 4 · Pôle 4'
+      : voteWinnerTop ? 'Vote des moteurs (' + voteTop.r1 + '–' + voteTop.r7 + ')'
+      : f4p4WinnerTop ? 'Front 4 · Pôle 4 (vote à égalité)'
       : chaineWinnerTop ? 'Solidité de chaîne R1/R7 (repli)'
       : siegesWinnerTop ? 'Lecture des sièges (repli)'
       : 'Réseau d\'ancrage V2 (repli)';
