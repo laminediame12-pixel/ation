@@ -13296,12 +13296,77 @@ var CAS_REFERENCE_V7 = [
     note: 'casse la hiérarchie : les couches fortes disaient R1' }
 ];
 
+// ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
+// Ellemine_D : « on aboutit à rien malgré les heures ». La cause n'était
+// pas le code : c'est qu'on mesurait sur sept cas, où 5/7 ne se
+// distingue pas du hasard. Or l'application COLLECTE déjà des résultats
+// — le panneau « Résultat réel » et le champ « Score reel » des thèmes
+// sauvegardés — et le banc les ignorait. Tout ce qui avait été saisi ne
+// comptait nulle part.
+// Ils comptent maintenant. Chaque score saisi devient un cas du banc, et
+// les moteurs sont renotés sans qu'on touche au code.
+//
+// La conversion M1/M7 → R1/R7 est sûre : verdictFinal pose
+// winner = winnerRotation==='R1' ? 'M1' : 'M7'. La correspondance est
+// biunivoque dans tout le fichier.
+function casSauvegardesV7() {
+  var out = [];
+  var list = [];
+  try { list = getSavedList() || []; } catch (e) { return out; }
+  var vus = {};
+  CAS_REFERENCE_V7.forEach(function (c) { vus[c.meres.join('|')] = true; });
+  list.forEach(function (e) {
+    if (!e || !e.theme || !e.realScore) return;
+    var m = String(e.realScore).match(/(\d+)\s*-\s*(\d+)/);
+    if (!m) return;
+    var g1 = parseInt(m[1], 10), g7 = parseInt(m[2], 10);
+    var meres = [1, 2, 3, 4].map(function (i) {
+      return e.theme[i] || e.theme[String(i)];
+    });
+    if (meres.some(function (f) { return !f || !MAP_GEO[f]; })) return;
+    var cle = meres.join('|');
+    if (vus[cle]) return;               // déjà dans l'archive, ou doublon
+    vus[cle] = true;
+    var nom = (e.team1 || '') && (e.team2 || '')
+      ? String(e.team1).slice(0, 6) + '/' + String(e.team2).slice(0, 6)
+      : (e.matchDate || 'saisi');
+    out.push({
+      nom: nom, meres: meres, score: g1 + '-' + g7,
+      camp: g1 > g7 ? 'R1' : g7 > g1 ? 'R7' : 'nul',
+      btts: g1 > 0 && g7 > 0,
+      saisi: true, note: 'saisi dans les thèmes sauvegardés'
+    });
+  });
+  return out;
+}
+
+// Tous les cas du banc : l'archive figée, plus ce que tu as saisi.
+function tousCasBancV7() {
+  var sup = [];
+  try { sup = casSauvegardesV7(); } catch (e) { sup = []; }
+  return CAS_REFERENCE_V7.concat(sup);
+}
+
+// Signature des cas saisis : sert à invalider le cache quand tu ajoutes
+// ou modifies un score, sans avoir à recharger la page.
+function signatureCasV7() {
+  try {
+    return casSauvegardesV7().map(function (c) {
+      return c.meres.join('|') + '=' + c.score;
+    }).join(';');
+  } catch (e) { return ''; }
+}
+
 // Rejoue tous les moteurs sur tous les cas. Mémoïsé : le banc ne dépend
 // pas du thème courant, seulement du code.
 var _bancCacheV7 = null;
+var _bancSignatureV7 = null;
 function bancMoteursV7(force) {
-  if (_bancCacheV7 && !force) return _bancCacheV7;
-  var themes = CAS_REFERENCE_V7.map(function (c) {
+  var sig = signatureCasV7();
+  if (_bancCacheV7 && !force && sig === _bancSignatureV7) return _bancCacheV7;
+  _bancSignatureV7 = sig;
+  var CAS = tousCasBancV7();
+  var themes = CAS.map(function (c) {
     var t = null;
     try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); }
     catch (e) { t = null; }
@@ -13310,7 +13375,7 @@ function bancMoteursV7(force) {
   function passe(liste, champ, attendu) {
     return liste.map(function (m) {
       var juste = 0, total = 0;
-      var details = CAS_REFERENCE_V7.map(function (c, i) {
+      var details = CAS.map(function (c, i) {
         var reel = attendu(c);
         if (reel === null || reel === undefined || !themes[i]) {
           return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
@@ -13335,7 +13400,9 @@ function bancMoteursV7(force) {
     btts: passe(MOTEURS_BTTS_V7, 'oui', function (c) {
       return (typeof c.btts === 'boolean') ? c.btts : null;
     }),
-    cas: CAS_REFERENCE_V7
+    cas: CAS,
+    nbArchive: CAS_REFERENCE_V7.length,
+    nbSaisis: CAS.length - CAS_REFERENCE_V7.length
   };
   return _bancCacheV7;
 }
@@ -13589,6 +13656,85 @@ function renderMoteursPanel(theme) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// LE PROFIL DU SCORE — ce que le générateur de score produit VRAIMENT.
+//
+// Constat du 27/08/26, en cherchant pourquoi le score est 0/8 en exact.
+// Ce n'est pas un défaut de réglage, c'est structurel :
+//     écart de buts = 2 dans 91 % des thèmes (jamais 0, jamais 1)
+//     total de buts = 6 dans 74 %, 8 dans 16 %
+// Autrement dit le moteur dit presque toujours « quelqu'un gagne de deux
+// buts, dans un match à six buts ». Il ne peut donc structurellement PAS
+// annoncer un nul ni une victoire d'un but — c'est-à-dire la moitié des
+// matchs réels. Les scores de l'archive : 6-1, 3-2, 7-0, 0-1, 1-1, 0-2,
+// 4-0, 0-1 — écarts 5, 1, 7, 1, 0, 2, 4, 1.
+//
+// La mesure est refaite par le code, jamais recopiée. Elle coûte ~27 ms
+// par thème, donc elle est calculée EN DIFFÉRÉ après le premier rendu,
+// une seule fois par session, et le panneau se remplit quand elle
+// arrive. Bloquer le rendu trois secondes pour ça serait absurde.
+var _profilScoreV7 = null;
+var _profilScoreEnCoursV7 = false;
+var PROFIL_SCORE_ECHANTILLON_V7 = 96;
+
+function profilScoreV7(quandPret) {
+  if (_profilScoreV7) { if (quandPret) quandPret(_profilScoreV7); return _profilScoreV7; }
+  if (_profilScoreEnCoursV7) return null;
+  _profilScoreEnCoursV7 = true;
+  var ecarts = {}, totaux = {}, n = 0, i = 0;
+  var graines = [];
+  for (var a = 0; a < 16 && graines.length < PROFIL_SCORE_ECHANTILLON_V7; a++) {
+    for (var b = 0; b < 16 && graines.length < PROFIL_SCORE_ECHANTILLON_V7; b++) {
+      graines.push([FIGS_V7[a], FIGS_V7[b], FIGS_V7[(a * 5 + 3) % 16], FIGS_V7[(b * 7 + 1) % 16]]);
+    }
+  }
+  function tranche() {
+    var fin = Math.min(i + 8, graines.length);
+    for (; i < fin; i++) {
+      try {
+        var t = buildThemeFromMothers(graines[i][0], graines[i][1], graines[i][2], graines[i][3]);
+        var v = getVerdictAfficheReel(t);
+        if (!v || v.goalM1 == null) continue;
+        var d = Math.abs(Number(v.goalM1) - Number(v.goalM7));
+        var som = Number(v.goalM1) + Number(v.goalM7);
+        ecarts[d] = (ecarts[d] || 0) + 1;
+        totaux[som] = (totaux[som] || 0) + 1;
+        n++;
+      } catch (e) {}
+    }
+    if (i < graines.length) { setTimeout(tranche, 0); return; }
+    _profilScoreV7 = { n: n, ecarts: ecarts, totaux: totaux };
+    _profilScoreEnCoursV7 = false;
+    if (quandPret) quandPret(_profilScoreV7);
+    var cible = document.getElementById('banc-score-profil');
+    if (cible) cible.innerHTML = htmlProfilScoreV7(_profilScoreV7);
+  }
+  setTimeout(tranche, 0);
+  return null;
+}
+
+function htmlProfilScoreV7(p) {
+  if (!p || !p.n) return '<span class="muted">mesure indisponible</span>';
+  function top(o, libelle) {
+    var cles = Object.keys(o).sort(function (x, y) { return o[y] - o[x]; }).slice(0, 3);
+    return cles.map(function (k) {
+      var pct = Math.round(o[k] * 1000 / p.n) / 10;
+      return '<span style="display:inline-block; margin-right:10px;">'
+        + libelle + ' <b>' + k + '</b> — <b style="color:'
+        + (pct > 60 ? '#f87171' : pct > 30 ? '#fbbf24' : '#94a3b8') + ';">' + pct + '%</b></span>';
+    }).join('');
+  }
+  var e2 = p.ecarts[2] || 0;
+  return '<div>' + top(p.ecarts, 'écart') + '</div>'
+    + '<div style="margin-top:2px;">' + top(p.totaux, 'total') + '</div>'
+    + '<div style="margin-top:3px; color:#f87171;">'
+    + 'Sur ' + p.n + ' thèmes, l\'écart de buts vaut 2 dans '
+    + Math.round(e2 * 1000 / p.n) / 10 + '% des cas. Le moteur n\'annonce jamais un nul '
+    + 'ni une victoire d\'un but — soit environ la moitié des matchs réels. '
+    + 'Tant que ce profil ne bouge pas, le SCORE exact n\'est pas prédictible, '
+    + 'quel que soit le moteur de camp.</div>';
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LE BANC — la grille moteurs × cas, rejouée à chaque affichage.
 // C'est le garde-fou : si une modification de doctrine fait tomber un
 // moteur, la case devient rouge ici avant qu'on s'en aperçoive ailleurs.
@@ -13617,7 +13763,8 @@ function renderBancPanel() {
       + b.cas.map(function (c) {
           return '<th style="padding:4px 3px; font-size:9px; color:#94a3b8; white-space:nowrap;" title="'
             + c.nom + (c.score ? ' — ' + c.score : '') + (c.note ? ' · ' + c.note : '') + '">'
-            + c.nom.slice(0, 4) + '</th>';
+            + '<span style="color:' + (c.saisi ? '#5eead4' : '#94a3b8') + ';">'
+            + c.nom.slice(0, 5) + '</span></th>';
         }).join('')
       + '<th style="padding:4px 6px; font-size:10px; color:#94a3b8;">score</th></tr>';
   }
@@ -13659,9 +13806,17 @@ function renderBancPanel() {
     + '<td></td></tr>';
 
   panneau.innerHTML =
-      '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px;">'
+      '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px; flex-wrap:wrap;">'
     + '<h3 style="margin:0; color:#5eead4;">🧪 Le banc — moteurs × cas réels</h3>'
     + '<span class="muted" style="font-size:10px;">rejoué à chaque affichage, jamais recopié</span></div>'
+    + '<div style="font-size:10.5px; margin-bottom:6px;">'
+    + '<b>' + b.cas.length + ' cas</b> — ' + b.nbArchive + ' d\'archive'
+    + (b.nbSaisis
+        ? ' + <b style="color:#5eead4;">' + b.nbSaisis + ' saisi'
+          + (b.nbSaisis > 1 ? 's' : '') + '</b> dans tes thèmes sauvegardés'
+        : ' · <span style="color:#fbbf24;">aucun match saisi pour l\'instant — '
+          + 'renseigne « Score reel » dans un thème sauvegardé, il entre ici automatiquement</span>')
+    + '</div>'
     + '<div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:520px;">'
     + '<thead>' + entete() + '</thead><tbody>'
     + lignesCamp + reel
@@ -13669,13 +13824,26 @@ function renderBancPanel() {
     + 'font-weight:700; color:#94a3b8;">Les deux marquent</td></tr>'
     + lignesBtts
     + '</tbody></table></div>'
+    + '<div style="margin-top:10px; padding:7px 9px; border:1px solid #7f1d1d; border-radius:8px; '
+    + 'background:rgba(127,29,29,.12);">'
+    + '<div style="font-size:10.5px; font-weight:700; color:#fca5a5; margin-bottom:3px;">'
+    + '⚠ Le profil du score — pourquoi le score exact ne tombe jamais</div>'
+    + '<div id="banc-score-profil" style="font-size:9.5px; color:#cbd5e1;">'
+    + (_profilScoreV7 ? htmlProfilScoreV7(_profilScoreV7)
+                      : '<span class="muted">mesure en cours…</span>')
+    + '</div></div>'
     + '<div class="hint" style="margin-top:9px; font-size:9px;">'
-    + 'Un point gris = le cas ne compte pas pour ce moteur (Roma est un nul, Lazio n\'a pas de score connu). '
+    + 'Les colonnes <span style="color:#5eead4;">en vert</span> sont les matchs que tu as saisis : '
+    + 'chaque « Score reel » renseigné dans un thème sauvegardé entre ici tout seul, et renote les '
+    + 'moteurs sans qu\'on touche au code. '
+    + 'Un point gris = le cas ne compte pas pour ce moteur (un nul, ou un score inconnu). '
     + 'Sept cas décisifs seulement : 5/7 ne se distingue pas du hasard (p ≈ 0,23), et le meilleur de huit '
     + 'moteurs est attendu haut par simple sélection. Ce tableau sert à VOIR UNE RÉGRESSION, pas à couronner '
     + 'un moteur. Il a été construit après en avoir manqué une : le 26/08, un changement d\'échelle dans '
     + 'forceCampV7 a fait tomber chaîne, ancrage et duel de 5/7 à 3–4/7 sans que rien ne l\'affiche.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
+  // une seule fois par session, après le rendu
+  try { profilScoreV7(); } catch (e) {}
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -17882,6 +18050,10 @@ function replayEntry(entry){
   var vf = verdictFinal(theme, entry.favorite || 'none');
   var rp = rangParole(vf);
   var vfOk = (vf.type==='verdict' || vf.type==='nul' || vf.type==='nul_suspecte') && vf.winner ? vf.winner===realWinner : null;
+  // Le verdict RÉELLEMENT AFFICHÉ par l'application, celui que pilote F4P4.
+  var affWinner = null;
+  try { var va = getVerdictAfficheReel(theme); affWinner = va ? va.winner : null; } catch (e) { affWinner = null; }
+  var affOk = affWinner ? affWinner === realWinner : null;
   var delaiMin = calculerDelaiTirageMinutes(entry.matchDate, entry.matchTime, entry.castAt || entry.savedAt, entry.matchTimezone);
   var scn = signalConvergenceNul(theme);
   var oc = oppositionComplementM1M7(theme);
@@ -17899,7 +18071,20 @@ function replayEntry(entry){
   // le contexte d'epoque (date -> planete, competition) au lieu du DOM courant.
   var ctxScore = {planeteJour: getPlaneteDuJour(entry.matchDate || ''), competition: entry.competition || 'fra_l1'};
   var v7Replay = verdictV7(theme, false, ctxScore);
-  var predM1 = v7Replay.goalM1, predM7 = v7Replay.goalM7;
+  // ─── DEUXIÈME INCOHÉRENCE, CORRIGÉE LE 27/08/26 ───
+  // Le score noté ici venait de verdictV7 ; le score AFFICHÉ vient de
+  // getVerdictAfficheReel. Mesuré sur les huit cas d'archive : les deux
+  // diffèrent sur SEPT (Juventus 0-1 contre 5-3, Inter 3-5 contre 0-5,
+  // Milan 5-3 contre 4-2…). La pastille de cohérence jugeait donc un
+  // score que l'utilisateur n'a jamais vu.
+  // On note l'affiché. Réserve honnête : getVerdictAfficheReel ne prend
+  // pas le contexte d'époque (planète du jour, compétition), donc le
+  // rejeu perd ce contexte ; le score de verdictV7 avec contexte reste
+  // exposé sous predScoreV7 pour comparaison.
+  var affScore = null;
+  try { var vaS = getVerdictAfficheReel(theme); affScore = vaS || null; } catch (e) { affScore = null; }
+  var predM1 = affScore ? Number(affScore.goalM1) : v7Replay.goalM1;
+  var predM7 = affScore ? Number(affScore.goalM7) : v7Replay.goalM7;
   var ecartButs = Math.abs(predM1-g1) + Math.abs(predM7-g7);
   var scoreOk = ecartButs <= 1;
 
@@ -17953,8 +18138,21 @@ function replayEntry(entry){
     vfRang: rp.rang,
     vfEtage: rp.etage,
     vfOk: vfOk,
+    // ─── INCOHÉRENCE CORRIGÉE LE 27/08/26 ───
+    // evalCoherence — la « Fiabilité globale » des thèmes sauvegardés —
+    // notait verdictFinal, le moteur HISTORIQUE. Or ce n'est pas lui qui
+    // s'affiche : le verdict du match vient de getVerdictAfficheReel
+    // (F4P4 en tête depuis le 26/08). Mesuré : les deux diffèrent sur
+    // 148 thèmes sur 379, soit 39 % — et sur le cas Fiorentina la
+    // fiabilité disait « vainqueur incorrect » alors que l'application
+    // avait affiché le bon camp. On notait un moteur que l'utilisateur
+    // ne voit pas.
+    // Les deux sont désormais exposés ; evalCoherence juge l'AFFICHÉ.
+    affWinner: affWinner,
+    affOk: affOk,
     favoriteKnown: !!entry.favorite,
     predScore: predM1+'-'+predM7,
+    predScoreV7: v7Replay.goalM1+'-'+v7Replay.goalM7,
     ecartButs: ecartButs,
     scoreOk: scoreOk,
     convergenceWinner: convergenceWinner,
@@ -18553,11 +18751,16 @@ function evalCoherence(entry) {
   if (!entry.realScore) return {level:'none', label:'Non evalue'};
   var r = replayEntry(entry);
   if (!r) return {level:'none', label:'Score invalide'};
-  var winnerMatch = (r.vfWinner !== null && r.vfWinner !== undefined) ? r.vfOk : null;
-  if (winnerMatch === true && r.scoreOk) return {level:'high', label:'✓ Cohérent (vainqueur + score proche) — prédit '+r.predScore};
-  if (winnerMatch === true) return {level:'mid', label:'~ Vainqueur correct, score différent — prédit '+r.predScore};
-  if (winnerMatch === false) return {level:'low', label:'✗ Vainqueur incorrect — prédit '+r.predScore};
-  return {level:'mid', label:'~ verdictFinal s abstient (moteur muet) — score prédit '+r.predScore+(r.scoreOk?' (proche)':'')};
+  // On juge le verdict AFFICHÉ (F4P4 en tête), pas verdictFinal : c'est
+  // celui que tu as sous les yeux. Le désaccord entre les deux est
+  // signalé quand il existe — c'est une information, pas du bruit.
+  var winnerMatch = (r.affWinner !== null && r.affWinner !== undefined) ? r.affOk : null;
+  var disc = (r.affWinner && r.vfWinner && r.affWinner !== r.vfWinner)
+    ? ' · ancien moteur : ' + r.vfWinner : '';
+  if (winnerMatch === true && r.scoreOk) return {level:'high', label:'✓ Cohérent (vainqueur + score proche) — prédit '+r.predScore+disc};
+  if (winnerMatch === true) return {level:'mid', label:'~ Vainqueur correct, score différent — prédit '+r.predScore+disc};
+  if (winnerMatch === false) return {level:'low', label:'✗ Vainqueur incorrect — prédit '+r.predScore+disc};
+  return {level:'mid', label:'~ le moteur s abstient — score prédit '+r.predScore+(r.scoreOk?' (proche)':'')};
 }
 
 function setRealScore(id, value) {
