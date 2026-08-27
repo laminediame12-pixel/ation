@@ -13372,6 +13372,7 @@ function casSauvegardesV7() {
       nom: nom, meres: meres, score: g1 + '-' + g7,
       camp: g1 > g7 ? 'R1' : g7 > g1 ? 'R7' : 'nul',
       btts: g1 > 0 && g7 > 0,
+      incident: e.realPenalty === 'yes' ? true : e.realPenalty === 'no' ? false : null,
       saisi: true, note: 'saisi dans les thèmes sauvegardés'
     });
   });
@@ -13451,6 +13452,9 @@ function bancMoteursV7(force) {
     }),
     btts: passe(MOTEURS_BTTS_V7, 'oui', function (c) {
       return (typeof c.btts === 'boolean') ? c.btts : null;
+    }),
+    incident: passe(MOTEURS_INCIDENT_V7, 'oui', function (c) {
+      return (typeof c.incident === 'boolean') ? c.incident : null;
     }),
     cas: CAS,
     nbArchive: CAS_REFERENCE_V7.length,
@@ -13583,6 +13587,48 @@ var MOTEURS_BTTS_V7 = [
   { cle: 'btts_score', nom: 'BTTS · « toujours oui »', icone: '➖', teinte: '#64748b',
     juste: 4, total: 9, note: 'témoin — le hasard à battre',
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// LES MOTEURS D'INCIDENT — mis au banc le 27/08/26.
+//
+// Il y avait DEUX mécanismes de pénalité dans le fichier, et ils se
+// contredisaient sans que rien ne le signale : sur le thème
+// puer/laetitia/amissio/acquisitio, detectIncidentChaotique disait OUI à
+// 66 % et verdictV7.penalty disait NON. Seul le premier arrivait à
+// l'écran, et le second était le seul à savoir nommer un camp.
+// Ils sont maintenant notés côte à côte, comme les moteurs de camp.
+//
+// ⚠️ AUCUN D'EUX N'A ENCORE UN SEUL CAS. Le champ « Rouge / pénalty
+// réel » n'était pas enregistré (cf. setRealPenalty). Le banc affichera
+// 0/0 jusqu'à ce que des matchs soient saisis — c'est exactement le but :
+// rendre visible qu'on ne sait pas.
+var MOTEURS_INCIDENT_V7 = [
+  { cle: 'incident_signaux', nom: 'Incident · signaux', icone: '⚠', teinte: '#f87171',
+    juste: 0, total: 0, note: 'affiché — chaos, filiation, M6/M12 discordantes',
+    verdict: function (t) {
+      var orderR = getRotationOrderFromRepos(t[1]);
+      var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
+        calculerButsCamp(t[orderR[6]], t), orderR[0], orderR[6]);
+      var niv = calculerNiveauIncidentV7(d.signals);
+      return { oui: niv.pct >= 50, camp: d.camp || null,
+        detail: niv.pct + '% ' + niv.niveau + (d.camp ? ' · contre ' + d.camp : '') };
+    } },
+  { cle: 'incident_binome', nom: 'Incident · binôme non protecteur', icone: '🛡', teinte: '#fb923c',
+    juste: 0, total: 0, note: 'non affiché — figure dangereuse en M6/M12 mal protégée',
+    verdict: function (t) {
+      var v = verdictV7(t, false, {});
+      return { oui: !!(v.penalty && (v.penalty.hasPen || v.penalty.hasRed)),
+        camp: (v.penalty && v.penalty.encaisseur) || null,
+        detail: (v.penalty && v.penalty.hasPen ? 'penalty' : 'aucun')
+          + (v.penalty && v.penalty.encaisseur ? ' · contre ' + v.penalty.encaisseur : '') };
+    } },
+  { cle: 'incident_filiation', nom: 'Incident · filiation double-négative', icone: '🧬', teinte: '#c084fc',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D 27/08 — M5⊕M6→M11 et symétriques',
+    verdict: function (t) {
+      var f = filiationIncidentV7(t);
+      return { oui: f.nb > 0, camp: f.camp || null, detail: f.resume };
+    } }
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -13905,6 +13951,10 @@ function renderBancPanel() {
   var lignesBtts = b.btts.slice().sort(function (x, y) {
     return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
   }).map(ligne).join('');
+  var lignesInc = (b.incident || []).slice().sort(function (x, y) {
+    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
+  }).map(ligne).join('');
+  var incidentSansCas = (b.incident || []).every(function (m) { return !m.total; });
 
   var reel = '<tr style="border-top:2px solid #0f766e;">'
     + '<td style="padding:4px 6px; font-size:10px; color:#5eead4; font-weight:700;">réel</td>'
@@ -13933,6 +13983,13 @@ function renderBancPanel() {
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Les deux marquent</td></tr>'
     + lignesBtts
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Penalty / carton rouge'
+    + (incidentSansCas
+        ? ' <span style="color:#fbbf24; font-weight:400;">— aucun cas : renseigne « Rouge/pénalty ? » '
+          + 'dans tes thèmes sauvegardés, ces trois lignes se rempliront seules</span>' : '')
+    + '</td></tr>'
+    + lignesInc
     + '</tbody></table></div>'
     + '<div style="margin-top:10px; padding:7px 9px; border:1px solid #7f1d1d; border-radius:8px; '
     + 'background:rgba(127,29,29,.12);">'
@@ -16197,6 +16254,88 @@ function confrontationBinome(binome, theme){
   return {present: sieges.length>0, resultats, rupture: !!rupture, detail: rupture || null};
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LA FILIATION DE L'INCIDENT (27/08/26, doctrine Ellemine_D)
+//
+// « vérifie m5 et m6, ils donnent m11. les deux premiers sont toutes des
+// figures négatives (chute, contrainte) donne recommencement,
+// déclenchement. »
+//
+// VÉRIFIÉ : M5 ⊕ M6 = M11 sur 311 thèmes sur 311. C'est une loi du carré,
+// pas une piste. Toute la filiation tient de même :
+//     M1⊕M2=M9 · M3⊕M4=M10 · M5⊕M6=M11 · M7⊕M8=M12
+//     M9⊕M10=M13 · M11⊕M12=M14 · M13⊕M14=M15 · M15⊕M1=M16
+// Les six maisons qu'Ellemine_D désigne (M1, M6, M7, M8, M11, M12) ne
+// sont donc pas une liste : ce sont deux générations. M5-M8 sont les
+// parents, M11-M12 les enfants.
+//
+// ⚠️ ET C'EST LÀ QUE J'AI DÛ COMPLÉTER SA DOCTRINE, PAS LA COPIER.
+// M5, M6, M7, M8, M11 et M12 appartiennent TOUTES à CAMP2. Une règle
+// bâtie sur ces seules maisons ne pourrait accuser QUE l'équipe 2, sur
+// 100 % des thèmes — l'attribution serait vide de sens. Le camp 1 a
+// exactement la même structure, et elle est parfaitement symétrique :
+//     camp 1 : M1⊕M2→M9   et M3⊕M4→M10   (toutes dans CAMP1)
+//     camp 2 : M5⊕M6→M11  et M7⊕M8→M12   (toutes dans CAMP2)
+// Les deux sont donc examinées. Mesuré sur 1772 thèmes :
+//     camp 1 seul 19 % · camp 2 seul 19 % · les deux 7 % · aucun 55 %
+// Signal attribuable dans 38 % des cas, et parfaitement équilibré entre
+// les camps — ce qu'une lecture littérale des six maisons n'aurait
+// jamais donné.
+//
+// À comparer avec la règle de présence en place (« cauda/tristitia/
+// carcer/amissio en M6 ou M12 »), qui se déclenche sur 43 % des thèmes
+// et n'attribue le camp que par la maison. La filiation est plus rare et
+// mieux fondée.
+var FIGURES_NEGATIVES_V7 = {
+  cauda_draconis: 'chute', carcer: 'contrainte', tristitia: 'tristesse',
+  amissio: 'perte', rubeus: 'violence', puer: 'impulsion'
+};
+// Les deux figures de Mars. Ellemine_D, 27/08 : « ce n'est pas parce
+// qu'une figure n'est pas de Mars qu'elle ne peut provoquer un
+// incident » — Mars n'est donc PAS une condition, seulement une
+// aggravation.
+var FIGURES_MARS_V7 = { rubeus: 1, puer: 1 };
+var FILIATIONS_V7 = [
+  { parents: [1, 2], enfant: 9,  camp: 'M1' },
+  { parents: [3, 4], enfant: 10, camp: 'M1' },
+  { parents: [5, 6], enfant: 11, camp: 'M7' },
+  { parents: [7, 8], enfant: 12, camp: 'M7' }
+];
+
+function filiationIncidentV7(theme) {
+  if (!theme || !theme[1]) return { applicable: false, lignes: [], camp: null };
+  var lignes = FILIATIONS_V7.map(function (f) {
+    var a = theme[f.parents[0]], b = theme[f.parents[1]], e = theme[f.enfant];
+    var na = FIGURES_NEGATIVES_V7[a] || null, nb = FIGURES_NEGATIVES_V7[b] || null;
+    return {
+      parents: f.parents, enfant: f.enfant, camp: f.camp,
+      figA: a, figB: b, figEnfant: e,
+      negA: na, negB: nb, negEnfant: FIGURES_NEGATIVES_V7[e] || null,
+      mars: !!(FIGURES_MARS_V7[a] || FIGURES_MARS_V7[b] || FIGURES_MARS_V7[e]),
+      double: !!(na && nb),
+      // Contrôle de la loi : si elle tombait en défaut on veut le savoir.
+      loiTenue: (typeof combine === 'function') ? (combine(a, b) === e) : null
+    };
+  });
+  var m1 = lignes.some(function (l) { return l.camp === 'M1' && l.double; });
+  var m7 = lignes.some(function (l) { return l.camp === 'M7' && l.double; });
+  var camp = (m1 && !m7) ? 'M1' : (m7 && !m1) ? 'M7' : null;
+  var actives = lignes.filter(function (l) { return l.double; });
+  return {
+    applicable: true, lignes: lignes, campM1: m1, campM7: m7, camp: camp,
+    mars: actives.some(function (l) { return l.mars; }),
+    nb: actives.length,
+    resume: !actives.length ? 'aucune filiation double-négative'
+      : actives.map(function (l) {
+          return 'M' + l.parents[0] + ' ' + (FL[l.figA] || l.figA) + ' (' + l.negA + ') + M'
+            + l.parents[1] + ' ' + (FL[l.figB] || l.figB) + ' (' + l.negB + ') → M'
+            + l.enfant + ' ' + (FL[l.figEnfant] || l.figEnfant);
+        }).join(' · ')
+        + (camp ? ' — incident porté par le camp ' + camp
+                : ' — les deux camps, aucune attribution')
+  };
+}
+
 // posA/posB (17/07/26, demande explicite utilisateur : "le verdict porte
 // sur la rotation non pourquoi analyse m1 et m7 pour les deux marques")
 // — check(1)/check(7) et leur bloc antagoniste (§2) comparaient TOUJOURS
@@ -16226,9 +16365,12 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   const ancresEquipe2 = posB === 7 ? [7] : [7, posB];
 
   // 1. Chaotique sur positions clés (fixe M1/M7 + mode affiché posA/posB, combinés)
-  const check = (pos, label) => { if (roleAt(pos)==='Chaotique') signals.push({pos, fig:theme[pos], label}); };
-  ancresEquipe1.forEach(pos => check(pos, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)'));
-  ancresEquipe2.forEach(pos => check(pos, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)'));
+  const check = (pos, label, camp) => { if (roleAt(pos)==='Chaotique') signals.push({pos, fig:theme[pos], label, camp: camp || null}); };
+  // Ces deux-là sont SYMÉTRIQUES par construction (ancre de chaque
+  // équipe) : elles peuvent accuser l'un ou l'autre camp, donc elles
+  // votent pour l'attribution.
+  ancresEquipe1.forEach(pos => check(pos, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)', 'M1'));
+  ancresEquipe2.forEach(pos => check(pos, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)', 'M7'));
   check(13, 'incident dans la phase de synthèse (témoin droit)');
   check(14, 'incident dans la phase de synthèse (témoin gauche)');
   check(15, 'JUGE Chaotique : issue du match par un incident décisif (penalty, rouge, CSC, accident)');
@@ -16253,7 +16395,8 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
       const ennemi = antag[theme[p]];
       for (let pos=1; pos<=16; pos++){
         if (theme[pos]===ennemi && roleAt(pos)==='Chaotique'){
-          signals.push({pos, fig:ennemi, label:'antagoniste de '+label+' en chaos → incident CONTRE l '+label});
+          signals.push({pos, fig:ennemi, camp: (label === 'équipe 1' ? 'M1' : 'M7'),
+            label:'antagoniste de '+label+' en chaos → incident CONTRE l '+label});
         }
       }
     });
@@ -16300,13 +16443,59 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   // volontairement ABSENTE de la liste ci-dessous (aucun signal ajouté
   // pour elle), sans pour autant annuler d'autres signaux indépendants
   // (ex. élémentaires) déjà détectés ailleurs dans le thème.
+  // ─── FILTRE DE COHABITATION (27/08/26, doctrine Ellemine_D) ───
+  // « Rubeus, son niveau d'élément actif est air, alors la maison 12 est
+  // terre — air et terre s'étouffent ; de même feu/eau crée le chaos. »
+  // La règle ne se déclenchait que sur la PRÉSENCE de la figure : mesuré,
+  // elle parlait sur 43 % des thèmes, ce qui ne discrimine presque rien.
+  // Elle exige désormais la DISCORDANCE ÉLÉMENTAIRE avec la maison
+  // (concordance < 0,5) — la figure doit être mal logée pour nuire.
+  // Mesuré : 43 % → 25 %.
+  // Mars (Rubeus, Puer) n'est PAS une condition — Ellemine_D, 27/08 :
+  // « ce n'est pas parce qu'une figure n'est pas de Mars qu'elle ne peut
+  // provoquer un incident » — mais une AGGRAVATION, comptée à part.
   var FIGURES_PENALITE_M12_M6 = ['cauda_draconis','tristitia','carcer','amissio'];
   [12, 6].forEach(function(pos) {
-    if (FIGURES_PENALITE_M12_M6.indexOf(theme[pos]) >= 0) {
-      var contre = CAMP1.includes(pos) ? 'CONTRE l\'équipe 1' : 'CONTRE l\'équipe 2';
-      signals.push({pos: pos, fig: theme[pos], label: FL[theme[pos]]+' en M'+pos+' : figure qui provoque le penalty/carton (doctrine utilisateur, 18/07/26) '+contre});
-    }
+    var f = theme[pos];
+    if (FIGURES_PENALITE_M12_M6.indexOf(f) < 0) return;
+    var conc = concordanceElement(ELEMENTS_V7[f], MAISON_ELEM_V7[pos]);
+    if (conc >= 0.5) return;                       // bien logée : elle ne nuit pas
+    var campSig = CAMP1.includes(pos) ? 'M1' : 'M7';
+    var contre = campSig === 'M1' ? 'CONTRE l\'équipe 1' : 'CONTRE l\'équipe 2';
+    var resultante = combine(f, FIGS_V7[pos - 1]);
+    var aggrave = !!(FIGURES_MARS_V7[f] || FIGURES_MARS_V7[resultante]);
+    // ⚠️ CETTE RÈGLE NE VOTE PAS POUR LE CAMP, ET C'EST DÉLIBÉRÉ.
+    // M6 et M12 appartiennent toutes deux à CAMP2 : elle ne peut
+    // structurellement accuser QUE l'équipe 2. La laisser voter faussait
+    // l'attribution — mesuré avant ce correctif : M1 16 % contre M7 33 %,
+    // alors que la filiation, elle, est équilibrée 19 %/19 %.
+    // Le camp reste écrit dans le libellé (c'est bien la maison de
+    // l'équipe 2 qui porte la figure), mais l'attribution finale se
+    // décide sur les signaux symétriques seuls.
+    signals.push({pos: pos, fig: f, camp: null,
+      label: FL[f]+' en M'+pos+' : figure qui provoque le penalty/carton, '
+        + 'DISCORDANTE avec sa maison ('+ELEMENTS_V7[f]+' en '+MAISON_ELEM_V7[pos]
+        + ', concordance '+conc+') '+contre
+        + (aggrave ? ' — AGGRAVÉ (Mars : '+FL[FIGURES_MARS_V7[f] ? f : resultante]+')' : '')});
   });
+
+  // ─── LA FILIATION DE L'INCIDENT (27/08/26) ───
+  // M5⊕M6→M11 et M7⊕M8→M12, plus leurs symétriques M1⊕M2→M9 et
+  // M3⊕M4→M10 : deux parents négatifs engendrent le déclenchement.
+  // Voir filiationIncidentV7 pour le détail et pour la raison qui oblige
+  // à traiter les deux camps.
+  try {
+    var fil = filiationIncidentV7(theme);
+    (fil.lignes || []).forEach(function (l) {
+      if (!l.double) return;
+      signals.push({pos: l.enfant, fig: l.figEnfant, camp: l.camp,
+        label: 'filiation : M'+l.parents[0]+' '+FL[l.figA]+' ('+l.negA+') + M'
+          + l.parents[1]+' '+FL[l.figB]+' ('+l.negB+') → M'+l.enfant+' '+FL[l.figEnfant]
+          + ' — deux parents négatifs engendrent le déclenchement, '
+          + (l.camp === 'M1' ? 'CONTRE l\'équipe 1' : 'CONTRE l\'équipe 2')
+          + (l.mars ? ' — AGGRAVÉ (Mars)' : '')});
+    });
+  } catch (e) {}
 
   // PUER + BINÔME (16/07/26, doctrine utilisateur, n=1 réel confirmé) —
   // Puer chaotique en M7 (feu/eau, toujours vrai dès que theme[7]='puer')
@@ -16359,7 +16548,22 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   const seen = new Set();
   const unique = signals.filter(s=>{const k=s.pos+'|'+s.label; if(seen.has(k)) return false; seen.add(k); return true;});
 
+  // ─── QUI ENCAISSE (27/08/26) ───
+  // Jusqu'ici le camp n'existait que noyé dans le texte d'un libellé
+  // (« CONTRE l'équipe 2 »), illisible pour le code comme pour l'œil.
+  // Il devient une donnée. Les signaux sans camp (témoins, Juge, buteurs
+  // actifs) ne votent pas : ils disent qu'il y a un incident, pas contre
+  // qui.
+  var nM1 = unique.filter(function(x){ return x.camp === 'M1'; }).length;
+  var nM7 = unique.filter(function(x){ return x.camp === 'M7'; }).length;
+  var campIncident = nM1 > nM7 ? 'M1' : nM7 > nM1 ? 'M7' : null;
+
   return {hasSignal: unique.length>0, signals: unique,
+    camp: campIncident, campM1: nM1, campM7: nM7,
+    campResume: campIncident
+      ? 'incident porté CONTRE ' + campIncident + ' (' + nM1 + ' signal(s) camp 1, ' + nM7 + ' camp 2)'
+      : (nM1 || nM7 ? 'signaux équilibrés (' + nM1 + '/' + nM7 + ') — aucun camp désigné'
+                    : 'aucun signal attribuable à un camp'),
     resume: unique.length ? unique.map(s=>(s.pos?'M'+s.pos+' ('+FL[s.fig]+') : ':'')+s.label).join(' | ') : 'Aucun signal d incident détecté (Chaotique, antagonistes, M11/M12/M6).'};
 }
 
@@ -16382,6 +16586,17 @@ var INCIDENT_WEIGHTS_V7 = [
   {test: /PENALTY probable/,                        w: 30, type: 'penalty'},
   {test: /CARTON ROUGE probable/,                   w: 30, type: 'rouge'},
   {test: /provoque le penalty\/carton/,              w: 25, type: 'penalty'},
+  // ─── LA FILIATION (27/08/26) ───
+  // Poids 20, entre « provoque le penalty » (25, présence + discordance,
+  // 25 % des thèmes) et « incident probable CONTRE » (20). Justification
+  // de fréquence : la filiation double-négative attribuable ne se
+  // déclenche que sur 38 % des thèmes, répartis 19 % / 19 % entre les
+  // camps — elle est plus rare que la règle de présence d'origine (43 %)
+  // et son camp est structurel, donc fiable.
+  // ⚠️ Ce 20 n'est PAS mesuré contre des résultats : aucune pénalité
+  // réelle n'est encore consignée. C'est un rang de doctrine, à corriger
+  // dès que le banc des incidents aura des cas.
+  {test: /^filiation :/,                             w: 20, type: 'penalty'},
   {test: /incident probable CONTRE/,                 w: 20, type: 'generique'},
   {test: /Figures très négatives.*opposées/,         w: 15, type: 'generique'},
   {test: /antagoniste de .* en chaos/,               w: 15, type: 'generique'},
@@ -16811,6 +17026,12 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
     scoreMain: scoreMain, scoreAlt: scoreAlt,
     penaltyRouge: incidentDetect.hasSignal,
+    // ─── LE CAMP QUI ENCAISSE, EN DONNÉE (27/08/26) ───
+    // Avant, l'information n'existait que noyée dans le texte d'un
+    // libellé. Elle remonte maintenant jusqu'à l'écran.
+    incidentCamp: incidentDetect.camp || null,
+    incidentCampResume: incidentDetect.campResume || null,
+    incidentSignaux: incidentDetect.signals || [],
     cartonsJaunes: incidentDetect.signals.length,
     incidentPct: niveauIncident.pct,
     incidentNiveau: niveauIncident.niveau,
@@ -17012,7 +17233,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // au lieu du signal réel.
   var penalty=card&&card.penaltyRouge!=null?(card.penaltyRouge?'Oui':'Non'):'—';
   if (card && card.incidentPct > 0) {
-    penalty = (card.penaltyRouge?'Oui':'Non') + ' — ' + card.incidentNiveau + ' (' + card.incidentPct + '%)' + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '');
+    penalty = (card.penaltyRouge?'Oui':'Non') + ' — ' + card.incidentNiveau + ' (' + card.incidentPct + '%)'
+      + (card.incidentCamp ? ' · CONTRE ' + card.incidentCamp : ' · camp non désigné')
+      + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '');
   }
   var yellow=card&&card.cartonsJaunes!=null?card.cartonsJaunes:'—';
   var nullStatus=nulActif?'NUL ACTIF':'NUL NON ACTIF';
@@ -17098,7 +17321,25 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   html+='<div class="tek-hero">';
   html+='<div class="tek-winner '+(nulActif?'warn':'')+'"><div class="tek-cap">'+(nulActif?'VERDICT SUSPENDU':'VAINQUEUR')+'</div><div class="tek-name">'+(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner))+'</div><div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div></div>';
   var incColorTek = card && card.incidentInevitable ? '#f87171' : card && card.incidentPct >= 50 ? '#fb923c' : card && card.incidentPct > 0 ? '#facc15' : null;
-  html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 Cartons jaunes (estimé)</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)+'</b></div><div class="tek-note">'+(nulActif?'⚠️ Structure du nul prioritaire — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — le nul ne l’invalide pas.')+'</div></div></div>';
+  // ─── LE DÉTAIL DE L'INCIDENT, AVEC SON CAMP (27/08/26) ───
+  var incHtml = '';
+  if (card && card.penaltyRouge && card.incidentSignaux && card.incidentSignaux.length) {
+    incHtml = '<div style="margin:10px 0 0; padding:8px 10px; border-radius:9px; '
+      + 'background:rgba(127,29,29,.14); border:1px solid #b91c1c;">'
+      + '<div style="font-size:11.5px; font-weight:800; color:#fca5a5;">⚠ Incident — '
+      + esc(card.incidentCampResume || '') + '</div>'
+      + card.incidentSignaux.map(function (sg) {
+          return '<div style="font-size:9.5px; margin-top:2px; color:'
+            + (sg.camp ? (sg.camp === 'M1' ? '#7dd3fc' : '#fdba74') : '#94a3b8') + ';">'
+            + (sg.camp ? '[' + sg.camp + '] ' : '[—] ') + esc(sg.label) + '</div>';
+        }).join('')
+      + '<div class="hint" style="font-size:8.5px; margin-top:4px;">'
+      + '[M1] / [M7] = signal qui désigne un camp. [—] = signal sans camp : il dit '
+      + 'qu\'il y a incident, pas contre qui. La règle M6/M12 ne vote pas — ces deux '
+      + 'maisons sont toutes deux du camp 2, elle ne pourrait accuser que lui.</div>'
+      + '</div>';
+  }
+  html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 Cartons jaunes (estimé)</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)+'</b></div><div class="tek-note">'+(nulActif?'⚠️ Structure du nul prioritaire — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — le nul ne l’invalide pas.')+'</div>'+incHtml+'</div></div>';
   html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
   html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
   html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
@@ -17139,6 +17380,11 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
   }
   html += '</div>';
   html += '<div style="text-align:left; margin-left:24px;">';
+  // ⚠️ 27/08/26 — renderCarteVerdict n'est appelée NULLE PART. Vérifié :
+  // une seule occurrence du nom dans tout le fichier, sa définition.
+  // C'est du code mort. J'y avais d'abord posé le détail des signaux
+  // d'incident : il ne s'affichait pas, forcément. Il vit maintenant
+  // dans renderProtocoleVerdictPrincipal, le panneau réellement rendu.
   html += '<div class="kv"><b>Penalty/Rouge :</b> ' + (card.penaltyRouge ? 'Oui' : 'Non') +
     (card.incidentPct > 0 ? ' — <span style="font-weight:900; color:' + (card.incidentInevitable ? '#f87171' : card.incidentPct >= 50 ? '#fb923c' : '#facc15') + ';">' + card.incidentNiveau + ' (' + card.incidentPct + '%)' + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '') + '</span>' : '') + '</div>';
   if (card.incidentPct > 0) {
@@ -18890,6 +19136,12 @@ function renderCurrentList() {
       h += '<input type="text" placeholder="Score reel ex: 2-1" value="' + (entry.realScore || '') + '" ';
       h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:120px;" ';
       h += 'onchange="setRealScore(\'' + eid + '\', this.value)" />';
+      h += '<select onchange="setRealPenalty(\'' + eid + '\', this.value)" '
+        + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;">'
+        + '<option value=""' + (!entry.realPenalty ? ' selected' : '') + '>Rouge/pénalty ?</option>'
+        + '<option value="yes"' + (entry.realPenalty === 'yes' ? ' selected' : '') + '>Oui</option>'
+        + '<option value="no"' + (entry.realPenalty === 'no' ? ' selected' : '') + '>Non</option>'
+        + '</select>';
       if (entry.realScore) {
         var badgeColor = coh.level === 'high' ? '#22c55e' : coh.level === 'mid' ? '#f59e0b' : '#ef4444';
         h += '<span style="background:' + badgeColor + '22;color:' + badgeColor + ';border:1px solid ' + badgeColor + ';border-radius:6px;padding:3px 8px;font-size:11px;font-weight:bold;">' + coh.label + '</span>';
@@ -18924,6 +19176,24 @@ function evalCoherence(entry) {
   if (winnerMatch === true) return {level:'mid', label:'~ Vainqueur correct, score différent — prédit '+r.predScore+disc};
   if (winnerMatch === false) return {level:'low', label:'✗ Vainqueur incorrect — prédit '+r.predScore+disc};
   return {level:'mid', label:'~ le moteur s abstient — score prédit '+r.predScore+(r.scoreOk?' (proche)':'')};
+}
+
+// ─── LE ROUGE/PÉNALTY RÉEL DEVIENT UNE DONNÉE (27/08/26) ───
+// Le formulaire « Résultat réel » proposait « Rouge / pénalty réel »
+// depuis toujours, mais compareWithReality se contentait de le LIRE dans
+// le DOM : il n'était jamais enregistré sur le thème. Le fichier le
+// notait lui-même (« aucun match de l'archive n'a encore realPenalty »).
+// Résultat : les règles d'incident — celles d'Ellemine_D comprises —
+// n'ont jamais été confrontées à un seul résultat.
+// Il est désormais stocké sur l'entrée, exactement comme le score, et le
+// banc le rejoue.
+function setRealPenalty(id, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  entry.realPenalty = (value === 'yes' || value === 'no') ? value : '';
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
 }
 
 function setRealScore(id, value) {
