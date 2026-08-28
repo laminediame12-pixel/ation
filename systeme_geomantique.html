@@ -12276,7 +12276,13 @@ function decalageCampsV7(figR1, figR7) {
     toucheR1: lR1.length, toucheR7: lR7.length,
     avantage: lR1.length > lR7.length ? 'R1' : lR7.length > lR1.length ? 'R7' : null,
     resume: memeBoucle
-      ? 'décalage k=' + k + ' (pair) — même boucle : AUCUN des deux camps ne peut toucher l\'autre'
+      ? (function () {
+          var c = contaminationCampsV7(figR1, figR7);
+          return 'décalage k=' + k + ' (pair) — même boucle : AUCUN des deux camps ne peut toucher l\'autre'
+            + (c && c.roleR7DansR1 ? ' · ⚠ R7 EST le ' + c.roleR7DansR1 + ' de R1' : '')
+            + (c && c.roleR1DansR7 ? ' · ⚠ R1 EST le ' + c.roleR1DansR7 + ' de R7' : '')
+            + (c ? ' · ' + c.partages.length + '/5 rôles partagés' : '');
+        })()
       : 'décalage k=' + k + ' — R1 atteint ' + lR1.length + '/5 du camp adverse, R7 ' + lR7.length + '/5'
         + (k === 3 ? ' · DUEL CANONIQUE, R1 frappe R7 rôle pour rôle'
           : k === 13 ? ' · DUEL CANONIQUE, R7 frappe R1 rôle pour rôle' : '')
@@ -12286,6 +12292,88 @@ function decalageCampsV7(figR1, figR7) {
 function campDeV7(fig) {
   if (!fig) return [];
   return [fig, BOUCLIER_V7[fig], FRONT_V7[fig], BINOMES_V7[fig], frontDuFrontV7(fig)];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LES DEUX QUATUORS D'UNE BOUCLE, ET LA FAILLE QU'ILS RÉVÈLENT
+// (28/08/26, observation d'Ellemine_D)
+//
+// Son constat, vérifié 16/16 : « une figure avec son binôme crée des
+// fronts différents dans la même boucle ». Le quatuor de front de X est
+// {X, X+4, X+8, X+12} ; celui de son binôme est {X+2, X+6, X+10, X+14} ;
+// les deux sont ENTIÈREMENT DISJOINTS. Une boucle de 8 se coupe donc en
+// deux quatuors de 4, et ces quatuors sont les familles d'élément des
+// maisons de repos.
+//     boucle A : Puer→Via→Fortuna Minor→Cauda  |  Caput→Rubeus→Conjonctio→Acquisitio
+//     boucle B : Laetitia→Amissio→Carcer→Puella |  Albus→Tristitia→Fortuna Major→Populus
+//
+// CONSÉQUENCE SUR LE CAMP : trois rôles (la centrale, le front, le front
+// du front) sont dans le quatuor de la centrale ; les deux autres (le
+// binôme et le bouclier) sont dans l'AUTRE quatuor. Un camp n'est donc
+// pas homogène — 16/16.
+//
+// ⚠️ ET VOICI LA FAILLE. Quand R1 et R7 sont dans la même boucle — la
+// moitié des thèmes — l'un est TOUJOURS un rôle du camp de l'autre :
+//     k= 0 : la même figure des deux côtés (5/5 rôles partagés)
+//     k= 2 : R7 est le BINÔME de R1        k=10 : R7 est son BOUCLIER
+//     k= 4 : R7 est son FRONT              k= 8 : R7 est son FRONT DU FRONT
+//     k= 6 : R1 est le bouclier de R7      k=12 : R1 est son front
+//     k=14 : R1 est son binôme
+// Aucune exception : 8 valeurs paires sur 8. Les moteurs qui comparent
+// « le camp de R1 » à « le camp de R7 » comptent alors la centrale
+// ADVERSE parmi les forces de l'un des deux.
+//
+// MESURÉ (3 856 thèmes, 1 sur 17) :
+//   R7 compte parmi les 4 pôles de R1 ......... 24,5 %  (et l'inverse 24,0 %)
+//   il y est compté SOLIDE ..................... 12,6 %  (et l'inverse 12,7 %)
+//   exclure la centrale adverse du décompte fait changer le verdict F4P4
+//   sur 3,8 % des thèmes — 7,4 % des thèmes à même boucle.
+//
+// ⚠️ MAIS LA CORRECTION NAÏVE COÛTE UN POINT : sur les dix cas réels,
+// F4P4 passe de 6/10 à 5/10 (Juventus bascule du juste au faux, et c'est
+// le seul cas qui change). Un cas, ce n'est pas une mesure. La lecture
+// corrigée siège donc au banc, à côté de l'originale, au lieu de la
+// remplacer en silence — et la faille est signalée à l'écran.
+function contaminationCampsV7(figR1, figR7) {
+  if (!figR1 || !figR7) return null;
+  var i1 = FIGS_V7.indexOf(figR1), i7 = FIGS_V7.indexOf(figR7);
+  if (i1 < 0 || i7 < 0) return null;
+  var k = ((i7 - i1) % 16 + 16) % 16;
+  var c1 = campDeV7(figR1), c7 = campDeV7(figR7);
+  var iDansR1 = c1.indexOf(figR7), iDansR7 = c7.indexOf(figR1);
+  var quatuor = function (f) {
+    var i = FIGS_V7.indexOf(f);
+    return [0, 4, 8, 12].map(function (d) { return FIGS_V7[(i + d) % 16]; });
+  };
+  return {
+    k: k, memeBoucle: (k % 2 === 0),
+    memeQuatuor: quatuor(figR1).indexOf(figR7) >= 0,
+    partages: c1.filter(function (x) { return c7.indexOf(x) >= 0; }),
+    roleR7DansR1: iDansR1 >= 0 ? ROLES_CAMP_V7[iDansR1] : null,
+    roleR1DansR7: iDansR7 >= 0 ? ROLES_CAMP_V7[iDansR7] : null,
+    contamine: iDansR1 >= 0 || iDansR7 >= 0
+  };
+}
+
+// La lecture F4P4 dont on a retiré la centrale adverse du décompte des
+// pôles solides. Banc uniquement — voir le commentaire ci-dessus.
+function moteurF4P4SansAdverseV7(theme) {
+  var m = null;
+  try { m = moteurF4P4V7(theme); } catch (e) { m = null; }
+  if (!m || !m.applicable) return { camp: null, detail: 'non applicable' };
+  var s1 = m.R1.poles.filter(function (p) { return p.solide && p.fig !== m.figR7; }).length;
+  var s7 = m.R7.poles.filter(function (p) { return p.solide && p.fig !== m.figR1; }).length;
+  var dit = function (c, pourquoi) { return { camp: c, detail: pourquoi + ' · pôles solides hors centrale adverse ' + s1 + ' contre ' + s7 }; };
+  if (!m.memeBoucle) {
+    if (s1 !== s7) return dit(s1 > s7 ? 'R1' : 'R7', 'boucles opposées');
+    if (m.R1.frappeMoyenne !== m.R7.frappeMoyenne) return dit(m.R1.frappeMoyenne > m.R7.frappeMoyenne ? 'R1' : 'R7', 'boucles opposées, départage frappe');
+    if (m.R1.ancrageTotal !== m.R7.ancrageTotal) return dit(m.R1.ancrageTotal > m.R7.ancrageTotal ? 'R1' : 'R7', 'boucles opposées, départage ancrage');
+    return dit(null, 'boucles opposées, égalité');
+  }
+  if (m.R1.solidesAdverse !== m.R7.solidesAdverse) return dit(m.R1.solidesAdverse < m.R7.solidesAdverse ? 'R1' : 'R7', 'même boucle, assaillants');
+  if (s1 !== s7) return dit(s1 > s7 ? 'R1' : 'R7', 'même boucle');
+  if (m.R1.ancrageTotal !== m.R7.ancrageTotal) return dit(m.R1.ancrageTotal > m.R7.ancrageTotal ? 'R1' : 'R7', 'même boucle, départage ancrage');
+  return dit(null, 'même boucle, égalité');
 }
 
 // Le rôle qu'occupe `cible` dans le camp de `centraleAdverse`, ou null.
@@ -14353,6 +14441,16 @@ var MOTEURS_BTTS_V7 = [
 // parce qu'elle est établie. Le motif ne se présente que sur 3 % des
 // thèmes : il faudra du temps.
 var MOTEURS_CONDITIONNELS_V7 = [
+  // Lecture F4P4 dont la centrale ADVERSE est retirée du décompte des
+  // pôles solides (28/08/26, faille des deux quatuors — voir
+  // contaminationCampsV7). Elle ne vote pas : elle est ici pour être
+  // comparée à l'originale sur les mêmes cas. Écart mesuré : elle change
+  // le verdict sur 3,8 % des thèmes, et sur les dix cas réels elle fait
+  // 5/10 contre 6/10 — un seul cas les sépare, Juventus.
+  { cle: 'f4p4_sans_adverse', nom: 'F4P4 sans la centrale adverse dans les pôles', icone: '🧭', teinte: '#c084fc',
+    juste: 0, total: 0,
+    note: 'même cascade que F4P4, mais un camp ne compte plus son rival parmi ses forces',
+    verdict: function (t) { return moteurF4P4SansAdverseV7(t); } },
   { cle: 'decalage_oblique', nom: 'Décalage oblique → celui qui touche le plus', icone: '⚔', teinte: '#60a5fa',
     juste: 0, total: 0,
     note: 'muet quand les boucles sont identiques (k pair) : là, aucun camp ne touche l\'autre',
@@ -15392,8 +15490,35 @@ function renderF4P4Panel(theme) {
       + '</div>';
   }
 
+  // ─── LA CENTRALE ADVERSE DANS LE CAMP (28/08/26) ───
+  // Signalé à l'écran parce qu'aucun chiffre du panneau ne le montrait :
+  // en même boucle, l'un des deux chefs est TOUJOURS un rôle du camp de
+  // l'autre, et il compte parmi ses pôles.
+  let alerteContamination = '';
+  try {
+    const ct = contaminationCampsV7(m.figR1, m.figR7);
+    if (ct && ct.contamine) {
+      const solR7 = m.R1.poles.some(function (p) { return p.fig === m.figR7 && p.solide; });
+      const solR1 = m.R7.poles.some(function (p) { return p.fig === m.figR1 && p.solide; });
+      alerteContamination = '<div style="margin:6px 0 8px; border:1px solid #f59e0b; border-radius:9px; '
+        + 'padding:8px 10px; background:rgba(120,53,15,.18); font-size:11px; color:#fde68a;">'
+        + '<b>⚠ La centrale adverse siège dans le camp.</b> '
+        + (ct.roleR7DansR1 ? nom(m.figR7) + ' (R7) est le <b>' + ct.roleR7DansR1 + '</b> de R1'
+            + (solR7 ? ' — et il y est compté SOLIDE' : '') + '. ' : '')
+        + (ct.roleR1DansR7 ? nom(m.figR1) + ' (R1) est le <b>' + ct.roleR1DansR7 + '</b> de R7'
+            + (solR1 ? ' — et il y est compté SOLIDE' : '') + '. ' : '')
+        + ct.partages.length + '/5 rôles sont communs aux deux camps. '
+        + 'C\'est structurel : en même boucle c\'est TOUJOURS le cas (8 décalages pairs sur 8), '
+        + 'parce qu\'une boucle se coupe en deux quatuors de front disjoints — le binôme n\'est '
+        + 'jamais dans le quatuor de sa figure. Le banc mesure la lecture qui retire ce pôle '
+        + '(« F4P4 sans la centrale adverse ») : elle change 3,8 % des verdicts.'
+        + '</div>';
+    }
+  } catch (e) { alerteContamination = ''; }
+
   panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
     + decHtml
+    + alerteContamination
     + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
     + 'La démarche en cinq étapes, dans l\'ordre. <b>profil</b> = les sept '
     + 'critères d\'analyse à la meilleure position (seuil ' + F4P4_SEUIL_ANCRAGE_V7 + ') ; '
