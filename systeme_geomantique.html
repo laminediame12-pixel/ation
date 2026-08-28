@@ -12788,10 +12788,30 @@ function lectureDeuxMarquentV7(theme) {
   if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
   const rot = getRotationCombat(theme);
   const anc = analyseAncrageDeveloppe(theme);
-  if (!anc.applicable || !anc.avantage) {
+  // ─── CORRIGÉ LE 28/08/26 : LE VAINQUEUR DÉCLARÉ MUET ───
+  // Cette lecture désignait le perdant avec analyseAncrageDeveloppe — un
+  // moteur à 5/8 qui n'est plus au volant depuis que les sièges ont pris
+  // la main. Résultat : sur 347 thèmes où le système annonce « un seul
+  // marque », le camp déclaré MUET était le VAINQUEUR affiché dans 45 %
+  // des cas. Un camp qui ne marque pas et qui gagne le match : impossible.
+  // Trouvé sur le thème Caput/Carcer/Fortuna Major/Populus d'Ellemine_D,
+  // où l'ancrage tranche R7 de 0,12 point pendant que l'écran affiche
+  // « M1 gagne 4-2 » et « muet : R1 ».
+  // Le perdant est désormais désigné par la LECTURE DES SIÈGES, qui est
+  // au volant. Repli sur l'ancrage quand les sièges s'abstiennent (7 %).
+  // ⚠️ getVerdictAfficheReel est INTERDIT ici : buildVerdictCard appelle
+  // cette fonction, l'appeler en retour boucle à l'infini. Les sièges ne
+  // touchent ni à la carte ni au BTTS — vérifié.
+  let source = null, avantage = null;
+  try {
+    const sg = lectureSiegesR1R7(theme);
+    if (sg && sg.applicable && sg.winner) { avantage = sg.winner; source = 'sièges'; }
+  } catch (e) { avantage = null; }
+  if (!avantage && anc.applicable && anc.avantage) { avantage = anc.avantage; source = 'ancrage (repli)'; }
+  if (!avantage) {
     return { applicable: false, raison: 'Aucun avantage départagé — le perdant n\'est pas identifié.' };
   }
-  const estR1 = anc.avantage === 'R1';
+  const estR1 = avantage === 'R1';
   const vainqueur = estR1 ? rot.figR1 : rot.figR7;
   const perdant   = estR1 ? rot.figR7 : rot.figR1;
   const siegeV    = estR1 ? rot.hR1 : rot.hR7;
@@ -12821,6 +12841,7 @@ function lectureDeuxMarquentV7(theme) {
   return {
     applicable: true,
     vainqueur: vainqueur, perdant: perdant,
+    sourceVainqueur: source,
     lesDeuxMarquent: lesDeuxMarquent,
     aneantiParLaFrappe: aneantit,
     chainePerdantPercee: percee,
