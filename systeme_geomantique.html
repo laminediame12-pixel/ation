@@ -20509,7 +20509,12 @@ function _setList(key, list) {
 function getHistoryList() { return _getList(HISTORY_KEY); }
 function setHistoryList(l) { _setList(HISTORY_KEY, l); }
 function getSavedList()    { return _getList(SAVE_KEY); }
-function setSavedList(l)   { _setList(SAVE_KEY, l); }
+function setSavedList(l)   {
+  // Toute écriture invalide le cache de cohérence (un score saisi ou
+  // effacé change le verdict de l'entrée) — cf. evalCoherence.
+  try { _cacheCoherenceV7 = {}; } catch (e) {}
+  _setList(SAVE_KEY, l);
+}
 
 function themeFingerprint(team1, team2, theme) {
   return team1+'|'+team2+'|'+Object.keys(theme).sort().map(function(k){return theme[k];}).join(',');
@@ -21210,11 +21215,24 @@ function switchTab(tab) {
 
 function openHistoryPanel() { currentTab='hist'; _openPanel(); }
 function openSavedPanel()   { currentTab='save'; _openPanel(); }
+// ─── OUVERTURE DU PANNEAU : DEUX GASPILLAGES SUPPRIMÉS (28/08/26) ───
+// Ellemine_D : « pourquoi quand je clique sur sauvegarde ça met du temps
+// à ouvrir ». Mesuré avant correction : 305 ms à 5 thèmes, 687 ms à 20,
+// 1 369 ms à 40 — et le calcul est BLOQUANT, donc sur téléphone c'est
+// plusieurs secondes d'écran figé.
+// Deux causes, toutes deux gratuites à corriger :
+//   1. la liste était rendue DEUX FOIS à chaque ouverture — renderCurrentList()
+//      ici, puis switchTab() qui la re-rend intégralement ;
+//   2. le panneau ne s'affichait qu'APRÈS le calcul complet.
+// Désormais : le panneau s'ouvre d'abord, la liste se rend une seule
+// fois, et le rendu est repoussé d'un tour de boucle pour que l'écran
+// apparaisse immédiatement.
 function _openPanel() {
-  renderCurrentList();
   var o = document.getElementById('historyOverlay');
   if (o) o.classList.add('open');
-  switchTab(currentTab);
+  var c = document.getElementById('historyList');
+  if (c) c.innerHTML = '<div class="history-empty">Chargement…</div>';
+  setTimeout(function () { switchTab(currentTab); }, 0);
 }
 function closeHistoryPanel() {
   var o = document.getElementById('historyOverlay');
@@ -21357,7 +21375,23 @@ function renderCurrentList() {
 // -> ne bougeait jamais quand le moteur changeait. Desormais : delegue a
 // replayEntry, qui rejoue vainqueur (verdictFinal) et score (verdictV7) avec
 // les regles ET le contexte d'epoque (date/competition/favori) actuels.
+// ─── MÉMOÏSATION (28/08/26) ───
+// evalCoherence appelle replayEntry, qui rejoue TOUT : verdictFinal,
+// getVerdictAfficheReel, campDominant, verdictElementaire et une dizaine
+// de signaux. Et il était appelé deux fois par thème noté à chaque rendu
+// — une fois pour le bandeau de fiabilité, une fois pour la ligne. Le
+// résultat ne dépend que de l'entrée et de son score réel : on le garde.
+// Le cache est vidé dès qu'une sauvegarde change (setSavedList).
+var _cacheCoherenceV7 = {};
 function evalCoherence(entry) {
+  if (!entry.realScore) return {level:'none', label:'Non evalue'};
+  var cle = (entry.id || '') + '|' + entry.realScore;
+  if (_cacheCoherenceV7[cle]) return _cacheCoherenceV7[cle];
+  var res = evalCoherenceBrut(entry);
+  _cacheCoherenceV7[cle] = res;
+  return res;
+}
+function evalCoherenceBrut(entry) {
   if (!entry.realScore) return {level:'none', label:'Non evalue'};
   var r = replayEntry(entry);
   if (!r) return {level:'none', label:'Score invalide'};
