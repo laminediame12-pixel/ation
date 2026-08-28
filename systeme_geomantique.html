@@ -355,7 +355,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 </div>
 <div class="page-content"><section class="section"><h2>🎴 Verdicts</h2><div id="carte-verdict-r" class="card verdict-priority" data-priority-label="⭐ VERDICT FINAL" style="margin-bottom:14px;"><div class="muted">Lance un thème pour afficher le verdict.</div></div><div id="regression-reference-panel" class="card" style="margin-top:10px; border:1px solid #7c3aed; display:none;"></div></section><section class="section" style="display:none;"><h2>Validation du tirage</h2><div class="card" id="theme-validation"><div class="muted">Lancer un thème pour afficher la validation.</div></div></section><section class="section"><h2>Contexte du tirage</h2><div class="card" id="question-context"><div class="muted">Sélectionne le match et au moins une question avant de lancer le thème.</div></div></section><section style="background:#1e293b;margin-bottom:12px;padding:8px 0 0 0;"><h2 style="padding:0 8px 8px;">Grille du thème</h2><div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 8px 8px;"><span style="font-size:12px; color:#94a3b8;">Thème actif :</span>
 <div id="axis-theme-controls" class="axis-theme-controls"></div>
-<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="validiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleValiditePanel()">🗓️ Validité &amp; figure du jour</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="validite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
+<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="validiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleValiditePanel()">🗓️ Validité &amp; figure du jour</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="septCriteresBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleSeptCriteresPanel()">🎯 Sept critères</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="validite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="sept-criteres-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
 <div style="display:flex; gap:14px; justify-content:center; margin-top:10px; font-size:12px; color:#cbd5e1;">
   <span><span style="display:inline-block; width:14px; height:4px; background:#ef4444; margin-right:4px; vertical-align:middle;"></span>Feu</span>
   <span><span style="display:inline-block; width:14px; height:4px; background:#eab308; margin-right:4px; vertical-align:middle;"></span>Air</span>
@@ -14481,7 +14481,141 @@ function toggleTablePolesPanel() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// MOTEUR « SEPT CRITÈRES » (28/08/26, reproche d'Ellemine_D)
+//
+// « Le problème réside dans la manière dont tu as fait la logique
+// analytique : tu n'appliques pas vraiment les critères. »
+//
+// L'AUDIT LUI DONNE RAISON. Ce qui décide, dans chaque moteur — le
+// nombre qui est réellement comparé entre R1 et R7 :
+//   Front 4 · Pôle 4 .......... profilFigureMaison, les SEPT critères ✓
+//   Ancrage développé ......... chaîne + rôles reçus + rôles exercés +
+//                               régénération — dont la chaîne ne pèse que
+//                               la PRÉSENCE (POIDS_CHAINE_V7 : ancre 3,
+//                               renfort 1, résultante 0,5, absent −3)
+//   Solidité de chaîne ........ cette même présence, et rien d'autre
+//   Duel du bouclier .......... forceCampV7.total = concordance +
+//                               alignement, soit DEUX critères sur sept
+//   2 boucliers rompus ........ le même duel
+//   Lecture des sièges ........ deux étiquettes de getInterpretationFootball
+//                               (une couleur, un mot sur les buts) — AUCUN critère
+//   Boucles antagonistes ...... appartenance de boucle — AUCUN critère
+//   Majorité des axes ......... rejoue les verdicts sur les thèmes dérivés,
+//                               donc hérite de tout ce qui précède
+// Un seul moteur sur neuf décide vraiment sur les sept critères, et le
+// vote les met tous à égalité : celui qui applique la doctrine est
+// minoritaire huit contre un.
+//
+// CE MOTEUR-CI NE FAIT QUE ÇA. Chaque rôle du camp vaut le profil de sa
+// figure aux SEPT critères, à sa meilleure position (profilFigureMaison
+// via analyseFigureV7 — concordance ×10, déplacement, multiplicité,
+// environnement, cohabitation, alignement actif, maison natale). Zéro si
+// la figure est absente. Le camp vaut la somme de ses cinq rôles moins
+// son antagoniste direct. Rien d'autre n'entre : ni présence brute, ni
+// étiquette, ni seuil.
+//
+// ⚠️ MESURÉ AVANT D'ÊTRE ÉCRIT, ET IL NE FAIT PAS DE MIRACLE : 8/14 —
+// exactement le score du verdict affiché, de F4P4 et du vote. Quatre
+// variantes ont été comparées (avec ou sans le terme d'antagoniste,
+// poids du fichier ou poids égaux, meilleure position ou somme des
+// positions) : elles vont de 6/14 à 8/14. Appliquer les critères
+// proprement ne fait donc pas monter le plafond sur ces quatorze cas —
+// mais c'est la seule lecture dont on puisse dire ce qu'elle mesure.
+// Il est le seul à trouver City/Madrid.
+function moteurSeptCriteresV7(theme) {
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { rot = null; }
+  if (!rot || !rot.figR1 || !rot.figR7) return { applicable: false };
+  function valeur(f) {
+    if (!f) return 0;
+    var a = analyseFigureV7(f, theme);
+    return a ? (a.ancrage || 0) : 0;
+  }
+  function camp(X) {
+    var roles = [
+      { role: 'centrale', fig: X },
+      { role: 'front', fig: FRONT_V7[X] },
+      { role: 'bouclier', fig: BOUCLIER_V7[X] },
+      { role: 'binôme', fig: BINOMES_V7[X] },
+      { role: 'front du front', fig: frontDuFrontV7(X) }
+    ].map(function (r) { r.valeur = Math.round(valeur(r.fig) * 100) / 100; return r; });
+    var ant = { role: 'antagoniste', fig: ANTAGONISTES_V7[X] };
+    ant.valeur = Math.round(valeur(ant.fig) * 100) / 100;
+    var total = roles.reduce(function (s, r) { return s + r.valeur; }, 0) - ant.valeur;
+    return { fig: X, roles: roles, antagoniste: ant, total: Math.round(total * 100) / 100 };
+  }
+  var A = camp(rot.figR1), B = camp(rot.figR7);
+  return {
+    applicable: true, figR1: rot.figR1, figR7: rot.figR7, hR1: rot.hR1, hR7: rot.hR7,
+    R1: A, R7: B,
+    camp: A.total > B.total ? 'R1' : B.total > A.total ? 'R7' : null,
+    ecart: Math.round(Math.abs(A.total - B.total) * 100) / 100,
+    resume: 'sept critères — R1 ' + A.total + ' contre R7 ' + B.total
+      + ' (antagonistes retranchés : ' + A.antagoniste.valeur + ' et ' + B.antagoniste.valeur + ')'
+  };
+}
+
+// Le panneau : les cinq rôles de chaque camp, avec leur valeur aux sept
+// critères, et l'antagoniste retranché. Rien d'autre n'entre dans le
+// total — c'est vérifiable ligne à ligne.
+function toggleSeptCriteresPanel() {
+  var panel = document.getElementById('sept-criteres-panel');
+  if (!panel) return;
+  if (panel.style.display === 'none' || !panel.style.display) {
+    if (!currentTheme) { panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>'; panel.style.display = 'block'; return; }
+    var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); };
+    var n = function (f) { return esc(FL[f] || f || '—'); };
+    var a = null;
+    try { a = moteurSeptCriteresV7(currentTheme); } catch (e) { a = null; }
+    if (!a || !a.applicable) { panel.innerHTML = '<div class="warn">Indisponible sur ce thème.</div>'; panel.style.display = 'block'; return; }
+    function colonne(c, titre, couleur) {
+      var h = '<div style="flex:1 1 240px; border:1px solid ' + couleur + '; border-radius:11px; padding:10px 12px;">'
+        + '<div style="font-weight:800; color:' + couleur + '; font-size:13px;">' + titre + ' — ' + n(c.fig) + '</div>'
+        + '<table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-top:6px;">';
+      c.roles.forEach(function (r) {
+        h += '<tr><td style="color:#94a3b8; padding:2px 0;">' + esc(r.role) + '</td>'
+          + '<td>' + n(r.fig) + '</td>'
+          + '<td style="text-align:right; color:' + (r.valeur > 0 ? '#4ade80' : r.valeur < 0 ? '#f87171' : '#64748b') + ';">'
+          + r.valeur + '</td></tr>';
+      });
+      h += '<tr><td style="color:#f87171; padding:2px 0;">− antagoniste</td><td>' + n(c.antagoniste.fig) + '</td>'
+        + '<td style="text-align:right; color:#f87171;">−' + c.antagoniste.valeur + '</td></tr>'
+        + '<tr style="border-top:1px solid rgba(148,163,184,.3); font-weight:800;">'
+        + '<td colspan="2" style="padding-top:4px;">TOTAL</td>'
+        + '<td style="text-align:right; padding-top:4px; color:' + couleur + ';">' + c.total + '</td></tr>'
+        + '</table></div>';
+      return h;
+    }
+    panel.innerHTML = '<h3 style="margin-bottom:2px;">🎯 Sept critères — la lecture stricte</h3>'
+      + '<div class="muted" style="font-size:11px; margin-bottom:8px;">Chaque rôle vaut le profil de sa figure aux SEPT critères '
+      + '(concordance, déplacement, multiplicité, environnement, cohabitation, alignement actif, maison natale), '
+      + 'à sa meilleure position ; zéro si elle est absente. Le camp vaut la somme de ses cinq rôles moins son antagoniste direct. '
+      + 'Rien d\'autre n\'entre — ni présence brute, ni étiquette, ni seuil.</div>'
+      + '<div style="display:flex; gap:12px; flex-wrap:wrap;">'
+      + colonne(a.R1, 'R1', '#38bdf8') + colonne(a.R7, 'R7', '#fb923c') + '</div>'
+      + '<div class="kv" style="margin-top:8px; font-size:12px;"><b>Verdict :</b> '
+      + (a.camp ? '<span class="good">' + a.camp + '</span>' : '<span style="color:#fbbf24;">égalité</span>')
+      + ' — écart ' + a.ecart + '</div>'
+      + '<div class="muted" style="font-size:11px; margin-top:6px;">⚠️ Au banc : 8/14 — à égalité avec le verdict affiché, '
+      + 'F4P4 et le vote. Appliquer les critères proprement n\'a pas fait monter le plafond sur ces quatorze cas ; '
+      + 'c\'est en revanche la seule lecture dont on sache exactement ce qu\'elle mesure. Les autres moteurs décident sur '
+      + 'la présence brute (chaîne), sur deux critères (duel), ou sur des étiquettes (sièges).</div>';
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
 var MOTEURS_V7 = [
+  { cle: 'sept_criteres', nom: 'Sept critères (strict)', icone: '🎯', teinte: '#22d3ee',
+    note: 'les 5 rôles pesés par les sept critères, moins l\'antagoniste — rien d\'autre', juste: 0, total: 0,
+    verdict: function (t) {
+      var a = moteurSeptCriteresV7(t);
+      if (!a.applicable) return null;
+      return { camp: a.camp, detail: a.resume };
+    } },
   { cle: 'table_poles', nom: 'Table des pôles', icone: '🧮', teinte: '#2dd4bf',
     note: 'les 4 pôles des 16 figures, pesés par les sept critères', juste: 0, total: 0,
     verdict: function (t) {
