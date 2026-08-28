@@ -12472,16 +12472,20 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
 // souvent ». Vérifié sur les cas de l'archive dont le score réel est
 // connu, verdict affiché contre vainqueur réel :
 //
-//     écart réel ≥ 2 buts .......... 4/4   (100 %)   [3/4 règle branchée]
-//     écart réel = 1 but ........... 2/6   ( 33 %)
+//     écart réel ≥ 2 buts .......... 4/4   (100 %)
+//     écart réel = 1 but ........... 3/7   ( 43 %)   [2/6 avant FortMajVia]
 //
 // Le constat tient. Mais il ne se transforme PAS en outil, et c'est le
 // point à retenir : l'écart réel n'est connu qu'après le match. Le seul
 // écart disponible avant, c'est celui que le système annonce — et lui ne
 // discrimine presque rien :
-//     marge annoncée ≥ 3 buts ...... 5/8   (63 %)
+//     marge annoncée ≥ 3 buts ...... 6/9   (67 %)
 //     marge annoncée = 2 buts ...... 2/3
 //     marge annoncée ≤ 1 but ....... 0/1
+// Et surtout, la marge annoncée ne dit RIEN de la marge réelle :
+// corrélation r = 0,05 sur les douze matchs au score connu. Quand le
+// système annonce trois buts d'écart ou plus, le match est réellement
+// large 3 fois sur 8 — la base est de 4 sur 12. Aucun gain.
 // D'autant que le système annonce presque toujours un score large : une
 // seule prédiction sur quatorze est à un but ou moins. Il ne sait donc
 // pas dire lui-même s'il est dans un cas où il est bon.
@@ -13967,7 +13971,18 @@ var CAS_REFERENCE_V7 = [
   // lecture disent R1).
   { nom: 'LaetAlbus', meres: ['laetitia','albus','caput_draconis','puella'],
     score: null, camp: 'R1', btts: null,
-    note: 'vainqueur donné le 28/08, juste · sièges et axes disaient R7' }
+    note: 'vainqueur donné le 28/08, juste · sièges et axes disaient R7' },
+  // ─── 28/08/26, SCORE RÉEL COMMUNIQUÉ : 2-1 POUR R7 ───
+  // Deuxième thème unanime de l'archive — les neuf moteurs disent R7 —
+  // et celui-ci est JUSTE, là où ConjVia, unanime lui aussi, était faux.
+  // L'unanimité reste donc sans valeur prédictive : 1 sur 2.
+  // Surtout, c'est un MATCH SERRÉ (un but d'écart) trouvé juste : la
+  // catégorie où le système échouait passe de 2/6 à 3/7. Le score, lui,
+  // est raté de loin — annoncé 0-4, réel 1-2 — et le BTTS avec (annoncé
+  // non, les deux ont marqué).
+  { nom: 'FortMajVia', meres: ['fortuna_major','via','puella','puer'],
+    score: '1-2', camp: 'R7', btts: true,
+    note: 'vainqueur ✔ (9 moteurs sur 9) · score ✘ 0-4 pour 1-2 · BTTS ✘ · match serré trouvé juste' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
