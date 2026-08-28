@@ -12075,6 +12075,73 @@ function victimeV7(fig) {
 // départage n'est donc pas QUI frappe QUI — c'est fixé — mais les
 // critères d'analyse de chaque figure à sa place.
 var ROLES_CAMP_V7 = ['centrale', 'protecteur', 'front', 'binôme', 'front du front'];
+// Les décalages des cinq rôles à l'intérieur d'un camp : +0, +10, +4, +2, +8.
+// Tous PAIRS — c'est pourquoi un camp tient entièrement dans une boucle.
+var OFFSETS_CAMP_V7 = [0, 10, 4, 2, 8];
+
+// ═══════════════════════════════════════════════════════════════
+// LE DÉCALAGE OBLIQUE — vérifié sur l'archive le 28/08/26.
+//
+// Le duel canonique (R7 = victime de R1) n'arrive que sur 13,3 % des
+// thèmes. Partout ailleurs les deux camps s'engagent EN OBLIQUE, et la
+// figure de cet engagement ne dépend que d'UNE grandeur : k, l'écart de
+// position entre les deux centrales sur le cycle de 16.
+//
+// LA TABLE COMPLÈTE DES SEIZE DÉCALAGES (frappes de R1 atteignant le
+// camp de R7, sur 5) :
+//     k=0  0/5     k=1  3/5     k=2  0/5     k=3  5/5  ⚔ canonique
+//     k=4  0/5     k=5  3/5     k=6  0/5     k=7  2/5
+//     k=8  0/5     k=9  3/5     k=10 0/5     k=11 4/5
+//     k=12 0/5     k=13 3/5  ⚔  k=14 0/5     k=15 2/5
+//
+// ⭐ TOUS LES k PAIRS DONNENT 0/5. Aucun des deux camps ne peut toucher
+// l'autre. La raison est mécanique : les cinq rôles sont à des décalages
+// PAIRS, donc un camp tient dans une seule boucle ; la victime est à +3,
+// impair, donc elle tombe TOUJOURS dans l'autre boucle. Si k est pair,
+// R1 et R7 sont dans la même boucle, et aucune frappe ne peut atteindre
+// le camp d'en face.
+// C'est la démonstration mécanique de l'étape 1 de F4P4 : « même boucle
+// → ce sont les antagonistes directs qui tranchent ». Ils tranchent
+// parce que les camps eux-mêmes ne se touchent pas.
+//
+// ⚠️ ET LA TABLE EST ASYMÉTRIQUE. À k donné, un camp frappe plus que
+// l'autre : k=3 → 5 contre 3 · k=1 → 3 contre 2 · k=11 → 4 contre 3.
+// R1 a l'avantage de décalage pour k ∈ {1,3,9,11}, R7 pour k ∈ {5,7,13,15}.
+//
+// SUR L'ARCHIVE : cinq cas à k impair, et TOUS ont k ∈ {1,3,9} — c'est-
+// à-dire que l'avantage de décalage y est TOUJOURS du côté de R1. Aucun
+// cas où R7 l'a. « Celui qui touche le plus gagne » y fait donc 2/5, et
+// cette mesure ne teste qu'une seule direction. À reprendre quand un cas
+// à k ∈ {5,7,13,15} se présentera.
+function decalageCampsV7(figR1, figR7) {
+  if (!figR1 || !figR7) return null;
+  var i1 = FIGS_V7.indexOf(figR1), i7 = FIGS_V7.indexOf(figR7);
+  if (i1 < 0 || i7 < 0) return null;
+  var k = ((i7 - i1) % 16 + 16) % 16;
+  function liaisons(sens) {
+    var out = [];
+    OFFSETS_CAMP_V7.forEach(function (o, i) {
+      var rel = ((o + 3 - sens * k) % 16 + 16) % 16;
+      var j = OFFSETS_CAMP_V7.indexOf(rel);
+      if (j >= 0) out.push({ de: ROLES_CAMP_V7[i], vers: ROLES_CAMP_V7[j] });
+    });
+    return out;
+  }
+  var lR1 = liaisons(1), lR7 = liaisons(-1);
+  var memeBoucle = (k % 2 === 0);
+  return {
+    k: k, memeBoucle: memeBoucle,
+    canonique: k === 3 ? 'R1' : k === 13 ? 'R7' : null,
+    liaisonsR1: lR1, liaisonsR7: lR7,
+    toucheR1: lR1.length, toucheR7: lR7.length,
+    avantage: lR1.length > lR7.length ? 'R1' : lR7.length > lR1.length ? 'R7' : null,
+    resume: memeBoucle
+      ? 'décalage k=' + k + ' (pair) — même boucle : AUCUN des deux camps ne peut toucher l\'autre'
+      : 'décalage k=' + k + ' — R1 atteint ' + lR1.length + '/5 du camp adverse, R7 ' + lR7.length + '/5'
+        + (k === 3 ? ' · DUEL CANONIQUE, R1 frappe R7 rôle pour rôle'
+          : k === 13 ? ' · DUEL CANONIQUE, R7 frappe R1 rôle pour rôle' : '')
+  };
+}
 
 function campDeV7(fig) {
   if (!fig) return [];
@@ -13776,6 +13843,16 @@ var MOTEURS_BTTS_V7 = [
 // parce qu'elle est établie. Le motif ne se présente que sur 3 % des
 // thèmes : il faudra du temps.
 var MOTEURS_CONDITIONNELS_V7 = [
+  { cle: 'decalage_oblique', nom: 'Décalage oblique → celui qui touche le plus', icone: '⚔', teinte: '#60a5fa',
+    juste: 0, total: 0,
+    note: 'muet quand les boucles sont identiques (k pair) : là, aucun camp ne touche l\'autre',
+    verdict: function (t) {
+      var rot = getRotationCombat(t);
+      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
+      var d = decalageCampsV7(rot.figR1, rot.figR7);
+      if (!d || d.memeBoucle) return { camp: null, detail: d ? d.resume : 'indisponible' };
+      return { camp: d.avantage, detail: d.resume };
+    } },
   { cle: 'carcer_m10', nom: 'Carcer en M10 → la boucle de Carcer gagne', icone: '🔒', teinte: '#f472b6',
     juste: 0, total: 0, note: 'théorie Ellemine_D 28/08 — ne parle que si Carcer est en M10 et les boucles diffèrent',
     verdict: function (t) {
@@ -14463,7 +14540,43 @@ function renderF4P4Panel(theme) {
     return h;
   }
 
+  // ─── LE DÉCALAGE OBLIQUE (28/08/26) ───
+  // Il ne dépend que de l'écart entre les deux centrales, et il dit AVANT
+  // tout chiffre si les camps peuvent seulement se toucher.
+  // m.figR1 n'existe pas sur le chemin des cinq étapes — les figures
+  // viennent des réseaux. Et renderF4P4Panel n'a pas d'esc() local : le
+  // panneau levait « esc is not defined » et n'affichait plus RIEN.
+  // C'est le même défaut qu'en juillet, attrapé au test cette fois.
+  var esc = function (v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  };
+  var dec = null;
+  try {
+    dec = decalageCampsV7(m.R1 ? m.R1.fig : null, m.R7 ? m.R7.fig : null);
+  } catch (e) { dec = null; }
+  var decHtml = '';
+  if (dec) {
+    var lignesDec = function (l, coul, qui) {
+      return l.length
+        ? '<div style="font-size:9px; color:' + coul + ';">' + qui + ' : '
+          + l.map(function (x) { return x.de + ' → ' + x.vers; }).join(' · ') + '</div>'
+        : '<div style="font-size:9px; color:#64748b;">' + qui + ' : aucune frappe n\'atteint le camp adverse</div>';
+    };
+    decHtml = '<div style="margin:6px 0 8px; padding:7px 9px; border-radius:8px; '
+      + 'background:rgba(96,165,250,.10); border:1px solid ' + (dec.memeBoucle ? '#475569' : '#2563eb') + ';">'
+      + '<div style="font-size:10.5px; font-weight:700; color:#93c5fd;">⚔ ' + esc(dec.resume) + '</div>'
+      + (dec.memeBoucle
+          ? '<div style="font-size:9px; color:#94a3b8; margin-top:3px;">'
+            + 'Les cinq rôles sont à des décalages pairs, la victime est à +3, impair : '
+            + 'deux camps de la même boucle ne peuvent pas se toucher. C\'est pourquoi '
+            + 'l\'étape 1 confie alors la décision aux antagonistes directs.</div>'
+          : lignesDec(dec.liaisonsR1, '#7dd3fc', 'R1') + lignesDec(dec.liaisonsR7, '#fdba74', 'R7'))
+      + '</div>';
+  }
+
   panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
+    + decHtml
     + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
     + 'La démarche en cinq étapes, dans l\'ordre. <b>profil</b> = les sept '
     + 'critères d\'analyse à la meilleure position (seuil ' + F4P4_SEUIL_ANCRAGE_V7 + ') ; '
