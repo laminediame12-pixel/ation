@@ -13668,7 +13668,30 @@ var CAS_REFERENCE_V7 = [
   { nom: 'Bologna', meres: ['caput_draconis','carcer','fortuna_major','populus'],
     score: '0-1', camp: 'R7', btts: false, incident: true, incidentCamp: 'M1',
     note: 'annoncé AVANT le résultat · camp ✔ par F4P4 (les sièges disaient R1) · '
-      + 'BTTS ✘ · incident présent ✔ mais camp ✘ (annoncé M7, rouge côté R1)' }
+      + 'BTTS ✘ · incident présent ✔ mais camp ✘ (annoncé M7, rouge côté R1)' },
+  // ─── AJOUTÉ LE 28/08/26 — LE CAS QUI DONNE SON SENS AUX INCIDENTS ───
+  // Match du jeudi 27/08. Réel : 2-1 POUR R7, ROUGE côté R1, PENALTY
+  // POUR R1 (donc concédé par R7). Deux incidents dans le même match, et
+  // dans des camps OPPOSÉS — c'est le premier cas de l'archive qui le
+  // montre, et il invalide l'idée qu'un thème désigne UN camp coupable.
+  //
+  // CE QU'IL APPREND. Le thème engendre Mars dans exactement deux
+  // maisons : M1 (Carcer → Rubeus, CAMP1) et M12 (Cauda → Puer, CAMP2).
+  // Deux naissances, deux incidents, les bons camps, et la bonne nature :
+  // M12 est la surface de réparation → penalty concédé par le camp 2 ;
+  // M1 n'est pas une maison de réparation → carton rouge pour le camp 1.
+  // Le siège de R1 (M10) et celui de R7 (M16) sont tous deux en maison
+  // PAIRE : par la loi de la résultante ils ne pouvaient engendrer
+  // aucune agression, et les deux moteurs « le siège engendre Mars » se
+  // taisent — ils cherchaient au mauvais endroit. Ce n'est pas le siège
+  // de la centrale qui porte l'incident, c'est LA MAISON OÙ MARS NAÎT.
+  // Le camp et le score, eux, sont ratés : verdict affiché R1 4-2, F4P4
+  // R1, réel R7 2-1.
+  { nom: 'Jeudi 27/08', meres: ['carcer','amissio','conjunctio','fortuna_minor'],
+    score: '1-2', camp: 'R7', btts: true, incident: true,
+    incidentCamp: 'M1', penaltyCamp: 'M7',
+    note: 'annoncé AVANT le résultat · camp ✘ (dit R1) · score ✘ · '
+      + 'rouge côté R1 et penalty concédé par R7 — les deux naissances de Mars, M1 et M12' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -13723,6 +13746,8 @@ function casSauvegardesV7() {
       incident: e.realPenalty === 'yes' ? true : e.realPenalty === 'no' ? false : null,
       incidentCamp: (e.realIncidentCamp === 'M1' || e.realIncidentCamp === 'M7')
         ? e.realIncidentCamp : null,
+      penaltyCamp: (e.realPenaltyCamp === 'M1' || e.realPenaltyCamp === 'M7')
+        ? e.realPenaltyCamp : null,
       corners: /^\d{1,2}$/.test(String(e.realCorners || '')) ? parseInt(e.realCorners, 10) : null,
       cornersM1: /^\d{1,2}$/.test(String(e.realCornersM1 || '')) ? parseInt(e.realCornersM1, 10) : null,
       cornersM7: /^\d{1,2}$/.test(String(e.realCornersM7 || '')) ? parseInt(e.realCornersM7, 10) : null,
@@ -13861,6 +13886,9 @@ function bancMoteursV7(force) {
     }),
     incidentCamp: passe(MOTEURS_INCIDENT_CAMP_V7, 'camp', function (c) {
       return (c.incidentCamp === 'M1' || c.incidentCamp === 'M7') ? c.incidentCamp : null;
+    }),
+    penaltyCamp: passe(MOTEURS_PENALTY_CAMP_V7, 'camp', function (c) {
+      return (c.penaltyCamp === 'M1' || c.penaltyCamp === 'M7') ? c.penaltyCamp : null;
     }),
     corners: passeNum(MOTEURS_CORNERS_V7, function (c) {
       return (typeof c.corners === 'number') ? c.corners : null;
@@ -14182,7 +14210,92 @@ var MOTEURS_CORNERS_V7 = [
 // d'incident en place, lui, annonçait M7 : il s'est trompé.
 // 1 sur 1 ne démontre RIEN. La règle entre au banc pour être réfutée.
 // Elle n'entre PAS dans l'affichage tant qu'elle n'a pas dix cas.
+// ═══════════════════════════════════════════════════════════════
+// LA NAISSANCE DE MARS (28/08/26) — ce que le match du jeudi 27/08 a
+// appris, et qui contredit ce qu'on cherchait la veille.
+//
+// On regardait le SIÈGE de R1 et de R7 : engendre-t-il Rubeus ou Puer ?
+// Sur ce match les deux sièges étaient en maison paire — donc, par la
+// loi de la résultante, incapables d'engendrer la moindre agression. Les
+// deux moteurs se sont tus. Et il y a eu DEUX incidents.
+//
+// Ils étaient inscrits ailleurs : dans les deux SEULES maisons du thème
+// dont la résultante est une figure de Mars.
+//     M1  Carcer → Rubeus  (CAMP1) ......... carton rouge côté équipe 1
+//     M12 Cauda  → Puer    (CAMP2) ......... penalty concédé par l'équipe 2
+// Le camp est celui de la MAISON, pas celui de la centrale ; la nature
+// suit la maison : M12 est la surface de réparation (penalty), toute
+// autre maison donne le rouge. Bologna confirme : une seule naissance,
+// M3 Fortuna Major → Rubeus (CAMP1), et un seul incident, rouge côté R1.
+// Soit 3 événements réels sur 3 : bon camp, bonne nature.
+//
+// ⚠️ TROIS RÉSERVES, ÉCRITES POUR QU'ON NE S'EMBALLE PAS.
+// 1. Trois événements, deux matchs. Ça ne démontre rien.
+// 2. Mesuré sur les 65 536 thèmes : 1,88 naissance par thème en moyenne,
+//    et seulement 12,2 % des thèmes n'en ont aucune. La règle LOCALISE
+//    bien, mais elle annoncerait un incident dans 88 % des matchs — très
+//    au-dessus du réel. Il manque un filtre « y a-t-il incident », et on
+//    ne l'a pas : restreindre aux naissances par agression (k=±3) aurait
+//    supprimé 2 des 3 événements justes.
+// 3. Le camp des naissances n'est pas parfaitement équilibré : CAMP1
+//    65 536 contre CAMP2 57 344 (53,3 % / 46,7 %), l'écart venant des
+//    maisons de synthèse. Et la règle du penalty (M12) accuse TOUJOURS
+//    le camp 2 : c'est pourquoi le témoin « toujours M7 » siège à côté
+//    d'elle dans le banc — les deux doivent être lues ensemble.
+// Banc uniquement, aucun poids sur le verdict.
+function naissancesMarsV7(theme) {
+  var out = [];
+  if (!theme) return out;
+  for (var h = 1; h <= 16; h++) {
+    var f = theme[h];
+    if (!f) continue;
+    var r = combine(f, FIGS_V7[h - 1]);
+    if (!FIGURES_MARS_V7[r]) continue;
+    out.push({ maison: h, fig: f, resultante: r,
+      camp: (CAMP1.indexOf(h) >= 0) ? 'M1' : 'M7', penalty: (h === 12) });
+  }
+  return out;
+}
+
+// Qui CONCÈDE le penalty. Famille distincte du carton rouge depuis le
+// 27/08 : un même match peut donner un rouge à un camp et un penalty à
+// l'autre, et une seule case « contre qui » ne pouvait pas le dire.
+var MOTEURS_PENALTY_CAMP_V7 = [
+  { cle: 'pen_camp_m12', nom: 'Penalty · Mars naît en M12 → le camp 2 concède', icone: '⚽', teinte: '#f472b6',
+    juste: 0, total: 0, note: 'surface de réparation — 12,5 % des thèmes, mais accuse toujours M7',
+    verdict: function (t) {
+      var n = naissancesMarsV7(t).filter(function (x) { return x.penalty; });
+      if (!n.length) return { camp: null, detail: 'M12 n\'engendre pas Mars' };
+      return { camp: 'M7', detail: 'M12 ' + (FL[n[0].fig] || n[0].fig) + ' engendre '
+        + (FL[n[0].resultante] || n[0].resultante) };
+    } },
+  { cle: 'pen_camp_v7', nom: 'Penalty · moteur verdictV7 (encaisseur)', icone: '⚠', teinte: '#fb923c',
+    juste: 0, total: 0, note: 'la lecture déjà en place',
+    verdict: function (t) {
+      var v = null;
+      try { v = verdictV7(t); } catch (e) { return { camp: null, detail: 'erreur' }; }
+      var e2 = v && v.penalty ? v.penalty.encaisseur : null;
+      return { camp: (e2 === 'M1' || e2 === 'M7') ? e2 : null,
+        detail: v && v.penalty && v.penalty.reasons ? String(v.penalty.reasons[0] || '') : '' };
+    } },
+  { cle: 'pen_camp_temoin', nom: 'Penalty · « toujours M7 »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — ne lit pas le thème, à comparer à la règle M12',
+    verdict: function () { return { camp: 'M7', detail: 'réponse constante' }; } }
+];
+
 var MOTEURS_INCIDENT_CAMP_V7 = [
+  { cle: 'inc_camp_naissance', nom: 'Camp · maison où Mars naît (hors M12)', icone: '🩸', teinte: '#ef4444',
+    juste: 0, total: 0, note: 'le camp de la MAISON, pas celui de la centrale — 2/2 sur le réel',
+    verdict: function (t) {
+      var n = naissancesMarsV7(t).filter(function (x) { return !x.penalty; });
+      if (!n.length) return { camp: null, detail: 'aucune naissance de Mars hors M12' };
+      var m1 = n.some(function (x) { return x.camp === 'M1'; });
+      var m7 = n.some(function (x) { return x.camp === 'M7'; });
+      var dit = function (x) { return 'M' + x.maison + ' ' + (FL[x.fig] || x.fig) + '→' + (FL[x.resultante] || x.resultante); };
+      if (m1 && !m7) return { camp: 'M1', detail: n.map(dit).join(' · ') };
+      if (m7 && !m1) return { camp: 'M7', detail: n.map(dit).join(' · ') };
+      return { camp: null, detail: 'naissances dans les deux camps : ' + n.map(dit).join(' · ') };
+    } },
   { cle: 'inc_camp_mars', nom: 'Camp · le siège engendre Mars', icone: '⚔', teinte: '#f472b6',
     juste: 0, total: 0, note: 'loi de la résultante au siège — se tait sur 81 % des thèmes',
     verdict: function (t) {
@@ -14682,6 +14795,11 @@ function renderBancPanel() {
     + ' <span style="font-weight:400; color:#64748b;">— étude du 28/08 : le siège qui '
     + 'engendre Mars ; se tait sur 81 % des thèmes</span></td></tr>'
     + (b.incidentCamp || []).map(ligne).join('')
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Penalty — qui concède'
+    + ' <span style="font-weight:400; color:#64748b;">— étude du 28/08 : Mars qui naît en M12, '
+    + 'la surface de réparation ; à lire avec le témoin juste en dessous</span></td></tr>'
+    + (b.penaltyCamp || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
     + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
@@ -20055,6 +20173,15 @@ function renderCurrentList() {
         + '<option value="M7"' + (entry.realIncidentCamp === 'M7' ? ' selected' : '') + '>'
         + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
         + '</select>';
+      h += '<select onchange="setRealPenaltyCamp(\'' + eid + '\', this.value)" '
+        + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;"'
+        + (entry.realPenalty === 'no' ? ' disabled' : '') + '>'
+        + '<option value=""' + (!entry.realPenaltyCamp ? ' selected' : '') + '>Penalty concédé par ?</option>'
+        + '<option value="M1"' + (entry.realPenaltyCamp === 'M1' ? ' selected' : '') + '>'
+        + String(entry.team1 || 'M1').slice(0, 10) + '</option>'
+        + '<option value="M7"' + (entry.realPenaltyCamp === 'M7' ? ' selected' : '') + '>'
+        + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
+        + '</select>';
       var champCorner = function (cote, val, ph) {
         return '<input type="number" min="0" max="30" step="1" placeholder="' + ph + '" value="' + (val || '') + '" '
           + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;'
@@ -20182,6 +20309,21 @@ function setRealIncidentCamp(id, value) {
   // Un camp désigné implique qu'il y a eu incident : on aligne le oui/non
   // plutôt que de laisser les deux champs se contredire.
   if (entry.realIncidentCamp && entry.realPenalty !== 'yes') entry.realPenalty = 'yes';
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
+}
+
+// Le camp qui CONCÈDE le penalty (28/08/26). Séparé du camp du rouge
+// depuis le match du 27/08 : rouge côté R1 ET penalty pour R1, donc
+// concédé par R7 — deux incidents, deux camps opposés dans le même
+// match. Une seule case « contre qui » ne pouvait pas l'écrire, et le
+// banc aurait compté une des deux lectures comme fausse à tort.
+function setRealPenaltyCamp(id, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  entry.realPenaltyCamp = (value === 'M1' || value === 'M7') ? value : '';
+  if (entry.realPenaltyCamp && entry.realPenalty !== 'yes') entry.realPenalty = 'yes';
   setSavedList(list);
   setTimeout(renderCurrentList, 0);
 }
