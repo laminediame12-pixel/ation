@@ -12439,7 +12439,12 @@ function frappeV7(fig, campAdverse, theme, centraleAdverse) {
 // figAdverse = la centrale D'EN FACE. Sans elle, la frappe se comparait
 // au camp de l'antagoniste et non au camp adverse : Carcer frappant
 // Cauda Draconis — le 4e pôle de R7 — était rangée « hors camp ».
-var REGLE_CENTRALE_ADVERSE_V7 = true;
+// COUPÉE le 28/08/26, sur décision d'Ellemine_D et sur la mesure : le
+// seul cas qu'elle coûtait, Juventus 6-1, est un score large — la seule
+// catégorie où le système est fiable (4/4 sans elle, 3/4 avec). La règle
+// reste entière dans le code et mesurable au banc ; il suffit de remettre
+// true pour la rebrancher si les prochains matchs la soutiennent.
+var REGLE_CENTRALE_ADVERSE_V7 = false;
 
 function reseauF4P4V7(fig, siege, theme, figAdverse) {
   if (!fig) return null;
