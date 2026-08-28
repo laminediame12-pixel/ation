@@ -13669,29 +13669,37 @@ var CAS_REFERENCE_V7 = [
     score: '0-1', camp: 'R7', btts: false, incident: true, incidentCamp: 'M1',
     note: 'annoncé AVANT le résultat · camp ✔ par F4P4 (les sièges disaient R1) · '
       + 'BTTS ✘ · incident présent ✔ mais camp ✘ (annoncé M7, rouge côté R1)' },
-  // ─── AJOUTÉ LE 28/08/26 — LE CAS QUI DONNE SON SENS AUX INCIDENTS ───
-  // Match du jeudi 27/08. Réel : 2-1 POUR R7, ROUGE côté R1, PENALTY
-  // POUR R1 (donc concédé par R7). Deux incidents dans le même match, et
-  // dans des camps OPPOSÉS — c'est le premier cas de l'archive qui le
-  // montre, et il invalide l'idée qu'un thème désigne UN camp coupable.
+  // ─── AJOUTÉ LE 28/08/26 — LE CAS QUI RECADRE LES INCIDENTS ───
+  // Match du jeudi 27/08. Réel : 2-1 POUR R7, ROUGE côté R1 et PENALTY
+  // côté R1 — les DEUX incidents dans le MÊME camp. (Première lecture
+  // corrigée aussitôt par Ellemine_D : le penalty était contre R1, pas
+  // pour lui. Le camp du penalty est désormais un champ à part entière,
+  // et c'est ce cas qui l'a fait naître.)
   //
-  // CE QU'IL APPREND. Le thème engendre Mars dans exactement deux
-  // maisons : M1 (Carcer → Rubeus, CAMP1) et M12 (Cauda → Puer, CAMP2).
-  // Deux naissances, deux incidents, les bons camps, et la bonne nature :
-  // M12 est la surface de réparation → penalty concédé par le camp 2 ;
-  // M1 n'est pas une maison de réparation → carton rouge pour le camp 1.
-  // Le siège de R1 (M10) et celui de R7 (M16) sont tous deux en maison
-  // PAIRE : par la loi de la résultante ils ne pouvaient engendrer
-  // aucune agression, et les deux moteurs « le siège engendre Mars » se
-  // taisent — ils cherchaient au mauvais endroit. Ce n'est pas le siège
-  // de la centrale qui porte l'incident, c'est LA MAISON OÙ MARS NAÎT.
-  // Le camp et le score, eux, sont ratés : verdict affiché R1 4-2, F4P4
-  // R1, réel R7 2-1.
+  // CE QU'IL APPREND. Le siège de R1 (M10) et celui de R7 (M16) sont
+  // tous deux en maison PAIRE : par la loi de la résultante ils ne
+  // pouvaient engendrer aucune agression, et les deux moteurs « le siège
+  // engendre Mars » se taisent alors qu'il y a eu deux incidents. Ce
+  // n'est donc pas le siège de la centrale qui porte l'incident.
+  // Le thème engendre Mars dans exactement deux maisons : M1 (Carcer →
+  // Rubeus) et M12 (Cauda → Puer). Or ces deux maisons tombent dans des
+  // camps OPPOSÉS, et dans les deux repères à la fois :
+  //     repère fixe ...... M1 → camp 1, M12 → camp 2
+  //     repère tourné .... M1 → camp 2, M12 → camp 1
+  // Comme les deux incidents réels sont dans le même camp, AU MOINS UNE
+  // des deux naissances est un faux positif, quel que soit le repère.
+  // Il n'y a donc pas eu « deux naissances, deux incidents » : il y a eu
+  // une naissance utile et une de trop. Laquelle, on ne peut pas le
+  // dire — le repère fixe explique tout par M1, le repère tourné
+  // explique tout par M12. Les deux lectures siègent au banc et un
+  // prochain match les séparera.
+  // Le camp et le score sont ratés : verdict affiché R1 4-2, F4P4 R1,
+  // réel R7 2-1.
   { nom: 'Jeudi 27/08', meres: ['carcer','amissio','conjunctio','fortuna_minor'],
     score: '1-2', camp: 'R7', btts: true, incident: true,
-    incidentCamp: 'M1', penaltyCamp: 'M7',
+    incidentCamp: 'M1', penaltyCamp: 'M1',
     note: 'annoncé AVANT le résultat · camp ✘ (dit R1) · score ✘ · '
-      + 'rouge côté R1 et penalty concédé par R7 — les deux naissances de Mars, M1 et M12' }
+      + 'rouge ET penalty côté R1 — deux naissances de Mars, M1 et M12, dans des camps opposés' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -14211,37 +14219,48 @@ var MOTEURS_CORNERS_V7 = [
 // 1 sur 1 ne démontre RIEN. La règle entre au banc pour être réfutée.
 // Elle n'entre PAS dans l'affichage tant qu'elle n'a pas dix cas.
 // ═══════════════════════════════════════════════════════════════
-// LA NAISSANCE DE MARS (28/08/26) — ce que le match du jeudi 27/08 a
-// appris, et qui contredit ce qu'on cherchait la veille.
+// LA NAISSANCE DE MARS (28/08/26) — et ce qu'elle ne dit PAS.
 //
-// On regardait le SIÈGE de R1 et de R7 : engendre-t-il Rubeus ou Puer ?
-// Sur ce match les deux sièges étaient en maison paire — donc, par la
-// loi de la résultante, incapables d'engendrer la moindre agression. Les
-// deux moteurs se sont tus. Et il y a eu DEUX incidents.
+// Point de départ : sur le match du 27/08 les deux sièges (R1 en M10,
+// R7 en M16) sont en maison paire, donc incapables d'engendrer une
+// agression par la loi de la résultante. Les deux moteurs « le siège
+// engendre Mars » se taisent — et il y a eu deux incidents. Ce n'est
+// donc pas le siège de la centrale qui porte l'incident.
 //
-// Ils étaient inscrits ailleurs : dans les deux SEULES maisons du thème
-// dont la résultante est une figure de Mars.
-//     M1  Carcer → Rubeus  (CAMP1) ......... carton rouge côté équipe 1
-//     M12 Cauda  → Puer    (CAMP2) ......... penalty concédé par l'équipe 2
-// Le camp est celui de la MAISON, pas celui de la centrale ; la nature
-// suit la maison : M12 est la surface de réparation (penalty), toute
-// autre maison donne le rouge. Bologna confirme : une seule naissance,
-// M3 Fortuna Major → Rubeus (CAMP1), et un seul incident, rouge côté R1.
-// Soit 3 événements réels sur 3 : bon camp, bonne nature.
+// Piste retenue : les maisons dont la RÉSULTANTE est une figure de Mars
+// (Rubeus ou Puer). Le camp serait celui de la MAISON, pas celui de la
+// centrale.
+//     Bologna .... une naissance, M3 Fortuna Major → Rubeus → camp 1,
+//                  et l'unique incident réel est un rouge côté R1. ✔
+//     27/08 ...... deux naissances, M1 Carcer → Rubeus et M12 Cauda →
+//                  Puer, et les deux incidents réels (rouge ET penalty)
+//                  sont côté R1.
 //
-// ⚠️ TROIS RÉSERVES, ÉCRITES POUR QU'ON NE S'EMBALLE PAS.
-// 1. Trois événements, deux matchs. Ça ne démontre rien.
-// 2. Mesuré sur les 65 536 thèmes : 1,88 naissance par thème en moyenne,
-//    et seulement 12,2 % des thèmes n'en ont aucune. La règle LOCALISE
-//    bien, mais elle annoncerait un incident dans 88 % des matchs — très
-//    au-dessus du réel. Il manque un filtre « y a-t-il incident », et on
-//    ne l'a pas : restreindre aux naissances par agression (k=±3) aurait
-//    supprimé 2 des 3 événements justes.
-// 3. Le camp des naissances n'est pas parfaitement équilibré : CAMP1
-//    65 536 contre CAMP2 57 344 (53,3 % / 46,7 %), l'écart venant des
-//    maisons de synthèse. Et la règle du penalty (M12) accuse TOUJOURS
-//    le camp 2 : c'est pourquoi le témoin « toujours M7 » siège à côté
-//    d'elle dans le banc — les deux doivent être lues ensemble.
+// ⚠️ CE QUE LE 27/08 INTERDIT DE CONCLURE. Les deux naissances tombent
+// dans des camps opposés, et dans les DEUX repères à la fois :
+//     repère fixe (CAMP1/CAMP2) ...... M1 → camp 1, M12 → camp 2
+//     repère tourné (getRotationOrderFromRepos) . M1 → camp 2, M12 → camp 1
+// Puisque les deux incidents réels sont dans le même camp, AU MOINS UNE
+// des deux naissances est un faux positif — quel que soit le repère
+// choisi. La coïncidence « deux naissances, deux incidents » n'existe
+// pas. Le repère fixe explique tout par M1 ; le repère tourné explique
+// tout par M12 ; les deux tiennent, et rien ici ne les départage. Les
+// deux lectures sont donc au banc, côte à côte, en attendant un match
+// qui les sépare.
+//
+// ⚠️ ET SURTOUT : les TROIS incidents réels connus sont côté camp 1.
+// Le témoin « toujours M1 » les a tous. Aucune règle ne peut être dite
+// meilleure que lui tant qu'un incident ne sera pas tombé côté camp 2.
+//
+// Autres réserves, mesurées sur les 65 536 thèmes : 1,88 naissance par
+// thème en moyenne, et seulement 12,2 % des thèmes n'en ont aucune — la
+// règle LOCALISE, elle ne DÉTECTE pas ; elle annoncerait un incident
+// dans 88 % des matchs. Restreindre aux naissances par agression (k=±3)
+// ne sauve rien : ça supprimerait la naissance juste de Bologna. Enfin
+// le camp des naissances penche déjà de lui-même vers le camp 1 en
+// repère fixe (65 536 contre 57 344, soit 53,3 % / 46,7 %), l'écart
+// venant des maisons de synthèse — une raison de plus de se méfier d'un
+// score obtenu sur trois incidents tous côté camp 1.
 // Banc uniquement, aucun poids sur le verdict.
 function naissancesMarsV7(theme) {
   var out = [];
@@ -14257,12 +14276,39 @@ function naissancesMarsV7(theme) {
   return out;
 }
 
+// Le camp d'une maison, dans l'un ou l'autre repère. En repère TOURNÉ,
+// les positions de CAMP1 sont lues sur l'anneau qui commence à la maison
+// de repos de M1 — c'est l'anneau qui sert déjà à situer R1 et R7.
+function campMaisonV7(maison, tourne, theme) {
+  if (!tourne) return (CAMP1.indexOf(maison) >= 0) ? 'M1' : 'M7';
+  var ordre = getRotationOrderFromRepos(theme[1]);
+  var rang = ordre.indexOf(maison);            // 0 = R1, 6 = R7
+  if (rang < 0) return null;
+  return (CAMP1.indexOf(rang + 1) >= 0) ? 'M1' : 'M7';
+}
+
+// Camp désigné par les naissances de Mars ; muet si elles se répartissent
+// des deux côtés — c'est exactement ce qui arrive le 27/08.
+function campNaissancesMarsV7(theme, tourne) {
+  var n = naissancesMarsV7(theme);
+  if (!n.length) return { camp: null, detail: 'aucune naissance de Mars' };
+  var camps = n.map(function (x) { return campMaisonV7(x.maison, tourne, theme); });
+  var dit = n.map(function (x, i) {
+    return 'M' + x.maison + ' ' + (FL[x.fig] || x.fig) + '→' + (FL[x.resultante] || x.resultante)
+      + ' (' + camps[i] + ')';
+  }).join(' · ');
+  var m1 = camps.indexOf('M1') >= 0, m7 = camps.indexOf('M7') >= 0;
+  if (m1 && !m7) return { camp: 'M1', detail: dit };
+  if (m7 && !m1) return { camp: 'M7', detail: dit };
+  return { camp: null, detail: 'naissances des deux côtés : ' + dit };
+}
+
 // Qui CONCÈDE le penalty. Famille distincte du carton rouge depuis le
 // 27/08 : un même match peut donner un rouge à un camp et un penalty à
 // l'autre, et une seule case « contre qui » ne pouvait pas le dire.
 var MOTEURS_PENALTY_CAMP_V7 = [
   { cle: 'pen_camp_m12', nom: 'Penalty · Mars naît en M12 → le camp 2 concède', icone: '⚽', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'surface de réparation — 12,5 % des thèmes, mais accuse toujours M7',
+    juste: 0, total: 0, note: 'RÉFUTÉE sur son unique cas (27/08 : penalty côté R1) — gardée pour mémoire, accuse toujours M7',
     verdict: function (t) {
       var n = naissancesMarsV7(t).filter(function (x) { return x.penalty; });
       if (!n.length) return { camp: null, detail: 'M12 n\'engendre pas Mars' };
@@ -14284,18 +14330,12 @@ var MOTEURS_PENALTY_CAMP_V7 = [
 ];
 
 var MOTEURS_INCIDENT_CAMP_V7 = [
-  { cle: 'inc_camp_naissance', nom: 'Camp · maison où Mars naît (hors M12)', icone: '🩸', teinte: '#ef4444',
-    juste: 0, total: 0, note: 'le camp de la MAISON, pas celui de la centrale — 2/2 sur le réel',
-    verdict: function (t) {
-      var n = naissancesMarsV7(t).filter(function (x) { return !x.penalty; });
-      if (!n.length) return { camp: null, detail: 'aucune naissance de Mars hors M12' };
-      var m1 = n.some(function (x) { return x.camp === 'M1'; });
-      var m7 = n.some(function (x) { return x.camp === 'M7'; });
-      var dit = function (x) { return 'M' + x.maison + ' ' + (FL[x.fig] || x.fig) + '→' + (FL[x.resultante] || x.resultante); };
-      if (m1 && !m7) return { camp: 'M1', detail: n.map(dit).join(' · ') };
-      if (m7 && !m1) return { camp: 'M7', detail: n.map(dit).join(' · ') };
-      return { camp: null, detail: 'naissances dans les deux camps : ' + n.map(dit).join(' · ') };
-    } },
+  { cle: 'inc_camp_naissance', nom: 'Camp · maison où Mars naît — repère FIXE', icone: '🩸', teinte: '#ef4444',
+    juste: 0, total: 0, note: 'CAMP1/CAMP2 tels quels ; muet si les naissances sont des deux côtés',
+    verdict: function (t) { return campNaissancesMarsV7(t, false); } },
+  { cle: 'inc_camp_naissance_rot', nom: 'Camp · maison où Mars naît — repère TOURNÉ', icone: '🩸', teinte: '#f97316',
+    juste: 0, total: 0, note: 'mêmes naissances, camps lus après la rotation de l\'anneau',
+    verdict: function (t) { return campNaissancesMarsV7(t, true); } },
   { cle: 'inc_camp_mars', nom: 'Camp · le siège engendre Mars', icone: '⚔', teinte: '#f472b6',
     juste: 0, total: 0, note: 'loi de la résultante au siège — se tait sur 81 % des thèmes',
     verdict: function (t) {
