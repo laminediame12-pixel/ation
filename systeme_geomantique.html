@@ -13552,7 +13552,32 @@ var CAS_REFERENCE_V7 = [
   { nom: 'PSG/Bayer', meres: ['caput_draconis','acquisitio','conjunctio','via'],
     score: '1-2', camp: 'R7', btts: true, esport: true,
     note: 'FC 26 — 5x5 Rush (e-sport, rang 7) · le vote se trompe 6-2, '
-      + 'sièges et axes ont raison, corners et incident aussi' }
+      + 'sièges et axes ont raison, corners et incident aussi' },
+  // ─── AJOUTÉ LE 28/08/26 — PREMIER CAS ANNONCÉ AVANT LE RÉSULTAT ───
+  // Caput Draconis · Carcer · Fortuna Major · Populus.
+  // Réel : 1-0 POUR R7, avec CARTON ROUGE du côté de R1.
+  // ⚠️ CONVENTION DE L'ARCHIVE : score écrit M1-M7. « 1-0 pour R7 »
+  // s'écrit donc '0-1'. Se tromper de sens ici corromprait le banc.
+  //
+  // CE CAS EST LE PREMIER TEST EN AVEUGLE DE F4P4 AU VOLANT, et il le
+  // passe : F4P4 annonçait R7 (2 pôles solides contre 1) AVANT que le
+  // score soit connu. La lecture des sièges, qui pilotait la veille,
+  // annonçait R1 — elle se serait trompée. Le changement de volant est
+  // validé sur son premier cas réel.
+  //
+  // MAIS TROIS AUTRES LECTURES SE TROMPENT, ET IL FAUT LE DIRE :
+  //   · BTTS : la chaîne annonce « les deux marquent », le réel est 1-0.
+  //     Avant que le perdant soit désigné par F4P4 (même jour), elle
+  //     disait « un seul marque, muet R1 » — ce qui était JUSTE. Ma
+  //     correction de cohérence lui a fait perdre ce cas.
+  //   · INCIDENT : présence annoncée (85 %, très élevé) ✔, mais CAMP
+  //     annoncé M7 alors que le rouge est côté R1. Premier test de
+  //     l'attribution, premier échec.
+  //   · SCORE : 2-4 annoncé, 0-1 réel.
+  { nom: 'Bologna', meres: ['caput_draconis','carcer','fortuna_major','populus'],
+    score: '0-1', camp: 'R7', btts: false, incident: true, incidentCamp: 'M1',
+    note: 'annoncé AVANT le résultat · camp ✔ par F4P4 (les sièges disaient R1) · '
+      + 'BTTS ✘ · incident présent ✔ mais camp ✘ (annoncé M7, rouge côté R1)' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -17544,6 +17569,32 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) btts = bttsChaine.lesDeuxMarquent;
   else if (BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable) btts = bttsRotation.lesDeuxMarquent;
   else btts = (goalA > 0 && goalB > 0);
+
+  // ─── LE SCORE OBÉIT AU BTTS (28/08/26) ───
+  // Constat sur le cas Bologna d'Ellemine_D : la carte annonçait « 2-4 »
+  // ET « un seul marque ». Deux affirmations dans la même carte, dont
+  // l'une nie l'autre.
+  // Mesuré : le score et la lecture BTTS se contredisent sur 44 % des
+  // thèmes (295 sur 676). C'est la même famille de défaut que le
+  // vainqueur qui contredisait son score, corrigé le 26/08.
+  // La lecture BTTS est la MEILLEURE pièce du système (chaîne du perdant,
+  // 9/11 au banc) ; le générateur de score en est la plus faible (écart
+  // de 2 dans 91 % des thèmes, 0 exact sur l'archive). Quand ils se
+  // contredisent, c'est le score qui doit céder.
+  // Effet secondaire recherché : forcer le perdant à 0 quand « un seul
+  // marque » produit enfin des 1-0, 2-0, 3-0 — des scores que le
+  // générateur ne savait pas atteindre.
+  if (btts === false) {
+    if (scWinnerCode === 'A' && goalB > 0) goalB = 0;
+    else if (scWinnerCode === 'B' && goalA > 0) goalA = 0;
+  } else if (btts === true) {
+    if (goalA <= 0) goalA = 1;
+    if (goalB <= 0) goalB = 1;
+  }
+  scoreMain = goalA + '-' + goalB;
+  scoreAlt = scWinnerCode === 'A' ? Math.max(btts === true ? 1 : 0, goalA - ecartAlt) + '-' + goalB
+    : scWinnerCode === 'B' ? goalA + '-' + Math.max(btts === true ? 1 : 0, goalB - ecartAlt)
+    : Math.max(0, goalA - ecartAlt) + '-' + Math.max(0, goalB - ecartAlt);
 
   // AJOUTÉ (demande utilisateur) : équipe à plus grande capacité de
   // marquage brute — campA.total/campB.total AVANT la correction de marge
