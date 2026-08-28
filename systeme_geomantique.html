@@ -355,7 +355,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 </div>
 <div class="page-content"><section class="section"><h2>🎴 Verdicts</h2><div id="carte-verdict-r" class="card verdict-priority" data-priority-label="⭐ VERDICT FINAL" style="margin-bottom:14px;"><div class="muted">Lance un thème pour afficher le verdict.</div></div><div id="regression-reference-panel" class="card" style="margin-top:10px; border:1px solid #7c3aed; display:none;"></div></section><section class="section" style="display:none;"><h2>Validation du tirage</h2><div class="card" id="theme-validation"><div class="muted">Lancer un thème pour afficher la validation.</div></div></section><section class="section"><h2>Contexte du tirage</h2><div class="card" id="question-context"><div class="muted">Sélectionne le match et au moins une question avant de lancer le thème.</div></div></section><section style="background:#1e293b;margin-bottom:12px;padding:8px 0 0 0;"><h2 style="padding:0 8px 8px;">Grille du thème</h2><div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 8px 8px;"><span style="font-size:12px; color:#94a3b8;">Thème actif :</span>
 <div id="axis-theme-controls" class="axis-theme-controls"></div>
-<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="validiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleValiditePanel()">🗓️ Validité &amp; figure du jour</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="validite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
+<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="validiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleValiditePanel()">🗓️ Validité &amp; figure du jour</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="validite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
 <div style="display:flex; gap:14px; justify-content:center; margin-top:10px; font-size:12px; color:#cbd5e1;">
   <span><span style="display:inline-block; width:14px; height:4px; background:#ef4444; margin-right:4px; vertical-align:middle;"></span>Feu</span>
   <span><span style="display:inline-block; width:14px; height:4px; background:#eab308; margin-right:4px; vertical-align:middle;"></span>Air</span>
@@ -13933,7 +13933,202 @@ function justesseMoteurV7(m, famille) {
 // REPLI : justesseMoteurV7 les remplace par la justesse rejouée sur le
 // banc dès qu'un cas s'applique. Ils sont laissés tels quels, non mis à
 // jour, précisément pour qu'on cesse de s'y fier.
+// ═══════════════════════════════════════════════════════════════
+// MOTEUR « TABLE DES PÔLES » (28/08/26, doctrine Ellemine_D)
+//
+// Énoncé, mot pour mot : « les vrais critères d'analyse d'une figure ;
+// les 4 pôles de chaque figure qui est dans le thème, c'est-à-dire
+// développer les 4 pôles de toutes les figures existantes dans le thème ;
+// après on lie R1 et R7 aux pôles qui les incluent et les excluent, afin
+// de déterminer celui qui tient le poids, la solidité des figures dans le
+// thème. […] mais attention au cas où R1 et R7 sont dans la même boucle :
+// ils partageront les mêmes pôles, mais leur antagoniste direct de
+// l'autre boucle va les différencier du plus solide au moins solide, ou
+// s'ils ont le nul. »
+//
+// CE QUE FAIT LE MOTEUR, LIGNE À LIGNE.
+// 1. Il développe les SEIZE maisons : pour chacune, la figure qui l'occupe
+//    et ses quatre pôles — bouclier (X+10), front (X+4), binôme (X+2),
+//    front du front (X+8), dans cet ordre (polesDeV7).
+// 2. Chaque ligne porte un POIDS : le profil de la figure À CETTE PLACE,
+//    c'est-à-dire les sept critères d'analyse (profilFigureMaison) —
+//    « les vrais critères ». Une figure bien placée pèse ; une figure
+//    déplacée en maison ennemie pèse peu, voire négativement.
+// 3. On lie : si R1 figure parmi les quatre pôles de la ligne, cette ligne
+//    TIENT R1, pour poids × le coefficient du rôle (POIDS_ROLES_V7 :
+//    front 1,5, bouclier 1, binôme 1 ; le front du front n'a pas de valeur
+//    dans cette table — il prend 1, le neutre, plutôt qu'une hiérarchie
+//    inventée). Idem pour R7. Une ligne peut tenir les deux.
+// 4. On EXCLUT : si la figure de la ligne est l'antagoniste direct de R1,
+//    elle le détruit — la ligne compte alors NÉGATIVEMENT pour lui
+//    (POIDS_ROLES_V7.antagoniste = −2). Idem pour R7.
+// 5. Verdict. Boucles différentes : celui dont le total est le plus haut
+//    tient le poids du thème. MÊME BOUCLE : les deux camps partagent
+//    l'essentiel de leurs pôles, le total ne veut plus rien dire — c'est
+//    l'antagoniste direct, qui vit dans l'AUTRE boucle, qui départage.
+//    Celui dont l'assaillant est le plus lourdement installé est le moins
+//    solide ; si aucun des deux assaillants n'est là, ou s'ils pèsent
+//    pareil, c'est le NUL.
+//
+// La règle de la même boucle n'est pas un garde-fou ajouté après coup :
+// c'est une conséquence mesurée. Les cinq rôles d'un camp sont à
+// décalages PAIRS, donc un camp tient entièrement dans une boucle ; quand
+// R1 et R7 sont dans la même, leurs deux camps se recouvrent (jusqu'à 3
+// rôles sur 5 partagés), et seule l'attaque — décalage impair, donc de
+// l'autre boucle — peut encore les distinguer.
+function tablePolesV7(theme) {
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { rot = null; }
+  if (!theme || !rot || !rot.figR1 || !rot.figR7) return { applicable: false, lignes: [] };
+  var R1 = rot.figR1, R7 = rot.figR7;
+  var ROLES = [
+    { cle: 'bouclier',       poids: POIDS_ROLES_V7.protecteur },
+    { cle: 'front',          poids: POIDS_ROLES_V7.front },
+    { cle: 'binôme',         poids: POIDS_ROLES_V7.binome },
+    { cle: 'front du front', poids: POIDS_ROLES_V7.binome }
+  ];
+  var antaR1 = ANTAGONISTES_V7[R1], antaR7 = ANTAGONISTES_V7[R7];
+  var lignes = [], totalR1 = 0, totalR7 = 0, contreR1 = 0, contreR7 = 0;
+  var tenuR1 = 0, tenuR7 = 0;
+  for (var h = 1; h <= 16; h++) {
+    var f = theme[h];
+    if (!f) continue;
+    var pr = null;
+    try { pr = profilFigureMaison(f, h, theme); } catch (e) { pr = null; }
+    var poids = pr ? pr.total : 0;
+    var poles = polesDeV7(f);
+    var l = { maison: h, fig: f, poids: Math.round(poids * 100) / 100, poles: poles,
+      roleR1: null, roleR7: null, gainR1: 0, gainR7: 0, attaque: null, estR1: f === R1, estR7: f === R7 };
+    for (var i = 0; i < poles.length; i++) {
+      if (poles[i] === R1) { l.roleR1 = ROLES[i].cle; l.gainR1 += poids * ROLES[i].poids; tenuR1++; }
+      if (poles[i] === R7) { l.roleR7 = ROLES[i].cle; l.gainR7 += poids * ROLES[i].poids; tenuR7++; }
+    }
+    if (f === antaR1) { l.attaque = 'R1'; l.gainR1 += poids * POIDS_ROLES_V7.antagoniste; contreR1 += poids; }
+    if (f === antaR7) { l.attaque = l.attaque ? 'les deux' : 'R7'; l.gainR7 += poids * POIDS_ROLES_V7.antagoniste; contreR7 += poids; }
+    l.gainR1 = Math.round(l.gainR1 * 100) / 100;
+    l.gainR7 = Math.round(l.gainR7 * 100) / 100;
+    totalR1 += l.gainR1; totalR7 += l.gainR7;
+    lignes.push(l);
+  }
+  totalR1 = Math.round(totalR1 * 100) / 100;
+  totalR7 = Math.round(totalR7 * 100) / 100;
+  contreR1 = Math.round(contreR1 * 100) / 100;
+  contreR7 = Math.round(contreR7 * 100) / 100;
+  var iR1 = FIGS_V7.indexOf(R1), iR7 = FIGS_V7.indexOf(R7);
+  var memeBoucle = (iR1 % 2) === (iR7 % 2);
+  var campR1 = campDeV7(R1), campR7 = campDeV7(R7);
+  var partages = campR1.filter(function (x) { return campR7.indexOf(x) >= 0; });
+  var camp = null, nul = false, resume = '';
+  if (memeBoucle) {
+    // Les pôles sont largement communs : seul l'assaillant, qui vient de
+    // l'autre boucle, peut encore séparer les deux.
+    if (contreR1 === contreR7) {
+      nul = true;
+      resume = 'même boucle (' + partages.length + '/5 rôles partagés) — les deux assaillants pèsent pareil ('
+        + contreR1 + ') : NUL';
+    } else {
+      camp = contreR1 < contreR7 ? 'R1' : 'R7';
+      resume = 'même boucle (' + partages.length + '/5 rôles partagés) — départage par l\'assaillant : '
+        + (FL[antaR1] || antaR1) + ' pèse ' + contreR1 + ' contre R1, '
+        + (FL[antaR7] || antaR7) + ' pèse ' + contreR7 + ' contre R7 → ' + camp + ' est le plus solide';
+    }
+  } else {
+    if (totalR1 === totalR7) {
+      nul = true;
+      resume = 'boucles différentes — les deux tables pèsent pareil (' + totalR1 + ') : NUL';
+    } else {
+      camp = totalR1 > totalR7 ? 'R1' : 'R7';
+      resume = 'boucles différentes — R1 tenu par ' + tenuR1 + ' pôle(s) pour ' + totalR1
+        + ', R7 par ' + tenuR7 + ' pôle(s) pour ' + totalR7 + ' → ' + camp;
+    }
+  }
+  return {
+    applicable: true, figR1: R1, figR7: R7, hR1: rot.hR1, hR7: rot.hR7,
+    lignes: lignes, totalR1: totalR1, totalR7: totalR7,
+    tenuR1: tenuR1, tenuR7: tenuR7,
+    antaR1: antaR1, antaR7: antaR7, contreR1: contreR1, contreR7: contreR7,
+    memeBoucle: memeBoucle, partages: partages,
+    camp: camp, nul: nul, ecart: Math.round(Math.abs(totalR1 - totalR7) * 100) / 100,
+    resume: resume
+  };
+}
+
+// Le tableau, à l'écran : les seize maisons développées en quatre pôles,
+// avec ce que chaque ligne apporte à R1 et à R7.
+function toggleTablePolesPanel() {
+  var panel = document.getElementById('table-poles-panel');
+  if (!panel) return;
+  if (panel.style.display === 'none' || !panel.style.display) {
+    if (!currentTheme) { panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>'; panel.style.display = 'block'; return; }
+    var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); };
+    var n = function (f) { return esc(FL[f] || f); };
+    var a = null;
+    try { a = tablePolesV7(currentTheme); } catch (e) { a = null; }
+    if (!a || !a.applicable) {
+      panel.innerHTML = '<div class="warn">Table des pôles indisponible sur ce thème.</div>';
+      panel.style.display = 'block'; return;
+    }
+    var h = '<h3 style="margin:0 0 6px;">🧮 Table des pôles</h3>'
+      + '<div class="muted" style="font-size:11px; margin-bottom:8px;">Les seize maisons développées par leurs quatre pôles '
+      + '(bouclier, front, binôme, front du front). Chaque ligne pèse le profil de sa figure à cette place — les sept critères. '
+      + 'Une ligne dont un pôle EST R1 ou R7 le tient ; une ligne qui est son antagoniste le détruit.</div>'
+      + '<div class="kv" style="font-size:12px;"><b>R1</b> ' + n(a.figR1) + ' en M' + a.hR1
+      + ' &nbsp;·&nbsp; <b>R7</b> ' + n(a.figR7) + ' en M' + a.hR7
+      + ' &nbsp;·&nbsp; ' + (a.memeBoucle ? '<span style="color:#fbbf24;">MÊME BOUCLE — ' + a.partages.length
+          + '/5 rôles partagés</span>' : 'boucles différentes') + '</div>'
+      + '<div style="overflow-x:auto; margin-top:8px;"><table style="width:100%; border-collapse:collapse; font-size:11px;">'
+      + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 4px;">M</th>'
+      + '<th style="text-align:left;">figure</th><th style="text-align:right;">poids</th>'
+      + '<th style="text-align:left;">bouclier · front · binôme · front du front</th>'
+      + '<th style="text-align:right;">R1</th><th style="text-align:right;">R7</th></tr>';
+    a.lignes.forEach(function (l) {
+      var fond = l.estR1 ? 'rgba(56,189,248,.10)' : l.estR7 ? 'rgba(251,146,60,.10)'
+        : (l.roleR1 || l.roleR7 || l.attaque) ? 'rgba(148,163,184,.06)' : 'transparent';
+      h += '<tr style="background:' + fond + '; border-top:1px solid rgba(148,163,184,.15);">'
+        + '<td style="padding:3px 4px; color:#94a3b8;">M' + l.maison + '</td>'
+        + '<td>' + n(l.fig) + (l.estR1 ? ' <b style="color:#38bdf8;">= R1</b>' : '')
+          + (l.estR7 ? ' <b style="color:#fb923c;">= R7</b>' : '')
+          + (l.attaque ? ' <span style="color:#f87171;">⚔ détruit ' + esc(l.attaque) + '</span>' : '') + '</td>'
+        + '<td style="text-align:right; color:' + (l.poids < 0 ? '#f87171' : '#cbd5e1') + ';">' + l.poids + '</td>'
+        + '<td style="color:#94a3b8;">' + l.poles.map(function (p) {
+            return (p === a.figR1) ? '<b style="color:#38bdf8;">' + n(p) + '</b>'
+                 : (p === a.figR7) ? '<b style="color:#fb923c;">' + n(p) + '</b>' : n(p);
+          }).join(' · ') + '</td>'
+        + '<td style="text-align:right; color:#38bdf8;">' + (l.roleR1 ? esc(l.roleR1) + ' ' + l.gainR1 : (l.gainR1 ? l.gainR1 : '—')) + '</td>'
+        + '<td style="text-align:right; color:#fb923c;">' + (l.roleR7 ? esc(l.roleR7) + ' ' + l.gainR7 : (l.gainR7 ? l.gainR7 : '—')) + '</td>'
+        + '</tr>';
+    });
+    h += '<tr style="border-top:2px solid rgba(148,163,184,.4); font-weight:700;">'
+      + '<td colspan="4" style="padding:4px;">TOTAL — pôles qui les tiennent</td>'
+      + '<td style="text-align:right; color:#38bdf8;">' + a.totalR1 + ' (' + a.tenuR1 + ')</td>'
+      + '<td style="text-align:right; color:#fb923c;">' + a.totalR7 + ' (' + a.tenuR7 + ')</td></tr>'
+      + '<tr><td colspan="4" style="padding:4px; color:#f87171;">Assaillant direct (autre boucle)</td>'
+      + '<td style="text-align:right; color:#f87171;">' + n(a.antaR1) + ' ' + a.contreR1 + '</td>'
+      + '<td style="text-align:right; color:#f87171;">' + n(a.antaR7) + ' ' + a.contreR7 + '</td></tr>'
+      + '</table></div>'
+      + '<div class="kv" style="margin-top:8px; font-size:12px;"><b>Verdict :</b> '
+      + (a.camp ? '<span class="good">' + a.camp + '</span>' : a.nul ? '<span style="color:#fbbf24;">NUL</span>' : '—')
+      + ' — ' + esc(a.resume) + '</div>'
+      + '<div class="muted" style="font-size:11px; margin-top:6px;">⚠️ Au banc ce moteur fait 4/10 — le plus faible, '
+      + 'sous « toujours R7 » qui fait 6/10. Onze lectures du même tableau ont été mesurées (poids planchés à zéro, '
+      + 'pôles seulement portés par une figure ancrée, sans la pénalité d\'antagoniste, règle de la même boucle '
+      + 'inversée…) : toutes entre 3/10 et 5/10. Il ne pilote rien.</div>';
+    panel.innerHTML = h;
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
 var MOTEURS_V7 = [
+  { cle: 'table_poles', nom: 'Table des pôles', icone: '🧮', teinte: '#2dd4bf',
+    note: 'les 4 pôles des 16 figures, pesés par les sept critères', juste: 0, total: 0,
+    verdict: function (t) {
+      var a = tablePolesV7(t);
+      if (!a.applicable) return null;
+      return { camp: a.camp, detail: a.resume };
+    } },
   { cle: 'ancrage', nom: 'Ancrage développé', icone: '⚓', teinte: '#38bdf8',
     note: 'chaîne + rôles reçus + rôles exercés + régénération', juste: 5, total: 7,
     verdict: function (t) {
