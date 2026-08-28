@@ -14056,7 +14056,18 @@ var CAS_REFERENCE_V7 = [
   // QUE pour la famille mi-temps, via le champ butsDeuxMiTemps.
   { nom: 'AmisCarcer', meres: ['amissio','carcer','puella','conjunctio'],
     score: null, camp: null, btts: null, butsDeuxMiTemps: true,
-    note: 'but dans chaque mi-temps ✔ — premier cas de la famille mi-temps' }
+    note: 'but dans chaque mi-temps ✔ — premier cas de la famille mi-temps' },
+  // ─── PREMIER CAS COMPLET AVEC MI-TEMPS (28/08/26) ───
+  // Mi-temps 2-0 pour R1, final 5-0. Le verdict trouve le camp et
+  // s'approche du score (annoncé 4-0 pour un 5-0 réel, un but d'écart).
+  // Pour la famille mi-temps : 2 buts avant la pause, 3 après → OUI.
+  // ⚠️ Et un détail qui compte : le signal htWinner dit « both », c'est-à-dire
+  // que les DEUX camps marquent en première période. Le réel est 2-0 :
+  // un seul a marqué. Le signal répond juste à la question de la famille
+  // (y a-t-il eu un but avant la pause) et faux sur ce qu'il prétend dire.
+  { nom: 'PuerLaet', meres: ['puer','laetitia','amissio','acquisitio'],
+    score: '5-0', htScore: '2-0', camp: 'R1', btts: false,
+    note: 'vainqueur ✔ · score 4-0 pour 5-0 (un but d\'écart) · BTTS ✔ · but dans les deux mi-temps ✔' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
