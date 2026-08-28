@@ -14049,7 +14049,14 @@ var CAS_REFERENCE_V7 = [
   // du générateur, elle est à surveiller comme telle.
   { nom: 'LaetCarcer', meres: ['laetitia','carcer','caput_draconis','amissio'],
     score: '4-0', camp: 'R1', btts: false,
-    note: 'vainqueur ✔ · SCORE EXACT 4-0 ✔ · BTTS ✔ — deuxième score exact de l\'archive' }
+    note: 'vainqueur ✔ · SCORE EXACT 4-0 ✔ · BTTS ✔ — deuxième score exact de l\'archive' },
+  // ─── PREMIER CAS DE LA FAMILLE « BUT DANS LES DEUX MI-TEMPS » ───
+  // Ellemine_D, 28/08 : « voici un match où il y a but dans chaque
+  // mi-temps ». Vainqueur et scores non communiqués : ce cas ne compte
+  // QUE pour la famille mi-temps, via le champ butsDeuxMiTemps.
+  { nom: 'AmisCarcer', meres: ['amissio','carcer','puella','conjunctio'],
+    score: null, camp: null, btts: null, butsDeuxMiTemps: true,
+    note: 'but dans chaque mi-temps ✔ — premier cas de la famille mi-temps' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -14106,6 +14113,7 @@ function casSauvegardesV7() {
         ? e.realIncidentCamp : null,
       penaltyCamp: (e.realPenaltyCamp === 'M1' || e.realPenaltyCamp === 'M7')
         ? e.realPenaltyCamp : null,
+      htScore: /^\d{1,2}-\d{1,2}$/.test(String(e.realHtScore || '')) ? e.realHtScore : null,
       corners: /^\d{1,2}$/.test(String(e.realCorners || '')) ? parseInt(e.realCorners, 10) : null,
       cornersM1: /^\d{1,2}$/.test(String(e.realCornersM1 || '')) ? parseInt(e.realCornersM1, 10) : null,
       cornersM7: /^\d{1,2}$/.test(String(e.realCornersM7 || '')) ? parseInt(e.realCornersM7, 10) : null,
@@ -14204,7 +14212,14 @@ function bancMoteursV7(force) {
         var v = null;
         try { v = m.verdict(themes[i]); } catch (e) { v = null; }
         var dit = v ? v[champ] : null;
-        if (champ === 'oui' && v) dit = !!v.oui;
+        // ─── CORRIGÉ LE 28/08/26 ───
+        // Cette ligne transformait un moteur MUET (oui = null) en « non ».
+        // Un moteur qui s'abstient était donc noté comme s'étant trompé
+        // chaque fois que la réponse réelle était « oui » — l'inverse
+        // exact de la règle posée le matin même pour les autres familles.
+        // Trouvé sur la famille mi-temps : le signal de première période,
+        // muet sur son unique cas, s'affichait 0/1.
+        if (champ === 'oui' && v) dit = (typeof v.oui === 'boolean') ? v.oui : null;
         if (dit === null || dit === undefined) {
           abstentions++;
           return { cas: c.nom, dit: null, reel: reel, compte: false, ok: null, abstenu: true };
@@ -14247,6 +14262,18 @@ function bancMoteursV7(force) {
     }),
     penaltyCamp: passe(MOTEURS_PENALTY_CAMP_V7, 'camp', function (c) {
       return (c.penaltyCamp === 'M1' || c.penaltyCamp === 'M7') ? c.penaltyCamp : null;
+    }),
+    // But dans les deux mi-temps : vrai si on a marqué avant la pause ET
+    // après. Demande les deux scores — mi-temps et final.
+    miTemps: passe(MOTEURS_MITEMPS_V7, 'oui', function (c) {
+      // Un cas peut porter directement le fait, quand seul le fait est
+      // connu (« il y a but dans chaque mi-temps ») sans les deux scores.
+      if (typeof c.butsDeuxMiTemps === 'boolean') return c.butsDeuxMiTemps;
+      if (!c.htScore || !c.score) return null;
+      var h = String(c.htScore).match(/(\d+)-(\d+)/), f = String(c.score).match(/(\d+)-(\d+)/);
+      if (!h || !f) return null;
+      var totH = (+h[1]) + (+h[2]), totF = (+f[1]) + (+f[2]);
+      return totH > 0 && totF > totH;
     }),
     corners: passeNum(MOTEURS_CORNERS_V7, function (c) {
       return (typeof c.corners === 'number') ? c.corners : null;
@@ -15009,6 +15036,59 @@ var MOTEURS_CORNERS_DOM_V7 = [
     verdict: function () { return { camp: 'R1', detail: 'réponse constante' }; } }
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// BUT DANS LES DEUX MI-TEMPS (28/08/26, demande d'Ellemine_D)
+//
+// La question : y a-t-il au moins un but dans CHAQUE mi-temps ?
+// Le fichier avait déjà trois lectures qui touchent aux mi-temps — le
+// panneau « But par mi-temps » (hypothèse M1/M7 pour la première,
+// R1/R7 pour la seconde, n=1), le signal htWinner (qui marque en
+// première période), et la répartition des corners ht1/ht2 — et AUCUNE
+// n'avait jamais vu un seul résultat, faute de champ pour l'enregistrer.
+// Le champ existe maintenant (setRealHtScore) et cette famille rejoue
+// les candidats dessus.
+//
+// Le réel se lit ainsi : but en 1re mi-temps = total du score à la pause
+// > 0 ; but en 2e = total final > total à la pause. Les deux à la fois =
+// « oui ». Il faut donc le score de mi-temps ET le score final.
+//
+// ⚠️ ZÉRO CAS AUJOURD'HUI. Les vingt thèmes de l'archive n'ont aucun
+// score de mi-temps : la famille affichera 0/0 tant que tu n'en auras pas
+// saisi. C'est le but — rendre visible qu'on ne sait pas, au lieu de
+// laisser trois lectures non testées avoir l'air de fonctionner.
+var MOTEURS_MITEMPS_V7 = [
+  { cle: 'mt_deux_cartes', nom: 'Mi-temps · hypothèse M1/M7 puis R1/R7', icone: '🕐', teinte: '#38bdf8',
+    juste: 0, total: 0, note: 'le panneau « But par mi-temps » : un but dans chaque moitié si les deux cartes marquent',
+    verdict: function (t) {
+      var b = null;
+      try { b = butParMiTemps(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
+      var tot = function (sc) {
+        var m = String(sc || '').match(/(\d+)-(\d+)/);
+        return m ? (+m[1]) + (+m[2]) : 0;
+      };
+      var a = tot(b.premiereMiTemps.score), c = tot(b.secondeMiTemps.score);
+      return { oui: a > 0 && c > 0, detail: '1re ' + b.premiereMiTemps.score + ' · 2e ' + b.secondeMiTemps.score };
+    } },
+  { cle: 'mt_match_ouvert', nom: 'Mi-temps · match ouvert', icone: '🕐', teinte: '#a78bfa',
+    juste: 0, total: 0, note: 'un match ouvert (M5 et M11 non paralysées, ou récit ouvert) marque dans les deux moitiés',
+    verdict: function (t) {
+      var o = false;
+      try { o = determinerMatchOuvertV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
+      return { oui: !!o, detail: o ? 'match ouvert' : 'match fermé' };
+    } },
+  { cle: 'mt_ht_signal', nom: 'Mi-temps · signal de première période (htWinner)', icone: '🕐', teinte: '#fb923c',
+    juste: 0, total: 0, note: 'quelqu\'un marque avant la pause, et le score prédit dépasse ce total',
+    verdict: function (t) {
+      var v = null;
+      try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
+      if (!v || !v.htWinner) return { oui: null, detail: 'aucun signal de première période' };
+      return { oui: true, detail: 'htWinner = ' + v.htWinner };
+    } },
+  { cle: 'mt_temoin', nom: 'Mi-temps · « toujours oui »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
+    verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
+];
+
 var MOTEURS_CORNERS_V7 = [
   { cle: 'corners_moteur', nom: 'Corners · moteur affiché', icone: '🚩', teinte: '#38bdf8',
     juste: 0, total: 0, note: 'estimerCornersV7 — mi-temps + doctrine Feu/Terre',
@@ -15749,6 +15829,12 @@ function renderBancPanel() {
     + ' <span style="font-weight:400; color:#64748b;">— étude du 28/08 : Mars qui naît en M12, '
     + 'la surface de réparation ; à lire avec le témoin juste en dessous</span></td></tr>'
     + (b.penaltyCamp || []).map(ligne).join('')
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">But dans les deux mi-temps'
+    + ' <span style="font-weight:400; color:#64748b;">— demande le score à la pause ET le score final ; '
+    + 'saisis « Mi-temps ex: 1-0 » dans tes thèmes sauvegardés. Attention : l\'hypothèse « M1/M7 puis R1/R7 » '
+    + 'dit OUI sur 100 % des thèmes — elle est identique au témoin constant</span></td></tr>'
+    + (b.miTemps || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
     + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
@@ -21296,6 +21382,9 @@ function renderCurrentList() {
       h += '<input type="text" placeholder="Score reel ex: 2-1" value="' + (entry.realScore || '') + '" ';
       h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:120px;" ';
       h += 'onchange="setRealScore(\'' + eid + '\', this.value)" />';
+      h += '<input type="text" placeholder="Mi-temps ex: 1-0" value="' + (entry.realHtScore || '') + '" ';
+      h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:120px;" ';
+      h += 'onchange="setRealHtScore(\'' + eid + '\', this.value)" />';
       h += '<select onchange="setRealPenalty(\'' + eid + '\', this.value)" '
         + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;">'
         + '<option value=""' + (!entry.realPenalty ? ' selected' : '') + '>Rouge/pénalty ?</option>'
@@ -21472,6 +21561,24 @@ function setRealIncidentCamp(id, value) {
 // concédé par R7 — deux incidents, deux camps opposés dans le même
 // match. Une seule case « contre qui » ne pouvait pas l'écrire, et le
 // banc aurait compté une des deux lectures comme fausse à tort.
+// ─── LE SCORE DE MI-TEMPS DEVIENT UNE DONNÉE (28/08/26, demande
+//     d'Ellemine_D : « on doit étudier but dans les deux mi-temps ») ───
+// Le fichier a un panneau « But par mi-temps », un signal htWinner et une
+// répartition des corners par mi-temps — et AUCUN moyen d'enregistrer ce
+// qui s'est réellement passé à la pause. Zéro cas sur vingt. Aucune de
+// ces lectures n'a donc jamais été confrontée à un résultat.
+// Le champ est là maintenant : « Mi-temps ex: 1-0 », au même format que
+// le score final, et le banc le rejoue.
+function setRealHtScore(id, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  var v = String(value || '').trim();
+  entry.realHtScore = /^\d{1,2}\s*-\s*\d{1,2}$/.test(v) ? v.replace(/\s+/g, '') : '';
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
+}
+
 function setRealPenaltyCamp(id, value) {
   var list = getSavedList();
   var entry = list.filter(function (e) { return e.id === id; })[0];
