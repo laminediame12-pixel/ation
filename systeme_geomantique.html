@@ -12111,8 +12111,28 @@ var OFFSETS_CAMP_V7 = [0, 10, 4, 2, 8];
 // SUR L'ARCHIVE : cinq cas à k impair, et TOUS ont k ∈ {1,3,9} — c'est-
 // à-dire que l'avantage de décalage y est TOUJOURS du côté de R1. Aucun
 // cas où R7 l'a. « Celui qui touche le plus gagne » y fait donc 2/5, et
-// cette mesure ne teste qu'une seule direction. À reprendre quand un cas
-// à k ∈ {5,7,13,15} se présentera.
+// cette mesure ne teste qu'une seule direction.
+//
+// ⭐ L'ANGLE MORT, CHIFFRÉ (28/08/26, recherche demandée par Ellemine_D).
+// Sur les 65 536 thèmes possibles, les deux sens sont EXACTEMENT
+// équilibrés : 16 384 thèmes donnent l'avantage à R1 (k ∈ {1,3,9,11}) et
+// 16 384 à R7 (k ∈ {5,7,13,15}) — 25 % du total chacun. Le décalage
+// inversé n'a donc rien de rare : c'est un thème sur quatre.
+// Que les cinq cas impairs de l'archive tombent tous du même côté a
+// (1/2)^5 = 3,1 % de chances. C'est un accident d'échantillonnage, pas
+// une propriété du système — et il rend la règle du décalage
+// INVÉRIFIABLE en l'état.
+//
+// LES THÈMES QUI TRANCHERAIENT. Sur un échantillon de 2 343 thèmes à
+// décalage inversé, le verdict affiché contredit le décalage dans 54 %
+// des cas. Exemples repérés — si l'un se présente en match réel, son
+// résultat règle la question à lui seul :
+//     Puer · Puer · Puer · Puer                    k=15  système M1
+//     Puer · Puer · Laetitia · Amissio             k=7   système M1
+//     Puer · Puer · Rubeus · Caput Draconis        k=7   système M1
+// Et pour mémoire un cas d'accord (k=13, le duel canonique inversé, où
+// R7 frappe R1 rôle pour rôle) :
+//     Laetitia · Rubeus · Puer · Albus             k=13  système M7
 function decalageCampsV7(figR1, figR7) {
   if (!figR1 || !figR7) return null;
   var i1 = FIGS_V7.indexOf(figR1), i7 = FIGS_V7.indexOf(figR7);
@@ -14572,6 +14592,30 @@ function renderF4P4Panel(theme) {
             + 'deux camps de la même boucle ne peuvent pas se toucher. C\'est pourquoi '
             + 'l\'étape 1 confie alors la décision aux antagonistes directs.</div>'
           : lignesDec(dec.liaisonsR1, '#7dd3fc', 'R1') + lignesDec(dec.liaisonsR7, '#fdba74', 'R7'))
+      // ─── LE DRAPEAU « CAS DÉCISIF » (28/08/26) ───
+      // Quand le décalage et le verdict se contredisent, ce thème-là
+      // vaut plus que les autres : son résultat réel tranche une
+      // question ouverte. On le signale pour qu'il soit saisi.
+      // La comparaison se fait avec la lecture des sièges, qui est au
+      // volant : c'est le verdict affiché sur 93 % des thèmes, et elle
+      // coûte 0,03 ms là où recalculer tout le verdict en coûterait 47.
+      + (function () {
+          if (!dec.avantage) return '';
+          var sg = null;
+          try { sg = lectureSiegesR1R7(theme); } catch (e) { return ''; }
+          if (!sg || !sg.applicable || !sg.winner) return '';
+          if (sg.winner === dec.avantage) return '';
+          return '<div style="margin-top:5px; padding:4px 7px; border-radius:6px; '
+            + 'background:rgba(250,204,21,.14); border:1px solid #facc15; '
+            + 'font-size:9.5px; color:#fde68a;">'
+            + '⚑ <b>CAS DÉCISIF</b> — le décalage donne l\'avantage à ' + esc(dec.avantage)
+            + ' et les sièges annoncent ' + esc(sg.winner) + '. '
+            + (dec.avantage === 'R7'
+                ? 'Et l\'archive n\'a AUCUN cas où le décalage favorise R7 : '
+                  + 'ce match comblerait un angle mort. '
+                : '')
+            + 'Saisis son résultat, il tranchera.</div>';
+        })()
       + '</div>';
   }
 
