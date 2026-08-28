@@ -2591,6 +2591,15 @@ function updateCombineRepos(){
   const repos = FIGS[parseInt(house)-1];
   outEl.value = FL[combine(fig, repos)] + ' (= ' + FL[fig] + ' + repos de M' + house + ' = ' + FL[repos] + ')';
 }
+// ⚠️ MODE LIVE : LES DEUX CHAMPS NE SONT LUS PAR PERSONNE (constaté le
+// 28/08/26). « Temps écoulé » et « Score actuel » s'affichent, se
+// saisissent, et aucune ligne du fichier ne les relit — ni l'analyse, ni
+// le verdict, ni la sauvegarde. Un thème tiré à la mi-temps d'un match
+// mené 1-0 est donc analysé exactement comme un thème d'avant-match.
+// Ce n'est pas corrigé ici parce qu'on ne sait pas ce que la doctrine
+// veut en faire (le score courant doit-il rendre le nul plus probable ?
+// verrouiller un camp ? ne rien changer ?) — mais c'est écrit noir sur
+// blanc pour que personne ne croie que le direct est pris en compte.
 function toggleDrawMode(){
   const mode=document.getElementById('drawMode').value;
   document.getElementById('manual-mothers').style.display=(mode==='manual'||mode==='live')?'grid':'none';
@@ -20392,7 +20401,24 @@ function renderTheme(){
         renderProtocoleVerdictPrincipal('carte-verdict-r', carteR, team1, team2, currentTheme, protocoleR1R7, structureNulTop, nulAxeTop, nulActifReseauTop);
       }
     } catch(e) { console.log('protocol display guard error', e); }
-    renderQuestionAnswers(currentQuestionContext, vfM, carteR, a.v7.htWinner);
+    // ─── CORRIGÉ LE 28/08/26 : LES RÉPONSES CONTREDISAIENT LA CARTE ───
+    // Ce bloc recevait vfM — la sortie de verdictFinal en repère M1/M7 —
+    // alors que la carte affiche carteR, le verdict de la rotation. Sur
+    // Lille/PSG, la carte annonçait « VAINQUEUR Équipe 1, 4-0 » et le bloc
+    // des questions répondait « Victoire (Paris Saint-Germain) · Lille
+    // va-t-il gagner ? Non » : deux moteurs différents dans le même écran.
+    // Les réponses suivent désormais le verdict affiché, et le nul actif
+    // du réseau est repris tel quel.
+    // carteR étiquette ses camps R1/R7 (c'est la carte de la rotation) ;
+    // le bloc des questions raisonne en M1/M7. La conversion est
+    // biunivoque dans tout le fichier — verdictFinal pose lui-même
+    // winner = winnerRotation === 'R1' ? 'M1' : 'M7'.
+    renderQuestionAnswers(currentQuestionContext,
+      { winner: nulActifReseauTop ? 'Nul'
+          : carteR && carteR.winner === 'R1' ? 'M1'
+          : carteR && carteR.winner === 'R7' ? 'M7'
+          : (carteR && carteR.winner) || null },
+      carteR, a.v7.htWinner);
     // Couche élémentaire R1/R7 : diagnostic de concordance additionnel,
     // ne remplace pas verdictFinal (couche de confirmation traçable).
     // (La couche Sikidy évoquée ici auparavant a été retirée le 20/08/26,
