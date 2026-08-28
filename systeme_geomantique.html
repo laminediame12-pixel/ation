@@ -12340,10 +12340,16 @@ function moteurF4P4V7Brut(theme) {
       avantage = R1.solidesAdverse < R7.solidesAdverse ? 'R1' : 'R7';
       critere = lecture + ' — assaillant de R1 ' + R1.solidesAdverse + ' pôles solides, '
         + 'assaillant de R7 ' + R7.solidesAdverse + ' : le plus attaqué est le plus fragile';
-    } else if (R1.frappeSomme !== R7.frappeSomme) {
-      avantage = R1.frappeSomme > R7.frappeSomme ? 'R1' : 'R7';
-      critere = lecture + ' — assaillants à égalité, départage par la FRAPPE : '
-        + R1.frappeSomme + ' contre ' + R7.frappeSomme;
+    // ─── CRITÈRE MORT, RETIRÉ LE 28/08/26 ───
+    // Il y avait ici un départage par la FRAPPE. Il n'a jamais pu se
+    // déclencher : en même boucle, les cinq rôles d'un camp et ceux de
+    // l'autre sont tous à des décalages pairs, la victime est à +3
+    // (impair), donc AUCUNE frappe n'atteint le camp d'en face — les
+    // deux frappeSomme valent 0 par construction.
+    // Mesuré avant retrait : 148 thèmes à même boucle, 0 avec une
+    // frappeSomme non nulle. La cascade affichait donc trois critères
+    // alors qu'elle n'en avait que deux, et on ne pouvait pas savoir
+    // d'où venait la décision.
     } else if (R1.solides !== R7.solides) {
       avantage = R1.solides > R7.solides ? 'R1' : 'R7';
       critere = lecture + ' — assaillants à égalité (' + R1.solidesAdverse
