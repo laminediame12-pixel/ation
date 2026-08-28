@@ -13306,11 +13306,13 @@ function renderAxesPanel(theme) {
 // et les cartes affichent la justesse MESURÉE. Toute modification de
 // doctrine est notée sur-le-champ.
 //
-// ⚠️ CE QUE LE BANC NE DIT PAS. Sept cas décisifs, c'est très peu :
-// 5/7 ne se distingue pas d'un tirage à pile ou face (p ≈ 0,23), et le
-// meilleur de huit moteurs sur sept cas est attendu haut par simple
-// sélection. Le banc sert à DÉTECTER LES RÉGRESSIONS, pas à couronner un
-// moteur.
+// ⚠️ CE QUE LE BANC NE DIT PAS. Une poignée de cas décisifs, c'est très
+// peu : à ce nombre, un moteur au-dessus de la moitié ne se distingue pas
+// d'un tirage à pile ou face, et le meilleur de neuf moteurs est attendu
+// haut par simple sélection. Le banc sert à DÉTECTER LES RÉGRESSIONS, pas
+// à couronner un moteur.
+// (Le compte exact est calculé et affiché par renderBancPanel — ne pas
+// le réécrire ici, il vieillirait comme le « sept » qu'il remplace.)
 var CAS_REFERENCE_V7 = [
   { nom: 'Juventus', meres: ['conjunctio','rubeus','cauda_draconis','acquisitio'],
     score: '6-1', camp: 'R1', btts: true },
@@ -13335,7 +13337,29 @@ var CAS_REFERENCE_V7 = [
     note: 'même rotation que Fiorentina, résultat opposé' },
   { nom: 'Torino', meres: ['via','rubeus','via','tristitia'],
     score: '0-1', camp: 'R7', btts: false,
-    note: 'casse la hiérarchie : les couches fortes disaient R1' }
+    note: 'casse la hiérarchie : les couches fortes disaient R1' },
+  // ─── AJOUTÉ LE 28/08/26, SUR DEMANDE D'ELLEMINE_D ───
+  // PSG vs Bayer 04, FC 26 — 5x5 Rush — Superligue. Réel 1-2.
+  // ⚡ FORMAT E-SPORT (rang 7) : TIER_CONFIG applique multButs 2,5 à ces
+  // formats, et le fichier note ailleurs « testé sur 6 vrais matchs,
+  // hors esport ». Le CAMP reste comparable — une victoire est une
+  // victoire — mais aucun chiffre de ce cas ne doit servir à juger le
+  // générateur de score. Marqué ⚡ dans le banc pour qu'on ne l'oublie
+  // jamais.
+  //
+  // CE QU'IL APPREND. Le vote des huit moteurs dit R1, 6 contre 2, et se
+  // trompe. Les deux minoritaires — Lecture des sièges et Majorité des
+  // axes — disent R7 et ont raison. Et les deux lectures branchées les
+  // 27 et 28/08 pointent le même camp que le réel :
+  //     dominant des corners ... M7      camp de l'incident ... M7
+  // Premier cas de l'archive où trois signaux HORS du vote de camp
+  // désignaient le bon vainqueur contre lui.
+  // C'est aussi le cas qui a révélé que le vainqueur enregistré
+  // contredisait son propre score dans 47 % des entrées.
+  { nom: 'PSG/Bayer', meres: ['caput_draconis','acquisitio','conjunctio','via'],
+    score: '1-2', camp: 'R7', btts: true, esport: true,
+    note: 'FC 26 — 5x5 Rush (e-sport, rang 7) · le vote se trompe 6-2, '
+      + 'sièges et axes ont raison, corners et incident aussi' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -14123,11 +14147,11 @@ function renderBancPanel() {
     + (b.nbSaisis
         ? ' + <b style="color:#5eead4;">' + b.nbSaisis + ' saisi'
           + (b.nbSaisis > 1 ? 's' : '') + '</b> dans tes thèmes sauvegardés'
-          + (b.nbEsport
-              ? ' <span style="color:#fbbf24;">dont ' + b.nbEsport + ' ⚡ e-sport '
-                + '(format arcade, scores hors échelle du football réel)</span>' : '')
         : ' · <span style="color:#fbbf24;">aucun match saisi pour l\'instant — '
           + 'renseigne « Score reel » dans un thème sauvegardé, il entre ici automatiquement</span>')
+    + (b.nbEsport
+        ? ' · <span style="color:#fbbf24;">' + b.nbEsport + ' ⚡ e-sport '
+          + '(format arcade — le camp compte, les chiffres non)</span>' : '')
     + '</div>'
     + '<div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:520px;">'
     + '<thead>' + entete() + '</thead><tbody>'
@@ -14176,8 +14200,18 @@ function renderBancPanel() {
     + 'moyenne d\'un match. Un moteur qui ne le bat pas ne lit rien — c\'est le rôle qu\'a joué '
     + '« BTTS toujours oui » pour les deux autres lectures. La tolérance de ±'
     + BANC_TOLERANCE_CORNERS_V7 + ' est un choix, calibré sur rien. '
-    + 'Sept cas décisifs seulement : 5/7 ne se distingue pas du hasard (p ≈ 0,23), et le meilleur de huit '
-    + 'moteurs est attendu haut par simple sélection. Ce tableau sert à VOIR UNE RÉGRESSION, pas à couronner '
+    + (function () {
+        // Compté, plus écrit en dur : la phrase disait « sept cas » alors
+        // que le banc en avait huit. Un chiffre à la main ne suit pas les
+        // données — c'est la leçon même qui a fait naître ce banc.
+        var d = b.cas.filter(function (c) { return c.camp === 'R1' || c.camp === 'R7'; }).length;
+        var e = b.cas.filter(function (c) { return c.esport; }).length;
+        return d + ' cas décisifs seulement' + (e ? ' (dont ' + e + ' e-sport)' : '')
+          + ' : à ce nombre, un moteur au-dessus de la moitié ne se distingue pas encore d\'un '
+          + 'tirage à pile ou face, et le meilleur de neuf moteurs est attendu haut par simple '
+          + 'sélection. ';
+      })()
+    + 'Ce tableau sert à VOIR UNE RÉGRESSION, pas à couronner '
     + 'un moteur. Il a été construit après en avoir manqué une : le 26/08, un changement d\'échelle dans '
     + 'forceCampV7 a fait tomber chaîne, ancrage et duel de 5/7 à 3–4/7 sans que rien ne l\'affiche.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
