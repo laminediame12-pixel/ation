@@ -13766,6 +13766,9 @@ function bancMoteursV7(force) {
     incident: passe(MOTEURS_INCIDENT_V7, 'oui', function (c) {
       return (typeof c.incident === 'boolean') ? c.incident : null;
     }),
+    incidentCamp: passe(MOTEURS_INCIDENT_CAMP_V7, 'camp', function (c) {
+      return (c.incidentCamp === 'M1' || c.incidentCamp === 'M7') ? c.incidentCamp : null;
+    }),
     corners: passeNum(MOTEURS_CORNERS_V7, function (c) {
       return (typeof c.corners === 'number') ? c.corners : null;
     }, BANC_TOLERANCE_CORNERS_V7),
@@ -14039,6 +14042,80 @@ var MOTEURS_CORNERS_V7 = [
   { cle: 'corners_temoin', nom: 'Corners · « toujours 10 »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — ne lit pas le thème, c\'est la moyenne d\'un match',
     verdict: function () { return { n: 10, detail: 'réponse constante' }; } }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// QUI ENCAISSE L'INCIDENT — étude du 28/08/26, demandée par Ellemine_D
+// « en se référant aux relations des figures des 4 pôles ».
+//
+// ─── CE QUE LA STRUCTURE INTERDIT, ET QUI ORIENTE TOUTE LA RECHERCHE ───
+// Un camp ne peut PAS produire de violence interne :
+//     un camp contient son propre agresseur ......... 0 / 16
+//     un pôle attaque un membre de son propre camp .. 0 / 80
+// La raison est la même que pour le non-contact en même boucle : les cinq
+// rôles sont à des décalages PAIRS (+0, +10, +4, +2, +8) et l'attaque est
+// à +3, impair. Un camp est donc structurellement pacifique envers
+// lui-même. La violence qu'il SUBIT ne peut venir que de deux endroits :
+// la MAISON où il siège, ou la RÉSULTANTE qu'il y engendre.
+//
+// ─── LA PISTE RETENUE : LE SIÈGE QUI ENGENDRE MARS ───
+// C'est la loi de la résultante appliquée au siège : ce que la centrale
+// PRODUIT là où elle est assise. Quand ce qu'elle engendre est Rubeus ou
+// Puer, le camp porte la violence.
+//
+// RÉGULARITÉ PARFAITE, vérifiée sur les 256 couples figure × maison :
+// CHAQUE figure engendre Rubeus dans EXACTEMENT UNE maison et Puer dans
+// EXACTEMENT UNE autre. 32 couples sur 256, soit 12,5 %.
+//     Puer M10→Rubeus, M16→Puer      · Fortuna Major M3→Rubeus, M13→Puer
+//     Carcer M1→Rubeus, M7→Puer      · Cauda Draconis M6→Rubeus, M12→Puer
+//     (table complète calculable par combine(fig, FIGS_V7[maison-1]))
+//
+// POURQUOI CELLE-CI PLUTÔT QU'UNE AUTRE. Sept candidats mesurés sur 676
+// thèmes, sur deux exigences : DÉSIGNER UN SEUL camp (sinon pas de
+// coupable) et être ÉQUILIBRÉ entre R1 et R7 (sinon c'est un biais) :
+//     le camp contient Mars ................. 52 % · 204/145  déséquilibré
+//     un pôle Mars discordant ............... 41 % · 161/115  déséquilibré
+//     le siège régénère hors réseau .......... 0 % ·   0/0    n attribue JAMAIS
+//     l assaillant est Mars ................. 19 % ·  71/59
+//     3 figures négatives ou plus ........... 19 % ·  76/52   déséquilibré
+//     ⭐ le siège régénère MARS .............. 19 % ·  63/63  PARFAIT
+//     le siège régénère Mars ET hors réseau .. 9 % ·  32/30
+// « Le siège régénère Mars » est le seul à la fois rare (il se tait sur
+// 81 % des thèmes) et rigoureusement équilibré.
+//
+// ⚠️ ET IL N'Y A QU'UN SEUL CAS RÉEL. Bologna : R1 Fortuna Major en M3
+// engendre RUBEUS, R7 Cauda Draconis en M9 engendre Albus. La règle
+// désigne R1 — et le carton rouge est tombé côté R1. Le détecteur
+// d'incident en place, lui, annonçait M7 : il s'est trompé.
+// 1 sur 1 ne démontre RIEN. La règle entre au banc pour être réfutée.
+// Elle n'entre PAS dans l'affichage tant qu'elle n'a pas dix cas.
+var MOTEURS_INCIDENT_CAMP_V7 = [
+  { cle: 'inc_camp_mars', nom: 'Camp · le siège engendre Mars', icone: '⚔', teinte: '#f472b6',
+    juste: 0, total: 0, note: 'loi de la résultante au siège — se tait sur 81 % des thèmes',
+    verdict: function (t) {
+      var rot = getRotationCombat(t);
+      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
+      var mars = function (f, h) {
+        var r = combine(f, FIGS_V7[h - 1]);
+        return FIGURES_MARS_V7[r] ? r : null;
+      };
+      var a = mars(rot.figR1, rot.hR1), b = mars(rot.figR7, rot.hR7);
+      if (a && !b) return { camp: 'M1', detail: 'R1 engendre ' + (FL[a] || a) + ' à son siège' };
+      if (b && !a) return { camp: 'M7', detail: 'R7 engendre ' + (FL[b] || b) + ' à son siège' };
+      if (a && b) return { camp: null, detail: 'les deux engendrent Mars — aucun coupable désigné' };
+      return { camp: null, detail: 'aucun siège n\'engendre Mars' };
+    } },
+  { cle: 'inc_camp_detecteur', nom: 'Camp · détecteur de signaux (affiché)', icone: '⚠', teinte: '#fb923c',
+    juste: 0, total: 0, note: 'ce que l\'application montre aujourd\'hui',
+    verdict: function (t) {
+      var orderR = getRotationOrderFromRepos(t[1]);
+      var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
+        calculerButsCamp(t[orderR[6]], t), orderR[0], orderR[6]);
+      return { camp: d.camp || null, detail: d.campResume || '' };
+    } },
+  { cle: 'inc_camp_temoin', nom: 'Camp · « toujours M1 »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
+    verdict: function () { return { camp: 'M1', detail: 'réponse constante' }; } }
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -14475,6 +14552,11 @@ function renderBancPanel() {
           + 'dans tes thèmes sauvegardés, ces trois lignes se rempliront seules</span>' : '')
     + '</td></tr>'
     + lignesInc
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Incident — qui encaisse'
+    + ' <span style="font-weight:400; color:#64748b;">— étude du 28/08 : le siège qui '
+    + 'engendre Mars ; se tait sur 81 % des thèmes</span></td></tr>'
+    + (b.incidentCamp || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
     + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
