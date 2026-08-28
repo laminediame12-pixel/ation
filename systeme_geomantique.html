@@ -12476,10 +12476,12 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
 //     écart réel = 1 but ........... 3/7   ( 43 %)
 // ⚠️ MIS À JOUR le 28/08 au soir : City/Madrid, annoncé R7 0-2 à
 // l'unanimité, réel 7-4 pour R1 — un score LARGE et un verdict FAUX. La
-// catégorie fiable ne l'est donc plus absolument. Et le découpage qui
-// sépare le mieux n'est plus la marge mais le FORMAT : hors e-sport 8/12,
-// e-sport 0/2 (PSG/Bayer et City/Madrid, les deux seuls, tous deux faux).
-// Deux cas ne prouvent rien, mais c'est la piste à surveiller.
+// catégorie fiable ne l'est donc plus absolument.
+// ⚠️ ET LA PISTE « E-SPORT » EST MORTE AUSSI VITE QU'ELLE EST NÉE : je
+// l'avais signalée le soir même (0/2, contre 8/12 hors e-sport) comme le
+// découpage le plus net. Le cas suivant, PuerCaput, est e-sport et JUSTE.
+// 1/3 : il n'y avait rien, seulement trois cas et du bruit. À
+// resurveiller vers une dizaine de cas e-sport, pas avant.
 //
 // Le constat tient. Mais il ne se transforme PAS en outil, et c'est le
 // point à retenir : l'écart réel n'est connu qu'après le match. Le seul
@@ -14004,7 +14006,15 @@ var CAS_REFERENCE_V7 = [
   //    arcade sont faux, alors que le hors-esport est à 8/12.
   { nom: 'City/Madrid', meres: ['laetitia','puella','amissio','via'],
     score: '7-4', camp: 'R1', btts: true, esport: true,
-    note: '⚡ e-sport · annoncé AVANT : R7 0-2 à l\'unanimité · réel 7-4 pour R1 — vainqueur ✘, score ✘, BTTS ✘' }
+    note: '⚡ e-sport · annoncé AVANT : R7 0-2 à l\'unanimité · réel 7-4 pour R1 — vainqueur ✘, score ✘, BTTS ✘' },
+  // ─── 28/08/26, FIFA — VAINQUEUR SEUL COMMUNIQUÉ, JUSTE ───
+  // Troisième cas e-sport de l'archive, et le premier JUSTE : il casse
+  // le « e-sport 0/2 » que je venais de signaler comme la piste la plus
+  // nette. Trois cas, un juste : il n'y a plus de motif, seulement du
+  // bruit. À resurveiller quand il y en aura une dizaine.
+  { nom: 'PuerCaput', meres: ['puer','puella','caput_draconis','puella'],
+    score: null, camp: 'R1', btts: null, esport: true,
+    note: '⚡ e-sport · vainqueur donné le 28/08, juste · score non communiqué' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
