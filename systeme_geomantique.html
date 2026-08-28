@@ -12460,6 +12460,34 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
       solidPoleV7('front du front', frontDuFrontV7(antagoniste), theme)
     ].filter(Boolean)
   } : null;
+// ═══════════════════════════════════════════════════════════════
+// CE QUE LE SYSTÈME SAIT FAIRE, ET CE QU'IL NE SAIT PAS (28/08/26)
+// Constat d'Ellemine_D : « les matchs serrés sont souvent faussés par le
+// système ; juste les matchs de score large qu'il trouve le plus
+// souvent ». Vérifié sur les cas de l'archive dont le score réel est
+// connu, verdict affiché contre vainqueur réel :
+//
+//     écart réel ≥ 2 buts .......... 4/4   (100 %)   [3/4 règle branchée]
+//     écart réel = 1 but ........... 2/6   ( 33 %)
+//
+// Le constat tient. Mais il ne se transforme PAS en outil, et c'est le
+// point à retenir : l'écart réel n'est connu qu'après le match. Le seul
+// écart disponible avant, c'est celui que le système annonce — et lui ne
+// discrimine presque rien :
+//     marge annoncée ≥ 3 buts ...... 5/8   (63 %)
+//     marge annoncée = 2 buts ...... 2/3
+//     marge annoncée ≤ 1 but ....... 0/1
+// D'autant que le système annonce presque toujours un score large : une
+// seule prédiction sur quatorze est à un but ou moins. Il ne sait donc
+// pas dire lui-même s'il est dans un cas où il est bon.
+//
+// Conclusion honnête, à ne pas maquiller : le verdict est fiable quand le
+// match se joue à deux buts ou plus — et il n'existe aujourd'hui aucun
+// moyen de savoir à l'avance que ce sera le cas. La piste utile n'est pas
+// un indice de confiance, c'est un détecteur de MATCH SERRÉ ; tant qu'il
+// n'existe pas, un verdict sur match serré vaut une pièce lancée (2/6).
+// ═══════════════════════════════════════════════════════════════
+
 // ─── L'INTERRUPTEUR DE LA RÈGLE (28/08/26) ───
 // La règle ci-dessous change le verdict affiché sur 3,8 % des thèmes et
 // COÛTE un point sur l'archive (6/10 → 5/10, seul Juventus bascule).
@@ -12467,6 +12495,11 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
 // qu'elle prédit mieux — et un cas sur dix ne tranche ni dans un sens ni
 // dans l'autre. Ce drapeau permet de revenir en arrière d'un caractère
 // et de comparer les deux lectures quand il y aura plus de résultats.
+// ⚠️ ET LE CAS QU'ELLE COÛTE EST JUSTEMENT UN SCORE LARGE : Juventus 6-1.
+// Sans la règle, le système est à 4/4 sur les matchs à deux buts d'écart
+// ou plus ; avec, il tombe à 3/4. La règle a donc entamé la SEULE
+// catégorie où le système était fiable — c'est le meilleur argument
+// contre elle à ce jour.
 // ─── RÈGLE DU 28/08/26 : UN CAMP NE COMPTE PAS SON RIVAL PARMI SES FORCES ───
 // Découverte d'Ellemine_D (les deux quatuors de front, cf.
 // contaminationCampsV7) : quand R1 et R7 sont dans la même boucle — la
