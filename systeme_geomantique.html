@@ -339,7 +339,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
     <div id="heuresPlanetairesContent" class="history-list"></div>
   </div>
 </div>
-<div class="topbar-shell"><div class="topbar"><div class="topbar-title"><h1>Système géomantique</h1><div style="display:flex; gap:10px; align-items:center;"><button id="historyBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#7c3aed;" onclick="openSavedPanel()">💾 Thèmes sauvegardés</button><button id="toggleResultantsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleResultants()">🔄 Afficher résultantes</button><button id="importImageBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#0e7490;" onclick="document.getElementById('themeImageInput').click()">📷 Importer une image</button><input type="file" id="themeImageInput" accept="image/*" style="display:none" onchange="importerThemeDepuisImage(this)" /><button id="toggleTopbarBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleTopbarContent()">Masquer</button></div></div><div id="topbarContent" class="topbar-grid"><div class="topbar-panel"><h3>Match</h3><div class="row"><div class="field"><label>Date</label><input id="matchDate" type="date" onchange="updatePlaneteJourIndicator()" /></div><div class="field" id="kickoff-time-field"><label>Heure</label><input id="matchTime" type="time" /></div><div class="field" id="live-match-fields" style="display:none; gap:10px;"><div><label>Temps écoulé (minutes)</label><input id="matchElapsedMinutes" type="number" min="0" max="130" placeholder="ex: 45" /></div><div><label>Score actuel</label><input id="matchLiveScore" type="text" placeholder="ex: 1-0" /></div></div><div class="field"><label>Fuseau horaire du match (UTC)</label><select id="matchTimezone" onchange="updatePlaneteJourIndicator()"><option value="-12">UTC-12</option><option value="-11">UTC-11</option><option value="-10">UTC-10 (Hawaï)</option><option value="-9">UTC-9 (Alaska)</option><option value="-8">UTC-8 (Los Angeles)</option><option value="-7">UTC-7 (Denver)</option><option value="-6">UTC-6 (Mexico, Chicago)</option><option value="-5">UTC-5 (New York, Bogotá)</option><option value="-4">UTC-4 (Santiago)</option><option value="-3">UTC-3 (Buenos Aires, São Paulo)</option><option value="-2">UTC-2</option><option value="-1">UTC-1</option><option value="0" selected>UTC+0 (Dakar, Londres, Accra)</option><option value="1">UTC+1 (Paris, Lagos, Alger)</option><option value="2">UTC+2 (Le Caire, Johannesburg)</option><option value="3">UTC+3 (Moscou, Nairobi, Riyad)</option><option value="4">UTC+4 (Dubaï)</option><option value="5">UTC+5</option><option value="5.5">UTC+5:30 (Inde)</option><option value="6">UTC+6</option><option value="7">UTC+7 (Bangkok)</option><option value="8">UTC+8 (Pékin, Singapour)</option><option value="9">UTC+9 (Tokyo, Séoul)</option><option value="9.5">UTC+9:30 (Adélaïde)</option><option value="10">UTC+10 (Sydney)</option><option value="11">UTC+11</option><option value="12">UTC+12 (Auckland)</option><option value="13">UTC+13</option><option value="14">UTC+14</option></select></div><div class="field"><label>Équipe 1</label><input id="team1" value="Équipe 1" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value); updateEquipe1QuestionLabel(this.value);" /></div><div class="field"><label>Équipe 2</label><input id="team2" value="Équipe 2" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value)" /></div><datalist id="team-suggestions"></datalist><div class="field"><label>Région / Pays</label><select id="competitionRegion" onchange="updateCompetitionList()"></select></div><div class="field"><label>Championnat</label><select id="competitionMode"></select></div><div class="field"><label>Lieu</label><input id="stadium" /></div><div class="field"><label>Code postal</label><input id="postalCode" /></div><div class="field"><label>Favori du match</label><select id="matchFavorite"><option value="none">Aucun favori net</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field"><label>Équipe à domicile</label><select id="matchDomicile"><option value="none">Terrain neutre / inconnu</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field" style="grid-column:1/-1;"><label>Questions à traiter <span style="color:#94a3b8; font-weight:normal;">(optionnel)</span></label><div id="userQuestionGroup" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;"><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="nul_ou_victoire" /> Nul ou victoire ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="penalty_ou_rouge" /> Il y aura-t-il penalty ou rouge ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="domicile_gagne" /> L'équipe à domicile va-t-elle gagner ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="premier_but" /> Qui va marquer en premier ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="equipe1_gagne" /> <span id="q-equipe1-label">Équipe 1</span> va-t-il gagner ce match ?</label></div><div class="hint">Aucune sélection requise — coche uniquement les questions qui t'intéressent.</div><div style="margin-top:10px;"><label for="userQuestionText">Ta question <span style="color:#94a3b8; font-weight:normal;">(texte libre, optionnel)</span></label><textarea id="userQuestionText" rows="2" placeholder="Écris ici la question précise que tu veux poser au thème…" style="width:100%; margin-top:4px; resize:vertical;"></textarea></div></div></div></div><div class="topbar-panel"><h3>Tirage des mères</h3><div class="row"><div class="field"><label>Mode de tirage</label><select id="drawMode" onchange="toggleDrawMode()"><option value="manual">Manuel</option><option value="dice">4 dés</option><option value="live">Live (match en cours)</option></select></div></div><div class="topbar-mini" id="planeteJourIndicator" style="margin-top:6px; color:#a78bfa;">🪐 Planète gouvernante du tirage : calcul en cours...</div><button class="btn-secondary" style="width:auto; padding:6px 12px; margin-top:6px; font-size:12px;" onclick="openHeuresPlanetairesPanel()">🕐 Table des 24 heures planétaires</button><div id="manual-mothers" class="row" style="margin-top:10px;"><div class="field"><label>Mère 1</label><select id="m1"></select></div><div class="field"><label>Mère 2</label><select id="m2"></select></div><div class="field"><label>Mère 3</label><select id="m3"></select></div><div class="field"><label>Mère 4</label><select id="m4"></select></div></div><div id="dice-mothers" style="display:none; margin-top:10px;"><div class="row"><button class="btn-primary" onclick="rollAllMothersFromDice()">Tirer les 4 mères</button><button class="btn-secondary" onclick="rollUntilValidDraw()" style="font-size:16px;">بسم الله</button></div><div id="dice-output" class="topbar-mini">Aucun tirage de dés pour le moment.</div></div><div style="margin-top:12px;"><h3>Actions</h3><div class="topbar-actions"><button class="btn-primary" onclick="launchTheme(false)">Lancer le thème</button><button class="btn-secondary" onclick="launchTheme(true)">Lancer aléatoire</button></div><div class="topbar-mini">Verdict fixe + verdict rotation + dualité des camps.</div></div><div style="margin-top:12px;"><h3>🔮 Consultation personnelle</h3><div class="row"><div class="field" style="grid-column:1/-1;"><label>Domaine de la question</label><select id="domainePerso"><option value="general">Vue générale (les 16 maisons)</option><optgroup label="Domaines de vie (I-XII)"><option value="1">I — La Vie (moi-même)</option><option value="2">II — La Richesse (argent)</option><option value="3">III — Les Frères (entourage)</option><option value="4">IV — Le Foyer (famille)</option><option value="5">V — Les Enfants</option><option value="6">VI — La Maladie (santé)</option><option value="7">VII — Le Mariage (union)</option><option value="8">VIII — La Mort (pertes)</option><option value="9">IX — La Religion (voyages)</option><option value="10">X — La Royauté (carrière)</option><option value="11">XI — Les Amis</option><option value="12">XII — Les Ennemis cachés</option></optgroup><optgroup label="Figures de synthèse (XIII-XVI)"><option value="13">XIII — Témoin de droite</option><option value="14">XIV — Témoin de gauche</option><option value="15">XV — Le Juge (verdict final)</option><option value="16">XVI — La Réconciliation</option></optgroup></select></div></div><div class="topbar-actions" style="margin-top:8px;"><button class="btn-secondary" onclick="lancerConsultationPersonnelle()">Interpréter avec les mères ci-dessus</button><button class="btn-secondary" id="toggleConsultationBtn" onclick="toggleConsultationOutput()" style="display:none;">👁️ Afficher l'interprétation</button></div><div class="topbar-mini">Utilise les mêmes 4 mères que le tirage, lues selon les 12 maisons classiques (indépendant du moteur football).</div></div></div></div></div></div>
+<div class="topbar-shell"><div class="topbar"><div class="topbar-title"><h1>Système géomantique</h1><div style="display:flex; gap:10px; align-items:center;"><button id="historyBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#7c3aed;" onclick="openSavedPanel()">💾 Thèmes sauvegardés</button><button id="toggleResultantsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleResultants()">🔄 Afficher résultantes</button><button id="importImageBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#0e7490;" onclick="document.getElementById('themeImageInput').click()">📷 Importer une image</button><input type="file" id="themeImageInput" accept="image/*" style="display:none" onchange="importerThemeDepuisImage(this)" /><button id="toggleTopbarBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleTopbarContent()">Masquer</button></div></div><div id="topbarContent" class="topbar-grid"><div class="topbar-panel"><h3>Match</h3><div class="row"><div class="field"><label>Date</label><input id="matchDate" type="date" onchange="updatePlaneteJourIndicator()" /></div><div class="field" id="kickoff-time-field"><label>Heure</label><input id="matchTime" type="time" /></div><div class="field" id="live-match-fields" style="display:none; gap:10px;"><div><label>Temps écoulé (minutes)</label><input id="matchElapsedMinutes" type="number" min="0" max="130" placeholder="ex: 45" /></div><div><label>Score actuel</label><input id="matchLiveScore" type="text" placeholder="ex: 1-0" /></div></div><div class="field"><label>Fuseau horaire du match (UTC)</label><select id="matchTimezone" onchange="updatePlaneteJourIndicator()"><option value="-12">UTC-12</option><option value="-11">UTC-11</option><option value="-10">UTC-10 (Hawaï)</option><option value="-9">UTC-9 (Alaska)</option><option value="-8">UTC-8 (Los Angeles)</option><option value="-7">UTC-7 (Denver)</option><option value="-6">UTC-6 (Mexico, Chicago)</option><option value="-5">UTC-5 (New York, Bogotá)</option><option value="-4">UTC-4 (Santiago)</option><option value="-3">UTC-3 (Buenos Aires, São Paulo)</option><option value="-2">UTC-2</option><option value="-1">UTC-1</option><option value="0" selected>UTC+0 (Dakar, Londres, Accra)</option><option value="1">UTC+1 (Paris, Lagos, Alger)</option><option value="2">UTC+2 (Le Caire, Johannesburg)</option><option value="3">UTC+3 (Moscou, Nairobi, Riyad)</option><option value="4">UTC+4 (Dubaï)</option><option value="5">UTC+5</option><option value="5.5">UTC+5:30 (Inde)</option><option value="6">UTC+6</option><option value="7">UTC+7 (Bangkok)</option><option value="8">UTC+8 (Pékin, Singapour)</option><option value="9">UTC+9 (Tokyo, Séoul)</option><option value="9.5">UTC+9:30 (Adélaïde)</option><option value="10">UTC+10 (Sydney)</option><option value="11">UTC+11</option><option value="12">UTC+12 (Auckland)</option><option value="13">UTC+13</option><option value="14">UTC+14</option></select></div><div class="field"><label>Équipe 1</label><input id="team1" value="Équipe 1" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value); updateEquipe1QuestionLabel(this.value);" /></div><div class="field"><label>Équipe 2</label><input id="team2" value="Équipe 2" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value)" /></div><datalist id="team-suggestions"></datalist><div class="field"><label>Région / Pays</label><select id="competitionRegion" onchange="updateCompetitionList()"></select></div><div class="field"><label>Championnat</label><select id="competitionMode"></select></div><div class="field"><label>Lieu</label><input id="stadium" /></div><div class="field"><label>Code postal</label><input id="postalCode" /></div><div class="field"><label>Favori du match</label><select id="matchFavorite"><option value="none">Aucun favori net</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field"><label>Équipe à domicile</label><select id="matchDomicile"><option value="none">Terrain neutre / inconnu</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field" style="grid-column:1/-1;"><label>Questions à traiter <span style="color:#94a3b8; font-weight:normal;">(optionnel)</span></label><div id="userQuestionGroup" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;"><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="nul_ou_victoire" /> Nul ou victoire ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="penalty_ou_rouge" /> Il y aura-t-il penalty ou rouge ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="domicile_gagne" /> L'équipe à domicile va-t-elle gagner ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="premier_but" /> Qui va marquer en premier ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="equipe1_gagne" /> <span id="q-equipe1-label">Équipe 1</span> va-t-il gagner ce match ?</label></div><div class="hint">Aucune sélection requise — coche uniquement les questions qui t'intéressent.</div><div style="margin-top:10px;"><label for="userQuestionText">Ta question <span style="color:#94a3b8; font-weight:normal;">(texte libre, optionnel)</span></label><textarea id="userQuestionText" rows="2" placeholder="Écris ici la question précise que tu veux poser au thème…" style="width:100%; margin-top:4px; resize:vertical;"></textarea></div></div></div></div><div class="topbar-panel"><h3>Tirage des mères</h3><div class="row"><div class="field"><label>Mode de tirage</label><select id="drawMode" onchange="toggleDrawMode()"><option value="manual">Manuel</option><option value="dice">4 dés</option><option value="live">Live (match en cours)</option></select></div></div><div class="topbar-mini" id="planeteJourIndicator" style="margin-top:6px; color:#a78bfa;">🪐 Planète gouvernante du tirage : calcul en cours...</div><button class="btn-secondary" style="width:auto; padding:6px 12px; margin-top:6px; font-size:12px;" onclick="openHeuresPlanetairesPanel()">🕐 Table des 24 heures planétaires</button><div id="manual-mothers" class="row" style="margin-top:10px;"><div class="field"><label>Mère 1</label><select id="m1"></select></div><div class="field"><label>Mère 2</label><select id="m2"></select></div><div class="field"><label>Mère 3</label><select id="m3"></select></div><div class="field"><label>Mère 4</label><select id="m4"></select></div></div><div id="dice-mothers" style="display:none; margin-top:10px;"><div class="row"><button class="btn-primary" onclick="rollAllMothersFromDice()">Tirer les 4 mères</button><button class="btn-secondary" onclick="rollUntilValidDraw()" style="font-size:16px;">بسم الله</button><button class="btn-secondary" onclick="rollUntilValid100Draw()" style="font-size:13px;">🎯 100 % valide</button></div><div id="dice-output" class="topbar-mini">Aucun tirage de dés pour le moment.</div></div><div style="margin-top:12px;"><h3>Actions</h3><div class="topbar-actions"><button class="btn-primary" onclick="launchTheme(false)">Lancer le thème</button><button class="btn-secondary" onclick="launchTheme(true)">Lancer aléatoire</button></div><div class="topbar-mini">Verdict fixe + verdict rotation + dualité des camps.</div></div><div style="margin-top:12px;"><h3>🔮 Consultation personnelle</h3><div class="row"><div class="field" style="grid-column:1/-1;"><label>Domaine de la question</label><select id="domainePerso"><option value="general">Vue générale (les 16 maisons)</option><optgroup label="Domaines de vie (I-XII)"><option value="1">I — La Vie (moi-même)</option><option value="2">II — La Richesse (argent)</option><option value="3">III — Les Frères (entourage)</option><option value="4">IV — Le Foyer (famille)</option><option value="5">V — Les Enfants</option><option value="6">VI — La Maladie (santé)</option><option value="7">VII — Le Mariage (union)</option><option value="8">VIII — La Mort (pertes)</option><option value="9">IX — La Religion (voyages)</option><option value="10">X — La Royauté (carrière)</option><option value="11">XI — Les Amis</option><option value="12">XII — Les Ennemis cachés</option></optgroup><optgroup label="Figures de synthèse (XIII-XVI)"><option value="13">XIII — Témoin de droite</option><option value="14">XIV — Témoin de gauche</option><option value="15">XV — Le Juge (verdict final)</option><option value="16">XVI — La Réconciliation</option></optgroup></select></div></div><div class="topbar-actions" style="margin-top:8px;"><button class="btn-secondary" onclick="lancerConsultationPersonnelle()">Interpréter avec les mères ci-dessus</button><button class="btn-secondary" id="toggleConsultationBtn" onclick="toggleConsultationOutput()" style="display:none;">👁️ Afficher l'interprétation</button></div><div class="topbar-mini">Utilise les mêmes 4 mères que le tirage, lues selon les 12 maisons classiques (indépendant du moteur football).</div></div></div></div></div></div>
 
 <div id="consultation-perso-output" style="display:none;"></div>
 
@@ -6121,6 +6121,27 @@ function toggleValiditePanel() {
       + (invalide ? 'background:#7f1d1d; color:#fecaca;' : 'background:#166534; color:#bbf7d0;') + '">'
       + (invalide ? '⛔ THÈME INVALIDE' : '✅ THÈME VALIDE') + '</div>';
 
+    // ─── VALIDITÉ À 100 % (28/08/26) : les trois thèmes dérivés aussi ───
+    var nv = null;
+    try { nv = niveauValiditeV7(theme); } catch (e) { nv = null; }
+    if (nv && nv.applicable) {
+      var couleurNv = nv.complet ? '#4ade80' : nv.niveau >= 2 ? '#fbbf24' : '#94a3b8';
+      html += '<div style="border:1px solid ' + couleurNv + '; border-radius:10px; padding:10px 14px; margin-bottom:14px;">'
+        + '<div style="display:flex; justify-content:space-between; align-items:center;">'
+        + '<b style="font-size:13px;">🎯 Validité à 100 % — les trois thèmes dérivés aussi</b>'
+        + '<span style="background:' + couleurNv + '33; color:' + couleurNv + '; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">'
+        + (nv.complet ? '3/3 + figure du jour' : nv.resume) + '</span></div>'
+        + '<div style="font-size:11px; margin-top:6px; color:#cbd5e1;">'
+        + 'base : axes ' + (nv.base.axes.ok ? '✓' : '✗') + ' · binôme de M1 ' + (nv.base.binome.ok ? '✓' : '✗')
+        + ' (' + (FL[nv.base.binome.fig] || '') + ')<br>'
+        + nv.derives.map(function (d) {
+            return d.nom + ' : axes ' + (d.axes.ok ? '✓' : '✗') + ' · binôme ' + (d.binome.ok ? '✓' : '✗');
+          }).join('<br>')
+        + '<br>figure du jour ' + (FL[nv.fdj] || nv.fdj) + ' ' + (nv.fdjOk ? '✓ présente' : '✗ absente')
+        + '</div>'
+        + '<div class="muted" style="font-size:11px; margin-top:6px;">📚 Test du 28/08 (Ellemine_D) : un thème 100 % valide est atteignable — 14,5 % des thèmes au niveau 3, ≈ 13 % avec la figure du jour, soit un tirage sur huit (bouton « 🎯 100 % valide »). Mais l\'accord des moteurs NE monte pas avec le niveau (72,8 / 73,7 / 70,0 / 73,0 % du niveau 0 au niveau 3) et la marge de F4P4 est plus faible au niveau 3 qu\'au niveau 1. Dans l\'archive, les trois cas les mieux validés sont trois des quatre verdicts faux. Aucun poids sur le verdict.</div>'
+        + '</div>';
+    }
     html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:14px;">';
     html += condCard('Axe Cardinal (angulaire)', 'M1 + M4 + M7 + M10', axeC, posAxeC);
     html += condCard('Axe Succédent', 'M2 + M5 + M8 + M11', axeS, posAxeS);
@@ -18786,6 +18807,106 @@ function countAxesEtJourPresents(theme){
   const count = [presentC, presentT, presentJ].filter(Boolean).length;
   return {axeC, axeT, fdj, presentC, presentT, presentJ, count};
 }
+// ═══════════════════════════════════════════════════════════════
+// VALIDITÉ À 100 % (28/08/26, test demandé par Ellemine_D)
+//
+// Son idée : « on fait les 3 thèmes des axes soient tous aussi valides,
+// c'est-à-dire qu'ils respectent les conditions de validité (binôme, les
+// 3 axes présents, figure du jour), pour que le thème soit à 100 % valide
+// et qu'on ne puisse pas douter du verdict ». Le point de départ était
+// que sur un match serré les moteurs ont du mal à trancher.
+//
+// Quatre niveaux, du plus lâche au plus strict :
+//   0 — le thème de base est INVALIDE (un de ses 3 axes est absent) ;
+//   1 — base valide (les 3 axes présents en base ou en résultante) ;
+//   2 — + les trois thèmes dérivés (angulaire, succédent, cadent) sont
+//       chacun valides par le même critère ;
+//   3 — + le binôme de M1 est présent dans les QUATRE thèmes ;
+//   et par-dessus, la figure du jour présente dans le thème de base.
+//
+// ⚠️ CE QUE ÇA DONNE, MESURÉ — ET ÇA NE VA PAS DANS LE SENS ESPÉRÉ.
+// Fréquence, sur les 65 536 thèmes possibles (exhaustif) :
+//     niveau 1 ... 47 491 (72,5 %)   niveau 2 ... 16 989 (25,9 %)
+//     niveau 3 ....9 507 (14,5 %)    niveau 3 + figure du jour ≈ 13 %
+// Le tirage est donc atteignable : environ un thème sur huit.
+// Mais l'accord des moteurs NE MONTE PAS avec le niveau (échantillon de
+// 676 thèmes) :
+//     niveau 0 : 72,8 % d'accord moyen, 8,6 % de votes unanimes
+//     niveau 1 : 73,7 %                 7,3 %
+//     niveau 2 : 70,0 %                 3,5 %
+//     niveau 3 : 73,0 %                 5,6 %
+// Et la marge de F4P4 (écart d'ancrage entre R1 et R7) est plus FAIBLE
+// au niveau 3 (23,04) qu'au niveau 1 (25,42). Un thème 100 % valide
+// n'est donc pas un thème où le verdict est plus net.
+// Enfin, dans l'archive : les trois cas les mieux validés — Inter et
+// Napoli (niveau 3), PSG/Bayer (niveau 2) — sont exactement TROIS DES
+// QUATRE CAS OÙ LE VERDICT S'EST TROMPÉ, alors que les cas de niveau 0
+// et 1 sont justes 6 fois sur 7. Dix cas, ça ne démontre rien, mais ça
+// pointe dans le sens inverse de l'hypothèse.
+// La fonction et le bouton existent pour que le test puisse continuer
+// avec de vrais matchs — pas parce que la validité renforcerait le
+// verdict. Aucun poids sur le verdict, aucun filtre imposé.
+function niveauValiditeV7(theme) {
+  if (!theme || !theme[1]) return { niveau: 0, applicable: false };
+  var present = function (f, t) { return positionsBaseEtResultantes(f, t).length > 0; };
+  var axes = function (t) {
+    var a = combineMany([t[1], t[4], t[7], t[10]]);
+    var b = combineMany([t[2], t[5], t[8], t[11]]);
+    var c = combineMany([t[3], t[6], t[9], t[12]]);
+    return { cardinal: { fig: a, ok: present(a, t) }, succedent: { fig: b, ok: present(b, t) },
+      cadent: { fig: c, ok: present(c, t) }, ok: present(a, t) && present(b, t) && present(c, t) };
+  };
+  var binome = function (t) { var b = BINOMES_V7[t[1]]; return { fig: b, ok: present(b, t) }; };
+  var base = { nom: 'thème de base', axes: axes(theme), binome: binome(theme) };
+  var derives = [['angulaire', 'Axe Cardinal'], ['succedent', 'Axe Succédent'], ['cadent', 'Axe Cadent']]
+    .map(function (d) {
+      var t = null;
+      try { t = getAxisThemeFromBase(theme, d[0]); } catch (e) { t = null; }
+      if (!t) return { nom: d[1], absent: true, axes: { ok: false }, binome: { ok: false } };
+      return { nom: d[1], cle: d[0], axes: axes(t), binome: binome(t) };
+    });
+  var fdj = figureDuJour();
+  var fdjOk = present(fdj, theme);
+  var niveau = 0;
+  if (base.axes.ok) {
+    niveau = 1;
+    if (derives.every(function (d) { return d.axes.ok; })) {
+      niveau = 2;
+      if (base.binome.ok && derives.every(function (d) { return d.binome.ok; })) niveau = 3;
+    }
+  }
+  return { applicable: true, niveau: niveau, base: base, derives: derives,
+    fdj: fdj, fdjOk: fdjOk, complet: niveau === 3 && fdjOk,
+    resume: 'niveau ' + niveau + '/3' + (fdjOk ? ' + figure du jour ✓' : ' · figure du jour absente')
+  };
+}
+
+// Tirage aux dés jusqu'à un thème 100 % valide (niveau 3 + figure du
+// jour). Environ un thème sur huit remplit la condition : 200 essais
+// suffisent en pratique. Si la boucle échoue, le dernier tirage reste —
+// on ne force rien, on annonce ce qu'on a obtenu.
+function rollUntilValid100Draw(){
+  var essais = 0, v = null;
+  do {
+    rollAllMothersFromDice();
+    essais += 1;
+    v = currentTheme ? niveauValiditeV7(currentTheme) : null;
+  } while (essais < 200 && !(v && v.complet && currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid));
+  var out = document.getElementById('dice-output');
+  if (!out || !v) return;
+  var lignes = ['<b>Tirage 100 % valide</b> — ' + essais + ' essai(s) → '
+    + (v.complet ? '<span style="color:#4ade80;">niveau 3/3 + figure du jour ✓</span>'
+                 : '<span style="color:#fbbf24;">non atteint, ' + v.resume + '</span>')];
+  lignes.push('base : axes ' + (v.base.axes.ok ? '✓' : '✗') + ' · binôme de M1 '
+    + (v.base.binome.ok ? '✓' : '✗') + ' (' + (FL[v.base.binome.fig] || '') + ')');
+  v.derives.forEach(function (d) {
+    lignes.push(d.nom + ' : axes ' + (d.axes.ok ? '✓' : '✗') + ' · binôme '
+      + (d.binome.ok ? '✓' : '✗'));
+  });
+  lignes.push('figure du jour ' + (FL[v.fdj] || v.fdj) + ' ' + (v.fdjOk ? '✓ présente' : '✗ absente'));
+  out.innerHTML += '<div class="kv" style="font-size:11px; line-height:1.5;">' + lignes.join('<br>') + '</div>';
+}
+
 function rollUntilValidDraw(){
   let attempts=0;
   let resonance;
