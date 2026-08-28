@@ -2746,6 +2746,12 @@ function toggleAutoTestXOR() {
     if (!tt.ok) {
       tt.mismatches.forEach(function(m) { html += '<div class="kv" style="font-size:11px; color:#f87171;">' + m + '</div>'; });
     }
+    var lm = autoTestLoiMaisonV7();
+    html += '<div class="kv" style="margin-top:8px; font-size:12px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>🏠 Loi de la résultante au siège (table Ellemine du 28/08) :</b> ' + (lm.ok ? '<span class="good">✅ les 6 lois tiennent sur les ' + lm.total + ' couples figure × maison</span>' : '<span class="bad">❌ ' + lm.fautes.length + ' loi(s) violée(s)</span>') + '</div>';
+    lm.lois.forEach(function(l) {
+      html += '<div class="kv" style="font-size:11px; color:' + (l.ok === lm.total ? '#4ade80' : '#f87171') + ';">' + l.nom + ' — ' + l.ok + '/' + lm.total + '</div>';
+    });
+    html += '<div class="muted" style="font-size:11px; margin-top:4px;">Maison paire : la résultante reste dans la boucle (terre → front/identité, air → binôme/bouclier). Maison impaire : elle vient d\'en face. L\'agresseur (±3) n\'est engendré que par M1, M3, M5, M11, M13 — jamais par une maison air ou terre.</div>';
     panel.innerHTML = html;
     panel.style.display = 'block';
     try { renderBouclesAntagonistesR1R7Panel(currentTheme || null); } catch(e) {}
@@ -7627,6 +7633,91 @@ function autoTestTablesLegacyVsV7() {
 (function() {
   var t = autoTestTablesLegacyVsV7();
   if (!t.ok) { console.warn('⚠️ Tables legacy/V7 désynchronisées :', t.mismatches); }
+})();
+
+
+// ═══════════════════════════════════════════════════════════════
+// LOI DE LA RÉSULTANTE AU SIÈGE (28/08/26) — table d'Ellemine_D,
+// vérifiée sur les 256 couples figure × maison, sans exception.
+//
+// ÉNONCÉ DE L'UTILISATEUR (M12) : « toute figure qui s'y trouve
+// cohabite avec sa figure de front — Puer en M12 résulte Cauda,
+// Puella en M12 résulte Laetitia ». VÉRIFIÉ 16/16 : en M12, la
+// résultante combine(X, siège de M12) est TOUJOURS à ±4 de X, donc
+// dans son quatuor de front. Huit figures donnent front(X), huit
+// donnent front⁻¹(X) — ce n'est pas une exception mais la même
+// relation lue dans l'autre sens : combine est une involution
+// (combine(combine(X,S),S) = X, 256/256), donc la maison APPARIE les
+// figures deux à deux ; dire « X donne son front » ou « X est le
+// front de sa résultante » décrit le même couple.
+// M4 fait exactement la même chose que M12 (même jeu de décalages) :
+// la propriété n'appartient pas à M12, elle appartient à son ÉLÉMENT.
+//
+// ÉNONCÉ DE L'UTILISATEUR (M6) : les seize figures rangées en quatre
+// familles, chacune donnant « son Binôme » ou « son Protecteur contre
+// Ant ». VÉRIFIÉ : les seize RÉSULTANTES annoncées sont exactes,
+// 16/16. Les quatre familles « Maison Feu / Air / Eau / Terre » ne
+// sont pas ELEMENTS_V7 (4/16 seulement) mais l'élément de la MAISON
+// DE REPOS de chaque figure (16/16) — les quatuors d'index ≡ 0,1,2,3
+// mod 4, c'est-à-dire les quatuors de front.
+//
+// LA LOI GÉNÉRALE QUI CONTIENT LES DEUX :
+//   1. parité — maison PAIRE ⇒ décalage PAIR, maison IMPAIRE ⇒
+//      décalage IMPAIR (256/256). Donc en maison paire X et sa
+//      résultante restent dans la même boucle et l'un est dans le
+//      camp de l'autre (256/256) ; en maison impaire la résultante
+//      vient toujours d'en face.
+//   2. élément de la maison — TERRE ⇒ décalage ≡ 0 mod 4 (identité,
+//      front, front du front : M16 rend X, M8 donne toujours le front
+//      du front, M4 et M12 le front) ; AIR ⇒ décalage ≡ 2 mod 4
+//      (binôme ou bouclier : M2 binôme, M10 bouclier, M6 et M14 les
+//      deux) ; FEU et EAU ⇒ décalage impair. 256/256.
+//   3. période 8 — X et son front du front réagissent à l'identique
+//      dans TOUTE maison (256/256), conséquence de X ⊕ Tristitia =
+//      front du front(X).
+//
+// CONSÉQUENCE POUR LES INCIDENTS : la résultante d'une figure à son
+// siège n'est son AGRESSEUR ou sa VICTIME (±3) que dans cinq maisons,
+// toutes feu ou eau — M1, M3, M11 (8 figures sur 16) et M5, M13
+// (4/16). Aucune maison AIR ni TERRE n'en produit : 0/128. M6, M8 et
+// M12 sont donc structurellement incapables d'engendrer une agression
+// par résultante ; si elles pèsent sur un incident, c'est par
+// cohabitation/discordance d'élément, pas par ce qu'elles engendrent.
+// ═══════════════════════════════════════════════════════════════
+function autoTestLoiMaisonV7() {
+  var idx = {};
+  FIGS_V7.forEach(function(f, i) { idx[f] = i; });
+  var lois = [
+    { nom: 'parité maison ↔ parité du décalage', ok: 0 },
+    { nom: 'terre ≡0 mod 4, air ≡2 mod 4, feu/eau impair', ok: 0 },
+    { nom: 'X et son front du front réagissent pareil', ok: 0 },
+    { nom: 'maison paire ⟺ même boucle', ok: 0 },
+    { nom: 'maison paire ⟺ l\'un est dans le camp de l\'autre', ok: 0 },
+    { nom: 'involution : la maison rend X', ok: 0 }
+  ];
+  var total = 0;
+  for (var h = 1; h <= 16; h++) {
+    var siege = FIGS_V7[h - 1], pair = (h % 2 === 0), elem = MAISON_ELEM_V7[h];
+    for (var i = 0; i < 16; i++) {
+      total++;
+      var f = FIGS_V7[i], r = combine(f, siege);
+      var k = ((idx[r] - i) % 16 + 16) % 16;
+      if (pair === (k % 2 === 0)) lois[0].ok++;
+      if (elem === 'terre' ? k % 4 === 0 : elem === 'air' ? k % 4 === 2 : k % 2 === 1) lois[1].ok++;
+      var f8 = FIGS_V7[(i + 8) % 16];
+      if (((idx[combine(f8, siege)] - (i + 8)) % 16 + 16) % 16 === k) lois[2].ok++;
+      if (pair === ((i % 2) === (idx[r] % 2))) lois[3].ok++;
+      var lie = campDeV7(f).indexOf(r) >= 0 || campDeV7(r).indexOf(f) >= 0;
+      if (pair === lie) lois[4].ok++;
+      if (combine(r, siege) === f) lois[5].ok++;
+    }
+  }
+  var fautes = lois.filter(function(l) { return l.ok !== total; });
+  return { ok: fautes.length === 0, total: total, lois: lois, fautes: fautes };
+}
+(function() {
+  var t = autoTestLoiMaisonV7();
+  if (!t.ok) { console.warn('⚠️ Loi de la résultante au siège violée :', t.fautes); }
 })();
 
 
@@ -14106,6 +14197,29 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
       if (b && !a) return { camp: 'M7', detail: 'R7 engendre ' + (FL[b] || b) + ' à son siège' };
       if (a && b) return { camp: null, detail: 'les deux engendrent Mars — aucun coupable désigné' };
       return { camp: null, detail: 'aucun siège n\'engendre Mars' };
+    } },
+  // Raffinement du 28/08/26, issu de la loi de la résultante au siège
+  // (cf. autoTestLoiMaisonV7) : en maison PAIRE la résultante reste dans
+  // le camp — le Mars engendré est un allié ; en maison IMPAIRE elle
+  // vient d'en face. Ne retenir que le second cas divise par deux la
+  // fréquence du critère (≈ 9 % des thèmes au lieu de 19 %) sans casser
+  // son équilibre R1/R7, et il désigne toujours R1 sur Bologna — le seul
+  // cas réel connu. Au banc uniquement, comme le précédent.
+  { cle: 'inc_camp_mars_hors', nom: 'Camp · le siège engendre Mars d\'en face', icone: '⚔', teinte: '#fb7185',
+    juste: 0, total: 0, note: 'idem, restreint aux maisons impaires — se tait sur ≈ 91 % des thèmes',
+    verdict: function (t) {
+      var rot = getRotationCombat(t);
+      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
+      var mars = function (f, h) {
+        if (!f || !h || h % 2 === 0) return null;
+        var r = combine(f, FIGS_V7[h - 1]);
+        return FIGURES_MARS_V7[r] ? r : null;
+      };
+      var a = mars(rot.figR1, rot.hR1), b = mars(rot.figR7, rot.hR7);
+      if (a && !b) return { camp: 'M1', detail: 'R1 engendre ' + (FL[a] || a) + ' en M' + rot.hR1 + ' (impaire — hors camp)' };
+      if (b && !a) return { camp: 'M7', detail: 'R7 engendre ' + (FL[b] || b) + ' en M' + rot.hR7 + ' (impaire — hors camp)' };
+      if (a && b) return { camp: null, detail: 'les deux engendrent Mars hors camp' };
+      return { camp: null, detail: 'aucun siège n\'engendre Mars depuis une maison impaire' };
     } },
   { cle: 'inc_camp_detecteur', nom: 'Camp · détecteur de signaux (affiché)', icone: '⚠', teinte: '#fb923c',
     juste: 0, total: 0, note: 'ce que l\'application montre aujourd\'hui',
