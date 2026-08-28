@@ -147,7 +147,10 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 
 
 
-.history-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; }
+/* z-index porté de 1000 à 10000 le 28/08/26 : la barre du haut est à
+   9999, elle recouvrait donc le panneau des thèmes sauvegardés — le
+   panneau s'ouvrait DERRIÈRE elle. Constaté à la capture. */
+.history-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; }
 .history-overlay.open { display: flex; }
 .history-panel { background: #0f172a; border: 1px solid #334155; border-radius: 14px; width: 100%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; }
 .history-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #334155; gap:8px; }
@@ -168,7 +171,8 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 .history-item-result { font-size: 12px; color: #94a3b8; display: flex; gap: 10px; align-items: center; margin-top: 6px; }
 .history-item-score { font-weight: 700; color: #4ade80; }
 .history-empty { text-align: center; color: #64748b; padding: 40px 20px; }
-.history-delete-btn { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer; }
+.history-delete-btn { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 3px 9px; font-size: 10.5px; cursor: pointer; width: auto; flex: 0 0 auto; margin-left: auto; font-weight: 600; line-height: 1.5; }
+.history-delete-btn:hover { background: rgba(239,68,68,0.28); color: #fecaca; }
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
@@ -17138,6 +17142,12 @@ function getVerdictAfficheReel(theme, favorite) {
       hasRed: !!carteR.penaltyRouge && carteR.incidentPctRouge > 0
     },
     incidentPct: carteR.incidentPct, incidentNiveau: carteR.incidentNiveau,
+    incidentCamp: carteR.incidentCamp || null,
+    // Le total de corners annoncé — exposé le 27/08/26 pour pouvoir le
+    // confronter au nombre réel saisi dans les thèmes sauvegardés.
+    cornersTotal: (carteR.corners && carteR.corners.total != null && carteR.corners.total !== '—')
+      ? Number(carteR.corners.total) : null,
+    corners: carteR.corners || null,
     corrected: carteR.corrected, nulActif: nulActif
   };
 }
@@ -19142,6 +19152,24 @@ function renderCurrentList() {
         + '<option value="yes"' + (entry.realPenalty === 'yes' ? ' selected' : '') + '>Oui</option>'
         + '<option value="no"' + (entry.realPenalty === 'no' ? ' selected' : '') + '>Non</option>'
         + '</select>';
+      h += '<input type="number" min="0" max="30" step="1" placeholder="Corners réels" value="' + (entry.realCorners || '') + '" ';
+      h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:110px;" ';
+      h += 'onchange="setRealCorners(\'' + eid + '\', this.value)" />';
+      if (entry.realCorners) {
+        var cornPred = null;
+        try {
+          var tc = {}; for (var pc = 1; pc <= 16; pc++) tc[pc] = entry.theme[pc] || entry.theme[String(pc)];
+          var vc = getVerdictAfficheReel(tc);
+          cornPred = vc && vc.cornersTotal != null ? vc.cornersTotal : null;
+        } catch (e) { cornPred = null; }
+        if (cornPred != null) {
+          var ecartC = Math.abs(cornPred - parseInt(entry.realCorners, 10));
+          var cc = ecartC <= 2 ? '#22c55e' : ecartC <= 4 ? '#f59e0b' : '#ef4444';
+          h += '<span style="background:' + cc + '22;color:' + cc + ';border:1px solid ' + cc
+            + ';border-radius:6px;padding:3px 8px;font-size:11px;font-weight:bold;">corners prédits '
+            + cornPred + ' · écart ' + ecartC + '</span>';
+        }
+      }
       if (entry.realScore) {
         var badgeColor = coh.level === 'high' ? '#22c55e' : coh.level === 'mid' ? '#f59e0b' : '#ef4444';
         h += '<span style="background:' + badgeColor + '22;color:' + badgeColor + ';border:1px solid ' + badgeColor + ';border-radius:6px;padding:3px 8px;font-size:11px;font-weight:bold;">' + coh.label + '</span>';
@@ -19187,6 +19215,18 @@ function evalCoherence(entry) {
 // n'ont jamais été confrontées à un seul résultat.
 // Il est désormais stocké sur l'entrée, exactement comme le score, et le
 // banc le rejoue.
+// Le nombre de corners réel — même logique que le score et la pénalité :
+// la carte annonce déjà un total de corners, il n'était comparé à rien.
+function setRealCorners(id, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  var v = String(value == null ? '' : value).trim();
+  entry.realCorners = /^\d{1,2}$/.test(v) ? v : '';
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
+}
+
 function setRealPenalty(id, value) {
   var list = getSavedList();
   var entry = list.filter(function (e) { return e.id === id; })[0];
