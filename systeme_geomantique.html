@@ -13372,6 +13372,17 @@ function casSauvegardesV7() {
     var nom = (e.team1 || '') && (e.team2 || '')
       ? String(e.team1).slice(0, 6) + '/' + String(e.team2).slice(0, 6)
       : (e.matchDate || 'saisi');
+    // ─── E-SPORT SIGNALÉ, PAS MÉLANGÉ EN SILENCE (28/08/26) ───
+    // Les compétitions de rang 6-7 sont des formats arcade (FC 26 Rush,
+    // 3x3, 4x4) : TIER_CONFIG leur applique multButs 2,5 et le fichier
+    // note ailleurs « testé sur 6 vrais matchs, hors esport — les scores
+    // esport… ». Les faire entrer au banc sans le dire fausserait surtout
+    // les familles chiffrées (score, corners).
+    // Ils sont donc COMPTÉS — un camp reste un camp — mais MARQUÉS, et le
+    // banc annonce combien il en contient.
+    var tier = 1;
+    try { tier = (COMPETITION_INDEX[e.competition] || {}).tier || 1; } catch (x) { tier = 1; }
+    var estEsport = tier >= 6;
     out.push({
       nom: nom, meres: meres, score: g1 + '-' + g7,
       camp: g1 > g7 ? 'R1' : g7 > g1 ? 'R7' : 'nul',
@@ -13385,7 +13396,9 @@ function casSauvegardesV7() {
         if (isNaN(a) || isNaN(b) || a === b) return null;
         return a > b ? 'R1' : 'R7';
       })(),
-      saisi: true, note: 'saisi dans les thèmes sauvegardés'
+      saisi: true, esport: estEsport, tier: tier,
+      note: 'saisi dans les thèmes sauvegardés'
+        + (estEsport ? ' · FORMAT E-SPORT (scores hors échelle du football réel)' : '')
     });
   });
   return out;
@@ -13506,7 +13519,8 @@ function bancMoteursV7(force) {
     }),
     cas: CAS,
     nbArchive: CAS_REFERENCE_V7.length,
-    nbSaisis: CAS.length - CAS_REFERENCE_V7.length
+    nbSaisis: CAS.length - CAS_REFERENCE_V7.length,
+    nbEsport: CAS.filter(function (c) { return c.esport; }).length
   };
   return _bancCacheV7;
 }
@@ -14037,8 +14051,8 @@ function renderBancPanel() {
       + b.cas.map(function (c) {
           return '<th style="padding:4px 3px; font-size:9px; color:#94a3b8; white-space:nowrap;" title="'
             + c.nom + (c.score ? ' — ' + c.score : '') + (c.note ? ' · ' + c.note : '') + '">'
-            + '<span style="color:' + (c.saisi ? '#5eead4' : '#94a3b8') + ';">'
-            + c.nom.slice(0, 5) + '</span></th>';
+            + '<span style="color:' + (c.esport ? '#fbbf24' : c.saisi ? '#5eead4' : '#94a3b8') + ';">'
+            + c.nom.slice(0, 5) + (c.esport ? ' ⚡' : '') + '</span></th>';
         }).join('')
       + '<th style="padding:4px 6px; font-size:10px; color:#94a3b8;">score</th></tr>';
   }
@@ -14109,6 +14123,9 @@ function renderBancPanel() {
     + (b.nbSaisis
         ? ' + <b style="color:#5eead4;">' + b.nbSaisis + ' saisi'
           + (b.nbSaisis > 1 ? 's' : '') + '</b> dans tes thèmes sauvegardés'
+          + (b.nbEsport
+              ? ' <span style="color:#fbbf24;">dont ' + b.nbEsport + ' ⚡ e-sport '
+                + '(format arcade, scores hors échelle du football réel)</span>' : '')
         : ' · <span style="color:#fbbf24;">aucun match saisi pour l\'instant — '
           + 'renseigne « Score reel » dans un thème sauvegardé, il entre ici automatiquement</span>')
     + '</div>'
@@ -19199,7 +19216,27 @@ function addToHistory() {
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
     realFirstGoal: (document.getElementById('realFirstGoal')||{}).value || '',
     blindTest: lastLaunchWasBlind,
-    verdict: { winner:vf.winner, vfType:vf.type, vfLabel:vf.label, winnerRaw:reel.winner, goalM1:reel.goalM1, goalM7:reel.goalM7, scoreMain:reel.scoreMain, htWinner:reel.htWinner, penalty:reel.penalty, corrected:reel.corrected }
+    // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
+    // « le verdict final donne victoire R7 mais le score donne R1 » — sur
+    // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
+    // « 5-3 (predit) Bayer 04 » : un score qui fait gagner M1 et un nom
+    // d'équipe qui désigne M7. Il avait raison, et ce n'était pas un
+    // détail d'affichage.
+    // CAUSE : l'entrée était composée de DEUX moteurs différents —
+    // winner venait de verdictFinal (le moteur historique), le score de
+    // getVerdictAfficheReel (le moteur affiché). Or les deux divergent
+    // sur 42 % des thèmes. Le vainqueur enregistré contredisait donc son
+    // propre score dans 42 % des cas ici, et 47 % dans saveManuel.
+    // DÉSORMAIS : le vainqueur ET le score viennent tous deux du verdict
+    // AFFICHÉ. Les valeurs des moteurs historiques restent enregistrées
+    // à côté, sous des noms qui disent ce qu'elles sont.
+    verdict: { winner:reel.winner, winnerRaw:reel.winner,
+      goalM1:reel.goalM1, goalM7:reel.goalM7, scoreMain:reel.scoreMain,
+      htWinner:reel.htWinner, penalty:reel.penalty, corrected:reel.corrected,
+      cornersM1:reel.cornersM1, cornersM7:reel.cornersM7, cornersDominant:reel.cornersDominant,
+      incidentCamp:reel.incidentCamp,
+      // conservés pour comparaison, jamais affichés comme le verdict
+      winnerLegacyVf:vf.winner, vfType:vf.type, vfLabel:vf.label }
   };
   list.unshift(entry);
   if (list.length > 200) list.length = 200;
@@ -19225,6 +19262,7 @@ function saveManuel() {
   }
   var v7 = currentAnalysis.v7;
   var vf = verdictFinal(currentTheme, favorite);
+  var reel = getVerdictAfficheReel(currentTheme, favorite);
   var entry = {
     id: Date.now()+'_'+Math.random().toString(36).slice(2,6),
     savedAt: new Date().toISOString(),
@@ -19236,7 +19274,18 @@ function saveManuel() {
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
     realFirstGoal: (document.getElementById('realFirstGoal')||{}).value || '',
     blindTest: lastLaunchWasBlind,
-    verdict: { winner:vf.winner, vfType:vf.type, vfLabel:vf.label, winnerRaw:v7.winner, goalM1:v7.goalM1, goalM7:v7.goalM7, scoreMain:v7.scoreMain, htWinner:v7.htWinner, penalty:v7.penalty, corrected:v7.corrected }
+    // Même correction qu'au-dessus, en pire : ici le score venait de
+    // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
+    // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
+    // le vainqueur enregistré contredisait son propre score sur 47 % des
+    // thèmes. Tout vient maintenant du verdict affiché.
+    verdict: { winner:reel.winner, winnerRaw:reel.winner,
+      goalM1:reel.goalM1, goalM7:reel.goalM7, scoreMain:reel.scoreMain,
+      htWinner:reel.htWinner, penalty:reel.penalty, corrected:reel.corrected,
+      cornersM1:reel.cornersM1, cornersM7:reel.cornersM7, cornersDominant:reel.cornersDominant,
+      incidentCamp:reel.incidentCamp,
+      winnerLegacyVf:vf.winner, vfType:vf.type, vfLabel:vf.label,
+      scoreLegacyV7:v7.scoreMain, winnerLegacyV7:v7.winner }
   };
   list.unshift(entry);
   if (list.length > 100) list.length = 100;
