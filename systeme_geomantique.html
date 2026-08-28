@@ -12493,6 +12493,38 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
 // n'existe pas, un verdict sur match serré vaut une pièce lancée (2/6).
 // ═══════════════════════════════════════════════════════════════
 
+// ─── DÉTECTEUR DE MATCH SERRÉ : CHERCHÉ, PAS TROUVÉ (28/08/26) ───
+// Suite du constat ci-dessus. Si le verdict ne vaut que sur les scores
+// larges, la seule chose utile serait de reconnaître un match serré AVANT
+// de parier. Dix-huit candidats ont été testés sur les onze cas au score
+// connu — 7 serrés (≤ 1 but) contre 4 larges — avec, à chaque fois, la
+// fréquence de base du signal sur les thèmes possibles :
+//
+//   candidat                                    serrés  larges  base
+//   même boucle (k pair) ....................... 2/7     3/4    48 %
+//   la centrale adverse est dans le camp ....... 2/7     3/4    48 %
+//   pôles solides à égalité (F4P4) ............. 2/7     3/4    42 %
+//   les deux assaillants présents .............. 6/7     4/4    76 %
+//   Populus en M15 ou M16 ...................... 3/7     0/4    19 %
+//   écart d'ancrage F4P4 < 10 .................. 2/7     0/4    25 %
+//   même quatuor de front (k ≡ 0 mod 4) ........ 0/7     2/4    20 %
+//   duel canonique · témoins M13=M14 · nul
+//   structurel · même élément R1/R7 · vote
+//   serré · BTTS annoncé · mi-temps « les deux »
+//   · marge annoncée ≤ 2 · assaillants absents .. tous entre 0/7 et 3/7,
+//                                                 et entre 0/4 et 1/4
+//
+// AUCUN NE SÉPARE. Le meilleur, « Populus en M15/M16 », rate quatre
+// serrés sur sept ; et avec dix-huit candidats sur onze cas, un écart de
+// cette taille est exactement ce que le hasard produit. Deux signaux vont
+// même dans le sens INVERSE de l'intuition — même boucle et même quatuor
+// de front sont plus fréquents sur les matchs LARGES que sur les serrés.
+//
+// Résultat négatif, écrit ici pour qu'on ne recommence pas cette
+// recherche à l'identique : avec sept matchs serrés, il n'y a rien à
+// trouver. Ce qu'il faut, ce sont des résultats, pas un autre critère.
+// ═══════════════════════════════════════════════════════════════
+
 // ─── L'INTERRUPTEUR DE LA RÈGLE (28/08/26) ───
 // La règle ci-dessous change le verdict affiché sur 3,8 % des thèmes et
 // COÛTE un point sur l'archive (6/10 → 5/10, seul Juventus bascule).
