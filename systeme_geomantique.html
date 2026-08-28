@@ -5471,7 +5471,20 @@ function regenerationSiegeV7(fig, house) {
 // comportement d'avant.
 var COEF_BOUCLIER_ROMPU_V7 = 0.5;
 
-function soliditeChaineV7(fig, theme) {
+// ─── MÊME RÈGLE DU 28/08/26 : UN CAMP NE COMPTE PAS SON RIVAL PARMI SES FORCES ───
+// Découverte d'Ellemine_D (les deux quatuors de front, cf.
+// contaminationCampsV7) : quand R1 et R7 sont dans la même boucle — la
+// moitié des thèmes — l'un est TOUJOURS un rôle du camp de l'autre. R7
+// est le binôme, le front, le front du front ou le bouclier de R1, ou
+// l'inverse ; huit décalages pairs sur huit. Les compteurs de force
+// créditaient donc un camp de la présence de son adversaire : mesuré,
+// 24,5 % des thèmes ont R7 parmi les quatre pôles de R1, et 12,6 %
+// l'y comptent SOLIDE.
+// Branché sur demande d'Ellemine_D. Les rôles POSITIFS (bouclier, front,
+// binôme, front du front) ne comptent plus lorsqu'ils sont tenus par la
+// centrale adverse. Le rôle NÉGATIF — l'antagoniste — reste compté :
+// être attaqué par l'autre chef est un fait réel, pas un appui.
+function soliditeChaineV7(fig, theme, figAdverse) {
   if (!fig) return null;
   function maillon(f, role, poids) {
     const occ = f ? trouverFigV7(f, theme) : [];
@@ -5487,6 +5500,11 @@ function soliditeChaineV7(fig, theme) {
   }
   const mProt  = maillon(BOUCLIER_V7[fig], 'bouclier', 1);
   const mFront = maillon(FRONT_V7[fig], 'front', POIDS_CHAINE_V7.poidsFront);
+  [mProt, mFront].forEach(function (mm) {
+    if (REGLE_CENTRALE_ADVERSE_V7 && figAdverse && mm.fig === figAdverse) {
+      mm.estAdverse = true; mm.scoreAvantAdverse = mm.score; mm.score = 0;
+    }
+  });
   // Le bouclier ne vaut pas ce qu'il pèse, il vaut ce qu'il tient.
   const duel = duelBouclierV7(fig, theme);
   if (duel && !duel.tenu && COEF_BOUCLIER_ROMPU_V7 !== 1) {
@@ -5618,10 +5636,10 @@ function analyseAncrageDeveloppeBrut(theme) {
   // seule prédiction posée avant de connaître le score.
   // Les rôles seuls donneraient 1/3 : ils complètent la chaîne, ils ne la
   // remplacent pas.
-  const chaineR1 = soliditeChaineV7(figR1, theme);
-  const chaineR7 = soliditeChaineV7(figR7, theme);
-  const rolesR1 = scoreRolesRecusV7(figR1, theme, rot.hR1);
-  const rolesR7 = scoreRolesRecusV7(figR7, theme, rot.hR7);
+  const chaineR1 = soliditeChaineV7(figR1, theme, figR7);
+  const chaineR7 = soliditeChaineV7(figR7, theme, figR1);
+  const rolesR1 = scoreRolesRecusV7(figR1, theme, rot.hR1, figR7);
+  const rolesR7 = scoreRolesRecusV7(figR7, theme, rot.hR7, figR1);
   // ─── CÔTÉ ACTIF (25/08/26) : « tu ne l'as pas branché » ───
   // Les rôles REÇUS visent les quatre pôles du chef — les mêmes figures que
   // la chaîne. Les rôles EXERCÉS visent quatre figures entièrement
@@ -11655,7 +11673,7 @@ var POIDS_ROLES_V7 = {
   portee: {effectif: 1, 'contrée': 0.5, affaibli: 0.5, latent: 0.25, 'à vide': 0}
 };
 
-function scoreRolesRecusV7(chef, theme, siegeImpose) {
+function scoreRolesRecusV7(chef, theme, siegeImpose, figAdverse) {
   if (!chef) return null;
   const cibles = [
     {fig: BOUCLIER_V7[chef], cle: 'protecteurDe', role: 'bouclier', poids: POIDS_ROLES_V7.protecteur},
@@ -11671,10 +11689,15 @@ function scoreRolesRecusV7(chef, theme, siegeImpose) {
     const vise = ro && ro.dest === chef;
     const portee = vise ? ro.portee : 'à vide';
     const coef = POIDS_ROLES_V7.portee[portee] || 0;
+    // Un appui positif tenu par la centrale adverse ne compte pas
+    // (28/08/26) ; l'antagoniste, lui, reste compté — voir la règle en
+    // tête de soliditeChaineV7.
+    const adverse = !!(REGLE_CENTRALE_ADVERSE_V7 && figAdverse && c.fig === figAdverse && c.role !== 'antagoniste');
     return {role: c.role, acteur: c.fig, portee: portee,
       acteurSolide: rx ? rx.solide : false,
+      estAdverse: adverse,
       etat: ro ? ro.etat.libelle : 'absente',
-      score: Math.round(c.poids * coef * 100) / 100};
+      score: adverse ? 0 : Math.round(c.poids * coef * 100) / 100};
   });
   const total = Math.round(detail.reduce(function (s, d) { return s + d.score; }, 0) * 100) / 100;
   return {chef: chef, detail: detail, total: total,
@@ -12355,24 +12378,25 @@ function contaminationCampsV7(figR1, figR7) {
   };
 }
 
-// La lecture F4P4 dont on a retiré la centrale adverse du décompte des
-// pôles solides. Banc uniquement — voir le commentaire ci-dessus.
-function moteurF4P4SansAdverseV7(theme) {
+// L'ANCIENNE lecture : la centrale adverse compte encore parmi les pôles.
+// Banc uniquement — elle mesure l'effet exact de la règle du 28/08.
+function moteurF4P4AvecAdverseV7(theme) {
   var m = null;
   try { m = moteurF4P4V7(theme); } catch (e) { m = null; }
   if (!m || !m.applicable) return { camp: null, detail: 'non applicable' };
-  var s1 = m.R1.poles.filter(function (p) { return p.solide && p.fig !== m.figR7; }).length;
-  var s7 = m.R7.poles.filter(function (p) { return p.solide && p.fig !== m.figR1; }).length;
-  var dit = function (c, pourquoi) { return { camp: c, detail: pourquoi + ' · pôles solides hors centrale adverse ' + s1 + ' contre ' + s7 }; };
+  var s1 = m.R1.poles.filter(function (p) { return p.solide; }).length;
+  var s7 = m.R7.poles.filter(function (p) { return p.solide; }).length;
+  var a1 = m.R1.ancrageTotalAvecAdverse, a7 = m.R7.ancrageTotalAvecAdverse;
+  var dit = function (c, pourquoi) { return { camp: c, detail: pourquoi + ' · pôles solides, rival compris, ' + s1 + ' contre ' + s7 }; };
   if (!m.memeBoucle) {
     if (s1 !== s7) return dit(s1 > s7 ? 'R1' : 'R7', 'boucles opposées');
     if (m.R1.frappeMoyenne !== m.R7.frappeMoyenne) return dit(m.R1.frappeMoyenne > m.R7.frappeMoyenne ? 'R1' : 'R7', 'boucles opposées, départage frappe');
-    if (m.R1.ancrageTotal !== m.R7.ancrageTotal) return dit(m.R1.ancrageTotal > m.R7.ancrageTotal ? 'R1' : 'R7', 'boucles opposées, départage ancrage');
+    if (a1 !== a7) return dit(a1 > a7 ? 'R1' : 'R7', 'boucles opposées, départage ancrage');
     return dit(null, 'boucles opposées, égalité');
   }
   if (m.R1.solidesAdverse !== m.R7.solidesAdverse) return dit(m.R1.solidesAdverse < m.R7.solidesAdverse ? 'R1' : 'R7', 'même boucle, assaillants');
   if (s1 !== s7) return dit(s1 > s7 ? 'R1' : 'R7', 'même boucle');
-  if (m.R1.ancrageTotal !== m.R7.ancrageTotal) return dit(m.R1.ancrageTotal > m.R7.ancrageTotal ? 'R1' : 'R7', 'même boucle, départage ancrage');
+  if (a1 !== a7) return dit(a1 > a7 ? 'R1' : 'R7', 'même boucle, départage ancrage');
   return dit(null, 'même boucle, égalité');
 }
 
@@ -12415,6 +12439,8 @@ function frappeV7(fig, campAdverse, theme, centraleAdverse) {
 // figAdverse = la centrale D'EN FACE. Sans elle, la frappe se comparait
 // au camp de l'antagoniste et non au camp adverse : Carcer frappant
 // Cauda Draconis — le 4e pôle de R7 — était rangée « hors camp ».
+var REGLE_CENTRALE_ADVERSE_V7 = true;
+
 function reseauF4P4V7(fig, siege, theme, figAdverse) {
   if (!fig) return null;
   const centrale = solidPoleV7('centrale', fig, theme);
@@ -12434,7 +12460,32 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
       solidPoleV7('front du front', frontDuFrontV7(antagoniste), theme)
     ].filter(Boolean)
   } : null;
-  const solides = poles.filter(function (p) { return p.solide; }).length;
+// ─── L'INTERRUPTEUR DE LA RÈGLE (28/08/26) ───
+// La règle ci-dessous change le verdict affiché sur 3,8 % des thèmes et
+// COÛTE un point sur l'archive (6/10 → 5/10, seul Juventus bascule).
+// Elle est branchée parce que la structure la commande, pas parce
+// qu'elle prédit mieux — et un cas sur dix ne tranche ni dans un sens ni
+// dans l'autre. Ce drapeau permet de revenir en arrière d'un caractère
+// et de comparer les deux lectures quand il y aura plus de résultats.
+// ─── RÈGLE DU 28/08/26 : UN CAMP NE COMPTE PAS SON RIVAL PARMI SES FORCES ───
+// Découverte d'Ellemine_D (les deux quatuors de front, cf.
+// contaminationCampsV7) : quand R1 et R7 sont dans la même boucle — la
+// moitié des thèmes — l'un est TOUJOURS un rôle du camp de l'autre. R7
+// est le binôme, le front, le front du front ou le bouclier de R1, ou
+// l'inverse ; huit décalages pairs sur huit. Les compteurs de force
+// créditaient donc un camp de la présence de son adversaire : mesuré,
+// 24,5 % des thèmes ont R7 parmi les quatre pôles de R1, et 12,6 %
+// l'y comptent SOLIDE.
+// Branché sur demande d'Ellemine_D. Les rôles POSITIFS (bouclier, front,
+// binôme, front du front) ne comptent plus lorsqu'ils sont tenus par la
+// centrale adverse. Le rôle NÉGATIF — l'antagoniste — reste compté :
+// être attaqué par l'autre chef est un fait réel, pas un appui.
+  poles.forEach(function (p) {
+    p.estAdverse = !!(REGLE_CENTRALE_ADVERSE_V7 && figAdverse && p.fig === figAdverse);
+    p.estCentraleAdverse = !!(figAdverse && p.fig === figAdverse);
+  });
+  const polesAdverses = poles.filter(function (p) { return p.estAdverse; }).length;
+  const solides = poles.filter(function (p) { return p.solide && !p.estAdverse; }).length;
   const solidesAdverse = adverse ? adverse.poles.filter(function (p) { return p.solide; }).length : 0;
   // Le sens offensif : ce que chacun de mes cinq membres frappe.
   const campAdv = campDeV7(figAdverse);
@@ -12485,10 +12536,16 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
     frappesSurCamp: frappesSurCamp, frappeSomme: frappeSomme,
     frappesPossibles: frappesPossibles, frappeMoyenne: frappeMoyenne,
     solides: solides, solidesAdverse: solidesAdverse,
+    polesAdverses: polesAdverses,
     // la centrale compte comme cinquième appui, elle n'est plus ignorée
     solidesAvecCentrale: solides + (centrale && centrale.solide ? 1 : 0),
-    ancrageTotal: Math.round((poles.reduce(function (s, p) { return s + p.ancrage; }, 0)
-      + (centrale ? centrale.ancrage : 0)) * 100) / 100
+    ancrageTotal: Math.round((poles.reduce(function (s, p) {
+        return s + (p.estAdverse ? 0 : p.ancrage); }, 0)
+      + (centrale ? centrale.ancrage : 0)) * 100) / 100,
+    // L'ancrage d'avant la règle, gardé pour que le banc puisse rejouer
+    // l'ancienne lecture à l'identique.
+    ancrageTotalAvecAdverse: Math.round((poles.reduce(function (s, p) {
+        return s + p.ancrage; }, 0) + (centrale ? centrale.ancrage : 0)) * 100) / 100
   };
 }
 
@@ -14117,8 +14174,10 @@ function tablePolesV7(theme) {
     var l = { maison: h, fig: f, poids: Math.round(poids * 100) / 100, poles: poles,
       roleR1: null, roleR7: null, gainR1: 0, gainR7: 0, attaque: null, estR1: f === R1, estR7: f === R7 };
     for (var i = 0; i < poles.length; i++) {
-      if (poles[i] === R1) { l.roleR1 = ROLES[i].cle; l.gainR1 += poids * ROLES[i].poids; tenuR1++; }
-      if (poles[i] === R7) { l.roleR7 = ROLES[i].cle; l.gainR7 += poids * ROLES[i].poids; tenuR7++; }
+      // 28/08/26 : une ligne occupée par la centrale ADVERSE ne tient pas
+      // le camp d'en face — un camp ne compte pas son rival dans ses forces.
+      if (poles[i] === R1 && !(REGLE_CENTRALE_ADVERSE_V7 && l.estR7)) { l.roleR1 = ROLES[i].cle; l.gainR1 += poids * ROLES[i].poids; tenuR1++; }
+      if (poles[i] === R7 && !(REGLE_CENTRALE_ADVERSE_V7 && l.estR1)) { l.roleR7 = ROLES[i].cle; l.gainR7 += poids * ROLES[i].poids; tenuR7++; }
     }
     if (f === antaR1) { l.attaque = 'R1'; l.gainR1 += poids * POIDS_ROLES_V7.antagoniste; contreR1 += poids; }
     if (f === antaR7) { l.attaque = l.attaque ? 'les deux' : 'R7'; l.gainR7 += poids * POIDS_ROLES_V7.antagoniste; contreR7 += poids; }
@@ -14441,16 +14500,16 @@ var MOTEURS_BTTS_V7 = [
 // parce qu'elle est établie. Le motif ne se présente que sur 3 % des
 // thèmes : il faudra du temps.
 var MOTEURS_CONDITIONNELS_V7 = [
-  // Lecture F4P4 dont la centrale ADVERSE est retirée du décompte des
-  // pôles solides (28/08/26, faille des deux quatuors — voir
-  // contaminationCampsV7). Elle ne vote pas : elle est ici pour être
-  // comparée à l'originale sur les mêmes cas. Écart mesuré : elle change
-  // le verdict sur 3,8 % des thèmes, et sur les dix cas réels elle fait
-  // 5/10 contre 6/10 — un seul cas les sépare, Juventus.
-  { cle: 'f4p4_sans_adverse', nom: 'F4P4 sans la centrale adverse dans les pôles', icone: '🧭', teinte: '#c084fc',
+  // L'ANCIENNE lecture de F4P4, gardée au banc depuis que la règle de la
+  // centrale adverse est branchée (28/08/26) : ici le rival compte encore
+  // parmi les pôles de son adversaire. Elle ne vote pas — elle sert à
+  // mesurer ce que la nouvelle règle coûte ou rapporte, cas par cas.
+  // Sur les dix cas réels : ancienne 6/10, nouvelle 5/10, un seul cas les
+  // sépare (Juventus). C'est trop peu pour trancher, d'où sa présence.
+  { cle: 'f4p4_avec_adverse', nom: 'F4P4 — ancienne lecture (le rival compte dans les pôles)', icone: '🧭', teinte: '#c084fc',
     juste: 0, total: 0,
-    note: 'même cascade que F4P4, mais un camp ne compte plus son rival parmi ses forces',
-    verdict: function (t) { return moteurF4P4SansAdverseV7(t); } },
+    note: 'à comparer au F4P4 courant : leur écart isole exactement l\'effet de la règle',
+    verdict: function (t) { return moteurF4P4AvecAdverseV7(t); } },
   { cle: 'decalage_oblique', nom: 'Décalage oblique → celui qui touche le plus', icone: '⚔', teinte: '#60a5fa',
     juste: 0, total: 0,
     note: 'muet quand les boucles sont identiques (k pair) : là, aucun camp ne touche l\'autre',
