@@ -10989,6 +10989,14 @@ function rangParole(vf){
 }
 
 function themeInvalidite(theme){
+  // ─── THÈME DÉTRUIT : LA RÈGLE ÉTAIT ÉCRITE, ELLE N'ÉTAIT BRANCHÉE
+  //     NULLE PART (constat d'Ellemine_D, 28/08/26) ───
+  // themeDetruit() existait depuis le 03/07/26 et n'était appelée par
+  // AUCUNE ligne du fichier : Rubeus ou Cauda Draconis en M1 ne
+  // produisait donc aucun signal à l'écran. Elle passe en tête de la
+  // validité : c'est le premier motif d'invalidité, avant les axes.
+  const detruit = themeDetruit(theme);
+  if (detruit) return detruit;
   const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
   // Axe Temporel M3+M5+M11+M15 RETIRÉ le 25/08/26 : ce n'était pas un axe
   // du carré (deux classes mélangées, et M15 hors des douze maisons).
@@ -14074,6 +14082,49 @@ function tablePolesV7(theme) {
   };
 }
 
+// ─── CONTRÔLE DU TABLEAU DES PÔLES (28/08/26, demande d'Ellemine_D) ───
+// « tu as oublié le binôme du front du front, qui est le protecteur
+// bouclier ». Vérifié : ce n'est pas un oubli, c'est la même figure.
+//     binôme(front du front(X)) = (X+8)+2 = X+10 = le BOUCLIER
+// Le bouclier de la première colonne EST le binôme du front du front —
+// 16 figures sur 16. Il n'existe donc pas de cinquième pôle : les quatre
+// colonnes plus la centrale forment exactement le camp de cinq rôles, et
+// aucune figure n'y apparaît deux fois. Les sept contrôles ci-dessous le
+// figent, et le panneau les affiche.
+function autoTestPolesV7() {
+  var idx = {};
+  FIGS_V7.forEach(function (f, i) { idx[f] = i; });
+  var t = [
+    { nom: 'ordre du tableau = bouclier, front, binôme, front du front', ok: 0 },
+    { nom: 'binôme(front du front) = BOUCLIER', ok: 0 },
+    { nom: 'bouclier(front du front) = BINÔME', ok: 0 },
+    { nom: 'front(front) = front du front', ok: 0 },
+    { nom: 'les 4 pôles + la centrale = le camp (5 rôles)', ok: 0 },
+    { nom: 'les 4 pôles restent dans la boucle de la centrale', ok: 0 },
+    { nom: 'aucune figure répétée dans les 5 rôles', ok: 0 }
+  ];
+  FIGS_V7.forEach(function (X) {
+    var p = polesDeV7(X);
+    var bouc = BOUCLIER_V7[X], fr = FRONT_V7[X], bin = BINOMES_V7[X], ff = frontDuFrontV7(X);
+    if (p[0] === bouc && p[1] === fr && p[2] === bin && p[3] === ff) t[0].ok++;
+    if (BINOMES_V7[ff] === bouc) t[1].ok++;
+    if (BOUCLIER_V7[ff] === bin) t[2].ok++;
+    if (FRONT_V7[fr] === ff) t[3].ok++;
+    var camp = campDeV7(X);
+    if (camp.length === 5 && camp.indexOf(X) >= 0 && p.every(function (y) { return camp.indexOf(y) >= 0; })) t[4].ok++;
+    if (p.every(function (y) { return (idx[y] % 2) === (idx[X] % 2); })) t[5].ok++;
+    var vus = {}, uniq = true;
+    p.concat([X]).forEach(function (y) { if (vus[y]) uniq = false; vus[y] = 1; });
+    if (uniq) t[6].ok++;
+  });
+  var fautes = t.filter(function (x) { return x.ok !== 16; });
+  return { ok: fautes.length === 0, controles: t, fautes: fautes };
+}
+(function () {
+  var r = autoTestPolesV7();
+  if (!r.ok) { console.warn('⚠️ Tableau des pôles incohérent :', r.fautes); }
+})();
+
 // Le tableau, à l'écran : les seize maisons développées en quatre pôles,
 // avec ce que chaque ligne apporte à R1 et à R7.
 function toggleTablePolesPanel() {
@@ -14131,6 +14182,16 @@ function toggleTablePolesPanel() {
       + '<div class="kv" style="margin-top:8px; font-size:12px;"><b>Verdict :</b> '
       + (a.camp ? '<span class="good">' + a.camp + '</span>' : a.nul ? '<span style="color:#fbbf24;">NUL</span>' : '—')
       + ' — ' + esc(a.resume) + '</div>'
+      + (function () {
+          var ap = autoTestPolesV7();
+          return '<div style="margin-top:8px; border:1px solid ' + (ap.ok ? '#4ade80' : '#f87171')
+            + '; border-radius:9px; padding:8px 10px; font-size:11px;">'
+            + '<b>Contrôle du tableau — ' + (ap.ok ? '✅ les 7 relations tiennent, 16/16' : '❌ incohérence') + '</b>'
+            + '<div style="color:#94a3b8; margin-top:3px;">'
+            + ap.controles.map(function (c) { return c.nom + ' — ' + c.ok + '/16'; }).join('<br>') + '</div>'
+            + '<div style="color:#cbd5e1; margin-top:4px;">Le <b>binôme du front du front EST le bouclier</b> '
+            + '((X+8)+2 = X+10) : la première colonne le contient déjà. Il n\'y a pas de cinquième pôle — '
+            + 'les quatre colonnes plus la centrale font exactement le camp de cinq rôles.</div></div>'; })()
       + '<div class="muted" style="font-size:11px; margin-top:6px;">⚠️ Au banc ce moteur fait 4/10 — le plus faible, '
       + 'sous « toujours R7 » qui fait 6/10. Onze lectures du même tableau ont été mesurées (poids planchés à zéro, '
       + 'pôles seulement portés par une figure ancrée, sans la pénalité d\'antagoniste, règle de la même boucle '
@@ -18543,6 +18604,15 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   .tek{font-family:inherit;color:#e5e7eb}.tek *{box-sizing:border-box}.tek-head{font-size:25px;font-weight:900;text-align:center;margin:0 0 6px;color:#dbeafe}.tek-head span{font-size:12px;color:#a78bfa}.tek-sub{text-align:center;color:#94a3b8;font-size:11px;margin-bottom:12px}.tek-hero{display:grid;grid-template-columns:1.02fr .98fr;gap:12px}.tek-winner{border:1px solid #22c55e;border-radius:13px;padding:16px;background:linear-gradient(135deg,rgba(20,83,45,.28),rgba(7,17,31,.96));text-align:center}.tek-winner.warn{border-color:#f59e0b}.tek-cap{font-size:12px;font-weight:900;color:#4ade80;letter-spacing:.08em}.tek-name{font-size:29px;line-height:1.08;font-weight:950;color:#4ade80;margin:6px 0}.tek-winner.warn .tek-name{color:#fbbf24}.tek-score{font-size:20px;font-weight:900;color:#dbeafe}.tek-stats{border:1px solid #334155;border-radius:13px;background:#07111f;padding:12px}.tek-stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgba(148,163,184,.11);font-size:12px}.tek-stat:last-of-type{border-bottom:0}.tek-note{color:#7dd3fc;font-size:12px;font-weight:800;margin-top:8px}.tek-credit{margin-top:10px;border:1px solid #22c55e;border-radius:10px;padding:8px;text-align:center}.tek-credit .num{font-size:28px;font-weight:950;color:#4ade80}.tek-section{margin-top:11px;border:1px solid #243b63;border-radius:13px;background:rgba(2,8,23,.58);padding:11px}.tek-title{font-size:17px;font-weight:950;text-align:center;color:#c4b5fd;margin-bottom:10px}.tek-camps{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tek-camp{border:1px solid #2563eb;border-radius:11px;background:#06101d;padding:11px}.tek-camp.r7{border-color:#b45309}.tek-camp h4{margin:0 0 5px;font-size:16px;color:#60a5fa}.tek-camp.r7 h4{color:#fb923c}.tek-meta{font-size:11px;color:#cbd5e1;line-height:1.55}.tek-bigscore{font-size:27px;font-weight:950;text-align:center;margin:8px 0;color:#60a5fa}.tek-camp.r7 .tek-bigscore{color:#fb923c}.tek-progress{height:22px;border:1px solid #334155;border-radius:6px;display:flex;overflow:hidden;margin-top:9px}.tek-progress div{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}.tek-tables{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.tek-tablebox{border:1px solid #1e4f83;border-radius:10px;overflow:hidden;background:#06101d}.tek-tablebox.r7{border-color:#7c4a13}.tek-tablebox h5{margin:0;padding:9px;color:#60a5fa;font-size:14px}.tek-tablebox.r7 h5{color:#fb923c}.tek-table{width:100%;border-collapse:collapse;font-size:10.5px}.tek-table th,.tek-table td{padding:6px 5px;border-bottom:1px solid rgba(148,163,184,.13);text-align:left}.tek-table th{color:#93c5fd}.tek-tablebox.r7 th{color:#fb923c}.tek-table td:last-child,.tek-table th:last-child{text-align:right}.tek-total{display:flex;justify-content:space-between;padding:9px;font-size:17px;font-weight:950}.tek-verdict{margin-top:10px;border:1px solid #475569;border-radius:11px;background:linear-gradient(90deg,rgba(30,41,59,.78),rgba(15,23,42,.9));padding:12px}.tek-verdictgrid{display:grid;grid-template-columns:145px 1fr;gap:12px;align-items:center}.tek-scale{text-align:center}.tek-scale .symbol{font-size:38px}.tek-scale b{font-size:13px}.tek-final{font-size:22px;font-weight:950;color:#4ade80}.tek-gap{color:#facc15;font-weight:900;margin-top:3px}.tek-list{font-size:10.5px;line-height:1.5;margin:7px 0 0 18px}.tek-null{border-color:#334155}.tek-null-grid{display:grid;grid-template-columns:.9fr 1.35fr .75fr;gap:9px}.tek-box{border:1px solid #334155;border-radius:9px;background:#08111f;padding:9px}.tek-box h5{margin:0 0 7px;color:#c4b5fd;font-size:13px}.tek-kv{display:flex;justify-content:space-between;gap:7px;padding:6px 2px;border-bottom:1px solid rgba(148,163,184,.1);font-size:10.5px}.tek-kv:last-child{border-bottom:0}.tek-nullstatus{height:100%;min-height:125px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid '+nullColor+';border-radius:9px;color:'+nullColor+'}.tek-nullstatus .ico{font-size:32px}.tek-nullstatus b{font-size:15px}.tek-bottom{display:grid;grid-template-columns:120px 1fr 1.35fr;gap:9px;align-items:stretch}.tek-bottom .box{border:1px solid #334155;border-radius:9px;padding:10px;background:#08111f}.tek-bottom .big{font-size:31px;font-weight:950;color:#4ade80;text-align:center}.tek-bottom p{margin:0;font-size:11px;line-height:1.5}.tek-mobile-only{display:none}@media(max-width:700px){.tek-hero,.tek-camps,.tek-tables,.tek-null-grid,.tek-bottom,.tek-verdictgrid{grid-template-columns:1fr}.tek-head{font-size:21px}.tek-name{font-size:25px}.tek-tables{display:grid}.tek-mobile-only{display:block}.tek-table{font-size:10px}.tek-table th,.tek-table td{padding:5px}.tek-nullstatus{min-height:105px}}\
   </style>';
   html+='<div class="tek" data-protocole-r1r7="1">';
+  // ─── SIGNAL IMMÉDIAT : THÈME DÉTRUIT (28/08/26, demande d'Ellemine_D) ───
+  var msgDetruit = null;
+  try { msgDetruit = themeDetruit(theme); } catch (e) { msgDetruit = null; }
+  if (msgDetruit) {
+    html += '<div style="border:2px solid #ef4444; border-radius:12px; padding:12px 14px; margin-bottom:12px; '
+      + 'background:linear-gradient(135deg, rgba(127,29,29,.35), rgba(7,17,31,.9));">'
+      + '<div style="font-size:15px; font-weight:900; color:#fca5a5;">⛔ THÈME INVALIDE — DÉTRUIT</div>'
+      + '<div style="font-size:11.5px; color:#fecaca; margin-top:4px;">' + esc(msgDetruit) + '</div></div>';
+  }
   html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Front 4 · Pôle 4')+'</span></div>';
   // ─── LE VOTE, DÉTAILLÉ (27/08/26) ───
   // On montre qui a voté quoi : un 8-0 et un 5-3 ne se lisent pas pareil,
@@ -18867,6 +18937,14 @@ function niveauValiditeV7(theme) {
     });
   var fdj = figureDuJour();
   var fdjOk = present(fdj, theme);
+  // Thème détruit : plus rien n'est à valider, le niveau est 0 quoi qu'il
+  // arrive (règle traditionnelle, Rubeus ou Cauda Draconis en M1).
+  var detruit = !!themeDetruit(theme);
+  if (detruit) {
+    return { applicable: true, niveau: 0, detruit: true, figM1: theme[1], base: base,
+      derives: derives, fdj: fdj, fdjOk: fdjOk, complet: false,
+      resume: 'THÈME DÉTRUIT — ' + (FL[theme[1]] || theme[1]) + ' en M1' };
+  }
   var niveau = 0;
   if (base.axes.ok) {
     niveau = 1;
@@ -18891,7 +18969,7 @@ function rollUntilValid100Draw(){
     rollAllMothersFromDice();
     essais += 1;
     v = currentTheme ? niveauValiditeV7(currentTheme) : null;
-  } while (essais < 200 && !(v && v.complet && currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid));
+  } while (essais < 200 && !(v && v.complet && !v.detruit && currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid));
   var out = document.getElementById('dice-output');
   if (!out || !v) return;
   var lignes = ['<b>Tirage 100 % valide</b> — ' + essais + ' essai(s) → '
@@ -18914,7 +18992,8 @@ function rollUntilValidDraw(){
     rollAllMothersFromDice();
     attempts+=1;
     resonance = currentTheme ? countAxesEtJourPresents(currentTheme) : {count:0};
-  } while(attempts<30 && !(currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid && resonance.count >= 2));
+  } while(attempts<30 && !(currentAnalysis && currentAnalysis.rotation && currentAnalysis.rotation.valid
+      && resonance.count >= 2 && !themeDetruit(currentTheme)));
   const detailRes = resonance.axeC ? `Axe Cardinal (${FL[resonance.axeC]}) ${resonance.presentC?'✓ présent':'✗ absent'} | Axe Cadent (${FL[resonance.axeT]}) ${resonance.presentT?'✓ présent':'✗ absent'} | Figure du jour (${FL[resonance.fdj]}) ${resonance.presentJ?'✓ présente':'✗ absente'} → ${resonance.count}/3` : '';
   document.getElementById('dice-output').innerHTML += `<div class="kv"><b>Essais :</b> ${attempts}</div><div class="kv" style="font-size:11px;">${detailRes}</div>`;
 }
@@ -19837,6 +19916,10 @@ function isThemeValideStrict(theme){
   // n'existe qu'en résultante (ex. Fortuna Minor en M10r/M11r, jamais en
   // base — validé par Ellemine_D le 10/07/26).
   function existsPresent(fig){ return positionsBaseEtResultantes(fig, theme).length>0; }
+  // Un thème détruit (Rubeus ou Cauda Draconis en M1) n'est pas valide —
+  // aligné le 28/08/26 sur themeInvalidite(), pour que le gate live et les
+  // statistiques rétrospectives disent la même chose.
+  if (themeDetruit(theme)) return false;
   return existsPresent(axeC) && existsPresent(axeS) && existsPresent(axeCad);
 }
 
