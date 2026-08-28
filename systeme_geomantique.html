@@ -14202,9 +14202,18 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
   // (cf. autoTestLoiMaisonV7) : en maison PAIRE la résultante reste dans
   // le camp — le Mars engendré est un allié ; en maison IMPAIRE elle
   // vient d'en face. Ne retenir que le second cas divise par deux la
-  // fréquence du critère (≈ 9 % des thèmes au lieu de 19 %) sans casser
-  // son équilibre R1/R7, et il désigne toujours R1 sur Bologna — le seul
-  // cas réel connu. Au banc uniquement, comme le précédent.
+  // fréquence du critère sans casser son équilibre, et il désigne
+  // toujours R1 sur Bologna — le seul cas réel connu.
+  // Mesuré sur les 65 536 thèmes possibles (exhaustif, pas un échantillon) :
+  //   « le siège engendre Mars » ............ R1 6144 / R7 6144, tranche 18,8 %
+  //   « … depuis une maison impaire » ....... R1 2880 / R7 2880, tranche  8,8 %
+  //   « … depuis une maison paire » ......... R1 3264 / R7 3264, tranche 10,0 %
+  // ⚠️ NE PAS remplacer Mars par l'agression directe (±3) : « le siège
+  // engendre son agresseur » donne R1 2432 / R7 3456 et « son agresseur
+  // ou sa victime » R1 3072 / R7 7168 — ces deux-là sont structurellement
+  // biaisés vers R7, ils désigneraient un coupable par la forme du thème
+  // et non par ce qu'il contient. Vérifié exhaustivement le 28/08/26.
+  // Au banc uniquement, comme le précédent.
   { cle: 'inc_camp_mars_hors', nom: 'Camp · le siège engendre Mars d\'en face', icone: '⚔', teinte: '#fb7185',
     juste: 0, total: 0, note: 'idem, restreint aux maisons impaires — se tait sur ≈ 91 % des thèmes',
     verdict: function (t) {
