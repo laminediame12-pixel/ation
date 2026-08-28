@@ -14028,7 +14028,10 @@ var CAS_REFERENCE_V7 = [
     note: 'vainqueur donné le 28/08, juste · score non communiqué · format non précisé' },
   { nom: 'ViaRubeus', meres: ['via','rubeus','acquisitio','albus'],
     score: null, camp: 'R1', btts: null,
-    note: 'vainqueur donné le 28/08, juste · score non communiqué · format non précisé' }
+    note: 'vainqueur donné le 28/08, juste · score non communiqué · format non précisé' },
+  { nom: 'ConjCaput', meres: ['conjunctio','caput_draconis','albus','carcer'],
+    score: null, camp: 'R7', btts: null,
+    note: 'vainqueur donné le 28/08, FAUX (annoncé R1) · score non communiqué · format non précisé' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -14876,6 +14879,31 @@ var MOTEURS_CONDITIONNELS_V7 = [
   // Les deux lectures issues de la fouille du 28/08 (voir moteurCritereV7).
   // Elles ne votent pas : elles sont là pour être suivies, parce que les
   // écarts qui les distinguent sont dans le bruit sur quatorze cas.
+  // ─── LA SÉLECTION, PAS LA LECTURE (28/08/26 au soir) ───
+  // Sur ConjCaput, SEPT moteurs sur neuf ont trouvé le bon camp (R7) et
+  // le verdict affiché a dit R1 : la cascade met F4P4 en tête, et F4P4
+  // s'est trompé. C'est la démonstration en un cas de ce que la fouille
+  // annonçait — l'information est là, c'est le choix du porte-parole qui
+  // rate.
+  // Cette lecture-ci ne garde que les trois moteurs qui pèsent vraiment
+  // les sept critères et prend leur majorité. Mesurée sur les dix-neuf
+  // cas : 13/19, contre 12/19 pour le verdict affiché, pour la majorité
+  // des neuf et pour F4P4 seul. UN point d'écart — c'est trop peu pour
+  // rebrancher la cascade, assez pour la suivre au banc.
+  { cle: 'majorite_purs', nom: 'Majorité des 3 moteurs qui appliquent les critères', icone: '🎯', teinte: '#5eead4',
+    juste: 0, total: 0, note: 'F4P4 + sept critères + ancrage, à la majorité — 13/19',
+    verdict: function (t) {
+      var r1 = 0, r7 = 0, det = [];
+      MOTEURS_V7.forEach(function (m) {
+        if (m.cle !== 'f4p4' && m.cle !== 'sept_criteres' && m.cle !== 'ancrage') return;
+        var v = null;
+        try { v = m.verdict(t); } catch (e) { v = null; }
+        var c = v && v.camp ? v.camp : null;
+        if (c === 'R1') r1++; else if (c === 'R7') r7++;
+        det.push(m.cle + ':' + (c || '—'));
+      });
+      return { camp: r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null, detail: det.join(' · ') };
+    } },
   { cle: 'crit_sans_concordance', nom: 'Critères sans la concordance', icone: '🎯', teinte: '#67e8f9',
     juste: 0, total: 0, note: 'la concordance pèse ×10 et se trompe 4 fois sur 12 — mais la retirer seule dégrade (6/14)',
     verdict: function (t) { return moteurCritereV7(t, POIDS_SANS_CONCORDANCE_V7); } },
