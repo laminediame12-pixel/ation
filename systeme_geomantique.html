@@ -13630,6 +13630,8 @@ function casSauvegardesV7() {
       camp: g1 > g7 ? 'R1' : g7 > g1 ? 'R7' : 'nul',
       btts: g1 > 0 && g7 > 0,
       incident: e.realPenalty === 'yes' ? true : e.realPenalty === 'no' ? false : null,
+      incidentCamp: (e.realIncidentCamp === 'M1' || e.realIncidentCamp === 'M7')
+        ? e.realIncidentCamp : null,
       corners: /^\d{1,2}$/.test(String(e.realCorners || '')) ? parseInt(e.realCorners, 10) : null,
       cornersM1: /^\d{1,2}$/.test(String(e.realCornersM1 || '')) ? parseInt(e.realCornersM1, 10) : null,
       cornersM7: /^\d{1,2}$/.test(String(e.realCornersM7 || '')) ? parseInt(e.realCornersM7, 10) : null,
@@ -19921,6 +19923,15 @@ function renderCurrentList() {
         + '<option value="yes"' + (entry.realPenalty === 'yes' ? ' selected' : '') + '>Oui</option>'
         + '<option value="no"' + (entry.realPenalty === 'no' ? ' selected' : '') + '>Non</option>'
         + '</select>';
+      h += '<select onchange="setRealIncidentCamp(\'' + eid + '\', this.value)" '
+        + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;"'
+        + (entry.realPenalty === 'no' ? ' disabled' : '') + '>'
+        + '<option value=""' + (!entry.realIncidentCamp ? ' selected' : '') + '>Contre qui ?</option>'
+        + '<option value="M1"' + (entry.realIncidentCamp === 'M1' ? ' selected' : '') + '>'
+        + String(entry.team1 || 'M1').slice(0, 10) + '</option>'
+        + '<option value="M7"' + (entry.realIncidentCamp === 'M7' ? ' selected' : '') + '>'
+        + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
+        + '</select>';
       var champCorner = function (cote, val, ph) {
         return '<input type="number" min="0" max="30" step="1" placeholder="' + ph + '" value="' + (val || '') + '" '
           + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;'
@@ -20031,6 +20042,23 @@ function setRealCorners(id, value) {
   if (!entry) return;
   var v = String(value == null ? '' : value).trim();
   entry.realCorners = /^\d{1,2}$/.test(v) ? v : '';
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
+}
+
+// Le CAMP qui encaisse le rouge ou le penalty (28/08/26). Le champ
+// « Rouge/pénalty » ne stockait qu'un oui/non : la famille « Incident —
+// qui encaisse » du banc n'avait donc aucune donnée à part le cas
+// Bologna, écrit à la main. Sans ce champ, la piste du siège qui
+// engendre Mars ne pouvait jamais être jugée.
+function setRealIncidentCamp(id, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  entry.realIncidentCamp = (value === 'M1' || value === 'M7') ? value : '';
+  // Un camp désigné implique qu'il y a eu incident : on aligne le oui/non
+  // plutôt que de laisser les deux champs se contredire.
+  if (entry.realIncidentCamp && entry.realPenalty !== 'yes') entry.realPenalty = 'yes';
   setSavedList(list);
   setTimeout(renderCurrentList, 0);
 }
