@@ -13377,6 +13377,7 @@ function casSauvegardesV7() {
       camp: g1 > g7 ? 'R1' : g7 > g1 ? 'R7' : 'nul',
       btts: g1 > 0 && g7 > 0,
       incident: e.realPenalty === 'yes' ? true : e.realPenalty === 'no' ? false : null,
+      corners: /^\d{1,2}$/.test(String(e.realCorners || '')) ? parseInt(e.realCorners, 10) : null,
       saisi: true, note: 'saisi dans les thèmes sauvegardés'
     });
   });
@@ -13415,6 +13416,36 @@ function bancMoteursV7(force) {
     catch (e) { t = null; }
     return t;
   });
+  // Notation À TOLÉRANCE, pour les grandeurs numériques (les corners).
+  // Un moteur est juste sur un cas si l'écart au réel ne dépasse pas
+  // BANC_TOLERANCE_CORNERS_V7.
+  function passeNum(liste, attendu, tolerance) {
+    return liste.map(function (m) {
+      var juste = 0, total = 0, ecartTotal = 0;
+      var details = CAS.map(function (c, i) {
+        var reel = attendu(c);
+        if (reel === null || reel === undefined || !themes[i]) {
+          return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
+        }
+        var v = null;
+        try { v = m.verdict(themes[i]); } catch (e) { v = null; }
+        var dit = v && v.n != null ? v.n : null;
+        if (dit === null) {
+          return { cas: c.nom, dit: null, reel: reel, compte: false, ok: null };
+        }
+        total++;
+        var ecart = Math.abs(dit - reel);
+        ecartTotal += ecart;
+        var ok = ecart <= tolerance;
+        if (ok) juste++;
+        return { cas: c.nom, dit: dit, reel: reel, compte: true, ok: ok, ecart: ecart };
+      });
+      return { cle: m.cle, nom: m.nom, icone: m.icone, teinte: m.teinte,
+        juste: juste, total: total, details: details,
+        ecartMoyen: total ? Math.round(ecartTotal * 10 / total) / 10 : null };
+    });
+  }
+
   function passe(liste, champ, attendu) {
     return liste.map(function (m) {
       var juste = 0, total = 0;
@@ -13460,6 +13491,9 @@ function bancMoteursV7(force) {
     incident: passe(MOTEURS_INCIDENT_V7, 'oui', function (c) {
       return (typeof c.incident === 'boolean') ? c.incident : null;
     }),
+    corners: passeNum(MOTEURS_CORNERS_V7, function (c) {
+      return (typeof c.corners === 'number') ? c.corners : null;
+    }, BANC_TOLERANCE_CORNERS_V7),
     cas: CAS,
     nbArchive: CAS_REFERENCE_V7.length,
     nbSaisis: CAS.length - CAS_REFERENCE_V7.length
@@ -13591,6 +13625,51 @@ var MOTEURS_BTTS_V7 = [
   { cle: 'btts_score', nom: 'BTTS · « toujours oui »', icone: '➖', teinte: '#64748b',
     juste: 4, total: 9, note: 'témoin — le hasard à battre',
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// LES MOTEURS DE CORNERS — mis au banc le 28/08/26, demande d'Ellemine_D.
+//
+// Le banc ne savait noter que des ÉGALITÉS : un camp (R1/R7) ou un
+// booléen (les deux marquent, incident). Les corners sont un nombre : il
+// a fallu un troisième mode de notation, à TOLÉRANCE (passeNum).
+//
+// ⚠️ LA TOLÉRANCE EST UN CHOIX, PAS UNE MESURE. ±2 corners, la même que
+// la pastille verte du panneau des thèmes sauvegardés. Elle n'a été
+// calibrée sur aucun résultat — il n'y en a aucun. À revoir dès que le
+// banc aura des cas.
+//
+// ⚠️ ET LE TÉMOIN EST LÀ POUR ÇA. « Toujours 10 » ne regarde pas le
+// thème : c'est la moyenne d'un match de football. Si le moteur ne le
+// bat pas, il ne lit rien — exactement le rôle qu'a joué « BTTS toujours
+// oui » (4/9), qui a servi d'étalon aux deux autres lectures.
+// Pour information, distribution du total annoncé sur 311 thèmes :
+// 11 dans 46 % des cas, 4 dans 25 % — deux valeurs couvrent 71 % des
+// thèmes. Le moteur de corners hérite du générateur de score, qui est
+// lui-même bloqué sur un écart de 2 dans 91 % des cas.
+var BANC_TOLERANCE_CORNERS_V7 = 2;
+
+var MOTEURS_CORNERS_V7 = [
+  { cle: 'corners_moteur', nom: 'Corners · moteur affiché', icone: '🚩', teinte: '#38bdf8',
+    juste: 0, total: 0, note: 'estimerCornersV7 — mi-temps + doctrine Feu/Terre',
+    verdict: function (t) {
+      var v = getVerdictAfficheReel(t);
+      if (!v || v.cornersTotal == null) return { n: null, detail: '—' };
+      var c = v.corners || {};
+      return { n: v.cornersTotal,
+        detail: (c.ht1 != null ? c.ht1 + '+' + c.ht2 + '=' : '') + v.cornersTotal
+          + (c.doctrine ? ' · ' + c.doctrine : '') };
+    } },
+  { cle: 'corners_ouvert', nom: 'Corners · match ouvert ou fermé', icone: '🚪', teinte: '#a78bfa',
+    juste: 0, total: 0, note: 'lecture seule de l\'ouverture : ouvert 10, fermé 4',
+    verdict: function (t) {
+      var ouvert = false;
+      try { ouvert = !!determinerMatchOuvertV7(t); } catch (e) { return { n: null, detail: '—' }; }
+      return { n: ouvert ? 10 : 4, detail: ouvert ? 'ouvert → 10' : 'fermé → 4' };
+    } },
+  { cle: 'corners_temoin', nom: 'Corners · « toujours 10 »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — ne lit pas le thème, c\'est la moyenne d\'un match',
+    verdict: function () { return { n: 10, detail: 'réponse constante' }; } }
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -13938,13 +14017,20 @@ function renderBancPanel() {
           var t = (d.dit === null || d.dit === undefined) ? '—'
                 : (d.dit === true ? 'oui' : d.dit === false ? 'non' : d.dit);
           return '<td style="text-align:center; padding:3px 2px;" title="dit ' + t
-            + ' · réel ' + (d.reel === true ? 'oui' : d.reel === false ? 'non' : d.reel) + '">'
+            + ' · réel ' + (d.reel === true ? 'oui' : d.reel === false ? 'non' : d.reel)
+            + (d.ecart != null ? ' · écart ' + d.ecart : '') + '">'
             + '<span style="font-size:12px; color:' + (d.ok ? '#4ade80' : '#f87171') + ';">'
             + (d.ok ? '✔' : '✘') + '</span>'
-            + '<div style="font-size:8px; color:#64748b; line-height:1;">' + t + '</div></td>';
+            + '<div style="font-size:8px; color:#64748b; line-height:1;">' + t
+            + (d.ecart != null ? ' <span style="opacity:.7;">±' + d.ecart + '</span>' : '')
+            + '</div></td>';
         }).join('')
       + '<td style="text-align:center; padding:4px 6px; font-weight:800; font-size:11px; color:' + coul + ';">'
-      + m.juste + '/' + m.total + '</td></tr>';
+      + m.juste + '/' + m.total
+      + (m.ecartMoyen != null
+          ? '<div style="font-size:8px; font-weight:400; color:#64748b;">écart moy. '
+            + m.ecartMoyen + '</div>' : '')
+      + '</td></tr>';
   }
 
   var lignesCamp = b.camp.slice().sort(function (x, y) {
@@ -13959,6 +14045,10 @@ function renderBancPanel() {
     return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
   }).map(ligne).join('');
   var incidentSansCas = (b.incident || []).every(function (m) { return !m.total; });
+  var lignesCorners = (b.corners || []).slice().sort(function (x, y) {
+    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
+  }).map(ligne).join('');
+  var cornersSansCas = (b.corners || []).every(function (m) { return !m.total; });
 
   var reel = '<tr style="border-top:2px solid #0f766e;">'
     + '<td style="padding:4px 6px; font-size:10px; color:#5eead4; font-weight:700;">réel</td>'
@@ -13994,6 +14084,15 @@ function renderBancPanel() {
           + 'dans tes thèmes sauvegardés, ces trois lignes se rempliront seules</span>' : '')
     + '</td></tr>'
     + lignesInc
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Corners '
+    + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
+    + BANC_TOLERANCE_CORNERS_V7 + '</span>'
+    + (cornersSansCas
+        ? ' <span style="color:#fbbf24; font-weight:400;">— aucun cas : renseigne « Corners réels » '
+          + 'dans tes thèmes sauvegardés</span>' : '')
+    + '</td></tr>'
+    + lignesCorners
     + '</tbody></table></div>'
     + '<div style="margin-top:10px; padding:7px 9px; border:1px solid #7f1d1d; border-radius:8px; '
     + 'background:rgba(127,29,29,.12);">'
@@ -14007,7 +14106,11 @@ function renderBancPanel() {
     + 'Les colonnes <span style="color:#5eead4;">en vert</span> sont les matchs que tu as saisis : '
     + 'chaque « Score reel » renseigné dans un thème sauvegardé entre ici tout seul, et renote les '
     + 'moteurs sans qu\'on touche au code. '
-    + 'Un point gris = le cas ne compte pas pour ce moteur (un nul, ou un score inconnu). '
+    + 'Un point gris = le cas ne compte pas pour ce moteur (un nul, un score inconnu, '
+    + 'des corners non saisis). Sur les corners, « toujours 10 » ne lit pas le thème : c\'est la '
+    + 'moyenne d\'un match. Un moteur qui ne le bat pas ne lit rien — c\'est le rôle qu\'a joué '
+    + '« BTTS toujours oui » pour les deux autres lectures. La tolérance de ±'
+    + BANC_TOLERANCE_CORNERS_V7 + ' est un choix, calibré sur rien. '
     + 'Sept cas décisifs seulement : 5/7 ne se distingue pas du hasard (p ≈ 0,23), et le meilleur de huit '
     + 'moteurs est attendu haut par simple sélection. Ce tableau sert à VOIR UNE RÉGRESSION, pas à couronner '
     + 'un moteur. Il a été construit après en avoir manqué une : le 26/08, un changement d\'échelle dans '
