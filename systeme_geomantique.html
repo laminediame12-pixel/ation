@@ -13378,6 +13378,13 @@ function casSauvegardesV7() {
       btts: g1 > 0 && g7 > 0,
       incident: e.realPenalty === 'yes' ? true : e.realPenalty === 'no' ? false : null,
       corners: /^\d{1,2}$/.test(String(e.realCorners || '')) ? parseInt(e.realCorners, 10) : null,
+      cornersM1: /^\d{1,2}$/.test(String(e.realCornersM1 || '')) ? parseInt(e.realCornersM1, 10) : null,
+      cornersM7: /^\d{1,2}$/.test(String(e.realCornersM7 || '')) ? parseInt(e.realCornersM7, 10) : null,
+      cornersDominant: (function () {
+        var a = parseInt(e.realCornersM1, 10), b = parseInt(e.realCornersM7, 10);
+        if (isNaN(a) || isNaN(b) || a === b) return null;
+        return a > b ? 'R1' : 'R7';
+      })(),
       saisi: true, note: 'saisi dans les thèmes sauvegardés'
     });
   });
@@ -13494,6 +13501,9 @@ function bancMoteursV7(force) {
     corners: passeNum(MOTEURS_CORNERS_V7, function (c) {
       return (typeof c.corners === 'number') ? c.corners : null;
     }, BANC_TOLERANCE_CORNERS_V7),
+    cornersDom: passe(MOTEURS_CORNERS_DOM_V7, 'camp', function (c) {
+      return (c.cornersDominant === 'R1' || c.cornersDominant === 'R7') ? c.cornersDominant : null;
+    }),
     cas: CAS,
     nbArchive: CAS_REFERENCE_V7.length,
     nbSaisis: CAS.length - CAS_REFERENCE_V7.length
@@ -13648,6 +13658,33 @@ var MOTEURS_BTTS_V7 = [
 // thèmes. Le moteur de corners hérite du générateur de score, qui est
 // lui-même bloqué sur un écart de 2 dans 91 % des cas.
 var BANC_TOLERANCE_CORNERS_V7 = 2;
+
+// Le DOMINANT des corners — une égalité de camp, comme le vainqueur, et
+// non une distance. C'est la vraie question posée par Ellemine_D : le
+// total hérite du générateur de score, le dominant vient de la
+// domination du duel, qui est une lecture à part.
+// Le témoin ne lit pas le thème : il désigne toujours R1. Si les vraies
+// lectures ne le battent pas, elles ne lisent rien.
+var MOTEURS_CORNERS_DOM_V7 = [
+  { cle: 'corners_dom', nom: 'Corners · dominant (domination du duel)', icone: '🚩', teinte: '#4ade80',
+    juste: 0, total: 0, note: 'répartition sur domA/domB, bornée à 25/75',
+    verdict: function (t) {
+      var v = getVerdictAfficheReel(t);
+      if (!v || !v.cornersDominant) return { camp: null, detail: 'égalité' };
+      return { camp: v.cornersDominant === 'M1' ? 'R1' : 'R7',
+        detail: v.cornersM1 + ' / ' + v.cornersM7 + ' · part ' + (v.corners ? v.corners.partA + '%' : '—') };
+    } },
+  { cle: 'corners_dom_vainqueur', nom: 'Corners · le vainqueur domine', icone: '🏆', teinte: '#a78bfa',
+    juste: 0, total: 0, note: 'lecture naïve : celui qui gagne pousse le plus',
+    verdict: function (t) {
+      var v = getVerdictAfficheReel(t);
+      if (!v || !v.winner || v.winner === 'Nul') return { camp: null, detail: 'nul' };
+      return { camp: v.winner === 'M1' ? 'R1' : 'R7', detail: 'vainqueur ' + v.winner };
+    } },
+  { cle: 'corners_dom_temoin', nom: 'Corners · « toujours R1 »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
+    verdict: function () { return { camp: 'R1', detail: 'réponse constante' }; } }
+];
 
 var MOTEURS_CORNERS_V7 = [
   { cle: 'corners_moteur', nom: 'Corners · moteur affiché', icone: '🚩', teinte: '#38bdf8',
@@ -14049,6 +14086,10 @@ function renderBancPanel() {
     return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
   }).map(ligne).join('');
   var cornersSansCas = (b.corners || []).every(function (m) { return !m.total; });
+  var lignesCornersDom = (b.cornersDom || []).slice().sort(function (x, y) {
+    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
+  }).map(ligne).join('');
+  var cornersDomSansCas = (b.cornersDom || []).every(function (m) { return !m.total; });
 
   var reel = '<tr style="border-top:2px solid #0f766e;">'
     + '<td style="padding:4px 6px; font-size:10px; color:#5eead4; font-weight:700;">réel</td>'
@@ -14093,6 +14134,13 @@ function renderBancPanel() {
           + 'dans tes thèmes sauvegardés</span>' : '')
     + '</td></tr>'
     + lignesCorners
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Corners — qui domine'
+    + (cornersDomSansCas
+        ? ' <span style="color:#fbbf24; font-weight:400;">— aucun cas : il faut les DEUX côtés '
+          + 'saisis pour qu\'un dominant existe</span>' : '')
+    + '</td></tr>'
+    + lignesCornersDom
     + '</tbody></table></div>'
     + '<div style="margin-top:10px; padding:7px 9px; border:1px solid #7f1d1d; border-radius:8px; '
     + 'background:rgba(127,29,29,.12);">'
@@ -16773,7 +16821,20 @@ function determinerMatchOuvertV7(theme) {
 // -> peu de corners, mais au moins 3 dans le match.
 // 📚 doctrine nouvelle, non encore validée sur l'archive — prime sur le
 // calcul par défaut quand elle s'applique (comme BTTS 100%/défavorisé).
-function estimerCornersV7(theme, goalA, goalB, figR1, figR7) {
+// ─── RÉPARTITION PAR CAMP (28/08/26, demande d'Ellemine_D) ───
+// « les corners il faut faire les deux côtés pour chaque équipe, comme
+// ça on saura le dominant. »
+// Le total ne disait pas qui pousse. La répartition se fait sur la
+// DOMINATION du duel (domA/domB, le scoreNet), pas sur les buts : un
+// corner naît de la pression, pas du but. Bornée à 25/75 — même un camp
+// écrasé continue d'obtenir des corners, 0 n'a pas de sens sur un match.
+// ⚠️ La borne 0,25 est un choix de bon sens, calibrée sur rien. Le banc
+// note désormais le DOMINANT (une égalité de camp, comme le vainqueur)
+// à côté du total (une distance) : le dominant est la vraie question,
+// le total hérite du générateur de score et de ses défauts.
+var CORNERS_PART_MIN_V7 = 0.25;
+
+function estimerCornersV7(theme, goalA, goalB, figR1, figR7, domA, domB) {
   var ouvert = determinerMatchOuvertV7(theme);
   var ht1, ht2;
   if (ouvert) {
@@ -16804,7 +16865,18 @@ function estimerCornersV7(theme, goalA, goalB, figR1, figR7) {
     ht1 += Math.ceil(manque2 / 2); ht2 += Math.floor(manque2 / 2); total = ht1 + ht2;
   }
 
-  return { ouvert: ouvert, ht1: ht1, ht2: ht2, total: total, doctrine: doctrine };
+  // La part de chaque camp, sur la domination du duel.
+  var dA = Number(domA || 0), dB = Number(domB || 0);
+  var part = (dA + dB) > 0 ? dA / (dA + dB) : 0.5;
+  part = Math.min(1 - CORNERS_PART_MIN_V7, Math.max(CORNERS_PART_MIN_V7, part));
+  var cA = Math.round(total * part);
+  var cB = total - cA;
+  var dominant = cA > cB ? 'A' : cB > cA ? 'B' : null;
+
+  return { ouvert: ouvert, ht1: ht1, ht2: ht2, total: total, doctrine: doctrine,
+    campA: cA, campB: cB, dominant: dominant,
+    partA: Math.round(part * 100),
+    baseDomination: { a: dA, b: dB } };
 }
 
 // Règle Ellemine (08/07/26) : chaque signal distinct de
@@ -17030,7 +17102,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // indépendamment ici pour que la règle s'applique correctement dans
   // tous les cas, y compris les cartes M1/M7.
   var rotCorners = getRotationOrderFromRepos(theme[1]);
-  var corners = estimerCornersV7(theme, goalA, goalB, theme[rotCorners[0]], theme[rotCorners[6]]);
+  // domA/domB appartiennent à posA/posB, c'est-à-dire à labelA/labelB de
+  // CETTE carte : la répartition est donc cohérente avec ses étiquettes.
+  var corners = estimerCornersV7(theme, goalA, goalB, theme[rotCorners[0]], theme[rotCorners[6]], domA, domB);
   // ─── RÈGLE ELLEMINE (25/08/26) : « oriente sur la rotation » ───
   // Le BTTS se lit désormais sur les SIÈGES R1/R7 de la rotation, par
   // l'ouverture : une figure ouverte ou active aux deux sièges = les deux
@@ -17158,6 +17232,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
           : 'score brut')),
     bttsRaison: bttsDoctrine.raison,
     corners: corners,
+    cornersA: corners.campA, cornersB: corners.campB,
+    cornersDominant: corners.dominant === 'A' ? labelA
+      : corners.dominant === 'B' ? labelB : null,
     domPctA: domPct, domPctB: 100 - domPct,
     domA: domA, domB: domB,
     capaciteA: capaciteA, capaciteB: capaciteB, capaciteWinner: capaciteWinner,
@@ -17250,6 +17327,10 @@ function getVerdictAfficheReel(theme, favorite) {
     // confronter au nombre réel saisi dans les thèmes sauvegardés.
     cornersTotal: (carteR.corners && carteR.corners.total != null && carteR.corners.total !== '—')
       ? Number(carteR.corners.total) : null,
+    cornersM1: carteR.corners ? carteR.corners.campA : null,
+    cornersM7: carteR.corners ? carteR.corners.campB : null,
+    cornersDominant: carteR.cornersDominant === 'R1' ? 'M1'
+      : carteR.cornersDominant === 'R7' ? 'M7' : (carteR.cornersDominant || null),
     corners: carteR.corners || null,
     corrected: carteR.corrected, nulActif: nulActif
   };
@@ -17452,7 +17533,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'maisons sont toutes deux du camp 2, elle ne pourrait accuser que lui.</div>'
       + '</div>';
   }
-  html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 Cartons jaunes (estimé)</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)+'</b></div><div class="tek-note">'+(nulActif?'⚠️ Structure du nul prioritaire — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — le nul ne l’invalide pas.')+'</div>'+incHtml+'</div></div>';
+  html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 Cartons jaunes (estimé)</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)
+    +(corners.campA!=null?' &nbsp;·&nbsp; <span style="color:#7dd3fc;">'+esc(teamA)+' '+esc(corners.campA)+'</span> / <span style="color:#fdba74;">'+esc(teamB)+' '+esc(corners.campB)+'</span>':'')
+    +(card&&card.cornersDominant?' &nbsp;→&nbsp; <span style="color:#4ade80;">dominant '+esc(card.cornersDominant==='R1'?teamA:teamB)+'</span>':'')
+    +'</b></div><div class="tek-note">'+(nulActif?'⚠️ Structure du nul prioritaire — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — le nul ne l’invalide pas.')+'</div>'+incHtml+'</div></div>';
   html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
   html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
   html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
@@ -19255,15 +19339,20 @@ function renderCurrentList() {
         + '<option value="yes"' + (entry.realPenalty === 'yes' ? ' selected' : '') + '>Oui</option>'
         + '<option value="no"' + (entry.realPenalty === 'no' ? ' selected' : '') + '>Non</option>'
         + '</select>';
-      h += '<input type="number" min="0" max="30" step="1" placeholder="Corners réels" value="' + (entry.realCorners || '') + '" ';
-      h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:110px;" ';
-      h += 'onchange="setRealCorners(\'' + eid + '\', this.value)" />';
+      var champCorner = function (cote, val, ph) {
+        return '<input type="number" min="0" max="30" step="1" placeholder="' + ph + '" value="' + (val || '') + '" '
+          + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;'
+          + 'color:#e2e8f0;font-size:12px;width:92px;" '
+          + 'onchange="setRealCornersCamp(\'' + eid + '\', \'' + cote + '\', this.value)" />';
+      };
+      h += champCorner('A', entry.realCornersM1, 'Corners ' + (entry.team1 || 'éq.1').slice(0, 7));
+      h += champCorner('B', entry.realCornersM7, 'Corners ' + (entry.team2 || 'éq.2').slice(0, 7));
       if (entry.realCorners) {
-        var cornPred = null;
+        var cornPred = null, vcRef = null;
         try {
           var tc = {}; for (var pc = 1; pc <= 16; pc++) tc[pc] = entry.theme[pc] || entry.theme[String(pc)];
-          var vc = getVerdictAfficheReel(tc);
-          cornPred = vc && vc.cornersTotal != null ? vc.cornersTotal : null;
+          vcRef = getVerdictAfficheReel(tc);
+          cornPred = vcRef && vcRef.cornersTotal != null ? vcRef.cornersTotal : null;
         } catch (e) { cornPred = null; }
         if (cornPred != null) {
           var ecartC = Math.abs(cornPred - parseInt(entry.realCorners, 10));
@@ -19271,6 +19360,18 @@ function renderCurrentList() {
           h += '<span style="background:' + cc + '22;color:' + cc + ';border:1px solid ' + cc
             + ';border-radius:6px;padding:3px 8px;font-size:11px;font-weight:bold;">corners prédits '
             + cornPred + ' · écart ' + ecartC + '</span>';
+          // le dominant, quand les deux côtés sont saisis
+          var ra = parseInt(entry.realCornersM1, 10), rb = parseInt(entry.realCornersM7, 10);
+          if (!isNaN(ra) && !isNaN(rb) && vcRef && vcRef.cornersDominant) {
+            var domReel = ra > rb ? 'M1' : rb > ra ? 'M7' : null;
+            var okDom = domReel && domReel === vcRef.cornersDominant;
+            var dc = domReel === null ? '#64748b' : okDom ? '#22c55e' : '#ef4444';
+            h += '<span style="background:' + dc + '22;color:' + dc + ';border:1px solid ' + dc
+              + ';border-radius:6px;padding:3px 8px;font-size:11px;font-weight:bold;">dominant prédit '
+              + (vcRef.cornersDominant === 'M1' ? (entry.team1 || 'éq.1') : (entry.team2 || 'éq.2'))
+              + ' · réel ' + (domReel === null ? 'égalité' : domReel === 'M1' ? (entry.team1 || 'éq.1') : (entry.team2 || 'éq.2'))
+              + (domReel === null ? '' : okDom ? ' ✔' : ' ✘') + '</span>';
+          }
         }
       }
       if (entry.realScore) {
@@ -19318,8 +19419,30 @@ function evalCoherence(entry) {
 // n'ont jamais été confrontées à un seul résultat.
 // Il est désormais stocké sur l'entrée, exactement comme le score, et le
 // banc le rejoue.
-// Le nombre de corners réel — même logique que le score et la pénalité :
-// la carte annonce déjà un total de corners, il n'était comparé à rien.
+// Les corners réels — un côté par équipe (28/08/26, Ellemine_D : « il
+// faut faire les deux côtés pour chaque équipe, comme ça on saura le
+// dominant »). Le total reste stocké dans realCorners, dérivé de la
+// somme, pour que les thèmes déjà saisis avec un seul total continuent
+// de compter au banc.
+function setRealCornersCamp(id, cote, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  var v = String(value == null ? '' : value).trim();
+  var ok = /^\d{1,2}$/.test(v) ? v : '';
+  if (cote === 'A') entry.realCornersM1 = ok; else entry.realCornersM7 = ok;
+  var a = entry.realCornersM1, b = entry.realCornersM7;
+  if (/^\d{1,2}$/.test(String(a || '')) && /^\d{1,2}$/.test(String(b || ''))) {
+    entry.realCorners = String(parseInt(a, 10) + parseInt(b, 10));
+  } else if (!a && !b) {
+    entry.realCorners = '';
+  }
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
+}
+
+// Conservée : un total saisi seul reste valable pour la ligne « total »
+// du banc, il ne dit simplement rien du dominant.
 function setRealCorners(id, value) {
   var list = getSavedList();
   var entry = list.filter(function (e) { return e.id === id; })[0];
