@@ -13873,7 +13873,31 @@ var CAS_REFERENCE_V7 = [
     score: '1-2', camp: 'R7', btts: true, incident: true,
     incidentCamp: 'M1', penaltyCamp: 'M1',
     note: 'annoncé AVANT le résultat · camp ✘ (dit R1) · score ✘ · '
-      + 'rouge ET penalty côté R1 — deux naissances de Mars, M1 et M12, dans des camps opposés' }
+      + 'rouge ET penalty côté R1 — deux naissances de Mars, M1 et M12, dans des camps opposés' },
+  // ─── DEUX THÈMES SOUMIS LE 28/08/26, VAINQUEUR CONNU, SCORE NON ───
+  // Ellemine_D a demandé le vainqueur seul, puis a corrigé : le premier
+  // était faux, le second juste. Score, BTTS, corners et incident ne sont
+  // pas renseignés — ces cas ne comptent QUE pour la famille « camp ».
+  //
+  // ⚠️ LE PREMIER EST LE CAS LE PLUS INSTRUCTIF DE L'ARCHIVE. Les NEUF
+  // moteurs ont dit R7, à l'unanimité — 9 contre 0 — et le réel est R1.
+  // L'unanimité n'est donc pas une garantie : c'est la réponse à la
+  // question posée le 28/08 (« un thème 100 % valide, pour qu'on ne
+  // puisse pas douter du verdict »). Ici il n'y avait aucun désaccord à
+  // arbitrer, et tout le monde s'est trompé ensemble.
+  // Ce cas est à boucles DIFFÉRENTES (k=5) et sans centrale adverse dans
+  // le camp : la règle du 28/08 n'y est pour rien, l'ancienne lecture dit
+  // R7 elle aussi.
+  { nom: 'ConjVia', meres: ['conjunctio','via','puella','puer'],
+    score: null, camp: 'R1', btts: null,
+    note: 'vainqueur donné le 28/08, faux · les 9 moteurs disaient R7 à l\'unanimité' },
+  // Le second : même boucle (k=8), et les deux chefs sont le front du
+  // front l'un de l'autre — la contamination maximale hors k=0. La règle
+  // du 28/08 ne change pas la réponse ici non plus (ancienne et nouvelle
+  // lecture disent R1).
+  { nom: 'LaetAlbus', meres: ['laetitia','albus','caput_draconis','puella'],
+    score: null, camp: 'R1', btts: null,
+    note: 'vainqueur donné le 28/08, juste · sièges et axes disaient R7' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
