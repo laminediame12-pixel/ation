@@ -14556,6 +14556,84 @@ function moteurSeptCriteresV7(theme) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// CE QUE CHAQUE CRITÈRE VAUT, MESURÉ UN PAR UN (28/08/26)
+// « Creuse. » — Ellemine_D. Chaque critère du profil pris SEUL, appliqué
+// aux cinq rôles du camp moins l'antagoniste, sur les quatorze cas au
+// vainqueur connu :
+//
+//   critère          poids actuel   juste
+//   déplacement            —         9/14   ← le meilleur, jamais muet
+//   cohabitation          ×2         8/10   (4 muets) — meilleur taux
+//   multiplicité         ×1,5        7/13
+//   alignement actif      ×5         7/13
+//   maison natale         ×6         6/9    (5 muets)
+//   environnement        ×0,3        4/14
+//   CONCORDANCE          ×10         4/12   ← LE PIRE, ET LE PLUS LOURD
+//
+// Le critère qui pèse dix fois plus que les autres est celui qui se
+// trompe le plus.
+//
+// Sept pondérations du camp ont ensuite été comparées (mesure refaite
+// après correction d'un cache fautif qui mélangeait les thèmes — les
+// premiers chiffres étaient faux, ceux-ci sont les bons) :
+//   les sept critères, poids du fichier (référence) ....... 8/14
+//   sans la concordance SEULE ............................. 6/14
+//   sans la concordance NI l'environnement ................ 9/14
+//   déplacement + cohabitation ............................ 8/13 (1 muet)
+//   déplacement + cohabitation + maison natale ............ 9/13 (1 muet)
+//   cohabitation seule .................................... 9/12 (2 muets)
+//   déplacement seul ...................................... 6/12 (2 muets)
+// Retirer la concordance seule DÉGRADE ; la retirer avec l'environnement
+// — les deux plus faibles — donne le meilleur score à couverture
+// complète. La cohabitation seule fait mieux que tous les moteurs du
+// fichier, mais se tait deux fois.
+//
+// ⚠️ QUATORZE CAS ET SEPT PONDÉRATIONS ESSAYÉES : ces écarts (6, 8 ou 9
+// sur 12 à 14) sont dans le bruit, et rien n'est démontré. Je ne
+// re-pondère donc PAS le profil — ce serait ajuster les poids sur
+// l'archive, exactement le défaut qu'on reproche aux autres. Les trois
+// lectures candidates entrent au banc pour être suivies match après
+// match ; on tranchera vers vingt-cinq cas.
+//
+// Deux autres résultats de la même fouille, à garder :
+// · le système n'a AUCUN biais de camp — réel R1 7 / R7 7, annoncé
+//   R1 7 / R7 7, et 4/7 de justesse de chaque côté ;
+// · sur treize cas sur quatorze, au moins un moteur trouve le bon camp
+//   (le seul où aucun n'y arrive est ConjVia). L'information n'est donc
+//   pas absente : c'est la sélection qui échoue, pas la lecture.
+// ═══════════════════════════════════════════════════════════════
+function moteurCritereV7(theme, poids) {
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { rot = null; }
+  if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
+  function meilleur(f) {
+    if (!f) return 0;
+    var occ = trouverFigV7(f, theme) || [], best = null;
+    occ.forEach(function (o) {
+      var pr = null;
+      try { pr = profilFigureMaison(f, o.pos, theme); } catch (e) { pr = null; }
+      if (!pr) return;
+      var v = 0;
+      Object.keys(poids).forEach(function (c) { v += (pr.parts[c] || 0) * poids[c]; });
+      if (best === null || v > best) best = v;
+    });
+    return best === null ? 0 : best;
+  }
+  function camp(X) {
+    return meilleur(X) + meilleur(FRONT_V7[X]) + meilleur(BOUCLIER_V7[X])
+         + meilleur(BINOMES_V7[X]) + meilleur(frontDuFrontV7(X)) - meilleur(ANTAGONISTES_V7[X]);
+  }
+  var a = Math.round(camp(rot.figR1) * 100) / 100, b = Math.round(camp(rot.figR7) * 100) / 100;
+  return { camp: a > b ? 'R1' : b > a ? 'R7' : null, detail: 'R1 ' + a + ' contre R7 ' + b };
+}
+var POIDS_SANS_CONCORDANCE_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
+  environnement: 1, cohabitation: 1, activation: 1, maisonNatale: 1 };
+var POIDS_COHABITATION_SEULE_V7 = { concordance: 0, deplacement: 0, multiplicite: 0,
+  environnement: 0, cohabitation: 1, activation: 0, maisonNatale: 0 };
+var POIDS_SANS_CONC_ENV_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
+  environnement: 0, cohabitation: 1, activation: 1, maisonNatale: 1 };
+
 // Le panneau : les cinq rôles de chaque camp, avec leur valeur aux sept
 // critères, et l'antagoniste retranché. Rien d'autre n'entre dans le
 // total — c'est vérifiable ligne à ligne.
@@ -14771,6 +14849,18 @@ var MOTEURS_CONDITIONNELS_V7 = [
   // mesurer ce que la nouvelle règle coûte ou rapporte, cas par cas.
   // Sur les dix cas réels : ancienne 6/10, nouvelle 5/10, un seul cas les
   // sépare (Juventus). C'est trop peu pour trancher, d'où sa présence.
+  // Les deux lectures issues de la fouille du 28/08 (voir moteurCritereV7).
+  // Elles ne votent pas : elles sont là pour être suivies, parce que les
+  // écarts qui les distinguent sont dans le bruit sur quatorze cas.
+  { cle: 'crit_sans_concordance', nom: 'Critères sans la concordance', icone: '🎯', teinte: '#67e8f9',
+    juste: 0, total: 0, note: 'la concordance pèse ×10 et se trompe 4 fois sur 12 — mais la retirer seule dégrade (6/14)',
+    verdict: function (t) { return moteurCritereV7(t, POIDS_SANS_CONCORDANCE_V7); } },
+  { cle: 'crit_sans_conc_env', nom: 'Critères sans concordance ni environnement', icone: '🎯', teinte: '#22d3ee',
+    juste: 0, total: 0, note: 'les deux critères les plus faibles retirés — meilleur score à couverture complète',
+    verdict: function (t) { return moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); } },
+  { cle: 'crit_cohabitation', nom: 'Cohabitation seule', icone: '🎯', teinte: '#a5f3fc',
+    juste: 0, total: 0, note: 'le meilleur critère pris isolément — 9/12 à la mesure du 28/08',
+    verdict: function (t) { return moteurCritereV7(t, POIDS_COHABITATION_SEULE_V7); } },
   { cle: 'f4p4_avec_adverse', nom: 'F4P4 — ancienne lecture (le rival compte dans les pôles)', icone: '🧭', teinte: '#c084fc',
     juste: 0, total: 0,
     note: 'à comparer au F4P4 courant : leur écart isole exactement l\'effet de la règle',
