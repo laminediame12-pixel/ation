@@ -12041,7 +12041,54 @@ function victimeV7(fig) {
   return i < 0 ? null : FIGS_V7[(i + 3) % 16];
 }
 
-function frappeV7(fig, campAdverse, theme) {
+// ═══════════════════════════════════════════════════════════════
+// LA DUALITÉ DES CAMPS — la loi qu'Ellemine_D m'a demandé d'INSISTER.
+//
+// « chaque figure devant une figure est une figure de front. Laetitia est
+// la figure de front de Puella. Conséquence : Laetitia est la figure de
+// front du figure de front de Carcer, et LE BINÔME DE LA FIGURE DE FRONT
+// DU FIGURE DE FRONT EST LE PROTECTEUR. » (28/08/26)
+//
+// VÉRIFIÉ SUR LES SEIZE FIGURES, SANS EXCEPTION :
+//     binôme( front du front (X) )      = protecteur(X)     16/16
+//     protecteur( front du front (X) )  = binôme(X)         16/16
+//     front( front (X) )                = front du front(X) 16/16
+// Les deux premières sont la MÊME loi lue des deux sens — front² = +8,
+// binôme = +2, protecteur = +10 : +8+2 = +10, et +8+10 = +18 = +2 (mod 16).
+// Sur Carcer : front(Carcer) = Puella, front(Puella) = Laetitia,
+// binôme(Laetitia) = Albus = protecteur(Carcer). Exactement ce qu'il dit.
+//
+// ET CE QUE ÇA ENTRAÎNE — LA LOI QUE J'AI TROUVÉE EN LA VÉRIFIANT.
+// Le camp d'une figure frappe le camp de sa victime RÔLE POUR RÔLE :
+//     centrale → centrale · protecteur → protecteur · front → front
+//     binôme → binôme · front du front → front du front
+// 80 correspondances sur 80. Démonstration : victime = +3 et le camp est
+// {X, X+10, X+4, X+2, X+8} ; ajouter 3 à chaque membre donne exactement
+// le camp de X+3. Le décalage est le même pour les cinq rôles.
+// Sur l'exemple d'Ellemine_D : Carcer → Cauda, Albus → Rubeus,
+// Puella → Puer (« Puella neutralise la figure de front de Cauda »),
+// Fortuna Major → Acquisitio, Laetitia → Via. Les cinq membres de la
+// boucle B tombent sur les cinq membres de la boucle A, dans l'ordre.
+//
+// C'est le fondement de la dualité R1/R7 : deux camps ne se rencontrent
+// jamais en désordre, ils s'affrontent poste par poste. Ce qui les
+// départage n'est donc pas QUI frappe QUI — c'est fixé — mais les
+// critères d'analyse de chaque figure à sa place.
+var ROLES_CAMP_V7 = ['centrale', 'protecteur', 'front', 'binôme', 'front du front'];
+
+function campDeV7(fig) {
+  if (!fig) return [];
+  return [fig, BOUCLIER_V7[fig], FRONT_V7[fig], BINOMES_V7[fig], frontDuFrontV7(fig)];
+}
+
+// Le rôle qu'occupe `cible` dans le camp de `centraleAdverse`, ou null.
+function roleDansCampV7(cible, centraleAdverse) {
+  var c = campDeV7(centraleAdverse);
+  var i = c.indexOf(cible);
+  return i >= 0 ? ROLES_CAMP_V7[i] : null;
+}
+
+function frappeV7(fig, campAdverse, theme, centraleAdverse) {
   if (!fig) return null;
   const cible = victimeV7(fig);
   const a = analyseFigureV7(fig, theme);
@@ -12056,8 +12103,14 @@ function frappeV7(fig, campAdverse, theme) {
     // une frappe ne compte que si elle touche le camp d'en face ET qu'elle
     // l'emporte sur ce qu'elle vise
     effective: viseCamp && marge > 0,
+    // Le rôle touché en face. Par la loi de dualité, une centrale frappe
+    // une centrale, un front un front, etc. — l'afficher rend la doctrine
+    // lisible au lieu de la laisser implicite.
+    roleCible: roleDansCampV7(cible, centraleAdverse),
     resume: (FL[fig] || fig) + ' frappe ' + (FL[cible] || cible)
-      + (viseCamp ? ' — pôle adverse' : ' — hors camp')
+      + (viseCamp
+          ? ' — ' + (roleDansCampV7(cible, centraleAdverse) || 'pôle') + ' adverse'
+          : ' — hors camp')
       + ' · ' + (a ? a.profil : 0) + ' contre ' + (c ? c.profil : 0)
       + (marge > 0 ? ' → PORTE' : ' → repoussée')
   };
@@ -12089,12 +12142,9 @@ function reseauF4P4V7(fig, siege, theme, figAdverse) {
   const solides = poles.filter(function (p) { return p.solide; }).length;
   const solidesAdverse = adverse ? adverse.poles.filter(function (p) { return p.solide; }).length : 0;
   // Le sens offensif : ce que chacun de mes cinq membres frappe.
-  const campAdv = figAdverse
-    ? [figAdverse, BOUCLIER_V7[figAdverse], FRONT_V7[figAdverse],
-       BINOMES_V7[figAdverse], frontDuFrontV7(figAdverse)]
-    : [];
+  const campAdv = campDeV7(figAdverse);
   const frappes = [centrale].concat(poles).map(function (p) {
-    const f = frappeV7(p.fig, campAdv, theme);
+    const f = frappeV7(p.fig, campAdv, theme, figAdverse);
     if (f) f.role = p.role;
     return f;
   }).filter(Boolean);
