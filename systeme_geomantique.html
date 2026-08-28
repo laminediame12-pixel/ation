@@ -14014,7 +14014,18 @@ var CAS_REFERENCE_V7 = [
   // bruit. À resurveiller quand il y en aura une dizaine.
   { nom: 'PuerCaput', meres: ['puer','puella','caput_draconis','puella'],
     score: null, camp: 'R1', btts: null, esport: true,
-    note: '⚡ e-sport · vainqueur donné le 28/08, juste · score non communiqué' }
+    note: '⚡ e-sport · vainqueur donné le 28/08, juste · score non communiqué' },
+  // ─── 28/08/26, DEUX THÈMES DE PLUS, LES DEUX VAINQUEURS JUSTES ───
+  // Vainqueurs annoncés puis confirmés (« exact les deux »). Scores non
+  // communiqués : ces cas ne comptent que pour la famille « camp ». Le
+  // format (réel ou e-sport) n'a pas été précisé — ils sont donc comptés
+  // hors e-sport par défaut, ce qui est une hypothèse, pas une donnée.
+  { nom: 'CaputAcq', meres: ['caput_draconis','acquisitio','amissio','via'],
+    score: null, camp: 'R1', btts: null,
+    note: 'vainqueur donné le 28/08, juste · score non communiqué · format non précisé' },
+  { nom: 'CarcerAcq', meres: ['carcer','acquisitio','via','rubeus'],
+    score: null, camp: 'R7', btts: null,
+    note: 'vainqueur donné le 28/08, juste · score non communiqué · format non précisé' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
