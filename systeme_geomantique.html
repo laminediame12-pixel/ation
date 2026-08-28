@@ -14303,6 +14303,47 @@ function campNaissancesMarsV7(theme, tourne) {
   return { camp: null, detail: 'naissances des deux côtés : ' + dit };
 }
 
+// ─── BRANCHÉ À L'ÉCRAN LE 28/08/26, SUR DEMANDE D'ELLEMINE_D ───
+// Le camp de l'incident affiché ne vient plus du seul détecteur de
+// signaux : il vient d'abord des NAISSANCES DE MARS, avec le détecteur
+// en repli. Cascade :
+//   1. les deux repères (fixe et tourné) désignent le même camp → lui ;
+//   2. sinon le repère fixe désigne un camp → lui (c'est le repère
+//      qu'utilise déjà le reste du code d'incident) ;
+//   3. sinon → le détecteur de signaux, comme avant.
+// Mesuré sur les deux seuls cas réels : la cascade donne M1 sur Bologna
+// (les deux repères d'accord) et M1 sur le 27/08 (les naissances se
+// contredisent, le détecteur reprend la main), soit 2/2 contre 1/2 pour
+// le détecteur seul, qui se trompait sur Bologna.
+// ⚠️ DEUX CAS. Et les trois incidents réels connus sont tous côté camp 1,
+// où le témoin « toujours M1 » fait le même score. Ce branchement ne
+// change QUE le camp désigné : il ne touche ni au « y a-t-il incident »
+// (les naissances ne savent pas détecter : 88 % des thèmes en ont au
+// moins une), ni au vainqueur, ni au score.
+function campIncidentAfficheV7(theme, detect) {
+  var d = detect || {};
+  var nais = naissancesMarsV7(theme);
+  if (nais.length) {
+    var fixe = campNaissancesMarsV7(theme, false);
+    var tour = campNaissancesMarsV7(theme, true);
+    if (fixe.camp && fixe.camp === tour.camp) {
+      return { camp: fixe.camp, source: 'naissance de Mars, les deux repères d\'accord',
+        resume: 'incident porté CONTRE ' + fixe.camp + ' — ' + fixe.detail
+          + ' (repère fixe et repère tourné d\'accord)' };
+    }
+    if (fixe.camp) {
+      return { camp: fixe.camp, source: 'naissance de Mars, repère fixe',
+        resume: 'incident porté CONTRE ' + fixe.camp + ' — ' + fixe.detail
+          + ' (repère tourné : ' + (tour.camp || 'ne tranche pas') + ')' };
+    }
+  }
+  return { camp: d.camp || null, source: 'détecteur de signaux',
+    resume: (d.campResume || '')
+      + (nais.length ? ' · les naissances de Mars ne tranchent pas (' + nais.map(function (x) {
+          return 'M' + x.maison;
+        }).join(', ') + ')' : ' · aucune naissance de Mars') };
+}
+
 // Qui CONCÈDE le penalty. Famille distincte du carton rouge depuis le
 // 27/08 : un même match peut donner un rouge à un camp et un penalty à
 // l'autre, et une seule case « contre qui » ne pouvait pas le dire.
@@ -14383,8 +14424,17 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
       if (a && b) return { camp: null, detail: 'les deux engendrent Mars hors camp' };
       return { camp: null, detail: 'aucun siège n\'engendre Mars depuis une maison impaire' };
     } },
-  { cle: 'inc_camp_detecteur', nom: 'Camp · détecteur de signaux (affiché)', icone: '⚠', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'ce que l\'application montre aujourd\'hui',
+  { cle: 'inc_camp_affiche', nom: 'Camp · ce que l\'application AFFICHE', icone: '📺', teinte: '#a78bfa',
+    juste: 0, total: 0, note: 'cascade branchée le 28/08 : naissances de Mars, puis détecteur en repli',
+    verdict: function (t) {
+      var orderR = getRotationOrderFromRepos(t[1]);
+      var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
+        calculerButsCamp(t[orderR[6]], t), orderR[0], orderR[6]);
+      var c = campIncidentAfficheV7(t, d);
+      return { camp: c.camp || null, detail: c.source + ' — ' + c.resume };
+    } },
+  { cle: 'inc_camp_detecteur', nom: 'Camp · détecteur de signaux seul (ancien affichage)', icone: '⚠', teinte: '#fb923c',
+    juste: 0, total: 0, note: 'ce que l\'application montrait avant le 28/08',
     verdict: function (t) {
       var orderR = getRotationOrderFromRepos(t[1]);
       var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
@@ -17881,6 +17931,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // suite sur le même thème via estimerCartonsJaunesV7 puis incidentDetect).
   var incidentDetect = detectIncidentChaotique(theme, campA, campB, posA, posB);
   var niveauIncident = calculerNiveauIncidentV7(incidentDetect.signals);
+  // Le camp affiché passe par la cascade des naissances de Mars (28/08/26).
+  var campIncidentAffiche = campIncidentAfficheV7(theme, incidentDetect);
   // CORRIGÉ (21/08/26) : la règle corners d'Ellemine porte sur R1/R7
   // (positions de rotation), pas sur posA/posB — qui valent parfois M1/M7
   // fixe selon l'appelant (ex. carte-verdict-m). On calcule R1/R7
@@ -18021,8 +18073,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // ─── LE CAMP QUI ENCAISSE, EN DONNÉE (27/08/26) ───
     // Avant, l'information n'existait que noyée dans le texte d'un
     // libellé. Elle remonte maintenant jusqu'à l'écran.
-    incidentCamp: incidentDetect.camp || null,
-    incidentCampResume: incidentDetect.campResume || null,
+    incidentCamp: campIncidentAffiche.camp || null,
+    incidentCampResume: campIncidentAffiche.resume || incidentDetect.campResume || null,
+    incidentCampSource: campIncidentAffiche.source || null,
     incidentSignaux: incidentDetect.signals || [],
     cartonsJaunes: incidentDetect.signals.length,
     incidentPct: niveauIncident.pct,
@@ -18153,6 +18206,7 @@ function getVerdictAfficheReel(theme, favorite) {
     },
     incidentPct: carteR.incidentPct, incidentNiveau: carteR.incidentNiveau,
     incidentCamp: carteR.incidentCamp || null,
+    incidentCampSource: carteR.incidentCampSource || null,
     // Le total de corners annoncé — exposé le 27/08/26 pour pouvoir le
     // confronter au nombre réel saisi dans les thèmes sauvegardés.
     cornersTotal: (carteR.corners && carteR.corners.total != null && carteR.corners.total !== '—')
@@ -18258,7 +18312,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var penalty=card&&card.penaltyRouge!=null?(card.penaltyRouge?'Oui':'Non'):'—';
   if (card && card.incidentPct > 0) {
     penalty = (card.penaltyRouge?'Oui':'Non') + ' — ' + card.incidentNiveau + ' (' + card.incidentPct + '%)'
-      + (card.incidentCamp ? ' · CONTRE ' + card.incidentCamp : ' · camp non désigné')
+      + (card.incidentCamp ? ' · CONTRE ' + card.incidentCamp
+          + (card.incidentCampSource ? ' [' + card.incidentCampSource + ']' : '') : ' · camp non désigné')
       + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '');
   }
   var yellow=card&&card.cartonsJaunes!=null?card.cartonsJaunes:'—';
