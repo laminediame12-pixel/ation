@@ -14297,7 +14297,22 @@ var CAS_REFERENCE_V7 = [
   // tirée seule, et il ne faut pas essayer.
   { nom: 'CarcAlbus', meres: ['carcer','albus','conjunctio','rubeus'],
     score: '0-0', camp: 'nul', btts: false,
-    note: 'NUL 0-0 du 14/02/26 · annoncé R7 3-5 ✘ (huit buts pour zéro) · R1 Albus en M10 ANGULAIRE — les 8 moteurs de nul muets, la lecture par la maison prend son premier vrai coup' }
+    note: 'NUL 0-0 du 14/02/26 · annoncé R7 3-5 ✘ (huit buts pour zéro) · R1 Albus en M10 ANGULAIRE — les 8 moteurs de nul muets, la lecture par la maison prend son premier vrai coup' },
+  // ─── 29/08/26 — Fortuna Major · Conjonctio · Laetitia · Puella, NUL ───
+  // Cinquième nul. Score exact non communiqué, le camp l'est : nul.
+  // C'est le thème sur lequel Ellemine_D a demandé le verdict de la
+  // TABLE DES PÔLES seule. Elle a répondu NUL, et elle a vu juste — son
+  // seul vrai succès sur un nul avec AmisPuer. R1 = Rubeus, R7 =
+  // Conjonctio, décalage +4 : MÊME BOUCLE, et c'est là que le moteur
+  // sait travailler. C'est ce cas qui a fait naître la doctrine des
+  // deux portes (voir nulDeuxPortesV7).
+  // ⚠️ +4 (le front) n'est vu que sur CE nul : la porte élargie
+  // {+2, +4} donne 5 nuls sur 5, mais son second battant tient sur un
+  // cas unique. Ne pas le confondre avec +2, qui a été prédit puis
+  // confirmé hors échantillon.
+  { nom: 'FortMajConj', meres: ['fortuna_major','conjunctio','laetitia','puella'],
+    score: null, camp: 'nul',
+    note: 'NUL · vu juste par la TABLE DES PÔLES (même boucle, +4) — le cas fondateur de la doctrine des deux portes' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -15751,6 +15766,82 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 // 3 nuls sur 4, jamais le quatrième. Son silence ne prouve rien — c'est
 // un outil pour OSER quand il parle, pas pour se rassurer quand il se
 // tait.
+// ═══════════════════════════════════════════════════════════════
+// LE NUL A DEUX PORTES (29/08/26) — doctrine d'Ellemine_D
+//
+// « La table des pôles a vu juste sur le premier, sauf le dernier où R1
+// et R7 ne partagent pas la même boucle. Conséquence : la manière dont
+// le nul doit être opéré dans les deux cas doit être différente. »
+//
+// IL A RAISON, ET C'EST ÉCRIT DANS LE CODE LUI-MÊME. Dans tablePolesV7,
+// la ligne « nul = true » n'existe QUE dans la branche if (memeBoucle).
+// Quand R1 et R7 sont en boucles opposées, ce moteur ne PEUT PAS
+// annoncer un nul, quoi qu'il voie. Mesuré sur les 30 cas au camp connu :
+//   même boucle ...... 13 cas · table juste 7/13 · annonce NUL 3 fois,
+//                      juste 2 fois, sur 3 vrais nuls du groupe
+//   boucles opposées . 17 cas · table juste 6/17 · annonce NUL 0 fois,
+//                      alors que le groupe contient 2 vrais nuls
+// Les deux nuls que rien n'attrapait (CaputPuella 2-2, CarcAlbus 0-0)
+// sont exactement les deux nuls de la branche opposée. Ils n'étaient pas
+// imprévisibles : ils étaient dans l'angle mort d'une règle écrite pour
+// l'autre branche.
+//
+// LA SECONDE PORTE. Dans la branche « boucles opposées », le décalage
+// R1→R7 des 17 cas se répartit ainsi :
+//   +1 → 6 cas · +3 → 2 · +5 → 2 · +7 → 1 · +9 → 3 · +13 → 1
+//   +11 → 2 cas, ET CE SONT LES DEUX NULS (CaputPuella, CarcAlbus)
+// +11 n'est pas un nombre au hasard : c'est victime(X) + 8, autrement
+// dit R7 est LE FRONT DU FRONT DE LA VICTIME DE R1 (vérifié 16/16 sur
+// les seize figures). En boucle opposée, le nul ne passe donc pas par
+// l'alliance — il passe par la figure la plus lointaine de la proie.
+//
+// LES DEUX PORTES ENSEMBLE, sur 30 cas au camp connu (5 nuls) :
+//   même boucle : binôme (+2) ................ 2 nuls / 5 · 1 faux+
+//   opposées : +11 ........................... 2 nuls / 5 · 0 faux+
+//   LES DEUX BRANCHES ........................ 4 nuls / 5 · 1 faux+
+//   règle unique « binôme partout » .......... 2 nuls / 5 · 1 faux+
+//   règle unique « R1 en maison cadente » .... 4 nuls / 5 · 4 faux+
+// La règle à deux portes fait aussi bien que la maison en couverture
+// avec quatre fois moins de faux positifs. Elle parle 5 fois sur 30 et
+// a raison 4 fois : 80 % de précision contre 17 % au hasard.
+//
+// ⚠️ CE QUI EST AJUSTÉ ET CE QUI NE L'EST PAS, à lire avant d'y croire :
+//   +2 (binôme) — trouvé par Ellemine_D sur AmisPuer AVANT toute
+//      mesure, puis confirmé sur Roma qu'il n'avait pas regardé. C'est
+//      une vraie prédiction hors échantillon.
+//   +11 — trouvé après coup en regardant les deux nuls de la branche
+//      opposée. Deux nuls qui partagent un décalage parmi huit : une
+//      chance sur huit que ce soit fortuit. Zéro faux positif, mais
+//      c'est de l'ajustement tant qu'un troisième cas ne l'a pas testé.
+//   +4 (front) — le cinquième nul, FortMajConj, est en même boucle à
+//      +4. Élargir la première porte à {+2, +4} donne 5 nuls sur 5 pour
+//      un seul faux positif. MAIS +4 est ajusté sur UN cas unique : il
+//      est signalé à part dans le moteur, jamais fondu dans la règle.
+function nulDeuxPortesV7(theme) {
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!rot || !rot.figR1 || !rot.figR7) return null;
+  var i1 = FIGS_V7.indexOf(rot.figR1), i7 = FIGS_V7.indexOf(rot.figR7);
+  if (i1 < 0 || i7 < 0) return null;
+  var k = (((i7 - i1) % 16) + 16) % 16;
+  var meme = (k % 2 === 0);
+  var oui = false, force = 'aucun', porte, detail;
+  if (meme) {
+    porte = 'même boucle';
+    if (k === 2) { oui = true; force = 'confirmée';
+      detail = 'R7 est le binôme de R1 (+2) — l\'alliance la plus proche'; }
+    else if (k === 4) { oui = true; force = 'à confirmer';
+      detail = 'R7 est le front de R1 (+4) — vu sur UN seul nul, à tester'; }
+    else { detail = 'décalage +' + k + ' — ni binôme ni front'; }
+  } else {
+    porte = 'boucles opposées';
+    if (k === 11) { oui = true; force = 'à confirmer';
+      detail = 'R7 est le front du front de la victime de R1 (+11) — les deux nuls de cette branche, trouvé après coup'; }
+    else { detail = 'décalage +' + k + ' — la porte de cette branche est +11'; }
+  }
+  return { porte: porte, k: k, memeBoucle: meme, oui: oui, force: force, detail: detail };
+}
+
 function faisceauNulV7(theme) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { return null; }
@@ -15938,6 +16029,21 @@ var MOTEURS_NUL_V7 = [
       var partage = c1.indexOf(t[15]) >= 0 && c7.indexOf(t[15]) >= 0;
       return { oui: partage, detail: partage ? 'binôme + juge ' + (FL[t[15]] || t[15]) + ' partagé'
         : 'binôme mais juge non partagé' };
+    } },
+  { cle: 'nul_deux_portes', nom: 'Nul · LES DEUX PORTES (+2 même boucle / +11 opposées)', icone: '🚪', teinte: '#22c55e',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D — 4 nuls sur 5, un seul faux positif',
+    verdict: function (t) {
+      var d = nulDeuxPortesV7(t);
+      if (!d) return { oui: null, detail: 'rotation indisponible' };
+      var oui = d.memeBoucle ? (d.k === 2) : (d.k === 11);
+      return { oui: oui, detail: d.porte + ' · +' + d.k };
+    } },
+  { cle: 'nul_deux_portes_large', nom: 'Nul · LES DEUX PORTES élargies ({+2,+4} / +11)', icone: '🚪', teinte: '#84cc16',
+    juste: 0, total: 0, note: '5 nuls sur 5, mais +4 est ajusté sur un cas unique',
+    verdict: function (t) {
+      var d = nulDeuxPortesV7(t);
+      if (!d) return { oui: null, detail: 'rotation indisponible' };
+      return { oui: d.oui, detail: d.porte + ' · +' + d.k + ' · ' + d.force };
     } },
   { cle: 'nul_faisceau4', nom: 'Nul · FAISCEAU — 4 signaux ou plus', icone: '🔆', teinte: '#f59e0b',
     juste: 0, total: 0, note: 'parle 5 fois sur 29, 2 nuls dedans — 40 % contre 14 % au hasard',
@@ -16789,12 +16895,14 @@ function renderBancPanel() {
     + (b.miTempsDeux || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
-    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#f59e0b;">lis le FAISCEAU, pas les lignes '
-    + 'une par une</b> : chaque lecture prise seule ne bat pas le témoin « jamais de nul », parce que le témoin est '
-    + 'imbattable en justesse et inutilisable en pratique. Croisées, les sept montent : 2 signaux → 21 % de nuls, '
-    + '3 → 25 %, 4 → 40 %, 5 → 67 %, contre 14 % au hasard. AmisPuer (4-4) allume les sept, Roma (1-1) en allume '
-    + 'cinq. ⚠️ Mais le 0-0 du 14/02 n\'en allume AUCUN : le faisceau attrape 3 nuls sur 4 et sert à oser quand il '
-    + 'parle, jamais à se rassurer quand il se tait</span>'
+    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#22c55e;">LES DEUX PORTES d\'Ellemine_D '
+    + 'battent tout, témoin compris : 28/30, 4 nuls sur 5, un seul faux positif.</b> Le nul ne se lit pas pareil '
+    + 'selon la boucle : en MÊME BOUCLE il passe par l\'alliance (R7 binôme de R1, +2), en BOUCLES OPPOSÉES par '
+    + '+11, le front du front de la victime. La table des pôles ne sait faire que la première — son code ne peut '
+    + 'littéralement pas annoncer un nul en boucles opposées, et c\'est là qu\'étaient les deux nuls que rien '
+    + 'n\'attrapait. Élargie à {+2, +4} elle fait 29/30 et 5 nuls sur 5, mais +4 n\'est vu que sur un cas. '
+    + 'Le faisceau reste utile en gradation (2 signaux → 21 % de nuls, 4 → 40 %, 5 → 67 %, contre 17 % au hasard)'
+    + '</span>'
     + ' <span style="font-weight:400; color:#64748b;">— après le 3<sup>e</sup> nul (CaputPuella 2-2), '
     + '<b style="color:#fbbf24;">la MAISON est la seule lecture qui attrape les trois</b> : R1 en maison cadente, '
     + '3 nuls sur 3. Les cadentes font 7 des 27 cas, soit 1,2 % de chance au hasard — mais elles se déclenchent '
@@ -20438,6 +20546,21 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     var f=null; try{ f=faisceauNulV7(theme); }catch(e){ f=null; }
     if(!f) return;
     var teinte = f.n>=5 ? '#ef4444' : (f.n>=4 ? '#f59e0b' : (f.n>=2 ? '#38bdf8' : '#64748b'));
+    var dp=null; try{ dp=nulDeuxPortesV7(theme); }catch(e){ dp=null; }
+    if(dp){
+      var tp2 = dp.oui ? (dp.force==='confirmée' ? '#22c55e' : '#84cc16') : '#64748b';
+      html+='<div class="tek-section"><div class="tek-title">🚪 LES DEUX PORTES DU NUL — branche « '+esc(dp.porte)+' »</div>'
+        +'<div style="padding:6px 2px; font-size:12px;"><b style="color:'+tp2+';">'
+        +(dp.oui?'PORTE OUVERTE — '+esc(dp.force):'porte fermée')+'</b> · décalage R1→R7 = +'+dp.k
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">'+esc(dp.detail)+'</div></div>'
+        +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
+        +'<b>Même boucle</b> : il passe par l\'alliance — R7 binôme de R1 (+2). '
+        +'<b>Boucles opposées</b> : il passe par +11, le front du front de la victime de R1. '
+        +'La table des pôles ne sait faire que la première : son code ne peut littéralement pas annoncer un nul '
+        +'en boucles opposées, et c\'est là que sont les deux nuls qu\'aucun moteur n\'attrapait. '
+        +'Les deux portes ensemble : 4 nuls sur 5 pour un seul faux positif, contre 4 sur 5 pour 4 faux positifs '
+        +'à la maison cadente.</div></div>';
+    }
     html+='<div class="tek-section"><div class="tek-title">🔆 FAISCEAU DU NUL — '+f.n+' signaux sur '+f.sur+'</div>';
     html+='<div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:6px 2px;">';
     html+='<div style="font-size:26px; font-weight:800; color:'+teinte+';">'+f.n+'/'+f.sur+'</div>';
