@@ -14281,7 +14281,23 @@ var CAS_REFERENCE_V7 = [
   // le match ; c'était le bon avertissement, il faut le garder.
   { nom: 'RubCarcer', meres: ['rubeus','rubeus','carcer','fortuna_major'],
     score: '1-0', camp: 'R1', btts: false,
-    note: 'camp trouvé ✔ · score 4-2 annoncé pour un 1-0 réel ✘ · R1 Tristitia en M7 (angulaire) — les règles de nul muettes à raison, le détecteur de serré muet à tort' }
+    note: 'camp trouvé ✔ · score 4-2 annoncé pour un 1-0 réel ✘ · R1 Tristitia en M7 (angulaire) — les règles de nul muettes à raison, le détecteur de serré muet à tort' },
+  // ─── 14/02/2026 17:30 — Carcer · Albus · Conjonctio · Rubeus, réel 0-0 ───
+  // QUATRIÈME NUL, ET LE PIRE ÉCHEC DE L'ARCHIVE. Les HUIT moteurs de
+  // la famille Nul ont dit non. Le système annonçait R7 3-5 : huit buts
+  // pour un match qui n'en a produit aucun, sa plus grosse erreur de
+  // score depuis le début.
+  // ☠️ IL CASSE LA LECTURE PAR LA MAISON DANS LES DEUX SENS. R1 = Albus
+  // en M10, ANGULAIRE. « R1 en maison cadente » tombe de 3 nuls sur 3 à
+  // 3 sur 4, et surtout « aucun nul en angulaire » — que j'avais notée
+  // 0 sur 8 la veille comme la preuve que la lecture tenait des deux
+  // côtés — devient 1 sur 9. La maison reste la meilleure lecture du
+  // banc, elle n'est plus une loi.
+  // Premier et seul 0-0 de l'archive : aucune règle ne peut en être
+  // tirée seule, et il ne faut pas essayer.
+  { nom: 'CarcAlbus', meres: ['carcer','albus','conjunctio','rubeus'],
+    score: '0-0', camp: 'nul', btts: false,
+    note: 'NUL 0-0 du 14/02/26 · annoncé R7 3-5 ✘ (huit buts pour zéro) · R1 Albus en M10 ANGULAIRE — les 8 moteurs de nul muets, la lecture par la maison prend son premier vrai coup' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -15243,6 +15259,54 @@ var MOTEURS_V7 = [
     } }
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// « LES DEUX MARQUENT » — ÉTAT RÉEL APRÈS LE 0-0 DU 14/02/2026
+//
+// Ellemine_D : « si tu parviens à saisir la raison tu pourras corriger
+// les deux marquent obligatoirement ». Cherché sérieusement. Je n'ai
+// pas trouvé la raison, et voici exactement ce qui a été mesuré, pour
+// que personne ne reparte de zéro.
+//
+// LE DIAGNOSTIC D'ABORD, ET IL EST DUR. Sur les 22 cas où l'on sait si
+// les deux ont marqué (9 oui, 13 non) :
+//   témoin « il n'y en a jamais deux » ................. 13/22
+//   ROTATION · ouverte OU (fermée et active) ........... 15/22
+//   matchFermeOuvert (< 7 maisons fermées) ............. 14/22
+//   SIÈGES FIXES · M1 et M7 toutes deux ouvertes ....... 12/22
+//   ROTATION · R1 et R7 toutes deux ouvertes ........... 12/22
+//   SIÈGES FIXES · chacune ouverte OU (fermée+active) .. 10/22
+//   SIÈGES FIXES · au moins une des deux ouverte ....... 9/22
+//   témoin « toujours oui » ............................ 9/22
+// Toutes les lectures par l'ouverture sont au niveau du témoin ou en
+// dessous. La question « les deux marquent » n'a donc AUCUNE règle qui
+// marche aujourd'hui — les trois moteurs branchés ne valent pas mieux
+// que de répondre « non » à chaque fois.
+//
+// LA RÉFUTATION QUI TRANCHE, ET ELLE TIENT EN UN SEUL CAS. Le thème du
+// 14/02 porte M1 = Carcer (fermée, passive) et M7 = Conjonctio (fermée,
+// active) : 0-0. Le thème « Jeudi 27/08 » porte EXACTEMENT le même
+// couple — M1 Carcer, M7 Conjonctio — et il a fini 1-2, les deux
+// marquant. Mêmes sièges fixes, mêmes natures, résultats opposés.
+// L'ouverture des sièges ne peut pas être la raison. Ce n'est pas une
+// statistique faible, c'est un contre-exemple exact.
+//
+// CE QUI NE PRÉDIT PAS LE NOMBRE DE BUTS NON PLUS (22 cas au score) :
+//   ancrage total R1+R7 ............ r = 0,00
+//   le plus faible des deux camps .. r = −0,02
+//   maisons ouvertes sur 16 ........ r = 0,22
+//   figures actives sur 16 ......... r = 0,35   (n=22, p≈0,11)
+// Le 0-0 est au milieu de chacune de ces échelles : 10 ouvertes sur 16,
+// 9 actives, ancrage 65,8. Rien ne le distingue.
+//
+// ⚠️ ET LE PIÈGE À NE PAS PRENDRE. Un balayage de 116 traits sur ces
+// 22 cas sort « M9 est mobile » à 17/22. C'est du bruit : avec un
+// partage 9 contre 13, le meilleur de 116 traits dépasse le témoin par
+// pure chance, et « M9 mobile » ne veut rien dire pour des buts. Rien
+// n'est branché sur cette base.
+//
+// CE QU'IL FAUDRAIT POUR AVANCER : des 0-0 et des 1-0, pas des 4-4.
+// L'archive n'a qu'UN seul 0-0. Une règle du « personne ne marque » ne
+// peut pas naître d'un cas unique, et il ne faut pas essayer.
 var MOTEURS_BTTS_V7 = [
   { cle: 'btts_chaine', nom: 'BTTS · chaîne du perdant', icone: '⛓', teinte: '#4ade80',
     juste: 8, total: 9, note: 'branché — source décisive',
@@ -15594,12 +15658,21 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 //   R1 et R7 dans la même boucle ......  17/27       2/3           9
 //   juge M15 figé (les 4 symétriques) .  13/27       2/3          13
 //
-// La maison cadente est LA SEULE lecture qui attrape les trois. Les
-// cadentes font 7 des 28 cas, et les 3 nuls y sont tous : la
-// probabilité au hasard vaut C(7,3)/C(28,3) = 35/3276 = 1,1 %.
-// Et elle tient dans l'AUTRE sens, ce qui compte autant : aucun nul
-// n'est jamais tombé en maison angulaire — 0 sur 8 après RubCarcer
-// (1-0, R1 en M7), où les quatre lectures de nul se sont tues à raison.
+// La maison cadente était alors LA SEULE lecture à attraper les trois.
+//
+// ☠️ ET LE 0-0 DU 14/02/2026 A CASSÉ ÇA LE SOIR MÊME (Carcer · Albus ·
+// Conjonctio · Rubeus). Quatrième nul, R1 = Albus en M10, ANGULAIRE.
+//   « R1 en maison cadente » .......... 3 nuls sur 4, 24/29
+//   « aucun nul en angulaire » ........ était 0 sur 8, devient 1 sur 9
+//   témoin « jamais de nul » .......... 25/29  ← repasse DEVANT
+// Les HUIT moteurs de la famille ont dit non sur ce thème. La lecture
+// par la maison reste la meilleure couverture qu'on ait (3 nuls sur 4
+// contre 2 sur 4 pour tout le reste), mais ce n'est plus une loi, et
+// elle ne bat plus le témoin en justesse brute. Aucune règle de nul du
+// fichier ne bat aujourd'hui « il n'y a jamais de nul ».
+// C'est le rappel qu'il fallait : trois cas qui vont dans le même sens
+// ne sont pas une loi, et le premier cas capable de le montrer l'a
+// montré.
 // Elle paie sa couverture en précision — 3 nuls pour 7 déclenchements,
 // donc quand elle dit oui, c'est nul deux fois sur cinq. Elle sert à
 // SAVOIR QUAND SE MÉFIER, pas à annoncer un nul.
@@ -16580,7 +16653,12 @@ function renderBancPanel() {
     + lignesCond
     + reel
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Les deux marquent</td></tr>'
+    + 'font-weight:700; color:#94a3b8;">Les deux marquent'
+    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#f87171;">aucune règle ne marche ici</b> : '
+    + 'toutes les lectures par l\'ouverture sont au niveau du témoin « jamais » (13/22) ou en dessous. Réfutation '
+    + 'exacte : le 0-0 du 14/02 et Jeudi 27/08 (1-2) ont le MÊME couple de sièges fixes — M1 Carcer fermée-passive, '
+    + 'M7 Conjonctio fermée-active — pour des résultats opposés. Et rien ne prédit le nombre de buts : ancrage '
+    + 'r = 0,00, figures actives r = 0,35 sur 22 cas</span></td></tr>'
     + lignesBtts
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Penalty / carton rouge'
