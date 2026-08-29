@@ -4821,6 +4821,9 @@ function reseauTroisPolesV7(fig, theme, siegeImpose) {
 //     C'est le contre-exemple le plus utile de l'archive : la chaîne de
 //     R7 y est PERCÉE (total −1) et R7 gagne quand même.
 //
+//  ⚠️ CAS RETIRÉ DE L'ARCHIVE LE 29/08/26 (ni score ni vainqueur). Les
+//  lignes qui suivent restent le journal du raisonnement de l'époque,
+//  mais Lazio ne compte plus dans aucune mesure du banc.
 //  Lazio — Fortuna Minor · Amissio · Carcer · Carcer     LES DEUX ONT MARQUÉ
 //     R1 = R7 = Conjonctio (M9 et M15) — cas où les deux sièges portent la
 //     MÊME figure (5,1% des thèmes). Score exact non communiqué.
@@ -13971,9 +13974,18 @@ var CAS_REFERENCE_V7 = [
     note: 'première prédiction hors échantillon' },
   { nom: 'Napoli', meres: ['conjunctio','fortuna_minor','via','albus'],
     score: '0-1', camp: 'R7', btts: false },
-  { nom: 'Lazio', meres: ['fortuna_minor','amissio','carcer','carcer'],
-    score: null, camp: null, btts: true,
-    note: 'score exact non communiqué — ne compte que pour le BTTS' },
+  // ─── LAZIO RETIRÉ DE L'ARCHIVE (29/08/26, demande d'Ellemine_D) ───
+  // « supprime tout thème qui n'a pas de score dans l'archive pour éviter
+  // les erreurs ». Lazio (mères Fortuna Minor · Amissio · Carcer · Carcer)
+  // ne portait ni score ni vainqueur : seulement « les deux ont marqué ».
+  // Il pesait donc sur la famille BTTS sans rien dire du camp, et il est
+  // apparu deux fois comme faux espoir — d'abord parce que R1 = R7 =
+  // Conjonctio (les deux sièges sur la MÊME figure, 5,1 % des thèmes),
+  // ensuite parce que R1 y tombe en M9, la maison des deux nuls. Un cas
+  // qu'on ne peut ni confirmer ni infirmer n'est pas une donnée.
+  // Le thème reste reconstructible à tout moment depuis ses quatre mères
+  // si le score refait surface : c'est la seule chose qui manquait.
+  // Conséquence mesurée : la famille BTTS passe de 20 à 19 cas.
   { nom: 'Roma', meres: ['fortuna_minor','acquisitio','carcer','albus'],
     score: '1-1', camp: 'nul', btts: true,
     note: 'seul vrai nul de l’archive' },
@@ -14153,9 +14165,11 @@ var CAS_REFERENCE_V7 = [
   // Ellemine_D, 28/08 : « voici un match où il y a but dans chaque
   // mi-temps ». Vainqueur et scores non communiqués : ce cas ne compte
   // QUE pour la famille mi-temps, via le champ butsDeuxMiTemps.
-  { nom: 'AmisCarcer', meres: ['amissio','carcer','puella','conjunctio'],
-    score: null, camp: null, btts: null, butsDeuxMiTemps: true,
-    note: 'but dans chaque mi-temps ✔ — premier cas de la famille mi-temps' },
+  // ─── AmisCarcer RETIRÉ POUR LA MÊME RAISON (29/08/26) ───
+  // Mères Amissio · Carcer · Puella · Conjonctio. Ni score ni vainqueur :
+  // seulement « but dans chaque mi-temps ». R1 y tombe en M6, l'autre
+  // maison des deux nuls — encore un cas qui promet sans pouvoir trancher.
+  // Conséquence mesurée : la famille mi-temps passe de 4 à 3 cas.
   // ─── PREMIER CAS COMPLET AVEC MI-TEMPS (28/08/26) ───
   // Mi-temps 2-0 pour R1, final 5-0. Le verdict trouve le camp et
   // s'approche du score (annoncé 4-0 pour un 5-0 réel, un but d'écart).
@@ -15625,11 +15639,14 @@ var MOTEURS_NUL_V7 = [
 //
 // ⚠️ Et le détail qui sépare les nuls des autres cadents : la maison
 // exacte. M6 et M9 → écart 0 (les deux nuls). M3 et M12 → écart 1 (les
-// trois autres). Sur toute l'archive, seuls QUATRE thèmes ont R1 en M6 ou
-// M9 : les deux nuls, plus Lazio et AmisCarcer dont le résultat est
-// inconnu. Deux cas, c'est un motif, pas une règle — et il est trouvé
-// après coup, donc il ne vaut rien tant que Lazio et AmisCarcer ne sont
-// pas renseignés. Ce sont les deux tests qui le tueront ou le tiendront.
+// trois autres). Deux cas, c'est un motif, pas une règle, et il est
+// trouvé après coup.
+// MISE À JOUR DU 29/08/26 : les deux seuls thèmes qui auraient pu le
+// tester — Lazio (R1 en M9) et AmisCarcer (R1 en M6) — ont été RETIRÉS
+// de l'archive faute de résultat. Il ne reste donc, dans M6 et M9, que
+// les deux nuls eux-mêmes : le motif n'a plus aucun contradicteur
+// possible ici, ce qui le rend INVÉRIFIABLE et non pas confirmé.
+// Ne pas le lire comme « 2/2 ». Il faudra de nouveaux thèmes.
 var MOTEURS_SERRE_V7 = [
   { cle: 'serre_r1_cadente', nom: 'Serré · R1 en maison cadente', icone: '⚖', teinte: '#34d399',
     juste: 0, total: 0, note: '5 cas sur 5 quand il ose le oui — écart moyen 0,60 contre 2,86 ailleurs',
@@ -16367,6 +16384,11 @@ function renderBancPanel() {
     + (b.nbEsport
         ? ' · <span style="color:#fbbf24;">' + b.nbEsport + ' ⚡ e-sport '
           + '(format arcade — le camp compte, les chiffres non)</span>' : '')
+    + '<div style="color:#64748b; margin-top:2px;">Règle d\'archive du 29/08 : un thème qui ne dit '
+    + '<b>ni le score ni le vainqueur</b> n\'entre pas ici. Lazio et AmisCarcer ont été retirés à ce '
+    + 'titre — ils ne pouvaient rien confirmer ni infirmer, et tous deux tombaient dans les maisons '
+    + 'des nuls, ce qui donnait de faux espoirs. Un thème qui dit le vainqueur sans le score reste : '
+    + 'il compte pour le camp, et se tait sur les chiffres.</div>'
     + '</div>'
     + '<div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:520px;">'
     + '<thead>' + entete() + '</thead><tbody>'
