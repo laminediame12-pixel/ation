@@ -14109,17 +14109,17 @@ var CAS_REFERENCE_V7 = [
   //                   dominant M7) : le total est faux de 7 et le
   //                   dominant est inversé
   //   incident ...... annoncé penalty ET rouge contre M7 ; le réel est un
-  //                   CSC et un carton jaune. Le CAMP est bon (un CSC
-  //                   dans un 2-0 pour R1 ne peut venir que d'un joueur
-  //                   de R7), la NATURE est fausse. C'est le premier cas
-  //                   où l'on peut le dire : incident = true selon la
-  //                   définition du fichier, qui range explicitement le
-  //                   CSC avec le penalty et le rouge.
+  //                   CSC et un carton jaune, donc NI penalty NI rouge.
+  //                   Ellemine_D tranche le 28/08 : le CSC n'est pas un
+  //                   incident. Le cas compte donc incident = FALSE, et le
+  //                   détecteur, qui annonçait un incident, se trompe.
+  //                   Le CSC est enregistré à part, avec son camp (dans un
+  //                   2-0 pour R1, il ne peut venir que d'un joueur de R7).
   { nom: 'PuellaAlbus', meres: ['puella','albus','populus','laetitia'],
     score: '2-0', htScore: '0-0', camp: 'R1', btts: false,
-    incident: true, incidentCamp: 'M7',
+    incident: false, csc: true, cscCamp: 'M7',
     corners: 4, cornersM1: 1, cornersM7: 3, cornersDominant: 'R7',
-    note: 'vainqueur ✔ · score ✘ 4-0 pour 2-0 · mi-temps 0-0 ✘ pour tous sauf un · corners 11 pour 4 réels, dominant inversé · incident CSC + jaune côté R1, camp ✔ nature ✘' }
+    note: 'vainqueur ✔ · score ✘ 4-0 pour 2-0 · mi-temps 0-0 ✘ · corners 11 pour 4 réels, dominant inversé · aucun penalty ni rouge (CSC + jaune) — le détecteur en annonçait deux' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -14177,6 +14177,8 @@ function casSauvegardesV7() {
       penaltyCamp: (e.realPenaltyCamp === 'M1' || e.realPenaltyCamp === 'M7')
         ? e.realPenaltyCamp : null,
       htScore: /^\d{1,2}-\d{1,2}$/.test(String(e.realHtScore || '')) ? e.realHtScore : null,
+      csc: (e.realCsc === 'M1' || e.realCsc === 'M7') ? true : null,
+      cscCamp: (e.realCsc === 'M1' || e.realCsc === 'M7') ? e.realCsc : null,
       corners: /^\d{1,2}$/.test(String(e.realCorners || '')) ? parseInt(e.realCorners, 10) : null,
       cornersM1: /^\d{1,2}$/.test(String(e.realCornersM1 || '')) ? parseInt(e.realCornersM1, 10) : null,
       cornersM7: /^\d{1,2}$/.test(String(e.realCornersM7 || '')) ? parseInt(e.realCornersM7, 10) : null,
@@ -18434,11 +18436,18 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   // Ces deux-là sont SYMÉTRIQUES par construction (ancre de chaque
   // équipe) : elles peuvent accuser l'un ou l'autre camp, donc elles
   // votent pour l'attribution.
-  ancresEquipe1.forEach(pos => check(pos, 'incident probable CONTRE l équipe 1 (penalty, rouge, CSC...)', 'M1'));
-  ancresEquipe2.forEach(pos => check(pos, 'incident probable CONTRE l équipe 2 (penalty, rouge, CSC...)', 'M7'));
+  // ─── LE CSC N'EST PAS UN INCIDENT (28/08/26, doctrine d'Ellemine_D) ───
+  // Ces libellés annonçaient « penalty, rouge, CSC ». Sur PuellaAlbus le
+  // réel était un CSC et un carton jaune : compter le CSC comme un
+  // incident aurait donné raison au détecteur sur un événement d'une
+  // autre nature. Ellemine_D tranche : le CSC est séparé. Les libellés ne
+  // le mentionnent plus, la famille « incident » ne note plus que le
+  // penalty et le rouge, et le CSC est enregistré à part (realCsc).
+  ancresEquipe1.forEach(pos => check(pos, 'incident probable CONTRE l équipe 1 (penalty ou rouge)', 'M1'));
+  ancresEquipe2.forEach(pos => check(pos, 'incident probable CONTRE l équipe 2 (penalty ou rouge)', 'M7'));
   check(13, 'incident dans la phase de synthèse (témoin droit)');
   check(14, 'incident dans la phase de synthèse (témoin gauche)');
-  check(15, 'JUGE Chaotique : issue du match par un incident décisif (penalty, rouge, CSC, accident)');
+  check(15, 'JUGE Chaotique : issue du match par un incident décisif (penalty ou rouge)');
 
   // PLANÈTES D'INCIDENT EN M13 (04/08/26, 📚 étude, doctrine Ellemine_D) —
   // Rubeus/Carcer/Tristitia (Mars/Saturne, les figures les plus agressives
@@ -21503,6 +21512,14 @@ function renderCurrentList() {
         + '<option value="M7"' + (entry.realIncidentCamp === 'M7' ? ' selected' : '') + '>'
         + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
         + '</select>';
+      h += '<select onchange="setRealCsc(\'' + eid + '\', this.value)" '
+        + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;">'
+        + '<option value=""' + (!entry.realCsc ? ' selected' : '') + '>CSC ? (hors incident)</option>'
+        + '<option value="M1"' + (entry.realCsc === 'M1' ? ' selected' : '') + '>CSC de '
+        + String(entry.team1 || 'M1').slice(0, 10) + '</option>'
+        + '<option value="M7"' + (entry.realCsc === 'M7' ? ' selected' : '') + '>CSC de '
+        + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
+        + '</select>';
       h += '<select onchange="setRealPenaltyCamp(\'' + eid + '\', this.value)" '
         + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;"'
         + (entry.realPenalty === 'no' ? ' disabled' : '') + '>'
@@ -21678,6 +21695,22 @@ function setRealHtScore(id, value) {
   if (!entry) return;
   var v = String(value || '').trim();
   entry.realHtScore = /^\d{1,2}\s*-\s*\d{1,2}$/.test(v) ? v.replace(/\s+/g, '') : '';
+  setSavedList(list);
+  setTimeout(renderCurrentList, 0);
+}
+
+// ─── LE CSC, ENREGISTRÉ À PART (28/08/26, doctrine d'Ellemine_D :
+//     « le CSC n'est pas un incident, sépare-le ») ───
+// La valeur est le camp qui l'a CONCÉDÉ (celui dont un joueur marque
+// contre son camp), ou vide s'il n'y en a pas eu. Aucun moteur ne prétend
+// aujourd'hui prédire un CSC : le champ sert à collecter, pas à noter —
+// tant qu'une doctrine ne dira pas ce qui l'annonce, il n'y aura pas de
+// famille de banc pour lui.
+function setRealCsc(id, value) {
+  var list = getSavedList();
+  var entry = list.filter(function (e) { return e.id === id; })[0];
+  if (!entry) return;
+  entry.realCsc = (value === 'M1' || value === 'M7') ? value : '';
   setSavedList(list);
   setTimeout(renderCurrentList, 0);
 }
