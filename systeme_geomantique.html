@@ -14415,7 +14415,20 @@ var CAS_REFERENCE_V7 = [
   // annonçait donc « match fermé, 1-0 ». Réel : TREIZE buts.
   { nom: 'AmisTrist', meres: ['amissio','tristitia','tristitia','cauda_draconis'],
     score: '6-7', camp: 'R7', btts: true, esport: true,
-    note: '⚡ e-sport · camp trouvé ✔ (R7) · score 0-1 annoncé pour un 6-7 réel ✘ · SEPT figures froides pour treize buts — le contre-exemple qui débranche la lecture froide' }
+    note: '⚡ e-sport · camp trouvé ✔ (R7) · score 0-1 annoncé pour un 6-7 réel ✘ · SEPT figures froides pour treize buts — le contre-exemple qui débranche la lecture froide' },
+  // ─── 29/08/26 — DEUX THÈMES DONNÉS POUR TESTER L'INCIDENT ───
+  // Ellemine_D : « premier thème il y a signe d'incident mais rien n'est
+  // passé ; deuxième thème il y a signe d'incident et la pénalité est
+  // passée comme rouge, côté signalé. Vérifie dans les dérivés des axes
+  // s'il y a signal d'incident : si oui ça confirme le thème principal,
+  // si non le signal est peu fiable. »
+  // Les deux cas sont versés à l'archive pour le champ « incident ».
+  { nom: 'CaputPop', meres: ['caput_draconis','populus','tristitia','amissio'],
+    incident: false,
+    note: 'incident annoncé 78 % « très élevé » côté M7 — RIEN ne s\'est passé. Les trois dérivés d\'axes moyennaient 39 % (73 · 43 · 0), aucun carton rouge : ils voyaient juste là où le principal criait' },
+  { nom: 'PuellaVia', meres: ['puella','via','fortuna_major','fortuna_minor'],
+    incident: true,
+    note: 'incident annoncé 20 % « faible » côté M1 — CARTON ROUGE réel, du côté signalé. Les trois dérivés moyennaient 80 % (50 · 95 · 95) et DEUX portaient un rouge : ils voyaient juste là où le principal se taisait' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -16779,7 +16792,84 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
 // réel » n'était pas enregistré (cf. setRealPenalty). Le banc affichera
 // 0/0 jusqu'à ce que des matchs soient saisis — c'est exactement le but :
 // rendre visible qu'on ne sait pas.
+// ═══════════════════════════════════════════════════════════════
+// L'INCIDENT LU DANS LES TROIS DÉRIVÉS D'AXES (29/08/26)
+//
+// Ellemine_D : « vérifie dans les dérivés des axes s'il y a signal
+// d'incident : si oui ça confirme le thème principal, si non le signal
+// est peu fiable. »
+//
+// Chaque axe du carré — cardinal (M1,4,7,10), succédent (M2,5,8,11),
+// cadent (M3,6,9,12) — donne quatre mères et donc un thème dérivé
+// complet, qui a son propre pourcentage d'incident.
+//
+// MESURÉ SUR LES CINQ CAS OÙ L'ON SAIT CE QUI S'EST PASSÉ :
+//   cas          principal   moyenne des 3 dérivés   réel
+//   CaputPop      78 % M7           39 %             RIEN
+//   PuellaVia     20 % M1           80 % (2 rouges)  CARTON ROUGE
+//   Bologna       85 % M1           26 %             incident
+//   Jeudi 27/08   28 % M1           66 % (1 rouge)   incident + penalty
+//   PuellaAlbus   93 % M7           68 %             rien (un CSC)
+// Au seuil de 50 % :
+//   le thème principal a raison ..... 1 fois sur 5
+//   la moyenne des dérivés .......... 3 fois sur 5
+//
+// ⚠️ MAIS SA RÈGLE, PRISE À LA LETTRE, NE MARCHE PAS. « Les dérivés
+// confirment → fiable » suppose qu'ils soient d'accord avec le principal.
+// Or ils ne le sont presque jamais : un seul cas d'accord dans toute
+// l'archive (PuellaAlbus, les deux au-dessus de 50 %), et ce cas-là est
+// justement celui où il ne s'est rien passé. Le vrai constat est plus
+// fort et plus simple : LES DÉRIVÉS NE CONFIRMENT PAS LE PRINCIPAL, ILS
+// LE CORRIGENT. Sur ses deux thèmes, ils ont eu raison exactement là où
+// le principal s'est trompé, et dans les deux sens — ils se sont tus
+// quand il criait, ils ont crié quand il se taisait.
+//
+// ⚠️ ET SUR LE CAMP, ILS SONT MAUVAIS. Sur PuellaVia le rouge est tombé
+// du côté M1 que désignait le principal, alors que les dérivés disaient
+// M7. Ils voient donc LE FAIT, pas LE CÔTÉ. Le moteur ci-dessous ne
+// répond qu'à la question « y aura-t-il un incident », jamais « pour
+// qui » — c'est tout ce que la mesure autorise.
+//
+// n = 5. Rien n'est établi, et rien n'est branché au verdict : le moteur
+// est au banc pour que les prochains cas tranchent.
+function incidentDerivesV7(theme) {
+  if (!theme || !theme[1] || typeof AXES_V7 === 'undefined') return null;
+  var pcts = [], rouges = 0, det = [];
+  for (var i = 0; i < AXES_V7.length; i++) {
+    var meres = AXES_V7[i].maisons.map(function (h) { return theme[h]; });
+    var derive = null;
+    try { derive = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]); }
+    catch (e) { continue; }
+    var v = null;
+    try { v = getVerdictAfficheReel(derive); } catch (e) { continue; }
+    if (!v || typeof v.incidentPct !== 'number') continue;
+    pcts.push(v.incidentPct);
+    if (v.penalty && v.penalty.hasRed) rouges++;
+    det.push({ axe: AXES_V7[i].nom, pct: v.incidentPct, rouge: !!(v.penalty && v.penalty.hasRed) });
+  }
+  if (!pcts.length) return null;
+  var moy = Math.round(pcts.reduce(function (s, x) { return s + x; }, 0) / pcts.length);
+  return { moyenne: moy, rouges: rouges, detail: det, nb: pcts.length };
+}
+
 var MOTEURS_INCIDENT_V7 = [
+  { cle: 'incident_derives', nom: 'Incident · moyenne des trois dérivés d\'axes ≥ 50 %', icone: '🧭', teinte: '#f472b6',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D — 3 justes sur 5 contre 1 sur 5 pour le thème principal',
+    verdict: function (t) {
+      var d = null;
+      try { d = incidentDerivesV7(t); } catch (e) { return { oui: null, detail: 'dérivés indisponibles' }; }
+      if (!d) return { oui: null, detail: 'dérivés indisponibles' };
+      return { oui: d.moyenne >= 50,
+        detail: 'moyenne ' + d.moyenne + ' % sur ' + d.nb + ' axes' + (d.rouges ? ' · ' + d.rouges + ' rouge(s)' : '') };
+    } },
+  { cle: 'incident_derives_rouge', nom: 'Incident · au moins un dérivé porte un rouge', icone: '🟥', teinte: '#ef4444',
+    juste: 0, total: 0, note: 'la lecture la plus stricte des dérivés',
+    verdict: function (t) {
+      var d = null;
+      try { d = incidentDerivesV7(t); } catch (e) { return { oui: null, detail: 'dérivés indisponibles' }; }
+      if (!d) return { oui: null, detail: 'dérivés indisponibles' };
+      return { oui: d.rouges > 0, detail: d.rouges + ' dérivé(s) sur ' + d.nb + ' portent un rouge' };
+    } },
   { cle: 'incident_signaux', nom: 'Incident · signaux', icone: '⚠', teinte: '#f87171',
     juste: 0, total: 0, note: 'affiché — chaos, filiation, M6/M12 discordantes',
     verdict: function (t) {
