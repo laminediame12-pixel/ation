@@ -21984,6 +21984,12 @@ function renderTheme(){
     try { renderDuelBouclierPanel(currentTheme); } catch(e) { console.log('duel bouclier error', e); }
     try { renderF4P4Panel(currentTheme); } catch(e) { console.log('f4p4 error', e); }
     try { renderMoteursPanel(currentTheme); } catch(e) { console.log('moteurs error', e); }
+    // ⚠️ NE PAS DIFFÉRER CET APPEL SANS TRAITER justesseMoteurV7 (29/08/26).
+    // Essayé, mesuré, annulé : envelopper renderBancPanel dans un
+    // setTimeout ne gagne RIEN (1 415 ms → 1 385 ms, dans le bruit),
+    // parce que justesseMoteurV7 appelle bancMoteursV7() en synchrone
+    // pendant le rendu des moteurs et reconstruit le banc de toute façon.
+    // Le vrai coût est là, pas ici. Voir le journal des mesures plus bas.
     try { renderBancPanel(); } catch(e) { console.log('banc error', e); }
     // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
     try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
