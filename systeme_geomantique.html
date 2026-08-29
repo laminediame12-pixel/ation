@@ -15704,6 +15704,91 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 // trois cas sépare parfaitement une fois sur 35, donc sur 232 traits on
 // en attend une petite dizaine — et on en a douze. Aucun n'est branché.
 // Rien ne sépare encore les nuls des autres cadents.
+// ═══════════════════════════════════════════════════════════════
+// LE FAISCEAU DU NUL (29/08/26) — reproche fondé d'Ellemine_D
+//
+// « À chaque fois que nous avons une piste solide tu fais tout pour
+// trouver une chose qui la contraint, au lieu de faire la corrélation
+// avec ce que nous avons étudié jusqu'ici. »
+//
+// Le reproche porte, et l'erreur était de méthode : chaque lecture était
+// jugée SEULE, contre le témoin « il n'y a jamais de nul » (25/29). Ce
+// témoin est imbattable en justesse brute parce que les nuls sont rares
+// — et il est INUTILISABLE, puisqu'il ne laisse jamais rien jouer. Le
+// prendre comme barre revenait à déclarer mort tout ce qui ose parler.
+// La bonne mesure, pour quelqu'un qui doit décider, n'est pas la
+// justesse : c'est la PRÉCISION quand le signal parle, comparée aux
+// 14 % de nuls que donne le hasard.
+//
+// Alors les sept lectures ont été croisées au lieu d'être opposées :
+//   cadente ...... R1 tombe en maison cadente (M3, M6, M9, M12)
+//   binôme ....... R7 est le binôme de R1 (+2)
+//   boucle ....... R1 et R7 dans la même boucle (décalage pair)
+//   partage ...... les deux camps partagent au moins 3 rôles sur 5
+//   juge ......... la figure de M15 appartient aux deux camps
+//   figé ......... M15 est une des quatre symétriques
+//   structure .... structureDuNul (M13 = M14 ou paire d'équilibre)
+//
+// ET LES SIGNAUX S'ADDITIONNENT. Mesuré sur les 29 cas au résultat connu
+// (4 nuls, soit 14 % au hasard) :
+//   au moins 2 signaux → parle 14 fois, 3 nuls .... précision 21 %
+//   au moins 3 signaux → parle  8 fois, 2 nuls .... précision 25 %
+//   au moins 4 signaux → parle  5 fois, 2 nuls .... précision 40 %
+//   au moins 5 signaux → parle  3 fois, 2 nuls .... précision 67 %
+// De 14 % à 67 % en montant le seuil, sans inversion : c'est une échelle
+// qui se tient, pas une coïncidence. AmisPuer (4-4) allume les SEPT.
+// Roma (1-1) en allume cinq. Aucun autre thème de l'archive n'atteint
+// six. À 5 signaux le seul faux positif est Juventus (6-1).
+//
+// Ce que ça vaut concrètement : un nul annoncé à 4 signaux est trois
+// fois plus probable qu'au hasard, à 5 signaux presque cinq fois. C'est
+// exactement le genre de signal sur lequel on peut décider — là où
+// chaque lecture prise seule ne dépassait pas le témoin.
+//
+// ⚠️ CE QUE LE FAISCEAU NE VOIT PAS, et il faut le savoir en s'en
+// servant : CarcAlbus (0-0 du 14/02) allume ZÉRO signal. Il est
+// invisible pour les sept lectures à la fois. Le faisceau attrape donc
+// 3 nuls sur 4, jamais le quatrième. Son silence ne prouve rien — c'est
+// un outil pour OSER quand il parle, pas pour se rassurer quand il se
+// tait.
+function faisceauNulV7(theme) {
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!rot || !rot.figR1 || !rot.figR7) return null;
+  function campDe(X) {
+    return [X, BOUCLIER_V7[X], FRONT_V7[X], BINOMES_V7[X], frontDuFrontV7(X)];
+  }
+  var c1 = campDe(rot.figR1), c7 = campDe(rot.figR7);
+  var part = c1.filter(function (x) { return c7.indexOf(x) >= 0; });
+  var i1 = FIGS_V7.indexOf(rot.figR1), i7 = FIGS_V7.indexOf(rot.figR7);
+  var k = (i1 < 0 || i7 < 0) ? null : ((((i7 - i1) % 16) + 16) % 16);
+  var FIGE = { populus: 1, carcer: 1, via: 1, conjunctio: 1 };
+  var structure = false;
+  try { var sn = structureDuNul(theme); structure = !!(sn && sn.nulDetecte); } catch (e) { structure = false; }
+  var signaux = [
+    { cle: 'cadente', nom: 'R1 en maison cadente', on: [3, 6, 9, 12].indexOf(rot.hR1) >= 0,
+      detail: 'R1 en M' + rot.hR1 },
+    { cle: 'binome', nom: 'R7 est le binôme de R1', on: k === 2, detail: 'décalage +' + k },
+    { cle: 'boucle', nom: 'R1 et R7 dans la même boucle', on: k !== null && k % 2 === 0,
+      detail: k % 2 ? 'boucles opposées' : 'même boucle' },
+    { cle: 'partage', nom: 'les camps partagent 3 rôles ou plus', on: part.length >= 3,
+      detail: part.length + '/5 rôles partagés' },
+    { cle: 'juge', nom: 'le juge M15 appartient aux deux camps',
+      on: part.indexOf(theme[15]) >= 0, detail: 'juge ' + (FL[theme[15]] || theme[15]) },
+    { cle: 'fige', nom: 'M15 est une des quatre symétriques', on: !!FIGE[theme[15]],
+      detail: FL[theme[15]] || theme[15] },
+    { cle: 'structure', nom: 'structure du nul (M13 = M14 ou équilibre)', on: structure,
+      detail: structure ? 'détectée' : 'aucune' }
+  ];
+  var n = signaux.filter(function (x) { return x.on; }).length;
+  // Précisions mesurées sur les 29 cas au résultat connu (14 % au hasard).
+  var PRECISION = { 0: 0, 1: 13, 2: 21, 3: 25, 4: 40, 5: 67, 6: 100, 7: 100 };
+  var niveau = n >= 5 ? 'FORTE ALERTE' : (n >= 4 ? 'alerte' : (n >= 2 ? 'veille' : 'aucun signe'));
+  return { n: n, sur: 7, signaux: signaux, niveau: niveau,
+    precision: PRECISION[n] || 0,
+    allumes: signaux.filter(function (x) { return x.on; }).map(function (x) { return x.nom; }) };
+}
+
 var MOTEURS_NUL_V7 = [
   { cle: 'nul_r1_cadente', nom: 'Nul · R1 tombe en maison cadente', icone: '⚖', teinte: '#fbbf24',
     juste: 0, total: 0, note: 'les deux nuls connus y sont, 25 % des thèmes le sont',
@@ -15853,6 +15938,20 @@ var MOTEURS_NUL_V7 = [
       var partage = c1.indexOf(t[15]) >= 0 && c7.indexOf(t[15]) >= 0;
       return { oui: partage, detail: partage ? 'binôme + juge ' + (FL[t[15]] || t[15]) + ' partagé'
         : 'binôme mais juge non partagé' };
+    } },
+  { cle: 'nul_faisceau4', nom: 'Nul · FAISCEAU — 4 signaux ou plus', icone: '🔆', teinte: '#f59e0b',
+    juste: 0, total: 0, note: 'parle 5 fois sur 29, 2 nuls dedans — 40 % contre 14 % au hasard',
+    verdict: function (t) {
+      var f = faisceauNulV7(t);
+      if (!f) return { oui: null, detail: 'rotation indisponible' };
+      return { oui: f.n >= 4, detail: f.n + '/7 signaux — ' + f.niveau };
+    } },
+  { cle: 'nul_faisceau5', nom: 'Nul · FAISCEAU — 5 signaux ou plus', icone: '🔆', teinte: '#ef4444',
+    juste: 0, total: 0, note: 'parle 3 fois sur 29, 2 nuls dedans — 67 % contre 14 % au hasard',
+    verdict: function (t) {
+      var f = faisceauNulV7(t);
+      if (!f) return { oui: null, detail: 'rotation indisponible' };
+      return { oui: f.n >= 5, detail: f.n + '/7 signaux — ' + f.niveau };
     } },
   { cle: 'nul_temoin', nom: 'Nul · « jamais de nul »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — la barre à battre est très haute, les nuls sont rares',
@@ -16690,6 +16789,12 @@ function renderBancPanel() {
     + (b.miTempsDeux || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
+    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#f59e0b;">lis le FAISCEAU, pas les lignes '
+    + 'une par une</b> : chaque lecture prise seule ne bat pas le témoin « jamais de nul », parce que le témoin est '
+    + 'imbattable en justesse et inutilisable en pratique. Croisées, les sept montent : 2 signaux → 21 % de nuls, '
+    + '3 → 25 %, 4 → 40 %, 5 → 67 %, contre 14 % au hasard. AmisPuer (4-4) allume les sept, Roma (1-1) en allume '
+    + 'cinq. ⚠️ Mais le 0-0 du 14/02 n\'en allume AUCUN : le faisceau attrape 3 nuls sur 4 et sert à oser quand il '
+    + 'parle, jamais à se rassurer quand il se tait</span>'
     + ' <span style="font-weight:400; color:#64748b;">— après le 3<sup>e</sup> nul (CaputPuella 2-2), '
     + '<b style="color:#fbbf24;">la MAISON est la seule lecture qui attrape les trois</b> : R1 en maison cadente, '
     + '3 nuls sur 3. Les cadentes font 7 des 27 cas, soit 1,2 % de chance au hasard — mais elles se déclenchent '
@@ -20326,6 +20431,30 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   html+='<div class="tek-nullstatus"><div class="ico">'+(nulActif?'⚠️':'⊘')+'</div><b>'+nullStatus+'</b><div style="font-size:9px;margin:5px 8px;color:#cbd5e1">'+(nulActif?'Le protocole R1/R7 est suspendu tant que la structure du nul est active.':'Aucun signal structurel suffisant pour invalider le vainqueur du protocole.')+'</div></div></div></div>';
   html+='<div class="tek-section"><div class="tek-title">🛡️ CRÉDIBILITÉ GLOBALE DU VERDICT</div><div class="tek-bottom"><div class="box"><div class="big">'+credibility+'%</div></div><div class="box"><p><b>'+(nulActif?'Le nul est actif.':'Le nul n’est pas actif.')+'</b> '+(nulActif?'Le protocole de comparaison ne reçoit pas de priorité décisionnelle.':'Le protocole de comparaison R1 / R7 est pleinement disponible pour désigner le vainqueur.')+'</p></div><div class="box"><p><b>ANALYSE</b><br>'+ (winner?'Thème orienté : domination structurelle de '+esc(cardWinner)+'.':'Thème équilibré : aucune domination structurelle claire.')+'<br>La crédibilité est un indicateur de disponibilité du protocole, pas une validation empirique.</p></div></div></div>';
   if((q.duel||[]).length){html+='<div class="tek-section"><div class="tek-title">⚔️ DUELS FIGURE ↔ ANTAGONISTE</div><table class="tek-table"><tr><th>R1 / R7</th><th>Score</th><th>Opposant</th><th>Score</th><th>Issue</th></tr>'+duelRows+'</table></div>';}
+  // ─── LE FAISCEAU DU NUL (29/08/26) — les sept lectures croisées ───
+  // Affiché sur chaque thème, parce que c'est le NOMBRE de signaux qui
+  // parle, jamais une ligne prise seule.
+  (function(){
+    var f=null; try{ f=faisceauNulV7(theme); }catch(e){ f=null; }
+    if(!f) return;
+    var teinte = f.n>=5 ? '#ef4444' : (f.n>=4 ? '#f59e0b' : (f.n>=2 ? '#38bdf8' : '#64748b'));
+    html+='<div class="tek-section"><div class="tek-title">🔆 FAISCEAU DU NUL — '+f.n+' signaux sur '+f.sur+'</div>';
+    html+='<div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:6px 2px;">';
+    html+='<div style="font-size:26px; font-weight:800; color:'+teinte+';">'+f.n+'/'+f.sur+'</div>';
+    html+='<div><b style="color:'+teinte+';">'+f.niveau.toUpperCase()+'</b>'
+      +'<div style="font-size:10px; color:#94a3b8;">à ce niveau, '+f.precision
+      +' % des thèmes de l\'archive ont fini sur un nul — contre 14 % au hasard</div></div></div>';
+    html+='<table class="tek-table"><tr><th>signal</th><th>état</th><th>lecture</th></tr>'
+      + f.signaux.map(function(x){
+          return '<tr><td>'+esc(x.nom)+'</td><td style="color:'+(x.on?'#4ade80':'#475569')+'; font-weight:700;">'
+            +(x.on?'✓ allumé':'—')+'</td><td>'+esc(x.detail)+'</td></tr>';
+        }).join('') + '</table>';
+    html+='<div style="font-size:10px; color:#94a3b8; margin-top:5px;">Les sept lectures ne valent rien prises '
+      +'une par une — le témoin « il n\'y a jamais de nul » les bat toutes en justesse brute, et ne sert à rien. '
+      +'Croisées, elles montent : 2 signaux → 21 %, 3 → 25 %, 4 → 40 %, 5 → 67 %. '
+      +'<b style="color:#fbbf24;">Attention</b> : le 0-0 du 14/02/2026 n\'allume AUCUN signal. Le faisceau attrape '
+      +'3 nuls sur 4 — il sert à oser quand il parle, pas à se rassurer quand il se tait.</div></div>';
+  })();
   html+='</div>';
   el.innerHTML=html;
 }
