@@ -3741,6 +3741,15 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
 // Le calcul et le panneau de diagnostic restent en place (lecture utile) ;
 // seul son pouvoir de décision est retiré via ce drapeau.
 var STRUCTURE_NUL_DECISIVE = false;
+// ─── LE NUL AU VERDICT PRINCIPAL (29/08/26) ───
+// false = porte STRICTE : le nul s'impose sur +2 en même boucle et sur
+//         +11 en boucles opposées. C'est ce qui est branché, mesuré à
+//         21/30 sur le verdict affiché contre 18/30 sans le nul.
+// true  = porte ÉLARGIE : ajoute +4 en même boucle. Elle donne 22/30,
+//         mais ce point vient du seul cas sur lequel « +4 » a été
+//         ajusté — il ne mesure rien tant qu'un second nul à +4 n'est
+//         pas arrivé. À basculer ce jour-là, pas avant.
+var NUL_PORTE_ELARGIE_V7 = false;
 
 function structureDuNul(theme) {
   const juge1 = theme[13], juge2 = theme[14];
@@ -20188,7 +20197,44 @@ function getVerdictAfficheReel(theme, favorite) {
   // Structure du Nul et Axe Succédent tous deux débranchés (24/08/26) —
   // cf. STRUCTURE_NUL_DECISIVE et AXE_SUCCEDENT_DECISIF. Plus aucune règle
   // de nul n'impose le verdict ; elles restent calculées et affichées.
-  var nulActif = !!((STRUCTURE_NUL_DECISIVE && structureNul.nulDetecte) || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
+  //
+  // ─── 29/08/26 : LE NUL EST BRANCHÉ AU VERDICT PRINCIPAL ───
+  // Demande d'Ellemine_D, après que sa doctrine des deux portes soit
+  // devenue la meilleure lecture du banc. C'est nulDeuxPortesV7 qui
+  // impose désormais le nul — pas structureDuNul, pas l'axe succédent,
+  // qui restent débranchés parce qu'ils ne l'ont jamais mérité
+  // (structure : 1 nul sur 5 ; juge figé : 2 sur 5 pour 14 faux positifs).
+  //
+  // MESURÉ AVANT D'ÊTRE BRANCHÉ, sur les 30 cas au camp connu (5 nuls) —
+  // c'est le verdict AFFICHÉ qui est compté, pas un moteur isolé :
+  //   sans le nul (état du 28/08) .................. 18/30
+  //   avec les deux portes (+2 / +11) .............. 21/30   ← branché
+  //   avec les portes élargies ({+2,+4} / +11) ..... 22/30
+  // Le détail de ce que change le branchement strict :
+  //   Roma       nul  · R1  ✘ → nul ✔      gagné
+  //   AmisPuer   nul  · R7  ✘ → nul ✔      gagné
+  //   CaputPuella nul · R7  ✘ → nul ✔      gagné
+  //   CarcAlbus  nul  · R7  ✘ → nul ✔      gagné
+  //   PuerCaput  R1   · R1  ✔ → nul ✘      PERDU, le prix à payer
+  // Quatre nuls gagnés contre un pronostic juste perdu.
+  //
+  // POURQUOI LA PORTE STRICTE ET PAS L'ÉLARGIE, alors qu'elle fait un
+  // point de plus : le point supplémentaire est FortMajConj, et c'est
+  // précisément le seul cas sur lequel le battant « +4 » a été ajusté.
+  // Une règle ne peut pas se tromper sur le cas qui l'a fabriquée : ce
+  // 22/30 ne mesure rien. Le battant élargi reste disponible par
+  // NUL_PORTE_ELARGIE_V7 pour le jour où un second nul à +4 arrivera.
+  var nulPortes = null;
+  try { nulPortes = nulDeuxPortesV7(theme); } catch (e) { nulPortes = null; }
+  var nulParPorte = false;
+  if (nulPortes) {
+    nulParPorte = NUL_PORTE_ELARGIE_V7
+      ? nulPortes.oui
+      : (nulPortes.memeBoucle ? nulPortes.k === 2 : nulPortes.k === 11);
+  }
+  var nulActif = !!(nulParPorte
+    || (STRUCTURE_NUL_DECISIVE && structureNul.nulDetecte)
+    || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
   var protocoleWinner = protocoleR1R7.applicable && !nulActif
     ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
     : null;
@@ -20410,6 +20456,14 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '');
   }
   var yellow=card&&card.cartonsJaunes!=null?card.cartonsJaunes:'—';
+  var nulPorteTxt='';
+  try {
+    var _dp = nulDeuxPortesV7(theme);
+    if (_dp) {
+      var _ouv = NUL_PORTE_ELARGIE_V7 ? _dp.oui : (_dp.memeBoucle ? _dp.k === 2 : _dp.k === 11);
+      if (_ouv) nulPorteTxt = 'Porte du nul ouverte — branche « ' + _dp.porte + ' », décalage +' + _dp.k;
+    }
+  } catch (e) { nulPorteTxt=''; }
   var nullStatus=nulActif?'NUL ACTIF':'NUL NON ACTIF';
   var nullColor=nulActif?'#fbbf24':'#22c55e';
   var nullReason=sdn.nulParIdentite?'Identité M13 = M14':sdn.nulParOpposition?'Opposition / paire d’équilibre M13 ↔ M14':'Aucune identité ni opposition directe entre les juges';
@@ -20523,7 +20577,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 Cartons jaunes (estimé)</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)
     +(corners.campA!=null?' &nbsp;·&nbsp; <span style="color:#7dd3fc;">'+esc(teamA)+' '+esc(corners.campA)+'</span> / <span style="color:#fdba74;">'+esc(teamB)+' '+esc(corners.campB)+'</span>':'')
     +(card&&card.cornersDominant?' &nbsp;→&nbsp; <span style="color:#4ade80;">dominant '+esc(card.cornersDominant==='R1'?teamA:teamB)+'</span>':'')
-    +'</b></div><div class="tek-note">'+(nulActif?'⚠️ Structure du nul prioritaire — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — le nul ne l’invalide pas.')+'</div>'+incHtml+'</div></div>';
+    +'</b></div><div class="tek-note">'+(nulActif?'⚠️ '+(nulPorteTxt||'Le nul est imposé')+' — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — aucune porte du nul n’est ouverte.')+'</div>'+incHtml+'</div></div>';
   html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
   html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
   html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
@@ -20536,7 +20590,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   html+='<div class="tek-section tek-null"><div class="tek-title">⚖️ STRUCTURE DU NUL</div><div class="tek-null-grid">';
   html+='<div class="tek-box"><h5>Juges de structure</h5><div class="tek-kv"><span>1ère partie (M13)</span><b>'+label(sdn.juge1)+'</b></div><div class="tek-kv"><span>2ème partie (M14)</span><b>'+label(sdn.juge2)+'</b></div><div class="tek-kv"><span>Juge final (M15)</span><b>'+label(sdn.reconstruction)+'</b></div><div class="tek-kv"><span>Sentence (M16)</span><b>'+label(sdn.sentence)+'</b></div></div>';
   html+='<div class="tek-box"><h5>Indicateurs de nul</h5><div class="tek-kv"><span>Identité des juges</span><b>'+ (sdn.nulParIdentite?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Opposition / équilibre</span><b>'+ (sdn.nulParOpposition?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Axe succédent</span><b>'+axeTxt+'</b></div><div class="tek-kv"><span>Signature</span><b>'+esc(nullReason)+'</b></div><div class="tek-kv"><span>Règle M15</span><b>'+esc(axeNul&&axeNul.m15Rule?axeNul.m15Rule:'—')+'</b></div></div>';
-  html+='<div class="tek-nullstatus"><div class="ico">'+(nulActif?'⚠️':'⊘')+'</div><b>'+nullStatus+'</b><div style="font-size:9px;margin:5px 8px;color:#cbd5e1">'+(nulActif?'Le protocole R1/R7 est suspendu tant que la structure du nul est active.':'Aucun signal structurel suffisant pour invalider le vainqueur du protocole.')+'</div></div></div></div>';
+  html+='<div class="tek-nullstatus"><div class="ico">'+(nulActif?'⚠️':'⊘')+'</div><b>'+nullStatus+'</b><div style="font-size:9px;margin:5px 8px;color:#cbd5e1">'+(nulActif?esc(nulPorteTxt||'Le nul est imposé')+'. Le protocole R1/R7 est suspendu.':'Aucune porte du nul n’est ouverte — le vainqueur du protocole tient.')+'</div></div></div></div>';
   html+='<div class="tek-section"><div class="tek-title">🛡️ CRÉDIBILITÉ GLOBALE DU VERDICT</div><div class="tek-bottom"><div class="box"><div class="big">'+credibility+'%</div></div><div class="box"><p><b>'+(nulActif?'Le nul est actif.':'Le nul n’est pas actif.')+'</b> '+(nulActif?'Le protocole de comparaison ne reçoit pas de priorité décisionnelle.':'Le protocole de comparaison R1 / R7 est pleinement disponible pour désigner le vainqueur.')+'</p></div><div class="box"><p><b>ANALYSE</b><br>'+ (winner?'Thème orienté : domination structurelle de '+esc(cardWinner)+'.':'Thème équilibré : aucune domination structurelle claire.')+'<br>La crédibilité est un indicateur de disponibilité du protocole, pas une validation empirique.</p></div></div></div>';
   if((q.duel||[]).length){html+='<div class="tek-section"><div class="tek-title">⚔️ DUELS FIGURE ↔ ANTAGONISTE</div><table class="tek-table"><tr><th>R1 / R7</th><th>Score</th><th>Opposant</th><th>Score</th><th>Issue</th></tr>'+duelRows+'</table></div>';}
   // ─── LE FAISCEAU DU NUL (29/08/26) — les sept lectures croisées ───
@@ -21528,7 +21582,22 @@ function renderTheme(){
     // STRUCTURE_NUL_DECISIVE. Elle ne suspend plus le protocole ni le réseau.
     // Structure du Nul et Axe Succédent tous deux débranchés (24/08/26) —
     // cf. STRUCTURE_NUL_DECISIVE et AXE_SUCCEDENT_DECISIF.
-    const nulActifTop = !!((STRUCTURE_NUL_DECISIVE && structureNulTop.nulDetecte) || (AXE_SUCCEDENT_DECISIF && nulAxeTop && nulAxeTop.confirmed));
+    // ─── LE NUL BRANCHÉ AU VERDICT AFFICHÉ (29/08/26) ───
+    // ⚠️ CE CALCUL DOIT RESTER IDENTIQUE À CELUI DE getVerdictAfficheReel.
+    // Le 29/08 les deux portes n'avaient été branchées QUE dans le moteur :
+    // le banc mesurait 21/30, et l'écran continuait d'afficher un vainqueur
+    // sur les quatre nuls. Vu au contrôle navigateur, pas au calcul — c'est
+    // exactement la dérive que le commentaire de getVerdictAfficheReel
+    // annonçait. Toute modification ici doit être reportée là-bas.
+    let nulPortesTop = null;
+    try { nulPortesTop = nulDeuxPortesV7(currentTheme); } catch (e) { nulPortesTop = null; }
+    const nulParPorteTop = nulPortesTop
+      ? (NUL_PORTE_ELARGIE_V7 ? nulPortesTop.oui
+          : (nulPortesTop.memeBoucle ? nulPortesTop.k === 2 : nulPortesTop.k === 11))
+      : false;
+    const nulActifTop = !!(nulParPorteTop
+      || (STRUCTURE_NUL_DECISIVE && structureNulTop.nulDetecte)
+      || (AXE_SUCCEDENT_DECISIF && nulAxeTop && nulAxeTop.confirmed));
     const protocoleWinner = protocoleR1R7.applicable && !nulActifTop
       ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
       : null;
