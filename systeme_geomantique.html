@@ -3811,6 +3811,35 @@ var STRUCTURE_NUL_DECISIVE = false;
 //   R7 possédé par R1, 2 premiers pas {+2, +4} .. 3 nuls / 4
 //   R7 possédé par R1, plus loin {+8, +10} ...... 0 nul  / 5
 //   R1 possédé par R7 {+12, +14} ................ 0 nul  / 4
+//
+// ═══ MISE À JOUR DU 29/08/26 AU SOIR — +6 ENTRE, ET LA LECTURE PAR
+// « RÔLE » TOMBE ═══
+// Un nul 0-0 tiré DEUX FOIS (PuerFortMaj et PopFortMaj, le même match)
+// porte un décalage de +6, jamais vu jusque-là. La porte est restée
+// fermée deux fois sur un nul. Répartition complète en même boucle,
+// sur 33 cas :
+//   + 2   2 nuls /  3      + 8   0 nul / 1
+//   + 4   1 nul  /  1      +10   0 nul / 4
+//   + 6   2 nuls /  2      +12   0 nul / 2
+//   ─────── frontière ───────  +14   0 nul / 2
+// TOUS les nuls de même boucle sont à +2, +4 ou +6. AUCUN au-delà,
+// aucun en sens inverse : neuf cas de l'autre côté de la coupure.
+//
+// ⚠️ ET MA JUSTIFICATION PAR LES RÔLES ÉTAIT FAUSSE. Je disais « R7
+// occupe l'un des rôles que R1 projette devant lui ». Or +6 n'EST PAS un
+// rôle du camp : les rôles sont à +2 (binôme), +4 (front), +8 (front du
+// front) et +10 (bouclier). +6 n'a pas de nom — c'est le bouclier lu à
+// l'envers. La bonne lecture n'est donc pas doctrinale mais POSITIONNELLE :
+// R7 est à 2, 4 ou 6 pas devant R1, dans l'arc proche. Rien d'autre.
+//
+// ⚠️⚠️ ET IL FAUT NOMMER LE DANGER : c'est la DEUXIÈME fois que j'élargis
+// cette porte après un raté — +4 hier, +6 ce soir. Élargir une règle à
+// chaque fois qu'elle se trompe, c'est la définition de l'ajustement
+// progressif, et trois nuls ont servi à fixer trois bornes. Ce qui la
+// sauve pour l'instant est la propreté de la coupure (neuf cas au-delà,
+// zéro nul) et le fait qu'elle est FALSIFIABLE : le prochain nul à +8,
+// +10, +12 ou +14 la tue. Si cela arrive, ne pas élargir une troisième
+// fois — abandonner.
 // Le camp entier {0,2,4,8,10} ferait 3 nuls sur 9 : la coupure est bien
 // aux deux premiers pas, pas au camp.
 // Fréquence de base : +4 seul 5,0 % des thèmes, {+2,+4} 12,3 %.
@@ -14428,7 +14457,27 @@ var CAS_REFERENCE_V7 = [
     note: 'incident annoncé 78 % « très élevé » côté M7 — RIEN ne s\'est passé. Les trois dérivés d\'axes moyennaient 39 % (73 · 43 · 0), aucun carton rouge : ils voyaient juste là où le principal criait' },
   { nom: 'PuellaVia', meres: ['puella','via','fortuna_major','fortuna_minor'],
     incident: true,
-    note: 'incident annoncé 20 % « faible » côté M1 — CARTON ROUGE réel, du côté signalé. Les trois dérivés moyennaient 80 % (50 · 95 · 95) et DEUX portaient un rouge : ils voyaient juste là où le principal se taisait' }
+    note: 'incident annoncé 20 % « faible » côté M1 — CARTON ROUGE réel, du côté signalé. Les trois dérivés moyennaient 80 % (50 · 95 · 95) et DEUX portaient un rouge : ils voyaient juste là où le principal se taisait' },
+  // ─── 29/08/26 — DEUX THÈMES POUR UN SEUL MATCH, 0-0 ───
+  // ⚠️ ATTENTION EN LISANT LE BANC : ces deux cas sont le MÊME match,
+  // tiré deux fois. Ils testent chacun les règles pour de bon — ce sont
+  // deux thèmes différents — mais ils ne valent PAS deux observations
+  // indépendantes de football. Ne jamais les compter comme deux preuves.
+  //
+  // ☠️ ILS CASSENT LA RÈGLE DES DEUX PORTES, ET DEUX FOIS. Les deux
+  // portent un décalage R1→R7 de +6, et +6 n'était jamais apparu dans
+  // toute l'archive. La porte est donc restée fermée sur un nul, deux
+  // fois de suite. Le verdict a annoncé un vainqueur (0-1) sur un 0-0.
+  // +6 veut dire que R1 EST LE BOUCLIER DE R7 (bouclier = +10, et
+  // 16 − 10 = 6) : encore une relation de camp, lue à l'envers.
+  // Les camps y partagent 3 rôles sur 5, comme à +2 — et ce signal-là,
+  // lui, s'est allumé dans les deux thèmes.
+  { nom: 'PuerFortMaj', meres: ['puer','fortuna_major','tristitia','populus'],
+    score: '0-0', camp: 'nul', btts: false,
+    note: 'NUL 0-0 — MÊME MATCH que PopFortMaj · R1 Puer en M1 (angulaire), décalage +6, porte fermée ✘ · faisceau 2/7 · aucune somme d\'axe d\'incident' },
+  { nom: 'PopFortMaj', meres: ['populus','fortuna_major','acquisitio','puer'],
+    score: '0-0', camp: 'nul', btts: false,
+    note: 'NUL 0-0 — MÊME MATCH que PuerFortMaj · R1 Amissio en M16 (synthèse), décalage +6, porte fermée ✘ · faisceau 3/7 · une somme d\'axe d\'incident (Cardinal = Tristitia)' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -15944,12 +15993,10 @@ function nulDeuxPortesV7(theme) {
   var oui = false, force = 'aucun', porte, detail;
   if (meme) {
     porte = 'même boucle';
-    if (k === 2) { oui = true; force = 'ÉTABLIE';
-      detail = 'R7 est le binôme de R1 — le premier rôle que R1 projette devant lui'; }
-    else if (k === 4) { oui = true; force = 'ÉTABLIE';
-      detail = 'R7 est le front de R1 — le second rôle que R1 projette devant lui'; }
+    if (k === 2 || k === 4 || k === 6) { oui = true; force = 'ÉTABLIE';
+      detail = 'R7 est à ' + k + ' pas devant R1 — dans l\'arc proche (2, 4 ou 6), où tombent TOUS les nuls de même boucle'; }
     else if (k === 8 || k === 10) {
-      detail = 'R7 est bien un rôle de R1, mais plus loin devant (' + (k === 8 ? 'front du front' : 'bouclier') + ') — 0 nul sur 5 cas'; }
+      detail = 'R7 est trop loin devant (+' + k + ', ' + (k === 8 ? 'front du front' : 'bouclier') + ') — 0 nul sur 5 cas'; }
     else if (k === 12 || k === 14) {
       detail = 'sens inverse : c\'est R1 qui est le ' + (k === 12 ? 'front' : 'binôme') + ' de R7 — 0 nul sur 4 cas'; }
     else { detail = 'décalage +' + k; }
@@ -16058,20 +16105,21 @@ function niveauNulV7(theme) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { return null; }
   if (!rot || !rot.hR1) return null;
-  var ANG = [1, 4, 7, 10];
+  // ☠️ L'EXCLUSION « LES DEUX SIÈGES ANGULAIRES » EST MORTE (29/08/26 soir).
+  // Elle reposait sur UN seul cas, PuerCaput. Le nul 0-0 d'aujourd'hui,
+  // tiré deux fois, a donné PuerFortMaj : R1 = Puer en M1, R7 = Rubeus en
+  // M7, LES DEUX ANGULAIRES, et c'est un nul. L'exclusion est donc à
+  // 1 juste et 1 fausse — un pile ou face. Retirée.
   var porte = nulParPorteV7(theme);
-  var deuxAngulaires = ANG.indexOf(rot.hR1) >= 0 && ANG.indexOf(rot.hR7) >= 0;
   var cadent = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
-  if (porte && !deuxAngulaires) return { niveau: 'MAXIMAL', taux: 100, sur: 5,
+  if (porte) return { niveau: 'MAXIMAL', taux: 88, sur: 8,
     detail: 'porte ouverte, paire M' + rot.hR1 + '→M' + rot.hR7
-      + ' — 5 nuls sur 5 dans l\'archive' + (cadent ? ' (R1 en cadente)' : '') };
-  if (porte) return { niveau: 'fort', taux: 0, sur: 1,
-    detail: 'porte ouverte MAIS les deux sièges sont angulaires (M' + rot.hR1
-      + '→M' + rot.hR7 + ') — le seul cas de ce type n\'était pas un nul' };
+      + ' — 7 nuls sur 8 déclenchements dans l\'archive'
+      + (cadent ? ' (R1 en cadente)' : '') };
   if (cadent) return { niveau: 'faible', taux: 0, sur: 4,
     detail: 'R1 en maison cadente mais porte fermée — 0 nul sur 4' };
-  return { niveau: 'aucun', taux: 0, sur: 20,
-    detail: 'ni porte ouverte ni maison cadente — 0 nul sur 20' };
+  return { niveau: 'aucun', taux: 0, sur: 21,
+    detail: 'ni porte ouverte ni maison cadente — 0 nul sur 21' };
 }
 
 // Le score AFFICHÉ, source unique. Quand le nul est imposé, la carte ne
@@ -16102,6 +16150,8 @@ function nulParPorteV7(theme) {
   return NUL_PORTE_ELARGIE_V7
     ? d.oui
     : (d.memeBoucle ? d.k === 2 : d.k === 11);
+  // (d.oui couvre désormais {+2, +4, +6} en même boucle et +11 en
+  //  boucles opposées — voir nulDeuxPortesV7.)
 }
 
 // ─── LE CROISEMENT EST AU VOLANT (29/08/26, demande d'Ellemine_D) ───
