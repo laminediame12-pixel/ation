@@ -15930,6 +15930,68 @@ function nulDeuxPortesV7(theme) {
 // Les deux constantes historiques restent lues ici, et restent à false :
 // STRUCTURE_NUL_DECISIVE (structureDuNul : 1 nul sur 5) et
 // AXE_SUCCEDENT_DECISIF. Elles n'ont jamais mérité le volant.
+// ═══════════════════════════════════════════════════════════════
+// LE SIÈGE ET LA PORTE — deux signaux indépendants (29/08/26)
+//
+// « Pourquoi si R1 en M3 et R7 en M9, ou R1 en M6 et R7 en M12, il y a
+// nul le plus souvent ? Tu peux fouiller. » (Ellemine_D)
+//
+// Fouillé. Sa question désigne exactement les deux configurations où
+// R1 ET R7 sont tous les deux en maison cadente : comme R7 tombe
+// toujours six maisons après R1, M3→M9 et M6→M12 gardent les deux
+// centrales dans les cadentes, tandis que M9→M15 et M12→M2 en font
+// sortir R7. L'intuition est juste, la conclusion ne l'est pas :
+//   R1 en M3 ou M6 — LES DEUX en cadente ..... 2 nuls / 5 cas · 40 %
+//   R1 en M9 ou M12 — R1 seul en cadente ..... 2 nuls / 3 cas · 67 %
+// Que les deux centrales soient cadentes n'ajoute rien. Les quatre
+// maisons cadentes se valent, et c'est la cadence de R1 seule qui parle.
+//
+// CE QUI PARLE VRAIMENT, C'EST LE CROISEMENT. En croisant le siège de
+// R1 avec la porte du nul, sur les 30 cas au camp connu :
+//   porte OUVERTE + R1 cadent .... 4 nuls / 4 cas .... 100 %
+//   porte OUVERTE, R1 non cadent . 1 nul  / 2 cas ..... 50 %
+//   porte fermée,  R1 cadent ..... 0 nul  / 4 cas ...... 0 %
+//   porte fermée,  R1 non cadent . 0 nul  / 20 cas ..... 0 %
+// Aucun des deux ne suffit seul : la maison cadente sans la porte ne
+// donne AUCUN nul sur quatre cas, et la porte sans la maison en donne
+// un sur deux. Ensemble, quatre sur quatre.
+//
+// ET ILS SONT INDÉPENDANTS, ce qui est la raison pour laquelle les
+// croiser paie. Vérifié sur les 65 536 thèmes possibles : la porte
+// s'ouvre dans 18,8 % des thèmes quand R1 est en maison cadente, et
+// 18,4 % en moyenne toutes maisons confondues. La maison ne change
+// donc pas la probabilité que la porte s'ouvre — les deux signaux
+// mesurent des choses différentes.
+//
+// LA LECTURE, en une phrase : le nul vient quand une centrale MAL
+// ASSISE (maison cadente, la plus faible) fait face à une figure QUI
+// N'EST PAS UNE VRAIE ADVERSAIRE (un rôle de son propre camp en même
+// boucle, ou le pôle lointain de sa proie en boucles opposées).
+// Faiblesse du siège ET absence d'adversité. Ni l'une ni l'autre seule.
+//
+// ⚠️ Quatre cas sur quatre, ce n'est pas une loi — c'est le meilleur
+// croisement de l'archive, sur quatre nuls. Il n'est PAS branché au
+// verdict : le nul continue d'être imposé par la porte seule
+// (nulParPorteV7), qui attrape les cinq nuls dont CarcAlbus, lequel
+// n'est pas cadent. Ajouter la maison en condition ferait perdre ce
+// nul-là. Le croisement sert à SAVOIR À QUEL POINT y croire, pas à
+// décider — voir niveauNulV7 juste en dessous.
+function niveauNulV7(theme) {
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!rot || !rot.hR1) return null;
+  var porte = nulParPorteV7(theme);
+  var cadent = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
+  if (porte && cadent) return { niveau: 'MAXIMAL', taux: 100, sur: 4,
+    detail: 'porte ouverte ET R1 en maison cadente — 4 nuls sur 4 dans l\'archive' };
+  if (porte) return { niveau: 'fort', taux: 50, sur: 2,
+    detail: 'porte ouverte, mais R1 en M' + rot.hR1 + ' (hors cadentes) — 1 nul sur 2' };
+  if (cadent) return { niveau: 'faible', taux: 0, sur: 4,
+    detail: 'R1 en maison cadente mais porte fermée — 0 nul sur 4' };
+  return { niveau: 'aucun', taux: 0, sur: 20,
+    detail: 'ni porte ouverte ni maison cadente — 0 nul sur 20' };
+}
+
 function nulParPorteV7(theme) {
   var d = null;
   try { d = nulDeuxPortesV7(theme); } catch (e) { return false; }
@@ -20691,10 +20753,23 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     if(dp){
       var dpOuverte = nulParPorteV7(theme);
       var tp2 = dpOuverte ? (dp.force==='ÉTABLIE' ? '#22c55e' : '#84cc16') : '#64748b';
+      var niv=null; try{ niv=niveauNulV7(theme); }catch(e){ niv=null; }
+      var nivCol = niv ? (niv.niveau==='MAXIMAL' ? '#ef4444' : (niv.niveau==='fort' ? '#f59e0b'
+        : (niv.niveau==='faible' ? '#64748b' : '#475569'))) : '#64748b';
       html+='<div class="tek-section"><div class="tek-title">🚪 LES DEUX PORTES DU NUL — branche « '+esc(dp.porte)+' »</div>'
         +'<div style="padding:6px 2px; font-size:12px;"><b style="color:'+tp2+';">'
         +(dpOuverte?'PORTE OUVERTE — '+esc(dp.force):'porte fermée')+'</b> · décalage R1→R7 = +'+dp.k
         +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">'+esc(dp.detail)+'</div></div>'
+        +(niv ? '<div style="padding:6px 8px; margin:4px 0; border-left:3px solid '+nivCol+'; background:rgba(148,163,184,.08);">'
+            +'<b style="color:'+nivCol+'; font-size:12px;">NIVEAU DE NUL : '+esc(niv.niveau)+'</b>'
+            +' <span style="font-size:11px; color:#cbd5e1;">— '+niv.taux+' % des cas de cette catégorie ont fini nuls ('
+            +niv.sur+' cas d\'archive)</span>'
+            +'<div style="font-size:10px; color:#94a3b8; margin-top:2px;">'+esc(niv.detail)+'</div>'
+            +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">Le siège et la porte sont deux signaux '
+            +'INDÉPENDANTS : vérifié sur les 65 536 thèmes, la porte s\'ouvre dans 18,8 % des thèmes quand R1 est '
+            +'cadent contre 18,4 % en moyenne — la maison ne change pas la chance que la porte s\'ouvre. '
+            +'C\'est pour ça que les croiser paie : <b>porte + cadent 4/4</b>, porte seule 1/2, '
+            +'cadent seul 0/4, ni l\'un ni l\'autre 0/20.</div></div>' : '')
         +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
         +'<b>Même boucle — porte ÉTABLIE</b> : R7 occupe l\'un des DEUX PREMIERS rôles que R1 projette '
         +'devant lui, binôme (+2) ou front (+4). Plus loin devant (+8, +10) ou dans le sens inverse '
