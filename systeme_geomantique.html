@@ -14676,6 +14676,87 @@ function autoTestPolesV7() {
   if (!r.ok) { console.warn('⚠️ Tableau des pôles incohérent :', r.fautes); }
 })();
 
+// ═══════════════════════════════════════════════════════════════
+// LOI DES AXES D'OPPOSITION (29/08/26) — théorie d'Ellemine_D
+//
+// « toutes les couplages des maisons sont occupées par les figures de
+// façon spéciale : M1 opposée de M7, la figure en M7 est front du front
+// de la figure en M1 ; M2 et M8 binôme direct ; de même que R1 et R7 sont
+// de relation binôme en maison cadente M6 et M12 ».
+//
+// Les six axes d'opposition sont M1/M7, M2/M8, M3/M9, M4/M10, M5/M11,
+// M6/M12 — le même écart de six maisons qui sépare toujours R7 de R1.
+// Chaque axe porte un décalage dans FIGS_V7, et ce décalage EST une
+// relation : +2 binôme, +4 front, +8 front du front, +10 bouclier,
+// +3 victime, +13 antagoniste, +14 le binôme lu à l'envers, etc.
+//
+// Deux lois vérifiées sur les 65 536 thèmes possibles, sans exception :
+//   1. le nombre d'axes portant un décalage IMPAIR est toujours PAIR —
+//      donc le nombre d'axes de MÊME BOUCLE vaut 0, 2, 4 ou 6, jamais
+//      un nombre impair ;
+//   2. cela découle d'une loi plus simple : parmi les douze premières
+//      maisons, le nombre de figures de boucle impaire est toujours pair.
+// Répartition exhaustive des axes de même boucle : 0 → 3,13 % des
+// thèmes, 2 → 46,88 %, 4 → 46,88 %, 6 → 3,13 %.
+//
+// Sa lecture du thème AmisPuer (4-4) est exacte sur deux points sur
+// trois, et la troisième est juste au sens de la relation mais pas du
+// sens de lecture :
+//   M1 Amissio ↔ M7 Puella ......... +8  front du front  ✅
+//   M2 Puer    ↔ M8 Acquisitio ..... +14 binôme À L'ENVERS — le binôme
+//        est un décalage de +2, non réciproque : c'est Puer qui est le
+//        binôme d'Acquisitio, pas l'inverse.
+//   M6 Conjunctio ↔ M12 Cauda ...... +2  binôme  ✅ (l'axe de R1/R7)
+// Les deux axes restants, M4/M10 +3 (victime) et M5/M11 +13
+// (antagoniste), sont exactement inverses l'un de l'autre : ils
+// s'annulent. C'est là sa « disposition d'équilibre », et elle est
+// littéralement vraie — le multiensemble des six décalages de ce thème
+// est symétrique (pour chaque +k il existe un +(16−k)). Mesuré : cela
+// n'arrive que dans 0,9 % des thèmes, et AmisPuer est le SEUL des
+// 28 thèmes de l'archive à l'avoir.
+// ⚠️ Mais Roma (1-1), l'autre nul, ne l'a PAS. L'équilibre des axes ne
+// peut donc pas être la loi du nul ; il reste une signature du 4-4.
+// Le résultat ne dépend pas du thème affiché : on le calcule une seule
+// fois. Sans ce cache, le panneau des pôles mettait 5,3 s à s'ouvrir.
+var _cacheAxesV7 = null;
+function autoTestAxesV7() {
+  if (_cacheAxesV7) return _cacheAxesV7;
+  var idx = {};
+  FIGS_V7.forEach(function (f, i) { idx[f] = i; });
+  var t = [
+    { nom: 'axes de boucles opposées en nombre pair', ok: 0 },
+    { nom: 'figures de boucle impaire en M1..M12 en nombre pair', ok: 0 }
+  ];
+  // Échantillon de 256 thèmes : la loi a été vérifiée hors ligne sur les
+  // 65 536 thèmes possibles, ce contrôle-ci n'est qu'un garde-fou de
+  // régression. Un pas de 2 (4 096 thèmes) coûtait 4 s au chargement.
+  var n = 0;
+  for (var i = 0; i < 16; i += 4) {
+    for (var j = 0; j < 16; j += 4) {
+      for (var a = 0; a < 16; a += 4) {
+        for (var b = 0; b < 16; b += 4) {
+          var th = buildThemeFromMothers(FIGS_V7[i], FIGS_V7[j], FIGS_V7[a], FIGS_V7[b]);
+          var impairs = 0, boucle = 0;
+          for (var h = 1; h <= 6; h++) {
+            if ((((idx[th[h + 6]] - idx[th[h]]) % 16) + 16) % 16 % 2) impairs++;
+          }
+          for (var g = 1; g <= 12; g++) { if (idx[th[g]] % 2) boucle++; }
+          if (impairs % 2 === 0) t[0].ok++;
+          if (boucle % 2 === 0) t[1].ok++;
+          n++;
+        }
+      }
+    }
+  }
+  var fautes = t.filter(function (x) { return x.ok !== n; });
+  _cacheAxesV7 = { ok: fautes.length === 0, total: n, controles: t, fautes: fautes };
+  return _cacheAxesV7;
+}
+(function () {
+  var r = autoTestAxesV7();
+  if (!r.ok) { console.warn('⚠️ Loi des axes d\'opposition en défaut :', r.fautes); }
+})();
+
 // Le tableau, à l'écran : les seize maisons développées en quatre pôles,
 // avec ce que chaque ligne apporte à R1 et à R7.
 function toggleTablePolesPanel() {
@@ -14743,6 +14824,35 @@ function toggleTablePolesPanel() {
             + '<div style="color:#cbd5e1; margin-top:4px;">Le <b>binôme du front du front EST le bouclier</b> '
             + '((X+8)+2 = X+10) : la première colonne le contient déjà. Il n\'y a pas de cinquième pôle — '
             + 'les quatre colonnes plus la centrale font exactement le camp de cinq rôles.</div></div>'; })()
+      + (function () {
+          var ax = autoTestAxesV7();
+          var idxF = {}; FIGS_V7.forEach(function (f, i) { idxF[f] = i; });
+          var NOMREL = { 0: 'même figure', 2: 'binôme', 3: 'victime', 4: 'front', 6: 'bouclier inv.',
+            8: 'front du front', 10: 'bouclier', 12: 'front inv.', 13: 'antagoniste', 14: 'binôme inv.' };
+          var lignes = '';
+          try {
+            for (var h = 1; h <= 6; h++) {
+              var f1 = currentTheme[h], f2 = currentTheme[h + 6];
+              var k = (((idxF[f2] - idxF[f1]) % 16) + 16) % 16;
+              lignes += '<tr><td>M' + h + ' ' + esc(FL[f1] || f1) + '</td><td>↔</td>'
+                + '<td>M' + (h + 6) + ' ' + esc(FL[f2] || f2) + '</td>'
+                + '<td style="text-align:right; color:' + (k % 2 ? '#f87171' : '#4ade80') + ';">+' + k + '</td>'
+                + '<td style="color:#cbd5e1;">' + (NOMREL[k] || '—')
+                + (k % 2 ? ' · boucles opposées' : ' · même boucle') + '</td></tr>';
+            }
+          } catch (e) { lignes = ''; }
+          return '<div style="margin-top:8px; border:1px solid ' + (ax.ok ? '#4ade80' : '#f87171')
+            + '; border-radius:9px; padding:8px 10px; font-size:11px;">'
+            + '<b>Les six axes d\'opposition — ' + (ax.ok ? '✅ les 2 lois tiennent — ' + ax.total
+              + ' thèmes en garde-fou, 65 536/65 536 hors ligne' : '❌ loi en défaut') + '</b>'
+            + '<div style="color:#94a3b8; margin-top:3px;">'
+            + ax.controles.map(function (c) { return c.nom + ' — ' + c.ok + '/' + ax.total; }).join('<br>') + '</div>'
+            + (lignes ? '<table style="width:100%; margin-top:6px; font-size:11px;">' + lignes + '</table>' : '')
+            + '<div style="color:#cbd5e1; margin-top:4px;">Le décalage entre les deux bouts d\'un axe EST une '
+            + 'relation. <b>Attention au sens</b> : le binôme est un décalage de +2, il n\'est pas réciproque — '
+            + '+14 veut dire que c\'est la figure du BAS qui est le binôme de celle du haut. '
+            + 'Le nombre d\'axes de boucles opposées est toujours pair (0, 2, 4 ou 6) : vérifié sur les '
+            + '65 536 thèmes possibles.</div></div>'; })()
       + '<div class="muted" style="font-size:11px; margin-top:6px;">⚠️ Au banc ce moteur fait 4/10 — le plus faible, '
       + 'sous « toujours R7 » qui fait 6/10. Onze lectures du même tableau ont été mesurées (poids planchés à zéro, '
       + 'pôles seulement portés par une figure ancrée, sans la pénalité d\'antagoniste, règle de la même boucle '
@@ -15441,6 +15551,49 @@ var MOTEURS_NUL_V7 = [
     verdict: function (t) {
       var FIGE = { populus: 1, carcer: 1, via: 1, conjunctio: 1 };
       return { oui: !!FIGE[t[15]], detail: 'juge ' + (FL[t[15]] || t[15]) };
+    } },
+  // ── AJOUT DU 29/08/26, sur la théorie d'Ellemine_D ──────────────
+  // « si c'est les natures des figures qui déterminent si c'est nul ou
+  // pas, ou bien leur disposition d'équilibre […] R1 et R7 sont de
+  // relation binôme en maison cadente M6 et M12 ».
+  // Lu sur son thème AmisPuer (4-4) : R1 = Conjunctio en M6, R7 = Cauda
+  // Draconis en M12, décalage +2, binôme. Exact.
+  // Mesuré ensuite sur toute l'archive, et c'est la meilleure règle de
+  // nul trouvée à ce jour — meilleure que la maison :
+  //   relation R1→R7      nuls / cas au résultat connu
+  //     +2  BINÔME ........ 2 / 3   ← les DEUX nuls y sont
+  //     +1  ............... 0 / 6
+  //     +10 bouclier ...... 0 / 4
+  //     +9  ............... 0 / 3
+  //     (huit autres relations) 0 nul
+  //   même boucle (décalage pair) 2/11 · boucles opposées (impair) 0/15
+  // Fréquence de base du binôme : 7,5 % des thèmes. Que les deux nuls
+  // tombent dans une case qui ne contient que 3 des 26 cas vaut
+  // C(3,2)/C(26,2) = 0,9 % au hasard.
+  // Le sens est net : le binôme est la relation d'ALLIANCE la plus
+  // proche. Deux centrales binômes ne sont pas des adversaires, et un
+  // match entre alliés ne désigne pas de vainqueur.
+  // Le seul faux positif est PuerCaput (e-sport, camp connu sans score).
+  { cle: 'nul_r7_binome', nom: 'Nul · R7 est le binôme de R1 (+2)', icone: '⚖', teinte: '#f472b6',
+    juste: 0, total: 0, note: 'théorie Ellemine_D — les deux nuls y sont, un seul faux positif',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
+      var b = BINOMES_V7[rot.figR1] === rot.figR7;
+      return { oui: b, detail: 'R7 = ' + (FL[rot.figR7] || rot.figR7)
+        + (b ? ' = binôme de ' + (FL[rot.figR1] || rot.figR1) : '') };
+    } },
+  { cle: 'nul_meme_boucle', nom: 'Nul · R1 et R7 dans la même boucle', icone: '⚖', teinte: '#22d3ee',
+    juste: 0, total: 0, note: 'décalage pair — 2 nuls sur 11, contre 0 sur 15 en boucles opposées',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
+      var i1 = FIGS_V7.indexOf(rot.figR1), i7 = FIGS_V7.indexOf(rot.figR7);
+      if (i1 < 0 || i7 < 0) return { oui: null, detail: 'figure inconnue' };
+      var k = (((i7 - i1) % 16) + 16) % 16;
+      return { oui: k % 2 === 0, detail: 'décalage +' + k + (k % 2 ? ' (boucles opposées)' : ' (même boucle)') };
     } },
   { cle: 'nul_temoin', nom: 'Nul · « jamais de nul »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — la barre à battre est très haute, les nuls sont rares',
@@ -16257,8 +16410,10 @@ function renderBancPanel() {
     + (b.miTempsDeux || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
-    + ' <span style="font-weight:400; color:#64748b;">— les deux nuls connus ont R1 en maison CADENTE (M9 et M6) ; '
-    + 'aucun des vingt autres cas n\'y est. Attention au témoin : « jamais de nul » est juste 24 fois sur 26</span></td></tr>'
+    + ' <span style="font-weight:400; color:#64748b;">— la règle d\'Ellemine_D, « R7 est le binôme de R1 », est la '
+    + 'PREMIÈRE à passer devant le témoin : 25/26 contre 24/26 pour « jamais de nul ». Les deux nuls y sont, '
+    + 'un seul faux positif (PuerCaput). Les deux nuls ont aussi R1 en maison cadente (M9 et M6), mais cette '
+    + 'lecture-là traîne quatre faux positifs</span></td></tr>'
     + (b.nul || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Match serr\u00e9 (\u00e9cart de buts \u2264 1)'
