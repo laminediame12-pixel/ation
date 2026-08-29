@@ -10561,11 +10561,27 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
   var m7OuvOuMobile = isOuverte(figM7) || isMobile(figM7);
   var m5ActifOuOuvert = isActive(figM5) || isOuverte(figM5);
   var m10Ouverte = isOuverte(figM10);
+  // ─── CORRECTION 3 (28/08/26, cas PuerLaet) : DEUX AFFIRMATIONS
+  //     DIFFÉRENTES ÉTAIENT CONFONDUES DANS UNE SEULE ───
+  // htWinner = 'both' voulait dire « les DEUX camps marquent avant la
+  // pause ». Sur PuerLaet il annonçait 'both' et le réel est 2-0 : un
+  // seul a marqué. Le signal était juste sur la question faible — y
+  // a-t-il eu UN but avant la pause — et faux sur la forte.
+  // Les deux sont désormais séparées :
+  //     htBut ........ au moins un but avant la pause (question faible)
+  //     htDeuxCamps .. les deux camps marquent avant la pause (forte)
+  // htWinner garde sa valeur pour ne rien casser en aval, mais il ne
+  // vaut 'both' que lorsque la forte est réellement soutenue, et le banc
+  // note désormais les deux séparément.
   var htWinner = null;
+  var htBut = false;
+  var htDeuxCamps = false;
   var htReasons = [];
 
   if (m5ActifOuOuvert && m10Ouverte && (m1OuvOuMobile || m7OuvOuMobile)) {
+    htBut = true;
     if (m1OuvOuMobile && m7OuvOuMobile) {
+      htDeuxCamps = true;
       htWinner = 'both';
       htReasons.push('M1 et M7 ouvertes/mobiles + M5 active/ouverte + M10 ouverte -> but des deux cotes en 1ere mi-temps');
     } else if (m1OuvOuMobile) {
@@ -10580,6 +10596,8 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
       var binFig = BINOMES_V7[fig];
       var conc = concordanceV7(ELEMENTS_V7[binFig], ELEMENTS_V7[fig]);
       if ((conc.type==='force_forte'||conc.type==='force') && trouverFigV7(binFig,theme).length>0) {
+        htBut = true;
+        if (htWinner !== null) htDeuxCamps = true;
         htWinner = htWinner===null ? side : 'both';
       }
     };
@@ -10689,7 +10707,8 @@ function verdictV7(theme, useRotationAsPrimary, ctx) {
     duelEmpR:duelEmpR, duelCycR:duelCycR,
     vcM:vcM, vcR:vcR,
     pm5:pm5, pm11:pm11, goalCap:goalCap,
-    htWinner:htWinner, htReasons:htReasons, penalty:penalty, reasons:reasons,
+    htWinner:htWinner, htBut:htBut, htDeuxCamps:htDeuxCamps,
+    htReasons:htReasons, penalty:penalty, reasons:reasons,
     planM1:planM1, planM7:planM7, concPlanetes:concPlanetes,
     // compat aliases for display
     duelEmp:duelEmpM, duelCyc:duelCycM
@@ -14276,6 +14295,14 @@ function bancMoteursV7(force) {
     }),
     // But dans les deux mi-temps : vrai si on a marqué avant la pause ET
     // après. Demande les deux scores — mi-temps et final.
+    // Les DEUX camps marquent-ils en première période ? Se lit sur le
+    // seul score de mi-temps : les deux nombres non nuls.
+    miTempsDeux: passe(MOTEURS_MITEMPS_DEUX_V7, 'oui', function (c) {
+      if (!c.htScore) return null;
+      var h = String(c.htScore).match(/(\d+)-(\d+)/);
+      if (!h) return null;
+      return (+h[1]) > 0 && (+h[2]) > 0;
+    }),
     miTemps: passe(MOTEURS_MITEMPS_V7, 'oui', function (c) {
       // Un cas peut porter directement le fait, quand seul le fait est
       // connu (« il y a but dans chaque mi-temps ») sans les deux scores.
@@ -15092,10 +15119,29 @@ var MOTEURS_MITEMPS_V7 = [
     verdict: function (t) {
       var v = null;
       try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      if (!v || !v.htWinner) return { oui: null, detail: 'aucun signal de première période' };
-      return { oui: true, detail: 'htWinner = ' + v.htWinner };
+      if (!v || !v.htBut) return { oui: null, detail: 'aucun signal de première période' };
+      return { oui: true, detail: 'but avant la pause'
+        + (v.htDeuxCamps ? ' (et le signal ajoute : des deux côtés)' : '') };
     } },
   { cle: 'mt_temoin', nom: 'Mi-temps · « toujours oui »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
+    verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
+];
+
+// La question FORTE, séparée le 28/08/26 : les DEUX camps marquent-ils
+// avant la pause ? C'est ce que htWinner='both' affirmait sans jamais
+// être noté là-dessus. Il l'est maintenant.
+var MOTEURS_MITEMPS_DEUX_V7 = [
+  { cle: 'mtd_signal', nom: '1re mi-temps · les deux marquent (signal htWinner)', icone: '🕐', teinte: '#f472b6',
+    juste: 0, total: 0, note: 'l\'affirmation forte de htWinner, enfin confrontée au réel',
+    verdict: function (t) {
+      var v = null;
+      try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
+      if (!v) return { oui: null, detail: 'indisponible' };
+      if (!v.htBut) return { oui: null, detail: 'aucun signal de première période' };
+      return { oui: !!v.htDeuxCamps, detail: v.htDeuxCamps ? 'les deux marquent' : 'un seul côté' };
+    } },
+  { cle: 'mtd_temoin', nom: '1re mi-temps · « toujours les deux »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
 ];
@@ -15846,6 +15892,11 @@ function renderBancPanel() {
     + 'saisis « Mi-temps ex: 1-0 » dans tes thèmes sauvegardés. Attention : l\'hypothèse « M1/M7 puis R1/R7 » '
     + 'dit OUI sur 100 % des thèmes — elle est identique au témoin constant</span></td></tr>'
     + (b.miTemps || []).map(ligne).join('')
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">1re mi-temps — les deux marquent'
+    + ' <span style="font-weight:400; color:#64748b;">— l\'affirmation forte de htWinner, séparée le 28/08 '
+    + 'de la question faible « y a-t-il eu un but avant la pause »</span></td></tr>'
+    + (b.miTempsDeux || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
     + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
