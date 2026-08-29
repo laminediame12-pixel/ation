@@ -15609,6 +15609,74 @@ var MOTEURS_NUL_V7 = [
       var k = (((i7 - i1) % 16) + 16) % 16;
       return { oui: k % 2 === 0, detail: 'décalage +' + k + (k % 2 ? ' (boucles opposées)' : ' (même boucle)') };
     } },
+  // ── LA PISTE DES MAISONS, REPRISE LE 29/08/26 ──────────────────
+  // « J'insiste sur la piste des maisons. Essaie de trouver des pôles
+  // identiques ou une corrélation dans le thème. Oriente ta recherche
+  // sur le résultat positif. » (Ellemine_D)
+  //
+  // Fait donc : balayage de 258 traits, tous formulés par ce que les
+  // nuls ONT (jamais par ce qui leur manque), en ne gardant que ceux qui
+  // attrapent LES DEUX nuls.
+  //
+  // 1. « PÔLES IDENTIQUES » AU SENS LITTÉRAL — deux maisons portant la
+  //    même figure : les 120 paires M(a)/M(b) ont été testées. AUCUNE
+  //    n'attrape les deux nuls. Réponse nette et négative.
+  //
+  // 2. CE QUI RESSORT : le pôle partagé au siège du JUGE. Les camps de
+  //    R1 et de R7 peuvent avoir des rôles communs ; la question est de
+  //    savoir quelle maison porte l'un d'eux. Testé sur les seize :
+  //      M15 .... attrape 2/2 nuls, 2 faux positifs, 24/26  ← LE JUGE
+  //      M10 .... 1/2 nuls, 0 faux positif
+  //      M4, M12, M16 ... 1/2 nuls
+  //      les onze autres ... 0/2 nul
+  //    M15 est la SEULE des seize maisons à attraper les deux. Et elle
+  //    a une raison d'être celle-là : M15 est le juge, la maison qui
+  //    prononce le verdict. Un juge dont la figure appartient aux deux
+  //    camps ne peut favoriser personne — donc personne ne gagne.
+  //
+  // 3. COMBINÉE À LA RÈGLE DU BINÔME, elle ne laisse plus rien passer :
+  //      juge partagé seul ......... 24/26 · 2 faux positifs
+  //      binôme seul ............... 25/26 · 1 faux positif (PuerCaput)
+  //      binôme ET juge partagé .... 26/26 · 0 faux positif
+  //      témoin « jamais de nul » .. 24/26 · 0 nul attrapé
+  //    Fréquences de base : juge partagé 13,9 %, binôme 7,3 %, les deux
+  //    ensemble 1,4 % des thèmes.
+  //
+  // ⚠️ CE QU'IL NE FAUT PAS EN CONCLURE. 258 traits balayés, 26 en
+  // attrapent deux ; avec seulement DEUX nuls parmi 26 cas, un trait qui
+  // se déclenche sur 4 cas les attrape tous les deux par pure chance une
+  // fois sur 54. Sur 258 traits, le hasard seul en produit une poignée.
+  // « 26/26 » est donc DEUX conditions ajustées sur DEUX cas : non
+  // infirmé, pas confirmé. Ce qui distingue M15 du bruit n'est pas son
+  // score, c'est d'être la seule des seize maisons à tenir ET d'avoir un
+  // sens doctrinal. Et la règle ne se déclenche que sur 1,4 % des
+  // thèmes : au mieux elle attrapera un nul réel sur cinq. Précision
+  // haute, rappel très bas — à croire quand elle parle, jamais à lire
+  // comme « pas de signal donc pas de nul ».
+  { cle: 'nul_juge_partage', nom: 'Nul · le juge M15 porte un pôle des DEUX camps', icone: '⚖', teinte: '#fb923c',
+    juste: 0, total: 0, note: 'seule des 16 maisons à attraper les deux nuls — le juge ne peut trancher',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
+      var c1 = [rot.figR1, BOUCLIER_V7[rot.figR1], FRONT_V7[rot.figR1], BINOMES_V7[rot.figR1], frontDuFrontV7(rot.figR1)];
+      var c7 = [rot.figR7, BOUCLIER_V7[rot.figR7], FRONT_V7[rot.figR7], BINOMES_V7[rot.figR7], frontDuFrontV7(rot.figR7)];
+      var partage = c1.indexOf(t[15]) >= 0 && c7.indexOf(t[15]) >= 0;
+      return { oui: partage, detail: 'juge ' + (FL[t[15]] || t[15]) + (partage ? ' — des deux camps' : '') };
+    } },
+  { cle: 'nul_binome_et_juge', nom: 'Nul · binôme ET juge partagé', icone: '⚖', teinte: '#e879f9',
+    juste: 0, total: 0, note: '0 faux positif, mais 2 conditions sur 2 cas — non infirmé, pas confirmé',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
+      if (BINOMES_V7[rot.figR1] !== rot.figR7) return { oui: false, detail: 'R7 n\'est pas le binôme de R1' };
+      var c1 = [rot.figR1, BOUCLIER_V7[rot.figR1], FRONT_V7[rot.figR1], BINOMES_V7[rot.figR1], frontDuFrontV7(rot.figR1)];
+      var c7 = [rot.figR7, BOUCLIER_V7[rot.figR7], FRONT_V7[rot.figR7], BINOMES_V7[rot.figR7], frontDuFrontV7(rot.figR7)];
+      var partage = c1.indexOf(t[15]) >= 0 && c7.indexOf(t[15]) >= 0;
+      return { oui: partage, detail: partage ? 'binôme + juge ' + (FL[t[15]] || t[15]) + ' partagé'
+        : 'binôme mais juge non partagé' };
+    } },
   { cle: 'nul_temoin', nom: 'Nul · « jamais de nul »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — la barre à battre est très haute, les nuls sont rares',
     verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
@@ -16432,10 +16500,11 @@ function renderBancPanel() {
     + (b.miTempsDeux || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
-    + ' <span style="font-weight:400; color:#64748b;">— la règle d\'Ellemine_D, « R7 est le binôme de R1 », est la '
-    + 'PREMIÈRE à passer devant le témoin : 25/26 contre 24/26 pour « jamais de nul ». Les deux nuls y sont, '
-    + 'un seul faux positif (PuerCaput). Les deux nuls ont aussi R1 en maison cadente (M9 et M6), mais cette '
-    + 'lecture-là traîne quatre faux positifs</span></td></tr>'
+    + ' <span style="font-weight:400; color:#64748b;">— « R7 est le binôme de R1 » fait 25/26 contre 24/26 pour le '
+    + 'témoin « jamais de nul ». Sur la piste des maisons, M15 est la SEULE des seize dont le pôle partagé attrape '
+    + 'les deux nuls : le juge appartient aux deux camps, il ne peut trancher. Les deux ensemble ne laissent rien '
+    + 'passer (26/26) — mais c\'est deux conditions ajustées sur deux cas, et elles ne se déclenchent que sur '
+    + '1,4 % des thèmes : à croire quand elles parlent, jamais à lire comme « pas de signal donc pas de nul »</span></td></tr>'
     + (b.nul || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Match serr\u00e9 (\u00e9cart de buts \u2264 1)'
