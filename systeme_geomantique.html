@@ -14783,22 +14783,42 @@ function moteurSeptCriteresV7(theme) {
 //   (le seul où aucun n'y arrive est ConjVia). L'information n'est donc
 //   pas absente : c'est la sélection qui échoue, pas la lecture.
 // ═══════════════════════════════════════════════════════════════
+// ─── CORRIGÉ LE 28/08/26, SUR DEMANDE D'ELLEMINE_D ───
+// « Neutralise la concordance SEULEMENT dans la comparaison R1/R7. »
+// La première version choisissait aussi la MEILLEURE POSITION avec les
+// poids réduits — donc elle retirait la concordance du profil par la
+// bande, exactement ce que la mesure précédente avait montré coûteux.
+// Désormais : la position est choisie par les SEPT critères, comme
+// partout ailleurs ; seule la VALEUR retenue pour comparer les deux camps
+// est amputée. Les deux étapes sont enfin séparées.
+// Mesuré sur les 23 cas :
+//     les sept critères (référence) ................. 15/23
+//     concordance neutralisée dans la comparaison ... 14/23
+//     concordance + environnement neutralisés ....... 16/23
+//     environnement seul neutralisé ................. 15/23
+// La demande littérale coûte un point ; c'est en retirant AUSSI
+// l'environnement — les deux critères les plus faibles — qu'on obtient
+// le meilleur score jamais mesuré sur cette archive.
 function moteurCritereV7(theme, poids) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { rot = null; }
   if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
   function meilleur(f) {
     if (!f) return 0;
-    var occ = trouverFigV7(f, theme) || [], best = null;
+    var occ = trouverFigV7(f, theme) || [], best = null, val = 0;
     occ.forEach(function (o) {
       var pr = null;
       try { pr = profilFigureMaison(f, o.pos, theme); } catch (e) { pr = null; }
       if (!pr) return;
-      var v = 0;
-      Object.keys(poids).forEach(function (c) { v += (pr.parts[c] || 0) * poids[c]; });
-      if (best === null || v > best) best = v;
+      // La position est choisie par le TOTAL des sept critères…
+      if (best === null || pr.total > best.total) {
+        best = pr;
+        // …et seule la valeur comparée applique les poids demandés.
+        val = 0;
+        Object.keys(poids).forEach(function (c) { val += (pr.parts[c] || 0) * poids[c]; });
+      }
     });
-    return best === null ? 0 : best;
+    return best === null ? 0 : val;
   }
   function camp(X) {
     return meilleur(X) + meilleur(FRONT_V7[X]) + meilleur(BOUCLIER_V7[X])
