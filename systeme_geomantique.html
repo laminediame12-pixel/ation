@@ -14265,7 +14265,23 @@ var CAS_REFERENCE_V7 = [
   // ⚠️ CE CAS TUE LE RAFFINEMENT « M6 ou M9 » : ce nul-ci est en M3.
   { nom: 'CaputPuella', meres: ['caput_draconis','puella','puella','via'],
     score: '2-2', camp: 'nul', btts: true,
-    note: 'NUL 2-2 · annoncé R7 1-2 ✘ avec l\'écart le plus large de l\'archive · R1 Puella en M3 (cadente) · binôme et juge partagé muets — premier faux négatif de la règle du binôme' }
+    note: 'NUL 2-2 · annoncé R7 1-2 ✘ avec l\'écart le plus large de l\'archive · R1 Puella en M3 (cadente) · binôme et juge partagé muets — premier faux négatif de la règle du binôme' },
+  // ─── 29/08/26 — Rubeus · Rubeus · Carcer · Fortuna Major, réel 1-0 ───
+  // CAMP TROUVÉ. R1 = Tristitia en M7, R7 = Amissio en M13, +14.
+  // Les quatre lectures de nul qui comptent se sont tues, et elles ont
+  // eu raison : R1 en maison ANGULAIRE, et l'archive n'a toujours jamais
+  // vu un nul en angulaire (0 sur 8 désormais). La lecture par la maison
+  // se tient donc dans les deux sens : elle attrape les trois nuls en
+  // cadente et n'en invente aucun en angulaire.
+  // ⚠️ MAIS LE SCORE EST FAUX, ET DANS LE SENS QUI COÛTE : annoncé 4-2,
+  // réel 1-0. Le match était SERRÉ et le détecteur de serré ne l'a pas
+  // vu — R1 n'est pas en cadente. C'est son faux négatif attendu : il
+  // rate la moitié des serrés. Son silence n'autorise donc pas un gros
+  // score, il ne dit rien du tout. J'avais écrit exactement cela avant
+  // le match ; c'était le bon avertissement, il faut le garder.
+  { nom: 'RubCarcer', meres: ['rubeus','rubeus','carcer','fortuna_major'],
+    score: '1-0', camp: 'R1', btts: false,
+    note: 'camp trouvé ✔ · score 4-2 annoncé pour un 1-0 réel ✘ · R1 Tristitia en M7 (angulaire) — les règles de nul muettes à raison, le détecteur de serré muet à tort' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -15579,8 +15595,11 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 //   juge M15 figé (les 4 symétriques) .  13/27       2/3          13
 //
 // La maison cadente est LA SEULE lecture qui attrape les trois. Les
-// cadentes font 7 des 27 cas, et les 3 nuls y sont tous : la
-// probabilité au hasard vaut C(7,3)/C(27,3) = 35/2925 = 1,2 %.
+// cadentes font 7 des 28 cas, et les 3 nuls y sont tous : la
+// probabilité au hasard vaut C(7,3)/C(28,3) = 35/3276 = 1,1 %.
+// Et elle tient dans l'AUTRE sens, ce qui compte autant : aucun nul
+// n'est jamais tombé en maison angulaire — 0 sur 8 après RubCarcer
+// (1-0, R1 en M7), où les quatre lectures de nul se sont tues à raison.
 // Elle paie sa couverture en précision — 3 nuls pour 7 déclenchements,
 // donc quand elle dit oui, c'est nul deux fois sur cinq. Elle sert à
 // SAVOIR QUAND SE MÉFIER, pas à annoncer un nul.
@@ -15595,8 +15614,9 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 // le plus large de toute l'archive : sept critères 114,28 contre 27,75,
 // lecture au volant 75 contre −9. Résultat : nul. Vérifié alors sur les
 // 27 cas au camp connu, en triant par l'écart du moteur :
-//     moitié aux écarts les plus LARGES ....  6 justes / 13
+//     moitié aux écarts les plus LARGES ....  7 justes / 14
 //     moitié aux écarts les plus SERRÉS .... 10 justes / 14
+// (recalculé le 29/08 après RubCarcer, camp trouvé sur un écart moyen)
 // L'écart du moteur n'est PAS un indice de fiabilité — le point estimé
 // va même à l'envers. (6/13 contre 10/14 n'est pas significatif sur 27
 // cas : ce n'est pas la preuve que l'écart trompe, c'est la preuve
@@ -15778,13 +15798,21 @@ var MOTEURS_NUL_V7 = [
 // ── TENU APRÈS LE 3e NUL (CaputPuella 2-2, 29/08/26) : le compte est
 // passé de 5/5 à 6/6, le détecteur n'a toujours jamais crié à tort.
 //
-// Écart de buts selon la catégorie de maison de R1 (20 cas au score exact) :
-//   angulaire  5 cas · écart moyen 2,60 · serrés 2/5 · larges (3+) 2/5
+// Écart de buts selon la catégorie de maison de R1 (21 cas au score exact) :
+//   angulaire  6 cas · écart moyen 2,33 · serrés 3/6 · larges (3+) 2/6
 //   succédent  7 cas · écart moyen 3,14 · serrés 3/7 · larges     4/7
 //   CADENTE    6 cas · écart moyen 0,50 · serrés 6/6 · larges     0/6
 //   synthèse   2 cas · écart moyen 1,50 · serrés 1/2 · larges     0/2
-// 12 des 20 cas sont serrés ; que les 6 cadents le soient tous vaut
-// C(12,6)/C(20,6) = 2,4 % de chance au hasard.
+// 13 des 21 cas sont serrés ; que les 6 cadents le soient tous vaut
+// C(13,6)/C(21,6) = 3,1 % de chance au hasard.
+//
+// ⚠️ SON FAUX NÉGATIF, VU EN VRAI LE 29/08 (RubCarcer). R1 = Tristitia
+// en M7, angulaire : le détecteur s'est tu, le match a fini 1-0. Serré,
+// et il ne l'a pas vu. Il rate maintenant 7 serrés sur 13 — plus de la
+// moitié. SON SILENCE NE VEUT RIEN DIRE : ce n'est jamais un feu vert
+// pour un gros score, seulement l'absence d'alerte. Le moteur de camp
+// annonçait 4-2 ce soir-là ; c'est lui qu'il faut cesser de croire sur
+// les chiffres, pas le détecteur qu'il faut élargir.
 //
 // C'EST LE DÉTECTEUR DE MATCH SERRÉ demandé depuis longtemps (« les matchs
 // serrés sont souvent faussés par le système, juste les matchs de score
