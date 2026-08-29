@@ -4386,6 +4386,38 @@ function forceFigureMaisonV7(fig, house, theme) {
 // endroit dès qu'un cas réel les contredit.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
+// ⚠️ LE SCORE DÉPEND DU JOUR OÙ ON REGARDE (découvert le 29/08/26)
+//
+// En cherchant pourquoi les deux scores exacts de l'archive avaient
+// disparu, on a fini par tester la seule chose qui avait changé : la
+// DATE. Le même thème, sans qu'une ligne bouge, donne un score différent
+// selon le jour — parce que la planète du jour et la figure du jour
+// entrent dans la force planétaire, donc dans le nombre de buts.
+//
+//   jour        figure du jour    Atalanta   LaetCarcer   scores exacts
+//   26/08       Populus           4-0        4-0          2/17
+//   27/08       Puer              4-0        4-0          2/17
+//   28/08       Laetitia          4-0        4-0          2/17
+//   29/08       Caput Draconis    3-0        3-0          0/17
+//   30/08       Albus             4-0        4-0          2/17
+//   01/09       Carcer            4-0        4-0          2/17
+//   05/09       Puella            3-0        3-0          0/17
+//
+// CE QUI EST TOUCHÉ, ET CE QUI NE L'EST PAS :
+// · le SCORE bouge — les deux scores exacts de l'archive n'existent que
+//   les jours où la figure du jour ne pousse pas les buts vers le bas ;
+// · le CAMP ne bouge pas — 15/23 sur les sept jours testés, identique.
+//
+// Conséquence pratique : un score « exact » n'est exact que le jour où il
+// a été calculé. Rejouer l'archive un autre jour ne donne pas les mêmes
+// scores, et toute mesure de la famille score doit dire à quelle date
+// elle a été faite. Le vainqueur, lui, est stable — c'est sur lui que le
+// banc doit se juger.
+// (Ce n'est pas un défaut en soi : la doctrine VEUT que le jour compte.
+// Le défaut serait de ne pas le savoir en comparant deux mesures.)
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
 // LA CONCORDANCE, RETIRÉE PUIS REMESURÉE (28/08/26, demande d'Ellemine_D)
 //
 // Le constat qui a lancé le test : prise SEULE, en somme sur les cinq
@@ -14834,6 +14866,11 @@ var POIDS_COHABITATION_SEULE_V7 = { concordance: 0, deplacement: 0, multiplicite
 var POIDS_SANS_CONC_ENV_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
   environnement: 0, cohabitation: 1, activation: 1, maisonNatale: 1 };
 
+// Interrupteur du pilote (28/08/26). true : la lecture des critères, sans
+// concordance ni environnement dans la comparaison, décide du verdict
+// affiché. false : F4P4 reprend la tête, comme avant. Un caractère.
+var PILOTE_CRITERES_V7 = true;
+
 // Le panneau : les cinq rôles de chaque camp, avec leur valeur aux sept
 // critères, et l'antagoniste retranché. Rien d'autre n'entre dans le
 // total — c'est vérifiable ligne à ligne.
@@ -19375,7 +19412,38 @@ function getVerdictAfficheReel(theme, favorite) {
   // Le verdict perd un point de justesse sur dix cas et gagne d'être
   // produit par la doctrine qu'il prétend appliquer. C'est son choix,
   // fait en connaissance du chiffre.
-  var winnerOverride = f4p4Aff || siegesWinner || voteAff || chaineAff || reseauAff || protocoleWinner;
+  // ═══════════════════════════════════════════════════════════════
+  // LA LECTURE DES CRITÈRES PASSE EN TÊTE (28/08/26, décision d'Ellemine_D)
+  //
+  // « Branche celle à 16/23. » Elle applique les sept critères aux cinq
+  // rôles de chaque camp, moins l'antagoniste, en neutralisant dans la
+  // COMPARAISON SEULE les deux critères qui discriminent le plus mal —
+  // concordance (4/12 en somme de camp) et environnement (4/14). La
+  // meilleure position de chaque figure reste choisie par les sept
+  // critères au complet : le profil n'est pas touché.
+  //
+  // Mesuré sur les 23 cas au vainqueur connu :
+  //     cette lecture ............................ 16/23
+  //     verdict affiché jusqu'ici (F4P4 en tête) . 15/23
+  //     F4P4 seul, sept critères stricts, ancrage
+  //       moins l'assaillant, majorité des purs ... 15/23
+  // Elle gagne Napoli, ConjVia, City/Madrid, ConjCaput et ViaCaput ;
+  // elle perd Atalanta, CaputAcq, LaetCarcer et PuellaAlbus.
+  //
+  // ⚠️ UN POINT D'AVANCE SUR VINGT-TROIS CAS NE SE DISTINGUE PAS DU
+  // BRUIT. Elle est branchée parce que c'est la décision d'Ellemine_D et
+  // parce qu'elle est la plus explicite de toutes — on sait exactement ce
+  // qu'elle mesure — pas parce qu'elle serait démontrée. Le drapeau
+  // PILOTE_CRITERES_V7 la débranche d'un caractère, et F4P4 reprend
+  // aussitôt la tête.
+  var critAff = null;
+  if (PILOTE_CRITERES_V7 && !nulActif) {
+    try {
+      var mc = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7);
+      critAff = mc && mc.camp ? mc.camp : null;
+    } catch (e) { critAff = null; }
+  }
+  var winnerOverride = critAff || f4p4Aff || siegesWinner || voteAff || chaineAff || reseauAff || protocoleWinner;
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
