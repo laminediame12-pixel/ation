@@ -14086,7 +14086,18 @@ var CAS_REFERENCE_V7 = [
   // (y a-t-il eu un but avant la pause) et faux sur ce qu'il prétend dire.
   { nom: 'PuerLaet', meres: ['puer','laetitia','amissio','acquisitio'],
     score: '5-0', htScore: '2-0', camp: 'R1', btts: false,
-    note: 'vainqueur ✔ · score 4-0 pour 5-0 (un but d\'écart) · BTTS ✔ · but dans les deux mi-temps ✔' }
+    note: 'vainqueur ✔ · score 4-0 pour 5-0 (un but d\'écart) · BTTS ✔ · but dans les deux mi-temps ✔' },
+  // ─── LE CAS QUI FAIT ENFIN TRIER LA FAMILLE MI-TEMPS (28/08/26) ───
+  // Mi-temps 0-0, final 1-0. C'est le premier « NON » de la famille : pas
+  // de but avant la pause. Les trois candidats qui disaient oui — dont le
+  // témoin constant — tombent ensemble ; seul le signal de première
+  // période avait vu juste, en annonçant qu'aucun but n'était attendu
+  // avant la pause (htBut = false), mais il s'abstenait au lieu de le
+  // dire. D'où la variante « qui répond non » ajoutée à la famille.
+  // Le verdict, lui, est faux : annoncé R7 0-4, réel 1-0 pour R1.
+  { nom: 'ViaCaput', meres: ['via','caput_draconis','amissio','carcer'],
+    score: '1-0', htScore: '0-0', camp: 'R1', btts: false,
+    note: 'vainqueur ✘ (annoncé R7) · score ✘ 0-4 pour 1-0 · mi-temps 0-0 — premier NON de la famille mi-temps' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -15122,6 +15133,14 @@ var MOTEURS_MITEMPS_V7 = [
       if (!v || !v.htBut) return { oui: null, detail: 'aucun signal de première période' };
       return { oui: true, detail: 'but avant la pause'
         + (v.htDeuxCamps ? ' (et le signal ajoute : des deux côtés)' : '') };
+    } },
+  { cle: 'mt_ht_signal_ferme', nom: 'Mi-temps · signal de première période, qui ose le non', icone: '🕐', teinte: '#fbbf24',
+    juste: 0, total: 0, note: 'même signal, mais l\'absence de signal vaut « non » au lieu d\'une abstention',
+    verdict: function (t) {
+      var v = null;
+      try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
+      if (!v) return { oui: null, detail: 'indisponible' };
+      return { oui: !!v.htBut, detail: v.htBut ? 'but attendu avant la pause' : 'aucun but attendu avant la pause' };
     } },
   { cle: 'mt_temoin', nom: 'Mi-temps · « toujours oui »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
