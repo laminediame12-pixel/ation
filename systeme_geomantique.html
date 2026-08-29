@@ -3740,6 +3740,10 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
 // contre 24% de taux de base — le signal n'apportait aucune information.
 // Le calcul et le panneau de diagnostic restent en place (lecture utile) ;
 // seul son pouvoir de décision est retiré via ce drapeau.
+// Ancienne règle « Via en M4 → le camp A ne marque pas », héritée de la
+// lecture M1/M7 et qui agissait encore sur le score de la carte R1/R7.
+// Réfutée 0 fois juste sur 5 le 29/08/26 — voir buildVerdictCard.
+var REGLE_VIA_M4_V7 = false;
 var STRUCTURE_NUL_DECISIVE = false;
 // ─── LE NUL AU VERDICT PRINCIPAL (29/08/26) ───
 // true  = porte ÉLARGIE : en même boucle le nul s'impose quand R7 est un
@@ -20163,7 +20167,34 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // 5 BTTS=true — split parfait 3/3 vs 0/5, base rate 5,6% sur 3000
   // thèmes aléatoires (P≈1% sous hasard pur). n=9 seulement, à confirmer
   // sur de nouveaux vrais matchs — voir REPERES.md §5.
-  var viaEnM4 = theme[4] === 'via';
+  // ═══ RÈGLE DÉBRANCHÉE LE 29/08/26 — RÉFUTÉE 0 SUR 5 ═══
+  // Ellemine_D : « ancien moteur M1, jusqu'à présent il fait effet au
+  // score ». Exact, et c'était le dernier endroit où une règle de
+  // l'époque M1/M7 agissait encore sur le verdict de rotation : M4 est
+  // une maison FIXE, mais campA est R1 dans la carte de rotation. Une
+  // doctrine écrite pour les sièges fixes remettait donc les buts de R1
+  // à zéro.
+  //
+  // SA JUSTIFICATION D'ORIGINE EST MORTE. Elle disait s'appuyer sur un
+  // split parfait 3/3 contre 0/5 sur neuf matchs. Rejouée sur les
+  // 30 cas d'aujourd'hui, les six thèmes qui portent Via en M4 donnent :
+  //   Inter 3-2 · Atalanta 4-0 · PSG/Bayer 1-2 · City/Madrid 7-4 ·
+  //   CaputPuella 2-2   (CaputAcq sans score exact)
+  // R1 a marqué dans LES CINQ cas mesurables. La règle est donc juste
+  // 0 fois sur 5 — elle affirmait que R1 resterait muet, y compris sur
+  // le 7-4 de City/Madrid où R1 a mis SEPT buts.
+  //
+  // ⚠️ ET POURTANT LA RETIRER DÉGRADE LÉGÈREMENT LE SCORE, mesuré :
+  //   avec la règle .... erreur totale 83 buts (3,77 par match)
+  //   sans la règle .... erreur totale 87 buts (3,95 par match)
+  // Quatre buts d'écart sur 22 matchs : du bruit. L'explication est que
+  // le générateur de score SUR-PRÉDIT systématiquement, et que remettre
+  // un camp à zéro compense par accident. Deux erreurs qui s'annulent ne
+  // font pas une doctrine : la règle est débranchée, et le vrai problème
+  // — un générateur qui n'a jamais trouvé un seul score exact sur 22 et
+  // se trompe de 3,8 buts par match — reste entier.
+  // Rebrancher : REGLE_VIA_M4_V7 = true.
+  var viaEnM4 = REGLE_VIA_M4_V7 && theme[4] === 'via';
   if (viaEnM4) { campA.total = 0; }
   // AJOUTÉ (demande utilisateur, "avantage du terrain") — 📚 étude, jamais
   // validé sur un match réel : léger boost du VOLUME de buts du camp à
