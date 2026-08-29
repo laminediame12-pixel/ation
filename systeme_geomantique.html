@@ -3743,6 +3743,10 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
 // Ancienne règle « Via en M4 → le camp A ne marque pas », héritée de la
 // lecture M1/M7 et qui agissait encore sur le score de la carte R1/R7.
 // Réfutée 0 fois juste sur 5 le 29/08/26 — voir buildVerdictCard.
+// Le score affiché : true = calibré sur le réel (camp → 1-0, nul → 1-1),
+// false = ancien générateur buildScoreFromCamps. Mesures dans
+// buildVerdictCard — 60 buts d'erreur et 7 scores exacts contre 87 et 0.
+var SCORE_CALIBRE_V7 = true;
 var REGLE_VIA_M4_V7 = false;
 var STRUCTURE_NUL_DECISIVE = false;
 // ─── LE NUL AU VERDICT PRINCIPAL (29/08/26) ───
@@ -16025,6 +16029,17 @@ function niveauNulV7(theme) {
     detail: 'ni porte ouverte ni maison cadente — 0 nul sur 20' };
 }
 
+// Le score AFFICHÉ, source unique. Quand le nul est imposé, la carte ne
+// le sait pas — nulActif se décide en dehors de buildVerdictCard — et
+// elle continuait de sortir un score décidé. Constaté au navigateur sur
+// 330 thèmes : « ⚖️ NUL À VÉRIFIER » affiché au-dessus d'un « 0-1 ».
+// Un match donné pour nul s'écrit 1-1, avec 0-0 en alternative.
+function scoreAfficheV7(card, nulActif) {
+  if (!card) return { main: '—', alt: '—' };
+  if (nulActif) return { main: '1-1', alt: '0-0' };
+  return { main: card.scoreMain || '—', alt: card.scoreAlt || '—' };
+}
+
 function nulParPorteV7(theme) {
   var d = null;
   try { d = nulDeuxPortesV7(theme); } catch (e) { return false; }
@@ -20329,10 +20344,69 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     if (goalA <= 0) goalA = 1;
     if (goalB <= 0) goalB = 1;
   }
+  // ═══════════════════════════════════════════════════════════════
+  // LE SCORE EST CALIBRÉ SUR LE RÉEL (29/08/26) — SCORE_CALIBRE_V7
+  //
+  // L'ancien générateur (buildScoreFromCamps, conservé ci-dessus pour
+  // les diagnostics) était plus mauvais que n'importe quelle réponse
+  // bête. Mesuré sur les 22 matchs au score exact de l'archive :
+  //   générateur d'origine ...... 87 buts d'erreur ·  0 score exact
+  //   « toujours 1-1 » .......... 60 buts d'erreur ·  1 score exact
+  //   « toujours 0-0 » .......... 76 buts d'erreur
+  //   « toujours 2-1 » .......... 62 buts d'erreur
+  // Pire : la corrélation entre les buts qu'il annonce et les buts
+  // réellement marqués vaut r = −0,34. ELLE EST NÉGATIVE — plus il
+  // annonce de buts, moins il y en a. Il sur-prédit de 0,77 but par
+  // match et sort sept fois « 0-4 » sur vingt-deux.
+  //
+  // CE QUI EST BRANCHÉ À LA PLACE : le score modal de l'archive,
+  // orienté par le camp.
+  //   camp désigné → 1-0 pour lui        nul → 1-1
+  // C'est la lecture la plus fréquente du réel : sur 18 matchs décidés,
+  // les buts du vainqueur ont pour médiane 2 et ceux du perdant 0, et
+  // « un but à zéro » est le score modal (6 des 18). Résultat :
+  //   60 buts d'erreur · 7 SCORES EXACTS sur 22 (contre 0)
+  // Le plafond, si le camp était trouvé à tous les coups, serait de
+  // 54 buts d'erreur et 7 exacts : on est à six buts du maximum
+  // atteignable avec la qualité de camp actuelle.
+  //
+  // ⚠️ CE QUE J'AI REFUSÉ D'AJOUTER. Moduler avec le nombre de figures
+  // actives (« ≥ 10 → 2-1 ») descend à 58 buts d'erreur — deux buts
+  // gagnés sur vingt-deux matchs, avec un seuil ajusté sur ces
+  // vingt-deux matchs. C'est du bruit habillé en règle. Refusé.
+  // Le détecteur de match serré non plus : « cadent → 1-0, sinon 2-0 »
+  // fait 63 et ne trouve que 3 scores exacts.
+  //
+  // ⚠️ ET CE QUE ÇA NE RÉSOUT PAS. Ce générateur ne PRÉDIT rien : il
+  // répète le score le plus courant. Il n'annoncera jamais un 7-4 ni un
+  // 4-4. Il est simplement honnête là où l'autre inventait. Le vrai
+  // travail — trouver dans le thème ce qui porte le NOMBRE de buts —
+  // reste entier : aucune grandeur mesurée à ce jour n'y corrèle
+  // (ancrage r = 0,00 · figures actives r = 0,35 sur 22 cas).
+  if (SCORE_CALIBRE_V7) {
+    if (scWinnerCode === 'A') { goalA = 1; goalB = 0; }
+    else if (scWinnerCode === 'B') { goalA = 0; goalB = 1; }
+    else { goalA = 1; goalB = 1; }
+  }
+  // ⚠️ PLACÉ ICI ET PAS PLUS HAUT, sur bogue constaté au navigateur : mis
+  // avant la couche BTTS ci-dessus, le « 1-0 » se faisait remonter à
+  // « 1-1 » par la ligne « if (btts === true) { if (goalB <= 0) goalB = 1; } »,
+  // et l'écran affichait « VAINQUEUR Équipe 1 · Score prédit 1-1 » sur
+  // quatre thèmes. La calibration doit avoir le DERNIER mot.
+  // Tenir compte du BTTS a été mesuré et écarté : « BTTS oui → 2-1 »
+  // descend à 58 buts d'erreur mais fait perdre un score exact (6 au lieu
+  // de 7), et le moteur BTTS est sous son propre témoin.
+  if (SCORE_CALIBRE_V7) {
+    if (scWinnerCode === 'A') { goalA = 1; goalB = 0; }
+    else if (scWinnerCode === 'B') { goalA = 0; goalB = 1; }
+    else { goalA = 1; goalB = 1; }
+  }
   scoreMain = goalA + '-' + goalB;
-  scoreAlt = scWinnerCode === 'A' ? Math.max(btts === true ? 1 : 0, goalA - ecartAlt) + '-' + goalB
-    : scWinnerCode === 'B' ? goalA + '-' + Math.max(btts === true ? 1 : 0, goalB - ecartAlt)
-    : Math.max(0, goalA - ecartAlt) + '-' + Math.max(0, goalB - ecartAlt);
+  scoreAlt = SCORE_CALIBRE_V7
+    ? (scWinnerCode === 'A' ? '2-0' : scWinnerCode === 'B' ? '0-2' : '0-0')
+    : (scWinnerCode === 'A' ? Math.max(btts === true ? 1 : 0, goalA - ecartAlt) + '-' + goalB
+      : scWinnerCode === 'B' ? goalA + '-' + Math.max(btts === true ? 1 : 0, goalB - ecartAlt)
+      : Math.max(0, goalA - ecartAlt) + '-' + Math.max(0, goalB - ecartAlt));
 
   // AJOUTÉ (demande utilisateur) : équipe à plus grande capacité de
   // marquage brute — campA.total/campB.total AVANT la correction de marge
@@ -20574,7 +20648,8 @@ function getVerdictAfficheReel(theme, favorite) {
   return {
     winner: nulActif ? 'Nul' : (carteR.winner === 'R1' ? 'M1' : carteR.winner === 'R7' ? 'M7' : 'Nul'),
     goalM1: goals[0] || 0, goalM7: goals[1] || 0,
-    scoreMain: carteR.scoreMain, scoreAlt: carteR.scoreAlt,
+    scoreMain: scoreAfficheV7(carteR, nulActif).main,
+    scoreAlt: scoreAfficheV7(carteR, nulActif).alt,
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
     // le concept exact de "vainqueur de la 1ère mi-temps" du moteur V7
     // legacy n'a pas d'équivalent direct dans le pipeline R1/R7.
@@ -20673,8 +20748,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   };
   var d1=sumRows(q.a1), d7=sumRows(q.a7);
   var cardWinner=winnerName;
-  var scoreMain=card&&card.scoreMain?card.scoreMain:'—';
-  var scoreAlt=card&&card.scoreAlt?card.scoreAlt:'—';
+  var _sa = scoreAfficheV7(card, nulActif);
+  var scoreMain = _sa.main;
+  var scoreAlt = _sa.alt;
   var markLabel=card&&card.capaciteFiable?(card.capaciteWinner==='A'?teamA:card.capaciteWinner==='B'?teamB:'Égalité'):'—';
   var markA=card&&card.capaciteA!=null?card.capaciteA:'—', markB=card&&card.capaciteB!=null?card.capaciteB:'—';
   var bt=card&&card.btts?'Oui':'Non';
