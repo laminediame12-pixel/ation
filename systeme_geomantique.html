@@ -14097,7 +14097,29 @@ var CAS_REFERENCE_V7 = [
   // Le verdict, lui, est faux : annoncé R7 0-4, réel 1-0 pour R1.
   { nom: 'ViaCaput', meres: ['via','caput_draconis','amissio','carcer'],
     score: '1-0', htScore: '0-0', camp: 'R1', btts: false,
-    note: 'vainqueur ✘ (annoncé R7) · score ✘ 0-4 pour 1-0 · mi-temps 0-0 — premier NON de la famille mi-temps' }
+    note: 'vainqueur ✘ (annoncé R7) · score ✘ 0-4 pour 1-0 · mi-temps 0-0 — premier NON de la famille mi-temps' },
+  // ─── LE CAS LE PLUS COMPLET DE L'ARCHIVE (28/08/26) ───
+  // Mi-temps 0-0, final 2-0 pour R1, corners 1-3 (R7 dominant), un carton
+  // jaune côté R1, et un CSC. Tout est renseigné sauf l'heure.
+  // Le verdict trouve le CAMP (R1 ✔) et rate tout le reste :
+  //   score ......... annoncé 4-0 pour un 2-0 réel
+  //   mi-temps ...... tous les candidats sauf « qui ose le non » disaient
+  //                   qu'il y aurait un but avant la pause — 0-0
+  //   corners ....... annoncés 11 (6/5, dominant M1), réels 4 (1/3,
+  //                   dominant M7) : le total est faux de 7 et le
+  //                   dominant est inversé
+  //   incident ...... annoncé penalty ET rouge contre M7 ; le réel est un
+  //                   CSC et un carton jaune. Le CAMP est bon (un CSC
+  //                   dans un 2-0 pour R1 ne peut venir que d'un joueur
+  //                   de R7), la NATURE est fausse. C'est le premier cas
+  //                   où l'on peut le dire : incident = true selon la
+  //                   définition du fichier, qui range explicitement le
+  //                   CSC avec le penalty et le rouge.
+  { nom: 'PuellaAlbus', meres: ['puella','albus','populus','laetitia'],
+    score: '2-0', htScore: '0-0', camp: 'R1', btts: false,
+    incident: true, incidentCamp: 'M7',
+    corners: 4, cornersM1: 1, cornersM7: 3, cornersDominant: 'R7',
+    note: 'vainqueur ✔ · score ✘ 4-0 pour 2-0 · mi-temps 0-0 ✘ pour tous sauf un · corners 11 pour 4 réels, dominant inversé · incident CSC + jaune côté R1, camp ✔ nature ✘' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
