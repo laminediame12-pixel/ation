@@ -14186,7 +14186,20 @@ var CAS_REFERENCE_V7 = [
     score: '2-0', htScore: '0-0', camp: 'R1', btts: false,
     incident: false, csc: true, cscCamp: 'M7',
     corners: 4, cornersM1: 1, cornersM7: 3, cornersDominant: 'R7',
-    note: 'vainqueur ✔ · score ✘ 4-0 pour 2-0 · mi-temps 0-0 ✘ · corners 11 pour 4 réels, dominant inversé · aucun penalty ni rouge (CSC + jaune) — le détecteur en annonçait deux' }
+    note: 'vainqueur ✔ · score ✘ 4-0 pour 2-0 · mi-temps 0-0 ✘ · corners 11 pour 4 réels, dominant inversé · aucun penalty ni rouge (CSC + jaune) — le détecteur en annonçait deux' },
+  // ─── PREMIER THÈME DÉTRUIT AVEC UN RÉSULTAT CONNU (29/08/26) ───
+  // Rubeus en M1 : le thème est « détruit sans être jugé » selon la règle
+  // traditionnelle rebranchée le 28/08. Le verdict a quand même trouvé le
+  // camp — annoncé R1, réel 1-0 pour R1.
+  // Avec Fiorentina et Atalanta, qui ont aussi Rubeus en M1, l'archive
+  // compte désormais TROIS thèmes détruits au résultat connu. La règle
+  // signale sans bloquer, et c'est heureux : sur ces trois cas le verdict
+  // n'est pas moins bon qu'ailleurs.
+  // ⚠️ Le score annoncé dépend du jour : 4-0 le 28/08, jour du match,
+  // 3-0 le 29/08. C'est le 4-0 du jour du match qui est comparé ici.
+  { nom: 'RubAmissio', meres: ['rubeus','amissio','caput_draconis','caput_draconis'],
+    score: '1-0', camp: 'R1', btts: false,
+    note: 'THÈME DÉTRUIT (Rubeus en M1) · vainqueur ✔ · score ✘ 4-0 au jour du match pour un 1-0 réel' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
