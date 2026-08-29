@@ -3817,12 +3817,14 @@ var STRUCTURE_NUL_DECISIVE = false;
 // Un nul 0-0 tiré DEUX FOIS (PuerFortMaj et PopFortMaj, le même match)
 // porte un décalage de +6, jamais vu jusque-là. La porte est restée
 // fermée deux fois sur un nul. Répartition complète en même boucle,
-// sur 33 cas :
+// sur 35 cas (mères de TristPop corrigées le 29/08 au soir : il passe
+// de +10 à +4, et devient le SECOND faux positif de la porte) :
 //   + 2   2 nuls /  3      + 8   0 nul / 1
-//   + 4   1 nul  /  1      +10   0 nul / 4
+//   + 4   1 nul  /  2      +10   0 nul / 4
 //   + 6   2 nuls /  2      +12   0 nul / 2
 //   ─────── frontière ───────  +14   0 nul / 2
-// TOUS les nuls de même boucle sont à +2, +4 ou +6. AUCUN au-delà,
+// TOUS les nuls de même boucle sont à +2, +4 ou +6 — 5 sur 5. AUCUN
+// au-delà,
 // aucun en sens inverse : neuf cas de l'autre côté de la coupure.
 //
 // ⚠️ ET MA JUSTIFICATION PAR LES RÔLES ÉTAIT FAUSSE. Je disais « R7
@@ -14485,27 +14487,34 @@ var CAS_REFERENCE_V7 = [
   // valides, il donne nul ; le deuxième, les dérivés sont valides, il
   // donne victoire R7. Le score réel est 3-2 pour R7 : c'est le deuxième
   // qui a raison. Exploite le constat. »
-  // Le fichier confirme QUI a raison : le thème 1 annonce R1, le thème 2
-  // annonce R7, et R7 a gagné. Il confirme aussi l'écart de validité —
-  // niveauValiditeV7 donne 2 au premier et 3 au second.
+  // Le fichier confirme QUI a raison, et au mot près : le thème 1 annonce
+  // NUL 1-1 (faux), le thème 2 annonce R7 (juste), et les axes des
+  // dérivés sont incomplets chez le premier (Cardinal seul présent,
+  // niveau 1/3) et complets chez le second (niveau 3/3).
+  // ⚠️ MÈRES CORRIGÉES LE 29/08 : j'avais d'abord noté le thème 1
+  // « Populus / Tristitia », il est « Tristitia / Populus ». Avec les
+  // mauvaises, le thème annonçait R1 et ses trois axes de dérivé étaient
+  // présents — j'en avais tiré une porte de confiance sur les BINÔMES des
+  // dérivés (+12 points) qui s'est effondrée à +2 une fois la ligne
+  // corrigée. Voir porteConfianceV7.
   // ☠️ MAIS L'ARCHIVE CONTREDIT LA RÈGLE GÉNÉRALE. Justesse du verdict
-  // affiché par niveau de validité, sur les 33 cas au camp connu :
+  // affiché par niveau de validité, sur les 35 cas au camp connu :
   //   niveau 0 ....  5 justes /  6 ... 83 %
-  //   niveau 1 .... 12 justes / 14 ... 86 %
+  //   niveau 1 .... 12 justes / 15 ... 80 %
   //   niveau 2 ....  1 juste  /  3 ... 33 %
-  //   niveau 3 ....  7 justes / 10 ... 70 %
-  //   niveaux 0-1 : 85 %   ·   niveaux 2-3 : 62 %
-  // Un niveau de validité élevé ne rend donc PAS le verdict plus sûr —
-  // il ferait plutôt l'inverse sur ce qu'on a. Sa paire d'aujourd'hui va
-  // dans son sens, l'archive globale n'y va pas. Une paire ne tranche
+  //   niveau 3 ....  8 justes / 11 ... 73 %
+  //   niveaux 0-1 : 81 %   ·   niveaux 2-3 : 64 %
+  // Et par nombre d'axes de dérivé présents : 1 axe 83 %, 2 axes 86 %,
+  // 3 axes 60 %. Un niveau de validité élevé ne rend donc PAS le verdict
+  // plus sûr — il ferait plutôt l'inverse sur ce qu'on a. Sa paire va
   // rien : c'est pour ça que le comparateur de doubles tirages existe
   // maintenant (voir comparerDeuxThemesV7).
-  { nom: 'PopTrist', meres: ['populus','tristitia','acquisitio','carcer'],
+  { nom: 'TristPop', meres: ['tristitia','populus','acquisitio','carcer'],
     score: '3-2', camp: 'R7',
-    note: 'MÊME MATCH que ConjTrist · annonce R1 ✘ · niveau de validité 2/3 · décalage +10, porte fermée' },
+    note: 'MÊME MATCH que ConjTrist · annonce NUL 1-1 ✘ · niveau de validité 1/3 : les axes des dérivés Succédent et Cadent sont ABSENTS · décalage +4, porte du nul ouverte' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '3-2', camp: 'R7',
-    note: 'MÊME MATCH que PopTrist · annonce R7 ✔ · niveau de validité 3/3 — c\'est celui-ci qui avait raison' }
+    note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -14623,12 +14632,12 @@ function casSauvegardesV7() {
 // et 3 au second.
 //
 // ☠️ MAIS L'ARCHIVE DIT L'INVERSE EN GÉNÉRAL. Justesse du verdict
-// affiché par niveau de validité, sur les 33 cas d'alors :
+// affiché par niveau de validité, sur les 35 cas au camp connu :
 //   niveau 0 ....  5 justes /  6 ... 83 %
-//   niveau 1 .... 12 justes / 14 ... 86 %
+//   niveau 1 .... 12 justes / 15 ... 80 %
 //   niveau 2 ....  1 juste  /  3 ... 33 %
-//   niveau 3 ....  7 justes / 10 ... 70 %
-// Niveaux 0-1 : 85 %. Niveaux 2-3 : 62 %. Un niveau élevé ne rend pas le
+//   niveau 3 ....  8 justes / 11 ... 73 %
+// Niveaux 0-1 : 81 %. Niveaux 2-3 : 64 %. Un niveau élevé ne rend pas le
 // verdict plus sûr. Sa paire va dans son sens, l'ensemble n'y va pas —
 // et UNE paire ne tranche rien.
 //
@@ -14641,8 +14650,9 @@ function casSauvegardesV7() {
 // Deux paires connues à ce jour :
 //   PuerFortMaj / PopFortMaj — 0-0 : les deux annonçaient R7, tous deux
 //     faux. Aucun critère ne pouvait sauver ce match.
-//   PopTrist / ConjTrist — 3-2 R7 : le second avait raison, et il avait
-//     le niveau de validité le plus haut.
+//   TristPop / ConjTrist — 3-2 R7 : le second avait raison, et il avait
+//     le niveau de validité le plus haut (3/3 contre 1/3), avec ses trois
+//     dérivés d'axe valides quand le premier n'en avait qu'un.
 // Une paire informative sur deux. Il en faut dix.
 // Le panneau : le thème courant est A, on saisit les quatre mères de B.
 function toggleDoubleTiragePanel() {
@@ -14739,7 +14749,7 @@ function renderDoubleTirage() {
 function comparerDeuxThemesV7(themeA, themeB) {
   if (!themeA || !themeB) return null;
   function lire(t) {
-    var o = { verdict: '?', score: '?', niveau: null, porte: false, k: null,
+    var o = { verdict: '?', score: '?', niveau: null, axesDerives: null, binomesDerives: null, porte: false, k: null,
       faisceau: null, axesValides: 0, axesAncres: 0, sommesIncident: 0 };
     try {
       var v = getVerdictAfficheReel(t);
@@ -14747,6 +14757,7 @@ function comparerDeuxThemesV7(themeA, themeB) {
       o.score = v.scoreMain;
     } catch (e) {}
     try { var nv = niveauValiditeV7(t); o.niveau = nv ? nv.niveau : null; } catch (e) {}
+    try { var pc = porteConfianceV7(t); if (pc) { o.axesDerives = pc.nbAxes; o.binomesDerives = pc.nbBinomes; } } catch (e) {}
     try { var d = nulDeuxPortesV7(t); if (d) { o.porte = nulParPorteV7(t); o.k = d.k; } } catch (e) {}
     try { var f = faisceauNulV7(t); o.faisceau = f ? f.n : null; } catch (e) {}
     try {
@@ -14761,6 +14772,8 @@ function comparerDeuxThemesV7(themeA, themeB) {
   }
   var a = lire(themeA), b = lire(themeB);
   var criteres = [
+    { nom: 'dérivés d\'axe valides (porte de confiance)', a: a.axesDerives, b: b.axesDerives, plusGrandGagne: true },
+    { nom: 'binômes des dérivés', a: a.binomesDerives, b: b.binomesDerives, plusGrandGagne: true },
     { nom: 'niveau de validité', a: a.niveau, b: b.niveau, plusGrandGagne: true },
     { nom: 'dérivés d\'axes valides', a: a.axesValides, b: b.axesValides, plusGrandGagne: true },
     { nom: 'dérivés d\'axes ancrés', a: a.axesAncres, b: b.axesAncres, plusGrandGagne: true },
@@ -16232,9 +16245,15 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 //      chance sur huit que ce soit fortuit. Zéro faux positif, mais
 //      c'est de l'ajustement tant qu'un troisième cas ne l'a pas testé.
 //   +4 (front) — le cinquième nul, FortMajConj, est en même boucle à
-//      +4. Élargir la première porte à {+2, +4} donne 5 nuls sur 5 pour
-//      un seul faux positif. MAIS +4 est ajusté sur UN cas unique : il
-//      est signalé à part dans le moteur, jamais fondu dans la règle.
+//      +4. Élargir la première porte à {+2, +4} le rattrapait.
+//      ⚠️ MISE À JOUR DU 29/08 AU SOIR : +4 n'est plus une case pure.
+//      TristPop, dont les mères ont été corrigées, y tombe aussi et n'est
+//      PAS un nul (3-2 pour R7). La case +4 fait donc 1 nul sur 2, et
+//      c'est le second faux positif de la porte. Elle reste dans la
+//      règle parce que la coupure {+2,+4,+6} / au-delà tient toujours
+//      sans exception (5 nuls sur 5 dedans, 0 sur 9 dehors) — mais elle
+//      coûte, et le croisement avec la maison cadente est ce qui la
+//      rattrape : les deux faux positifs ont R1 hors cadente.
 function nulDeuxPortesV7(theme) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { return null; }
@@ -16365,12 +16384,12 @@ function niveauNulV7(theme) {
   // 1 juste et 1 fausse — un pile ou face. Retirée.
   var porte = nulParPorteV7(theme);
   var cadent = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
-  if (porte) return { niveau: 'MAXIMAL', taux: 88, sur: 8,
+  if (porte) return { niveau: 'MAXIMAL', taux: 78, sur: 9,
     detail: 'porte ouverte, paire M' + rot.hR1 + '→M' + rot.hR7
-      + ' — 7 nuls sur 8 déclenchements dans l\'archive'
+      + ' — 7 nuls sur 9 déclenchements dans l\'archive'
       + (cadent ? ' (R1 en cadente)' : '') };
-  if (cadent) return { niveau: 'faible', taux: 0, sur: 4,
-    detail: 'R1 en maison cadente mais porte fermée — 0 nul sur 4' };
+  if (cadent) return { niveau: 'faible', taux: 0, sur: 5,
+    detail: 'R1 en maison cadente mais porte fermée — 0 nul sur 5' };
   return { niveau: 'aucun', taux: 0, sur: 21,
     detail: 'ni porte ouverte ni maison cadente — 0 nul sur 21' };
 }
@@ -16636,7 +16655,7 @@ var MOTEURS_NUL_V7 = [
         : 'binôme mais juge non partagé' };
     } },
   { cle: 'nul_deux_portes', nom: 'Nul · LES DEUX PORTES (+2 même boucle / +11 opposées)', icone: '🚪', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D — 4 nuls sur 5, un seul faux positif',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D, forme d\'origine {+2} — 4 nuls sur 7, un faux positif',
     verdict: function (t) {
       var d = nulDeuxPortesV7(t);
       if (!d) return { oui: null, detail: 'rotation indisponible' };
@@ -17742,11 +17761,12 @@ function renderBancPanel() {
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
     + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#22c55e;">LES DEUX PORTES d\'Ellemine_D '
-    + 'battent tout, témoin compris : 28/30, 4 nuls sur 5, un seul faux positif.</b> Le nul ne se lit pas pareil '
+    + 'battent tout, témoin compris : 33/35, 7 nuls sur 7, deux faux positifs, contre 28/35 pour le témoin.</b> Le nul ne se lit pas pareil '
     + 'selon la boucle : en MÊME BOUCLE il passe par l\'alliance (R7 binôme de R1, +2), en BOUCLES OPPOSÉES par '
     + '+11, le front du front de la victime. La table des pôles ne sait faire que la première — son code ne peut '
     + 'littéralement pas annoncer un nul en boucles opposées, et c\'est là qu\'étaient les deux nuls que rien '
-    + 'n\'attrapait. Élargie à {+2, +4} elle fait 29/30 et 5 nuls sur 5, mais +4 n\'est vu que sur un cas. '
+    + 'n\'attrapait. La forme branchée est élargie à {+2, +4, +6} : elle attrape les 7 nuls, au prix de deux '
+    + 'faux positifs (PuerCaput, TristPop) — tous deux hors maison cadente, ce que le croisement rattrape. '
     + 'Le faisceau reste utile en gradation (2 signaux → 21 % de nuls, 4 → 40 %, 5 → 67 %, contre 17 % au hasard)'
     + '</span>'
     + ' <span style="font-weight:400; color:#64748b;">— après le 3<sup>e</sup> nul (CaputPuella 2-2), '
@@ -21532,6 +21552,43 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   if (card && card.contradictionReseau) {
     html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#7f1d1d33; border:1px solid #f87171; font-size:12px; color:#fecaca;">⚠️ <b>CONTRADICTION</b> — le Réseau d\'ancrage (👉 panneau ci-dessous) donne un vainqueur différent : <b>'+esc(card.reseauWinnerRotation)+'</b> ('+esc(card.reseauNiveauLabel)+', écart '+esc(card.reseauEcartNet)+(card.reseauPiege?', camp piégé':'')+'). Fiabilité réduite, à examiner avant de trancher.</div>';
   }
+  // ─── LA PORTE DE CONFIANCE, AU-DESSUS DU VERDICT (29/08/26) ───
+  // Elle se lit AVANT le vainqueur, parce qu'elle dit si le thème a le
+  // droit de trancher. Elle ne modifie rien, et elle affiche le chiffre
+  // d'archive qui la contredit. Voir porteConfianceV7.
+  (function () {
+    var pc = null;
+    try { pc = porteConfianceV7(theme); } catch (e) { pc = null; }
+    if (!pc) return;
+    var col = pc.ouverte ? '#4ade80' : (pc.nbAxes === 2 ? '#fbbf24' : '#f87171');
+    var fond = pc.ouverte ? 'rgba(22,101,52,.16)' : (pc.nbAxes === 2 ? 'rgba(180,83,9,.14)' : 'rgba(127,29,29,.16)');
+    var puces = pc.dets.map(function (d) {
+      return '<span style="font-size:10.5px; color:' + (d.axes ? '#86efac' : '#fca5a5') + ';">'
+        + (d.axes ? '✔' : '✘') + ' ' + esc(d.nom) + '</span>';
+    }).join('&nbsp;&nbsp;·&nbsp;&nbsp;');
+    html += '<div style="margin-bottom:10px; padding:9px 12px; border-radius:9px; background:' + fond
+      + '; border:1px solid ' + col + ';">'
+      + '<div style="font-size:12.5px; font-weight:800; color:' + col + ';">'
+      + (pc.ouverte ? '🔓 PORTE DE CONFIANCE OUVERTE — le thème tranche'
+                    : '🔒 PORTE DE CONFIANCE FERMÉE — le verdict peut être faux')
+      + ' <span style="font-weight:600; color:#cbd5e1;">(' + pc.nbAxes + '/3 dérivés d\'axe valides)</span></div>'
+      + '<div style="font-size:11px; color:#e2e8f0; margin-top:3px;">' + esc(pc.texte) + '</div>'
+      + '<div style="margin-top:5px;">' + puces
+      + '<span style="font-size:10px; color:#64748b;">&nbsp;&nbsp;|&nbsp;&nbsp;binômes des dérivés '
+      + pc.nbBinomes + '/3</span></div>'
+      + (pc.taux != null ? '<div style="font-size:10px; color:#94a3b8; margin-top:5px;">'
+          + '⚠️ <b>Le chiffre d\'archive va à l\'envers de cette règle</b> : à ce palier le verdict affiché '
+          + 'est juste <b>' + pc.taux + ' %</b> du temps (' + pc.sur + ' cas), et le classement complet est '
+          + '1 axe 83 %, 2 axes 86 %, <b>3 axes 60 %</b>. Un thème dont les trois dérivés sont valides est, '
+          + 'dans ce qu\'on a, MOINS juste que les autres.</div>' : '')
+      + '<div style="font-size:9.5px; color:#64748b; margin-top:4px;">'
+      + 'Ta paire du 29/08 dit le contraire de l\'archive, et proprement : deux tirages pour un seul match, '
+      + 'le tirage à trois dérivés valides a vu juste, l\'autre non. Ce sont deux questions différentes — '
+      + '« ce thème isolé est-il fiable ? » et « entre deux thèmes du même match, lequel croire ? ». '
+      + 'L\'archive (35 cas, p = 0,129) répond à la première, ta paire à la seconde. '
+      + 'La porte n\'est branchée sur aucun calcul tant que le comparateur de doubles tirages n\'a pas '
+      + 'une dizaine de paires.</div></div>';
+  })();
   html+='<div class="tek-hero">';
   var _alerteNul=false; try{ _alerteNul = !nulActif && alerteNulV7(theme); }catch(e){ _alerteNul=false; }
   html+='<div class="tek-winner '+(nulActif?'warn':'')+'"><div class="tek-cap">'+(nulActif?'VERDICT SUSPENDU':'VAINQUEUR')+'</div><div class="tek-name">'+(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner))+'</div><div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>'
@@ -21628,19 +21685,21 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">Le siège et la porte sont deux signaux '
             +'INDÉPENDANTS : vérifié sur les 65 536 thèmes, la porte s\'ouvre dans 18,8 % des thèmes quand R1 est '
             +'cadent contre 18,4 % en moyenne — la maison ne change pas la chance que la porte s\'ouvre. '
-            +'C\'est pour ça que les croiser paie : <b>porte + cadent 4/4</b>, porte seule 1/2, '
-            +'cadent seul 0/4, ni l\'un ni l\'autre 0/20.</div></div>' : '')
+            +'C\'est pour ça que les croiser paie : <b>porte + cadent 4/4</b>, porte seule 3/5, '
+            +'cadent seul 0/5, ni l\'un ni l\'autre 0/21. Les DEUX faux positifs de la porte '
+            +'(PuerCaput, TristPop) sont des thèmes où R1 n\'est PAS en maison cadente : la cadence est '
+            +'ce qui les aurait écartés.</div></div>' : '')
         +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
         +'<b>Même boucle — porte ÉTABLIE</b> : R7 occupe l\'un des DEUX PREMIERS rôles que R1 projette '
         +'devant lui, binôme (+2) ou front (+4). Plus loin devant (+8, +10) ou dans le sens inverse '
-        +'(+12, +14) : aucun nul sur 9 cas. Les 3 nuls de cette branche sont dans la cible — 1,7 % au hasard. '
+        +'(+12, +14) : aucun nul sur 9 cas. Les 5 nuls de cette branche sont tous dans la cible. '
         +'<b>Boucles opposées — porte EN PROBATION</b> : +11, le front du front de la victime de R1. '
         +'2 tirs, 2 nuls, aucun faux positif — mais deux nuls qui partagent un décalage parmi huit, '
         +'c\'est 15,4 % au hasard. Ce n\'est pas une preuve, c\'est une hypothèse qu\'on fait tourner. '
         +'La table des pôles ne sait faire que la première : son code ne peut littéralement pas annoncer un nul '
         +'en boucles opposées, et c\'est là que sont les deux nuls qu\'aucun moteur n\'attrapait. '
-        +'Les deux portes ensemble : 4 nuls sur 5 pour un seul faux positif, contre 4 sur 5 pour 4 faux positifs '
-        +'à la maison cadente.</div></div>';
+        +'Les deux portes ensemble : <b>7 nuls sur 7, deux faux positifs, 33 cas justes sur 35</b> — '
+        +'contre 28/35 pour le témoin « il n\'y a jamais de nul », qui n\'attrape évidemment aucun nul.</div></div>';
     }
     html+='<div class="tek-section"><div class="tek-title">🔆 FAISCEAU DU NUL — '+f.n+' signaux sur '+f.sur+'</div>';
     html+='<div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:6px 2px;">';
@@ -21907,6 +21966,102 @@ function niveauValiditeV7(theme) {
   return { applicable: true, niveau: niveau, base: base, derives: derives,
     fdj: fdj, fdjOk: fdjOk, complet: niveau === 3 && fdjOk,
     resume: 'niveau ' + niveau + '/3' + (fdjOk ? ' + figure du jour ✓' : ' · figure du jour absente')
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+// LA PORTE DE CONFIANCE (29/08/26) — Ellemine_D
+//
+// « dérivés valides le thème tranche, sinon le verdict peut être faux,
+// c'est de ça qu'il s'agit — pas de chercher dans les dérivés s'ils
+// donnent raison au thème principal par le même verdict. »
+//
+// Ce n'est donc pas un second avis à comparer au verdict : c'est une
+// AUTORISATION. Porte ouverte, le thème a le droit de trancher. Porte
+// fermée, le verdict reste affiché mais il n'engage rien.
+//
+// SA PAIRE DU 29/08 LUI DONNE RAISON, ET AU MOT PRÈS.
+//   thème 1  Tristitia / Populus / Acquisitio / Carcer
+//            axes des dérivés : Cardinal ✔  Succédent ✘  Cadent ✘
+//            annonce NUL 1-1 — FAUX
+//   thème 2  Conjunctio / Tristitia / Populus / Acquisitio
+//            axes des dérivés : Cardinal ✔  Succédent ✔  Cadent ✔
+//            annonce R7 — JUSTE (3-2 pour R7)
+// Un seul match, deux tirages, et le tirage dont les dérivés étaient
+// valides est celui qui a vu juste. C'est exactement sa règle.
+//
+// ⚠️ CE QUE J'AI FAILLI ÉCRIRE À LA PLACE. J'avais d'abord noté ce
+// thème 1 avec ses deux premières mères inversées (Populus / Tristitia).
+// Le thème s'en trouvait tout autre : ses trois axes de dérivé étaient
+// présents, il annonçait R1 au lieu du nul, et j'en concluais que la
+// vraie porte n'était pas sur les axes mais sur les BINÔMES des dérivés
+// (78 % contre 67 %, +12 points). Ellemine_D a corrigé les mères. Avec
+// les bonnes, la porte des binômes tombe à 75 % contre 73 % — +2 points,
+// p = 1,000, c'est-à-dire rien. Un seul thème mal recopié sur 35 avait
+// fabriqué toute la découverte. C'est la mesure de ce que valent ces
+// écarts à n = 35 : ils tiennent à une ligne.
+//
+// ☠️ ET L'ARCHIVE, ELLE, VA DANS L'AUTRE SENS. Justesse du verdict
+// affiché selon le nombre d'axes de dérivé présents, 35 cas au camp
+// connu (justesse globale 26/35 = 74 %) :
+//     1 axe ....  5 justes /  6 ... 83 %
+//     2 axes ... 12 justes / 14 ... 86 %
+//     3 axes .... 9 justes / 15 ... 60 %
+// Les trois axes présents : 60 %. Un axe qui manque : 85 %. Écart de
+// −25 points, Fisher exact bilatéral p = 0,129 — le plus fort des sept
+// critères de validité du fichier, et il pointe à l'envers de la règle.
+// Ce n'est pas non plus un artefact de nuls : les thèmes à axes complets
+// contiennent MOINS de nuls réels (2/15) que les autres (5/20).
+// Les six autres critères ne disent rien qui vaille :
+//     les 3 binômes des dérivés ...... 75 % / 73 %    +2 pts
+//     niveau ≥ 2 .................... 64 % / 81 %   −17 pts
+//     niveau = 3 .................... 73 % / 75 %    −2 pts
+//     niveau 3 + figure du jour ..... 73 % / 75 %    −2 pts
+//     axes du thème de base ......... 72 % / 83 %   −11 pts
+//     binôme de M1 dans la base ..... 74 % / 100 %  −26 pts
+//
+// ALORS QUI A RAISON ? Personne encore. Sa paire est une observation
+// propre — deux tirages, un match, le plus valide a gagné. L'archive est
+// 35 observations qui penchent de l'autre côté sans atteindre le seuil.
+// Trente-cinq cas ne battent pas une paire quand la paire teste une
+// question que les 35 ne testent pas : « entre DEUX thèmes du MÊME match,
+// lequel croire ? » n'est pas « un thème isolé est-il plus juste ? ».
+// C'est pour ça que le comparateur de doubles tirages existe, et c'est
+// lui qui tranchera — vers dix paires.
+//
+// D'ICI LÀ, LA PORTE NE TOUCHE À RIEN. Elle ne change ni le vainqueur,
+// ni le score, ni le nul. Elle affiche l'état des dérivés au-dessus du
+// verdict, avec le chiffre qui la contredit à côté. Brancher un p = 0,129
+// à l'envers d'une règle, ou un p = 1,000 dans son sens, ce serait dans
+// les deux cas décider à la place des résultats.
+function porteConfianceV7(theme) {
+  var nv = null;
+  try { nv = niveauValiditeV7(theme); } catch (e) { nv = null; }
+  if (!nv || !nv.applicable || !nv.derives) return null;
+  var dets = nv.derives.map(function (d) {
+    return { nom: d.nom,
+      axes: !d.absent && !!(d.axes && d.axes.ok),
+      binome: !d.absent && !!(d.binome && d.binome.ok),
+      figBinome: d.binome ? d.binome.fig : null };
+  });
+  var nbAxes = dets.filter(function (d) { return d.axes; }).length;
+  var nbBinomes = dets.filter(function (d) { return d.binome; }).length;
+  var ouverte = nbAxes === 3;
+  var manquants = dets.filter(function (d) { return !d.axes; })
+    .map(function (d) { return d.nom; });
+  // Taux d'archive par palier d'axes — chiffres du 29/08/26, 35 cas,
+  // mères corrigées. Ils vont à l'ENVERS de la règle : c'est voulu qu'ils
+  // s'affichent quand même.
+  var taux = nbAxes === 3 ? 60 : nbAxes === 2 ? 86 : nbAxes === 1 ? 83 : null;
+  var sur = nbAxes === 3 ? 15 : nbAxes === 2 ? 14 : nbAxes === 1 ? 6 : 0;
+  return {
+    ouverte: ouverte, nbAxes: nbAxes, nb: nbBinomes, nbBinomes: nbBinomes,
+    dets: dets, manquants: manquants, taux: taux, sur: sur,
+    detruit: !!nv.detruit, niveau: nv.niveau,
+    texte: ouverte
+      ? 'Les trois dérivés d\'axe ont leurs trois axes présents — selon ta règle, le thème a le droit de trancher.'
+      : 'Dérivé' + (manquants.length > 1 ? 's' : '') + ' dont les axes ne sont pas tous présents : '
+        + manquants.join(', ') + ' — selon ta règle, le verdict reste affiché mais il peut être faux.'
   };
 }
 
