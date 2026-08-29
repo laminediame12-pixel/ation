@@ -15909,6 +15909,44 @@ function nulDeuxPortesV7(theme) {
   return { porte: porte, k: k, memeBoucle: meme, oui: oui, force: force, detail: detail };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LA DÉCISION DU NUL, EN UN SEUL ENDROIT (29/08/26)
+//
+// « Fusionne les deux calculs de nulActif en un seul » (Ellemine_D).
+// Fait, et c'était nécessaire : le nul était décidé DEUX FOIS, par du
+// code dupliqué — une fois dans getVerdictAfficheReel (ce que mesure le
+// banc), une fois dans le rendu (ce que voit l'écran). Le 29/08 les
+// portes n'avaient été branchées que dans le premier : le banc annonçait
+// 21/30 pendant que l'écran désignait encore un vainqueur sur les quatre
+// nuls. Il n'y a plus qu'un seul endroit où le nul se décide.
+//
+// LA CLAUSE EN TROP QUE PORTAIT LE RENDU. Le rendu ajoutait un repli :
+// « si le réseau dit Nul et qu'aucun autre moteur ne tranche, alors
+// nul ». Vérifié EXHAUSTIVEMENT : sur les 65 536 thèmes possibles,
+// reseauF4P4V7 ne renvoie JAMAIS winner === 'Nul'. C'était du code mort.
+// Retiré — sa suppression ne change aucun verdict, et 430 thèmes ont été
+// comparés moteur contre écran avant et après : 0 divergence.
+//
+// Les deux constantes historiques restent lues ici, et restent à false :
+// STRUCTURE_NUL_DECISIVE (structureDuNul : 1 nul sur 5) et
+// AXE_SUCCEDENT_DECISIF. Elles n'ont jamais mérité le volant.
+function nulParPorteV7(theme) {
+  var d = null;
+  try { d = nulDeuxPortesV7(theme); } catch (e) { return false; }
+  if (!d) return false;
+  return NUL_PORTE_ELARGIE_V7
+    ? d.oui
+    : (d.memeBoucle ? d.k === 2 : d.k === 11);
+}
+
+// L'UNIQUE décision de nul du fichier. Tout ce qui affiche ou mesure un
+// verdict doit passer par elle — ne jamais réécrire ce test ailleurs.
+function nulActifV7(theme, structureNul, nulAxe) {
+  return !!(nulParPorteV7(theme)
+    || (STRUCTURE_NUL_DECISIVE && structureNul && structureNul.nulDetecte)
+    || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
+}
+
 function faisceauNulV7(theme) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { return null; }
@@ -20282,17 +20320,7 @@ function getVerdictAfficheReel(theme, favorite) {
   // Une règle ne peut pas se tromper sur le cas qui l'a fabriquée : ce
   // 22/30 ne mesure rien. Le battant élargi reste disponible par
   // NUL_PORTE_ELARGIE_V7 pour le jour où un second nul à +4 arrivera.
-  var nulPortes = null;
-  try { nulPortes = nulDeuxPortesV7(theme); } catch (e) { nulPortes = null; }
-  var nulParPorte = false;
-  if (nulPortes) {
-    nulParPorte = NUL_PORTE_ELARGIE_V7
-      ? nulPortes.oui
-      : (nulPortes.memeBoucle ? nulPortes.k === 2 : nulPortes.k === 11);
-  }
-  var nulActif = !!(nulParPorte
-    || (STRUCTURE_NUL_DECISIVE && structureNul.nulDetecte)
-    || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
+  var nulActif = nulActifV7(theme, structureNul, nulAxe);
   var protocoleWinner = protocoleR1R7.applicable && !nulActif
     ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
     : null;
@@ -20517,9 +20545,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var nulPorteTxt='';
   try {
     var _dp = nulDeuxPortesV7(theme);
-    if (_dp) {
-      var _ouv = NUL_PORTE_ELARGIE_V7 ? _dp.oui : (_dp.memeBoucle ? _dp.k === 2 : _dp.k === 11);
-      if (_ouv) nulPorteTxt = 'Porte du nul ouverte — branche « ' + _dp.porte + ' », décalage +' + _dp.k
+    if (_dp && nulParPorteV7(theme)) {
+      nulPorteTxt = 'Porte du nul ouverte — branche « ' + _dp.porte + ' », décalage +' + _dp.k
         + ' · porte ' + _dp.force
         + (_dp.force === 'EN PROBATION' ? ' (2 tirs seulement, 15,4 % au hasard — à confirmer)' : '');
     }
@@ -20662,10 +20689,11 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     var teinte = f.n>=5 ? '#ef4444' : (f.n>=4 ? '#f59e0b' : (f.n>=2 ? '#38bdf8' : '#64748b'));
     var dp=null; try{ dp=nulDeuxPortesV7(theme); }catch(e){ dp=null; }
     if(dp){
-      var tp2 = dp.oui ? (dp.force==='confirmée' ? '#22c55e' : '#84cc16') : '#64748b';
+      var dpOuverte = nulParPorteV7(theme);
+      var tp2 = dpOuverte ? (dp.force==='ÉTABLIE' ? '#22c55e' : '#84cc16') : '#64748b';
       html+='<div class="tek-section"><div class="tek-title">🚪 LES DEUX PORTES DU NUL — branche « '+esc(dp.porte)+' »</div>'
         +'<div style="padding:6px 2px; font-size:12px;"><b style="color:'+tp2+';">'
-        +(dp.oui?'PORTE OUVERTE — '+esc(dp.force):'porte fermée')+'</b> · décalage R1→R7 = +'+dp.k
+        +(dpOuverte?'PORTE OUVERTE — '+esc(dp.force):'porte fermée')+'</b> · décalage R1→R7 = +'+dp.k
         +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">'+esc(dp.detail)+'</div></div>'
         +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
         +'<b>Même boucle — porte ÉTABLIE</b> : R7 occupe l\'un des DEUX PREMIERS rôles que R1 projette '
@@ -21646,22 +21674,10 @@ function renderTheme(){
     // STRUCTURE_NUL_DECISIVE. Elle ne suspend plus le protocole ni le réseau.
     // Structure du Nul et Axe Succédent tous deux débranchés (24/08/26) —
     // cf. STRUCTURE_NUL_DECISIVE et AXE_SUCCEDENT_DECISIF.
-    // ─── LE NUL BRANCHÉ AU VERDICT AFFICHÉ (29/08/26) ───
-    // ⚠️ CE CALCUL DOIT RESTER IDENTIQUE À CELUI DE getVerdictAfficheReel.
-    // Le 29/08 les deux portes n'avaient été branchées QUE dans le moteur :
-    // le banc mesurait 21/30, et l'écran continuait d'afficher un vainqueur
-    // sur les quatre nuls. Vu au contrôle navigateur, pas au calcul — c'est
-    // exactement la dérive que le commentaire de getVerdictAfficheReel
-    // annonçait. Toute modification ici doit être reportée là-bas.
-    let nulPortesTop = null;
-    try { nulPortesTop = nulDeuxPortesV7(currentTheme); } catch (e) { nulPortesTop = null; }
-    const nulParPorteTop = nulPortesTop
-      ? (NUL_PORTE_ELARGIE_V7 ? nulPortesTop.oui
-          : (nulPortesTop.memeBoucle ? nulPortesTop.k === 2 : nulPortesTop.k === 11))
-      : false;
-    const nulActifTop = !!(nulParPorteTop
-      || (STRUCTURE_NUL_DECISIVE && structureNulTop.nulDetecte)
-      || (AXE_SUCCEDENT_DECISIF && nulAxeTop && nulAxeTop.confirmed));
+    // Le nul se décide dans nulActifV7 et NULLE PART AILLEURS (29/08/26).
+    // Ce calcul était dupliqué ici ; la copie a divergé le jour même où
+    // les portes ont été branchées. Ne jamais la réécrire.
+    const nulActifTop = nulActifV7(currentTheme, structureNulTop, nulAxeTop);
     const protocoleWinner = protocoleR1R7.applicable && !nulActifTop
       ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
       : null;
@@ -21727,7 +21743,11 @@ function renderTheme(){
     let voteTop = null;
     try { voteTop = VERDICT_VOTE_V7 ? voteMoteursV7(currentTheme) : null; } catch (e) { voteTop = null; }
     const voteWinnerTop = !nulActifTop && voteTop && voteTop.camp ? voteTop.camp : null;
-    const nulActifReseauTop = nulActifTop || (!f4p4WinnerTop && !siegesWinnerTop && !voteWinnerTop && !chaineWinnerTop && reseauTop.winner === 'Nul');
+    // Repli « le réseau dit Nul et personne ne tranche » RETIRÉ le 29/08 :
+    // vérifié sur les 65 536 thèmes possibles, reseauF4P4V7 ne renvoie
+    // jamais winner === 'Nul'. C'était du code mort, et il faisait
+    // diverger l'écran du moteur pour rien.
+    const nulActifReseauTop = nulActifTop;
     // Même ordre qu'en haut : les sièges d'abord (28/08/26).
     // Même ordre qu'en haut : F4P4 d'abord (28/08/26).
     const rWinnerOverride = f4p4WinnerTop || siegesWinnerTop || voteWinnerTop || chaineWinnerTop || reseauWinnerTop;
