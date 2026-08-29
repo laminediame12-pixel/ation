@@ -3747,9 +3747,14 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
 // false = ancien générateur buildScoreFromCamps. Mesures dans
 // buildVerdictCard — 60 buts d'erreur et 7 scores exacts contre 87 et 0.
 // La piste de Saturne sur les buts : « peu de figures froides → 2-1 au
-// lieu de 1-0 ». Débranchée — 4 matchs concernés sur 22, mêmes scores
-// exacts. Mesures dans buildVerdictCard.
-var SCORE_FROID_V7 = false;
+// lieu de 1-0 ». BRANCHÉE le 29/08/26 sur décision d'Ellemine_D
+// (« branche-le, on verra avec les scores à venir ») — je l'avais
+// laissée débranchée parce que le gain ne porte que sur quatre matchs
+// sur vingt-deux. C'est sa doctrine, elle a la corrélation la plus forte
+// jamais mesurée sur les buts (r = −0,45), et elle se testera d'elle-même
+// à chaque nouveau score. Mesures complètes dans buildVerdictCard.
+// Repasser à false si les scores à venir la démentent.
+var SCORE_FROID_V7 = true;
 var SCORE_CALIBRE_V7 = true;
 var REGLE_VIA_M4_V7 = false;
 var STRUCTURE_NUL_DECISIVE = false;
@@ -20475,9 +20480,13 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     //    mais seuls QUATRE matchs sur 22 changent (Inter, FortMajVia et
     //    City/Madrid gagnent, ViaCaput perd) et le nombre de scores
     //    exacts ne bouge pas — 7 avant, 7 après.
-    // Quatre matchs ne suffisent pas à changer ce que le fichier affiche.
-    // SCORE_FROID_V7 = true l'active ; la corrélation, elle, mérite
-    // d'être retestée à chaque nouveau score.
+    // BRANCHÉE LE 29/08/26 malgré ces trois réserves, sur décision
+    // d'Ellemine_D : « branche-le, on verra avec les scores à venir ».
+    // C'est sa doctrine, elle porte le signal le plus fort qu'on ait sur
+    // les buts, et elle se juge d'elle-même au fil des résultats.
+    // État mesuré à l'activation : 56 buts d'erreur et 7 scores exacts,
+    // contre 60 et 7 sans elle. À surveiller sur les prochains scores —
+    // si l'erreur remonte, SCORE_FROID_V7 = false la débranche.
     if (SCORE_FROID_V7 && scWinnerCode !== 'Nul') {
       var FROID_V7 = { carcer: 1, tristitia: 1, populus: 1, cauda_draconis: 1 };
       var nFroid = 0;
