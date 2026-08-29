@@ -16001,12 +16001,44 @@ function nulParPorteV7(theme) {
     : (d.memeBoucle ? d.k === 2 : d.k === 11);
 }
 
+// ─── LE CROISEMENT EST AU VOLANT (29/08/26, demande d'Ellemine_D) ───
+// Le nul n'est plus imposé par la porte seule : il faut la porte OUVERTE
+// ET R1 en maison cadente — le niveau MAXIMAL de niveauNulV7.
+// Les deux branchements font le même score, avec des profils opposés :
+//   porte seule ..... 22/30 · dit nul 6 fois, juste 5 ·  83 % · 1 FAUX nul
+//   CROISEMENT ...... 22/30 · dit nul 4 fois, juste 4 · 100 % · 1 nul raté
+// À score égal on prend celui qui ne se trompe jamais quand il parle :
+// quand le fichier annonce NUL, il ne l'a jamais annoncé à tort. Le prix
+// est CarcAlbus (0-0, R1 en M10 angulaire) qui n'est plus imposé — mais
+// il n'est pas perdu pour autant : le niveau « fort » (porte ouverte
+// sans la cadence) déclenche une ALERTE affichée à côté du vainqueur.
+// Le verdict reste tranché, l'avertissement est là.
+// Repasser à la porte seule : NUL_CROISEMENT_V7 = false.
+var NUL_CROISEMENT_V7 = true;
+
 // L'UNIQUE décision de nul du fichier. Tout ce qui affiche ou mesure un
 // verdict doit passer par elle — ne jamais réécrire ce test ailleurs.
 function nulActifV7(theme, structureNul, nulAxe) {
-  return !!(nulParPorteV7(theme)
+  var parLeNul = false;
+  if (NUL_CROISEMENT_V7) {
+    var niv = null;
+    try { niv = niveauNulV7(theme); } catch (e) { niv = null; }
+    parLeNul = !!(niv && niv.niveau === 'MAXIMAL');
+  } else {
+    parLeNul = nulParPorteV7(theme);
+  }
+  return !!(parLeNul
     || (STRUCTURE_NUL_DECISIVE && structureNul && structureNul.nulDetecte)
     || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
+}
+
+// L'alerte : la porte est ouverte mais R1 n'est pas en maison cadente.
+// Un nul sur deux dans cette situation (CarcAlbus 0-0 oui, PuerCaput
+// non). Le verdict n'est PAS suspendu — c'est un avertissement.
+function alerteNulV7(theme) {
+  var niv = null;
+  try { niv = niveauNulV7(theme); } catch (e) { return false; }
+  return !!(niv && niv.niveau === 'fort');
 }
 
 function faisceauNulV7(theme) {
@@ -20703,7 +20735,15 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     html+='<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; background:#7f1d1d33; border:1px solid #f87171; font-size:12px; color:#fecaca;">⚠️ <b>CONTRADICTION</b> — le Réseau d\'ancrage (👉 panneau ci-dessous) donne un vainqueur différent : <b>'+esc(card.reseauWinnerRotation)+'</b> ('+esc(card.reseauNiveauLabel)+', écart '+esc(card.reseauEcartNet)+(card.reseauPiege?', camp piégé':'')+'). Fiabilité réduite, à examiner avant de trancher.</div>';
   }
   html+='<div class="tek-hero">';
-  html+='<div class="tek-winner '+(nulActif?'warn':'')+'"><div class="tek-cap">'+(nulActif?'VERDICT SUSPENDU':'VAINQUEUR')+'</div><div class="tek-name">'+(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner))+'</div><div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div></div>';
+  var _alerteNul=false; try{ _alerteNul = !nulActif && alerteNulV7(theme); }catch(e){ _alerteNul=false; }
+  html+='<div class="tek-winner '+(nulActif?'warn':'')+'"><div class="tek-cap">'+(nulActif?'VERDICT SUSPENDU':'VAINQUEUR')+'</div><div class="tek-name">'+(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner))+'</div><div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>'
+    +(_alerteNul ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f59e0b; border-radius:7px; '
+      + 'background:rgba(245,158,11,.12); font-size:11px; color:#fbbf24; text-align:left;">'
+      + '<b>⚠️ ALERTE NUL</b> — la porte du nul est ouverte, mais R1 n\'est pas en maison cadente. '
+      + 'Le vainqueur reste annoncé parce que le croisement complet n\'est pas atteint, mais dans cette '
+      + 'situation l\'archive donne <b>un nul sur deux</b> (le 0-0 du 14/02 en était un). '
+      + 'À ne pas jouer sec.</div>' : '')
+    +'</div>';
   var incColorTek = card && card.incidentInevitable ? '#f87171' : card && card.incidentPct >= 50 ? '#fb923c' : card && card.incidentPct > 0 ? '#facc15' : null;
   // ─── LE DÉTAIL DE L'INCIDENT, AVEC SON CAMP (27/08/26) ───
   var incHtml = '';
