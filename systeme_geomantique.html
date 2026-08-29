@@ -3746,6 +3746,10 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
 // Le score affiché : true = calibré sur le réel (camp → 1-0, nul → 1-1),
 // false = ancien générateur buildScoreFromCamps. Mesures dans
 // buildVerdictCard — 60 buts d'erreur et 7 scores exacts contre 87 et 0.
+// La piste de Saturne sur les buts : « peu de figures froides → 2-1 au
+// lieu de 1-0 ». Débranchée — 4 matchs concernés sur 22, mêmes scores
+// exacts. Mesures dans buildVerdictCard.
+var SCORE_FROID_V7 = false;
 var SCORE_CALIBRE_V7 = true;
 var REGLE_VIA_M4_V7 = false;
 var STRUCTURE_NUL_DECISIVE = false;
@@ -16306,6 +16310,54 @@ var MOTEURS_NUL_V7 = [
       if (!f) return { oui: null, detail: 'rotation indisponible' };
       return { oui: f.n >= 5, detail: f.n + '/7 signaux — ' + f.niveau };
     } },
+  // ─── LA DOCTRINE DE SATURNE (29/08/26, Ellemine_D) ───
+  // « Saturne symbolise blocage, défense, stabilité, rigueur. Il faut
+  // associer les figures liées à Saturne et opérer les maisons les plus
+  // susceptibles du nul. Ça, c'est l'ingrédient pour le nul. »
+  //
+  // Figures de Saturne dans la table du fichier : CARCER et TRISTITIA.
+  // Maisons de Saturne : M10 et M11.
+  //
+  // ⚠️ MESURÉ SUR LES 30 CAS, ET AUCUNE LECTURE NE BAT LE HASARD (17 %) :
+  //   R1 est de Saturne .............. 1 nul /  6 tirs · 17 %
+  //   R7 est de Saturne .............. 0 nul /  1
+  //   le juge M15 est de Saturne ..... 0 nul /  4
+  //   M13 ou M14 est de Saturne ...... 2 nuls /  8 · 25 %
+  //   R1 en maison de Saturne ........ 1 nul /  7 · 14 %
+  //   Saturne chez lui (M10/M11) ..... 0 nul /  4
+  //   Saturne dans une cadente ....... 2 nuls / 14 · 14 %
+  //   M1 ou M7 est de Saturne ........ 2 nuls /  9 · 22 %
+  //   au moins 2 Saturne dans le thème 3 nuls / 21 · 14 %
+  // Et le fait qui tranche : AmisPuer, le 4-4, le nul le plus net de
+  // l'archive — sept signaux sur sept au faisceau — ne contient AUCUNE
+  // figure de Saturne dans ses seize maisons.
+  //
+  // La doctrine n'est donc pas branchée au verdict. Les deux moteurs
+  // ci-dessous la mettent SOUS SURVEILLANCE : chaque nouveau nul les
+  // départagera tout seul, sans qu'on ait à y revenir à la main.
+  { cle: 'nul_saturne_siege', nom: 'Nul · Saturne sur un siège (R1, R7, M1 ou M7)', icone: '♄', teinte: '#a3a3a3',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D — sous surveillance, 2 nuls sur 5 aujourd\'hui',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.figR1) return { oui: null, detail: 'rotation indisponible' };
+      var SAT = { carcer: 1, tristitia: 1 };
+      var ou = [];
+      if (SAT[rot.figR1]) ou.push('R1');
+      if (SAT[rot.figR7]) ou.push('R7');
+      if (SAT[t[1]]) ou.push('M1');
+      if (SAT[t[7]]) ou.push('M7');
+      return { oui: ou.length > 0, detail: ou.length ? 'Saturne en ' + ou.join(', ') : 'aucun siège saturnien' };
+    } },
+  { cle: 'nul_saturne_cadent', nom: 'Nul · Saturne dans une maison cadente', icone: '♄', teinte: '#737373',
+    juste: 0, total: 0, note: 'les maisons « susceptibles » croisées avec Saturne — 2 nuls sur 5',
+    verdict: function (t) {
+      var ou = [];
+      [3, 6, 9, 12].forEach(function (h) {
+        if (t[h] === 'carcer' || t[h] === 'tristitia') ou.push('M' + h);
+      });
+      return { oui: ou.length > 0, detail: ou.length ? 'Saturne en ' + ou.join(', ') : 'aucune cadente saturnienne' };
+    } },
   { cle: 'nul_temoin', nom: 'Nul · « jamais de nul »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — la barre à battre est très haute, les nuls sont rares',
     verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
@@ -20383,11 +20435,6 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // travail — trouver dans le thème ce qui porte le NOMBRE de buts —
   // reste entier : aucune grandeur mesurée à ce jour n'y corrèle
   // (ancrage r = 0,00 · figures actives r = 0,35 sur 22 cas).
-  if (SCORE_CALIBRE_V7) {
-    if (scWinnerCode === 'A') { goalA = 1; goalB = 0; }
-    else if (scWinnerCode === 'B') { goalA = 0; goalB = 1; }
-    else { goalA = 1; goalB = 1; }
-  }
   // ⚠️ PLACÉ ICI ET PAS PLUS HAUT, sur bogue constaté au navigateur : mis
   // avant la couche BTTS ci-dessus, le « 1-0 » se faisait remonter à
   // « 1-1 » par la ligne « if (btts === true) { if (goalB <= 0) goalB = 1; } »,
@@ -20400,6 +20447,46 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     if (scWinnerCode === 'A') { goalA = 1; goalB = 0; }
     else if (scWinnerCode === 'B') { goalA = 0; goalB = 1; }
     else { goalA = 1; goalB = 1; }
+    // ─── LA PISTE DE SATURNE, SUR LES BUTS (29/08/26) ───
+    // Ellemine_D proposait Saturne comme ingrédient du NUL. Mesuré, ça ne
+    // marche pas pour le nul (voir les deux moteurs Saturne du banc).
+    // Mais son intuition — Saturne bloque — vise juste sur autre chose :
+    // LE NOMBRE DE BUTS, exactement le domaine où rien ne fonctionnait.
+    // Corrélation avec le total de buts, sur les 22 matchs au score exact :
+    //   Saturne seul (Carcer, Tristitia) ................ r = −0,25
+    //   + Populus et Cauda Draconis (blocage et fin) .... r = −0,45
+    //   figures chaudes ................................. r = −0,11
+    //   ancrage total des deux camps .................... r =  0,00
+    // C'est de loin le signal le plus fort jamais trouvé pour les buts, et
+    // il va dans le sens annoncé — plus de froid, moins de buts :
+    //   0 à 3 froides (11 matchs) ... 4,45 buts   4 à 5 (9) ... 2,44
+    //   6 et plus      ( 2 matchs) ... 2,50 buts
+    //
+    // ⚠️ DÉBRANCHÉ, POUR TROIS RAISONS TOUTES MESURÉES.
+    // 1. C'est MOI qui ai élargi l'ensemble. Sa doctrine stricte donne
+    //    r = −0,25, non significatif. L'essentiel du signal vient de
+    //    POPULUS, qui est de la Lune et pas de Saturne.
+    // 2. Testé contre les 1820 combinaisons de 4 figures parmi 16, mon
+    //    ensemble arrive 26e. Les meilleurs de la machine (Rubeus +
+    //    Fortuna Major + Populus…) n'ont aucun sens doctrinal : la
+    //    recherche ajuste du bruit. Être dans les 1,4 % n'est pas
+    //    être démontré.
+    // 3. Le gain sur le score est mince : l'erreur passe de 60 à 56 buts,
+    //    mais seuls QUATRE matchs sur 22 changent (Inter, FortMajVia et
+    //    City/Madrid gagnent, ViaCaput perd) et le nombre de scores
+    //    exacts ne bouge pas — 7 avant, 7 après.
+    // Quatre matchs ne suffisent pas à changer ce que le fichier affiche.
+    // SCORE_FROID_V7 = true l'active ; la corrélation, elle, mérite
+    // d'être retestée à chaque nouveau score.
+    if (SCORE_FROID_V7 && scWinnerCode !== 'Nul') {
+      var FROID_V7 = { carcer: 1, tristitia: 1, populus: 1, cauda_draconis: 1 };
+      var nFroid = 0;
+      for (var hf = 1; hf <= 16; hf++) { if (FROID_V7[theme[hf]]) nFroid++; }
+      if (nFroid < 4) {
+        if (scWinnerCode === 'A') { goalA = 2; goalB = 1; }
+        else { goalA = 1; goalB = 2; }
+      }
+    }
   }
   scoreMain = goalA + '-' + goalB;
   scoreAlt = SCORE_CALIBRE_V7
