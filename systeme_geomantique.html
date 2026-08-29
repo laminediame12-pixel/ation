@@ -4385,6 +4385,41 @@ function forceFigureMaisonV7(fig, house, theme) {
 // l'archive — exposés dans une constante pour être réglés d'un seul
 // endroit dès qu'un cas réel les contredit.
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// LA CONCORDANCE, RETIRÉE PUIS REMESURÉE (28/08/26, demande d'Ellemine_D)
+//
+// Le constat qui a lancé le test : prise SEULE, en somme sur les cinq
+// rôles d'un camp, la concordance est le plus mauvais des sept critères
+// (4/12 sur l'archive) — et c'est le plus lourd, ×10. Sur ViaCaput elle
+// donne à elle seule +7,5 à R7, ce qui inverse le camp : sans elle le
+// camp de R1 passe devant (19,63 contre 15,05).
+//
+// Elle a donc été mise à 0 dans le profil, et TOUT a été remesuré :
+//
+//   configuration                          verdict affiché   pôles solides
+//   référence (concordance ×10, seuil 12) ...... 15/23           33 %
+//   concordance à 0, seuil inchangé ............ 12/23           12 %
+//   concordance à 0, seuil abaissé à 6 ......... 12/23           37 %
+//   concordance et environnement à 0 ........... 11/23            4 %
+//
+// TROIS POINTS PERDUS. Et le seuil n'y est pour rien : en l'abaissant
+// pour retrouver le même taux de pôles solides, le verdict reste à 12/23.
+//
+// POURQUOI LES DEUX MESURES NE SE CONTREDISENT PAS. En somme de camp, la
+// concordance discrimine mal. Mais dans le PROFIL, elle fait autre chose :
+// c'est elle qui choisit la MEILLEURE POSITION d'une figure présente
+// plusieurs fois, et qui décide si une figure « tient sa place ». La
+// retirer ne supprime pas un mauvais juge, elle aveugle la sélection des
+// positions — et tout ce qui en dépend (chaîne, pôles solides, ancrage)
+// se dégrade.
+//
+// Ce que ça coûte, cas par cas : ViaCaput est redressé (R1 ✔ au lieu de
+// R7), mais LaetCarcer perd son SCORE EXACT (3-0 au lieu de 4-0 pour un
+// 4-0 réel) et deux autres cas basculent. La concordance reste donc à ×10.
+// Le test est écrit ici pour qu'on ne le refasse pas, et pour qu'on sache
+// que le vrai levier n'est pas son poids mais sa PLACE : bonne pour
+// choisir une position, mauvaise pour départager deux camps.
+// ═══════════════════════════════════════════════════════════════
 var POIDS_PROFIL_V7 = {
   concordance: 10,     // existant (forceFigureMaisonV7)
   multiplicite: 1.5,   // existant, plafonné à 4 occurrences
