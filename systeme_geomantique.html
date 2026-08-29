@@ -15976,16 +15976,45 @@ function nulDeuxPortesV7(theme) {
 // n'est pas cadent. Ajouter la maison en condition ferait perdre ce
 // nul-là. Le croisement sert à SAVOIR À QUEL POINT y croire, pas à
 // décider — voir niveauNulV7 juste en dessous.
+// ─── RÉVISÉ LE 29/08/26 : LA PAIRE, PAS LA CATÉGORIE ───
+// « J'insiste sur les positions de R1 et R7, dans deux maisons position »
+// (Ellemine_D). Lues comme PAIRE — et R7 tombant toujours six maisons
+// après R1, la paire est fixée par R1 — les six cas où la porte s'ouvre
+// donnent ceci :
+//   M 9→M15  R1 cadente    R7 autre        NUL   Roma
+//   M 6→M12  R1 cadente    R7 cadente      NUL   AmisPuer
+//   M 3→M 9  R1 cadente    R7 cadente      NUL   CaputPuella
+//   M12→M 2  R1 cadente    R7 autre        NUL   FortMajConj
+//   M10→M16  R1 ANGULAIRE  R7 autre        NUL   CarcAlbus
+//   M 1→M 7  R1 ANGULAIRE  R7 ANGULAIRE   pas nul  PuerCaput
+// Le SEUL cas où la porte se trompe est le seul où LES DEUX SIÈGES sont
+// angulaires. Deux centrales aux maisons les plus fortes : quelqu'un
+// gagne, même entre alliées. C'est le complément exact de la lecture
+// cadente — faiblesse d'un côté, force de l'autre.
+//   porte seule ............................ 5 nuls / 6 tirs ·  83 %
+//   porte + R1 cadent (ancien) ............. 4 nuls / 4 tirs · 100 % · rate CarcAlbus
+//   porte SAUF deux sièges angulaires ...... 5 nuls / 5 tirs · 100 % · ne rate rien
+// La nouvelle condition est aussi BEAUCOUP plus légère : exiger la
+// cadence écartait 75 % des thèmes ; exclure les deux sièges angulaires
+// n'en écarte que 12,5 % (seules les paires M1→M7 et M4→M10 le sont).
+//
+// ⚠️ L'exclusion repose sur UN seul cas, PuerCaput. C'est une condition
+// étroite avec un sens clair, pas une liste ajustée — mais un second
+// nul en paire angulaire↔angulaire la tuerait. Le fichier le dira.
 function niveauNulV7(theme) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { return null; }
   if (!rot || !rot.hR1) return null;
+  var ANG = [1, 4, 7, 10];
   var porte = nulParPorteV7(theme);
+  var deuxAngulaires = ANG.indexOf(rot.hR1) >= 0 && ANG.indexOf(rot.hR7) >= 0;
   var cadent = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
-  if (porte && cadent) return { niveau: 'MAXIMAL', taux: 100, sur: 4,
-    detail: 'porte ouverte ET R1 en maison cadente — 4 nuls sur 4 dans l\'archive' };
-  if (porte) return { niveau: 'fort', taux: 50, sur: 2,
-    detail: 'porte ouverte, mais R1 en M' + rot.hR1 + ' (hors cadentes) — 1 nul sur 2' };
+  if (porte && !deuxAngulaires) return { niveau: 'MAXIMAL', taux: 100, sur: 5,
+    detail: 'porte ouverte, paire M' + rot.hR1 + '→M' + rot.hR7
+      + ' — 5 nuls sur 5 dans l\'archive' + (cadent ? ' (R1 en cadente)' : '') };
+  if (porte) return { niveau: 'fort', taux: 0, sur: 1,
+    detail: 'porte ouverte MAIS les deux sièges sont angulaires (M' + rot.hR1
+      + '→M' + rot.hR7 + ') — le seul cas de ce type n\'était pas un nul' };
   if (cadent) return { niveau: 'faible', taux: 0, sur: 4,
     detail: 'R1 en maison cadente mais porte fermée — 0 nul sur 4' };
   return { niveau: 'aucun', taux: 0, sur: 20,
@@ -20767,21 +20796,12 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     +(corners.campA!=null?' &nbsp;·&nbsp; <span style="color:#7dd3fc;">'+esc(teamA)+' '+esc(corners.campA)+'</span> / <span style="color:#fdba74;">'+esc(teamB)+' '+esc(corners.campB)+'</span>':'')
     +(card&&card.cornersDominant?' &nbsp;→&nbsp; <span style="color:#4ade80;">dominant '+esc(card.cornersDominant==='R1'?teamA:teamB)+'</span>':'')
     +'</b></div><div class="tek-note">'+(nulActif?'⚠️ '+(nulPorteTxt||'Le nul est imposé')+' — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — aucune porte du nul n’est ouverte.')+'</div>'+incHtml+'</div></div>';
-  html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
-  html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
-  html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
-  html+='<div class="tek-progress"><div style="width:'+p1+'%;background:#2563eb">R1 '+p1.toFixed(1)+'%</div><div style="width:'+p7+'%;background:#f59e0b">R7 '+p7.toFixed(1)+'%</div></div>';
-  html+='<div class="tek-meta" style="margin-top:7px;text-align:center">R1 : base / résultantes '+(q.a1||[]).length+' maillons · R7 : base / résultantes '+(q.a7||[]).length+' maillons</div></div>';
-  html+='<div class="tek-tables">';
-  html+='<div class="tek-tablebox"><h5>🔵 DÉTAIL DES FORCES — BOUCLE R1</h5><table class="tek-table"><tr><th>Critère évalué</th><th>Détail</th><th>Points</th></tr><tr><td>Présence des maillons</td><td>'+d1.presence+' présences</td><td>'+n(d1.presence)+'</td></tr><tr><td>Répétitions des figures</td><td>'+d1.repetitions+' répétitions</td><td>'+n(d1.repetitions*.5)+'</td></tr><tr><td>Ancrage au repos</td><td>'+((q.a1||[]).filter(function(x){return x.reposPresent;}).length?'Présence au repos':'Pas d’ancrage au repos')+'</td><td>'+n(d1.repos)+'</td></tr><tr><td>Force du binôme</td><td>'+((q.binomeR1&&label(q.binomeR1))||'—')+'</td><td>'+n(d1.bin)+'</td></tr><tr><td>Résultantes propres</td><td>'+d1.propre/0.75+' résultat(s)</td><td>'+n(d1.propre)+'</td></tr><tr><td>Résultantes adverses</td><td>'+d1.adverse/1.25+' résultat(s)</td><td>-'+n(d1.adverse)+'</td></tr></table><div class="tek-total"><span>TOTAL R1</span><span style="color:#60a5fa">'+n(s1)+'</span></div></div>';
-  html+='<div class="tek-tablebox r7"><h5>🟠 DÉTAIL DES FORCES — BOUCLE R7</h5><table class="tek-table"><tr><th>Critère évalué</th><th>Détail</th><th>Points</th></tr><tr><td>Présence des maillons</td><td>'+d7.presence+' présences</td><td>'+n(d7.presence)+'</td></tr><tr><td>Répétitions des figures</td><td>'+d7.repetitions+' répétitions</td><td>'+n(d7.repetitions*.5)+'</td></tr><tr><td>Ancrage au repos</td><td>'+((q.a7||[]).filter(function(x){return x.reposPresent;}).length?'Présence au repos':'Pas d’ancrage au repos')+'</td><td>'+n(d7.repos)+'</td></tr><tr><td>Force du binôme</td><td>'+((q.binomeR7&&label(q.binomeR7))||'—')+'</td><td>'+n(d7.bin)+'</td></tr><tr><td>Résultantes propres</td><td>'+d7.propre/0.75+' résultat(s)</td><td>'+n(d7.propre)+'</td></tr><tr><td>Résultantes adverses</td><td>'+d7.adverse/1.25+' résultat(s)</td><td>-'+n(d7.adverse)+'</td></tr></table><div class="tek-total"><span>TOTAL R7</span><span style="color:#fb923c">'+n(s7)+'</span></div></div></div>';
-  html+='<div class="tek-verdict"><div class="tek-verdictgrid"><div class="tek-scale"><div class="symbol">⚖️</div><b>VERDICT DU PROTOCOLE</b><div style="font-size:9px;color:#94a3b8">Comparaison des deux boucles antagonistes</div></div><div><div class="tek-final">'+(nulActif?'⚠️ PROTOCOLE SUSPENDU':'➜ VAINQUEUR FINAL : '+esc(cardWinner)+' ('+winner+')')+'</div><div class="tek-gap">'+(winner?'Avance nette de '+n(gap)+' points.':'Aucune avance décisive.')+'</div><div class="tek-meta">'+(winner?'Le modèle indique que la force structurelle et la qualité des maillons de '+esc(cardWinner)+' sont supérieures à celles de '+esc(winner==='R1'?teamB:teamA)+'.':'Les deux boucles ne présentent pas de domination suffisamment nette.')+'</div>'+(reasonList?'<ul class="tek-list">'+reasonList+'</ul>':'')+'</div></div></div>';
-  html+='<div class="tek-section tek-null"><div class="tek-title">⚖️ STRUCTURE DU NUL</div><div class="tek-null-grid">';
-  html+='<div class="tek-box"><h5>Juges de structure</h5><div class="tek-kv"><span>1ère partie (M13)</span><b>'+label(sdn.juge1)+'</b></div><div class="tek-kv"><span>2ème partie (M14)</span><b>'+label(sdn.juge2)+'</b></div><div class="tek-kv"><span>Juge final (M15)</span><b>'+label(sdn.reconstruction)+'</b></div><div class="tek-kv"><span>Sentence (M16)</span><b>'+label(sdn.sentence)+'</b></div></div>';
-  html+='<div class="tek-box"><h5>Indicateurs de nul</h5><div class="tek-kv"><span>Identité des juges</span><b>'+ (sdn.nulParIdentite?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Opposition / équilibre</span><b>'+ (sdn.nulParOpposition?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Axe succédent</span><b>'+axeTxt+'</b></div><div class="tek-kv"><span>Signature</span><b>'+esc(nullReason)+'</b></div><div class="tek-kv"><span>Règle M15</span><b>'+esc(axeNul&&axeNul.m15Rule?axeNul.m15Rule:'—')+'</b></div></div>';
-  html+='<div class="tek-nullstatus"><div class="ico">'+(nulActif?'⚠️':'⊘')+'</div><b>'+nullStatus+'</b><div style="font-size:9px;margin:5px 8px;color:#cbd5e1">'+(nulActif?esc(nulPorteTxt||'Le nul est imposé')+'. Le protocole R1/R7 est suspendu.':'Aucune porte du nul n’est ouverte — le vainqueur du protocole tient.')+'</div></div></div></div>';
-  html+='<div class="tek-section"><div class="tek-title">🛡️ CRÉDIBILITÉ GLOBALE DU VERDICT</div><div class="tek-bottom"><div class="box"><div class="big">'+credibility+'%</div></div><div class="box"><p><b>'+(nulActif?'Le nul est actif.':'Le nul n’est pas actif.')+'</b> '+(nulActif?'Le protocole de comparaison ne reçoit pas de priorité décisionnelle.':'Le protocole de comparaison R1 / R7 est pleinement disponible pour désigner le vainqueur.')+'</p></div><div class="box"><p><b>ANALYSE</b><br>'+ (winner?'Thème orienté : domination structurelle de '+esc(cardWinner)+'.':'Thème équilibré : aucune domination structurelle claire.')+'<br>La crédibilité est un indicateur de disponibilité du protocole, pas une validation empirique.</p></div></div></div>';
-  if((q.duel||[]).length){html+='<div class="tek-section"><div class="tek-title">⚔️ DUELS FIGURE ↔ ANTAGONISTE</div><table class="tek-table"><tr><th>R1 / R7</th><th>Score</th><th>Opposant</th><th>Score</th><th>Issue</th></tr>'+duelRows+'</table></div>';}
+  // ─── LE NUL PASSE AVANT LES MOTEURS (29/08/26) ───
+  // Ellemine_D : « le verdict : les moteurs sont après celui qui décide
+  // pour le nul ». Ces deux panneaux étaient en fin de page, après les
+  // tables de forces, la crédibilité et les duels. Ils sont désormais
+  // juste sous le vainqueur, AVANT le protocole de comparaison : c'est le
+  // nul qui décide s'il y a un vainqueur à lire, il se lit donc en premier.
   // ─── LE FAISCEAU DU NUL (29/08/26) — les sept lectures croisées ───
   // Affiché sur chaque thème, parce que c'est le NOMBRE de signaux qui
   // parle, jamais une ligne prise seule.
@@ -20839,6 +20859,21 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       +'<b style="color:#fbbf24;">Attention</b> : le 0-0 du 14/02/2026 n\'allume AUCUN signal. Le faisceau attrape '
       +'3 nuls sur 4 — il sert à oser quand il parle, pas à se rassurer quand il se tait.</div></div>';
   })();
+  html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
+  html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
+  html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
+  html+='<div class="tek-progress"><div style="width:'+p1+'%;background:#2563eb">R1 '+p1.toFixed(1)+'%</div><div style="width:'+p7+'%;background:#f59e0b">R7 '+p7.toFixed(1)+'%</div></div>';
+  html+='<div class="tek-meta" style="margin-top:7px;text-align:center">R1 : base / résultantes '+(q.a1||[]).length+' maillons · R7 : base / résultantes '+(q.a7||[]).length+' maillons</div></div>';
+  html+='<div class="tek-tables">';
+  html+='<div class="tek-tablebox"><h5>🔵 DÉTAIL DES FORCES — BOUCLE R1</h5><table class="tek-table"><tr><th>Critère évalué</th><th>Détail</th><th>Points</th></tr><tr><td>Présence des maillons</td><td>'+d1.presence+' présences</td><td>'+n(d1.presence)+'</td></tr><tr><td>Répétitions des figures</td><td>'+d1.repetitions+' répétitions</td><td>'+n(d1.repetitions*.5)+'</td></tr><tr><td>Ancrage au repos</td><td>'+((q.a1||[]).filter(function(x){return x.reposPresent;}).length?'Présence au repos':'Pas d’ancrage au repos')+'</td><td>'+n(d1.repos)+'</td></tr><tr><td>Force du binôme</td><td>'+((q.binomeR1&&label(q.binomeR1))||'—')+'</td><td>'+n(d1.bin)+'</td></tr><tr><td>Résultantes propres</td><td>'+d1.propre/0.75+' résultat(s)</td><td>'+n(d1.propre)+'</td></tr><tr><td>Résultantes adverses</td><td>'+d1.adverse/1.25+' résultat(s)</td><td>-'+n(d1.adverse)+'</td></tr></table><div class="tek-total"><span>TOTAL R1</span><span style="color:#60a5fa">'+n(s1)+'</span></div></div>';
+  html+='<div class="tek-tablebox r7"><h5>🟠 DÉTAIL DES FORCES — BOUCLE R7</h5><table class="tek-table"><tr><th>Critère évalué</th><th>Détail</th><th>Points</th></tr><tr><td>Présence des maillons</td><td>'+d7.presence+' présences</td><td>'+n(d7.presence)+'</td></tr><tr><td>Répétitions des figures</td><td>'+d7.repetitions+' répétitions</td><td>'+n(d7.repetitions*.5)+'</td></tr><tr><td>Ancrage au repos</td><td>'+((q.a7||[]).filter(function(x){return x.reposPresent;}).length?'Présence au repos':'Pas d’ancrage au repos')+'</td><td>'+n(d7.repos)+'</td></tr><tr><td>Force du binôme</td><td>'+((q.binomeR7&&label(q.binomeR7))||'—')+'</td><td>'+n(d7.bin)+'</td></tr><tr><td>Résultantes propres</td><td>'+d7.propre/0.75+' résultat(s)</td><td>'+n(d7.propre)+'</td></tr><tr><td>Résultantes adverses</td><td>'+d7.adverse/1.25+' résultat(s)</td><td>-'+n(d7.adverse)+'</td></tr></table><div class="tek-total"><span>TOTAL R7</span><span style="color:#fb923c">'+n(s7)+'</span></div></div></div>';
+  html+='<div class="tek-verdict"><div class="tek-verdictgrid"><div class="tek-scale"><div class="symbol">⚖️</div><b>VERDICT DU PROTOCOLE</b><div style="font-size:9px;color:#94a3b8">Comparaison des deux boucles antagonistes</div></div><div><div class="tek-final">'+(nulActif?'⚠️ PROTOCOLE SUSPENDU':'➜ VAINQUEUR FINAL : '+esc(cardWinner)+' ('+winner+')')+'</div><div class="tek-gap">'+(winner?'Avance nette de '+n(gap)+' points.':'Aucune avance décisive.')+'</div><div class="tek-meta">'+(winner?'Le modèle indique que la force structurelle et la qualité des maillons de '+esc(cardWinner)+' sont supérieures à celles de '+esc(winner==='R1'?teamB:teamA)+'.':'Les deux boucles ne présentent pas de domination suffisamment nette.')+'</div>'+(reasonList?'<ul class="tek-list">'+reasonList+'</ul>':'')+'</div></div></div>';
+  html+='<div class="tek-section tek-null"><div class="tek-title">⚖️ STRUCTURE DU NUL</div><div class="tek-null-grid">';
+  html+='<div class="tek-box"><h5>Juges de structure</h5><div class="tek-kv"><span>1ère partie (M13)</span><b>'+label(sdn.juge1)+'</b></div><div class="tek-kv"><span>2ème partie (M14)</span><b>'+label(sdn.juge2)+'</b></div><div class="tek-kv"><span>Juge final (M15)</span><b>'+label(sdn.reconstruction)+'</b></div><div class="tek-kv"><span>Sentence (M16)</span><b>'+label(sdn.sentence)+'</b></div></div>';
+  html+='<div class="tek-box"><h5>Indicateurs de nul</h5><div class="tek-kv"><span>Identité des juges</span><b>'+ (sdn.nulParIdentite?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Opposition / équilibre</span><b>'+ (sdn.nulParOpposition?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Axe succédent</span><b>'+axeTxt+'</b></div><div class="tek-kv"><span>Signature</span><b>'+esc(nullReason)+'</b></div><div class="tek-kv"><span>Règle M15</span><b>'+esc(axeNul&&axeNul.m15Rule?axeNul.m15Rule:'—')+'</b></div></div>';
+  html+='<div class="tek-nullstatus"><div class="ico">'+(nulActif?'⚠️':'⊘')+'</div><b>'+nullStatus+'</b><div style="font-size:9px;margin:5px 8px;color:#cbd5e1">'+(nulActif?esc(nulPorteTxt||'Le nul est imposé')+'. Le protocole R1/R7 est suspendu.':'Aucune porte du nul n’est ouverte — le vainqueur du protocole tient.')+'</div></div></div></div>';
+  html+='<div class="tek-section"><div class="tek-title">🛡️ CRÉDIBILITÉ GLOBALE DU VERDICT</div><div class="tek-bottom"><div class="box"><div class="big">'+credibility+'%</div></div><div class="box"><p><b>'+(nulActif?'Le nul est actif.':'Le nul n’est pas actif.')+'</b> '+(nulActif?'Le protocole de comparaison ne reçoit pas de priorité décisionnelle.':'Le protocole de comparaison R1 / R7 est pleinement disponible pour désigner le vainqueur.')+'</p></div><div class="box"><p><b>ANALYSE</b><br>'+ (winner?'Thème orienté : domination structurelle de '+esc(cardWinner)+'.':'Thème équilibré : aucune domination structurelle claire.')+'<br>La crédibilité est un indicateur de disponibilité du protocole, pas une validation empirique.</p></div></div></div>';
+  if((q.duel||[]).length){html+='<div class="tek-section"><div class="tek-title">⚔️ DUELS FIGURE ↔ ANTAGONISTE</div><table class="tek-table"><tr><th>R1 / R7</th><th>Score</th><th>Opposant</th><th>Score</th><th>Issue</th></tr>'+duelRows+'</table></div>';}
   html+='</div>';
   el.innerHTML=html;
 }
