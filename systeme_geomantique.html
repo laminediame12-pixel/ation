@@ -14554,6 +14554,65 @@ function casSauvegardesV7() {
 }
 
 // Tous les cas du banc : l'archive figée, plus ce que tu as saisi.
+// ═══════════════════════════════════════════════════════════════
+// LE JOURNAL DES PRÉDICTIONS GELÉES (29/08/26)
+//
+// Ellemine_D : « maintenant on en fait quoi dans le système ? »
+//
+// Le problème qu'il faut regarder en face : LE BANC MESURE EN REJOUANT.
+// bancMoteursV7 relance tous les moteurs, avec les règles D'AUJOURD'HUI,
+// sur tous les cas de l'archive. Chaque fois qu'une règle est corrigée
+// après un raté — la porte du nul l'a été deux fois, à +4 puis à +6 —
+// le banc remonte, et il remonte forcément : la règle a été taillée sur
+// ces cas-là. Un chiffre de banc ne prouve donc jamais qu'on prédit ;
+// il prouve seulement qu'on décrit le passé sans se contredire.
+//
+// Ce qui manquait n'est pas une règle de plus, c'est un JUGE HONNÊTE.
+// Et il existait déjà à moitié : saveManuel() gèle le verdict affiché au
+// moment de l'enregistrement, dans entry.verdict — un instantané que
+// rien ne réécrit ensuite. Personne ne s'en servait pour compter.
+//
+// journalPredictionsV7() compare ce verdict GELÉ au score réel saisi
+// plus tard. C'est la seule mesure du fichier qui ne puisse pas être
+// flattée par une correction rétroactive : si je change une doctrine
+// demain, les prédictions déjà gelées ne bougent pas.
+//
+// À lire à côté du banc, jamais à sa place :
+//   le banc dit « mes règles actuelles décrivent bien l'archive »
+//   le journal dit « voilà ce que j'ai annoncé AVANT de savoir »
+// Tant que le journal est vide, aucun chiffre de ce fichier n'est une
+// preuve de prédiction. C'est la phrase la plus importante du projet.
+function journalPredictionsV7() {
+  var list = [];
+  try { list = getSavedList() || []; } catch (e) { return null; }
+  var lignes = [], campJ = 0, campN = 0, scoreJ = 0, scoreN = 0, nulJ = 0, nulN = 0;
+  list.forEach(function (e) {
+    if (!e || !e.verdict || !e.realScore) return;
+    var m = String(e.realScore).match(/(\d+)\s*-\s*(\d+)/);
+    if (!m) return;
+    var rA = +m[1], rB = +m[2];
+    var reelCamp = rA === rB ? 'nul' : (rA > rB ? 'M1' : 'M7');
+    var ditCamp = e.verdict.winner === 'Nul' ? 'nul' : e.verdict.winner;
+    var ditScore = e.verdict.scoreMain || '';
+    campN++; if (ditCamp === reelCamp) campJ++;
+    if (reelCamp === 'nul' || ditCamp === 'nul') {
+      nulN++; if ((ditCamp === 'nul') === (reelCamp === 'nul')) nulJ++;
+    }
+    var p = String(ditScore).match(/^(\d+)-(\d+)$/);
+    if (p) { scoreN++; if (+p[1] === rA && +p[2] === rB) scoreJ++; }
+    lignes.push({
+      quand: (e.savedAt || '').slice(0, 10),
+      equipes: (e.team1 || '?') + ' — ' + (e.team2 || '?'),
+      ditCamp: ditCamp, ditScore: ditScore,
+      reelCamp: reelCamp, reelScore: e.realScore,
+      campJuste: ditCamp === reelCamp,
+      scoreJuste: !!(p && +p[1] === rA && +p[2] === rB)
+    });
+  });
+  return { lignes: lignes, campJuste: campJ, campTotal: campN,
+    scoreJuste: scoreJ, scoreTotal: scoreN, nulJuste: nulJ, nulTotal: nulN };
+}
+
 function tousCasBancV7() {
   var sup = [];
   try { sup = casSauvegardesV7(); } catch (e) { sup = []; }
@@ -17396,6 +17455,51 @@ function renderBancPanel() {
     + 'des nuls, ce qui donnait de faux espoirs. Un thème qui dit le vainqueur sans le score reste : '
     + 'il compte pour le camp, et se tait sur les chiffres.</div>'
     + '</div>'
+    + (function () {
+        // Petit échappement local : renderBancPanel n'a pas de esc() dans
+        // sa portée, et les noms d'équipes viennent d'une saisie libre.
+        var esc = function (v) {
+          return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        };
+        var jp = null;
+        try { jp = journalPredictionsV7(); } catch (e) { jp = null; }
+        var tete = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
+          + 'border-radius:10px; background:rgba(251,191,36,.07);">'
+          + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
+          + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+          + 'Le tableau ci-dessous <b>rejoue</b> les moteurs d\'aujourd\'hui sur toute l\'archive. Chaque fois '
+          + 'qu\'une règle est corrigée après un raté — la porte du nul l\'a été deux fois, à +4 puis à +6 — '
+          + 'ces chiffres remontent, et ils remontent forcément : la règle a été taillée sur ces cas-là. '
+          + '<b>Un score de banc ne prouve pas qu\'on prédit, il prouve qu\'on décrit le passé sans se '
+          + 'contredire.</b> Le journal, lui, compare le verdict <b>gelé à l\'enregistrement</b> au score saisi '
+          + 'plus tard : rien ne peut le flatter après coup.</div>';
+        if (!jp || !jp.campTotal) {
+          return tete + '<div style="font-size:11px; color:#fbbf24; margin-top:6px;">'
+            + '<b>Journal vide.</b> Il se remplit tout seul : enregistre un thème AVANT le match, puis saisis '
+            + '« Score reel » quand tu le connais. Tant qu\'il est vide, aucun chiffre de ce fichier n\'est une '
+            + 'preuve de prédiction — c\'est la phrase la plus importante du projet.</div></div>';
+        }
+        return tete
+          + '<div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:7px; font-size:12px;">'
+          + '<div><b style="color:#4ade80; font-size:16px;">' + jp.campJuste + '/' + jp.campTotal + '</b>'
+          + ' <span style="color:#94a3b8;">camp annoncé avant le match</span></div>'
+          + '<div><b style="color:#4ade80; font-size:16px;">' + jp.scoreJuste + '/' + jp.scoreTotal + '</b>'
+          + ' <span style="color:#94a3b8;">score exact</span></div>'
+          + (jp.nulTotal ? '<div><b style="color:#4ade80; font-size:16px;">' + jp.nulJuste + '/' + jp.nulTotal + '</b>'
+            + ' <span style="color:#94a3b8;">nul / pas nul</span></div>' : '')
+          + '</div>'
+          + '<table style="width:100%; margin-top:7px; font-size:10.5px; border-collapse:collapse;">'
+          + jp.lignes.slice(0, 25).map(function (x) {
+              return '<tr><td style="padding:3px 4px; color:#64748b;">' + esc(x.quand) + '</td>'
+                + '<td style="padding:3px 4px;">' + esc(x.equipes) + '</td>'
+                + '<td style="padding:3px 4px;">annoncé <b>' + esc(x.ditCamp) + '</b> ' + esc(x.ditScore) + '</td>'
+                + '<td style="padding:3px 4px;">réel <b>' + esc(x.reelCamp) + '</b> ' + esc(x.reelScore) + '</td>'
+                + '<td style="padding:3px 4px; color:' + (x.campJuste ? '#4ade80' : '#f87171') + ';">'
+                + (x.campJuste ? '✔ camp' : '✘ camp') + (x.scoreJuste ? ' ✔ score' : '') + '</td></tr>';
+            }).join('')
+          + '</table></div>';
+      })()
     + '<div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:520px;">'
     + '<thead>' + entete() + '</thead><tbody>'
     + lignesCamp
