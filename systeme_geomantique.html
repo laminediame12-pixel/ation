@@ -14450,6 +14450,14 @@ function bancMoteursV7(force) {
       if (!h) return null;
       return (+h[1]) > 0 && (+h[2]) > 0;
     }),
+    // Le NUL : vrai si le score réel est égal, ou si le camp vaut 'nul'.
+    nul: passe(MOTEURS_NUL_V7, 'oui', function (c) {
+      if (c.camp === 'nul') return true;
+      if (!c.score) return c.camp ? false : null;
+      var m = String(c.score).match(/(\d+)-(\d+)/);
+      if (!m) return null;
+      return m[1] === m[2];
+    }),
     miTemps: passe(MOTEURS_MITEMPS_V7, 'oui', function (c) {
       // Un cas peut porter directement le fait, quand seul le fait est
       // connu (« il y a but dans chaque mi-temps ») sans les deux scores.
@@ -15375,6 +15383,62 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// LE NUL (29/08/26) — « vérifie R1 et R7 dans les matchs nuls, ils
+// tombent dans quelle maison » (Ellemine_D)
+//
+// Vérifié. D'abord un fait structurel : R7 tombe TOUJOURS six maisons
+// après R1 dans l'anneau — 28 cas sur 28, sans exception. La position de
+// R7 ne dit donc rien de plus que celle de R1.
+//
+// Ensuite le résultat, et il est net sur ce qu'on a :
+//   catégorie de la maison de R1     nuls / cas au résultat connu
+//     angulaire (M1,4,7,10) ............ 0 / 7
+//     succédente (M2,5,8,11) ........... 0 / 11
+//     CADENTE (M3,6,9,12) .............. 2 / 6   ← les DEUX nuls
+//     synthèse (M13-16) ................ 0 / 2
+// Roma, R1 en M9. AmisPuer, R1 en M6. Les deux nuls de l'archive sont
+// dans la même catégorie, et les vingt autres cas n'y sont pas.
+// Fréquence de base : R1 tombe en maison cadente sur 25 % des thèmes
+// (mesuré, la répartition est parfaitement uniforme entre les quatre
+// catégories). Deux nuls sur deux dans un quart des thèmes : la
+// probabilité que ce soit le hasard est de 1 sur 16.
+//
+// ⚠️ DEUX NULS. C'est la première chose de cette archive qui sépare les
+// nuls du reste, et c'est aussi trop peu pour en faire une règle. Pire :
+// le témoin « jamais de nul » a 24 cas justes sur 26, parce que les nuls
+// sont rares. Tout détecteur de nul doit donc battre 92 % pour valoir
+// quelque chose — aucun ne le fait aujourd'hui.
+// La famille existe pour que les prochains nuls tombent dedans.
+var MOTEURS_NUL_V7 = [
+  { cle: 'nul_r1_cadente', nom: 'Nul · R1 tombe en maison cadente', icone: '⚖', teinte: '#fbbf24',
+    juste: 0, total: 0, note: 'les deux nuls connus y sont, 25 % des thèmes le sont',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
+      var cadente = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
+      return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
+    } },
+  { cle: 'nul_structure', nom: 'Nul · structure (M13=M14 ou paire d\'équilibre)', icone: '⚖', teinte: '#a78bfa',
+    juste: 0, total: 0, note: 'le détecteur historique, débranché du verdict',
+    verdict: function (t) {
+      var s2 = null;
+      try { s2 = structureDuNul(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
+      return { oui: !!(s2 && s2.nulDetecte), detail: s2 && s2.nulParIdentite ? 'M13 = M14'
+        : (s2 && s2.nulParOpposition ? 'M13/M14 en paire d\'équilibre' : 'aucun signal') };
+    } },
+  { cle: 'nul_juge_fige', nom: 'Nul · juge M15 figé (les 4 symétriques)', icone: '⚖', teinte: '#38bdf8',
+    juste: 0, total: 0, note: 'Populus, Carcer, Via, Conjonctio — 50 % des thèmes',
+    verdict: function (t) {
+      var FIGE = { populus: 1, carcer: 1, via: 1, conjunctio: 1 };
+      return { oui: !!FIGE[t[15]], detail: 'juge ' + (FL[t[15]] || t[15]) };
+    } },
+  { cle: 'nul_temoin', nom: 'Nul · « jamais de nul »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — la barre à battre est très haute, les nuls sont rares',
+    verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
+];
+
 var MOTEURS_CORNERS_V7 = [
   { cle: 'corners_moteur', nom: 'Corners · moteur affiché', icone: '🚩', teinte: '#38bdf8',
     juste: 0, total: 0, note: 'estimerCornersV7 — mi-temps + doctrine Feu/Terre',
@@ -16126,6 +16190,11 @@ function renderBancPanel() {
     + ' <span style="font-weight:400; color:#64748b;">— l\'affirmation forte de htWinner, séparée le 28/08 '
     + 'de la question faible « y a-t-il eu un but avant la pause »</span></td></tr>'
     + (b.miTempsDeux || []).map(ligne).join('')
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Nul'
+    + ' <span style="font-weight:400; color:#64748b;">— les deux nuls connus ont R1 en maison CADENTE (M9 et M6) ; '
+    + 'aucun des vingt autres cas n\'y est. Attention au témoin : « jamais de nul » est juste 24 fois sur 26</span></td></tr>'
+    + (b.nul || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
     + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
