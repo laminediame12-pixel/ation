@@ -14994,6 +14994,55 @@ var MOTEURS_CONDITIONNELS_V7 = [
   // mesurer ce que la nouvelle règle coûte ou rapporte, cas par cas.
   // Sur les dix cas réels : ancienne 6/10, nouvelle 5/10, un seul cas les
   // sépare (Juventus). C'est trop peu pour trancher, d'où sa présence.
+  // ═══════════════════════════════════════════════════════════════
+  // AUTOPSIE DE ViaCaput (28/08/26) — POURQUOI LE SYSTÈME A DIT R7
+  //
+  // Via/Caput/Amissio/Carcer, réel 1-0 pour R1, verdict affiché R7 0-4.
+  // R1 = Puella en M5, R7 = Caput Draconis en M11, k=5, boucles
+  // différentes, aucun rôle partagé.
+  //
+  // 1. LE VERDICT SUIT F4P4, ET F4P4 A TRANCHÉ SUR « PÔLES SOLIDES :
+  //    0 CONTRE 2 ». C'est le premier critère de sa cascade en boucles
+  //    différentes.
+  // 2. OR LA FIGURE LA PLUS FORTE DU THÈME EST LE CHEF DE R1 : Puella
+  //    pèse 27,38 aux sept critères, contre 8,10 pour Caput Draconis, le
+  //    chef de R7. Le compte qui décide ne regarde QUE les quatre pôles :
+  //    le chef lui-même n'y entre pas. reseauF4P4V7 calcule pourtant
+  //    solidesAvecCentrale — un champ qui n'est utilisé NULLE PART.
+  //    (Et l'utiliser ne sauverait pas ce cas : Puella n'est pas « solide »
+  //    au sens de solidPoleV7, qui exige en plus que son propre réseau
+  //    tienne — 0 contre 2 dans les deux comptes. Mesuré : 14/23 au lieu
+  //    de 15/23 sur l'archive.)
+  // 3. L'AUTRE DIFFÉRENCE DÉCISIVE EST L'ASSAILLANT, ET F4P4 NE LE
+  //    REGARDE PAS ICI. L'assaillant de R7 est Populus (16,63), celui de
+  //    R1 est Conjonctio (11,25) : c'est R7 le plus attaqué. Mais la
+  //    cascade des boucles différentes est « solides → frappe → ancrage » ;
+  //    l'assaillant n'apparaît QUE dans la branche même boucle. Cette
+  //    asymétrie n'est justifiée nulle part dans le fichier.
+  // 4. TOUTES LES LECTURES QUI COMPTENT LE CHEF ET RETRANCHENT
+  //    L'ASSAILLANT ONT TROUVÉ R1 : sept critères (45,89 contre 43,42 —
+  //    l'écart est exactement la soustraction des assaillants), table des
+  //    pôles, sans concordance, cohabitation seule.
+  //
+  // ⚠️ ET LA CORRECTION NE FAIT PAS MIEUX EN TOTAL. La variante ci-dessous
+  // — départager par « ancrage total moins l'assaillant », avant tout le
+  // reste — fait 15/23, exactement comme F4P4 actuel. Elle redresse les
+  // trois échecs les plus récents (ViaCaput, City/Madrid, ConjCaput) et
+  // en casse trois anciens (Atalanta, LaetCarcer, PuerLaet). Elle entre
+  // donc au banc, sans voter, comme les autres candidates.
+  { cle: 'f4p4_moins_assaillant', nom: 'F4P4 · ancrage moins l\'assaillant', icone: '🧭', teinte: '#f0abfc',
+    juste: 0, total: 0, note: 'le chef compte, et l\'assaillant est retranché même en boucles différentes — 15/23',
+    verdict: function (t) {
+      var m = null;
+      try { m = moteurF4P4V7(t); } catch (e) { m = null; }
+      if (!m || !m.applicable) return { camp: null, detail: 'non applicable' };
+      var adv = function (r) { return (r.adverse && r.adverse.centrale) ? (r.adverse.centrale.ancrage || 0) : 0; };
+      var a = Math.round((m.R1.ancrageTotal - adv(m.R1)) * 100) / 100;
+      var b = Math.round((m.R7.ancrageTotal - adv(m.R7)) * 100) / 100;
+      return { camp: a > b ? 'R1' : b > a ? 'R7' : null,
+        detail: 'R1 ' + a + ' contre R7 ' + b + ' (assaillants retranchés : ' + adv(m.R1) + ' et ' + adv(m.R7) + ')' };
+    } },
+
   // Les deux lectures issues de la fouille du 28/08 (voir moteurCritereV7).
   // Elles ne votent pas : elles sont là pour être suivies, parce que les
   // écarts qui les distinguent sont dans le bruit sur quatorze cas.
