@@ -14450,6 +14450,14 @@ function bancMoteursV7(force) {
       if (!h) return null;
       return (+h[1]) > 0 && (+h[2]) > 0;
     }),
+    // MATCH SERRÉ : écart de buts <= 1 (le nul compte comme serré).
+    // Demande le score exact ; muet sans lui.
+    serre: passe(MOTEURS_SERRE_V7, 'oui', function (c) {
+      if (!c.score) return null;
+      var m = String(c.score).match(/^(\d+)-(\d+)$/);
+      if (!m) return null;
+      return Math.abs((+m[1]) - (+m[2])) <= 1;
+    }),
     // Le NUL : vrai si le score réel est égal, ou si le camp vaut 'nul'.
     nul: passe(MOTEURS_NUL_V7, 'oui', function (c) {
       if (c.camp === 'nul') return true;
@@ -15439,6 +15447,63 @@ var MOTEURS_NUL_V7 = [
     verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
 ];
 
+// ══════════════════════════════════════════════════════════════
+// MATCH SERRÉ (29/08/26) — « vérifie si les 4 cas cadents non-nuls ont un
+// point commun » (Ellemine_D)
+//
+// Oui, et ce n'est pas « ils ne sont pas nuls » : les quatre sont des
+// matchs à UN BUT D'ÉCART. PSG/Bayer 1-2, Bologna 0-1, FortMajVia 1-2
+// (CaputAcq n'a pas de score exact). Avec les deux nuls à 0 d'écart, les
+// CINQ cas cadents au score exact sont serrés, sans exception.
+//
+// Écart de buts selon la catégorie de maison de R1 (19 cas au score exact) :
+//   angulaire  5 cas · écart moyen 2,60 · serrés 2/5 · larges (3+) 2/5
+//   succédent  7 cas · écart moyen 3,14 · serrés 3/7 · larges     4/7
+//   CADENTE    5 cas · écart moyen 0,60 · serrés 5/5 · larges     0/5
+//   synthèse   2 cas · écart moyen 1,50 · serrés 1/2 · larges     0/2
+// 11 des 19 cas sont serrés ; que les 5 cadents le soient tous vaut
+// C(11,5)/C(19,5) = 4 % de chance au hasard.
+//
+// C'EST LE DÉTECTEUR DE MATCH SERRÉ demandé depuis longtemps (« les matchs
+// serrés sont souvent faussés par le système, juste les matchs de score
+// large »). Il ne dit pas qui gagne — il dit quand ne PAS croire un gros
+// score annoncé. Sa force est sa précision : quand il dit serré, 5 fois
+// sur 5. Sa faiblesse est son rappel : il rate 6 serrés sur 11.
+//
+// ⚠️ Et le détail qui sépare les nuls des autres cadents : la maison
+// exacte. M6 et M9 → écart 0 (les deux nuls). M3 et M12 → écart 1 (les
+// trois autres). Sur toute l'archive, seuls QUATRE thèmes ont R1 en M6 ou
+// M9 : les deux nuls, plus Lazio et AmisCarcer dont le résultat est
+// inconnu. Deux cas, c'est un motif, pas une règle — et il est trouvé
+// après coup, donc il ne vaut rien tant que Lazio et AmisCarcer ne sont
+// pas renseignés. Ce sont les deux tests qui le tueront ou le tiendront.
+var MOTEURS_SERRE_V7 = [
+  { cle: 'serre_r1_cadente', nom: 'Serré · R1 en maison cadente', icone: '⚖', teinte: '#34d399',
+    juste: 0, total: 0, note: '5 cas sur 5 quand il ose le oui — écart moyen 0,60 contre 2,86 ailleurs',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
+      var cadente = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
+      return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
+    } },
+  { cle: 'serre_m6m9', nom: 'Serré · R1 en M6 ou M9 (le couple des nuls)', icone: '⚖', teinte: '#a78bfa',
+    juste: 0, total: 0, note: 'les deux nuls y sont ; deux cas seulement, motif à confirmer',
+    verdict: function (t) {
+      var rot = null;
+      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
+      if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
+      var vise = (rot.hR1 === 6 || rot.hR1 === 9);
+      return { oui: vise, detail: 'R1 en M' + rot.hR1 };
+    } },
+  { cle: 'serre_temoin', nom: 'Serré · « toujours serré »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin — 11 des 19 scores exacts sont serrés',
+    verdict: function () { return { oui: true, detail: 'réponse constante' }; } },
+  { cle: 'serre_temoin_non', nom: 'Serré · « jamais serré »', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin inverse',
+    verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
+];
+
 var MOTEURS_CORNERS_V7 = [
   { cle: 'corners_moteur', nom: 'Corners · moteur affiché', icone: '🚩', teinte: '#38bdf8',
     juste: 0, total: 0, note: 'estimerCornersV7 — mi-temps + doctrine Feu/Terre',
@@ -16195,6 +16260,12 @@ function renderBancPanel() {
     + ' <span style="font-weight:400; color:#64748b;">— les deux nuls connus ont R1 en maison CADENTE (M9 et M6) ; '
     + 'aucun des vingt autres cas n\'y est. Attention au témoin : « jamais de nul » est juste 24 fois sur 26</span></td></tr>'
     + (b.nul || []).map(ligne).join('')
+    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
+    + 'font-weight:700; color:#94a3b8;">Match serr\u00e9 (\u00e9cart de buts \u2264 1)'
+    + ' <span style="font-weight:400; color:#64748b;">\u2014 les CINQ cas o\u00f9 R1 tombe en maison cadente sont serr\u00e9s : '
+    + '\u00e9cart moyen 0,60 contre 2,86 partout ailleurs. Quand ce moteur ose le oui, il ne s\'est jamais tromp\u00e9 ; '
+    + 'en revanche il rate 6 serr\u00e9s sur 11</span></td></tr>'
+    + (b.serre || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
     + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
