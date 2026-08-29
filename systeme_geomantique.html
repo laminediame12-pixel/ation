@@ -14245,7 +14245,27 @@ var CAS_REFERENCE_V7 = [
   // rares et les plus précieux.
   { nom: 'AmisPuer', meres: ['amissio','puer','conjunctio','puella'],
     score: '4-4', camp: 'nul', btts: true, esport: true,
-    note: '⚡ e-sport · NUL 4-4 · annoncé R7 1-3 ✘ · juge M15 = Via (figée) · M13/M14 paire d\'équilibre — première détection juste de structureDuNul' }
+    note: '⚡ e-sport · NUL 4-4 · annoncé R7 1-3 ✘ · juge M15 = Via (figée) · M13/M14 paire d\'équilibre — première détection juste de structureDuNul' },
+  // ─── TROISIÈME NUL DE L'ARCHIVE (29/08/26) ───
+  // Caput · Puella · Puella · Via — réel 2-2.
+  // Le système annonçait R7 avec l'écart le plus net jamais vu (sept
+  // critères 114,28 contre 27,75, lecture au volant 75 contre −9) et
+  // les DEUX règles de nul qui battaient le témoin se sont tues :
+  // R7 n'est pas le binôme de R1 (+11, boucles opposées), le juge M15
+  // Conjunctio n'appartient qu'au camp de R7, et les deux camps ne
+  // partagent AUCUN rôle (0/5) là où les deux premiers nuls en
+  // partageaient trois. Elles ne se trompent donc pas en criant : elles
+  // se taisent quand il faut parler. Premier faux négatif du binôme.
+  // Ce qui a vu juste, en revanche, ce sont les deux lectures que je
+  // tenais pour les plus faibles :
+  //   R1 en maison cadente — R1 = Puella en M3 → TROISIÈME nul sur trois
+  //   juge M15 figé (les 4 symétriques) — Conjunctio → 2 nuls sur 3
+  // Et le détecteur de match serré s'était allumé (R1 cadente) : écart
+  // réel 0, il reste à 6 cas sur 6 quand il ose le oui.
+  // ⚠️ CE CAS TUE LE RAFFINEMENT « M6 ou M9 » : ce nul-ci est en M3.
+  { nom: 'CaputPuella', meres: ['caput_draconis','puella','puella','via'],
+    score: '2-2', camp: 'nul', btts: true,
+    note: 'NUL 2-2 · annoncé R7 1-2 ✘ avec l\'écart le plus large de l\'archive · R1 Puella en M3 (cadente) · binôme et juge partagé muets — premier faux négatif de la règle du binôme' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
@@ -15542,6 +15562,55 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 // sont rares. Tout détecteur de nul doit donc battre 92 % pour valoir
 // quelque chose — aucun ne le fait aujourd'hui.
 // La famille existe pour que les prochains nuls tombent dedans.
+// ═══════════════════════════════════════════════════════════════
+// 29/08/26 — LE TROISIÈME NUL TRANCHE : C'EST LA MAISON QUI TIENT
+//
+// Ellemine_D : « j'insiste sur la piste des maisons ». Il avait raison,
+// et le thème Caput · Puella · Puella · Via (réel 2-2) l'a prouvé le
+// soir même. Bilan de la famille Nul sur 27 cas et 3 nuls :
+//
+//   moteur                              justesse  nuls attrapés  faux+
+//   R1 tombe en maison CADENTE ........  23/27       3/3           4
+//   binôme ET juge partagé ............  26/27       2/3           0
+//   R7 est le binôme de R1 ............  25/27       2/3           1
+//   le juge M15 porte un pôle des 2 ...  24/27       2/3           2
+//   témoin « jamais de nul » ..........  24/27       0/3           0
+//   R1 et R7 dans la même boucle ......  17/27       2/3           9
+//   juge M15 figé (les 4 symétriques) .  13/27       2/3          13
+//
+// La maison cadente est LA SEULE lecture qui attrape les trois. Les
+// cadentes font 7 des 27 cas, et les 3 nuls y sont tous : la
+// probabilité au hasard vaut C(7,3)/C(27,3) = 35/2925 = 1,2 %.
+// Elle paie sa couverture en précision — 3 nuls pour 7 déclenchements,
+// donc quand elle dit oui, c'est nul deux fois sur cinq. Elle sert à
+// SAVOIR QUAND SE MÉFIER, pas à annoncer un nul.
+//
+// À l'inverse, tout ce qui reposait sur la nature des figures rate le
+// même cas : CaputPuella a R7 à +11 de R1 (boucles opposées) et zéro
+// rôle partagé entre les camps. Ces règles-là ne crient jamais à tort —
+// elles se taisent. Les deux familles sont donc COMPLÉMENTAIRES : la
+// maison ratisse, la figure confirme.
+//
+// ⚠️ ET LE PLUS GRAVE, SUR LE CAMP. Le système annonçait R7 avec l'écart
+// le plus large de toute l'archive : sept critères 114,28 contre 27,75,
+// lecture au volant 75 contre −9. Résultat : nul. Vérifié alors sur les
+// 27 cas au camp connu, en triant par l'écart du moteur :
+//     moitié aux écarts les plus LARGES ....  6 justes / 13
+//     moitié aux écarts les plus SERRÉS .... 10 justes / 14
+// L'écart du moteur n'est PAS un indice de fiabilité — le point estimé
+// va même à l'envers. (6/13 contre 10/14 n'est pas significatif sur 27
+// cas : ce n'est pas la preuve que l'écart trompe, c'est la preuve
+// qu'il ne renseigne pas.) Ne jamais présenter un gros écart comme une
+// prédiction plus sûre. C'était déjà l'erreur commise sur ce thème.
+//
+// ⚠️ CE QU'ON N'A PAS TROUVÉ, ET IL FAUT LE DIRE. Balayage refait sur
+// les trois nuls : 232 traits testés à l'intérieur de la seule famille
+// cadente (7 cas, 3 nuls contre 4 non-nuls). Douze traits séparent
+// parfaitement, dont « M11 porte une figure répétée ». C'est du BRUIT :
+// avec un partage 3 contre 4, un trait au hasard qui se déclenche sur
+// trois cas sépare parfaitement une fois sur 35, donc sur 232 traits on
+// en attend une petite dizaine — et on en a douze. Aucun n'est branché.
+// Rien ne sépare encore les nuls des autres cadents.
 var MOTEURS_NUL_V7 = [
   { cle: 'nul_r1_cadente', nom: 'Nul · R1 tombe en maison cadente', icone: '⚖', teinte: '#fbbf24',
     juste: 0, total: 0, note: 'les deux nuls connus y sont, 25 % des thèmes le sont',
@@ -15572,8 +15641,15 @@ var MOTEURS_NUL_V7 = [
   // relation binôme en maison cadente M6 et M12 ».
   // Lu sur son thème AmisPuer (4-4) : R1 = Conjunctio en M6, R7 = Cauda
   // Draconis en M12, décalage +2, binôme. Exact.
-  // Mesuré ensuite sur toute l'archive, et c'est la meilleure règle de
-  // nul trouvée à ce jour — meilleure que la maison :
+  // ⚠️ MISE À JOUR DU 29/08/26 — PREMIER FAUX NÉGATIF. Le troisième nul,
+  // CaputPuella 2-2, a R7 à +11 de R1 : boucles opposées, aucun binôme,
+  // et les deux camps ne partagent AUCUN rôle (0/5) là où les deux
+  // premiers nuls en partageaient trois. La règle est restée muette.
+  // Elle ne crie donc pas à tort — elle se tait quand il faut parler :
+  // 2 nuls sur 3, 1 faux positif, 25/27. Elle reste devant le témoin
+  // (24/27) mais elle n'est plus « la » règle du nul : c'est LA MAISON
+  // qui a tenu ce soir-là, pas la nature des figures.
+  // Mesuré sur l'archive de l'époque (2 nuls) :
   //   relation R1→R7      nuls / cas au résultat connu
   //     +2  BINÔME ........ 2 / 3   ← les DEUX nuls y sont
   //     +1  ............... 0 / 6
@@ -15622,9 +15698,17 @@ var MOTEURS_NUL_V7 = [
   //    même figure : les 120 paires M(a)/M(b) ont été testées. AUCUNE
   //    n'attrape les deux nuls. Réponse nette et négative.
   //
-  // 2. CE QUI RESSORT : le pôle partagé au siège du JUGE. Les camps de
-  //    R1 et de R7 peuvent avoir des rôles communs ; la question est de
-  //    savoir quelle maison porte l'un d'eux. Testé sur les seize :
+  // ⚠️ RÉSULTAT PÉRIMÉ PAR LE 3e NUL (29/08/26). CaputPuella 2-2 n'a
+  //    AUCUN rôle partagé entre les camps : le pôle du juge ne pouvait
+  //    donc pas s'allumer, et il ne s'est pas allumé. M15 tombe à 2 nuls
+  //    sur 3 (24/27), et « binôme ET juge partagé » à 2 sur 3 aussi —
+  //    toujours 0 faux positif, mais un raté. Le balayage ci-dessous a
+  //    été REFAIT sur les trois nuls : plus aucun trait de pôle partagé
+  //    ne les attrape tous les trois. Ce qui suit est le journal de la
+  //    mesure d'alors, gardé pour mémoire, pas une règle vivante.
+  // 2. CE QUI RESSORTAIT ALORS : le pôle partagé au siège du JUGE. Les
+  //    camps de R1 et de R7 peuvent avoir des rôles communs ; la
+  //    question est quelle maison porte l'un d'eux. Testé sur les seize :
   //      M15 .... attrape 2/2 nuls, 2 faux positifs, 24/26  ← LE JUGE
   //      M10 .... 1/2 nuls, 0 faux positif
   //      M4, M12, M16 ... 1/2 nuls
@@ -15688,16 +15772,19 @@ var MOTEURS_NUL_V7 = [
 //
 // Oui, et ce n'est pas « ils ne sont pas nuls » : les quatre sont des
 // matchs à UN BUT D'ÉCART. PSG/Bayer 1-2, Bologna 0-1, FortMajVia 1-2
-// (CaputAcq n'a pas de score exact). Avec les deux nuls à 0 d'écart, les
-// CINQ cas cadents au score exact sont serrés, sans exception.
+// (CaputAcq n'a pas de score exact). Avec les nuls à 0 d'écart, TOUS les
+// cas cadents au score exact sont serrés, sans exception.
 //
-// Écart de buts selon la catégorie de maison de R1 (19 cas au score exact) :
+// ── TENU APRÈS LE 3e NUL (CaputPuella 2-2, 29/08/26) : le compte est
+// passé de 5/5 à 6/6, le détecteur n'a toujours jamais crié à tort.
+//
+// Écart de buts selon la catégorie de maison de R1 (20 cas au score exact) :
 //   angulaire  5 cas · écart moyen 2,60 · serrés 2/5 · larges (3+) 2/5
 //   succédent  7 cas · écart moyen 3,14 · serrés 3/7 · larges     4/7
-//   CADENTE    5 cas · écart moyen 0,60 · serrés 5/5 · larges     0/5
+//   CADENTE    6 cas · écart moyen 0,50 · serrés 6/6 · larges     0/6
 //   synthèse   2 cas · écart moyen 1,50 · serrés 1/2 · larges     0/2
-// 11 des 19 cas sont serrés ; que les 5 cadents le soient tous vaut
-// C(11,5)/C(19,5) = 4 % de chance au hasard.
+// 12 des 20 cas sont serrés ; que les 6 cadents le soient tous vaut
+// C(12,6)/C(20,6) = 2,4 % de chance au hasard.
 //
 // C'EST LE DÉTECTEUR DE MATCH SERRÉ demandé depuis longtemps (« les matchs
 // serrés sont souvent faussés par le système, juste les matchs de score
@@ -15705,16 +15792,13 @@ var MOTEURS_NUL_V7 = [
 // score annoncé. Sa force est sa précision : quand il dit serré, 5 fois
 // sur 5. Sa faiblesse est son rappel : il rate 6 serrés sur 11.
 //
-// ⚠️ Et le détail qui sépare les nuls des autres cadents : la maison
-// exacte. M6 et M9 → écart 0 (les deux nuls). M3 et M12 → écart 1 (les
-// trois autres). Deux cas, c'est un motif, pas une règle, et il est
-// trouvé après coup.
-// MISE À JOUR DU 29/08/26 : les deux seuls thèmes qui auraient pu le
-// tester — Lazio (R1 en M9) et AmisCarcer (R1 en M6) — ont été RETIRÉS
-// de l'archive faute de résultat. Il ne reste donc, dans M6 et M9, que
-// les deux nuls eux-mêmes : le motif n'a plus aucun contradicteur
-// possible ici, ce qui le rend INVÉRIFIABLE et non pas confirmé.
-// Ne pas le lire comme « 2/2 ». Il faudra de nouveaux thèmes.
+// ☠️ LE RAFFINEMENT « M6 OU M9 » EST MORT (29/08/26). Il disait : parmi
+// les cadentes, M6 et M9 donnent le nul (écart 0) et M3/M12 la victoire
+// d'un but. Le troisième nul, CaputPuella 2-2, a R1 = Puella en M3.
+// Un nul en M3. La règle est réfutée par le premier cas qui pouvait la
+// réfuter, exactement comme il fallait s'y attendre d'un motif ajusté
+// après coup sur deux cas. Le moteur reste au banc comme témoin de ce
+// qu'une jolie coïncidence vaut : 2 nuls sur 3, et un raté.
 var MOTEURS_SERRE_V7 = [
   { cle: 'serre_r1_cadente', nom: 'Serré · R1 en maison cadente', icone: '⚖', teinte: '#34d399',
     juste: 0, total: 0, note: '5 cas sur 5 quand il ose le oui — écart moyen 0,60 contre 2,86 ailleurs',
@@ -16500,17 +16584,20 @@ function renderBancPanel() {
     + (b.miTempsDeux || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
-    + ' <span style="font-weight:400; color:#64748b;">— « R7 est le binôme de R1 » fait 25/26 contre 24/26 pour le '
-    + 'témoin « jamais de nul ». Sur la piste des maisons, M15 est la SEULE des seize dont le pôle partagé attrape '
-    + 'les deux nuls : le juge appartient aux deux camps, il ne peut trancher. Les deux ensemble ne laissent rien '
-    + 'passer (26/26) — mais c\'est deux conditions ajustées sur deux cas, et elles ne se déclenchent que sur '
-    + '1,4 % des thèmes : à croire quand elles parlent, jamais à lire comme « pas de signal donc pas de nul »</span></td></tr>'
+    + ' <span style="font-weight:400; color:#64748b;">— après le 3<sup>e</sup> nul (CaputPuella 2-2), '
+    + '<b style="color:#fbbf24;">la MAISON est la seule lecture qui attrape les trois</b> : R1 en maison cadente, '
+    + '3 nuls sur 3. Les cadentes font 7 des 27 cas, soit 1,2 % de chance au hasard — mais elles se déclenchent '
+    + '7 fois pour 3 nuls, donc elles disent « méfie-toi », pas « c\'est nul ». Tout ce qui repose sur la nature '
+    + 'des figures (binôme, juge partagé) rate ce nul-là sans jamais crier à tort : la maison ratisse, la figure '
+    + 'confirme. Le raffinement « M6 ou M9 » est mort — ce nul est en M3</span></td></tr>'
     + (b.nul || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Match serr\u00e9 (\u00e9cart de buts \u2264 1)'
-    + ' <span style="font-weight:400; color:#64748b;">\u2014 les CINQ cas o\u00f9 R1 tombe en maison cadente sont serr\u00e9s : '
-    + '\u00e9cart moyen 0,60 contre 2,86 partout ailleurs. Quand ce moteur ose le oui, il ne s\'est jamais tromp\u00e9 ; '
-    + 'en revanche il rate 6 serr\u00e9s sur 11</span></td></tr>'
+    + ' <span style="font-weight:400; color:#64748b;">\u2014 les SIX cas o\u00f9 R1 tombe en maison cadente sont serr\u00e9s : '
+    + '\u00e9cart moyen 0,50 contre 2,86 partout ailleurs. Quand ce moteur ose le oui il ne s\'est jamais tromp\u00e9, '
+    + '6 fois sur 6 \u2014 en revanche il rate la moiti\u00e9 des serr\u00e9s. C\'est le signal le plus s\u00fbr du fichier : '
+    + 'R1 en maison cadente veut dire <b>ne crois pas \u00e0 un gros score</b>, quel que soit l\'\u00e9cart annonc\u00e9 '
+    + 'par le moteur de camp</span></td></tr>'
     + (b.serre || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Corners '
