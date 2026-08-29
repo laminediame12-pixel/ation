@@ -3748,10 +3748,32 @@ var STRUCTURE_NUL_DECISIVE = false;
 //         verdict affiché, contre 18/30 sans le nul.
 // false = porte STRICTE : +2 seulement en même boucle. 21/30.
 //
-// POURQUOI L'ÉLARGIE, ALORS QUE « +4 » N'A QU'UN CAS. Parce que ce cas
-// n'est pas isolé : il est du bon côté d'une frontière que neuf autres
-// cas soutiennent. Rangés par éloignement dans le camp, les 13 thèmes
-// de la branche « même boucle » donnent :
+// ⚠️ RÉVISION DU 29/08/26 AU SOIR, demandée par Ellemine_D
+// (« revérifie encore les deux branches du nul »). MA JUSTIFICATION
+// D'« ALLIÉ PROCHE » ÉTAIT FAUSSE comme notion de distance. Mesuré :
+//     décalage  distance dans l'anneau min(k,16−k)  relation
+//       +2            2                  binôme
+//       +4            4                  front
+//       +8            8                  front du front
+//      +10            6                  bouclier
+//      +12            4                  front à l'envers
+//      +14            2                  binôme à l'envers
+// Si « proche » voulait dire distance dans l'anneau, +14 (distance 2)
+// serait AUSSI proche que +2, et +12 (distance 4) aussi proche que +4 —
+// or ces deux-là n'ont aucun nul. Et +10 (distance 6) serait plus proche
+// que +8 (distance 8), les deux à zéro. La distance n'explique rien.
+//
+// CE QUI SÉPARE VRAIMENT, ce sont deux choses ensemble :
+//   1. LE SENS. +2 et +4 disent « R7 est le binôme ou le front DE R1 ».
+//      +12 et +14 disent l'inverse — c'est R1 qui est le front ou le
+//      binôme DE R7. Même relation, propriétaire opposé : 0 nul sur 4.
+//   2. LA POSITION VERS L'AVANT. Parmi les rôles que R1 possède,
+//      seuls les DEUX PREMIERS PAS PAIRS devant lui donnent le nul.
+//      Plus loin devant — +8 front du front, +10 bouclier — 0 nul sur 5.
+// La formule juste est donc : « R7 occupe l'un des deux premiers rôles
+// que R1 projette devant lui ». Pas « allié proche ».
+//
+// Le tableau qui soutient la coupure, les 13 thèmes en même boucle :
 //     +2  binôme .............. 2 nuls / 3
 //     +4  front ............... 1 nul  / 1
 //   ─────────────── la frontière ───────────────
@@ -3759,19 +3781,28 @@ var STRUCTURE_NUL_DECISIVE = false;
 //     +10 bouclier ............ 0 nuls / 4
 //     +12 front à l'envers ..... 0 nuls / 2
 //     +14 binôme à l'envers .... 0 nuls / 2
-//   alliés PROCHES  {+2, +4} .... 3 nuls / 4 déclenchements
-//   alliés LOINTAINS {+8, +10} .. 0 nul  / 5
-//   rôles à l'envers {+12, +14} . 0 nul  / 4
-// La règle n'est donc pas « +2 et +4 », qui serait une liste ajustée :
-// c'est « R7 est un ALLIÉ PROCHE de R1 », et la coupure est soutenue
-// par les neuf cas qui sont de l'autre côté. Le camp entier
-// {0,2,4,8,10} ferait 3 nuls sur 9 : la frontière est bien aux proches,
-// pas au camp.
+//   R7 possédé par R1, 2 premiers pas {+2, +4} .. 3 nuls / 4
+//   R7 possédé par R1, plus loin {+8, +10} ...... 0 nul  / 5
+//   R1 possédé par R7 {+12, +14} ................ 0 nul  / 4
+// Le camp entier {0,2,4,8,10} ferait 3 nuls sur 9 : la coupure est bien
+// aux deux premiers pas, pas au camp.
 // Fréquence de base : +4 seul 5,0 % des thèmes, {+2,+4} 12,3 %.
 //
-// ⚠️ Ce que ça reste : +4 n'a qu'un seul nul pour lui. C'est la
-// frontière qui est mesurée, pas le battant. Si un non-nul à +4 arrive
-// et se fait suspendre à tort, c'est ici qu'il faut revenir.
+// ⚠️⚠️ ET LA DEUXIÈME CHOSE QUE J'AVAIS MAL DITE : LES DEUX BRANCHES NE
+// SONT PAS ÉGALEMENT SOUTENUES. Je les ai présentées côte à côte comme
+// si elles se valaient. Mesuré, elles ne se valent pas du tout :
+//   MÊME BOUCLE, cible {+2,+4} : 3 nuls sur 3 dans la cible.
+//     probabilité au hasard, cible trouvée APRÈS COUP ...... 1,7 %
+//   BOUCLES OPPOSÉES, cible {+11} : 2 nuls sur 2 dans la cible.
+//     probabilité au hasard, cible trouvée APRÈS COUP ..... 15,4 %
+// Trois nuls qui tombent tous dans une case de quatre, c'est difficile
+// à obtenir par hasard. DEUX nuls qui partagent un décalage parmi huit,
+// c'est une chance sur six ou sept — ce n'est pas une preuve.
+// Autrement dit : la porte de la MÊME BOUCLE est établie ; celle des
+// BOUCLES OPPOSÉES est une HYPOTHÈSE en probation, qu'on fait tourner
+// en vrai parce qu'elle n'a encore produit aucun faux positif (2 tirs,
+// 2 nuls) et parce que sans elle on n'a rien du tout sur cette branche.
+// Le troisième nul en boucles opposées la tuera ou la fera passer.
 var NUL_PORTE_ELARGIE_V7 = true;
 
 function structureDuNul(theme) {
@@ -15860,15 +15891,19 @@ function nulDeuxPortesV7(theme) {
   var oui = false, force = 'aucun', porte, detail;
   if (meme) {
     porte = 'même boucle';
-    if (k === 2) { oui = true; force = 'confirmée';
-      detail = 'R7 est le binôme de R1 (+2) — l\'alliance la plus proche'; }
-    else if (k === 4) { oui = true; force = 'confirmée';
-      detail = 'R7 est le front de R1 (+4) — allié proche, du bon côté de la frontière'; }
-    else { detail = 'décalage +' + k + ' — allié lointain ou rôle à l\'envers, 0 nul sur 9 cas'; }
+    if (k === 2) { oui = true; force = 'ÉTABLIE';
+      detail = 'R7 est le binôme de R1 — le premier rôle que R1 projette devant lui'; }
+    else if (k === 4) { oui = true; force = 'ÉTABLIE';
+      detail = 'R7 est le front de R1 — le second rôle que R1 projette devant lui'; }
+    else if (k === 8 || k === 10) {
+      detail = 'R7 est bien un rôle de R1, mais plus loin devant (' + (k === 8 ? 'front du front' : 'bouclier') + ') — 0 nul sur 5 cas'; }
+    else if (k === 12 || k === 14) {
+      detail = 'sens inverse : c\'est R1 qui est le ' + (k === 12 ? 'front' : 'binôme') + ' de R7 — 0 nul sur 4 cas'; }
+    else { detail = 'décalage +' + k; }
   } else {
     porte = 'boucles opposées';
-    if (k === 11) { oui = true; force = 'à confirmer';
-      detail = 'R7 est le front du front de la victime de R1 (+11) — les deux nuls de cette branche, trouvé après coup'; }
+    if (k === 11) { oui = true; force = 'EN PROBATION';
+      detail = 'R7 est le front du front de la victime de R1 — 2 tirs, 2 nuls, mais 15,4 % de chance au hasard'; }
     else { detail = 'décalage +' + k + ' — la porte de cette branche est +11'; }
   }
   return { porte: porte, k: k, memeBoucle: meme, oui: oui, force: force, detail: detail };
@@ -20484,7 +20519,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     var _dp = nulDeuxPortesV7(theme);
     if (_dp) {
       var _ouv = NUL_PORTE_ELARGIE_V7 ? _dp.oui : (_dp.memeBoucle ? _dp.k === 2 : _dp.k === 11);
-      if (_ouv) nulPorteTxt = 'Porte du nul ouverte — branche « ' + _dp.porte + ' », décalage +' + _dp.k;
+      if (_ouv) nulPorteTxt = 'Porte du nul ouverte — branche « ' + _dp.porte + ' », décalage +' + _dp.k
+        + ' · porte ' + _dp.force
+        + (_dp.force === 'EN PROBATION' ? ' (2 tirs seulement, 15,4 % au hasard — à confirmer)' : '');
     }
   } catch (e) { nulPorteTxt=''; }
   var nullStatus=nulActif?'NUL ACTIF':'NUL NON ACTIF';
@@ -20631,9 +20668,12 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +(dp.oui?'PORTE OUVERTE — '+esc(dp.force):'porte fermée')+'</b> · décalage R1→R7 = +'+dp.k
         +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">'+esc(dp.detail)+'</div></div>'
         +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
-        +'<b>Même boucle</b> : il passe par l\'alliance PROCHE — R7 binôme (+2) ou front (+4) de R1 ; '
-        +'au-delà (front du front, bouclier, rôles à l\'envers) l\'archive ne montre aucun nul sur 9 cas. '
-        +'<b>Boucles opposées</b> : il passe par +11, le front du front de la victime de R1. '
+        +'<b>Même boucle — porte ÉTABLIE</b> : R7 occupe l\'un des DEUX PREMIERS rôles que R1 projette '
+        +'devant lui, binôme (+2) ou front (+4). Plus loin devant (+8, +10) ou dans le sens inverse '
+        +'(+12, +14) : aucun nul sur 9 cas. Les 3 nuls de cette branche sont dans la cible — 1,7 % au hasard. '
+        +'<b>Boucles opposées — porte EN PROBATION</b> : +11, le front du front de la victime de R1. '
+        +'2 tirs, 2 nuls, aucun faux positif — mais deux nuls qui partagent un décalage parmi huit, '
+        +'c\'est 15,4 % au hasard. Ce n\'est pas une preuve, c\'est une hypothèse qu\'on fait tourner. '
         +'La table des pôles ne sait faire que la première : son code ne peut littéralement pas annoncer un nul '
         +'en boucles opposées, et c\'est là que sont les deux nuls qu\'aucun moteur n\'attrapait. '
         +'Les deux portes ensemble : 4 nuls sur 5 pour un seul faux positif, contre 4 sur 5 pour 4 faux positifs '
