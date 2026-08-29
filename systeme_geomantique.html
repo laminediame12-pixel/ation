@@ -3742,14 +3742,37 @@ function scoreEnvironnementInterpretation(fig, mSiege, theme, profondeur) {
 // seul son pouvoir de décision est retiré via ce drapeau.
 var STRUCTURE_NUL_DECISIVE = false;
 // ─── LE NUL AU VERDICT PRINCIPAL (29/08/26) ───
-// false = porte STRICTE : le nul s'impose sur +2 en même boucle et sur
-//         +11 en boucles opposées. C'est ce qui est branché, mesuré à
-//         21/30 sur le verdict affiché contre 18/30 sans le nul.
-// true  = porte ÉLARGIE : ajoute +4 en même boucle. Elle donne 22/30,
-//         mais ce point vient du seul cas sur lequel « +4 » a été
-//         ajusté — il ne mesure rien tant qu'un second nul à +4 n'est
-//         pas arrivé. À basculer ce jour-là, pas avant.
-var NUL_PORTE_ELARGIE_V7 = false;
+// true  = porte ÉLARGIE : en même boucle le nul s'impose quand R7 est un
+//         ALLIÉ PROCHE de R1 — binôme (+2) ou front (+4) ; en boucles
+//         opposées, sur +11. C'est ce qui est branché : 22/30 sur le
+//         verdict affiché, contre 18/30 sans le nul.
+// false = porte STRICTE : +2 seulement en même boucle. 21/30.
+//
+// POURQUOI L'ÉLARGIE, ALORS QUE « +4 » N'A QU'UN CAS. Parce que ce cas
+// n'est pas isolé : il est du bon côté d'une frontière que neuf autres
+// cas soutiennent. Rangés par éloignement dans le camp, les 13 thèmes
+// de la branche « même boucle » donnent :
+//     +2  binôme .............. 2 nuls / 3
+//     +4  front ............... 1 nul  / 1
+//   ─────────────── la frontière ───────────────
+//     +8  front du front ...... 0 nul  / 1
+//     +10 bouclier ............ 0 nuls / 4
+//     +12 front à l'envers ..... 0 nuls / 2
+//     +14 binôme à l'envers .... 0 nuls / 2
+//   alliés PROCHES  {+2, +4} .... 3 nuls / 4 déclenchements
+//   alliés LOINTAINS {+8, +10} .. 0 nul  / 5
+//   rôles à l'envers {+12, +14} . 0 nul  / 4
+// La règle n'est donc pas « +2 et +4 », qui serait une liste ajustée :
+// c'est « R7 est un ALLIÉ PROCHE de R1 », et la coupure est soutenue
+// par les neuf cas qui sont de l'autre côté. Le camp entier
+// {0,2,4,8,10} ferait 3 nuls sur 9 : la frontière est bien aux proches,
+// pas au camp.
+// Fréquence de base : +4 seul 5,0 % des thèmes, {+2,+4} 12,3 %.
+//
+// ⚠️ Ce que ça reste : +4 n'a qu'un seul nul pour lui. C'est la
+// frontière qui est mesurée, pas le battant. Si un non-nul à +4 arrive
+// et se fait suspendre à tort, c'est ici qu'il faut revenir.
+var NUL_PORTE_ELARGIE_V7 = true;
 
 function structureDuNul(theme) {
   const juge1 = theme[13], juge2 = theme[14];
@@ -15839,9 +15862,9 @@ function nulDeuxPortesV7(theme) {
     porte = 'même boucle';
     if (k === 2) { oui = true; force = 'confirmée';
       detail = 'R7 est le binôme de R1 (+2) — l\'alliance la plus proche'; }
-    else if (k === 4) { oui = true; force = 'à confirmer';
-      detail = 'R7 est le front de R1 (+4) — vu sur UN seul nul, à tester'; }
-    else { detail = 'décalage +' + k + ' — ni binôme ni front'; }
+    else if (k === 4) { oui = true; force = 'confirmée';
+      detail = 'R7 est le front de R1 (+4) — allié proche, du bon côté de la frontière'; }
+    else { detail = 'décalage +' + k + ' — allié lointain ou rôle à l\'envers, 0 nul sur 9 cas'; }
   } else {
     porte = 'boucles opposées';
     if (k === 11) { oui = true; force = 'à confirmer';
@@ -20608,7 +20631,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +(dp.oui?'PORTE OUVERTE — '+esc(dp.force):'porte fermée')+'</b> · décalage R1→R7 = +'+dp.k
         +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">'+esc(dp.detail)+'</div></div>'
         +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
-        +'<b>Même boucle</b> : il passe par l\'alliance — R7 binôme de R1 (+2). '
+        +'<b>Même boucle</b> : il passe par l\'alliance PROCHE — R7 binôme (+2) ou front (+4) de R1 ; '
+        +'au-delà (front du front, bouclier, rôles à l\'envers) l\'archive ne montre aucun nul sur 9 cas. '
         +'<b>Boucles opposées</b> : il passe par +11, le front du front de la victime de R1. '
         +'La table des pôles ne sait faire que la première : son code ne peut littéralement pas annoncer un nul '
         +'en boucles opposées, et c\'est là que sont les deux nuls qu\'aucun moteur n\'attrapait. '
