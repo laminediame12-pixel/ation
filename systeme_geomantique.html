@@ -15336,16 +15336,38 @@ function tablePolesV7(theme) {
 // et les maisons sans confusion exactement celles à un seul. Ce n'est
 // pas une coïncidence de notation : les deux découpages sont le même.
 //
-// ✔✔ ET IL EN SORT UN THÉORÈME, exact sur les 12 maisons.
-// R7 est toujours SIX maisons après R1 (fait établi de longue date dans
-// ce fichier). Or +6 fait toujours passer d'une maison de confusion à une
-// maison simple, et réciproquement :
-//     M1 conf → M7 simple      M7 simple → M1 conf
-//     M2 conf → M8 simple      M8 simple → M2 conf   ... et ainsi de suite
-// DONC : L'UN DES DEUX CAMPS EST TOUJOURS EN MAISON DOUBLE, L'AUTRE
-// TOUJOURS EN MAISON SIMPLE. Jamais les deux, jamais aucun. Vérifié
-// 12/12 sur la structure et 0 violation sur les cas d'archive.
-// Il y a donc, dans chaque thème, un camp « doublé » et un camp
+// ✔✔ ET IL EN SORT UN THÉORÈME.
+// R7 est toujours SIX maisons après R1 — mais SUR SEIZE, pas sur douze.
+// ☠️ MA PREMIÈRE DÉMONSTRATION ÉTAIT FAUSSE SUR LA MOITIÉ DE SA TABLE.
+// J'avais écrit le pas comme +6 modulo 12, ce qui donne M7 → M1. Le
+// moteur fait M7 → M13. Six lignes sur douze étaient inventées :
+//     je disais M7→M1, M8→M2, M9→M3, M10→M4, M11→M5, M12→M6
+//     le moteur fait M7→M13, M8→M14, M9→M15, M10→M16, M11→M1, M12→M2
+// Et autoTestConfusionV7 « vérifiait » cette table imaginaire : il
+// passait 12/12 sur une règle que le fichier n'applique pas.
+//
+// LA VRAIE TABLE, +6 SUR SEIZE :
+//     M1  → M7    FA / A      classes opposées ✔
+//     M2  → M8    ET / E      ✔
+//     M3  → M9    A / FA      ✔
+//     M4  → M10   E / TE      ✔
+//     M5  → M11   FA / A      ✔
+//     M6  → M12   ET / E      ✔
+//     M11 → M1    A / FA      ✔      (le pas repasse par 16 puis 1)
+//     M12 → M2    E / ET      ✔
+//     M7 M8 M9 M10 → M13 M14 M15 M16   hors du cycle
+//     M13 M14 M15 M16 → M3 M4 M5 M6    hors du cycle
+// LE THÉORÈME TIENT QUAND MÊME, et sans exception : sur les 8 positions
+// de départ où les deux camps restent dans les douze maisons, l'un est
+// TOUJOURS en maison double et l'autre en maison simple. Zéro violation.
+// Simplement, il vaut sur 8 positions sur 16 — 50 %, ce qui colle aux
+// 48,9 % mesurés sur 4 000 tirages.
+//
+// ✔ ET UN SECOND FAIT, CELUI-LÀ SANS EXCEPTION SUR LES SEIZE POSITIONS :
+// R1 et R7 ne sont JAMAIS tous les deux en maison de synthèse (M13-M16).
+// Zéro cas sur 4 000 tirages. Exactement un des deux, ou aucun.
+//
+// Il y a donc, dans chaque thème du cycle, un camp « doublé » et un camp
 // « simple », et c'est une donnée qu'on n'avait jamais lue.
 //
 // ⚠️ IL NE S'APPLIQUE QU'À LA MOITIÉ DES THÈMES. Mesuré sur 3 000
@@ -15415,11 +15437,15 @@ function campDoubleV7(theme) {
     maisonDouble: c1 ? r.hR1 : r.hR7, maisonSimple: c1 ? r.hR7 : r.hR1 };
 }
 
-// Auto-test du théorème : il doit tenir sur les douze maisons.
+// Auto-test du théorème. ⚠️ CORRIGÉ LE 30/08 : il bouclait sur douze
+// maisons (%12) alors que le pas du moteur est +6 sur SEIZE. Il validait
+// une table imaginaire. Il applique désormais le vrai pas, et ne compte
+// que les positions où les deux camps restent dans les douze maisons.
 function autoTestConfusionV7() {
-  var manques = [], ok = 0;
-  for (var h = 1; h <= 12; h++) {
-    var h7 = ((h - 1 + 6) % 12) + 1;
+  var manques = [], ok = 0, hors = 0;
+  for (var h = 1; h <= 16; h++) {
+    var h7 = ((h - 1 + 6) % 16) + 1;
+    if (h > 12 || h7 > 12) { hors += 1; continue; }
     if (maisonConfusionV7(h) === maisonConfusionV7(h7)) manques.push('M' + h + '→M' + h7);
     else ok += 1;
   }
@@ -15429,7 +15455,7 @@ function autoTestConfusionV7() {
     if ((ELEMENT_MAISON_V7[k] || '').length === 2) doubles.push(k);
     if (maisonConfusionV7(k)) conf.push(k);
   }
-  return { ok: ok, sur: 12, manques: manques,
+  return { ok: ok, sur: ok + manques.length, hors: hors, manques: manques,
     memesMaisons: doubles.join(',') === conf.join(','),
     doubles: doubles, conf: conf };
 }
@@ -22554,9 +22580,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + esc(cd.elementR7) + ') — M' + cd.maisonDouble + ' est une maison de confusion, M'
       + cd.maisonSimple + ' non.</div>'
       + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
-      + 'Comme R7 est toujours six maisons après R1, <b>l\'un des deux camps est toujours en maison '
-      + 'double et l\'autre en maison simple</b> — jamais les deux, jamais aucun (théorème vérifié '
-      + '12/12 et 0 violation sur 3 000 tirages). Il ne vaut que dans le cycle des douze, soit la '
+      + 'Comme R7 est toujours six maisons après R1 — sur SEIZE, pas sur douze — <b>l\'un des deux '
+      + 'camps est toujours en maison double et l\'autre en maison simple</b> quand les deux restent '
+      + 'dans les douze : jamais les deux, jamais aucun (8 positions de départ sur 16, 0 violation). '
+      + 'Ils ne sont d\'ailleurs jamais tous les deux en synthèse non plus. Il ne vaut donc que la '
       + 'moitié des thèmes. Le camp doublé PRIS SEUL ne bat pas le verdict (13/19 contre 14/19), et '
       + 'il ne dit rien du nul (p = 0,297). Ce qui compte, c\'est leur <b>accord</b> : d\'accord, le '
       + 'verdict est juste 10 fois sur 12 ; en désaccord, 4 fois sur 7. '
