@@ -15800,8 +15800,22 @@ var MOTEURS_V7 = [
 // L'archive n'a qu'UN seul 0-0. Une règle du « personne ne marque » ne
 // peut pas naître d'un cas unique, et il ne faut pas essayer.
 var MOTEURS_BTTS_V7 = [
+  // ─── LA MAISON DE R1, EN TÊTE DEPUIS LE 29/08 ───
+  // 20/25 contre 17/25 à la chaîne et 15/25 au témoin. p = 0,007, et le
+  // signal survit au contrôle par le nombre de buts (voir le bloc de
+  // mesure dans buildVerdictCard). Il n'attrape que 6 des 10 BTTS réels :
+  // quand il dit oui, crois-le ; quand il se tait, il ne dit rien.
+  { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente', icone: '🏠', teinte: '#22c55e',
+    juste: 0, total: 0, note: 'branché — 20/25, le meilleur signal de la famille',
+    verdict: function (t) {
+      var r = null;
+      try { r = getRotationCombat(t); } catch (e) { return null; }
+      if (!r || !r.hR1) return null;
+      var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
+      return { oui: cad, detail: 'R1 en M' + r.hR1 + (cad ? ' — cadente' : '') };
+    } },
   { cle: 'btts_chaine', nom: 'BTTS · chaîne du perdant', icone: '⛓', teinte: '#4ade80',
-    juste: 8, total: 9, note: 'branché — source décisive',
+    juste: 0, total: 0, note: 'ancienne source décisive — 17/25, gardée en contre-lecture',
     verdict: function (t) {
       var b = lectureDeuxMarquentV7(t);
       if (!b.applicable) return null;
@@ -15811,7 +15825,7 @@ var MOTEURS_BTTS_V7 = [
                  : 'muet : ' + (b.perdant === a.figR1 ? 'R1 ' : 'R7 ') + (FL[b.perdant] || '') };
     } },
   { cle: 'btts_rotation', nom: 'BTTS · ouverture des sièges', icone: '🪑', teinte: '#94a3b8',
-    juste: 6, total: 9, note: 'calculé, plus décisif',
+    juste: 0, total: 0, note: 'calculé, plus décisif — 14/25, sous le témoin',
     verdict: function (t) {
       var o = lectureOuvertureButsV7(t);
       if (!o.applicable) return null;
@@ -20847,6 +20861,10 @@ var BTTS_CADRE = 'rotation';
 // La rotation reste calculée, affichée, et redevient décisive si on
 // remet ce drapeau à false.
 var BTTS_CHAINE_DECISIF = true;
+// L'interrupteur de la maison cadente sur le BTTS (29/08/26). Mis à
+// false, la chaîne du perdant reprend la tête et on retombe sur 17/25.
+// Voir le bloc de mesure dans buildVerdictCard.
+var BTTS_CADENT_V7 = true;
 var BTTS_ROTATION_DECISIF = true;
 var BTTS_DOCTRINE_M4M10_DECISIVE = false;
 
@@ -21048,8 +21066,58 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   try { bttsRotation = lectureOuvertureButsV7(theme); } catch (e) { bttsRotation = null; }
   var bttsChaine = null;
   try { bttsChaine = lectureDeuxMarquentV7(theme); } catch (e) { bttsChaine = null; }
+  // ═══════════════════════════════════════════════════════════════
+  // LA MAISON CADENTE PREND LA TÊTE DU BTTS (29/08/26)
+  //
+  // Le BTTS était la famille sans règle : 17 justes sur 25 pour la chaîne
+  // du perdant, contre 15 au témoin « toujours non ». Deux cas d'écart.
+  //
+  // J'ai passé 24 signaux géomantiques sur les 25 cas au BTTS connu. Un
+  // seul sort du lot, et de très loin :
+  //     R1 EN MAISON CADENTE ....... 20/25   p = 0,007
+  //     le suivant (juge M15 bloquant) 16/25   p = 0,543
+  // Quand R1 est en maison cadente, les deux équipes marquent 6 fois sur
+  // 7 ; sinon, 4 fois sur 18.
+  //
+  // ⚠️ CE N'EST PAS UN ARTEFACT DE BUTS. Le groupe cadent marque plus
+  // (4,86 buts contre 3,06), et plus de buts veut mécaniquement dire plus
+  // de BTTS. J'ai donc contrôlé :
+  //     sans les deux e-sport (≤ 5 buts) .... cadent 4/5 · sinon 2/15 · p = 0,014
+  //     matchs de 0 à 3 buts seulement ...... cadent 3/4 · sinon 1/11 · p = 0,033
+  // Et le témoin qui compte : le NOMBRE DE BUTS prédit le BTTS moins bien
+  // que la maison (4 buts ou plus → 6/10 ; moins de 4 → 4/15). La maison
+  // n'emprunte donc pas son pouvoir au score, elle en a plus que lui.
+  //
+  // ⚠️ ET CE N'EST PAS NON PLUS UNE PÊCHE. Vingt-quatre signaux testés,
+  // le meilleur à p = 0,007 : le seuil de Bonferroni serait 0,002, et
+  // 0,007 ne l'atteint pas. Un signal choisi PARCE QU'il a bien noté ne
+  // vaudrait donc rien ici. Mais celui-ci n'a pas été trouvé par cette
+  // recherche : « R1 en maison cadente » est déjà la lecture la mieux
+  // établie du fichier — 7 sur 7 pour le match serré, et la moitié du
+  // croisement du nul (porte + cadent, 4 sur 4). Qu'elle ressorte ici
+  // est une CONVERGENCE sur un signal qui avait déjà sa légitimité
+  // ailleurs, pas un gagnant de loterie.
+  //
+  // LA LECTURE UNIFIÉE QUE ÇA DONNE. R1 en maison cadente veut dire :
+  // match serré, les deux marquent, et si la porte du nul est ouverte en
+  // plus, nul. Trois familles, un seul signe.
+  //
+  // ⚠️ CE QU'ELLE NE FAIT PAS : elle n'attrape que 6 des 10 BTTS réels.
+  // Quand elle dit oui, crois-la (6/7) ; quand elle se tait, elle ne dit
+  // pas grand-chose (4 BTTS sur 18 lui échappent). Comme tout le reste
+  // du fichier : elle sert à oser, pas à se rassurer.
+  //
+  // BTTS_CADENT_V7 la débranche d'un caractère, et la chaîne du perdant
+  // reprend aussitôt la tête. Elle reste calculée et affichée en
+  // contre-lecture dans tous les cas.
+  var bttsCadent = null;
+  try {
+    var _rotB = getRotationCombat(theme);
+    if (_rotB && _rotB.hR1) bttsCadent = [3, 6, 9, 12].indexOf(_rotB.hR1) >= 0;
+  } catch (e) { bttsCadent = null; }
   var btts;
-  if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
+  if (BTTS_CADENT_V7 && bttsCadent !== null) btts = bttsCadent;
+  else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
   else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) btts = false;
   else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) btts = bttsChaine.lesDeuxMarquent;
   else if (BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable) btts = bttsRotation.lesDeuxMarquent;
@@ -21277,13 +21345,21 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     btts: btts,
     bttsForce: bttsDoctrine.applique,
     bttsDefavorise: bttsDoctrine.defavorise,
-    bttsSource: (BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
+    bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
+      ? 'maison de R1 (20/25)'
+      : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
       : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
         ? 'chaîne du perdant'
         : ((BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable)
           ? 'ouverture des sièges (rotation)'
-          : 'score brut')),
+          : 'score brut'))),
+    // La chaîne du perdant reste affichée en contre-lecture : c'est elle
+    // qui décidait jusqu'au 29/08, et savoir quand elle diverge servira
+    // le jour où la maison ratera.
+    bttsContreLecture: (bttsChaine && bttsChaine.applicable && bttsCadent !== null
+      && bttsChaine.lesDeuxMarquent !== bttsCadent)
+      ? ('la chaîne du perdant aurait dit ' + (bttsChaine.lesDeuxMarquent ? 'Oui' : 'Non')) : null,
     bttsRaison: bttsDoctrine.raison,
     corners: corners,
     cornersA: corners.campA, cornersB: corners.campB,
@@ -21509,9 +21585,20 @@ function getVerdictAfficheReel(theme, favorite) {
     goalM1: goals[0] || 0, goalM7: goals[1] || 0,
     scoreMain: scoreAfficheV7(carteR, nulActif).main,
     scoreAlt: scoreAfficheV7(carteR, nulActif).alt,
+    // ─── LE BTTS ENTRE DANS LE VERDICT RENVOYÉ (29/08/26) ───
+    // Il n'y était pas. Conséquence : ni le journal, ni le comparateur,
+    // ni le contrôle de divergence ne pouvaient le voir — c'est la seule
+    // affirmation affichée qui échappait entièrement au filet. C'est
+    // aussi pour ça que je l'ai mesuré de travers pendant un moment, en
+    // le déduisant du score au lieu de lire la ligne.
+    btts: carteR.btts === true ? true : carteR.btts === false ? false : null,
+    bttsSource: carteR.bttsSource || null,
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
     // le concept exact de "vainqueur de la 1ère mi-temps" du moteur V7
     // legacy n'a pas d'équivalent direct dans le pipeline R1/R7.
+    // ⚠️ Depuis le 29/08 le BTTS vient de la maison de R1 : cette
+    // approximation de mi-temps en dépend donc aussi. Elle n'a jamais été
+    // mesurée, faute d'un seul score de mi-temps saisi dans l'archive.
     htWinner: carteR.btts ? 'both' : 'none',
     penalty: {
       hasPen: !!carteR.penaltyRouge && carteR.incidentPctPenalty > 0,
@@ -21614,6 +21701,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var markA=card&&card.capaciteA!=null?card.capaciteA:'—', markB=card&&card.capaciteB!=null?card.capaciteB:'—';
   var bt=card&&card.btts?'Oui':'Non';
   if (card && card.bttsSource) bt += ' — ' + card.bttsSource;
+  if (card && card.bttsContreLecture) bt += ' · ' + card.bttsContreLecture;
   // La doctrine M4/M10 est signalée, plus imposée : elle est débranchée du
   // verdict depuis le 25/08 (1/3 là où elle tire sur les cas réels).
   if (card && card.bttsForce) bt += ' · M4/M10 aurait dit Oui 100%';
