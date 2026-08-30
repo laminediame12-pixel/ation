@@ -14656,6 +14656,32 @@ var CAS_REFERENCE_V7 = [
   { nom: 'FortMajFMin', meres: ['fortuna_major','albus','fortuna_minor','caput_draconis'],
     score: '3-4', camp: 'R7', btts: true,
     note: 'TRIPLET 2 du 30/08 (C) · annonce R7 0-1 ✔ camp · BTTS non ✘ · théorème des maisons applicable et JUSTE (R7) : il passe à 2 justes sur 3 en départage · R1 en cadente, faisceau 3/7, et pas de nul' },
+  // ─── 30/08/26 — LE 0-7, ET LE BUG QU'IL A FAIT SORTIR ───
+  // Ellemine_D : « il y a trop de contradiction, regarde ce thème ».
+  // Réel 0-7 pour R7 — le plus gros écart de toute l'archive. L'écran
+  // annonçait R1 1-0. Ce qui se lisait dans le même thème :
+  //     critères (qui PILOTENT la carte) .. R1   [R1 59 contre R7 5]
+  //     F4P4 ............................... R7
+  //     vote des moteurs ................... R7
+  //     chaîne ............................. R7
+  //     réseau d'ancrage ................... R7
+  //     protocole des boucles .............. R7  (-3,75 contre 56,25)
+  //     table des pôles .................... R7  (36,28 contre 120,76)
+  // SIX LECTURES CONTRE UNE, et c'est l'une qui gagne parce qu'elle est
+  // branchée en tête de la cascade. Le seul moteur juste ce jour-là est
+  // celui qu'on n'écoute pas.
+  // ☠️ ET LE PANNEAU MENTAIT. « VERDICT DU PROTOCOLE : vainqueur R1,
+  // avance nette de 60,00 points » s'affichait au-dessus d'un tableau
+  // où R1 fait -3,75 et R7 fait 56,25. Le bloc montrait les totaux du
+  // protocole sous le nom du vainqueur de la CARTE. L'écart de 60 était
+  // exact, le camp était inversé, et la barre annonçait « R7 107,1 % »
+  // juste en dessous sans que personne ne relève. Corrigé : le bloc
+  // nomme son propre vainqueur et signale en rouge quand il contredit
+  // la carte. Les pourcentages sont décalés au-dessus de zéro.
+  // ✔ Le BTTS, lui, a vu juste une fois de plus : « non » sur un 0-7.
+  { nom: 'AcqFortMaj', meres: ['acquisitio','fortuna_major','caput_draconis','acquisitio'],
+    score: '0-7', camp: 'R7', btts: false,
+    note: '0-7 pour R7, le plus gros écart de l\'archive · annonce R1 1-0 ✘ — les critères (pilote) disent R1 à 59 contre 5, et SIX autres moteurs disent R7 · BTTS non ✔ · a fait sortir le bug d\'affichage du protocole (nom du vainqueur pris sur la carte au lieu du protocole, barre à 107 %)' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
@@ -15464,6 +15490,87 @@ function balayageSeparationV7() {
     meilleurP: k ? lignes[0].p : null,
     corrige: k ? Math.min(1, lignes[0].p * k) : null,
     attenduSous5: Math.round(k * 0.05 * 100) / 100 };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// L'ARBITRAGE DES MOTEURS (30/08/26) — « il y a trop de contradiction »
+//
+// Ellemine_D a raison sur le fait, et le 0-7 le montre en grand : sept
+// lectures du même thème, six disent R7, celle qui pilote dit R1, et
+// c'est elle qui s'affiche. La question naturelle est « laquelle
+// suivre ? ». Elle a une réponse mesurable, et la réponse est : aucune.
+//
+// ☠️ SUR 33 MATCHS DÉCIDÉS OÙ AU MOINS TROIS MOTEURS SE PRONONCENT :
+//     les critères (le pilote, ce qui s'affiche) .... 20/33   61 %
+//     la MAJORITÉ des six autres moteurs ........... 19/33   58 %
+//     ils divergent sur 13 matchs :
+//        le pilote a raison ......................... 7/13
+//        la majorité a raison ....................... 6/13     p = 1,000
+//
+// ☠️ ET PIRE — QUAND LES SIX AUTRES SONT UNANIMES : 4 justes sur 9.
+// Sous la pièce. Unanimes CONTRE le pilote : 1 sur 4 (Napoli 6/6 pour
+// R1, réel R7 ; ConjVia 6/6 pour R7, réel R1 ; City/Madrid 6/6 pour R7,
+// réel R1 ; le 0-7 est le seul où ils avaient raison).
+//
+// ⚠️ CE QU'IL FAUT EN COMPRENDRE, ET C'EST LA MÊME LEÇON QUE CELLE DE
+// L'UNANIMITÉ DE F4P4 SUR LE DEUXIÈME TRIPLET : ces moteurs ne sont pas
+// indépendants. Ils lisent tous les mêmes seize figures par des chemins
+// voisins — présence, position, boucle, résultantes. Quand la structure
+// du thème penche, ils penchent tous ensemble, juste ou faux. Leur
+// accord n'est donc pas une confirmation : c'est le même avis compté
+// six fois. Un vote entre eux ne peut pas produire d'information qu'ils
+// n'ont pas séparément.
+//
+// ➜ LA CONTRADICTION N'EST PAS UNE ÉNIGME À RÉSOUDRE, C'EST DU BRUIT.
+// Suivre le pilote, suivre la majorité, ou tirer à pile ou face donnent
+// la même chose. Ce qu'il faut en faire : ne pas jouer le camp sur un
+// thème où les moteurs se contredisent — et ne pas le jouer davantage
+// quand ils s'accordent, parce que leur accord ne vaut pas mieux.
+function arbitrageMoteursV7() {
+  var cas = [];
+  try { cas = tousCasBancV7() || []; } catch (e) { return null; }
+  var r = { pilote: [0, 0], majorite: [0, 0], divergences: [], unanime: [0, 0], unanimeContre: [0, 0], n: 0 };
+  cas.forEach(function (c) {
+    if (!c || !c.camp || c.camp === 'nul') return;
+    var t;
+    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var pil = null, autres = [];
+    try { var mc = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); pil = mc && mc.camp ? mc.camp : null; } catch (e) {}
+    if (!pil) return;
+    function pousse(v) { if (v === 'R1' || v === 'R7') autres.push(v); }
+    try { var m = moteurF4P4V7(t); pousse(m && m.applicable ? m.avantage : null); } catch (e) {}
+    try { var sg = lectureSiegesR1R7(t); pousse(sg && sg.applicable ? sg.winner : null); } catch (e) {}
+    try { var an = analyseAncrageDeveloppe(t); pousse(an && an.applicable ? an.avantage : null); } catch (e) {}
+    try { var rz = analyserReseauAncrageV2(t); pousse(rz ? rz.winner : null); } catch (e) {}
+    try { var pr = comparerBouclesAntagonistesR1R7(t); pousse(pr && pr.applicable ? pr.winner : null); } catch (e) {}
+    try { var tp = tablePolesV7(t); pousse(tp ? (tp.winner || tp.camp) : null); } catch (e) {}
+    if (autres.length < 3) return;
+    var n1 = 0;
+    autres.forEach(function (x) { if (x === 'R1') n1 += 1; });
+    var n7 = autres.length - n1;
+    if (n1 === n7) return;
+    var maj = n1 > n7 ? 'R1' : 'R7';
+    r.n += 1;
+    r.pilote[pil === c.camp ? 0 : 1] += 1;
+    r.majorite[maj === c.camp ? 0 : 1] += 1;
+    if (n1 === 0 || n7 === 0) {
+      r.unanime[maj === c.camp ? 0 : 1] += 1;
+      if (maj !== pil) r.unanimeContre[maj === c.camp ? 0 : 1] += 1;
+    }
+    if (pil !== maj) {
+      r.divergences.push({ nom: c.nom, pilote: pil, majorite: maj,
+        force: Math.max(n1, n7) + '/' + autres.length, reel: c.camp,
+        bon: maj === c.camp ? 'majorité' : 'pilote' });
+    }
+  });
+  var dp = [0, 0], dm = [0, 0];
+  r.divergences.forEach(function (d) {
+    dp[d.pilote === d.reel ? 0 : 1] += 1;
+    dm[d.majorite === d.reel ? 0 : 1] += 1;
+  });
+  r.divPilote = dp; r.divMajorite = dm;
+  r.p = fisherExactV7(dp[0], dp[1], dm[0], dm[1]);
+  return r;
 }
 
 // Fisher exact bilatéral sur un tableau 2×2, en log-factorielles pour
@@ -18909,7 +19016,48 @@ function renderBancPanel() {
             + '59 %). Je n\'ai pas d\'explication — seulement le fait qu\'elle se répète.'
             + '</div></div>';
         }
-        var tete = alerteCoh + blocBal + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
+        // ─── L'ARBITRAGE DES MOTEURS (30/08/26) ───
+        // « Il y a trop de contradiction » — oui, et voici ce que valent
+        // les deux façons de trancher.
+        var arb = null;
+        try { arb = arbitrageMoteursV7(); } catch (e) { arb = null; }
+        var blocArb = '';
+        if (arb && arb.n) {
+          var np = arb.divPilote[0] + arb.divPilote[1];
+          var nu = arb.unanime[0] + arb.unanime[1];
+          var nuc = arb.unanimeContre[0] + arb.unanimeContre[1];
+          blocArb = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #94a3b8; '
+            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
+            + '<div style="font-size:12px; font-weight:800; color:#cbd5e1;">⚔️ ARBITRAGE DES MOTEURS — '
+            + 'le pilote contre la majorité des six autres</div>'
+            + '<div style="font-size:11px; color:#e2e8f0; margin-top:5px; line-height:1.6;">'
+            + 'les critères <b>(le pilote, ce qui s\'affiche)</b> — <b>' + arb.pilote[0] + '/' + arb.n + '</b><br>'
+            + 'la <b>majorité</b> des six autres moteurs — <b>' + arb.majorite[0] + '/' + arb.n + '</b><br>'
+            + 'ils divergent sur <b>' + np + '</b> matchs : le pilote a raison <b>' + arb.divPilote[0] + '/' + np
+            + '</b>, la majorité <b>' + arb.divMajorite[0] + '/' + np + '</b> — <b style="color:#f87171;">p = '
+            + arb.p.toFixed(3) + '</b>'
+            + (nu ? '<br>quand les six autres sont <b>unanimes</b> (' + nu + ' cas) : <b>' + arb.unanime[0] + '/' + nu + '</b>'
+                + (nuc ? ', et unanimes <b>contre</b> le pilote (' + nuc + ' cas) : <b>' + arb.unanimeContre[0] + '/' + nuc + '</b>' : '')
+              : '')
+            + '</div>'
+            + '<div style="font-size:10px; color:#fbbf24; margin-top:5px; line-height:1.55;">'
+            + '☠️ <b>La contradiction n\'est pas une énigme à résoudre, c\'est du bruit.</b> Suivre le pilote, '
+            + 'suivre la majorité ou tirer à pile ou face donnent la même chose. Ces moteurs lisent tous les '
+            + 'mêmes seize figures par des chemins voisins : quand le thème penche, ils penchent ensemble, '
+            + 'juste ou faux. <b>Leur accord n\'est pas une confirmation — c\'est le même avis compté six fois.</b>'
+            + '</div>'
+            + (arb.divergences.length
+              ? '<div style="font-size:10px; color:#94a3b8; margin-top:5px;">'
+                + arb.divergences.map(function (d) {
+                    return '• <b>' + esc(d.nom) + '</b> — pilote ' + d.pilote + ' · majorité ' + d.majorite
+                      + ' (' + d.force + ') · réel ' + d.reel + ' → <b style="color:'
+                      + (d.bon === 'majorité' ? '#4ade80' : '#60a5fa') + ';">' + d.bon + '</b>';
+                  }).join('<br>')
+                + '</div>'
+              : '')
+            + '</div>';
+        }
+        var tete = alerteCoh + blocBal + blocArb + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
           + 'border-radius:10px; background:rgba(251,191,36,.07);">'
           + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
           + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
@@ -22854,14 +23002,72 @@ function themeRejeteV7(theme) {
 // systématiquement. NE JAMAIS s'en servir pour choisir dans un triplet.
 // Affiché seulement, branché sur rien — et à ne plus lire comme un
 // signal du tout.
+// ⚠️ 30/08/26 — CES TAUX ÉTAIENT CODÉS EN DUR ET ILS ONT VIEILLI TROIS
+// FOIS EN UN JOUR (15/20 puis 14/20 puis 14/21, pendant que l'écran
+// affichait encore les premiers). Un chiffre écrit à la main dans du
+// code est un chiffre qui ment dès le cas suivant. Il se calcule
+// maintenant sur l'archive, une fois, et se met à jour tout seul.
+var _CACHE_ACCORD_V7 = null;
+function bilanAccordV7() {
+  if (_CACHE_ACCORD_V7) return _CACHE_ACCORD_V7;
+  var vide = { accord: { juste: 0, sur: 0, taux: 0 }, desaccord: { juste: 0, sur: 0, taux: 0 }, p: 1 };
+  var cas = [];
+  try { cas = tousCasBancV7() || []; } catch (e) { return vide; }
+  var a = [0, 0], d = [0, 0];
+  // Le cache est posé AVANT la boucle : accordCampV7 est atteignable
+  // depuis getVerdictAfficheReel, et sans ça on repartirait en boucle.
+  _CACHE_ACCORD_V7 = vide;
+  cas.forEach(function (c) {
+    if (!c || !c.camp || c.camp === 'nul') return;
+    var t, f4 = null, cr = null;
+    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    try { var m = moteurF4P4V7(t); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch (e) {}
+    try { var q = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); cr = q && q.camp ? q.camp : null; } catch (e) {}
+    if (!f4 || !cr) return;
+    // ⚠️ Ne PAS rejouer getVerdictAfficheReel ici. Mesuré au chronomètre,
+    // premier lancement / lancement suivant :
+    //     avant ce cache ................ 5 132 ms / 1 120 ms
+    //     cache avec la carte complète .. 6 063 ms / 1 379 ms
+    //     cache par la chaîne seule ..... 5 369 ms / 1 401 ms  ← retenu
+    // (Les 5 s du premier lancement existaient DÉJÀ : elles viennent des
+    // autres rejeux d'archive, pas d'ici. J'ai d'abord lu « 1,4 s → 6,1 s »
+    // en comparant le premier lancement au second du même build, ce qui
+    // ne compare rien. Ce cache-ci coûte ~240 ms.)
+    // Le camp affiché, quand le nul n'est pas imposé, c'est exactement ce
+    // que renvoie la chaîne de priorité : résultat identique (14/21 et
+    // 8/16) pour une fraction du coût.
+    var nulActif = false;
+    try {
+      nulActif = nulActifV7(t,
+        (typeof STRUCTURE_NUL_DECISIVE !== 'undefined' && STRUCTURE_NUL_DECISIVE) ? structureDuNul(t) : null,
+        (typeof AXE_SUCCEDENT_DECISIF !== 'undefined' && AXE_SUCCEDENT_DECISIF
+          && typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(t) : null);
+    } catch (e) { nulActif = false; }
+    var dit = 'nul';
+    if (!nulActif) { try { dit = overrideVerdictV7(t, false) || cr; } catch (e) { dit = cr; } }
+    var b = (f4 === cr) ? a : d;
+    b[dit === c.camp ? 0 : 1] += 1;
+  });
+  function pack(x) {
+    var n = x[0] + x[1];
+    return { juste: x[0], sur: n, taux: n ? Math.round(100 * x[0] / n) : 0 };
+  }
+  _CACHE_ACCORD_V7 = { accord: pack(a), desaccord: pack(d), p: fisherExactV7(a[0], a[1], d[0], d[1]) };
+  return _CACHE_ACCORD_V7;
+}
+
 function accordCampV7(theme) {
   var f4 = null, cr = null;
   try { var m = moteurF4P4V7(theme); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch (e) {}
   try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch (e) {}
   if (!f4 || !cr) return { lisible: false, f4p4: f4, criteres: cr };
+  var b = bilanAccordV7();
+  var cle = (f4 === cr) ? 'accord' : 'desaccord';
   return { lisible: true, f4p4: f4, criteres: cr, accord: f4 === cr,
-    taux: f4 === cr ? 67 : 53, juste: f4 === cr ? 14 : 8, sur: f4 === cr ? 21 : 15,
-    mort: true };
+    taux: b[cle].taux, juste: b[cle].juste, sur: b[cle].sur,
+    autreJuste: b[f4 === cr ? 'desaccord' : 'accord'].juste,
+    autreSur: b[f4 === cr ? 'desaccord' : 'accord'].sur,
+    p: b.p, mort: true };
 }
 
 function overrideVerdictV7(theme, nulActif) {
@@ -23129,10 +23335,31 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var el=document.getElementById(containerId); if(!el) return;
   q=q||{}; sdn=sdn||{};
   var active=!!q.applicable;
-  var s1=Number(q.scoreR1||0), s7=Number(q.scoreR7||0), sum=s1+s7||1;
-  var p1=s1/sum*100, p7=s7/sum*100, gap=Math.abs(s1-s7);
+  var s1=Number(q.scoreR1||0), s7=Number(q.scoreR7||0);
+  // ☠️ 30/08/26 — LA BARRE POUVAIT AFFICHER « R7 107,1 % » ET « R1 -7,1 % ».
+  // Les totaux du protocole sont des sommes signées : un camp peut finir
+  // en négatif (Conjunctio contre Populus : R1 -3,75, R7 56,25). Divisés
+  // par leur somme (52,5), ça donne des pourcentages hors de [0,100] et
+  // une largeur CSS négative. On décale les deux totaux au-dessus de zéro
+  // avant de faire la part de chacun ; l'écart affiché ne change pas.
+  var _bas=Math.min(0, s1, s7), _v1=s1-_bas, _v7=s7-_bas, _sm=(_v1+_v7)||1;
+  var p1=_v1/_sm*100, p7=_v7/_sm*100, gap=Math.abs(s1-s7);
   var winner = !nulActif && card && card.winner ? (card.winner === 'R1' ? 'R1' : card.winner === 'R7' ? 'R7' : null) : null;
   var winnerName=winner==='R1'?teamA:winner==='R7'?teamB:'Indécis';
+  // ☠️ 30/08/26 — LE BLOC « VERDICT DU PROTOCOLE » NOMMAIT LE MAUVAIS CAMP.
+  // Il montre les totaux du protocole (q.scoreR1 / q.scoreR7) mais il
+  // nommait le vainqueur de la CARTE — la conclusion d'un autre moteur.
+  // Quand les deux divergent, on lisait « VAINQUEUR FINAL : R1, avance
+  // nette de 60,00 points » au-dessus d'un tableau où R1 fait -3,75 et R7
+  // fait 56,25. Le chiffre était juste, le nom était faux, et rien ne le
+  // signalait. Le thème Acquisitio/Fortuna Major/Caput/Acquisitio (réel
+  // 0-7 pour R7) l'a mis à nu : six moteurs disaient R7, seule la lecture
+  // des critères disait R1, et c'est elle qui pilote la carte.
+  // Ces trois variables servent UNIQUEMENT au bloc du protocole ; la
+  // grande carte « VAINQUEUR » garde winnerName, qui est bien le sien.
+  var winnerProto = (!nulActif && q && q.winner === 'R1') ? 'R1' : ((!nulActif && q && q.winner === 'R7') ? 'R7' : null);
+  var winnerProtoName = winnerProto==='R1'?teamA:winnerProto==='R7'?teamB:'Indécis';
+  var divergeProto = !!(winnerProto && winner && winnerProto !== winner);
   var credibility=nulActif?0:Math.min(99,Math.max(50,Math.round(60+Math.min(gap,10)*3.5)));
   var label=function(f){return (typeof FL!=='undefined'&&FL[f])?FL[f]:f||'—';};
   var n=function(v){return Number(v||0).toFixed(2);};
@@ -23349,10 +23576,13 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           + ', les critères disent ' + esc(nomC))
       + '</div>'
       + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-      + 'Accord <b>' + (ac.accord ? ac.juste + '/' + ac.sur : '14/21') + '</b> · désaccord <b>'
-      + (ac.accord ? '8/15' : ac.juste + '/' + ac.sur) + '</b> — <b style="color:#f87171;">p = 0,499</b>, '
-      + 'c\'est pile ou face. L\'écart a fondu à chaque mesure (79/55 à 19 cas, 70/46 à 33, 67/53 à 36) : '
-      + 'un vrai effet se resserre, il ne fond pas.'
+      + 'Accord <b>' + (ac.accord ? ac.juste + '/' + ac.sur : ac.autreJuste + '/' + ac.autreSur) + '</b> · désaccord <b>'
+      + (ac.accord ? ac.autreJuste + '/' + ac.autreSur : ac.juste + '/' + ac.sur) + '</b> — '
+      + '<b style="color:#f87171;">p = ' + ac.p.toFixed(3) + '</b>. '
+      + 'L\'écart n\'a jamais tenu en place : 79/55 à 19 cas, 70/46 à 33, 67/53 à 36, 67/50 à 37, avec un p '
+      + 'qui a fait 0,225 → 0,276 → 0,499 → 0,336. Un vrai effet se resserre autour d\'une valeur ; celui-ci '
+      + 'saute à chaque match. Ces chiffres se recalculent sur l\'archive à chaque ouverture — ils ne sont '
+      + 'plus écrits à la main.'
       + '</div>'
       + '<div style="font-size:9.5px; color:#f87171; margin-top:4px;">'
       + '☠️ Sur les DEUX triplets joués, le thème en accord était le mauvais et le thème gagnant '
@@ -23573,12 +23803,12 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   html+='<div class="tek-tables">';
   html+='<div class="tek-tablebox"><h5>🔵 DÉTAIL DES FORCES — BOUCLE R1</h5><table class="tek-table"><tr><th>Critère évalué</th><th>Détail</th><th>Points</th></tr><tr><td>Présence des maillons</td><td>'+d1.presence+' présences</td><td>'+n(d1.presence)+'</td></tr><tr><td>Répétitions des figures</td><td>'+d1.repetitions+' répétitions</td><td>'+n(d1.repetitions*.5)+'</td></tr><tr><td>Ancrage au repos</td><td>'+((q.a1||[]).filter(function(x){return x.reposPresent;}).length?'Présence au repos':'Pas d’ancrage au repos')+'</td><td>'+n(d1.repos)+'</td></tr><tr><td>Force du binôme</td><td>'+((q.binomeR1&&label(q.binomeR1))||'—')+'</td><td>'+n(d1.bin)+'</td></tr><tr><td>Résultantes propres</td><td>'+d1.propre/0.75+' résultat(s)</td><td>'+n(d1.propre)+'</td></tr><tr><td>Résultantes adverses</td><td>'+d1.adverse/1.25+' résultat(s)</td><td>-'+n(d1.adverse)+'</td></tr></table><div class="tek-total"><span>TOTAL R1</span><span style="color:#60a5fa">'+n(s1)+'</span></div></div>';
   html+='<div class="tek-tablebox r7"><h5>🟠 DÉTAIL DES FORCES — BOUCLE R7</h5><table class="tek-table"><tr><th>Critère évalué</th><th>Détail</th><th>Points</th></tr><tr><td>Présence des maillons</td><td>'+d7.presence+' présences</td><td>'+n(d7.presence)+'</td></tr><tr><td>Répétitions des figures</td><td>'+d7.repetitions+' répétitions</td><td>'+n(d7.repetitions*.5)+'</td></tr><tr><td>Ancrage au repos</td><td>'+((q.a7||[]).filter(function(x){return x.reposPresent;}).length?'Présence au repos':'Pas d’ancrage au repos')+'</td><td>'+n(d7.repos)+'</td></tr><tr><td>Force du binôme</td><td>'+((q.binomeR7&&label(q.binomeR7))||'—')+'</td><td>'+n(d7.bin)+'</td></tr><tr><td>Résultantes propres</td><td>'+d7.propre/0.75+' résultat(s)</td><td>'+n(d7.propre)+'</td></tr><tr><td>Résultantes adverses</td><td>'+d7.adverse/1.25+' résultat(s)</td><td>-'+n(d7.adverse)+'</td></tr></table><div class="tek-total"><span>TOTAL R7</span><span style="color:#fb923c">'+n(s7)+'</span></div></div></div>';
-  html+='<div class="tek-verdict"><div class="tek-verdictgrid"><div class="tek-scale"><div class="symbol">⚖️</div><b>VERDICT DU PROTOCOLE</b><div style="font-size:9px;color:#94a3b8">Comparaison des deux boucles antagonistes</div></div><div><div class="tek-final">'+(nulActif?'⚠️ PROTOCOLE SUSPENDU':'➜ VAINQUEUR FINAL : '+esc(cardWinner)+' ('+winner+')')+'</div><div class="tek-gap">'+(winner?'Avance nette de '+n(gap)+' points.':'Aucune avance décisive.')+'</div><div class="tek-meta">'+(winner?'Le modèle indique que la force structurelle et la qualité des maillons de '+esc(cardWinner)+' sont supérieures à celles de '+esc(winner==='R1'?teamB:teamA)+'.':'Les deux boucles ne présentent pas de domination suffisamment nette.')+'</div>'+(reasonList?'<ul class="tek-list">'+reasonList+'</ul>':'')+'</div></div></div>';
+  html+='<div class="tek-verdict"><div class="tek-verdictgrid"><div class="tek-scale"><div class="symbol">⚖️</div><b>VERDICT DU PROTOCOLE</b><div style="font-size:9px;color:#94a3b8">Comparaison des deux boucles antagonistes</div></div><div><div class="tek-final">'+(nulActif?'⚠️ PROTOCOLE SUSPENDU':'➜ VAINQUEUR FINAL : '+esc(winnerProtoName)+' ('+winnerProto+')')+'</div><div class="tek-gap">'+(winnerProto?'Avance nette de '+n(gap)+' points.':'Aucune avance décisive.')+'</div><div class="tek-meta">'+(winnerProto?'Le modèle indique que la force structurelle et la qualité des maillons de '+esc(winnerProtoName)+' sont supérieures à celles de '+esc(winnerProto==='R1'?teamB:teamA)+'.':'Les deux boucles ne présentent pas de domination suffisamment nette.')+'</div>'+(divergeProto?'<div style="margin-top:7px; padding:8px 10px; border:2px solid #f87171; border-radius:9px; background:rgba(248,113,113,.10); font-size:11px; color:#fecaca; line-height:1.5;"><b>⚠️ LE PROTOCOLE CONTREDIT LA CARTE DU HAUT.</b> Sur ses propres totaux le protocole donne <b>'+esc(winnerProtoName)+' ('+winnerProto+')</b> ; la carte annonce <b>'+esc(winnerName)+' ('+winner+')</b>, parce que c\'est la lecture des sept critères qui la pilote, pas ce tableau. Les deux sont affichés tels quels : sur l\'archive, <b>aucun des deux n\'a de supériorité démontrée</b> (critères 23/36, F4P4 22/36, chaîne complète 22/36, et parier toujours R1 fait 21/36). Quand ils divergent, le camp est à pile ou face — <b>ne le joue pas.</b></div>':'')+(reasonList?'<ul class="tek-list">'+reasonList+'</ul>':'')+'</div></div></div>';
   html+='<div class="tek-section tek-null"><div class="tek-title">⚖️ STRUCTURE DU NUL</div><div class="tek-null-grid">';
   html+='<div class="tek-box"><h5>Juges de structure</h5><div class="tek-kv"><span>1ère partie (M13)</span><b>'+label(sdn.juge1)+'</b></div><div class="tek-kv"><span>2ème partie (M14)</span><b>'+label(sdn.juge2)+'</b></div><div class="tek-kv"><span>Juge final (M15)</span><b>'+label(sdn.reconstruction)+'</b></div><div class="tek-kv"><span>Sentence (M16)</span><b>'+label(sdn.sentence)+'</b></div></div>';
   html+='<div class="tek-box"><h5>Indicateurs de nul</h5><div class="tek-kv"><span>Identité des juges</span><b>'+ (sdn.nulParIdentite?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Opposition / équilibre</span><b>'+ (sdn.nulParOpposition?'✓ active':'—') +'</b></div><div class="tek-kv"><span>Axe succédent</span><b>'+axeTxt+'</b></div><div class="tek-kv"><span>Signature</span><b>'+esc(nullReason)+'</b></div><div class="tek-kv"><span>Règle M15</span><b>'+esc(axeNul&&axeNul.m15Rule?axeNul.m15Rule:'—')+'</b></div></div>';
   html+='<div class="tek-nullstatus"><div class="ico">'+(nulActif?'⚠️':'⊘')+'</div><b>'+nullStatus+'</b><div style="font-size:9px;margin:5px 8px;color:#cbd5e1">'+(nulActif?esc(nulPorteTxt||'Le nul est imposé')+'. Le protocole R1/R7 est suspendu.':'Aucune porte du nul n’est ouverte — le vainqueur du protocole tient.')+'</div></div></div></div>';
-  html+='<div class="tek-section"><div class="tek-title">🛡️ CRÉDIBILITÉ GLOBALE DU VERDICT</div><div class="tek-bottom"><div class="box"><div class="big">'+credibility+'%</div></div><div class="box"><p><b>'+(nulActif?'Le nul est actif.':'Le nul n’est pas actif.')+'</b> '+(nulActif?'Le protocole de comparaison ne reçoit pas de priorité décisionnelle.':'Le protocole de comparaison R1 / R7 est pleinement disponible pour désigner le vainqueur.')+'</p></div><div class="box"><p><b>ANALYSE</b><br>'+ (winner?'Thème orienté : domination structurelle de '+esc(cardWinner)+'.':'Thème équilibré : aucune domination structurelle claire.')+'<br>La crédibilité est un indicateur de disponibilité du protocole, pas une validation empirique.</p></div></div></div>';
+  html+='<div class="tek-section"><div class="tek-title">🛡️ CRÉDIBILITÉ GLOBALE DU VERDICT</div><div class="tek-bottom"><div class="box"><div class="big">'+credibility+'%</div></div><div class="box"><p><b>'+(nulActif?'Le nul est actif.':'Le nul n’est pas actif.')+'</b> '+(nulActif?'Le protocole de comparaison ne reçoit pas de priorité décisionnelle.':'Le protocole de comparaison R1 / R7 est pleinement disponible pour désigner le vainqueur.')+'</p></div><div class="box"><p><b>ANALYSE</b><br>'+ (winnerProto?'Thème orienté : domination structurelle de '+esc(winnerProtoName)+' selon le protocole'+(divergeProto?' — <b style="color:#fca5a5;">qui contredit la carte du haut</b>':'')+'.':'Thème équilibré : aucune domination structurelle claire.')+'<br>La crédibilité est un indicateur de disponibilité du protocole, pas une validation empirique.</p></div></div></div>';
   if((q.duel||[]).length){html+='<div class="tek-section"><div class="tek-title">⚔️ DUELS FIGURE ↔ ANTAGONISTE</div><table class="tek-table"><tr><th>R1 / R7</th><th>Score</th><th>Opposant</th><th>Score</th><th>Issue</th></tr>'+duelRows+'</table></div>';}
   html+='</div>';
   el.innerHTML=html;
