@@ -14539,6 +14539,24 @@ var CAS_REFERENCE_V7 = [
   { nom: 'FortMajTrist', meres: ['fortuna_major','tristitia','populus','conjunctio'],
     score: '3-3', camp: 'nul', btts: true,
     note: 'MÊME MATCH que TristCaput · annonce R1 ✘ · PREMIER NUL RATÉ PAR LA PORTE : +9 en boucles opposées, porte fermée · BTTS annoncé oui ✔ (cadent + Conjunctio)' },
+  // ─── 30/08/26 — LE PREMIER DUEL ENTRE LE VERROU ET PUER ───
+  // Thème analysé AVANT le résultat, à la demande d'Ellemine_D, en
+  // référence au théorème des maisons de confusion — qui n'était pas
+  // applicable ici (R7 en M16, hors du cycle des douze).
+  // Ce que le fichier avait annoncé, et ce qui est arrivé :
+  //   camp ....... R7 annoncé · RÉEL R1                        ✘
+  //   score ...... 0-1 annoncé · réel 1-0 — le score EXACTEMENT
+  //                MIROIR : la forme était juste, le côté non    ✘
+  //   nul ........ aucun (porte fermée à +10, catégorie 0/21)   ✔
+  //   BTTS ....... NON annoncé · réel non (1-0)                 ✔
+  // ⚔️ ET C'EST LE PREMIER CAS OÙ LE VERROU DE CONJUNCTIO ET LA RÈGLE
+  // PUER SE CONTREDISAIENT. Conjunctio absent → le verrou dit NON ;
+  // Puer en M8 succédente → la règle d'Ellemine_D dit OUI. Le verrou
+  // avait la priorité (8/8 contre 4/6) et il a eu raison. Il passe à
+  // 9 sur 9, Puer succédent perd un point.
+  { nom: 'CarcAmis', meres: ['carcer','carcer','amissio','via'],
+    score: '1-0', camp: 'R1', btts: false,
+    note: 'annonce R7 ✘ (réel R1) · score 0-1 pour un 1-0 réel — miroir exact · nul correctement écarté (+10, porte fermée) ✔ · BTTS non ✔ : le verrou de Conjunctio bat la règle Puer sur leur premier désaccord · théorème des maisons inapplicable (R7 en M16)' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
@@ -16057,7 +16075,7 @@ var MOTEURS_BTTS_V7 = [
   // ─── LE CROISEMENT BRANCHÉ DEPUIS LE 30/08 ───
   // ─── LA RÈGLE BRANCHÉE DEPUIS LE 30/08 : TROIS ÉTAGES ───
   { cle: 'btts_trois_etages', nom: 'BTTS · Conjunctio, puis maison de R1, puis Puer', icone: '🪜', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'branché — 24/27 · Conjunctio absent 8/8 · cadent+Conjunctio 7/7 · zone faible départagée par Puer succédent 4/6 et 5/6',
+    juste: 0, total: 0, note: 'branché — 25/28 · Conjunctio absent 9/9 · cadent+Conjunctio 7/7 · zone faible départagée par Puer succédent 4/6 et 5/6',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -16071,7 +16089,7 @@ var MOTEURS_BTTS_V7 = [
       return { oui: suc, detail: 'zone faible · Puer succédent ' + (suc ? 'oui' : 'non') };
     } },
   { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent (sans Puer)', icone: '🔗', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'l\'étage du milieu seul — 22/27 · c\'est ce qui était branché avant le départage par Puer',
+    juste: 0, total: 0, note: 'l\'étage du milieu seul — 23/28 · c\'est ce qui était branché avant le départage par Puer',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -16083,18 +16101,18 @@ var MOTEURS_BTTS_V7 = [
         detail: 'R1 en M' + r.hR1 + (cad ? ' (cadente)' : '') + ' · Conjunctio ' + (conj ? 'présent' : 'ABSENT') };
     } },
   { cle: 'btts_puer_m8', nom: 'BTTS · Puer en M8 exactement', icone: '⑧', teinte: '#64748b',
-    juste: 0, total: 0, note: 'la forme resserrée proposée le 30/08 — 3/4 quand il parle, p = 0,294 : PLUS FAIBLE que la succédente entière (6/9, p = 0,127), et M5 donne le même 3/4',
+    juste: 0, total: 0, note: 'la forme resserrée proposée le 30/08 — 3/5 quand il parle : PLUS FAIBLE que la succédente entière (6/10), et M5 donne le même résultat',
     verdict: function (t) {
       return { oui: t[8] === 'puer', detail: 'M8 = ' + (FL[t[8]] || t[8]) };
     } },
   { cle: 'btts_conjunctio', nom: 'BTTS · Conjunctio présent dans le thème', icone: '🔀', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 20/27 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 8)',
+    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 21/28 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 9)',
     verdict: function (t) {
       for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') return { oui: true, detail: 'Conjunctio en M' + h }; }
       return { oui: false, detail: 'Conjunctio absent des 16 maisons' };
     } },
   { cle: 'btts_puer', nom: 'BTTS · Puer en maison succédente', icone: '⚔', teinte: '#94a3b8',
-    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — 6/9 quand il parle contre 6/18 sinon · BRANCHÉ depuis le 30/08 comme départage de la zone faible, où il fait 4/6 contre 1/6',
+    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — 6/10 quand il parle contre 6/18 sinon · BRANCHÉ comme départage de la zone faible, où il fait 4/6 contre 1/6 · battu par le verrou de Conjunctio sur leur premier désaccord',
     verdict: function (t) {
       var vu = [];
       for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
@@ -16104,7 +16122,7 @@ var MOTEURS_BTTS_V7 = [
         detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
     } },
   { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente (seule)', icone: '🏠', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'la maison seule — 21/27 · son unique raté (Bologna) est un thème sans Conjunctio',
+    juste: 0, total: 0, note: 'la maison seule — 22/28 · son unique raté (Bologna) est un thème sans Conjunctio',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -21494,8 +21512,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // ✔ MAIS SA MÉTHODE, ELLE, DONNE LE MEILLEUR RÉSULTAT DU FICHIER —
   // appliquée à une autre figure. Les seize figures passées sous cinq
   // définitions d'« actif », une seule sort :
-  //     CONJUNCTIO ABSENT DU THÈME → les deux ne marquent PAS : 8 fois
-  //     sur 8. Présent : 10 BTTS sur 17. p = 0,008.
+  //     CONJUNCTIO ABSENT DU THÈME → les deux ne marquent PAS : 9 fois
+  //     sur 9 (8 sur 8 à la découverte, +1 le 30/08). p = 0,008.
   // Et le sens colle exactement : Conjunctio, c'est la jonction,
   // la rencontre, l'échange. « Les deux marquent » EST un échange
   // mutuel. Son absence dit qu'il n'y a pas d'échange.
@@ -21506,13 +21524,12 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // les 4 BTTS que la maison rate ont TOUS Conjunctio présent, donc le
   // verrou n'en bloque aucun.
   //
-  // LA PARTITION EN TROIS ZONES, sur les 27 cas :
-  //     Conjunctio ABSENT ............... NON, 8 sur 8
-  //     cadent + Conjunctio présent ..... OUI, 7 sur 7   (30/08 : +1)
-  //     Conjunctio présent, non cadent .. ZONE MUETTE, 5 BTTS sur 12
-  // Quinze cas tranchés, quinze justes. Douze cas où le fichier ne sait
-  // pas et répond « non » par défaut, ce qui lui en donne 7 de plus.
-  // Total 22/27, contre 21 pour la maison seule et 15 pour le témoin.
+  // LA PARTITION EN TROIS ZONES, sur les 28 cas :
+  //     Conjunctio ABSENT ............... NON, 9 sur 9
+  //     cadent + Conjunctio présent ..... OUI, 7 sur 7
+  //     Conjunctio présent, non cadent .. ZONE FAIBLE, 5 BTTS sur 12
+  // Seize cas tranchés, seize justes.
+  // Total 25/28, contre 22 pour la maison seule et 15 pour le témoin.
   //
   // ⚠️ 30/08 : LA ZONE MUETTE A COÛTÉ UN CAS. TristCaput (nul 1-1, donc
   // BTTS oui) y tombe et reçoit « non ». Or « Puer en maison succédente »,
@@ -21538,8 +21555,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   //
   // ☠️ M8 SEUL EST PLUS FAIBLE, PAS PLUS FORT. Resserrer la règle sur la
   // maison qui l'a suggérée diminue la preuve au lieu de l'augmenter :
-  //     Puer en maison succédente (M2,5,8,11) .. 6/9 · p = 0,127
-  //     Puer en M8 seulement ................... 3/4 · p = 0,294
+  //     Puer en maison succédente (M2,5,8,11) .. 6/10
+  //     Puer en M8 seulement ................... 3/5
   // Quatre cas au lieu de neuf : moins de matière, p plus haut. Et M5
   // donne exactement le même 3/4 que M8 — M8 n'a rien de singulier.
   //
@@ -21555,7 +21572,16 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // par défaut. Sur les 12 cas de cette zone :
   //     Puer en succédente ...... 4 BTTS sur 6
   //     sans .................... 1 BTTS sur 6
-  // Le BTTS affiché passe de 22/27 à 24/27.
+  // Le BTTS affiché passe de 22/28 à 25/28.
+  //
+  // ⚔️ 30/08, PREMIER DUEL — ET LE VERROU GAGNE. Sur CarcAmis (Carcer,
+  // Carcer, Amissio, Via) les deux règles se contredisaient pour la
+  // première fois : Conjunctio ABSENT (le verrou dit non), Puer en M8
+  // succédente (la règle d'Ellemine_D dit oui). Le verrou avait la
+  // priorité, et le match a fini 1-0 : un seul buteur. Le verrou passe
+  // à 9/9, Puer succédent tombe à 6 BTTS sur 10 quand il parle contre
+  // 6 sur 18 quand il se tait. L'ordre des étages est donc confirmé par
+  // le premier cas qui pouvait le renverser.
   //
   // ⚠️ CE QUE ÇA VAUT. p = 0,242 sur la zone muette, 12 cas. C'est
   // nettement plus faible que les deux premiers étages (8/8 et 7/7). Ce
@@ -21806,7 +21832,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsForce: bttsDoctrine.applique,
     bttsDefavorise: bttsDoctrine.defavorise,
     bttsZone: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 8 cas sur 8'
+      ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 9 cas sur 9'
         : (bttsCadent ? 'R1 cadent + Conjunctio présent — 7 cas sur 7'
           : (BTTS_PUER_SUCCEDENT_V7
             ? (bttsPuerSuc
@@ -21815,7 +21841,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
             : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — le fichier répond non par défaut')))
       : null,
     bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? 'maison de R1 + Conjunctio + Puer (24/27)'
+      ? 'maison de R1 + Conjunctio + Puer (25/28)'
       : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
       : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
