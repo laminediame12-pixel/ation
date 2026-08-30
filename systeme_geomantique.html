@@ -14808,12 +14808,74 @@ function renderDoubleTirage() {
       + '<tr><th style="text-align:left; padding:4px 6px;">critère</th>'
       + '<th style="padding:4px 6px;">A</th><th style="padding:4px 6px;">B</th>'
       + '<th style="padding:4px 6px;">préfère</th></tr>' + lignes + '</table>'
+      + (function () {
+          // ─── LE REGISTRE DES PAIRES (30/08/26) ───
+          // Il ne décide pas, il COMPTE. Voir registrePairesV7.
+          var rg = null;
+          try { rg = registrePairesV7(); } catch (e) { return ''; }
+          if (!rg) return '';
+          var departage = c.criteres.filter(function (x) { return x.prefere; }).length;
+          // La validité est-elle muette ? C'est le cas qui fait mal :
+          // deux thèmes également complets qui disent le contraire.
+          var critValid = c.criteres.filter(function (x) {
+            return /validité|dérivés d/.test(x.nom || '');
+          });
+          var validMuette = critValid.length > 0 && critValid.every(function (x) { return !x.prefere; });
+          var alerte = '';
+          if (!c.accord && departage === 0) {
+            alerte = '<div style="margin:8px 0 4px; padding:8px 10px; border:2px solid #f87171; border-radius:9px; '
+              + 'background:rgba(248,113,113,.10); font-size:12px; font-weight:800; color:#fca5a5;">'
+              + '⛔ AUCUN CRITÈRE NE DÉPARTAGE — les deux thèmes se contredisent et tout est à égalité.'
+              + '<div style="font-size:10.5px; font-weight:400; color:#fecaca; margin-top:3px;">'
+              + 'Le fichier ne sait pas lequel croire, et il préfère le dire.</div></div>';
+          } else if (!c.accord && validMuette) {
+            alerte = '<div style="margin:8px 0 4px; padding:8px 10px; border:2px solid #fbbf24; border-radius:9px; '
+              + 'background:rgba(251,191,36,.10); font-size:12px; font-weight:800; color:#fbbf24;">'
+              + '⚠️ LA VALIDITÉ EST MUETTE — les deux thèmes sont aussi complets l\'un que l\'autre.'
+              + '<div style="font-size:10.5px; font-weight:400; color:#fde68a; margin-top:3px;">'
+              + 'C\'est sa limite de naissance : elle mesure si un thème est BIEN FORMÉ, pas s\'il '
+              + 'correspond au match. Deux thèmes bien formés peuvent se contredire, et elle ne peut rien '
+              + 'y faire. Sur les paires connues elle n\'a jamais choisi le mauvais thème — mais elle s\'est '
+              + 'tue une fois, dans exactement cette situation. Les critères ci-dessous qui ne sont pas à '
+              + 'égalité sont tout ce qu\'il reste, et leur registre est sous le tableau.</div></div>';
+          }
+          var lignes = CRITERES_PAIRE_V7.map(function (cr) {
+            var b = rg.bilan[cr.cle];
+            var col = b.faux === 0 && b.juste > 0 ? '#4ade80' : (b.juste > b.faux ? '#fbbf24' : '#94a3b8');
+            return '<tr><td style="padding:3px 6px;">' + esc(cr.nom) + '</td>'
+              + '<td style="padding:3px 6px; text-align:center; color:' + col + '; font-weight:800;">' + b.juste + '</td>'
+              + '<td style="padding:3px 6px; text-align:center; color:#f87171;">' + b.faux + '</td>'
+              + '<td style="padding:3px 6px; text-align:center; color:#64748b;">' + b.muet + '</td></tr>';
+          }).join('');
+          return alerte
+            + '<div style="margin-top:10px; padding:8px 10px; border:1px solid #334155; border-radius:9px;">'
+            + '<div style="font-size:11.5px; font-weight:800; color:#cbd5e1;">📒 REGISTRE DES PAIRES — '
+            + rg.informatives + ' paire(s) qui départagent sur ' + rg.total + '</div>'
+            + '<div style="font-size:10px; color:#94a3b8; margin-top:2px;">Chaque critère doit choisir '
+            + '« celui qui en a le plus ». Une paire dont les deux thèmes disent la même chose ne '
+            + 'départage rien et n\'est pas comptée.</div>'
+            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:5px;">'
+            + '<tr><th style="text-align:left; padding:3px 6px;">critère</th>'
+            + '<th style="padding:3px 6px;">juste</th><th style="padding:3px 6px;">faux</th>'
+            + '<th style="padding:3px 6px;">muet</th></tr>' + lignes + '</table>'
+            + '<div style="font-size:10px; color:#94a3b8; margin-top:5px;">'
+            + rg.lignes.map(function (x) {
+                return '• ' + esc(x.paire.a) + ' / ' + esc(x.paire.b) + ' (' + esc(x.paire.match) + ') — '
+                  + (x.informative ? 'le bon était <b>' + esc(x.bon) + '</b>' : esc(x.resume));
+              }).join('<br>')
+            + '</div>'
+            + '<div style="font-size:10px; color:#64748b; margin-top:5px;">'
+            + 'Le registre ne décide pas, il compte. Le jour où un critère sera à 5 ou 6 sur 6, le '
+            + 'départage sera acquis sans avoir été inventé. Aujourd\'hui la validité n\'a jamais choisi '
+            + 'le mauvais thème — elle a seulement été <b>muette</b> une fois, sur la paire où les deux '
+            + 'étaient à 100 %.</div></div>';
+        })()
       + '<div class="muted" style="font-size:10.5px; margin-top:7px;">'
-      + '⚠️ Aucun de ces critères n\'est démontré. Sur les deux paires connues, une seule était informative '
-      + '(les deux thèmes se contredisaient) et c\'est le <b>niveau de validité</b> qui a choisi le bon — '
-      + '1 sur 1. À l\'inverse, sur l\'ensemble de l\'archive un niveau élevé ne rend PAS un thème isolé plus '
-      + 'juste : niveaux 0-1 → 85 %, niveaux 2-3 → 62 %. Ce sont deux questions différentes, et il faut une '
-      + 'dizaine de paires pour trancher la première.</div>';
+      + '⚠️ Aucun de ces critères n\'est démontré — le registre ci-dessus est là pour qu\'ils le deviennent, '
+      + 'ou pas. À noter que sur l\'ensemble de l\'archive un niveau de validité élevé ne rend PAS un thème '
+      + 'ISOLÉ plus juste (1 axe de dérivé 83 %, 2 axes 86 %, 3 axes 59 %) : « ce thème est-il fiable ? » et '
+      + '« entre ces deux thèmes, lequel croire ? » sont deux questions différentes, et seule la seconde est '
+      + 'comptée ici.</div>';
   };
 })();
 
@@ -14858,6 +14920,107 @@ function comparerDeuxThemesV7(themeA, themeB) {
   return { a: a, b: b, criteres: criteres,
     accord: a.verdict === b.verdict,
     departageables: criteres.filter(function (c) { return c.prefere; }).length };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE REGISTRE DES PAIRES (30/08/26) — demande d'Ellemine_D
+//
+// « Deux thèmes 100 % valides de verdicts différents, ça me tue. »
+//
+// C'est le bon reproche, et il touche une limite de naissance : la
+// validité mesure si un thème est BIEN FORMÉ (ses axes présents, ses
+// binômes présents), pas s'il correspond au match. Rien dans sa
+// définition ne peut empêcher deux thèmes bien formés de se contredire.
+// Elle ne peut donc pas départager une paire où les deux sont complets.
+//
+// CE QUE LES PAIRES CONNUES DISENT VRAIMENT. Trois paires archivées,
+// mais une seule ne départage rien (les deux thèmes disaient nul et
+// c'était un nul). Sur les deux qui départagent, en demandant à chaque
+// critère de choisir « celui qui en a le plus » :
+//     niveau de validité ..... 1 juste · 0 faux · 1 MUET
+//     dérivés d'axe valides .. 1 · 0 · 1 MUET
+//     100 % complet .......... 1 · 0 · 1 MUET
+//     faisceau du nul ........ 1 · 1 · 0
+//     théorème applicable .... 1 · 1 · 0
+//     R1 en maison cadente ... 0 · 1 · 1
+// La validité ne s'est JAMAIS trompée — elle a été muette une fois,
+// exactement sur la paire qui pose problème. Ce n'est pas la même chose
+// qu'être fausse : tout le reste est à pile ou face ou pire.
+//
+// ☠️ ET JE N'INVENTE PAS DE DÉPARTAGE. Sur la paire à 100 % / 100 %, les
+// trois critères non muets ont TOUS choisi le mauvais thème. J'ai aussi
+// essayé « croire le thème dont le verdict s'appuie sur la règle la mieux
+// notée » : juste sur une paire, faux sur l'autre. Avec deux paires
+// informatives on ne peut pas savoir, et une règle taillée sur deux cas
+// est exactement ce qu'on s'est interdit depuis le début.
+//
+// D'OÙ CE REGISTRE. Il ne décide pas : il COMPTE. Chaque paire ajoutée
+// met à jour le tableau, et le jour où un critère sera à 5 ou 6 sur 6,
+// le départage sera acquis sans avoir été inventé. En attendant, quand
+// tous les critères sont à égalité, le panneau le dit franchement.
+var PAIRES_V7 = [
+  { a: 'PuerFortMaj', b: 'PopFortMaj', camp: 'nul', quand: '29/08/26', match: '0-0' },
+  { a: 'TristPop', b: 'ConjTrist', camp: 'R7', quand: '29/08/26', match: '3-2 pour R7' },
+  { a: 'TristCaput', b: 'FortMajTrist', camp: 'nul', quand: '30/08/26', match: '3-3' }
+];
+
+// Les valeurs comparables d'un thème, pour départager une paire.
+// Toutes se lisent « plus il y en a, plus on fait confiance ».
+function criteresPaireV7(theme) {
+  var o = { niveau: 0, axes: 0, complet: 0, faisceau: 0, theoreme: 0, cadent: 0, verdict: '?' };
+  try {
+    var v = getVerdictAfficheReel(theme);
+    o.verdict = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+  } catch (e) {}
+  try { var nv = niveauValiditeV7(theme); o.niveau = nv.niveau; o.complet = nv.complet ? 1 : 0; } catch (e) {}
+  try { var pc = porteConfianceV7(theme); if (pc) o.axes = pc.nbAxes; } catch (e) {}
+  try { var f = faisceauNulV7(theme); if (f) o.faisceau = f.n; } catch (e) {}
+  try { var cd = campDoubleV7(theme); o.theoreme = (cd && cd.applicable) ? 1 : 0; } catch (e) {}
+  try { var r = getRotationCombat(theme); o.cadent = (r && [3, 6, 9, 12].indexOf(r.hR1) >= 0) ? 1 : 0; } catch (e) {}
+  return o;
+}
+
+var CRITERES_PAIRE_V7 = [
+  { cle: 'niveau', nom: 'niveau de validité' },
+  { cle: 'axes', nom: 'dérivés d\'axe valides' },
+  { cle: 'complet', nom: '100 % (niveau 3 + figure du jour)' },
+  { cle: 'faisceau', nom: 'faisceau du nul' },
+  { cle: 'theoreme', nom: 'théorème des maisons applicable' },
+  { cle: 'cadent', nom: 'R1 en maison cadente' }
+];
+
+function registrePairesV7() {
+  var bilan = {}, informatives = 0, total = 0, lignes = [];
+  CRITERES_PAIRE_V7.forEach(function (c) { bilan[c.cle] = { juste: 0, faux: 0, muet: 0 }; });
+  (PAIRES_V7 || []).forEach(function (p) {
+    var ca = null, cb = null;
+    try {
+      var la = tousCasBancV7().filter(function (x) { return x.nom === p.a; })[0];
+      var lb = tousCasBancV7().filter(function (x) { return x.nom === p.b; })[0];
+      if (!la || !lb) return;
+      ca = criteresPaireV7(buildThemeFromMothers(la.meres[0], la.meres[1], la.meres[2], la.meres[3]));
+      cb = criteresPaireV7(buildThemeFromMothers(lb.meres[0], lb.meres[1], lb.meres[2], lb.meres[3]));
+    } catch (e) { return; }
+    total += 1;
+    var aJuste = (ca.verdict === p.camp), bJuste = (cb.verdict === p.camp);
+    if (aJuste === bJuste) {
+      lignes.push({ paire: p, informative: false,
+        resume: aJuste ? 'les deux ont raison' : 'les deux ont tort' });
+      return;
+    }
+    informatives += 1;
+    var bon = aJuste ? 'a' : 'b';
+    var detail = [];
+    CRITERES_PAIRE_V7.forEach(function (c) {
+      var va = ca[c.cle], vb = cb[c.cle];
+      var choix = (va === vb) ? null : (va > vb ? 'a' : 'b');
+      if (choix === null) { bilan[c.cle].muet += 1; detail.push({ cle: c.cle, etat: 'muet' }); }
+      else if (choix === bon) { bilan[c.cle].juste += 1; detail.push({ cle: c.cle, etat: 'juste' }); }
+      else { bilan[c.cle].faux += 1; detail.push({ cle: c.cle, etat: 'faux' }); }
+    });
+    lignes.push({ paire: p, informative: true, bon: bon === 'a' ? p.a : p.b, detail: detail });
+  });
+  return { bilan: bilan, informatives: informatives, total: total, lignes: lignes };
 }
 
 // ═══════════════════════════════════════════════════════════════
