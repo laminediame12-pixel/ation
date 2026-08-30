@@ -15200,6 +15200,89 @@ function tablePolesV7(theme) {
 // colonnes plus la centrale forment exactement le camp de cinq rôles, et
 // aucune figure n'y apparaît deux fois. Les sept contrôles ci-dessous le
 // figent, et le panneau les affiche.
+// ═══════════════════════════════════════════════════════════════
+// CE QUE DONNE UNE FIGURE COMBINÉE À SES PROPRES RELATIONS (30/08/26)
+//
+// Ellemine_D : « une figure résulte antagoniste de son binôme, vérifie
+// ça. »
+//
+// ☠️ PAS SOUS CETTE FORME : 1 sur 16. X combiné à son binôme ne donne
+// son antagoniste que pour Fortuna Minor, et c'est une coïncidence.
+//
+// ✔ MAIS SON INTUITION DE FOND EST JUSTE : « X + son binôme » n'est pas
+// n'importe quoi. Sur les seize figures, ça ne donne que TROIS
+// résultats, jamais un autre :
+//     = Amissio ..... Puer, Laetitia, Fortuna Minor, Carcer
+//     = Laetitia .... Caput, Albus, Rubeus, Tristitia, Conjunctio,
+//                     Fortuna Major, Acquisitio, Populus
+//     = Puella ...... Via, Amissio, Cauda, Puella
+// Et « X + son front » n'en donne que DEUX : Albus ou Fortuna Major.
+//
+// ✔✔ ET IL Y A UNE LOI EXACTE, 16 SUR 16, qu'il cherchait au mauvais
+// endroit :
+//     X + LE FRONT DE SON FRONT (+8) = TRISTITIA, TOUJOURS.
+// Autrement dit : avancer de 8 rangs dans l'ordre de repos revient
+// EXACTEMENT à combiner avec Tristitia.
+//
+// POURQUOI. La combinaison des figures est un ou-exclusif : elle est
+// commutative, associative, Populus est son élément neutre, et chaque
+// figure est sa propre inverse (X + X = Populus, vérifié 16/16 par
+// autoTestMoteurXOR). Dans un groupe pareil, « X + décalage(X) » ne peut
+// être CONSTANT que si le décalage revient à ajouter une figure fixe.
+// Deux décalages seulement le font, et on peut le prouver en les
+// balayant tous :
+//     combiner avec Populus ..... avancer de  0 rang
+//     combiner avec Tristitia ... avancer de  8 rangs
+// Aucune autre figure ne correspond à un décalage constant. C'est
+// pourquoi +2 donne trois résultats et +4 deux : ces décalages ne sont
+// pas des additions de figure fixe.
+//
+// CE QUE ÇA DIT À LA DOCTRINE. Le +8 est déjà la frontière du nul —
+// au-delà de {+2, +4, +6}, zéro nul sur neuf cas. On sait maintenant ce
+// que ce +8 EST : la marque de Tristitia, l'une des trois figures
+// d'incident et l'une des deux figures de Saturne. Quand R7 est à +8 de
+// R1, R7 est littéralement R1 marqué par Tristitia. La frontière du nul
+// n'est donc pas un rang arbitraire dans une liste : c'est l'endroit où
+// la tristesse de Saturne s'interpose entre les deux camps.
+function autoTestRelationsFiguresV7() {
+  var F = FIGS_V7, idx = {};
+  F.forEach(function (f, i) { idx[f] = i; });
+  var app = function (f, k) { return F[(idx[f] + k) % 16]; };
+  var res = { controles: [], ok: true };
+  function loi(nom, k, attendu) {
+    var n = 0, distinct = {};
+    F.forEach(function (X) {
+      var r = combine(X, app(X, k));
+      distinct[r] = true;
+      if (r === attendu) n += 1;
+    });
+    res.controles.push({ nom: nom, ok: n, distinct: Object.keys(distinct).length,
+      figures: Object.keys(distinct) });
+    return n;
+  }
+  loi('X + lui-même = Populus', 0, 'populus');
+  loi('X + le front de son front (+8) = Tristitia', 8, 'tristitia');
+  loi('X + son binôme (+2)', 2, null);
+  loi('X + son front (+4)', 4, null);
+  // La proposition d'Ellemine_D, gardée comme témoin de ce qui a été testé.
+  var claim = 0;
+  F.forEach(function (X) { if (combine(X, app(X, 2)) === app(X, 13)) claim += 1; });
+  res.claimBinomeAntagoniste = claim;
+  // Quelles figures correspondent à un décalage constant ?
+  res.decalagesConstants = [];
+  F.forEach(function (T) {
+    var d = null, coherent = true;
+    F.forEach(function (X) {
+      var k = (((idx[combine(X, T)] - idx[X]) % 16) + 16) % 16;
+      if (d === null) d = k; else if (d !== k) coherent = false;
+    });
+    if (coherent) res.decalagesConstants.push({ figure: T, rangs: d });
+  });
+  res.ok = res.controles[0].ok === 16 && res.controles[1].ok === 16
+    && res.decalagesConstants.length === 2;
+  return res;
+}
+
 function autoTestPolesV7() {
   var idx = {};
   FIGS_V7.forEach(function (f, i) { idx[f] = i; });
@@ -15381,7 +15464,32 @@ function toggleTablePolesPanel() {
             + ap.controles.map(function (c) { return c.nom + ' — ' + c.ok + '/16'; }).join('<br>') + '</div>'
             + '<div style="color:#cbd5e1; margin-top:4px;">Le <b>binôme du front du front EST le bouclier</b> '
             + '((X+8)+2 = X+10) : la première colonne le contient déjà. Il n\'y a pas de cinquième pôle — '
-            + 'les quatre colonnes plus la centrale font exactement le camp de cinq rôles.</div></div>'; })()
+            + 'les quatre colonnes plus la centrale font exactement le camp de cinq rôles.</div>'
+            + (function () {
+                var rf = null;
+                try { rf = autoTestRelationsFiguresV7(); } catch (e) { return ''; }
+                if (!rf) return '';
+                var nom = function (f) { return FL[f] || f; };
+                return '<div style="margin-top:7px; padding-top:6px; border-top:1px solid #334155; color:#cbd5e1;">'
+                  + '<b>Ce que donne une figure combinée à ses propres relations</b> — '
+                  + (rf.ok ? '<span style="color:#4ade80;">lois vérifiées</span>'
+                           : '<span style="color:#f87171;">incohérence</span>')
+                  + '<div style="color:#94a3b8; margin-top:3px;">'
+                  + 'X + le front de son front (+8) = <b>Tristitia</b>, ' + rf.controles[1].ok + '/16. '
+                  + 'X + lui-même = Populus, ' + rf.controles[0].ok + '/16.<br>'
+                  + 'X + son binôme ne donne que ' + rf.controles[2].distinct + ' figures ('
+                  + rf.controles[2].figures.map(nom).join(', ') + ') ; '
+                  + 'X + son front, ' + rf.controles[3].distinct + ' ('
+                  + rf.controles[3].figures.map(nom).join(', ') + ').<br>'
+                  + 'Seules <b>' + rf.decalagesConstants.map(function (d) {
+                      return nom(d.figure) + ' (+' + d.rangs + ')'; }).join(' et ')
+                  + '</b> correspondent à un décalage constant de rangs — c\'est pour ça que le +8 est '
+                  + 'la seule loi exacte.<br>'
+                  + '<span style="color:#fbbf24;">« Une figure résulte antagoniste de son binôme » : '
+                  + rf.claimBinomeAntagoniste + '/16 — la proposition ne tient pas sous cette forme.</span>'
+                  + '</div></div>';
+              })()
+            + '</div>'; })()
       + (function () {
           var ax = autoTestAxesV7();
           var idxF = {}; FIGS_V7.forEach(function (f, i) { idxF[f] = i; });
