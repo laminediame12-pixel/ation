@@ -14557,6 +14557,32 @@ var CAS_REFERENCE_V7 = [
   { nom: 'CarcAmis', meres: ['carcer','carcer','amissio','via'],
     score: '1-0', camp: 'R1', btts: false,
     note: 'annonce R7 ✘ (réel R1) · score 0-1 pour un 1-0 réel — miroir exact · nul correctement écarté (+10, porte fermée) ✔ · BTTS non ✔ : le verrou de Conjunctio bat la règle Puer sur leur premier désaccord · théorème des maisons inapplicable (R7 en M16)' },
+  // ─── 30/08/26 — LE 2-0 QUI COÛTE CHER À TROIS RÈGLES ───
+  // Thème analysé avant le résultat. Ce qu'il annonçait :
+  //   camp ....... R7 · RÉEL R1 (2-0)                            ✘
+  //   score ...... 1-2 · réel 2-0                                ✘
+  //   nul ........ écarté (porte fermée à +10)                   ✔
+  //   BTTS ....... OUI · réel NON (2-0, un seul buteur)          ✘
+  // ☠️ TROIS COUPS D'UN SEUL MATCH :
+  //   1. L'ÉTAGE FORT DU BTTS TOMBE. « R1 cadent + Conjunctio présent »
+  //      était à 7 sur 7 — c'était le socle de la règle branchée. Ici R1
+  //      est en M12 (cadente) et Conjunctio est en M14 : l'étage dit OUI,
+  //      et le match fait 2-0. Il passe à 7 sur 8.
+  //   2. L'ACCORD CAMP DOUBLÉ / VERDICT TOMBE AUSSI. Les deux disaient
+  //      R7 — c'est la configuration que je venais d'annoncer à 10 sur 11.
+  //      Elle passe à 10 sur 12. Un signal de confiance qui se trompe
+  //      quand les deux sont d'accord vaut moins qu'un signal isolé.
+  //   3. Le verdict lui-même se trompe : 27/39.
+  // ✔ Ce qui a tenu : le nul, correctement écarté malgré un faisceau à
+  //   5 signaux sur 7 (FORTE ALERTE). La porte bat le faisceau une fois
+  //   de plus.
+  // ⚠️ Et un point pour la doctrine d'Ellemine_D : ce thème n'est validé
+  //   qu'à 1/3 (un seul dérivé sur trois a ses trois axes) et le verdict
+  //   est faux. C'est un cas qui va dans SON sens, contre la tendance de
+  //   l'archive (1 axe 83 %, 3 axes 59 %).
+  { nom: 'FortMajLaet', meres: ['fortuna_major','laetitia','puella','carcer'],
+    score: '2-0', camp: 'R1', btts: false,
+    note: 'annonce R7 ✘ (réel R1 2-0) · BTTS oui ✘ : PREMIER RATÉ de l\'étage « cadent + Conjunctio », qui passe de 7/7 à 7/8 · camp doublé R7, d\'accord avec le verdict et faux tous les deux · nul écarté ✔ malgré un faisceau à 5/7 · validation 1/3' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
@@ -15336,23 +15362,28 @@ function tablePolesV7(theme) {
 // et il ne sort pas du bruit. Aucune paire de maisons ne se distingue
 // non plus : la meilleure, M2/M12, fait 2 nuls sur 3 cas.
 //
-// ☠️ SUR LE CAMP GAGNANT, LE DOUBLÉ NE BAT PAS LE VERDICT. Sur les 18
+// ☠️ SUR LE CAMP GAGNANT, LE DOUBLÉ NE BAT PAS LE VERDICT. Sur les 19
 // matchs décidés où le théorème s'applique :
-//     verdict affiché ............. 14/18
-//     le camp doublé .............. 13/18
-//     témoin « toujours R1 » ...... 9/18
-// Et découper par l'élément du doublé ne sauve rien : FA 9/13, ET 4/5.
+//     verdict affiché ............. 14/19
+//     le camp doublé .............. 13/19
+//     témoin « toujours R1 » ...... 10/19
+// Et découper par l'élément du doublé ne sauve rien : FA 9/13, ET 4/6.
 //
-// ✔ CE QU'ELLE DONNE, ET C'EST LA SEULE CHOSE. LEUR ACCORD :
+// ✔ CE QU'ELLE DONNE : LEUR ACCORD, et c'est la seule chose.
 //     le camp doublé et le verdict désignent le MÊME camp
-//         (11 cas sur 18) ......... verdict juste 10 fois sur 11   91 %
+//         (12 cas sur 19) ......... verdict juste 10 fois sur 12   83 %
 //     ils se contredisent
 //         (7 cas) ................. verdict juste  4 fois sur 7    57 %
-// C'est le premier signal de confiance du fichier qui aille dans le BON
+// C'est le seul signal de confiance du fichier qui aille dans le BON
 // sens — la porte de confiance par les dérivés, elle, allait à l'envers
 // (3 axes valides → 59 % de justesse contre 86 % à 2 axes).
-// ⚠️ p = 0,245 sur 18 cas. Ce n'est pas démontré, et ça ne touche à rien.
-// Le camp doublé est AFFICHÉ à côté du verdict, il ne le change jamais.
+// ☠️ MAIS IL A DÉJÀ RATÉ. Le 30/08, sur FortMajLaet, le camp doublé et
+// le verdict disaient tous les deux R7 — accord parfait — et le match a
+// fait 2-0 pour R1. L'accord est passé de 10/11 à 10/12 en un match.
+// Un signal de confiance qui se trompe quand les deux sont d'accord vaut
+// moins qu'un signal isolé qui se trompe.
+// ⚠️ 19 cas. Ce n'est pas démontré, et ça ne touche à rien. Le camp
+// doublé est AFFICHÉ à côté du verdict, il ne le change jamais.
 function maisonConfusionV7(h) {
   return [1, 2, 5, 6, 9, 10].indexOf(h) >= 0;
 }
@@ -16075,7 +16106,7 @@ var MOTEURS_BTTS_V7 = [
   // ─── LE CROISEMENT BRANCHÉ DEPUIS LE 30/08 ───
   // ─── LA RÈGLE BRANCHÉE DEPUIS LE 30/08 : TROIS ÉTAGES ───
   { cle: 'btts_trois_etages', nom: 'BTTS · Conjunctio, puis maison de R1, puis Puer', icone: '🪜', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'branché — 25/28 · Conjunctio absent 9/9 · cadent+Conjunctio 7/7 · zone faible départagée par Puer succédent 4/6 et 5/6',
+    juste: 0, total: 0, note: 'branché — 25/29 · Conjunctio absent 9/9 · cadent+Conjunctio 7/8 · zone faible départagée par Puer succédent 4/6 et 5/6',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -16089,7 +16120,7 @@ var MOTEURS_BTTS_V7 = [
       return { oui: suc, detail: 'zone faible · Puer succédent ' + (suc ? 'oui' : 'non') };
     } },
   { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent (sans Puer)', icone: '🔗', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'l\'étage du milieu seul — 23/28 · c\'est ce qui était branché avant le départage par Puer',
+    juste: 0, total: 0, note: 'l\'étage du milieu seul — 23/29 · premier raté le 30/08 (FortMajLaet)',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -16106,7 +16137,7 @@ var MOTEURS_BTTS_V7 = [
       return { oui: t[8] === 'puer', detail: 'M8 = ' + (FL[t[8]] || t[8]) };
     } },
   { cle: 'btts_conjunctio', nom: 'BTTS · Conjunctio présent dans le thème', icone: '🔀', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 21/28 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 9)',
+    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 21/29 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 9)',
     verdict: function (t) {
       for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') return { oui: true, detail: 'Conjunctio en M' + h }; }
       return { oui: false, detail: 'Conjunctio absent des 16 maisons' };
@@ -16122,7 +16153,7 @@ var MOTEURS_BTTS_V7 = [
         detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
     } },
   { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente (seule)', icone: '🏠', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'la maison seule — 22/28 · son unique raté (Bologna) est un thème sans Conjunctio',
+    juste: 0, total: 0, note: 'la maison seule — 22/29',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -21534,10 +21565,16 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   //
   // LA PARTITION EN TROIS ZONES, sur les 28 cas :
   //     Conjunctio ABSENT ............... NON, 9 sur 9
-  //     cadent + Conjunctio présent ..... OUI, 7 sur 7
+  //     cadent + Conjunctio présent ..... OUI, 7 sur 8   (premier raté le 30/08)
   //     Conjunctio présent, non cadent .. ZONE FAIBLE, 5 BTTS sur 12
-  // Seize cas tranchés, seize justes.
-  // Total 25/28, contre 22 pour la maison seule et 15 pour le témoin.
+  // Total 25/29, contre 22 pour la maison seule et 15 pour le témoin.
+  //
+  // ☠️ 30/08 : L'ÉTAGE FORT A RATÉ POUR LA PREMIÈRE FOIS. FortMajLaet —
+  // R1 Tristitia en M12 (cadente), Conjunctio en M14 : l'étage dit OUI,
+  // le match fait 2-0. Il était à 7/7 depuis sa découverte, il est à 7/8.
+  // Le verrou de Conjunctio, lui, tient toujours à 9/9. Si l'étage du
+  // milieu rate une deuxième fois, c'est lui qu'il faudra débrancher, pas
+  // le verrou.
   //
   // ⚠️ 30/08 : LA ZONE MUETTE A COÛTÉ UN CAS. TristCaput (nul 1-1, donc
   // BTTS oui) y tombe et reçoit « non ». Or « Puer en maison succédente »,
@@ -21875,7 +21912,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsDefavorise: bttsDoctrine.defavorise,
     bttsZone: (BTTS_CADENT_V7 && bttsCadent !== null)
       ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 9 cas sur 9'
-        : (bttsCadent ? 'R1 cadent + Conjunctio présent — 7 cas sur 7'
+        : (bttsCadent ? 'R1 cadent + Conjunctio présent — 7 cas sur 8'
           : (BTTS_PUER_SUCCEDENT_V7
             ? (bttsPuerSuc
               ? 'zone faible : R1 pas cadent, mais Puer en maison succédente — 4 BTTS sur 6'
@@ -21883,7 +21920,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
             : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — le fichier répond non par défaut')))
       : null,
     bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? 'maison de R1 + Conjunctio + Puer (25/28)'
+      ? 'maison de R1 + Conjunctio + Puer (25/29)'
       : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
       : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
@@ -22431,10 +22468,11 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'Comme R7 est toujours six maisons après R1, <b>l\'un des deux camps est toujours en maison '
       + 'double et l\'autre en maison simple</b> — jamais les deux, jamais aucun (théorème vérifié '
       + '12/12 et 0 violation sur 3 000 tirages). Il ne vaut que dans le cycle des douze, soit la '
-      + 'moitié des thèmes. Le camp doublé PRIS SEUL ne bat pas le verdict (13/18 contre 14/18), et '
+      + 'moitié des thèmes. Le camp doublé PRIS SEUL ne bat pas le verdict (13/19 contre 14/19), et '
       + 'il ne dit rien du nul (p = 0,297). Ce qui compte, c\'est leur <b>accord</b> : d\'accord, le '
-      + 'verdict est juste 10 fois sur 11 ; en désaccord, 4 fois sur 7. '
-      + '<b style="color:#fbbf24;">Non démontré</b> — 18 cas, p = 0,245 — et branché sur aucun calcul.'
+      + 'verdict est juste 10 fois sur 12 ; en désaccord, 4 fois sur 7. '
+      + '<b style="color:#fbbf24;">Non démontré</b> — 19 cas — et branché sur aucun calcul. '
+      + 'Il a déjà raté une fois en plein accord (30/08, 2-0 contre un R7 annoncé des deux côtés).'
       + '</div></div>';
   })();
   html+='<div class="tek-hero">';
