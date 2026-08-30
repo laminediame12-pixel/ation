@@ -355,7 +355,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 </div>
 <div class="page-content"><section class="section"><h2>🎴 Verdicts</h2><div id="carte-verdict-r" class="card verdict-priority" data-priority-label="⭐ VERDICT FINAL" style="margin-bottom:14px;"><div class="muted">Lance un thème pour afficher le verdict.</div></div><div id="regression-reference-panel" class="card" style="margin-top:10px; border:1px solid #7c3aed; display:none;"></div></section><section class="section" style="display:none;"><h2>Validation du tirage</h2><div class="card" id="theme-validation"><div class="muted">Lancer un thème pour afficher la validation.</div></div></section><section class="section"><h2>Contexte du tirage</h2><div class="card" id="question-context"><div class="muted">Sélectionne le match et au moins une question avant de lancer le thème.</div></div></section><section style="background:#1e293b;margin-bottom:12px;padding:8px 0 0 0;"><h2 style="padding:0 8px 8px;">Grille du thème</h2><div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 8px 8px;"><span style="font-size:12px; color:#94a3b8;">Thème actif :</span>
 <div id="axis-theme-controls" class="axis-theme-controls"></div>
-<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="validiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleValiditePanel()">🗓️ Validité &amp; figure du jour</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="septCriteresBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleSeptCriteresPanel()">🎯 Sept critères</button><button id="doubleTirageBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleDoubleTiragePanel()">⚖️ Double tirage</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="validite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="sept-criteres-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="double-tirage-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
+<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="validiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleValiditePanel()">🗓️ Validité &amp; figure du jour</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="septCriteresBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleSeptCriteresPanel()">🎯 Sept critères</button><button id="doubleTirageBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleDoubleTiragePanel()">⚖️ Double tirage</button><button id="consensusBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleConsensusPanel()">🎲 Consensus de tirages</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="validite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="sept-criteres-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="double-tirage-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="consensus-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
 <div style="display:flex; gap:14px; justify-content:center; margin-top:10px; font-size:12px; color:#cbd5e1;">
   <span><span style="display:inline-block; width:14px; height:4px; background:#ef4444; margin-right:4px; vertical-align:middle;"></span>Feu</span>
   <span><span style="display:inline-block; width:14px; height:4px; background:#eab308; margin-right:4px; vertical-align:middle;"></span>Air</span>
@@ -14909,6 +14909,252 @@ function renderDoubleTirage() {
       + 'comptée ici.</div>';
   };
 })();
+
+// ═══════════════════════════════════════════════════════════════
+// LE CONSENSUS DE TIRAGES (30/08/26) — idée d'Ellemine_D
+//
+// « Fais un bouton de lancement pour 10 ou 20 thèmes, on regarde le camp
+// qui vient le plus souvent — 2/3, 16/20. »
+//
+// L'idée est juste, et elle est TESTABLE AVANT D'ÊTRE CRUE. Deux
+// conditions doivent tenir pour qu'un consensus veuille dire quelque
+// chose.
+//
+// 1. IL FAUT CONNAÎTRE LE TAUX DE BASE. Si le système disait « R1 » sur
+//    la majorité des thèmes au hasard, un 16/20 pour R1 ne dirait rien du
+//    match. Mesuré sur 3 000 tirages aléatoires :
+//        R1 ... 39,0 %     R7 ... 36,8 %     nul ... 24,2 %
+//    (et sur les seuls thèmes valides : 38,5 / 36,8 / 24,7 — identique).
+//    La distribution est presque équilibrée : un écart net est donc
+//    lisible. C'est ce qui rend l'idée exploitable.
+//
+// 2. ☠️ IL FAUT QUE LES TIRAGES SOIENT LES TIENS. Si c'est l'ordinateur
+//    qui tire les mères avec Math.random(), les verdicts sont par
+//    construction des tirages indépendants dans 39/37/24 — aucun
+//    consensus ne peut émerger au-delà du hasard, jamais. Le bouton
+//    « tirage machine » n'est donc PAS l'outil : c'est le TÉMOIN, celui
+//    qui montre à quoi ressemble l'absence de signal.
+//
+// ET C'EST LÀ QUE ÇA DEVIENT INTÉRESSANT. Ce panneau est un test direct
+// de la prémisse du fichier. Si tes tirages à la main donnent des
+// consensus que la machine ne donne jamais, c'est que l'acte de tirer
+// n'est pas indépendant du match. Si tes tirages ressemblent à ceux de
+// la machine, il faut le savoir aussi. Le panneau ne tranche pas : il
+// compte, il compare au témoin, et il donne la probabilité qu'un tel
+// écart sorte du hasard.
+var BASE_VERDICT_V7 = { R1: 0.390, R7: 0.368, nul: 0.242 };
+
+// Probabilité d'obtenir AU MOINS k succès sur n, chacun de probabilité p.
+function queueBinomialeV7(k, n, p) {
+  function lchoose(n2, k2) {
+    var r = 0;
+    for (var i = 1; i <= k2; i++) r += Math.log(n2 - k2 + i) - Math.log(i);
+    return r;
+  }
+  var tot = 0;
+  for (var i = k; i <= n; i++) {
+    tot += Math.exp(lchoose(n, i) + i * Math.log(p) + (n - i) * Math.log(1 - p));
+  }
+  return Math.min(1, Math.max(0, tot));
+}
+
+// themes : tableau de tableaux de 4 clés de figures.
+function consensusTiragesV7(themes) {
+  var tally = { R1: 0, R7: 0, nul: 0 }, lignes = [], rejetes = 0;
+  (themes || []).forEach(function (m, i) {
+    var t = null;
+    try { t = buildThemeFromMothers(m[0], m[1], m[2], m[3]); } catch (e) { return; }
+    var v = null;
+    try { v = getVerdictAfficheReel(t); } catch (e) { return; }
+    var d = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+    tally[d] += 1;
+    var nv = 0;
+    try { nv = niveauValiditeV7(t).niveau; } catch (e) {}
+    if (v.rejete) rejetes += 1;
+    lignes.push({ n: i + 1, meres: m, dit: d, score: v.scoreMain, niveau: nv, rejete: !!v.rejete });
+  });
+  var n = tally.R1 + tally.R7 + tally.nul;
+  if (!n) return null;
+  var tete = ['R1', 'R7', 'nul'].sort(function (a, b) { return tally[b] - tally[a]; })[0];
+  var p = queueBinomialeV7(tally[tete], n, BASE_VERDICT_V7[tete]);
+  var attendu = Math.round(BASE_VERDICT_V7[tete] * n * 10) / 10;
+  return { tally: tally, n: n, tete: tete, compte: tally[tete], attendu: attendu,
+    p: p, significatif: p < 0.05, lignes: lignes, rejetes: rejetes };
+}
+
+// Le panneau : on colle ses tirages, une ligne par thème.
+function toggleConsensusPanel() {
+  var panel = document.getElementById('consensus-panel');
+  if (!panel) return;
+  if (panel.style.display === 'none' || !panel.style.display) {
+    renderConsensusPanel();
+    panel.style.display = 'block';
+  } else { panel.style.display = 'none'; }
+}
+
+// Lit un nom de figure écrit à la main : accents, majuscules, « conjonctio »,
+// « Caput », « Aquisitio »… tout ce qu'Ellemine_D écrit réellement.
+function figureDepuisTexteV7(txt) {
+  var v = String(txt || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z]/g, '');
+  if (!v) return null;
+  var alias = {
+    puer: 'puer', laetitia: 'laetitia', letitia: 'laetitia',
+    caput: 'caput_draconis', caputdraconis: 'caput_draconis',
+    cauda: 'cauda_draconis', caudadraconis: 'cauda_draconis',
+    albus: 'albus', via: 'via', amissio: 'amissio', rubeus: 'rubeus',
+    tristitia: 'tristitia', carcer: 'carcer',
+    conjunctio: 'conjunctio', conjonctio: 'conjunctio', conionctio: 'conjunctio',
+    puella: 'puella', populus: 'populus',
+    acquisitio: 'acquisitio', aquisitio: 'acquisitio',
+    fortunamajor: 'fortuna_major', fortunamaior: 'fortuna_major',
+    fortunaminor: 'fortuna_minor'
+  };
+  if (alias[v]) return alias[v];
+  var cles = Object.keys(FL);
+  for (var i = 0; i < cles.length; i++) {
+    if (cles[i].replace(/_/g, '') === v) return cles[i];
+  }
+  return null;
+}
+
+function lireTiragesTexteV7(txt) {
+  var lignes = String(txt || '').split(/\n+/);
+  var out = [], erreurs = [];
+  lignes.forEach(function (l, i) {
+    var brut = l.trim();
+    if (!brut) return;
+    var mots = brut.split(/[\s,;/·|]+/).filter(function (x) { return x; });
+    // regrouper « fortuna major » en un seul nom
+    var noms = [], j = 0;
+    while (j < mots.length) {
+      var deux = (j + 1 < mots.length) ? figureDepuisTexteV7(mots[j] + mots[j + 1]) : null;
+      if (deux) { noms.push(deux); j += 2; }
+      else { noms.push(figureDepuisTexteV7(mots[j])); j += 1; }
+    }
+    if (noms.length !== 4 || noms.some(function (x) { return !x; })) {
+      erreurs.push('ligne ' + (i + 1) + ' : « ' + brut + ' » — il faut exactement 4 figures reconnues');
+      return;
+    }
+    out.push(noms);
+  });
+  return { themes: out, erreurs: erreurs };
+}
+
+function renderConsensusPanel(action) {
+  var panel = document.getElementById('consensus-panel');
+  if (!panel) return;
+  var esc = function (v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  };
+  if (!action) {
+    panel.innerHTML =
+      '<h3 style="margin-bottom:2px;">🎲 Consensus de tirages</h3>'
+      + '<div class="muted" style="font-size:11px; margin-bottom:8px;">'
+      + 'Colle tes tirages pour un même match, <b>une ligne par thème, quatre mères par ligne</b>. '
+      + 'Le panneau compte les verdicts et dit si le camp majoritaire sort du hasard.'
+      + '<br><b style="color:#fbbf24;">Taux de base mesurés sur 3 000 tirages aléatoires : '
+      + 'R1 39,0 % · R7 36,8 % · nul 24,2 %.</b> C\'est à ces taux qu\'un consensus se compare, '
+      + 'jamais à 50/50.</div>'
+      + '<textarea id="cons-txt" rows="8" placeholder="Fortuna major, Laetitia, Fortuna major, Rubeus&#10;'
+      + 'Fortuna major, Albus, Albus, Albus&#10;Conjonctio, Caput, Aquisitio, Albus" '
+      + 'style="width:100%; border-radius:8px; background:#020617; color:#e2e8f0; border:1px solid #334155; '
+      + 'padding:9px; font-size:12px;"></textarea>'
+      + '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">'
+      + '<button class="btn-primary" style="width:auto; padding:7px 14px;" '
+      + 'onclick="renderConsensusPanel(\'mes\')">Compter mes tirages</button>'
+      + '<button class="btn-secondary" style="width:auto; padding:7px 14px;" '
+      + 'onclick="renderConsensusPanel(\'temoin10\')">Témoin machine — 10</button>'
+      + '<button class="btn-secondary" style="width:auto; padding:7px 14px;" '
+      + 'onclick="renderConsensusPanel(\'temoin20\')">Témoin machine — 20</button></div>'
+      + '<div id="cons-res" style="margin-top:10px;"></div>';
+    return;
+  }
+  var zone = document.getElementById('cons-res');
+  if (!zone) return;
+  var themes = [], erreurs = [], temoin = false;
+  if (action === 'mes') {
+    var lu = lireTiragesTexteV7((document.getElementById('cons-txt') || {}).value || '');
+    themes = lu.themes; erreurs = lu.erreurs;
+  } else {
+    temoin = true;
+    var n = action === 'temoin20' ? 20 : 10;
+    for (var i = 0; i < n; i++) {
+      themes.push([0, 0, 0, 0].map(function () {
+        return FIGS_V7[Math.floor(Math.random() * 16)];
+      }));
+    }
+  }
+  if (!themes.length) {
+    zone.innerHTML = '<div class="warn">Aucun tirage lisible.'
+      + (erreurs.length ? '<br>' + erreurs.map(esc).join('<br>') : '') + '</div>';
+    return;
+  }
+  var r = consensusTiragesV7(themes);
+  if (!r) { zone.innerHTML = '<div class="warn">Calcul impossible.</div>'; return; }
+  var col = r.significatif ? '#4ade80' : '#fbbf24';
+  var nomTete = r.tete === 'nul' ? 'le NUL' : r.tete;
+  zone.innerHTML =
+    (erreurs.length ? '<div class="warn" style="font-size:11px; margin-bottom:6px;">'
+      + erreurs.map(esc).join('<br>') + '</div>' : '')
+    + (temoin ? '<div style="font-size:11px; color:#94a3b8; margin-bottom:6px;">'
+      + '⚙️ <b>TÉMOIN MACHINE</b> — ces tirages viennent de Math.random(). Par construction ils ne '
+      + 'peuvent RIEN dire du match : ils montrent seulement à quoi ressemble l\'absence de signal. '
+      + 'Compare-les à tes propres tirages.</div>' : '')
+    + '<div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:8px;">'
+    + [['R1', '#7dd3fc'], ['R7', '#fdba74'], ['nul', '#fbbf24']].map(function (x) {
+        return '<div style="flex:1; min-width:110px; border:1px solid ' + x[1]
+          + '; border-radius:9px; padding:8px; text-align:center;">'
+          + '<div style="font-size:11px; color:#94a3b8;">' + x[0] + '</div>'
+          + '<div style="font-size:24px; font-weight:800; color:' + x[1] + ';">'
+          + r.tally[x[0]] + '</div>'
+          + '<div style="font-size:10px; color:#64748b;">attendu ' 
+          + (Math.round(BASE_VERDICT_V7[x[0]] * r.n * 10) / 10) + '</div></div>';
+      }).join('')
+    + '</div>'
+    + '<div style="padding:9px 11px; border-radius:9px; border:2px solid ' + col + '; '
+    + 'background:rgba(15,23,42,.6);">'
+    + '<div style="font-size:13px; font-weight:800; color:' + col + ';">'
+    + esc(nomTete) + ' sort ' + r.compte + ' fois sur ' + r.n
+    + ' — attendu ' + r.attendu + ' au hasard</div>'
+    + '<div style="font-size:11.5px; color:#e2e8f0; margin-top:4px;">'
+    + (r.significatif
+      ? 'Probabilité d\'obtenir au moins ' + r.compte + ' sur ' + r.n + ' par pur hasard : <b>'
+        + (r.p < 0.001 ? 'moins de 0,1 %' : (r.p * 100).toFixed(1) + ' %') + '</b>. '
+        + 'C\'est un écart que le hasard ne produit pas facilement.'
+      : 'Probabilité d\'obtenir au moins ' + r.compte + ' sur ' + r.n + ' par pur hasard : <b>'
+        + (r.p * 100).toFixed(1) + ' %</b>. <b>Compatible avec le hasard</b> — ce n\'est pas un consensus, '
+        + 'c\'est une majorité ordinaire.')
+    + '</div>'
+    + (r.rejetes ? '<div style="font-size:10.5px; color:#94a3b8; margin-top:4px;">'
+        + r.rejetes + ' de ces thèmes sont rejetés par ta règle de validité — leur verdict est compté '
+        + 'ici quand même, sinon il ne resterait presque rien à compter.</div>' : '')
+    + '</div>'
+    + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:8px;">'
+    + '<tr><th style="text-align:left; padding:3px 6px;">#</th>'
+    + '<th style="text-align:left; padding:3px 6px;">mères</th>'
+    + '<th style="padding:3px 6px;">verdict</th><th style="padding:3px 6px;">score</th>'
+    + '<th style="padding:3px 6px;">validité</th></tr>'
+    + r.lignes.map(function (l) {
+        var c = l.dit === 'nul' ? '#fbbf24' : (l.dit === 'R1' ? '#7dd3fc' : '#fdba74');
+        return '<tr><td style="padding:3px 6px; color:#64748b;">' + l.n + '</td>'
+          + '<td style="padding:3px 6px; color:#cbd5e1;">'
+          + l.meres.map(function (f) { return esc(FL[f] || f); }).join(' · ') + '</td>'
+          + '<td style="padding:3px 6px; text-align:center; color:' + c + '; font-weight:800;">'
+          + esc(l.dit) + '</td>'
+          + '<td style="padding:3px 6px; text-align:center; color:#94a3b8;">' + esc(l.score) + '</td>'
+          + '<td style="padding:3px 6px; text-align:center; color:'
+          + (l.rejete ? '#f87171' : '#4ade80') + ';">' + l.niveau + '/3</td></tr>';
+      }).join('')
+    + '</table>'
+    + '<div class="muted" style="font-size:10px; margin-top:7px;">'
+    + '⚠️ Un consensus significatif prouve que TES tirages ne se comportent pas comme des tirages au '
+    + 'hasard. Il ne prouve pas encore qu\'ils disent vrai sur le match — pour ça il faut comparer le '
+    + 'camp majoritaire au résultat réel, plusieurs fois. C\'est exactement ce que le journal des '
+    + 'prédictions gelées est fait pour mesurer.</div>';
+}
 
 function comparerDeuxThemesV7(themeA, themeB) {
   if (!themeA || !themeB) return null;
