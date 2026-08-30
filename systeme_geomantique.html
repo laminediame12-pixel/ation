@@ -15939,8 +15939,23 @@ var MOTEURS_BTTS_V7 = [
   // mesure dans buildVerdictCard). Il n'attrape que 6 des 10 BTTS réels :
   // quand il dit oui, crois-le ; quand il se tait, il ne dit rien.
   // ─── LE CROISEMENT BRANCHÉ DEPUIS LE 30/08 ───
-  { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent', icone: '🔗', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'branché — 22/27 · absent de Conjunctio : 0 BTTS sur 8 · cadent+présent : 7 sur 7',
+  // ─── LA RÈGLE BRANCHÉE DEPUIS LE 30/08 : TROIS ÉTAGES ───
+  { cle: 'btts_trois_etages', nom: 'BTTS · Conjunctio, puis maison de R1, puis Puer', icone: '🪜', teinte: '#22c55e',
+    juste: 0, total: 0, note: 'branché — 24/27 · Conjunctio absent 8/8 · cadent+Conjunctio 7/7 · zone faible départagée par Puer succédent 4/6 et 5/6',
+    verdict: function (t) {
+      var r = null;
+      try { r = getRotationCombat(t); } catch (e) { return null; }
+      if (!r || !r.hR1) return null;
+      var conj = false;
+      for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') { conj = true; break; } }
+      if (!conj) return { oui: false, detail: 'Conjunctio absent — pas d\'échange' };
+      var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
+      if (cad) return { oui: true, detail: 'R1 en M' + r.hR1 + ' cadente + Conjunctio' };
+      var suc = [2, 5, 8, 11].some(function (h) { return t[h] === 'puer'; });
+      return { oui: suc, detail: 'zone faible · Puer succédent ' + (suc ? 'oui' : 'non') };
+    } },
+  { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent (sans Puer)', icone: '🔗', teinte: '#84cc16',
+    juste: 0, total: 0, note: 'l\'étage du milieu seul — 22/27 · c\'est ce qui était branché avant le départage par Puer',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -15951,6 +15966,11 @@ var MOTEURS_BTTS_V7 = [
       return { oui: cad && conj,
         detail: 'R1 en M' + r.hR1 + (cad ? ' (cadente)' : '') + ' · Conjunctio ' + (conj ? 'présent' : 'ABSENT') };
     } },
+  { cle: 'btts_puer_m8', nom: 'BTTS · Puer en M8 exactement', icone: '⑧', teinte: '#64748b',
+    juste: 0, total: 0, note: 'la forme resserrée proposée le 30/08 — 3/4 quand il parle, p = 0,294 : PLUS FAIBLE que la succédente entière (6/9, p = 0,127), et M5 donne le même 3/4',
+    verdict: function (t) {
+      return { oui: t[8] === 'puer', detail: 'M8 = ' + (FL[t[8]] || t[8]) };
+    } },
   { cle: 'btts_conjunctio', nom: 'BTTS · Conjunctio présent dans le thème', icone: '🔀', teinte: '#38bdf8',
     juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 20/27 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 8)',
     verdict: function (t) {
@@ -15958,7 +15978,7 @@ var MOTEURS_BTTS_V7 = [
       return { oui: false, detail: 'Conjunctio absent des 16 maisons' };
     } },
   { cle: 'btts_puer', nom: 'BTTS · Puer en maison succédente', icone: '⚔', teinte: '#94a3b8',
-    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — la seule des 18 formes qui aille dans son sens : 6/9 quand il parle contre 6/18 sinon · deux fois il a vu ce que la règle branchée manquait · NON démontrée',
+    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — 6/9 quand il parle contre 6/18 sinon · BRANCHÉ depuis le 30/08 comme départage de la zone faible, où il fait 4/6 contre 1/6',
     verdict: function (t) {
       var vu = [];
       for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
@@ -21075,6 +21095,10 @@ var BTTS_CHAINE_DECISIF = true;
 // false, la chaîne du perdant reprend la tête et on retombe sur 17/25.
 // Voir le bloc de mesure dans buildVerdictCard.
 var BTTS_CADENT_V7 = true;
+// Le départage de la zone muette par Puer en maison succédente
+// (30/08/26, règle d'Ellemine_D). Mis à false, cette zone répond « non »
+// par défaut comme avant et le BTTS retombe à 22/27.
+var BTTS_PUER_SUCCEDENT_V7 = true;
 var BTTS_ROTATION_DECISIF = true;
 var BTTS_DOCTRINE_M4M10_DECISIVE = false;
 
@@ -21391,8 +21415,52 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   var bttsConj = false;
   try { for (var _h = 1; _h <= 16; _h++) { if (theme[_h] === 'conjunctio') { bttsConj = true; break; } } }
   catch (e) { bttsConj = false; }
+  // ═══════════════════════════════════════════════════════════════
+  // PUER EN MAISON SUCCÉDENTE TRANCHE LA ZONE MUETTE (30/08/26)
+  //
+  // Ellemine_D : « Puer en M8 indique les deux marquent. »
+  //
+  // ☠️ M8 SEUL EST PLUS FAIBLE, PAS PLUS FORT. Resserrer la règle sur la
+  // maison qui l'a suggérée diminue la preuve au lieu de l'augmenter :
+  //     Puer en maison succédente (M2,5,8,11) .. 6/9 · p = 0,127
+  //     Puer en M8 seulement ................... 3/4 · p = 0,294
+  // Quatre cas au lieu de neuf : moins de matière, p plus haut. Et M5
+  // donne exactement le même 3/4 que M8 — M8 n'a rien de singulier.
+  //
+  // ☠️ ET CE N'EST PAS LA MAISON QUI PARLE, C'EST LA FIGURE. Testé :
+  // la nature de l'occupant de M8 ne dit rien du BTTS (attaquante 7/15,
+  // bloquante 1/3, p = 1,000 dans les deux cas). M8 n'est pas « la maison
+  // des deux buts » ; c'est Puer qui compte, et il compte partout dans
+  // les succédentes.
+  //
+  // ✔ MAIS SA RÈGLE TROUVE SA PLACE, ET C'EST LA BONNE. Elle ne remplace
+  // pas le croisement cadent+Conjunctio : elle tranche exactement la ZONE
+  // MUETTE, là où ce croisement déclare ne pas savoir et répondait « non »
+  // par défaut. Sur les 12 cas de cette zone :
+  //     Puer en succédente ...... 4 BTTS sur 6
+  //     sans .................... 1 BTTS sur 6
+  // Le BTTS affiché passe de 22/27 à 24/27.
+  //
+  // ⚠️ CE QUE ÇA VAUT. p = 0,242 sur la zone muette, 12 cas. C'est
+  // nettement plus faible que les deux premiers étages (8/8 et 7/7). Ce
+  // qui justifie de le brancher quand même : la règle existait AVANT
+  // cette mesure — elle était déjà au banc depuis le 30/08 — donc elle
+  // n'est pas un gagnant de recherche, et elle s'applique au résidu que
+  // le fichier reconnaissait ne pas savoir lire. Les deux étages du bas
+  // restent affichés comme faibles, avec leurs fractions.
+  var bttsPuerSuc = false;
+  try {
+    for (var _hp = 0; _hp < 4; _hp++) {
+      var _mh = [2, 5, 8, 11][_hp];
+      if (theme[_mh] === 'puer') { bttsPuerSuc = true; break; }
+    }
+  } catch (e) { bttsPuerSuc = false; }
   var btts;
-  if (BTTS_CADENT_V7 && bttsCadent !== null) btts = (bttsCadent && bttsConj);
+  if (BTTS_CADENT_V7 && bttsCadent !== null) {
+    if (!bttsConj) btts = false;
+    else if (bttsCadent) btts = true;
+    else btts = (BTTS_PUER_SUCCEDENT_V7 ? bttsPuerSuc : false);
+  }
   else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
   else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) btts = false;
   else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) btts = bttsChaine.lesDeuxMarquent;
@@ -21624,10 +21692,14 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsZone: (BTTS_CADENT_V7 && bttsCadent !== null)
       ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 8 cas sur 8'
         : (bttsCadent ? 'R1 cadent + Conjunctio présent — 7 cas sur 7'
-          : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — 5 BTTS sur 12, le fichier répond non par défaut'))
+          : (BTTS_PUER_SUCCEDENT_V7
+            ? (bttsPuerSuc
+              ? 'zone faible : R1 pas cadent, mais Puer en maison succédente — 4 BTTS sur 6'
+              : 'zone faible : ni cadent ni Puer succédent — 1 BTTS sur 6, donc non')
+            : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — le fichier répond non par défaut')))
       : null,
     bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? 'maison de R1 + Conjunctio (22/27)'
+      ? 'maison de R1 + Conjunctio + Puer (24/27)'
       : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
       : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
