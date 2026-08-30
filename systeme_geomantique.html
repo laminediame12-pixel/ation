@@ -21979,6 +21979,84 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
 //
 // La leçon est la même que pour nulActifV7 : deux copies d'une décision
 // finissent toujours par diverger. Il n'y en a plus qu'une.
+// ═══════════════════════════════════════════════════════════════
+// LE REJET DES THÈMES NON VALIDES (30/08/26) — demande d'Ellemine_D
+//
+// « Si ce n'est pas valide, rejette-le, afin qu'on soit clean. »
+//
+// Le thème dont la validation n'atteint pas le seuil ne reçoit plus de
+// verdict : la carte affiche un REFUS et dit ce qui manque. Le reste des
+// panneaux (nul, BTTS, incident, axes) continue de s'afficher — ils ne
+// dépendent pas de la validation.
+//
+// ☠️ CE QUE ÇA COÛTE, MESURÉ AVANT DE LE BRANCHER, sur les 39 cas au
+// camp connu (justesse globale 27/39 = 69 %) :
+//   seuil            gardés   justesse des GARDÉS   justesse des REJETÉS
+//   aucun rejet      39/39          69 %                  —
+//   niveau ≥ 1       33/39          67 %                 83 %
+//   niveau ≥ 2       16/39          63 %                 74 %
+//   niveau 3         13/39          69 %                 69 %
+//   100 % (niv 3+fdj) 11/39         64 %                 71 %
+// AUCUN SEUIL N'AMÉLIORE LA JUSTESSE DE CE QUI RESTE. Deux d'entre eux
+// gardent franchement le moins bon paquet : à « niveau ≥ 2 » on garde du
+// 63 % et on jette du 74 %. C'est cohérent avec ce que le fichier mesure
+// depuis le 29/08 — un thème très validé n'est PAS un thème plus juste
+// (1 axe de dérivé 83 %, 2 axes 86 %, 3 axes 59 %).
+//
+// ET IL FAUT BEAUCOUP TIRER. Sur 2 000 tirages au hasard : niveau ≥ 2
+// dans 24 % des cas, niveau 3 dans 12,7 %, 100 % dans 11 %. Au seuil le
+// plus strict, il faut écarter environ neuf thèmes sur dix.
+//
+// C'EST BRANCHÉ QUAND MÊME, parce que c'est sa demande et que le refus
+// est honnête : mieux vaut ne rien dire que dire faux. Mais le fichier
+// écrit ici que la mesure ne soutient pas ce filtre, et REJET_THEME_
+// INVALIDE_V7 le débranche d'un caractère.
+//
+// ⚠️ LE SEUIL EST À 3, PAS À « 100 % ». Le 100 % inclut la figure du
+// jour, qui dépend de la DATE : le même thème serait accepté aujourd'hui
+// et refusé demain. Un filtre qui change d'avis tout seul n'est pas un
+// filtre. La figure du jour reste affichée à titre indicatif.
+//
+// ⚠️ L'ARCHIVE, ELLE, GARDE TOUT. Si on retirait les thèmes non valides
+// des cas de référence, on perdrait la seule chose qui permet de savoir
+// si ce filtre sert à quelque chose. Le rejet porte sur le VERDICT
+// AFFICHÉ, jamais sur la mesure.
+var REJET_THEME_INVALIDE_V7 = true;
+var SEUIL_VALIDITE_V7 = 3;
+function themeRejeteV7(theme) {
+  if (!REJET_THEME_INVALIDE_V7) return null;
+  var nv = null;
+  try { nv = niveauValiditeV7(theme); } catch (e) { return null; }
+  if (!nv || !nv.applicable) return null;
+  if (nv.detruit) {
+    return { rejete: true, niveau: 0, detruit: true, seuil: SEUIL_VALIDITE_V7,
+      manques: ['thème détruit — ' + (FL[nv.figM1] || nv.figM1) + ' en M1'] };
+  }
+  if (nv.niveau >= SEUIL_VALIDITE_V7) return { rejete: false, niveau: nv.niveau, seuil: SEUIL_VALIDITE_V7 };
+  var manques = [];
+  if (!nv.base.axes.ok) {
+    ['cardinal', 'succedent', 'cadent'].forEach(function (k) {
+      if (!nv.base.axes[k].ok) manques.push('thème de base : axe ' + k + ' ('
+        + (FL[nv.base.axes[k].fig] || nv.base.axes[k].fig) + ') absent');
+    });
+  }
+  nv.derives.forEach(function (d) {
+    if (d.absent) { manques.push(d.nom + ' : dérivé impossible'); return; }
+    ['cardinal', 'succedent', 'cadent'].forEach(function (k) {
+      if (d.axes[k] && !d.axes[k].ok) manques.push(d.nom + ' : axe ' + k + ' ('
+        + (FL[d.axes[k].fig] || d.axes[k].fig) + ') absent');
+    });
+  });
+  if (!nv.base.binome.ok) manques.push('thème de base : binôme de M1 ('
+    + (FL[nv.base.binome.fig] || nv.base.binome.fig) + ') absent');
+  nv.derives.forEach(function (d) {
+    if (!d.absent && d.binome && !d.binome.ok) manques.push(d.nom + ' : binôme ('
+      + (FL[d.binome.fig] || d.binome.fig) + ') absent');
+  });
+  return { rejete: true, niveau: nv.niveau, seuil: SEUIL_VALIDITE_V7,
+    manques: manques, fdj: nv.fdj, fdjOk: nv.fdjOk };
+}
+
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
   var crit = null;
@@ -22165,6 +22243,17 @@ function getVerdictAfficheReel(theme, favorite) {
     // affirmation affichée qui échappait entièrement au filet. C'est
     // aussi pour ça que je l'ai mesuré de travers pendant un moment, en
     // le déduisant du score au lieu de lire la ligne.
+    // ─── LE REJET ENTRE DANS LA SOURCE UNIQUE (30/08/26) ───
+    // Sans ça, le moteur renverrait un vainqueur pendant que l'écran
+    // affiche « NON VALIDE » — exactement le défaut corrigé le 29/08 sur
+    // la chaîne de priorité, refait par l'autre bout. Le contrôle de
+    // divergence l'a attrapé dans la minute.
+    // Le verdict SOUS-JACENT reste renvoyé : c'est lui que le banc mesure,
+    // sinon on perdrait la seule façon de savoir si le filtre sert. Ce
+    // champ dit seulement que l'écran, lui, ne l'annonce pas.
+    rejete: (function () {
+      try { var rj = themeRejeteV7(theme); return !!(rj && rj.rejete); } catch (e) { return false; }
+    })(),
     btts: carteR.btts === true ? true : carteR.btts === false ? false : null,
     bttsSource: carteR.bttsSource || null,
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
@@ -22477,7 +22566,26 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   })();
   html+='<div class="tek-hero">';
   var _alerteNul=false; try{ _alerteNul = !nulActif && alerteNulV7(theme); }catch(e){ _alerteNul=false; }
-  html+='<div class="tek-winner '+(nulActif?'warn':'')+'"><div class="tek-cap">'+(nulActif?'VERDICT SUSPENDU':'VAINQUEUR')+'</div><div class="tek-name">'+(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner))+'</div><div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>'
+  var _rej = null;
+  try { _rej = themeRejeteV7(theme); } catch (e) { _rej = null; }
+  var _refuse = !!(_rej && _rej.rejete);
+  html+='<div class="tek-winner '+(_refuse?'warn':(nulActif?'warn':''))+'"><div class="tek-cap">'
+    +(_refuse?'THÈME REJETÉ':(nulActif?'VERDICT SUSPENDU':'VAINQUEUR'))+'</div><div class="tek-name">'
+    +(_refuse?'⛔ NON VALIDE':(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner)))+'</div>'
+    +(_refuse
+      ? '<div class="tek-score" style="font-size:12px; line-height:1.5;">validation '
+        + _rej.niveau + '/3 — le seuil est ' + _rej.seuil + '/3'
+        + '<div style="font-size:10.5px; color:#fca5a5; margin-top:5px; text-align:left;">'
+        + _rej.manques.slice(0, 6).map(function (m) { return '• ' + esc(m); }).join('<br>')
+        + (_rej.manques.length > 6 ? '<br>• … et ' + (_rej.manques.length - 6) + ' autre(s)' : '')
+        + '</div>'
+        + '<div style="font-size:10px; color:#94a3b8; margin-top:6px; text-align:left;">'
+        + 'Aucun vainqueur ni score n\'est annoncé sur un thème non valide — c\'est ta règle. '
+        + '⚠️ L\'archive dit pourtant que ce filtre garde le moins bon paquet : à ce seuil elle '
+        + 'garderait 13 cas sur 39 pour la même justesse (69 %) que ceux qu\'elle jette, et il faut '
+        + 'écarter environ neuf thèmes sur dix pour en trouver un acceptable. '
+        + 'REJET_THEME_INVALIDE_V7 débranche le filtre.</div></div>'
+      : '<div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>')
     +(_alerteNul ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f59e0b; border-radius:7px; '
       + 'background:rgba(245,158,11,.12); font-size:11px; color:#fbbf24; text-align:left;">'
       + '<b>⚠️ ALERTE NUL</b> — la porte du nul est ouverte, mais R1 n\'est pas en maison cadente. '
