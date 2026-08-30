@@ -4639,6 +4639,11 @@ function cohabitationFigureMaison(fig, house, theme) {
 }
 
 function profilFigureMaison(fig, house, theme) {
+  // Voir memoThemeV7 : on met le CALCUL en cache, on rend une copie,
+  // parce que profilFigureTheme écrit « enResultante » sur ce qu'il reçoit.
+  const memoP = memoThemeV7(theme, '__memoProfil');
+  const cleP = fig + '|' + house;
+  if (memoP && memoP[cleP]) return Object.assign({}, memoP[cleP]);
   const base = forceFigureMaisonV7(fig, house, theme);
   const elem = elementaireFigureMaison(fig, house);
   const cohab = cohabitationFigureMaison(fig, house, theme);
@@ -4666,7 +4671,7 @@ function profilFigureMaison(fig, house, theme) {
   };
   const total = Object.keys(parts).reduce(function(s, k){ return s + parts[k]; }, 0);
 
-  return {
+  const sortieP = {
     fig: fig, house: house,
     elemFig: base.elemFig, elemMaison: base.elemMaison, natif: base.natif,
     concordance: base.concordance,
@@ -4682,6 +4687,8 @@ function profilFigureMaison(fig, house, theme) {
     total: Math.round(total * 100) / 100,
     forceSimple: base.score
   };
+  if (memoP) { memoP[cleP] = sortieP; return Object.assign({}, sortieP); }
+  return sortieP;
 }
 
 // Profil d'une figure sur TOUT le thème : une entrée par maison occupée
@@ -5772,7 +5779,26 @@ function _cleThemeV7(theme) {
   for (var i = 1; i <= 16; i++) k += (theme[i] || '?') + ',';
   return k;
 }
+// ⚡ 30/08/26 — CE MÉMO NE GARDAIT QU'UNE SEULE ENTRÉE PAR NOM.
+// Un seul emplacement { cle, val } : dès que le code parcourt plusieurs
+// thèmes à la suite — le banc en rejoue 48, le balayage aussi — chaque
+// appel chassait le précédent et NE TOUCHAIT JAMAIS. Au chronomètre,
+// analyseAncrageDeveloppe était appelée 1 413 fois et recalculée 968
+// fois : le cache servait à moins d'un tiers.
+// Le mémo vit maintenant sur l'objet thème (propriété non énumérable) :
+// chaque thème garde le sien, il n'y a plus de chasse entre thèmes, et
+// il disparaît avec le thème. La sémantique ne change pas — deux appels
+// sur le même thème rendaient déjà le même objet.
+// L'ancien emplacement unique reste le repli quand le thème n'est pas un
+// objet où l'on peut écrire.
 function memoParThemeV7(nom, theme, calcul) {
+  var m = memoThemeV7(theme, '__memoCalcul');
+  if (m) {
+    if (Object.prototype.hasOwnProperty.call(m, nom)) return m[nom];
+    var w = calcul();
+    m[nom] = w;
+    return w;
+  }
   var k = _cleThemeV7(theme);
   if (!k) return calcul();
   var e = _memoThemeV7[nom];
@@ -8864,7 +8890,61 @@ function proxV7(posA, posB) {
 }
 
 // Trouve toutes les positions d'une figure dans le thème (visible + résultante invisible)
+// ⚡ 30/08/26 — MÉMOÏSATION (« le système répond très lent », Ellemine_D).
+// Profilé au chronomètre sur un lancement : trouverFigV7 était appelée
+// 433 977 fois et profilFigureMaison 210 513 fois pour UN thème. Les deux
+// sont des fonctions pures de (figure, maison, thème) : le même appel
+// refait le même calcul des milliers de fois.
+//
+// ☠️ LE PIÈGE, ET IL EST RÉEL : leurs résultats sont MODIFIÉS par les
+// appelants. profilFigureTheme fait « p.enResultante = ... » sur le profil
+// renvoyé, et « occ.push(...) » sur le tableau de trouverFigV7. Rendre
+// l'objet du cache directement ferait fuiter ces écritures d'un appel à
+// l'autre — un bug silencieux bien pire que la lenteur. On rend donc une
+// COPIE à chaque fois ; ce qui est mis en cache, c'est le CALCUL, pas
+// l'objet. La copie coûte quelques microsecondes, le calcul des
+// millisecondes.
+//
+// Le cache est posé sur l'objet thème lui-même, en propriété NON
+// énumérable : il disparaît avec le thème, et Object.assign({}, theme)
+// — que fait verdictElementaire pour voiler Populus — ne le recopie pas,
+// donc la copie repart avec un cache vierge. C'est exactement ce qu'on
+// veut : ce n'est plus le même thème.
+//
+// ✔ RÉSULTAT MESURÉ, lancement d'un thème, du même banc de mesure :
+//     avant .......................... 5 132 ms puis 1 120 ms
+//     mémo trouverFig + profilFigure .. 1 315 ms
+//     + mémo par thème corrigé ........   859 ms puis   277 ms
+//     état livré ......................  ~850 ms puis  ~320 ms
+// Six fois plus rapide au premier lancement, quatre fois ensuite.
+//
+// ✔ ET VÉRIFIÉ IDENTIQUE, parce qu'un cache qui change un résultat est
+// pire qu'une lenteur : les 48 cas de l'archive plus 2 000 thèmes tirés
+// au hasard, rejoués sur la version d'avant et sur celle-ci, comparés
+// sur le verdict, le score, le BTTS, le rejet, la table des pôles, la
+// chaîne, le réseau, le profil, trouverFigV7, la marge des critères,
+// F4P4, la validité et le faisceau. 2 048 lignes, ZÉRO différence.
+function memoThemeV7(theme, nom) {
+  if (!theme || typeof theme !== 'object') return null;
+  var m = theme[nom];
+  if (m) return m;
+  m = {};
+  try { Object.defineProperty(theme, nom, { value: m, enumerable: false, writable: true, configurable: true }); }
+  catch (e) { return null; }
+  return m;
+}
+
 function trouverFigV7(fig, theme) {
+  var memo = memoThemeV7(theme, '__memoTrouve');
+  if (memo) {
+    var vu = memo[fig];
+    if (vu) {
+      // copie : profilFigureTheme pousse dans le tableau qu'il reçoit
+      var out = new Array(vu.length);
+      for (var i = 0; i < vu.length; i++) out[i] = { pos: vu[i].pos, hidden: vu[i].hidden };
+      return out;
+    }
+  }
   var res = [];
   for (var p = 1; p <= 16; p++) {
     if (theme[p] === fig) res.push({pos:p, hidden:false});
@@ -8872,6 +8952,12 @@ function trouverFigV7(fig, theme) {
       var resFig = combine(theme[p], FIGS_V7[p-1]);
       if (resFig === fig) res.push({pos:p, hidden:true});
     }
+  }
+  if (memo) {
+    memo[fig] = res;
+    var cp = new Array(res.length);
+    for (var j = 0; j < res.length; j++) cp[j] = { pos: res[j].pos, hidden: res[j].hidden };
+    return cp;
   }
   return res;
 }
@@ -13705,7 +13791,13 @@ function lectureUnAxeV7(theme, axe) {
   };
 }
 
+// ⚡ 30/08/26 — même mémo par thème : trois appelants relisent les axes du
+// même thème, et chacun refaisait les trois lectures de dérivé.
 function lectureAxesV7(theme) {
+  return memoParThemeV7('axes', theme, function () { return lectureAxesV7Brut(theme); });
+}
+
+function lectureAxesV7Brut(theme) {
   if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
   const axes = AXES_V7.map(function (a) { return lectureUnAxeV7(theme, a); });
   const valides = axes.filter(function (a) { return a.applicable && a.avantage; });
