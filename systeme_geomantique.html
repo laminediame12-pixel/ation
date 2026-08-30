@@ -22038,6 +22038,13 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
 // écrit ici que la mesure ne soutient pas ce filtre, et REJET_THEME_
 // INVALIDE_V7 le débranche d'un caractère.
 //
+// ⚠️ CE CHIFFRE A ÉTÉ RETIRÉ DU BANDEAU À L'ÉCRAN (30/08, « si ce n'est
+// pas valide on ignore »). Il y était répété sur chaque thème refusé :
+// une objection dite une fois est utile, la même objection ressortie à
+// chaque tirage est du bruit, et elle vidait le filtre de son sens en
+// invitant à passer outre. Elle reste écrite ici, une fois, à sa place.
+// Le bandeau ne dit plus que ce qui manque.
+//
 // ⚠️ LE SEUIL EST À 3, PAS À « 100 % ». Le 100 % inclut la figure du
 // jour, qui dépend de la DATE : le même thème serait accepté aujourd'hui
 // et refusé demain. Un filtre qui change d'avis tout seul n'est pas un
@@ -22607,11 +22614,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + (_rej.manques.length > 6 ? '<br>• … et ' + (_rej.manques.length - 6) + ' autre(s)' : '')
         + '</div>'
         + '<div style="font-size:10px; color:#94a3b8; margin-top:6px; text-align:left;">'
-        + 'Aucun vainqueur ni score n\'est annoncé sur un thème non valide — c\'est ta règle. '
-        + '⚠️ L\'archive dit pourtant que ce filtre garde le moins bon paquet : à ce seuil elle '
-        + 'garderait 13 cas sur 39 pour la même justesse (69 %) que ceux qu\'elle jette, et il faut '
-        + 'écarter environ neuf thèmes sur dix pour en trouver un acceptable. '
-        + 'REJET_THEME_INVALIDE_V7 débranche le filtre.</div></div>'
+        + 'Thème ignoré : ni vainqueur ni score. Les autres lectures restent affichées plus bas.'
+        + '</div></div>'
       : '<div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>')
     +(_alerteNul ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f59e0b; border-radius:7px; '
       + 'background:rgba(245,158,11,.12); font-size:11px; color:#fbbf24; text-align:left;">'
