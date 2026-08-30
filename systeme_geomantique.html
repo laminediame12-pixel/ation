@@ -22253,6 +22253,65 @@ function themeRejeteV7(theme) {
     manques: manques, fdj: nv.fdj, fdjOk: nv.fdjOk };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// L'ACCORD F4P4 / CRITÈRES — la seule structure du CAMP (30/08/26)
+//
+// Ellemine_D : « creuse le camp ». C'est la famille qui traîne — le nul
+// est à 34/39, le BTTS à 25/29, le camp à 27/39.
+//
+// CHAQUE MOTEUR SEUL, sur les 30 matchs DÉCIDÉS de l'archive :
+//     F4P4 ..................... 21/30 = 70 %
+//     critères (sans conc./env.) 20/30 = 67 %
+//     chaîne d'ancrage ......... 18/30 = 60 %
+//     vote des moteurs ......... 16/29 = 55 %
+//     protocole R1/R7 ...........  9/17 = 53 %   (muet 13 fois)
+//     lecture des sièges ....... 13/28 = 46 %
+//     réseau d'ancrage ......... 12/28 = 43 %
+//     témoin « toujours R1 » ... 18/30 = 60 %
+//
+// ☠️ DEUX MOTEURS DE LA CHAÎNE SONT SOUS LE TÉMOIN. Les sièges (46 %) et
+// le réseau (43 %) font moins bien que de parier toujours sur R1. Ils
+// restent dans la cascade parce qu'ils ne sont atteints qu'après quatre
+// autres — mais il faut le savoir.
+//
+// ☠️ ET LA CASCADE ENTIÈRE NE FAIT PAS MIEUX QUE SON PREMIER MOTEUR.
+//     la chaîne branchée (critères en tête) ... 20/30
+//     F4P4 en tête, même suite ............... 21/30
+//     F4P4 TOUT SEUL ......................... 21/30
+// Six moteurs derrière F4P4 n'ajoutent pas un seul cas. La cascade est
+// une décoration. (Et l'écart entre « critères en tête » et « F4P4 en
+// tête » est d'UN cas : le choix de 2023 « branche celle à 16/23 » et
+// celui d'aujourd'hui sont tous deux dans le bruit. Rien ne justifie de
+// retoucher l'ordre ; rien ne le justifiait non plus à l'époque.)
+//
+// ⚠️ ET LA MISE EN GARDE QUE JE M'ÉTAIS FAITE À MOI-MÊME. J'allais
+// écrire « le camp ne bat pas le témoin, p = 0,589 ». C'est vrai en
+// justesse brute et c'est TROMPEUR : le témoin « toujours R1 » obtient
+// ses 60 % en ne nommant JAMAIS R7. Découpé par camp réel :
+//     F4P4   — R1 13/18 (72 %) · R7 8/12 (67 %)   → équilibré à 69 %
+//     témoin — R1 18/18 (100 %) · R7 0/12 (0 %)   → équilibré à 50 %
+// Sur les 12 matchs gagnés par R7, F4P4 en trouve 8 et le témoin 0 :
+// p = 0,0013. Le moteur de camp lit bien les DEUX côtés ; le témoin est
+// dégénéré. La comparaison honnête est la justesse équilibrée, et là
+// F4P4 gagne franchement.
+//
+// ✔ LA STRUCTURE UTILISABLE : L'ACCORD DES DEUX PREMIERS.
+//     F4P4 et les critères d'accord   (19 cas) → 15 justes sur 19  79 %
+//     en désaccord                    (11 cas) →  6 justes sur 11  55 %
+// p = 0,225 : non démontré, comme tout le reste ici. Mais c'est la même
+// forme que partout ailleurs dans ce fichier — deux lectures
+// indépendantes qui se rejoignent valent mieux que la meilleure des deux
+// prise seule. En désaccord, le camp est à pile ou face : ne pas jouer.
+// Affiché seulement, branché sur rien.
+function accordCampV7(theme) {
+  var f4 = null, cr = null;
+  try { var m = moteurF4P4V7(theme); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch (e) {}
+  try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch (e) {}
+  if (!f4 || !cr) return { lisible: false, f4p4: f4, criteres: cr };
+  return { lisible: true, f4p4: f4, criteres: cr, accord: f4 === cr,
+    taux: f4 === cr ? 79 : 55, juste: f4 === cr ? 15 : 6, sur: f4 === cr ? 19 : 11 };
+}
+
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
   var crit = null;
@@ -22718,6 +22777,37 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'La porte n\'est branchée sur aucun calcul tant que le comparateur de doubles tirages n\'a pas '
       + 'une dizaine de paires.</div></div>';
   })();
+  // ─── L'ACCORD F4P4 / CRITÈRES SUR LE CAMP (30/08/26) ───
+  // Affiché seulement, jamais décisif. Voir accordCampV7.
+  (function () {
+    var ac = null;
+    try { ac = accordCampV7(theme); } catch (e) { ac = null; }
+    if (!ac || !ac.lisible || nulActif) return;
+    var col = ac.accord ? '#4ade80' : '#fbbf24';
+    var nomF = ac.f4p4 === 'R1' ? teamA : teamB;
+    var nomC = ac.criteres === 'R1' ? teamA : teamB;
+    html += '<div style="margin-bottom:10px; padding:8px 11px; border-radius:9px; '
+      + 'background:rgba(15,23,42,.55); border:1px solid ' + col + ';">'
+      + '<div style="font-size:12px; font-weight:800; color:' + col + ';">'
+      + (ac.accord
+        ? '🤝 LES DEUX LECTURES DU CAMP S\'ACCORDENT sur ' + esc(nomF)
+        : '⚠️ LES DEUX LECTURES DU CAMP SE CONTREDISENT — F4P4 dit ' + esc(nomF)
+          + ', les critères disent ' + esc(nomC))
+      + '</div>'
+      + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+      + (ac.accord
+        ? 'Quand elles se rejoignent, le camp affiché est juste <b>' + ac.juste + ' fois sur ' + ac.sur + '</b> ('
+          + ac.taux + ' %) dans l\'archive.'
+        : 'Quand elles divergent, le camp affiché tombe à <b>' + ac.juste + ' sur ' + ac.sur + '</b> ('
+          + ac.taux + ' %) — pile ou face. <b>Ne joue pas le vainqueur sur ce thème.</b>')
+      + '</div>'
+      + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
+      + 'F4P4 seul fait 21/30 sur les matchs décidés, et la cascade complète 20/30 : les six moteurs '
+      + 'derrière lui n\'ajoutent aucun cas. Ce qui ajoute quelque chose, c\'est leur accord. '
+      + '<b style="color:#fbbf24;">Non démontré</b> — 30 matchs, p = 0,225 — et branché sur aucun calcul.'
+      + '</div></div>';
+  })();
+
   // ─── LE CAMP DOUBLÉ (30/08/26, découverte d'Ellemine_D) ───
   // Affiché, jamais décisif. Voir campDoubleV7.
   (function () {
