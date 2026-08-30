@@ -14614,6 +14614,48 @@ var CAS_REFERENCE_V7 = [
   { nom: 'ConjCaput2', meres: ['conjunctio','caput_draconis','acquisitio','albus'],
     score: '3-1', camp: 'R1', btts: true,
     note: 'TRIPLET du 30/08 (C) · annonce R7 0-1 ✘ · F4P4 et critères d\'ACCORD sur R7 et pourtant faux : l\'accord du camp passe de 15/19 à 15/20 · BTTS non ✘' },
+  // ─── 30/08/26 — LE DEUXIÈME TRIPLET, ET IL DIT L'INVERSE DU PREMIER ───
+  // Trois thèmes, TOUS À 3/3 + figure du jour à nouveau. Réel : 3-4 R7.
+  //   A (CarcPuella)  R1 2-1 annoncé ✘ camp — BTTS oui ✔
+  //   B (CarcCaput)   R7 0-1 annoncé ✔ camp — BTTS non ✘
+  //   C (FortMajFMin) R7 0-1 annoncé ✔ camp — BTTS non ✘
+  // ☠️ CE QUE J'AI CONSEILLÉ, ET POURQUOI C'ÉTAIT FAUX :
+  //   J'ai dit R1. Mon seul argument : F4P4 disait R1 sur LES TROIS
+  //   thèmes, et F4P4 est le meilleur moteur de l'archive (22/33). Une
+  //   unanimité de trois lectures indépendantes du même moteur. Elle
+  //   valait zéro : le camp était R7.
+  //   ⚠️ J'avais écrit moi-même, deux paragraphes plus haut, que le
+  //   « F4P4 dit R1 » ne bat PAS le taux de base de R1 (p = 0,158). Je
+  //   l'ai quand même pris pour un signal parce qu'il était unanime.
+  //   Trois lectures du même moteur ne sont pas trois moteurs : quand le
+  //   moteur se trompe, il se trompe trois fois. L'unanimité d'un seul
+  //   moteur n'ajoute AUCUNE information — c'est un seul cas, pas trois.
+  // ☠️ L'ACCORD DU CAMP ÉCHOUE POUR LA DEUXIÈME FOIS SUR UN TRIPLET.
+  //   A était le seul en accord (F4P4 R1 · critères R1). A est faux. La
+  //   bande d'accord a maintenant 0 triplet sur 2 : elle a désigné le
+  //   mauvais thème les deux fois. C'est le seul test répété qu'elle
+  //   ait, et elle le perd systématiquement. NE PAS s'en servir pour
+  //   choisir dans un triplet, quel que soit son taux global.
+  // ✔ CE QUI A MARCHÉ : LA MAJORITÉ DES THÈMES. R7 2/3 → réel R7.
+  //   Son idée du 30/08 (« on regarde le camp qui vient 2/3 ou 16/20 »)
+  //   marque son premier point. Bilan honnête sur les triplets : le
+  //   premier était 1/1/1, sans majorité, donc muet ; celui-ci est le
+  //   PREMIER cas où la règle dit quelque chose, et elle a raison.
+  //   1 sur 1. Ça ne démontre rien (p = 0,63 contre le hasard) mais
+  //   c'est la seule règle du fichier qui n'ait pas encore échoué sur un
+  //   triplet, et elle bat la bande d'accord 1-0 contre 0-2.
+  // ✔ ET LE BTTS SÉPARE PROPREMENT LE CAMP : A a le camp faux et le BTTS
+  //   juste, B et C l'inverse. Aucun thème n'a eu les deux. Sur ce match
+  //   il fallait lire le camp dans la majorité et le BTTS dans A.
+  { nom: 'CarcPuella', meres: ['carcer','puella','laetitia','via'],
+    score: '3-4', camp: 'R7', btts: true,
+    note: 'TRIPLET 2 du 30/08 (A) · annonce R1 2-1 ✘ · SEUL thème en accord F4P4/critères, et faux : la bande d\'accord tombe à 0/2 sur les triplets · BTTS oui ✔ · porte fermée, faisceau 0/7, théorème muet' },
+  { nom: 'CarcCaput', meres: ['carcer','caput_draconis','conjunctio','conjunctio'],
+    score: '3-4', camp: 'R7', btts: true,
+    note: 'TRIPLET 2 du 30/08 (B) · annonce R7 0-1 ✔ camp · BTTS non ✘ · en désaccord F4P4/critères et juste quand même, comme le gagnant du triplet 1' },
+  { nom: 'FortMajFMin', meres: ['fortuna_major','albus','fortuna_minor','caput_draconis'],
+    score: '3-4', camp: 'R7', btts: true,
+    note: 'TRIPLET 2 du 30/08 (C) · annonce R7 0-1 ✔ camp · BTTS non ✘ · théorème des maisons applicable et JUSTE (R7) : il passe à 2 justes sur 3 en départage · R1 en cadente, faisceau 3/7, et pas de nul' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
@@ -14942,6 +14984,23 @@ function renderDoubleTirage() {
 // la machine, il faut le savoir aussi. Le panneau ne tranche pas : il
 // compte, il compare au témoin, et il donne la probabilité qu'un tel
 // écart sorte du hasard.
+//
+// ✔ PREMIER POINT MARQUÉ (30/08/26, quelques heures après la mise en
+// service). Deuxième triplet, trois thèmes tous à 3/3 + figure du jour :
+//     CarcPuella  → R1     CarcCaput → R7     FortMajFMin → R7
+// Majorité R7 2/3. Réel : 3-4 pour R7. La règle d'Ellemine_D a raison,
+// et elle a raison CONTRE moi : j'avais conseillé R1 sur une unanimité
+// de F4P4, et j'avais écrit sous le tableau « trois tirages ne peuvent
+// rien prouver ». C'est vrai statistiquement — p = 0,307, et même 3/3
+// ne descendrait pas sous 0,05 — et ça n'empêche pas la règle d'avoir
+// vu juste quand aucune des miennes ne l'a fait.
+// Bilan honnête sur les triplets : le premier était 1/1/1, sans
+// majorité, donc muet ; celui-ci est le premier où la règle parle.
+//     majorité des thèmes ... 1 sur 1
+//     accord F4P4/critères ... 0 sur 2
+// Un sur un ne démontre rien (p = 0,50). Mais c'est la seule règle de ce
+// fichier qui n'ait pas encore échoué sur un triplet, et la seule que je
+// n'aie pas inventée. Elle mérite les 15 à 20 tirages qu'elle demande.
 var BASE_VERDICT_V7 = { R1: 0.390, R7: 0.368, nul: 0.242 };
 
 // Probabilité d'obtenir AU MOINS k succès sur n, chacun de probabilité p.
@@ -15244,7 +15303,10 @@ var PAIRES_V7 = [
   // triplet n'est pas une paire, mais il contient trois comparaisons.
   { a: 'FortMajLaet2', b: 'FortMajAlbus', camp: 'R1', quand: '30/08/26', match: '3-1 (triplet A/B)' },
   { a: 'FortMajLaet2', b: 'ConjCaput2', camp: 'R1', quand: '30/08/26', match: '3-1 (triplet A/C)' },
-  { a: 'FortMajAlbus', b: 'ConjCaput2', camp: 'R1', quand: '30/08/26', match: '3-1 (triplet B/C)' }
+  { a: 'FortMajAlbus', b: 'ConjCaput2', camp: 'R1', quand: '30/08/26', match: '3-1 (triplet B/C)' },
+  { a: 'CarcPuella', b: 'CarcCaput', camp: 'R7', quand: '30/08/26', match: '3-4 (triplet 2 A/B)' },
+  { a: 'CarcPuella', b: 'FortMajFMin', camp: 'R7', quand: '30/08/26', match: '3-4 (triplet 2 A/C)' },
+  { a: 'CarcCaput', b: 'FortMajFMin', camp: 'R7', quand: '30/08/26', match: '3-4 (triplet 2 B/C)' }
 ];
 
 // Les valeurs comparables d'un thème, pour départager une paire.
@@ -22558,63 +22620,77 @@ function themeRejeteV7(theme) {
 // autres — mais il faut le savoir.
 //
 // ☠️ ET LA CASCADE ENTIÈRE NE FAIT PAS MIEUX QUE SON PREMIER MOTEUR.
-// (Chiffres repris le 30/08/26 sur l'archive à 33 matchs décidés ; les
-// anciens étaient mesurés à 30 et sont périmés.)
-//     la chaîne branchée (critères en tête) ... 20/33
-//     F4P4 en tête, même suite ............... 22/33
-//     F4P4 TOUT SEUL ......................... 22/33
-//     critères tout seuls .................... 21/33
-// Six moteurs derrière F4P4 n'ajoutent toujours pas un seul cas. La
-// cascade est une décoration. (Et l'écart entre « critères en tête » et
-// « F4P4 en tête » est de DEUX cas maintenant, toujours dans le bruit :
-// le choix de 2023 « branche celle à 16/23 » et celui d'aujourd'hui
-// restent indiscernables. Rien ne justifie de retoucher l'ordre.)
+// (Chiffres repris le 30/08/26 après le deuxième triplet, archive à 36
+// matchs décidés. Les séries à 30 et 33 sont périmées.)
+//     la chaîne branchée (critères en tête) ... 22/36
+//     F4P4 en tête, même suite ............... 22/36
+//     F4P4 TOUT SEUL ......................... 22/36
+//     critères tout seuls .................... 23/36
+//     témoin « toujours R1 » ................. 21/36
+// Six moteurs derrière F4P4 n'ajoutent toujours pas un seul cas : « F4P4
+// en tête » et « F4P4 tout seul » donnent le MÊME nombre. La cascade est
+// une décoration. Et les trois lectures tiennent maintenant dans un
+// écart d'un cas — laquelle est « la meilleure » change à chaque match
+// qui arrive. Rien ne justifie de retoucher l'ordre, aujourd'hui pas
+// plus qu'en 2023.
 //
 // ⚠️ ET LA MISE EN GARDE QUE JE M'ÉTAIS FAITE À MOI-MÊME. J'allais
 // écrire « le camp ne bat pas le témoin, p = 0,589 ». C'est vrai en
 // justesse brute et c'est TROMPEUR : le témoin « toujours R1 » obtient
-// ses 64 % en ne nommant JAMAIS R7. Découpé par camp réel (33 cas) :
-//     F4P4   — R1 14/21 (67 %) · R7 8/12 (67 %)   → équilibré à 67 %
-//     témoin — R1 21/21 (100 %) · R7 0/12 (0 %)   → équilibré à 50 %
-// Sur les 12 matchs gagnés par R7, F4P4 en trouve 8 et le témoin 0 :
-// p = 0,0013. Le moteur de camp lit bien les DEUX côtés ; le témoin est
-// dégénéré. La comparaison honnête est la justesse équilibrée, et là
-// F4P4 gagne franchement.
+// ses 58 % en ne nommant JAMAIS R7. Découpé par camp réel (36 cas) :
+//     F4P4   — R1 14/21 (67 %) · R7 8/15 (53 %)   → équilibré à 60 %
+//     témoin — R1 21/21 (100 %) · R7 0/15 (0 %)   → équilibré à 50 %
+// Sur les 15 matchs gagnés par R7, F4P4 en trouve 8 et le témoin 0 :
+// p = 0,0002. C'est le SEUL résultat solide de tout cet étage — le
+// moteur de camp lit les deux côtés, le témoin est dégénéré. Mais
+// l'avantage équilibré s'est réduit de 69 % à 60 % en six matchs.
 //
-// ✔ CE QUE VAUT F4P4 SELON CE QU'IL DIT (33 cas) :
-//     quand il dit R1 → 14 justes sur 18   (78 %)
-//     quand il dit R7 →  8 justes sur 15   (53 %)
-// Le 14/18 bat une pièce (p = 0,015) mais PAS le taux de base de R1
-// (21/33 = 64 %, p = 0,158). Un « F4P4 dit R1 » est donc une indication
-// dans le bon sens, pas une démonstration : il dit la même chose que le
-// simple fait que R1 gagne plus souvent.
+// ☠️ CE QUE VAUT F4P4 SELON CE QU'IL DIT, ET COMMENT JE M'EN SUIS SERVI
+// DE TRAVERS. À 33 cas j'avais mesuré « quand F4P4 dit R1 → 14/18,
+// 78 % », en notant que ça battait une pièce (p = 0,015) mais pas le
+// taux de base de R1. Puis le deuxième triplet est arrivé : F4P4 disait
+// R1 sur ses TROIS thèmes, j'ai pris cette unanimité pour un signal, et
+// le match a fini 3-4 pour R7. Le compteur :
+//     quand F4P4 dit R1 → 14 justes sur 21   (67 %, p = 0,095 vs pièce)
+//     quand F4P4 dit R7 →  8 justes sur 15   (53 %)
+// Le 78 % n'a jamais existé : c'était 18 cas. ⚠️ ET SURTOUT : TROIS
+// LECTURES DU MÊME MOTEUR NE SONT PAS TROIS MOTEURS. Quand F4P4 se
+// trompe, il se trompe sur les trois thèmes à la fois. Une unanimité
+// interne n'ajoute AUCUNE information — c'est un cas, pas trois. Je le
+// savais et je l'ai fait quand même parce que le mot « unanime » sonne
+// comme une preuve.
 //
-// ~ L'ACCORD DES DEUX PREMIERS : la structure que je croyais utilisable.
-//     F4P4 et les critères d'accord   (20 cas) → 14 justes sur 20  70 %
-//     en désaccord                    (13 cas) →  6 justes sur 13  46 %
-// p = 0,276 : non démontré, et l'écart a RÉTRÉCI quand l'archive a
-// grandi (79/55 à 19 cas, 70/46 à 33). C'était la même forme que partout
-// ailleurs ici — deux lectures indépendantes qui se rejoignent — et il
-// faut maintenant écrire ce qui la contredit.
+// ☠️ L'ACCORD DES DEUX PREMIERS EST MORT. C'était la structure que je
+// croyais utilisable ; voici sa trajectoire, mesure après mesure :
+//     19 cas → accord 79 % · désaccord 55 %   p = 0,225
+//     33 cas → accord 70 % · désaccord 46 %   p = 0,276
+//     36 cas → accord 67 % (14/21) · désaccord 53 % (8/15)   p = 0,499
+// L'écart rétrécit à CHAQUE fois que des données arrivent. C'est la
+// signature d'un motif qui n'existait pas : un vrai effet se resserre
+// autour de sa valeur, il ne fond pas. p = 0,499, c'est pile ou face.
 //
-// ☠️ L'ACCORD A ÉCHOUÉ SUR LE SEUL TRIPLET JAMAIS JOUÉ (30/08/26, 3-1
-// pour R1). Trois thèmes valides, trois verdicts :
+// ☠️ ET IL A DÉSIGNÉ LE MAUVAIS THÈME SUR LES DEUX TRIPLETS JOUÉS.
+//   30/08, réel 3-1 R1 :
 //     FortMajLaet2  dit nul   F4P4 R1 · critères R7   désaccord
 //     FortMajAlbus  dit R1    F4P4 R7 · critères R1   désaccord  ← LE BON
 //     ConjCaput2    dit R7    F4P4 R7 · critères R7   ACCORD     ← faux
-// Le seul thème en accord était le mauvais, et le bon était en
-// désaccord. Un cas ne réfute rien, mais c'est exactement le test que la
-// bande d'accord prétend gagner, et elle l'a perdu. Ne pas s'en servir
-// pour éliminer un thème d'un triplet : c'est la faute que j'ai déjà
-// commise une fois sur ce même triplet.
-// Affiché seulement, branché sur rien.
+//   30/08, réel 3-4 R7 :
+//     CarcPuella    dit R1    F4P4 R1 · critères R1   ACCORD     ← faux
+//     CarcCaput     dit R7    F4P4 R1 · critères R7   désaccord  ← LE BON
+//     FortMajFMin   dit R7    F4P4 R1 · critères R7   désaccord  ← LE BON
+// 0 sur 2, et les deux fois le thème gagnant était en DÉSACCORD. C'est
+// le seul test répété que cette bande possède et elle le perd
+// systématiquement. NE JAMAIS s'en servir pour choisir dans un triplet.
+// Affiché seulement, branché sur rien — et à ne plus lire comme un
+// signal du tout.
 function accordCampV7(theme) {
   var f4 = null, cr = null;
   try { var m = moteurF4P4V7(theme); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch (e) {}
   try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch (e) {}
   if (!f4 || !cr) return { lisible: false, f4p4: f4, criteres: cr };
   return { lisible: true, f4p4: f4, criteres: cr, accord: f4 === cr,
-    taux: f4 === cr ? 70 : 46, juste: f4 === cr ? 14 : 6, sur: f4 === cr ? 20 : 13 };
+    taux: f4 === cr ? 67 : 53, juste: f4 === cr ? 14 : 8, sur: f4 === cr ? 21 : 15,
+    mort: true };
 }
 
 function overrideVerdictV7(theme, nulActif) {
@@ -23088,28 +23164,30 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     var ac = null;
     try { ac = accordCampV7(theme); } catch (e) { ac = null; }
     if (!ac || !ac.lisible || nulActif) return;
-    var col = ac.accord ? '#4ade80' : '#fbbf24';
+    // Plus de vert : au 30/08/26 l'accord ne vaut plus rien (p = 0,499).
+    // Une bordure grise pour un renseignement, pas un feu de circulation.
+    var col = '#94a3b8';
     var nomF = ac.f4p4 === 'R1' ? teamA : teamB;
     var nomC = ac.criteres === 'R1' ? teamA : teamB;
     html += '<div style="margin-bottom:10px; padding:8px 11px; border-radius:9px; '
       + 'background:rgba(15,23,42,.55); border:1px solid ' + col + ';">'
       + '<div style="font-size:12px; font-weight:800; color:' + col + ';">'
       + (ac.accord
-        ? '🤝 LES DEUX LECTURES DU CAMP S\'ACCORDENT sur ' + esc(nomF)
-        : '⚠️ LES DEUX LECTURES DU CAMP SE CONTREDISENT — F4P4 dit ' + esc(nomF)
+        ? '🤝 les deux lectures du camp s\'accordent sur ' + esc(nomF) + ' — sans valeur, voir ci-dessous'
+        : '⚠️ les deux lectures du camp se contredisent — F4P4 dit ' + esc(nomF)
           + ', les critères disent ' + esc(nomC))
       + '</div>'
       + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-      + (ac.accord
-        ? 'Quand elles se rejoignent, le camp affiché est juste <b>' + ac.juste + ' fois sur ' + ac.sur + '</b> ('
-          + ac.taux + ' %) dans l\'archive.'
-        : 'Quand elles divergent, le camp affiché tombe à <b>' + ac.juste + ' sur ' + ac.sur + '</b> ('
-          + ac.taux + ' %) — pile ou face. <b>Ne joue pas le vainqueur sur ce thème.</b>')
+      + 'Accord <b>' + (ac.accord ? ac.juste + '/' + ac.sur : '14/21') + '</b> · désaccord <b>'
+      + (ac.accord ? '8/15' : ac.juste + '/' + ac.sur) + '</b> — <b style="color:#f87171;">p = 0,499</b>, '
+      + 'c\'est pile ou face. L\'écart a fondu à chaque mesure (79/55 à 19 cas, 70/46 à 33, 67/53 à 36) : '
+      + 'un vrai effet se resserre, il ne fond pas.'
       + '</div>'
-      + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
-      + 'F4P4 seul fait 22/33 sur les matchs décidés, et la cascade complète 21/33 : les six moteurs '
-      + 'derrière lui n\'ajoutent aucun cas. Ce qui ajoute quelque chose, c\'est leur accord. '
-      + '<b style="color:#fbbf24;">Non démontré</b> — 30 matchs, p = 0,225 — et branché sur aucun calcul.'
+      + '<div style="font-size:9.5px; color:#f87171; margin-top:4px;">'
+      + '☠️ Sur les DEUX triplets joués, le thème en accord était le mauvais et le thème gagnant '
+      + 'était en désaccord. 0 sur 2. <b>Ne choisis jamais un thème d\'un triplet là-dessus.</b> '
+      + '<span style="color:#94a3b8;">(F4P4 seul 22/36, cascade complète 22/36, critères seuls 23/36, '
+      + 'témoin « toujours R1 » 21/36 : les trois lectures tiennent dans un cas.)</span>'
       + '</div></div>';
   })();
 
