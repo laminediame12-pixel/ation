@@ -22558,33 +22558,55 @@ function themeRejeteV7(theme) {
 // autres — mais il faut le savoir.
 //
 // ☠️ ET LA CASCADE ENTIÈRE NE FAIT PAS MIEUX QUE SON PREMIER MOTEUR.
-//     la chaîne branchée (critères en tête) ... 20/30
-//     F4P4 en tête, même suite ............... 21/30
-//     F4P4 TOUT SEUL ......................... 21/30
-// Six moteurs derrière F4P4 n'ajoutent pas un seul cas. La cascade est
-// une décoration. (Et l'écart entre « critères en tête » et « F4P4 en
-// tête » est d'UN cas : le choix de 2023 « branche celle à 16/23 » et
-// celui d'aujourd'hui sont tous deux dans le bruit. Rien ne justifie de
-// retoucher l'ordre ; rien ne le justifiait non plus à l'époque.)
+// (Chiffres repris le 30/08/26 sur l'archive à 33 matchs décidés ; les
+// anciens étaient mesurés à 30 et sont périmés.)
+//     la chaîne branchée (critères en tête) ... 20/33
+//     F4P4 en tête, même suite ............... 22/33
+//     F4P4 TOUT SEUL ......................... 22/33
+//     critères tout seuls .................... 21/33
+// Six moteurs derrière F4P4 n'ajoutent toujours pas un seul cas. La
+// cascade est une décoration. (Et l'écart entre « critères en tête » et
+// « F4P4 en tête » est de DEUX cas maintenant, toujours dans le bruit :
+// le choix de 2023 « branche celle à 16/23 » et celui d'aujourd'hui
+// restent indiscernables. Rien ne justifie de retoucher l'ordre.)
 //
 // ⚠️ ET LA MISE EN GARDE QUE JE M'ÉTAIS FAITE À MOI-MÊME. J'allais
 // écrire « le camp ne bat pas le témoin, p = 0,589 ». C'est vrai en
 // justesse brute et c'est TROMPEUR : le témoin « toujours R1 » obtient
-// ses 60 % en ne nommant JAMAIS R7. Découpé par camp réel :
-//     F4P4   — R1 13/18 (72 %) · R7 8/12 (67 %)   → équilibré à 69 %
-//     témoin — R1 18/18 (100 %) · R7 0/12 (0 %)   → équilibré à 50 %
+// ses 64 % en ne nommant JAMAIS R7. Découpé par camp réel (33 cas) :
+//     F4P4   — R1 14/21 (67 %) · R7 8/12 (67 %)   → équilibré à 67 %
+//     témoin — R1 21/21 (100 %) · R7 0/12 (0 %)   → équilibré à 50 %
 // Sur les 12 matchs gagnés par R7, F4P4 en trouve 8 et le témoin 0 :
 // p = 0,0013. Le moteur de camp lit bien les DEUX côtés ; le témoin est
 // dégénéré. La comparaison honnête est la justesse équilibrée, et là
 // F4P4 gagne franchement.
 //
-// ✔ LA STRUCTURE UTILISABLE : L'ACCORD DES DEUX PREMIERS.
-//     F4P4 et les critères d'accord   (19 cas) → 15 justes sur 19  79 %
-//     en désaccord                    (11 cas) →  6 justes sur 11  55 %
-// p = 0,225 : non démontré, comme tout le reste ici. Mais c'est la même
-// forme que partout ailleurs dans ce fichier — deux lectures
-// indépendantes qui se rejoignent valent mieux que la meilleure des deux
-// prise seule. En désaccord, le camp est à pile ou face : ne pas jouer.
+// ✔ CE QUE VAUT F4P4 SELON CE QU'IL DIT (33 cas) :
+//     quand il dit R1 → 14 justes sur 18   (78 %)
+//     quand il dit R7 →  8 justes sur 15   (53 %)
+// Le 14/18 bat une pièce (p = 0,015) mais PAS le taux de base de R1
+// (21/33 = 64 %, p = 0,158). Un « F4P4 dit R1 » est donc une indication
+// dans le bon sens, pas une démonstration : il dit la même chose que le
+// simple fait que R1 gagne plus souvent.
+//
+// ~ L'ACCORD DES DEUX PREMIERS : la structure que je croyais utilisable.
+//     F4P4 et les critères d'accord   (20 cas) → 14 justes sur 20  70 %
+//     en désaccord                    (13 cas) →  6 justes sur 13  46 %
+// p = 0,276 : non démontré, et l'écart a RÉTRÉCI quand l'archive a
+// grandi (79/55 à 19 cas, 70/46 à 33). C'était la même forme que partout
+// ailleurs ici — deux lectures indépendantes qui se rejoignent — et il
+// faut maintenant écrire ce qui la contredit.
+//
+// ☠️ L'ACCORD A ÉCHOUÉ SUR LE SEUL TRIPLET JAMAIS JOUÉ (30/08/26, 3-1
+// pour R1). Trois thèmes valides, trois verdicts :
+//     FortMajLaet2  dit nul   F4P4 R1 · critères R7   désaccord
+//     FortMajAlbus  dit R1    F4P4 R7 · critères R1   désaccord  ← LE BON
+//     ConjCaput2    dit R7    F4P4 R7 · critères R7   ACCORD     ← faux
+// Le seul thème en accord était le mauvais, et le bon était en
+// désaccord. Un cas ne réfute rien, mais c'est exactement le test que la
+// bande d'accord prétend gagner, et elle l'a perdu. Ne pas s'en servir
+// pour éliminer un thème d'un triplet : c'est la faute que j'ai déjà
+// commise une fois sur ce même triplet.
 // Affiché seulement, branché sur rien.
 function accordCampV7(theme) {
   var f4 = null, cr = null;
@@ -22592,7 +22614,7 @@ function accordCampV7(theme) {
   try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch (e) {}
   if (!f4 || !cr) return { lisible: false, f4p4: f4, criteres: cr };
   return { lisible: true, f4p4: f4, criteres: cr, accord: f4 === cr,
-    taux: f4 === cr ? 75 : 54, juste: f4 === cr ? 15 : 7, sur: f4 === cr ? 20 : 13 };
+    taux: f4 === cr ? 70 : 46, juste: f4 === cr ? 14 : 6, sur: f4 === cr ? 20 : 13 };
 }
 
 function overrideVerdictV7(theme, nulActif) {
