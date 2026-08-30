@@ -15304,26 +15304,37 @@ function tablePolesV7(theme) {
 // Il y a donc, dans chaque thème, un camp « doublé » et un camp
 // « simple », et c'est une donnée qu'on n'avait jamais lue.
 //
-// ☠️ CE QUE ÇA NE DONNE PAS. « Le camp doublé gagne » ne bat pas le
-// verdict, sur les 20 matchs décidés où le théorème s'applique :
-//     verdict affiché ............. 15/20
-//     le camp doublé .............. 13/20
-//     témoin « toujours R1 » ...... 10/20
-// Et quand les deux se contredisent, c'est le verdict qui a raison
-// 5 fois sur 8. La partition ne prédit non plus ni le nul (p = 1,000),
-// ni le BTTS (p = 1,000), ni le match serré (p = 1,000) — testée seule,
-// elle est muette.
+// ⚠️ IL NE S'APPLIQUE QU'À LA MOITIÉ DES THÈMES. Mesuré sur 3 000
+// tirages : 50 % ont R1 ou R7 dans les maisons de synthèse M13-M16, qui
+// sortent du cycle des douze. Le pas de +6 n'y boucle pas, et le
+// théorème ne les concerne pas. Sur l'archive, 23 cas sur 37.
 //
-// ✔ CE QU'ELLE DONNE. LEUR ACCORD, lui, porte quelque chose :
-//     quand le camp doublé et le verdict désignent le MÊME camp
-//         (12 cas sur 20) ......... 10 justes sur 12   83 %
-//     quand ils se contredisent
-//         (8 cas) ................. 5 justes sur 8     62 %
+// ☠️ SUR LE NUL, ÇA NE DONNE RIEN. Tout testé sur les 23 cas :
+//     camp doublé = R1 ........................ 2/11 contre 3/12 · p = 1,000
+//     élément du camp doublé (FA / ET) ........ 2/15 contre 3/8  · p = 0,297
+//     élément du camp simple (A / E) .......... même chose par construction
+// Le seul écart visible — plus de nuls quand la paire est ET/E (3 sur 8)
+// que FA/A (2 sur 15) — n'est que la PARITÉ des maisons redite autrement,
+// et il ne sort pas du bruit. Aucune paire de maisons ne se distingue
+// non plus : la meilleure, M2/M12, fait 2 nuls sur 3 cas.
+//
+// ☠️ SUR LE CAMP GAGNANT, LE DOUBLÉ NE BAT PAS LE VERDICT. Sur les 18
+// matchs décidés où le théorème s'applique :
+//     verdict affiché ............. 14/18
+//     le camp doublé .............. 13/18
+//     témoin « toujours R1 » ...... 9/18
+// Et découper par l'élément du doublé ne sauve rien : FA 9/13, ET 4/5.
+//
+// ✔ CE QU'ELLE DONNE, ET C'EST LA SEULE CHOSE. LEUR ACCORD :
+//     le camp doublé et le verdict désignent le MÊME camp
+//         (11 cas sur 18) ......... verdict juste 10 fois sur 11   91 %
+//     ils se contredisent
+//         (7 cas) ................. verdict juste  4 fois sur 7    57 %
 // C'est le premier signal de confiance du fichier qui aille dans le BON
-// sens — la porte de confiance par les dérivés, elle, allait à l'envers.
-// ⚠️ p = 0,347 sur 20 cas : ce n'est pas démontré, et ça ne touche à
-// rien. Le camp doublé est AFFICHÉ à côté du verdict, il ne le change
-// jamais.
+// sens — la porte de confiance par les dérivés, elle, allait à l'envers
+// (3 axes valides → 59 % de justesse contre 86 % à 2 axes).
+// ⚠️ p = 0,245 sur 18 cas. Ce n'est pas démontré, et ça ne touche à rien.
+// Le camp doublé est AFFICHÉ à côté du verdict, il ne le change jamais.
 function maisonConfusionV7(h) {
   return [1, 2, 5, 6, 9, 10].indexOf(h) >= 0;
 }
@@ -15333,12 +15344,22 @@ function campDoubleV7(theme) {
   var r = null;
   try { r = getRotationCombat(theme); } catch (e) { return null; }
   if (!r || !r.hR1 || !r.hR7) return null;
+  // ⚠️ CORRIGÉ LE 30/08 DANS L'HEURE QUI A SUIVI. La première version ne
+  // testait que « les deux classes diffèrent ». Or maisonConfusionV7
+  // renvoie false pour M13 à M16 aussi : une paire M9/M15 passait donc
+  // pour applicable, avec un « camp simple » qui n'a aucun élément. Trois
+  // cas d'archive étaient concernés (M9/M15, M6/M16, M10/M16) et ils
+  // faussaient les mesures. Le théorème ne vaut que DANS le cycle des
+  // douze maisons — c'est là que le pas de +6 boucle.
+  if (r.hR1 > 12 || r.hR7 > 12) {
+    return { applicable: false, hR1: r.hR1, hR7: r.hR7,
+      raison: 'une des deux maisons est hors du cycle des douze (M13 à M16)' };
+  }
   var c1 = maisonConfusionV7(r.hR1), c7 = maisonConfusionV7(r.hR7);
   if (c1 === c7) {
-    // Possible seulement si une des deux maisons sort du cycle des douze
-    // (M13 à M16, les figures de synthèse) : le théorème ne s'y applique pas.
+    // Ne doit jamais arriver dans le cycle des douze : c'est le théorème.
     return { applicable: false, hR1: r.hR1, hR7: r.hR7,
-      raison: 'une des deux maisons est hors du cycle des douze' };
+      raison: 'THÉORÈME VIOLÉ — à signaler' };
   }
   return { applicable: true, camp: c1 ? 'R1' : 'R7', hR1: r.hR1, hR7: r.hR7,
     elementR1: ELEMENT_MAISON_V7[r.hR1] || '—', elementR7: ELEMENT_MAISON_V7[r.hR7] || '—',
@@ -22341,10 +22362,12 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
       + 'Comme R7 est toujours six maisons après R1, <b>l\'un des deux camps est toujours en maison '
       + 'double et l\'autre en maison simple</b> — jamais les deux, jamais aucun (théorème vérifié '
-      + '12/12). Le camp doublé PRIS SEUL ne bat pas le verdict (13/20 contre 15/20). Ce qui compte, '
-      + 'c\'est leur <b>accord</b> : d\'accord, le verdict est juste 10 fois sur 12 ; en désaccord, '
-      + '5 fois sur 8. <b style="color:#fbbf24;">Non démontré</b> — 20 cas, p = 0,347 — et branché sur '
-      + 'aucun calcul.</div></div>';
+      + '12/12 et 0 violation sur 3 000 tirages). Il ne vaut que dans le cycle des douze, soit la '
+      + 'moitié des thèmes. Le camp doublé PRIS SEUL ne bat pas le verdict (13/18 contre 14/18), et '
+      + 'il ne dit rien du nul (p = 0,297). Ce qui compte, c\'est leur <b>accord</b> : d\'accord, le '
+      + 'verdict est juste 10 fois sur 11 ; en désaccord, 4 fois sur 7. '
+      + '<b style="color:#fbbf24;">Non démontré</b> — 18 cas, p = 0,245 — et branché sur aucun calcul.'
+      + '</div></div>';
   })();
   html+='<div class="tek-hero">';
   var _alerteNul=false; try{ _alerteNul = !nulActif && alerteNulV7(theme); }catch(e){ _alerteNul=false; }
