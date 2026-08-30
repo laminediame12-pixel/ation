@@ -21306,6 +21306,67 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
 // sur CE qui est affiché, pas sur le moteur V7 legacy (jamais montré à
 // l'écran depuis le passage au protocole R1/R7 — bug d'archive corrigé
 // ici, cf. audit "élagage" du 20/08/26).
+// ═══════════════════════════════════════════════════════════════
+// LA CHAÎNE DE PRIORITÉ DU VERDICT — UNE SEULE (29/08/26)
+//
+// ☠️ ELLE ÉTAIT ÉCRITE DEUX FOIS, ET LES DEUX N'ÉTAIENT PAS PAREILLES.
+// getVerdictAfficheReel avait :
+//     critAff || f4p4 || sièges || vote || chaîne || réseau || protocole
+// renderTheme, c'est-à-dire L'ÉCRAN, avait :
+//              f4p4 || sièges || vote || chaîne || réseau
+// « La lecture des critères » — celle qu'Ellemine_D a demandé de brancher
+// (« branche celle à 16/23 ») — n'a jamais atteint l'écran. Le protocole
+// non plus. Résultat mesuré sur 537 thèmes : sur 122 d'entre eux, soit
+// 23 %, le moteur nommait un camp et l'écran affichait l'autre, avec le
+// score en miroir.
+//
+// Ce que ça abîmait : le banc, le journal, le comparateur et l'archive
+// lisent tous getVerdictAfficheReel. Les 26/35 du verdict décrivaient
+// donc une lecture que l'utilisateur ne voyait pas sur un thème sur
+// quatre. C'est exactement le bug d'archive du 20/08/26, revenu par
+// l'autre bout : à l'époque l'archive lisait un moteur mort, cette fois
+// c'est l'écran qui avait pris du retard sur l'archive.
+//
+// La leçon est la même que pour nulActifV7 : deux copies d'une décision
+// finissent toujours par diverger. Il n'y en a plus qu'une.
+function overrideVerdictV7(theme, nulActif) {
+  if (nulActif) return null;
+  var crit = null;
+  if (PILOTE_CRITERES_V7) {
+    try {
+      var mc = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7);
+      crit = mc && mc.camp ? mc.camp : null;
+    } catch (e) { crit = null; }
+  }
+  if (crit) return crit;
+  var f4p4 = null;
+  try { var mf = moteurF4P4V7(theme); f4p4 = mf && mf.applicable && mf.avantage ? mf.avantage : null; }
+  catch (e) { f4p4 = null; }
+  if (f4p4) return f4p4;
+  var sieges = null;
+  try { var sg = lectureSiegesR1R7(theme); sieges = sg && sg.applicable && sg.winner ? sg.winner : null; }
+  catch (e) { sieges = null; }
+  if (sieges) return sieges;
+  var vote = null;
+  try { var vt = VERDICT_VOTE_V7 ? voteMoteursV7(theme) : null; vote = vt && vt.camp ? vt.camp : null; }
+  catch (e) { vote = null; }
+  if (vote) return vote;
+  var chaine = null;
+  try { var an = analyseAncrageDeveloppe(theme); chaine = an && an.applicable && an.avantage ? an.avantage : null; }
+  catch (e) { chaine = null; }
+  if (chaine) return chaine;
+  var reseau = null;
+  try { var rz = analyserReseauAncrageV2(theme); reseau = rz && rz.winner && rz.winner !== 'Nul' ? rz.winner : null; }
+  catch (e) { reseau = null; }
+  if (reseau) return reseau;
+  var proto = null;
+  try {
+    var pr = comparerBouclesAntagonistesR1R7(theme);
+    proto = pr && pr.applicable ? (pr.winner === 'R1' ? 'R1' : pr.winner === 'R7' ? 'R7' : null) : null;
+  } catch (e) { proto = null; }
+  return proto;
+}
+
 function getVerdictAfficheReel(theme, favorite) {
   var orderR = getRotationOrderFromRepos(theme[1]);
   var protocoleR1R7 = comparerBouclesAntagonistesR1R7(theme);
@@ -21435,7 +21496,10 @@ function getVerdictAfficheReel(theme, favorite) {
       critAff = mc && mc.camp ? mc.camp : null;
     } catch (e) { critAff = null; }
   }
-  var winnerOverride = critAff || f4p4Aff || siegesWinner || voteAff || chaineAff || reseauAff || protocoleWinner;
+  // Une seule chaîne, partagée avec l'écran — voir overrideVerdictV7.
+  // Les variables critAff/f4p4Aff/... ci-dessus restent calculées : elles
+  // alimentent les panneaux de comparaison, pas la décision.
+  var winnerOverride = overrideVerdictV7(theme, nulActif);
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
@@ -22983,7 +23047,11 @@ function renderTheme(){
     const nulActifReseauTop = nulActifTop;
     // Même ordre qu'en haut : les sièges d'abord (28/08/26).
     // Même ordre qu'en haut : F4P4 d'abord (28/08/26).
-    const rWinnerOverride = f4p4WinnerTop || siegesWinnerTop || voteWinnerTop || chaineWinnerTop || reseauWinnerTop;
+    // ─── LA MÊME CHAÎNE QUE LE MOTEUR (29/08/26) ───
+    // Cette ligne énumérait sa propre suite de replis, sans la lecture
+    // des critères ni le protocole : l'écran et le banc nommaient deux
+    // camps différents sur 23 % des thèmes. Voir overrideVerdictV7.
+    const rWinnerOverride = overrideVerdictV7(currentTheme, nulActifTop);
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
     carteR.chaineSynthese = ancrageTop.applicable ? ancrageTop.synthese : null;
     carteR.chaineWinner = chaineWinnerTop;
