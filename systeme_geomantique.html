@@ -15369,6 +15369,125 @@ function registrePairesV7() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// LE BALAYAGE DE SÉPARATION (30/08/26)
+//
+// La question d'Ellemine_D après le deuxième triplet : « comment séparer
+// les thèmes qui tiennent le vrai verdict ? » Elle mérite mieux qu'une
+// opinion, et elle mérite mieux qu'une réponse d'un jour.
+//
+// Ce balayage prend TOUTES les propriétés qu'un thème peut avoir —
+// validité, axes, faisceau, porte, maison de R1, théorème, figure du
+// Juge, accord des moteurs, ce que le verdict annonce — et demande pour
+// chacune : « les thèmes qui l'ont sont-ils plus souvent justes que ceux
+// qui ne l'ont pas ? » Puis il applique la correction qu'on oublie
+// toujours : quand on teste 17 propriétés, il en sort UNE sous p = 0,05
+// par pur hasard (17 × 0,05 = 0,85). Un p brut de 0,03 sur le meilleur
+// de 17 candidats ne vaut rien. Bonferroni multiplie par le nombre de
+// tests ; c'est brutal et c'est le minimum honnête.
+//
+// ☠️ AU 30/08/26, SUR 45 CAS : AUCUNE PROPRIÉTÉ NE SÉPARE.
+//     faisceau ≥ 4/7 ......... 43 % contre 71 %   p = 0,199
+//     3 dérivés d'axe sur 3 .. 57 % contre 77 %   p = 0,208
+//     BTTS annoncé ........... 57 % contre 75 %   p = 0,226
+//     …14 autres, toutes au-dessus de 0,49
+// Meilleur p brut 0,199 ; corrigé pour 17 tests : 0,199 × 17 = 3,4,
+// plafonné à 1,00 — autrement dit rien du tout. Et les trois plus gros
+// écarts pointent tous À L'ENVERS : plus le thème a de signal, moins il
+// est juste. C'est la même inversion que sur les axes (1 axe 83 %,
+// 2 axes 86 %, 3 axes 59 %) et je n'ai pas d'explication à en donner —
+// seulement le fait qu'elle se répète.
+//
+// ⚠️ CE QUE ÇA VEUT DIRE. « Ce thème est-il fiable ? » n'a pas de
+// réponse mesurable dans ce fichier. Toutes les tentatives de SÉLECTION
+// ont échoué : la validité, les axes, la porte, le faisceau, le
+// théorème, l'accord des moteurs (0/2 sur les triplets), l'unanimité de
+// F4P4 (fausse le jour où je m'en suis servi). Le balayage reste
+// branché pour que le jour où une propriété sépare vraiment, elle se
+// signale toute seule au lieu d'être devinée.
+function balayageSeparationV7() {
+  var cas = [];
+  try { cas = tousCasBancV7() || []; } catch (e) { return null; }
+  var props = {}, nJ = 0, nT = 0;
+  function add(nom, val, juste) {
+    if (val === null || val === undefined) return;
+    if (!props[nom]) props[nom] = { oui: [0, 0], non: [0, 0] };
+    var b = props[nom][val ? 'oui' : 'non'];
+    b[juste ? 0 : 1] += 1;
+  }
+  cas.forEach(function (c) {
+    if (!c || !c.camp) return;
+    var t, v;
+    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    try { v = getVerdictAfficheReel(t); } catch (e) { return; }
+    var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+    var juste = (dit === c.camp);
+    nT += 1; if (juste) nJ += 1;
+    var nv = null, pc = null, f = null, r = null, cd = null, ac = null;
+    try { nv = niveauValiditeV7(t); } catch (e) {}
+    try { pc = porteConfianceV7(t); } catch (e) {}
+    try { f = faisceauNulV7(t); } catch (e) {}
+    try { r = getRotationCombat(t); } catch (e) {}
+    try { cd = campDoubleV7(t); } catch (e) {}
+    try { ac = accordCampV7(t); } catch (e) {}
+    if (nv) { add('validité 3/3', nv.niveau >= 3, juste); add('figure du jour présente', !!nv.complet, juste); }
+    if (pc) { add('3 dérivés d\'axe sur 3', pc.nbAxes >= 3, juste); add('3 binômes sur 3', pc.nbBinomes >= 3, juste); }
+    if (f) add('faisceau ≥ 4/7', f.n >= 4, juste);
+    add('porte du nul ouverte', !!nulParPorteV7(t), juste);
+    if (r && r.hR1) {
+      add('R1 en maison cadente', [3, 6, 9, 12].indexOf(r.hR1) >= 0, juste);
+      add('R1 en maison angulaire', [1, 4, 7, 10].indexOf(r.hR1) >= 0, juste);
+      if (r.hR1 <= 12) add('R1 en maison de confusion', !!maisonConfusionV7(r.hR1), juste);
+    }
+    add('théorème des maisons applicable', !!(cd && cd.applicable), juste);
+    if (ac && ac.lisible) add('F4P4 et critères d\'accord', !!ac.accord, juste);
+    add('le Juge (M15) est Via ou Populus', t[15] === 'via' || t[15] === 'populus', juste);
+    add('Conjunctio présent dans le thème', (function () {
+      for (var h = 1; h <= 16; h++) if (t[h] === 'conjunctio') return true; return false;
+    })(), juste);
+    add('verdict annoncé = nul', dit === 'nul', juste);
+    add('verdict annoncé = R1', dit === 'R1', juste);
+    if (typeof v.btts === 'boolean') add('les deux marquent annoncé', v.btts === true, juste);
+    try { add('sommes d\'incident > 0', sommesAxesIncidentV7(t).nb > 0, juste); } catch (e) {}
+  });
+  var lignes = [];
+  Object.keys(props).forEach(function (k) {
+    var o = props[k].oui, n = props[k].non;
+    var no = o[0] + o[1], nn = n[0] + n[1];
+    if (no < 4 || nn < 4) return;   // moins de 4 d'un côté : illisible
+    var to = o[0] / no, tn = n[0] / nn;
+    lignes.push({ nom: k, oui: o[0], nOui: no, non: n[0], nNon: nn,
+      tauxOui: to, tauxNon: tn, ecart: to - tn, p: fisherExactV7(o[0], o[1], n[0], n[1]) });
+  });
+  lignes.sort(function (a, b) { return a.p - b.p; });
+  var k = lignes.length;
+  return { lignes: lignes, tests: k, justes: nJ, total: nT,
+    meilleurP: k ? lignes[0].p : null,
+    corrige: k ? Math.min(1, lignes[0].p * k) : null,
+    attenduSous5: Math.round(k * 0.05 * 100) / 100 };
+}
+
+// Fisher exact bilatéral sur un tableau 2×2, en log-factorielles pour
+// que les grands effectifs ne débordent pas.
+function fisherExactV7(a, b, c, d) {
+  var LF = [0];
+  function lf(n) { for (var i = LF.length; i <= n; i++) LF[i] = LF[i - 1] + Math.log(i); return LF[n]; }
+  var n = a + b + c + d;
+  if (!n) return 1;
+  lf(n);
+  function pr(x, y, z, w) {
+    return Math.exp(lf(x + y) + lf(z + w) + lf(x + z) + lf(y + w) - lf(n) - lf(x) - lf(y) - lf(z) - lf(w));
+  }
+  var p0 = pr(a, b, c, d), tot = 0;
+  var r1 = a + b, r2 = c + d, c1 = a + c;
+  var lo = Math.max(0, c1 - r2), hi = Math.min(r1, c1);
+  for (var i = lo; i <= hi; i++) {
+    var pi = pr(i, r1 - i, c1 - i, r2 - c1 + i);
+    if (pi <= p0 * (1 + 1e-9)) tot += pi;
+  }
+  return Math.min(1, tot);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LE GARDE-FOU DE L'ARCHIVE (29/08/26, révision d'ensemble)
 //
 // Toute l'archive écrit le score dans l'ordre R1-R7 : le premier nombre
@@ -16418,7 +16537,11 @@ function moteurCritereV7(theme, poids) {
          + meilleur(BINOMES_V7[X]) + meilleur(frontDuFrontV7(X)) - meilleur(ANTAGONISTES_V7[X]);
   }
   var a = Math.round(camp(rot.figR1) * 100) / 100, b = Math.round(camp(rot.figR7) * 100) / 100;
-  return { camp: a > b ? 'R1' : b > a ? 'R7' : null, detail: 'R1 ' + a + ' contre R7 ' + b };
+  // Les deux totaux sont exposés : un consensus qui additionne des écarts
+  // vaut mieux qu'un consensus qui compte des vainqueurs — encore
+  // faut-il que l'écart veuille dire quelque chose. Voir margeCritereV7.
+  return { camp: a > b ? 'R1' : b > a ? 'R7' : null, scoreR1: a, scoreR7: b, marge: Math.round((a - b) * 100) / 100,
+    detail: 'R1 ' + a + ' contre R7 ' + b };
 }
 var POIDS_SANS_CONCORDANCE_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
   environnement: 1, cohabitation: 1, activation: 1, maisonNatale: 1 };
@@ -18738,7 +18861,55 @@ function renderBancPanel() {
               }).join('')
             + '</div>';
         }
-        var tete = alerteCoh + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
+        // ─── LE BALAYAGE DE SÉPARATION (30/08/26) ───
+        // « Comment séparer les thèmes qui tiennent le vrai verdict ? »
+        // La réponse se recalcule à chaque ouverture du banc.
+        var bal = null;
+        try { bal = balayageSeparationV7(); } catch (e) { bal = null; }
+        var blocBal = '';
+        if (bal && bal.lignes.length) {
+          var gagne = bal.corrige !== null && bal.corrige < 0.05;
+          var col = gagne ? '#4ade80' : '#94a3b8';
+          blocBal = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid ' + col + '; '
+            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
+            + '<div style="font-size:12px; font-weight:800; color:' + col + ';">🔎 BALAYAGE DE SÉPARATION — '
+            + bal.tests + ' propriétés contre ' + bal.justes + '/' + bal.total + ' verdicts justes</div>'
+            + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+            + 'Une seule question, posée à chaque propriété qu\'un thème peut avoir : <b>les thèmes qui '
+            + 'l\'ont sont-ils plus souvent justes que ceux qui ne l\'ont pas ?</b> C\'est la question '
+            + '« quel thème croire », et elle n\'a pas la même réponse que « ce thème est-il beau ».</div>'
+            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:6px;">'
+            + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 6px;">propriété</th>'
+            + '<th style="padding:3px 6px;">avec</th><th style="padding:3px 6px;">sans</th>'
+            + '<th style="padding:3px 6px;">écart</th><th style="padding:3px 6px;">p</th></tr>'
+            + bal.lignes.slice(0, 6).map(function (x) {
+                var e = Math.round(100 * x.ecart);
+                return '<tr><td style="padding:3px 6px; color:#e2e8f0;">' + esc(x.nom) + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + x.oui + '/' + x.nOui
+                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxOui) + ' %</span></td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + x.non + '/' + x.nNon
+                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxNon) + ' %</span></td>'
+                  + '<td style="padding:3px 6px; text-align:center; color:' + (e >= 0 ? '#4ade80' : '#f87171')
+                  + ';">' + (e >= 0 ? '+' : '') + e + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + x.p.toFixed(3) + '</td></tr>';
+              }).join('')
+            + '</table>'
+            + '<div style="font-size:10px; color:' + (gagne ? '#4ade80' : '#fbbf24') + '; margin-top:5px;">'
+            + (gagne
+              ? '✔ Une propriété passe la correction de Bonferroni (p corrigé ' + bal.corrige.toFixed(3)
+                + ') : elle sépare vraiment. À vérifier sur les matchs suivants avant de s\'en servir.'
+              : '☠️ <b>Aucune propriété ne sépare.</b> Meilleur p brut ' + bal.meilleurP.toFixed(3)
+                + ', corrigé pour ' + bal.tests + ' tests : ' + bal.corrige.toFixed(2) + '. Sur ' + bal.tests
+                + ' propriétés testées, le hasard seul en donne ' + bal.attenduSous5
+                + ' sous p = 0,05 — un joli p brut ne veut donc rien dire ici.')
+            + '</div>'
+            + '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+            + 'Les plus gros écarts pointent souvent <b>à l\'envers</b> : plus le thème a de signal, moins '
+            + 'il est juste. Même inversion que sur les dérivés d\'axe (1 axe 83 %, 2 axes 86 %, 3 axes '
+            + '59 %). Je n\'ai pas d\'explication — seulement le fait qu\'elle se répète.'
+            + '</div></div>';
+        }
+        var tete = alerteCoh + blocBal + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
           + 'border-radius:10px; background:rgba(251,191,36,.07);">'
           + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
           + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
