@@ -14932,7 +14932,8 @@ function bancMoteursV7(force) {
           return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
         }
         var v = null;
-        try { v = m.verdict(themes[i]); } catch (e) { v = null; }
+        try { v = avecFormatV7(c.esport ? 'esport' : 'reel', function () { return m.verdict(themes[i]); }); }
+        catch (e) { v = null; }
         var dit = v && v.n != null ? v.n : null;
         if (dit === null) {
           return { cas: c.nom, dit: null, reel: reel, compte: false, ok: null };
@@ -14968,7 +14969,8 @@ function bancMoteursV7(force) {
           return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
         }
         var v = null;
-        try { v = m.verdict(themes[i]); } catch (e) { v = null; }
+        try { v = avecFormatV7(c.esport ? 'esport' : 'reel', function () { return m.verdict(themes[i]); }); }
+        catch (e) { v = null; }
         var dit = v ? v[champ] : null;
         // ─── CORRIGÉ LE 28/08/26 ───
         // Cette ligne transformait un moteur MUET (oui = null) en « non ».
@@ -16616,6 +16618,37 @@ function niveauNulV7(theme) {
     detail: 'ni porte ouverte ni maison cadente — 0 nul sur 21' };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// L'ÉCHELLE DU MATCH, SOURCE UNIQUE (30/08/26)
+//
+// ☠️ LE BANC NOTAIT LES CAS E-SPORT SUR L'ÉCHELLE DU FOOTBALL RÉEL.
+// L'échelle était lue directement dans le menu « Format du match » de la
+// page — à deux endroits, scoreAfficheV7 et la calibration du score.
+// Or le banc REJOUE des cas archivés, chacun avec son propre format
+// (champ esport), pendant que le menu reste sur ce que l'utilisateur y a
+// laissé. Constaté : AmisPuer, nul e-sport réel 4-4, était rejoué en
+// « 0-0 » ; City/Madrid, e-sport 7-4, en « 1-0 ». Cinq cas sur 37 notés
+// sur la mauvaise échelle, et l'échelle e-sport n'était en pratique
+// jamais éprouvée.
+//
+// formatMatchV7() est désormais la seule lecture du format, et
+// avecFormatV7() permet au banc d'imposer celui du cas rejoué le temps
+// de l'évaluation. Sauvegarde et restauration, donc réentrant : un appel
+// imbriqué ne casse pas le format de l'appelant.
+var _formatReplayV7 = null;
+function formatMatchV7() {
+  if (_formatReplayV7) return _formatReplayV7;
+  try {
+    var f = document.getElementById('matchFormat');
+    return (f && f.value) ? f.value : 'reel';
+  } catch (e) { return 'reel'; }
+}
+function avecFormatV7(fmt, fn) {
+  var avant = _formatReplayV7;
+  _formatReplayV7 = fmt || null;
+  try { return fn(); } finally { _formatReplayV7 = avant; }
+}
+
 // Le score AFFICHÉ, source unique. Quand le nul est imposé, la carte ne
 // le sait pas — nulActif se décide en dehors de buildVerdictCard — et
 // elle continuait de sortir un score décidé. Constaté au navigateur sur
@@ -16628,21 +16661,19 @@ function scoreAfficheV7(card, nulActif) {
     // Le nul suit l'échelle du format, comme le reste du score : un nul
     // d'arcade s'écrit 4-4 (AmisPuer, le seul de l'archive, a fini 4-4),
     // un nul de football réel 0-0 (voir la mesure juste en dessous).
-    var esp = false;
-    try {
-      var f = document.getElementById('matchFormat');
-      esp = !!(f && f.value === 'esport');
-    } catch (e) { esp = false; }
+    var esp = (formatMatchV7() === 'esport');
     // ─── 0-0 PASSE DEVANT 1-1 (30/08/26) ───
     // Le nul imposé sortait 1-1, avec 0-0 en alternative. La correction
     // du score du 30/08 (3-3, pas 1-1) a fait relire les neuf nuls de
     // l'archive, et leur distribution ne soutient pas ce choix :
+    //   football réel (7 nuls au score connu) :
     //     0-0 ... 3 fois       2-2 ... 1 fois
     //     1-1 ... 1 fois       3-3 ... 2 fois
-    //                          4-4 ... 1 fois (e-sport)
-    // Le 1-1 imposé tombait juste 1 fois sur 8 ; le 0-0 en tomberait 3.
-    // Et la conclusion tient que les deux 3-3 soient du football réel ou
-    // de l'e-sport : dans les deux découpages, 0-0 bat 1-1.
+    //   e-sport (1 nul) : 4-4
+    // Ellemine_D a confirmé le 30/08 que le match à 3-3 est du football
+    // RÉEL. Sur l'échelle réelle, le 1-1 imposé tombait donc juste 1 fois
+    // sur 7 et le 0-0 en prend 3. L'échelle e-sport (4-4 / 3-3) garde son
+    // seul cas connu et ne bouge pas.
     // ⚠️ Ça ne veut pas dire qu'un nul est un 0-0 : la moitié des nuls
     // de l'archive ont au moins deux buts par équipe. Ça veut dire que
     // le score le PLUS FRÉQUENT est 0-0, et qu'un score imposé n'a rien
@@ -21258,14 +21289,21 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // Quand R1 est en maison cadente, les deux équipes marquent 6 fois sur
   // 7 ; sinon, 4 fois sur 18.
   //
-  // ⚠️ CE N'EST PAS UN ARTEFACT DE BUTS. Le groupe cadent marque plus
-  // (4,86 buts contre 3,06), et plus de buts veut mécaniquement dire plus
-  // de BTTS. J'ai donc contrôlé :
-  //     sans les deux e-sport (≤ 5 buts) .... cadent 4/5 · sinon 2/15 · p = 0,014
-  //     matchs de 0 à 3 buts seulement ...... cadent 3/4 · sinon 1/11 · p = 0,033
-  // Et le témoin qui compte : le NOMBRE DE BUTS prédit le BTTS moins bien
-  // que la maison (4 buts ou plus → 6/10 ; moins de 4 → 4/15). La maison
-  // n'emprunte donc pas son pouvoir au score, elle en a plus que lui.
+  // ⚠️ CE N'EST PAS UN ARTEFACT DE BUTS — contrôle refait le 30/08 PAR LE
+  // FORMAT, ce qui est la bonne façon de le faire. Ma première version
+  // filtrait « ≤ 5 buts » en appelant ça « sans les e-sport » : les
+  // chiffres étaient justes mais l'étiquette était fausse, et elle
+  // écartait aussi des matchs réels à gros score.
+  //     tous les cas .................. cadent 7/8 · sinon 5/19 · p = 0,008
+  //     FOOTBALL RÉEL seulement ....... cadent 4/5 · sinon 4/18 · p = 0,033
+  //     réel, 0 à 3 buts .............. cadent 2/3 · sinon 1/11 · p = 0,093
+  // Et en football réel l'écart de buts entre les deux groupes est
+  // presque nul : 3,20 contre 2,78. Le soupçon d'artefact venait
+  // entièrement des deux e-sport (8 et 13 buts) que ma première mesure
+  // laissait entrer dans la moyenne. Enfin le témoin qui compte : en
+  // réel, le NOMBRE DE BUTS prédit le BTTS moins bien que la maison
+  // (4 buts ou plus → 5/9 ; moins de 4 → 3/14). La maison n'emprunte
+  // donc pas son pouvoir au score.
   //
   // ⚠️ ET CE N'EST PAS NON PLUS UNE PÊCHE. Vingt-quatre signaux testés,
   // le meilleur à p = 0,007 : le seuil de Bonferroni serait 0,002, et
@@ -21448,7 +21486,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // personne ne peut le deviner depuis le thème.
     var _esport = false;
     try {
-      var _fmt = document.getElementById('matchFormat');
+      var _fmt = { value: formatMatchV7() };
       _esport = !!(_fmt && _fmt.value === 'esport');
     } catch (e) { _esport = false; }
     var _g = _esport ? 4 : 1, _p = _esport ? 3 : 0, _n = _esport ? 4 : 1;
@@ -23622,7 +23660,11 @@ function replayEntry(entry){
   var vfOk = (vf.type==='verdict' || vf.type==='nul' || vf.type==='nul_suspecte') && vf.winner ? vf.winner===realWinner : null;
   // Le verdict RÉELLEMENT AFFICHÉ par l'application, celui que pilote F4P4.
   var affWinner = null;
-  try { var va = getVerdictAfficheReel(theme); affWinner = va ? va.winner : null; } catch (e) { affWinner = null; }
+  var _fmtEntry = entry.matchFormat === 'esport' ? 'esport' : 'reel';
+  try {
+    var va = avecFormatV7(_fmtEntry, function () { return getVerdictAfficheReel(theme); });
+    affWinner = va ? va.winner : null;
+  } catch (e) { affWinner = null; }
   var affOk = affWinner ? affWinner === realWinner : null;
   var delaiMin = calculerDelaiTirageMinutes(entry.matchDate, entry.matchTime, entry.castAt || entry.savedAt, entry.matchTimezone);
   var scn = signalConvergenceNul(theme);
@@ -23652,7 +23694,10 @@ function replayEntry(entry){
   // rejeu perd ce contexte ; le score de verdictV7 avec contexte reste
   // exposé sous predScoreV7 pour comparaison.
   var affScore = null;
-  try { var vaS = getVerdictAfficheReel(theme); affScore = vaS || null; } catch (e) { affScore = null; }
+  try {
+    var vaS = avecFormatV7(_fmtEntry, function () { return getVerdictAfficheReel(theme); });
+    affScore = vaS || null;
+  } catch (e) { affScore = null; }
   var predM1 = affScore ? Number(affScore.goalM1) : v7Replay.goalM1;
   var predM7 = affScore ? Number(affScore.goalM7) : v7Replay.goalM7;
   var ecartButs = Math.abs(predM1-g1) + Math.abs(predM7-g7);
@@ -24158,6 +24203,11 @@ function addToHistory() {
     castAt: themeCastAt || new Date().toISOString(),
     delaiTirageMin: calculerDelaiTirageMinutes(matchDate, matchTime, themeCastAt, matchTimezone),
     team1:team1, team2:team2, matchDate:matchDate, matchTime:matchTime, matchTimezone:matchTimezone, competition:competition, favorite:favorite,
+    // ─── LE FORMAT EST GELÉ AVEC LE THÈME (30/08/26) ───
+    // Le favori l'était déjà, pas le format. Un thème e-sport sauvegardé
+    // était rejoué au banc sur l'échelle du menu au moment du rejeu, pas
+    // sur la sienne — même défaut que pour les cas d'archive.
+    matchFormat: (document.getElementById('matchFormat')||{}).value || 'reel',
     theme: Object.assign({}, currentTheme),
     interpretation: getInterpretationText(),
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
@@ -24216,6 +24266,11 @@ function saveManuel() {
     castAt: themeCastAt || new Date().toISOString(),
     delaiTirageMin: calculerDelaiTirageMinutes(matchDate, matchTime, themeCastAt, matchTimezone),
     team1:team1, team2:team2, matchDate:matchDate, matchTime:matchTime, matchTimezone:matchTimezone, competition:competition, favorite:favorite,
+    // ─── LE FORMAT EST GELÉ AVEC LE THÈME (30/08/26) ───
+    // Le favori l'était déjà, pas le format. Un thème e-sport sauvegardé
+    // était rejoué au banc sur l'échelle du menu au moment du rejeu, pas
+    // sur la sienne — même défaut que pour les cas d'archive.
+    matchFormat: (document.getElementById('matchFormat')||{}).value || 'reel',
     theme: Object.assign({}, currentTheme),
     interpretation: getInterpretationText(),
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
