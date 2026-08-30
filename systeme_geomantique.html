@@ -14774,6 +14774,25 @@ var CAS_REFERENCE_V7 = [
   { nom: 'AcqFortMaj', meres: ['acquisitio','fortuna_major','caput_draconis','acquisitio'],
     score: '0-7', camp: 'R7', btts: false,
     note: '0-7 pour R7, le plus gros écart de l\'archive · annonce R1 1-0 ✘ — les critères (pilote) disent R1 à 59 contre 5, et SIX autres moteurs disent R7 · BTTS non ✔ · a fait sortir le bug d\'affichage du protocole (nom du vainqueur pris sur la carte au lieu du protocole, barre à 107 %)' },
+  // ─── 29/08/26 — LIVERPOOL 2-2 FOREST, ET UN THÈME QUE LE FILTRE REFUSE ───
+  // Ellemine_D : « on travaille sur ce thème ». Puer/Rubeus/Amissio/Puer.
+  // Validation 2/3 — sous le seuil, donc REJETÉ par son propre filtre :
+  // son verdict n'est pas rapporté et ne doit pas l'être. Le match, lui,
+  // a bien eu lieu, et c'est à ce titre qu'il entre ici. Un thème rejeté
+  // reste une donnée ; ce qu'on refuse, c'est de s'en servir pour parier.
+  //
+  // ✔ C'EST LE CAS LE PLUS RICHE DE L'ARCHIVE : il alimente SIX familles
+  // d'un coup, dont deux qui n'avaient presque rien.
+  //     nul ............. oui (2-2)
+  //     les deux marquent oui
+  //     match serré ..... oui
+  //     penalty ......... oui, camp R7 (Gibbs-White 70')  → 2e cas
+  //     mi-temps ........ but dans chaque période (0-1 puis 2-1) → 4e cas
+  //     deux en 1re MT .. non (0-1 à la pause)            → 4e cas
+  // Ordre R1-R7 = Liverpool-Forest : 0-1 à la pause, 2-2 au bout.
+  { nom: 'PuerRubeus', meres: ['puer','rubeus','amissio','puer'],
+    score: '2-2', htScore: '0-1', camp: 'nul', btts: true, penaltyCamp: 'M7',
+    note: 'Liverpool 2-2 Forest (29/08) · THÈME REJETÉ, validation 2/3 : verdict non rapporté, cas conservé comme donnée · nul ✔ · BTTS oui · penalty pour R7 · but dans chaque mi-temps, 0-1 à la pause · six familles alimentées par un seul match' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
