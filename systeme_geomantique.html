@@ -16833,7 +16833,15 @@ function scoreAfficheV7(card, nulActif) {
     // le score le PLUS FRÉQUENT est 0-0, et qu'un score imposé n'a rien
     // de mieux à offrir qu'un mode. L'ampleur d'un nul n'est pas prédite
     // par ce fichier — c'est écrit ici pour qu'on ne l'oublie pas.
-    return esp ? { main: '4-4', alt: '3-3' } : { main: '0-0', alt: '1-1' };
+    // ─── LE NUL IMPOSÉ RESPECTE LE BTTS AUSSI (30/08/26) ───
+    // Sinon la carte pouvait afficher « Les deux marquent : Oui » sur un
+    // « 0-0 » — la même contradiction que du côté du score décidé.
+    // Sur les nuls de l'archive : sans BTTS, 0-0 trois fois sur trois ;
+    // avec BTTS, 3-3 ×2, 1-1 ×1, 2-2 ×1 — on prend le minimum compatible,
+    // 1-1, pour ne rien devoir à quatre cas.
+    var _deuxNul = (card.btts === true);
+    if (esp) return _deuxNul ? { main: '4-4', alt: '3-3' } : { main: '0-0', alt: '1-1' };
+    return _deuxNul ? { main: '1-1', alt: '2-2' } : { main: '0-0', alt: '1-1' };
   }
   return { main: card.scoreMain || '—', alt: card.scoreAlt || '—' };
 }
@@ -21699,7 +21707,41 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       var _fmt = { value: formatMatchV7() };
       _esport = !!(_fmt && _fmt.value === 'esport');
     } catch (e) { _esport = false; }
-    var _g = _esport ? 4 : 1, _p = _esport ? 3 : 0, _n = _esport ? 4 : 1;
+    // ═══════════════════════════════════════════════════════════
+    // LE SCORE DOIT RESPECTER LE BTTS (30/08/26)
+    //
+    // ☠️ RÉGRESSION QUE J'AVAIS INTRODUITE MOI-MÊME. En déplaçant la
+    // calibration APRÈS la couche BTTS — pour corriger un « VAINQUEUR
+    // Équipe 1 · Score 1-1 » — je lui ai donné le dernier mot sur les
+    // buts, et elle écrasait le BTTS. Résultat : la carte affichait
+    // « Les deux marquent : Oui » AU-DESSUS d'un « Score prédit : 0-1 ».
+    // Mesuré : 30 % des thèmes au hasard, et 16 des 40 cas d'archive.
+    // J'avais réparé une contradiction en en fabriquant une autre.
+    //
+    // LE CHOIX DES CHIFFRES, SUR LES SCORES RÉELS DE L'ARCHIVE :
+    //   réel · décidé · un seul marque .... 1-0 ×7, 2-0 ×2, 4-0 ×2 … (13)
+    //   réel · décidé · les deux marquent . 3-2 ×3, 2-1 ×2, 6-1 ×1  ( 6)
+    //   réel · nul · un seul marque ....... 0-0 ×3                  ( 3)
+    //   réel · nul · les deux marquent .... 3-3 ×2, 1-1 ×1, 2-2 ×1  ( 4)
+    // Quatre variantes essayées sur les 30 cas au score connu :
+    //   aujourd'hui, BTTS ignoré ......... 10 exacts · 80 buts d'erreur
+    //   2-1 · 1-1 (minimal) .............. 12 exacts · 69
+    //   3-2 · 3-3 (modal) ................ 11 exacts · 71
+    //   2-1 · 2-2 ........................ 12 exacts · 67
+    // ⚠️ J'AI PRIS LA VARIANTE MINIMALE (2-1 · 1-1), PAS LA MEILLEURE.
+    // 2-1 · 2-2 gagne de 2 buts d'erreur sur 30 cas — du bruit — et son
+    // 2-2 est choisi sur quatre nuls. La variante minimale est le plus
+    // petit score compatible avec « les deux ont marqué » : elle ne doit
+    // rien à l'échantillon, et elle fait le même nombre d'exacts.
+    // Le vrai gain est ailleurs : la contradiction disparaît.
+    //
+    // ⚠️ L'E-SPORT SANS BTTS N'EST PAS MESURÉ. Aucun cas e-sport de
+    // l'archive n'a un seul buteur ; le 4-0 est posé par cohérence, pas
+    // par mesure. Le premier match FiFa à un seul buteur le corrigera.
+    var _deux = (btts === true);
+    var _g, _p, _n;
+    if (_esport) { _g = 4; _p = _deux ? 3 : 0; _n = _deux ? 4 : 0; }
+    else { _g = _deux ? 2 : 1; _p = _deux ? 1 : 0; _n = _deux ? 1 : 0; }
     if (scWinnerCode === 'A') { goalA = _g; goalB = _p; }
     else if (scWinnerCode === 'B') { goalA = _p; goalB = _g; }
     else { goalA = _n; goalB = _n; }
