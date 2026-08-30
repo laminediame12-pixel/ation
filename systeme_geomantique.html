@@ -15805,8 +15805,37 @@ var MOTEURS_BTTS_V7 = [
   // signal survit au contrôle par le nombre de buts (voir le bloc de
   // mesure dans buildVerdictCard). Il n'attrape que 6 des 10 BTTS réels :
   // quand il dit oui, crois-le ; quand il se tait, il ne dit rien.
-  { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente', icone: '🏠', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'branché — 20/25, le meilleur signal de la famille',
+  // ─── LE CROISEMENT BRANCHÉ DEPUIS LE 30/08 ───
+  { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent', icone: '🔗', teinte: '#22c55e',
+    juste: 0, total: 0, note: 'branché — 21/25 · absent de Conjunctio : 0 BTTS sur 8 · cadent+présent : 6 sur 6',
+    verdict: function (t) {
+      var r = null;
+      try { r = getRotationCombat(t); } catch (e) { return null; }
+      if (!r || !r.hR1) return null;
+      var conj = false;
+      for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') { conj = true; break; } }
+      var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
+      return { oui: cad && conj,
+        detail: 'R1 en M' + r.hR1 + (cad ? ' (cadente)' : '') + ' · Conjunctio ' + (conj ? 'présent' : 'ABSENT') };
+    } },
+  { cle: 'btts_conjunctio', nom: 'BTTS · Conjunctio présent dans le thème', icone: '🔀', teinte: '#38bdf8',
+    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 18/25 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 8)',
+    verdict: function (t) {
+      for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') return { oui: true, detail: 'Conjunctio en M' + h }; }
+      return { oui: false, detail: 'Conjunctio absent des 16 maisons' };
+    } },
+  { cle: 'btts_puer', nom: 'BTTS · Puer en maison succédente', icone: '⚔', teinte: '#94a3b8',
+    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — la seule des 18 formes qui aille dans son sens : 5/8 contre 5/17, p = 0,194, NON démontrée',
+    verdict: function (t) {
+      var vu = [];
+      for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
+      if (!vu.length) return { oui: false, detail: 'Puer absent du thème' };
+      var suc = vu.filter(function (h) { return [2, 5, 8, 11].indexOf(h) >= 0; });
+      return { oui: suc.length > 0,
+        detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
+    } },
+  { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente (seule)', icone: '🏠', teinte: '#84cc16',
+    juste: 0, total: 0, note: 'la maison seule — 20/25 · son unique raté (Bologna) est un thème sans Conjunctio',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -21115,8 +21144,59 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     var _rotB = getRotationCombat(theme);
     if (_rotB && _rotB.hR1) bttsCadent = [3, 6, 9, 12].indexOf(_rotB.hR1) >= 0;
   } catch (e) { bttsCadent = null; }
+  // ═══════════════════════════════════════════════════════════════
+  // LE VERROU DE CONJUNCTIO (30/08/26) — méthode d'Ellemine_D
+  //
+  // Sa proposition : « Puer quand il est actif peut désigner les deux
+  // marques, car Puer marque mais encaisse. Après Carcer, vérifie, et
+  // Fortuna Minor, et les autres figures. »
+  //
+  // ☠️ SUR PUER, LA MESURE DIT NON. Dix-huit formes d'« actif » testées
+  // (siège R1/R7, M1, M7, angulaire, succédente, cadente, présent, présent
+  // 2 ou 3 fois, juge, mères, témoins, camp de R1, camp de R7, les deux
+  // camps). Aucune ne tient : la meilleure est 17/25 à p = 0,194, et Puer
+  // présent dans le thème donne 6 BTTS sur 15 — exactement le taux de
+  // base. Deux formes pointent même à l'envers. La seule qui aille dans
+  // son sens est « Puer en maison SUCCÉDENTE » (5/8 contre 5/17), à
+  // surveiller mais pas démontrée.
+  // Carcer : rien non plus (meilleur 17/25, p = 0,175 en angulaire).
+  // Fortuna Minor : rien (meilleur 16/25, p = 0,397).
+  //
+  // ✔ MAIS SA MÉTHODE, ELLE, DONNE LE MEILLEUR RÉSULTAT DU FICHIER —
+  // appliquée à une autre figure. Les seize figures passées sous cinq
+  // définitions d'« actif », une seule sort :
+  //     CONJUNCTIO ABSENT DU THÈME → les deux ne marquent PAS : 8 fois
+  //     sur 8. Présent : 10 BTTS sur 17. p = 0,008.
+  // Et le sens colle exactement : Conjunctio, c'est la jonction,
+  // la rencontre, l'échange. « Les deux marquent » EST un échange
+  // mutuel. Son absence dit qu'il n'y a pas d'échange.
+  //
+  // CE QUI EMPORTE LA DÉCISION, ce n'est pas le p. C'est que le verrou
+  // explique l'UNIQUE raté de la maison cadente : Bologna (0-1), seul cas
+  // cadent sans BTTS — et Conjunctio y est absent. Et il ne coûte rien :
+  // les 4 BTTS que la maison rate ont TOUS Conjunctio présent, donc le
+  // verrou n'en bloque aucun.
+  //
+  // LA PARTITION EN TROIS ZONES, sur les 25 cas :
+  //     Conjunctio ABSENT ............... NON, 8 sur 8
+  //     cadent + Conjunctio présent ..... OUI, 6 sur 6
+  //     Conjunctio présent, non cadent .. ZONE MUETTE, 4 BTTS sur 11
+  // Quatorze cas tranchés, quatorze justes. Onze cas où le fichier ne
+  // sait pas et répond « non » par défaut, ce qui lui en donne 7 de plus.
+  // Total 21/25, contre 20 pour la maison seule et 15 pour le témoin.
+  //
+  // ☠️ CE QUE ÇA NE VAUT PAS. J'ai lancé environ 96 tests pour trouver
+  // ça. À ce compte-là, un p de 0,008 sort tout seul du hasard une fois
+  // sur deux ou trois : le seuil honnête serait 0,0005, et on en est
+  // loin. Ce qui tient ce verrou, c'est le sens de la figure et le fait
+  // qu'il explique le seul raté de l'autre règle — pas sa statistique.
+  // Le premier match où Conjunctio est absent ET les deux marquent le
+  // tue. Il est écrit ici pour être tué, si c'est ce qui doit arriver.
+  var bttsConj = false;
+  try { for (var _h = 1; _h <= 16; _h++) { if (theme[_h] === 'conjunctio') { bttsConj = true; break; } } }
+  catch (e) { bttsConj = false; }
   var btts;
-  if (BTTS_CADENT_V7 && bttsCadent !== null) btts = bttsCadent;
+  if (BTTS_CADENT_V7 && bttsCadent !== null) btts = (bttsCadent && bttsConj);
   else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
   else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) btts = false;
   else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) btts = bttsChaine.lesDeuxMarquent;
@@ -21345,8 +21425,13 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     btts: btts,
     bttsForce: bttsDoctrine.applique,
     bttsDefavorise: bttsDoctrine.defavorise,
+    bttsZone: (BTTS_CADENT_V7 && bttsCadent !== null)
+      ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 8 cas sur 8'
+        : (bttsCadent ? 'R1 cadent + Conjunctio présent — 6 cas sur 6'
+          : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — 4 BTTS sur 11, le fichier répond non par défaut'))
+      : null,
     bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? 'maison de R1 (20/25)'
+      ? 'maison de R1 + Conjunctio (21/25)'
       : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
       : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
@@ -21701,6 +21786,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var markA=card&&card.capaciteA!=null?card.capaciteA:'—', markB=card&&card.capaciteB!=null?card.capaciteB:'—';
   var bt=card&&card.btts?'Oui':'Non';
   if (card && card.bttsSource) bt += ' — ' + card.bttsSource;
+  if (card && card.bttsZone) bt += '<br><span style="font-size:10px; color:#94a3b8; font-weight:400;">'
+    + card.bttsZone + '</span>';
   if (card && card.bttsContreLecture) bt += ' · ' + card.bttsContreLecture;
   // La doctrine M4/M10 est signalée, plus imposée : elle est débranchée du
   // verdict depuis le 25/08 (1/3 là où elle tire sur les cas réels).
