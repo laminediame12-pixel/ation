@@ -14516,6 +14516,24 @@ var CAS_REFERENCE_V7 = [
   { nom: 'TristPop', meres: ['tristitia','populus','acquisitio','carcer'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que ConjTrist · annonce NUL 1-1 ✘ · niveau de validité 1/3 : les axes des dérivés Succédent et Cadent sont ABSENTS · décalage +4, porte du nul ouverte' },
+  // ─── 30/08/26 — TROISIÈME DOUBLE TIRAGE, un match nul 1-1 ───
+  // ⚠️ MÊME MATCH tous les deux : deux thèmes, une seule observation.
+  // Thème 1 : NUL annoncé, score 1-1 annoncé — JUSTE, au score exact.
+  //           Porte ouverte à +4, niveau de nul MAXIMAL.
+  // Thème 2 : R1 annoncé — FAUX. Porte FERMÉE à +9, boucles opposées.
+  // ☠️ C'EST LE PREMIER NUL QUE LA PORTE RATE. Elle était à 7 sur 7.
+  //    Le décalage +9 est en boucles opposées, où seul +11 ouvre.
+  // ☠️ ET LA PORTE DE CONFIANCE NE SÉPARE PAS CETTE PAIRE : les deux
+  //    thèmes sont à 3/3 dérivés d'axe valides et niveau 3/3. Le critère
+  //    d'Ellemine_D était à 1 sur 1 ; il est à 1 sur 2.
+  // ✔ En revanche « Puer en maison succédente » voit juste sur le thème 1
+  //    (Puer en M8, BTTS réel oui) là où la règle branchée dit non.
+  { nom: 'TristCaput', meres: ['tristitia','caput_draconis','cauda_draconis','puer'],
+    score: '1-1', camp: 'nul', btts: true,
+    note: 'MÊME MATCH que FortMajTrist · NUL 1-1 annoncé au score exact ✔ · porte ouverte +4, niveau MAXIMAL · BTTS annoncé non ✘ (zone muette) alors que Puer en M8 succédente disait oui' },
+  { nom: 'FortMajTrist', meres: ['fortuna_major','tristitia','populus','conjunctio'],
+    score: '1-1', camp: 'nul', btts: true,
+    note: 'MÊME MATCH que TristCaput · annonce R1 ✘ · PREMIER NUL RATÉ PAR LA PORTE : +9 en boucles opposées, porte fermée · BTTS annoncé oui ✔ (cadent + Conjunctio)' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
@@ -15915,7 +15933,7 @@ var MOTEURS_BTTS_V7 = [
   // quand il dit oui, crois-le ; quand il se tait, il ne dit rien.
   // ─── LE CROISEMENT BRANCHÉ DEPUIS LE 30/08 ───
   { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent', icone: '🔗', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'branché — 21/25 · absent de Conjunctio : 0 BTTS sur 8 · cadent+présent : 6 sur 6',
+    juste: 0, total: 0, note: 'branché — 22/27 · absent de Conjunctio : 0 BTTS sur 8 · cadent+présent : 7 sur 7',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -15927,13 +15945,13 @@ var MOTEURS_BTTS_V7 = [
         detail: 'R1 en M' + r.hR1 + (cad ? ' (cadente)' : '') + ' · Conjunctio ' + (conj ? 'présent' : 'ABSENT') };
     } },
   { cle: 'btts_conjunctio', nom: 'BTTS · Conjunctio présent dans le thème', icone: '🔀', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 18/25 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 8)',
+    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 20/27 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 8)',
     verdict: function (t) {
       for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') return { oui: true, detail: 'Conjunctio en M' + h }; }
       return { oui: false, detail: 'Conjunctio absent des 16 maisons' };
     } },
   { cle: 'btts_puer', nom: 'BTTS · Puer en maison succédente', icone: '⚔', teinte: '#94a3b8',
-    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — la seule des 18 formes qui aille dans son sens : 5/8 contre 5/17, p = 0,194, NON démontrée',
+    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — la seule des 18 formes qui aille dans son sens : 6/9 quand il parle contre 6/18 sinon · deux fois il a vu ce que la règle branchée manquait · NON démontrée',
     verdict: function (t) {
       var vu = [];
       for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
@@ -15943,7 +15961,7 @@ var MOTEURS_BTTS_V7 = [
         detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
     } },
   { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente (seule)', icone: '🏠', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'la maison seule — 20/25 · son unique raté (Bologna) est un thème sans Conjunctio',
+    juste: 0, total: 0, note: 'la maison seule — 21/27 · son unique raté (Bologna) est un thème sans Conjunctio',
     verdict: function (t) {
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
@@ -16581,12 +16599,14 @@ function niveauNulV7(theme) {
   // 1 juste et 1 fausse — un pile ou face. Retirée.
   var porte = nulParPorteV7(theme);
   var cadent = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
-  if (porte) return { niveau: 'MAXIMAL', taux: 78, sur: 9,
+  if (porte) return { niveau: 'MAXIMAL', taux: 80, sur: 10,
     detail: 'porte ouverte, paire M' + rot.hR1 + '→M' + rot.hR7
-      + ' — 7 nuls sur 9 déclenchements dans l\'archive'
+      + ' — 8 nuls sur 10 déclenchements dans l\'archive'
       + (cadent ? ' (R1 en cadente)' : '') };
-  if (cadent) return { niveau: 'faible', taux: 0, sur: 5,
-    detail: 'R1 en maison cadente mais porte fermée — 0 nul sur 5' };
+  // ⚠️ Cette case était à 0 nul sur 5 jusqu'au 30/08. FortMajTrist l'a
+  // ouverte : R1 cadent en M12, porte fermée, et le match a fait 1-1.
+  if (cadent) return { niveau: 'faible', taux: 17, sur: 6,
+    detail: 'R1 en maison cadente mais porte fermée — 1 nul sur 6' };
   return { niveau: 'aucun', taux: 0, sur: 21,
     detail: 'ni porte ouverte ni maison cadente — 0 nul sur 21' };
 }
@@ -18023,19 +18043,20 @@ function renderBancPanel() {
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Nul'
     + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#22c55e;">LES DEUX PORTES d\'Ellemine_D '
-    + 'battent tout, témoin compris : 33/35, 7 nuls sur 7, deux faux positifs, contre 28/35 pour le témoin.</b> Le nul ne se lit pas pareil '
+    + 'battent tout, témoin compris : 34/37, 8 nuls sur 9, deux faux positifs, contre 28/37 pour le témoin.</b> Le nul ne se lit pas pareil '
     + 'selon la boucle : en MÊME BOUCLE il passe par l\'alliance (R7 binôme de R1, +2), en BOUCLES OPPOSÉES par '
     + '+11, le front du front de la victime. La table des pôles ne sait faire que la première — son code ne peut '
     + 'littéralement pas annoncer un nul en boucles opposées, et c\'est là qu\'étaient les deux nuls que rien '
-    + 'n\'attrapait. La forme branchée est élargie à {+2, +4, +6} : elle attrape les 7 nuls, au prix de deux '
+    + 'n\'attrapait. La forme branchée est élargie à {+2, +4, +6} : elle attrape 8 nuls sur 9, au prix de deux '
     + 'faux positifs (PuerCaput, TristPop) — tous deux hors maison cadente, ce que le croisement rattrape. '
+    + 'Le nul qu\'elle rate (FortMajTrist, 30/08) est à +9 en boucles opposées, où seul +11 ouvre. '
     + 'Le faisceau reste utile en gradation, et son échelle est désormais recalculée sur l\'archive à chaque '
     + 'ouverture au lieu d\'être recopiée à la main — elle l\'était, et elle annonçait encore 40 % à quatre '
     + 'signaux là où l\'archive dit 0 sur 2. Les fractions se lisent dans le panneau du thème'
     + '</span>'
     + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#fbbf24;">la maison ratisse, la figure '
-    + 'confirme.</b> À 3 nuls, « R1 en maison cadente » les attrapait tous les trois ; à 7 nuls elle en attrape '
-    + '4 pour 5 faux positifs (44 % de précision). Elle dit donc « méfie-toi », jamais « c\'est nul » — et c\'est '
+    + 'confirme.</b> À 3 nuls, « R1 en maison cadente » les attrapait tous les trois ; à 9 nuls elle en attrape '
+    + '5 pour 5 faux positifs (50 % de précision). Elle dit donc « méfie-toi », jamais « c\'est nul » — et c\'est '
     + 'exactement à ce titre qu\'elle sert : croisée avec la porte, elle écarte les DEUX faux positifs de '
     + 'celle-ci. Ce qui repose sur la nature des figures (binôme, juge partagé) crie beaucoup moins à tort mais '
     + 'rate davantage : 2 nuls sur 3 déclenchements pour le binôme, 4 sur 6 pour le juge partagé</span></td></tr>'
@@ -21265,8 +21286,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // camps). Aucune ne tient : la meilleure est 17/25 à p = 0,194, et Puer
   // présent dans le thème donne 6 BTTS sur 15 — exactement le taux de
   // base. Deux formes pointent même à l'envers. La seule qui aille dans
-  // son sens est « Puer en maison SUCCÉDENTE » (5/8 contre 5/17), à
-  // surveiller mais pas démontrée.
+  // son sens est « Puer en maison SUCCÉDENTE » (6/9 quand il parle contre
+  // 6/18 sinon), à surveiller mais pas démontrée — et le 30/08 elle a vu
+  // juste sur TristCaput là où la règle branchée s'est trompée.
   // Carcer : rien non plus (meilleur 17/25, p = 0,175 en angulaire).
   // Fortuna Minor : rien (meilleur 16/25, p = 0,397).
   //
@@ -21285,13 +21307,20 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // les 4 BTTS que la maison rate ont TOUS Conjunctio présent, donc le
   // verrou n'en bloque aucun.
   //
-  // LA PARTITION EN TROIS ZONES, sur les 25 cas :
+  // LA PARTITION EN TROIS ZONES, sur les 27 cas :
   //     Conjunctio ABSENT ............... NON, 8 sur 8
-  //     cadent + Conjunctio présent ..... OUI, 6 sur 6
-  //     Conjunctio présent, non cadent .. ZONE MUETTE, 4 BTTS sur 11
-  // Quatorze cas tranchés, quatorze justes. Onze cas où le fichier ne
-  // sait pas et répond « non » par défaut, ce qui lui en donne 7 de plus.
-  // Total 21/25, contre 20 pour la maison seule et 15 pour le témoin.
+  //     cadent + Conjunctio présent ..... OUI, 7 sur 7   (30/08 : +1)
+  //     Conjunctio présent, non cadent .. ZONE MUETTE, 5 BTTS sur 12
+  // Quinze cas tranchés, quinze justes. Douze cas où le fichier ne sait
+  // pas et répond « non » par défaut, ce qui lui en donne 7 de plus.
+  // Total 22/27, contre 21 pour la maison seule et 15 pour le témoin.
+  //
+  // ⚠️ 30/08 : LA ZONE MUETTE A COÛTÉ UN CAS. TristCaput (nul 1-1, donc
+  // BTTS oui) y tombe et reçoit « non ». Or « Puer en maison succédente »,
+  // la seule forme de la théorie d'Ellemine_D qui tenait, disait OUI :
+  // Puer y est en M8. Elle fait 6/9 quand elle parle contre 6/18 quand
+  // elle se tait. Toujours pas démontrée, mais c'est la deuxième fois
+  // qu'elle voit ce que la règle branchée manque.
   //
   // ☠️ CE QUE ÇA NE VAUT PAS. J'ai lancé environ 96 tests pour trouver
   // ça. À ce compte-là, un p de 0,008 sort tout seul du hasard une fois
@@ -21535,11 +21564,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsDefavorise: bttsDoctrine.defavorise,
     bttsZone: (BTTS_CADENT_V7 && bttsCadent !== null)
       ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 8 cas sur 8'
-        : (bttsCadent ? 'R1 cadent + Conjunctio présent — 6 cas sur 6'
-          : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — 4 BTTS sur 11, le fichier répond non par défaut'))
+        : (bttsCadent ? 'R1 cadent + Conjunctio présent — 7 cas sur 7'
+          : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — 5 BTTS sur 12, le fichier répond non par défaut'))
       : null,
     bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? 'maison de R1 + Conjunctio (21/25)'
+      ? 'maison de R1 + Conjunctio (22/27)'
       : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
       ? 'doctrine M4/M10'
       : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
@@ -22039,13 +22068,16 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + (pc.taux != null ? '<div style="font-size:10px; color:#94a3b8; margin-top:5px;">'
           + '⚠️ <b>Le chiffre d\'archive va à l\'envers de cette règle</b> : à ce palier le verdict affiché '
           + 'est juste <b>' + pc.taux + ' %</b> du temps (' + pc.sur + ' cas), et le classement complet est '
-          + '1 axe 83 %, 2 axes 86 %, <b>3 axes 60 %</b>. Un thème dont les trois dérivés sont valides est, '
+          + '1 axe 83 %, 2 axes 86 %, <b>3 axes 59 %</b>. Un thème dont les trois dérivés sont valides est, '
           + 'dans ce qu\'on a, MOINS juste que les autres.</div>' : '')
       + '<div style="font-size:9.5px; color:#64748b; margin-top:4px;">'
       + 'Ta paire du 29/08 dit le contraire de l\'archive, et proprement : deux tirages pour un seul match, '
       + 'le tirage à trois dérivés valides a vu juste, l\'autre non. Ce sont deux questions différentes — '
       + '« ce thème isolé est-il fiable ? » et « entre deux thèmes du même match, lequel croire ? ». '
-      + 'L\'archive (35 cas, p = 0,129) répond à la première, ta paire à la seconde. '
+      + 'L\'archive (37 cas) répond à la première, tes paires à la seconde. '
+      + '<b style="color:#fbbf24;">⚠️ 30/08 : la paire du nul 1-1 ne se laisse pas départager</b> — les deux '
+      + 'thèmes sont à 3/3 dérivés valides et niveau 3/3, et pourtant l\'un voit juste et l\'autre non. '
+      + 'Le critère est à 1 paire sur 2. '
       + 'La porte n\'est branchée sur aucun calcul tant que le comparateur de doubles tirages n\'a pas '
       + 'une dizaine de paires.</div></div>';
   })();
@@ -22145,21 +22177,25 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">Le siège et la porte sont deux signaux '
             +'INDÉPENDANTS : vérifié sur les 65 536 thèmes, la porte s\'ouvre dans 18,8 % des thèmes quand R1 est '
             +'cadent contre 18,4 % en moyenne — la maison ne change pas la chance que la porte s\'ouvre. '
-            +'C\'est pour ça que les croiser paie : <b>porte + cadent 4/4</b>, porte seule 3/5, '
-            +'cadent seul 0/5, ni l\'un ni l\'autre 0/21. Les DEUX faux positifs de la porte '
+            +'C\'est pour ça que les croiser paie : <b>porte + cadent 4/4</b>, porte seule 4/6, '
+            +'cadent seul 1/6, ni l\'un ni l\'autre 0/21. Les DEUX faux positifs de la porte '
             +'(PuerCaput, TristPop) sont des thèmes où R1 n\'est PAS en maison cadente : la cadence est '
-            +'ce qui les aurait écartés.</div></div>' : '')
+            +'ce qui les aurait écartés. ⚠️ Et depuis le 30/08 la case « cadent seul » n\'est plus vide : '
+            +'FortMajTrist y est, porte fermée, et c\'est un nul.</div></div>' : '')
         +'<div style="font-size:10px; color:#94a3b8;">Le nul ne se lit pas pareil selon la boucle. '
         +'<b>Même boucle — porte ÉTABLIE</b> : R7 occupe l\'un des DEUX PREMIERS rôles que R1 projette '
         +'devant lui, binôme (+2) ou front (+4). Plus loin devant (+8, +10) ou dans le sens inverse '
-        +'(+12, +14) : aucun nul sur 9 cas. Les 5 nuls de cette branche sont tous dans la cible. '
+        +'(+12, +14) : aucun nul sur 9 cas. Les 6 nuls de cette branche sont tous dans la cible. '
         +'<b>Boucles opposées — porte EN PROBATION</b> : +11, le front du front de la victime de R1. '
         +'2 tirs, 2 nuls, aucun faux positif — mais deux nuls qui partagent un décalage parmi huit, '
         +'c\'est 15,4 % au hasard. Ce n\'est pas une preuve, c\'est une hypothèse qu\'on fait tourner. '
+        +'<b style="color:#fbbf24;">⚠️ 30/08 : cette branche a laissé passer son premier nul</b> — '
+        +'FortMajTrist, décalage +9. Élargir à {+9, +11} le rattraperait au prix de 3 faux positifs '
+        +'(+9 fait 1 nul sur 4) : ça ne vaut pas le coup, et la porte reste à +11. '
         +'La table des pôles ne sait faire que la première : son code ne peut littéralement pas annoncer un nul '
         +'en boucles opposées, et c\'est là que sont les deux nuls qu\'aucun moteur n\'attrapait. '
-        +'Les deux portes ensemble : <b>7 nuls sur 7, deux faux positifs, 33 cas justes sur 35</b> — '
-        +'contre 28/35 pour le témoin « il n\'y a jamais de nul », qui n\'attrape évidemment aucun nul.</div></div>';
+        +'Les deux portes ensemble : <b>8 nuls sur 9, deux faux positifs, 34 cas justes sur 37</b> — '
+        +'contre 28/37 pour le témoin « il n\'y a jamais de nul », qui n\'attrape évidemment aucun nul.</div></div>';
     }
     html+='<div class="tek-section"><div class="tek-title">🔆 FAISCEAU DU NUL — '+f.n+' signaux sur '+f.sur+'</div>';
     html+='<div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:6px 2px;">';
@@ -22527,8 +22563,8 @@ function porteConfianceV7(theme) {
   // Taux d'archive par palier d'axes — chiffres du 29/08/26, 35 cas,
   // mères corrigées. Ils vont à l'ENVERS de la règle : c'est voulu qu'ils
   // s'affichent quand même.
-  var taux = nbAxes === 3 ? 60 : nbAxes === 2 ? 86 : nbAxes === 1 ? 83 : null;
-  var sur = nbAxes === 3 ? 15 : nbAxes === 2 ? 14 : nbAxes === 1 ? 6 : 0;
+  var taux = nbAxes === 3 ? 59 : nbAxes === 2 ? 86 : nbAxes === 1 ? 83 : null;
+  var sur = nbAxes === 3 ? 17 : nbAxes === 2 ? 14 : nbAxes === 1 ? 6 : 0;
   return {
     ouverte: ouverte, nbAxes: nbAxes, nb: nbBinomes, nbBinomes: nbBinomes,
     dets: dets, manquants: manquants, taux: taux, sur: sur,
