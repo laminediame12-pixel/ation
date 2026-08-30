@@ -14509,11 +14509,15 @@ var CAS_REFERENCE_V7 = [
   // plus sûr — il ferait plutôt l'inverse sur ce qu'on a. Sa paire va
   // rien : c'est pour ça que le comparateur de doubles tirages existe
   // maintenant (voir comparerDeuxThemesV7).
+  // ⚠️ SCORE ÉCRIT R1-R7, comme tout le reste de l'archive. Le match
+  // s'est joué 3-2 POUR R7 : il s'écrit donc 2-3 ici. Je l'avais d'abord
+  // noté 3-2, vainqueur en premier — les deux seuls cas de l'archive à
+  // contredire leur propre camp déclaré. Voir coherenceArchiveV7.
   { nom: 'TristPop', meres: ['tristitia','populus','acquisitio','carcer'],
-    score: '3-2', camp: 'R7',
+    score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que ConjTrist · annonce NUL 1-1 ✘ · niveau de validité 1/3 : les axes des dérivés Succédent et Cadent sont ABSENTS · décalage +4, porte du nul ouverte' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
-    score: '3-2', camp: 'R7',
+    score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
 ];
 
@@ -14789,6 +14793,36 @@ function comparerDeuxThemesV7(themeA, themeB) {
     departageables: criteres.filter(function (c) { return c.prefere; }).length };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LE GARDE-FOU DE L'ARCHIVE (29/08/26, révision d'ensemble)
+//
+// Toute l'archive écrit le score dans l'ordre R1-R7 : le premier nombre
+// est celui du camp 1, jamais celui du vainqueur. J'ai saisi les deux
+// cas du 29/08 dans l'autre sens — « 3-2 » pour un match gagné 3-2 par
+// R7 — et rien ne l'a signalé. Le camp déclaré disait R7, le score
+// disait R1, et les deux familles de moteurs lisaient chacune la sienne.
+//
+// Une contradiction pareille ne se voit pas à l'œil dans 35 lignes.
+// Elle se voit ici : coherenceArchiveV7 relit l'archive et signale tout
+// cas dont le score contredit le camp. Le banc l'affiche en rouge.
+function coherenceArchiveV7() {
+  var soucis = [];
+  var cas = [];
+  try { cas = tousCasBancV7() || []; } catch (e) { return { soucis: [], total: 0 }; }
+  cas.forEach(function (c) {
+    if (!c || !c.camp || !c.score) return;
+    var m = String(c.score).match(/^(\d+)\s*-\s*(\d+)$/);
+    if (!m) return;
+    var a = +m[1], b = +m[2];
+    var implique = a === b ? 'nul' : (a > b ? 'R1' : 'R7');
+    var declare = c.camp === 'M1' ? 'R1' : c.camp === 'M7' ? 'R7' : c.camp;
+    if (implique !== declare) {
+      soucis.push({ nom: c.nom, score: c.score, implique: implique, declare: declare });
+    }
+  });
+  return { soucis: soucis, total: cas.length };
+}
+
 function journalPredictionsV7() {
   var list = [];
   try { list = getSavedList() || []; } catch (e) { return null; }
@@ -14798,7 +14832,19 @@ function journalPredictionsV7() {
     var m = String(e.realScore).match(/(\d+)\s*-\s*(\d+)/);
     if (!m) return;
     var rA = +m[1], rB = +m[2];
-    var reelCamp = rA === rB ? 'nul' : (rA > rB ? 'M1' : 'M7');
+    // ─── LE VAINQUEUR SAISI PASSE AVANT LE SCORE (29/08/26) ───
+    // Le journal déduisait le camp réel du seul score et ignorait le
+    // champ « Vainqueur réel » du panneau « Résultat réel », que
+    // l'application collecte pourtant. Quand les deux se contredisent —
+    // un score noté vainqueur-en-premier, par exemple — le journal
+    // comptait un raté qui n'en était pas un. Ce que tu as déclaré
+    // toi-même l'emporte ; le score ne sert que si tu n'as rien déclaré.
+    var reelCamp;
+    if (e.realWinner === 'M1' || e.realWinner === 'M7' || e.realWinner === 'Nul') {
+      reelCamp = e.realWinner === 'Nul' ? 'nul' : e.realWinner;
+    } else {
+      reelCamp = rA === rB ? 'nul' : (rA > rB ? 'M1' : 'M7');
+    }
     var ditCamp = e.verdict.winner === 'Nul' ? 'nul' : e.verdict.winner;
     var ditScore = e.verdict.scoreMain || '';
     campN++; if (ditCamp === reelCamp) campJ++;
@@ -16496,17 +16542,59 @@ function faisceauNulV7(theme) {
       detail: structure ? 'détectée' : 'aucune' }
   ];
   var n = signaux.filter(function (x) { return x.on; }).length;
-  // Précisions mesurées sur les 29 cas au résultat connu (14 % au hasard).
-  var PRECISION = { 0: 0, 1: 13, 2: 21, 3: 25, 4: 40, 5: 67, 6: 100, 7: 100 };
+  // ─── L'ÉCHELLE EST CALCULÉE, PLUS ÉCRITE À LA MAIN (29/08/26) ───
+  // Elle était figée : { 0:0, 1:13, 2:21, 3:25, 4:40, 5:67, 6:100, 7:100 },
+  // mesurée sur 29 cas. À 35 cas elle était fausse partout — elle annonçait
+  // 40 % à 4 signaux quand l'archive disait 0 sur 2, et 0 % à 0 signal
+  // quand un nul y était tombé. Un chiffre à la main vieillit à chaque
+  // match ajouté ; celui-ci se recalcule.
+  var pr = precisionFaisceauV7();
+  var cell = pr.table[n] || { n: 0, nul: 0 };
+  var cum = { n: 0, nul: 0 };
+  Object.keys(pr.table).forEach(function (k) {
+    if (+k >= n) { cum.n += pr.table[k].n; cum.nul += pr.table[k].nul; }
+  });
   var niveau = n >= 5 ? 'FORTE ALERTE' : (n >= 4 ? 'alerte' : (n >= 2 ? 'veille' : 'aucun signe'));
   return { n: n, sur: 7, signaux: signaux, niveau: niveau,
-    precision: PRECISION[n] || 0,
+    precision: cell.n ? Math.round(cell.nul * 100 / cell.n) : null,
+    casNiveau: cell.n, nulsNiveau: cell.nul,
+    precisionCumul: cum.n ? Math.round(cum.nul * 100 / cum.n) : null,
+    casCumul: cum.n, nulsCumul: cum.nul,
+    base: pr.base, baseCas: pr.total, baseNuls: pr.nuls,
+    echelle: pr.table,
     allumes: signaux.filter(function (x) { return x.on; }).map(function (x) { return x.nom; }) };
+}
+
+// L'échelle du faisceau, mesurée sur l'archive au lieu d'être recopiée.
+// ⚠️ Le cache est posé AVANT la boucle exprès : faisceauNulV7 appelle
+// cette fonction, qui rappelle faisceauNulV7 sur chaque cas d'archive.
+// Le cache vide sert de fond de récursion — les appels internes reçoivent
+// une table vide et une précision nulle, ce qui ne les gêne pas puisque
+// seul leur compte de signaux est lu ici.
+var _cacheFaisceauPrecV7 = null;
+function precisionFaisceauV7() {
+  if (_cacheFaisceauPrecV7) return _cacheFaisceauPrecV7;
+  _cacheFaisceauPrecV7 = { table: {}, base: 0, total: 0, nuls: 0 };
+  var tab = {}, tot = 0, nuls = 0;
+  try {
+    tousCasBancV7().forEach(function (c) {
+      if (!c.camp) return;
+      var t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]);
+      var f = faisceauNulV7(t);
+      if (!f) return;
+      tab[f.n] = tab[f.n] || { n: 0, nul: 0 };
+      tab[f.n].n += 1; tot += 1;
+      if (c.camp === 'nul') { tab[f.n].nul += 1; nuls += 1; }
+    });
+  } catch (e) { /* archive indisponible : on garde la table vide */ }
+  _cacheFaisceauPrecV7 = { table: tab, total: tot, nuls: nuls,
+    base: tot ? Math.round(nuls * 100 / tot) : 0 };
+  return _cacheFaisceauPrecV7;
 }
 
 var MOTEURS_NUL_V7 = [
   { cle: 'nul_r1_cadente', nom: 'Nul · R1 tombe en maison cadente', icone: '⚖', teinte: '#fbbf24',
-    juste: 0, total: 0, note: 'les deux nuls connus y sont, 25 % des thèmes le sont',
+    juste: 0, total: 0, note: 'la maison seule : 4 nuls sur 7 attrapés, mais 5 faux positifs — 44 % de précision',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16523,7 +16611,7 @@ var MOTEURS_NUL_V7 = [
         : (s2 && s2.nulParOpposition ? 'M13/M14 en paire d\'équilibre' : 'aucun signal') };
     } },
   { cle: 'nul_juge_fige', nom: 'Nul · juge M15 figé (les 4 symétriques)', icone: '⚖', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'Populus, Carcer, Via, Conjonctio — 50 % des thèmes',
+    juste: 0, total: 0, note: 'Populus, Carcer, Via, Conjonctio — parle sur la moitié des thèmes : 2 nuls sur 7 pour 15 faux positifs, 12 % de précision',
     verdict: function (t) {
       var FIGE = { populus: 1, carcer: 1, via: 1, conjunctio: 1 };
       return { oui: !!FIGE[t[15]], detail: 'juge ' + (FL[t[15]] || t[15]) };
@@ -16558,7 +16646,7 @@ var MOTEURS_NUL_V7 = [
   // match entre alliés ne désigne pas de vainqueur.
   // Le seul faux positif est PuerCaput (e-sport, camp connu sans score).
   { cle: 'nul_r7_binome', nom: 'Nul · R7 est le binôme de R1 (+2)', icone: '⚖', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'théorie Ellemine_D — les deux nuls y sont, un seul faux positif',
+    juste: 0, total: 0, note: 'théorie Ellemine_D — la case la plus pure (2 nuls sur 3 déclenchements) mais elle en rate cinq',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16568,7 +16656,7 @@ var MOTEURS_NUL_V7 = [
         + (b ? ' = binôme de ' + (FL[rot.figR1] || rot.figR1) : '') };
     } },
   { cle: 'nul_meme_boucle', nom: 'Nul · R1 et R7 dans la même boucle', icone: '⚖', teinte: '#22d3ee',
-    juste: 0, total: 0, note: 'décalage pair — 2 nuls sur 11, contre 0 sur 15 en boucles opposées',
+    juste: 0, total: 0, note: 'décalage pair — 5 nuls sur 16 en même boucle, contre 2 sur 19 en boucles opposées',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16631,7 +16719,7 @@ var MOTEURS_NUL_V7 = [
   // haute, rappel très bas — à croire quand elle parle, jamais à lire
   // comme « pas de signal donc pas de nul ».
   { cle: 'nul_juge_partage', nom: 'Nul · le juge M15 porte un pôle des DEUX camps', icone: '⚖', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'seule des 16 maisons à attraper les deux nuls — le juge ne peut trancher',
+    juste: 0, total: 0, note: 'le juge ne peut trancher — 4 nuls sur 6 déclenchements, 67 % de précision',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16642,7 +16730,7 @@ var MOTEURS_NUL_V7 = [
       return { oui: partage, detail: 'juge ' + (FL[t[15]] || t[15]) + (partage ? ' — des deux camps' : '') };
     } },
   { cle: 'nul_binome_et_juge', nom: 'Nul · binôme ET juge partagé', icone: '⚖', teinte: '#e879f9',
-    juste: 0, total: 0, note: '0 faux positif, mais 2 conditions sur 2 cas — non infirmé, pas confirmé',
+    juste: 0, total: 0, note: '0 faux positif en 2 déclenchements, 2 nuls — non infirmé, jamais confirmé non plus',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16663,21 +16751,21 @@ var MOTEURS_NUL_V7 = [
       return { oui: oui, detail: d.porte + ' · +' + d.k };
     } },
   { cle: 'nul_deux_portes_large', nom: 'Nul · LES DEUX PORTES élargies ({+2,+4} / +11)', icone: '🚪', teinte: '#84cc16',
-    juste: 0, total: 0, note: '5 nuls sur 5, mais +4 est ajusté sur un cas unique',
+    juste: 0, total: 0, note: 'la forme branchée {+2,+4,+6} — les 7 nuls attrapés, 2 faux positifs, 78 % de précision',
     verdict: function (t) {
       var d = nulDeuxPortesV7(t);
       if (!d) return { oui: null, detail: 'rotation indisponible' };
       return { oui: d.oui, detail: d.porte + ' · +' + d.k + ' · ' + d.force };
     } },
   { cle: 'nul_faisceau4', nom: 'Nul · FAISCEAU — 4 signaux ou plus', icone: '🔆', teinte: '#f59e0b',
-    juste: 0, total: 0, note: 'parle 5 fois sur 29, 2 nuls dedans — 40 % contre 14 % au hasard',
+    juste: 0, total: 0, note: 'parle 5 fois sur 35, 2 nuls dedans — 40 % contre 20 % au hasard',
     verdict: function (t) {
       var f = faisceauNulV7(t);
       if (!f) return { oui: null, detail: 'rotation indisponible' };
       return { oui: f.n >= 4, detail: f.n + '/7 signaux — ' + f.niveau };
     } },
   { cle: 'nul_faisceau5', nom: 'Nul · FAISCEAU — 5 signaux ou plus', icone: '🔆', teinte: '#ef4444',
-    juste: 0, total: 0, note: 'parle 3 fois sur 29, 2 nuls dedans — 67 % contre 14 % au hasard',
+    juste: 0, total: 0, note: 'parle 3 fois sur 35, 2 nuls dedans — 67 % contre 20 % au hasard',
     verdict: function (t) {
       var f = faisceauNulV7(t);
       if (!f) return { oui: null, detail: 'rotation indisponible' };
@@ -16709,7 +16797,7 @@ var MOTEURS_NUL_V7 = [
   // ci-dessous la mettent SOUS SURVEILLANCE : chaque nouveau nul les
   // départagera tout seul, sans qu'on ait à y revenir à la main.
   { cle: 'nul_saturne_siege', nom: 'Nul · Saturne sur un siège (R1, R7, M1 ou M7)', icone: '♄', teinte: '#a3a3a3',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D — sous surveillance, 2 nuls sur 5 aujourd\'hui',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D — sous surveillance : parle sur 14 thèmes sur 35 et n\'y trouve que 2 nuls (14 %, sous le hasard)',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16723,7 +16811,7 @@ var MOTEURS_NUL_V7 = [
       return { oui: ou.length > 0, detail: ou.length ? 'Saturne en ' + ou.join(', ') : 'aucun siège saturnien' };
     } },
   { cle: 'nul_saturne_cadent', nom: 'Nul · Saturne dans une maison cadente', icone: '♄', teinte: '#737373',
-    juste: 0, total: 0, note: 'les maisons « susceptibles » croisées avec Saturne — 2 nuls sur 5',
+    juste: 0, total: 0, note: 'Saturne croisé aux maisons susceptibles — parle sur 18 thèmes sur 35, 3 nuls (17 %, sous le hasard)',
     verdict: function (t) {
       var ou = [];
       [3, 6, 9, 12].forEach(function (h) {
@@ -16779,7 +16867,7 @@ var MOTEURS_NUL_V7 = [
 // qu'une jolie coïncidence vaut : 2 nuls sur 3, et un raté.
 var MOTEURS_SERRE_V7 = [
   { cle: 'serre_r1_cadente', nom: 'Serré · R1 en maison cadente', icone: '⚖', teinte: '#34d399',
-    juste: 0, total: 0, note: '5 cas sur 5 quand il ose le oui — écart moyen 0,60 contre 2,86 ailleurs',
+    juste: 0, total: 0, note: '7 cas sur 7 quand il ose le oui — écart moyen 0,57 contre 2,05 ailleurs',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16788,7 +16876,7 @@ var MOTEURS_SERRE_V7 = [
       return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
     } },
   { cle: 'serre_m6m9', nom: 'Serré · R1 en M6 ou M9 (le couple des nuls)', icone: '⚖', teinte: '#a78bfa',
-    juste: 0, total: 0, note: 'les deux nuls y sont ; deux cas seulement, motif à confirmer',
+    juste: 0, total: 0, note: '3 cas sur 3, écart moyen 0,33 — trois cas seulement, motif à confirmer',
     verdict: function (t) {
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
@@ -16797,7 +16885,7 @@ var MOTEURS_SERRE_V7 = [
       return { oui: vise, detail: 'R1 en M' + rot.hR1 };
     } },
   { cle: 'serre_temoin', nom: 'Serré · « toujours serré »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — 11 des 19 scores exacts sont serrés',
+    juste: 0, total: 0, note: 'témoin — 19 des 27 cas au score connu sont serrés',
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } },
   { cle: 'serre_temoin_non', nom: 'Serré · « jamais serré »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin inverse',
@@ -17677,7 +17765,30 @@ function renderBancPanel() {
         };
         var jp = null;
         try { jp = journalPredictionsV7(); } catch (e) { jp = null; }
-        var tete = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
+        // ─── LE GARDE-FOU DE L'ARCHIVE, TOUT EN HAUT (29/08/26) ───
+        // Une ligne d'archive qui se contredit fausse silencieusement
+        // toutes les familles à la fois. Elle se voit ici ou nulle part.
+        var coh = null;
+        try { coh = coherenceArchiveV7(); } catch (e) { coh = null; }
+        var alerteCoh = '';
+        if (coh && coh.soucis && coh.soucis.length) {
+          alerteCoh = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #f87171; '
+            + 'border-radius:10px; background:rgba(248,113,113,.10);">'
+            + '<div style="font-size:12px; font-weight:800; color:#fca5a5;">⚠️ ARCHIVE INCOHÉRENTE — '
+            + coh.soucis.length + ' cas sur ' + coh.total + '</div>'
+            + '<div style="font-size:10.5px; color:#fecaca; margin-top:3px;">'
+            + 'Le score de ces cas contredit leur camp déclaré. Toute l\'archive écrit le score dans '
+            + 'l\'ordre <b>R1-R7</b> — le premier nombre est celui du camp 1, jamais celui du vainqueur. '
+            + 'Tant que ces lignes ne sont pas corrigées, les familles « score » et « vainqueur » lisent '
+            + 'deux vérités différentes.</div>'
+            + coh.soucis.map(function (x) {
+                return '<div style="font-size:10.5px; color:#fecaca; margin-top:2px;">• <b>' + esc(x.nom)
+                  + '</b> — score ' + esc(x.score) + ' (implique ' + esc(x.implique)
+                  + ') mais camp déclaré ' + esc(x.declare) + '</div>';
+              }).join('')
+            + '</div>';
+        }
+        var tete = alerteCoh + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
           + 'border-radius:10px; background:rgba(251,191,36,.07);">'
           + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
           + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
@@ -17767,20 +17878,22 @@ function renderBancPanel() {
     + 'littéralement pas annoncer un nul en boucles opposées, et c\'est là qu\'étaient les deux nuls que rien '
     + 'n\'attrapait. La forme branchée est élargie à {+2, +4, +6} : elle attrape les 7 nuls, au prix de deux '
     + 'faux positifs (PuerCaput, TristPop) — tous deux hors maison cadente, ce que le croisement rattrape. '
-    + 'Le faisceau reste utile en gradation (2 signaux → 21 % de nuls, 4 → 40 %, 5 → 67 %, contre 17 % au hasard)'
+    + 'Le faisceau reste utile en gradation, et son échelle est désormais recalculée sur l\'archive à chaque '
+    + 'ouverture au lieu d\'être recopiée à la main — elle l\'était, et elle annonçait encore 40 % à quatre '
+    + 'signaux là où l\'archive dit 0 sur 2. Les fractions se lisent dans le panneau du thème'
     + '</span>'
-    + ' <span style="font-weight:400; color:#64748b;">— après le 3<sup>e</sup> nul (CaputPuella 2-2), '
-    + '<b style="color:#fbbf24;">la MAISON est la seule lecture qui attrape les trois</b> : R1 en maison cadente, '
-    + '3 nuls sur 3. Les cadentes font 7 des 27 cas, soit 1,2 % de chance au hasard — mais elles se déclenchent '
-    + '7 fois pour 3 nuls, donc elles disent « méfie-toi », pas « c\'est nul ». Tout ce qui repose sur la nature '
-    + 'des figures (binôme, juge partagé) rate ce nul-là sans jamais crier à tort : la maison ratisse, la figure '
-    + 'confirme. Le raffinement « M6 ou M9 » est mort — ce nul est en M3</span></td></tr>'
+    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#fbbf24;">la maison ratisse, la figure '
+    + 'confirme.</b> À 3 nuls, « R1 en maison cadente » les attrapait tous les trois ; à 7 nuls elle en attrape '
+    + '4 pour 5 faux positifs (44 % de précision). Elle dit donc « méfie-toi », jamais « c\'est nul » — et c\'est '
+    + 'exactement à ce titre qu\'elle sert : croisée avec la porte, elle écarte les DEUX faux positifs de '
+    + 'celle-ci. Ce qui repose sur la nature des figures (binôme, juge partagé) crie beaucoup moins à tort mais '
+    + 'rate davantage : 2 nuls sur 3 déclenchements pour le binôme, 4 sur 6 pour le juge partagé</span></td></tr>'
     + (b.nul || []).map(ligne).join('')
     + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
     + 'font-weight:700; color:#94a3b8;">Match serr\u00e9 (\u00e9cart de buts \u2264 1)'
-    + ' <span style="font-weight:400; color:#64748b;">\u2014 les SIX cas o\u00f9 R1 tombe en maison cadente sont serr\u00e9s : '
-    + '\u00e9cart moyen 0,50 contre 2,86 partout ailleurs. Quand ce moteur ose le oui il ne s\'est jamais tromp\u00e9, '
-    + '6 fois sur 6 \u2014 en revanche il rate la moiti\u00e9 des serr\u00e9s. C\'est le signal le plus s\u00fbr du fichier : '
+    + ' <span style="font-weight:400; color:#64748b;">\u2014 les SEPT cas o\u00f9 R1 tombe en maison cadente sont serr\u00e9s : '
+    + '\u00e9cart moyen 0,57 contre 2,05 partout ailleurs. Quand ce moteur ose le oui il ne s\'est jamais tromp\u00e9, '
+    + '7 fois sur 7 \u2014 en revanche il rate 12 des 19 serr\u00e9s. C\'est le signal le plus s\u00fbr du fichier : '
     + 'R1 en maison cadente veut dire <b>ne crois pas \u00e0 un gros score</b>, quel que soit l\'\u00e9cart annonc\u00e9 '
     + 'par le moteur de camp</span></td></tr>'
     + (b.serre || []).map(ligne).join('')
@@ -21705,16 +21818,26 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     html+='<div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:6px 2px;">';
     html+='<div style="font-size:26px; font-weight:800; color:'+teinte+';">'+f.n+'/'+f.sur+'</div>';
     html+='<div><b style="color:'+teinte+';">'+f.niveau.toUpperCase()+'</b>'
-      +'<div style="font-size:10px; color:#94a3b8;">à ce niveau, '+f.precision
-      +' % des thèmes de l\'archive ont fini sur un nul — contre 14 % au hasard</div></div></div>';
+      +'<div style="font-size:10px; color:#94a3b8;">'
+      +(f.casNiveau ? 'à ce niveau exact, <b>'+f.nulsNiveau+' cas sur '+f.casNiveau+'</b> ('+f.precision
+          +' %) ont fini sur un nul' : 'aucun cas d\'archive n\'est à ce niveau exact')
+      +(f.casCumul ? ' · à ce niveau <b>ou au-dessus</b>, '+f.nulsCumul+'/'+f.casCumul
+          +' ('+f.precisionCumul+' %)' : '')
+      +' — contre '+f.base+' % sur l\'ensemble de l\'archive ('+f.baseNuls+'/'+f.baseCas+')'
+      +'</div></div></div>';
     html+='<table class="tek-table"><tr><th>signal</th><th>état</th><th>lecture</th></tr>'
       + f.signaux.map(function(x){
           return '<tr><td>'+esc(x.nom)+'</td><td style="color:'+(x.on?'#4ade80':'#475569')+'; font-weight:700;">'
             +(x.on?'✓ allumé':'—')+'</td><td>'+esc(x.detail)+'</td></tr>';
         }).join('') + '</table>';
+    var _ech = Object.keys(f.echelle || {}).sort(function(a,b){ return a-b; }).map(function(k){
+      return k+' → '+f.echelle[k].nul+'/'+f.echelle[k].n;
+    }).join(' · ');
     html+='<div style="font-size:10px; color:#94a3b8; margin-top:5px;">Les sept lectures ne valent rien prises '
       +'une par une — le témoin « il n\'y a jamais de nul » les bat toutes en justesse brute, et ne sert à rien. '
-      +'Croisées, elles montent : 2 signaux → 21 %, 3 → 25 %, 4 → 40 %, 5 → 67 %. '
+      +'L\'échelle complète, <b>recalculée sur l\'archive à chaque ouverture</b> (signaux → nuls/cas) : '
+      +_ech+'. Elle n\'est plus écrite à la main : elle l\'était, et elle avait vieilli de travers. '
+      +'Les paliers hauts reposent sur deux ou trois cas — lis les fractions, pas les pourcentages. '
       +'<b style="color:#fbbf24;">Attention</b> : le 0-0 du 14/02/2026 n\'allume AUCUN signal. Le faisceau attrape '
       +'3 nuls sur 4 — il sert à oser quand il parle, pas à se rassurer quand il se tait.</div></div>';
   })();
@@ -22016,9 +22139,14 @@ function niveauValiditeV7(theme) {
 //     les 3 binômes des dérivés ...... 75 % / 73 %    +2 pts
 //     niveau ≥ 2 .................... 64 % / 81 %   −17 pts
 //     niveau = 3 .................... 73 % / 75 %    −2 pts
-//     niveau 3 + figure du jour ..... 73 % / 75 %    −2 pts
 //     axes du thème de base ......... 72 % / 83 %   −11 pts
 //     binôme de M1 dans la base ..... 74 % / 100 %  −26 pts
+// ⚠️ Le septième critère, « niveau 3 + figure du jour », n'est pas
+// mesurable de façon stable : la figure du jour dépend de la DATE, donc
+// ce critère change de valeur sur les mêmes 35 cas d'un jour à l'autre
+// (73 % / 75 % le 29/08, 67 % / 77 % le lendemain). Aucun chiffre le
+// concernant ne doit être cité comme une mesure — c'est le seul critère
+// du fichier dont la valeur dépende du moment où on la regarde.
 //
 // ALORS QUI A RAISON ? Personne encore. Sa paire est une observation
 // propre — deux tirages, un match, le plus valide a gagné. L'archive est
@@ -25184,6 +25312,24 @@ if ('serviceWorker' in navigator) {
    GEOMANCIE FOOTBALL - NOYAU REFACTORE V1
 ========================================================= */
 (function(){
+// ☠️ SIX FIGURES SUR SEIZE AVAIENT DE MAUVAIS BITS (29/08/26, révision
+// d'ensemble). Ce noyau V1 est un module séparé, avec sa propre table :
+// elle ne s'accordait pas avec MAP_GEO, la table du moteur principal.
+//     Albus portait 2122, qui est Rubeus, et Rubeus 2212, qui est Albus
+//     Laetitia portait 2111, qui est Caput Draconis
+//     Tristitia portait 1112, qui est Cauda Draconis
+//     Caput Draconis portait 2112 — un DOUBLON de Conjunctio
+//     Cauda Draconis portait 1221 — un DOUBLON de Carcer
+// Conséquence : deux motifs sur seize (1222 et 2221) n'existaient dans
+// aucune figure. Dès qu'une fille, une nièce ou un juge tombait sur l'un
+// des deux, figFromBits renvoyait null et le panneau plantait sur
+// « Cannot read properties of undefined (reading 'bits') ». C'est ce qui
+// arrivait avec les quatre mères posées par défaut. Et quand il ne
+// plantait pas, il calculait faux : un thème lu avec Albus et Rubeus
+// échangés ne dit rien du thème qu'on a tiré.
+// Les bits ci-dessous sont ceux de MAP_GEO, la table que tout le reste
+// du fichier utilise. Les poids (strength, attack, goals...) sont ceux
+// du noyau V1 et n'ont pas bougé : ils sont attachés au NOM, pas aux bits.
 const FIGURES = {
   "Via":{bits:[1,1,1,1],strength:0,attack:1,defense:-1,stability:-2,goals:2,chaos:2,btts:2,draw:1,first:1},
   "Populus":{bits:[2,2,2,2],strength:0,attack:-1,defense:1,stability:2,goals:-2,chaos:-1,btts:0,draw:3,first:-1},
@@ -25193,14 +25339,14 @@ const FIGURES = {
   "Carcer":{bits:[1,2,2,1],strength:0,attack:-3,defense:3,stability:3,goals:-3,chaos:-2,btts:-2,draw:2,first:-2},
   "Puella":{bits:[1,2,1,1],strength:1,attack:1,defense:1,stability:2,goals:0,chaos:-2,btts:0,draw:0,first:0},
   "Puer":{bits:[1,1,2,1],strength:1,attack:2,defense:-1,stability:-2,goals:2,chaos:3,btts:1,draw:-1,first:2},
-  "Albus":{bits:[2,1,2,2],strength:2,attack:0,defense:2,stability:3,goals:-1,chaos:-2,btts:-1,draw:1,first:0},
-  "Rubeus":{bits:[2,2,1,2],strength:-1,attack:2,defense:-3,stability:-3,goals:2,chaos:4,btts:2,draw:-1,first:1},
+  "Albus":{bits:[2,2,1,2],strength:2,attack:0,defense:2,stability:3,goals:-1,chaos:-2,btts:-1,draw:1,first:0},
+  "Rubeus":{bits:[2,1,2,2],strength:-1,attack:2,defense:-3,stability:-3,goals:2,chaos:4,btts:2,draw:-1,first:1},
   "Acquisitio":{bits:[2,1,2,1],strength:3,attack:3,defense:0,stability:1,goals:3,chaos:0,btts:1,draw:-2,first:1},
   "Amissio":{bits:[1,2,1,2],strength:-2,attack:-1,defense:-2,stability:-1,goals:0,chaos:1,btts:1,draw:1,first:-1},
-  "Laetitia":{bits:[2,1,1,1],strength:2,attack:2,defense:0,stability:1,goals:2,chaos:0,btts:1,draw:-1,first:1},
-  "Tristitia":{bits:[1,1,1,2],strength:-1,attack:-3,defense:1,stability:1,goals:-3,chaos:-1,btts:-2,draw:1,first:-2},
-  "Caput Draconis":{bits:[2,1,1,2],strength:2,attack:1,defense:1,stability:1,goals:1,chaos:1,btts:0,draw:-1,first:3},
-  "Cauda Draconis":{bits:[1,2,2,1],strength:-1,attack:1,defense:-2,stability:-3,goals:1,chaos:3,btts:2,draw:-1,first:0}
+  "Laetitia":{bits:[1,2,2,2],strength:2,attack:2,defense:0,stability:1,goals:2,chaos:0,btts:1,draw:-1,first:1},
+  "Tristitia":{bits:[2,2,2,1],strength:-1,attack:-3,defense:1,stability:1,goals:-3,chaos:-1,btts:-2,draw:1,first:-2},
+  "Caput Draconis":{bits:[2,1,1,1],strength:2,attack:1,defense:1,stability:1,goals:1,chaos:1,btts:0,draw:-1,first:3},
+  "Cauda Draconis":{bits:[1,1,1,2],strength:-1,attack:1,defense:-2,stability:-3,goals:1,chaos:3,btts:2,draw:-1,first:0}
 };
 function norm(name){ const c=String(name||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); return Object.keys(FIGURES).find(k=>k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')===c)||null; }
 function val(fig,key){ const n=norm(fig); return n ? (FIGURES[n][key]||0) : 0; }
