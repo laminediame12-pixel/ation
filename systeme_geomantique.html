@@ -15269,6 +15269,101 @@ function tablePolesV7(theme) {
 // R1, R7 est littéralement R1 marqué par Tristitia. La frontière du nul
 // n'est donc pas un rang arbitraire dans une liste : c'est l'endroit où
 // la tristesse de Saturne s'interpose entre les deux camps.
+// ═══════════════════════════════════════════════════════════════
+// LES MAISONS DE CONFUSION — découverte d'Ellemine_D (30/08/26)
+//
+// Son dessin : quatre courbes sur les douze maisons.
+//   rouge  les fronts de M1 ....... M1, M5, M9        (pas de 4)
+//   vert   les binômes de M1 ...... M1, M3, M5, M7, M9, M11  (pas de 2)
+//   noir   les fronts de M2 ....... M2, M6, M10       (pas de 4)
+//   bleu   les binômes de M2 ...... M2, M4, M6, M8, M10, M12 (pas de 2)
+// Là où la ligne de front et la ligne de binôme se rejoignent, il parle
+// de « confusion ». Sa liste des maisons SANS confusion — M3, M4, M7,
+// M8, M11, M12 — est exacte, vérifiée ici.
+// Deux précisions sur ses notes : en boucle paire M2 est aussi un point
+// de confusion (c'est l'origine des deux lignes, comme M1 pour l'impaire),
+// et sa dernière ligne « boucle pair : m1, 10, 12 » est un lapsus — c'est
+// M2, M6, M10.
+//
+// ✔ ET SA TABLE DES ÉLÉMENTS DIT EXACTEMENT LA MÊME CHOSE.
+//     M1, M5, M9 ..... FA        M2, M6, M10 .... ET / TE
+//     M3, M7, M11 .... A         M4, M8, M12 .... E
+// Les maisons de confusion sont EXACTEMENT les maisons à deux éléments,
+// et les maisons sans confusion exactement celles à un seul. Ce n'est
+// pas une coïncidence de notation : les deux découpages sont le même.
+//
+// ✔✔ ET IL EN SORT UN THÉORÈME, exact sur les 12 maisons.
+// R7 est toujours SIX maisons après R1 (fait établi de longue date dans
+// ce fichier). Or +6 fait toujours passer d'une maison de confusion à une
+// maison simple, et réciproquement :
+//     M1 conf → M7 simple      M7 simple → M1 conf
+//     M2 conf → M8 simple      M8 simple → M2 conf   ... et ainsi de suite
+// DONC : L'UN DES DEUX CAMPS EST TOUJOURS EN MAISON DOUBLE, L'AUTRE
+// TOUJOURS EN MAISON SIMPLE. Jamais les deux, jamais aucun. Vérifié
+// 12/12 sur la structure et 0 violation sur les cas d'archive.
+// Il y a donc, dans chaque thème, un camp « doublé » et un camp
+// « simple », et c'est une donnée qu'on n'avait jamais lue.
+//
+// ☠️ CE QUE ÇA NE DONNE PAS. « Le camp doublé gagne » ne bat pas le
+// verdict, sur les 20 matchs décidés où le théorème s'applique :
+//     verdict affiché ............. 15/20
+//     le camp doublé .............. 13/20
+//     témoin « toujours R1 » ...... 10/20
+// Et quand les deux se contredisent, c'est le verdict qui a raison
+// 5 fois sur 8. La partition ne prédit non plus ni le nul (p = 1,000),
+// ni le BTTS (p = 1,000), ni le match serré (p = 1,000) — testée seule,
+// elle est muette.
+//
+// ✔ CE QU'ELLE DONNE. LEUR ACCORD, lui, porte quelque chose :
+//     quand le camp doublé et le verdict désignent le MÊME camp
+//         (12 cas sur 20) ......... 10 justes sur 12   83 %
+//     quand ils se contredisent
+//         (8 cas) ................. 5 justes sur 8     62 %
+// C'est le premier signal de confiance du fichier qui aille dans le BON
+// sens — la porte de confiance par les dérivés, elle, allait à l'envers.
+// ⚠️ p = 0,347 sur 20 cas : ce n'est pas démontré, et ça ne touche à
+// rien. Le camp doublé est AFFICHÉ à côté du verdict, il ne le change
+// jamais.
+function maisonConfusionV7(h) {
+  return [1, 2, 5, 6, 9, 10].indexOf(h) >= 0;
+}
+var ELEMENT_MAISON_V7 = { 1: 'FA', 2: 'ET', 3: 'A', 4: 'E', 5: 'FA', 6: 'ET',
+  7: 'A', 8: 'E', 9: 'FA', 10: 'TE', 11: 'A', 12: 'E' };
+function campDoubleV7(theme) {
+  var r = null;
+  try { r = getRotationCombat(theme); } catch (e) { return null; }
+  if (!r || !r.hR1 || !r.hR7) return null;
+  var c1 = maisonConfusionV7(r.hR1), c7 = maisonConfusionV7(r.hR7);
+  if (c1 === c7) {
+    // Possible seulement si une des deux maisons sort du cycle des douze
+    // (M13 à M16, les figures de synthèse) : le théorème ne s'y applique pas.
+    return { applicable: false, hR1: r.hR1, hR7: r.hR7,
+      raison: 'une des deux maisons est hors du cycle des douze' };
+  }
+  return { applicable: true, camp: c1 ? 'R1' : 'R7', hR1: r.hR1, hR7: r.hR7,
+    elementR1: ELEMENT_MAISON_V7[r.hR1] || '—', elementR7: ELEMENT_MAISON_V7[r.hR7] || '—',
+    maisonDouble: c1 ? r.hR1 : r.hR7, maisonSimple: c1 ? r.hR7 : r.hR1 };
+}
+
+// Auto-test du théorème : il doit tenir sur les douze maisons.
+function autoTestConfusionV7() {
+  var manques = [], ok = 0;
+  for (var h = 1; h <= 12; h++) {
+    var h7 = ((h - 1 + 6) % 12) + 1;
+    if (maisonConfusionV7(h) === maisonConfusionV7(h7)) manques.push('M' + h + '→M' + h7);
+    else ok += 1;
+  }
+  // la confusion doit coïncider avec les maisons à deux éléments
+  var doubles = [], conf = [];
+  for (var k = 1; k <= 12; k++) {
+    if ((ELEMENT_MAISON_V7[k] || '').length === 2) doubles.push(k);
+    if (maisonConfusionV7(k)) conf.push(k);
+  }
+  return { ok: ok, sur: 12, manques: manques,
+    memesMaisons: doubles.join(',') === conf.join(','),
+    doubles: doubles, conf: conf };
+}
+
 function autoTestRelationsFiguresV7() {
   var F = FIGS_V7, idx = {};
   F.forEach(function (f, i) { idx[f] = i; });
@@ -22211,6 +22306,45 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'Le critère est à 1 paire sur 2. '
       + 'La porte n\'est branchée sur aucun calcul tant que le comparateur de doubles tirages n\'a pas '
       + 'une dizaine de paires.</div></div>';
+  })();
+  // ─── LE CAMP DOUBLÉ (30/08/26, découverte d'Ellemine_D) ───
+  // Affiché, jamais décisif. Voir campDoubleV7.
+  (function () {
+    var cd = null;
+    try { cd = campDoubleV7(theme); } catch (e) { cd = null; }
+    if (!cd) return;
+    if (!cd.applicable) {
+      html += '<div style="margin-bottom:10px; padding:7px 11px; border-radius:9px; '
+        + 'background:rgba(15,23,42,.5); border:1px solid #334155; font-size:11px; color:#94a3b8;">'
+        + '⚖️ <b>Camp doublé</b> — inapplicable : ' + esc(cd.raison)
+        + ' (R1 en M' + cd.hR1 + ', R7 en M' + cd.hR7 + ').</div>';
+      return;
+    }
+    var nomDouble = cd.camp === 'R1' ? teamA : teamB;
+    var accord = null;
+    if (!nulActif && cardWinner) {
+      var ditR1 = (cardWinner === teamA);
+      accord = (cd.camp === 'R1') === ditR1;
+    }
+    var col = accord === true ? '#4ade80' : accord === false ? '#fbbf24' : '#64748b';
+    html += '<div style="margin-bottom:10px; padding:8px 11px; border-radius:9px; '
+      + 'background:rgba(15,23,42,.55); border:1px solid ' + col + ';">'
+      + '<div style="font-size:12px; font-weight:800; color:' + col + ';">'
+      + '⚖️ CAMP DOUBLÉ : ' + esc(nomDouble) + ' — sa maison porte DEUX éléments'
+      + (accord === true ? ' · <span style="color:#4ade80;">d\'accord avec le verdict</span>'
+        : accord === false ? ' · <span style="color:#fbbf24;">en désaccord avec le verdict</span>' : '')
+      + '</div>'
+      + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+      + 'R1 en M' + cd.hR1 + ' (' + esc(cd.elementR1) + ') · R7 en M' + cd.hR7 + ' ('
+      + esc(cd.elementR7) + ') — M' + cd.maisonDouble + ' est une maison de confusion, M'
+      + cd.maisonSimple + ' non.</div>'
+      + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
+      + 'Comme R7 est toujours six maisons après R1, <b>l\'un des deux camps est toujours en maison '
+      + 'double et l\'autre en maison simple</b> — jamais les deux, jamais aucun (théorème vérifié '
+      + '12/12). Le camp doublé PRIS SEUL ne bat pas le verdict (13/20 contre 15/20). Ce qui compte, '
+      + 'c\'est leur <b>accord</b> : d\'accord, le verdict est juste 10 fois sur 12 ; en désaccord, '
+      + '5 fois sur 8. <b style="color:#fbbf24;">Non démontré</b> — 20 cas, p = 0,347 — et branché sur '
+      + 'aucun calcul.</div></div>';
   })();
   html+='<div class="tek-hero">';
   var _alerteNul=false; try{ _alerteNul = !nulActif && alerteNulV7(theme); }catch(e){ _alerteNul=false; }
