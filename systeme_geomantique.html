@@ -23488,6 +23488,130 @@ function moteurV8V7(theme) {
       + (mb === true ? ' (même boucle : le partage n\'y rapporte rien de plus que « toujours R1 »)' : '') };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ✦ LE VERDICT STANDARD — DIX LIGNES (31/08/26)
+//
+// Format demandé par Ellemine_D, mot pour mot : vainqueur · score exact ·
+// double chance · les deux marquent · mi-temps 1 buts · nombre de corners
+// · nombre de cartons jaunes · plus/moins de 2,5 buts · incidents ·
+// buts de la tête.
+//
+// CHAQUE LIGNE SORT AVEC SON DOSSIER. Une prédiction sans son taux est
+// une opinion déguisée en chiffre ; ici on ne peut plus lire l'une sans
+// l'autre. Mesuré sur l'archive au 31/08/26 :
+//     double chance ............ 42/51   82 %   ← la meilleure ligne
+//     incident ................. 6/8     75 %
+//     vainqueur ................ 35/51   69 %
+//     les deux marquent ........ 28/41   68 %
+//     plus de 2,5 buts ......... 23/43   53 %   ← à peine une pièce
+//     but en 1re mi-temps ...... 2/5     40 %
+//     score exact .............. 13/43   30 %
+//     corners (±3) ............. 0/1
+//     cartons jaunes ........... AUCUN CAS — le champ n'a jamais été saisi
+//     buts de la tête .......... 0 CAS — la ligne n'existait pas
+//
+// ⚠️ CE QUE CE TABLEAU DIT DE TRAVERS SI ON NE LE LIT PAS EN ENTIER : la
+// double chance n'est pas « meilleure » parce qu'elle voit mieux, elle
+// est meilleure parce qu'elle demande MOINS. Elle couvre deux issues sur
+// trois ; le hasard seul y ferait déjà 100 % − le taux de l'issue exclue,
+// soit environ 76 % avec la répartition de l'archive (23 R1, 16 R7,
+// 12 nuls). 82 % contre 76 % de base, ce n'est pas un exploit — c'est
+// un pari plus large, à cote plus basse.
+// Et « plus de 2,5 buts » à 53 % ne dit rien du tout.
+//
+// ☠️ BUTS DE LA TÊTE : cette ligne n'existait nulle part et l'archive
+// n'a AUCUN cas. La lecture proposée ci-dessous est de la doctrine pure,
+// jamais confrontée à un seul match — Caput Draconis, la TÊTE du dragon,
+// présente EN BASE (pas en résultante) dans une maison de but. C'est
+// cohérent avec le vocabulaire du système et ça ne vaut rien tant qu'un
+// résultat ne l'aura pas touchée. Elle est marquée « 0 cas » à l'écran
+// pour qu'on ne l'oublie pas.
+var DOSSIER_LIGNES_V7 = {
+  vainqueur:    { juste: 35, sur: 51 },
+  score:        { juste: 13, sur: 43 },
+  doubleChance: { juste: 42, sur: 51, note: 'pari plus large — le hasard y fait déjà ~76 %' },
+  btts:         { juste: 28, sur: 41 },
+  miTemps1:     { juste: 2,  sur: 5 },
+  corners:      { juste: 0,  sur: 1 },
+  cartons:      { juste: 0,  sur: 0 },
+  buts25:       { juste: 23, sur: 43, note: 'à peine une pièce' },
+  incident:     { juste: 6,  sur: 8 },
+  tete:         { juste: 0,  sur: 0, note: 'doctrine pure, jamais mesurée' }
+};
+
+function verdictStandardV7(theme, teamA, teamB) {
+  if (!theme || !theme[1]) return null;
+  var A = teamA || 'R1', B = teamB || 'R7';
+  var v = null;
+  try { v = getVerdictAfficheReel(theme); } catch (e) { return null; }
+  var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+  var p = String(v.scoreMain || '').match(/^(\d+)-(\d+)$/);
+  var g1 = p ? +p[1] : null, g7 = p ? +p[2] : null;
+  var r = null; try { r = getRotationCombat(theme); } catch (e) {}
+
+  // 3 · double chance : on exclut l'issue que le verdict écarte le plus.
+  var dc = (dit === 'R7') ? 'X2' : '1X';
+  var dcTexte = (dc === '1X') ? ('1X — ' + A + ' ou nul') : ('X2 — nul ou ' + B);
+
+  // 5 · mi-temps 1 : y a-t-il but avant la pause ?
+  var mt1 = null, mt1Detail = '';
+  try {
+    var bm = butParMiTemps(theme);
+    var sp = bm && bm.premiereMiTemps ? String(bm.premiereMiTemps.score || '').match(/^(\d+)-(\d+)$/) : null;
+    if (sp) { mt1 = ((+sp[1]) + (+sp[2])) > 0; mt1Detail = bm.premiereMiTemps.score; }
+  } catch (e) { mt1 = null; }
+
+  // 6 · corners
+  var corners = null;
+  try {
+    if (r && g1 !== null) {
+      var ec = estimerCornersV7(theme, g1, g7, r.figR1, r.figR7, null, null);
+      if (ec && typeof ec.total === 'number') corners = ec.total;
+    }
+  } catch (e) { corners = null; }
+
+  // 7 · cartons jaunes
+  var cartons = null;
+  try {
+    if (r) {
+      var cj = estimerCartonsJaunesV7(theme, calculerButsCamp(r.figR1, theme), calculerButsCamp(r.figR7, theme));
+      if (cj && typeof cj.count === 'number') cartons = cj.count;
+    }
+  } catch (e) { cartons = null; }
+
+  // 9 · incidents — la somme d'axes (6/8) contre les dérivés, on dit les deux
+  var incS = null, incD = null, incRouge = 0;
+  try { var sa = sommesAxesIncidentV7(theme); if (sa) incS = sa.signal; } catch (e) {}
+  try { var dd = incidentDerivesV7(theme); if (dd) { incD = dd.moyenne >= 50; incRouge = dd.rouges; } } catch (e) {}
+  var incTexte;
+  if (incS === null && incD === null) incTexte = '—';
+  else if (incS && incD) incTexte = (incRouge > 0) ? 'penalty ET rouge' : 'penalty ou rouge';
+  else if (incS || incD) incTexte = 'possible — les deux lectures se contredisent';
+  else incTexte = 'aucun';
+
+  // 10 · buts de la tête — doctrine pure, 0 cas.
+  var tete = null, teteOu = [];
+  try {
+    for (var h = 1; h <= 12; h++) if (theme[h] === 'caput_draconis') teteOu.push(h);
+    tete = teteOu.length > 0;
+  } catch (e) { tete = null; }
+
+  return {
+    vainqueur:    { valeur: v.nulActif ? 'NUL' : (dit === 'R1' ? A : B), brut: dit },
+    score:        { valeur: v.scoreMain, alt: v.scoreAlt },
+    doubleChance: { valeur: dc, texte: dcTexte },
+    btts:         { valeur: v.btts === true ? 'OUI' : v.btts === false ? 'NON' : '—', brut: v.btts },
+    miTemps1:     { valeur: mt1 === null ? '—' : (mt1 ? 'OUI' : 'NON'), detail: mt1Detail },
+    corners:      { valeur: corners === null ? '—' : corners },
+    cartons:      { valeur: cartons === null ? '—' : cartons },
+    buts25:       { valeur: (g1 === null) ? '—' : ((g1 + g7) > 2.5 ? 'PLUS de 2,5' : 'MOINS de 2,5'),
+                    total: (g1 === null) ? null : (g1 + g7) },
+    incident:     { valeur: incTexte, sommes: incS, derives: incD, rouges: incRouge },
+    tete:         { valeur: tete === null ? '—' : (tete ? 'OUI' : 'non'),
+                    detail: teteOu.length ? ('Caput Draconis en base : M' + teteOu.join(', M')) : 'Caput Draconis absent des douze maisons' }
+  };
+}
+
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
   if (MOTEUR_V8_ACTIF) {
@@ -24090,6 +24214,53 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var _rej = null;
   try { _rej = themeRejeteV7(theme); } catch (e) { _rej = null; }
   var _refuse = !!(_rej && _rej.rejete);
+  // ─── LE VERDICT STANDARD EN DIX LIGNES (31/08/26) ───
+  // Son format, en tête de carte, chaque ligne avec son taux mesuré.
+  (function () {
+    var vs = null;
+    try { vs = verdictStandardV7(theme, teamA, teamB); } catch (e) { vs = null; }
+    if (!vs || _refuse) return;
+    var D = DOSSIER_LIGNES_V7;
+    function dossier(d) {
+      if (!d || !d.sur) return '<span style="color:#f87171;">0 cas — jamais mesuré</span>';
+      var t = Math.round(100 * d.juste / d.sur);
+      var col = d.sur < 6 ? '#94a3b8' : (t >= 65 ? '#4ade80' : t >= 55 ? '#fbbf24' : '#f87171');
+      return '<span style="color:' + col + ';">' + d.juste + '/' + d.sur + ' · ' + t + ' %</span>'
+        + (d.note ? '<span style="color:#94a3b8;"> — ' + esc(d.note) + '</span>' : '');
+    }
+    function ligne(num, nom, valeur, d, detail) {
+      return '<tr>'
+        + '<td style="padding:4px 6px; color:#64748b; font-size:10px;">' + num + '</td>'
+        + '<td style="padding:4px 6px; color:#cbd5e1;">' + nom + '</td>'
+        + '<td style="padding:4px 6px; font-weight:800; color:#e2e8f0;">' + esc(valeur)
+          + (detail ? '<span style="font-weight:400; color:#94a3b8; font-size:10px;"> ' + esc(detail) + '</span>' : '')
+          + '</td>'
+        + '<td style="padding:4px 6px; text-align:right; font-size:10px;">' + dossier(d) + '</td></tr>';
+    }
+    html += '<div style="margin-bottom:10px; padding:10px 12px; border-radius:11px; '
+      + 'border:2px solid #60a5fa; background:rgba(37,99,235,.10);">'
+      + '<div style="font-size:13px; font-weight:900; color:#93c5fd; margin-bottom:2px;">📋 VERDICT — LES DIX LIGNES</div>'
+      + '<div style="font-size:10px; color:#94a3b8; margin-bottom:6px;">Chaque ligne avec son taux mesuré sur l\'archive. '
+      + 'Une prédiction sans son taux est une opinion déguisée en chiffre.</div>'
+      + '<table style="width:100%; border-collapse:collapse; font-size:11.5px;">'
+      + ligne(1, 'Vainqueur', vs.vainqueur.valeur, D.vainqueur)
+      + ligne(2, 'Score exact', vs.score.valeur, D.score, 'alt. ' + vs.score.alt)
+      + ligne(3, 'Double chance', vs.doubleChance.texte, D.doubleChance)
+      + ligne(4, 'Les deux marquent', vs.btts.valeur, D.btts)
+      + ligne(5, 'Mi-temps 1 — but ?', vs.miTemps1.valeur, D.miTemps1, vs.miTemps1.detail)
+      + ligne(6, 'Nombre de corners', vs.corners.valeur, D.corners)
+      + ligne(7, 'Cartons jaunes', vs.cartons.valeur, D.cartons)
+      + ligne(8, 'Buts 2,5', vs.buts25.valeur, D.buts25)
+      + ligne(9, 'Incidents', vs.incident.valeur, D.incident)
+      + ligne(10, 'Buts de la tête', vs.tete.valeur, D.tete, vs.tete.detail)
+      + '</table>'
+      + '<div style="font-size:9.5px; color:#94a3b8; margin-top:6px; line-height:1.5;">'
+      + '⚠️ La <b>double chance</b> n\'est pas meilleure parce qu\'elle voit mieux : elle demande MOINS. '
+      + 'Elle couvre deux issues sur trois, et le hasard seul y ferait déjà ~76 % avec la répartition de '
+      + 'l\'archive. 82 % contre 76 %, c\'est un pari plus large à cote plus basse, pas un exploit. '
+      + 'Et <b>« plus de 2,5 buts » à 53 % ne dit rien du tout</b>.'
+      + '</div></div>';
+  })();
   html+='<div class="tek-winner '+(_refuse?'warn':(nulActif?'warn':''))+'"><div class="tek-cap">'
     +(_refuse?'THÈME REJETÉ':(nulActif?'VERDICT SUSPENDU':'VAINQUEUR'))+'</div><div class="tek-name">'
     +(_refuse?'⛔ NON VALIDE':(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner)))+'</div>'
