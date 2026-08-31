@@ -14862,6 +14862,32 @@ var CAS_REFERENCE_V7 = [
     score: '1-1', camp: 'nul', btts: true,
     incident: true, incidentCamp: 'M1', penaltyCamp: 'M1',
     note: 'validation 0/3, LE PLUS BAS DE L\'ARCHIVE · annoncé R1 1-0 ✘ · BTTS non ✘ (réel 1-1) · nul raté, porte fermée ✘ · penalty pour R7 arrêté par le gardien, concédé par R1 · la somme d\'axes d\'incident dit non ✘ (elle tombe de 6/7 à 6/8), les dérivés disent oui ✔ · premier cas qui donne raison au filtre de rejet' },
+  // ─── 31/08/26 — LE PREMIER RÉSULTAT DU PLAN APPARIÉ, ET IL FAIT MAL ───
+  // Porto vs Roma, FIFA. Les deux thèmes gelés AVANT le match, commités
+  // et horodatés par git : rien ici ne peut être arrangé après coup.
+  // Réel : 6-3 pour R1 (Porto).
+  //     MACHINE (hachage) . annonçait NUL 0-0 · BTTS non
+  //     MAIN (Ellemine_D) . annonçait R7 0-4 · BTTS non
+  //   camp  : FAUX des deux côtés (nul et R7 contre un R1)
+  //   score : FAUX des deux côtés, et de très loin (9 buts marqués)
+  //   BTTS  : FAUX des deux côtés — la famille la plus solide du fichier
+  //           (28/39) annonçait « non » sur un 6-3.
+  // ☠️ ET LA PORTE DU NUL A LEVÉ UNE FAUSSE ALERTE. Elle était OUVERTE
+  // sur le thème machine, faisceau 4/7, et le match a fini 6-3. Elle
+  // était fermée sur le thème à la main : sur ce match, c'est le tirage
+  // à la main qui l'a bien lue. Première ligne du plan apparié, et elle
+  // départage dans le sens de la main — un seul cas, aucune conclusion.
+  // ⚠️ CE QUE CE PREMIER GEL APPREND VRAIMENT : sur l'archive le verdict
+  // fait 61 % et le BTTS 72 %. Sur le premier match jamais annoncé à
+  // l'avance, les deux tombent à 0. C'est exactement pour ça que le
+  // journal existe et que les chiffres de banc ne prouvent rien. Il en
+  // faut dix ; en voilà un.
+  { nom: 'Gel2Machine', meres: ['acquisitio','amissio','caput_draconis','acquisitio'],
+    score: '6-3', camp: 'R1', btts: true, esport: true,
+    note: 'GELÉ AVANT LE MATCH (Porto-Roma FIFA, 31/08) · tirage MACHINE par hachage · annonçait NUL 0-0 ✘ · BTTS non ✘ · porte du nul OUVERTE à 4/7 : FAUSSE ALERTE sur un 6-3 · validation 1/3' },
+  { nom: 'Gel2Main', meres: ['populus','rubeus','fortuna_minor','cauda_draconis'],
+    score: '6-3', camp: 'R1', btts: true, esport: true,
+    note: 'GELÉ AVANT LE MATCH (Porto-Roma FIFA, 31/08) · tirage À LA MAIN d\'Ellemine_D · annonçait R7 0-4 ✘ · BTTS non ✘ · porte du nul fermée ✔ — seule lecture juste des deux thèmes · validation 1/3' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }

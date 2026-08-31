@@ -74,6 +74,28 @@ si le tirage à la main porte quelque chose que le hachage ne porte pas.
 5. La règle renforcée est **muette des deux côtés**, comme au match 1.
 6. Sur du FIFA (8,75 buts par match en moyenne contre 2,84 en réel), un 0-0 est une annonce très forte.
 
-**RÉSULTAT :** _à compléter après le match_
+**RÉSULTAT : 6-3 pour R1 (Porto).**
+
+|  | MACHINE | MAIN | réel |
+|---|---|---|---|
+| camp | nul ✘ | R7 ✘ | **R1** |
+| score | 0-0 ✘ | 0-4 ✘ | **6-3** |
+| les deux marquent | non ✘ | non ✘ | **oui** |
+| porte du nul | ouverte ✘ | **fermée ✔** | pas de nul |
+| incident · dérivés | oui | oui | _non renseigné_ |
+
+**Les deux thèmes se sont trompés sur le camp, le score et le BTTS.**
+
+- La **porte du nul** (43/51 sur l'archive) a levé une **fausse alerte** côté
+  machine — ouverte, faisceau 4/7, sur un match à 9 buts. Côté main elle
+  était fermée : sur cette ligne, c'est le tirage à la main qui a bien lu.
+- Le **BTTS**, la famille la plus solide du fichier, annonçait « non » des
+  deux côtés sur un 6-3.
+- La règle renforcée était muette : ce match ne compte ni pour ni contre
+  elle.
+
+**Ce que ça vaut :** sur l'archive le verdict fait 59 % et le BTTS 68 %.
+Sur le premier match jamais annoncé à l'avance, les deux tombent à zéro.
+C'est précisément pourquoi ce fichier existe. Il en faut dix ; en voilà un.
 
 ---
