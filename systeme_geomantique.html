@@ -15536,7 +15536,7 @@ var CRITERES_PAIRE_V7 = [
   { cle: 'axes', nom: 'dérivés d\'axe valides' },
   { cle: 'complet', nom: '100 % (niveau 3 + figure du jour)' },
   { cle: 'faisceau', nom: 'faisceau du nul' },
-  { cle: 'theoreme', nom: 'théorème des maisons applicable' },
+  { cle: 'theoreme', nom: 'théorème d\'Ellemine applicable' },
   { cle: 'cadent', nom: 'R1 en maison cadente' }
 ];
 
@@ -15644,7 +15644,7 @@ function balayageSeparationV7() {
       add('R1 en maison angulaire', [1, 4, 7, 10].indexOf(r.hR1) >= 0, juste);
       if (r.hR1 <= 12) add('R1 en maison de confusion', !!maisonConfusionV7(r.hR1), juste);
     }
-    add('théorème des maisons applicable', !!(cd && cd.applicable), juste);
+    add('théorème d\'Ellemine applicable', !!(cd && cd.applicable), juste);
     if (ac && ac.lisible) add('F4P4 et critères d\'accord', !!ac.accord, juste);
     add('le Juge (M15) est Via ou Populus', t[15] === 'via' || t[15] === 'populus', juste);
     add('Conjunctio présent dans le thème', (function () {
@@ -16387,6 +16387,37 @@ function tablePolesV7(theme) {
 // et les maisons sans confusion exactement celles à un seul. Ce n'est
 // pas une coïncidence de notation : les deux découpages sont le même.
 //
+// ═══════════════════════════════════════════════════════════════
+//                  ✦  LE THÉORÈME D'ELLEMINE  ✦
+//         nommé le 31/08/26, sur sa demande et de son nom
+// ═══════════════════════════════════════════════════════════════
+//
+//   ÉNONCÉ. Dans le cycle des douze maisons, les deux camps d'un
+//   thème ne sont JAMAIS à égalité élémentaire : l'un occupe
+//   toujours une maison à deux éléments, l'autre une maison à un
+//   seul. Jamais les deux, jamais aucun.
+//
+//   FORME ÉLÉMENTAIRE — la plus forte, trouvée le 31/08. L'élément
+//   du camp simple est toujours l'UN DES DEUX du camp doublé. Les
+//   deux camps partagent donc toujours exactement un élément, et
+//   l'un en a toujours exactement un de plus.
+//        JAMAIS ÉGAUX, JAMAIS ÉTRANGERS.
+//
+//   CAUSE. R7 est toujours six maisons après R1 — sur SEIZE, pas
+//   sur douze. Ce pas de six fait alterner maisons doubles et
+//   maisons simples sans exception possible.
+//
+//   PORTÉE. Vrai sur 8 des 16 positions de départ, 0 violation ;
+//   muet sur les 8 autres, où l'un des camps sort dans les maisons
+//   de synthèse (M13 à M16), hors du cycle où le pas boucle.
+//
+//   CE QU'IL NE FAIT PAS. Il ne prédit rien : le camp doublé pris
+//   seul fait 14/23 sur les matchs décidés (p = 0,202), et la
+//   lecture par la fusion des éléments est sous le témoin sur le
+//   nul (17/29 contre 23/29). C'est un théorème de STRUCTURE — il
+//   dit ce que le thème est, pas ce que le match sera. Il est vrai
+//   et il n'est pas rentable ; les deux à la fois.
+//
 // ✔✔ ET IL EN SORT UN THÉORÈME.
 // R7 est toujours SIX maisons après R1 — mais SUR SEIZE, pas sur douze.
 // ☠️ MA PREMIÈRE DÉMONSTRATION ÉTAIT FAUSSE SUR LA MOITIÉ DE SA TABLE.
@@ -16658,7 +16689,7 @@ function campDoubleV7(theme) {
   if (c1 === c7) {
     // Ne doit jamais arriver dans le cycle des douze : c'est le théorème.
     return { applicable: false, hR1: r.hR1, hR7: r.hR7,
-      raison: 'THÉORÈME VIOLÉ — à signaler' };
+      raison: 'THÉORÈME D\'ELLEMINE VIOLÉ — à signaler' };
   }
   return { applicable: true, camp: c1 ? 'R1' : 'R7', hR1: r.hR1, hR7: r.hR7,
     elementR1: ELEMENT_MAISON_V7[r.hR1] || '—', elementR7: ELEMENT_MAISON_V7[r.hR7] || '—',
@@ -24226,7 +24257,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     html += '<div style="margin-bottom:10px; padding:8px 11px; border-radius:9px; '
       + 'background:rgba(15,23,42,.55); border:1px solid ' + col + ';">'
       + '<div style="font-size:12px; font-weight:800; color:' + col + ';">'
-      + '⚖️ CAMP DOUBLÉ : ' + esc(nomDouble) + ' — sa maison porte DEUX éléments'
+      + '✦ THÉORÈME D\'ELLEMINE — CAMP DOUBLÉ : ' + esc(nomDouble) + ', sa maison porte DEUX éléments'
       + (accord === true ? ' · <span style="color:#4ade80;">d\'accord avec le verdict</span>'
         : accord === false ? ' · <span style="color:#fbbf24;">en désaccord avec le verdict</span>' : '')
       + '</div>'
@@ -24260,9 +24291,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             + '</div>';
         })()
       + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
-      + 'Comme R7 est toujours six maisons après R1 — sur SEIZE, pas sur douze — <b>l\'un des deux '
-      + 'camps est toujours en maison double et l\'autre en maison simple</b> quand les deux restent '
-      + 'dans les douze : jamais les deux, jamais aucun (8 positions de départ sur 16, 0 violation). '
+      + '<b>Jamais égaux, jamais étrangers.</b> Comme R7 est toujours six maisons après R1 — sur SEIZE, '
+      + 'pas sur douze — <b>l\'un des deux camps est toujours en maison double et l\'autre en maison '
+      + 'simple</b> quand les deux restent dans les douze : jamais les deux, jamais aucun (8 positions '
+      + 'de départ sur 16, 0 violation). '
       + 'Ils ne sont d\'ailleurs jamais tous les deux en synthèse non plus. Il ne vaut donc que la '
       + 'moitié des thèmes. Le camp doublé PRIS SEUL ne bat pas le verdict (13/19 contre 14/19), et '
       + 'il ne dit rien du nul (p = 0,297). Ce qui compte, c\'est leur <b>accord</b> : d\'accord, le '
