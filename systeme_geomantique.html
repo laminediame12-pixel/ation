@@ -23514,6 +23514,75 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // sont des propriétés de la table, vraies avant qu'aucun thème ne soit
 // tiré. Leur valeur est ailleurs — elles montrent que l'ordre des repos
 // n'est pas arbitraire, et le théorème d'Ellemine s'appuie dessus.
+// ═══════════════════════════════════════════════════════════════
+// LA DENSITÉ DU QUATUOR (31/08/26) — « un moteur à double tranche »
+//
+// Sa demande : lire les niveaux d'activation des éléments dans le
+// quatuor figure / binôme / antagoniste / protecteur, par rapport à la
+// maison occupée — Via en M5, Conjunctio en M12 — et en faire un moteur
+// à double tranche.
+//
+// ☠️ D'ABORD UNE CORRECTION SUR SA TABLE. Il donne les quatre lignes de
+// Via, Rubeus, Laetitia, Acquisitio. Via et Acquisitio sont exactes.
+// RUBEUS ET LAETITIA SONT INVERSÉES :
+//     il écrit  Rubeus 1 2 2 2 · Laetitia 2 1 2 2
+//     MAP_GEO   Rubeus 2 1 2 2 · Laetitia 1 2 2 2
+// Laetitia porte le point simple sur le FEU, Rubeus sur l'AIR. C'est la
+// troisième fois que cette paire précise s'inverse dans ce projet — le
+// noyau V1 les avait déjà échangées, et je l'avais corrigé le 26/08.
+// Sa STRUCTURE, elle, est juste : Rubeus est bien le binôme de Via,
+// Laetitia bien son antagoniste, Acquisitio bien son bouclier.
+//
+// ✔ ET SA NOTION D'ACTIVATION EXISTE DÉJÀ DANS LE FICHIER. C'est
+// alignementActifV7 : une ligne à UN point est active, et par-dessus on
+// regarde si elle est compatible avec l'élément de la maison. Sa
+// question était déjà la question du code.
+//
+// LES DEUX TABLEAUX QU'IL DEMANDE, calculés :
+//   VIA en M5 (feu)          actives              compatibles
+//     figure      Via 1111   feu,air,eau,terre    2 (feu, air)
+//     binôme      Rubeus     air                  1
+//     antagoniste Laetitia   feu                  1
+//     bouclier    Acquisitio air, terre           1
+//     front       Fort. Min. feu, air             2
+//     densité offensive 6/8 · défensive 1/2
+//   CONJUNCTIO en M12 (terre)
+//     figure      Conj. 2112 air, eau             1 (eau)
+//     binôme      Cauda      feu, air, eau        1
+//     antagoniste Tristitia  terre                1
+//     bouclier    Via        les quatre           2 (eau, terre)
+//     front       Acquisitio air, terre           1
+//     densité offensive 5/8 · défensive 1/2
+//
+// ✔ UN FAIT DE STRUCTURE : la densité du quatuor de Via ne prend que
+// DEUX valeurs selon la maison — 6 en maison de feu ou d'air, 3 en
+// maison d'eau ou de terre. Jamais autre chose.
+// ⚠️ ET SA MAISON DE REPOS N'EST PAS SA MAISON DE DENSITÉ MAXIMALE :
+// M5 donne 6, comme M1, M2, M6, M9, M10, M13, M14. « Pourquoi M5 » ne
+// se répond donc pas par la densité — la question reste ouverte.
+//
+// ☠️ ET LE MOTEUR À DOUBLE TRANCHE NE MARCHE PAS. Huit formes testées,
+// deux mesures (lignes actives brutes / actives ET compatibles) croisées
+// avec quatre lectures, dont la vraie double tranche — l'attaque de l'un
+// contre la DÉFENSE de l'autre, pas attaque contre attaque :
+//     off(R1)−déf(R7) contre off(R7)−déf(R1) ..... 18/33  55 %
+//     attaque contre défense, figure seule ....... 19/27  70 %  ← la meilleure
+//     défense adverse la plus faible ............. 19/29  66 %
+//     offensive brute la plus forte .............. 19/36  53 %
+// La meilleure fait 70 %, p = 0,026 en brut — mais la recherche portait
+// sur HUIT combinaisons, seuil de Bonferroni 0,00625 : elle NE SURVIT
+// PAS. Et trois choses l'achèvent :
+//   • elle est MUETTE sur 12 des 39 cas ;
+//   • sur ses 27 cas, le partage de la synthèse fait 18/27 — la même
+//     chose, sans rien de neuf ;
+//   • sur leurs 11 divergences, la tranche a raison 6 fois, le partage 5.
+//     Pile ou face. Et la tranche dit R1 sur DIX de ces onze : dans la
+//     zone où elle se distingue, elle est presque le témoin dégénéré.
+//
+// ➜ La densité du quatuor décrit bien une figure dans sa maison. Elle ne
+// désigne pas un vainqueur. Les deux passes ont été faites — casser,
+// puis chercher la meilleure forme — et c'est la meilleure forme qui est
+// donnée ci-dessus.
 function autoTestAlternanceV7() {
   function rep(h) { return FIGS_V7[((h - 1) % 16 + 16) % 16]; }
   var AXE = { puer: 1, via: 1, cauda_draconis: 1 };
