@@ -23624,6 +23624,135 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     thème, un match ni un verdict. Elles sont vraies avant qu'on tire.
 //     Sa consigne tient : on récolte, on ne bâtit pas encore.
 //
+// ── J · LA RELATION DE DESTRUCTION ── (sa trouvaille, 31/08/26)
+//     Il apporte une relation que le fichier n'avait pas nommée : qui
+//     détruit qui. Ses cinq exemples, lus comme des décalages :
+//         Puella M14 → Puer M1 ....... +3
+//         Puer M1 → Albus M4 ......... +3
+//         Albus M4 → Rubeus M7 ....... +3
+//         Rubeus M7 → Carcer M10 ..... +3
+//         Carcer M10 → Cauda M13 ..... +3
+//     LES CINQ SONT EXACTS. La destruction est le décalage +3.
+//
+//     ✔✔ J.1 · LA DESTRUCTION EST L'ANTAGONISME RETOURNÉ ── 16/16
+//         +3 = −13. Donc : la figure qui détruit f EST l'antagoniste de
+//         f, et f est l'antagoniste de sa propre victime. 16/16 dans les
+//         deux sens. Sa relation de destruction n'est pas une sixième
+//         relation : c'est la cinquième, lue dans le sens de l'attaque.
+//         Le fichier avait la table ; il lui manquait la FLÈCHE.
+//
+//     ☠️ J.2 · IL N'Y A PAS DE DUALITÉ ── 0/16
+//         Il dit « la dualité Puer et Puella ». Elle n'existe pas.
+//         L'antagonisme n'est PAS réciproque : antagoniste(antagoniste(f))
+//         vaut +26 = +10, c'est-à-dire le BOUCLIER, jamais f. 0/16.
+//         L'antagoniste de Puella n'est pas Puer, c'est Conjunctio.
+//         Il n'y a donc pas huit couples : il y a UN SEUL CYCLE DE SEIZE.
+//           M1 Puer → M4 Albus → M7 Rubeus → M10 Carcer → M13 Cauda →
+//           M16 Populus → M3 Caput → M6 Amissio → M9 Fortuna Minor →
+//           M12 Fortuna Major → M15 Acquisitio → M2 Laetitia → M5 Via →
+//           M8 Tristitia → M11 Conjunctio → M14 Puella → et retour.
+//         Chaque figure a EXACTEMENT un attaquant et EXACTEMENT une
+//         victime. Aucune n'échappe, aucune n'est frappée deux fois.
+//
+//     ✔✔ J.3 · LA RÉPONSE À SA QUESTION SUR LA FIGURE AU REPOS
+//         Il demande : la figure au repos bloque-t-elle la voie de son
+//         antagoniste, ou constitue-t-elle une voie destructrice contre
+//         son adversaire, ou les deux ?
+//         RÉPONSE : LES DEUX, TOUJOURS, ET JAMAIS UN BLOCAGE.
+//           toute figure est détruite par son antagoniste ...... 16/16
+//           toute figure est l'antagoniste de sa victime ....... 16/16
+//           les deux à la fois ................................ 16/16
+//           une figure détruit-elle son propre attaquant ? ..... 0/16
+//           ... même en deux coups ? .......................... 0/16
+//         Le blocage n'existe pas dans la table. Personne ne peut rendre
+//         son coup à celui qui l'a frappé : il faudrait QUINZE
+//         destructions d'affilée pour qu'une figure atteigne son propre
+//         antagoniste.
+//
+//     ✔✔ J.4 · MAIS LE BOUCLIER, LUI, DÉTRUIT L'ANTAGONISTE ── 16/16
+//         bouclier(f) = f+10, et (f+10)+3 = f+13 = antagoniste(f).
+//         LE BOUCLIER EST EXACTEMENT LA FIGURE QUI TUE CELUI QUI TE TUE.
+//         Le fichier l'appelait « bouclier » par doctrine depuis le
+//         début ; le nom est maintenant mérité, et démontré.
+//         La riposte existe donc, mais elle passe par un relais :
+//           quinze pas par la destruction seule ;
+//           DEUX pas en passant par son bouclier. 16/16.
+//         ➜ C'est ce qui explique son « 1 par la voie de Conjunctio »
+//         dans la riposte de Puer : Conjunctio EST le bouclier de Puer,
+//         et c'est bien Conjunctio qui détruit Puella.
+//
+//     ✔✔ J.5 · SA LOI DU BINÔME DU FRONT ── 16/16
+//         Il écrit : « chaque voie qui gagne est directement liée au
+//         binôme de sa figure de front », et donne Puer → Albus → Rubeus.
+//         VÉRIFIÉ, ET C'EST UNE IDENTITÉ EXACTE :
+//             détruire DEUX FOIS (+6) = binôme(front(f)). 16/16
+//         En détruisant Albus, Puer libère bien Rubeus — la victime de
+//         sa victime — et Rubeus est bien le binôme de Via, le front de
+//         Puer. De même : détruire QUATRE fois (+12) = bouclier(binôme(f)),
+//         16/16 ; détruire CINQ fois (+15) = la maison précédente.
+//
+//     ✔✔ J.6 · IL N'Y A QUE CINQ VOIES POUR SEIZE ATTAQUES
+//         La « voie » d'une attaque, c'est la combinaison des deux
+//         combattants. Sur les seize attaques du cycle, elle ne prend que
+//         CINQ valeurs — et ce sont exactement les cinq résultantes de
+//         l'antagoniste déjà connues (loi H), toutes de boucle A, toutes
+//         en maison impaire :
+//           voie Puer M1 ...... Caput→Amissio · Rubeus→Carcer ·
+//                               Conjunctio→Puella · Acquisitio→Laetitia
+//           voie Caput M3 ..... Laetitia→Via · Tristitia→Conjunctio ·
+//                               Carcer→Cauda · Populus→Caput
+//           voie Via M5 ....... Puer→Albus · Fortuna Minor→Fortuna Major
+//           voie Conjunctio M11 Albus→Rubeus · Amissio→Fortuna Minor ·
+//                               Fortuna Major→Acquisitio · Puella→Puer
+//           voie Cauda M13 .... Via→Tristitia · Cauda→Populus
+//
+//     ✔ J.7 · SON FAIT PAIR/IMPAIR, DANS SA FORME EXACTE
+//         Il dit que les attaques des paires vers les impaires n'ont pas
+//         d'intersection et que celles des impaires vers les paires en
+//         ont. Ce qui est vrai, mesuré :
+//           attaques depuis une maison IMPAIRE (boucle A vers boucle B)
+//             → voies { Puer, Via, Cauda } = SON AXE 1-5-13
+//           attaques depuis une maison PAIRE (boucle B vers boucle A)
+//             → voies { Caput Draconis, Conjunctio }
+//           LES DEUX FAMILLES NE PARTAGENT AUCUNE VOIE. Jamais une
+//           attaque impaire ne rencontre une attaque paire.
+//         ⚠️ MAIS LE SENS EST INVERSÉ. Ce n'est pas que l'une n'a pas
+//         d'intersection : chacune se rencontre abondamment CHEZ ELLE.
+//         Les impaires se répartissent sur trois voies (4+2+2), les
+//         paires sur deux seulement (4+4) — les PAIRES se rencontrent
+//         donc plus, pas moins. Ce qui est vrai et fort, c'est la
+//         SÉPARATION : zéro rencontre entre les deux familles.
+//
+//     ✔ J.8 · SON EXEMPLE CARCER / RUBEUS, VÉRIFIÉ ET CORRIGÉ
+//         Rubeus→Carcer voyage sur la voie Puer, et ce groupe compte
+//         EXACTEMENT QUATRE attaques — son chiffre est juste.
+//         Il en nomme quatre : Conjunctio→Puella ✔ et Acquisitio→Laetitia
+//         ✔ sont dans le groupe ; « Acquisitio vers Puer » est cette même
+//         attaque désignée par sa voie ; « Cauda vers Populus » n'y est
+//         pas — celle-là voyage sur la voie Cauda. Et il en manque une :
+//         Caput Draconis → Amissio. Trois sur quatre.
+//         Sa conclusion, elle, est exacte : Carcer détruit bien Cauda.
+//
+//     ✔ J.9 · LES QUATRE ATTAQUES OÙ LA VOIE EST DANS LE COMBAT
+//         Sur les seize, quatre seulement voient leur voie engagée :
+//           Cauda → Populus ....... la voie EST l'attaquant (Cauda)
+//           Populus → Caput ....... la voie EST la cible (Caput)
+//           Puella → Puer ......... la voie (Conjunctio) détruit l'attaquant
+//           Conjunctio → Puella ... la cible détruit la voie
+//         Les deux premières viennent de Populus, l'élément neutre. Les
+//         deux dernières sont le couple Puer/Puella-Conjunctio — c'est-à-
+//         dire précisément l'exemple qu'il a choisi pour commencer.
+//
+//     ⚠️ ET CE QUI N'EST PAS RETROUVÉ. Dans la riposte de Puer il nomme
+//     trois voies : Conjunctio, Cauda, Acquisitio. Conjunctio est exacte
+//     et expliquée (J.4). Cauda est bien une voie du cycle, mais pas
+//     celle de ce combat. Acquisitio n'est voie d'aucune des seize
+//     attaques — elle y figure comme CIBLE (Fortuna Major → Acquisitio,
+//     dans le groupe de la voie Conjunctio). Je ne force pas la table
+//     pour les faire entrer.
+//
+//     ⚠️ RIEN DE TOUT CECI N'EST BRANCHÉ SUR UN VERDICT. On récolte.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -23753,6 +23882,20 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // désigne pas un vainqueur. Les deux passes ont été faites — casser,
 // puis chercher la meilleure forme — et c'est la meilleure forme qui est
 // donnée ci-dessus.
+// La flèche de la destruction : f détruit la figure de la maison f+3.
+// C'est l'antagonisme retourné (loi J.1) — aucun moteur ne s'en sert,
+// elle sert la récolte et l'auto-test.
+function detruitV7(fig) {
+  var i = FIGS_V7.indexOf(fig);
+  if (i < 0) return null;
+  return FIGS_V7[(i + 3) % 16];
+}
+// La voie d'une attaque : la combinaison des deux combattants.
+function voieAttaqueV7(fig) {
+  var c = detruitV7(fig);
+  return c ? combine(fig, c) : null;
+}
+
 function autoTestAlternanceV7() {
   function rep(h) { return FIGS_V7[((h - 1) % 16 + 16) % 16]; }
   var AXE = { puer: 1, via: 1, cauda_draconis: 1 };
@@ -23856,13 +23999,49 @@ function autoTestAlternanceV7() {
   });
   r.inatteignables = [7, 9, 15, 16].filter(function (m) { return !atteintes[m]; }).length;
   r.couvertes = Object.keys(atteintes).length;
+  // ── loi J : la relation de destruction ──
+  r.destAntag = 0; r.destPasReciproque = 0; r.destDeux = 0; r.destQuatre = 0;
+  r.bouclierTueAntag = 0; r.riposteDirecte = 0; r.riposteDeuxCoups = 0;
+  FIGS_V7.forEach(function (f7) {
+    var victime = detruitV7(f7);
+    if (ANTAGONISTES_V7[victime] === f7 && detruitV7(ANTAGONISTES_V7[f7]) === f7) r.destAntag += 1;
+    if (ANTAGONISTES_V7[ANTAGONISTES_V7[f7]] === BOUCLIER_V7[f7]) r.destPasReciproque += 1;
+    if (detruitV7(victime) === BINOMES_V7[FRONT_V7[f7]]) r.destDeux += 1;
+    if (detruitV7(detruitV7(detruitV7(victime))) === BOUCLIER_V7[BINOMES_V7[f7]]) r.destQuatre += 1;
+    if (detruitV7(BOUCLIER_V7[f7]) === ANTAGONISTES_V7[f7]) r.bouclierTueAntag += 1;
+    if (victime === ANTAGONISTES_V7[f7]) r.riposteDirecte += 1;
+    if (detruitV7(victime) === ANTAGONISTES_V7[f7]) r.riposteDeuxCoups += 1;
+  });
+  // les cinq voies, et la separation des deux familles
+  var voiesImp = {}, voiesPai = {}, toutesVoies = {};
+  for (var h8 = 1; h8 <= 16; h8++) {
+    var f8 = FIGS_V7[h8 - 1], v8 = voieAttaqueV7(f8);
+    toutesVoies[v8] = 1;
+    if (h8 % 2 === 1) voiesImp[v8] = 1; else voiesPai[v8] = 1;
+  }
+  r.nbVoies = Object.keys(toutesVoies).length;
+  r.voiesImpaires = Object.keys(voiesImp).length;
+  r.voiesPaires = Object.keys(voiesPai).length;
+  r.voiesSeparees = Object.keys(voiesImp).every(function (v) { return !voiesPai[v]; }) ? 1 : 0;
+  // les voies impaires sont exactement l'axe 1-5-13
+  r.voiesAxe = (Object.keys(voiesImp).sort().join() ===
+    ['puer', 'via', 'cauda_draconis'].sort().join()) ? 1 : 0;
+  // les cinq voies sont les cinq resultantes de l'antagoniste (loi H)
+  var resAnt = {}; FIGS_V7.forEach(function (f9) { resAnt[combine(f9, ANTAGONISTES_V7[f9])] = 1; });
+  r.voiesEgalesLoiH = (Object.keys(resAnt).length === r.nbVoies
+    && Object.keys(resAnt).every(function (v) { return toutesVoies[v]; })) ? 1 : 0;
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
     && r.boucliersBinome === 16 && r.binomeBouclierTristitia === 16
     && r.cardImpair === 16 && r.cardPair === 15
     && r.quatuorTristitia === 16 && r.roueDouble === 15
-    && r.inatteignables === 4 && r.couvertes === 12);
+    && r.inatteignables === 4 && r.couvertes === 12
+    && r.destAntag === 16 && r.destPasReciproque === 16
+    && r.destDeux === 16 && r.destQuatre === 16 && r.bouclierTueAntag === 16
+    && r.riposteDirecte === 0 && r.riposteDeuxCoups === 0
+    && r.nbVoies === 5 && r.voiesImpaires === 3 && r.voiesPaires === 2
+    && r.voiesSeparees === 1 && r.voiesAxe === 1 && r.voiesEgalesLoiH === 1);
   return r;
 }
 
