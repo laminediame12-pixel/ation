@@ -2034,21 +2034,8 @@ function renderThemeLegacyWidgets(theme){
 // Familial juste après dans ce fichier (tierWeightFF). Unifié : les deux
 // moteurs partagent maintenant EXACTEMENT le même calcul de force par
 // case, donc les mêmes conclusions sur une même case.
-function figurePresenteDansTheme(fig, theme){
-  for(let m=1;m<=16;m++){ if(theme[m]===fig) return true; }
-  return false;
-}
-function evaluateCase(fig, m, theme){
-  const poids = tierWeightFF(fig, m, theme);
-  let label;
-  if(poids>=1000) label='REPOS';
-  else if(poids>=60) label='CONCORDANCE+BINÔME';
-  else if(poids>=40) label='CONCORDANCE';
-  else if(poids>=20) label='ALLIÉE';
-  else if(poids>=3) label='NEUTRE';
-  else label='CONTRADICTOIRE';
-  return {fig, m, poids, label};
-}
+
+
 
 
 // ===== Intégration avec le thème de l'application hôte =====
@@ -2460,10 +2447,7 @@ function indexBinaireEngine(fig){
 }
 const ELEMENTS={puer:'feu',laetitia:'feu',caput_draconis:'air',albus:'eau',via:'eau',amissio:'eau',rubeus:'air',tristitia:'terre',fortuna_minor:'feu',carcer:'terre',conjunctio:'air',fortuna_major:'terre',cauda_draconis:'eau',puella:'terre',acquisitio:'air',populus:'feu'};
 const ELEMENT_COLORS = {feu:'#ef4444', air:'#eab308', eau:'#3b82f6', terre:'#000000'};
-function elementColorOf(fig) {
-  var e = (typeof ELEMENTS_V7 !== 'undefined' && ELEMENTS_V7[fig]) ? ELEMENTS_V7[fig] : ELEMENTS[fig];
-  return ELEMENT_COLORS[e] || '#64748b';
-}
+
 const BINOMES={puer:'caput_draconis',puella:'populus',albus:'amissio',rubeus:'fortuna_minor',fortuna_major:'puella',cauda_draconis:'acquisitio',laetitia:'albus',caput_draconis:'via',via:'rubeus',amissio:'tristitia',tristitia:'carcer',fortuna_minor:'conjunctio',carcer:'fortuna_major',conjunctio:'cauda_draconis',acquisitio:'puer',populus:'laetitia'};
 const ANTAGONISTES={puer:'puella',puella:'conjunctio',conjunctio:'tristitia',tristitia:'via',via:'laetitia',laetitia:'acquisitio',acquisitio:'fortuna_major',fortuna_major:'fortuna_minor',fortuna_minor:'amissio',amissio:'caput_draconis',caput_draconis:'populus',populus:'cauda_draconis',cauda_draconis:'carcer',carcer:'rubeus',rubeus:'albus',albus:'puer'};
 // ⚠️ Table historique corrigée (08/07/26) : M9-M16 étaient désynchronisés de
@@ -4373,24 +4357,7 @@ function reseauAncrageR1R7(chef, hSiege, theme, profondeur) {
 // camps sont piégés en même temps, c'est le plus solide (score net le
 // plus élevé) qui l'emporte — départage explicite demandé.
 // ═══════════════════════════════════════════════════════════════
-function estDomineParChaine(fig, chaineAdverse, theme) {
-  const posFig = positionsBaseEtResultantes(fig, theme).map(function(s){ return parseInt(s.replace('M','').replace('r','')); });
-  for (let i = 0; i < posFig.length; i++) {
-    const p = posFig[i];
-    for (let j = 0; j < chaineAdverse.length; j++) {
-      const adversaire = chaineAdverse[j];
-      const posAdv = positionsBaseEtResultantes(adversaire, theme).map(function(s){ return parseInt(s.replace('M','').replace('r','')); });
-      for (let k = 0; k < posAdv.length; k++) {
-        const pa = posAdv[k];
-        if (pa === p) return { piege: true, type: 'même maison', adversaire: adversaire, maison: p };
-        if (concordanceElement(MAISON_ELEM_V7[p], MAISON_ELEM_V7[pa]) >= 0.5) {
-          return { piege: true, type: 'maison concordante', adversaire: adversaire, maisonFig: p, maisonAdversaire: pa };
-        }
-      }
-    }
-  }
-  return { piege: false };
-}
+
 
 // ─── RÈGLE ELLEMINE (21/08/26) : ANALYSE PROTECTEUR PAR CHAÎNE D'ANTAGONISME ───
 // Pour chaque figure du cycle (16), calcule si elle est PROTÉGÉE (son
@@ -5353,54 +5320,7 @@ function resoudreLiberationsV7(theme) {
 // propre antagoniste était libre et au repos — la doctrine de libération
 // et le résultat réel se contredisent frontalement. À éclaircir avant
 // tout branchement.
-function cascadeR1R7V7(theme) {
-  if (!theme || !theme[1]) return { applicable: false };
-  const rot = getRotationCombat(theme);
-  const L = resoudreLiberationsV7(theme);
 
-  function acteur(f, role) {
-    const cible = FIGS_V7.filter(function (x) { return ANTAGONISTES_V7[x] === f; })[0] || null;
-    return { role: role, fig: f, etat: L.etat[f], solide: L.solidite[f].solide,
-      raison: L.solidite[f].raison, detruit: cible };
-  }
-  function camp(chef, siege) {
-    const sol = figureSolideV7(chef, theme, siege);
-    return {
-      chef: chef, siege: siege, etatChef: L.etat[chef], soliditeChef: sol.raison,
-      antagoniste: acteur(ANTAGONISTES_V7[chef], 'antagoniste'),
-      protecteur: acteur(PROTECTEURS_V7[chef], 'protecteur'),
-      front: acteur(FRONT_V7[chef], 'front'),
-      binome: acteur(BINOMES_V7[chef], 'binôme')
-    };
-  }
-  const R1 = camp(rot.figR1, rot.hR1), R7 = camp(rot.figR7, rot.hR7);
-
-  // Un acteur d'un camp « atteint » l'autre camp s'il est libre, solide,
-  // et que ce qu'il détruit est un pôle adverse.
-  function offensives(campA, campB) {
-    const cibles = {};
-    cibles[campB.chef] = 'le chef';
-    cibles[campB.protecteur.fig] = 'le protecteur';
-    cibles[campB.front.fig] = 'la figure de front';
-    cibles[campB.binome.fig] = 'le binôme';
-    const out = [];
-    [ { role: 'chef', fig: campA.chef }, campA.binome, campA.protecteur, campA.front ].forEach(function (a) {
-      if (!a.fig) return;
-      const cible = FIGS_V7.filter(function (x) { return ANTAGONISTES_V7[x] === a.fig; })[0];
-      if (cible && cibles[cible] && L.etat[a.fig] === 'libre' && L.solidite[a.fig].solide) {
-        out.push({ acteur: a.fig, role: a.role, cible: cible, quoi: cibles[cible] });
-      }
-    });
-    return out;
-  }
-
-  return {
-    applicable: true, R1: R1, R7: R7,
-    offensivesR1: offensives(R1, R7),
-    offensivesR7: offensives(R7, R1),
-    indetermines: L.indetermines
-  };
-}
 
 // ═══════════════════════════════════════════════════════════════
 // FORCE D'UN CAMP ET DUEL DU BOUCLIER (26/08/26)
@@ -7318,16 +7238,16 @@ function signalFamilleOpposition(theme){
   return {fig1, fig7, carcerActive, puellaActive, carcerAtM1orM7};
 }
 function wrapHouse(pos){return ((pos-1+16)%16)+1;}
-function getRelativeHouse(pos, offset){return wrapHouse(pos + offset);}
+
 function findFigurePositions(fig,theme){return Object.keys(theme).filter(function(pos){return theme[pos]===fig;}).map(function(pos){return Number(pos);});}
 function getRestHouse(fig){return FIGS.indexOf(fig)+1;}
-function isFigureAtRestHouse(fig,theme){const rest=getRestHouse(fig); return rest>0 && theme[rest]===fig;}
+
 function circularDistance(a,b){const diff=Math.abs(a-b); return Math.min(diff,16-diff);}
-function getClosestFigureDistance(fromPos,fig,theme){const positions=findFigurePositions(fig,theme); if(!positions.length) return Infinity; return Math.min(...positions.map(pos=>circularDistance(fromPos,pos)));}
+
 function hasBinomeInTheme(fig,theme){const binome=BINOMES[fig]; return !!binome && figureExistsInTheme(binome,theme);}
-function isAntagonistStrong(fig,theme){const antagonist=ANTAGONISTES[fig]; if(!antagonist) return false; return hasBinomeInTheme(antagonist,theme);}
-function isAntagonistVeryStrong(fig,theme){const antagonist=ANTAGONISTES[fig]; if(!antagonist) return false; const positions=findFigurePositions(antagonist,theme); if(!positions.length || !hasBinomeInTheme(antagonist,theme)) return false; return positions.some(pos=>ELEMENTS[antagonist]==='terre' && ['terre','eau'].includes(MAISON_ELEM[pos]));}
-function hasFirstHalfBinomeSignal(sourcePos,theme){const fig=theme[sourcePos]; const binome=BINOMES[fig]; if(!binome) return false; const positions=findFigurePositions(binome,theme); if(!positions.length) return false; return positions.some(pos=>MAISON_ELEM[pos]==='feu' && ['feu','air'].includes(ELEMENTS[binome]));}
+
+
+
 function findActiveFigurePositions(fig,theme){const direct=findFigurePositions(fig,theme); const resultants=Array.from({length:16},(_,i)=>i+1).filter(pos=>getResultant(theme[pos],pos)===fig); return [...new Set([...direct,...resultants])];}
 function figureExistsActive(fig,theme){return findActiveFigurePositions(fig,theme).length>0;}
 function getClosestActiveFigureDistance(fromPos,fig,theme){const positions=findActiveFigurePositions(fig,theme); if(!positions.length) return Infinity; return Math.min(...positions.map(pos=>circularDistance(fromPos,pos)));}
@@ -7336,8 +7256,8 @@ function isActiveAntagonistStrong(fig,theme){const antagonist=ANTAGONISTES[fig];
 function isActiveAntagonistVeryStrong(fig,theme){const antagonist=ANTAGONISTES[fig]; if(!antagonist) return false; const positions=findActiveFigurePositions(antagonist,theme); if(!positions.length || !hasActiveBinome(antagonist,theme)) return false; return positions.some(pos=>ELEMENTS[antagonist]==='terre' && ['terre','eau'].includes(MAISON_ELEM[pos]));}
 function hasActiveFirstHalfBinomeSignal(sourcePos,theme){const fig=theme[sourcePos]; const binome=BINOMES[fig]; if(!binome) return false; const positions=findActiveFigurePositions(binome,theme); if(!positions.length) return false; return positions.some(pos=>MAISON_ELEM[pos]==='feu' && ['feu','air'].includes(ELEMENTS[binome]));}
 function isFigureWellPositioned(fig,theme){return findFigurePositions(fig,theme).some(pos=>fig===FIGS[pos-1] || houseMatchesElement(pos,fig) || ELEMENTS[getResultant(fig,pos)]===MAISON_ELEM[pos]);}
-function getFigureForceDetails(pos,theme){const fig=theme[pos]; const reposeFig=FIGS[pos-1]; const resultFig=getResultant(fig,pos); if(fig===reposeFig) return {pct:100, reason:`${FL[fig]} est dans sa maison de repos.`}; if(ELEMENTS[resultFig]===MAISON_ELEM[pos]) return {pct:90, reason:`La résultante ${FL[resultFig]} est accordée à l'élément de la maison (${MAISON_ELEM[pos]}).`}; if(houseMatchesElement(pos,fig)) return {pct:75, reason:`La figure partage l'élément de la maison.`}; return {pct:60, reason:`La figure reste active mais sans accord fort avec cette maison.`};}
-function getPositiveImpactDetails(viseurFig,targetFig,forcePct,theme){if(!targetFig) return {pct:0, text:`Aucune figure soutenue.`}; if(!figureExistsInTheme(targetFig,theme)) return {pct:0, text:`${FL[targetFig]} est absente du thème.`}; return {pct:forcePct, text:`${FL[viseurFig]} soutient et protège ${FL[targetFig]} à ${forcePct}%.`};}
+
+
 function getNegativeImpactDetails(viseurFig,targetFig,forcePct,theme){if(!targetFig) return {pct:0, text:`Aucune figure visée.`}; const positions=findFigurePositions(targetFig,theme); if(!positions.length) return {pct:0, text:`${FL[targetFig]} est absente du thème.`}; const basePct=forcePct; const targetWellPlaced=isFigureWellPositioned(targetFig,theme); const targetBinome=BINOMES[targetFig]; const binomeReady=figureExistsInTheme(targetBinome,theme) && isFigureWellPositioned(targetBinome,theme); if(targetWellPlaced && binomeReady) return {pct:0, text:`${FL[targetFig]} résiste totalement à ${FL[viseurFig]} avec ${FL[targetBinome]} bien positionnée : impact nul.`}; if(targetWellPlaced) return {pct:Math.round(basePct/2), text:`${FL[targetFig]} résiste à ${FL[viseurFig]} car elle est bien positionnée.`}; return {pct:basePct, text:`${FL[viseurFig]} impacte négativement ${FL[targetFig]} à ${basePct}%.`};}
 function renderHouseInsight(pos){const panel=document.getElementById('house-insight-content'); if(!panel || !currentTheme) return; panel.innerHTML='';}
 
@@ -7444,11 +7364,7 @@ FIGS_V7.forEach(function(fig, i) {
 // pour rien) ; ces alias portent le vocabulaire dans le code, et
 // l'affichage, lui, dit bouclier.
 const BOUCLIER_V7 = PROTECTEURS_V7;
-const FIG_FRONT_V7 = FRONT_V7;
-function figureCentraleV7(theme, cote) {
-  const rot = getRotationCombat(theme);
-  return cote === 'R7' ? rot.figR7 : rot.figR1;
-}
+
 
 // ─── RÈGLE ELLEMINE (25/08/26) : UNE FIGURE TIENT QUATRE RÔLES À LA FOIS ───
 // Énoncé de l'utilisateur, mot pour mot : « une figure peut jouer un rôle de
@@ -7833,15 +7749,7 @@ const BUTS_FIGURE = {
  * Retourne le nombre de buts prédit pour une figure à une position,
  * en tenant compte de si elle peut marquer (canScore) et du score net.
  */
-function butsPredisFigure(fig, canScore, scoreNet) {
-  var b = BUTS_FIGURE[fig];
-  if (!b || !canScore || b.max === 0) return 0;
-  if (scoreNet <= 0) return 0;
-  var comp = (typeof getCompetitionConfig === 'function') ? getCompetitionConfig() : {enjeu:1.0};
-  var scoreNetAjuste = scoreNet * comp.enjeu;
-  var ratio = Math.min(1, scoreNetAjuste / 120);
-  return Math.round(b.min + ratio * (b.max - b.min));
-}
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -8509,10 +8417,7 @@ function getPlaneteHeure(dateStr, heureStr) {
   return CHALDEEN_ORDRE[idx];
 }
 
-function getFigureGouvernante(dateStr, heureStr) {
-  var pl = getPlaneteHeure(dateStr, heureStr);
-  return PLANETE_GOUVERNEUR[pl] || null;
-}
+
 
 // ═══════════════════════════════════════════════════════════════
 // HEURES PLANÉTAIRES VRAIES (10/07/26) — lever/coucher du soleil par
@@ -8628,10 +8533,7 @@ function getPlaneteHeureVraie(dateStr, heureStr, nomVille) {
   }
 }
 
-function getFigureGouvernanteVraie(dateStr, heureStr, nomVille) {
-  var r = getPlaneteHeureVraie(dateStr, heureStr, nomVille);
-  return Object.assign({figure: PLANETE_GOUVERNEUR[r.planete] || null}, r);
-}
+
 
 // ═══════════════════════════════════════════════════════════════
 // TABLE COMPLÈTE DES 24 HEURES PLANÉTAIRES (03/08/26, format calqué sur
@@ -8737,27 +8639,7 @@ function closeHeuresPlanetairesPanel() {
 // Signal d'etude : la figure gouvernante de l'heure est-elle presente
 // dans le theme, et de quel cote (CAMP1/CAMP2, ou tete M1/M7 directement) ?
 // Ne pese sur aucun verdict tant que non valide.
-function signalHeurePlanetaire(theme, dateStr, heureStr, nomVille) {
-  var r = getPlaneteHeureVraie(dateStr, heureStr, nomVille);
-  var pl = r.planete;
-  var fig = PLANETE_GOUVERNEUR[pl] || null;
-  if (!fig) return {planete:pl, figure:null, present:false, methode:r.methode};
-  var positions = positionsBaseEtResultantes(fig, theme);
-  var camp = null;
-  if (theme[1]===fig) camp = 'M1';
-  else if (theme[7]===fig) camp = 'M7';
-  else if (positions.length) {
-    var p0 = parseInt(String(positions[0]).replace('M','').replace('r',''), 10);
-    camp = CAMP1.indexOf(p0)>=0 ? 'CAMP1' : 'CAMP2';
-  }
-  return {
-    planete: pl, figure: fig, figureLabel: FL[fig], methode: r.methode,
-    present: positions.length>0, positions: positions, camp: camp,
-    resume: (positions.length
-      ? '🪐 Heure de ' + pl + ' (' + r.methode + ') — figure gouvernante ' + FL[fig] + ' présente en ' + positions.join(',') + (camp?' ('+camp+')':'')
-      : '🪐 Heure de ' + pl + ' (' + r.methode + ') — figure gouvernante ' + FL[fig] + ' absente du thème')
-  };
-}
+
 
 // ═══════════════════════════════════════════════════════════════
 // RADICALITÉ DU TIRAGE (06/07/26) — doctrine classique : un thème tiré
@@ -9071,13 +8953,7 @@ function binomeEstFaibleV7(figBinome, figBase) {
  * (la figure que `fig` detruit). Le cycle ANTAGONISTES_V7 etant une permutation complete des
  * 16 figures, Y existe toujours et est unique.
  */
-function figureCibleAntagonisme(fig) {
-  for (var i = 0; i < FIGS_V7.length; i++) {
-    var y = FIGS_V7[i];
-    if (ANTAGONISTES_V7[y] === fig) return y;
-  }
-  return null;
-}
+
 
 /**
  * Regle empirique : une figure a sa maison de repos AVEC son binome present dans le theme
@@ -9668,18 +9544,7 @@ function checkRubeusM11Penalty(theme) {
 // avec la plus forte concordance détruit la figure occupante
 // ═══════════════════════════════════════════════════════════════
 
-function checkCaputDraconisDestruction(theme) {
-  // Toute figure dont la maison occupée == sa propre maison de repos avec force=100 (repos_absolu)
-  // détruit potentiellement les autres figures en présence (effet structurel global)
-  var destructeurs = [];
-  for (var pos = 1; pos <= 16; pos++) {
-    var fig = theme[pos];
-    if (fig === FIGS_V7[pos-1]) {
-      destructeurs.push({fig:fig, pos:pos});
-    }
-  }
-  return destructeurs;
-}
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -10401,12 +10266,7 @@ function piliersReposCount(theme){
 // vrai nul (FK Jenis vs Astana, 2-2) avait son binôme UNIQUEMENT en
 // résultante (jamais en base) — configuration qui ne satisfait donc pas ce
 // verrou et reste soumise aux règles de nul normales.
-function verrouM16Feu(theme){
-  var m16 = theme[16];
-  if (ELEMENTS[m16] !== 'feu') return false;
-  var binM16 = BINOMES[m16];
-  return positionsBaseEtResultantes(binM16, theme).some(function(p){ return p.indexOf('r')<0; });
-}
+
 
 // ═══════════════════════════════════════════════════════════════
 // DOUBLE NEUTRALISATION DES BINÔMES + FUSION (14/07/26, doctrine
@@ -10440,10 +10300,7 @@ function binomeNeutralise(chef, theme){
   if (!figureAncree(attaquant, posAttaquant)) return false;
   return positionsBaseEtResultantes(BINOMES[attaquant], theme).length > 0;
 }
-function doubleNeutralisationFusion(theme){
-  if (!binomeNeutralise(theme[1], theme) || !binomeNeutralise(theme[7], theme)) return false;
-  return ANTAGONISTES[theme[1]] === BINOMES[theme[7]] || ANTAGONISTES[theme[7]] === BINOMES[theme[1]];
-}
+
 
 function buildScoreFromCamps(campA, campB, winner, competitionOverride, theme) {
   var compConfig = (typeof getCompetitionConfig === 'function') ? getCompetitionConfig(competitionOverride) : {multButs:1.0, label:'?'};
@@ -10622,38 +10479,7 @@ function paralysieV7(pos, theme) {
 // donne un résultat différent si les maisons d'entrée diffèrent.
 // Signal purement explicatif, ne pèse sur aucun verdict.
 // ═══════════════════════════════════════════════════════════════
-function explicationDivergenceMR(theme) {
-  var order = getRotationOrderFromRepos(theme[1]);
-  var r1 = order[0], r7 = order[6];
-  var duelM = duelV7(1, 7, theme);
-  var duelR = duelV7(r1, r7, theme);
 
-  function detailPos(pos, scoreObj) {
-    var elem = MAISON_ELEM_V7[pos];
-    var camp = CAMP1.indexOf(pos) >= 0 ? 'CAMP1' : 'CAMP2';
-    var repos = scoreObj.reposBinomeActif ? 'repos tenu (binôme présent)' : 'hors repos / repos rompu';
-    var etat = scoreObj.isDestroyed ? 'DÉTRUITE' : scoreObj.canScore ? 'peut marquer' : 'ne peut pas marquer';
-    return 'M' + pos + '=' + FL[scoreObj.fig] + ' (élément:' + elem + ', ' + camp + ', ' + repos + ', ' + etat + ', score net:' + scoreObj.scoreNet + ')';
-  }
-
-  var distM = hammingDistance(theme[1], theme[7]);
-  var distR = hammingDistance(theme[r1], theme[r7]);
-  var distTxt = '📏 Distance de Hamming — M1↔M7 : ' + distM + '/4, R1↔R7 : ' + distR + '/4.';
-
-  var same = (duelM.winner === duelR.winner);
-  if (same) {
-    return { divergent: false, resume: '✅ Camp M et Camp R convergent (même vainqueur), même si les maisons d\'entrée diffèrent (R1=M' + r1 + ', R7=M' + r7 + ').', distanceTxt: distTxt };
-  }
-  var lignes = [];
-  lignes.push('Camp M — ' + detailPos(1, duelM.a) + ' vs ' + detailPos(7, duelM.b));
-  lignes.push('Camp R — ' + detailPos(r1, duelR.a) + ' vs ' + detailPos(r7, duelR.b));
-  return {
-    divergent: true,
-    resume: '⚠️ Camp M et Camp R divergent — même procédé (duelV7), maisons différentes en entrée (élément/camp/repos propres à chaque numéro de maison).',
-    details: lignes,
-    distanceTxt: distTxt
-  };
-}
 
 function verdictV7(theme, useRotationAsPrimary, ctx) {
 
@@ -11025,13 +10851,7 @@ function verdictV7Rotation(theme) {
   return verdictV7(theme, true);
 }
 
-function figureExistsInThemeFull(fig,theme){
-  for(let p=1;p<=16;p++){
-    if(theme[p]===fig) return true;
-    if(combine(theme[p],FIGS[p-1])===fig) return true;
-  }
-  return false;
-}
+
 function figureExistsBaseOnly(fig,theme){
   for(let p=1;p<=16;p++){
     if(theme[p]===fig) return true;
@@ -11386,25 +11206,7 @@ function themeInvalidite(theme){
 // parce qu'elle est assez rare pour ne jamais entrer en conflit avec
 // les 27 cas déjà validés — contrairement à la tentative abandonnée de
 // remonter TOUTES les règles de nul (qui cassait 4 cas archivés).
-function superpositionAncreAssaillant(theme) {
-  const ancre1 = BINOMES_V7[theme[1]], ancre7 = BINOMES_V7[theme[7]];
-  const assaillant1 = ANTAGONISTES_V7[theme[1]], assaillant7 = ANTAGONISTES_V7[theme[7]];
-  const binAncre1 = BINOMES_V7[ancre1], binAncre7 = BINOMES_V7[ancre7];
-  const binAssaillant1 = BINOMES_V7[assaillant1], binAssaillant7 = BINOMES_V7[assaillant7];
-  for (let p = 1; p <= 16; p++) {
-    const base = theme[p];
-    const dc = checkMaisonDoubleConcordance(base, p);
-    if (!dc.match) continue;
-    const res = combine(base, FIGS_V7[p-1]);
-    const figsIci = [base, res];
-    const lienAncre = figsIci.includes(binAncre1) || figsIci.includes(binAncre7);
-    const lienAssaillant = figsIci.includes(binAssaillant1) || figsIci.includes(binAssaillant7);
-    if (lienAncre && lienAssaillant) {
-      return { trouve: true, maison: p, base, res, resume: '⚖️ SUPERPOSITION ANCRE/ASSAILLANT : M'+p+' ('+FL[base]+'/'+FL[res]+', triple concordance '+dc.eMaison+') noue à la fois le binôme d\'une ancre et le binôme d\'un assaillant — les deux camps restent verrouillés au même point (validé n=1, Suisse-Colombie, 17/07/26).' };
-    }
-  }
-  return { trouve: false };
-}
+
 // CONFIRMATION RÉSULTANTE+BINÔME (18/07/26, demande explicite
 // utilisateur : "le résultante confirme ou nie la figure de base par
 // rapport à ce que le résultante exprime", puis "ajoute la nécessité
@@ -11428,18 +11230,7 @@ function binomeEnHarmonie(binome, theme) {
   var sieges = trouverFigV7(binome, theme);
   return sieges.some(function(s) { return forceMaisonV7(binome, s.pos).force >= HARMONIE_SEUIL_CONFIRMATION; });
 }
-function confirmationResultanteBinome(pos, theme) {
-  var baseFig = theme[pos];
-  var resFig = combine(baseFig, FIGS_V7[pos-1]);
-  var baseP = FIGURE_MEANINGS_PERSO[baseFig].polarite;
-  var resP = FIGURE_MEANINGS_PERSO[resFig].polarite;
-  var polariteMatch = (baseP === 'favorable' && resP === 'favorable') || (baseP === 'defavorable' && resP === 'defavorable');
-  var binome = BINOMES_V7[baseFig];
-  var binomePresent = positionsBaseEtResultantes(binome, theme).length > 0;
-  var resHarmonieux = forceMaisonV7(baseFig, pos).force >= HARMONIE_SEUIL_CONFIRMATION;
-  var binHarmonieux = binomePresent && binomeEnHarmonie(binome, theme);
-  return polariteMatch && binomePresent && resHarmonieux && binHarmonieux;
-}
+
 
 // CONVERGENCE FIXE/ROTATION (19/07/26, demande utilisateur "indique si les
 // deux côtés du verdict se pointe une seule équipe") : compare le camp
@@ -11448,18 +11239,7 @@ function confirmationResultanteBinome(pos, theme) {
 // 4 forces" ci-dessous) — indépendamment de QUEL mécanisme a réellement
 // tranché verdictFinal. Signal de confiance affiché à l'utilisateur, PAS
 // un nouvel étage de décision (verdictFinal reste inchangé).
-function convergenceFixeRotation(theme) {
-  var orderRot = getRotationOrderFromRepos(theme[1]);
-  var fM1 = chaineDualite(theme[1], theme).forceMaisons;
-  var fM7 = chaineDualite(theme[7], theme).forceMaisons;
-  var fR1 = chaineDualite(theme[orderRot[0]], theme).forceMaisons;
-  var fR7 = chaineDualite(theme[orderRot[6]], theme).forceMaisons;
-  var wFixe = fM1 === fM7 ? null : (fM1 > fM7 ? 'M1' : 'M7');
-  var wRotation = fR1 === fR7 ? null : (fR1 > fR7 ? 'M1' : 'M7');
-  var convergent = wFixe !== null && wRotation !== null && wFixe === wRotation;
-  var divergent = wFixe !== null && wRotation !== null && wFixe !== wRotation;
-  return { wFixe: wFixe, wRotation: wRotation, fM1: fM1, fM7: fM7, fR1: fR1, fR7: fR7, convergent: convergent, divergent: divergent };
-}
+
 
 // SUPPRIMÉ (20/08/26, élagage demandé par Ellemine_D) : verdictRotationSeule()
 // — jamais appelée en dehors d'elle-même et de commentaires, moteur mort
@@ -12149,7 +11929,13 @@ var F4P4_SEUIL_TENUE_V7 = 0;
 // lecture la plus complète doit primer. Ce n'est pas un gain mesuré.
 // Il change tout de même le verdict sur 10,4 % des thèmes par rapport à
 // defensif : ce n'est pas un habillage.
-var F4P4_VERDICT_V7 = 'duel4';
+// ☠️ 31/08/26 — CETTE VARIABLE ÉTAIT UN INTERRUPTEUR DÉCORATIF, retirée.
+// Elle valait 'duel4' et n'était LUE NULLE PART : la règle duel4 est
+// codée en dur dans moteurF4P4V7. Y écrire 'defensif' n'aurait rien
+// changé au verdict, tout en donnant l'impression du contraire — et le
+// commentaire au-dessus décrit un choix qui n'était donc pas exerçable.
+// Si un jour on veut vraiment pouvoir basculer, il faudra câbler la
+// lecture, pas seulement redéclarer la variable.
 
 // ─── FUSION AVEC LE RÉSEAU D'ANCRAGE V2 (26/08/26, Ellemine_D :
 // « le réseau d'ancrage est similaire à F4P4, essaie de fusionner les
@@ -15955,17 +15741,7 @@ function etatGelV7(theme, team1, team2) {
 
 // Les prédictions gelées qui n'ont pas encore de score : c'est là que le
 // journal se perd. Un thème enregistré et jamais complété ne compte pas.
-function predictionsEnAttenteV7() {
-  var list = [];
-  try { list = getSavedList() || []; } catch (e) { return []; }
-  return list.filter(function (e) { return e && e.verdict && !e.realScore; })
-    .map(function (e) {
-      return { id: e.id, quand: (e.matchDate || (e.savedAt || '').slice(0, 10)),
-        equipes: (e.team1 || '?') + ' — ' + (e.team2 || '?'),
-        dit: (e.verdict.winner === 'Nul' ? 'nul' : e.verdict.winner) + ' ' + (e.verdict.scoreMain || '') };
-    })
-    .sort(function (a, b) { return String(a.quand) < String(b.quand) ? 1 : -1; });
-}
+
 
 function journalPredictionsV7() {
   var list = [];
@@ -16731,7 +16507,10 @@ function fusionElementV7(theme) {
     // Ne doit jamais arriver : l'inclusion est vraie sur les six axes.
     return { anomalie: true, double: dbl, simple: smp, camp: cd.camp };
   }
-  var dominant = setD[0];
+  // La table de dominance d'Ellemine_D est la source : on la LIT au lieu
+  // de recalculer le premier élément, pour qu'il n'y ait qu'un endroit à
+  // corriger si l'ordre de sa table change.
+  var dominant = DOMINANT_MAISON_V7[cd.maisonDouble] || setD[0];
   return { camp: cd.camp, double: dbl, simple: smp, commun: commun, extra: extra,
     dominant: dominant, domineParSonSupplement: dominant === extra,
     axe: 'M' + Math.min(cd.maisonDouble, cd.maisonSimple) + '/M' + Math.max(cd.maisonDouble, cd.maisonSimple),
@@ -20695,15 +20474,7 @@ function procedureR1R7(theme, figR1, hR1, figR7, hR7){
 }
 
 
-function diagnosticNulSuccedent(theme){
-  const s = signalAxeSuccedentOpposition(theme);
-  return {
-    axe:[theme[2],theme[5],theme[8],theme[11]].map(f=>FL[f]),
-    ancrages:s.ancrages.map(a=>({figure:FL[a.fig], maisons:a.positions})),
-    m13:FL[s.m13], m14:FL[s.m14], m15:FL[s.m15],
-    regle:s.m15Rule, confirme:s.confirmed
-  };
-}
+
 
 // COUCHE RELATIONNELLE R1/R7 — COLOCATAIRE, RÉPÉTITION, ENVIRONNEMENT.
 // La résultante d'une figure dans sa maison est calculée avec FIGS[pos-1]
@@ -21098,16 +20869,7 @@ function noeudsEchange(campPos, theme){
   return noeuds;
 }
 
-function resumeNoeudsEchange(theme){
-  const parts = [];
-  [1,7].forEach(cp=>{
-    const n = noeudsEchange(cp, theme);
-    n.forEach(x=>{
-      parts.push('M'+cp+' ('+FL[theme[cp]]+') ← nœud COMPLET en M'+x.p+' ['+FL[x.base]+'→'+FL[x.res]+']'+(x.aligne?' aligné ✓':''));
-    });
-  });
-  return parts.length ? parts.join(' | ')+' — source de force, subordonnée au récit du Juge' : null;
-}
+
 
 // ═══════════════════════════════════════════════════════════════
 // CHAMBRES FORMIDABLES PAR ALLÉGEANCE — doctrine des 16 maisons
@@ -21151,59 +20913,11 @@ function binomeConfirmeDansTheme(fig, theme){
   for(var p=1;p<=16;p++) if(theme[p]===bin) return true;
   return false;
 }
-function modulationSanctionCroisee(theme){
-  const alertes = [];
-  [6,12].forEach(hF=>{
-    const figF = theme[hF];
-    if(!figF || !figureNegativeDangereuse(figF)) return;
-    if(!binomeConfirmeDansTheme(figF, theme)) return; // déclencheur non confirmé par le binôme
-    [5,11].forEach(hE=>{
-      const figE = theme[hE];
-      if(figE) alertes.push('📚 étude — '+FL[figF]+' (M'+hF+', conflit/sanction) confirmé par binôme '+FL[BINOMES_V7[figF]]+' → aggrave l\'offensive en M'+hE+' ('+FL[figE]+')');
-    });
-    [4,10].forEach(hD=>{
-      const figD = theme[hD];
-      if(figD) alertes.push('📚 étude — '+FL[figF]+' (M'+hF+', conflit/sanction) confirmé par binôme '+FL[BINOMES_V7[figF]]+' → aggrave la défense en M'+hD+' ('+FL[figD]+')');
-    });
-  });
-  return alertes;
-}
 
-function chambresFormidablesAllegeance(theme){
-  const cycleOf = f => (FIGS_V7.indexOf(f) % 2 === 0) ? 'impair' : 'pair';
-  const chaine = fig => {
-    let amont=null; for(const f in BINOMES_V7){ if(BINOMES_V7[f]===fig){amont=f;break;} }
-    return [fig, BINOMES_V7[fig], amont];
-  };
-  const ch1 = chaine(theme[1]), ch7 = chaine(theme[7]);
-  const a1=[], a7=[], neutres=[];
-  for(let p=2;p<=16;p+=2){
-    const base = theme[p];
-    if(cycleOf(base)!=='pair') continue;
-    const res = combine(base, FIGS_V7[p-1]);
-    const tag = 'M'+p+'['+FL[base]+'→'+FL[res]+']';
-    const sert1 = ch1.indexOf(base)>=0 || ch1.indexOf(res)>=0;
-    const sert7 = ch7.indexOf(base)>=0 || ch7.indexOf(res)>=0;
-    if(sert1 && !sert7) a1.push(tag);
-    else if(sert7 && !sert1) a7.push(tag);
-    else neutres.push(tag);
-  }
-  const resume = 'M1 ← '+(a1.length?a1.join(', '):'aucune')+' | M7 ← '+(a7.length?a7.join(', '):'aucune')+(neutres.length?' | neutres : '+neutres.length:'')+' — force nourricière, subordonnée au récit du Juge';
-  return {a1, a7, neutres, resume};
-}
 
-function alignementTerritorial(theme){
-  const a1=[], a2=[];
-  for(let p=1;p<=16;p++){
-    if(figureAlignee(theme[p], p, theme)){
-      const tag = 'M'+p+(theme[p]===FIGS_V7[p-1]?'*':'');
-      if(CAMP1.indexOf(p)>=0) a1.push(tag); else a2.push(tag);
-    }
-  }
-  const adv = a1.length>a2.length?'M1':a2.length>a1.length?'M7':'égalité';
-  return {camp1:a1, camp2:a2, avantage:adv,
-    resume:'camp1 = '+a1.length+(a1.length?' ('+a1.join(', ')+')':'')+' vs camp2 = '+a2.length+(a2.length?' ('+a2.join(', ')+')':'')+' → '+(adv==='égalité'?'équilibre':'avantage '+adv)+' (* = repos absolu)'};
-}
+
+
+
 
 // ═══════════════════════════════════════════════════════════════
 // GUERRE CIVILE DE BOUCLE — doctrine de la trahison (02/07/26)
@@ -21590,84 +21304,13 @@ function methodePoints(theme){
     resume:'🔢 Méthode des points (du maître) : Camp M1 = '+p1+' points (réduit '+r1+') | Camp M7 = '+p7+' points (réduit '+r7+')'+(egal?' → ÉGALITÉ des réductions : signal de NUL (arithmétique de Pietro d Abano)':' → M'+(p1>p7?'1':'7')+' a plus de points')};
 }
 
-function orientationR1R7(theme){
-  const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
-  const order = getRotationOrderFromRepos(theme[1]);
-  const h1 = order[0], h7 = order[6];
-  const fr1 = theme[h1];   // R1 = figure de BASE de la 1re maison de rotation
-  const fr7 = theme[h7];   // R7 = figure de BASE de la 7e maison de rotation
-  const X = combine(fr1, fr7);
-  const aff = (a,b) => a===b ? 3 : ((a==='feu'&&b==='air')||(a==='air'&&b==='feu')||(a==='terre'&&b==='eau')||(a==='eau'&&b==='terre')) ? 2 : ((a==='feu'&&b==='terre')||(a==='terre'&&b==='feu')||(a==='air'&&b==='eau')||(a==='eau'&&b==='air')) ? 1 : 0;
-  const a1 = aff(els[fr1], els[X]), a7 = aff(els[fr7], els[X]);
-  const CAMP1 = [1,2,3,4,9,10,13,16];
-  let cote = null, campLabel = 'équilibrée';
-  if(a1>a7){ cote='R1'; campLabel = 'le camp de R1 (M'+h1+', '+(CAMP1.indexOf(h1)>=0?'côté M1':'côté M7')+')'; }
-  else if(a7>a1){ cote='R7'; campLabel = 'le camp de R7 (M'+h7+', '+(CAMP1.indexOf(h7)>=0?'côté M1':'côté M7')+')'; }
-  return {resume:'🧭 Orientation R1/R7 : R1='+FL[fr1]+' (M'+h1+'), R7='+FL[fr7]+' (M'+h7+'), X='+FL[X]+' — '+(cote?'la confrontation penche vers '+campLabel:'inclinaison équilibrée')+'. Inclinaison de départ, à confirmer par les meutes et coalitions (aucun poids sur le verdict).'};
-}
 
-function chefConfonduDestructeur(theme){
-  const presB = f => {
-    for(let p=1;p<=16;p++){
-      if(theme[p]===f) return true;
-      if(f!=='populus' && combine(theme[p], FIGS_V7[p-1])===f) return true;
-    }
-    return false;
-  };
-  const out = [];
-  // CORRIGÉ (04/08/26, demande Ellemine_D) — R1/R7 (rotation), plus M1/M7 fixes.
-  const orderRcc = getRotationOrderFromRepos(theme[1]);
-  const hR1cc = orderRcc[0], hR7cc = orderRcc[6];
-  [[hR1cc,'R1 (Équipe 1)'],[hR7cc,'R7 (Équipe 2)']].forEach(([cp,label])=>{
-    const f = theme[cp], a = ANTAGONISTES_V7[f];
-    const coh = [];
-    for(let p=1;p<=16;p++){
-      const b=theme[p], r=combine(theme[p], FIGS_V7[p-1]);
-      if((b===f&&r===a)||(r===f&&b===a)) coh.push('M'+p);
-    }
-    if(!coh.length) return;
-    const nourri = presB(BINOMES_V7[a]);
-    const libre = !presB(ANTAGONISTES_V7[a]);
-    if(nourri && libre){
-      out.push('⚠️ CHEF CONFONDU AVEC SON DESTRUCTEUR : '+label+' ('+FL[f]+') cohabite avec '+FL[a]+' effectif (nourri, libre) en '+coh.join(',')+' — '+label+' est compromis');
-    }
-  });
-  return out;
-}
 
-function frappesImminentes(theme){
-  const chezElle = f => {
-    const m = FIGS_V7.indexOf(f)+1;
-    return theme[m]===f || combine(theme[m], FIGS_V7[m-1])===f;
-  };
-  const out = [];
-  FIGS_V7.forEach(A=>{
-    if(A==='populus') return;
-    if(chezElle(A) && chezElle(BINOMES_V7[A])){
-      const cibleA = FIGS_V7[(FIGS_V7.indexOf(A)+3)%16];
-      // la destruction s'élargit avec la chaîne : le binôme chez lui détruit aussi SA cible
-      const cibles = [cibleA];
-      let f = BINOMES_V7[A];
-      while(chezElle(f) && f!==A){
-        cibles.push(FIGS_V7[(FIGS_V7.indexOf(f)+3)%16]);
-        f = BINOMES_V7[f];
-      }
-      const touche = cibles.filter(x=>x===theme[1]||x===theme[7]).map(x=>x===theme[1]?'M1':'M7');
-      out.push('🗡️ FRAPPE IMMINENTE : '+FL[A]+' chez lui + '+FL[BINOMES_V7[A]]+' chez lui → détruit '+cibles.map(x=>FL[x]).join(' puis ')+(touche.length?' — LE CHEF '+touche.join('/')+' EST VISÉ':''));
-    }
-  });
-  return out;
-}
 
-function figuresAutonomes(theme){
-  const out = [];
-  for(let p=1;p<=16;p++){
-    if(combine(theme[p], FIGS_V7[p-1])===BINOMES_V7[theme[p]] && theme[p]!=='populus'){
-      out.push(FL[theme[p]]+'@M'+p);
-    }
-  }
-  return out.length ? ['🔋 Figures AUTONOMES (leur résultante engendre leur binôme — elles s auto-nourrissent) : '+out.join(', ')] : [];
-}
+
+
+
+
 
 // ═══════════════════════════════════════════════════════════════
 // AUTO-NOURRISSEMENT / AUTO-DESTRUCTION STRUCTURELLE (08/07/26, porté
@@ -21699,54 +21342,11 @@ function signauxAutoNourriture(theme){
   }
   return {nourrit, detruit};
 }
-function signalAutoNourriture(theme){
-  const {nourrit, detruit} = signauxAutoNourriture(theme);
-  const lignes = [];
-  nourrit.forEach(function(n){
-    lignes.push({type:'nourrit', txt:'🌱 AUTO-NOURRISSEMENT : '+FL[n.fig]+' en M'+n.pos+' génère sa propre résultante-binôme '+FL[n.binome]+' — renforce structurellement quiconque a '+FL[n.fig]+' comme binôme (signal structurel, non encore validé empiriquement)'});
-  });
-  detruit.forEach(function(d){
-    lignes.push({type:'detruit', txt:'💥 AUTO-DESTRUCTION : '+FL[d.fig]+' en M'+d.pos+' génère sa propre résultante-antagoniste '+FL[d.antagoniste]+' — affaiblit structurellement quiconque a '+FL[d.fig]+' comme binôme (signal structurel, non encore validé empiriquement)'});
-  });
-  return lignes;
-}
 
-function signalChaineRepos(theme){
-  const ch = chaineDeRepos(theme);
-  if(ch.n < 2) return [];
-  const det = ch.membres.map(f=>FL[f]+'@M'+(FIGS_V7.indexOf(f)+1)).join(' → ');
-  // La chaîne se déverse (sens binôme) vers son aval
-  const chaineEtAval = ch.membres.concat([ch.aval, BINOMES_V7[ch.aval]]);
-  const versM1 = chaineEtAval.indexOf(theme[1])>=0;
-  const versM7 = chaineEtAval.indexOf(theme[7])>=0;
-  const lien = versM1&&!versM7 ? ' — elle se déverse vers M1' : versM7&&!versM1 ? ' — elle se déverse vers M7' : '';
-  if(ch.n >= 3) return ['👑 CHAÎNE DE REPOS SOUVERAINE ('+ch.n+' maillons chez eux : '+det+')'+lien+' — « 1000 chances de gagner » pour le camp lié positivement (tradition, jamais démentie)'];
-  return ['⛓️ Chaîne de repos favorable ('+ch.n+' maillons : '+det+')'+lien+' — sous le seuil souverain (≥3), signal favorable non décisif'];
-}
 
-function dangerAgresseurLibre(theme){
-  const alertes = [];
-  // CORRIGÉ (04/08/26, demande Ellemine_D) — R1/R7 (rotation), plus M1/M7 fixes.
-  const orderRda = getRotationOrderFromRepos(theme[1]);
-  const hR1da = orderRda[0], hR7da = orderRda[6];
-  [[hR1da,'R1 (Équipe 1)'],[hR7da,'R7 (Équipe 2)']].forEach(([cp,label])=>{
-    const agr = ANTAGONISTES_V7[theme[cp]];
-    if(positionsBaseEtResultantes(agr, theme).length === 0) return;
-    const f = forceFigure(agr, theme);
-    if(f.forteLibre){
-      const protege = noeudsEchange(cp, theme).some(n=>n.aligne);
-      // Intensité (synthèse 03/07) : repos absolu > concordance identique — amplificateurs de la destruction
-      const maisonRepos = FIGS_V7.indexOf(agr)+1;
-      const reposAbsolu = theme[maisonRepos]===agr;
-      const els2 = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
-      const sejours = positionsBaseEtResultantes(agr, theme).map(x=>parseInt(x.replace('M','').replace('r','')));
-      const concordant = sejours.some(p=>els2[agr]===MAISON_ELEM_V7[p]);
-      const intensite = reposAbsolu ? ' [DESTRUCTION MAJEURE : il siège dans sa propre maison de repos]' : concordant ? ' [destruction aggravée : concordance identique avec sa maison]' : '';
-      alertes.push('☠️ Agresseur FORT ET LIBRE contre '+label+' : '+FL[agr]+' (binôme '+FL[BINOMES_V7[agr]]+' présent, antagoniste '+FL[ANTAGONISTES_V7[agr]]+' absent)'+intensite+' — sa destruction porte'+(protege?'. MAIS '+label+' est nourri par un nœud d échange complet aligné : il peut résister (cf. 7-0)':' : danger mortel pour '+label));
-    }
-  });
-  return alertes;
-}
+
+
+
 
 // ═══════════════════════════════════════════════════════════════
 // PROFIL DU NUL STRUCTUREL — la zone aveugle historique
@@ -21772,60 +21372,7 @@ function dangerAgresseurLibre(theme){
 // le nul MARQUE (≥6 : type 2-2/3-3) ou se ferme (testé <6 = 0/3, pas
 // assez fiable pour conclure "se ferme", donc simplement pas de verdict).
 // ═══════════════════════════════════════════════════════════════
-function profilNulStructurel(theme){
-  // ═══ ÉTAPE 1 RÉVISÉE (04/07/26) — doctrine complète du NUL ═══
-  // « Il est nul s'il y a trop de symétrie et que le juge parle de nul. »
-  // 1. ENTRE-BLOCAGE : aucune figure FORTE-LIBRE effective — chaque force
-  //    est tenue par une autre, le circuit est fermé, personne ne conclut.
-  //    Présences : POPULUS ne compte qu'en BASE (la résultante-Populus est
-  //    le VOILE qui cache le repos d'une figure, pas une présence).
-  //    CAS PARTICULIER DE CAPUT : son antagoniste est Populus le neutre —
-  //    sa « liberté » est structurelle/triviale et ne brise PAS
-  //    l'entre-blocage, SAUF si Caput est lui-même chef (M1/M7) : le chef
-  //    libre agit, et chez lui il domine.
-  // 2. LE JUGE CONSTATE : figures pouvant parler de nul en M15 =
-  //    Conjunctio, Via, Carcer, Populus, Acquisitio — mais elles ne
-  //    signifient PAS nul à chaque fois : le juge ne crée pas le nul,
-  //    il le constate quand le terrain est verrouillé, ET sa parole doit
-  //    être CONFIRMÉE PAR SON BINÔME présent dans le thème.
-  // Validation : 17/17 sur l'archive (2 nuls capturés, 0 faux positif,
-  // M14/M2/1-écart résolus). Règle assemblée rétrospectivement —
-  // les futurs nuls la jugeront en aveugle.
-  const presN = f => {
-    for(let p=1;p<=16;p++){
-      if(theme[p]===f) return true;
-      if(f!=='populus' && combine(theme[p], FIGS_V7[p-1])===f) return true;
-    }
-    return false;
-  };
-  const libre = f => presN(BINOMES_V7[f]) && !presN(ANTAGONISTES_V7[f]);
-  const presentes = new Set();
-  for(let p=1;p<=16;p++){
-    presentes.add(theme[p]);
-    const r = combine(theme[p], FIGS_V7[p-1]);
-    if(r!=='populus') presentes.add(r);
-  }
-  const libres = [...presentes].filter(f=>{
-    if(f==='populus') return false;
-    if(!libre(f)) return false;
-    if(f==='caput_draconis' && theme[1]!=='caput_draconis' && theme[7]!=='caput_draconis') return false; // liberté triviale
-    return true;
-  });
-  if(libres.length) return null; // pas d'entre-blocage : une force peut conclure
-  const j = theme[15];
-  const JUGES_NUL = ['conjunctio','via','carcer','populus','acquisitio'];
-  if(JUGES_NUL.indexOf(j)<0) return null; // le juge raconte une issue tranchée malgré l'équilibre
-  if(!presN(BINOMES_V7[j])) return null;  // parole du juge non confirmée par son binôme
-  // énergie pour la texture du nul
-  const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
-  let energie=0;
-  for(let p=1;p<=16;p++){
-    const r = ELEMENT_ROLE_MATRIX_V7[els[theme[p]]+'-'+MAISON_ELEM_V7[p]];
-    if(r==='Déclencheur'||r==='Amplificateur'||r==='Chaotique') energie++;
-  }
-  if(energie<6) return null; // TEST 10/07/26 : energie<6 = 0/3 sur l archive, pas assez fiable pour trancher
-  return {nul:true, resume:'⚖️ PROFIL DU NUL : ENTRE-BLOCAGE total (aucune force libre — chaque figure est tenue, le circuit est fermé) + le Juge '+FL[j]+' constate le nul, confirmé par son binôme '+FL[BINOMES_V7[j]]+' présent → NUL, QUI MARQUE (énergie '+energie+' : type 2-2/3-3).'};
-}
+
 
 function themeDetruit(theme){
   if(theme[1]==='rubeus' || theme[1]==='cauda_draconis'){
@@ -21834,29 +21381,7 @@ function themeDetruit(theme){
   return null;
 }
 
-function effondrementVital(theme){
-  const INV = {}; for(const f in BINOMES_V7){ INV[BINOMES_V7[f]] = f; }
-  function bilan(campPos){
-    const chef = theme[campPos];
-    const amont = INV[chef];
-    const agresseur = ANTAGONISTES_V7[chef];
-    const bouclier = ANTAGONISTES_V7[agresseur];
-    const sourceOK = positionsBaseEtResultantes(amont, theme).length > 0;
-    const agrPresent = positionsBaseEtResultantes(agresseur, theme).length > 0;
-    const bouclierOK = positionsBaseEtResultantes(bouclier, theme).length > 0;
-    const infiltre = combine(chef, FIGS_V7[campPos-1]) === agresseur;
-    const effondre = !sourceOK && agrPresent && !bouclierOK && infiltre;
-    return {chef, sourceOK, agrPresent, bouclierOK, infiltre, effondre};
-  }
-  // CORRIGÉ (04/08/26, demande Ellemine_D) — R1/R7 (rotation), plus M1/M7 fixes.
-  const orderR = getRotationOrderFromRepos(theme[1]);
-  const hR1 = orderR[0], hR7 = orderR[6];
-  const b1 = bilan(hR1), b7 = bilan(hR7);
-  const alertes = [];
-  if(b1.effondre) alertes.push('⚠️ EFFONDREMENT VITAL R1/Équipe 1 ('+FL[b1.chef]+') : DÉRACINÉ (sa racine '+FL[INV[b1.chef]]+', la figure qui le nourrit par en dessous, est absente), sans bouclier, et infiltré par son agresseur '+FL[ANTAGONISTES_V7[b1.chef]]+' — chute possible malgré les autres signaux');
-  if(b7.effondre) alertes.push('⚠️ EFFONDREMENT VITAL R7/Équipe 2 ('+FL[b7.chef]+') : DÉRACINÉ (sa racine '+FL[INV[b7.chef]]+', la figure qui le nourrit par en dessous, est absente), sans bouclier, et infiltré par son agresseur '+FL[ANTAGONISTES_V7[b7.chef]]+' — chute possible malgré les autres signaux');
-  return {b1, b7, alertes};
-}
+
 
 // ═══════════════════════════════════════════════════════════════
 // L'ARBRE DU CHEF (04/07/26 — doctrine de la racine)
@@ -21866,41 +21391,7 @@ function effondrementVital(theme){
 // = chef DÉRACINÉ (c'est la "source absente" de l'effondrement vital,
 // enfin nommée). Signal d'étude organique.
 // ═══════════════════════════════════════════════════════════════
-function arbreDuChef(theme){
-  const INV = {}; for(const f in BINOMES_V7){ INV[BINOMES_V7[f]] = f; }
-  const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
-  const out = [];
-  // CORRIGÉ (04/08/26, demande explicite Ellemine_D : "c'est R1 et R7 qui
-  // déterminent le verdict") — utilisait theme[1]/theme[7] (positions
-  // fixes) au lieu de la rotation R1/R7. Toute la doctrine de l'Arbre du
-  // Chef porte maintenant sur R1 (maison de repos naturelle de M1) et R7
-  // (6 crans plus loin), cohérent avec verdictFamilialEngine.
-  const orderR = getRotationOrderFromRepos(theme[1]);
-  const hR1 = orderR[0], hR7 = orderR[6];
-  [[hR1,'R1 (Équipe 1)'],[hR7,'R7 (Équipe 2)']].forEach(([cp,label])=>{
-    const chef = theme[cp];
-    const racine = INV[chef];
-    const branche = BINOMES_V7[chef];
-    const posR = positionsBaseEtResultantes(racine, theme);
-    let etatR;
-    if(!posR.length) etatR = 'DÉRACINÉ (racine '+FL[racine]+' absente — privé de sa source)';
-    else {
-      // CORRIGÉ DEUX FOIS (05/08/26) — première correction erronée
-      // (excluait les résultantes du repos), annulée sur clarification
-      // d'Ellemine_D : "toute figure a sa propre maison qu'elle soit fig
-      // de base ou résultante, c'est la même". Le repos compte donc
-      // aussi bien une présence en base qu'en résultante, tant que
-      // c'est dans la maison de repos naturelle de la racine.
-      const ps = posR.map(x=>parseInt(x.replace('M','').replace('r','')));
-      const repos = ps.some(p=>FIGS_V7[p-1]===racine);
-      const parf = ps.some(p=>els[racine]===MAISON_ELEM_V7[p]);
-      etatR = 'racine '+FL[racine]+' '+(repos?'EN REPOS (ancrage profond)':parf?'bien plantée (concordance parfaite)':'présente')+' → '+label+' ancré';
-    }
-    const posB = positionsBaseEtResultantes(branche, theme);
-    out.push('🌳 Arbre '+label+' : tronc '+FL[chef]+', branche '+FL[branche]+(posB.length?' présente':' absente')+', '+etatR);
-  });
-  return out;
-}
+
 
 function detecteurGuerreCivile(theme){
   const f1=theme[1], f7=theme[7];
@@ -22916,9 +22407,7 @@ function estimerCartonsJaunesV7(theme, campA, campB) {
 // obligatoire (sans elle, le cas ne s'applique pas).
 var BTTS100_FIGS_M10_CAS2 = {acquisitio:1, via:1, rubeus:1, fortuna_minor:1};
 
-function isFixeFermeeV7(fig) {
-  return MOBILITE_FIGURE[fig] === 'fixe' && OUVERTURE_FIGURE[fig] === 'fermee';
-}
+
 
 function estBienPlaceV7(fig, theme) {
   var occ = trouverFigV7(fig, theme);
@@ -26898,7 +26387,7 @@ function switchTab(tab) {
   renderCurrentList();
 }
 
-function openHistoryPanel() { currentTab='hist'; _openPanel(); }
+
 function openSavedPanel()   { currentTab='save'; _openPanel(); }
 // ─── OUVERTURE DU PANNEAU : DEUX GASPILLAGES SUPPRIMÉS (28/08/26) ───
 // Ellemine_D : « pourquoi quand je clique sur sauvegarde ça met du temps
@@ -27136,15 +26625,7 @@ function setRealCornersCamp(id, cote, value) {
 
 // Conservée : un total saisi seul reste valable pour la ligne « total »
 // du banc, il ne dit simplement rien du dominant.
-function setRealCorners(id, value) {
-  var list = getSavedList();
-  var entry = list.filter(function (e) { return e.id === id; })[0];
-  if (!entry) return;
-  var v = String(value == null ? '' : value).trim();
-  entry.realCorners = /^\d{1,2}$/.test(v) ? v : '';
-  setSavedList(list);
-  setTimeout(renderCurrentList, 0);
-}
+
 
 // Le CAMP qui encaisse le rouge ou le penalty (28/08/26). Le champ
 // « Rouge/pénalty » ne stockait qu'un oui/non : la famille « Incident —
@@ -27526,7 +27007,7 @@ function renderThemeWithSize(hSize) {
 // mode fixe (M1/M7 en dur) — remplacé par la rotation (R1/R7, déjà
 // utilisée pour le petit point bleu rotDot juste à côté), cohérent avec
 // le reste de l'app qui n'affiche plus que le verdict rotation.
-function isHLRotation(rotationNumber){ return rotationNumber===1||rotationNumber===7; }
+
 // ÉNERGIE D'UNE FIGURE (17/07/26, demande explicite utilisateur : "varie
 // selon la position de la figure, selon la position du binôme de la
 // figure, selon le nombre de figure comme binôme dans le thème, selon
@@ -28473,16 +27954,8 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
 
 <script>
 (function(){
-  function cleanClone(node){
-    const clone=node.cloneNode(true);
-    clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
-    if(clone.id) clone.removeAttribute('id');
-    return clone;
-  }
-  function put(dstId,node){
-    const dst=document.getElementById(dstId); if(!dst) return;
-    dst.innerHTML=''; if(node) dst.appendChild(node);
-  }
+  
+  
   function syncReferenceUI(){
     try{
       function esc(v){
