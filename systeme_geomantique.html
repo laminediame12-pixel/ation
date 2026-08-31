@@ -14790,9 +14790,44 @@ var CAS_REFERENCE_V7 = [
   //     mi-temps ........ but dans chaque période (0-1 puis 2-1) → 4e cas
   //     deux en 1re MT .. non (0-1 à la pause)            → 4e cas
   // Ordre R1-R7 = Liverpool-Forest : 0-1 à la pause, 2-2 au bout.
+  // ☠️ CORRECTION DU 30/08, LE LENDEMAIN DE LA SAISIE. J'avais écrit
+  // penaltyCamp: 'M7' en pensant « le camp qui obtient le penalty ».
+  // Le champ veut dire l'INVERSE : le sélecteur de l'app s'intitule
+  // « Penalty concédé par ? » et MOTEURS_PENALTY_CAMP_V7 s'appelle
+  // « Qui CONCÈDE le penalty ». Gibbs-White (Forest, R7) l'a transformé,
+  // donc c'est Liverpool (R1) qui l'a concédé : penaltyCamp = 'M1'.
+  // Sur une famille qui compte DEUX cas, une inversion de camp ne fait
+  // pas du bruit, elle retourne le résultat. Et elle m'aurait échappé si
+  // Ellemine_D n'avait pas envoyé un second thème sur le même match.
   { nom: 'PuerRubeus', meres: ['puer','rubeus','amissio','puer'],
-    score: '2-2', htScore: '0-1', camp: 'nul', btts: true, penaltyCamp: 'M7',
-    note: 'Liverpool 2-2 Forest (29/08) · THÈME REJETÉ, validation 2/3 : verdict non rapporté, cas conservé comme donnée · nul ✔ · BTTS oui · penalty pour R7 · but dans chaque mi-temps, 0-1 à la pause · six familles alimentées par un seul match' },
+    score: '2-2', htScore: '0-1', camp: 'nul', btts: true,
+    incident: true, incidentCamp: 'M1', penaltyCamp: 'M1',
+    note: 'Liverpool 2-2 Forest (29/08) · THÈME REJETÉ, validation 2/3 : verdict non rapporté, cas conservé comme donnée · nul ✔ · BTTS oui · penalty CONCÉDÉ par R1 (converti par Forest) · but dans chaque mi-temps, 0-1 à la pause · camp de l\'incident lu JUSTE (M1)' },
+  // ─── LE MÊME MATCH, UN AUTRE THÈME (30/08) — ET SON MEILLEUR ARGUMENT ───
+  // Populus / Fortuna Minor / Puer / Via, validation 1/3. Ellemine_D :
+  // « le thème est signalé comme non valide, mais il parvient à voir
+  // l'incident du match avec un faux score ; le mode d'analyse n'est pas
+  // juste, ça reste. » Vérifié, et il a raison sur le fond :
+  //   ✔ CE QUI PASSE — la DÉTECTION de l'incident, sur un thème à 1/3 :
+  //       somme d'axe d'incident ..... 1/3, Rubeus sur l'Axe Cadent
+  //       dérivés d'axes ............. moyenne 72 %, 2 rouges sur 3
+  //       signaux .................... 88 %, « très élevé »
+  //       binôme non protecteur ...... penalty annoncé
+  //     Cinq lectures sur six disent « incident ». Le match en a eu un.
+  //   ✘ CE QUI NE PASSE PAS — le CAMP et le SCORE. Le thème accuse M7 ;
+  //     le penalty a été concédé par M1. Et il annonce un ROUGE, pas un
+  //     penalty. La règle « Mars naît en M12 → le camp 2 concède » était
+  //     déjà réfutée sur son unique cas ; en voici un second, et le
+  //     témoin « toujours M7 » se trompe aussi.
+  // ➜ CE QUE ÇA VEUT DIRE, ET C'EST SA PHRASE : la validité gouverne
+  // certaines familles et pas d'autres. Le filtre de rejet est global —
+  // il jette le thème entier — alors que ce thème n'était faux que sur
+  // le camp et le score. Sur les 5 cas où l'incident est renseigné, la
+  // somme d'axes le lit juste 5 fois, dont 4 sur des thèmes REJETÉS.
+  { nom: 'PopFortMin', meres: ['populus','fortuna_minor','puer','via'],
+    score: '2-2', htScore: '0-1', camp: 'nul', btts: true,
+    incident: true, incidentCamp: 'M1', penaltyCamp: 'M1',
+    note: 'MÊME MATCH que PuerRubeus (Liverpool 2-2 Forest) · validation 1/3, REJETÉ · incident VU (5 lectures sur 6) sur un thème que le filtre jette · camp de l\'incident FAUX (dit M7, réel M1) et rouge annoncé au lieu d\'un penalty · l\'exemple d\'Ellemine_D : le rejet est global, l\'erreur ne l\'était pas' },
   { nom: 'ConjTrist', meres: ['conjunctio','tristitia','populus','acquisitio'],
     score: '2-3', camp: 'R7',
     note: 'MÊME MATCH que TristPop · annonce R7 ✔ · niveau de validité 3/3, les trois axes de chaque dérivé présents — c\'est celui-ci qui avait raison' }
@@ -16414,8 +16449,14 @@ function autoTestPolesV7() {
 // s'annulent. C'est là sa « disposition d'équilibre », et elle est
 // littéralement vraie — le multiensemble des six décalages de ce thème
 // est symétrique (pour chaque +k il existe un +(16−k)). Mesuré : cela
-// n'arrive que dans 0,9 % des thèmes, et AmisPuer est le SEUL des
-// 28 thèmes de l'archive à l'avoir.
+// n'arrive que dans 0,85 % des thèmes (559 sur les 65 536, recompté le
+// 30/08), et AmisPuer est toujours le SEUL de l'archive à l'avoir —
+// 1 sur 49 maintenant, contre 1 sur 28 à l'époque. Les six décalages,
+// revérifiés : M1↔M7 +8 front du front · M2↔M8 +14 binôme à l'envers ·
+// M3↔M9 +8 front du front · M4↔M10 +3 victime · M5↔M11 +13 antagoniste
+// · M6↔M12 +2 binôme. Les deux du milieu (+3 et +13) s'annulent, les
+// deux +8 sont leur propre inverse, et +2 répond à +14 : c'est de là que
+// vient la symétrie.
 // ⚠️ Mais Roma (1-1), l'autre nul, ne l'a PAS. L'équilibre des axes ne
 // peut donc pas être la loi du nul ; il reste une signature du 4-4.
 // Le résultat ne dépend pas du thème affiché : on le calcule une seule
@@ -18400,7 +18441,20 @@ var MOTEURS_PENALTY_CAMP_V7 = [
     } },
   { cle: 'pen_camp_temoin', nom: 'Penalty · « toujours M7 »', icone: '➖', teinte: '#64748b',
     juste: 0, total: 0, note: 'témoin — ne lit pas le thème, à comparer à la règle M12',
-    verdict: function () { return { camp: 'M7', detail: 'réponse constante' }; } }
+    verdict: function () { return { camp: 'M7', detail: 'réponse constante' }; } },
+  // ☠️ 30/08/26 — TOUTE CETTE FAMILLE EST À ZÉRO. Les trois moteurs
+  // ci-dessus font 0/1, 0/2 et 0/3 : aucun n'a jamais désigné le bon
+  // camp. La raison est bête et il fallait la voir : les TROIS cas
+  // connus ont le penalty concédé par M1, et le seul témoin qu'on avait
+  // répond toujours M7. Un témoin qui ne peut pas gagner ne mesure rien.
+  // Celui-ci est son inverse. Il fait 3/3 — et ça ne vaut RIEN : trois
+  // cas, p = 0,125 contre une pièce. Il est là pour que le plancher de
+  // la famille soit visible, pas pour être joué. Le jour où un match
+  // donnera un penalty concédé par M7, il tombera à 3/4 et on saura
+  // enfin quelque chose.
+  { cle: 'pen_camp_temoin_m1', nom: 'Penalty · « toujours M1 » (témoin inverse)', icone: '➖', teinte: '#64748b',
+    juste: 0, total: 0, note: 'témoin inverse (30/08) — les 3 cas connus sont tous M1 ; 3/3 ne démontre rien, p = 0,125',
+    verdict: function () { return { camp: 'M1', detail: 'réponse constante — témoin, pas une règle' }; } }
 ];
 
 var MOTEURS_INCIDENT_CAMP_V7 = [
