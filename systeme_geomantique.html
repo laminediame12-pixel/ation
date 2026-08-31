@@ -16434,6 +16434,67 @@ function maisonConfusionV7(h) {
 }
 var ELEMENT_MAISON_V7 = { 1: 'FA', 2: 'ET', 3: 'A', 4: 'E', 5: 'FA', 6: 'ET',
   7: 'A', 8: 'E', 9: 'FA', 10: 'TE', 11: 'A', 12: 'E' };
+// ═══════════════════════════════════════════════════════════════
+// LA FUSION DES ÉLÉMENTS (31/08/26) — demande d'Ellemine_D
+//
+// « Étudie ce match avec notre théorème en comptant sur la fusion des
+// éléments dans les maisons. » Fait, et ça donne une reformulation du
+// théorème qui est plus parlante que la sienne.
+//
+// ✔ SUR LES SIX AXES M(h) ↔ M(h+6), L'ÉLÉMENT DU CAMP SIMPLE EST
+// TOUJOURS L'UN DES DEUX DU CAMP DOUBLÉ :
+//     M1 FA / M7  A   → commun Air,   en plus FEU
+//     M2 ET / M8  E   → commun Eau,   en plus TERRE
+//     M3 A  / M9  FA  → commun Air,   en plus FEU
+//     M4 E  / M10 TE  → commun Eau,   en plus TERRE
+//     M5 FA / M11 A   → commun Air,   en plus FEU
+//     M6 ET / M12 E   → commun Eau,   en plus TERRE
+// Six sur six. Le camp doublé ne porte donc pas « deux éléments contre
+// un » : il porte L'ÉLÉMENT DE L'ADVERSAIRE, PLUS UN. Les deux camps
+// partagent toujours un élément, et l'un a un supplément. C'est vrai
+// pour TOUS les thèmes — c'est le théorème lui-même, pas une propriété
+// du thème étudié. Il ne faut donc pas lire « ce thème a six axes
+// doublé/simple » comme une découverte : tous les thèmes les ont.
+//
+// ☠️ ET L'ÉLÉMENT EN PLUS NE PRÉDIT RIEN. C'était la seule variable
+// nouvelle que cette lecture fait apparaître : le supplément est FEU sur
+// les axes M1/M7, M3/M9, M5/M11 et TERRE sur M2/M8, M4/M10, M6/M12.
+// Mesuré sur les 29 cas où le théorème s'applique :
+//     en plus FEU (17 cas) — nul 18 % · le doublé gagne 9/14 · BTTS 45 %
+//     en plus TERRE (12)   — nul 25 % · le doublé gagne 5/9  · BTTS 80 %
+//     p : nul 0,669 · camp 1,000 · BTTS 0,183
+// Rien. Le 45 % contre 80 % du BTTS est le plus gros écart, et c'est le
+// troisième test de cette série — au niveau de bruit habituel.
+//
+// ⚠️ UNE QUESTION QUI RESTE, ET ELLE EST POUR LUI : sa table écrit M2 et
+// M6 « ET » mais M10 « TE ». Si l'ordre encode l'élément dominant, alors
+// M10 est une maison Terre-puis-Eau quand M2 et M6 sont Eau-puis-Terre,
+// et c'est une distinction que le code IGNORE — ELEMENT_MAISON_V7 n'est
+// lu nulle part pour son ordre, seulement pour son étiquette. Si l'ordre
+// ne veut rien dire, il faudrait écrire ET partout. Si l'ordre veut dire
+// quelque chose, il y a une règle qu'on n'utilise pas.
+var FUSION_ELEMENTS_V7 = { FA: ['F', 'A'], ET: ['E', 'T'], TE: ['T', 'E'], A: ['A'], E: ['E'] };
+var NOM_ELEMENT_V7 = { F: 'Feu', A: 'Air', E: 'Eau', T: 'Terre' };
+
+// Ce que les deux camps partagent, et ce que le doublé a en plus.
+// Descriptif : mesuré sans effet, branché sur rien.
+function fusionElementV7(theme) {
+  var cd = null;
+  try { cd = campDoubleV7(theme); } catch (e) { return null; }
+  if (!cd || !cd.applicable) return null;
+  var dbl = ELEMENT_MAISON_V7[cd.maisonDouble], smp = ELEMENT_MAISON_V7[cd.maisonSimple];
+  var setD = FUSION_ELEMENTS_V7[dbl], setS = FUSION_ELEMENTS_V7[smp];
+  if (!setD || !setS) return null;
+  var commun = setS[0];
+  var extra = setD.filter(function (x) { return x !== commun; })[0];
+  if (setD.indexOf(commun) < 0) {
+    // Ne doit jamais arriver : l'inclusion est vraie sur les six axes.
+    return { anomalie: true, double: dbl, simple: smp, camp: cd.camp };
+  }
+  return { camp: cd.camp, double: dbl, simple: smp, commun: commun, extra: extra,
+    nomCommun: NOM_ELEMENT_V7[commun] || commun, nomExtra: NOM_ELEMENT_V7[extra] || extra };
+}
+
 function campDoubleV7(theme) {
   var r = null;
   try { r = getRotationCombat(theme); } catch (e) { return null; }
@@ -23976,6 +24037,17 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'R1 en M' + cd.hR1 + ' (' + esc(cd.elementR1) + ') · R7 en M' + cd.hR7 + ' ('
       + esc(cd.elementR7) + ') — M' + cd.maisonDouble + ' est une maison de confusion, M'
       + cd.maisonSimple + ' non.</div>'
+      + (function () {
+          var f = null;
+          try { f = fusionElementV7(theme); } catch (e) { f = null; }
+          if (!f || f.anomalie) return '';
+          return '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+            + '<b>Fusion des éléments</b> — les deux camps partagent <b>' + esc(f.nomCommun) + '</b> ; '
+            + esc(f.camp === 'R1' ? teamA : teamB) + ' a <b>' + esc(f.nomExtra) + '</b> en plus. '
+            + '<span style="color:#94a3b8;">Le camp doublé porte toujours l\'élément de l\'adversaire '
+            + 'PLUS un — c\'est vrai des six axes, donc de tous les thèmes. L\'élément supplémentaire ne '
+            + 'prédit rien (nul p = 0,669 · camp p = 1,000 · BTTS p = 0,183).</span></div>';
+        })()
       + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
       + 'Comme R7 est toujours six maisons après R1 — sur SEIZE, pas sur douze — <b>l\'un des deux '
       + 'camps est toujours en maison double et l\'autre en maison simple</b> quand les deux restent '
