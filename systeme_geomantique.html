@@ -15719,6 +15719,91 @@ function arbitrageMoteursV7() {
   return r;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// CE QUE LA VALIDITÉ GOUVERNE, FAMILLE PAR FAMILLE (30/08/26)
+//
+// Ellemine_D, sur un thème à 1/3 qui avait vu l'incident du match :
+// « le mode d'analyse n'est pas juste, ça reste. » Son idée implicite
+// est excellente : le rejet est GLOBAL alors que l'erreur ne l'est pas.
+// Peut-être faut-il taire le thème sur le camp et le laisser parler sur
+// l'incident. J'allais le construire. Je l'ai mesuré d'abord.
+//
+// ☠️ ET IL N'Y A RIEN À RAFFINER : LA VALIDITÉ NE GOUVERNE AUCUNE
+// FAMILLE. Sur 50 cas, thèmes valides contre thèmes rejetés :
+//     camp (vainqueur/nul) .... 60 % contre 64 %    p = 0,772
+//     le nul (oui/non) ........ 85 % contre 89 %    p = 0,683
+//     les deux marquent ....... 71 % contre 75 %    p = 1,000
+//     score exact ............. 20 % contre 32 %    p = 0,486
+//     match serré ............. 67 % contre 68 %    p = 1,000
+//     incident (somme d'axes) . 1/1  contre 5/6     p = 1,000
+// CINQ familles sur six, l'écart penche du côté des thèmes REJETÉS. La
+// sixième — l'incident — penche de l'autre côté sur UN SEUL cas valide
+// (1/1 contre 5/6) : ça ne pèse rien.
+// (⚠️ J'avais écrit « six sur six » dans ce commentaire pendant que le
+// code affichait « cinq sur six ». Le code avait raison. C'est la
+// troisième fois en deux jours qu'un chiffre écrit à la main dans ce
+// fichier ment ; les chiffres du banc, eux, se recalculent.)
+// Rien n'est significatif — p de 0,486 à 1,000 — mais un filtre censé
+// garder les bons thèmes qui ne gagne dans aucune famille, ce n'est
+// plus « non démontré », c'est « jamais vu marcher ».
+//
+// ➜ DONC PAS DE REJET PAR FAMILLE. On ne raffine pas un signal qui
+// n'existe dans aucune famille : ce serait donner une apparence de
+// finesse à un tri qui n'en a aucune. Le choix reste entier et il est à
+// lui : garder le filtre (il coûte peu et il le rassure) ou le lever.
+// Ce qui est écarté, c'est la troisième voie — elle n'a pas de base.
+function validiteParFamilleV7() {
+  var cas = [];
+  try { cas = tousCasBancV7() || []; } catch (e) { return null; }
+  var F = {}, ordre = [];
+  function add(fam, valide, juste) {
+    if (juste === null || juste === undefined) return;
+    if (!F[fam]) { F[fam] = { val: [0, 0], rej: [0, 0] }; ordre.push(fam); }
+    F[fam][valide ? 'val' : 'rej'][juste ? 0 : 1] += 1;
+  }
+  cas.forEach(function (c) {
+    var t, v;
+    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var rj = null;
+    try { rj = themeRejeteV7(t); } catch (e) {}
+    var valide = !(rj && rj.rejete);
+    try { v = avecFormatV7(c.format || formatMatchV7(), function () { return getVerdictAfficheReel(t); }); }
+    catch (e) { return; }
+    var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+    if (c.camp) {
+      add('camp (vainqueur/nul)', valide, dit === c.camp);
+      add('le nul (oui/non)', valide, (dit === 'nul') === (c.camp === 'nul'));
+    }
+    if (typeof c.btts === 'boolean' && typeof v.btts === 'boolean') {
+      add('les deux marquent', valide, v.btts === c.btts);
+    }
+    if (c.score) {
+      add('score exact', valide, String(v.scoreMain) === String(c.score));
+      var m = String(c.score).match(/^(\d+)-(\d+)$/), mm = String(v.scoreMain).match(/^(\d+)-(\d+)$/);
+      if (m && mm) {
+        add('match serré (écart ≤ 1)', valide,
+          (Math.abs(+m[1] - +m[2]) <= 1) === (Math.abs(+mm[1] - +mm[2]) <= 1));
+      }
+    }
+    if (typeof c.incident === 'boolean') {
+      var sg = null;
+      try { sg = sommesAxesIncidentV7(t); } catch (e) {}
+      if (sg) add('incident (somme d\'axes)', valide, sg.signal === c.incident);
+    }
+  });
+  var lignes = [], pencheRejet = 0, lisibles = 0;
+  ordre.forEach(function (k) {
+    var o = F[k], nv = o.val[0] + o.val[1], nr = o.rej[0] + o.rej[1];
+    if (!nv || !nr) { lignes.push({ nom: k, val: o.val, nVal: nv, rej: o.rej, nRej: nr, lisible: false }); return; }
+    lisibles += 1;
+    var tv = o.val[0] / nv, tr = o.rej[0] / nr;
+    if (tr >= tv) pencheRejet += 1;
+    lignes.push({ nom: k, val: o.val, nVal: nv, rej: o.rej, nRej: nr, lisible: true,
+      tauxVal: tv, tauxRej: tr, ecart: tv - tr, p: fisherExactV7(o.val[0], o.val[1], o.rej[0], o.rej[1]) });
+  });
+  return { lignes: lignes, lisibles: lisibles, pencheRejet: pencheRejet };
+}
+
 // Fisher exact bilatéral sur un tableau 2×2, en log-factorielles pour
 // que les grands effectifs ne débordent pas.
 function fisherExactV7(a, b, c, d) {
@@ -19222,7 +19307,52 @@ function renderBancPanel() {
               : '')
             + '</div>';
         }
-        var tete = alerteCoh + blocBal + blocArb + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
+        // ─── CE QUE LA VALIDITÉ GOUVERNE (30/08/26) ───
+        var vpf = null;
+        try { vpf = validiteParFamilleV7(); } catch (e) { vpf = null; }
+        var blocVpf = '';
+        if (vpf && vpf.lisibles) {
+          blocVpf = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #94a3b8; '
+            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
+            + '<div style="font-size:12px; font-weight:800; color:#cbd5e1;">🗓️ CE QUE LA VALIDITÉ GOUVERNE — '
+            + 'famille par famille</div>'
+            + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+            + 'Les thèmes que le filtre GARDE font-ils mieux que ceux qu\'il JETTE ? Une ligne par famille, '
+            + 'parce que la validité pourrait gouverner le camp sans gouverner l\'incident.</div>'
+            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:6px;">'
+            + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 6px;">famille</th>'
+            + '<th style="padding:3px 6px;">gardés</th><th style="padding:3px 6px;">jetés</th>'
+            + '<th style="padding:3px 6px;">écart</th><th style="padding:3px 6px;">p</th></tr>'
+            + vpf.lignes.map(function (x) {
+                if (!x.lisible) {
+                  return '<tr><td style="padding:3px 6px; color:#e2e8f0;">' + esc(x.nom) + '</td>'
+                    + '<td colspan="4" style="padding:3px 6px; text-align:center; color:#64748b;">effectif trop faible</td></tr>';
+                }
+                var e = Math.round(100 * x.ecart);
+                return '<tr><td style="padding:3px 6px; color:#e2e8f0;">' + esc(x.nom) + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + x.val[0] + '/' + x.nVal
+                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxVal) + ' %</span></td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + x.rej[0] + '/' + x.nRej
+                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxRej) + ' %</span></td>'
+                  + '<td style="padding:3px 6px; text-align:center; color:' + (e > 0 ? '#4ade80' : '#f87171')
+                  + ';">' + (e >= 0 ? '+' : '') + e + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + x.p.toFixed(3) + '</td></tr>';
+              }).join('')
+            + '</table>'
+            + '<div style="font-size:10px; color:' + (vpf.pencheRejet >= vpf.lisibles ? '#f87171' : '#fbbf24')
+            + '; margin-top:5px; line-height:1.55;">'
+            + (vpf.pencheRejet >= vpf.lisibles
+              ? '☠️ <b>' + vpf.lisibles + ' familles sur ' + vpf.lisibles + ', l\'écart penche du côté des thèmes JETÉS.</b> '
+                + 'Pas une seule ne va dans l\'autre sens. Rien n\'est significatif — mais un filtre censé garder les bons '
+                + 'thèmes qui perd partout, ce n\'est plus « non démontré », c\'est « jamais vu marcher ».'
+              : vpf.pencheRejet + ' familles sur ' + vpf.lisibles + ' penchent du côté des thèmes jetés.')
+            + '</div>'
+            + '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+            + '➜ <b>Pas de rejet par famille.</b> On ne raffine pas un signal qui n\'existe dans aucune famille. '
+            + 'Le filtre reste branché parce que c\'est un choix assumé, pas parce qu\'il est démontré.'
+            + '</div></div>';
+        }
+        var tete = alerteCoh + blocBal + blocArb + blocVpf + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
           + 'border-radius:10px; background:rgba(251,191,36,.07);">'
           + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
           + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
