@@ -23914,8 +23914,99 @@ function accordCampV7(theme) {
     p: b.p, mort: true };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ✦✦ LE MOTEUR V8 — LA REPRISE À ZÉRO (31/08/26) ✦✦
+//
+// Décision d'Ellemine_D : « on reprend à zéro. Le socle on le garde —
+// MAP_GEO, les figures et leur élément naturel, les binômes,
+// l'antagoniste, les maisons et leurs éléments, la rotation, la
+// compatibilité des quatre éléments, les pôles, F4P4, le théorème
+// d'Ellemine, les tableaux, les planètes. C'est seulement les MOTEURS
+// qu'on attaque, et deux moteurs suffiront : quand R1 et R7 sont dans
+// une même boucle, et quand ils sont dans des boucles différentes. »
+//
+// ✔ ET LA MESURE LUI DONNE RAISON SUR LE FOND : les deux configurations
+// ne se comportent pas pareil. Sur les 51 cas au camp connu, chacune
+// pèse exactement la moitié des thèmes (32 768 sur 65 536, vérifié) :
+//                            MÊME BOUCLE   BOUCLES DIFFÉRENTES
+//     fréquence du nul .....  8/25  32 %    4/26  15 %
+//     R1 gagne (décidés) ... 12/17  71 %   11/22  50 %
+//     partage de la synthèse 11/17  65 %   18/22  82 %
+//     porte du nul ......... 19/25  76 %   24/26  92 %
+//     les deux marquent .... 11/19  58 %   17/22  77 %
+//     camp doublé ..........  3/8   38 %   11/15  73 %
+// Aucun de ces contrastes n'est significatif seul (p de 0,14 à 0,33) —
+// mais LES SIX POINTENT DANS LE MÊME SENS. Six familles mesurées
+// indépendamment, unanimes : tout se lit mieux en boucles différentes,
+// et le nul est deux fois plus fréquent en même boucle. C'est la
+// cohérence qui parle, pas les p isolés.
+//
+// ☠️ ET LA SURPRISE QU'IL FAUT DIRE : LE PARTAGE NE RAPPORTE RIEN EN
+// MÊME BOUCLE. Là, rien ne bat le témoin « toujours R1 » (15/25 pour le
+// témoin, 15/25 pour le partage). Le découpage en deux moteurs
+// n'améliore donc PAS le score total — les deux architectures font
+// 35/51. Ce que le découpage apporte, c'est de savoir OÙ la lecture
+// travaille et où elle ne fait que suivre un taux de base.
+//
+// LES DEUX FORMES, mesurées sur les 51 cas :
+//     règle simple partout ... 35/51  69 %  · équilibré 70 % · R7 14/16
+//     les deux moteurs ....... 35/51  69 %  · équilibré 68 % · R7 11/16
+//     l'ancienne cascade ..... 30/51  59 %  · équilibré 61 % · R7 11/16
+// Même total pour les deux nouvelles ; la simple est meilleure sur R7,
+// le camp le plus dur à voir. L'archive ne peut donc pas les départager
+// et trancher sur deux points d'écart serait ajuster du bruit : les deux
+// sont construites, ARCHI_V8 passe de l'une à l'autre, et c'est le
+// journal gelé qui décidera sur des matchs à venir.
+//
+// ☠️ CE QUE CES 69 % NE SONT PAS. Le partage de la synthèse a été
+// DÉCOUVERT sur ces mêmes 51 cas. 69 % est donc une description du
+// passé, exactement comme les 59 % de l'ancienne cascade l'étaient. Le
+// premier match jamais annoncé à l'avance (Porto-Roma, 6-3) a vu les
+// deux thèmes se tromper sur le camp, le score ET le BTTS. Ce moteur
+// n'aura une performance que le jour où PREDICTIONS_GELEES.md en
+// portera dix.
+//
+// L'ancienne cascade reste entière derrière MOTEUR_V8_ACTIF = false :
+// rien n'est détruit, tout est réversible d'un booléen.
+var MOTEUR_V8_ACTIF = true;
+var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucle)
+
+// R1 et R7 sont-ils dans la même boucle ? C'est le seul aiguillage.
+function memeBoucleV8(theme) {
+  var r = null;
+  try { r = getRotationCombat(theme); } catch (e) { return null; }
+  if (!r || !r.figR1 || !r.figR7 || typeof loopOf !== 'function') return null;
+  var a = loopOf(r.figR1), b = loopOf(r.figR7);
+  if (!a || !b) return null;
+  return a === b;
+}
+
+// Le moteur. Il ne rend QUE le camp : le nul est décidé en amont par
+// nulActifV7, qui garde son dossier (8 nuls vus sur 12, 4 fausses
+// alertes sur 39 non-nuls) et que rien n'a battu.
+function moteurV8V7(theme) {
+  var mb = memeBoucleV8(theme);
+  var p = null;
+  try { p = partageSyntheseV7(theme); } catch (e) { p = null; }
+  if (ARCHI_V8 === 'deux' && mb === true) {
+    return { camp: 'R1', voie: 'même boucle — rien ne bat le témoin (15/25)',
+      memeBoucle: true, partage: p ? p.camp : null };
+  }
+  if (!p) return { camp: null, voie: 'partage de la synthèse indisponible', memeBoucle: mb, partage: null };
+  return { camp: p.camp, memeBoucle: mb, partage: p.camp,
+    voie: 'partage de la synthèse — M13/M14/M15 ' + p.e13 + '/' + p.e14 + '/' + p.e15
+      + (p.tousDifferents ? ' : trois différents → R1' : ' : au moins deux partagent → R7')
+      + (mb === true ? ' (même boucle : le partage n\'y rapporte rien de plus que « toujours R1 »)' : '') };
+}
+
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
+  if (MOTEUR_V8_ACTIF) {
+    var m8 = null;
+    try { m8 = moteurV8V7(theme); } catch (e) { m8 = null; }
+    if (m8 && m8.camp) return m8.camp;
+    // pas de camp lisible : on retombe sur l'ancienne cascade plus bas.
+  }
   var crit = null;
   if (PILOTE_CRITERES_V7) {
     try {
