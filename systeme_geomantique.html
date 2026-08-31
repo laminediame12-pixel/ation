@@ -23461,6 +23461,82 @@ var MOTEUR_V8_ACTIF = true;
 var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucle)
 
 // R1 et R7 sont-ils dans la même boucle ? C'est le seul aiguillage.
+// ═══════════════════════════════════════════════════════════════
+// ✦ LA LOI D'ALTERNANCE (31/08/26) — extension du théorème d'Ellemine
+//
+// Il apporte quatre constats sur la table des repos, écrits de mémoire,
+// avec leurs listes de nombres. LES QUATRE SONT EXACTS, 8 sur 8 chacun,
+// et chaque nombre de ses deux tables tombe juste. Vérifié exhaustivement.
+//
+//   1. Toute figure de maison PAIRE, combinée à la maison DERRIÈRE,
+//      donne ACQUISITIO.                                        8/8 ✔
+//        exemple : Laetitia (M2) + Puer (M1) = Acquisitio
+//   2. Toute figure de maison IMPAIRE, combinée à la maison DEVANT,
+//      donne ACQUISITIO.                                        8/8 ✔
+//        (c'est la même paire, lue dans l'autre sens : la combinaison
+//         est commutative)
+//   3. Figure PAIRE + maison DEVANT — sa liste, vérifiée :
+//        M2→M5 · M4→M1 · M6→M13 · M8→M1 · M10→M5 · M12→M1 · M14→M13 · M16→M1
+//   4. Figure IMPAIRE + maison DERRIÈRE — sa liste, vérifiée :
+//        M1→M1 · M3→M5 · M5→M1 · M7→M13 · M9→M1 · M11→M5 · M13→M1 · M15→M13
+//   Son « axe 1-5-13 » est donc réel : les résultantes ne tombent JAMAIS
+//   ailleurs que sur M1 (Puer), M5 (Via), M13 (Cauda Draconis) — plus
+//   M15 (Acquisitio) pour les deux premiers constats.
+//
+// ✔✔ ET VOICI LA LOI QUI LES EXPLIQUE TOUS LES QUATRE D'UN COUP.
+// La table des seize repos n'est pas une liste : c'est une MARCHE qui
+// alterne deux pas.
+//     d'une maison IMPAIRE vers la suivante : le pas est TOUJOURS
+//        ACQUISITIO ......................................... 8/8
+//     d'une maison PAIRE vers la suivante : le pas est TOUJOURS
+//        l'un des trois de son axe — Via, Puer ou Cauda ..... 8/8
+//        et il suit le motif (Via, Puer, Cauda, Puer), répété deux fois.
+// Partant de Puer et en appliquant ces pas, on reconstruit les SEIZE
+// repos exactement — 16/16. La table des repos EST cette loi ; il n'y a
+// rien d'autre dedans. Ses quatre constats en découlent mécaniquement.
+//
+// ✔ DEUX FAITS DE PLUS, SORTIS DE LA MÊME FOUILLE :
+//   5. Sur les quinze distances possibles, UNE SEULE donne une
+//      résultante constante : repos(h) + repos(h+8) = TRISTITIA, 16/16.
+//      C'est la loi « X + front du front = Tristitia » vue depuis la
+//      table des repos — les deux ne font qu'une.
+//   6. POPULUS n'est jamais la résultante de deux repos distincts, à
+//      aucune distance. Raison : la combinaison ne s'annule que pour
+//      deux figures identiques, et les seize repos sont tous différents.
+//   7. Le nombre de résultantes distinctes ne dépend que de la distance :
+//        1 résultante  → d = 8
+//        2             → d = 4, 12
+//        3             → d = 2, 6, 10, 14
+//        4             → d = 1, 7, 9, 15
+//        5             → d = 3, 5, 11, 13
+//
+// ⚠️ CE QUE ÇA N'EST PAS. Aucune de ces lois ne prédit un match : ce
+// sont des propriétés de la table, vraies avant qu'aucun thème ne soit
+// tiré. Leur valeur est ailleurs — elles montrent que l'ordre des repos
+// n'est pas arbitraire, et le théorème d'Ellemine s'appuie dessus.
+function autoTestAlternanceV7() {
+  function rep(h) { return FIGS_V7[((h - 1) % 16 + 16) % 16]; }
+  var AXE = { puer: 1, via: 1, cauda_draconis: 1 };
+  var r = { impairAcq: 0, pairAxe: 0, recon: 0, d8: 0, pasPairs: [] };
+  for (var h = 1; h <= 16; h++) {
+    var pas = combine(rep(h), rep(h + 1));
+    if (h % 2 === 1) { if (pas === 'acquisitio') r.impairAcq += 1; }
+    else { r.pasPairs.push(pas); if (AXE[pas]) r.pairAxe += 1; }
+    if (combine(rep(h), rep(h + 8)) === 'tristitia') r.d8 += 1;
+  }
+  // reconstruction : Puer, puis les pas alternés
+  var cour = rep(1), iPair = 0;
+  r.recon = 1;
+  for (var k = 1; k <= 15; k++) {
+    var p2 = (k % 2 === 1) ? 'acquisitio' : r.pasPairs[iPair++];
+    cour = combine(cour, p2);
+    if (cour === rep(k + 1)) r.recon += 1;
+  }
+  r.periode4 = r.pasPairs.slice(0, 4).join() === r.pasPairs.slice(4, 8).join();
+  r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4);
+  return r;
+}
+
 function memeBoucleV8(theme) {
   var r = null;
   try { r = getRotationCombat(theme); } catch (e) { return null; }
