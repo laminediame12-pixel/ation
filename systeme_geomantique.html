@@ -16476,8 +16476,62 @@ var ELEMENT_MAISON_V7 = { 1: 'FA', 2: 'ET', 3: 'A', 4: 'E', 5: 'FA', 6: 'ET',
 var FUSION_ELEMENTS_V7 = { FA: ['F', 'A'], ET: ['E', 'T'], TE: ['T', 'E'], A: ['A'], E: ['E'] };
 var NOM_ELEMENT_V7 = { F: 'Feu', A: 'Air', E: 'Eau', T: 'Terre' };
 
-// Ce que les deux camps partagent, et ce que le doublé a en plus.
-// Descriptif : mesuré sans effet, branché sur rien.
+// ═══════════════════════════════════════════════════════════════
+// L'ORDRE DE LA TABLE = L'ÉLÉMENT DOMINANT (31/08/26)
+//
+// Je lui avais posé la question franchement : sa table écrit M2 et M6
+// « ET » mais M10 « TE ». Soit l'ordre ne veut rien dire et il faut
+// écrire ET partout, soit il encode l'élément dominant. Réponse : le
+// second. Le PREMIER élément écrit domine.
+//
+// Ce que ça donne, axe par axe :
+//     M1  FA / M7  A   dominant Feu    partagé Air   en plus Feu    → SON SUPPLÉMENT
+//     M2  ET / M8  E   dominant Eau    partagé Eau   en plus Terre  → le PARTAGÉ
+//     M3  A  / M9  FA  dominant Feu    partagé Air   en plus Feu    → SON SUPPLÉMENT
+//     M4  E  / M10 TE  dominant Terre  partagé Eau   en plus Terre  → SON SUPPLÉMENT
+//     M5  FA / M11 A   dominant Feu    partagé Air   en plus Feu    → SON SUPPLÉMENT
+//     M6  ET / M12 E   dominant Eau    partagé Eau   en plus Terre  → le PARTAGÉ
+// Sur quatre axes le camp doublé est gouverné par CE QU'IL A EN PLUS —
+// l'élément que l'adversaire n'a pas. Sur deux (M2/M8 et M6/M12) il est
+// gouverné par l'élément PARTAGÉ : sa force est celle que l'autre a
+// aussi, son supplément ne mène pas. C'est une distinction qui a du sens
+// et qu'on peut suivre.
+//
+// ⚠️ ET ELLE NE CHANGE RIEN AUJOURD'HUI — VOICI EXACTEMENT POURQUOI.
+// Sans l'ordre, la classe se lisait « supplément Feu / supplément
+// Terre » : Feu = {M1/M7, M3/M9, M5/M11}, Terre = {M2/M8, M4/M10,
+// M6/M12}. Avec l'ordre, elle se lit « dominé par son supplément /
+// dominé par le partagé » : supplément = {M1/M7, M3/M9, M4/M10,
+// M5/M11}, partagé = {M2/M8, M6/M12}. Les deux découpages ne diffèrent
+// QUE sur l'axe M4/M10.
+// Or M4→M10 n'apparaît dans AUCUN des 50 thèmes de l'archive. Les deux
+// lectures donnent donc rigoureusement les mêmes chiffres :
+//     dominé par son supplément (17) — nul 18 % · doublé gagne 9/14 · BTTS 45 %
+//     dominé par le partagé     (12) — nul 25 % · doublé gagne 5/9  · BTTS 80 %
+//     p : nul 0,669 · camp 1,000 · BTTS 0,183
+// Sa règle est donc implémentée et bien définie, mais elle est POUR
+// L'INSTANT INDISCERNABLE de la précédente. Ce n'est pas « ça ne marche
+// pas » : c'est « le seul cas qui trancherait n'est jamais sorti ».
+//
+// ✔ QUAND SAURA-T-ON ? Les seize maisons de R1 sont exactement
+// équiprobables — 4 096 thèmes sur 65 536, 6,25 % chacune, vérifié
+// exhaustivement. N'avoir vu aucun M4→M10 en 50 tirages a une
+// probabilité de 0,040 : c'est de la malchance, pas une impossibilité.
+// Il faut 36 tirages pour en voir un avec 90 % de chances. Le jour où
+// un thème sortira avec R1 en M4, il ira dans « dominé par son
+// supplément » au lieu de « supplément Terre », et les deux lectures se
+// sépareront pour la première fois. C'est le seul thème à guetter.
+var DOMINANT_MAISON_V7 = (function () {
+  var d = {};
+  Object.keys(ELEMENT_MAISON_V7).forEach(function (h) {
+    var e = FUSION_ELEMENTS_V7[ELEMENT_MAISON_V7[h]];
+    d[h] = e ? e[0] : null;
+  });
+  return d;
+})();
+
+// Ce que les deux camps partagent, ce que le doublé a en plus, et lequel
+// des deux le gouverne. Descriptif : mesuré sans effet, branché sur rien.
 function fusionElementV7(theme) {
   var cd = null;
   try { cd = campDoubleV7(theme); } catch (e) { return null; }
@@ -16491,8 +16545,13 @@ function fusionElementV7(theme) {
     // Ne doit jamais arriver : l'inclusion est vraie sur les six axes.
     return { anomalie: true, double: dbl, simple: smp, camp: cd.camp };
   }
+  var dominant = setD[0];
   return { camp: cd.camp, double: dbl, simple: smp, commun: commun, extra: extra,
-    nomCommun: NOM_ELEMENT_V7[commun] || commun, nomExtra: NOM_ELEMENT_V7[extra] || extra };
+    dominant: dominant, domineParSonSupplement: dominant === extra,
+    axe: 'M' + Math.min(cd.maisonDouble, cd.maisonSimple) + '/M' + Math.max(cd.maisonDouble, cd.maisonSimple),
+    separateur: (cd.maisonDouble === 10 || cd.maisonSimple === 10) && (cd.maisonDouble === 4 || cd.maisonSimple === 4),
+    nomCommun: NOM_ELEMENT_V7[commun] || commun, nomExtra: NOM_ELEMENT_V7[extra] || extra,
+    nomDominant: NOM_ELEMENT_V7[dominant] || dominant };
 }
 
 function campDoubleV7(theme) {
@@ -24041,12 +24100,26 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           var f = null;
           try { f = fusionElementV7(theme); } catch (e) { f = null; }
           if (!f || f.anomalie) return '';
+          var nomD = esc(f.camp === 'R1' ? teamA : teamB);
           return '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-            + '<b>Fusion des éléments</b> — les deux camps partagent <b>' + esc(f.nomCommun) + '</b> ; '
-            + esc(f.camp === 'R1' ? teamA : teamB) + ' a <b>' + esc(f.nomExtra) + '</b> en plus. '
-            + '<span style="color:#94a3b8;">Le camp doublé porte toujours l\'élément de l\'adversaire '
-            + 'PLUS un — c\'est vrai des six axes, donc de tous les thèmes. L\'élément supplémentaire ne '
-            + 'prédit rien (nul p = 0,669 · camp p = 1,000 · BTTS p = 0,183).</span></div>';
+            + '<b>Fusion des éléments</b> (axe ' + esc(f.axe) + ') — les deux camps partagent <b>'
+            + esc(f.nomCommun) + '</b> ; ' + nomD + ' a <b>' + esc(f.nomExtra) + '</b> en plus, et sa '
+            + 'maison est dominée par <b>' + esc(f.nomDominant) + '</b> — '
+            + (f.domineParSonSupplement
+              ? 'donc par <b>ce qu\'il a en plus</b>, l\'élément que l\'autre n\'a pas.'
+              : 'donc par <b>l\'élément partagé</b> : sa force est celle que l\'autre a aussi.')
+            + '<span style="color:#94a3b8;"> Le camp doublé porte toujours l\'élément de l\'adversaire '
+            + 'PLUS un — vrai des six axes, donc de tous les thèmes. Ni le supplément ni la domination ne '
+            + 'prédisent quoi que ce soit (nul p = 0,669 · camp p = 1,000 · BTTS p = 0,183), et les deux '
+            + 'lectures restent indiscernables tant qu\'aucun thème ne sort en axe M4/M10 — jamais vu en '
+            + '50 tirages, attendu dans 6,25 % d\'entre eux.</span>'
+            + (f.separateur
+              ? '<div style="margin-top:4px; padding:5px 8px; border:1px solid #4ade80; border-radius:7px; '
+                + 'background:rgba(74,222,128,.10); color:#86efac;"><b>⭐ AXE M4/M10 — LE THÈME QU\'ON ATTEND.</b> '
+                + 'C\'est le seul axe où l\'ordre de la table (« TE » et non « ET ») change la classe. '
+                + 'À enregistrer : il sépare pour la première fois les deux lectures.</div>'
+              : '')
+            + '</div>';
         })()
       + '<div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
       + 'Comme R7 est toujours six maisons après R1 — sur SEIZE, pas sur douze — <b>l\'un des deux '
