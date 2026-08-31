@@ -8915,8 +8915,14 @@ function proxV7(posA, posB) {
 //     avant .......................... 5 132 ms puis 1 120 ms
 //     mémo trouverFig + profilFigure .. 1 315 ms
 //     + mémo par thème corrigé ........   859 ms puis   277 ms
-//     état livré ......................  ~850 ms puis  ~320 ms
 // Six fois plus rapide au premier lancement, quatre fois ensuite.
+// ⚠️ Les valeurs ABSOLUES bougent avec la charge de la machine de
+// mesure : la même version relancée le lendemain donne 1 100 ms puis
+// 510 ms, sans qu'une ligne ait changé. Seules les comparaisons faites
+// dans la même session valent quelque chose — c'est pour ça que chaque
+// modification est chronométrée contre le commit précédent et non
+// contre un chiffre noté ici. (Vérifié ainsi pour la bannière de gel :
+// coût nul.)
 //
 // ✔ ET VÉRIFIÉ IDENTIQUE, parce qu'un cache qui change un résultat est
 // pire qu'une lenteur : les 48 cas de l'archive plus 2 000 thèmes tirés
@@ -15853,6 +15859,58 @@ function coherenceArchiveV7() {
     }
   });
   return { soucis: soucis, total: cas.length };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE GEL DES PRÉDICTIONS (30/08/26) — le seul chantier qui reste
+//
+// Tout ce que ce fichier mesure est mesuré SUR L'ARCHIVE : on rejoue les
+// moteurs d'aujourd'hui sur des matchs dont les règles ont été taillées.
+// La porte du nul a été corrigée deux fois après des ratés de cette même
+// archive ; forcément qu'elle y fait 42/48. Ça décrit le passé sans se
+// contredire, ça ne prouve pas qu'on prédit.
+//
+// Le journal, lui, compare le verdict GELÉ avant le match au score saisi
+// après. Rien ne peut le flatter. Il est vide depuis le premier jour —
+// non pas parce que le mécanisme manque (saveManuel gèle déjà tout ce
+// qu'il faut) mais parce que RIEN NE LE RAPPELLE au moment où il
+// faudrait le faire, c'est-à-dire quand le thème vient de sortir.
+//
+// D'où ces deux fonctions et la bannière qu'elles alimentent : savoir si
+// le thème affiché est gelé, et savoir combien de prédictions gelées
+// attendent encore leur score. Aucune n'invente de mesure ; elles
+// rendent seulement visible le geste qui manque.
+function etatGelV7(theme, team1, team2) {
+  var out = { gelee: false, entry: null, enAttente: 0 };
+  if (!theme) return out;
+  var list = [];
+  try { list = getSavedList() || []; } catch (e) { return out; }
+  var fp = null;
+  try { fp = themeFingerprint(team1, team2, theme); } catch (e) { fp = null; }
+  list.forEach(function (e) {
+    if (!e) return;
+    if (e.verdict && !e.realScore) out.enAttente += 1;
+    if (!out.entry && fp) {
+      var f2 = null;
+      try { f2 = themeFingerprint(e.team1, e.team2, e.theme); } catch (x) { f2 = null; }
+      if (f2 && f2 === fp) { out.gelee = true; out.entry = e; }
+    }
+  });
+  return out;
+}
+
+// Les prédictions gelées qui n'ont pas encore de score : c'est là que le
+// journal se perd. Un thème enregistré et jamais complété ne compte pas.
+function predictionsEnAttenteV7() {
+  var list = [];
+  try { list = getSavedList() || []; } catch (e) { return []; }
+  return list.filter(function (e) { return e && e.verdict && !e.realScore; })
+    .map(function (e) {
+      return { id: e.id, quand: (e.matchDate || (e.savedAt || '').slice(0, 10)),
+        equipes: (e.team1 || '?') + ' — ' + (e.team2 || '?'),
+        dit: (e.verdict.winner === 'Nul' ? 'nul' : e.verdict.winner) + ' ' + (e.verdict.scoreMain || '') };
+    })
+    .sort(function (a, b) { return String(a.quand) < String(b.quand) ? 1 : -1; });
 }
 
 function journalPredictionsV7() {
@@ -23956,6 +24014,41 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'situation l\'archive donne <b>un nul sur deux</b> (le 0-0 du 14/02 en était un). '
       + 'À ne pas jouer sec.</div>' : '')
     +'</div>';
+  // ─── LA BANNIÈRE DU GEL (30/08/26) ───
+  // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
+  // regarde à coup sûr. Voir etatGelV7.
+  (function () {
+    var g = null;
+    try { g = etatGelV7(theme, teamA, teamB); } catch (e) { g = null; }
+    if (!g) return;
+    if (g.gelee) {
+      var aScore = !!(g.entry && g.entry.realScore);
+      html += '<div style="margin:8px 0 0; padding:8px 11px; border-radius:9px; border:1px solid '
+        + (aScore ? '#4ade80' : '#fbbf24') + '; background:rgba(15,23,42,.55); font-size:11px; color:#cbd5e1;">'
+        + (aScore
+          ? '<b style="color:#4ade80;">✔ Prédiction gelée et notée.</b> Elle compte dans le journal.'
+          : '<b style="color:#fbbf24;">⏳ Prédiction gelée, score non saisi.</b> Elle ne comptera dans le '
+            + 'journal que quand tu auras entré le score réel — panneau <b>💾 Thèmes sauvegardés</b>.')
+        + '</div>';
+    } else {
+      html += '<div style="margin:8px 0 0; padding:9px 11px; border-radius:9px; border:2px solid #60a5fa; '
+        + 'background:rgba(37,99,235,.12); font-size:11.5px; color:#dbeafe; line-height:1.55;">'
+        + '<b style="color:#93c5fd;">🧊 CETTE PRÉDICTION N\'EST PAS GELÉE.</b> Tant qu\'elle ne l\'est pas, '
+        + 'elle ne prouvera rien : tous les chiffres de ce fichier sont rejoués sur une archive dont les '
+        + 'règles ont été taillées. Un verdict gelé <b>avant</b> le match, comparé au score saisi <b>après</b>, '
+        + 'est la seule mesure que rien ne peut flatter.'
+        + '<div style="margin-top:7px;"><button onclick="saveManuel()" style="padding:7px 14px; border-radius:8px; '
+        + 'border:1px solid #60a5fa; background:#1d4ed8; color:#fff; font-weight:800; font-size:12px; cursor:pointer;">'
+        + '🧊 Geler cette prédiction</button></div></div>';
+    }
+    if (g.enAttente > 0) {
+      html += '<div style="margin:6px 0 0; padding:7px 10px; border-radius:8px; border:1px solid #fbbf24; '
+        + 'background:rgba(251,191,36,.10); font-size:10.5px; color:#fde68a;">'
+        + '<b>' + g.enAttente + ' prédiction' + (g.enAttente > 1 ? 's' : '') + ' gelée'
+        + (g.enAttente > 1 ? 's' : '') + ' attend' + (g.enAttente > 1 ? 'ent' : '')
+        + ' encore son score.</b> Chacune est une ligne de journal perdue tant qu\'elle reste vide.</div>';
+    }
+  })();
   var incColorTek = card && card.incidentInevitable ? '#f87171' : card && card.incidentPct >= 50 ? '#fb923c' : card && card.incidentPct > 0 ? '#facc15' : null;
   // ─── LE DÉTAIL DE L'INCIDENT, AVEC SON CAMP (27/08/26) ───
   // ─── LA SOMME DES AXES, AU-DESSUS DES SIGNAUX (29/08/26) ───
