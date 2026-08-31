@@ -25052,6 +25052,82 @@ function rollUntilValid100Draw(){
   out.innerHTML += '<div class="kv" style="font-size:11px; line-height:1.5;">' + lignes.join('<br>') + '</div>';
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LE TIRAGE DEPUIS LE MATCH (31/08/26) — « tu peux tirer à partir des
+// infos d'un match à venir »
+//
+// Oui. Et il faut dire exactement ce que ça teste, parce que ce n'est
+// PAS la même chose qu'un tirage à la main.
+//
+// ⚠️ CE QUE ÇA NE PEUT PAS FAIRE. Les quatre mères sont ici dérivées du
+// NOM DES ÉQUIPES ET DE LA DATE, par un hachage. Rien dans ce calcul ne
+// connaît le résultat du match ; le thème ne peut donc porter aucune
+// information sur l'issue, par construction. Si une règle marche sur ces
+// thèmes-là, elle ne lit pas le match — elle lit un taux de base. Un
+// tirage machine ne peut pas VALIDER une règle.
+//
+// ✔ CE QUE ÇA PEUT FAIRE, ET C'EST PRÉCIEUX : le RÉFUTER. C'est un
+// témoin. Si « trois éléments différents et porte fermée » sort encore
+// à 81 % sur des thèmes dérivés d'un hachage, alors le 13/16 de
+// l'archive ne venait pas d'une lecture du match, et la règle tombe.
+//
+// ✔ ET SURTOUT, LE PLAN APPARIÉ. Pour chaque match à venir, on garde
+// DEUX thèmes : le sien, tiré à la main, et celui-ci, tiré du hachage.
+// Même match, même résultat, deux thèmes. Au bout de dix matchs on ne
+// saura pas seulement si la règle marche : on saura si LE TIRAGE À LA
+// MAIN PORTE QUELQUE CHOSE QUE LE HACHAGE NE PORTE PAS. C'est la
+// prémisse centrale du fichier, jamais testée depuis le premier jour, et
+// ce plan la teste gratuitement, en même temps que la règle.
+//
+// Le hachage est déterministe et publié : mêmes équipes, même date,
+// même heure → mêmes quatre mères, toujours. Il est vérifiable ligne à
+// ligne, et je ne peux pas choisir les figures qui m'arrangent.
+// ☠️ PREMIÈRE VERSION CASSÉE, TROUVÉE EN LA TESTANT AVANT DE LA
+// PROPOSER. Je prenais les 4 bits de POIDS FAIBLE d'un FNV-1a sur des
+// chaînes qui ne diffèrent que par leur DERNIER caractère (« …|mere1 »,
+// « …|mere2 »…). Le dernier pas de FNV est une multiplication : les bits
+// bas du produit sont presque déterminés par les bits bas des opérandes.
+// Résultat mesuré sur 1 800 tirages : SEIZE paires (mère1, mère2)
+// distinctes sur 256 possibles, et l'écart entre deux mères consécutives
+// TOUJOURS IMPAIR (+1, +3, +5… jamais +2, +4, +6). Les verdicts
+// sortaient à 43/19/38 au lieu de 39/37/24, et la règle renforcée ne se
+// déclenchait sur AUCUN thème.
+// Un générateur pareil aurait empoisonné en silence tout ce qu'on aurait
+// mesuré avec. Corrigé par un brassage final (finalizer lowbias32) qui
+// disperse les bits hauts vers les bas, et par un compteur placé AVANT
+// la graine plutôt qu'après.
+function hachageTexteV7(txt) {
+  var v = String(txt || '').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+  var h = 0x811c9dc5;
+  for (var i = 0; i < v.length; i++) {
+    h = (h ^ v.charCodeAt(i)) >>> 0;
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  // Brassage final : sans lui les bits bas restent corrélés.
+  h = (h ^ (h >>> 16)) >>> 0;
+  h = Math.imul(h, 0x7feb352d) >>> 0;
+  h = (h ^ (h >>> 15)) >>> 0;
+  h = Math.imul(h, 0x846ca68b) >>> 0;
+  h = (h ^ (h >>> 16)) >>> 0;
+  return h >>> 0;
+}
+
+// Les quatre mères d'un match, dérivées de ses seules données publiques.
+// L'ordre des équipes compte (équipe 1 puis équipe 2) : c'est la même
+// convention que R1/R7 dans tout le fichier.
+function tirageDepuisMatchV7(equipe1, equipe2, date, heure) {
+  var base = [equipe1, equipe2, date, heure].join('|');
+  var meres = [];
+  for (var k = 1; k <= 4; k++) {
+    // le compteur EN TÊTE : deux graines pour la même mère ne partagent
+    // plus leur fin de chaîne.
+    meres.push(FIGS_V7[hachageTexteV7('m' + k + '|' + base) % 16]);
+  }
+  return { meres: meres, graine: base };
+}
+
 function rollUntilValidDraw(){
   let attempts=0;
   let resonance;
