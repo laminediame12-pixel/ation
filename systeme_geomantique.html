@@ -16418,6 +16418,28 @@ function tablePolesV7(theme) {
 //   dit ce que le thème est, pas ce que le match sera. Il est vrai
 //   et il n'est pas rentable ; les deux à la fois.
 //
+//   ✔ MAIS LA ROTATION EST ESSENTIELLE — testé le 31/08 sur sa
+//   proposition « et si on lisait le théorème sur M1 et M7 au lieu
+//   de R1 et R7 ». M1 et M7 sont des maisons FIXES : M1 est
+//   toujours FA (double), M7 toujours A (simple). Le théorème y est
+//   donc toujours applicable et le camp doublé est TOUJOURS le
+//   camp 1, sur tous les thèmes, pour toujours. C'est le témoin
+//   dégénéré « toujours R1 » sous un autre nom.
+//   Et le piège est que LES DEUX LECTURES DONNENT LE MÊME BRUT :
+//       lecture M1/M7 (constante) ..... 14/23
+//       lecture R1/R7 (le théorème) ... 14/23
+//   Identiques. On aurait pu conclure « ça revient au même ».
+//   Découpé par camp réellement vainqueur, tout change :
+//       M1/M7  — R1 gagne 14/14 (100 %) · R7 gagne 0/9 (0 %)  → équilibré 50 %
+//       R1/R7  — R1 gagne  7/14 (50 %) · R7 gagne 7/9 (78 %)  → équilibré 64 %
+//   Sur les 9 matchs gagnés par R7, la lecture fixe en trouve ZÉRO
+//   et le théorème en trouve SEPT : p = 0,0023.
+//   ➜ La rotation n'est pas un détail de mise en œuvre, c'est ce
+//   qui donne au théorème son seul contenu mesurable. Lu sur des
+//   maisons fixes il devient une constante et ne dit plus rien.
+//   (Même piège que le témoin « toujours R1 » face à F4P4 : le
+//   score brut cache tout, seule la justesse équilibrée parle.)
+//
 // ✔✔ ET IL EN SORT UN THÉORÈME.
 // R7 est toujours SIX maisons après R1 — mais SUR SEIZE, pas sur douze.
 // ☠️ MA PREMIÈRE DÉMONSTRATION ÉTAIT FAUSSE SUR LA MOITIÉ DE SA TABLE.
