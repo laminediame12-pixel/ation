@@ -17289,7 +17289,81 @@ function toggleSeptCriteresPanel() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ✦ LE PARTAGE DE LA SYNTHÈSE (31/08/26) — demande d'Ellemine_D
+//
+// « Pour le partage, ajoute les deux témoins et regarde M15, son
+// jugement. » Autrement dit : appliquer la lecture du partage — celle
+// du théorème d'Ellemine — non plus aux deux camps, mais aux deux
+// TÉMOINS (M13, M14) et au JUGE (M15).
+//
+// Rappel de structure, vérifié sur les 65 536 thèmes : M15 = M13 + M14,
+// toujours, par construction. Le Juge EST la somme de ses deux témoins.
+//
+// LA RÈGLE QUI EN SORT :
+//     les trois figures M13, M14, M15 ont-elles TROIS éléments
+//     différents ?  oui → R1 · non → R7
+//
+// ✔ ET C'EST LE MEILLEUR RÉSULTAT DE CAMP DU FICHIER, DE LOIN.
+// Sur les 37 matchs décidés de l'archive :
+//     LA RÈGLE ................ 29/37   78 %
+//     le verdict affiché ...... 22/37   59 %
+//     F4P4 seul ............... 23/37   62 %
+//     critères seuls .......... 23/37   62 %
+// Découpé par camp réel — le contrôle qui a piégé deux fois déjà :
+//     R1 gagne : la règle 14/21 (67 %) · l'écran 11/21 (52 %)
+//     R7 gagne : la règle 15/16 (94 %) · l'écran 11/16 (69 %)
+//     équilibré : règle 80 % · écran 61 % · témoin « toujours R1 » 50 %
+// Elle n'est pas un doublon du verdict : elle en diverge sur 12 des 37.
+//
+// ✔ LES CONTRÔLES QU'ELLE PASSE :
+//   • ce n'est pas un effet du nul : sur les décidés seuls, 14/15 contre
+//     7/22, p = 0,0002 (elle est PLUS forte sans les nuls).
+//   • la configuration n'est pas rare : 34,4 % des 65 536 thèmes, 39 %
+//     de l'archive. Pas une poignée de cas exotiques.
+//   • le sens tient dans les DEUX moitiés de l'archive : première
+//     moitié p = 0,005, seconde p = 0,156 — plus faible mais du même
+//     côté, jamais inversé.
+//   • correction pour tests multiples : elle sort d'un balayage de 40
+//     croisements (seuil 0,0013) et le p brut est 0,0009 : elle survit.
+//     Et même contre TOUS les tests de la journée — environ 150 entre
+//     le balayage de séparation, la grande fouille élémentaire et
+//     celui-ci — 0,0002 × 150 = 0,03, encore sous 0,05.
+//
+// ☠️ ET POURQUOI ELLE N'EST PAS BRANCHÉE. Elle a été DÉCOUVERTE sur ces
+// 49 cas. C'est exactement la situation de tout ce qui a échoué ici :
+// la porte du nul, corrigée deux fois sur cette archive, y fait 42/49
+// et n'a jamais été testée à l'aveugle ; la bande d'accord faisait 79 %
+// à 19 cas et vaut 67 % à 37. Un chiffre trouvé dans les données qui
+// l'ont produit n'est pas une prédiction, c'est une description.
+// Elle est donc notée au banc, affichée, et elle ne décide de RIEN.
+// CE QUI LA FERAIT BRANCHER : des cas gelés AVANT le match. Dix lignes
+// de journal où elle tient, et elle passe devant la chaîne. C'est le
+// seul chemin, et il ne dépend plus du code.
+function partageSyntheseV7(theme) {
+  if (!theme || !theme[13] || !theme[14] || !theme[15]) return null;
+  var e13 = ELEMENTS_V7[theme[13]], e14 = ELEMENTS_V7[theme[14]], e15 = ELEMENTS_V7[theme[15]];
+  if (!e13 || !e14 || !e15) return null;
+  var tousDifferents = (e13 !== e14 && e14 !== e15 && e13 !== e15);
+  return { camp: tousDifferents ? 'R1' : 'R7', tousDifferents: tousDifferents,
+    e13: e13, e14: e14, e15: e15,
+    fig13: theme[13], fig14: theme[14], fig15: theme[15],
+    partages: (e13 === e14 ? 1 : 0) + (e14 === e15 ? 1 : 0) + (e13 === e15 ? 1 : 0) };
+}
+
 var MOTEURS_V7 = [
+  { cle: 'partage_synthese', nom: 'Partage de la synthèse — M13, M14, M15 à l\'élément', icone: '✦', teinte: '#facc15',
+    note: 'doctrine Ellemine_D (31/08) — 29/37, équilibré 80 % contre 61 % pour l\'écran · DÉCOUVERTE sur l\'archive, jamais testée à l\'aveugle : notée, jamais décisive',
+    juste: 0, total: 0, horsVote: true,
+    verdict: function (t) {
+      var p = partageSyntheseV7(t);
+      if (!p) return null;
+      var n = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+      return { camp: p.camp,
+        detail: 'M13 ' + n(p.fig13) + ' (' + p.e13 + ') · M14 ' + n(p.fig14) + ' (' + p.e14 + ') · M15 '
+          + n(p.fig15) + ' (' + p.e15 + ') → '
+          + (p.tousDifferents ? 'trois éléments différents' : 'au moins deux partagent') };
+    } },
   { cle: 'sept_criteres', nom: 'Sept critères (strict)', icone: '🎯', teinte: '#22d3ee',
     note: 'les 5 rôles pesés par les sept critères, moins l\'antagoniste — rien d\'autre', juste: 0, total: 0,
     verdict: function (t) {
@@ -19233,10 +19307,20 @@ var MOTEURS_INCIDENT_V7 = [
 // quoi que ce soit d'un 6-2.
 var VERDICT_VOTE_V7 = true;
 
+// ☠️ 31/08/26 — PIÈGE ÉVITÉ DE JUSTESSE. J'ai ajouté le moteur
+// « partage de la synthèse » à MOTEURS_V7 en écrivant dans sa
+// documentation qu'il « ne décide de RIEN ». C'était faux : cette liste
+// nourrit le vote, et le vote est dans la chaîne de overrideVerdictV7.
+// Un moteur découvert SUR l'archive se serait mis à décider du verdict
+// affiché, en silence, le jour même de sa découverte — la faute exacte
+// contre laquelle tout ce fichier met en garde.
+// D'où le drapeau horsVote : un moteur peut désormais être noté par le
+// banc sans peser sur le verdict. Il est réservé à ce cas précis — une
+// règle qui n'a pas encore été vérifiée à l'aveugle.
 function voteMoteursV7(theme) {
   var r1 = 0, r7 = 0, muets = 0, detail = [];
   if (!theme) return { applicable: false, camp: null, r1: 0, r7: 0, detail: [] };
-  MOTEURS_V7.forEach(function (m) {
+  MOTEURS_V7.filter(function (m) { return !m.horsVote; }).forEach(function (m) {
     var v = null;
     try { v = m.verdict(theme); } catch (e) { v = null; }
     var c = v && v.camp ? v.camp : null;
