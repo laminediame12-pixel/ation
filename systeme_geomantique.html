@@ -23518,6 +23518,40 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     (4 actives, M5, boucle A). Elles ne sont ni binômes ni
 //     antagonistes l'une de l'autre.
 //
+// ── H · LA FIGURE DANS LA MAISON DE SON ANTAGONISTE ── (sa question)
+//     Son exemple : Puer en M14, la maison de Puella son antagoniste.
+//     Puer + Puella = Conjunctio. VÉRIFIÉ, et les seize suivent.
+//     Les résultantes ne sont que CINQ figures, toutes de boucle A,
+//     toutes en maison impaire :
+//         Puer M1 (4×) · Caput Draconis M3 (4×) · Conjunctio M11 (4×)
+//         Via M5 (2×) · Cauda Draconis M13 (2×)
+//
+//     ✔✔ ET LA LOI QUI L'EXPLIQUE, vérifiée sur les cinq relations,
+//     16/16 chacune :
+//         binôme .......... +2  pair    → résultante de boucle B
+//         front ........... +4  pair    → boucle B
+//         front du front .. +8  pair    → boucle B
+//         bouclier ........ +10 pair    → boucle B
+//         antagoniste ..... +13 IMPAIR  → boucle A
+//     DÉCALAGE PAIR → résultante de boucle B, en maison paire.
+//     DÉCALAGE IMPAIR → résultante de boucle A, en maison impaire.
+//     C'est une conséquence directe de la loi C : un décalage pair garde
+//     la même boucle (donc la combinaison donne B), un décalage impair
+//     change de boucle (donc la combinaison donne A).
+//
+//     ➜ DES CINQ RELATIONS, SEUL L'ANTAGONISTE A UN DÉCALAGE IMPAIR.
+//     C'est le seul dont la résultante tombe en maison impaire, et donc
+//     le seul qui ne se comporte pas comme les quatre autres. Le fichier
+//     le traitait déjà à part partout — on le RETRANCHE dans le moteur
+//     des sept critères, il est le seul « ennemi » du quatuor — mais
+//     c'était une doctrine. C'en est maintenant une conséquence de la
+//     structure : l'antagoniste est le seul rôle qui change de boucle.
+//
+//     Deux cas particuliers dans la table, et ils viennent tous deux de
+//     Populus, l'élément neutre : Caput Draconis + Populus = Caput
+//     Draconis (elle reste elle-même), et Populus + Cauda = Cauda.
+//     Ce sont les deux seuls cas où la résultante EST l'une des deux.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -23678,6 +23712,18 @@ function autoTestAlternanceV7() {
     var attendu = (loopOf(a) === loopOf(b)) ? 'B' : 'A';
     if (loopOf(combine(a, b)) === attendu) r.composition += 1;
   }
+  // loi H : parité du décalage → boucle de la résultante
+  r.pariteDecalage = 0;
+  var REL_H = [[BINOMES_V7, 2], [FRONT_V7, 4], [BOUCLIER_V7, 10], [ANTAGONISTES_V7, 13]];
+  for (var k3 = 1; k3 <= 16; k3++) {
+    var f3 = FIGS_V7[k3 - 1], bonH = true;
+    REL_H.forEach(function (R) {
+      var att = (R[1] % 2 === 0) ? 'B' : 'A';
+      if (loopOf(combine(f3, R[0][f3])) !== att) bonH = false;
+    });
+    if (loopOf(combine(f3, frontDuFrontV7(f3))) !== 'B') bonH = false;
+    if (bonH) r.pariteDecalage += 1;
+  }
   r.decalages = 0;
   var REL = [[BINOMES_V7, 2], [FRONT_V7, 4], [BOUCLIER_V7, 10], [ANTAGONISTES_V7, 13]];
   for (var k2 = 1; k2 <= 16; k2++) {
@@ -23688,7 +23734,8 @@ function autoTestAlternanceV7() {
     if (bon) r.decalages += 1;
   }
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
-    && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16);
+    && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
+    && r.pariteDecalage === 16);
   return r;
 }
 
