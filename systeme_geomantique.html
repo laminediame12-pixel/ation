@@ -23552,6 +23552,78 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     Draconis (elle reste elle-même), et Populus + Cauda = Cauda.
 //     Ce sont les deux seuls cas où la résultante EST l'une des deux.
 //
+// ── I · LES CINQ RELATIONS, LA TABLE COMPLÈTE ── (« on creuse »)
+//     La figure PLACÉE DANS LA MAISON de chacun de ses cinq parents,
+//     et combinée avec l'occupant de cette maison. Les seize, à chaque
+//     fois. Ce qui sort :
+//         binôme     +2  → 3 résultantes  M2 Laetitia ×8 · M6 Amissio ×4
+//                                         · M14 Puella ×4
+//         front      +4  → 2  M4 Albus ×8 · M12 Fortuna Major ×8
+//         front du front +8 → 1  M8 Tristitia ×16
+//         bouclier   +10 → 3  M6 Amissio ×4 · M10 Carcer ×8 · M14 Puella ×4
+//         antagoniste +13 → 5 M1 Puer ×4 · M3 Caput Dr. ×4 · M5 Via ×2
+//                            · M11 Conjunctio ×4 · M13 Cauda Dr. ×2
+//     Les nombres 3, 2, 1, 3, 5 ne sont pas neufs : ce sont ceux du
+//     point 7 de la loi d'alternance, qui dit déjà que le nombre de
+//     résultantes ne dépend QUE de la distance. C'est le contenu des
+//     cases qui est neuf.
+//
+//     ✔ I.1 · LE BOUCLIER EST LE FRONT DU FRONT DU BINÔME ── 16/16
+//         +10 = +2 puis +8, et l'ordre ne compte pas : bouclier(f) vaut
+//         aussi bien frontDuFront(binôme(f)) que binôme(frontDuFront(f)).
+//         Conséquence immédiate, vérifiée à part : binôme ⊕ bouclier =
+//         TRISTITIA, 16/16 — la même constante que figure ⊕ front du
+//         front. Le bouclier n'est donc pas un cinquième rôle
+//         indépendant : c'est le binôme vu depuis l'autre bout de l'axe.
+//         ➜ ET C'EST CE QUI EXPLIQUE LE SEUL CHEVAUCHEMENT DE LA TABLE.
+//         Sur les dix paires de relations, neuf ont des résultantes
+//         entièrement disjointes ; la seule qui partage quelque chose est
+//         binôme ∩ bouclier = { M6 Amissio, M14 Puella }. Elles se
+//         touchent parce qu'elles sont à huit maisons l'une de l'autre.
+//
+//     ✔ I.2 · LA LOI DU CARDINAL ── 31/31 sous-ensembles
+//         On somme un sous-ensemble quelconque des cinq rôles (figure,
+//         binôme, front, bouclier, antagoniste) :
+//           nombre IMPAIR de rôles → le résultat est une PERMUTATION des
+//             seize figures : chacune sort exactement une fois. 16/16
+//             sous-ensembles impairs.
+//           nombre PAIR de rôles → au plus CINQ valeurs, jamais plus.
+//             15/15 sous-ensembles pairs.
+//         Aucun cas intermédiaire sur les trente et un.
+//
+//     ✔ I.3 · LE QUATUOR EST LE FRONT DÉCALÉ DE TRISTITIA ── 16/16
+//         figure ⊕ binôme ⊕ front ⊕ bouclier donne les deux mêmes
+//         figures que le front seul — M4 Albus ×8, M12 Fortuna Major ×8 —
+//         mais ÉCHANGÉES : 0 maison sur 16 donne la même. Raison :
+//         binôme ⊕ bouclier = Tristitia (I.1), et Albus ⊕ Tristitia =
+//         Fortuna Major. Le quatuor ne dit rien de plus que le front ;
+//         il le dit à l'envers.
+//         En ajoutant l'antagoniste, la somme des CINQ redevient une
+//         permutation des seize (loi I.2) : image = h+1 pour douze
+//         maisons, h+9 pour les quatre maisons h ≡ 2 (mod 4).
+//
+//     ✔ I.4 · LA ROUE EST DOUBLE ── 15/15 distances
+//         Pour n'importe quelle distance d, la résultante en maison h et
+//         celle en maison h+8 sont la MÊME figure. Les huit premières
+//         maisons décident tout ; les huit suivantes répètent.
+//         Ce n'est pas une coïncidence : repos(h+8) = repos(h) ⊕
+//         Tristitia (point 5 de la loi d'alternance), et le Tristitia
+//         s'annule des deux côtés de la combinaison.
+//         Même chose pour le miroir : l'ensemble des résultantes à
+//         distance d est identique à celui à distance 16−d, 7/7.
+//
+//     ✔ I.5 · LES QUATRE MAISONS INATTEIGNABLES
+//         L'union des cinq relations couvre douze maisons sur seize.
+//         Quatre ne sont JAMAIS la résultante d'aucune des cinq :
+//             M7 Rubeus · M9 Fortuna Minor · M15 Acquisitio · M16 Populus
+//         Deux d'entre elles sont les figures les plus singulières de la
+//         table : Populus, l'élément neutre, et Acquisitio, le pas de
+//         toutes les maisons impaires.
+//
+//     ⚠️ CE QUE ÇA NE FAIT PAS. Aucune de ces cinq lois ne touche un
+//     thème, un match ni un verdict. Elles sont vraies avant qu'on tire.
+//     Sa consigne tient : on récolte, on ne bâtit pas encore.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -23733,9 +23805,64 @@ function autoTestAlternanceV7() {
     });
     if (bon) r.decalages += 1;
   }
+  // ── loi I : les cinq relations, la table complète ──
+  // I.1 le bouclier est le front du front du binome
+  r.boucliersBinome = 0; r.binomeBouclierTristitia = 0;
+  FIGS_V7.forEach(function (f4) {
+    if (BOUCLIER_V7[f4] === frontDuFrontV7(BINOMES_V7[f4])
+      && BOUCLIER_V7[f4] === BINOMES_V7[frontDuFrontV7(f4)]) r.boucliersBinome += 1;
+    if (combine(BINOMES_V7[f4], BOUCLIER_V7[f4]) === 'tristitia') r.binomeBouclierTristitia += 1;
+  });
+  // I.2 la loi du cardinal : impair -> permutation des 16, pair -> au plus 5
+  var ROLES_I = [function (f) { return f; },
+    function (f) { return BINOMES_V7[f]; },
+    function (f) { return FRONT_V7[f]; },
+    function (f) { return BOUCLIER_V7[f]; },
+    function (f) { return ANTAGONISTES_V7[f]; }];
+  r.cardImpair = 0; r.cardPair = 0;
+  for (var msk = 1; msk < 32; msk++) {
+    var card = 0, vus = {}, nb = 0;
+    for (var b = 0; b < 5; b++) if (msk & (1 << b)) card += 1;
+    for (var h4 = 1; h4 <= 16; h4++) {
+      var f5 = rep(h4), acc = null;
+      for (var b2 = 0; b2 < 5; b2++) if (msk & (1 << b2)) {
+        var v = ROLES_I[b2](f5); acc = (acc === null) ? v : combine(acc, v);
+      }
+      if (!vus[acc]) { vus[acc] = 1; nb += 1; }
+    }
+    if (card % 2 === 1) { if (nb === 16) r.cardImpair += 1; }
+    else if (nb <= 5) r.cardPair += 1;
+  }
+  // I.3 le quatuor est le front decale de Tristitia
+  r.quatuorTristitia = 0;
+  for (var h5 = 1; h5 <= 16; h5++) {
+    var f6 = rep(h5);
+    var q = combine(combine(combine(f6, BINOMES_V7[f6]), FRONT_V7[f6]), BOUCLIER_V7[f6]);
+    if (q === combine(combine(f6, FRONT_V7[f6]), 'tristitia')) r.quatuorTristitia += 1;
+  }
+  // I.4 la roue est double : resultante(h) === resultante(h+8), toute distance
+  r.roueDouble = 0;
+  for (var d = 1; d <= 15; d++) {
+    var okD = true;
+    for (var h6 = 1; h6 <= 16; h6++) {
+      if (combine(rep(h6), rep(h6 + d)) !== combine(rep(h6 + 8), rep(h6 + 8 + d))) okD = false;
+    }
+    if (okD) r.roueDouble += 1;
+  }
+  // I.5 les quatre maisons inatteignables par les cinq relations
+  var atteintes = {};
+  [2, 4, 8, 10, 13].forEach(function (dd) {
+    for (var h7 = 1; h7 <= 16; h7++) atteintes[FIGS_V7.indexOf(combine(rep(h7), rep(h7 + dd))) + 1] = 1;
+  });
+  r.inatteignables = [7, 9, 15, 16].filter(function (m) { return !atteintes[m]; }).length;
+  r.couvertes = Object.keys(atteintes).length;
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
-    && r.pariteDecalage === 16);
+    && r.pariteDecalage === 16
+    && r.boucliersBinome === 16 && r.binomeBouclierTristitia === 16
+    && r.cardImpair === 16 && r.cardPair === 15
+    && r.quatuorTristitia === 16 && r.roueDouble === 15
+    && r.inatteignables === 4 && r.couvertes === 12);
   return r;
 }
 
