@@ -16473,6 +16473,63 @@ var ELEMENT_MAISON_V7 = { 1: 'FA', 2: 'ET', 3: 'A', 4: 'E', 5: 'FA', 6: 'ET',
 // lu nulle part pour son ordre, seulement pour son étiquette. Si l'ordre
 // ne veut rien dire, il faudrait écrire ET partout. Si l'ordre veut dire
 // quelque chose, il y a une règle qu'on n'utilise pas.
+// ═══════════════════════════════════════════════════════════════
+// LA GRANDE FOUILLE ÉLÉMENTAIRE (31/08/26) — « fouille une dernière fois »
+//
+// Dernier passage sur la couche des éléments, fait large et corrigé pour
+// qu'on ne puisse pas se raconter d'histoire. DIX-HUIT variables
+// élémentaires croisées avec CINQ issues, soit 88 croisements lisibles
+// (au moins 5 cas de chaque côté) sur les 48 cas de l'archive.
+//
+// Les variables : la maison de R1 par élément classique (Feu/Air/Eau/
+// Terre) · figure et maison de même élément, pour R1 puis pour R7 · R1
+// et R7 de même élément de figure · idem de maison · l'harmonie du thème
+// (combien des seize figures sont dans une maison de leur élément),
+// haute et basse · l'élément majoritaire des seize figures, dans les
+// quatre valeurs · un élément absent du thème · le Juge M15 de même
+// élément que R1, que R7, ou dans une maison de son élément · et les
+// deux variables de SA table : le camp doublé gouverné par le partagé,
+// et l'élément partagé = Eau.
+// Les issues : le match est nul · R1 gagne · les deux marquent · match
+// serré · le verdict affiché est juste.
+//
+// ☠️ RÉSULTAT : ZÉRO CROISEMENT SOUS p = 0,05. Pas « zéro après
+// correction » — ZÉRO EN BRUT. Le hasard seul en donnerait 4,4 sur 88.
+// Les cinq meilleurs, pour mémoire :
+//     R7 figure et maison de même élément → nul .... 50 % contre 18 %  p = 0,068
+//     R1 figure et maison de même élément → juste .. 43 % contre 71 %  p = 0,103
+//     R1 en maison de Terre → nul .................. 42 % contre 17 %  p = 0,113
+//     R1 en maison d'Eau → nul ......................  7 % contre 30 %  p = 0,136
+//     harmonie basse → les deux marquent ........... 33 % contre 62 %  p = 0,164
+// Obtenir MOINS de résultats nominalement significatifs que le hasard
+// n'en produirait est le signe le plus net qu'on puisse avoir : la
+// couche élémentaire ne porte aucune information sur ces cinq issues.
+// C'est la réponse à « qu'apporte cette lecture » : de la compréhension
+// de la structure, rien pour parier.
+//
+// (Mesure non branchée : 88 croisements avec rejeu du verdict coûteraient
+// plusieurs secondes à chaque ouverture du banc, et le résultat est
+// « rien ». Le script est reproductible tel quel — même méthode que
+// balayageSeparationV7, qui lui reste vivant parce qu'il est léger.)
+//
+// ⚠️ ET UNE OBSERVATION DE STRUCTURE, TROUVÉE EN CHEMIN : le fichier
+// contient DEUX doctrines d'éléments par maison qui ne coïncident nulle
+// part.
+//     ELEMENT_OF_HOUSE (globale) . M1 feu, M2 air, M3 eau, M4 terre, …
+//                                   le cycle classique par quatre
+//     ELEMENT_MAISON_V7 (sa table) M1 FA, M2 ET, M3 A, M4 E, …
+// La PREMIÈRE est celle que les moteurs utilisent réellement (la
+// concordance figure/maison, qui pèse dans les sept critères). La
+// SECONDE ne sert qu'au théorème des maisons de confusion et à
+// l'affichage. Elles ne se contredisent pas au sens du code — elles ne
+// se rencontrent jamais — mais il faut savoir qu'un « élément de la
+// maison » ne veut pas la même chose selon l'endroit du fichier où on
+// le lit.
+// (Fausse piste écartée au passage : ELEMENT_OF_HOUSE, FIGURES et
+// ELEMENT_COLORS apparaissent chacun deux fois en `const`. J'ai cru à
+// une redéclaration fatale. Vérifié dans le navigateur : les blocs 1, 2,
+// 7 et 8 sont des IIFE, leurs déclarations sont locales. Aucun conflit,
+// aucun bloc mort.)
 var FUSION_ELEMENTS_V7 = { FA: ['F', 'A'], ET: ['E', 'T'], TE: ['T', 'E'], A: ['A'], E: ['E'] };
 var NOM_ELEMENT_V7 = { F: 'Feu', A: 'Air', E: 'Eau', T: 'Terre' };
 
