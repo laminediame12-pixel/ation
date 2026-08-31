@@ -16440,6 +16440,28 @@ function tablePolesV7(theme) {
 //   (Même piège que le témoin « toujours R1 » face à F4P4 : le
 //   score brut cache tout, seule la justesse équilibrée parle.)
 //
+//   ☠️ ET IL NE FAUT PAS SUR-LIRE CE 7/9. J'ai écrit à Ellemine_D
+//   que c'était « le résultat le plus solide du fichier sur le
+//   camp ». C'était trop dire, et voici le chiffre qui manquait —
+//   la matrice complète, nuls compris, des 30 cas applicables :
+//                        R1 gagne   R7 gagne   nul   total
+//       dit R7 ........      7          7        3     17
+//       dit R1 ........      7          2        4     13
+//   QUAND IL DIT R7, R7 GAGNE 7 FOIS SUR 17 — 41 %, contre 30 % de
+//   taux de base. p = 0,225. Il attrape 7 des 9 victoires de R7
+//   parce qu'il annonce R7 SUR PLUS DE LA MOITIÉ DES THÈMES (17 sur
+//   30), pas parce qu'il les reconnaît. C'est l'image inverse du
+//   témoin dégénéré : beaucoup de rappel, peu de précision.
+//   Et sur ces mêmes 17 cas, le verdict affiché fait 11/17 quand le
+//   théorème fait 7/17.
+//   ➜ CE QUI TIENT : la rotation porte une information que la
+//   lecture fixe ne peut pas porter (équilibré 64 % contre 50 %).
+//   CE QUI NE TIENT PAS : « camp doublé = R7 donc joue R7 ». Ce
+//   n'est pas une règle de pari, et le p de 0,0023 ne dit pas
+//   l'inverse — il compare le théorème à un témoin qui, par
+//   construction, ne peut JAMAIS nommer R7. Battre ça est facile
+//   pour n'importe quoi qui nomme R7 de temps en temps.
+//
 // ✔✔ ET IL EN SORT UN THÉORÈME.
 // R7 est toujours SIX maisons après R1 — mais SUR SEIZE, pas sur douze.
 // ☠️ MA PREMIÈRE DÉMONSTRATION ÉTAIT FAUSSE SUR LA MOITIÉ DE SA TABLE.
