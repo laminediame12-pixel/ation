@@ -18188,6 +18188,59 @@ function precisionFaisceauV7() {
 }
 
 var MOTEURS_NUL_V7 = [
+  // ─── LA FUSION DES ÉLÉMENTS COMME LECTURE DU NUL (31/08/26) ───
+  // Ellemine_D, après AmisPuer : « cette lecture est adéquate au résultat
+  // du nul, alors soit on en fait un moteur, soit tu le fusionnes au
+  // moteur similaire. » Les deux ont été mesurés avant d'être branchés,
+  // et c'est le premier qui entre — le second est refusé, mesure à
+  // l'appui.
+  //
+  // L'IDÉE. Sur les axes M2/M8 et M6/M12, le camp doublé est gouverné par
+  // l'élément qu'il PARTAGE avec l'adversaire, pas par son supplément :
+  // sa force est celle que l'autre a aussi. AmisPuer est de ce type
+  // (M6/M12, partagé Eau) et le match a fini 4-4. La lecture est belle.
+  //
+  // ☠️ ET ELLE EST MAUVAISE, SUR LES 29 CAS OÙ LE THÉORÈME S'APPLIQUE :
+  //     dominant = partagé → nul ......... 17/29   59 %
+  //     témoin « jamais nul » ............ 23/29   79 %
+  // Elle attrape 3 nuls, en rate 3, et lève 9 fausses alertes. Elle fait
+  // vingt points de MOINS que de ne jamais annoncer de nul. AmisPuer
+  // était un cas juste dans une lecture qui perd.
+  //
+  // ☠️ ET LA FUSION AVEC LA PORTE DU NUL ABÎME LA PORTE :
+  //     porte du nul SEULE ............... 25/29   86 %
+  //     porte ET dominant partagé ........ 24/29   83 %
+  // La conjonction ne retire qu'une fausse alerte et coûte un vrai nul.
+  // La meilleure lecture du nul de tout le fichier ressort dégradée. Je
+  // ne fusionne donc pas : ce serait payer un chiffre en baisse pour une
+  // idée qui, seule, est sous le témoin.
+  //
+  // Le moteur est ici parce que c'est sa place — le banc le note à côté
+  // des autres, sur chaque nouveau cas, et il remontera tout seul s'il
+  // avait raison. Il ne décide de rien.
+  { cle: 'nul_fusion_partage', nom: 'Nul · le camp doublé est gouverné par l\'élément PARTAGÉ', icone: '🜄', teinte: '#22d3ee',
+    juste: 0, total: 0, note: 'doctrine Ellemine_D (31/08) — 17/29 contre 23/29 pour « jamais nul » : sous le témoin, affiché et noté, branché sur rien',
+    verdict: function (t) {
+      var f = null;
+      try { f = fusionElementV7(t); } catch (e) { return { oui: null, detail: 'théorème indisponible' }; }
+      if (!f || f.anomalie) return { oui: null, detail: 'théorème non applicable (une maison hors des douze)' };
+      return { oui: !f.domineParSonSupplement,
+        detail: 'axe ' + f.axe + ' · partagé ' + (NOM_ELEMENT_V7[f.commun] || f.commun)
+          + ' · dominant ' + (NOM_ELEMENT_V7[f.dominant] || f.dominant)
+          + ' → ' + (f.domineParSonSupplement ? 'son supplément' : 'le PARTAGÉ') };
+    } },
+  { cle: 'nul_fusion_et_porte', nom: 'Nul · porte ouverte ET gouverné par le partagé', icone: '🜄', teinte: '#0ea5e9',
+    juste: 0, total: 0, note: 'la fusion proposée le 31/08 : 24/29 contre 25/29 pour la porte SEULE — la conjonction dégrade, gardée pour que ça reste vérifiable',
+    verdict: function (t) {
+      var f = null;
+      try { f = fusionElementV7(t); } catch (e) { return { oui: null, detail: 'théorème indisponible' }; }
+      if (!f || f.anomalie) return { oui: null, detail: 'théorème non applicable' };
+      var porte = false;
+      try { porte = !!nulParPorteV7(t); } catch (e) { porte = false; }
+      return { oui: porte && !f.domineParSonSupplement,
+        detail: 'porte ' + (porte ? 'ouverte' : 'fermée') + ' · '
+          + (f.domineParSonSupplement ? 'gouverné par son supplément' : 'gouverné par le PARTAGÉ') };
+    } },
   { cle: 'nul_r1_cadente', nom: 'Nul · R1 tombe en maison cadente', icone: '⚖', teinte: '#fbbf24',
     juste: 0, total: 0, note: 'la maison seule : 4 nuls sur 7 attrapés, mais 5 faux positifs — 44 % de précision',
     verdict: function (t) {
