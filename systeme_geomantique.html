@@ -17330,6 +17330,42 @@ function toggleSeptCriteresPanel() {
 //     le balayage de séparation, la grande fouille élémentaire et
 //     celui-ci — 0,0002 × 150 = 0,03, encore sous 0,05.
 //
+// ═══ LA PASSE DE RENFORCEMENT (31/08/26) ═══
+// Ellemine_D : « on trouve une piste et tu cherches immédiatement ce qui
+// la contredit au lieu de ce qui la renforce ; avec ça on tourne en rond,
+// même une bonne piste on va la minimiser. »
+// Il a raison sur un point précis et il faut l'écrire : j'avais lancé
+// QUATRE contrôles de robustesse sur cette règle et ZÉRO tentative de
+// l'améliorer. Vérifier qu'une piste n'est pas un mirage et chercher sa
+// meilleure forme sont deux travaux différents ; je n'avais fait que le
+// premier. Voici le second.
+//
+// ✔ CE QU'IL A FALLU REGARDER : LES RATÉS. Sur les 8 erreurs de la règle,
+// SEPT sont « dit R7, réel R1 ». La faiblesse est d'un seul côté, et ça
+// ne se voyait pas dans le score global.
+//     branche « trois différents » → R1 ....... 14/19  74 %  p = 0,0065
+//     branche « au moins deux pareils » → R7 ... 15/30  50 %  p = 0,036
+// Les deux branches n'ont rien à voir. La première tire 39 % des thèmes
+// et gagne trois fois sur quatre ; la seconde est à peine au-dessus de
+// son taux de base. Lues ensemble, la mauvaise diluait la bonne.
+//
+// ✔ ET LA BRANCHE R1 SE RENFORCE, POUR UNE RAISON MÉCANIQUE.
+// Ses 5 erreurs sont 1 victoire de R7 et QUATRE NULS. Ce n'est donc pas
+// le camp qu'elle lit mal, c'est le nul qu'elle ne voit pas. On lui donne
+// donc le seul détecteur de nul qui ait un dossier :
+//     trois différents (nue) ...................... 14/19  74 %  p = 0,0065
+//     + porte du nul FERMÉE ....................... 13/16  81 %  p = 0,0020
+//     + F4P4 dit R1 ............................... 11/13  85 %  p = 0,0026
+//     + camp doublé = R1 (théorème d'Ellemine) ....  6/8   75 %  p = 0,070
+// La forme retenue est « trois différents ET porte fermée » : 81 %, et
+// elle parle encore sur 16 thèmes sur 49 — un tiers. Contre elle il ne
+// reste qu'UNE victoire de R7 et deux nuls. Le renfort par F4P4 monte à
+// 85 % mais ne parle plus que sur 13, et il fait dépendre la règle d'un
+// moteur qui, seul, est à 62 %.
+// Ce n'est pas un réglage sur mesure : on ne cherche pas le seuil qui
+// maximise le score, on retire la famille d'erreurs identifiée dans les
+// ratés avec l'outil déjà validé pour elle.
+//
 // ☠️ ET POURQUOI ELLE N'EST PAS BRANCHÉE. Elle a été DÉCOUVERTE sur ces
 // 49 cas. C'est exactement la situation de tout ce qui a échoué ici :
 // la porte du nul, corrigée deux fois sur cette archive, y fait 42/49
@@ -17363,6 +17399,18 @@ var MOTEURS_V7 = [
         detail: 'M13 ' + n(p.fig13) + ' (' + p.e13 + ') · M14 ' + n(p.fig14) + ' (' + p.e14 + ') · M15 '
           + n(p.fig15) + ' (' + p.e15 + ') → '
           + (p.tousDifferents ? 'trois éléments différents' : 'au moins deux partagent') };
+    } },
+  { cle: 'partage_r1_ferme', nom: 'Partage · trois éléments différents ET porte du nul fermée → R1', icone: '✦', teinte: '#fb923c',
+    note: 'la forme renforcée (31/08) — 13/16 soit 81 % quand on COMPTE les nuls (c\'est le chiffre du pari : contre elle il reste 1 victoire de R7 et 2 nuls), 13/14 sur le banc qui les écarte · contre 43 % de taux de base, p = 0,0020 · parle sur un tiers des thèmes · découverte sur l\'archive : notée, jamais décisive',
+    juste: 0, total: 0, horsVote: true,
+    verdict: function (t) {
+      var p = partageSyntheseV7(t);
+      if (!p || !p.tousDifferents) return null;
+      var porte = false;
+      try { porte = !!nulParPorteV7(t); } catch (e) { porte = false; }
+      if (porte) return null;
+      return { camp: 'R1', detail: 'trois éléments différents (' + p.e13 + '/' + p.e14 + '/' + p.e15
+        + ') et porte du nul fermée' };
     } },
   { cle: 'sept_criteres', nom: 'Sept critères (strict)', icone: '🎯', teinte: '#22d3ee',
     note: 'les 5 rôles pesés par les sept critères, moins l\'antagoniste — rien d\'autre', juste: 0, total: 0,
