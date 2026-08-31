@@ -23753,6 +23753,108 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //
 //     ⚠️ RIEN DE TOUT CECI N'EST BRANCHÉ SUR UN VERDICT. On récolte.
 //
+// ── K · LE DESSIN DE LA LIGNE ── (sa construction, 31/08/26)
+//     Sa consigne : une droite, seize points, un trait vertical ; les
+//     IMPAIRES à gauche avec Puer collé au trait, les PAIRES à droite
+//     avec Laetitia collée au trait. Puis des demi-cercles pour le
+//     binôme et pour l'antagoniste. « Si tu le fais bien, ça va sauter
+//     aux yeux. » Ça saute aux yeux.
+//
+//     LA LIGNE — X va de 1 à 16, le trait est entre X8 et X9 :
+//       X    1   2   3   4   5   6   7   8 ‖  9  10  11  12  13  14  15  16
+//          M15 M13 M11  M9  M7  M5  M3  M1 ‖ M2  M4  M6  M8 M10 M12 M14 M16
+//       (impair : X = 8−(h−1)/2 · pair : X = 8+h/2)
+//
+//     ✔ K.1 · LE BINÔME EST LE VOISIN IMMÉDIAT, VERS L'EXTÉRIEUR ── 14/16
+//         Sur la ligne, le binôme n'est jamais un saut : c'est toujours
+//         le point d'à côté, et toujours EN S'ÉLOIGNANT du trait. Quatorze
+//         arcs de portée 1. Les deux derniers sont les GRANDS RETOURS,
+//         de portée 7 : Acquisitio (X1) revient sur Puer (X8), Populus
+//         (X16) revient sur Laetitia (X9). Les deux bouts se replient
+//         sur le trait. Le binôme est donc une marche qui s'éloigne du
+//         centre et qui, arrivée au bord, y retombe d'un seul coup.
+//
+//     ✔✔ K.2 · L'ANTAGONISTE DESSINE QUATRE FAMILLES CONCENTRIQUES
+//         Les seize demi-cercles de l'antagoniste ne se dispersent pas :
+//         ils se rangent en quatre faisceaux de cercles CONCENTRIQUES.
+//           centre  7.5 (l'écart Caput/Puer) ...... 6 arcs, tous IMPAIRS
+//           centre  9   (Laetitia elle-même) ...... 7 arcs, tous PAIRS
+//           centre 11.5 (l'écart Amissio/Tristitia) 2 arcs : Puer→Puella
+//                                                   et CAPUT→POPULUS
+//           centre  5   (Rubeus) ................. 1 arc : Laetitia→Acquisitio
+//         Et des arcs concentriques NE SE CROISENT JAMAIS :
+//           croisements à l'intérieur d'une famille ......  0
+//           croisements entre familles différentes ....... 45
+//         ➜ C'est ça, son « intersection » : elle n'existe qu'ENTRE
+//         faisceaux. À l'intérieur d'un faisceau, tout est emboîté.
+//
+//     ✔✔ K.3 · ET SON EXCEPTION CAPUT / POPULUS EST DANS LE DESSIN
+//         Il écrit : « je vois Caput et Populus seuls comme une
+//         exception ». L'arc Caput→Populus est en effet l'un des DEUX
+//         SEULS arcs impairs hors du grand faisceau — avec Puer→Puella.
+//         Les trois figures dont l'arc quitte son faisceau sont
+//         exactement les trois collées au trait : Caput (X7), Puer (X8),
+//         Laetitia (X9). Toutes les autres restent emboîtées.
+//
+//     ✔✔ K.4 · LA PYRAMIDE DE COUVERTURE ── exacte sur les seize
+//         Nombre d'arcs qui passent AU-DESSUS de chaque point :
+//             0  2  4  6  8 10 12 14 ‖ 14 12 10  8  6  4  2  0
+//         C'est exactement 2 × (distance au bout le plus proche), et
+//         c'est parfaitement symétrique autour du trait.
+//         ➜ PLUS ON EST PRÈS DU TRAIT, PLUS ON EST COUVERT. Puer et
+//         Laetitia, collées au trait, passent sous QUATORZE des seize
+//         arcs. Acquisitio et Populus, aux deux bouts, ne passent sous
+//         AUCUN. Voilà son « cela dépend de la position de la figure ».
+//         Et son exemple tombe juste : Caput (X7) est couverte par douze
+//         arcs, dont Cauda Draconis→Carcer — « la voie de Carcer est
+//         prolongée jusqu'à Caput », mot pour mot.
+//
+// ── L · L'ÉNERGIE SAUTE LA VICTIME ── (sa règle des éléments)
+//     Il donne la compatibilité : eau+terre, feu+air, eau+air oui ;
+//     terre+air et feu+eau non. Il ne dit rien de feu+terre.
+//     ✔ SA RÈGLE EST DÉJÀ CELLE DU FICHIER. concordanceElement donne
+//     0 pour feu/eau et air/terre — « opposition totale » — et une
+//     valeur non nulle pour les quatre autres paires, feu/terre compris.
+//     Ses deux paires interdites sont exactement les deux oppositions.
+//
+//     ✔✔ ET SON CONSTAT EST EXACT ── 15/16
+//         Il dit : Populus attaque Caput, l'énergie doit CONTINUER
+//         jusqu'à Amissio, et là Populus est feu quand Amissio est eau —
+//         « mais le reste ils ont une compatibilité ».
+//         Mesuré avec la table du fichier :
+//           f compatible avec la victime de sa victime (+6) .... 15/16
+//           EXCEPTION UNIQUE : Populus (feu) ⇢ Amissio (eau)
+//         Pas une de plus. Son exception est LA seule.
+//         Et c'est bien au SAUT que la loi vit, pas au coup direct :
+//           f avec sa victime directe (+3) ..................... 8/16
+//         L'énergie de la destruction ne se mesure donc pas entre le
+//         frappeur et sa victime, mais entre le frappeur et CE QUE SA
+//         VICTIME ALLAIT FRAPPER. Or +6 = binôme(front(f)) (loi J.5) :
+//         c'est exactement « la voie qui sauve » dont il parlait.
+//
+//     ✔✔ UN FAIT DE PLUS, SORTI DE LÀ. La compatibilité élémentaire par
+//     distance ne prend que cinq valeurs, et elle suit EXACTEMENT le
+//     nombre de résultantes de la loi I point 7 :
+//         d = 8 ................... 16/16   (1 résultante)
+//         d = 2, 6, 10, 14 ........ 15/16   (3 résultantes)
+//         d = 1, 7, 9, 15 ......... 12/16   (4 résultantes)
+//         d = 4, 12 ............... 10/16   (2 résultantes)
+//         d = 3, 5, 11, 13 ......... 8/16   (5 résultantes)
+//     ➜ LES RELATIONS QUI LIENT SONT LES DISTANCES ÉLÉMENTAIREMENT
+//     COMPATIBLES, CELLES QUI DÉTRUISENT SONT LES INCOMPATIBLES.
+//     Le front du front (+8) est parfait, le binôme (+2) et le bouclier
+//     (+10) au maximum ; la destruction (+3) et l'antagoniste (+13) sont
+//     au minimum, 8/16. La table des éléments et la table des
+//     combinaisons ne sont pas indépendantes.
+//
+//     ☠️ MA FAUTE, notée pour qu'elle ne se répète pas. Mon premier
+//     contrôle a rendu 4/16 et douze exceptions, ce qui aurait enterré
+//     son constat. La cause : mes clés de compatibilité étaient écrites
+//     'feu|air' alors que je les cherchais triées ('air|feu'). Deux des
+//     trois paires compatibles ne matchaient jamais. Le fichier avait
+//     raison, lui, depuis le début — j'aurais dû partir de
+//     concordanceElement au lieu de réécrire la règle à la main.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -23896,6 +23998,14 @@ function voieAttaqueV7(fig) {
   return c ? combine(fig, c) : null;
 }
 
+// La ligne du dessin d'Ellemine_D (loi K) : impaires a gauche, Puer
+// collee au trait ; paires a droite, Laetitia collee au trait.
+function positionLigneV7(fig) {
+  var h = FIGS_V7.indexOf(fig) + 1;
+  if (h < 1) return null;
+  return (h % 2 === 1) ? 8 - (h - 1) / 2 : 8 + h / 2;
+}
+
 function autoTestAlternanceV7() {
   function rep(h) { return FIGS_V7[((h - 1) % 16 + 16) % 16]; }
   var AXE = { puer: 1, via: 1, cauda_draconis: 1 };
@@ -24030,6 +24140,40 @@ function autoTestAlternanceV7() {
   var resAnt = {}; FIGS_V7.forEach(function (f9) { resAnt[combine(f9, ANTAGONISTES_V7[f9])] = 1; });
   r.voiesEgalesLoiH = (Object.keys(resAnt).length === r.nbVoies
     && Object.keys(resAnt).every(function (v) { return toutesVoies[v]; })) ? 1 : 0;
+  // ── loi K : le dessin de la ligne ──
+  r.binomeVoisin = 0; r.binomeRetour = 0;
+  FIGS_V7.forEach(function (fk) {
+    var p1 = positionLigneV7(fk), p2 = positionLigneV7(BINOMES_V7[fk]);
+    var e = Math.abs(p2 - p1);
+    if (e === 1) r.binomeVoisin += 1; else if (e === 7) r.binomeRetour += 1;
+  });
+  var arcsK = FIGS_V7.map(function (fk2) {
+    var p3 = positionLigneV7(fk2), p4 = positionLigneV7(ANTAGONISTES_V7[fk2]);
+    return { lo: Math.min(p3, p4), hi: Math.max(p3, p4), c: (p3 + p4) / 2 };
+  });
+  var centres = {};
+  arcsK.forEach(function (A) { centres[A.c] = (centres[A.c] || 0) + 1; });
+  r.famillesArcs = Object.keys(centres).length;
+  r.croiseDedans = 0; r.croiseDehors = 0;
+  for (var ia = 0; ia < 16; ia++) for (var ja = ia + 1; ja < 16; ja++) {
+    var A1 = arcsK[ia], A2 = arcsK[ja];
+    var x = (A1.lo < A2.lo && A2.lo < A1.hi && A1.hi < A2.hi)
+      || (A2.lo < A1.lo && A1.lo < A2.hi && A2.hi < A1.hi);
+    if (x) { if (A1.c === A2.c) r.croiseDedans += 1; else r.croiseDehors += 1; }
+  }
+  r.pyramide = 0;
+  for (var xk = 1; xk <= 16; xk++) {
+    var nb2 = arcsK.filter(function (A) { return A.lo < xk && xk < A.hi; }).length;
+    if (nb2 === 2 * Math.min(xk - 1, 16 - xk)) r.pyramide += 1;
+  }
+  // ── loi L : l'energie saute la victime ──
+  r.energieSaut = 0; r.energieDirecte = 0; r.exceptionEnergie = null;
+  FIGS_V7.forEach(function (fl) {
+    var v = detruitV7(fl), w = detruitV7(v);
+    if (concordanceElement(ELEMENTS_V7[fl], ELEMENTS_V7[w]) > 0) r.energieSaut += 1;
+    else r.exceptionEnergie = fl;
+    if (concordanceElement(ELEMENTS_V7[fl], ELEMENTS_V7[v]) > 0) r.energieDirecte += 1;
+  });
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -24041,7 +24185,12 @@ function autoTestAlternanceV7() {
     && r.destDeux === 16 && r.destQuatre === 16 && r.bouclierTueAntag === 16
     && r.riposteDirecte === 0 && r.riposteDeuxCoups === 0
     && r.nbVoies === 5 && r.voiesImpaires === 3 && r.voiesPaires === 2
-    && r.voiesSeparees === 1 && r.voiesAxe === 1 && r.voiesEgalesLoiH === 1);
+    && r.voiesSeparees === 1 && r.voiesAxe === 1 && r.voiesEgalesLoiH === 1
+    && r.binomeVoisin === 14 && r.binomeRetour === 2
+    && r.famillesArcs === 4 && r.croiseDedans === 0 && r.croiseDehors === 45
+    && r.pyramide === 16
+    && r.energieSaut === 15 && r.exceptionEnergie === 'populus'
+    && r.energieDirecte === 8);
   return r;
 }
 
