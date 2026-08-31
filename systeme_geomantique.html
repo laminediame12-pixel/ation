@@ -23462,6 +23462,70 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 
 // R1 et R7 sont-ils dans la même boucle ? C'est le seul aiguillage.
 // ═══════════════════════════════════════════════════════════════
+// ✦ LA RÉCOLTE (31/08/26) — « on récolte les détails d'abord »
+//
+// Sa consigne, et elle est la bonne : rassembler les faits AVANT de
+// bâtir un moteur. Ce qui suit ne prédit rien et n'est branché sur rien.
+// Ce sont des propriétés de la table, vraies avant qu'un thème existe,
+// toutes vérifiées exhaustivement (16/16 ou 256/256).
+//
+// ── A · LES CINQ RELATIONS SONT DES DÉCALAGES CONSTANTS ── 16/16 chacune
+//     binôme .......... +2 maisons
+//     front ........... +4
+//     front du front .. +8
+//     bouclier ........ +10
+//     antagoniste ..... +13
+//     et aucune figure n'est jamais son propre rôle (0 cas sur 64).
+//
+// ── B · PARITÉ ET BOUCLE ── 16/16
+//     maison IMPAIRE → sa figure de repos est de boucle A
+//     maison PAIRE   → boucle B
+//     L'alternance est parfaite sur les seize.
+//
+// ── C · LA LOI DE COMPOSITION DES BOUCLES ── 256/256
+//     deux figures de la MÊME boucle donnent une figure de boucle B
+//     deux figures de boucles DIFFÉRENTES donnent une figure de boucle A
+//     ☠️ Je l'avais d'abord écrite à l'envers (« même boucle → A »), et
+//     mon propre contrôle a répondu 0/256. C'est LOOP_B le sous-groupe,
+//     parce que c'est lui qui contient Populus, l'élément neutre.
+//
+// ── D · POURQUOI L'ALTERNANCE A/B EXISTE ── vérifié figure par figure
+//     Combiner avec une figure de boucle A fait TOUJOURS basculer la
+//     boucle (16/16 pour chacune des huit). Combiner avec une figure de
+//     boucle B la préserve toujours.
+//     Or les quatre pas de la marche des repos — Acquisitio, Via, Puer,
+//     Cauda Draconis — sont TOUS DE BOUCLE A. Donc chaque pas bascule,
+//     et partant de Puer (boucle A) on obtient A, B, A, B…
+//     ➜ La loi B n'est pas une coïncidence : elle découle de la loi D.
+//     ☠️ J'avais d'abord écrit « la marche alterne un pas qui bascule et
+//     un pas qui préserve ». Faux : TOUS les pas basculent, et
+//     l'explication est plus simple que celle que j'avais donnée.
+//
+// ── E · LES ÉLÉMENTS ──
+//     Les quatre figures d'AIR se reposent exactement en M3, M7, M11,
+//     M15 — toutes les maisons ≡ 3 (mod 4). Aucun des trois autres
+//     éléments n'a de régularité comparable :
+//         feu   M1, M2, M9, M16       terre M8, M10, M12, M14
+//         eau   M4, M5, M6, M13
+//     Une figure partage l'élément de sa maison de repos 4 fois sur 16 —
+//     exactement ce que donnerait le hasard. Il n'y a rien là.
+//
+// ── F · LES LIGNES ACTIVES ──
+//     Répartition du nombre de lignes à un point : 1, 4, 6, 4, 1.
+//     C'est le triangle de Pascal : les seize figures sont TOUTES les
+//     combinaisons de quatre lignes, sans exception ni doublon.
+//     Deux extrêmes : Populus (0 active, M16, boucle B) et Via
+//     (4 actives, M5, boucle A). Elles ne sont ni binômes ni
+//     antagonistes l'une de l'autre.
+//
+// ── G · CE QUI RESTE SANS RÉPONSE ──
+//     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
+//     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
+//     d'alternance engendre l'ordre mais ne dit pas pourquoi CET ordre.
+//     L'élément ne l'explique pas non plus. C'est la question ouverte de
+//     la table, et elle est notée ici pour ne pas être oubliée.
+//
+// ═══════════════════════════════════════════════════════════════
 // ✦ LA LOI D'ALTERNANCE (31/08/26) — extension du théorème d'Ellemine
 //
 // Il apporte quatre constats sur la table des repos, écrits de mémoire,
@@ -23602,7 +23666,29 @@ function autoTestAlternanceV7() {
     if (cour === rep(k + 1)) r.recon += 1;
   }
   r.periode4 = r.pasPairs.slice(0, 4).join() === r.pasPairs.slice(4, 8).join();
-  r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4);
+  // ── les lois de la récolte, vérifiées à l'exécution ──
+  r.pariteBoucle = 0;
+  for (var m = 1; m <= 16; m++) {
+    var att = (m % 2 === 1) ? 'A' : 'B';
+    if (loopOf(FIGS_V7[m - 1]) === att) r.pariteBoucle += 1;
+  }
+  r.composition = 0;
+  for (var i = 0; i < 16; i++) for (var j = 0; j < 16; j++) {
+    var a = FIGS_V7[i], b = FIGS_V7[j];
+    var attendu = (loopOf(a) === loopOf(b)) ? 'B' : 'A';
+    if (loopOf(combine(a, b)) === attendu) r.composition += 1;
+  }
+  r.decalages = 0;
+  var REL = [[BINOMES_V7, 2], [FRONT_V7, 4], [BOUCLIER_V7, 10], [ANTAGONISTES_V7, 13]];
+  for (var k2 = 1; k2 <= 16; k2++) {
+    var f2 = FIGS_V7[k2 - 1], bon = true;
+    REL.forEach(function (R) {
+      if (FIGS_V7.indexOf(R[0][f2]) + 1 !== (((k2 - 1 + R[1]) % 16) + 1)) bon = false;
+    });
+    if (bon) r.decalages += 1;
+  }
+  r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
+    && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16);
   return r;
 }
 
