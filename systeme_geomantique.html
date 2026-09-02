@@ -23855,6 +23855,101 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     raison, lui, depuis le début — j'aurais dû partir de
 //     concordanceElement au lieu de réécrire la règle à la main.
 //
+// ── M · LES DEUX DEMI-PLANS ── (sa construction, suite)
+//     Sa consigne : les antagonistes AU-DESSUS de la ligne, les binômes
+//     AU-DESSOUS ; sauf que le retour Acquisitio→Puer reste en bas et
+//     que le retour Populus→Laetitia passe en haut. « Tu auras des
+//     intersections. » Voici le dessin, calculé :
+//
+//       ╭───────────────────────────────────────────────────────╮
+//       │   HAUT : 16 antagonistes + le retour Populus→Laetitia  │
+//       │          17 arcs · 57 CROISEMENTS                      │
+//       ╰───────────────────────────────────────────────────────╯
+//        M15 M13 M11 M9 M7 M5 M3 M1 ‖ M2 M4 M6 M8 M10 M12 M14 M16
+//       ╭───────────────────────────────────────────────────────╮
+//       │   BAS : 15 binômes, dont le couvercle Acquisitio→Puer  │
+//       │         15 arcs · ZÉRO CROISEMENT                      │
+//       ╰───────────────────────────────────────────────────────╯
+//
+//     ✔✔ M.1 · LE BAS NE SE CROISE JAMAIS, ET CE N'EST PAS UN HASARD
+//         Zéro croisement en bas — et zéro quel que soit le placement des
+//         deux retours. Raison : SA LIGNE EST L'ORDRE DU BINÔME. Le
+//         demi-plan gauche lu de l'extérieur vers le trait donne M15,
+//         M13, M11, M9, M7, M5, M3, M1 — la chaîne des binômes ; le
+//         demi-plan droit donne M2, M4, M6, M8, M10, M12, M14, M16 —
+//         l'autre chaîne. Sa ligne, c'est les deux cycles de binômes mis
+//         à plat, dos à dos contre le trait. Un cycle tracé dans son
+//         propre ordre s'emboîte toujours ; il ne peut pas se croiser.
+//
+//     ✔✔ M.2 · ET LE BINÔME EST LA SEULE RELATION PLANAIRE SUR CETTE LIGNE
+//         Croisements de chaque décalage tracé seul, sur sa ligne :
+//             d= 1 ...  13     d= 9 ...  61
+//             d= 2 ...   0 ←   d=10 ...  32   (bouclier)
+//             d= 3 ...  45     d=11 ...  61
+//             d= 4 ...  16     d=12 ...  16
+//             d= 5 ...  61     d=13 ...  45   (antagoniste)
+//             d= 6 ...  32     d=14 ...   0 ←
+//             d= 7 ...  61     d=15 ...  13
+//             d= 8 ...  48
+//         Sur les quinze distances, DEUX SEULEMENT donnent zéro : le
+//         binôme et son miroir. Toutes les autres se croisent, et le
+//         maximum (61) est atteint quatre fois, à d = 5, 7, 9, 11.
+//         ⚠️ Et il faut sa ligne pour voir ça. Sur la roue ordinaire
+//         (M1..M16 dans l'ordre) le compte est plat et sans intérêt :
+//         0, 16, 32, 48, 64, 80, 96, 112, 96, 80… — une simple montée.
+//         C'est SA disposition qui fait apparaître la structure.
+//
+//     ✔✔ M.3 · CHAQUE RETOUR MONTÉ EN HAUT COÛTE EXACTEMENT DOUZE
+//         Les quatre placements possibles des deux retours :
+//             les deux en bas ................ haut 45 · bas 0
+//             son choix (AP bas, PL haut) .... haut 57 · bas 0
+//             le miroir (PL bas, AP haut) .... haut 57 · bas 0
+//             les deux en haut ............... haut 69 · bas 0
+//         45, 57, 57, 69 : douze de plus par retour monté, et les deux
+//         retours sont interchangeables — ils ne se croisent pas entre
+//         eux, chacun tient dans sa moitié. Le bas reste à zéro dans les
+//         quatre cas. ➜ Le prix d'un passage de la paix à la guerre est
+//         constant : douze.
+//
+//     ✔✔ M.4 · CE QUE POPULUS→LAETITIA NE CROISE PAS
+//         Il croise 12 des 16 arcs d'antagoniste. Les QUATRE qu'il
+//         épargne sont exactement les quatre arcs qui touchent l'une de
+//         ses deux extrémités :
+//             Via→Laetitia · Laetitia→Acquisitio (touchent Laetitia)
+//             Caput→Populus · Populus→Cauda      (touchent Populus)
+//         Un arc ne croise pas ses propres voisins ; il croise tout le
+//         reste. C'est la règle complète, sans exception.
+//
+//     ✔✔ M.5 · LE FOSSÉ — un arc qui quitte son faisceau se fait déchirer
+//         Nombre de fois où chaque arc du haut est croisé :
+//             dans un faisceau concentrique .... 2 à 6
+//             hors faisceau .................... 11 à 13
+//             entre les deux ................... RIEN (aucun arc à 7, 8, 9 ou 10)
+//         Les quatre arcs les plus croisés sont exactement les quatre qui
+//         sortent des faisceaux : Laetitia→Acquisitio 13, Puer→Puella 12,
+//         Populus→Laetitia 12, Caput→Populus 11. Le moins croisé est
+//         Populus→Cauda Draconis, à 2.
+//         ➜ La loi K.2 disait que les concentriques ne se croisent
+//         jamais. M.5 dit le revers : celui qui sort du faisceau paye.
+//
+//     ✔✔ M.6 · SA MANIPULATION ISOLE EXACTEMENT DEUX FIGURES
+//         Chaque figure porte quatre arcs — deux en haut, deux en bas.
+//         Toutes, sauf DEUX : Laetitia et Populus portent 3 en haut et 1
+//         en bas. Ce sont précisément les deux extrémités de l'arc qu'il
+//         a demandé de retourner. Aucune autre figure n'est déséquilibrée.
+//
+//     ✔✔ M.7 · UN PANIER FERMÉ, UN PANIER OUVERT
+//         En bas, le côté IMPAIR garde son couvercle (Acquisitio→Puer,
+//         qui ne croise rien et ENFERME les sept autres arcs) : la boucle
+//         A est un panier CLOS. Le côté PAIR a perdu le sien : la boucle
+//         B est une chaîne OUVERTE, sept arcs sans couvercle.
+//         ➜ Et c'est la boucle B qui est ouverte — celle qui contient
+//         Populus, l'élément neutre, celle que la loi C désigne comme le
+//         SOUS-GROUPE. Sa construction ouvre exactement le côté que
+//         l'algèbre désignait déjà comme le côté « fermé sur lui-même ».
+//
+//     ⚠️ On récolte. Rien de ceci ne touche un verdict.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -24174,6 +24269,69 @@ function autoTestAlternanceV7() {
     else r.exceptionEnergie = fl;
     if (concordanceElement(ELEMENTS_V7[fl], ELEMENTS_V7[v]) > 0) r.energieDirecte += 1;
   });
+  // ── loi M : les deux demi-plans ──
+  function arcLigneV7(a, b) {
+    var p = positionLigneV7(a), q = positionLigneV7(b);
+    return { lo: Math.min(p, q), hi: Math.max(p, q) };
+  }
+  function croiseV7(P, Q) {
+    return (P.lo < Q.lo && Q.lo < P.hi && P.hi < Q.hi)
+      || (Q.lo < P.lo && P.lo < Q.hi && Q.hi < P.hi);
+  }
+  function compteCroisV7(arcs) {
+    var t = 0;
+    for (var i = 0; i < arcs.length; i++) for (var j = i + 1; j < arcs.length; j++)
+      if (croiseV7(arcs[i], arcs[j])) t += 1;
+    return t;
+  }
+  var hautM = FIGS_V7.map(function (fm) { return arcLigneV7(fm, ANTAGONISTES_V7[fm]); });
+  var retPL = arcLigneV7('populus', 'laetitia');
+  var retAP = arcLigneV7('acquisitio', 'puer');
+  var basM = FIGS_V7.filter(function (fm2) { return fm2 !== 'populus'; })
+    .map(function (fm3) { return arcLigneV7(fm3, BINOMES_V7[fm3]); });
+  r.croisHaut = compteCroisV7(hautM.concat([retPL]));
+  r.croisBas = compteCroisV7(basM);
+  r.croisHautNu = compteCroisV7(hautM);
+  r.croisHautDeux = compteCroisV7(hautM.concat([retPL, retAP]));
+  // le binome est la seule relation planaire sur cette ligne
+  r.decalagesPlanaires = 0; r.maxCrois = 0;
+  for (var dm = 1; dm <= 15; dm++) {
+    var am = FIGS_V7.map(function (fm4) {
+      return arcLigneV7(fm4, FIGS_V7[(FIGS_V7.indexOf(fm4) + dm) % 16]);
+    });
+    var cm = compteCroisV7(am);
+    if (cm === 0) r.decalagesPlanaires += 1;
+    if (cm > r.maxCrois) r.maxCrois = cm;
+  }
+  // le retour PL epargne exactement ses quatre voisins
+  r.plEpargne = 0;
+  hautM.forEach(function (am2, im) {
+    var fm5 = FIGS_V7[im], gm = ANTAGONISTES_V7[fm5];
+    var voisin = (fm5 === 'populus' || fm5 === 'laetitia' || gm === 'populus' || gm === 'laetitia');
+    if (!croiseV7(am2, retPL) === voisin) r.plEpargne += 1;
+  });
+  // le fosse : aucun arc croise entre 7 et 10 fois
+  var tousM = hautM.concat([retPL]);
+  r.fosse = 1;
+  tousM.forEach(function (am3, im2) {
+    var c2 = 0;
+    tousM.forEach(function (bm, jm) { if (im2 !== jm && croiseV7(am3, bm)) c2 += 1; });
+    if (c2 >= 7 && c2 <= 10) r.fosse = 0;
+  });
+  // le degre : 2/2 partout sauf Laetitia et Populus
+  r.degreEquilibre = 0;
+  FIGS_V7.forEach(function (fm6) {
+    var pf = positionLigneV7(fm6), h2 = 0, b2 = 0;
+    tousM.forEach(function (am4) { if (am4.lo === pf || am4.hi === pf) h2 += 1; });
+    basM.forEach(function (bm2) { if (bm2.lo === pf || bm2.hi === pf) b2 += 1; });
+    var attendu = (fm6 === 'laetitia' || fm6 === 'populus') ? [3, 1] : [2, 2];
+    if (h2 === attendu[0] && b2 === attendu[1]) r.degreEquilibre += 1;
+  });
+  // le couvercle impair enferme les sept autres arcs de gauche
+  r.couvercle = basM.filter(function (bm3) {
+    if (bm3.lo === retAP.lo && bm3.hi === retAP.hi) return false;  // le couvercle lui-meme
+    return retAP.lo <= bm3.lo && bm3.hi <= retAP.hi && !croiseV7(bm3, retAP);
+  }).length;
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -24190,7 +24348,12 @@ function autoTestAlternanceV7() {
     && r.famillesArcs === 4 && r.croiseDedans === 0 && r.croiseDehors === 45
     && r.pyramide === 16
     && r.energieSaut === 15 && r.exceptionEnergie === 'populus'
-    && r.energieDirecte === 8);
+    && r.energieDirecte === 8
+    && r.croisBas === 0 && r.croisHautNu === 45 && r.croisHaut === 57
+    && r.croisHautDeux === 69
+    && r.decalagesPlanaires === 2 && r.maxCrois === 61
+    && r.plEpargne === 16 && r.fosse === 1
+    && r.degreEquilibre === 16 && r.couvercle === 7);
   return r;
 }
 
