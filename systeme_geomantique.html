@@ -6267,10 +6267,12 @@ function toggleValiditePanel() {
     var axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
     var axeS = combineMany([theme[2],theme[5],theme[8],theme[11]]);
     var axeCad = combineMany([theme[3],theme[6],theme[9],theme[12]]);
+    var axePartage = combineMany([theme[3],theme[5],theme[9],theme[11]]);
     var binM1 = BINOMES[theme[1]];
     var posAxeC = positionsBaseEtResultantes(axeC, theme);
     var posAxeS = positionsBaseEtResultantes(axeS, theme);
     var posAxeCad = positionsBaseEtResultantes(axeCad, theme);
+    var posAxePartage = positionsBaseEtResultantes(axePartage, theme);
     var posBinM1 = positionsBaseEtResultantes(binM1, theme);
     var invalide = themeInvalidite(theme);
 
@@ -6292,7 +6294,7 @@ function toggleValiditePanel() {
     }
 
     var html = '<h3 style="margin-bottom:2px;">🗓️ Validité du thème &amp; figure du jour</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Les TROIS axes du carré — Cardinal M1+M4+M7+M10 (angulaire), Succédent M2+M5+M8+M11, Cadent M3+M6+M9+M12 — doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide, protocole appliqué en direct au verdict. Il n\'en existe pas de quatrième : les douze maisons se partagent en exactement trois classes de pas 3, et prolonger un axe y ramène (4-7-10-1 = 1-4-7-10). L\'ancien « Axe Temporel » M3+M5+M11+M15 mélangeait deux classes et empruntait M15, un témoin hors du carré — retiré le 25/08/26 sur correction d\'Ellemine_D. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Les TROIS axes du carré — Cardinal M1+M4+M7+M10 (angulaire), Succédent M2+M5+M8+M11, Cadent M3+M6+M9+M12 — plus l\'Axe du Partage M3+M5+M9+M11 ajouté le 31/08/26 — doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide, protocole appliqué en direct au verdict. Les trois premiers sont les seules classes de pas 3 : prolonger un axe y ramène (4-7-10-1 = 1-4-7-10). Le quatrième n\'est pas une classe de pas 3 et ne prétend pas l\'être : c\'est le rectangle de deux oppositions croisées (3-9 et 5-11), dont les diagonales coupent celles du carré cardinal aux quatre paires, et qui est la part PARTAGÉE par les deux trigones de M1 et M7 — trigone(M1) ⊕ trigone(M7) = ce rectangle ⊕ M1 ⊕ M7, vérifié 2000/2000 (loi N). Coût mesuré : le taux de thèmes valides passe de 72,3 % à 63,6 %. L\'ancien « Axe Temporel » M3+M5+M11+M15, lui, reste retiré : il empruntait M15, un témoin hors du carré des douze. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
 
     html += '<div style="border-radius:10px; padding:12px 16px; margin-bottom:14px; font-weight:600; text-align:center; '
       + (invalide ? 'background:#7f1d1d; color:#fecaca;' : 'background:#166534; color:#bbf7d0;') + '">'
@@ -6323,6 +6325,7 @@ function toggleValiditePanel() {
     html += condCard('Axe Cardinal (angulaire)', 'M1 + M4 + M7 + M10', axeC, posAxeC);
     html += condCard('Axe Succédent', 'M2 + M5 + M8 + M11', axeS, posAxeS);
     html += condCard('Axe Cadent', 'M3 + M6 + M9 + M12', axeCad, posAxeCad);
+    html += condCard('Axe du Partage', 'M3 + M5 + M9 + M11', axePartage, posAxePartage);
     html += condCard('Binôme de M1 (indicatif)', 'BINOMES[' + FL[theme[1]] + ']', binM1, posBinM1);
     html += '</div>';
 
@@ -10871,7 +10874,21 @@ function analyzeValidation(theme){
     // carré des douze — c'est un des quatre témoins. Retiré.
     {label:'Axe Cardinal (M1 + M4 + M7 + M10)',houses:[1,4,7,10]},
     {label:'Axe Succédent (M2 + M5 + M8 + M11)',houses:[2,5,8,11]},
-    {label:'Axe Cadent (M3 + M6 + M9 + M12)',houses:[3,6,9,12]}
+    {label:'Axe Cadent (M3 + M6 + M9 + M12)',houses:[3,6,9,12]},
+    // ─── QUATRIÈME CONDITION (31/08/26, demande Ellemine_D) ───
+    // Le rectangle M3+M5+M9+M11. ⚠️ CE N'EST PAS UNE CLASSE MODULO 3,
+    // et le commentaire ci-dessus reste vrai : les trois axes du carré
+    // sont bien les seules classes de pas 3. Celui-ci est autre chose,
+    // et c'est SA construction (loi N) : deux oppositions croisées,
+    // 3-9 et 5-11, dont les diagonales coupent celles du carré
+    // cardinal aux quatre paires. Il est le rectangle PARTAGÉ par les
+    // deux trigones : trigone(M1) ⊕ trigone(M7) = ce rectangle ⊕ M1 ⊕ M7,
+    // vérifié 2000/2000.
+    // COÛT MESURÉ, à connaître : le taux de thèmes valides passe de
+    // 72,3 % à 63,6 % sur 4000 tirages, soit 12 % des valides actuels
+    // en moins. Sur l'archive, 46 cas valides deviennent 42 — les
+    // quatre perdus sont Juventus, TristPop, ConjCaput2 et Gel2Main.
+    {label:'Axe du Partage (M3 + M5 + M9 + M11)',houses:[3,5,9,11]}
   ];
   // ALIGNÉ (25/08/26) : cette fonction cherchait les figures d'axe EN BASE
   // SEULE (figureExistsBaseOnly), alors que themeInvalidite() et
@@ -11183,6 +11200,10 @@ function themeInvalidite(theme){
   if (!present(axeC)) manquants.push('Axe Cardinal (M1+M4+M7+M10 = '+FL[axeC]+', absent du thème)');
   if (!present(axeS)) manquants.push('Axe Succédent (M2+M5+M8+M11 = '+FL[axeS]+', absent du thème)');
   if (!present(axeCad)) manquants.push('Axe Cadent (M3+M6+M9+M12 = '+FL[axeCad]+', absent du thème)');
+  // QUATRIÈME CONDITION (31/08/26) — voir analyzeValidation() pour la
+  // raison et pour le coût mesuré (72,3 % → 63,6 % de thèmes valides).
+  const axePartage = combineMany([theme[3],theme[5],theme[9],theme[11]]);
+  if (!present(axePartage)) manquants.push('Axe du Partage (M3+M5+M9+M11 = '+FL[axePartage]+', absent du thème)');
   if (!manquants.length) return null;
   return '⛔ THÈME INVALIDE : '+manquants.join(' ; ')+' — protocole de validité structurelle (même critère que celui utilisé pour exclure les thèmes invalides des statistiques rétrospectives, maintenant appliqué en direct).';
 }
@@ -17192,7 +17213,73 @@ function partageSyntheseV7(theme) {
     partages: (e13 === e14 ? 1 : 0) + (e14 === e15 ? 1 : 0) + (e13 === e15 ? 1 : 0) };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ✦ LE MOTEUR DE LA DESTRUCTION (31/08/26) — issu de la récolte
+//
+// Il demande un moteur bâti sur la récolte. Le voici, avec son dossier
+// complet, et le dossier commence par une mauvaise nouvelle qu'il faut
+// lire avant le reste.
+//
+// ☠️ LA RÉCOLTE N'A PAS DONNÉ DE MOTEUR DE CAMP. Quatorze lois de
+// structure, toutes vraies, et AUCUNE ne bat le hasard sur les 39 duels
+// de l'archive. Huit lectures tirées des lois J, K et L, mesurées :
+//     k impair → R1 ................... 16/39  41 %  p = 0,337
+//     k ≤ 8 → R1 ...................... 20/39  51 %  p = 1,000
+//     k multiple de 4 → R1 ............ 15/39  38 %  p = 0,200
+//     R1 en boucle A → R1 ............. 21/39  54 %  p = 0,749
+//     R7 en boucle B → R1 ............. 18/39  46 %  p = 0,749
+//     R1 plus loin du trait → R1 ...... 17/36  47 %  p = 0,868
+//     R1 compatible élément avec R7 ... 19/39  49 %  p = 1,000
+// Rien. Le taux de base est 23/39 = 59 % pour R1 ; aucune lecture n'y
+// touche. Une structure exacte n'est pas une structure prédictive, et
+// c'est le résultat qu'il faut retenir de la récolte.
+//
+// 📌 IL RESTE UNE SEULE CHOSE, ET ELLE EST ÉTROITE.
+// Quand R1 et R7 sont en relation DIRECTE de destruction — c'est-à-dire
+// quand l'un est l'antagoniste de l'autre, k = 1 ou k = 15 (loi J.1) —
+// le destructeur gagne :
+//     Inter ........ Laetitia détruit Via ......... R1  ✔
+//     FortMajVia ... Via est détruite par Tristitia  R7  ✔
+//     PuerLaet ..... Puer détruit Albus ........... R1  ✔
+//     AmisTrist .... Via est détruite par Tristitia  R7  ✔
+//     CarcPuella ... Caput détruit Amissio ........ R7  ✘
+//     FortMajFMin .. Rubeus est détruit par Albus .. R7  ✔
+//     ➜ 5 sur 6.  p = 0,219 (binomial bilatéral). n = SIX.
+// ⚠️ Et deux des six portent la MÊME paire (Tristitia vs Via) : il n'y
+// a donc que cinq configurations distinctes. Ce n'est pas une preuve,
+// c'est une piste — la seule que quatorze lois aient produite.
+//
+// ➜ IL EST DONC MUET SUR 33 DUELS SUR 39, ET horsVote. Il ne décide
+// rien, il ne vote pas, il ne touche pas l'écran du verdict. Il est là
+// pour être vérifié DEHORS, sur les prochains matchs, comme le partage
+// de la synthèse avant lui. Dix déclenchements gelés et on rediscute.
+function moteurDestructionV7(theme) {
+  var r = null;
+  try { r = getRotationCombat(theme); } catch (e) { return null; }
+  if (!r || !r.figR1 || !r.figR7) return null;
+  if (typeof detruitV7 !== 'function' || typeof ANTAGONISTES_V7 === 'undefined') return null;
+  var n = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+  if (detruitV7(r.figR1) === r.figR7) {
+    return { camp: 'R1', direct: true, figR1: r.figR1, figR7: r.figR7,
+      detail: n(r.figR1) + ' est l\'antagoniste de ' + n(r.figR7) + ' : R1 détruit R7 (+3 maisons)' };
+  }
+  if (detruitV7(r.figR7) === r.figR1) {
+    return { camp: 'R7', direct: true, figR1: r.figR1, figR7: r.figR7,
+      detail: n(r.figR7) + ' est l\'antagoniste de ' + n(r.figR1) + ' : R7 détruit R1 (+3 maisons)' };
+  }
+  return { camp: null, direct: false, figR1: r.figR1, figR7: r.figR7,
+    detail: 'aucune relation directe de destruction entre R1 et R7 — le moteur se tait' };
+}
+
 var MOTEURS_V7 = [
+  { cle: 'destruction_directe', nom: 'Destruction directe — R1 et R7 antagonistes', icone: '⚔', teinte: '#f87171',
+    note: 'issu de la récolte (loi J, 31/08) — 5/6, p = 0,219, n = SIX et cinq configurations distinctes · muet sur 33 duels sur 39 · piste gelée, ne décide de rien',
+    juste: 0, total: 0, horsVote: true,
+    verdict: function (t) {
+      var d = moteurDestructionV7(t);
+      if (!d || !d.camp) return null;
+      return { camp: d.camp, detail: d.detail };
+    } },
   { cle: 'partage_synthese', nom: 'Partage de la synthèse — M13, M14, M15 à l\'élément', icone: '✦', teinte: '#facc15',
     note: 'doctrine Ellemine_D (31/08) — 29/37, équilibré 80 % contre 61 % pour l\'écran · DÉCOUVERTE sur l\'archive, jamais testée à l\'aveugle : notée, jamais décisive',
     juste: 0, total: 0, horsVote: true,
@@ -24035,6 +24122,60 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //         elles ne touchent aucun verdict. La règle du projet tient :
 //         une piste trouvée dans l'échantillon se vérifie DEHORS.
 //
+// ── O · LE MOTEUR, ET LE QUATRIÈME AXE ── (31/08/26, sa demande)
+//     « Crée le moteur et ajoute cet axe comme condition de validation
+//     de thème : axe 3-5-9-11. »
+//
+//     ✔ O.1 · LE QUATRIÈME AXE EST BRANCHÉ, SUR LES CINQ CHEMINS
+//         Le fichier avait CINQ endroits qui calculaient la validité, et
+//         chacun avait sa propre copie du test — c'est la troisième fois
+//         que ce fichier se désynchronise là-dessus. Les cinq portent
+//         maintenant l'Axe du Partage M3+M5+M9+M11 :
+//             analyzeValidation ....... le panneau de validation
+//             themeInvalidite ......... la bannière en direct
+//             isThemeValideStrict ..... le gate et les statistiques
+//             niveauValiditeV7 ........ le niveau 0-3 et les dérivés
+//             toggleValiditePanel ..... les cartes à l'écran
+//         Accord vérifié : 1500/1500 thèmes, les trois fonctions
+//         booléennes disent la même chose.
+//     ⚠️ CE N'EST PAS UNE CLASSE MODULO 3, et le fichier ne prétend pas
+//         le contraire. Les trois premiers axes sont les seules classes
+//         de pas 3 ; celui-ci est un RECTANGLE de deux oppositions
+//         croisées (3-9 et 5-11), et c'est sa loi N : la part partagée
+//         par les trigones de M1 et M7. L'ancien « Axe Temporel »
+//         M3+M5+M11+M15 reste retiré — il empruntait M15, hors du carré.
+//
+//     📊 O.2 · LE COÛT, MESURÉ AVANT DE BRANCHER
+//         thèmes valides ............. 72,3 % → 63,6 %  (sur 4000 tirages)
+//         archive ................... 46 → 42 cas valides
+//             perdus : Juventus · TristPop · ConjCaput2 · Gel2Main
+//         niveau 3 (« 100 % valide ») . 14,5 % → 8,7 %
+//             le bouton 🎯 devra tirer ~11 fois au lieu de 7 ; son
+//             plafond de 200 essais reste très largement suffisant.
+//         A/B contre la version précédente : 129 lignes changées sur
+//         2053, et elles ne touchent QUE deux champs — le rejet (10) et
+//         le niveau de validité (119). AUCUN verdict, AUCUN score,
+//         AUCUN camp, AUCUN BTTS n'a bougé. Le 4e axe filtre, il ne
+//         prédit pas.
+//
+//     ⚔ O.3 · LE MOTEUR : moteurDestructionV7
+//         Bâti sur la loi J — R1 et R7 en relation directe de
+//         destruction, c'est-à-dire l'un antagoniste de l'autre.
+//         Son dossier est écrit en entier au-dessus de la fonction, et
+//         il tient en une ligne : 5 sur 6, p = 0,219, et deux des six
+//         portent la même paire. IL EST horsVote. Il ne décide rien.
+//
+//     ☠️ O.4 · ET LA VÉRITÉ SUR LA RÉCOLTE, PUISQU'IL FAUT LA DIRE
+//         Quatorze lois de structure, toutes exactes, toutes vérifiées à
+//         l'exécution. AUCUNE ne bat le hasard sur les 39 duels de
+//         l'archive : huit lectures tirées des lois J, K et L donnent
+//         41, 51, 38, 54, 46, 47, 49 % — le taux de base est 59 %.
+//         Une structure exacte n'est pas une structure prédictive.
+//         C'est le résultat de la récolte, et il ne faut pas le
+//         maquiller : le fichier sait beaucoup mieux COMMENT la table
+//         est faite, et pas mieux qui va gagner.
+//         Ce qui manque n'est pas de la fouille — c'est des matchs.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -25708,8 +25849,17 @@ function niveauValiditeV7(theme) {
     var a = combineMany([t[1], t[4], t[7], t[10]]);
     var b = combineMany([t[2], t[5], t[8], t[11]]);
     var c = combineMany([t[3], t[6], t[9], t[12]]);
+    // QUATRIÈME CONDITION (31/08/26) — cette fonction avait, comme les
+    // trois autres avant elle, sa PROPRE copie du test des axes ; elle
+    // serait restée à trois pendant que le reste du fichier en compte
+    // quatre. C'est exactement la désynchronisation que le fichier
+    // documente déjà deux fois. Cinq chemins de validité existent
+    // (analyzeValidation · themeInvalidite · isThemeValideStrict ·
+    // celui-ci · toggleValiditePanel) et les cinq portent le 4e axe.
+    var d = combineMany([t[3], t[5], t[9], t[11]]);
     return { cardinal: { fig: a, ok: present(a, t) }, succedent: { fig: b, ok: present(b, t) },
-      cadent: { fig: c, ok: present(c, t) }, ok: present(a, t) && present(b, t) && present(c, t) };
+      cadent: { fig: c, ok: present(c, t) }, partage: { fig: d, ok: present(d, t) },
+      ok: present(a, t) && present(b, t) && present(c, t) && present(d, t) };
   };
   var binome = function (t) { var b = BINOMES_V7[t[1]]; return { fig: b, ok: present(b, t) }; };
   var base = { nom: 'thème de base', axes: axes(theme), binome: binome(theme) };
@@ -26921,7 +27071,12 @@ function isThemeValideStrict(theme){
   // aligné le 28/08/26 sur themeInvalidite(), pour que le gate live et les
   // statistiques rétrospectives disent la même chose.
   if (themeDetruit(theme)) return false;
-  return existsPresent(axeC) && existsPresent(axeS) && existsPresent(axeCad);
+  // QUATRIÈME CONDITION (31/08/26) — resynchronisée ici comme les deux
+  // précédentes, pour que le gate live et les statistiques disent la
+  // même chose. Voir analyzeValidation() pour la raison et le coût.
+  const axePartage = combineMany([theme[3],theme[5],theme[9],theme[11]]);
+  return existsPresent(axeC) && existsPresent(axeS) && existsPresent(axeCad)
+    && existsPresent(axePartage);
 }
 
 function replayEntry(entry){
