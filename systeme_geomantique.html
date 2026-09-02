@@ -14235,6 +14235,29 @@ var CAS_REFERENCE_V7 = [
   //                   détecteur, qui annonçait un incident, se trompe.
   //                   Le CSC est enregistré à part, avec son camp (dans un
   //                   2-0 pour R1, il ne peut venir que d'un joueur de R7).
+  // ─── 31/08/26 · PREMIER MATCH GELÉ EN RÉEL — Aston Villa 0-1 Arsenal ───
+  // ⚠️⚠️ LIRE D'ABORD CECI. Les deux thèmes ci-dessous sont LE MÊME MATCH,
+  // gelés à l'avance dans PREDICTIONS_GELEES.md. Ils ne valent PAS deux
+  // observations de football — un seul Aston Villa-Arsenal a eu lieu.
+  //
+  // ☠️ ET LE GEL A ÉTÉ CASSÉ PAR MOI. Le thème MACHINE annonçait « R1 1-0 »
+  // au commit du gel (3110811). J'ai ensuite reconstruit le moteur (V8,
+  // commit a70f8f9) et le même thème annonce maintenant « R7 0-1 » —
+  // c'est-à-dire exactement le score réel. CE N'EST PAS UNE RÉUSSITE :
+  // c'est une prédiction changée après coup. Le seul verdict qui compte
+  // pour ce match est celui du commit du gel, R1 1-0, et il est FAUX.
+  // Vérifié en rejouant le thème sur quatre commits (3110811 · a70f8f9 ·
+  // 843f5bc · HEAD) : le basculement date bien de la reconstruction V8.
+  // ➜ CORRECTIF DE PROTOCOLE : tout bloc gelé doit désormais porter le
+  // hash du commit qui l'a produit, et se juger contre CE build.
+  { nom: 'VillaMachine', meres: ['puella','populus','fortuna_minor','acquisitio'],
+    score: '0-1', camp: 'R7', btts: false,
+    corners: 6, cornersM1: 2, cornersM7: 4, cornersDominant: 'R7',
+    note: 'GELÉ · thème MACHINE (hachage du match, aucune information sur l\'issue) · verdict au gel R1 1-0 ✘ camp · BTTS non ✔ · rejeté par les axes (le 4e, du Partage, tombe) · ⚔ destruction directe : Acquisitio est l\'antagoniste de Laetitia → R7, JUSTE, première sortie à l\'aveugle · ✦ partage de la synthèse → R7, JUSTE · ☠️ verdict changé après le gel par la reconstruction V8, voir le commentaire au-dessus' },
+  { nom: 'VillaMain', meres: ['amissio','conjunctio','carcer','cauda_draconis'],
+    score: '0-1', camp: 'R7', btts: false,
+    corners: 6, cornersM1: 2, cornersM7: 4, cornersDominant: 'R7',
+    note: 'GELÉ · MÊME MATCH que VillaMachine · thème à la main d\'Ellemine_D · verdict nul 1-1 ✘ camp ✘ score · BTTS oui ✘ (0-1) · porte du nul OUVERTE ✘ fausse alerte · validation 3/3 + figure du jour, le mieux validé des deux, et le plus faux — troisième fois que le niveau de validité joue à l\'envers · ✦ partage de la synthèse → R7, JUSTE' },
   { nom: 'PuellaAlbus', meres: ['puella','albus','populus','laetitia'],
     score: '2-0', htScore: '0-0', camp: 'R1', btts: false,
     incident: false, csc: true, cscCamp: 'M7',
@@ -17249,6 +17272,14 @@ function partageSyntheseV7(theme) {
 // a donc que cinq configurations distinctes. Ce n'est pas une preuve,
 // c'est une piste — la seule que quatorze lois aient produite.
 //
+// ✔ PREMIÈRE SORTIE À L'AVEUGLE (01/09/26) — Aston Villa 0-1 Arsenal.
+//     Sur le thème MACHINE : Acquisitio (R7) est l'antagoniste de
+//     Laetitia (R1), donc R7 détruit R1 → R7. RÉEL : R7. JUSTE.
+//     C'est sa première prédiction faite avant le match, et elle tombe
+//     juste là où l'écran se trompait. Le dossier passe à 6/7.
+//     ⚠️ n = SEPT. p brut 0,125. Rien n'est démontré ; il reste horsVote
+//     et il le restera jusqu'à dix déclenchements gelés.
+//
 // ➜ IL EST DONC MUET SUR 33 DUELS SUR 39, ET horsVote. Il ne décide
 // rien, il ne vote pas, il ne touche pas l'écran du verdict. Il est là
 // pour être vérifié DEHORS, sur les prochains matchs, comme le partage
@@ -17273,7 +17304,7 @@ function moteurDestructionV7(theme) {
 
 var MOTEURS_V7 = [
   { cle: 'destruction_directe', nom: 'Destruction directe — R1 et R7 antagonistes', icone: '⚔', teinte: '#f87171',
-    note: 'issu de la récolte (loi J, 31/08) — 5/6, p = 0,219, n = SIX et cinq configurations distinctes · muet sur 33 duels sur 39 · piste gelée, ne décide de rien',
+    note: 'issu de la récolte (loi J, 31/08) — 6/7 après Aston Villa-Arsenal, dont la PREMIÈRE sortie à l\'aveugle, juste (R7) · reste n = SEPT et six configurations distinctes, p brut 0,125 · muet sur 34 duels sur 41 · piste gelée, ne décide de rien',
     juste: 0, total: 0, horsVote: true,
     verdict: function (t) {
       var d = moteurDestructionV7(t);
@@ -17281,7 +17312,7 @@ var MOTEURS_V7 = [
       return { camp: d.camp, detail: d.detail };
     } },
   { cle: 'partage_synthese', nom: 'Partage de la synthèse — M13, M14, M15 à l\'élément', icone: '✦', teinte: '#facc15',
-    note: 'doctrine Ellemine_D (31/08) — 29/37, équilibré 80 % contre 61 % pour l\'écran · DÉCOUVERTE sur l\'archive, jamais testée à l\'aveugle : notée, jamais décisive',
+    note: 'doctrine Ellemine_D (31/08) — 31/41 · ses DEUX premières sorties à l\'aveugle sont justes : R7 sur les deux thèmes gelés d\'Aston Villa-Arsenal, là où l\'écran disait R1 puis nul · mais les deux portent le MÊME match, cela ne fait qu\'UNE observation · découverte sur l\'archive, notée, jamais décisive',
     juste: 0, total: 0, horsVote: true,
     verdict: function (t) {
       var p = partageSyntheseV7(t);
