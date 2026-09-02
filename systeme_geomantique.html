@@ -23485,11 +23485,11 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // ✦ LA RÉCOLTE (31/08/26) — « on récolte les détails d'abord »
 //
 // ┌───────────────────────────────────────────────────────────────┐
-// │  L'INVENTAIRE — QUINZE LOIS, ET CE QUI LES GARDE              │
+// │  L'INVENTAIRE — DIX-SEPT LOIS, ET CE QUI LES GARDE            │
 // └───────────────────────────────────────────────────────────────┘
 // Tout ce que la fouille a établi est ici, et chaque loi de STRUCTURE
 // est revérifiée à chaque appel de autoTestAlternanceV7(), qui rend
-// tout: true seulement si les cinquante-six contrôles passent. Une loi
+// tout: true seulement si les soixante-sept contrôles passent. Une loi
 // qui céderait un jour ferait basculer ce drapeau — elle n'est pas
 // seulement écrite, elle est gardée.
 //
@@ -23532,6 +23532,10 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //       trigone(M1) ⊕ trigone(M7) = rectangle ⊕ M1 ⊕ M7 . partageTrigones 1
 //       les quatre diagonales se croisent .............. diagonales 4
 //   O · le moteur de la destruction et le quatrième axe ...... (mesures, pas structure)
+//   P · les triangles du carré : sa règle et son domaine exact . triTotal 220
+//       un par axe et sans voisines → toujours isocèle ... triUnParAxeSansVoisin 28 / Scal 0
+//       même axe toujours isocèle, deux axes jamais ...... triMemeAxeIso 12 · triDeuxAxesScal 144
+//   Q · l'affirmation d'une trajectoire ....................... (mesures, pas structure)
 //   G · ce qui reste sans réponse ............ (en dernier, rien à vérifier)
 //
 // ⚠️ L'ORDRE DES LETTRES. G a été écrite avant H à O et elle est restée
@@ -24248,6 +24252,50 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     ne distingue une force « offensive » d'une force « défensive » dans
 //     les données enregistrées. La géométrie est donnée ; le lien aux
 //     événements reste à mesurer, et il faudra des matchs pour ça.
+//
+// ── Q · L'AFFIRMATION D'UNE TRAJECTOIRE ── (sa règle, 01/09/26)
+//     « La somme de la trajectoire résulte une figure ; si elle existe
+//     dans le thème, oui. Le comment réside dans sa position, son
+//     environnement et son influence. »
+//
+//     ✔ Q.1 · LA PREMIÈRE MOITIÉ EST DÉJÀ LE PROTOCOLE DU FICHIER.
+//         « Exister en base ou en résultante » est positionsBaseEtResultantes,
+//         le test même des quatre axes de validité. Sa règle applique au
+//         triangle ce que le fichier appliquait déjà à l'axe. Cohérent.
+//
+//     ☠️ Q.2 · MAIS LE OUI/NON NE FILTRE PRESQUE RIEN — 87 %
+//         Un thème contient en moyenne 13,9 des 16 figures (base ou
+//         résultante), mesuré sur 4000 tirages. Demander si une figure
+//         est là, c'est poser une question dont la réponse est oui neuf
+//         fois sur dix. Sur les quatorze trajectoires des deux pôles,
+//         l'affirmation tombe entre 80 % (5-7-12, la plus sélective) et
+//         96 % (1-9-11, 2-7-9, 7-9-11).
+//         C'est aussi pourquoi les quatre axes de validité ne servent
+//         qu'ENSEMBLE : seuls ils passent à 86-91 %, tous les quatre à
+//         la fois seulement à 63 %.
+//
+//     ☠️ Q.3 · ET LE OUI/NON NE PRÉDIT RIEN — 0 sur 14
+//         Quatorze tests directionnels (une trajectoire de M1 qui affirme
+//         devrait annoncer R1, une de M7 devrait annoncer R7) :
+//             survivants à Bonferroni (0,0036) ..... ZÉRO
+//             sous 0,05 brut ....................... ZÉRO
+//             attendus par le hasard ............... 0,7
+//         Pas une touche. Meilleur p : 0,187.
+//
+//     ✔✔ Q.4 · DONC C'EST SA SECONDE MOITIÉ QUI PORTE TOUT
+//         Le oui étant quasi gratuit, l'information est entièrement dans
+//         « sa position, son environnement et son influence » — ses
+//         propres mots. lectureTrajectoireV7 les rend dans cet ordre :
+//             position ...... maison, base ou résultante, élément de la
+//                             maison, concordance avec la figure
+//             environnement . les deux maisons qui bordent chaque position
+//             influence ..... le lien de la résultante à R1 et à R7
+//                             (binôme, front, bouclier, antagoniste,
+//                             front du front, destruction) et la boucle
+//         Affichée sous chaque préréglage de la somme. Elle ne décide de
+//         rien : elle donne à lire, et elle porte l'avertissement du
+//         point Q.2 à chaque affichage, pour qu'un « oui » ne soit jamais
+//         pris pour une preuve.
 //
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
@@ -28774,6 +28822,120 @@ function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; rende
   setTimeout(()=>{ try { if(currentTheme) showRelationArrows(pos); } catch(e){} }, 0);
 },3000);}
 function calculateHouseSum(){if(!currentTheme){document.getElementById('sum-result').innerHTML='<div class="bad">Lance le theme d abord.</div>'; return;} const mode=document.getElementById('sumModeBottom').value; const selected=sumSlots.map(slot=>{const raw=document.getElementById(`${slot}Bottom`).value; return raw===''?null:Number(raw);}).filter(Boolean); if(!selected.length){document.getElementById('sum-result').innerHTML='<div class="warn">Sélectionne au moins une maison.</div>'; return;} let figs=[],labels=[]; if(mode==='fixed'){figs=selected.map(h=>currentTheme[h]); labels=selected.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=selected.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${selected[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Mode :</b> ${mode==='fixed'?'fixe':'rotation'}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
+// ═══════════════════════════════════════════════════════════════
+// ✦ LA LECTURE D'UNE TRAJECTOIRE (01/09/26, doctrine Ellemine_D)
+//
+// Sa règle, mot pour mot : « pour vérifier si la trajectoire donne un
+// verdict d'affirmation c'est comme la validation d'un thème, c'est-à-
+// dire la somme de la trajectoire résulte une figure ; si elle existe
+// dans le thème, oui. Le comment réside dans sa position, son
+// environnement et son influence dans le thème. »
+//
+// ✔ LA PREMIÈRE MOITIÉ EST DÉJÀ LE PROTOCOLE DU FICHIER. « La figure
+// existe-t-elle en base ou en résultante » est exactement ce que fait
+// positionsBaseEtResultantes, et c'est le test des quatre axes de
+// validité. Sa règle n'invente rien : elle APPLIQUE le protocole du
+// thème à une trajectoire. C'est cohérent, et c'est bien vu.
+//
+// ☠️ MAIS MESURÉ, LE OUI/NON NE FILTRE PRESQUE RIEN.
+// Sur les quatorze trajectoires des deux pôles, l'affirmation tombe
+// entre 80 % et 96 % des cas de l'archive :
+//     1-9-11 · 2-7-9 · 7-9-11 .... 96 %
+//     1-5-9 · 1-6-11 ............. 95 %
+//     5-7-12 ..................... 80 %   ← la plus sélective
+// La raison est structurelle, et elle vaut pour toute figure :
+// UN THÈME CONTIENT EN MOYENNE 13,9 DES 16 FIGURES (base ou résultante),
+// mesuré sur 4000 tirages — 87 %. Demander « cette figure est-elle
+// là ? » revient donc à poser une question dont la réponse est oui neuf
+// fois sur dix. Ce n'est pas un filtre, c'est presque un passe-droit.
+// C'est d'ailleurs pour ça que les quatre axes de validité ne servent
+// qu'ENSEMBLE : pris un par un ils passent à 86-91 %, tous les quatre à
+// la fois seulement à 63 %.
+//
+// ☠️ ET LE OUI/NON NE PRÉDIT RIEN. Quatorze tests directionnels — une
+// trajectoire de M1 qui affirme devrait annoncer R1, une de M7 devrait
+// annoncer R7 :
+//     survivants à Bonferroni (seuil 0,0036) ...... ZÉRO
+//     sous 0,05 brut .............................. ZÉRO
+//     attendus par le seul hasard ................. 0,7
+// Pas une seule touche. Le meilleur p est 0,187.
+//
+// ✔✔ DONC C'EST LA SECONDE MOITIÉ DE SA PHRASE QUI PORTE TOUT.
+// Puisque le oui est quasi gratuit, toute l'information est dans « sa
+// position, son environnement et son influence » — les trois mots qu'il
+// a écrits lui-même. lectureTrajectoireV7 les rend, dans cet ordre.
+// Elle ne décide de rien : elle donne à lire.
+function lectureTrajectoireV7(theme, maisons) {
+  if (!theme || !maisons || !maisons.length) return null;
+  var figs = maisons.map(function (h) { return theme[h]; });
+  if (figs.some(function (f) { return !f; })) return null;
+  var res = figs.reduce(function (a, b) { return a === null ? b : combine(a, b); }, null);
+  var nom = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+
+  // ── 1 · L'AFFIRMATION : la résultante est-elle dans le thème ? ──
+  var places = [];
+  try { places = positionsBaseEtResultantes(res, theme) || []; } catch (e) { places = []; }
+  var affirme = places.length > 0;
+
+  // ── 2 · LA POSITION : où, et en base ou en résultante ──
+  var positions = [];
+  try {
+    (trouverFigV7(res, theme) || []).forEach(function (o) {
+      var el = (typeof MAISON_ELEM_V7 !== 'undefined') ? MAISON_ELEM_V7[o.pos] : null;
+      positions.push({
+        maison: o.pos,
+        source: o.hidden ? 'résultante' : 'base',
+        elemMaison: el,
+        elemFigure: ELEMENTS_V7[res],
+        concordance: el ? concordanceElement(ELEMENTS_V7[res], el) : null,
+        surLaTrajectoire: maisons.indexOf(o.pos) >= 0
+      });
+    });
+  } catch (e) { /* positions reste vide */ }
+
+  // ── 3 · L'ENVIRONNEMENT : ce qui borde chaque position ──
+  positions.forEach(function (P) {
+    var av = ((P.maison - 2 + 16) % 16) + 1, ap = (P.maison % 16) + 1;
+    P.avant = { maison: av, figure: theme[av] };
+    P.apres = { maison: ap, figure: theme[ap] };
+  });
+
+  // ── 4 · L'INFLUENCE : quel lien la résultante a-t-elle avec les deux chefs ──
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { rot = null; }
+  function lien(a, b) {
+    if (!a || !b) return null;
+    if (a === b) return 'la figure elle-même';
+    if (BINOMES_V7[b] === a) return 'binôme';
+    if (FRONT_V7[b] === a) return 'front';
+    if (BOUCLIER_V7[b] === a) return 'bouclier';
+    if (ANTAGONISTES_V7[b] === a) return 'antagoniste';
+    if (typeof frontDuFrontV7 === 'function' && frontDuFrontV7(b) === a) return 'front du front';
+    if (typeof detruitV7 === 'function' && detruitV7(b) === a) return 'elle détruit ce chef';
+    if (typeof detruitV7 === 'function' && detruitV7(a) === b) return 'ce chef la détruit';
+    return null;
+  }
+  var influence = null;
+  if (rot && rot.figR1 && rot.figR7) {
+    influence = {
+      figR1: rot.figR1, figR7: rot.figR7,
+      versR1: lien(res, rot.figR1), versR7: lien(res, rot.figR7),
+      memeBoucleR1: loopOf(res) === loopOf(rot.figR1),
+      memeBoucleR7: loopOf(res) === loopOf(rot.figR7)
+    };
+  }
+  return {
+    maisons: maisons, figures: figs, resultante: res, nomResultante: nom(res),
+    affirme: affirme, nbPositions: positions.length,
+    positions: positions, influence: influence,
+    // ⚠️ à afficher partout où l'affirmation est montrée : le oui ne vaut
+    // presque rien, c'est la position qui parle.
+    avertissement: affirme
+      ? 'affirme — mais 87 % des figures sont présentes dans un thème quelconque : le oui ne discrimine presque pas, lis la position'
+      : 'se tait — et c\'est le cas rare : moins d\'un sur huit'
+  };
+}
+
 // ─── LES PRÉRÉGLAGES SONT REFAITS (01/09/26, doctrine Ellemine_D) ───
 // Les anciens étaient des listes de maisons sans nom ni raison — '3D'
 // valait [2,3,11,8,9,14], et '4D' treize maisons dont deux répétées
@@ -28829,7 +28991,45 @@ function applyPresetSum(name){
     + (meta.reduit
         ? '<div class="kv muted" style="font-size:11px;">⚠️ loi N.3 — cette trajectoire s\'effondre : '
           + 'elle vaut ' + meta.reduit + ', elle ne contient donc pas toutes les maisons qu\'elle traverse.</div>'
-        : '');
+        : '')
+    + rendreLectureTrajectoireV7(currentTheme, houses);
+}
+
+// L'affichage de sa règle : l'affirmation, puis la position, puis
+// l'environnement, puis l'influence. Voir lectureTrajectoireV7 pour
+// pourquoi le oui/non est presque toujours oui.
+function rendreLectureTrajectoireV7(theme, maisons) {
+  var L = null;
+  try { L = lectureTrajectoireV7(theme, maisons); } catch (e) { return ''; }
+  if (!L) return '';
+  var n = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+  var h = '<div style="margin-top:10px; padding:9px 12px; border-radius:8px; '
+    + 'background:#0f172a; border:1px solid ' + (L.affirme ? '#4ade80' : '#f87171') + ';">'
+    + '<div style="font-size:12px; font-weight:800; color:' + (L.affirme ? '#bbf7d0' : '#fecaca') + ';">'
+    + (L.affirme ? '✔ LA TRAJECTOIRE AFFIRME' : '✘ LA TRAJECTOIRE SE TAIT')
+    + ' — ' + L.nomResultante + '</div>'
+    + '<div style="font-size:10px; color:#94a3b8; margin:3px 0 6px;">' + L.avertissement + '</div>';
+  if (L.positions.length) {
+    h += '<div style="font-size:11px; color:#e2e8f0;"><b>Position</b> — '
+      + L.positions.map(function (P) {
+          return 'M' + P.maison + ' (' + P.source + ', maison ' + (P.elemMaison || '?')
+            + ', concordance ' + (P.concordance === null ? '?' : P.concordance) + ')';
+        }).join(' · ') + '</div>'
+      + '<div style="font-size:11px; color:#cbd5e1; margin-top:3px;"><b>Environnement</b> — '
+      + L.positions.map(function (P) {
+          return 'M' + P.maison + ' entre ' + n(P.avant.figure) + ' (M' + P.avant.maison + ') et '
+            + n(P.apres.figure) + ' (M' + P.apres.maison + ')';
+        }).join(' · ') + '</div>';
+  }
+  if (L.influence) {
+    h += '<div style="font-size:11px; color:#cbd5e1; margin-top:3px;"><b>Influence</b> — '
+      + 'R1 ' + n(L.influence.figR1) + ' : ' + (L.influence.versR1 || 'aucun lien direct')
+      + (L.influence.memeBoucleR1 ? ', même boucle' : ', boucle opposée')
+      + ' &nbsp;·&nbsp; R7 ' + n(L.influence.figR7) + ' : ' + (L.influence.versR7 || 'aucun lien direct')
+      + (L.influence.memeBoucleR7 ? ', même boucle' : ', boucle opposée')
+      + '</div>';
+  }
+  return h + '</div>';
 }
 function compareWithReality(){
   if(!currentTheme) return;
