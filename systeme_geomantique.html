@@ -1288,7 +1288,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
   <p class="sub">Carré extérieur + carré central tourné à 45° (ses 4 pointes = les maisons angulaires I/IV/VII/X, aux milieux des côtés) + carré intérieur vide au centre. Les 8 triangles restants portent les maisons succédentes/cadentes. Même thème que la matrice ci-dessus.</p>
   <div class="row" style="margin:6px 0 10px;">
     <div class="field"><label>Trajectoires à tracer</label>
-      <select id="carreTrajSelect" onchange="redessinerCarreGeoV7()">
+      <select id="carreTrajSelect" onchange="isolerTrajectoireV7(null); redessinerCarreGeoV7()">
         <option value="aucune">Aucune — les trois axes seuls</option>
         <option value="trigones">Les 4 trigones (les seuls équilatéraux)</option>
         <option value="m1">Les 7 trajectoires de M1</option>
@@ -1300,6 +1300,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
   </div>
   <svg id="carre-geo-svg" viewBox="0 0 400 400"></svg>
   <div id="carre-geo-legende" style="font-size:11px; margin:8px auto 0; max-width:560px; line-height:1.9;"></div>
+  <div id="carre-geo-lecture" style="margin:10px auto 0; max-width:560px;"></div>
   <div id="carre-geo-verdict"></div>
 </div>
 
@@ -1975,12 +1976,25 @@ function renderCarreGeomantique(theme){
     var selU = document.getElementById('carreTrajUne');
     if (selU) une = selU.value;
   } catch (e) { /* panneau absent : on ne trace que les axes */ }
-  var aTracer = trajectoiresCarreV7(choix, une);
+  var aTracer = trajectoiresAffichéesV7(choix, une);
   aTracer.forEach(function (T) {
     var pts = T.maisons.map(centreMaisonV7);
     var d = pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' ');
-    html += '<polygon points="' + d + '" style="fill:none; stroke:#e2e8f0; stroke-width:2px; '
-      + 'stroke-dasharray:7 4; stroke-linejoin:round; opacity:.9; pointer-events:none;"></polygon>';
+    var estIsolee = (trajIsoleeV7 === T.nom);
+    // ⚠️ ZONE DE CLIC SÉPARÉE. Le trait visible fait 2 px : viser 2 px à la
+    // souris est impossible en pratique, et le clic tombait dans le vide
+    // (fill:none + pointer-events:stroke = seul le trait est cliquable).
+    // Constaté en cliquant vraiment, pas en relisant le code. On pose donc
+    // un polygone JUMEAU, transparent, épais de 16 px, qui porte le clic ;
+    // le trait visible, lui, n'écoute plus rien.
+    html += '<polygon points="' + d + '" data-traj="' + T.nom + '"'
+      + ' onclick="isolerTrajectoireV7(\'' + T.nom + '\')"'
+      + ' style="fill:none; stroke:transparent; stroke-width:16px; '
+      + 'pointer-events:stroke; cursor:pointer;"></polygon>';
+    html += '<polygon points="' + d + '"'
+      + ' style="fill:none; stroke:#e2e8f0; stroke-width:' + (estIsolee ? 3.2 : 2) + 'px; '
+      + 'stroke-dasharray:7 4; stroke-linejoin:round; opacity:' + (estIsolee ? 1 : 0.9) + '; '
+      + 'pointer-events:none;"></polygon>';
     // ⚠️ L'ÉTIQUETTE N'EST PAS AU CENTROÏDE. Les quatre trigones ont
     // EXACTEMENT le même centre — le milieu du carré — et leurs quatre
     // noms se superposaient les uns sur les autres et sur les cases
@@ -2011,6 +2025,7 @@ function renderCarreGeomantique(theme){
   });
   svg.innerHTML = html;
   majLegendeCarreV7(AXES_CARRE_V7, aTracer);
+  majLectureCarreV7(theme, aTracer);
 }
 
 // ⚠️ CE BLOC DE SCRIPT EST UNE IIFE : renderCarreGeomantique y est privée,
@@ -2029,6 +2044,15 @@ var TRAJ_CARRE_V7 = {
   m1: [[1, 3, 5], [1, 3, 8], [1, 3, 11], [1, 5, 9], [1, 6, 8], [1, 6, 11], [1, 9, 11]],
   m7: [[2, 7, 9], [2, 7, 12], [3, 5, 7], [3, 7, 11], [5, 7, 9], [5, 7, 12], [7, 9, 11]]
 };
+// ─── L'ISOLEMENT AU CLIC (01/09/26, demande Ellemine_D) ───
+// « Quand on clique sur une trajectoire les autres ne doivent pas
+// s'afficher, pour avoir une meilleure vue. » Un second clic sur la même
+// rend la famille. Changer de famille dans le menu remet tout à zéro.
+var trajIsoleeV7 = null;
+window.isolerTrajectoireV7 = function (nom) {
+  trajIsoleeV7 = (trajIsoleeV7 === nom) ? null : nom;
+  window.redessinerCarreGeoV7();
+};
 function trajectoiresCarreV7(choix, une) {
   function pack(a) { return { maisons: a, nom: a.join('-') }; }
   if (choix === 'trigones') return TRAJ_CARRE_V7.trigones.map(pack);
@@ -2039,6 +2063,15 @@ function trajectoiresCarreV7(choix, une) {
     if (t.length === 3 && t.every(function (x) { return x >= 1 && x <= 12; })) return [pack(t)];
   }
   return [];
+}
+// Enveloppe : applique l'isolement par-dessus le choix de famille.
+function trajectoiresAffichéesV7(choix, une) {
+  var toutes = trajectoiresCarreV7(choix, une);
+  if (!trajIsoleeV7) return toutes;
+  var seule = toutes.filter(function (T) { return T.nom === trajIsoleeV7; });
+  // si l'isolée n'appartient plus à la famille choisie, l'isolement tombe
+  if (!seule.length) { trajIsoleeV7 = null; return toutes; }
+  return seule;
 }
 // Peuple le menu « une trajectoire précise » avec les VINGT-HUIT de la
 // loi P : une maison par axe, aucune paire de maisons voisines. Ce sont
@@ -2061,6 +2094,99 @@ function peuplerTrajectoiresCarreV7() {
   sel.innerHTML = out.map(function (o) {
     return '<option value="' + o.cle + '">' + o.cle + ' — ' + o.nat + '</option>';
   }).join('');
+}
+
+// ═══ LA FENÊTRE SOUS LE CARRÉ (01/09/26, demande Ellemine_D) ═══
+// « Dans une fenêtre au-dessous, fais le résultat si elle existe ou pas
+// dans le thème, avec une barre de pourcentage de son influence. »
+//
+// 📏 CE QUE MESURE LA BARRE, ÉCRIT SUR L'ÉCRAN PLUTÔT QUE CACHÉ.
+//     influence = (positions en BASE × 1 + positions en RÉSULTANTE × 0,5) / 16
+// La résultante compte moitié parce qu'elle est cachée : elle n'occupe pas
+// la maison, elle y transparaît. Aucune autre pondération, aucun mélange
+// avec la concordance ou les liens de camp — ceux-là sont affichés à côté,
+// en clair, pour qu'on ne prenne pas un score composite pour une mesure.
+//
+// 📐 ET L'ÉCHELLE EST MESURÉE, pour qu'un pourcentage veuille dire quelque
+// chose. Sur 32 000 couples (figure, thème) — 2000 thèmes × 16 figures :
+//     minimum 0 %  ·  1er quartile 3,1 %  ·  MÉDIANE 9,4 %
+//     3e quartile 12,5 %  ·  9e décile 18,8 %  ·  maximum observé 53,1 %
+// La barre va donc de 0 à 56 % et porte un repère à la médiane. Sans ce
+// repère, « 12 % » ne se lit pas ; avec, on voit tout de suite que c'est
+// au-dessus de l'ordinaire.
+var INFLUENCE_MEDIANE_V7 = 9.4, INFLUENCE_MAX_V7 = 56;
+function majLectureCarreV7(theme, traj) {
+  var el = document.getElementById('carre-geo-lecture');
+  if (!el) return;
+  if (!traj || traj.length !== 1) {
+    el.innerHTML = '<div style="font-size:11px; color:#94a3b8; text-align:center; padding:8px;">'
+      + (traj && traj.length
+          ? 'Clique une trajectoire pour l\'isoler et lire son verdict — les autres disparaîtront.'
+          : 'Choisis une famille de trajectoires ci-dessus, puis clique celle que tu veux lire.')
+      + '</div>';
+    return;
+  }
+  var T = traj[0];
+  var L = null;
+  try { L = lectureTrajectoireV7(theme, T.maisons); } catch (e) { L = null; }
+  if (!L) { el.innerHTML = ''; return; }
+  var nom = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+  var nBase = L.positions.filter(function (P) { return P.source === 'base'; }).length;
+  var nRes = L.positions.filter(function (P) { return P.source === 'résultante'; }).length;
+  var inf = (nBase + 0.5 * nRes) / 16 * 100;
+  var pctBarre = Math.min(100, inf / INFLUENCE_MAX_V7 * 100);
+  var pctMed = INFLUENCE_MEDIANE_V7 / INFLUENCE_MAX_V7 * 100;
+  var teinte = L.affirme ? '#199e70' : '#d95926';
+
+  var h = '<div style="border:1px solid ' + teinte + '; border-radius:10px; padding:11px 14px; '
+    + 'background:#0f172a;">'
+    + '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;">'
+    + '<b style="font-size:13px; color:#e2e8f0;">Trajectoire ' + T.nom + '</b>'
+    + '<span style="font-size:12px; font-weight:800; color:' + teinte + ';">'
+    + (L.affirme ? '✔ EXISTE DANS LE THÈME' : '✘ ABSENTE DU THÈME') + '</span></div>'
+    + '<div style="font-size:12px; color:#cbd5e1; margin-top:4px;">Somme des maisons M'
+    + T.maisons.join(' + M') + ' = <b>' + L.nomResultante + '</b></div>';
+
+  // la barre — échelle nommée, repère de médiane, valeur écrite en toutes lettres
+  h += '<div style="margin-top:9px;">'
+    + '<div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8;">'
+    + '<span>Influence dans le thème</span><span><b style="color:#e2e8f0; font-size:12px;">'
+    + inf.toFixed(1) + ' %</b></span></div>'
+    + '<div style="position:relative; height:13px; background:#1e293b; border-radius:7px; '
+    + 'margin-top:3px; overflow:hidden;">'
+    + '<div style="width:' + pctBarre + '%; height:100%; background:' + teinte + '; border-radius:7px;"></div>'
+    + '<div style="position:absolute; left:' + pctMed + '%; top:0; width:2px; height:100%; '
+    + 'background:#e2e8f0; opacity:.85;"></div>'
+    + '</div>'
+    + '<div style="display:flex; justify-content:space-between; font-size:9.5px; color:#64748b; margin-top:2px;">'
+    + '<span>0 %</span><span style="color:#cbd5e1;">| médiane ' + INFLUENCE_MEDIANE_V7 + ' %</span>'
+    + '<span>' + INFLUENCE_MAX_V7 + ' %</span></div>'
+    + '<div style="font-size:9.5px; color:#64748b; margin-top:3px;">'
+    + nBase + ' position' + (nBase > 1 ? 's' : '') + ' en base (×1) · ' + nRes + ' en résultante (×0,5) '
+    + '→ (' + nBase + ' + ' + (0.5 * nRes) + ') / 16. Échelle mesurée sur 32 000 couples figure-thème.</div>'
+    + '</div>';
+
+  if (L.positions.length) {
+    h += '<div style="font-size:11px; color:#cbd5e1; margin-top:7px;"><b>Position</b> — '
+      + L.positions.map(function (P) {
+          return 'M' + P.maison + ' (' + P.source + ', maison ' + (P.elemMaison || '?')
+            + ', concordance ' + (P.concordance === null ? '?' : P.concordance) + ')';
+        }).join(' · ') + '</div>'
+      + '<div style="font-size:11px; color:#cbd5e1; margin-top:2px;"><b>Environnement</b> — '
+      + L.positions.map(function (P) {
+          return 'M' + P.maison + ' entre ' + nom(P.avant.figure) + ' et ' + nom(P.apres.figure);
+        }).join(' · ') + '</div>';
+  }
+  if (L.influence) {
+    h += '<div style="font-size:11px; color:#cbd5e1; margin-top:2px;"><b>Influence sur les chefs</b> — '
+      + 'R1 ' + nom(L.influence.figR1) + ' : ' + (L.influence.versR1 || 'aucun lien direct')
+      + ' · R7 ' + nom(L.influence.figR7) + ' : ' + (L.influence.versR7 || 'aucun lien direct') + '</div>';
+  }
+  h += '<div style="font-size:9.5px; color:#94a3b8; margin-top:6px; border-top:1px solid #1e293b; padding-top:5px;">'
+    + '⚠️ ' + L.avertissement + '</div>'
+    + '<div style="font-size:9.5px; color:#64748b; margin-top:3px;">Clique à nouveau la trajectoire pour revoir toute la famille.</div>'
+    + '</div>';
+  el.innerHTML = h;
 }
 
 function majLegendeCarreV7(axes, traj) {
