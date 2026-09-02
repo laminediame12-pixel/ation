@@ -15934,22 +15934,10 @@ function bancMoteursV7(force) {
         juste: juste, total: total, abstentions: abstentions, details: details };
     });
   }
-  // Le VOTE est noté comme les autres, mais il ne siège pas dans
-  // MOTEURS_V7 : il voterait pour lui-même. Il est ajouté ici, à part,
-  // avec le départage réel (égalité → F4P4) — c'est ce qui pilote.
-  var moteurVote = {
-    cle: '_vote', nom: '⚑ VOTE DES MOTEURS (au volant)', icone: '', teinte: '#c4b5fd',
-    juste: 0, total: 0,
-    verdict: function (t) {
-      var v = voteMoteursV7(t);
-      if (v.camp) return { camp: v.camp, detail: v.resume };
-      var f = null;
-      try { var mf = moteurF4P4V7(t); f = mf && mf.avantage ? mf.avantage : null; } catch (e) { f = null; }
-      return { camp: f, detail: v.resume + ' — F4P4 départage' };
-    }
-  };
+  // Le moteur « ⚑ VOTE DES MOTEURS » est retiré du banc le 01/09/26 avec
+  // le vote lui-même : il n'y a plus de votants à compter.
   _bancCacheV7 = {
-    camp: passe([moteurVote].concat(MOTEURS_V7), 'camp', function (c) {
+    camp: passe(MOTEURS_V7, 'camp', function (c) {
       return (c.camp === 'R1' || c.camp === 'R7') ? c.camp : null;
     }),
     btts: passe(MOTEURS_BTTS_V7, 'oui', function (c) {
@@ -17335,102 +17323,18 @@ var MOTEURS_V7 = [
       return { camp: 'R1', detail: 'trois éléments différents (' + p.e13 + '/' + p.e14 + '/' + p.e15
         + ') et porte du nul fermée' };
     } },
-  { cle: 'sept_criteres', nom: 'Sept critères (strict)', icone: '🎯', teinte: '#22d3ee',
-    note: 'les 5 rôles pesés par les sept critères, moins l\'antagoniste — rien d\'autre', juste: 0, total: 0,
-    verdict: function (t) {
-      var a = moteurSeptCriteresV7(t);
-      if (!a.applicable) return null;
-      return { camp: a.camp, detail: a.resume };
-    } },
-  { cle: 'table_poles', nom: 'Table des pôles', icone: '🧮', teinte: '#2dd4bf',
-    note: 'les 4 pôles des 16 figures, pesés par les sept critères', juste: 0, total: 0,
-    verdict: function (t) {
-      var a = tablePolesV7(t);
-      if (!a.applicable) return null;
-      return { camp: a.camp, detail: a.resume };
-    } },
-  { cle: 'ancrage', nom: 'Ancrage développé', icone: '⚓', teinte: '#38bdf8',
-    note: 'chaîne + rôles reçus + rôles exercés + régénération', juste: 5, total: 7,
-    verdict: function (t) {
-      var a = analyseAncrageDeveloppe(t);
-      if (!a.applicable) return null;
-      return { camp: a.avantage, detail: a.ancrageR1 + ' contre ' + a.ancrageR7 };
-    } },
-  { cle: 'chaine', nom: 'Solidité de chaîne', icone: '⛓', teinte: '#818cf8',
-    note: 'bouclier et front, présence et poids', juste: 5, total: 7,
-    verdict: function (t) {
-      var a = analyseAncrageDeveloppe(t);
-      if (!a.applicable) return null;
-      var c = a.chaineR1.total > a.chaineR7.total ? 'R1'
-            : a.chaineR7.total > a.chaineR1.total ? 'R7' : null;
-      return { camp: c, detail: a.chaineR1.total + ' contre ' + a.chaineR7.total };
-    } },
-  { cle: 'duel', nom: 'Duel du bouclier', icone: '🛡', teinte: '#a16207',
-    note: 'assaillant du bouclier contre le front', juste: 5, total: 7,
-    verdict: function (t) {
-      var a = analyseAncrageDeveloppe(t);
-      if (!a.applicable) return null;
-      var x = duelBouclierV7(a.figR1, t), y = duelBouclierV7(a.figR7, t);
-      var n1 = x.bouclierPresent ? x.marge : -99, n7 = y.bouclierPresent ? y.marge : -99;
-      return { camp: n1 > n7 ? 'R1' : n7 > n1 ? 'R7' : null,
-               detail: (x.tenu ? 'tenu ' : 'rompu ') + x.marge + ' contre '
-                     + (y.tenu ? 'tenu ' : 'rompu ') + y.marge };
-    } },
-  { cle: 'f4p4', nom: 'Front 4 · Pôle 4', icone: '🧭', teinte: '#a78bfa',
-    note: 'quatre pôles · force et présence — Réseau V2 fondu dedans', juste: 5, total: 7,
-    verdict: function (t) {
-      var m = moteurF4P4V7(t);
-      if (!m.applicable) return null;
-      return { camp: m.avantage, detail: m.critere };
-    } },
-  { cle: 'sieges', nom: 'Lecture des sièges', icone: '🪑', teinte: '#f472b6',
-    note: 'couleur des sièges R1 et R7', juste: 5, total: 7,
-    verdict: function (t) {
-      var s = lectureSiegesR1R7(t);
-      if (!s.applicable) return null;
-      // slice brut coupait au milieu d'un emoji (🟥/🟦) : on coupe au mot.
-      var txt = (s.synthese || '').replace(/^Siège\s*/, '').replace(/\s—\s.*$/, '');
-      if (txt.length > 78) txt = txt.slice(0, 78).replace(/\s\S*$/, '') + '…';
-      return { camp: s.winner, detail: txt };
-    } },
-  { cle: 'axes', nom: 'Majorité des axes', icone: '✚', teinte: '#34d399',
-    note: 'Cardinal, Succédent, Cadent', juste: 4, total: 7,
-    verdict: function (t) {
-      var ax = lectureAxesV7(t), r1 = 0, r7 = 0;
-      (ax.axes || []).forEach(function (x) {
-        var w = x.avantage || x.winner;
-        if (w === 'R1') r1++; else if (w === 'R7') r7++;
-      });
-      return { camp: r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null, detail: r1 + ' contre ' + r7 };
-    } },
-  // ─── Réseau d'ancrage V2 RETIRÉ du tableau le 26/08/26 ───
-  // Ellemine_D : « le réseau d'ancrage est similaire à F4P4, essaie de
-  // fusionner les deux dans la bonne logique. » C'est fait : son cœur,
-  // analyserResistanceV7 et ses deux voies de résistance, est appelé
-  // pour CHACUN des quatre pôles dans poleF4P4V7 — il en faisait moins,
-  // il ne jugeait que les deux centrales. Le garder comme voix séparée
-  // reviendrait à compter deux fois la même lecture, en moins bien
-  // (3/7 seul). Son code reste en place : il porte aussi la
-  // confrontation directe, le pivot du nul et le filtre M15/M16, qui ne
-  // sont pas des verdicts de camp et n'ont pas d'équivalent dans F4P4.
-  { cle: 'boucles', nom: 'Boucles antagonistes', icone: '🔗', teinte: '#94a3b8',
-    note: 'protocole R1/R7 d\'origine', juste: 3, total: 7,
-    verdict: function (t) {
-      var p = comparerBouclesAntagonistesR1R7(t);
-      if (!p || !p.applicable || (p.winner !== 'R1' && p.winner !== 'R7')) return null;
-      return { camp: p.winner, detail: '' };
-    } },
-  { cle: 'hypo', nom: '2 boucliers rompus → duel', icone: '⚖', teinte: '#fbbf24',
-    note: '⚠ hypothèse non branchée — un seul cas la distingue', juste: 6, total: 7,
-    verdict: function (t) {
-      var a = analyseAncrageDeveloppe(t);
-      if (!a.applicable) return null;
-      var x = duelBouclierV7(a.figR1, t), y = duelBouclierV7(a.figR7, t);
-      if (x.tenu || y.tenu) return { camp: a.avantage, detail: 'règle inactive — l\'ancrage décide' };
-      var n1 = x.bouclierPresent ? x.marge : -99, n7 = y.bouclierPresent ? y.marge : -99;
-      return { camp: n1 > n7 ? 'R1' : n7 > n1 ? 'R7' : null,
-               detail: 'les deux boucliers rompus — le duel décide' };
-    } }
+  // ─── LES DIX MOTEURS VOTANTS SONT RETIRÉS (01/09/26) ───
+  // Ellemine_D : « retire-les aussi. » Ils ne décidaient plus rien
+  // depuis que la cascade est partie — le camp vient du seul moteurV8V7.
+  // Retirés : sept_criteres · table_poles · ancrage · chaine · duel ·
+  // f4p4 · sieges · axes · boucles · hypo.
+  // ⚠️ Leurs FONCTIONS sous-jacentes restent (moteurF4P4V7,
+  // moteurCritereV7, lectureSiegesR1R7, analyseAncrageDeveloppe,
+  // analyserReseauAncrageV2, tablePolesV7…) : elles servent encore aux
+  // panneaux de lecture et au banc. C'est le VOTE qui disparaît, pas la
+  // doctrine.
+  // Ne restent ici que les trois moteurs horsVote, ceux dont le dossier
+  // est en cours de vérification à l'aveugle sur les matchs gelés.
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -17674,14 +17578,20 @@ var MOTEURS_CONDITIONNELS_V7 = [
   { cle: 'majorite_purs', nom: 'Majorité des 3 moteurs qui appliquent les critères', icone: '🎯', teinte: '#5eead4',
     juste: 0, total: 0, note: 'F4P4 + sept critères + ancrage, à la majorité — 13/19',
     verdict: function (t) {
+      // ─── RECÂBLÉ LE 01/09/26 ───
+      // Cette lecture cherchait f4p4, sept_criteres et ancrage DANS
+      // MOTEURS_V7. Les trois en sont partis avec les dix votants : elle
+      // serait devenue muette en silence. Elle appelle maintenant les
+      // trois fonctions directement — sa doctrine ne change pas.
       var r1 = 0, r7 = 0, det = [];
-      MOTEURS_V7.forEach(function (m) {
-        if (m.cle !== 'f4p4' && m.cle !== 'sept_criteres' && m.cle !== 'ancrage') return;
-        var v = null;
-        try { v = m.verdict(t); } catch (e) { v = null; }
-        var c = v && v.camp ? v.camp : null;
+      [['f4p4', function () { var x = moteurF4P4V7(t); return x && x.applicable ? x.avantage : null; }],
+       ['sept_criteres', function () { var x = moteurSeptCriteresV7(t); return x && x.applicable ? x.camp : null; }],
+       ['ancrage', function () { var x = analyseAncrageDeveloppe(t); return x && x.applicable ? x.avantage : null; }]
+      ].forEach(function (P) {
+        var c = null;
+        try { c = P[1](); } catch (e) { c = null; }
         if (c === 'R1') r1++; else if (c === 'R7') r7++;
-        det.push(m.cle + ':' + (c || '—'));
+        det.push(P[0] + ':' + (c || '—'));
       });
       return { camp: r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null, detail: det.join(' · ') };
     } },
@@ -19276,40 +19186,18 @@ var MOTEURS_INCIDENT_V7 = [
 // de jumeaux n'est pas une majorité : le vote penche mécaniquement du
 // côté de la famille chaîne/ancrage. À garder en tête avant de conclure
 // quoi que ce soit d'un 6-2.
-var VERDICT_VOTE_V7 = true;
-
-// ☠️ 31/08/26 — PIÈGE ÉVITÉ DE JUSTESSE. J'ai ajouté le moteur
-// « partage de la synthèse » à MOTEURS_V7 en écrivant dans sa
-// documentation qu'il « ne décide de RIEN ». C'était faux : cette liste
-// nourrit le vote, et le vote est dans la chaîne de overrideVerdictV7.
-// Un moteur découvert SUR l'archive se serait mis à décider du verdict
-// affiché, en silence, le jour même de sa découverte — la faute exacte
-// contre laquelle tout ce fichier met en garde.
-// D'où le drapeau horsVote : un moteur peut désormais être noté par le
-// banc sans peser sur le verdict. Il est réservé à ce cas précis — une
-// règle qui n'a pas encore été vérifiée à l'aveugle.
-function voteMoteursV7(theme) {
-  var r1 = 0, r7 = 0, muets = 0, detail = [];
-  if (!theme) return { applicable: false, camp: null, r1: 0, r7: 0, detail: [] };
-  MOTEURS_V7.filter(function (m) { return !m.horsVote; }).forEach(function (m) {
-    var v = null;
-    try { v = m.verdict(theme); } catch (e) { v = null; }
-    var c = v && v.camp ? v.camp : null;
-    if (c === 'R1') r1++; else if (c === 'R7') r7++; else muets++;
-    detail.push({ cle: m.cle, nom: m.nom, icone: m.icone, camp: c });
-  });
-  var camp = r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null;
-  return {
-    applicable: (r1 + r7) > 0,
-    camp: camp, r1: r1, r7: r7, muets: muets, detail: detail,
-    egalite: !camp && (r1 + r7) > 0,
-    resume: r1 + ' pour R1 · ' + r7 + ' pour R7'
-      + (muets ? ' · ' + muets + ' sans avis' : '')
-      + (camp ? ' → ' + camp : ' → égalité, F4P4 départage')
-  };
-}
-
-
+// ─── LE VOTE DES MOTEURS EST SUPPRIMÉ (01/09/26) ───
+// voteMoteursV7 et VERDICT_VOTE_V7 sont retirés avec les dix moteurs qui
+// le nourrissaient. Le vote avait été mis « au volant » le 27/08 ; la
+// cascade l'en a délogé le 01/09 sans que personne ne le dise à l'écran,
+// et Ellemine_D a fini par le voir tout seul. Plutôt que de laisser un
+// vote sans votants, il part.
+//
+// ☠️ ET IL EMPORTE UN MENSONGE D'ÉCRAN. L'en-tête de la carte de verdict
+// affichait « — Front 4 · Pôle 4 », ou « Vote des moteurs (repli) »,
+// pendant que le camp venait en réalité de moteurV8V7. Le champ
+// sourceDecisive nommait un décideur qui ne décidait plus. Corrigé en
+// même temps : il nomme maintenant ce qui décide vraiment.
 function renderMoteursPanel(theme) {
   var ancien = document.getElementById('moteurs-panel');
   if (ancien) ancien.remove();
@@ -19410,13 +19298,19 @@ function renderMoteursPanel(theme) {
 
   panneau.innerHTML =
       '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:3px;">'
-    + '<h3 style="margin:0;">🏁 Les moteurs, un par un</h3>'
+    + '<h3 style="margin:0;">🏁 Les moteurs gelés</h3>'
     + '<span class="muted" style="font-size:10px;">classés par justesse sur les cas réels</span></div>'
-    + '<div style="font-size:11px; margin-bottom:9px;">'
+    // ─── PLUS DE « MAJORITÉ » ICI (01/09/26) ───
+    // Ce panneau annonçait « majorité R1 » comme si le compte tranchait.
+    // Il ne reste que les trois moteurs horsVote, dont la documentation
+    // dit qu'ils ne décident de RIEN : afficher leur majorité serait
+    // refaire, en plus petit, le mensonge d'écran qu'on vient d'enlever.
+    + '<div style="font-size:11px; margin-bottom:9px; color:#94a3b8;">'
     + '<b style="color:#38bdf8;">' + t1 + '</b> ' + nR1 + '  ·  '
     + '<b style="color:#fb923c;">' + t7 + '</b> ' + nR7
-    + (majorite ? '  →  <b>majorité ' + (majorite === 'R1' ? t1 : t7) + '</b>'
-                : '  →  <b>partagés</b>') + '</div>'
+    + '  —  <b>aucun de ces moteurs ne décide du verdict.</b> '
+    + 'Le camp vient du moteur V8 ; ceux-ci sont en cours de vérification '
+    + 'à l\'aveugle sur les matchs gelés.</div>'
     + '<div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill,minmax(215px,1fr));">'
     + ordre.map(carte).join('') + '</div>'
     + '<div style="margin:12px 0 5px; font-size:11px; font-weight:700; color:#94a3b8;">Les deux marquent</div>'
@@ -25208,46 +25102,18 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '<div style="font-size:15px; font-weight:900; color:#fca5a5;">⛔ THÈME INVALIDE — DÉTRUIT</div>'
       + '<div style="font-size:11.5px; color:#fecaca; margin-top:4px;">' + esc(msgDetruit) + '</div></div>';
   }
-  html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Front 4 · Pôle 4')+'</span></div>';
-  // ─── LE VOTE, DÉTAILLÉ (27/08/26) ───
-  // On montre qui a voté quoi : un 8-0 et un 5-3 ne se lisent pas pareil,
-  // et le lecteur doit pouvoir voir tout de suite qui est minoritaire.
-  if (card && card.voteDetail && card.voteDetail.length) {
-    var pourR1 = card.voteDetail.filter(function(d){ return d.camp === 'R1'; });
-    var pourR7 = card.voteDetail.filter(function(d){ return d.camp === 'R7'; });
-    var muets  = card.voteDetail.filter(function(d){ return !d.camp; });
-    var puce = function (liste, coul) {
-      return liste.map(function (d) {
-        return '<span style="display:inline-block; margin:1px 4px 1px 0; padding:1px 6px; '
-          + 'border-radius:6px; background:rgba(148,163,184,.12); color:' + coul + '; font-size:10px;">'
-          + esc((d.icone || '') + ' ' + d.nom) + '</span>';
-      }).join('');
-    };
-    html += '<div style="margin-bottom:10px; padding:9px 12px; border-radius:8px; '
-      + 'background:#140f2b; border:1px solid #c4b5fd;">'
-      + '<div style="font-size:12px; font-weight:800; color:#ede9fe; margin-bottom:4px;">'
-      + '⚑ Vote des moteurs — <b>' + pourR1.length + '</b> pour R1, <b>' + pourR7.length + '</b> pour R7'
-      + (muets.length ? ' · ' + muets.length + ' sans avis' : '')
-      + (card.voteWinner ? '' : ' — <b>égalité, F4P4 départage</b>') + '</div>'
-      + '<div>' + puce(pourR1, '#7dd3fc') + '</div>'
-      + '<div>' + puce(pourR7, '#fdba74') + '</div>'
-      + (muets.length ? '<div>' + puce(muets, '#64748b') + '</div>' : '')
-      + '<div style="font-size:9.5px; color:#a5b4fc; margin-top:4px;">'
-      + 'Attention : ancrage et chaîne s\'accordent 91 % du temps, et « 2 boucliers » suit '
-      + 'l\'ancrage 80 % du temps. Une majorité de moteurs jumeaux n\'est pas une majorité.</div>'
-      + '</div>';
-  }
+  html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Moteur V8')+'</span></div>';
+  // Le bloc « vote des moteurs » est retiré (01/09/26) avec le vote.
   if (card && card.f4p4Synthese) {
     html+='<div style="margin-bottom:10px; padding:10px 12px; border-radius:8px; '
       +'background:#1e1633; border:1px solid #a78bfa; font-size:12px; color:#ede9fe;">'
       +'🧭 <b>Front 4 · Pôle 4</b> '
-      +(card.voteWinner ? '<span style="color:#a5b4fc;">(un votant parmi huit)</span>'
-                        : '<span style="color:#fbbf24;">(départage — le vote est à égalité)</span>')
+      +'<span style="color:#94a3b8;">(lecture — ne décide pas)</span>'
       +' : '+esc(card.f4p4Critere||'')+'</div>';
   }
   if (card && card.desaccordF4P4Ancrage) {
     html+='<div class="kv" style="font-size:11px;color:#fbbf24;">⚡ F4P4 et l\'ancrage développé se contredisent ('
-      +esc(card.chaineWinner)+' pour l\'ancrage) — c\'est le vote qui tranche, '
+      +esc(card.chaineWinner)+' pour l\'ancrage) — ni l\'un ni l\'autre ne tranche, '
       +'le désaccord est signalé pour que le cas s\'accumule au banc.</div>';
   }
   if (card && card.chaineSynthese) {
@@ -26877,14 +26743,7 @@ function renderTheme(){
     const f4p4WinnerTop = !nulActifTop && f4p4Top && f4p4Top.applicable && f4p4Top.avantage
       ? f4p4Top.avantage
       : null;
-    // ─── LE VOTE DES MOTEURS PREND LE VOLANT (27/08/26) ───
-    // Demande d'Ellemine_D après le cas Inter, où sept moteurs sur huit
-    // voyaient le bon camp et où le huitième, seul au volant, affichait
-    // l'autre. F4P4 reste le départage quand le vote est à égalité (7 %
-    // des thèmes) et reste affiché en entier dans son panneau.
-    let voteTop = null;
-    try { voteTop = VERDICT_VOTE_V7 ? voteMoteursV7(currentTheme) : null; } catch (e) { voteTop = null; }
-    const voteWinnerTop = !nulActifTop && voteTop && voteTop.camp ? voteTop.camp : null;
+    // Le vote des moteurs est supprimé (01/09/26) — plus de votants.
     // Repli « le réseau dit Nul et personne ne tranche » RETIRÉ le 29/08 :
     // vérifié sur les 65 536 thèmes possibles, reseauF4P4V7 ne renvoie
     // jamais winner === 'Nul'. C'était du code mort, et il faisait
@@ -26913,16 +26772,16 @@ function renderTheme(){
     carteR.f4p4Synthese = f4p4Top && f4p4Top.applicable ? f4p4Top.synthese : null;
     carteR.accordF4P4Ancrage = !!(f4p4WinnerTop && chaineWinnerTop && f4p4WinnerTop === chaineWinnerTop);
     carteR.desaccordF4P4Ancrage = !!(f4p4WinnerTop && chaineWinnerTop && f4p4WinnerTop !== chaineWinnerTop);
-    carteR.voteWinner = voteWinnerTop;
-    carteR.voteResume = voteTop ? voteTop.resume : null;
-    carteR.voteDetail = voteTop ? voteTop.detail : null;
-    carteR.sourceDecisive = nulActifTop ? 'Axe Succédent — nul imposé'
-      : f4p4WinnerTop ? 'Front 4 · Pôle 4'
-      : siegesWinnerTop ? 'Lecture des sièges (repli)'
-      : voteWinnerTop ? 'Vote des moteurs (' + voteTop.r1 + '–' + voteTop.r7 + ', repli)'
-      : chaineWinnerTop ? 'Solidité de chaîne R1/R7 (repli)'
-      : siegesWinnerTop ? 'Lecture des sièges (repli)'
-      : 'Réseau d\'ancrage V2 (repli)';
+    // ─── L'EN-TÊTE DIT MAINTENANT LA VÉRITÉ (01/09/26) ───
+    // Elle annonçait « Front 4 · Pôle 4 » ou « Vote des moteurs (repli) »
+    // alors que le camp venait de moteurV8V7 depuis la reprise à zéro.
+    // Le lecteur croyait donc lire le décideur ; il lisait un moteur qui
+    // ne décidait plus rien. C'est ce que voyait Ellemine_D.
+    var m8Top = null;
+    try { m8Top = moteurV8V7(currentTheme); } catch (e) { m8Top = null; }
+    carteR.sourceDecisive = nulActifTop ? 'Porte du nul — nul imposé'
+      : (m8Top && m8Top.camp) ? 'Moteur V8 — ' + (m8Top.voie || 'partage de la synthèse')
+      : 'aucun décideur';
     carteR.reseauSynthese = reseauTop.synthese;
     carteR.nulActifReseau = nulActifReseauTop;
     carteR.protocoleWinnerCompare = protocoleWinner;
