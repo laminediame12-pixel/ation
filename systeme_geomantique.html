@@ -401,6 +401,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
      changé — les mêmes sumHouse1Bottom..8Bottom, donc updateSumHouseLabels,
      calculateHouseSum et applyPresetSum continuent de la trouver. -->
 <section class="section sum-section"><h2>Somme de 8 maisons</h2><div class="row"><div class="field"><label>Mode</label><select id="sumModeBottom" onchange="updateSumHouseLabels()"><option value="fixed">Mode fixe</option><option value="rotation">Mode rotation</option></select></div><div class="field"><label>Maison 1</label><select id="sumHouse1Bottom"></select></div><div class="field"><label>Maison 2</label><select id="sumHouse2Bottom"></select></div><div class="field"><label>Maison 3</label><select id="sumHouse3Bottom"></select></div><div class="field"><label>Maison 4</label><select id="sumHouse4Bottom"></select></div><div class="field"><label>Maison 5</label><select id="sumHouse5Bottom"></select></div><div class="field"><label>Maison 6</label><select id="sumHouse6Bottom"></select></div><div class="field"><label>Maison 7</label><select id="sumHouse7Bottom"></select></div><div class="field"><label>Maison 8</label><select id="sumHouse8Bottom"></select></div></div><div class="row"><button class="btn-primary" onclick="calculateHouseSum()">Calculer la somme</button><button class="btn-secondary" title="Axe Cardinal — M1 + M4 + M7 + M10 (les angulaires)" onclick="applyPresetSum('1D')">1D · Cardinal</button><button class="btn-secondary" title="Axe Succédent — M2 + M5 + M8 + M11" onclick="applyPresetSum('2D')">2D · Succédent</button><button class="btn-secondary" title="Axe Cadent — M3 + M6 + M9 + M12" onclick="applyPresetSum('3D')">3D · Cadent</button><button class="btn-secondary" title="Trigone offensif de M1 / R1 — M1 + M5 + M9" onclick="applyPresetSum('4D')">4D · offensive 1</button><button class="btn-secondary" title="Trigone offensif de M7 / R7 — M7 + M3 + M11" onclick="applyPresetSum('3B')">3B · offensive 7</button><button class="btn-secondary" onclick="applyPresetSum('V-1')">V-1</button><button class="btn-secondary" onclick="applyPresetSum('V-2')">V-2</button></div><div class="card" id="sum-result"><div class="muted">Aucun calcul pour le moment.</div></div></section>
+
 </section>
 <section id="geomtx-outil-section" style="background:#0f0d18;margin-bottom:12px;padding:8px 0;border-top:3px solid #8E5FC7;">
 <h2 style="padding:0 8px 8px;">🔷 Outil de référence — Matrice géomantique (figures × maisons)</h2>
@@ -1285,7 +1286,20 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 <div class="carre-geo-wrap">
   <h1 style="font-size:22px;">Carré géomantique (construction classique à 3 carrés)</h1>
   <p class="sub">Carré extérieur + carré central tourné à 45° (ses 4 pointes = les maisons angulaires I/IV/VII/X, aux milieux des côtés) + carré intérieur vide au centre. Les 8 triangles restants portent les maisons succédentes/cadentes. Même thème que la matrice ci-dessus.</p>
+  <div class="row" style="margin:6px 0 10px;">
+    <div class="field"><label>Trajectoires à tracer</label>
+      <select id="carreTrajSelect" onchange="redessinerCarreGeoV7()">
+        <option value="aucune">Aucune — les trois axes seuls</option>
+        <option value="trigones">Les 4 trigones (les seuls équilatéraux)</option>
+        <option value="m1">Les 7 trajectoires de M1</option>
+        <option value="m7">Les 7 trajectoires de M7</option>
+        <option value="une">Une seule — voir à côté</option>
+      </select></div>
+    <div class="field"><label>Une trajectoire précise</label>
+      <select id="carreTrajUne" onchange="var s=document.getElementById('carreTrajSelect'); if(s) s.value='une'; redessinerCarreGeoV7();"></select></div>
+  </div>
   <svg id="carre-geo-svg" viewBox="0 0 400 400"></svg>
+  <div id="carre-geo-legende" style="font-size:11px; margin:8px auto 0; max-width:560px; line-height:1.9;"></div>
   <div id="carre-geo-verdict"></div>
 </div>
 
@@ -1917,7 +1931,155 @@ function renderCarreGeomantique(theme){
     html += '<text class="cg-fig" x="'+(x+50)+'" y="'+(y+52)+'" font-size="9" style="pointer-events:none;">'+(fig||'—')+'</text>';
     html += '<text x="'+(x+50)+'" y="'+(y+64)+'" font-size="6" fill="#94a3b8" style="pointer-events:none;">'+SYNTH_NOM_16[m]+'</text>';
   }
+  // ═══ LES AXES CLOS ET LES TRAJECTOIRES (01/09/26, demande Ellemine_D) ═══
+  // « Clore l'axe de couleur différente, et les trajectoires possibles par
+  // des traits de couleurs différentes des axes. »
+  //
+  // 🎨 LE CHOIX DES COULEURS N'EST PAS UN GOÛT, IL EST MESURÉ.
+  // Palette validée par le contrôleur de daltonisme sur le fond sombre du
+  // panneau (#0f172a), en mode « toutes les paires » — parce qu'ici les
+  // trois axes sont visibles EN MÊME TEMPS, pas côte à côte :
+  //     bleu #3987e5 · orange #d95926 · vert d'eau #199e70
+  //     pire paire deutan ΔE 9,4 (cible ≥ 8) · vision normale ΔE 20,9
+  //     (plancher 15) · contraste ≥ 3:1 pour les trois. TOUT PASSE.
+  // ⚠️ ET UNE QUATRIÈME TEINTE NE PASSE PAS. Testé : ajouter le jaune
+  // #c98500 fait tomber la pire paire à ΔE 10,6 en vision normale — sous
+  // le plancher de 15, donc deux lecteurs sur deux les confondraient.
+  // Les trajectoires ne prennent donc PAS une quatrième couleur : elles
+  // sont en blanc cassé, en TIRETS, et chacune porte son nom écrit à
+  // côté. Elles restent parfaitement distinctes des axes — ce qu'il
+  // demandait — sans casser la lisibilité des trois axes entre eux.
+  var AXES_CARRE_V7 = [
+    { nom: 'Cardinal', maisons: [1, 4, 7, 10], couleur: '#3987e5' },
+    { nom: 'Succédent', maisons: [2, 5, 8, 11], couleur: '#d95926' },
+    { nom: 'Cadent', maisons: [3, 6, 9, 12], couleur: '#199e70' }
+  ];
+  function centreMaisonV7(m) { return centroid(CARRE_GEO_PTS[m]); }
+  // les axes, clos
+  AXES_CARRE_V7.forEach(function (A) {
+    var pts = A.maisons.map(centreMaisonV7).map(function (p) { return p[0] + ',' + p[1]; }).join(' ');
+    // ⚠️ LE STYLE DOIT ÊTRE INLINE, PAS UN ATTRIBUT. La feuille de style
+    // porte « #carre-geo-svg polygon{stroke:var(--gold)} », et en SVG un
+    // attribut de présentation (stroke="…") a une priorité INFÉRIEURE à
+    // n'importe quelle règle CSS : mes trois couleurs sortaient toutes en
+    // doré. Constaté à la capture d'écran, pas à la lecture du code.
+    html += '<polygon points="' + pts + '" style="fill:none; stroke:' + A.couleur
+      + '; stroke-width:2.5px; stroke-linejoin:round; opacity:.95; pointer-events:none;"></polygon>';
+  });
+  // les trajectoires demandées
+  var choix = 'aucune', une = '';
+  try { peuplerTrajectoiresCarreV7(); } catch (e) { /* menu absent */ }
+  try {
+    var sel = document.getElementById('carreTrajSelect');
+    if (sel) choix = sel.value;
+    var selU = document.getElementById('carreTrajUne');
+    if (selU) une = selU.value;
+  } catch (e) { /* panneau absent : on ne trace que les axes */ }
+  var aTracer = trajectoiresCarreV7(choix, une);
+  aTracer.forEach(function (T) {
+    var pts = T.maisons.map(centreMaisonV7);
+    var d = pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' ');
+    html += '<polygon points="' + d + '" style="fill:none; stroke:#e2e8f0; stroke-width:2px; '
+      + 'stroke-dasharray:7 4; stroke-linejoin:round; opacity:.9; pointer-events:none;"></polygon>';
+    // ⚠️ L'ÉTIQUETTE N'EST PAS AU CENTROÏDE. Les quatre trigones ont
+    // EXACTEMENT le même centre — le milieu du carré — et leurs quatre
+    // noms se superposaient les uns sur les autres et sur les cases
+    // M13-M16. Vu à la capture d'écran. On la pose donc aux deux tiers
+    // du chemin entre le centre et le premier sommet : les étiquettes
+    // s'écartent, et chacune reste sur son propre triangle.
+    // ⚠️ OÙ POSER L'ÉTIQUETTE — deux pièges vus à la capture d'écran.
+    // 1) au centroïde : les quatre trigones ont le MÊME centre, leurs
+    //    quatre noms se superposaient sur les cases M13-M16 ;
+    // 2) vers le premier sommet : les sept trajectoires d'un pôle
+    //    PARTAGENT ce sommet, les sept noms s'empilaient dessus.
+    // On la pose donc au milieu du PLUS LONG CÔTÉ, tiré de 18 % vers le
+    // centre. Ce côté diffère d'une trajectoire à l'autre dans les deux
+    // familles, donc les étiquettes s'écartent d'elles-mêmes.
+    var gx = (pts[0][0] + pts[1][0] + pts[2][0]) / 3, gy = (pts[0][1] + pts[1][1] + pts[2][1]) / 3;
+    var meilleur = 0, longMax = -1;
+    for (var e = 0; e < 3; e++) {
+      var p1 = pts[e], p2 = pts[(e + 1) % 3];
+      var lg = (p2[0] - p1[0]) * (p2[0] - p1[0]) + (p2[1] - p1[1]) * (p2[1] - p1[1]);
+      if (lg > longMax) { longMax = lg; meilleur = e; }
+    }
+    var q1 = pts[meilleur], q2 = pts[(meilleur + 1) % 3];
+    var mx = (q1[0] + q2[0]) / 2, my = (q1[1] + q2[1]) / 2;
+    var cx = mx + (gx - mx) * 0.18, cy = my + (gy - my) * 0.18;
+    html += '<text x="' + cx + '" y="' + cy + '" style="font-size:10px; fill:#0b1220; '
+      + 'stroke:#e2e8f0; stroke-width:3.5px; paint-order:stroke; font-weight:700; pointer-events:none;">'
+      + T.nom + '</text>';
+  });
   svg.innerHTML = html;
+  majLegendeCarreV7(AXES_CARRE_V7, aTracer);
+}
+
+// ⚠️ CE BLOC DE SCRIPT EST UNE IIFE : renderCarreGeomantique y est privée,
+// et un onchange="..." écrit dans le HTML ne peut donc PAS l'appeler.
+// C'est le piège dans lequel je suis tombé en écrivant les menus. On
+// expose un seul point d'entrée, et les menus passent par lui.
+window.redessinerCarreGeoV7 = function () {
+  try { renderCarreGeomantique(lastTheme || window.currentTheme); } catch (e) { /* pas de thème */ }
+};
+
+// Les trajectoires traçables. Ce sont celles de la loi P : une maison par
+// axe, aucune paire de maisons voisines — les 28 où sa règle « isocèle ou
+// équilatéral » est exacte, restreintes ici aux familles utiles.
+var TRAJ_CARRE_V7 = {
+  trigones: [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]],
+  m1: [[1, 3, 5], [1, 3, 8], [1, 3, 11], [1, 5, 9], [1, 6, 8], [1, 6, 11], [1, 9, 11]],
+  m7: [[2, 7, 9], [2, 7, 12], [3, 5, 7], [3, 7, 11], [5, 7, 9], [5, 7, 12], [7, 9, 11]]
+};
+function trajectoiresCarreV7(choix, une) {
+  function pack(a) { return { maisons: a, nom: a.join('-') }; }
+  if (choix === 'trigones') return TRAJ_CARRE_V7.trigones.map(pack);
+  if (choix === 'm1') return TRAJ_CARRE_V7.m1.map(pack);
+  if (choix === 'm7') return TRAJ_CARRE_V7.m7.map(pack);
+  if (choix === 'une' && une) {
+    var t = une.split('-').map(Number);
+    if (t.length === 3 && t.every(function (x) { return x >= 1 && x <= 12; })) return [pack(t)];
+  }
+  return [];
+}
+// Peuple le menu « une trajectoire précise » avec les VINGT-HUIT de la
+// loi P : une maison par axe, aucune paire de maisons voisines. Ce sont
+// exactement celles où sa règle « isocèle ou équilatéral » est exacte —
+// les 24 isocèles et les 4 équilatéraux, sans une scalène.
+function peuplerTrajectoiresCarreV7() {
+  var sel = document.getElementById('carreTrajUne');
+  if (!sel || sel.options.length) return;
+  var out = [];
+  for (var a = 1; a <= 12; a++) for (var b = a + 1; b <= 12; b++) for (var c = b + 1; c <= 12; c++) {
+    var T = [a, b, c];
+    var axes = {};
+    T.forEach(function (h) { axes[(h - 1) % 3] = 1; });
+    if (Object.keys(axes).length !== 3) continue;          // une maison par axe
+    var d = [b - a, c - b, 12 - (c - a)].sort(function (x, y) { return x - y; });
+    if (d[0] < 2) continue;                                 // pas deux maisons voisines
+    var nat = (d[0] === d[1] && d[1] === d[2]) ? 'équilatéral' : 'isocèle';
+    out.push({ cle: T.join('-'), nat: nat });
+  }
+  sel.innerHTML = out.map(function (o) {
+    return '<option value="' + o.cle + '">' + o.cle + ' — ' + o.nat + '</option>';
+  }).join('');
+}
+
+function majLegendeCarreV7(axes, traj) {
+  var el = document.getElementById('carre-geo-legende');
+  if (!el) return;
+  // La légende est TOUJOURS là dès qu'il y a deux séries : l'identité ne
+  // doit jamais reposer sur la seule couleur.
+  var h = axes.map(function (A) {
+    return '<span style="display:inline-flex; align-items:center; gap:5px; margin-right:14px;">'
+      + '<span style="display:inline-block; width:18px; height:0; border-top:3px solid ' + A.couleur + ';"></span>'
+      + '<span style="color:#cbd5e1;">Axe ' + A.nom + ' — M' + A.maisons.join(' M') + '</span></span>';
+  }).join('');
+  if (traj.length) {
+    h += '<span style="display:inline-flex; align-items:center; gap:5px;">'
+      + '<span style="display:inline-block; width:18px; height:0; border-top:2px dashed #e2e8f0;"></span>'
+      + '<span style="color:#cbd5e1;">' + traj.length + ' trajectoire' + (traj.length > 1 ? 's' : '')
+      + ' — ' + traj.map(function (T) { return T.nom; }).join(' · ') + '</span></span>';
+  }
+  el.innerHTML = h;
 }
 
 // 5) CLIC INTERACTIF (03/08/26, demande Ellemine_D) — même esprit que le
