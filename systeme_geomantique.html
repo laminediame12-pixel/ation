@@ -24911,53 +24911,54 @@ function verdictStandardV7(theme, teamA, teamB) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ✦ LE CAMP : UN SEUL DÉCIDEUR (01/09/26, rappel d'Ellemine_D)
+//
+// Son constat, et il est juste : « les anciens moteurs prennent toujours
+// des décisions, alors qu'on avait bien décidé de les supprimer. »
+// À la reprise à zéro (a70f8f9) j'avais branché le moteur V8 en tête et
+// LAISSÉ derrière lui les sept étages de l'ancienne cascade, en repli.
+// C'était mon choix de prudence, pas le sien, et il ne l'a jamais
+// demandé. La cascade partait :
+//     1. moteurCritereV7 (les sept critères)
+//     2. moteurF4P4V7
+//     3. lectureSiegesR1R7
+//     4. voteMoteursV7 (les dix moteurs)
+//     5. analyseAncrageDeveloppe
+//     6. analyserReseauAncrageV2
+//     7. comparerBouclesAntagonistesR1R7
+//
+// 📊 MESURÉ AVANT DE COUPER : sur 3000 thèmes au hasard et sur les 55
+// cas de l'archive, la cascade n'a JAMAIS tranché — pas une fois. Le
+// moteur V8 rend toujours un camp (le partage de la synthèse est
+// disponible dès que M13, M14 et M15 existent, donc toujours). Les sept
+// étages étaient déjà du code mort sur la décision ; ils étaient
+// seulement encore exécutés, et encore lisibles comme s'ils décidaient.
+// Les retirer ne change donc AUCUN verdict — vérifié par A/B.
+//
+// ➜ CE QUI DÉCIDE MAINTENANT, ET C'EST TOUT :
+//     le nul .... nulActifV7 (doctrine des deux portes), en amont
+//     le camp ... moteurV8V7, et rien d'autre
+//     le score .. calculerButsCamp, dans buildVerdictCard
+// ⚠️ Et par voie de conséquence : voteMoteursV7 et les dix moteurs qui
+// votent ne décident PLUS RIEN du tout. Ils restent calculés et affichés
+// comme panneau de lecture — c'est leur seul rôle désormais.
+//
+// ⏱️ CE QUE ÇA COÛTAIT. Avec la cascade et les sept calculs morts de
+// getVerdictAfficheReel, un verdict prenait 6,27 ms. Sans eux : 2,37 ms.
+// 62 % de moins, 2,6 fois plus rapide, pour une sortie STRICTEMENT
+// identique (A/B par clé : 2055 clés, 0 différence). Une partie de la
+// lenteur dont il se plaignait le 31/08 venait de là — de moteurs qu'on
+// exécutait à chaque verdict et dont personne ne lisait la réponse.
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
-  if (MOTEUR_V8_ACTIF) {
-    var m8 = null;
-    try { m8 = moteurV8V7(theme); } catch (e) { m8 = null; }
-    if (m8 && m8.camp) return m8.camp;
-    // pas de camp lisible : on retombe sur l'ancienne cascade plus bas.
-  }
-  var crit = null;
-  if (PILOTE_CRITERES_V7) {
-    try {
-      var mc = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7);
-      crit = mc && mc.camp ? mc.camp : null;
-    } catch (e) { crit = null; }
-  }
-  if (crit) return crit;
-  var f4p4 = null;
-  try { var mf = moteurF4P4V7(theme); f4p4 = mf && mf.applicable && mf.avantage ? mf.avantage : null; }
-  catch (e) { f4p4 = null; }
-  if (f4p4) return f4p4;
-  var sieges = null;
-  try { var sg = lectureSiegesR1R7(theme); sieges = sg && sg.applicable && sg.winner ? sg.winner : null; }
-  catch (e) { sieges = null; }
-  if (sieges) return sieges;
-  var vote = null;
-  try { var vt = VERDICT_VOTE_V7 ? voteMoteursV7(theme) : null; vote = vt && vt.camp ? vt.camp : null; }
-  catch (e) { vote = null; }
-  if (vote) return vote;
-  var chaine = null;
-  try { var an = analyseAncrageDeveloppe(theme); chaine = an && an.applicable && an.avantage ? an.avantage : null; }
-  catch (e) { chaine = null; }
-  if (chaine) return chaine;
-  var reseau = null;
-  try { var rz = analyserReseauAncrageV2(theme); reseau = rz && rz.winner && rz.winner !== 'Nul' ? rz.winner : null; }
-  catch (e) { reseau = null; }
-  if (reseau) return reseau;
-  var proto = null;
-  try {
-    var pr = comparerBouclesAntagonistesR1R7(theme);
-    proto = pr && pr.applicable ? (pr.winner === 'R1' ? 'R1' : pr.winner === 'R7' ? 'R7' : null) : null;
-  } catch (e) { proto = null; }
-  return proto;
+  var m8 = null;
+  try { m8 = moteurV8V7(theme); } catch (e) { m8 = null; }
+  return (m8 && m8.camp) ? m8.camp : null;
 }
 
 function getVerdictAfficheReel(theme, favorite) {
   var orderR = getRotationOrderFromRepos(theme[1]);
-  var protocoleR1R7 = comparerBouclesAntagonistesR1R7(theme);
   var structureNul = structureDuNul(theme);
   var nulAxe = (typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(theme) : null;
   // Structure du Nul débranchée du verdict (24/08/26) — cf.
@@ -24993,100 +24994,14 @@ function getVerdictAfficheReel(theme, favorite) {
   // 22/30 ne mesure rien. Le battant élargi reste disponible par
   // NUL_PORTE_ELARGIE_V7 pour le jour où un second nul à +4 arrivera.
   var nulActif = nulActifV7(theme, structureNul, nulAxe);
-  var protocoleWinner = protocoleR1R7.applicable && !nulActif
-    ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
-    : null;
-  // ALIGNÉ SUR L'AFFICHAGE (24/08/26) : cette fonction doit renvoyer CE QUI
-  // EST MONTRÉ À L'ÉCRAN — c'est elle qui alimente addToHistory() et
-  // compareWithReality(). Depuis que la lecture des sièges est le moteur
-  // décisif de renderTheme(), elle doit primer ici aussi, sinon l'archive
-  // et l'auto-validation porteraient sur un verdict que l'utilisateur n'a
-  // jamais vu (exactement le bug d'archive corrigé le 20/08/26).
-  // Repli identique à renderTheme : réseau, puis protocole.
-  var sieges = lectureSiegesR1R7(theme);
-  var siegesWinner = !nulActif && sieges.applicable && sieges.winner ? sieges.winner : null;
-  // Même ordre de priorité que renderTheme (24/08/26) : solidité de chaîne
-  // d'abord, puis sièges, puis réseau, puis protocole.
-  var chaineAff = null;
-  try {
-    var anc = analyseAncrageDeveloppe(theme);
-    chaineAff = !nulActif && anc.applicable && anc.avantage ? anc.avantage : null;
-  } catch(e) { chaineAff = null; }
-  // F4P4 passe devant ici aussi — sinon l'archive et l'auto-validation
-  // porteraient sur un verdict que l'utilisateur n'a jamais vu, exactement
-  // le bug d'archive corrigé le 20/08/26.
-  var f4p4Aff = null;
-  try {
-    var mf = moteurF4P4V7(theme);
-    f4p4Aff = !nulActif && mf.applicable && mf.avantage ? mf.avantage : null;
-  } catch(e) { f4p4Aff = null; }
-  var reseauAff = null;
-  try {
-    var rz = analyserReseauAncrageV2(theme);
-    reseauAff = !nulActif && rz.winner && rz.winner !== 'Nul' ? rz.winner : null;
-  } catch(e) { reseauAff = null; }
-  // ─── LE VOTE PASSE DEVANT (27/08/26, choix d'Ellemine_D) ───
-  // Aucun moteur de MOTEURS_V7 n'appelle getVerdictAfficheReel — vérifié,
-  // y compris « Majorité des axes », qui lit l'ancrage et les sièges sur
-  // les thèmes dérivés. Pas de récursion.
-  var voteAff = null;
-  try {
-    var vt = VERDICT_VOTE_V7 ? voteMoteursV7(theme) : null;
-    voteAff = !nulActif && vt && vt.camp ? vt.camp : null;
-  } catch(e) { voteAff = null; }
-  // ─── LES SIÈGES PRENNENT LE VOLANT (28/08/26, choix d'Ellemine_D) ───
-  // Après l'entrée du cas PSG/Bayer au banc, la Lecture des sièges
-  // rejoint le vote à 6/8 — et c'est elle qui a vu juste sur ce cas,
-  // quand sept moteurs sur neuf se trompaient. Elle passe devant ; le
-  // vote reste en premier repli, puis F4P4, puis la chaîne.
-  // ─── F4P4 REPREND LE VOLANT (28/08/26, décision d'Ellemine_D) ───
-  // Sa remarque : « j'utilise la méthode d'analyse dont le système est
-  // censé analyser » — et le verdict affiché venait de la lecture des
-  // sièges, qui ne lit NI les sept critères, NI les quatre pôles, NI le
-  // réseau : elle compare deux étiquettes de getInterpretationFootball
-  // (une couleur, un mot sur les buts). Deux doctrines différentes, qui
-  // divergent sur 48 % des thèmes — d'où l'écart entre son analyse
-  // manuelle et l'écran.
-  // F4P4 EST sa méthode. Il repasse devant ; les sièges deviennent le
-  // premier repli.
-  // ⚠️ COÛT ASSUMÉ, MESURÉ : au banc F4P4 fait 5/8 et les sièges 6/8.
-  // Le verdict perd un point de justesse sur dix cas et gagne d'être
-  // produit par la doctrine qu'il prétend appliquer. C'est son choix,
-  // fait en connaissance du chiffre.
-  // ═══════════════════════════════════════════════════════════════
-  // LA LECTURE DES CRITÈRES PASSE EN TÊTE (28/08/26, décision d'Ellemine_D)
-  //
-  // « Branche celle à 16/23. » Elle applique les sept critères aux cinq
-  // rôles de chaque camp, moins l'antagoniste, en neutralisant dans la
-  // COMPARAISON SEULE les deux critères qui discriminent le plus mal —
-  // concordance (4/12 en somme de camp) et environnement (4/14). La
-  // meilleure position de chaque figure reste choisie par les sept
-  // critères au complet : le profil n'est pas touché.
-  //
-  // Mesuré sur les 23 cas au vainqueur connu :
-  //     cette lecture ............................ 16/23
-  //     verdict affiché jusqu'ici (F4P4 en tête) . 15/23
-  //     F4P4 seul, sept critères stricts, ancrage
-  //       moins l'assaillant, majorité des purs ... 15/23
-  // Elle gagne Napoli, ConjVia, City/Madrid, ConjCaput et ViaCaput ;
-  // elle perd Atalanta, CaputAcq, LaetCarcer et PuellaAlbus.
-  //
-  // ⚠️ UN POINT D'AVANCE SUR VINGT-TROIS CAS NE SE DISTINGUE PAS DU
-  // BRUIT. Elle est branchée parce que c'est la décision d'Ellemine_D et
-  // parce qu'elle est la plus explicite de toutes — on sait exactement ce
-  // qu'elle mesure — pas parce qu'elle serait démontrée. Le drapeau
-  // PILOTE_CRITERES_V7 la débranche d'un caractère, et F4P4 reprend
-  // aussitôt la tête.
-  var critAff = null;
-  if (PILOTE_CRITERES_V7 && !nulActif) {
-    try {
-      var mc = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7);
-      critAff = mc && mc.camp ? mc.camp : null;
-    } catch (e) { critAff = null; }
-  }
-  // Une seule chaîne, partagée avec l'écran — voir overrideVerdictV7.
-  // Les variables critAff/f4p4Aff/... ci-dessus restent calculées : elles
-  // alimentent les panneaux de comparaison, pas la décision.
+  // ─── LES SEPT CALCULS MORTS SONT PARTIS (01/09/26) ───
+  // protocoleWinner · siegesWinner · chaineAff · f4p4Aff · reseauAff ·
+  // voteAff · critAff étaient calculés ici À CHAQUE VERDICT et n'étaient
+  // LUS NULLE PART — le commentaire qui les accompagnait le disait déjà
+  // (« elles alimentent les panneaux de comparaison, pas la décision »),
+  // sauf que les panneaux les recalculent eux-mêmes. Sept appels de
+  // moteurs par verdict, pour rien. Retirés sur le constat d'Ellemine_D.
+  // Les panneaux qui les affichent appellent directement leur moteur.
   var winnerOverride = overrideVerdictV7(theme, nulActif);
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
