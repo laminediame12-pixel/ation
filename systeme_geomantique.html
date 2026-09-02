@@ -24170,6 +24170,85 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //         est faite, et pas mieux qui va gagner.
 //         Ce qui manque n'est pas de la fouille — c'est des matchs.
 //
+// ── P · LES TRIANGLES DU CARRÉ ── (sa question, 01/09/26)
+//     « Chaque trajectoire dans le carré est un triangle isocèle ou
+//     équilatéral, comme 1-5-9 ou 3-5-10. Vérifie. »
+//     Vérifié exhaustivement sur les 220 triangles des douze maisons.
+//
+//     ☠️ P.1 · LA RÈGLE EST FAUSSE TELLE QUELLE
+//         Sur les 220 triangles possibles :
+//             équilatéraux ....   4   1,8 %
+//             isocèles ........  48  21,8 %
+//             SCALÈNES ........ 168  76,4 %
+//         Trois triangles sur quatre sont scalènes. Prise au pied de la
+//         lettre, la phrase est démentie par les trois quarts des cas.
+//
+//     ✔✔ P.2 · MAIS ELLE DEVIENT EXACTE SOUS DEUX CONDITIONS — 28/28
+//         Ses deux exemples ne sont pas pris au hasard : 1-5-9 et 3-5-10
+//         ont tous les deux UNE MAISON PAR AXE (un cardinal, un
+//         succédent, un cadent) et AUCUNE PAIRE DE MAISONS VOISINES.
+//         Sous ces deux conditions, et seulement sous elles :
+//             triangles concernés ........ 28
+//             équilatéraux ...............  4
+//             isocèles ................... 24
+//             SCALÈNES ...................  0
+//         ZÉRO exception sur vingt-huit. Sa règle est vraie, et voici
+//         son domaine exact.
+//
+//     ✔ P.3 · POURQUOI, ET OÙ ÇA CASSE
+//         Une maison par axe force les trois arcs à ne pas être des
+//         multiples de 3. Les seules découpes de 12 qui respectent ça
+//         sont (1,1,10), (2,2,8), (2,5,5), (4,4,4) et (1,4,7).
+//         Les quatre premières sont isocèles ou équilatérales.
+//         LA CINQUIÈME EST LA SEULE SCALÈNE, et elle est aussi la seule
+//         qui contienne un arc de 1 — c'est-à-dire deux maisons
+//         VOISINES. Les 24 scalènes des 64 triangles un-par-axe ont
+//         toutes la forme (1,4,7), et toutes contiennent deux voisines :
+//         24 sur 24. Interdire le pas de 1, c'est exactement interdire
+//         la seule forme scalène.
+//
+//     ✔✔ P.4 · DEUX FAITS DE PLUS, TOMBÉS DE LA MÊME FOUILLE
+//         • LES TROIS MAISONS D'UN MÊME AXE : 12 triangles, TOUS
+//           isocèles, tous de forme (3,3,6). 12/12, sans exception.
+//           Ce sont 1-4-7, 1-4-10, 1-7-10, 4-7-10 et leurs équivalents
+//           succédents et cadents — ses quatre triangles du carré
+//           cardinal en font partie.
+//         • DEUX AXES SEULEMENT (deux maisons d'un axe, une d'un autre) :
+//           144 triangles, TOUS SCALÈNES. 144/144, sans une seule
+//           exception. Raison : deux maisons d'un même axe sont à 3 ou 6
+//           maisons l'une de l'autre ; pour un isocèle il faudrait un
+//           troisième point équidistant des deux, or à distance 6 les
+//           deux points équidistants sont à 3 et 9 — donc du MÊME axe —
+//           et à distance 3 le point équidistant tomberait à 1,5, qui
+//           n'est pas une maison.
+//         ➜ LA DICHOTOMIE EST TOTALE : trois axes ou un seul, ça peut
+//         être isocèle ; deux axes, jamais.
+//
+//     ✔ P.5 · LES QUATRE ÉQUILATÉRAUX SONT LES QUATRE TRIGONES
+//             1-5-9 · 2-6-10 · 3-7-11 · 4-8-12
+//         Il n'y en a pas d'autres, et tous les quatre portent une
+//         maison de chaque axe. Ses deux « offensives » — 1-5-9 pour M1
+//         et 3-7-11 pour M7 — sont donc les deux seuls équilatéraux qui
+//         passent par ces pôles.
+//
+//     📋 P.6 · CE QUE ÇA LUI DONNE POUR SES QUATRE ÉVÉNEMENTS
+//         Il veut relier les trajectoires à : force potentielle de M1/M7
+//         (en rotation), force de défense, force offensive, trajectoire
+//         des incidents. La géométrie lui livre un jeu propre et fini :
+//             par M1 : 1-3-5 · 1-3-8 · 1-3-11 · 1-5-9 · 1-6-8 ·
+//                      1-6-11 · 1-9-11 ................. SEPT
+//             par M7 : 2-7-9 · 2-7-12 · 3-5-7 · 3-7-11 · 5-7-9 ·
+//                      5-7-12 · 7-9-11 ................. SEPT
+//         Sept de chaque côté, parfaitement symétriques, dont un seul
+//         équilatéral par pôle. C'est le vivier où ses quatre catégories
+//         doivent se loger.
+//     ⚠️ MAIS L'ATTRIBUTION AUX ÉVÉNEMENTS N'EST PAS VÉRIFIÉE, et elle
+//     ne peut pas l'être aujourd'hui. Sur les 55 cas de l'archive, le
+//     champ « incident » n'est rempli que sur HUIT (loi N.5), et rien
+//     ne distingue une force « offensive » d'une force « défensive » dans
+//     les données enregistrées. La géométrie est donnée ; le lien aux
+//     événements reste à mesurer, et il faudra des matchs pour ça.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -24634,6 +24713,41 @@ function autoTestAlternanceV7() {
     if (k >= 0 && k <= 4) distF[k] += 1;
   });
   r.pascal = (distF.join() === [1, 4, 6, 4, 1].join()) ? 1 : 0;
+  // ── loi P : les triangles du carre des douze maisons ──
+  function arcsTriV7(t) {
+    var a = t.slice().sort(function (x, y) { return x - y; });
+    return [a[1] - a[0], a[2] - a[1], 12 - (a[2] - a[0])].sort(function (x, y) { return x - y; });
+  }
+  function natureTriV7(t) {
+    var d = arcsTriV7(t);
+    if (d[0] === d[1] && d[1] === d[2]) return 'equilateral';
+    return (d[0] === d[1] || d[1] === d[2]) ? 'isocele' : 'scalene';
+  }
+  function axeMaisonV7(h) { return ((h - 1) % 3); }  // 0 cardinal · 1 succedent · 2 cadent
+  r.triTotal = 0; r.triEqui = 0; r.triIso = 0; r.triScal = 0;
+  r.triUnParAxeBons = 0; r.triUnParAxeSansVoisin = 0; r.triUnParAxeSansVoisinScal = 0;
+  r.triMemeAxeIso = 0; r.triMemeAxeTotal = 0;
+  r.triDeuxAxesScal = 0; r.triDeuxAxesTotal = 0;
+  for (var ta = 1; ta <= 12; ta++) for (var tb = ta + 1; tb <= 12; tb++) for (var tc = tb + 1; tc <= 12; tc++) {
+    var T = [ta, tb, tc], nat = natureTriV7(T);
+    r.triTotal += 1;
+    if (nat === 'equilateral') r.triEqui += 1; else if (nat === 'isocele') r.triIso += 1; else r.triScal += 1;
+    var ax = {}; T.forEach(function (h) { ax[axeMaisonV7(h)] = 1; });
+    var nbAxes = Object.keys(ax).length;
+    if (nbAxes === 3) {
+      if (nat !== 'scalene') r.triUnParAxeBons += 1;
+      if (arcsTriV7(T)[0] >= 2) {
+        r.triUnParAxeSansVoisin += 1;
+        if (nat === 'scalene') r.triUnParAxeSansVoisinScal += 1;
+      }
+    } else if (nbAxes === 1) {
+      r.triMemeAxeTotal += 1;
+      if (nat === 'isocele') r.triMemeAxeIso += 1;
+    } else {
+      r.triDeuxAxesTotal += 1;
+      if (nat === 'scalene') r.triDeuxAxesScal += 1;
+    }
+  }
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -24658,7 +24772,12 @@ function autoTestAlternanceV7() {
     && r.degreEquilibre === 16 && r.couvercle === 7
     && r.identitesTheme === 1 && r.reductions === 1 && r.partageTrigones === 1
     && r.diagonales === 4
-    && r.airMod4 === 16 && r.partageElement === 4 && r.pascal === 1);
+    && r.airMod4 === 16 && r.partageElement === 4 && r.pascal === 1
+    && r.triTotal === 220 && r.triEqui === 4 && r.triIso === 48 && r.triScal === 168
+    && r.triUnParAxeBons === 40 && r.triUnParAxeSansVoisin === 28
+    && r.triUnParAxeSansVoisinScal === 0
+    && r.triMemeAxeTotal === 12 && r.triMemeAxeIso === 12
+    && r.triDeuxAxesTotal === 144 && r.triDeuxAxesScal === 144);
   return r;
 }
 
