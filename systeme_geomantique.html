@@ -23551,6 +23551,67 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // ═══════════════════════════════════════════════════════════════
 // ✦ LA RÉCOLTE (31/08/26) — « on récolte les détails d'abord »
 //
+// ┌───────────────────────────────────────────────────────────────┐
+// │  L'INVENTAIRE — QUINZE LOIS, ET CE QUI LES GARDE              │
+// └───────────────────────────────────────────────────────────────┘
+// Tout ce que la fouille a établi est ici, et chaque loi de STRUCTURE
+// est revérifiée à chaque appel de autoTestAlternanceV7(), qui rend
+// tout: true seulement si les cinquante-six contrôles passent. Une loi
+// qui céderait un jour ferait basculer ce drapeau — elle n'est pas
+// seulement écrite, elle est gardée.
+//
+//   A · les cinq relations sont des décalages constants ...... decalages 16
+//   B · maison impaire → boucle A, paire → boucle B .......... pariteBoucle 16
+//   C · même boucle → B, boucles différentes → A ............. composition 256
+//   D · pourquoi l'alternance existe : tous les pas basculent . (A+B+C)
+//   E · les quatre figures d'air se reposent en M3-7-11-15 ... airMod4 16
+//       et le partage d'élément avec la maison vaut le hasard . partageElement 4
+//   F · les lignes actives suivent le triangle de Pascal ..... pascal 1
+//   H · la figure dans la maison de son antagoniste .......... pariteDecalage 16
+//   I · les cinq relations, la table complète ................ boucliersBinome 16
+//       le bouclier est le front du front du binôme ..... binomeBouclierTristitia 16
+//       la loi du cardinal : impair → permutation ....... cardImpair 16 / cardPair 15
+//       le quatuor est le front décalé de Tristitia ..... quatuorTristitia 16
+//       la roue est double ............................. roueDouble 15
+//       quatre maisons inatteignables .................. inatteignables 4 / couvertes 12
+//   J · la destruction est l'antagonisme retourné ............ destAntag 16
+//       l'antagonisme n'est pas réciproque ............. destPasReciproque 16
+//       le bouclier détruit l'antagoniste .............. bouclierTueAntag 16
+//       personne ne rend son coup ...................... riposteDirecte 0 / DeuxCoups 0
+//       détruire 2 fois = binôme(front), 4 fois = bouclier(binôme) . destDeux/Quatre 16
+//       cinq voies pour seize attaques, jamais mêlées ... nbVoies 5 · voiesSeparees 1
+//   K · le binôme est le voisin, vers l'extérieur ............ binomeVoisin 14 / retour 2
+//       l'antagoniste dessine quatre faisceaux concentriques . famillesArcs 4
+//       les concentriques ne se croisent jamais ........ croiseDedans 0 / Dehors 45
+//       la pyramide de couverture ...................... pyramide 16
+//   L · l'énergie saute la victime : f compatible avec f+6 ... energieSaut 15
+//       l'unique exception est Populus ⇢ Amissio ....... exceptionEnergie populus
+//       au coup direct il n'y a rien ................... energieDirecte 8
+//   M · le bas ne se croise jamais ........................... croisBas 0
+//       le binôme est la seule relation planaire ....... decalagesPlanaires 2
+//       chaque retour monté coûte douze ................ 45 · 57 · 69
+//       un arc n'épargne que ses voisins ............... plEpargne 16
+//       le fossé : dans un faisceau 2-6, dehors 11-13 .. fosse 1
+//       Laetitia et Populus seules déséquilibrées ...... degreEquilibre 16
+//       un panier fermé, un panier ouvert .............. couvercle 7
+//   N · les identités du thème, et les trajectoires qui s'effondrent
+//       ................................................ identitesTheme 1 · reductions 1
+//       trigone(M1) ⊕ trigone(M7) = rectangle ⊕ M1 ⊕ M7 . partageTrigones 1
+//       les quatre diagonales se croisent .............. diagonales 4
+//   O · le moteur de la destruction et le quatrième axe ...... (mesures, pas structure)
+//   G · ce qui reste sans réponse ............ (en dernier, rien à vérifier)
+//
+// ⚠️ L'ORDRE DES LETTRES. G a été écrite avant H à O et elle est restée
+// EN FIN DE BLOC, à sa place logique : c'est la liste des questions
+// ouvertes, elle se lit en dernier. Les lettres ne sont donc pas dans
+// l'ordre alphabétique du fichier — elles sont citées vingt-sept fois
+// ailleurs dans le code et les renommer casserait ces renvois.
+//
+// ☠️ ET CE QUE LA RÉCOLTE N'A PAS DONNÉ, redit ici pour que personne ne
+// lise cet inventaire comme une victoire : AUCUNE de ces quinze lois ne
+// bat le hasard sur les 39 duels de l'archive (loi O.4). Elles disent
+// comment la table est faite. Elles ne disent pas qui gagne.
+//
 // Sa consigne, et elle est la bonne : rassembler les faits AVANT de
 // bâtir un moteur. Ce qui suit ne prédit rien et n'est branché sur rien.
 // Ce sont des propriétés de la table, vraies avant qu'un thème existe,
@@ -24617,6 +24678,29 @@ function autoTestAlternanceV7() {
         || (Q[0] < P[0] && P[0] < Q[1] && Q[1] < P[1])) r.diagonales += 1;
     });
   });
+  // ── lois E et F : elles n'avaient aucun controle a l'execution, ajoute
+  //    le 31/08/26 pour que TOUTE loi de structure de la recolte soit
+  //    gardee, pas seulement decrite ──
+  // E : les quatre figures d'air se reposent en M3, M7, M11, M15
+  r.airMod4 = 0; r.partageElement = 0;
+  for (var he = 1; he <= 16; he++) {
+    var fe = FIGS_V7[he - 1];
+    if (ELEMENTS_V7[fe] === 'air' && he % 4 === 3) r.airMod4 += 1;
+    else if (ELEMENTS_V7[fe] !== 'air' && he % 4 !== 3) r.airMod4 += 1;
+    // le partage avec l'element de la maison : 4/16, soit le hasard.
+    // ⚠️ table MAISON_ELEM_V7 (celle des moteurs), pas ELEMENT_MAISON_V7
+    // qui est la table d'affichage et donne 0/16 — les deux coexistent.
+    if (typeof MAISON_ELEM_V7 !== 'undefined' && ELEMENTS_V7[fe] === MAISON_ELEM_V7[he]) r.partageElement += 1;
+  }
+  // F : la distribution des lignes a UN point est le triangle de Pascal
+  var distF = [0, 0, 0, 0, 0];
+  FIGS_V7.forEach(function (ff) {
+    var m = MAP_GEO[ff];
+    if (!m) return;
+    var k = m.filter(function (x) { return x === 1; }).length;
+    if (k >= 0 && k <= 4) distF[k] += 1;
+  });
+  r.pascal = (distF.join() === [1, 4, 6, 4, 1].join()) ? 1 : 0;
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -24640,7 +24724,8 @@ function autoTestAlternanceV7() {
     && r.plEpargne === 16 && r.fosse === 1
     && r.degreEquilibre === 16 && r.couvercle === 7
     && r.identitesTheme === 1 && r.reductions === 1 && r.partageTrigones === 1
-    && r.diagonales === 4);
+    && r.diagonales === 4
+    && r.airMod4 === 16 && r.partageElement === 4 && r.pascal === 1);
   return r;
 }
 
