@@ -400,7 +400,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
      maintenant directement sous la fenêtre d'export. Aucun identifiant n'a
      changé — les mêmes sumHouse1Bottom..8Bottom, donc updateSumHouseLabels,
      calculateHouseSum et applyPresetSum continuent de la trouver. -->
-<section class="section sum-section"><h2>Somme de 8 maisons</h2><div class="row"><div class="field"><label>Mode</label><select id="sumModeBottom" onchange="updateSumHouseLabels()"><option value="fixed">Mode fixe</option><option value="rotation">Mode rotation</option></select></div><div class="field"><label>Maison 1</label><select id="sumHouse1Bottom"></select></div><div class="field"><label>Maison 2</label><select id="sumHouse2Bottom"></select></div><div class="field"><label>Maison 3</label><select id="sumHouse3Bottom"></select></div><div class="field"><label>Maison 4</label><select id="sumHouse4Bottom"></select></div><div class="field"><label>Maison 5</label><select id="sumHouse5Bottom"></select></div><div class="field"><label>Maison 6</label><select id="sumHouse6Bottom"></select></div><div class="field"><label>Maison 7</label><select id="sumHouse7Bottom"></select></div><div class="field"><label>Maison 8</label><select id="sumHouse8Bottom"></select></div></div><div class="row"><button class="btn-primary" onclick="calculateHouseSum()">Calculer la somme</button><button class="btn-secondary" onclick="applyPresetSum('1D')">1D</button><button class="btn-secondary" onclick="applyPresetSum('2D')">2D</button><button class="btn-secondary" onclick="applyPresetSum('3D')">3D</button><button class="btn-secondary" onclick="applyPresetSum('4D')">4D</button><button class="btn-secondary" onclick="applyPresetSum('3B')">3B</button><button class="btn-secondary" onclick="applyPresetSum('Yes')">Yes</button><button class="btn-secondary" onclick="applyPresetSum('V-1')">V-1</button><button class="btn-secondary" onclick="applyPresetSum('V-2')">V-2</button></div><div class="card" id="sum-result"><div class="muted">Aucun calcul pour le moment.</div></div></section>
+<section class="section sum-section"><h2>Somme de 8 maisons</h2><div class="row"><div class="field"><label>Mode</label><select id="sumModeBottom" onchange="updateSumHouseLabels()"><option value="fixed">Mode fixe</option><option value="rotation">Mode rotation</option></select></div><div class="field"><label>Maison 1</label><select id="sumHouse1Bottom"></select></div><div class="field"><label>Maison 2</label><select id="sumHouse2Bottom"></select></div><div class="field"><label>Maison 3</label><select id="sumHouse3Bottom"></select></div><div class="field"><label>Maison 4</label><select id="sumHouse4Bottom"></select></div><div class="field"><label>Maison 5</label><select id="sumHouse5Bottom"></select></div><div class="field"><label>Maison 6</label><select id="sumHouse6Bottom"></select></div><div class="field"><label>Maison 7</label><select id="sumHouse7Bottom"></select></div><div class="field"><label>Maison 8</label><select id="sumHouse8Bottom"></select></div></div><div class="row"><button class="btn-primary" onclick="calculateHouseSum()">Calculer la somme</button><button class="btn-secondary" title="Axe Cardinal — M1 + M4 + M7 + M10 (les angulaires)" onclick="applyPresetSum('1D')">1D · Cardinal</button><button class="btn-secondary" title="Axe Succédent — M2 + M5 + M8 + M11" onclick="applyPresetSum('2D')">2D · Succédent</button><button class="btn-secondary" title="Axe Cadent — M3 + M6 + M9 + M12" onclick="applyPresetSum('3D')">3D · Cadent</button><button class="btn-secondary" title="Trigone offensif de M1 / R1 — M1 + M5 + M9" onclick="applyPresetSum('4D')">4D · offensive 1</button><button class="btn-secondary" title="Trigone offensif de M7 / R7 — M7 + M3 + M11" onclick="applyPresetSum('3B')">3B · offensive 7</button><button class="btn-secondary" onclick="applyPresetSum('V-1')">V-1</button><button class="btn-secondary" onclick="applyPresetSum('V-2')">V-2</button></div><div class="card" id="sum-result"><div class="muted">Aucun calcul pour le moment.</div></div></section>
 </section>
 <section id="geomtx-outil-section" style="background:#0f0d18;margin-bottom:12px;padding:8px 0;border-top:3px solid #8E5FC7;">
 <h2 style="padding:0 8px 8px;">🔷 Outil de référence — Matrice géomantique (figures × maisons)</h2>
@@ -28655,7 +28655,63 @@ function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; rende
   setTimeout(()=>{ try { if(currentTheme) showRelationArrows(pos); } catch(e){} }, 0);
 },3000);}
 function calculateHouseSum(){if(!currentTheme){document.getElementById('sum-result').innerHTML='<div class="bad">Lance le theme d abord.</div>'; return;} const mode=document.getElementById('sumModeBottom').value; const selected=sumSlots.map(slot=>{const raw=document.getElementById(`${slot}Bottom`).value; return raw===''?null:Number(raw);}).filter(Boolean); if(!selected.length){document.getElementById('sum-result').innerHTML='<div class="warn">Sélectionne au moins une maison.</div>'; return;} let figs=[],labels=[]; if(mode==='fixed'){figs=selected.map(h=>currentTheme[h]); labels=selected.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=selected.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${selected[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Mode :</b> ${mode==='fixed'?'fixe':'rotation'}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
-function applyPresetSum(name){const presets={'1D':[13,14,15,16],'2D':[1,4,7,10],'3D':[2,3,11,8,9,14],'4D':[9,12,13,10,5,14,6,7,8,15,13,11,16],'3B':[13,8,4,6],'Yes':[2,7,12,10],'V-1':[1,2,3,4,9,10,13,15],'V-2':[5,6,7,8,11,12,14,16]}; if(!currentTheme || !presets[name]) return; const mode=document.getElementById('sumModeBottom').value; const houses=presets[name]; let figs=[],labels=[]; if(mode==='fixed'){figs=houses.map(h=>currentTheme[h]); labels=houses.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=houses.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${houses[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Preset :</b> ${name}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
+// ─── LES PRÉRÉGLAGES SONT REFAITS (01/09/26, doctrine Ellemine_D) ───
+// Les anciens étaient des listes de maisons sans nom ni raison — '3D'
+// valait [2,3,11,8,9,14], et '4D' treize maisons dont deux répétées
+// (M13 et M14 y figuraient deux fois : combinées, elles s'annulaient).
+// Ils sont remplacés par les structures de la récolte, qui ont un nom :
+//   1D · Cardinal ...... M1 + M4 + M7 + M10, les angulaires
+//   2D · Succédent ..... M2 + M5 + M8 + M11
+//   3D · Cadent ........ M3 + M6 + M9 + M12
+//   4D · offensive 1 ... M1 + M5 + M9, le trigone de M1
+//   3B · offensive 7 ... M7 + M3 + M11, le trigone de M7
+// « Selon la rotation » est déjà le sélecteur Mode de ce panneau : en
+// mode fixe on lit M1, M5, M9 ; en mode rotation on lit R1, R5, R9,
+// c'est-à-dire les maisons que la rotation met à ces places. Le code le
+// faisait déjà, rien à ajouter pour ça.
+// 'Yes' est retiré sur sa demande. V-1 et V-2 sont conservés tels quels :
+// il les a listés sans consigne, et supprimer sans consigne est pire que
+// laisser en trop.
+// ⚠️ RAPPEL DE LA LOI N.3 — les deux trigones S'EFFONDRENT. M1+M5+M9 vaut
+// M2 ⊕ M5 : il ne contient NI M1 NI M9, parce que M9 = M1 ⊕ M2 et que M1
+// s'annule avec lui-même. C'est affiché sous le résultat, pour que
+// personne ne croie lire la somme de ce que la trajectoire traverse.
+var PRESETS_SOMME_V7 = {
+  '1D':  { maisons: [1, 4, 7, 10], nom: 'Axe Cardinal (les angulaires)' },
+  '2D':  { maisons: [2, 5, 8, 11], nom: 'Axe Succédent' },
+  '3D':  { maisons: [3, 6, 9, 12], nom: 'Axe Cadent' },
+  '4D':  { maisons: [1, 5, 9],     nom: 'Trigone offensif de M1 / R1', reduit: 'M2 ⊕ M5' },
+  '3B':  { maisons: [7, 3, 11],    nom: 'Trigone offensif de M7 / R7', reduit: 'M3 ⊕ M5 ⊕ M6 ⊕ M7' },
+  'V-1': { maisons: [1, 2, 3, 4, 9, 10, 13, 15], nom: 'V-1' },
+  'V-2': { maisons: [5, 6, 7, 8, 11, 12, 14, 16], nom: 'V-2' }
+};
+function applyPresetSum(name){
+  var meta = PRESETS_SOMME_V7[name];
+  if (!currentTheme || !meta) return;
+  var mode = document.getElementById('sumModeBottom').value;
+  var houses = meta.maisons, figs = [], labels = [];
+  if (mode === 'fixed') {
+    figs = houses.map(function (h) { return currentTheme[h]; });
+    labels = houses.map(function (h) { return 'M' + h; });
+  } else {
+    var order = getRotationOrderFromRepos(currentTheme[1]);
+    var rotated = houses.map(function (h) { return order[h - 1]; });
+    figs = rotated.map(function (h) { return currentTheme[h]; });
+    labels = rotated.map(function (h, i) { return 'R' + houses[i] + ' → M' + h; });
+  }
+  var result = combineMany(figs);
+  var exists = figureExistsInTheme(result, currentTheme);
+  document.getElementById('sum-result').innerHTML =
+      '<div class="kv"><b>Preset :</b> ' + name + ' — ' + meta.nom + '</div>'
+    + labels.map(function (l, i) { return '<div class="kv"><b>' + l + ' :</b> ' + FL[figs[i]] + '</div>'; }).join('')
+    + '<div class="kv"><b>Somme :</b> <span class="' + (exists ? 'good' : 'bad') + '">' + FL[result] + '</span> '
+    + (exists ? 'existe dans le thème' : 'absente du thème') + '</div>'
+    + '<div class="kv"><b>Symbole :</b><br>' + symb(result) + '</div>'
+    + (meta.reduit
+        ? '<div class="kv muted" style="font-size:11px;">⚠️ loi N.3 — cette trajectoire s\'effondre : '
+          + 'elle vaut ' + meta.reduit + ', elle ne contient donc pas toutes les maisons qu\'elle traverse.</div>'
+        : '');
+}
 function compareWithReality(){
   if(!currentTheme) return;
   var favorite = (document.getElementById('matchFavorite')||{}).value || 'none';
