@@ -23950,6 +23950,91 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //
 //     ⚠️ On récolte. Rien de ceci ne touche un verdict.
 //
+// ── N · LES TRAJECTOIRES ── (ses axes, 31/08/26)
+//     Il demande d'attaquer les axes 1-4-7, 1-10-7, 4-7-10, 4-1-10, et
+//     les trigones de M1 et M7 : « 3-5-9-11 est partagé par M1 et M7,
+//     ainsi 1-5-9 et 7-3-11 ». Puis d'exploiter pour trouver où les
+//     figures doivent se loger pour qu'il y ait penalty, rouge, les deux
+//     marquent, un camp faible ou fort.
+//     La géométrie répond très bien. LA MESURE, ELLE, NE RÉPOND PAS —
+//     et il faut le dire avant tout le reste.
+//
+//     ✔✔ N.1 · SES DEUX CARRÉS S'INTERSECTENT, 4 DIAGONALES SUR 4
+//         Le carré 1-4-7-10 porte les diagonales 1-7 et 4-10 ; le
+//         rectangle 3-5-9-11 porte 3-9 et 5-11. Les QUATRE paires se
+//         croisent, sans exception. Son « carrés intrasect de 4
+//         diagonales » est exact.
+//
+//     ✔✔ N.2 · SA PHRASE SUR LE PARTAGE, VÉRIFIÉE 2000/2000
+//         trigone(M1) ⊕ trigone(M7) = rectangle 3-5-9-11 ⊕ M1 ⊕ M7
+//         Le rectangle est bien la part COMMUNE ; chaque trigone n'y
+//         ajoute que son propre pôle. C'est exactement ce qu'il décrit.
+//
+//     ✔✔ N.3 · LES TRAJECTOIRES S'EFFONDRENT — et ça, c'est neuf
+//         Le thème obéit à M9 = M1⊕M2, M10 = M3⊕M4, M11 = M5⊕M6,
+//         M12 = M7⊕M8, M13 = M9⊕M10, M14 = M11⊕M12, M15 = M13⊕M14
+//         (7/7 vérifiées). Donc TOUTE trajectoire qui contient une
+//         maison ET l'un de ses deux parents perd les deux et ne garde
+//         que l'autre parent. Ses trajectoires se réduisent :
+//             trigone M1  1-5-9 ....... = M2 ⊕ M5      (deux maisons !)
+//             triangle 4-7-10 ......... = M3 ⊕ M7      (deux maisons)
+//             triangle 4-1-10 ......... = M1 ⊕ M3      (deux maisons)
+//             carré cardinal 1-4-7-10 . = M1 ⊕ M3 ⊕ M7
+//             triangle 1-4-7 .......... = M1 ⊕ M4 ⊕ M7
+//             triangle 1-10-7 ......... = M1 ⊕ M3 ⊕ M4 ⊕ M7
+//             trigone M7  3-7-11 ...... = M3 ⊕ M5 ⊕ M6 ⊕ M7
+//             rectangle 3-5-9-11 ...... = M1 ⊕ M2 ⊕ M3 ⊕ M6
+//             succédent 2-5-8-11 ...... = M2 ⊕ M6 ⊕ M8
+//             cadent 3-6-9-12 ......... = M1⊕M2⊕M3⊕M6⊕M7⊕M8
+//         ☠️ LE TRIGONE DE M1 ANNULE M1. 1-5-9 ne dépend NI de M1 NI de
+//         M9 : il vaut M2 ⊕ M5, deux mères. La « trajectoire de M1 » est
+//         la seule des dix qui ne contient pas M1. Même chose pour le
+//         triangle 4-7-10, qui n'a plus M4 dedans.
+//         ➜ Une trajectoire n'est donc PAS l'addition de ce qu'elle
+//         traverse. Trois maisons peuvent n'en valoir que deux, et
+//         parfois pas celles qu'on croit.
+//
+//     ☠️☠️ N.4 · ET LA MESURE NE DONNE RIEN. Il faut le dire net.
+//         Balayage préenregistré : 10 trajectoires × 4 lectures
+//         (résultante en boucle A · résultante = Populus · résultante
+//         ancrée · majorité de boucle A dans la trajectoire) × 4 sorties
+//         (camp · nul · les deux marquent · plus de 2,5 buts) = 160
+//         tests, plus 64 tests de maisons seules = 224.
+//             seuil de Bonferroni ......... 0,000223
+//             meilleur p obtenu ........... 0,0015
+//             SURVIVANTS .................. ZÉRO
+//             sous 0,05 brut .............. 8 sur 224
+//             attendus par le seul hasard . 11,2
+//         LE BALAYAGE PRODUIT MOINS DE TOUCHES QUE LE HASARD. Ce n'est
+//         pas « peu concluant » : c'est un résultat négatif franc.
+//
+//     ☠️ N.5 · L'INCIDENT NE PEUT PAS ÊTRE MESURÉ DU TOUT
+//         Sur les 53 cas de l'archive, le champ « incident » n'est
+//         rempli que sur HUIT — six oui, deux non. Aucune trajectoire,
+//         aucune figure, aucun test ne peut sortir de huit observations
+//         dont deux d'une classe. La question « dans quelle trajectoire
+//         une figure doit se loger pour qu'il y ait penalty ou rouge »
+//         N'EST PAS RÉPONDABLE en l'état, et aucune fouille ne la rendra
+//         répondable. Ce qui la débloquerait est simple et n'est pas du
+//         calcul : remplir le champ incident sur les quarante-cinq cas
+//         qui l'ont vécu. Vingt oui et vingt non, et le test devient
+//         possible.
+//
+//     📌 N.6 · DEUX PISTES GELÉES, NON BRANCHÉES
+//         Les deux meilleures du balayage — hors trajectoires, ce sont
+//         des MAISONS SEULES, ce qui répond déjà non à sa question :
+//             M15 (le JUGE) en boucle A → les deux marquent MOINS
+//                 9/25 = 36 %  contre  14/16 = 88 %   p brut 0,0015
+//             M4 en boucle A → plus de 2,5 buts
+//                 23/28 = 82 % contre 5/15 = 33 %     p brut 0,0024
+//                 (et l'effet se renforce en excluant l'e-sport :
+//                  17/21 contre 5/16, p = 0,0059 — ce n'est donc pas le
+//                  piège des 8,75 buts de l'arcade)
+//         Aucune des deux ne survit à la correction. Elles sont notées
+//         ICI, gelées, pour être retestées sur les prochains matchs — et
+//         elles ne touchent aucun verdict. La règle du projet tient :
+//         une piste trouvée dans l'échantillon se vérifie DEHORS.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -24099,6 +24184,30 @@ function positionLigneV7(fig) {
   var h = FIGS_V7.indexOf(fig) + 1;
   if (h < 1) return null;
   return (h % 2 === 1) ? 8 - (h - 1) / 2 : 8 + h / 2;
+}
+
+// Les trajectoires d'Ellemine_D (loi N) : la combinaison des maisons
+// qu'une trajectoire traverse. Elle ne sert qu'a la recolte et a
+// l'auto-test — aucun moteur ne l'appelle.
+var TRAJECTOIRES_V7 = [
+  { cle: 'cardinal', nom: 'carre cardinal 1-4-7-10', maisons: [1, 4, 7, 10], reduit: [1, 3, 7] },
+  { cle: 'rectangle', nom: 'rectangle 3-5-9-11', maisons: [3, 5, 9, 11], reduit: [1, 2, 3, 6] },
+  { cle: 'trigone1', nom: 'trigone de M1 1-5-9', maisons: [1, 5, 9], reduit: [2, 5] },
+  { cle: 'trigone7', nom: 'trigone de M7 3-7-11', maisons: [3, 7, 11], reduit: [3, 5, 6, 7] },
+  { cle: 'tri147', nom: 'triangle 1-4-7', maisons: [1, 4, 7], reduit: [1, 4, 7] },
+  { cle: 'tri1107', nom: 'triangle 1-10-7', maisons: [1, 10, 7], reduit: [1, 3, 4, 7] },
+  { cle: 'tri4710', nom: 'triangle 4-7-10', maisons: [4, 7, 10], reduit: [3, 7] },
+  { cle: 'tri4110', nom: 'triangle 4-1-10', maisons: [4, 1, 10], reduit: [1, 3] }
+];
+function trajectoireV7(theme, maisons) {
+  if (!theme) return null;
+  var r = null;
+  for (var i = 0; i < maisons.length; i++) {
+    var f = theme[maisons[i]];
+    if (!f) return null;
+    r = (r === null) ? f : combine(r, f);
+  }
+  return r;
 }
 
 function autoTestAlternanceV7() {
@@ -24332,6 +24441,41 @@ function autoTestAlternanceV7() {
     if (bm3.lo === retAP.lo && bm3.hi === retAP.hi) return false;  // le couvercle lui-meme
     return retAP.lo <= bm3.lo && bm3.hi <= retAP.hi && !croiseV7(bm3, retAP);
   }).length;
+  // ── loi N : les trajectoires ──
+  r.identitesTheme = 0; r.reductions = 0; r.partageTrigones = 0; r.diagonales = 0;
+  try {
+    var essais = 0, idOk = 0, redOk = 0, parOk = 0;
+    for (var it = 0; it < 60; it++) {
+      var mm = [0, 1, 2, 3].map(function () { return FIGS_V7[Math.floor(Math.random() * 16)]; });
+      var th = null;
+      try { th = buildThemeFromMothers(mm[0], mm[1], mm[2], mm[3]); } catch (e) { continue; }
+      essais += 1;
+      var IDS = [[9, 1, 2], [10, 3, 4], [11, 5, 6], [12, 7, 8], [13, 9, 10], [14, 11, 12], [15, 13, 14]];
+      var bonId = true;
+      IDS.forEach(function (P) { if (th[P[0]] !== combine(th[P[1]], th[P[2]])) bonId = false; });
+      if (bonId) idOk += 1;
+      var bonRed = true;
+      TRAJECTOIRES_V7.forEach(function (T) {
+        if (trajectoireV7(th, T.maisons) !== trajectoireV7(th, T.reduit)) bonRed = false;
+      });
+      if (bonRed) redOk += 1;
+      // trigone(M1) + trigone(M7) = rectangle + M1 + M7
+      var g = combine(trajectoireV7(th, [1, 5, 9]), trajectoireV7(th, [3, 7, 11]));
+      var dr = combine(combine(trajectoireV7(th, [3, 5, 9, 11]), th[1]), th[7]);
+      if (g === dr) parOk += 1;
+    }
+    r.identitesTheme = (essais > 0 && idOk === essais) ? 1 : 0;
+    r.reductions = (essais > 0 && redOk === essais) ? 1 : 0;
+    r.partageTrigones = (essais > 0 && parOk === essais) ? 1 : 0;
+  } catch (e) { /* le builder n'est pas la : les trois restent a 0 */ }
+  // les quatre diagonales se croisent
+  var D1 = [[1, 7], [4, 10]], D2 = [[3, 9], [5, 11]];
+  D1.forEach(function (P) {
+    D2.forEach(function (Q) {
+      if ((P[0] < Q[0] && Q[0] < P[1] && P[1] < Q[1])
+        || (Q[0] < P[0] && P[0] < Q[1] && Q[1] < P[1])) r.diagonales += 1;
+    });
+  });
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -24353,7 +24497,9 @@ function autoTestAlternanceV7() {
     && r.croisHautDeux === 69
     && r.decalagesPlanaires === 2 && r.maxCrois === 61
     && r.plEpargne === 16 && r.fosse === 1
-    && r.degreEquilibre === 16 && r.couvercle === 7);
+    && r.degreEquilibre === 16 && r.couvercle === 7
+    && r.identitesTheme === 1 && r.reductions === 1 && r.partageTrigones === 1
+    && r.diagonales === 4);
   return r;
 }
 
