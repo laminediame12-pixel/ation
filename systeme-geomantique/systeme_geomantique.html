@@ -7720,6 +7720,32 @@ function coincidenceJugeAxesV7(theme){
   var axeCad = combineMany([theme[3], theme[6], theme[9], theme[12]]);
   return combineMany([axeCard, axeSucc, axeCad]) === theme[15];
 }
+
+// ═══════════════════════════════════════════════════════════════
+// SIGNAL M4/M10 — BOUCLE DE M1 OU M7 (03/09/26, piste d'Ellemine_D :
+// « M4 et M10 sont les maisons où M1 ou M7 sont directement atteints ; si
+// M4 et M10 soutiennent un camp, ce camp gagne ») — formalisé comme :
+// M1 et M7 doivent être dans deux boucles binôme différentes (sinon la
+// règle est muette), puis M4 ET M10 doivent être TOUS LES DEUX dans la
+// même boucle que M1 (→ M1 soutenu) ou que M7 (→ M7 soutenu).
+// Vérifié sur l'archive réelle (45 cas) : s'applique 13/45 fois, exact
+// 8/13 (62%), 8/11 (73%) en excluant les nuls (jamais prédits par cette
+// règle). Contrôle fait : regarder la seule boucle de M1 (sans M4/M10) ne
+// donne que 38%, sous le hasard — c'est bien l'accord de M4 ET M10 qui
+// porte le signal, pas la boucle de M1 seule. C'est le résultat le plus
+// net trouvé à ce jour sur l'archive, mais l'échantillon (11-13 cas)
+// reste modeste — statut : signal EN OBSERVATION, pas encore au niveau de
+// preuve exigé ailleurs dans ce fichier (souvent 80%+ sur des échantillons
+// plus larges). Aucun poids sur le verdict pour l'instant.
+function signalM4M10BoucleV7(theme){
+  var l1 = loopOf(theme[1]), l7 = loopOf(theme[7]);
+  if (!l1 || !l7 || l1 === l7) return {applicable:false, campSoutenu:null};
+  var l4 = loopOf(theme[4]), l10 = loopOf(theme[10]);
+  var camp = null;
+  if (l4 === l10 && l4 === l1) camp = 'M1';
+  else if (l4 === l10 && l4 === l7) camp = 'M7';
+  return {applicable: camp !== null, campSoutenu: camp, l1:l1, l7:l7, l4:l4, l10:l10};
+}
 // ═══════════════════════════════════════════════════════════════
 // TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
 // Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
@@ -26999,6 +27025,22 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + '🎯 <b>COÏNCIDENCE JUGE/3-AXES</b> — le Juge égale la combinaison des axes Cardinal+Succédent+Cadent '
         + '(1 thème sur 8 en moyenne). Signal en observation, pas encore assez de cas réels pour conclure — '
         + 'aucun poids sur le verdict.</div>' : '')
+    // SIGNAL M4/M10 (03/09/26) — cf. signalM4M10BoucleV7 : M1 et M7 dans deux
+    // boucles différentes, et M4+M10 tous deux dans la boucle de l'un des
+    // deux camps. Le plus net des signaux d'observation testés à ce jour
+    // (8/11 = 73% sur les cas décidés de l'archive, contre 38% pour la
+    // seule boucle de M1), mais échantillon encore modeste (11-13 cas) —
+    // pas encore au niveau de preuve exigé ailleurs, aucun poids sur le verdict.
+    +((function(){
+        var s; try { s = signalM4M10BoucleV7(theme); } catch(e){ s = {applicable:false}; }
+        if (!s.applicable) return '';
+        var campNom = s.campSoutenu === 'M1' ? teamA : teamB;
+        return '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
+          + 'background:rgba(52,211,153,.10); font-size:11px; color:#6ee7b7; text-align:left;">'
+          + '🧭 <b>SIGNAL M4/M10</b> — M1 et M7 dans deux boucles différentes, M4 et M10 tous deux dans la boucle de '
+          + campNom + '. Sur l\'archive à ce jour : correct 8 fois sur 11 cas décidés (73%). Signal en observation, '
+          + 'échantillon encore modeste — aucun poids sur le verdict.</div>';
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29248,6 +29290,8 @@ function addToHistory() {
     coincidenceJugeAxes: (function(){ try { return coincidenceJugeAxesV7(currentTheme); } catch(e){ return null; } })(),
     // Tableau d'observation pour le motif du BTTS, cf. tableauReferenceBTTS.
     refBTTS: (function(){ try { return tableauReferenceBTTS(currentTheme, matchDate); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalM4M10BoucleV7.
+    signalM4M10Boucle: (function(){ try { return signalM4M10BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29315,6 +29359,8 @@ function saveManuel() {
     coincidenceJugeAxes: (function(){ try { return coincidenceJugeAxesV7(currentTheme); } catch(e){ return null; } })(),
     // Tableau d'observation pour le motif du BTTS, cf. tableauReferenceBTTS.
     refBTTS: (function(){ try { return tableauReferenceBTTS(currentTheme, matchDate); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalM4M10BoucleV7.
+    signalM4M10Boucle: (function(){ try { return signalM4M10BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
