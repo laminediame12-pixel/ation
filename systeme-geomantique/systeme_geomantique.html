@@ -7746,6 +7746,33 @@ function signalM4M10BoucleV7(theme){
   else if (l4 === l10 && l4 === l7) camp = 'M7';
   return {applicable: camp !== null, campSoutenu: camp, l1:l1, l7:l7, l4:l4, l10:l10};
 }
+
+// ═══════════════════════════════════════════════════════════════
+// SIGNAL M15/M16 — BOUCLE INVERSÉE DU JUGE/SENTENCE (03/09/26, piste
+// d'Ellemine_D : « M13/M14 sont des témoins, 15 Juge, 16 Sentence, sont
+// dans une autre dimension ») — même mécanisme que signalM4M10BoucleV7
+// (M1/M7 dans deux boucles différentes, puis les deux maisons choisies
+// tombent-elles ensemble dans l'une des deux boucles ?), mais appliqué à
+// M15+M16, et dans le sens INVERSÉ : sur l'archive, quand M15 et M16
+// tombent ensemble dans la boucle d'un camp, c'est l'AUTRE camp qui gagne
+// le plus souvent (9/11 = 82%, contre 55% pour deviner le camp majoritaire
+// du même sous-groupe — soit +27 points).
+// ⚠️ STATUT PLUS FRAGILE que signalM4M10BoucleV7 : ce sens inversé a été
+// trouvé en retournant l'hypothèse directe après coup (qui, elle, donnait
+// 2/11 = 18%, très en dessous du hasard) — tester les deux sens d'une
+// hypothèse augmente le risque de fausse piste par rapport à une
+// prédiction faite à l'avance. Échantillon (11 cas) modeste. Aucun poids
+// sur le verdict.
+function signalM15M16BoucleV7(theme){
+  var l1 = loopOf(theme[1]), l7 = loopOf(theme[7]);
+  if (!l1 || !l7 || l1 === l7) return {applicable:false, campPredit:null};
+  var l15 = loopOf(theme[15]), l16 = loopOf(theme[16]);
+  var campAccorde = null;
+  if (l15 === l16 && l15 === l1) campAccorde = 'M1';
+  else if (l15 === l16 && l15 === l7) campAccorde = 'M7';
+  var campPredit = campAccorde === 'M1' ? 'M7' : campAccorde === 'M7' ? 'M1' : null;
+  return {applicable: campAccorde !== null, campAccorde: campAccorde, campPredit: campPredit, l1:l1, l7:l7, l15:l15, l16:l16};
+}
 // ═══════════════════════════════════════════════════════════════
 // TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
 // Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
@@ -27059,6 +27086,31 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         }
         return html;
       })())
+    // SIGNAL M15/M16 (03/09/26) — cf. signalM15M16BoucleV7 : quand le Juge
+    // et la Sentence tombent ensemble dans la boucle d'un camp, c'est
+    // l'AUTRE camp qui gagne le plus souvent sur l'archive (9/11 = 82%).
+    // Statut plus fragile que M4/M10 (trouvé en inversant une hypothèse
+    // après coup) — affiché quand même en observation, aucun poids sur
+    // le verdict.
+    +((function(){
+        var s; try { s = signalM15M16BoucleV7(theme); } catch(e){ s = {applicable:false}; }
+        if (!s.applicable) return '';
+        var sigCampR = s.campPredit === 'M1' ? 'R1' : 'R7';
+        var campNom = s.campPredit === 'M1' ? teamA : teamB;
+        var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #818cf8; border-radius:7px; '
+          + 'background:rgba(129,140,248,.10); font-size:11px; color:#c7d2fe; text-align:left;">'
+          + '🔮 <b>SIGNAL M15/M16 (inversé)</b> — Juge et Sentence tous deux dans la boucle de '
+          + (s.campAccorde === 'M1' ? teamA : teamB) + ', ce qui a historiquement favorisé l\'AUTRE camp, '
+          + campNom + '. Sur l\'archive : correct 9 fois sur 11 (82%). Signal plus fragile que M4/M10 '
+          + '(trouvé en inversant l\'hypothèse de départ) — aucun poids sur le verdict.</div>';
+        if (card.winner && card.winner !== 'Nul' && card.winner !== sigCampR) {
+          html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
+            + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
+            + '⚠️ <b>SIGNAL M15/M16 CONTREDIT LE VERDICT</b> — le verdict ci-dessus désigne '
+            + (card.winner === 'R1' ? teamA : teamB) + ', le signal désigne ' + campNom + '.</div>';
+        }
+        return html;
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29310,6 +29362,8 @@ function addToHistory() {
     refBTTS: (function(){ try { return tableauReferenceBTTS(currentTheme, matchDate); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalM4M10BoucleV7.
     signalM4M10Boucle: (function(){ try { return signalM4M10BoucleV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalM15M16BoucleV7.
+    signalM15M16Boucle: (function(){ try { return signalM15M16BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29379,6 +29433,8 @@ function saveManuel() {
     refBTTS: (function(){ try { return tableauReferenceBTTS(currentTheme, matchDate); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalM4M10BoucleV7.
     signalM4M10Boucle: (function(){ try { return signalM4M10BoucleV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalM15M16BoucleV7.
+    signalM15M16Boucle: (function(){ try { return signalM15M16BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
