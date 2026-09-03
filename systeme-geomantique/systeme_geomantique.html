@@ -27031,15 +27031,33 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     // (8/11 = 73% sur les cas décidés de l'archive, contre 38% pour la
     // seule boucle de M1), mais échantillon encore modeste (11-13 cas) —
     // pas encore au niveau de preuve exigé ailleurs, aucun poids sur le verdict.
+    // ─── ALERTE DE CONTRADICTION (03/09/26) ─── Vérifié sur l'archive :
+    // quand le signal s'applique, il contredit le verdict officiel dans
+    // 69% des cas (4/13 d'accord) — et dans CES cas précis, c'est
+    // historiquement le verdict officiel qui se trompe le plus (4/11 = 36%
+    // contre 52% sur le reste de l'archive), là où le signal reste à 73%.
+    // Toujours affiché à titre d'alerte, jamais pour changer le vainqueur
+    // affiché : aucune bascule automatique tant que l'échantillon (11 cas)
+    // reste aussi modeste.
     +((function(){
         var s; try { s = signalM4M10BoucleV7(theme); } catch(e){ s = {applicable:false}; }
         if (!s.applicable) return '';
+        var sigCampR = s.campSoutenu === 'M1' ? 'R1' : 'R7';
         var campNom = s.campSoutenu === 'M1' ? teamA : teamB;
-        return '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
+        var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
           + 'background:rgba(52,211,153,.10); font-size:11px; color:#6ee7b7; text-align:left;">'
           + '🧭 <b>SIGNAL M4/M10</b> — M1 et M7 dans deux boucles différentes, M4 et M10 tous deux dans la boucle de '
           + campNom + '. Sur l\'archive à ce jour : correct 8 fois sur 11 cas décidés (73%). Signal en observation, '
           + 'échantillon encore modeste — aucun poids sur le verdict.</div>';
+        if (card.winner && card.winner !== 'Nul' && card.winner !== sigCampR) {
+          html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
+            + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
+            + '⚠️ <b>SIGNAL M4/M10 CONTREDIT LE VERDICT</b> — le verdict ci-dessus désigne '
+            + (card.winner === 'R1' ? teamA : teamB) + ', le signal désigne ' + campNom
+            + '. Sur les 11 cas de l\'archive où ce désaccord précis a été mesuré, le verdict officiel avait raison '
+            + '4 fois (36%) contre 8 pour le signal (73%) — un échantillon encore modeste, mais qui va dans le sens du signal.</div>';
+        }
+        return html;
       })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
