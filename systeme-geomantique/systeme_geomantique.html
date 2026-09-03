@@ -1994,6 +1994,14 @@ function renderCarreGeomantique(theme){
   if(!svg) return;
   let html = '';
   const mono = (typeof STYLE_CARRE_V7 !== 'undefined' && STYLE_CARRE_V7 === 'mono');
+  // ─── FOND NOIR EN MONOCHROME (03/09/26, sa demande explicite : « la
+  // couleur de fond doit être noir ou bleu foncé ») — posé en style
+  // INLINE sur l'élément (pas dans la feuille de style globale) parce que
+  // le fond parchemin (#1c1206) reste la valeur par défaut du mode
+  // couleur, inchangée. On la retire (chaîne vide) en revenant au mode
+  // couleur pour laisser le CSS reprendre la main.
+  svg.style.background = mono ? '#04060d' : '';
+  svg.style.borderColor = mono ? '#334155' : '';
 
   // 2) ZONES M1/M7 (03/08/26, demande Ellemine_D) — I à gauche = zone M1,
   // VII à droite = zone M7, X et IV (exactement sur l'axe central x=200)
