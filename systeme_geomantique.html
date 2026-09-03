@@ -1944,10 +1944,39 @@ function renderCarreGeomantique(theme){
 
     // 4) BADGE DE DIGNITÉ ACCIDENTELLE (03/08/26, 📚 étude non validée) —
     // petit score coloré (vert=positif, rouge=négatif) sous la figure.
-    if(typeof calculerDigniteAccidentelle === 'function' && fig){
-      const da = calculerDigniteAccidentelle(m, fig, theme);
-      const daCol = da.total > 0 ? '#4ade80' : (da.total < 0 ? '#f87171' : '#94a3b8');
-      html += '<text x="'+cx+'" y="'+(cy+17)+'" font-size="7" fill="'+daCol+'" style="pointer-events:none;">'+(da.total>=0?'+':'')+da.total+'</text>';
+    // ─── L'ÉLÉMENT REVIENT DANS LA MAISON (01/09/26, sa demande) ───
+    // « Remets l'élément de la figure dans la maison. » Il était porté par
+    // le FOND de la maison, que la couleur d'axe a pris. Il revient sous
+    // la figure, en toutes lettres, avec sa pastille.
+    // ⚠️ POURQUOI UN HALO SOMBRE ET PAS UNE PASTILLE COLORÉE SEULE : les
+    // couleurs d'élément entrent en collision avec celles des axes — feu
+    // est rouge #C0392B sur une maison cadente rouge, air est jaune
+    // #E8C547 sur une maison succédente jaune. Invisible. Le halo sombre
+    // (paint-order:stroke) détache le texte de n'importe quel fond, sans
+    // avoir à mesurer une boîte.
+    // ✔ ET LE NOM EST ÉCRIT À CÔTÉ DE LA PASTILLE : l'identité de
+    // l'élément ne repose jamais sur la seule couleur — ce qui règle du
+    // même coup le cas de « terre », qui est un gris.
+    // 📏 Les quatre couleurs d'élément du fichier sont CONSERVÉES telles
+    // quelles : passées au contrôleur sur fond sombre, elles tiennent les
+    // deux contrôles qui décident si on les distingue — séparation
+    // daltonienne ΔE 12,9 (cible ≥ 8) et vision normale ΔE 15,8
+    // (plancher 15). Elles ne sortent de la bande de clarté que parce que
+    // ce sont les teintes historiques du projet, pas une rampe neuve.
+    if(fig){
+      const elemCol = ELEMENT_COLORS[elem] || '#94a3b8';
+      let daTxt = '', daCol = '#94a3b8';
+      if(typeof calculerDigniteAccidentelle === 'function'){
+        const da = calculerDigniteAccidentelle(m, fig, theme);
+        daCol = da.total > 0 ? '#4ade80' : (da.total < 0 ? '#f87171' : '#94a3b8');
+        daTxt = (da.total>=0?'+':'')+da.total;
+      }
+      html += '<text x="'+cx+'" y="'+(cy+17)+'" style="font-size:'+(isGrand?8:7)+'px; '
+        + 'paint-order:stroke; stroke:#0b1220; stroke-width:2.6px; pointer-events:none;">'
+        + '<tspan style="fill:'+elemCol+';">●</tspan>'
+        + '<tspan style="fill:#e2e8f0;"> '+elem+'</tspan>'
+        + (daTxt ? '<tspan style="fill:'+daCol+';"> '+daTxt+'</tspan>' : '')
+        + '</text>';
     }
   }
 
