@@ -15400,7 +15400,25 @@ var CAS_REFERENCE_V7 = [
   // score annoncé (1-0) est dans le bon sens mais loin du 4-0 réel.
   { nom: 'AmisAmisCarcLaet', meres: ['amissio','amissio','carcer','laetitia'],
     score: '4-0', camp: 'R1', btts: false, incident: true, incidentCamp: 'M7',
-    note: 'PREMIER incident réel côté camp 2 de toute l\'archive (les six précédents étaient côté M1) · naissance de Mars en M12 (Cauda Draconis→Puer), repère fixe ET tourné d\'accord sur M7 · camp de l\'incident lu JUSTE · vainqueur R1 ✔ (4-0) · score annoncé 1-0, bon sens mais sous-estimé' }
+    note: 'PREMIER incident réel côté camp 2 de toute l\'archive (les six précédents étaient côté M1) · naissance de Mars en M12 (Cauda Draconis→Puer), repère fixe ET tourné d\'accord sur M7 · camp de l\'incident lu JUSTE · vainqueur R1 ✔ (4-0) · score annoncé 1-0, bon sens mais sous-estimé' },
+  // ─── 03/09/26 — L'INCIDENT SE TROMPE QUAND LA NAISSANCE DE MARS EST
+  // MUETTE ─── Deuxième cas signalé le même jour, cette fois un raté.
+  // Aucune naissance de Mars dans tout le thème : l'app retombe sur
+  // l'ancien détecteur de signaux (detectIncidentChaotique), qui ne
+  // trouve qu'un seul signal attribuable à un camp — Cauda Draconis en
+  // R7 lui-même (M9), lu comme "incident probable CONTRE l'équipe 2" —
+  // et annonce M7. Le carton réel est côté M1/R1.
+  // ⚠️ HYPOTHÈSE QUI SE DESSINE (à confirmer avec plus de cas) : le camp
+  // de l'incident semble fiable quand la naissance de Mars est active
+  // (surtout si les deux repères, fixe et tourné, sont d'accord — cf.
+  // AmisAmisCarcLaet ci-dessus, et Bologna depuis que la cascade l'a
+  // corrigé), et moins fiable quand elle est muette et que l'app retombe
+  // sur l'ancien détecteur de signaux — exactement ce qui arrive ici.
+  // Vainqueur (R7) et sens du score corrects ; seul le camp de
+  // l'incident est faux.
+  { nom: 'CaputCarcCaputPuer', meres: ['caput_draconis','carcer','caput_draconis','puer'],
+    score: '1-2', camp: 'R7', btts: true, incident: true, incidentCamp: 'M1',
+    note: 'Vainqueur R7 ✔ (1-2) · aucune naissance de Mars, détecteur de signaux de repli seul en cause · incident annoncé côté M7 (Cauda Draconis en R7/M9) — FAUX, carton réel côté M1/R1 · appuie l\'hypothèse que la fiabilité du camp d\'incident dépend de la source (naissance de Mars fiable, détecteur de signaux seul moins fiable)' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
