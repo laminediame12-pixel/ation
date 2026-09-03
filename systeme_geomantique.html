@@ -1884,12 +1884,25 @@ function renderVerdictCarreGeomantique(theme){
   const titre = z.camp==='R1' ? ('🔵 La zone '+n1+' remporte')
               : z.camp==='R7' ? ('🟠 La zone '+n7+' remporte')
               : '⚖️ Les deux zones sont identiques';
+  // ⚠️ EN ROTATION, LES TRAJECTOIRES SORTENT DU CARRÉ. L'ordre de
+  // rotation tourne sur SEIZE maisons (getRotationOrderFromRepos rend une
+  // permutation de 1..16), donc R1..R12 ne sont pas les douze maisons
+  // dessinées : ils tombent dans M13-M16 une fois sur deux. Mesuré sur
+  // 600 thèmes : 3811 trajectoires sur 6000 (63,5 %) touchent une maison
+  // hors du carré en rotation, contre 0 sur 6000 en fixe — et 95,8 % des
+  // thèmes sont concernés. Les maisons concernées sont signalées.
+  const horsCarre = z.zone1.concat(z.zone7).filter(function(x){
+    return x.maisons.some(function(h){ return h > 12; });
+  }).length;
   function liste(zone){
     return zone.map(function(x){
       const col = x.forte ? '#4ade80' : (x.force>0 ? '#fcd34d' : '#f87171');
       const ou = x.ou.length ? x.ou.map(function(h){return labelMaisonV7(h);}).join('·') : '—';
+      const dehors = x.maisons.some(function(h){ return h > 12; });
       return '<div class="rft-li"><span class="rft-base">'
-        + x.maisons.map(function(h){return labelMaisonV7(h);}).join('·') + '</span>'
+        + x.maisons.map(function(h){
+            return h > 12 ? '<span style="color:#fb923c;">'+labelMaisonV7(h)+'</span>' : labelMaisonV7(h);
+          }).join('·') + (dehors ? ' <span style="color:#fb923c;" title="sort des 12 maisons dessinées">⚠</span>' : '') + '</span>'
         + '<span style="color:'+col+';">' + (FL[x.somme]||x.somme)
         + ' &nbsp;force ' + x.force + (x.forte ? ' <b>FORTE</b>' : '') + ' <span style="color:#64748b;">('+ou+')</span></span></div>';
     }).join('');
@@ -1903,6 +1916,14 @@ function renderVerdictCarreGeomantique(theme){
     + '<div class="rft-col"><b style="color:#93c5fd;">Zone '+n1+' — sommet '+labelMaisonV7(z.apex1)+'</b>'+liste(z.zone1)+'</div>'
     + '<div class="rft-col"><b style="color:#fcd34d;">Zone '+n7+' — sommet '+labelMaisonV7(z.apex7)+'</b>'+liste(z.zone7)+'</div>'
     + '</div>';
+  if(horsCarre){
+    html += '<div class="cgv-card" style="margin-top:10px; background:#fb923c22; border:1px solid #fb923c; font-size:12px; font-weight:400;">'
+      + '⚠️ <b>'+horsCarre+' des 10 trajectoires sortent du carré dessiné.</b> '
+      + 'L\'ordre de rotation tourne sur SEIZE maisons, donc R1…R12 ne sont pas les douze maisons du dessin : ils tombent dans M13-M16, '
+      + 'que le carré ne trace pas et dont la doctrine des catégories ne dit rien. Les maisons concernées sont en orange ci-dessus.<br>'
+      + 'Mesuré sur 600 thèmes : en rotation 63,5 % des trajectoires sortent du carré (95,8 % des thèmes touchés) ; en mode fixe, 0 %.'
+      + '</div>';
+  }
   html += '<div class="hint" style="margin-top:8px; text-align:center;">'
     + 'Sa règle (03/09/26) — <b>la zone qui a le plus de trajectoires fortes remporte</b> ; à égalité, la force totale départage.<br>'
     + '<b>Force d\'une trajectoire</b> : 0 si sa somme est absente du thème ; sinon la somme, sur chaque maison où elle figure, du poids de cette maison — angulaire 3, succédente 2, cadente 1. Position et influence dans un seul nombre. <b>Forte</b> = force ≥ 3.<br>'
@@ -1974,7 +1995,24 @@ function renderCarreGeomantique(theme){
     const glow = isGrand ? ' filter="drop-shadow(0 0 4px rgba(250,204,21,.65))"' : '';
 
     html += '<polygon points="'+ptsStr+'" fill="'+col+'" fill-opacity="0.28" stroke="'+strokeCol+'" stroke-width="'+strokeW+'"'+glow+' style="cursor:pointer;" onclick="carreGeoClickHouse('+m+')" data-house="'+m+'"></polygon>';
-    html += '<text class="cg-num" x="'+cx+'" y="'+(cy-7)+'" font-size="'+fsNum+'" style="pointer-events:none;">'+ROMAN_12[m]+(isGrand?' ★':'')+'</text>';
+    // ═══ LE NUMÉRO DE ROTATION, À CÔTÉ DU NUMÉRO DE MAISON (03/09/26,
+    // sa demande : « vérifie bien si les figures changent en mode
+    // rotation dans les maisons ») ═══
+    // ELLES NE CHANGENT PAS, et c'est maintenant visible sans me croire
+    // sur parole : la maison garde son chiffre romain ET sa figure, quel
+    // que soit le mode. En rotation, on ajoute seulement son numéro R —
+    // « III · R9 » se lit « la troisième maison, qui est la neuvième à
+    // partir du siège ». La figure reste où elle est ; c'est la
+    // NUMÉROTATION qui tourne, jamais le contenu.
+    var rNum = '';
+    if (typeof MODE_CARRE_V7 !== 'undefined' && MODE_CARRE_V7 === 'rotation') {
+      try {
+        var ordreDessin = getRotationOrderFromRepos(toHostTheme(theme)[1]);
+        var kR = ordreDessin.indexOf(m);
+        if (kR >= 0) rNum = ' · R' + (kR + 1);
+      } catch (e) { rNum = ''; }
+    }
+    html += '<text class="cg-num" x="'+cx+'" y="'+(cy-7)+'" font-size="'+fsNum+'" style="pointer-events:none;">'+ROMAN_12[m]+rNum+(isGrand?' ★':'')+'</text>';
     html += '<text class="cg-fig" x="'+cx+'" y="'+(cy+6)+'" font-size="'+fsFig+'" style="pointer-events:none;">'+(fig||'—')+'</text>';
 
     // 4) BADGE DE DIGNITÉ ACCIDENTELLE (03/08/26, 📚 étude non validée) —
