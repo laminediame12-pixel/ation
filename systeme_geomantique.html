@@ -23968,11 +23968,11 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // ✦ LA RÉCOLTE (31/08/26) — « on récolte les détails d'abord »
 //
 // ┌───────────────────────────────────────────────────────────────┐
-// │  L'INVENTAIRE — VINGT ET UNE LOIS, ET CE QUI LES GARDE        │
+// │  L'INVENTAIRE — VINGT-DEUX LOIS, ET CE QUI LES GARDE          │
 // └───────────────────────────────────────────────────────────────┘
 // Tout ce que la fouille a établi est ici, et chaque loi de STRUCTURE
 // est revérifiée à chaque appel de autoTestAlternanceV7(), qui rend
-// tout: true seulement si les quatre-vingt-huit contrôles passent. Une loi
+// tout: true seulement si les quatre-vingt-onze contrôles passent. Une loi
 // qui céderait un jour ferait basculer ce drapeau — elle n'est pas
 // seulement écrite, elle est gardée.
 //
@@ -24030,6 +24030,9 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //       le pôle n'est qu'une translation : somme = apex ⊕ base
 //       ................................ trianglesTranslation 1 · MemeCollapse 1
 //       deux triangles coïncident ssi leurs bases coïncident . CoincidenceBase 1
+//   V · la force d'une trajectoire, et les zones aux trajectoires fortes
+//       ................................ forceMaxPopulus 28 · forceNulleSsiAbsente 1
+//       le seuil de « forte » vaut une angulaire . seuilForteVautAngulaire 1
 //   G · ce qui reste sans réponse ............ (en dernier, rien à vérifier)
 //
 // ⚠️ L'ORDRE DES LETTRES. G a été écrite avant H à O et elle est restée
@@ -25059,6 +25062,101 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     pour de bon, ça remonte à 38-40 %, c'est-à-dire rien.
 //     Règle : un chiffre trop beau se vérifie AVANT de se raconter.
 //
+// ── V · LA FORCE D'UNE TRAJECTOIRE, ET LES DEUX ZONES ── (sa règle,
+//     03/09/26 : « pour le verdict c'est la zone entre m1 et m7 qui a
+//     plus de trajectoires fortes qui remporte »)
+//
+//     V.1 · CE QU'ELLE REMPLACE, ET POURQUOI IL AVAIT RAISON DE LE
+//     SIGNALER. Les zones étaient les deux moitiés du DESSIN, notées à
+//     la dignité accidentelle. Réparé le matin même (loi T), le panneau
+//     restait faux par construction : les deux moitiés portent le même
+//     jeu de catégories, donc l'écart ne tenait qu'au bruit de la
+//     régence. Sur son propre thème : +20,75 contre +21, écart −0,25,
+//     « carré équilibré ». Un panneau qui ne tranche jamais n'est pas
+//     prudent, il est cassé.
+//     ➜ Une ZONE, c'est désormais LES CINQ TRAJECTOIRES DE SON PÔLE
+//     (loi R). Le découpage spatial ne sert plus qu'au dessin.
+//
+//     V.2 · LA FORCE, telle qu'il l'avait déjà définie en loi Q (« le
+//     comment réside dans sa position, son environnant et son influence
+//     dans le thème ») :
+//         somme ABSENTE du thème ........ force 0, trajectoire morte
+//         somme PRÉSENTE ................ on additionne, sur CHAQUE
+//             maison où elle figure, le poids de cette maison :
+//                 angulaire 3 · succédente 2 · cadente 1
+//         maisons XIII-XVI .............. poids 1, choix explicite : la
+//             doctrine des catégories s'arrête à XII, on ne leur prête
+//             pas une force qu'aucune règle ne leur donne, et on ne les
+//             efface pas non plus.
+//     Position ET influence dans un seul nombre — une figure présente
+//     trois fois compte trois fois. FORTE = force ≥ 3, c'est-à-dire le
+//     poids d'une angulaire. La zone qui compte le plus de fortes
+//     l'emporte ; à égalité, la force totale départage.
+//     Gardé à chaque appel : forceMaxPopulus 28 (le plafond, seize
+//     maisons de la même figure : 4×3 + 4×2 + 4×1 + 4×1) ·
+//     forceNulleSsiAbsente 1 (3200/3200 au banc) ·
+//     seuilForteVautAngulaire 1.
+//
+//     V.3 · LA RÈGLE DISCRIMINE, ET C'EST DÉJÀ UN PROGRÈS. Sur 800
+//     thèmes tirés, le carré est MUET (autant de fortes ET même force
+//     totale des deux côtés) 10,5 % du temps en mode fixe, 9,8 % en
+//     rotation. L'ancien panneau, lui, répondait « équilibré » presque
+//     toujours. La répartition du nombre de fortes d'un pôle, en fixe :
+//         0 → 124 · 1 → 290 · 2 → 242 · 3 → 117 · 4 → 18 · 5 → 9
+//     Elle s'étale sur les six valeurs : la note n'est pas dégénérée.
+//
+//     V.4 · MESURÉ, ET SOUS V8. Verdict affiché de bout en bout, 53 cas
+//     de l'archive qui portent un camp, taux de base 43 % :
+//         pilote V8 ........................ 36/53  (68 %)
+//         carré, mode FIXE (défaut) ........ 30/53  (57 %)  muet 4 fois
+//         carré, mode ROTATION ............. 24/53  (45 %)  muet 2 fois
+//     ➜ Sa règle fait MIEUX que ce que j'avais bricolé la veille
+//     (comptage d'affirmations, 26/53) — de quatre cas. Elle reste sous
+//     V8 de six cas. Le carré pilote parce qu'il l'a demandé, et le
+//     fichier dit ce que ça coûte.
+//
+//     ⚠️ V.5 · LES POIDS ET LE SEUIL VIENNENT DE SA DOCTRINE, PAS DU
+//     SCORE — et je l'écris parce que la tentation était réelle. Sur
+//     l'archive, « force totale seule, en maisons fixes » fait 27/53
+//     contre 25/53 pour la règle livrée. J'ai gardé la sienne. Choisir
+//     la variante qui gagne sur les cas mêmes qui servent à la mesurer,
+//     c'est se fabriquer un résultat, pas en trouver un.
+//     Même raison pour le défaut du mode : 'fixe' est retenu parce que
+//     le carré est DESSINÉ en maisons fixes et que c'est cette zone-là
+//     qu'on a sous les yeux. Qu'il mesure aussi six cas de mieux que la
+//     rotation est DANS LE BRUIT à 53 cas, et n'a pas décidé.
+//
+//     ☠️ V.6 · ET UNE FAUTE DE MA MÉTHODE, NOTÉE ICI PARCE QU'ELLE
+//     TOUCHE TOUT CE QUE J'AFFIRME. Le banc A/B que je cite à chaque
+//     livraison (« 2055 clés, 0 différence ») construit une empreinte
+//     par thème à partir de getVerdictAfficheReel, tablePolesV7,
+//     analyseAncrageDeveloppe, analyserReseauAncrageV2, moteurCritereV7,
+//     moteurF4P4V7, niveauValiditeV7 et faisceauNulV7.
+//     LE CARRÉ N'Y ÉTAIT PAS. J'ai donc annoncé « 0 différence » après
+//     avoir corrigé le calcul des zones, alors que l'empreinte ne
+//     regardait pas les zones : elle disait seulement que les AUTRES
+//     moteurs n'avaient pas bougé. Ce n'était pas faux, c'était à côté
+//     de ce que je venais de changer. (Le travail lui-même était
+//     vérifié — les écarts des zones ont été mesurés à part sur huit
+//     thèmes — mais pas par la ligne que je citais.)
+//     ➜ CORRIGÉ : le carré est entré dans l'empreinte
+//     (camp:fortes1/fortes2:total1/total2), et la base de comparaison
+//     est désormais passée en argument au lieu d'être un cache figé —
+//     celui-ci datait de la loi S, plusieurs commits en arrière, sans
+//     que rien ne le signale.
+//     ➜ RÈGLE : quand un moteur entre dans la décision, il entre dans
+//     l'empreinte le même jour. Un banc de non-régression qui ne
+//     regarde pas la pièce qu'on vient de toucher ne prouve rien sur
+//     elle.
+//
+//     ☠️ V.7 · ET LE PIÈGE DU MODE FIXE, DIT EN FACE. En fixe, le moteur
+//     renvoie 'R1' quand la zone M1 l'emporte — or M1 n'est le siège R1
+//     que si la rotation est triviale, 4 cas d'archive sur 53 (loi
+//     U.4bis). C'est un raccourci assumé, pas une équivalence. Le
+//     panneau écrit « M1 » et « M7 » en fixe, « R1 » et « R7 » en
+//     rotation, pour qu'on ne confonde pas à la lecture ce que le code
+//     confond dans son étiquette.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -25725,7 +25823,39 @@ function autoTestAlternanceV7() {
     r.trianglesCoincidenceBase = (ssiTot > 0 && ssi === ssiTot) ? 1 : 0;
   })();
 
-  r.tout = (r.baseAnnuleeConst === 1 && r.baseAnnuleeApex === 1
+  // ═══ LOI V — LA FORCE D'UNE TRAJECTOIRE (03/09/26, sa règle) ═══
+  // Trois faits qui gardent la notation. Ils tomberaient tout de suite si
+  // la table des poids, le seuil ou le repli des maisons XIII-XVI étaient
+  // touchés sans y penser.
+  (function () {
+    var t = null;
+    try { t = buildThemeFromMothers('populus', 'populus', 'populus', 'populus'); } catch (e) { t = null; }
+    // 1) le plafond : seize maisons de la même figure
+    //    4 angulaires ×3 + 4 succédentes ×2 + 4 cadentes ×1 + 4 hors-douze ×1 = 28
+    r.forceMaxPopulus = (t && forceTrajectoireV7(t, 'populus').force) || 0;
+    // 2) force nulle SI ET SEULEMENT SI la somme est absente du thème
+    var ok = 0, n = 0;
+    for (var k = 0; k < 12; k++) {
+      var m = [0, 0, 0, 0].map(function () { return FIGS_V7[Math.floor(Math.random() * 16)]; });
+      var th;
+      try { th = buildThemeFromMothers(m[0], m[1], m[2], m[3]); } catch (e) { continue; }
+      if (!th) continue;
+      FIGS_V7.forEach(function (f) {
+        var present = false;
+        for (var h = 1; h <= 16; h++) if (th[h] === f) present = true;
+        var F = forceTrajectoireV7(th, f);
+        n++;
+        if (present === (F.force > 0)) ok++;
+      });
+    }
+    r.forceNulleSsiAbsente = (n > 0 && ok === n) ? 1 : 0;
+    // 3) le seuil de « forte » est bien celui d'une angulaire
+    r.seuilForteVautAngulaire = (SEUIL_TRAJ_FORTE_V7 === POIDS_CATEGORIE_TRAJ_V7.angulaire) ? 1 : 0;
+  })();
+
+  r.tout = (r.forceMaxPopulus === 28 && r.forceNulleSsiAbsente === 1
+    && r.seuilForteVautAngulaire === 1
+    && r.baseAnnuleeConst === 1 && r.baseAnnuleeApex === 1
     && r.trianglesTranslation === 1 && r.trianglesMemeCollapse === 1
     && r.trianglesCoincidenceBase === 1
     && r.zoneCatM1 === 3 && r.zoneCatM7 === 3
