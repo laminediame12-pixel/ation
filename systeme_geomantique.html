@@ -1291,6 +1291,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
       <select id="carreTrajSelect" onchange="isolerTrajectoireV7(null); redessinerCarreGeoV7()">
         <option value="aucune">Aucune — les trois axes seuls</option>
         <option value="trigones">Les 4 trigones (les seuls équilatéraux)</option>
+        <option value="cardinales">Les 4 cardinales opposées — 1-4-7 · 1-7-10 · 4-7-10 · 1-4-10</option>
         <option value="m1">Les 7 trajectoires de M1</option>
         <option value="m7">Les 7 trajectoires de M7</option>
         <option value="une">Une seule — voir à côté</option>
@@ -2033,7 +2034,13 @@ function renderCarreGeomantique(theme){
 // C'est le piège dans lequel je suis tombé en écrivant les menus. On
 // expose un seul point d'entrée, et les menus passent par lui.
 window.redessinerCarreGeoV7 = function () {
-  try { renderCarreGeomantique(lastTheme || window.currentTheme); } catch (e) { /* pas de thème */ }
+  // ☠️ CE catch AVALAIT TOUT EN SILENCE. Une erreur dans la fenêtre de
+  // lecture laissait le SVG à jour et le panneau figé sur son message
+  // précédent, sans une ligne dans la console : le défaut était
+  // invisible. Un catch muet sur un chemin d'affichage est un piège ; il
+  // parle maintenant.
+  try { renderCarreGeomantique(lastTheme || window.currentTheme); }
+  catch (e) { if (window.console && console.error) console.error('carré géomantique :', e); }
 };
 
 // Les trajectoires traçables. Ce sont celles de la loi P : une maison par
@@ -2041,6 +2048,9 @@ window.redessinerCarreGeoV7 = function () {
 // équilatéral » est exacte, restreintes ici aux familles utiles.
 var TRAJ_CARRE_V7 = {
   trigones: [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]],
+  // Les quatre triangles du carré cardinal — ses deux couples opposés.
+  // Tous isocèles de forme (3,3,6), loi P.4.
+  cardinales: [[1, 4, 7], [1, 7, 10], [4, 7, 10], [1, 4, 10]],
   m1: [[1, 3, 5], [1, 3, 8], [1, 3, 11], [1, 5, 9], [1, 6, 8], [1, 6, 11], [1, 9, 11]],
   m7: [[2, 7, 9], [2, 7, 12], [3, 5, 7], [3, 7, 11], [5, 7, 9], [5, 7, 12], [7, 9, 11]]
 };
@@ -2056,6 +2066,7 @@ window.isolerTrajectoireV7 = function (nom) {
 function trajectoiresCarreV7(choix, une) {
   function pack(a) { return { maisons: a, nom: a.join('-') }; }
   if (choix === 'trigones') return TRAJ_CARRE_V7.trigones.map(pack);
+  if (choix === 'cardinales') return TRAJ_CARRE_V7.cardinales.map(pack);
   if (choix === 'm1') return TRAJ_CARRE_V7.m1.map(pack);
   if (choix === 'm7') return TRAJ_CARRE_V7.m7.map(pack);
   if (choix === 'une' && une) {
@@ -2073,47 +2084,79 @@ function trajectoiresAffichéesV7(choix, une) {
   if (!seule.length) { trajIsoleeV7 = null; return toutes; }
   return seule;
 }
-// Peuple le menu « une trajectoire précise » avec les VINGT-HUIT de la
-// loi P : une maison par axe, aucune paire de maisons voisines. Ce sont
-// exactement celles où sa règle « isocèle ou équilatéral » est exacte —
-// les 24 isocèles et les 4 équilatéraux, sans une scalène.
+// ═══ LE MENU DES TRAJECTOIRES (revu le 01/09/26 sur son constat) ═══
+//
+// ☠️ IL EN MANQUAIT QUATRE, ET CE SONT LES SIENNES. Ellemine_D :
+// « il y a deux trajectoires qui s'opposent qui t'échappent : 1-4-7 et
+// 1-10-7 ; 4-7-10 et 4-1-10. » Il a raison. Mon filtre exigeait UNE
+// MAISON PAR AXE (loi P.2), ce qui excluait d'office tout triangle logé
+// dans un seul axe — donc les quatre triangles du carré cardinal, ceux-là
+// mêmes par lesquels il avait ouvert l'étude des axes.
+// Ils ne sont pas hors-la-loi pour autant : la loi P.4 dit que les DOUZE
+// triangles d'un même axe sont TOUS isocèles, de forme (3,3,6), 12/12.
+// Ils entrent donc au menu, dans leur propre groupe.
+//
+// ✔ ET SA REMARQUE SUR L'OPPOSITION EST EXACTE. Les quatre cardinaux
+// forment deux couples qui partagent deux pôles et échangent le
+// troisième :
+//     1-4-7  ↔  1-7-10   (M1 et M7 en commun, M4 contre M10)
+//     4-7-10 ↔  1-4-10   (M4 et M10 en commun, M7 contre M1)
+// C'est la même figure lue depuis l'autre diagonale du carré.
+//
+// 📋 ET L'ORDRE EST LE SIEN : d'abord les trajectoires de M1, puis celles
+// de M7, puis de M4, puis de M10, et le reste ensuite.
 function peuplerTrajectoiresCarreV7() {
   var sel = document.getElementById('carreTrajUne');
   if (!sel || sel.options.length) return;
   var out = [];
   for (var a = 1; a <= 12; a++) for (var b = a + 1; b <= 12; b++) for (var c = b + 1; c <= 12; c++) {
-    var T = [a, b, c];
-    var axes = {};
-    T.forEach(function (h) { axes[(h - 1) % 3] = 1; });
-    if (Object.keys(axes).length !== 3) continue;          // une maison par axe
+    var T = [a, b, c], ax = {};
+    T.forEach(function (h) { ax[(h - 1) % 3] = 1; });
+    var nbAxes = Object.keys(ax).length;
     var d = [b - a, c - b, 12 - (c - a)].sort(function (x, y) { return x - y; });
-    if (d[0] < 2) continue;                                 // pas deux maisons voisines
-    var nat = (d[0] === d[1] && d[1] === d[2]) ? 'équilatéral' : 'isocèle';
-    out.push({ cle: T.join('-'), nat: nat });
+    var nat = (d[0] === d[1] && d[1] === d[2]) ? 'équilatéral'
+            : (d[0] === d[1] || d[1] === d[2]) ? 'isocèle' : 'scalène';
+    var groupe = null;
+    if (nbAxes === 3 && d[0] >= 2) groupe = 'un par axe';        // les 28 de la loi P.2
+    else if (nbAxes === 1) groupe = 'même axe';                   // les 12 de la loi P.4
+    if (!groupe) continue;                                        // le reste est scalène, on l'écarte
+    // l'ordre demandé : M1, puis M7, puis M4, puis M10, puis le reste
+    var rang = T.indexOf(1) >= 0 ? 0 : T.indexOf(7) >= 0 ? 1
+             : T.indexOf(4) >= 0 ? 2 : T.indexOf(10) >= 0 ? 3 : 4;
+    out.push({ cle: T.join('-'), nat: nat, groupe: groupe, rang: rang, T: T });
   }
-  sel.innerHTML = out.map(function (o) {
-    return '<option value="' + o.cle + '">' + o.cle + ' — ' + o.nat + '</option>';
-  }).join('');
+  out.sort(function (x, y) {
+    if (x.rang !== y.rang) return x.rang - y.rang;
+    for (var i = 0; i < 3; i++) if (x.T[i] !== y.T[i]) return x.T[i] - y.T[i];
+    return 0;
+  });
+  var OPPOSES = { '1-4-7': '1-7-10', '1-7-10': '1-4-7', '4-7-10': '1-4-10', '1-4-10': '4-7-10' };
+  var titres = ['— de M1 —', '— de M7 —', '— de M4 —', '— de M10 —', '— les autres —'];
+  var html = '', rangCourant = -1;
+  out.forEach(function (o) {
+    if (o.rang !== rangCourant) {
+      if (rangCourant >= 0) html += '</optgroup>';
+      html += '<optgroup label="' + titres[o.rang] + '">';
+      rangCourant = o.rang;
+    }
+    html += '<option value="' + o.cle + '">' + o.cle + ' — ' + o.nat
+      + (o.groupe === 'même axe' ? ' · même axe' : '')
+      + (OPPOSES[o.cle] ? ' · s\'oppose à ' + OPPOSES[o.cle] : '') + '</option>';
+  });
+  if (rangCourant >= 0) html += '</optgroup>';
+  sel.innerHTML = html;
 }
 
-// ═══ LA FENÊTRE SOUS LE CARRÉ (01/09/26, demande Ellemine_D) ═══
-// « Dans une fenêtre au-dessous, fais le résultat si elle existe ou pas
-// dans le thème, avec une barre de pourcentage de son influence. »
-//
-// 📏 CE QUE MESURE LA BARRE, ÉCRIT SUR L'ÉCRAN PLUTÔT QUE CACHÉ.
-//     influence = (positions en BASE × 1 + positions en RÉSULTANTE × 0,5) / 16
-// La résultante compte moitié parce qu'elle est cachée : elle n'occupe pas
-// la maison, elle y transparaît. Aucune autre pondération, aucun mélange
-// avec la concordance ou les liens de camp — ceux-là sont affichés à côté,
-// en clair, pour qu'on ne prenne pas un score composite pour une mesure.
-//
-// 📐 ET L'ÉCHELLE EST MESURÉE, pour qu'un pourcentage veuille dire quelque
-// chose. Sur 32 000 couples (figure, thème) — 2000 thèmes × 16 figures :
-//     minimum 0 %  ·  1er quartile 3,1 %  ·  MÉDIANE 9,4 %
-//     3e quartile 12,5 %  ·  9e décile 18,8 %  ·  maximum observé 53,1 %
-// La barre va donc de 0 à 56 % et porte un repère à la médiane. Sans ce
-// repère, « 12 % » ne se lit pas ; avec, on voit tout de suite que c'est
-// au-dessus de l'ordinaire.
+// 📐 L'ÉCHELLE DE LA BARRE D'INFLUENCE, mesurée sur 32 000 couples
+// (figure, thème) — 2000 thèmes × 16 figures :
+//     minimum 0 % · 1er quartile 3,1 % · MÉDIANE 9,4 %
+//     3e quartile 12,5 % · 9e décile 18,8 % · maximum observé 53,1 %
+// La barre va de 0 à 56 % et porte un repère à la médiane : sans lui,
+// « 12 % » ne se lit pas ; avec, on voit que c'est au-dessus de l'ordinaire.
+// ☠️ CES DEUX CONSTANTES ONT ÉTÉ EMPORTÉES une fois par une réécriture du
+// menu juste au-dessus, et la fenêtre de lecture est restée MUETTE sans
+// un mot dans la console — parce que redessinerCarreGeoV7 avalait
+// l'erreur. Les deux défauts sont corrigés ensemble.
 var INFLUENCE_MEDIANE_V7 = 9.4, INFLUENCE_MAX_V7 = 56;
 function majLectureCarreV7(theme, traj) {
   var el = document.getElementById('carre-geo-lecture');
@@ -2127,9 +2170,21 @@ function majLectureCarreV7(theme, traj) {
     return;
   }
   var T = traj[0];
+  // ⚠️ ON CALCULE SUR LE THÈME CANONIQUE, PAS SUR CELUI DU CARRÉ.
+  // Le carré porte un thème aux clés d'affichage (voir le garde-fou dans
+  // lectureTrajectoireV7). Les MAISONS sont les mêmes, les figures aussi,
+  // mais seul window.currentTheme porte les identifiants que combine
+  // comprend.
+  var themeCalcul = (typeof window.themeCanoniqueV7 === 'function' && window.themeCanoniqueV7())
+    ? window.themeCanoniqueV7() : theme;
   var L = null;
-  try { L = lectureTrajectoireV7(theme, T.maisons); } catch (e) { L = null; }
+  try { L = lectureTrajectoireV7(themeCalcul, T.maisons); } catch (e) { L = null; }
   if (!L) { el.innerHTML = ''; return; }
+  if (L.erreur) {
+    el.innerHTML = '<div style="border:1px solid #d95926; border-radius:10px; padding:10px 13px; '
+      + 'background:#0f172a; font-size:11px; color:#fecaca;">⚠️ ' + L.erreur + '</div>';
+    return;
+  }
   var nom = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
   var nBase = L.positions.filter(function (P) { return P.source === 'base'; }).length;
   var nRes = L.positions.filter(function (P) { return P.source === 'résultante'; }).length;
@@ -29153,10 +29208,33 @@ function calculateHouseSum(){if(!currentTheme){document.getElementById('sum-resu
 // position, son environnement et son influence » — les trois mots qu'il
 // a écrits lui-même. lectureTrajectoireV7 les rend, dans cet ordre.
 // Elle ne décide de rien : elle donne à lire.
+// ⚠️ currentTheme est déclaré en `let` au niveau du script principal : il
+// n'est donc PAS sur window, et window.currentTheme vaut undefined depuis
+// un autre bloc de script. Deuxième pas dans le même piège en une heure.
+// Cette fonction, elle, ferme sur la variable et la rend accessible aux
+// blocs voisins — c'est le seul accès canonique au thème.
+window.themeCanoniqueV7 = function () {
+  return (typeof currentTheme !== 'undefined') ? currentTheme : null;
+};
+
 function lectureTrajectoireV7(theme, maisons) {
   if (!theme || !maisons || !maisons.length) return null;
   var figs = maisons.map(function (h) { return theme[h]; });
   if (figs.some(function (f) { return !f; })) return null;
+  // ☠️ GARDE-FOU AJOUTÉ LE 01/09/26 APRÈS UN FAUX RÉSULTAT SILENCIEUX.
+  // Le carré géomantique vit dans un autre bloc de script, avec un thème
+  // dont les clés sont des NOMS D'AFFICHAGE — « Cauda », « Conjonctio »,
+  // « Fortuna minor » — et non les identifiants canoniques
+  // cauda_draconis, conjunctio, fortuna_minor. Passé tel quel,
+  // combineMany(['Carcer','Cauda','Albus']) ne lève AUCUNE erreur : il
+  // rend « via » quand la bonne réponse est « acquisitio ». Une clé
+  // inconnue produisait donc une figure plausible et fausse, affichée
+  // avec assurance. C'est Ellemine_D qui l'a vu à l'écran.
+  // Désormais on refuse plutôt que de deviner.
+  if (figs.some(function (f) { return FIGS_V7.indexOf(f) < 0; })) {
+    return { erreur: 'figures hors table : ' + figs.join(', ')
+      + ' — thème non canonique, calcul refusé' };
+  }
   var res = figs.reduce(function (a, b) { return a === null ? b : combine(a, b); }, null);
   var nom = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
 
