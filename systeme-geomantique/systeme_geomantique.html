@@ -29261,6 +29261,10 @@ function renderTableauReferenceBTTSTab(){
   var all = getHistoryList().concat(getSavedList());
   var seen = {}; var list = [];
   all.forEach(function(e){
+    // Garde-fou (même protection que renderStatsTab) : une entrée sans
+    // thème (ancienne version, donnée corrompue) ferait planter
+    // themeFingerprint (Object.keys sur undefined) et donc tout l'onglet.
+    if (!e.theme) return;
     var fp = themeFingerprint(e.team1||'', e.team2||'', e.theme);
     if (seen[fp]) return; seen[fp] = true;
     list.push(e);
