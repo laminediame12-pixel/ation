@@ -1875,6 +1875,32 @@ function renderVerdictCarreGeomantique(theme){
   el.innerHTML = html;
 }
 
+// ═══ LES TROIS AXES ET LEUR COULEUR (01/09/26, ses couleurs) ═══
+// Cardinal vert, succédent jaune, cadent rouge.
+// 🎨 TEINTES MESURÉES, PAS CHOISIES. Contrôleur de daltonisme sur le fond
+// parchemin du carré, mode « toutes les paires » — les trois sont visibles
+// ensemble, pas côte à côte :
+//     vert #008300 · jaune #c98500 · rouge #e34948
+//     vision normale ΔE 15,1 (plancher 15) · contraste ≥ 3:1 · TOUT PASSE
+// ⚠️ Le rouge et le jaune tombent à ΔE 6,2 en deutéranopie, dans la bande
+// 6-8 : légal SEULEMENT avec encodage secondaire. Il est là — chaque
+// maison porte son chiffre romain, et de I à XII on lit son axe sans la
+// couleur ; la légende nomme les maisons de chaque axe. La couleur
+// accélère la lecture, elle ne la porte pas seule.
+// ☠️ Ses couleurs littérales (#22c55e, #eab308, #ef4444) ont été testées
+// et REFUSÉES : jaune contre rouge à ΔE 13,0 en vision normale, sous le
+// plancher de 15 — deux lecteurs sur deux les auraient confondues. Les
+// trois retenues sont les plus proches qui passent.
+var AXES_CARRE_V7 = [
+  { nom: 'Cardinal', maisons: [1, 4, 7, 10], couleur: '#008300' },
+  { nom: 'Succédent', maisons: [2, 5, 8, 11], couleur: '#c98500' },
+  { nom: 'Cadent', maisons: [3, 6, 9, 12], couleur: '#e34948' }
+];
+function COULEUR_AXE_CARRE_V7(m) {
+  var a = AXES_CARRE_V7[(m - 1) % 3];
+  return a ? a.couleur : '#8E7A4A';
+}
+
 function renderCarreGeomantique(theme){
   const svg = document.getElementById('carre-geo-svg');
   if(!svg) return;
@@ -1892,7 +1918,13 @@ function renderCarreGeomantique(theme){
     const pts = CARRE_GEO_PTS[m];
     const fig = theme[m];
     const elem = FIGURE_ELEMENT[fig];
-    const col = ELEMENT_COLORS[elem] || '#8E7A4A';
+    // ─── LA COULEUR DIT L'AXE, PLUS L'ÉLÉMENT (01/09/26, sa demande) ───
+    // ☠️ CE QUE ÇA REMPLACE, ET IL FAUT LE SAVOIR : la maison était
+    // teintée par l'ÉLÉMENT de la figure qui l'occupe. Cette information
+    // SORT du carré. Elle reste lisible au clic sur la maison et dans la
+    // matrice figures × maisons juste au-dessus — mais le carré ne la
+    // montre plus. C'est le prix de la lecture par axe.
+    const col = COULEUR_AXE_CARRE_V7(m);
     const ptsStr = pts.map(p=>p.join(',')).join(' ');
     const [cx, cy] = centroid(pts);
     const isGrand = (m===1||m===4||m===7||m===10); // maisons angulaires (pointes)
@@ -1951,23 +1983,13 @@ function renderCarreGeomantique(theme){
   // sont en blanc cassé, en TIRETS, et chacune porte son nom écrit à
   // côté. Elles restent parfaitement distinctes des axes — ce qu'il
   // demandait — sans casser la lisibilité des trois axes entre eux.
-  var AXES_CARRE_V7 = [
-    { nom: 'Cardinal', maisons: [1, 4, 7, 10], couleur: '#3987e5' },
-    { nom: 'Succédent', maisons: [2, 5, 8, 11], couleur: '#d95926' },
-    { nom: 'Cadent', maisons: [3, 6, 9, 12], couleur: '#199e70' }
-  ];
+  // ─── LES TRAITS D'AXE SONT RETIRÉS (01/09/26, sa demande) ───
+  // « Au lieu des traits permanents des axes, fais des couleurs dans les
+  // maisons des axes. » Les trois quadrilatères fermés encombraient le
+  // carré et masquaient les trajectoires, qui sont ce qu'on vient y lire.
+  // Ce sont les MAISONS qui portent maintenant la couleur de leur axe —
+  // voir COULEUR_AXE_CARRE_V7 et le commentaire dans la boucle.
   function centreMaisonV7(m) { return centroid(CARRE_GEO_PTS[m]); }
-  // les axes, clos
-  AXES_CARRE_V7.forEach(function (A) {
-    var pts = A.maisons.map(centreMaisonV7).map(function (p) { return p[0] + ',' + p[1]; }).join(' ');
-    // ⚠️ LE STYLE DOIT ÊTRE INLINE, PAS UN ATTRIBUT. La feuille de style
-    // porte « #carre-geo-svg polygon{stroke:var(--gold)} », et en SVG un
-    // attribut de présentation (stroke="…") a une priorité INFÉRIEURE à
-    // n'importe quelle règle CSS : mes trois couleurs sortaient toutes en
-    // doré. Constaté à la capture d'écran, pas à la lecture du code.
-    html += '<polygon points="' + pts + '" style="fill:none; stroke:' + A.couleur
-      + '; stroke-width:2.5px; stroke-linejoin:round; opacity:.95; pointer-events:none;"></polygon>';
-  });
   // les trajectoires demandées
   var choix = 'aucune', une = '';
   try { peuplerTrajectoiresCarreV7(); } catch (e) { /* menu absent */ }
@@ -2257,10 +2279,15 @@ function majLegendeCarreV7(axes, traj) {
   if (!el) return;
   // La légende est TOUJOURS là dès qu'il y a deux séries : l'identité ne
   // doit jamais reposer sur la seule couleur.
+  // La légende décrit maintenant des MAISONS COLORÉES, plus des traits :
+  // pastille pleine, et le nom de l'axe écrit à côté — l'identité ne
+  // repose jamais sur la seule couleur (le rouge et le jaune sont à
+  // ΔE 6,2 en deutéranopie, l'étiquette est obligatoire).
   var h = axes.map(function (A) {
     return '<span style="display:inline-flex; align-items:center; gap:5px; margin-right:14px;">'
-      + '<span style="display:inline-block; width:18px; height:0; border-top:3px solid ' + A.couleur + ';"></span>'
-      + '<span style="color:#cbd5e1;">Axe ' + A.nom + ' — M' + A.maisons.join(' M') + '</span></span>';
+      + '<span style="display:inline-block; width:13px; height:13px; border-radius:3px; '
+      + 'background:' + A.couleur + '; opacity:.45; border:1px solid ' + A.couleur + ';"></span>'
+      + '<span style="color:#cbd5e1;">maisons de l\'axe ' + A.nom + ' — M' + A.maisons.join(' M') + '</span></span>';
   }).join('');
   if (traj.length) {
     h += '<span style="display:inline-flex; align-items:center; gap:5px;">'
@@ -24704,6 +24731,60 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     ⚠️ L'attribution aux événements reste non mesurée : le champ
 //     incident n'est rempli que sur 8 cas sur 55 (loi N.5).
 //
+// ── S · LE DIAMÈTRE, ET L'ANGLE DROIT ── (sa remarque, 01/09/26)
+//     « Chaque maison par rapport à son opposé possède 5 triangles, et sa
+//     TROISIÈME maison est toujours son diamètre — exemple M1 → M2, M3,
+//     M4 : ici M4 avec son opposé M10 est le diamètre de M1 par rapport à
+//     M7. » Exact sur les douze pôles, et ça va plus loin qu'il ne dit.
+//
+//     ✔✔ S.1 · UNE SEULE PAIRE DIAMÈTRE, TOUJOURS LA TROISIÈME ── 12/12
+//         Les cinq paires miroir d'un pôle sont à distance k = 1, 2, 3, 4,
+//         5 de lui ; les deux maisons d'une paire sont donc séparées de
+//         2k. Un diamètre vaut 6. La paire diamètre est celle où 2k = 6,
+//         c'est-à-dire k = 3 : la TROISIÈME, toujours, et jamais une
+//         autre. Vérifié sur les douze pôles.
+//             M1  → (2,12) (3,11) [4,10] (5,9) (6,8)
+//             M7  → (6,8) (5,9) [4,10] (3,11) (2,12)
+//             M4  → (3,5) (2,6) [1,7] (8,12) (9,11)
+//             M10 → (9,11) (8,12) [1,7] (2,6) (3,5)
+//
+//     ✔✔ S.2 · ET CE DIAMÈTRE EST PERPENDICULAIRE À L'AXE DU PÔLE ── 12/12
+//         Il l'a écrit sans le nommer : « M4 avec son opposé M10 est le
+//         diamètre de M1 par rapport à M7 ». L'axe M1-M7 et le diamètre
+//         M4-M10 se coupent à angle droit, et c'est vrai pour les douze :
+//         la troisième paire d'un pôle est TOUJOURS la perpendiculaire de
+//         son propre axe.
+//
+//     ✔✔✔ S.3 · DONC CE TRIANGLE EST RECTANGLE — THALÈS
+//         Un triangle inscrit dont un côté est un diamètre a un angle
+//         droit sur le troisième point. La troisième trajectoire de
+//         chaque pôle a pour base un diamètre : elle est donc RECTANGLE,
+//         et isocèle par la loi R. Douze triangles rectangles isocèles,
+//         un par pôle, tous de forme (3,3,6) :
+//             M1 → 1-4-10   M7 → 4-7-10   M4 → 1-4-7   M10 → 1-7-10
+//         L'angle droit est au sommet, c'est-à-dire sur le pôle lui-même.
+//
+//     ✔✔ S.4 · ET ÇA BOUCLE SUR SES QUATRE OPPOSÉES
+//         Chaque diamètre porte DEUX triangles rectangles, dont les
+//         sommets sont eux-mêmes opposés :
+//             base 1-7 (diamètre)  → sommets M4 et M10 → 1-4-7 et 1-7-10
+//             base 4-10 (diamètre) → sommets M1 et M7  → 1-4-10 et 4-7-10
+//         Ce sont EXACTEMENT les quatre trajectoires opposées qu'il
+//         signalait au message précédent. Elles ne sont pas quatre cas
+//         particuliers : ce sont les deux triangles rectangles de chacun
+//         des deux diamètres cardinaux. Sa remarque d'hier et celle
+//         d'aujourd'hui sont le même fait, vu de deux côtés.
+//         Les six diamètres du carré portent donc douze rectangles :
+//             1-7 → M4, M10   ·   2-8 → M5, M11   ·   3-9 → M6, M12
+//             4-10 → M1, M7   ·   5-11 → M2, M8   ·   6-12 → M3, M9
+//
+//     ➜ CHAQUE PÔLE A DONC UNE TRAJECTOIRE PARTICULIÈRE parmi ses cinq :
+//     la troisième, celle qui s'appuie sur la perpendiculaire de son axe
+//     et forme l'angle droit. Si l'une des cinq doit porter un rôle
+//     distinct dans ses quatre événements, c'est celle-là qui a la
+//     géométrie la plus marquée.
+//     ⚠️ Non mesuré : l'archive ne peut pas trancher (loi N.5).
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -25237,6 +25318,35 @@ function autoTestAlternanceV7() {
   [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]].forEach(function (P) {
     if (((2 - P[0] - 1 + 24) % 12) + 1 === P[1]) r.miroirPaires += 1;
   });
+  // ── loi S : le diamètre de la troisième paire, et l'angle droit ──
+  function pairesPoleV7(pole) {
+    var o = [];
+    for (var k = 1; k <= 5; k++) {
+      o.push([((pole + k - 1) % 12) + 1, ((pole - k - 1 + 12) % 12) + 1]);
+    }
+    return o;
+  }
+  function estDiametreV7(a, b) { var d = Math.abs(a - b); return Math.min(d, 12 - d) === 6; }
+  r.diamTroisieme = 0; r.diamPerp = 0; r.diamRectangles = 0;
+  var basesRect = {};
+  for (var ps = 1; ps <= 12; ps++) {
+    var P = pairesPoleV7(ps);
+    var rangs = [];
+    P.forEach(function (pr2, i) { if (estDiametreV7(pr2[0], pr2[1])) rangs.push(i + 1); });
+    if (rangs.length === 1 && rangs[0] === 3) r.diamTroisieme += 1;
+    // la 3e paire est-elle la perpendiculaire de l'axe du pôle ?
+    var att = [((ps + 3 - 1) % 12) + 1, ((ps - 3 - 1 + 12) % 12) + 1].sort(function (x, y) { return x - y; });
+    var eff = P[2].slice().sort(function (x, y) { return x - y; });
+    if (att[0] === eff[0] && att[1] === eff[1]) r.diamPerp += 1;
+    // le triangle correspondant est isocèle de forme (3,3,6)
+    var T3 = [ps, P[2][0], P[2][1]].sort(function (x, y) { return x - y; });
+    var d3 = [T3[1] - T3[0], T3[2] - T3[1], 12 - (T3[2] - T3[0])].sort(function (x, y) { return x - y; });
+    if (d3[0] === 3 && d3[1] === 3 && d3[2] === 6) r.diamRectangles += 1;
+    basesRect[eff.join('-')] = (basesRect[eff.join('-')] || 0) + 1;
+  }
+  // six diamètres, deux sommets chacun
+  r.diamBases = Object.keys(basesRect).length;
+  r.diamDeuxSommets = Object.keys(basesRect).filter(function (k) { return basesRect[k] === 2; }).length;
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -25269,7 +25379,9 @@ function autoTestAlternanceV7() {
     && r.triDeuxAxesTotal === 144 && r.triDeuxAxesScal === 144
     && r.miroirEngendres === 52 && r.miroirIsoceles === 52 && r.miroirIdentiques === 1
     && r.miroirScalenes === 0 && r.miroirTroisApex === 4 && r.miroirUnApex === 48
-    && r.miroirPaires === 5);
+    && r.miroirPaires === 5
+    && r.diamTroisieme === 12 && r.diamPerp === 12 && r.diamRectangles === 12
+    && r.diamBases === 6 && r.diamDeuxSommets === 6);
   return r;
 }
 
