@@ -7699,6 +7699,26 @@ function evaluerAxesValidite(theme){
     return {key:def.key, label:def.label, houses:def.houses, fig:fig, exists:positions.length>0, positions:positions};
   });
 }
+
+// ═══════════════════════════════════════════════════════════════
+// COÏNCIDENCE JUGE / 3 AXES (03/09/26, piste d'Ellemine_D : « le Juge est
+// l'ensemble des figures des 3 axes ») — vérifié EXHAUSTIVEMENT sur les
+// 65 536 thèmes possibles : ce n'est PAS une identité (le Juge n'égale pas
+// systématiquement combine(Axe Cardinal, Axe Succédent, Axe Cadent)), mais
+// ça arrive exactement 8192/65536 = 1/8 des thèmes — deux fois le taux
+// (1/16) auquel deux figures indépendantes coïncideraient par pur hasard
+// combinatoire. Un vrai lien structurel existe donc, mais partiel.
+// Sur l'archive réelle (45 cas décidés), la coïncidence n'est arrivée que
+// 2 fois (Torino 0-1, FortMajTrist 3-3 nul) — bien trop peu pour conclure,
+// mais les deux étaient des scores serrés. Ajouté comme signal purement
+// informatif pour accumuler des cas au fil du temps ; AUCUN poids sur le
+// verdict tant que l'archive ne dépasse pas quelques dizaines d'occurrences.
+function coincidenceJugeAxesV7(theme){
+  var axeCard = combineMany([theme[1], theme[4], theme[7], theme[10]]);
+  var axeSucc = combineMany([theme[2], theme[5], theme[8], theme[11]]);
+  var axeCad = combineMany([theme[3], theme[6], theme[9], theme[12]]);
+  return combineMany([axeCard, axeSucc, axeCad]) === theme[15];
+}
 function getResultant(fig,pos){return combine(fig,FIGS[pos-1]);}
 function figureExistsInTheme(fig,theme){return Object.values(theme).includes(fig);}
 function findFigureTargetByBinomeWitness(fig){return Object.keys(BINOMES).find(key=>BINOMES[key]===fig) || null;}
@@ -26931,6 +26951,16 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     +(card.liveContradiction ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f87171; border-radius:7px; '
       + 'background:rgba(248,113,113,.12); font-size:11px; color:#fca5a5; text-align:left;">'
       + '<b>⚠️ CONTREDIT PAR LE DIRECT</b> — ' + esc(card.liveContradiction) + '</div>' : '')
+    // COÏNCIDENCE JUGE/3-AXES (03/09/26) — cf. coincidenceJugeAxesV7 : signal
+    // purement observationnel (2 cas connus dans l'archive à ce jour, tous
+    // deux des scores serrés), aucun poids sur le verdict. Affiché pour
+    // accumuler des cas au fil du temps, pas pour orienter la lecture.
+    +((function(){ try { return coincidenceJugeAxesV7(theme); } catch(e){ return false; } })()
+      ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #a78bfa; border-radius:7px; '
+        + 'background:rgba(167,139,250,.10); font-size:11px; color:#c4b5fd; text-align:left;">'
+        + '🎯 <b>COÏNCIDENCE JUGE/3-AXES</b> — le Juge égale la combinaison des axes Cardinal+Succédent+Cadent '
+        + '(1 thème sur 8 en moyenne). Signal en observation, pas encore assez de cas réels pour conclure — '
+        + 'aucun poids sur le verdict.</div>' : '')
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29100,6 +29130,8 @@ function addToHistory() {
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
     realFirstGoal: (document.getElementById('realFirstGoal')||{}).value || '',
     blindTest: lastLaunchWasBlind,
+    // Signal informatif en cours d'observation, cf. coincidenceJugeAxesV7.
+    coincidenceJugeAxes: (function(){ try { return coincidenceJugeAxesV7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29163,6 +29195,8 @@ function saveManuel() {
     realPenalty: (document.getElementById('realPenalty')||{}).value || '',
     realFirstGoal: (document.getElementById('realFirstGoal')||{}).value || '',
     blindTest: lastLaunchWasBlind,
+    // Signal informatif en cours d'observation, cf. coincidenceJugeAxesV7.
+    coincidenceJugeAxes: (function(){ try { return coincidenceJugeAxesV7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
