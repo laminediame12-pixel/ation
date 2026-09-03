@@ -7807,6 +7807,39 @@ function signalAxeCadentInverseV7(theme){
   return {applicable: campPredit !== null, voteDirect: voteDirect, campPredit: campPredit, fig: fig, inCamp1: inCamp1, inCamp2: inCamp2};
 }
 // ═══════════════════════════════════════════════════════════════
+// SIGNAL DE RECOUVREMENT DES CAMPS (03/09/26, demande Ellemine_D :
+// « la disposition des figures dans les maisons divise le thème en
+// deux, dis-moi ce que tu remarques ») — pour chaque figure du thème,
+// on compte ses occurrences dans les 8 maisons de CAMP1 et dans les 8
+// maisons de CAMP2, et on somme le minimum des deux : plus les deux
+// camps sont bâtis avec LES MÊMES figures, plus le calcul de force
+// interne du thème tend à s'annuler des deux côtés — c'est exactement
+// ce que verdictV7 calcule en interne (« Cycles contredisent → Nul »
+// côté M ET côté R) avant qu'un arbitrage de départage ne force un
+// vainqueur.
+// MESURÉ SUR 55 CAS AU CAMP CONNU :
+//   recouvrement < 3 (camps peu partagés) ..... 2/22 nuls = 9,1 %
+//   recouvrement >= 3 (camps très partagés) ... 10/33 nuls = 30,3 %
+//   recouvrement >= 5 ......................... 1/2 nuls = 50,0 %
+//   baseline globale .......................... 12/55 = 21,8 %
+// Fisher exact sur le seuil <3/≥3 : p≈0,10 — pas encore significatif,
+// mais c'est le seul signal de nul testé jusqu'ici qui a un POURQUOI
+// mécanique (le matériau des deux camps se ressemble), pas seulement
+// une corrélation trouvée après coup. Aucun poids sur le verdict.
+function signalRecouvrementCampsV7(theme){
+  var c1 = {}, c2 = {};
+  CAMP1.forEach(function(h){ c1[theme[h]] = (c1[theme[h]]||0) + 1; });
+  CAMP2.forEach(function(h){ c2[theme[h]] = (c2[theme[h]]||0) + 1; });
+  var figs = Object.keys(c1).concat(Object.keys(c2)).filter(function(f, i, arr){ return arr.indexOf(f) === i; });
+  var overlap = 0, detail = [];
+  figs.forEach(function(f){
+    var a = c1[f] || 0, b = c2[f] || 0, m = Math.min(a, b);
+    overlap += m;
+    if (m > 0) detail.push({fig: f, campM1: a, campM7: b});
+  });
+  return {overlap: overlap, eleve: overlap >= 3, detail: detail};
+}
+// ═══════════════════════════════════════════════════════════════
 // TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
 // Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
 // soupçonne qu'ils pourraient expliquer BTTS, pour les archiver au fil des
@@ -27210,6 +27243,28 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         }
         return html;
       })())
+    // SIGNAL DE RECOUVREMENT DES CAMPS (03/09/26) — cf. signalRecouvrementCampsV7 :
+    // plus les deux camps sont bâtis avec les mêmes figures, plus le thème
+    // penche vers le nul (30,3% au-dessus du seuil contre 9,1% en dessous,
+    // n=55, p≈0,10). Seul signal de nul suivi qui a un pourquoi mécanique
+    // (matériau partagé) plutôt qu'une simple corrélation. Aucun poids sur le verdict.
+    +((function(){
+        var s; try { s = signalRecouvrementCampsV7(theme); } catch(e){ s = {overlap:0, eleve:false}; }
+        if (!s.eleve) return '';
+        var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #a78bfa; border-radius:7px; '
+          + 'background:rgba(167,139,250,.10); font-size:11px; color:#ddd6fe; text-align:left;">'
+          + '🪞 <b>SIGNAL DE RECOUVREMENT DES CAMPS</b> — les deux camps partagent '
+          + s.overlap + ' figure(s) sur 8 maisons (' + s.detail.map(function(d){ return FL[d.fig] || d.fig; }).join(', ')
+          + '). Sur l\'archive, ce niveau de partage penche vers le nul (30% contre 9% en dessous du seuil, n=55, p≈0,10). '
+          + 'Aucun poids sur le verdict.</div>';
+        if (card.winner && card.winner !== 'Nul') {
+          html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
+            + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
+            + '⚠️ <b>SIGNAL DE RECOUVREMENT CONTREDIT LE VERDICT</b> — le verdict ci-dessus désigne un vainqueur net, '
+            + 'le signal penche vers un nul.</div>';
+        }
+        return html;
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29469,6 +29524,8 @@ function addToHistory() {
     signalM15M16Boucle: (function(){ try { return signalM15M16BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalAxeCadentInverseV7.
     signalAxeCadentInverse: (function(){ try { return signalAxeCadentInverseV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalRecouvrementCampsV7.
+    signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29542,6 +29599,8 @@ function saveManuel() {
     signalM15M16Boucle: (function(){ try { return signalM15M16BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalAxeCadentInverseV7.
     signalAxeCadentInverse: (function(){ try { return signalAxeCadentInverseV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalRecouvrementCampsV7.
+    signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
