@@ -7773,6 +7773,39 @@ function signalM15M16BoucleV7(theme){
   var campPredit = campAccorde === 'M1' ? 'M7' : campAccorde === 'M7' ? 'M1' : null;
   return {applicable: campAccorde !== null, campAccorde: campAccorde, campPredit: campPredit, l1:l1, l7:l7, l15:l15, l16:l16};
 }
+
+// ═══════════════════════════════════════════════════════════════
+// SIGNAL AXE CADENT INVERSÉ (03/09/26, demande Ellemine_D : « creusez
+// l'utilité des axes ») — pour chaque axe (Cardinal, Succédent, Cadent,
+// Partage), on regarde dans quel camp (CAMP1/CAMP2) tombent le plus les
+// positions (base+résultante) de la figure combinée de l'axe, et on
+// compare ce "vote" au vainqueur réel. Sur l'archive (45 cas) :
+//   Cardinal ........ 56% (baseline locale 52%, +4 pts)
+//   Succédent ....... 62% (baseline locale 54%, +8 pts)
+//   Partage ......... 52% (baseline locale 62%, -10 pts)
+//   Cadent (direct) . 30% (baseline locale 52%, -22 pts) ← très en dessous
+//   Cadent INVERSÉ .. 70% (baseline locale 52%, +18 pts, n=23)
+// Le Cadent direct est si mauvais qu'inversé il devient le signal avec le
+// plus grand échantillon testé à ce jour (23 cas, contre 11-13 pour
+// M4/M10 et M15/M16). Même réserve que M15/M16 : trouvé en inversant une
+// hypothèse après coup, donc plus fragile qu'une prédiction faite à
+// l'avance — mais l'échantillon plus large rend celui-ci un peu plus
+// crédible. Aucun poids sur le verdict.
+function signalAxeCadentInverseV7(theme){
+  var fig = combineMany([theme[3], theme[6], theme[9], theme[12]]);
+  var pos = positionsBaseEtResultantes(fig, theme);
+  var inCamp1 = 0, inCamp2 = 0;
+  pos.forEach(function(p){
+    var h = parseInt(p.replace('M','').replace('r',''), 10);
+    if (CAMP1.indexOf(h) >= 0) inCamp1++;
+    else if (CAMP2.indexOf(h) >= 0) inCamp2++;
+  });
+  var voteDirect = null;
+  if (inCamp1 > inCamp2) voteDirect = 'M1';
+  else if (inCamp2 > inCamp1) voteDirect = 'M7';
+  var campPredit = voteDirect === 'M1' ? 'M7' : voteDirect === 'M7' ? 'M1' : null;
+  return {applicable: campPredit !== null, voteDirect: voteDirect, campPredit: campPredit, fig: fig, inCamp1: inCamp1, inCamp2: inCamp2};
+}
 // ═══════════════════════════════════════════════════════════════
 // TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
 // Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
@@ -27111,6 +27144,31 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         }
         return html;
       })())
+    // SIGNAL AXE CADENT INVERSÉ (03/09/26) — cf. signalAxeCadentInverseV7 :
+    // le camp vers lequel penche l'axe Cadent (M3+M6+M9+M12) perd le plus
+    // souvent sur l'archive (70% en inversant, n=23 — le plus grand
+    // échantillon des 3 signaux suivis). Statut : trouvé par inversion,
+    // comme M15/M16, mais échantillon plus large. Aucun poids sur le verdict.
+    +((function(){
+        var s; try { s = signalAxeCadentInverseV7(theme); } catch(e){ s = {applicable:false}; }
+        if (!s.applicable) return '';
+        var sigCampR = s.campPredit === 'M1' ? 'R1' : 'R7';
+        var campNom = s.campPredit === 'M1' ? teamA : teamB;
+        var campVoteNom = s.voteDirect === 'M1' ? teamA : teamB;
+        var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f472b6; border-radius:7px; '
+          + 'background:rgba(244,114,182,.10); font-size:11px; color:#fbcfe8; text-align:left;">'
+          + '🧿 <b>SIGNAL AXE CADENT (inversé)</b> — l\'axe Cadent penche vers ' + campVoteNom
+          + ', ce qui a historiquement favorisé l\'AUTRE camp, ' + campNom
+          + '. Sur l\'archive : correct 16 fois sur 23 (70%, le plus grand échantillon des signaux suivis). '
+          + 'Trouvé par inversion (même réserve que M15/M16) — aucun poids sur le verdict.</div>';
+        if (card.winner && card.winner !== 'Nul' && card.winner !== sigCampR) {
+          html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
+            + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
+            + '⚠️ <b>SIGNAL AXE CADENT CONTREDIT LE VERDICT</b> — le verdict ci-dessus désigne '
+            + (card.winner === 'R1' ? teamA : teamB) + ', le signal désigne ' + campNom + '.</div>';
+        }
+        return html;
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29368,6 +29426,8 @@ function addToHistory() {
     signalM4M10Boucle: (function(){ try { return signalM4M10BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalM15M16BoucleV7.
     signalM15M16Boucle: (function(){ try { return signalM15M16BoucleV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalAxeCadentInverseV7.
+    signalAxeCadentInverse: (function(){ try { return signalAxeCadentInverseV7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29439,6 +29499,8 @@ function saveManuel() {
     signalM4M10Boucle: (function(){ try { return signalM4M10BoucleV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalM15M16BoucleV7.
     signalM15M16Boucle: (function(){ try { return signalM15M16BoucleV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalAxeCadentInverseV7.
+    signalAxeCadentInverse: (function(){ try { return signalAxeCadentInverseV7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
