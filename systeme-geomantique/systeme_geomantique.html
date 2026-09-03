@@ -7939,6 +7939,46 @@ function signalFragiliteM4M10V7(theme){
   return {applicable: fragileM4 || fragileM10, fragileM4: fragileM4, fragileM10: fragileM10, m4: theme[4], m10: theme[10]};
 }
 // ═══════════════════════════════════════════════════════════════
+// GÉOMÉTRIE DES DEUX POINTS D'INTERSECTION SUR LA LIGNE M1-M7 (03/09/26,
+// observation Ellemine_D : « m2 et m6 sont liés à m10, m8 et m12 sont
+// liés à m4 ... il crée deux points d'intersection sur la ligne m1 et
+// m7 »).
+//
+// VÉRIFIÉ GÉOMÉTRIQUEMENT, PAS SEULEMENT À L'ŒIL — calcul fait sur les
+// coordonnées réelles du carré (CARRE_GEO_PTS, mêmes que le dessin) :
+//   droite M2→M10  ET  droite M12→M4  se croisent EXACTEMENT au même
+//     point sur la ligne horizontale M1-M7, côté M1 (x≈104,8 sur 400).
+//   droite M6→M10  ET  droite M8→M4   se croisent EXACTEMENT au même
+//     point elle aussi, côté M7 (x≈295,2 sur 400).
+// Ce n'est pas approximatif : conséquence exacte de la symétrie du carré
+// autour de l'axe vertical M4-M10 — M2 et M12 sont le miroir l'un de
+// l'autre par rapport à cet axe, M6 et M8 aussi. Vrai sur TOUT thème
+// (c'est la forme du carré qui le garantit, pas son contenu) — d'où la
+// séparation stricte ci-dessous entre la géométrie (acquise) et le
+// contenu (encore à découvrir).
+//   groupe côté M1 : M2, M12, M10, M4
+//   groupe côté M7 : M6, M8, M10, M4
+//
+// ⚠️ CE QUI N'EST PAS ENCORE ÉTABLI : POURQUOI cette géométrie compterait
+// pour telle ou telle figure. Premier test fait avec Puer (sa proposition
+// du même jour : « puer parle, les deux marquent ») sur les 45 cas à BTTS
+// connu — Puer dans ce groupe de maisons ne fait pas mieux que Puer
+// n'importe où dans le thème (60% contre 57,7%, baseline 53,3%), et par
+// maison c'est incohérent (M4 80% sur n=5, M10 33% sur n=3 — SOUS la
+// baseline alors que M10 est justement le point commun des deux
+// groupes). Fisher p≈0,75 sur le groupe entier — dans le bruit.
+// La géométrie reste ici pour qu'on la reteste à chaque nouveau cas et
+// avec d'autres figures, comme la famille MOTEURS_INCIDENT_CAMP_V7 :
+// la forme est prouvée, le sens qu'elle porte ne l'est pas encore.
+function geometrieIntersectionsM1M7V7(theme){
+  return {
+    coteM1: { maisons: [2, 12, 10, 4],
+      figures: { M2: theme[2], M12: theme[12], M10: theme[10], M4: theme[4] } },
+    coteM7: { maisons: [6, 8, 10, 4],
+      figures: { M6: theme[6], M8: theme[8], M10: theme[10], M4: theme[4] } }
+  };
+}
+// ═══════════════════════════════════════════════════════════════
 // TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
 // Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
 // soupçonne qu'ils pourraient expliquer BTTS, pour les archiver au fil des
@@ -29666,6 +29706,8 @@ function addToHistory() {
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
+    // Géométrie acquise, contenu encore à l'étude — cf. geometrieIntersectionsM1M7V7.
+    geometrieIntersectionsM1M7: (function(){ try { return geometrieIntersectionsM1M7V7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29743,6 +29785,8 @@ function saveManuel() {
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
+    // Géométrie acquise, contenu encore à l'étude — cf. geometrieIntersectionsM1M7V7.
+    geometrieIntersectionsM1M7: (function(){ try { return geometrieIntersectionsM1M7V7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
