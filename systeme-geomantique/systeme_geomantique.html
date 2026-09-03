@@ -1825,6 +1825,17 @@ const CARRE_GEO_PTS = {
   11: [[0,0],[200,0],[100,100]],       // XI  (coin haut-gauche)
   12: [[0,0],[100,100],[0,200]]        // XII
 };
+// ─── MAISONS À PLAFOND BAS (03/09/26, sa demande : « vérifiez bien si
+// les figures sont centrées dans les maisons ») ───
+// Calculé géométriquement, pas à l'œil : la hauteur disponible SOUS le
+// centroïde (là où le nom de la figure puis ses points en losange sont
+// posés) n'est pas la même partout. Sur les 12 triangles, elle vaut
+// 66,7px pour 9 d'entre eux — mais seulement 33,3px pour III, V et X.
+// Avec le pas fixe de 8px x 4 rangs (32px) utilisé jusqu'ici, les points
+// débordaient hors du triangle sur ces trois maisons-là. Elles reçoivent
+// un pas et une police resserrés (cf. l'appel dans renderCarreGeomantique).
+const MAISONS_CARRE_PLAFOND_BAS = {3:1, 5:1, 10:1};
+
 // Petits décalages du centroïde vers le bord extérieur pour que le texte
 // respire mieux dans les triangles étroits (purement cosmétique).
 function centroid(pts){
@@ -1969,21 +1980,28 @@ function COULEUR_AXE_CARRE_V7(m) {
 // MAP_GEO stocke déjà chaque figure comme 4 valeurs 1 (point simple) ou 2
 // (point double) — c'est la notation géomantique traditionnelle elle-même,
 // rien à recalculer : un rang par valeur, un ou deux losanges par rang.
-function dessinerPointsFigureV7(fig, cx, yTop, coul){
+function dessinerPointsFigureV7(fig, cx, yTop, coul, pas, tailleFont){
   // Le carré géo travaille avec les noms d'affichage du thème ("Fortuna
   // minor", "Aquisitio"...), MAP_GEO avec les clés internes minuscules
   // ("fortuna_minor", "acquisitio"...) — même pont que loopOf, cf.
   // NORM_FIG_LOOP juste au-dessus.
   var m = MAP_GEO[NORM_FIG_LOOP[fig] || fig];
   if (!m) return '';
-  var out = '', pas = 8;
+  // ⚠️ pas/tailleFont sont réglables : les 12 triangles du carré n'ont
+  // PAS tous la même hauteur disponible sous leur centroïde (03/09/26,
+  // sa demande : « vérifiez bien si les figures sont centrées dans les
+  // maisons ») — un pas fixe de 8px déborde hors du triangle sur les
+  // maisons III, V et X, mesuré géométriquement (cf. l'appel dans
+  // renderCarreGeomantique). Valeurs par défaut = comportement d'origine.
+  pas = pas || 8;
+  var out = '', fs = tailleFont || 9, decal = Math.round(fs * 0.55);
   for (var i = 0; i < 4; i++) {
     var y = yTop + i * pas;
     if (m[i] === 1) {
-      out += '<text x="'+cx+'" y="'+y+'" font-size="9" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>';
+      out += '<text x="'+cx+'" y="'+y+'" font-size="'+fs+'" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>';
     } else {
-      out += '<text x="'+(cx-5)+'" y="'+y+'" font-size="9" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>'
-           + '<text x="'+(cx+5)+'" y="'+y+'" font-size="9" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>';
+      out += '<text x="'+(cx-decal)+'" y="'+y+'" font-size="'+fs+'" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>'
+           + '<text x="'+(cx+decal)+'" y="'+y+'" font-size="'+fs+'" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>';
     }
   }
   return out;
@@ -2099,7 +2117,14 @@ function renderCarreGeomantique(theme){
       // COLORÉ (03/09/26, sa demande) — élément et dignité accidentelle
       // restent lisibles au clic sur la maison, comme en mode couleur
       // l'élément était devenu lisible là plutôt que sur le fond.
-      html += dessinerPointsFigureV7(fig, cx, cy+16, '#e8dcc0');
+      // III, V et X ont un plafond bas (cf. MAISONS_CARRE_PLAFOND_BAS) :
+      // pas et police resserrés pour que les 4 rangs restent DANS le
+      // triangle au lieu de déborder par-dessus le trait du carré.
+      if (MAISONS_CARRE_PLAFOND_BAS[m]) {
+        html += dessinerPointsFigureV7(fig, cx, cy+13, '#e8dcc0', 5.5, 7);
+      } else {
+        html += dessinerPointsFigureV7(fig, cx, cy+16, '#e8dcc0');
+      }
     } else if(fig){
       const elemCol = ELEMENT_COLORS[elem] || '#94a3b8';
       let daTxt = '', daCol = '#94a3b8';
