@@ -6782,15 +6782,18 @@ function toggleValiditePanel() {
   if (panel.style.display === 'none' || !panel.style.display) {
     if (!currentTheme) { panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>'; panel.style.display = 'block'; return; }
     var theme = currentTheme;
-    var axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-    var axeS = combineMany([theme[2],theme[5],theme[8],theme[11]]);
-    var axeCad = combineMany([theme[3],theme[6],theme[9],theme[12]]);
-    var axePartage = combineMany([theme[3],theme[5],theme[9],theme[11]]);
+    // MAINTENANCE (03/09/26) : les 4 axes viennent désormais du même calcul
+    // partagé que les 4 autres chemins de validité (evaluerAxesValidite,
+    // cf. combineMany) au lieu d'une 5e copie locale.
+    var axesRes = evaluerAxesValidite(theme);
+    var axesByKey = {}; axesRes.forEach(function(r){ axesByKey[r.key] = r; });
+    var axeC = axesByKey.cardinal.fig, axeS = axesByKey.succedent.fig,
+      axeCad = axesByKey.cadent.fig, axePartage = axesByKey.partage.fig;
     var binM1 = BINOMES[theme[1]];
-    var posAxeC = positionsBaseEtResultantes(axeC, theme);
-    var posAxeS = positionsBaseEtResultantes(axeS, theme);
-    var posAxeCad = positionsBaseEtResultantes(axeCad, theme);
-    var posAxePartage = positionsBaseEtResultantes(axePartage, theme);
+    var posAxeC = axesByKey.cardinal.positions;
+    var posAxeS = axesByKey.succedent.positions;
+    var posAxeCad = axesByKey.cadent.positions;
+    var posAxePartage = axesByKey.partage.positions;
     var posBinM1 = positionsBaseEtResultantes(binM1, theme);
     var invalide = themeInvalidite(theme);
 
@@ -7673,6 +7676,31 @@ function figFromArray(arr){for(const k in MAP_GEO) if(MAP_GEO[k].every((v,i)=>v=
 function symb(fig){return MAP_GEO[fig].map(v=>v===2?'◆◆':'◆ ').join('<br>');}
 function combine(a,b){const x=MAP_GEO[a]||MAP_GEO.via,y=MAP_GEO[b]||MAP_GEO.via; return figFromArray(x.map((v,i)=>((v+y[i])%2===0?2:1)));}
 function combineMany(arr){return arr.slice(1).reduce((acc,f)=>combine(acc,f),arr[0]||'via');}
+
+// ═══════════════════════════════════════════════════════════════
+// MAINTENANCE (03/09/26) — CRITÈRE DE VALIDITÉ CENTRALISÉ
+// Le test « les 3 axes du carré (Cardinal/Succédent/Cadent) + l'Axe du
+// Partage doivent tous exister dans le thème, en base ou en résultante »
+// était recalculé indépendamment dans 5 fonctions du fichier
+// (toggleValiditePanel, analyzeValidation, themeInvalidite,
+// niveauValiditeV7, isThemeValideStrict) — le commentaire historique sur
+// niveauValiditeV7 documente qu'elles s'étaient déjà retrouvées
+// désynchronisées une fois (une copie à 3 axes pendant que les autres
+// étaient passées à 4). Les 5 s'appuient désormais sur ce calcul unique ;
+// une seule mise à jour future suffit à les garder synchronisées.
+const AXES_VALIDITE_DEFS = [
+  {key:'cardinal',  label:'Axe Cardinal (M1 + M4 + M7 + M10)',   houses:[1,4,7,10]},
+  {key:'succedent', label:'Axe Succédent (M2 + M5 + M8 + M11)',  houses:[2,5,8,11]},
+  {key:'cadent',    label:'Axe Cadent (M3 + M6 + M9 + M12)',     houses:[3,6,9,12]},
+  {key:'partage',   label:"Axe du Partage (M3 + M5 + M9 + M11)", houses:[3,5,9,11]}
+];
+function evaluerAxesValidite(theme){
+  return AXES_VALIDITE_DEFS.map(function(def){
+    const fig = combineMany(def.houses.map(function(h){ return theme[h]; }));
+    const positions = positionsBaseEtResultantes(fig, theme);
+    return {key:def.key, label:def.label, houses:def.houses, fig:fig, exists:positions.length>0, positions:positions};
+  });
+}
 function getResultant(fig,pos){return combine(fig,FIGS[pos-1]);}
 function figureExistsInTheme(fig,theme){return Object.values(theme).includes(fig);}
 function findFigureTargetByBinomeWitness(fig){return Object.keys(BINOMES).find(key=>BINOMES[key]===fig) || null;}
@@ -7789,16 +7817,15 @@ function renderHouseInsight(pos){const panel=document.getElementById('house-insi
 // trouve ce binôme/antagoniste dans le thème courant.
 // ═══════════════════════════════════════════════════════════════
 
-const FIGS_V7 = ['puer','laetitia','caput_draconis','albus','via','amissio','rubeus',
-  'tristitia','fortuna_minor','carcer','conjunctio','fortuna_major',
-  'cauda_draconis','puella','acquisitio','populus'];
-
-const BINOMES_V7 = {};
-const ANTAGONISTES_V7 = {};
-FIGS_V7.forEach(function(fig, i) {
-  BINOMES_V7[fig]      = FIGS_V7[(i + 2) % 16];
-  ANTAGONISTES_V7[fig] = FIGS_V7[(i - 3 + 16) % 16];
-});
+// MAINTENANCE (03/09/26) : FIGS_V7/BINOMES_V7/ANTAGONISTES_V7 étaient une
+// copie indépendante de FIGS/BINOMES/ANTAGONISTES (déclarées plus haut,
+// lignes ~2952-2970) — deux tables à maintenir à la main en parallèle,
+// déjà prises en flagrant délit de désynchronisation par le passé
+// (autoTestTablesLegacyVsV7 plus bas). Elles sont désormais des alias du
+// même objet : plus aucune divergence possible entre "legacy" et "V7".
+const FIGS_V7 = FIGS;
+const BINOMES_V7 = BINOMES;
+const ANTAGONISTES_V7 = ANTAGONISTES;
 
 // ─── RÈGLE ELLEMINE (21/08/26) : PROTECTEUR PAR CHAÎNE D'ANTAGONISME ───
 // Fait universel découvert par Ellemine_D : dans chaque boucle (A ou B),
@@ -7925,12 +7952,9 @@ function rolesDeLaFigureV7(fig) {
   };
 }
 
-const ELEMENTS_V7 = {
-  puer:'feu',puella:'terre',albus:'eau',rubeus:'air',via:'eau',amissio:'eau',
-  tristitia:'terre',fortuna_minor:'feu',carcer:'terre',conjunctio:'air',
-  fortuna_major:'terre',cauda_draconis:'eau',caput_draconis:'air',
-  laetitia:'feu',acquisitio:'air',populus:'feu'
-};
+// MAINTENANCE (03/09/26) : alias de ELEMENTS (ligne ~2966), voir la note sur
+// FIGS_V7/BINOMES_V7/ANTAGONISTES_V7 ci-dessus — même raison, même correctif.
+const ELEMENTS_V7 = ELEMENTS;
 const ELEMENT_OF_HOUSE = {1:'feu',5:'feu',9:'feu',13:'feu', 2:'air',6:'air',10:'air',14:'air', 3:'eau',7:'eau',11:'eau',15:'eau', 4:'terre',8:'terre',12:'terre',16:'terre'};
 
 
@@ -8311,19 +8335,19 @@ function isActive(fig)  { return ACTIVE_PASSIVE_FIGURE[fig] === 'active'; }
 function isForte(fig)   { return FORCE_FIGURE[fig] === 'forte'; }
 function isMobile(fig)  { return MOBILITE_FIGURE[fig] === 'mobile'; }
 
-const MAISON_ELEM_V7 = {
-  1:'feu',2:'air',3:'eau',4:'terre',5:'feu',6:'air',7:'eau',8:'terre',
-  9:'feu',10:'air',11:'eau',12:'terre',13:'feu',14:'air',15:'eau',16:'terre'
-};
+// MAINTENANCE (03/09/26) : alias de MAISON_ELEM (ligne ~2974), même raison
+// que FIGS_V7/BINOMES_V7/ANTAGONISTES_V7/ELEMENTS_V7 ci-dessus.
+const MAISON_ELEM_V7 = MAISON_ELEM;
 
 // ═══════════════════════════════════════════════════════════════
 // AUTO-TEST TABLES LEGACY vs V7 (revue contradictions) — ELEMENTS/
-// BINOMES/ANTAGONISTES/MAISON_ELEM et leurs équivalents _V7 sont deux
-// tables distinctes qui doivent rester identiques (elles le sont
-// aujourd'hui, vérifié valeur par valeur). Rien ne garantissait qu'une
-// future modification de l'une seule des deux ne les fasse silencieusement
-// diverger — ce self-test le détecte au chargement, dans le même esprit
-// qu'autoTestMoteurXOR.
+// BINOMES/ANTAGONISTES/MAISON_ELEM et leurs équivalents _V7 étaient deux
+// tables distinctes à maintenir en parallèle (déjà prises en flagrant
+// délit de désynchronisation par le passé). MAINTENANCE (03/09/26) : les
+// _V7 sont désormais des alias directs des tables legacy (même objet en
+// mémoire) — cette divergence n'est plus possible par construction. Le
+// test est conservé tel quel comme garde-fou bon marché si une future
+// modification réintroduisait deux tables séparées par erreur.
 // ═══════════════════════════════════════════════════════════════
 function autoTestTablesLegacyVsV7() {
   var mismatches = [];
@@ -11404,48 +11428,14 @@ function figureExistsBaseOnly(fig,theme){
   return false;
 }
 function analyzeValidation(theme){
-  const checks=[
-    // ─── TROIS AXES, PAS QUATRE (25/08/26, correction Ellemine_D) ───
-    // Les douze maisons du carré géomantique se partagent EXACTEMENT en
-    // trois classes de pas 3, et il n'y en a pas de quatrième :
-    //   1-4-7-10 (angulaire) · 2-5-8-11 (succédent) · 3-6-9-12 (cadent)
-    // Prolonger un axe y ramène : 4-7-10-1 est le même ensemble que
-    // 1-4-7-10. Vérifié : ce sont les trois classes de restes modulo 3.
-    // L'ancien « Axe Temporel » M3+M5+M11+M15 n'était pas un axe : 3 et 5
-    // et 11 tombent dans deux classes différentes, et M15 est hors du
-    // carré des douze — c'est un des quatre témoins. Retiré.
-    {label:'Axe Cardinal (M1 + M4 + M7 + M10)',houses:[1,4,7,10]},
-    {label:'Axe Succédent (M2 + M5 + M8 + M11)',houses:[2,5,8,11]},
-    {label:'Axe Cadent (M3 + M6 + M9 + M12)',houses:[3,6,9,12]},
-    // ─── QUATRIÈME CONDITION (31/08/26, demande Ellemine_D) ───
-    // Le rectangle M3+M5+M9+M11. ⚠️ CE N'EST PAS UNE CLASSE MODULO 3,
-    // et le commentaire ci-dessus reste vrai : les trois axes du carré
-    // sont bien les seules classes de pas 3. Celui-ci est autre chose,
-    // et c'est SA construction (loi N) : deux oppositions croisées,
-    // 3-9 et 5-11, dont les diagonales coupent celles du carré
-    // cardinal aux quatre paires. Il est le rectangle PARTAGÉ par les
-    // deux trigones : trigone(M1) ⊕ trigone(M7) = ce rectangle ⊕ M1 ⊕ M7,
-    // vérifié 2000/2000.
-    // COÛT MESURÉ, à connaître : le taux de thèmes valides passe de
-    // 72,3 % à 63,6 % sur 4000 tirages, soit 12 % des valides actuels
-    // en moins. Sur l'archive, 46 cas valides deviennent 42 — les
-    // quatre perdus sont Juventus, TristPop, ConjCaput2 et Gel2Main.
-    {label:'Axe du Partage (M3 + M5 + M9 + M11)',houses:[3,5,9,11]}
-  ];
-  // ALIGNÉ (25/08/26) : cette fonction cherchait les figures d'axe EN BASE
-  // SEULE (figureExistsBaseOnly), alors que themeInvalidite() et
-  // isThemeValideStrict() comptent base ET résultante — protocole confirmé
-  // par Ellemine_D le 10/07/26 et écrit dans le commentaire de
-  // isThemeValideStrict. Les trois fonctions se contredisaient : mesuré sur
-  // 3000 thèmes, 31,5% de valides ici contre 72,4% là, et elles ne
-  // s'accordaient que sur 59,2% des thèmes. Un même thème pouvait
-  // s'afficher valide dans un panneau et invalide dans un autre. C'est
-  // celle-ci qui était l'exception ; elle rejoint les deux autres.
-  const results=checks.map(check=>{const fig=combineMany(check.houses.map(h=>theme[h])); const exists=positionsBaseEtResultantes(fig,theme).length>0; return {...check, fig, exists};});
-
+  // Les 4 axes de validité (3 classes modulo 3 du carré + l'Axe du Partage,
+  // ajouté le 31/08/26) sont désormais définis une seule fois dans
+  // AXES_VALIDITE_DEFS/evaluerAxesValidite (cf. commentaire à leur
+  // déclaration, près de combineMany) — voir là-bas pour l'historique et la
+  // justification de chaque axe.
   // Condition binôme de M1 RETIRÉE (27/07/26, demande explicite Ellemine_D :
   // "on laisse les figures faire le choix") — on ne garde que les axes.
-
+  const results=evaluerAxesValidite(theme);
   return {checks:results, valid:results.every(r=>r.exists)};
 }
 
@@ -11718,34 +11708,17 @@ function themeInvalidite(theme){
   // validité : c'est le premier motif d'invalidité, avant les axes.
   const detruit = themeDetruit(theme);
   if (detruit) return detruit;
-  const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-  // Axe Temporel M3+M5+M11+M15 RETIRÉ le 25/08/26 : ce n'était pas un axe
-  // du carré (deux classes mélangées, et M15 hors des douze maisons).
-  // AXES SUCCÉDENT/CADENT (03/08/26, demande utilisateur, doctrine
-  // horaire classique angulaire/succédente/cadente importée) : M1+M4+M7+M10
-  // sont déjà les maisons angulaires (= Axe Cardinal existant, aucun
-  // changement nécessaire dessus). On ajoute ici les deux catégories
-  // manquantes, mappées sur le même M1-M12 = I-XII classique déjà utilisé
-  // pour la "Consultation personnelle" :
-  //   Succédentes = II, V, VIII, XI  → M2+M5+M8+M11
-  //   Cadentes    = III, VI, IX, XII → M3+M6+M9+M12
-  // Même protocole que les 2 axes existants : le thème est INVALIDE si
-  // la figure résultant de la combinaison des 4 maisons est totalement
-  // absente du thème (base ET résultante). Statut : NOUVEAU, non validé
-  // empiriquement — à contre-tester sur l'archive avant confiance totale.
-  const axeS = combineMany([theme[2],theme[5],theme[8],theme[11]]);
-  const axeCad = combineMany([theme[3],theme[6],theme[9],theme[12]]);
-  // Condition binôme de M1 RETIRÉE (27/07/26, demande explicite Ellemine_D :
-  // "on laisse les figures faire le choix") — on ne garde que les axes.
-  const present = fig => positionsBaseEtResultantes(fig, theme).length>0;
+  // Les 4 axes (Cardinal/Succédent/Cadent + Axe du Partage) sont calculés
+  // une seule fois par evaluerAxesValidite (cf. combineMany) — même
+  // définition que celle utilisée par analyzeValidation/isThemeValideStrict/
+  // niveauValiditeV7/toggleValiditePanel.
+  const axesRes = evaluerAxesValidite(theme);
+  const byKey = {}; axesRes.forEach(function(r){ byKey[r.key] = r; });
   const manquants = [];
-  if (!present(axeC)) manquants.push('Axe Cardinal (M1+M4+M7+M10 = '+FL[axeC]+', absent du thème)');
-  if (!present(axeS)) manquants.push('Axe Succédent (M2+M5+M8+M11 = '+FL[axeS]+', absent du thème)');
-  if (!present(axeCad)) manquants.push('Axe Cadent (M3+M6+M9+M12 = '+FL[axeCad]+', absent du thème)');
-  // QUATRIÈME CONDITION (31/08/26) — voir analyzeValidation() pour la
-  // raison et pour le coût mesuré (72,3 % → 63,6 % de thèmes valides).
-  const axePartage = combineMany([theme[3],theme[5],theme[9],theme[11]]);
-  if (!present(axePartage)) manquants.push('Axe du Partage (M3+M5+M9+M11 = '+FL[axePartage]+', absent du thème)');
+  if (!byKey.cardinal.exists) manquants.push('Axe Cardinal (M1+M4+M7+M10 = '+FL[byKey.cardinal.fig]+', absent du thème)');
+  if (!byKey.succedent.exists) manquants.push('Axe Succédent (M2+M5+M8+M11 = '+FL[byKey.succedent.fig]+', absent du thème)');
+  if (!byKey.cadent.exists) manquants.push('Axe Cadent (M3+M6+M9+M12 = '+FL[byKey.cadent.fig]+', absent du thème)');
+  if (!byKey.partage.exists) manquants.push('Axe du Partage (M3+M5+M9+M11 = '+FL[byKey.partage.fig]+', absent du thème)');
   if (!manquants.length) return null;
   return '⛔ THÈME INVALIDE : '+manquants.join(' ; ')+' — protocole de validité structurelle (même critère que celui utilisé pour exclure les thèmes invalides des statistiques rétrospectives, maintenant appliqué en direct).';
 }
@@ -27261,21 +27234,15 @@ function countAxesEtJourPresents(theme){
 function niveauValiditeV7(theme) {
   if (!theme || !theme[1]) return { niveau: 0, applicable: false };
   var present = function (f, t) { return positionsBaseEtResultantes(f, t).length > 0; };
+  // MAINTENANCE (03/09/26) : les 5 chemins de validité (analyzeValidation ·
+  // themeInvalidite · isThemeValideStrict · celui-ci · toggleValiditePanel)
+  // partagent désormais un seul calcul, evaluerAxesValidite (cf.
+  // combineMany) — plus de copie locale du test des axes à tenir à jour.
   var axes = function (t) {
-    var a = combineMany([t[1], t[4], t[7], t[10]]);
-    var b = combineMany([t[2], t[5], t[8], t[11]]);
-    var c = combineMany([t[3], t[6], t[9], t[12]]);
-    // QUATRIÈME CONDITION (31/08/26) — cette fonction avait, comme les
-    // trois autres avant elle, sa PROPRE copie du test des axes ; elle
-    // serait restée à trois pendant que le reste du fichier en compte
-    // quatre. C'est exactement la désynchronisation que le fichier
-    // documente déjà deux fois. Cinq chemins de validité existent
-    // (analyzeValidation · themeInvalidite · isThemeValideStrict ·
-    // celui-ci · toggleValiditePanel) et les cinq portent le 4e axe.
-    var d = combineMany([t[3], t[5], t[9], t[11]]);
-    return { cardinal: { fig: a, ok: present(a, t) }, succedent: { fig: b, ok: present(b, t) },
-      cadent: { fig: c, ok: present(c, t) }, partage: { fig: d, ok: present(d, t) },
-      ok: present(a, t) && present(b, t) && present(c, t) && present(d, t) };
+    var r = evaluerAxesValidite(t);
+    var byKey = {}; r.forEach(function (x) { byKey[x.key] = { fig: x.fig, ok: x.exists }; });
+    byKey.ok = r.every(function (x) { return x.exists; });
+    return byKey;
   };
   var binome = function (t) { var b = BINOMES_V7[t[1]]; return { fig: b, ok: present(b, t) }; };
   var base = { nom: 'thème de base', axes: axes(theme), binome: binome(theme) };
@@ -28466,35 +28433,15 @@ function themeFingerprint(team1, team2, theme) {
 // ainsi testée contre l'historique complet en un clic.
 // ═══════════════════════════════════════════════════════════════
 function isThemeValideStrict(theme){
-  const axeC = combineMany([theme[1],theme[4],theme[7],theme[10]]);
-  // Axe Temporel retiré le 25/08/26 — voir analyzeValidation().
-  // AXES SUCCÉDENT/CADENT (03/08/26) — resynchronisé avec themeInvalidite()
-  // et analyzeValidation() : cette fonction avait été oubliée lors de
-  // l'ajout des 2 nouveaux axes, ce qui désynchronisait le gate live (UI)
-  // et les stats rétrospectives (un thème pouvait s'afficher ⛔ INVALIDE
-  // en direct tout en étant compté "valide" dans les stats). Corrigé.
-  const axeS = combineMany([theme[2],theme[5],theme[8],theme[11]]);
-  const axeCad = combineMany([theme[3],theme[6],theme[9],theme[12]]);
-  // Condition binôme de M1 RETIRÉE (27/07/26, demande explicite Ellemine_D :
-  // "on laisse les figures faire le choix") — on ne garde que les axes.
-  // PROTOCOLE CONFIRMÉ (10/07/26) : les résultantes comptent pour la
-  // validation du thème, au même titre que les figures de base — harmonisé
-  // avec positionsBaseEtResultantes, utilisé partout ailleurs dans la
-  // doctrine (attEff, etatC, règle Juge Conjunctio...). Avant : existsBase
-  // (base seule) rejetait à tort des thèmes où l'axe/binôme cherché
-  // n'existe qu'en résultante (ex. Fortuna Minor en M10r/M11r, jamais en
-  // base — validé par Ellemine_D le 10/07/26).
-  function existsPresent(fig){ return positionsBaseEtResultantes(fig, theme).length>0; }
   // Un thème détruit (Rubeus ou Cauda Draconis en M1) n'est pas valide —
   // aligné le 28/08/26 sur themeInvalidite(), pour que le gate live et les
   // statistiques rétrospectives disent la même chose.
   if (themeDetruit(theme)) return false;
-  // QUATRIÈME CONDITION (31/08/26) — resynchronisée ici comme les deux
-  // précédentes, pour que le gate live et les statistiques disent la
-  // même chose. Voir analyzeValidation() pour la raison et le coût.
-  const axePartage = combineMany([theme[3],theme[5],theme[9],theme[11]]);
-  return existsPresent(axeC) && existsPresent(axeS) && existsPresent(axeCad)
-    && existsPresent(axePartage);
+  // Les 4 axes sont calculés une seule fois par evaluerAxesValidite (cf.
+  // combineMany) — même définition que themeInvalidite/analyzeValidation/
+  // niveauValiditeV7/toggleValiditePanel, pour que le gate live (UI) et les
+  // statistiques rétrospectives disent toujours la même chose.
+  return evaluerAxesValidite(theme).every(function(r){ return r.exists; });
 }
 
 function replayEntry(entry){
