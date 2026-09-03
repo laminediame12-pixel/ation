@@ -1780,6 +1780,12 @@ function clearThemeHighlights(){
 }
 
 const ROMAN_12 = {1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI',7:'VII',8:'VIII',9:'IX',10:'X',11:'XI',12:'XII'};
+// En cadre tourné, R1 et R7 peuvent tomber en M13-M16 (le carré ne les
+// dessine pas, mais la lecture les traverse) : ROMAN_12 y rendait
+// undefined. Ce libellé couvre les seize.
+function labelMaisonV7(h) {
+  return ROMAN_12[h] || ({ 13: 'XIII', 14: 'XIV', 15: 'XV', 16: 'XVI' })[h] || ('M' + h);
+}
 const ROMAN_16 = {13:'XIII',14:'XIV',15:'XV',16:'XVI'};
 const SYNTH_NOM_16 = {13:'Témoin de droite',14:'Témoin de gauche',15:'Le Juge',16:'La Réconciliation'};
 
@@ -1996,6 +2002,17 @@ function renderRapportForceCarre(theme) {
   if (!el) return;
   var r = rapportForceTrianglesV7(theme);
   if (!r) { el.innerHTML = ''; return; }
+  // ☠️ LE CADRE TOURNÉ EST LE SEUL QUI PARLE DES CAMPS (03/09/26).
+  // Le carré est dessiné en maisons fixes, donc son M1 n'est le camp R1
+  // que si la rotation est triviale — 4 cas sur 53 dans l'archive. Les
+  // deux lectures sont donc affichées côte à côte, et c'est la tournée
+  // qui désigne un camp.
+  var rot = null;
+  try {
+    var ordre = getRotationOrderFromRepos(toHostTheme(theme)[1]);
+    rot = rapportForceTrianglesV7(theme, function (h) { return ordre[h - 1]; });
+    rot.triviale = (ordre[0] === 1);
+  } catch (e) { rot = null; }
   if (r.erreur) {
     el.innerHTML = '<div class="cgv-card" style="background:#f8717122; border:1px solid #f87171;">⚠️ ' + r.erreur + '</div>';
     return;
@@ -2007,11 +2024,11 @@ function renderRapportForceCarre(theme) {
   function colonne(l, pole, coulPole) {
     var lignes = l.map(function (x) {
       var ok = x.occ > 0;
-      return '<div class="rft-li"><span class="rft-base">' + ROMAN_12[pole] + '·' + ROMAN_12[x.base[0]] + '·' + ROMAN_12[x.base[1]] + '</span>'
+      return '<div class="rft-li"><span class="rft-base">' + labelMaisonV7(pole) + '·' + labelMaisonV7(x.base[0]) + '·' + labelMaisonV7(x.base[1]) + '</span>'
         + '<span style="color:' + (ok ? '#4ade80' : '#f87171') + ';">' + (FL[x.somme] || x.somme)
         + ' ' + (ok ? '✔ ×' + x.occ : '✘') + '</span></div>';
     }).join('');
-    return '<div class="rft-col"><b style="color:' + coulPole + ';">Les cinq triangles de ' + ROMAN_12[pole]
+    return '<div class="rft-col"><b style="color:' + coulPole + ';">Les cinq triangles de ' + labelMaisonV7(pole)
       + '</b>' + lignes + '</div>';
   }
   var html = '<div class="cgv-card" style="background:' + coul + '22; border:1px solid ' + coul + ';">' + titre
@@ -2020,10 +2037,25 @@ function renderRapportForceCarre(theme) {
     + ' &nbsp;·&nbsp; influence (occurrences) ' + r.inflM1 + ' vs ' + r.inflM7
     + ' &nbsp;·&nbsp; duels gagnés ' + r.duelM1 + ' vs ' + r.duelM7 + '</div></div>';
   html += '<div class="rft-grid">' + colonne(r.m1, 1, '#93c5fd') + colonne(r.m7, 7, '#fcd34d') + '</div>';
+  if (rot && !rot.erreur) {
+    var cr = rot.camp === 'M1' ? '#60a5fa' : (rot.camp === 'M7' ? '#fb923c' : '#94a3b8');
+    var lr = rot.camp === 'M1' ? '🔵 penche pour R1' : (rot.camp === 'M7' ? '🟠 penche pour R7' : '⚖️ équilibre');
+    html += '<div class="cgv-card" style="margin-top:10px; background:' + cr + '22; border:1px solid ' + cr + ';">'
+      + '⟳ Cadre tourné — ' + lr
+      + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">'
+      + 'R1 = ' + labelMaisonV7(rot.apexM1) + ' (' + (FL[toHostTheme(theme)[rot.apexM1]] || '—') + ')'
+      + ' &nbsp;·&nbsp; R7 = ' + labelMaisonV7(rot.apexM7) + ' (' + (FL[toHostTheme(theme)[rot.apexM7]] || '—') + ')'
+      + (rot.triviale ? ' &nbsp;— rotation triviale, identique au cadre fixe' : '')
+      + '<br>Affirmations : R1 ' + rot.affM1 + '/5 &nbsp;vs&nbsp; R7 ' + rot.affM7 + '/5'
+      + ' &nbsp;·&nbsp; influence ' + rot.inflM1 + ' vs ' + rot.inflM7
+      + ' &nbsp;·&nbsp; duels ' + rot.duelM1 + ' vs ' + rot.duelM7 + '</div></div>';
+  }
   html += '<div class="hint" style="margin-top:8px; text-align:center;">'
     + 'Sa doctrine (03/09/26) — chaque paire miroir (II·XII, III·XI, IV·X, V·IX, VI·VIII) porte DEUX triangles : '
     + 'un sur l\'apex M1, un sur l\'apex M7. La somme de chaque triangle donne une figure ; elle affirme si elle existe dans le thème (loi Q).<br>'
-    + '⚠️ <b>MESURÉ, ET IL NE PRÉDIT PAS.</b> Sur les 53 cas de l\'archive qui portent un camp : affirmations 22/53 (42 %), influence 26/53 (49 %), duels 25/53 (47 %) — contre 43 % de taux de base. En cadre tourné : 32 à 40 %. Meilleur p = 0,077, soit 0,62 après correction pour les huit lectures essayées. Relevé hors vote, aucun poids sur verdictFinal.<br>'
+    + '⚠️ <b>MESURÉ, ET IL NE PRÉDIT PAS.</b> Sur les 53 cas de l\'archive qui portent un camp (taux de base 43 %), <b>c\'est le cadre tourné qui compte</b> : affirmations 17/53 (32 %), influence 21/53 (40 %), duels 20/53 (38 %). Meilleur p = 0,077, soit 0,62 après correction pour les huit lectures essayées.<br>'
+    + '☠️ Les chiffres du cadre FIXE (42 à 49 %) ne sont <b>pas</b> une mesure de camp : ils comparent les maisons M1 et M7 à une étiquette R1/R7, et R1 ne vaut M1 que dans 4 cas sur 53. Ne pas s\'en servir. Relevé hors vote, aucun poids sur verdictFinal.<br>'
+    + '📉 Testé aussi, et négatif : « le pôle qui affirme 5/5 gagne » — 9 cas où un seul pôle est parfait, il gagne 5 fois (56 %, p = 0,50). Hypothèse née des données, morte à la mesure.<br>'
     + '📐 <b>Pourquoi la somme et pas la dignité</b> : la base de chaque paire est commune aux deux triangles, donc tout score additif par maison s\'annule et les cinq écarts se réduisent à dignité(M1) − dignité(M7). Seule la somme (XOR) fait des cinq triangles cinq lectures distinctes.</div>';
   el.innerHTML = html;
 }
@@ -25168,13 +25200,35 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //         duels triangle/triangle    25/53 (47 %)      20/53 (38 %)
 //     Meilleur p unilatéral sur les cas tranchés : 0,077 — soit 0,62
 //     après correction pour les huit lectures essayées. Rien.
-//     Une seule chose vaut d'être notée sans être crue : les
-//     affirmations en maisons fixes ne tranchent que 30 fois sur 53,
-//     mais quand elles tranchent elles ont raison 18 fois (60 %,
-//     p = 0,18). C'est trop peu de cas pour dire quoi que ce soit ; à
-//     revoir quand l'archive aura doublé, pas avant.
 //
-//     ☠️ U.5 · UNE FAUSSE JOIE, ÉCRITE POUR NE PAS LA REFAIRE.
+//     ☠️ U.4bis · ET LA COLONNE DE GAUCHE N'EST MÊME PAS UNE MESURE DE
+//     CAMP. Je l'ai écrite avant de vérifier ce qu'elle comparait. Le
+//     carré est dessiné en MAISONS fixes ; l'archive étiquette les camps
+//     en R1/R7. Les deux ne coïncident que si la rotation est triviale,
+//     et sur les 53 cas c'est vrai 4 FOIS. Dans les 49 autres, « M1
+//     l'emporte » ne dit rien de « R1 l'emporte ». Les 42-49 % de la
+//     colonne fixe sont donc un chiffre sans objet, pas un résultat
+//     faible : à ne pas citer.
+//     ➜ Seule la colonne tournée mesure ce qu'on croit mesurer, et elle
+//     donne 32 à 40 % — sous le taux de base. Le rapport de force ne
+//     désigne pas le camp.
+//     (Sur les 4 cas à rotation triviale la lecture fixe fait 2/4, dont
+//     2 sans verdict. Quatre cas ne disent rien.)
+//
+//     U.5 · L'HYPOTHÈSE DU 5/5, NÉE DES DONNÉES ET MORTE À LA MESURE.
+//     Son thème du 03/09/26 (tristitia/via/conjunctio/rubeus) donne un
+//     R1 qui affirme 5/5 contre 3/5 — et R1 est bien le vainqueur réel.
+//     J'ai voulu savoir si la PERFECTION valait mieux que l'écart. Sur
+//     l'archive, les cas où un seul pôle fait 5/5 : 9 en maisons fixes,
+//     9 en cadre tourné ; le pôle parfait gagne 5 fois sur 9 dans les
+//     deux cas (56 %, p = 0,50). C'est un tirage à pile ou face. Le 5/5
+//     survient dans 16 % des thèmes fixes et 23 % des tournés — il n'est
+//     même pas rare.
+//     ➜ Écrit ici précisément parce que le cas qui l'a fait naître était
+//     joli : une hypothèse tirée d'un seul thème se teste avant d'être
+//     crue, et celle-ci ne survit pas.
+//
+//     ☠️ U.6 · UNE FAUSSE JOIE, ÉCRITE POUR NE PAS LA REFAIRE.
 //     Un premier passage donnait 26 % en rotation sur presque toutes les
 //     lectures — assez bas et assez constant pour ressembler à un signal
 //     inversé (« il suffirait de lire à l'envers »). C'était MON bug :
