@@ -1292,8 +1292,8 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
         <option value="aucune">Aucune — les trois axes seuls</option>
         <option value="trigones">Les 4 trigones (les seuls équilatéraux)</option>
         <option value="cardinales">Les 4 cardinales opposées — 1-4-7 · 1-7-10 · 4-7-10 · 1-4-10</option>
-        <option value="m1">Les 7 trajectoires de M1</option>
-        <option value="m7">Les 7 trajectoires de M7</option>
+        <option value="m1">Les 5 de M1 — M1 au sommet (miroir 2-12 · 3-11 · 4-10 · 5-9 · 6-8)</option>
+        <option value="m7">Les 5 de M7 — M7 au sommet (les mêmes paires, à l'inverse)</option>
         <option value="une">Une seule — voir à côté</option>
       </select></div>
     <div class="field"><label>Une trajectoire précise</label>
@@ -2046,13 +2046,35 @@ window.redessinerCarreGeoV7 = function () {
 // Les trajectoires traçables. Ce sont celles de la loi P : une maison par
 // axe, aucune paire de maisons voisines — les 28 où sa règle « isocèle ou
 // équilatéral » est exacte, restreintes ici aux familles utiles.
+// Les cinq triangles dont un pôle est le SOMMET : le pôle, plus chacune
+// des cinq paires symétriques par rapport au diamètre pôle ↔ pôle+6.
+// Le sommet est à égale distance des deux autres : isocèle par
+// construction, sans exception possible (loi R).
+function trianglesApexV7(pole) {
+  var out = [];
+  for (var k = 1; k <= 5; k++) {
+    var a = ((pole + k - 1) % 12) + 1;
+    var b = ((pole - k - 1 + 12) % 12) + 1;
+    out.push([pole, a, b].sort(function (x, y) { return x - y; }));
+  }
+  return out;
+}
 var TRAJ_CARRE_V7 = {
   trigones: [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]],
   // Les quatre triangles du carré cardinal — ses deux couples opposés.
   // Tous isocèles de forme (3,3,6), loi P.4.
   cardinales: [[1, 4, 7], [1, 7, 10], [4, 7, 10], [1, 4, 10]],
-  m1: [[1, 3, 5], [1, 3, 8], [1, 3, 11], [1, 5, 9], [1, 6, 8], [1, 6, 11], [1, 9, 11]],
-  m7: [[2, 7, 9], [2, 7, 12], [3, 5, 7], [3, 7, 11], [5, 7, 9], [5, 7, 12], [7, 9, 11]]
+  // ─── LES CINQ D'UN PÔLE, PAR LA RÈGLE DU MIROIR (01/09/26) ───
+  // Sa remarque : « M1 s'oppose à M7 ; M1 est lié 6-8, 5-9, 4-10, 3-11,
+  // 2-12 ; M7 est lié par l'inverse. » Ces paires sont les REFLETS l'un
+  // de l'autre à travers le diamètre M1-M7 : le triangle a donc son
+  // SOMMET sur le pôle, et il est isocèle par construction.
+  // ⚠️ MES ANCIENNES LISTES ÉTAIENT AUTRE CHOSE. Je donnais sept
+  // triangles « de M1 » qui contenaient M1 sans que M1 en soit le
+  // sommet — 1-3-5 est isocèle, mais son sommet est M3. Les siens sont
+  // les cinq où M1 EST le sommet, et c'est ce qui fait la dualité.
+  m1: trianglesApexV7(1),
+  m7: trianglesApexV7(7)
 };
 // ─── L'ISOLEMENT AU CLIC (01/09/26, demande Ellemine_D) ───
 // « Quand on clique sur une trajectoire les autres ne doivent pas
@@ -2084,67 +2106,53 @@ function trajectoiresAffichéesV7(choix, une) {
   if (!seule.length) { trajIsoleeV7 = null; return toutes; }
   return seule;
 }
-// ═══ LE MENU DES TRAJECTOIRES (revu le 01/09/26 sur son constat) ═══
+// ═══ LE MENU DES TRAJECTOIRES — REFAIT SUR SA RÈGLE DU MIROIR ═══
 //
-// ☠️ IL EN MANQUAIT QUATRE, ET CE SONT LES SIENNES. Ellemine_D :
-// « il y a deux trajectoires qui s'opposent qui t'échappent : 1-4-7 et
-// 1-10-7 ; 4-7-10 et 4-1-10. » Il a raison. Mon filtre exigeait UNE
-// MAISON PAR AXE (loi P.2), ce qui excluait d'office tout triangle logé
-// dans un seul axe — donc les quatre triangles du carré cardinal, ceux-là
-// mêmes par lesquels il avait ouvert l'étude des axes.
-// Ils ne sont pas hors-la-loi pour autant : la loi P.4 dit que les DOUZE
-// triangles d'un même axe sont TOUS isocèles, de forme (3,3,6), 12/12.
-// Ils entrent donc au menu, dans leur propre groupe.
+// ✔✔ SA RÈGLE ENGENDRE TOUS LES ISOCÈLES DU CARRÉ, ET RIEN D'AUTRE.
+// « M1 est lié 6-8, 5-9, 4-10, 3-11, 2-12 ; M7 par l'inverse. »
+// Ces cinq paires sont les reflets par le diamètre M1-M7. Appliquée aux
+// douze pôles, la règle produit :
+//     triangles engendrés .................... 52
+//     isocèles + équilatéraux du carré ....... 52
+//     identiques ? ........................... OUI
+//     scalènes engendrés par erreur .......... ZÉRO
+// 48 n'ont qu'un sommet, 4 en ont trois — et ces quatre sont exactement
+// les équilatéraux. La règle du sommet EST la définition de l'isocèle
+// sur douze points, et elle est complète.
 //
-// ✔ ET SA REMARQUE SUR L'OPPOSITION EST EXACTE. Les quatre cardinaux
-// forment deux couples qui partagent deux pôles et échangent le
-// troisième :
-//     1-4-7  ↔  1-7-10   (M1 et M7 en commun, M4 contre M10)
-//     4-7-10 ↔  1-4-10   (M4 et M10 en commun, M7 contre M1)
-// C'est la même figure lue depuis l'autre diagonale du carré.
-//
-// 📋 ET L'ORDRE EST LE SIEN : d'abord les trajectoires de M1, puis celles
-// de M7, puis de M4, puis de M10, et le reste ensuite.
+// ☠️ MES DEUX FILTRES PRÉCÉDENTS ÉTAIENT DONC MAL POSÉS. « Une maison
+// par axe, aucune voisine » donnait 28 triangles, « même axe » en
+// ajoutait 12 : 40, en excluant 12 vrais isocèles et sans jamais dire
+// où était le sommet. Le menu porte maintenant les 52, groupés par
+// SOMMET, dans son ordre : M1, M7, M4, M10, puis les autres.
 function peuplerTrajectoiresCarreV7() {
   var sel = document.getElementById('carreTrajUne');
   if (!sel || sel.options.length) return;
-  var out = [];
-  for (var a = 1; a <= 12; a++) for (var b = a + 1; b <= 12; b++) for (var c = b + 1; c <= 12; c++) {
-    var T = [a, b, c], ax = {};
-    T.forEach(function (h) { ax[(h - 1) % 3] = 1; });
-    var nbAxes = Object.keys(ax).length;
-    var d = [b - a, c - b, 12 - (c - a)].sort(function (x, y) { return x - y; });
-    var nat = (d[0] === d[1] && d[1] === d[2]) ? 'équilatéral'
-            : (d[0] === d[1] || d[1] === d[2]) ? 'isocèle' : 'scalène';
-    var groupe = null;
-    if (nbAxes === 3 && d[0] >= 2) groupe = 'un par axe';        // les 28 de la loi P.2
-    else if (nbAxes === 1) groupe = 'même axe';                   // les 12 de la loi P.4
-    if (!groupe) continue;                                        // le reste est scalène, on l'écarte
-    // l'ordre demandé : M1, puis M7, puis M4, puis M10, puis le reste
-    var rang = T.indexOf(1) >= 0 ? 0 : T.indexOf(7) >= 0 ? 1
-             : T.indexOf(4) >= 0 ? 2 : T.indexOf(10) >= 0 ? 3 : 4;
-    out.push({ cle: T.join('-'), nat: nat, groupe: groupe, rang: rang, T: T });
-  }
-  out.sort(function (x, y) {
-    if (x.rang !== y.rang) return x.rang - y.rang;
-    for (var i = 0; i < 3; i++) if (x.T[i] !== y.T[i]) return x.T[i] - y.T[i];
-    return 0;
+  var vus = {}, groupes = [];
+  var ordre = [1, 7, 4, 10, 2, 3, 5, 6, 8, 9, 11, 12];
+  ordre.forEach(function (pole) {
+    var lignes = [];
+    trianglesApexV7(pole).forEach(function (T) {
+      var cle = T.join('-');
+      if (vus[cle]) return;              // un équilatéral a trois sommets : on le range au premier
+      vus[cle] = pole;
+      var d = [T[1] - T[0], T[2] - T[1], 12 - (T[2] - T[0])].sort(function (x, y) { return x - y; });
+      var nat = (d[0] === d[1] && d[1] === d[2]) ? 'équilatéral' : 'isocèle';
+      var paire = T.filter(function (h) { return h !== pole; });
+      lignes.push({ cle: cle, nat: nat, paire: paire.join('-') });
+    });
+    if (lignes.length) groupes.push({ pole: pole, lignes: lignes });
   });
   var OPPOSES = { '1-4-7': '1-7-10', '1-7-10': '1-4-7', '4-7-10': '1-4-10', '1-4-10': '4-7-10' };
-  var titres = ['— de M1 —', '— de M7 —', '— de M4 —', '— de M10 —', '— les autres —'];
-  var html = '', rangCourant = -1;
-  out.forEach(function (o) {
-    if (o.rang !== rangCourant) {
-      if (rangCourant >= 0) html += '</optgroup>';
-      html += '<optgroup label="' + titres[o.rang] + '">';
-      rangCourant = o.rang;
-    }
-    html += '<option value="' + o.cle + '">' + o.cle + ' — ' + o.nat
-      + (o.groupe === 'même axe' ? ' · même axe' : '')
-      + (OPPOSES[o.cle] ? ' · s\'oppose à ' + OPPOSES[o.cle] : '') + '</option>';
-  });
-  if (rangCourant >= 0) html += '</optgroup>';
-  sel.innerHTML = html;
+  sel.innerHTML = groupes.map(function (G) {
+    return '<optgroup label="— sommet M' + G.pole + ' —">'
+      + G.lignes.map(function (o) {
+          return '<option value="' + o.cle + '">' + o.cle + ' — ' + o.nat
+            + ' · miroir ' + o.paire
+            + (OPPOSES[o.cle] ? ' · s\'oppose à ' + OPPOSES[o.cle] : '') + '</option>';
+        }).join('')
+      + '</optgroup>';
+  }).join('');
 }
 
 // 📐 L'ÉCHELLE DE LA BARRE D'INFLUENCE, mesurée sur 32 000 couples
@@ -24640,6 +24648,62 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //         point Q.2 à chaque affichage, pour qu'un « oui » ne soit jamais
 //         pris pour une preuve.
 //
+// ── R · LA RÈGLE DU MIROIR ── (sa remarque, 01/09/26)
+//     « M1 s'oppose à M7. M1 est lié 6-8, 5-9, 4-10, 3-11, 2-12 ; M7 est
+//     lié par l'inverse. Ces liaisons sont isocèles ou équilatérales.
+//     C'est là que la dualité M1/M7 se fait. Exploite, tu verras. »
+//     Vu. C'est le résultat le plus net de toute la fouille du carré.
+//
+//     ✔✔ R.1 · SES CINQ PAIRES SONT LES REFLETS DU DIAMÈTRE M1-M7
+//         Le diamètre M1↔M7 est un axe de symétrie des douze maisons. La
+//         réflexion à travers lui donne exactement :
+//             2 ↔ 12 · 3 ↔ 11 · 4 ↔ 10 · 5 ↔ 9 · 6 ↔ 8
+//         et laisse M1 et M7 fixes. Ce sont ses cinq paires, sans une de
+//         plus ni une de moins. Un pôle est donc à ÉGALE DISTANCE des
+//         deux maisons de chaque paire : le triangle est isocèle par
+//         construction, et il ne peut PAS ne pas l'être.
+//
+//     ✔✔ R.2 · ET « PAR L'INVERSE » EST EXACT
+//             M1 : 1-2-12 · 1-3-11 · 1-4-10 · 1-5-9 · 1-6-8
+//             M7 : 6-7-8 · 5-7-9 · 4-7-10 · 3-7-11 · 2-7-12
+//         Les mêmes cinq paires en sens contraire, et la même suite
+//         d'écarts (1,1,10) (2,2,8) (3,3,6) (4,4,4) (2,5,5). La dualité
+//         des deux pôles est une SYMÉTRIE, pas une analogie.
+//         Un seul équilatéral par pôle : 1-5-9 pour M1, 3-7-11 pour M7 —
+//         ses deux « offensives » du début, retrouvées par un autre
+//         chemin.
+//
+//     ✔✔✔ R.3 · SA RÈGLE ENGENDRE TOUS LES ISOCÈLES DU CARRÉ
+//         Appliquée aux douze pôles :
+//             triangles engendrés .................. 52
+//             isocèles + équilatéraux du carré ..... 52
+//             identiques ? ......................... OUI
+//             scalènes engendrés par erreur ........ ZÉRO
+//         48 n'ont qu'un sommet, 4 en ont trois — et ces quatre sont
+//         exactement les équilatéraux (loi P.5). La règle du sommet EST
+//         la définition de l'isocèle sur douze points, et elle est
+//         COMPLÈTE : rien n'y échappe, rien de faux n'y entre.
+//
+//     ☠️ R.4 · ET ELLE CORRIGE MES DEUX FILTRES
+//         Je donnais « les 7 trajectoires de M1 » : 1-3-5, 1-3-8, 1-3-11,
+//         1-5-9, 1-6-8, 1-6-11, 1-9-11. QUATRE contiennent M1 sans que M1
+//         en soit le sommet — 1-3-5 est isocèle, mais son sommet est M3.
+//         Elles ne lui appartiennent pas ; elles passent par lui.
+//         Et il me manquait 1-2-12 (deux voisines de M1, écartées par mon
+//         filtre) et 1-4-10 (tout entière dans l'axe cardinal, écartée
+//         par l'autre). Mes deux filtres donnaient 40 triangles, en
+//         laissant 12 vrais isocèles dehors et sans jamais dire où était
+//         le sommet.
+//         ➜ Le menu porte maintenant les 52, groupés par SOMMET, dans son
+//         ordre : M1, M7, M4, M10, puis les autres.
+//
+//     ➜ POUR LA SUITE : chaque pôle a exactement CINQ trajectoires dont
+//     il est le sommet, dont une équilatérale. Un jeu fini, symétrique et
+//     fondé, au lieu des sept arbitraires que mes filtres produisaient.
+//     Si ses quatre événements doivent se loger quelque part, c'est là.
+//     ⚠️ L'attribution aux événements reste non mesurée : le champ
+//     incident n'est rempli que sur 8 cas sur 55 (loi N.5).
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -25139,6 +25203,40 @@ function autoTestAlternanceV7() {
       if (nat === 'scalene') r.triDeuxAxesScal += 1;
     }
   }
+  // ── loi R : la règle du miroir ──
+  function apexV7(pole) {
+    var o = [];
+    for (var k = 1; k <= 5; k++) {
+      o.push([pole, ((pole + k - 1) % 12) + 1, ((pole - k - 1 + 12) % 12) + 1]
+        .sort(function (x, y) { return x - y; }));
+    }
+    return o;
+  }
+  var engendres = {}, apexCompte = {};
+  for (var pr = 1; pr <= 12; pr++) {
+    apexV7(pr).forEach(function (T) {
+      var cle = T.join('-');
+      engendres[cle] = 1;
+      apexCompte[cle] = (apexCompte[cle] || 0) + 1;
+    });
+  }
+  var isocelesCarre = {};
+  for (var ra = 1; ra <= 12; ra++) for (var rb = ra + 1; rb <= 12; rb++) for (var rc = rb + 1; rc <= 12; rc++) {
+    if (natureTriV7([ra, rb, rc]) !== 'scalene') isocelesCarre[[ra, rb, rc].join('-')] = 1;
+  }
+  r.miroirEngendres = Object.keys(engendres).length;
+  r.miroirIsoceles = Object.keys(isocelesCarre).length;
+  r.miroirIdentiques = (r.miroirEngendres === r.miroirIsoceles
+    && Object.keys(engendres).every(function (k) { return isocelesCarre[k]; })) ? 1 : 0;
+  r.miroirScalenes = Object.keys(engendres).filter(function (k) {
+    return natureTriV7(k.split('-').map(Number)) === 'scalene';
+  }).length;
+  r.miroirTroisApex = Object.keys(apexCompte).filter(function (k) { return apexCompte[k] === 3; }).length;
+  r.miroirUnApex = Object.keys(apexCompte).filter(function (k) { return apexCompte[k] === 1; }).length;
+  r.miroirPaires = 0;
+  [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]].forEach(function (P) {
+    if (((2 - P[0] - 1 + 24) % 12) + 1 === P[1]) r.miroirPaires += 1;
+  });
   r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
@@ -25168,7 +25266,10 @@ function autoTestAlternanceV7() {
     && r.triUnParAxeBons === 40 && r.triUnParAxeSansVoisin === 28
     && r.triUnParAxeSansVoisinScal === 0
     && r.triMemeAxeTotal === 12 && r.triMemeAxeIso === 12
-    && r.triDeuxAxesTotal === 144 && r.triDeuxAxesScal === 144);
+    && r.triDeuxAxesTotal === 144 && r.triDeuxAxesScal === 144
+    && r.miroirEngendres === 52 && r.miroirIsoceles === 52 && r.miroirIdentiques === 1
+    && r.miroirScalenes === 0 && r.miroirTroisApex === 4 && r.miroirUnApex === 48
+    && r.miroirPaires === 5);
   return r;
 }
 
