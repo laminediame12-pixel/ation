@@ -18649,6 +18649,71 @@ function avecFormatV7(fmt, fn) {
 // 330 thèmes : « ⚖️ NUL À VÉRIFIER » affiché au-dessus d'un « 0-1 ».
 // Un match donné pour nul s'écrit 0-0, avec 1-1 en alternative
 // (l'ordre a été inversé le 30/08, voir la mesure dans scoreAfficheV7).
+// ─── MODE LIVE : LE SCORE ET LE TEMPS ÉCOULÉ SONT ENFIN LUS (03/09/26) ───
+// Avant cette maintenance, les deux champs du mode "Live" (#matchElapsedMinutes,
+// #matchLiveScore) s'affichaient et se saisissaient mais n'étaient lus par
+// AUCUNE ligne du fichier (constaté le 28/08/26, cf. commentaire historique
+// près de toggleDrawMode) : un thème tiré à la mi-temps d'un match mené 1-0
+// était analysé exactement comme un thème d'avant-match.
+//
+// Il n'existe aucune doctrine géomantique d'Ellemine_D validée sur la façon
+// dont un score déjà connu doit influencer la lecture d'un thème — à la
+// différence de chaque autre règle de ce fichier, qui n'est écrite qu'après
+// mesure sur l'archive des matchs réels. Inventer ici une règle doctrinale
+// (« tel score impose tel camp ») serait donc malhonnête : ce n'est pas
+// fait. On se limite à deux choses vérifiables qui ne demandent aucune
+// doctrine nouvelle :
+//   1) COHÉRENCE — si le camp donné vainqueur par le thème contredit le
+//      camp actuellement mené au score avec peu de temps restant, c'est
+//      SIGNALÉ, jamais corrigé : le fichier n'a aucune règle pour arbitrer
+//      entre les deux.
+//   2) PLANCHER DE SCORE — le score final affiché ne peut pas être inférieur
+//      au score déjà acquis (un but marqué ne se retire pas) ; les buts que
+//      le thème prédisait encore sont ajoutés par-dessus, réduits selon la
+//      part du match qui reste à jouer.
+// Statut : nouveau, NON validé empiriquement — contrairement au reste du
+// moteur, qui ne s'écrit qu'après preuve sur l'archive réelle des matchs.
+function getLiveMatchState(){
+  var modeEl = document.getElementById('drawMode');
+  if(!modeEl || modeEl.value !== 'live') return null;
+  var scoreEl = document.getElementById('matchLiveScore');
+  var m = scoreEl ? String(scoreEl.value||'').match(/^\s*(\d+)\s*-\s*(\d+)\s*$/) : null;
+  if(!m) return null;
+  var minEl = document.getElementById('matchElapsedMinutes');
+  var minutesRaw = minEl ? parseInt(minEl.value, 10) : NaN;
+  return {
+    minutes: isNaN(minutesRaw) ? null : Math.max(0, Math.min(130, minutesRaw)),
+    g1: parseInt(m[1], 10), g2: parseInt(m[2], 10)
+  };
+}
+function appliquerEtatLiveV7(card, theme){
+  if(!card) return card;
+  var live = getLiveMatchState();
+  if(!live) return card;
+  card.liveState = live;
+  var leaderLive = live.g1 > live.g2 ? 'M1' : live.g2 > live.g1 ? 'M7' : 'Nul';
+  // card.winner est exprimé dans le référentiel de la carte (M1/M7 pour la
+  // carte fixe, R1/R7 pour la carte rotation) — R1 vaut toujours M1 et R7
+  // vaut toujours M7 côté vainqueur (cf. renderProtocoleVerdictPrincipal).
+  var winnerCampM = card.winner==='R1' ? 'M1' : card.winner==='R7' ? 'M7' : card.winner;
+  var minutesRestantes = live.minutes==null ? null : Math.max(0, 90 - live.minutes);
+  if(winnerCampM && leaderLive!=='Nul' && winnerCampM!==leaderLive && minutesRestantes!=null && minutesRestantes<=15){
+    card.liveContradiction = 'le direct donne '+(leaderLive==='M1'?'l\'équipe 1':'l\'équipe 2')+' devant ('+live.g1+'-'+live.g2+') à '+minutesRestantes+' min de la fin, le thème donne '+(winnerCampM==='M1'?'l\'équipe 1':winnerCampM==='M7'?'l\'équipe 2':'le nul')+' — aucune règle du fichier ne permet de trancher entre les deux.';
+  }
+  var mScore = String(card.scoreMain||'').match(/^(\d+)-(\d+)$/);
+  if(mScore){
+    var predG1 = parseInt(mScore[1],10), predG2 = parseInt(mScore[2],10);
+    var frac = live.minutes==null ? 1 : Math.max(0, Math.min(1, (90-live.minutes)/90));
+    var addG1 = Math.round(Math.max(0, predG1-live.g1)*frac);
+    var addG2 = Math.round(Math.max(0, predG2-live.g2)*frac);
+    var finalG1 = live.g1+addG1, finalG2 = live.g2+addG2;
+    card.scoreMain = finalG1+'-'+finalG2;
+    if(card.scoreAlt){
+      card.scoreAlt = Math.max(finalG1-1,live.g1)+'-'+Math.max(finalG2-1,live.g2);
+    }
+  }
+  return card;
+}
 function scoreAfficheV7(card, nulActif) {
   if (!card) return { main: '—', alt: '—' };
   if (nulActif) {
@@ -26853,6 +26918,21 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'Le vainqueur reste annoncé parce que le croisement complet n\'est pas atteint, mais dans cette '
       + 'situation l\'archive donne <b>un nul sur deux</b> (le 0-0 du 14/02 en était un). '
       + 'À ne pas jouer sec.</div>' : '')
+    // MODE LIVE (03/09/26) : le score et le temps écoulé saisis en mode
+    // "Live" étaient auparavant affichés sans être lus par aucun calcul
+    // (cf. commentaire historique près de toggleDrawMode). Ils servent
+    // désormais à deux choses honnêtes — voir appliquerEtatLiveV7 — mais
+    // sans prétendre à une doctrine géomantique validée sur le direct :
+    // aucune règle de ce fichier n'a été mesurée sur des tirages en cours
+    // de match, contrairement au reste du moteur.
+    +(card.liveState ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #38bdf8; border-radius:7px; '
+      + 'background:rgba(56,189,248,.10); font-size:11px; color:#7dd3fc; text-align:left;">'
+      + '🔴 <b>EN DIRECT</b> — score actuel ' + esc(card.liveState.g1 + '-' + card.liveState.g2) + (card.liveState.minutes!=null ? ' à la ' + card.liveState.minutes + 'e minute' : '')
+      + '. Score final ci-dessus ajusté avec un plancher au score en direct (aucun but déjà marqué n\'est retiré) ; '
+      + 'non validé empiriquement, contrairement au reste du moteur.</div>' : '')
+    +(card.liveContradiction ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f87171; border-radius:7px; '
+      + 'background:rgba(248,113,113,.12); font-size:11px; color:#fca5a5; text-align:left;">'
+      + '<b>⚠️ CONTREDIT PAR LE DIRECT</b> — ' + esc(card.liveContradiction) + '</div>' : '')
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -28282,6 +28362,9 @@ function renderTheme(){
     carteR.protocoleWinnerCompare = protocoleWinner;
     carteR.accordProtocole = !!(protocoleWinner && rWinnerOverride && protocoleWinner === rWinnerOverride);
     carteR.desaccordProtocole = !!(protocoleWinner && rWinnerOverride && protocoleWinner !== rWinnerOverride);
+    // MODE LIVE (03/09/26) — voir appliquerEtatLiveV7 : plancher de score au
+    // score déjà connu + signal de cohérence, sans toucher au verdict.
+    try { appliquerEtatLiveV7(carteR, currentTheme); } catch(e) { console.debug('[maintenance] erreur ignorée:', e); }
     // SUPPRIMÉ (21/08/26, focalisation sur un seul moteur) : la bannière
     // de contradiction contre jugementReseauR1R7 (Réseau d'ancrage V1,
     // supprimé) faisait doublon avec accordProtocole/desaccordProtocole
