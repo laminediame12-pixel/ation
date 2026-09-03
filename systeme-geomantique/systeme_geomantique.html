@@ -322,6 +322,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
         <button id="tabHistBtn" class="btn-secondary" style="width:auto; padding:6px 12px; background:#1e3a8a;" onclick="switchTab('hist')">📜 Historique</button>
         <button id="tabSaveBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="switchTab('save')">💾 Sauvegardés</button>
         <button id="tabStatsBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="renderStatsTab()">📊 Statistiques</button>
+        <button id="tabRefBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="renderTableauReferenceBTTSTab()">📋 Référence BTTS</button>
         <button id="downloadStatsBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="exportStatsJSON()">⬇️ Télécharger les statistiques</button>
         <button id="downloadSavedBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="exportSavedThemesJSON()">⬇️ Télécharger les thèmes sauvegardés</button>
       </div>
@@ -7718,6 +7719,43 @@ function coincidenceJugeAxesV7(theme){
   var axeSucc = combineMany([theme[2], theme[5], theme[8], theme[11]]);
   var axeCad = combineMany([theme[3], theme[6], theme[9], theme[12]]);
   return combineMany([axeCard, axeSucc, axeCad]) === theme[15];
+}
+// ═══════════════════════════════════════════════════════════════
+// TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
+// Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
+// soupçonne qu'ils pourraient expliquer BTTS, pour les archiver au fil des
+// tirages réels plutôt que de les re-tester sur les mêmes 45 cas déjà
+// épuisés dans la discussion : figures offensive/défensive (axe 3-5-9-11
+// et axe 4-10 discutés précédemment), confirmation du Juge sur M1/M7 (le
+// Juge est-il le binôme de la figure de M1 ou de M7 ?), figure du jour et
+// planète gouvernante du jour du match. AUCUNE de ces colonnes n'est une
+// règle validée — c'est un tableau d'observation à faire grossir au fil
+// des vrais matchs, pas un moteur de décision. Utilisé par le panneau
+// "📊 Tableau de référence" (renderTableauReferenceBTTS) et persisté dans
+// chaque entrée sauvegardée (addToHistory/saveManuel).
+function tableauReferenceBTTS(theme, matchDateStr){
+  var figOffensive = combineMany([theme[3], theme[5], theme[9], theme[11]]);
+  var figDefensiveM1 = combineMany([theme[4], theme[10], theme[1]]);
+  var figDefensiveM7 = combineMany([theme[4], theme[10], theme[7]]);
+  var juge = theme[15];
+  var jugeConfirmeM1 = juge === BINOMES_V7[theme[1]];
+  var jugeConfirmeM7 = juge === BINOMES_V7[theme[7]];
+  var fdj = figureDuJour(matchDateStr ? new Date(matchDateStr) : undefined);
+  var planete = getPlaneteDuJour(matchDateStr);
+  var figGouvernante = PLANETE_GOUVERNEUR[planete] || null;
+  return {
+    figOffensive: figOffensive,
+    offensivePresente: positionsBaseEtResultantes(figOffensive, theme).length > 0,
+    figDefensiveM1: figDefensiveM1,
+    defensiveM1Presente: positionsBaseEtResultantes(figDefensiveM1, theme).length > 0,
+    figDefensiveM7: figDefensiveM7,
+    defensiveM7Presente: positionsBaseEtResultantes(figDefensiveM7, theme).length > 0,
+    juge: juge, jugeConfirmeM1: jugeConfirmeM1, jugeConfirmeM7: jugeConfirmeM7,
+    figureDuJour: fdj,
+    figureDuJourPresente: positionsBaseEtResultantes(fdj, theme).length > 0,
+    planeteDuJour: planete, figureGouvernante: figGouvernante,
+    figureGouvernantePresente: figGouvernante ? positionsBaseEtResultantes(figGouvernante, theme).length > 0 : false
+  };
 }
 function getResultant(fig,pos){return combine(fig,FIGS[pos-1]);}
 function figureExistsInTheme(fig,theme){return Object.values(theme).includes(fig);}
@@ -29091,6 +29129,82 @@ function renderStatsTab(){
   document.getElementById('historyList').innerHTML = h;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// TABLEAU DE RÉFÉRENCE — MOTIF DU BTTS (03/09/26, demande Ellemine_D) —
+// liste, thème par thème, les colonnes calculées par tableauReferenceBTTS
+// (figures offensive/défensive, confirmation du Juge, figure du jour,
+// planète gouvernante) à côté du BTTS prédit et du BTTS réel (dérivé du
+// score réel saisi). Pur outil d'observation : aucune conclusion n'est
+// tirée ici, le but est d'accumuler assez de thèmes réels pour qu'un
+// motif, s'il existe, devienne visible à l'œil. Les thèmes tirés avant
+// cette maintenance n'ont pas de colonne refBTTS (affiché "—").
+// ═══════════════════════════════════════════════════════════════
+function renderTableauReferenceBTTSTab(){
+  currentTab = 'refbtts';
+  ['tabHistBtn','tabSaveBtn','tabStatsBtn','tabRefBtn'].forEach(function(id){
+    var b = document.getElementById(id); if (b) b.style.background = '';
+  });
+  var btnRef = document.getElementById('tabRefBtn'); if (btnRef) btnRef.style.background = '#1e3a8a';
+
+  var all = getHistoryList().concat(getSavedList());
+  var seen = {}; var list = [];
+  all.forEach(function(e){
+    var fp = themeFingerprint(e.team1||'', e.team2||'', e.theme);
+    if (seen[fp]) return; seen[fp] = true;
+    list.push(e);
+  });
+  list.sort(function(a,b){ return new Date(b.savedAt||0) - new Date(a.savedAt||0); });
+
+  function b(v){ return v===true ? '✓' : v===false ? '✗' : '—'; }
+  function figLabel(fig){ return fig ? (FL[fig]||fig) : '—'; }
+  function jugeConfirme(r){
+    if (!r) return '—';
+    if (r.jugeConfirmeM1 && r.jugeConfirmeM7) return 'M1+M7';
+    if (r.jugeConfirmeM1) return 'M1';
+    if (r.jugeConfirmeM7) return 'M7';
+    return 'aucun';
+  }
+  var avecDonnees = 0;
+  var rows = list.map(function(e){
+    var r = e.refBTTS;
+    if (r) avecDonnees++;
+    var predG1 = e.verdict ? e.verdict.goalM1 : null, predG7 = e.verdict ? e.verdict.goalM7 : null;
+    var bttsPredit = (predG1 != null && predG7 != null) ? (predG1 > 0 && predG7 > 0) : null;
+    var m = e.realScore ? String(e.realScore).match(/^\s*(\d+)\s*-\s*(\d+)\s*$/) : null;
+    var bttsReel = m ? (parseInt(m[1], 10) > 0 && parseInt(m[2], 10) > 0) : null;
+    return '<tr>'
+      + '<td style="padding:4px;">' + escHtml(e.team1 || '?') + ' vs ' + escHtml(e.team2 || '?') + '</td>'
+      + '<td style="padding:4px;">' + escHtml(e.matchDate || '—') + '</td>'
+      + '<td style="padding:4px;">' + (r ? figLabel(r.figOffensive) + ' ' + b(r.offensivePresente) : '—') + '</td>'
+      + '<td style="padding:4px;">' + (r ? figLabel(r.figDefensiveM1) + ' ' + b(r.defensiveM1Presente) : '—') + '</td>'
+      + '<td style="padding:4px;">' + (r ? figLabel(r.figDefensiveM7) + ' ' + b(r.defensiveM7Presente) : '—') + '</td>'
+      + '<td style="padding:4px;">' + jugeConfirme(r) + '</td>'
+      + '<td style="padding:4px;">' + (r ? figLabel(r.figureDuJour) + ' ' + b(r.figureDuJourPresente) : '—') + '</td>'
+      + '<td style="padding:4px;">' + (r ? escHtml(r.planeteDuJour) + ' (' + figLabel(r.figureGouvernante) + ') ' + b(r.figureGouvernantePresente) : '—') + '</td>'
+      + '<td style="padding:4px; text-align:center;">' + b(bttsPredit) + '</td>'
+      + '<td style="padding:4px; text-align:center;">' + b(bttsReel) + '</td>'
+      + '</tr>';
+  }).join('');
+
+  var h = '<div class="card">';
+  h += '<h3>📋 Tableau de référence — motif du "les deux marquent"</h3>';
+  h += '<div class="muted" style="font-size:11px; margin-bottom:8px;">Observation en cours — aucune colonne ci-dessous n\'est une règle validée, c\'est un tableau à faire grossir au fil des vrais matchs. '
+    + avecDonnees + '/' + list.length + ' thème(s) avec les données (les thèmes tirés avant le 03/09/26 n\'en ont pas). '
+    + 'Renseigne le score réel dans l\'onglet Sauvegardés pour remplir la colonne BTTS réel.</div>';
+  if (!list.length) {
+    h += '<div class="muted">Aucun thème dans l\'historique pour l\'instant.</div>';
+  } else {
+    h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:11px;">'
+      + '<tr style="background:#1e293b;">'
+      + '<th style="padding:4px; text-align:left;">Match</th><th style="padding:4px;">Date</th>'
+      + '<th style="padding:4px;">Offensive (3-5-9-11)</th><th style="padding:4px;">Défensive M1 (4-10-1)</th><th style="padding:4px;">Défensive M7 (4-10-7)</th>'
+      + '<th style="padding:4px;">Juge confirme</th><th style="padding:4px;">Figure du jour</th><th style="padding:4px;">Planète (fig. gouv.)</th>'
+      + '<th style="padding:4px;">BTTS prédit</th><th style="padding:4px;">BTTS réel</th>'
+      + '</tr>' + rows + '</table></div>';
+  }
+  h += '</div>';
+  document.getElementById('historyList').innerHTML = h;
+}
 
 function addToHistory() {
   if (!currentTheme || !currentAnalysis) return;
@@ -29132,6 +29246,8 @@ function addToHistory() {
     blindTest: lastLaunchWasBlind,
     // Signal informatif en cours d'observation, cf. coincidenceJugeAxesV7.
     coincidenceJugeAxes: (function(){ try { return coincidenceJugeAxesV7(currentTheme); } catch(e){ return null; } })(),
+    // Tableau d'observation pour le motif du BTTS, cf. tableauReferenceBTTS.
+    refBTTS: (function(){ try { return tableauReferenceBTTS(currentTheme, matchDate); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29197,6 +29313,8 @@ function saveManuel() {
     blindTest: lastLaunchWasBlind,
     // Signal informatif en cours d'observation, cf. coincidenceJugeAxesV7.
     coincidenceJugeAxes: (function(){ try { return coincidenceJugeAxesV7(currentTheme); } catch(e){ return null; } })(),
+    // Tableau d'observation pour le motif du BTTS, cf. tableauReferenceBTTS.
+    refBTTS: (function(){ try { return tableauReferenceBTTS(currentTheme, matchDate); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
