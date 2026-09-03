@@ -3093,15 +3093,13 @@ function updateCombineRepos(){
   const repos = FIGS[parseInt(house)-1];
   outEl.value = FL[combine(fig, repos)] + ' (= ' + FL[fig] + ' + repos de M' + house + ' = ' + FL[repos] + ')';
 }
-// ⚠️ MODE LIVE : LES DEUX CHAMPS NE SONT LUS PAR PERSONNE (constaté le
-// 28/08/26). « Temps écoulé » et « Score actuel » s'affichent, se
-// saisissent, et aucune ligne du fichier ne les relit — ni l'analyse, ni
-// le verdict, ni la sauvegarde. Un thème tiré à la mi-temps d'un match
-// mené 1-0 est donc analysé exactement comme un thème d'avant-match.
-// Ce n'est pas corrigé ici parce qu'on ne sait pas ce que la doctrine
-// veut en faire (le score courant doit-il rendre le nul plus probable ?
-// verrouiller un camp ? ne rien changer ?) — mais c'est écrit noir sur
-// blanc pour que personne ne croie que le direct est pris en compte.
+// MODE LIVE : « Temps écoulé » et « Score actuel » étaient affichés et
+// saisissables sans être relus par aucune ligne du fichier (constaté le
+// 28/08/26). CORRIGÉ le 03/09/26 : getLiveMatchState()/appliquerEtatLiveV7()
+// (cf. leur commentaire, près de scoreAfficheV7) les utilisent désormais
+// pour poser un plancher sur le score final affiché et signaler une
+// contradiction en fin de match — sans imposer de camp, faute de doctrine
+// validée sur le direct (à la différence du reste du moteur).
 function toggleDrawMode(){
   const mode=document.getElementById('drawMode').value;
   document.getElementById('manual-mothers').style.display=(mode==='manual'||mode==='live')?'grid':'none';
