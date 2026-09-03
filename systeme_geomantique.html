@@ -26136,10 +26136,94 @@ function verdictStandardV7(theme, teamA, teamB) {
 // identique (A/B par clé : 2055 clés, 0 différence). Une partie de la
 // lenteur dont il se plaignait le 31/08 venait de là — de moteurs qu'on
 // exécutait à chaque verdict et dont personne ne lisait la réponse.
+// ═══════════════════════════════════════════════════════════════
+// 🔲 LE CARRÉ COMME MOTEUR PILOTE (03/09/26, sa demande : « tu peux
+// faire le carré comme moteur piloteur du verdict final »)
+// ═══════════════════════════════════════════════════════════════
+// Il agrège les signaux du carré EN CADRE TOURNÉ — le seul qui parle des
+// camps (loi U.4bis : R1 ne vaut M1 que dans 4 cas d'archive sur 53) :
+//   · affirmations   combien des cinq triangles du pôle affirment
+//   · influence      total des occurrences des cinq sommes
+//   · duels          triangle contre triangle, paire par paire
+// Vote à trois voix. Quand le carré est muet (0), V8 répond.
+//
+// ☠️ ET VOICI CE QUE ÇA COÛTE, MESURÉ AVANT D'ÊTRE BRANCHÉ.
+// Sur les 53 cas de l'archive qui portent un camp, en comptant LE
+// VERDICT AFFICHÉ de bout en bout (porte du nul comprise), pas un
+// moteur isolé — c'est getVerdictAfficheReel qui est rejoué, une fois
+// avec chaque pilote :
+//       pilote V8 (le précédent) ...................... 36/53  (68 %)
+//       pilote CARRÉ (branché ici) .................... 26/53  (49 %)
+//       « R1 toujours », taux de base ................. 23/53  (43 %)
+// ➜ LE BRANCHEMENT FAIT PERDRE DIX CAS NETS : treize verdicts justes
+// deviennent faux, trois faux deviennent justes.
+//   perdus  Juventus · Jeudi 27/08 · LaetAlbus · FortMajVia · CarcerAcq
+//           ViaRubeus · PuerLaet · VillaMachine · RubAmissio · RubCarcer
+//           AmisTrist · FortMajFMin · AcqFortMaj
+//   gagnés  ConjCaput · PuellaAlbus · FortMajAlbus
+// Le moteur du carré pris seul (sans la porte du nul) fait 20/53 (38 %)
+// contre 31/53 (58 %) pour V8 seul — même écart, même conclusion.
+// ⚠️ Ces chiffres sont IN SAMPLE : l'archive a servi à les mesurer, pas
+// à les valider. Le vrai test sera la prochaine prédiction gelée.
+//
+// ⚠️ ET CE N'EST PAS UN SIGNAL INVERSÉ. J'ai vérifié avant de le dire :
+//   · sur 600 thèmes quelconques le carré est ÉQUILIBRÉ — 255 R1,
+//     261 R7, 84 muets. Aucun biais de fabrication.
+//   · s'il penche R7 sur l'archive (28 contre 18) alors que la réalité
+//     penche R1 (23 contre 18), c'est un accident d'échantillon.
+//   · retourner sa réponse donne 20/37 (54 %), p = 0,37. Rien.
+// Le carré ne porte pas d'information sur le camp, ni à l'endroit ni à
+// l'envers. Il est branché parce qu'il l'a demandé, et le fichier dit
+// ce que ça coûte.
+//
+// 🔧 POUR REVENIR EN ARRIÈRE : passer PILOTE_VERDICT_V7 à 'v8'. Rien
+// d'autre à toucher — la ligne « source décisive » du panneau VERDICT
+// nomme toujours le pilote qui a réellement tranché.
+var PILOTE_VERDICT_V7 = 'carre';   // 'carre' (sa demande) | 'v8'
+
+function moteurCarreV7(theme) {
+  if (!theme) return null;
+  var P = [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]];
+  var ordre;
+  try { ordre = getRotationOrderFromRepos(theme[1]); } catch (e) { return null; }
+  if (!ordre) return null;
+  function occ(f) { var n = 0; for (var h = 1; h <= 16; h++) if (theme[h] === f) n++; return n; }
+  function lecture(apex) {
+    return P.map(function (p) {
+      return occ(combineMany([theme[ordre[apex - 1]], theme[ordre[p[0] - 1]], theme[ordre[p[1] - 1]]]));
+    });
+  }
+  var a, b;
+  try { a = lecture(1); b = lecture(7); } catch (e) { return null; }
+  var affA = a.filter(function (x) { return x > 0; }).length;
+  var affB = b.filter(function (x) { return x > 0; }).length;
+  var infA = a.reduce(function (s, x) { return s + x; }, 0);
+  var infB = b.reduce(function (s, x) { return s + x; }, 0);
+  var duA = 0, duB = 0;
+  for (var i = 0; i < 5; i++) { if (a[i] > b[i]) duA++; else if (b[i] > a[i]) duB++; }
+  var voix = Math.sign(affA - affB) + Math.sign(infA - infB) + Math.sign(duA - duB);
+  var camp = voix > 0 ? 'R1' : (voix < 0 ? 'R7' : null);
+  return {
+    camp: camp, voix: voix,
+    affR1: affA, affR7: affB, inflR1: infA, inflR7: infB, duelR1: duA, duelR7: duB,
+    hR1: ordre[0], hR7: ordre[6],
+    voie: camp
+      ? ('carré tourné — affirmations ' + affA + '/' + affB + ', influence ' + infA + '/' + infB + ', duels ' + duA + '/' + duB)
+      : 'carré muet — les trois signaux s\'annulent'
+  };
+}
+
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
   var m8 = null;
   try { m8 = moteurV8V7(theme); } catch (e) { m8 = null; }
+  if (PILOTE_VERDICT_V7 === 'carre') {
+    var mc = null;
+    try { mc = moteurCarreV7(theme); } catch (e) { mc = null; }
+    if (mc && mc.camp) return mc.camp;
+    // carré muet : V8 répond plutôt que de laisser le verdict sans pilote.
+    return (m8 && m8.camp) ? m8.camp : null;
+  }
   return (m8 && m8.camp) ? m8.camp : null;
 }
 
@@ -28069,10 +28153,19 @@ function renderTheme(){
     // alors que le camp venait de moteurV8V7 depuis la reprise à zéro.
     // Le lecteur croyait donc lire le décideur ; il lisait un moteur qui
     // ne décidait plus rien. C'est ce que voyait Ellemine_D.
-    var m8Top = null;
+    // 03/09/26 : le carré est devenu le pilote (PILOTE_VERDICT_V7). La
+    // ligne nomme donc CELUI QUI A TRANCHÉ POUR DE BON — carré quand il
+    // parle, V8 quand le carré est muet — et jamais celui qui aurait pu.
+    var m8Top = null, mcTop = null;
     try { m8Top = moteurV8V7(currentTheme); } catch (e) { m8Top = null; }
+    if (PILOTE_VERDICT_V7 === 'carre') {
+      try { mcTop = moteurCarreV7(currentTheme); } catch (e) { mcTop = null; }
+    }
     carteR.sourceDecisive = nulActifTop ? 'Porte du nul — nul imposé'
-      : (m8Top && m8Top.camp) ? 'Moteur V8 — ' + (m8Top.voie || 'partage de la synthèse')
+      : (mcTop && mcTop.camp) ? 'Carré géomantique — ' + mcTop.voie
+      : (m8Top && m8Top.camp) ? (PILOTE_VERDICT_V7 === 'carre'
+          ? 'Moteur V8 (secours — ' + (mcTop ? 'carré muet' : 'carré indisponible') + ') — ' + (m8Top.voie || 'partage de la synthèse')
+          : 'Moteur V8 — ' + (m8Top.voie || 'partage de la synthèse'))
       : 'aucun décideur';
     carteR.reseauSynthese = reseauTop.synthese;
     carteR.nulActifReseau = nulActifReseauTop;
