@@ -869,7 +869,6 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
   .cgv-detail{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; font-size:11px; color:#94a3b8;}
   .cgv-zone{flex:1; min-width:160px; border:1px solid var(--gold,#C7A143); border-radius:8px; padding:8px 10px;}
   .cgv-zone b{display:block; font-size:12px; margin-bottom:4px;}
-  #carre-geo-rapport{max-width:560px; margin:14px auto 0;}
   .rft-grid{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; font-size:11px;}
   .rft-col{flex:1; min-width:210px; border:1px solid var(--gold,#C7A143); border-radius:8px; padding:8px 10px;}
   .rft-col b{display:block; font-size:12px; margin-bottom:5px;}
@@ -1293,6 +1292,11 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
   <h1 style="font-size:22px;">Carré géomantique (construction classique à 3 carrés)</h1>
   <p class="sub">Carré extérieur + carré central tourné à 45° (ses 4 pointes = les maisons angulaires I/IV/VII/X, aux milieux des côtés) + carré intérieur vide au centre. Les 8 triangles restants portent les maisons succédentes/cadentes. Même thème que la matrice ci-dessus.</p>
   <div class="row" style="margin:6px 0 10px;">
+    <div class="field"><label>Mode du carré</label>
+      <select id="carreModeSelect" onchange="setModeCarreV7(this.value)">
+        <option value="fixe">Fixe — les zones restent sur M1 et M7 (défaut)</option>
+        <option value="rotation">Rotation — les zones suivent R1 et R7</option>
+      </select></div>
     <div class="field"><label>Trajectoires à tracer</label>
       <select id="carreTrajSelect" onchange="isolerTrajectoireV7(null); redessinerCarreGeoV7()">
         <option value="aucune">Aucune — les trois axes seuls</option>
@@ -1309,7 +1313,6 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
   <div id="carre-geo-legende" style="font-size:11px; margin:8px auto 0; max-width:560px; line-height:1.9;"></div>
   <div id="carre-geo-lecture" style="margin:10px auto 0; max-width:560px;"></div>
   <div id="carre-geo-verdict"></div>
-  <div id="carre-geo-rapport"></div>
 </div>
 
 <div id="juge-resultantes-panel"></div>
@@ -1832,265 +1835,78 @@ function centroid(pts){
 // maisons de chaque camp et compare. AUCUN poids sur verdictFinal tant
 // que non contre-testé sur l'archive — c'est un second avis indépendant,
 // pas un remplacement du moteur M1/M7 principal.
-const ZONE_M1_MAISONS = [1,2,3,11,12];   // I, II, III, XI, XII (x<200)
-const ZONE_M7_MAISONS = [5,6,7,8,9];     // V, VI, VII, VIII, IX (x>200)
-const ZONE_NEUTRE_MAISONS = [4,10];      // IV, X (exactement sur l'axe, x=200)
-// ☠️ CORRIGÉ (03/09/26, « revois le calcul des zones ») — LE PIÈGE DES
-// NOMS D'AFFICHAGE, TROUVÉ DANS UN SECOND ENDROIT.
-// Ce panneau travaille en noms d'affichage ("Carcer", "Conjonctio",
-// "Fortuna minor") ; calculerDigniteAccidentelle attend les identifiants
-// canoniques. Elle ne protestait pas : régence et concordance tombaient
-// silencieusement à 0 et il ne restait que le score de catégorie.
-// ⚠️ ET AVEC LA SEULE CATÉGORIE, LES DEUX ZONES SONT ÉGALES PAR
-// CONSTRUCTION, QUEL QUE SOIT LE THÈME :
-//     zone M1 = I(ang +5) II(suc +2) III(cad −3) XI(suc +2) XII(cad −3) = +3
-//     zone M7 = V(suc +2) VI(cad −3) VII(ang +5) VIII(suc +2) IX(cad −3) = +3
-// Les deux portent le même multi-ensemble {angulaire, succédent,
-// succédent, cadent, cadent}. Mesuré sur cinq thèmes radicalement
-// différents (amissio/puella/amissio/populus · carcer/puella/via/
-// tristitia · puer/rubeus/amissio/puer · populus×4 · via/via/acquisitio/
-// laetitia) : « M1 +3 · M7 +3 » les cinq fois. Le « Carré équilibré —
-// écart trop faible pour trancher » affiché depuis le 03/08/26 n'était
-// pas une lecture, c'était une CONSTANTE.
-// ✔ Conséquence retenue : la catégorie s'annule exactement entre les
-// deux zones, elle ne peut RIEN départager. L'écart entre les camps ne
-// vient donc que de la régence planétaire et de la concordance
-// élémentaire. Le total affiché les garde toutes les trois (c'est la
-// dignité accidentelle réelle de la maison), mais l'écart est décomposé
-// pour qu'on voie d'où il sort.
+// Ce bloc travaille en noms d'affichage ("Carcer") ; la dignité est
+// indexée par identifiant canonique ('carcer'). Traduction avant appel —
+// garde-fou de la loi T. Sert à la dignité écrite dans chaque maison du
+// dessin et au panneau de détail au clic.
+// ⚠️ Elle avait été emportée le 03/09/26 avec l'ancien bloc des zones :
+// renderCarreGeomantique levait alors un ReferenceError à chaque rendu.
+// Trouvé tout de suite parce que le catch du pont geomtx PARLE — c'est
+// exactement ce pour quoi il a cessé d'être muet.
 function digniteAccidentelleCarre(h, fig, theme){
   var code = OUR_TO_HOST[fig] || fig;
   var hostTheme = theme ? toHostTheme(theme) : null;
   return calculerDigniteAccidentelle(h, code, hostTheme);
 }
 
-// SEUIL RECALIBRÉ (03/09/26) — l'ancien ±3 avait été posé « arbitraire, à
-// calibrer sur l'archive » sur une échelle où l'écart valait TOUJOURS 0 :
-// il ne pouvait qu'annoncer le nul. Voir la mesure reportée dans la
-// récolte ; tant que ce second avis n'est pas contre-testé, il reste
-// hors vote.
-const SEUIL_ECART_CGV = 3;
-
-function calculerVerdictCarreGeomantique(theme){
-  function scoreZone(maisons){
-    let total = 0, catTotal = 0, digTotal = 0;
-    const detail = maisons.map(function(h){
-      const fig = theme[h];
-      const da = digniteAccidentelleCarre(h, fig, theme);
-      const t = (typeof da.total === 'number') ? da.total : 0;
-      total += t;
-      catTotal += da.scoreCategorie || 0;
-      digTotal += (da.regence ? da.regence.score : 0) + (da.concordanceBonus || 0);
-      return {house:h, label:ROMAN_12[h], fig:fig, total:da.total, erreur:da.erreur||null,
-              categorie:da.categorie, scoreCategorie:da.scoreCategorie,
-              regence:da.regence, concordanceBonus:da.concordanceBonus,
-              concordanceInfo:da.concordanceInfo};
-    });
-    return {total:total, categorie:catTotal, dignite:digTotal, detail:detail};
-  }
-  const zM1 = scoreZone(ZONE_M1_MAISONS);
-  const zM7 = scoreZone(ZONE_M7_MAISONS);
-  const neutre = scoreZone(ZONE_NEUTRE_MAISONS);
-  const diff = zM1.total - zM7.total;
-
-  let winner, label, couleur;
-  if (Math.abs(diff) < SEUIL_ECART_CGV) {
-    winner = 'Nul'; label = '⚖️ Carré équilibré — écart trop faible pour trancher'; couleur = '#94a3b8';
-  } else if (diff > 0) {
-    winner = 'M1'; label = '🔵 Le carré penche pour M1 (zone gauche)'; couleur = '#60a5fa';
-  } else {
-    winner = 'M7'; label = '🟠 Le carré penche pour M7 (zone droite)'; couleur = '#fb923c';
-  }
-
-  return {zM1:zM1, zM7:zM7, neutre:neutre, diff:diff, winner:winner, label:label, couleur:couleur};
-}
-
-// ═══════════════════════════════════════════════════════════════
-// ⚔️ LE RAPPORT DE FORCE — LES CINQ TRIANGLES DE M1 CONTRE LES CINQ
-// DE M7 (03/09/26, sa doctrine : « le carré prédit par les rapports de
-// force entre m1 et m7 avec leur 5 triangles »)
-// ═══════════════════════════════════════════════════════════════
-// Les dix triangles viennent de SA règle du miroir (loi R) : M1 est lié
-// aux paires 2-12, 3-11, 4-10, 5-9, 6-8 ; M7 aux mêmes paires par
-// l'inverse. Chaque paire est donc une BASE PARTAGÉE, portée d'un côté
-// par l'apex M1, de l'autre par l'apex M7.
-//
-// ☠️ ET C'EST CE PARTAGE QUI DICTE LA SEULE LECTURE POSSIBLE (loi U).
-// Un score ADDITIF par maison — la dignité accidentelle, par exemple —
-// ne peut RIEN départager : la base étant commune aux deux triangles
-// d'une même paire, elle s'annule dans la soustraction, et les cinq
-// écarts valent tous dignité(M1) − dignité(M7). Mesuré : sur le thème
-// tristitia/via/rubeus/albus les cinq écarts sortent 7 · 7 · 7 · 7 · 7,
-// et dignité(M1) − dignité(M7) vaut 7. Ce ne sont pas cinq triangles,
-// c'est une seule comparaison recopiée cinq fois.
-// ➜ Il faut donc une fonction NON ADDITIVE du triangle. Il y en a une
-// dans la doctrine, et c'est la sienne : la SOMME de la trajectoire
-// (loi Q) — M1 ⊕ Ma ⊕ Mb d'un côté, M7 ⊕ Ma ⊕ Mb de l'autre. Le XOR ne
-// se laisse pas simplifier, les cinq lectures sont vraiment cinq.
-//
-// ⚠️ MESURÉ SUR L'ARCHIVE, ET IL NE PRÉDIT PAS. 53 cas portent un camp
-// (23 R1 · 18 R7 · 12 nuls), taux de base 43 %. Quatre lectures, en
-// maisons fixes et en cadre tourné :
-//     affirmations (5 vs 5) .... fixe 22/53 (42 %) · tourné 17/53 (32 %)
-//     influence (occurrences) .. fixe 26/53 (49 %) · tourné 21/53 (40 %)
-//     présence en angulaire .... fixe 17/53 (32 %) · tourné 21/53 (40 %)
-//     duels triangle/triangle .. fixe 25/53 (47 %) · tourné 20/53 (38 %)
-// Le meilleur p unilatéral sur les cas tranchés vaut 0,077 ; multiplié
-// par les huit lectures essayées (Bonferroni) il monte à 0,62. Rien.
-// ☠️ Et une fausse joie que je note pour ne pas la refaire : un premier
-// passage donnait 26 % en rotation — assez bas pour ressembler à un
-// signal inversé. C'était MON bug : j'avais fait tourner l'apex en
-// gardant les paires en maisons fixes. Cadre tourné pour de bon, ça
-// remonte à 38-40 %, c'est-à-dire rien. Un chiffre trop beau se vérifie
-// avant de se raconter.
-// ➜ Le panneau reste donc un RELEVÉ hors vote, comme le verdict des
-// zones. Il montre les dix trajectoires et leur affirmation ; il ne
-// décide pas.
-var PAIRES_MIROIR_V7 = [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]];
-
-function trianglesPoleV7(pole) {
-  return PAIRES_MIROIR_V7.map(function (p) { return [pole, p[0], p[1]]; });
-}
-
-// map : position logique -> maison réelle. Identité en maisons fixes,
-// l'ordre de rotation en cadre tourné.
-function rapportForceTrianglesV7(theme, mapPos) {
-  if (!theme) return null;
-  var map = mapPos || function (h) { return h; };
-  var canon = theme;
-  // ce panneau vit dans le bloc à noms d'affichage : on repasse en
-  // identifiants canoniques avant toute combinaison (piège de la loi T).
-  try { canon = toHostTheme(theme); } catch (e) { canon = theme; }
-  if (typeof FIGS_V7 === 'undefined' || typeof combineMany !== 'function') return null;
-  for (var h = 1; h <= 16; h++) {
-    if (canon[h] && FIGS_V7.indexOf(canon[h]) < 0) {
-      return { erreur: 'thème non canonique (' + canon[h] + ') — calcul refusé' };
-    }
-  }
-  function occurrences(f) {
-    var n = 0, ou = [];
-    for (var h = 1; h <= 16; h++) if (canon[h] === f) { n++; ou.push(h); }
-    return { n: n, ou: ou };
-  }
-  function lecture(apexLog) {
-    return PAIRES_MIROIR_V7.map(function (p) {
-      var hs = [map(apexLog), map(p[0]), map(p[1])];
-      var somme = combineMany([canon[hs[0]], canon[hs[1]], canon[hs[2]]]);
-      var o = occurrences(somme);
-      return { base: p, maisons: hs, somme: somme, occ: o.n, ou: o.ou };
-    });
-  }
-  var a = lecture(1), b = lecture(7);
-  function agg(l) { return l.reduce(function (s, x) { return s + x.occ; }, 0); }
-  var affA = a.filter(function (x) { return x.occ > 0; }).length;
-  var affB = b.filter(function (x) { return x.occ > 0; }).length;
-  var duA = 0, duB = 0;
-  for (var i = 0; i < 5; i++) {
-    if (a[i].occ > b[i].occ) duA++; else if (b[i].occ > a[i].occ) duB++;
-  }
-  var camp = affA > affB ? 'M1' : (affB > affA ? 'M7' : null);
-  return {
-    m1: a, m7: b, affM1: affA, affM7: affB,
-    inflM1: agg(a), inflM7: agg(b), duelM1: duA, duelM7: duB,
-    camp: camp,
-    apexM1: map(1), apexM7: map(7)
-  };
-}
-
-function renderRapportForceCarre(theme) {
-  var el = document.getElementById('carre-geo-rapport');
-  if (!el) return;
-  var r = rapportForceTrianglesV7(theme);
-  if (!r) { el.innerHTML = ''; return; }
-  // ☠️ LE CADRE TOURNÉ EST LE SEUL QUI PARLE DES CAMPS (03/09/26).
-  // Le carré est dessiné en maisons fixes, donc son M1 n'est le camp R1
-  // que si la rotation est triviale — 4 cas sur 53 dans l'archive. Les
-  // deux lectures sont donc affichées côte à côte, et c'est la tournée
-  // qui désigne un camp.
-  var rot = null;
-  try {
-    var ordre = getRotationOrderFromRepos(toHostTheme(theme)[1]);
-    rot = rapportForceTrianglesV7(theme, function (h) { return ordre[h - 1]; });
-    rot.triviale = (ordre[0] === 1);
-  } catch (e) { rot = null; }
-  if (r.erreur) {
-    el.innerHTML = '<div class="cgv-card" style="background:#f8717122; border:1px solid #f87171;">⚠️ ' + r.erreur + '</div>';
-    return;
-  }
-  var coul = r.camp === 'M1' ? '#60a5fa' : (r.camp === 'M7' ? '#fb923c' : '#94a3b8');
-  var titre = r.camp === 'M1' ? '🔵 Les triangles penchent pour M1'
-    : (r.camp === 'M7' ? '🟠 Les triangles penchent pour M7'
-      : '⚖️ Les cinq triangles s\'équilibrent');
-  function colonne(l, pole, coulPole) {
-    var lignes = l.map(function (x) {
-      var ok = x.occ > 0;
-      return '<div class="rft-li"><span class="rft-base">' + labelMaisonV7(pole) + '·' + labelMaisonV7(x.base[0]) + '·' + labelMaisonV7(x.base[1]) + '</span>'
-        + '<span style="color:' + (ok ? '#4ade80' : '#f87171') + ';">' + (FL[x.somme] || x.somme)
-        + ' ' + (ok ? '✔ ×' + x.occ : '✘') + '</span></div>';
-    }).join('');
-    return '<div class="rft-col"><b style="color:' + coulPole + ';">Les cinq triangles de ' + labelMaisonV7(pole)
-      + '</b>' + lignes + '</div>';
-  }
-  var html = '<div class="cgv-card" style="background:' + coul + '22; border:1px solid ' + coul + ';">' + titre
-    + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">Affirmations : M1 '
-    + r.affM1 + '/5 &nbsp;vs&nbsp; M7 ' + r.affM7 + '/5'
-    + ' &nbsp;·&nbsp; influence (occurrences) ' + r.inflM1 + ' vs ' + r.inflM7
-    + ' &nbsp;·&nbsp; duels gagnés ' + r.duelM1 + ' vs ' + r.duelM7 + '</div></div>';
-  html += '<div class="rft-grid">' + colonne(r.m1, 1, '#93c5fd') + colonne(r.m7, 7, '#fcd34d') + '</div>';
-  if (rot && !rot.erreur) {
-    var cr = rot.camp === 'M1' ? '#60a5fa' : (rot.camp === 'M7' ? '#fb923c' : '#94a3b8');
-    var lr = rot.camp === 'M1' ? '🔵 penche pour R1' : (rot.camp === 'M7' ? '🟠 penche pour R7' : '⚖️ équilibre');
-    html += '<div class="cgv-card" style="margin-top:10px; background:' + cr + '22; border:1px solid ' + cr + ';">'
-      + '⟳ Cadre tourné — ' + lr
-      + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">'
-      + 'R1 = ' + labelMaisonV7(rot.apexM1) + ' (' + (FL[toHostTheme(theme)[rot.apexM1]] || '—') + ')'
-      + ' &nbsp;·&nbsp; R7 = ' + labelMaisonV7(rot.apexM7) + ' (' + (FL[toHostTheme(theme)[rot.apexM7]] || '—') + ')'
-      + (rot.triviale ? ' &nbsp;— rotation triviale, identique au cadre fixe' : '')
-      + '<br>Affirmations : R1 ' + rot.affM1 + '/5 &nbsp;vs&nbsp; R7 ' + rot.affM7 + '/5'
-      + ' &nbsp;·&nbsp; influence ' + rot.inflM1 + ' vs ' + rot.inflM7
-      + ' &nbsp;·&nbsp; duels ' + rot.duelM1 + ' vs ' + rot.duelM7 + '</div></div>';
-  }
-  html += '<div class="hint" style="margin-top:8px; text-align:center;">'
-    + 'Sa doctrine (03/09/26) — chaque paire miroir (II·XII, III·XI, IV·X, V·IX, VI·VIII) porte DEUX triangles : '
-    + 'un sur l\'apex M1, un sur l\'apex M7. La somme de chaque triangle donne une figure ; elle affirme si elle existe dans le thème (loi Q).<br>'
-    + '⚠️ <b>MESURÉ, ET IL NE PRÉDIT PAS.</b> Sur les 53 cas de l\'archive qui portent un camp (taux de base 43 %), <b>c\'est le cadre tourné qui compte</b> : affirmations 17/53 (32 %), influence 21/53 (40 %), duels 20/53 (38 %). Meilleur p = 0,077, soit 0,62 après correction pour les huit lectures essayées.<br>'
-    + '☠️ Les chiffres du cadre FIXE (42 à 49 %) ne sont <b>pas</b> une mesure de camp : ils comparent les maisons M1 et M7 à une étiquette R1/R7, et R1 ne vaut M1 que dans 4 cas sur 53. Ne pas s\'en servir. Relevé hors vote, aucun poids sur verdictFinal.<br>'
-    + '📉 Testé aussi, et négatif : « le pôle qui affirme 5/5 gagne » — 9 cas où un seul pôle est parfait, il gagne 5 fois (56 %, p = 0,50). Hypothèse née des données, morte à la mesure.<br>'
-    + '📐 <b>Pourquoi la somme et pas la dignité</b> : la base de chaque paire est commune aux deux triangles, donc tout score additif par maison s\'annule et les cinq écarts se réduisent à dignité(M1) − dignité(M7). Seule la somme (XOR) fait des cinq triangles cinq lectures distinctes.</div>';
-  el.innerHTML = html;
-}
+// ═══ LES DEUX ZONES, NOTÉES AUX TRAJECTOIRES FORTES (03/09/26) ═══
+// ☠️ CE QUI A ÉTÉ JETÉ ET POURQUOI. Jusqu'ici les zones étaient les deux
+// moitiés du DESSIN (gauche I·II·III·XI·XII, droite V·VI·VII·VIII·IX),
+// notées à la dignité accidentelle. Même réparé (loi T), ce panneau
+// répondait « carré équilibré » presque toujours : les deux moitiés
+// portent le même jeu de catégories, donc l'écart ne tenait qu'au bruit
+// de la régence — −0,25 sur son thème du 03/09, pour des scores de +20,75
+// et +21. Il l'a vu et a donné la règle : « pour le verdict c'est la zone
+// entre m1 et m7 qui a plus de trajectoires fortes qui remporte ».
+// ➜ Une ZONE, c'est désormais LES CINQ TRAJECTOIRES DE SON PÔLE. Le
+// découpage spatial ne sert plus qu'au dessin. Tout le calcul est dans
+// zonesTrajectoiresV7 (bloc canonique) — une seule implémentation,
+// partagée avec le moteur pilote, qui ne peut donc pas en diverger.
+const ZONE_M1_MAISONS = [1,2,3,11,12];   // conservées pour le DESSIN seul
+const ZONE_M7_MAISONS = [5,6,7,8,9];
+const ZONE_NEUTRE_MAISONS = [4,10];
 
 function renderVerdictCarreGeomantique(theme){
   const el = document.getElementById('carre-geo-verdict');
   if(!el) return;
-  const v = calculerVerdictCarreGeomantique(theme);
-  function zoneListHtml(zone){
-    return zone.detail.map(function(d){
-      if(d.erreur) return d.label+' '+d.fig+' <span style="color:#f87171;">(⚠️ '+d.erreur+')</span>';
-      const col = d.total>0?'#4ade80':(d.total<0?'#f87171':'#94a3b8');
-      const val = Math.round(d.total*100)/100;
-      return d.label+' '+d.fig+' <span style="color:'+col+';">('+(val>=0?'+':'')+val+')</span>'
-        + '<span style="color:#64748b; font-size:10px;"> cat '+(d.scoreCategorie>=0?'+':'')+d.scoreCategorie
-        + ' · rég '+(d.regence.score>=0?'+':'')+d.regence.score
-        + ' · conc '+(d.concordanceBonus>=0?'+':'')+(Math.round(d.concordanceBonus*100)/100)+'</span>';
-    }).join('<br>');
+  let canon = theme;
+  try { canon = toHostTheme(theme); } catch(e) { canon = theme; }
+  let z = null;
+  try { z = zonesTrajectoiresV7(canon); } catch(e) { z = { erreur: String(e && e.message || e) }; }
+  if(!z){ el.innerHTML=''; return; }
+  if(z.erreur){
+    el.innerHTML='<div class="cgv-card" style="background:#f8717122; border:1px solid #f87171;">⚠️ '+z.erreur+'</div>';
+    return;
   }
-  function sg(n){ return (n>=0?'+':'')+(Math.round(n*100)/100); }
-  let html = '<div class="cgv-card" style="background:'+v.couleur+'22; border:1px solid '+v.couleur+';">'+v.label
-    + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">Score zone M1 : '+sg(v.zM1.total)
-    + ' &nbsp;vs&nbsp; Score zone M7 : '+sg(v.zM7.total)
-    + ' &nbsp;(écart '+sg(v.diff)+', seuil nul : ±'+SEUIL_ECART_CGV+')</div>'
-    + '<div style="font-size:11px; font-weight:400; margin-top:3px; color:#94a3b8;">Décomposition de l\'écart — catégorie '
-    + sg(v.zM1.categorie - v.zM7.categorie) + ' (toujours 0 : les deux zones portent le même jeu angulaire/succédent×2/cadent×2)'
-    + ' &nbsp;+&nbsp; régence + concordance ' + sg(v.zM1.dignite - v.zM7.dignite) + '</div></div>';
-  html += '<div class="cgv-detail">'
-    + '<div class="cgv-zone"><b style="color:#93c5fd;">Zone M1 (I·II·III·XI·XII)</b>'+zoneListHtml(v.zM1)+'</div>'
-    + '<div class="cgv-zone"><b style="color:#94a3b8;">Axe neutre (X·IV)</b>'+zoneListHtml(v.neutre)+'</div>'
-    + '<div class="cgv-zone"><b style="color:#fcd34d;">Zone M7 (V·VI·VII·VIII·IX)</b>'+zoneListHtml(v.zM7)+'</div>'
+  const rot = (z.mode === 'rotation');
+  const n1 = rot ? 'R1' : 'M1', n7 = rot ? 'R7' : 'M7';
+  const coul = z.camp==='R1' ? '#60a5fa' : (z.camp==='R7' ? '#fb923c' : '#94a3b8');
+  const titre = z.camp==='R1' ? ('🔵 La zone '+n1+' remporte')
+              : z.camp==='R7' ? ('🟠 La zone '+n7+' remporte')
+              : '⚖️ Les deux zones sont identiques';
+  function liste(zone){
+    return zone.map(function(x){
+      const col = x.forte ? '#4ade80' : (x.force>0 ? '#fcd34d' : '#f87171');
+      const ou = x.ou.length ? x.ou.map(function(h){return labelMaisonV7(h);}).join('·') : '—';
+      return '<div class="rft-li"><span class="rft-base">'
+        + x.maisons.map(function(h){return labelMaisonV7(h);}).join('·') + '</span>'
+        + '<span style="color:'+col+';">' + (FL[x.somme]||x.somme)
+        + ' &nbsp;force ' + x.force + (x.forte ? ' <b>FORTE</b>' : '') + ' <span style="color:#64748b;">('+ou+')</span></span></div>';
+    }).join('');
+  }
+  let html = '<div class="cgv-card" style="background:'+coul+'22; border:1px solid '+coul+';">'+titre
+    + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">'
+    + 'Trajectoires fortes : '+n1+' '+z.nbFortes1+'/5 &nbsp;vs&nbsp; '+n7+' '+z.nbFortes7+'/5'
+    + ' &nbsp;·&nbsp; force totale '+z.total1+' vs '+z.total7
+    + '<br>'+z.motif+'</div></div>';
+  html += '<div class="rft-grid">'
+    + '<div class="rft-col"><b style="color:#93c5fd;">Zone '+n1+' — sommet '+labelMaisonV7(z.apex1)+'</b>'+liste(z.zone1)+'</div>'
+    + '<div class="rft-col"><b style="color:#fcd34d;">Zone '+n7+' — sommet '+labelMaisonV7(z.apex7)+'</b>'+liste(z.zone7)+'</div>'
     + '</div>';
-  html += '<div class="hint" style="margin-top:8px; text-align:center;">📚 Étude (03/08/26, calcul corrigé le 03/09/26) — second avis basé sur la dignité accidentelle par maison (catégorie + régence planétaire + concordance élémentaire).<br>'
-    + '⚠️ <b>MESURÉ, ET IL NE PRÉDIT PAS.</b> Rejoué sur les 53 cas de l\'archive qui portent un camp : <b>25/53 justes (47 %)</b> au seuil ±3, contre un taux de base de <b>43 %</b> (le camp majoritaire, R1, sort 23 fois sur 53). L\'écart tient dans le bruit. En rotation (R1/R7 au lieu des maisons fixes) il tombe à 17/53 (32 %) — pire que le hasard. Il reste affiché comme relevé, il n\'a AUCUN poids sur verdictFinal.<br>'
-    + 'Avant le 03/09/26 il annonçait « carré équilibré » sur TOUS les thèmes : les noms d\'affichage tuaient silencieusement la régence et la concordance, et la seule catégorie restante s\'annule exactement entre les deux zones.</div>';
+  html += '<div class="hint" style="margin-top:8px; text-align:center;">'
+    + 'Sa règle (03/09/26) — <b>la zone qui a le plus de trajectoires fortes remporte</b> ; à égalité, la force totale départage.<br>'
+    + '<b>Force d\'une trajectoire</b> : 0 si sa somme est absente du thème ; sinon la somme, sur chaque maison où elle figure, du poids de cette maison — angulaire 3, succédente 2, cadente 1. Position et influence dans un seul nombre. <b>Forte</b> = force ≥ 3.<br>'
+    + '⚠️ <b>MESURÉ, ET CE N\'EST PAS SIGNIFICATIF.</b> Sur les 53 cas de l\'archive qui portent un camp (base 43 %) : cadre tourné 17/53 (32 %), maisons fixes 25/53 (47 %). Meilleur p = 0,44. Les poids et le seuil viennent de sa doctrine, pas du score — « force totale en maisons fixes » ferait 27/53, mais choisir la variante qui gagne sur les cas qui servent à la mesurer, c\'est se fabriquer un résultat.</div>';
   el.innerHTML = html;
 }
 
@@ -2641,8 +2457,14 @@ function renderThemeLegacyWidgets(theme){
   // — deux verdicts concurrents supplémentaires, retirés au profit du
   // Réseau d'ancrage V2 comme unique moteur décisif.
   renderCarreGeomantique(theme);
+  // ⚠️ renderRapportForceCarre A ÉTÉ RETIRÉ (03/09/26). Le panneau
+  // « rapport de force » montrait les MÊMES dix trajectoires que le
+  // panneau des zones, en binaire (✔/✘) là où les zones les notent
+  // maintenant en force graduée. Deux panneaux disant la même chose sur
+  // deux échelles, c'est une invitation à se demander lequel décide.
+  // Le panneau des zones les subsume : il porte les dix trajectoires,
+  // leur somme, leur force, leurs maisons, et le mode fixe/rotation.
   renderVerdictCarreGeomantique(theme);
-  renderRapportForceCarre(theme);
   setTimeout(function(){ if(window.syncReferenceUI) window.syncReferenceUI(); }, 0);
   var pp=document.getElementById('force-planetaire-panel');
   if(pp && pp.style.display==='block' && typeof toggleForcePlanetairePanel==='function'){
@@ -26153,16 +25975,15 @@ function verdictStandardV7(theme, teamA, teamB) {
 // moteur isolé — c'est getVerdictAfficheReel qui est rejoué, une fois
 // avec chaque pilote :
 //       pilote V8 (le précédent) ...................... 36/53  (68 %)
-//       pilote CARRÉ (branché ici) .................... 26/53  (49 %)
+//       pilote CARRÉ, mode fixe (défaut) .............. 30/53  (57 %)
+//       pilote CARRÉ, mode rotation ................... 24/53  (45 %)
 //       « R1 toujours », taux de base ................. 23/53  (43 %)
-// ➜ LE BRANCHEMENT FAIT PERDRE DIX CAS NETS : treize verdicts justes
-// deviennent faux, trois faux deviennent justes.
-//   perdus  Juventus · Jeudi 27/08 · LaetAlbus · FortMajVia · CarcerAcq
-//           ViaRubeus · PuerLaet · VillaMachine · RubAmissio · RubCarcer
-//           AmisTrist · FortMajFMin · AcqFortMaj
-//   gagnés  ConjCaput · PuellaAlbus · FortMajAlbus
-// Le moteur du carré pris seul (sans la porte du nul) fait 20/53 (38 %)
-// contre 31/53 (58 %) pour V8 seul — même écart, même conclusion.
+// ➜ LE BRANCHEMENT COÛTE SIX CAS au défaut, douze en rotation.
+// ⚠️ CHIFFRES DU 03/09/26, RÈGLE DES TRAJECTOIRES FORTES. La première
+// version du pilote (comptage d'affirmations, cadre tourné) faisait
+// 26/53. Sa règle des trajectoires fortes l'a fait remonter à 30/53 en
+// mode fixe : elle est meilleure que ce que j'avais bricolé, et elle
+// reste sous V8.
 // ⚠️ Ces chiffres sont IN SAMPLE : l'archive a servi à les mesurer, pas
 // à les valider. Le vrai test sera la prochaine prédiction gelée.
 //
@@ -26179,37 +26000,172 @@ function verdictStandardV7(theme, teamA, teamB) {
 // 🔧 POUR REVENIR EN ARRIÈRE : passer PILOTE_VERDICT_V7 à 'v8'. Rien
 // d'autre à toucher — la ligne « source décisive » du panneau VERDICT
 // nomme toujours le pilote qui a réellement tranché.
+// ═══════════════════════════════════════════════════════════════
+// 🔲 LA FORCE D'UNE TRAJECTOIRE, ET LES DEUX ZONES (03/09/26, sa
+// doctrine : « pour le verdict c'est la zone entre m1 et m7 qui a plus
+// de trajectoires fortes qui remporte »)
+// ═══════════════════════════════════════════════════════════════
+// ☠️ CE QUE ÇA REMPLACE. Les zones étaient notées à la dignité
+// accidentelle des cinq maisons de chaque moitié du dessin. Même après
+// la correction de la loi T, ça ne pouvait rien dire : les deux moitiés
+// portent le même jeu de catégories, l'écart tombait dans le bruit de la
+// régence (−0,25 sur son thème du 03/09) et le panneau répondait
+// « carré équilibré » presque à chaque fois. Le découpage spatial est
+// abandonné pour la notation : une ZONE, c'est désormais LES CINQ
+// TRAJECTOIRES DE SON PÔLE (loi R), et son score est leur force.
+//
+// LA FORCE D'UNE TRAJECTOIRE, telle qu'il l'a définie (loi Q : « le
+// comment réside dans sa position, son environnant et son influence
+// dans le thème ») :
+//     · sa somme est ABSENTE du thème → force 0, trajectoire morte
+//     · sa somme est PRÉSENTE → on additionne, sur CHAQUE maison où
+//       elle figure, le poids de la catégorie de cette maison :
+//           angulaire 3 · succédente 2 · cadente 1
+//       — la position ET l'influence dans un seul nombre, puisqu'une
+//       figure présente trois fois compte trois fois.
+//     · une trajectoire est FORTE quand sa force atteint 3, c'est-à-dire
+//       qu'elle touche une angulaire, ou qu'elle est présente assez de
+//       fois pour valoir autant.
+// La zone qui compte le plus de trajectoires fortes l'emporte ; à
+// égalité, la force totale départage.
+//
+// ⚠️ LE SEUIL ET LES POIDS VIENNENT DE SA DOCTRINE, PAS DU SCORE. Je le
+// dis parce que la tentation était réelle : sur l'archive, « force
+// totale en maisons fixes » fait 27/53 (51 %) contre 25/53 pour la règle
+// livrée. Choisir la variante qui gagne sur les cas qui servent à la
+// mesurer, c'est se fabriquer un résultat. La règle livrée est celle
+// qu'il a énoncée.
+// MESURÉ, sur les 53 cas de l'archive qui portent un camp (base 43 %) :
+//     maisons fixes  nb de fortes 16/53 · force totale 27/53 · règle livrée 25/53 (47 %)
+//     cadre tourné   nb de fortes 22/53 · force totale 16/53 · règle livrée 17/53 (32 %)
+// Meilleur p unilatéral : 0,44. Rien n'est significatif.
+// Les cinq paires du miroir (loi R), déclarées ICI parce que le bloc du
+// carré est une IIFE et ne peut rien exporter.
+var PAIRES_MIROIR_V7 = [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]];
+var POIDS_CATEGORIE_TRAJ_V7 = { angulaire: 3, succedente: 2, cadente: 1 };
+var SEUIL_TRAJ_FORTE_V7 = 3;
+
+// LE MODE DU CARRÉ (sa demande du 03/09/26, le choix est à l'écran).
+//   'fixe'     les zones restent sur les maisons du DESSIN, M1 et M7.
+//   'rotation' les zones suivent R1 et R7, en passant les cinq paires
+//              du miroir par l'ordre de rotation.
+//
+// DÉFAUT : 'fixe', et pour une raison de doctrine, pas de score. Le
+// carré est DESSINÉ en maisons fixes ; quand il regarde « la zone entre
+// M1 et M7 », c'est celle-là qu'il a sous les yeux. Le mode qui
+// correspond à ce qu'on voit doit être celui qui s'ouvre.
+//
+// ⚠️ ET LE PIÈGE DU MODE FIXE, dit franchement : en fixe, le moteur
+// renvoie 'R1' quand la zone M1 l'emporte, alors que M1 n'est le siège
+// R1 que si la rotation est triviale — 4 cas d'archive sur 53 (loi
+// U.4bis). C'est un raccourci assumé, pas une équivalence. Le panneau
+// écrit « M1 » et « M7 » en mode fixe, « R1 » et « R7 » en rotation,
+// pour qu'on ne s'y trompe pas à la lecture.
+//
+// MESURÉ, verdict affiché de bout en bout, 53 cas avec camp :
+//     pilote V8 ................................. 36/53  (68 %)
+//     pilote carré, mode FIXE ................... 30/53  (57 %)  · muet 4 fois
+//     pilote carré, mode ROTATION ............... 24/53  (45 %)  · muet 2 fois
+//     « R1 toujours », taux de base ............. 23/53  (43 %)
+// ☠️ Le mode fixe fait six cas de mieux que la rotation — sur 53 cas
+// c'est DANS LE BRUIT, et ce n'est donc pas ce qui a décidé du défaut.
+// Je l'écris pour qu'on ne relise pas ce choix comme une optimisation.
+var MODE_CARRE_V7 = 'fixe';
+
+// Bascule à l'écran (sa demande du 03/09/26). Elle change TOUT ce qui
+// dépend du cadre d'un coup : les deux zones, le rapport de force, et le
+// moteur pilote — puisque les trois passent par zonesTrajectoiresV7 ou
+// par mapCarreV7. Un seul interrupteur, aucun réglage à retrouver
+// ailleurs.
+// ⚠️ Le mode CHANGE LE VERDICT quand le carré pilote (PILOTE_VERDICT_V7
+// = 'carre') : c'est voulu, et la ligne « source décisive » du panneau
+// VERDICT nomme le cadre qui a tranché.
+window.setModeCarreV7 = function (mode) {
+  MODE_CARRE_V7 = (mode === 'fixe') ? 'fixe' : 'rotation';
+  var sel = document.getElementById('carreModeSelect');
+  if (sel && sel.value !== MODE_CARRE_V7) sel.value = MODE_CARRE_V7;
+  try { if (typeof renderTheme === 'function' && typeof currentTheme !== 'undefined' && currentTheme) renderTheme(); }
+  catch (e) { console.error('carré : re-rendu après changement de mode', e); }
+  return MODE_CARRE_V7;
+};
+
+function mapCarreV7(theme) {
+  if (MODE_CARRE_V7 !== 'rotation') return function (h) { return h; };
+  var ordre = null;
+  try { ordre = getRotationOrderFromRepos(theme[1]); } catch (e) { ordre = null; }
+  if (!ordre) return function (h) { return h; };
+  return function (h) { return ordre[h - 1]; };
+}
+
+// ⚠️ LE CAS DES MAISONS XIII À XVI, DIT EXPLICITEMENT plutôt que laissé
+// à un repli tacite : MAISON_CATEGORIE ne va que jusqu'à XII (la
+// doctrine angulaire/succédente/cadente est faite pour douze maisons).
+// Une somme qui figure en XIII-XVI compte donc POIDS_HORS_DOUZE_V7 = 1,
+// le poids le plus faible — elle est présente, mais dans une maison dont
+// la doctrine ne dit rien. C'est le choix le plus prudent : il ne lui
+// prête pas une force qu'aucune règle ne lui donne, et il ne l'efface
+// pas non plus. À revoir le jour où M13-M16 auront une doctrine (cf. sa
+// consigne « ignore les [M13-16] on y reviendra »).
+var POIDS_HORS_DOUZE_V7 = 1;
+
+function forceTrajectoireV7(theme, somme) {
+  var f = 0, ou = [];
+  for (var h = 1; h <= 16; h++) {
+    if (theme[h] === somme) {
+      var cat = MAISON_CATEGORIE[h];
+      f += cat ? POIDS_CATEGORIE_TRAJ_V7[cat] : POIDS_HORS_DOUZE_V7;
+      ou.push(h);
+    }
+  }
+  return { force: f, ou: ou, forte: f >= SEUIL_TRAJ_FORTE_V7 };
+}
+
+// theme DOIT être canonique (identifiants 'carcer', pas "Carcer") —
+// garde-fou de la loi T.
+function zonesTrajectoiresV7(theme) {
+  if (!theme || typeof FIGS_V7 === 'undefined' || typeof combineMany !== 'function') return null;
+  for (var h = 1; h <= 16; h++) {
+    if (theme[h] && FIGS_V7.indexOf(theme[h]) < 0) {
+      return { erreur: 'thème non canonique (' + theme[h] + ') — calcul refusé' };
+    }
+  }
+  var map = mapCarreV7(theme);
+  function zone(apex) {
+    return PAIRES_MIROIR_V7.map(function (p) {
+      var maisons = [map(apex), map(p[0]), map(p[1])];
+      var somme = combineMany([theme[maisons[0]], theme[maisons[1]], theme[maisons[2]]]);
+      var F = forceTrajectoireV7(theme, somme);
+      return { base: p, maisons: maisons, somme: somme, force: F.force, ou: F.ou, forte: F.forte };
+    });
+  }
+  var z1 = zone(1), z7 = zone(7);
+  var n1 = z1.filter(function (x) { return x.forte; }).length;
+  var n7 = z7.filter(function (x) { return x.forte; }).length;
+  var t1 = z1.reduce(function (s, x) { return s + x.force; }, 0);
+  var t7 = z7.reduce(function (s, x) { return s + x.force; }, 0);
+  var camp = null, motif = null;
+  if (n1 !== n7) { camp = n1 > n7 ? 'R1' : 'R7'; motif = 'trajectoires fortes ' + n1 + ' contre ' + n7; }
+  else if (t1 !== t7) { camp = t1 > t7 ? 'R1' : 'R7'; motif = 'à égalité de fortes (' + n1 + '), la force totale départage : ' + t1 + ' contre ' + t7; }
+  else { motif = 'zones identiques — ' + n1 + ' fortes et ' + t1 + ' de force de chaque côté'; }
+  return {
+    mode: MODE_CARRE_V7, zone1: z1, zone7: z7,
+    nbFortes1: n1, nbFortes7: n7, total1: t1, total7: t7,
+    apex1: map(1), apex7: map(7), camp: camp, motif: motif
+  };
+}
+
 var PILOTE_VERDICT_V7 = 'carre';   // 'carre' (sa demande) | 'v8'
 
 function moteurCarreV7(theme) {
-  if (!theme) return null;
-  var P = [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]];
-  var ordre;
-  try { ordre = getRotationOrderFromRepos(theme[1]); } catch (e) { return null; }
-  if (!ordre) return null;
-  function occ(f) { var n = 0; for (var h = 1; h <= 16; h++) if (theme[h] === f) n++; return n; }
-  function lecture(apex) {
-    return P.map(function (p) {
-      return occ(combineMany([theme[ordre[apex - 1]], theme[ordre[p[0] - 1]], theme[ordre[p[1] - 1]]]));
-    });
-  }
-  var a, b;
-  try { a = lecture(1); b = lecture(7); } catch (e) { return null; }
-  var affA = a.filter(function (x) { return x > 0; }).length;
-  var affB = b.filter(function (x) { return x > 0; }).length;
-  var infA = a.reduce(function (s, x) { return s + x; }, 0);
-  var infB = b.reduce(function (s, x) { return s + x; }, 0);
-  var duA = 0, duB = 0;
-  for (var i = 0; i < 5; i++) { if (a[i] > b[i]) duA++; else if (b[i] > a[i]) duB++; }
-  var voix = Math.sign(affA - affB) + Math.sign(infA - infB) + Math.sign(duA - duB);
-  var camp = voix > 0 ? 'R1' : (voix < 0 ? 'R7' : null);
+  var z = null;
+  try { z = zonesTrajectoiresV7(theme); } catch (e) { return null; }
+  if (!z || z.erreur) return null;
   return {
-    camp: camp, voix: voix,
-    affR1: affA, affR7: affB, inflR1: infA, inflR7: infB, duelR1: duA, duelR7: duB,
-    hR1: ordre[0], hR7: ordre[6],
-    voie: camp
-      ? ('carré tourné — affirmations ' + affA + '/' + affB + ', influence ' + infA + '/' + infB + ', duels ' + duA + '/' + duB)
-      : 'carré muet — les trois signaux s\'annulent'
+    camp: z.camp, voix: z.nbFortes1 - z.nbFortes7,
+    nbFortes1: z.nbFortes1, nbFortes7: z.nbFortes7,
+    total1: z.total1, total7: z.total7,
+    hR1: z.apex1, hR7: z.apex7, mode: z.mode,
+    voie: (z.mode === 'rotation' ? 'carré tourné' : 'carré en maisons fixes') + ' — ' + z.motif
   };
 }
 
@@ -30938,9 +30894,15 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
           sh+='<div class="ui-house"><div class="ui-house-num">M'+sm+'</div><div class="ui-house-fig" style="color:'+elemColor(sf)+'">'+esc(label(sf))+'</div>'+glyph(sf)+'</div>';
         }
         sh+='</div>';
+        // 03/09/26 : calculerVerdictCarreGeomantique (zones notées à la
+        // dignité) a été remplacée par zonesTrajectoiresV7 (zones notées
+        // aux trajectoires fortes). currentTheme est déjà canonique ici.
         var cv=null;
-        try{cv=typeof calculerVerdictCarreGeomantique==='function'?calculerVerdictCarreGeomantique(currentTheme):null;}catch(e){}
-        sh+='<div class="ui-square-result">Verdict du carré : '+esc(cv?cv.winner:'—')+(cv?' · écart '+esc(cv.diff):'')+'</div>';
+        try{cv=typeof zonesTrajectoiresV7==='function'?zonesTrajectoiresV7(currentTheme):null;}catch(e){}
+        sh+='<div class="ui-square-result">Verdict du carré : '
+          +esc(cv&&!cv.erreur?(cv.camp||'égalité'):'—')
+          +(cv&&!cv.erreur?' · fortes '+esc(cv.nbFortes1)+'/'+esc(cv.nbFortes7)+' · force '+esc(cv.total1)+'/'+esc(cv.total7)+' ('+esc(cv.mode)+')':'')
+          +'</div>';
         sq.innerHTML=sh;
       }
 
