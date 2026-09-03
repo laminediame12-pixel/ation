@@ -7910,6 +7910,35 @@ function signalRecouvrementCampsV7(theme){
   return {overlap: overlap, eleve: overlap >= 3, detail: detail};
 }
 // ═══════════════════════════════════════════════════════════════
+// SIGNAL DE FRAGILITÉ M4/M10 — MOTIF DU "LES DEUX MARQUENT" (03/09/26,
+// demande Ellemine_D : « pour que les deux marquent découle de la
+// fragilité de M4 et M10 ») — M4 et M10 forment la ligne défensive
+// commune aux deux camps (déjà établi pour figDefensiveM1/M7 dans
+// tableauReferenceBTTS). Une figure "fragile" ici = mobile ET ouverte à
+// la fois (tables traditionnelles MOBILITE_FIGURE / OUVERTURE_FIGURE) :
+// une défense qui bouge et qui laisse passer.
+// MESURÉ SUR 45 CAS AU BTTS CONNU (baseline 53,3 %) :
+//   M4 ou M10 mobile+ouverte ......... 64,5 % (20/31) — Fisher p≈0,05
+//   ni l'une ni l'autre ............... 28,6 % (4/14)
+// ⚠️ DEUX PISTES ÉCARTÉES APRÈS VÉRIFICATION (03/09/26, sur sa demande
+// « creuse la version inversée » puis « axe offensive des deux camps ») :
+//   - M1/M7 mobiles+ouvertes ("l'attaque ouverte fait marquer") va dans
+//     le sens INVERSE (38,1 % vs 66,7 %) — c'est la fermeture de M1/M7,
+//     pas leur ouverture, qui accompagne le BTTS. Combinée à ce
+//     signal-ci, la significativité BAISSE (p≈0,14 au lieu de 0,05) :
+//     les deux se recouvrent trop (18/45 cas où les deux sont vraies
+//     ensemble) pour être deux mécanismes indépendants qui s'additionnent.
+//   - la figure de l'axe offensif commun (combine de M3+M5+M9+M11)
+//     mobile+ouverte est EXACTEMENT à la baseline (53,3 % pile des deux
+//     côtés) — nulle, ne discrimine rien, seule ou combinée.
+// Seul le signal M4/M10 survit à ces deux vérifications ; c'est le seul
+// retenu ici. Aucun poids sur le verdict.
+function signalFragiliteM4M10V7(theme){
+  function fragile(fig){ return MOBILITE_FIGURE[fig] === 'mobile' && OUVERTURE_FIGURE[fig] === 'ouverte'; }
+  var fragileM4 = fragile(theme[4]), fragileM10 = fragile(theme[10]);
+  return {applicable: fragileM4 || fragileM10, fragileM4: fragileM4, fragileM10: fragileM10, m4: theme[4], m10: theme[10]};
+}
+// ═══════════════════════════════════════════════════════════════
 // TABLEAU DE RÉFÉRENCE — MOTIF DU "LES DEUX MARQUENT" (03/09/26, demande
 // Ellemine_D) — rassemble dans un seul objet les ingrédients dont on
 // soupçonne qu'ils pourraient expliquer BTTS, pour les archiver au fil des
@@ -27350,6 +27379,30 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         }
         return html;
       })())
+    // SIGNAL DE FRAGILITÉ M4/M10 (03/09/26) — cf. signalFragiliteM4M10V7 :
+    // M4 ou M10 mobile+ouverte (défense qui bouge et qui laisse passer)
+    // penche vers le BTTS (64,5% contre 28,6%, n=45, p≈0,05). L'attaque
+    // M1/M7 ouverte et l'axe offensif commun ont été vérifiés et écartés
+    // (voir le commentaire de signalFragiliteM4M10V7). Aucun poids sur le verdict.
+    +((function(){
+        var s; try { s = signalFragiliteM4M10V7(theme); } catch(e){ s = {applicable:false}; }
+        if (!s.applicable) return '';
+        var maisons = [];
+        if (s.fragileM4) maisons.push('M4 (' + (FL[s.m4] || s.m4) + ')');
+        if (s.fragileM10) maisons.push('M10 (' + (FL[s.m10] || s.m10) + ')');
+        var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
+          + 'background:rgba(52,211,153,.10); font-size:11px; color:#a7f3d0; text-align:left;">'
+          + '🥅 <b>SIGNAL DE FRAGILITÉ DÉFENSIVE (M4/M10)</b> — ' + maisons.join(' et ')
+          + ' mobile(s) et ouverte(s). Sur l\'archive, ce profil penche vers les deux équipes qui marquent '
+          + '(65% contre 29% sinon, n=45, p≈0,05). Aucun poids sur le verdict.</div>';
+        if (card.btts === false) {
+          html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
+            + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
+            + '⚠️ <b>SIGNAL DE FRAGILITÉ CONTREDIT LE VERDICT</b> — le verdict ci-dessus exclut le BTTS, '
+            + 'le signal penche vers les deux équipes qui marquent.</div>';
+        }
+        return html;
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29611,6 +29664,8 @@ function addToHistory() {
     signalAxeCadentInverse: (function(){ try { return signalAxeCadentInverseV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalRecouvrementCampsV7.
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
+    signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
     // « le verdict final donne victoire R7 mais le score donne R1 » — sur
     // le thème Caput/Acquisitio/Conjonctio/Via, l'entrée affichait
@@ -29686,6 +29741,8 @@ function saveManuel() {
     signalAxeCadentInverse: (function(){ try { return signalAxeCadentInverseV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalRecouvrementCampsV7.
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
+    signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
     // verdictV7, un TROISIÈME moteur, et le vainqueur de verdictFinal.
     // Aucun des deux n'était celui affiché en haut de l'écran. Mesuré :
