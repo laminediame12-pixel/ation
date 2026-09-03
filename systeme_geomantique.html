@@ -1822,18 +1822,58 @@ function centroid(pts){
 const ZONE_M1_MAISONS = [1,2,3,11,12];   // I, II, III, XI, XII (x<200)
 const ZONE_M7_MAISONS = [5,6,7,8,9];     // V, VI, VII, VIII, IX (x>200)
 const ZONE_NEUTRE_MAISONS = [4,10];      // IV, X (exactement sur l'axe, x=200)
-const SEUIL_ECART_CGV = 3; // en dessous de cet écart absolu -> nul (arbitraire, à calibrer sur l'archive)
+// ☠️ CORRIGÉ (03/09/26, « revois le calcul des zones ») — LE PIÈGE DES
+// NOMS D'AFFICHAGE, TROUVÉ DANS UN SECOND ENDROIT.
+// Ce panneau travaille en noms d'affichage ("Carcer", "Conjonctio",
+// "Fortuna minor") ; calculerDigniteAccidentelle attend les identifiants
+// canoniques. Elle ne protestait pas : régence et concordance tombaient
+// silencieusement à 0 et il ne restait que le score de catégorie.
+// ⚠️ ET AVEC LA SEULE CATÉGORIE, LES DEUX ZONES SONT ÉGALES PAR
+// CONSTRUCTION, QUEL QUE SOIT LE THÈME :
+//     zone M1 = I(ang +5) II(suc +2) III(cad −3) XI(suc +2) XII(cad −3) = +3
+//     zone M7 = V(suc +2) VI(cad −3) VII(ang +5) VIII(suc +2) IX(cad −3) = +3
+// Les deux portent le même multi-ensemble {angulaire, succédent,
+// succédent, cadent, cadent}. Mesuré sur cinq thèmes radicalement
+// différents (amissio/puella/amissio/populus · carcer/puella/via/
+// tristitia · puer/rubeus/amissio/puer · populus×4 · via/via/acquisitio/
+// laetitia) : « M1 +3 · M7 +3 » les cinq fois. Le « Carré équilibré —
+// écart trop faible pour trancher » affiché depuis le 03/08/26 n'était
+// pas une lecture, c'était une CONSTANTE.
+// ✔ Conséquence retenue : la catégorie s'annule exactement entre les
+// deux zones, elle ne peut RIEN départager. L'écart entre les camps ne
+// vient donc que de la régence planétaire et de la concordance
+// élémentaire. Le total affiché les garde toutes les trois (c'est la
+// dignité accidentelle réelle de la maison), mais l'écart est décomposé
+// pour qu'on voie d'où il sort.
+function digniteAccidentelleCarre(h, fig, theme){
+  var code = OUR_TO_HOST[fig] || fig;
+  var hostTheme = theme ? toHostTheme(theme) : null;
+  return calculerDigniteAccidentelle(h, code, hostTheme);
+}
+
+// SEUIL RECALIBRÉ (03/09/26) — l'ancien ±3 avait été posé « arbitraire, à
+// calibrer sur l'archive » sur une échelle où l'écart valait TOUJOURS 0 :
+// il ne pouvait qu'annoncer le nul. Voir la mesure reportée dans la
+// récolte ; tant que ce second avis n'est pas contre-testé, il reste
+// hors vote.
+const SEUIL_ECART_CGV = 3;
 
 function calculerVerdictCarreGeomantique(theme){
   function scoreZone(maisons){
-    let total = 0;
+    let total = 0, catTotal = 0, digTotal = 0;
     const detail = maisons.map(function(h){
       const fig = theme[h];
-      const da = calculerDigniteAccidentelle(h, fig, theme);
-      total += da.total;
-      return {house:h, label:ROMAN_12[h], fig:fig, total:da.total, categorie:da.categorie, regence:da.regence};
+      const da = digniteAccidentelleCarre(h, fig, theme);
+      const t = (typeof da.total === 'number') ? da.total : 0;
+      total += t;
+      catTotal += da.scoreCategorie || 0;
+      digTotal += (da.regence ? da.regence.score : 0) + (da.concordanceBonus || 0);
+      return {house:h, label:ROMAN_12[h], fig:fig, total:da.total, erreur:da.erreur||null,
+              categorie:da.categorie, scoreCategorie:da.scoreCategorie,
+              regence:da.regence, concordanceBonus:da.concordanceBonus,
+              concordanceInfo:da.concordanceInfo};
     });
-    return {total:total, detail:detail};
+    return {total:total, categorie:catTotal, dignite:digTotal, detail:detail};
   }
   const zM1 = scoreZone(ZONE_M1_MAISONS);
   const zM7 = scoreZone(ZONE_M7_MAISONS);
@@ -1858,20 +1898,31 @@ function renderVerdictCarreGeomantique(theme){
   const v = calculerVerdictCarreGeomantique(theme);
   function zoneListHtml(zone){
     return zone.detail.map(function(d){
+      if(d.erreur) return d.label+' '+d.fig+' <span style="color:#f87171;">(⚠️ '+d.erreur+')</span>';
       const col = d.total>0?'#4ade80':(d.total<0?'#f87171':'#94a3b8');
-      return d.label+' '+d.fig+' <span style="color:'+col+';">('+(d.total>=0?'+':'')+d.total+')</span>';
+      const val = Math.round(d.total*100)/100;
+      return d.label+' '+d.fig+' <span style="color:'+col+';">('+(val>=0?'+':'')+val+')</span>'
+        + '<span style="color:#64748b; font-size:10px;"> cat '+(d.scoreCategorie>=0?'+':'')+d.scoreCategorie
+        + ' · rég '+(d.regence.score>=0?'+':'')+d.regence.score
+        + ' · conc '+(d.concordanceBonus>=0?'+':'')+(Math.round(d.concordanceBonus*100)/100)+'</span>';
     }).join('<br>');
   }
+  function sg(n){ return (n>=0?'+':'')+(Math.round(n*100)/100); }
   let html = '<div class="cgv-card" style="background:'+v.couleur+'22; border:1px solid '+v.couleur+';">'+v.label
-    + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">Score zone M1 : '+(v.zM1.total>=0?'+':'')+v.zM1.total
-    + ' &nbsp;vs&nbsp; Score zone M7 : '+(v.zM7.total>=0?'+':'')+v.zM7.total
-    + ' &nbsp;(écart '+(v.diff>=0?'+':'')+v.diff+', seuil nul : ±'+SEUIL_ECART_CGV+')</div></div>';
+    + '<div style="font-size:12px; font-weight:400; margin-top:4px; color:#cbd5e1;">Score zone M1 : '+sg(v.zM1.total)
+    + ' &nbsp;vs&nbsp; Score zone M7 : '+sg(v.zM7.total)
+    + ' &nbsp;(écart '+sg(v.diff)+', seuil nul : ±'+SEUIL_ECART_CGV+')</div>'
+    + '<div style="font-size:11px; font-weight:400; margin-top:3px; color:#94a3b8;">Décomposition de l\'écart — catégorie '
+    + sg(v.zM1.categorie - v.zM7.categorie) + ' (toujours 0 : les deux zones portent le même jeu angulaire/succédent×2/cadent×2)'
+    + ' &nbsp;+&nbsp; régence + concordance ' + sg(v.zM1.dignite - v.zM7.dignite) + '</div></div>';
   html += '<div class="cgv-detail">'
     + '<div class="cgv-zone"><b style="color:#93c5fd;">Zone M1 (I·II·III·XI·XII)</b>'+zoneListHtml(v.zM1)+'</div>'
     + '<div class="cgv-zone"><b style="color:#94a3b8;">Axe neutre (X·IV)</b>'+zoneListHtml(v.neutre)+'</div>'
     + '<div class="cgv-zone"><b style="color:#fcd34d;">Zone M7 (V·VI·VII·VIII·IX)</b>'+zoneListHtml(v.zM7)+'</div>'
     + '</div>';
-  html += '<div class="hint" style="margin-top:8px; text-align:center;">📚 Étude (03/08/26) — second avis basé uniquement sur la dignité accidentelle par maison, indépendant du moteur M1/M7 principal. Non validé, aucun poids sur verdictFinal.</div>';
+  html += '<div class="hint" style="margin-top:8px; text-align:center;">📚 Étude (03/08/26, calcul corrigé le 03/09/26) — second avis basé sur la dignité accidentelle par maison (catégorie + régence planétaire + concordance élémentaire).<br>'
+    + '⚠️ <b>MESURÉ, ET IL NE PRÉDIT PAS.</b> Rejoué sur les 53 cas de l\'archive qui portent un camp : <b>25/53 justes (47 %)</b> au seuil ±3, contre un taux de base de <b>43 %</b> (le camp majoritaire, R1, sort 23 fois sur 53). L\'écart tient dans le bruit. En rotation (R1/R7 au lieu des maisons fixes) il tombe à 17/53 (32 %) — pire que le hasard. Il reste affiché comme relevé, il n\'a AUCUN poids sur verdictFinal.<br>'
+    + 'Avant le 03/09/26 il annonçait « carré équilibré » sur TOUS les thèmes : les noms d\'affichage tuaient silencieusement la régence et la concordance, et la seule catégorie restante s\'annule exactement entre les deux zones.</div>';
   el.innerHTML = html;
 }
 
@@ -1967,9 +2018,12 @@ function renderCarreGeomantique(theme){
       const elemCol = ELEMENT_COLORS[elem] || '#94a3b8';
       let daTxt = '', daCol = '#94a3b8';
       if(typeof calculerDigniteAccidentelle === 'function'){
-        const da = calculerDigniteAccidentelle(m, fig, theme);
-        daCol = da.total > 0 ? '#4ade80' : (da.total < 0 ? '#f87171' : '#94a3b8');
-        daTxt = (da.total>=0?'+':'')+da.total;
+        const da = digniteAccidentelleCarre(m, fig, theme);
+        if(typeof da.total === 'number'){
+          daCol = da.total > 0 ? '#4ade80' : (da.total < 0 ? '#f87171' : '#94a3b8');
+          const v = Math.round(da.total*100)/100;
+          daTxt = (v>=0?'+':'')+v;
+        } else { daCol = '#f87171'; daTxt = '⚠️'; }
       }
       html += '<text x="'+cx+'" y="'+(cy+17)+'" style="font-size:'+(isGrand?8:7)+'px; '
         + 'paint-order:stroke; stroke:#0b1220; stroke-width:2.6px; pointer-events:none;">'
@@ -2380,10 +2434,17 @@ window.carreGeoClickHouse = function(m){
   }
 
   if(m<=12 && typeof calculerDigniteAccidentelle==='function'){
-    const da = calculerDigniteAccidentelle(m, fig, lastTheme);
-    const daCol = da.total>0?'#4ade80':(da.total<0?'#f87171':'#94a3b8');
-    html += '<br><br><strong>Dignité accidentelle totale : <span style="color:'+daCol+';">'+(da.total>=0?'+':'')+da.total+'</span></strong>';
-    html += '<br><span style="font-size:11px; color:#94a3b8;">(catégorie '+(da.categorie||'—')+' : '+(da.scoreCategorie>=0?'+':'')+da.scoreCategorie+' &nbsp;+&nbsp; régence : '+da.regence.label+' '+(da.regence.score>=0?'+':'')+da.regence.score+' &nbsp;+&nbsp; concordance élémentaire ('+da.concordanceInfo+') '+(da.concordanceBonus>=0?'+':'')+da.concordanceBonus+')</span>';
+    // 03/09/26 : troisième appel qui passait un nom d'affichage — même
+    // correctif que les deux autres de ce bloc.
+    const da = digniteAccidentelleCarre(m, fig, lastTheme);
+    if(da.erreur){
+      html += '<br><br><strong style="color:#f87171;">Dignité accidentelle : ⚠️ '+da.erreur+'</strong>';
+    } else {
+      const daCol = da.total>0?'#4ade80':(da.total<0?'#f87171':'#94a3b8');
+      const daV = Math.round(da.total*100)/100;
+      html += '<br><br><strong>Dignité accidentelle totale : <span style="color:'+daCol+';">'+(daV>=0?'+':'')+daV+'</span></strong>';
+      html += '<br><span style="font-size:11px; color:#94a3b8;">(catégorie '+(da.categorie||'—')+' : '+(da.scoreCategorie>=0?'+':'')+da.scoreCategorie+' &nbsp;+&nbsp; régence : '+da.regence.label+' '+(da.regence.score>=0?'+':'')+da.regence.score+' &nbsp;+&nbsp; concordance élémentaire ('+da.concordanceInfo+') '+(da.concordanceBonus>=0?'+':'')+(Math.round(da.concordanceBonus*100)/100)+')</span>';
+    }
   }
 
   html += '<br><br><span class="hint">📚 Étude (03/08/26) — dignités et régences non validées empiriquement, informatif seul.</span>';
@@ -8419,6 +8480,30 @@ const CATEGORIE_SCORE = {angulaire:5, succedente:2, cadente:-3};
 //      Mercure en M1 = peregrin ou en détriment selon la table)
 // Score total informatif — n'affecte aucun verdict tant que non validé.
 function calculerDigniteAccidentelle(posFig, fig, theme) {
+  // ☠️ GARDE-FOU (03/09/26) — CETTE FONCTION RENDAIT UN SCORE PARTIEL
+  // PLAUSIBLE SUR UN NOM NON CANONIQUE, SANS RIEN DIRE.
+  // Ses trois tables (PLANETES_V7, FIGURE_ELEMENT_CODE, FIGS_V7) sont
+  // toutes indexées par identifiant canonique ('carcer', 'conjunctio',
+  // 'fortuna_minor'). Passez-lui un nom d'affichage ("Carcer",
+  // "Conjonctio", "Fortuna minor") et les trois rendent undefined : la
+  // régence tombe à 0, la concordance à 0, le repos n'est jamais
+  // reconnu — il ne reste que le score de catégorie, et le total sort
+  // sans la moindre erreur.
+  //     calculerDigniteAccidentelle(1,'Carcer',t) -> 5    (cat 5 · rég 0 · conc 0)
+  //     calculerDigniteAccidentelle(1,'carcer',t) -> 8.25 (cat 5 · rég 2 · conc 1.25)
+  // C'est exactement le piège qui avait déjà fait rendre "via" au lieu
+  // de "acquisitio" à combineMany. Désormais elle REFUSE au lieu de
+  // deviner : total null, champ erreur rempli, l'appelant voit la panne.
+  if (fig && typeof FIGS_V7 !== 'undefined' && FIGS_V7.indexOf(fig) < 0) {
+    return {
+      posFig: posFig, fig: fig, planeteFig: null,
+      erreur: 'figure hors table : ' + fig + ' — nom non canonique, dignité refusée',
+      categorie: MAISON_CATEGORIE[posFig] || null, scoreCategorie: 0,
+      planeteNaturelle: null,
+      regence: { statut: null, label: 'refusée (nom non canonique)', score: 0 },
+      concordanceBonus: 0, concordanceInfo: null, total: null
+    };
+  }
   var planeteFig = PLANETES_V7[fig];
   var categorie = MAISON_CATEGORIE[posFig] || null;
   var scoreCategorie = categorie ? CATEGORIE_SCORE[categorie] : 0;
@@ -23892,11 +23977,11 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // ✦ LA RÉCOLTE (31/08/26) — « on récolte les détails d'abord »
 //
 // ┌───────────────────────────────────────────────────────────────┐
-// │  L'INVENTAIRE — DIX-SEPT LOIS, ET CE QUI LES GARDE            │
+// │  L'INVENTAIRE — VINGT LOIS, ET CE QUI LES GARDE               │
 // └───────────────────────────────────────────────────────────────┘
 // Tout ce que la fouille a établi est ici, et chaque loi de STRUCTURE
 // est revérifiée à chaque appel de autoTestAlternanceV7(), qui rend
-// tout: true seulement si les soixante-sept contrôles passent. Une loi
+// tout: true seulement si les quatre-vingt-trois contrôles passent. Une loi
 // qui céderait un jour ferait basculer ce drapeau — elle n'est pas
 // seulement écrite, elle est gardée.
 //
@@ -23943,6 +24028,12 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //       un par axe et sans voisines → toujours isocèle ... triUnParAxeSansVoisin 28 / Scal 0
 //       même axe toujours isocèle, deux axes jamais ...... triMemeAxeIso 12 · triDeuxAxesScal 144
 //   Q · l'affirmation d'une trajectoire ....................... (mesures, pas structure)
+//   R · la règle du miroir : sa remarque engendre TOUS les isocèles
+//       ................................................ miroirEngendres 52 · miroirScalenes 0
+//   S · le diamètre de la troisième paire, et l'angle droit .. diamTroisieme 12 · diamPerp 12
+//   T · les deux zones du carré portent le même jeu de catégories
+//       ................................................ zoneCatM1 3 · zoneCatM7 3
+//       et la dignité refuse désormais un nom non canonique . digniteRefuseAffichage 4
 //   G · ce qui reste sans réponse ............ (en dernier, rien à vérifier)
 //
 // ⚠️ L'ORDRE DES LETTRES. G a été écrite avant H à O et elle est restée
@@ -23952,7 +24043,7 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 // ailleurs dans le code et les renommer casserait ces renvois.
 //
 // ☠️ ET CE QUE LA RÉCOLTE N'A PAS DONNÉ, redit ici pour que personne ne
-// lise cet inventaire comme une victoire : AUCUNE de ces quinze lois ne
+// lise cet inventaire comme une victoire : AUCUNE de ces lois ne
 // bat le hasard sur les 39 duels de l'archive (loi O.4). Elles disent
 // comment la table est faite. Elles ne disent pas qui gagne.
 //
@@ -24814,6 +24905,74 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //     géométrie la plus marquée.
 //     ⚠️ Non mesuré : l'archive ne peut pas trancher (loi N.5).
 //
+// ── T · LES DEUX ZONES DU CARRÉ ── (sa demande, 03/09/26 : « revois le
+//     calcul des zones »)
+//
+//     ☠️ IL AVAIT RAISON DE DEMANDER. Le panneau qu'il a recopié —
+//     « Zone M1 (I·II·III·XI·XII) … Axe neutre (X·IV) … Zone M7
+//     (V·VI·VII·VIII·IX) » — n'affichait pas une lecture. Il affichait
+//     une CONSTANTE. « M1 +3 · M7 +3 · carré équilibré », sur tous les
+//     thèmes, depuis le 03/08/26.
+//
+//     T.1 · LA PANNE — LE PIÈGE DES NOMS D'AFFICHAGE, UNE DEUXIÈME FOIS.
+//     Ce panneau travaille en noms d'affichage ("Carcer", "Conjonctio",
+//     "Fortuna minor"). calculerDigniteAccidentelle est indexée par
+//     identifiant canonique ('carcer', 'conjunctio', 'fortuna_minor').
+//     Elle ne protestait pas : PLANETES_V7[fig] et FIGURE_ELEMENT_CODE
+//     [fig] rendaient undefined, la régence tombait à 0, la concordance
+//     à 0, le repos n'était jamais reconnu, et il ne restait que le
+//     score de catégorie. Mesuré, sur la même maison et le même thème :
+//         calculerDigniteAccidentelle(1,'Carcer',t) → 5    (cat 5 · rég 0 · conc 0)
+//         calculerDigniteAccidentelle(1,'carcer',t) → 8.25 (cat 5 · rég 2 · conc 1.25)
+//     C'est EXACTEMENT le piège qui avait fait rendre "via" au lieu de
+//     "acquisitio" à combineMany dans le même bloc. Je l'avais bouché
+//     à un endroit et pas cherché ailleurs. Il y était trois fois : le
+//     verdict des zones, la dignité écrite dans chaque maison du dessin,
+//     et le panneau de détail au clic. Les trois sont corrigées, et
+//     calculerDigniteAccidentelle REFUSE désormais un nom non canonique
+//     (total null + champ erreur) au lieu de noter au rabais.
+//
+//     T.2 · MAIS LA VRAIE RAISON DU +3 CONTRE +3 EST STRUCTURELLE, et
+//     elle vaut d'être écrite comme une loi, parce qu'elle survivra à
+//     toute correction de code :
+//         zone M1 = I(angulaire +5) II(succ +2) III(cad −3) XI(succ +2) XII(cad −3) = +3
+//         zone M7 = V(succ +2) VI(cad −3) VII(angulaire +5) VIII(succ +2) IX(cad −3) = +3
+//     Les deux zones portent le MÊME multi-ensemble de catégories :
+//     une angulaire, deux succédentes, deux cadentes. Leur somme de
+//     catégorie est donc égale sur TOUS les thèmes possibles.
+//     ➜ LA GÉOMÉTRIE DU DÉCOUPAGE NE PEUT RIEN DÉPARTAGER. Tout ce qui
+//     sépare les deux camps dans le carré vient de la régence planétaire
+//     et de la concordance élémentaire. C'est vérifié à chaque appel :
+//     zoneCatM1 3 · zoneCatM7 3.
+//
+//     T.3 · CE QUE ÇA DONNE UNE FOIS RÉPARÉ — et c'est une déception,
+//     dite franchement. Les zones bougent enfin : écart de −28 à +30,
+//     médiane −2, sur 150 thèmes aléatoires. Rejoué sur les 53 cas de
+//     l'archive qui portent un camp (23 R1 · 18 R7 · 12 nuls) :
+//         seuil ±0 : 21/53 (40 %)      seuil ±3 : 25/53 (47 %)
+//         seuil ±2 : 25/53 (47 %)      seuil ±5 : 22/53 (42 %)
+//     Le taux de base — annoncer R1 à chaque coup — vaut 43 %. Le
+//     meilleur seuil rend 47 %, soit deux cas de mieux sur 53. C'est du
+//     bruit, et le seuil a été choisi APRÈS avoir vu les réponses, ce
+//     qui gonfle encore ce chiffre. Le carré ne prédit pas le camp.
+//
+//     T.4 · ET LA ROTATION LE DÉGRADE. J'ai essayé la version qui suit
+//     sa doctrine habituelle (« M1 ou M7 selon la rotation ») : zone R1
+//     = {R1,R2,R3,R11,R12} passée par l'ordre de rotation, zone R7 de
+//     même. Résultat 17/53 (32 %) au même seuil — nettement PIRE que le
+//     hasard, et pire que la version en maisons fixes. Le découpage
+//     gauche/droite du dessin n'est donc pas une rotation déguisée : il
+//     mesure autre chose, et cette autre chose ne vaut rien non plus.
+//     ➜ La version en maisons fixes est conservée telle quelle, hors
+//     vote, affichée comme relevé avec sa justesse mesurée écrite sous
+//     le panneau. Aucun poids sur verdictFinal.
+//
+//     ⚠️ CE QUE ÇA DIT DU RESTE DU FICHIER. Deux pannes silencieuses de
+//     la même famille en deux jours, dans le même bloc, toutes deux
+//     rendant un résultat plausible sans lever d'erreur. La règle qui
+//     en sort : toute fonction indexée par une table de figures doit
+//     REFUSER une clé absente, jamais la traiter comme un zéro.
+//
 // ── G · CE QUI RESTE SANS RÉPONSE ──
 //     « Pourquoi Via se repose-t-elle en M5 ? » La densité du quatuor ne
 //     l'explique pas (M5 donne 6, comme sept autres maisons). La loi
@@ -25376,7 +25535,45 @@ function autoTestAlternanceV7() {
   // six diamètres, deux sommets chacun
   r.diamBases = Object.keys(basesRect).length;
   r.diamDeuxSommets = Object.keys(basesRect).filter(function (k) { return basesRect[k] === 2; }).length;
-  r.tout = (r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
+  // ═══ LOI T — LES DEUX ZONES DU CARRÉ NE PEUVENT PAS SE DÉPARTAGER PAR
+  // LA CATÉGORIE (03/09/26, « revois le calcul des zones ») ═══
+  // Zone M1 = I·II·III·XI·XII, zone M7 = V·VI·VII·VIII·IX. Ce ne sont pas
+  // deux paquets quelconques : chacun porte EXACTEMENT une angulaire,
+  // deux succédentes et deux cadentes. Leur somme de catégorie vaut donc
+  // +3 des deux côtés, sur TOUS les thèmes possibles, sans exception.
+  // Conséquence : tout ce qui départage les deux camps dans le carré vient
+  // de la régence planétaire et de la concordance élémentaire — jamais de
+  // la géométrie. Ce contrôle est ici pour qu'un panneau qui perdrait de
+  // nouveau ces deux composantes (le piège des noms d'affichage) reparte
+  // en écart nul et se fasse voir tout de suite.
+  (function () {
+    var Z1 = [1, 2, 3, 11, 12], Z7 = [5, 6, 7, 8, 9];
+    function cat(l) {
+      return l.reduce(function (a, h) {
+        var c = MAISON_CATEGORIE[h];
+        return a + (c ? CATEGORIE_SCORE[c] : 0);
+      }, 0);
+    }
+    r.zoneCatM1 = cat(Z1);
+    r.zoneCatM7 = cat(Z7);
+    // Et le garde-fou de la dignité : un nom d'affichage doit être REFUSÉ,
+    // plus jamais noté au rabais.
+    var refus = 0, canon = 0;
+    ['Carcer', 'Cauda', 'Fortuna minor', 'Conjonctio'].forEach(function (n) {
+      var d = calculerDigniteAccidentelle(1, n, null);
+      if (d && d.erreur && d.total === null) refus++;
+    });
+    ['carcer', 'cauda_draconis', 'fortuna_minor', 'conjunctio'].forEach(function (n) {
+      var d = calculerDigniteAccidentelle(1, n, null);
+      if (d && !d.erreur && typeof d.total === 'number') canon++;
+    });
+    r.digniteRefuseAffichage = refus;
+    r.digniteAccepteCanonique = canon;
+  })();
+
+  r.tout = (r.zoneCatM1 === 3 && r.zoneCatM7 === 3
+    && r.digniteRefuseAffichage === 4 && r.digniteAccepteCanonique === 4
+    && r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
     && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
     && r.pariteDecalage === 16
     && r.boucliersBinome === 16 && r.binomeBouclierTristitia === 16
