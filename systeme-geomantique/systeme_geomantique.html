@@ -1298,6 +1298,11 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
         <option value="fixe">Fixe — les zones restent sur M1 et M7 (défaut)</option>
         <option value="rotation">Rotation — les zones suivent R1 et R7</option>
       </select></div>
+    <div class="field"><label>Style du carré</label>
+      <select id="carreStyleSelect" onchange="setStyleCarreV7(this.value)">
+        <option value="couleur">Couleur — axes, éléments, dignités (défaut)</option>
+        <option value="mono">Monochrome — style thème astrologique, figures en points</option>
+      </select></div>
     <div class="field"><label>Trajectoires à tracer</label>
       <select id="carreTrajSelect" onchange="isolerTrajectoireV7(null); redessinerCarreGeoV7()">
         <option value="aucune">Aucune — les trois axes seuls</option>
@@ -1958,18 +1963,49 @@ function COULEUR_AXE_CARRE_V7(m) {
   return a ? a.couleur : '#8E7A4A';
 }
 
+// ═══ LA FIGURE EN POINTS (03/09/26, demande Ellemine_D : reproduire le
+// style d'un thème astrologique classique envoyé en exemple, où chaque
+// position porte son symbole en petits points plutôt qu'un nom écrit) ═══
+// MAP_GEO stocke déjà chaque figure comme 4 valeurs 1 (point simple) ou 2
+// (point double) — c'est la notation géomantique traditionnelle elle-même,
+// rien à recalculer : un rang par valeur, un ou deux losanges par rang.
+function dessinerPointsFigureV7(fig, cx, yTop, coul){
+  // Le carré géo travaille avec les noms d'affichage du thème ("Fortuna
+  // minor", "Aquisitio"...), MAP_GEO avec les clés internes minuscules
+  // ("fortuna_minor", "acquisitio"...) — même pont que loopOf, cf.
+  // NORM_FIG_LOOP juste au-dessus.
+  var m = MAP_GEO[NORM_FIG_LOOP[fig] || fig];
+  if (!m) return '';
+  var out = '', pas = 8;
+  for (var i = 0; i < 4; i++) {
+    var y = yTop + i * pas;
+    if (m[i] === 1) {
+      out += '<text x="'+cx+'" y="'+y+'" font-size="9" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>';
+    } else {
+      out += '<text x="'+(cx-5)+'" y="'+y+'" font-size="9" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>'
+           + '<text x="'+(cx+5)+'" y="'+y+'" font-size="9" style="fill:'+coul+'; text-anchor:middle; pointer-events:none;">◆</text>';
+    }
+  }
+  return out;
+}
+
 function renderCarreGeomantique(theme){
   const svg = document.getElementById('carre-geo-svg');
   if(!svg) return;
   let html = '';
+  const mono = (typeof STYLE_CARRE_V7 !== 'undefined' && STYLE_CARRE_V7 === 'mono');
 
   // 2) ZONES M1/M7 (03/08/26, demande Ellemine_D) — I à gauche = zone M1,
   // VII à droite = zone M7, X et IV (exactement sur l'axe central x=200)
   // restent neutres. Fond léger, purement visuel, sous les triangles.
-  html += '<rect x="0" y="0" width="200" height="400" fill="#3b82f6" fill-opacity="0.07"></rect>';
-  html += '<rect x="200" y="0" width="200" height="400" fill="#f59e0b" fill-opacity="0.07"></rect>';
-  html += '<text x="60" y="392" font-size="9" fill="#93c5fd" font-style="italic">zone M1</text>';
-  html += '<text x="340" y="392" font-size="9" fill="#fcd34d" font-style="italic">zone M7</text>';
+  // ─── RETIRÉES EN STYLE MONOCHROME (03/09/26, sa demande) — le thème
+  // astrologique de référence n'a pas de fond teinté par zone.
+  if (!mono) {
+    html += '<rect x="0" y="0" width="200" height="400" fill="#3b82f6" fill-opacity="0.07"></rect>';
+    html += '<rect x="200" y="0" width="200" height="400" fill="#f59e0b" fill-opacity="0.07"></rect>';
+    html += '<text x="60" y="392" font-size="9" fill="#93c5fd" font-style="italic">zone M1</text>';
+    html += '<text x="340" y="392" font-size="9" fill="#fcd34d" font-style="italic">zone M7</text>';
+  }
 
   for(let m=1; m<=12; m++){
     const pts = CARRE_GEO_PTS[m];
@@ -1991,11 +2027,21 @@ function renderCarreGeomantique(theme){
     // 1) HALO ANGULAIRE — bordure dorée épaisse + surbrillance pour les
     // 4 maisons angulaires, pour que la force saute aux yeux sans lire
     // le doctrinal.
-    const strokeCol = isGrand ? '#facc15' : 'var(--gold,#C7A143)';
-    const strokeW = isGrand ? 3.5 : 1.5;
-    const glow = isGrand ? ' filter="drop-shadow(0 0 4px rgba(250,204,21,.65))"' : '';
+    // ─── EN MONOCHROME, UN SEUL TRAIT BLANC, MÊME ÉPAISSEUR PARTOUT ───
+    // (03/09/26, sa demande) — comme le thème de référence, où les douze
+    // secteurs sont tracés du même trait, sans distinction de couleur.
+    const strokeCol = mono ? '#e8dcc0' : (isGrand ? '#facc15' : 'var(--gold,#C7A143)');
+    const strokeW = mono ? 1.2 : (isGrand ? 3.5 : 1.5);
+    const glow = (!mono && isGrand) ? ' filter="drop-shadow(0 0 4px rgba(250,204,21,.65))"' : '';
+    const fillAttr = mono ? 'none' : col;
+    const fillOpacity = mono ? '1' : '0.28';
 
-    html += '<polygon points="'+ptsStr+'" fill="'+col+'" fill-opacity="0.28" stroke="'+strokeCol+'" stroke-width="'+strokeW+'"'+glow+' style="cursor:pointer;" onclick="carreGeoClickHouse('+m+')" data-house="'+m+'"></polygon>';
+    // ⚠️ fill/stroke posés DANS style="", pas en attributs nus : la règle
+    // globale "#carre-geo-svg polygon{stroke:...}" du CSS gagnerait sinon
+    // sur l'attribut de présentation, quelle que soit la valeur calculée
+    // ici (cascade CSS : attribut de présentation < règle de feuille de
+    // style, même par sélecteur de type).
+    html += '<polygon points="'+ptsStr+'" style="cursor:pointer; fill:'+fillAttr+'; fill-opacity:'+fillOpacity+'; stroke:'+strokeCol+'; stroke-width:'+strokeW+'px;"'+glow+' onclick="carreGeoClickHouse('+m+')" data-house="'+m+'"></polygon>';
     // ═══ LE NUMÉRO DE ROTATION, À CÔTÉ DU NUMÉRO DE MAISON (03/09/26,
     // sa demande : « vérifie bien si les figures changent en mode
     // rotation dans les maisons ») ═══
@@ -2013,8 +2059,11 @@ function renderCarreGeomantique(theme){
         if (kR >= 0) rNum = ' · R' + (kR + 1);
       } catch (e) { rNum = ''; }
     }
-    html += '<text class="cg-num" x="'+cx+'" y="'+(cy-7)+'" font-size="'+fsNum+'" style="pointer-events:none;">'+ROMAN_12[m]+rNum+(isGrand?' ★':'')+'</text>';
-    html += '<text class="cg-fig" x="'+cx+'" y="'+(cy+6)+'" font-size="'+fsFig+'" style="pointer-events:none;">'+(fig||'—')+'</text>';
+    // ⚠️ La couleur va DANS style="" : la règle CSS ".cg-num{fill:#c4b5fd}"
+    // gagnerait sur un attribut fill="" nu, même quand mono le calcule.
+    const numColStyle = mono ? 'fill:#e8dcc0; ' : '';
+    html += '<text class="cg-num" x="'+cx+'" y="'+(cy-7)+'" font-size="'+fsNum+'" style="'+numColStyle+'pointer-events:none;">'+ROMAN_12[m]+rNum+(isGrand?' ★':'')+'</text>';
+    html += '<text class="cg-fig" x="'+cx+'" y="'+(cy+6)+'" font-size="'+fsFig+'" style="'+numColStyle+'pointer-events:none;">'+(fig||'—')+'</text>';
 
     // 4) BADGE DE DIGNITÉ ACCIDENTELLE (03/08/26, 📚 étude non validée) —
     // petit score coloré (vert=positif, rouge=négatif) sous la figure.
@@ -2037,7 +2086,13 @@ function renderCarreGeomantique(theme){
     // daltonienne ΔE 12,9 (cible ≥ 8) et vision normale ΔE 15,8
     // (plancher 15). Elles ne sortent de la bande de clarté que parce que
     // ce sont les teintes historiques du projet, pas une rampe neuve.
-    if(fig){
+    if(fig && mono){
+      // ─── EN MONOCHROME, LA FIGURE SE LIT EN POINTS, PAS EN BADGE
+      // COLORÉ (03/09/26, sa demande) — élément et dignité accidentelle
+      // restent lisibles au clic sur la maison, comme en mode couleur
+      // l'élément était devenu lisible là plutôt que sur le fond.
+      html += dessinerPointsFigureV7(fig, cx, cy+16, '#e8dcc0');
+    } else if(fig){
       const elemCol = ELEMENT_COLORS[elem] || '#94a3b8';
       let daTxt = '', daCol = '#94a3b8';
       if(typeof calculerDigniteAccidentelle === 'function'){
@@ -2065,11 +2120,18 @@ function renderCarreGeomantique(theme){
     const [x,y] = quads[m];
     const fig = theme[m];
     const elem = FIGURE_ELEMENT[fig];
-    const col = ELEMENT_COLORS[elem] || '#8E7A4A';
-    html += '<rect class="cg-inner-cell" x="'+x+'" y="'+y+'" width="100" height="100" fill="'+col+'" fill-opacity="0.14" style="cursor:pointer;" onclick="carreGeoClickHouse('+m+')"></rect>';
-    html += '<text class="cg-num" x="'+(x+50)+'" y="'+(y+38)+'" font-size="8" style="pointer-events:none;">'+ROMAN_16[m]+' (M'+m+')</text>';
-    html += '<text class="cg-fig" x="'+(x+50)+'" y="'+(y+52)+'" font-size="9" style="pointer-events:none;">'+(fig||'—')+'</text>';
-    html += '<text x="'+(x+50)+'" y="'+(y+64)+'" font-size="6" fill="#94a3b8" style="pointer-events:none;">'+SYNTH_NOM_16[m]+'</text>';
+    const col = mono ? 'none' : (ELEMENT_COLORS[elem] || '#8E7A4A');
+    // ⚠️ Même remarque que pour les polygones : couleurs dans style="",
+    // sinon les règles CSS ("rect.cg-inner-cell{...}", ".cg-num{...}")
+    // gagnent toujours sur un attribut de présentation nu.
+    html += '<rect class="cg-inner-cell" x="'+x+'" y="'+y+'" width="100" height="100" style="cursor:pointer; fill:'+col+'; fill-opacity:'+(mono?1:0.14)+'; stroke:'+(mono?'#e8dcc0':'var(--gold,#C7A143)')+'; stroke-width:1px;" onclick="carreGeoClickHouse('+m+')"></rect>';
+    html += '<text class="cg-num" x="'+(x+50)+'" y="'+(y+38)+'" font-size="8" style="'+(mono?'fill:#e8dcc0; ':'')+'pointer-events:none;">'+ROMAN_16[m]+' (M'+m+')</text>';
+    if (mono) {
+      html += dessinerPointsFigureV7(fig, x+50, y+62, '#e8dcc0');
+    } else {
+      html += '<text class="cg-fig" x="'+(x+50)+'" y="'+(y+52)+'" font-size="9" style="pointer-events:none;">'+(fig||'—')+'</text>';
+      html += '<text x="'+(x+50)+'" y="'+(y+64)+'" font-size="6" fill="#94a3b8" style="pointer-events:none;">'+SYNTH_NOM_16[m]+'</text>';
+    }
   }
   // ═══ LES AXES CLOS ET LES TRAJECTOIRES (01/09/26, demande Ellemine_D) ═══
   // « Clore l'axe de couleur différente, et les trajectoires possibles par
@@ -26522,6 +26584,21 @@ window.setModeCarreV7 = function (mode) {
   try { if (typeof renderTheme === 'function' && typeof currentTheme !== 'undefined' && currentTheme) renderTheme(); }
   catch (e) { console.error('carré : re-rendu après changement de mode', e); }
   return MODE_CARRE_V7;
+};
+
+// ═══ STYLE DU CARRÉ — COULEUR / MONOCHROME (03/09/26, demande
+// Ellemine_D : reproduire le rendu d'un thème astrologique classique
+// qu'elle a envoyé en exemple, sans les couleurs) ═══
+// N'affecte QUE le dessin (renderCarreGeomantique) : aucune donnée, aucun
+// calcul, aucun verdict n'en dépend — contrairement à MODE_CARRE_V7 qui,
+// lui, peut piloter le verdict. Purement visuel, réversible d'un clic.
+var STYLE_CARRE_V7 = 'couleur';
+window.setStyleCarreV7 = function (style) {
+  STYLE_CARRE_V7 = (style === 'mono') ? 'mono' : 'couleur';
+  var sel = document.getElementById('carreStyleSelect');
+  if (sel && sel.value !== STYLE_CARRE_V7) sel.value = STYLE_CARRE_V7;
+  try { window.redessinerCarreGeoV7(); } catch (e) { console.error('carré : re-rendu après changement de style', e); }
+  return STYLE_CARRE_V7;
 };
 
 function mapCarreV7(theme) {
