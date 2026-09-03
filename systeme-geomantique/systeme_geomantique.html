@@ -2637,6 +2637,19 @@ window.__geomtxOnHostTheme = function(hostTheme){
 <section class="section"><h2>Combinaison avec la figure de repos</h2><div class="row"><div class="field"><label>Figure (optionnel)</label><select id="combineFigureSelect" onchange="updateCombineRepos()"></select></div><div class="field"><label>Maison</label><select id="combineHouseSelect" onchange="updateCombineRepos()"></select></div><div class="field"><label>Résultante</label><input id="combineResult" readonly value="—" /></div></div></section><section class="section" style="display:none;"><h2>Analyse rotation</h2><div class="row" id="rotation-analysis"><div class="card"><div class="muted">Aucun calcul pour le moment.</div></div></div></section><section class="hero" style="display:none;"><h2>Verdicts</h2><div class="verdict-grid" id="dual-verdicts"><div class="card"><div class="muted">Aucun verdict pour le moment.</div></div></div></section><section class="section" style="display:none;"><h2>Synthèse structurelle</h2><div class="card" id="structural-summary"><div class="muted">La synthèse structurelle apparaîtra ici.</div></div></section><section class="section" style="display:none;"><h2>Conclusion automatique</h2><div class="card" id="final-conclusion"><div class="muted">La conclusion automatique apparaîtra ici.</div></div></section><section class="section" style="display:none;"><h2>Analyse détaillée maison par maison</h2><div class="card" id="house-analysis"><div class="muted">L'analyse détaillée apparaîtra ici.</div></div></section><section class="section" style="display:none;"><h2>Premier mi-temps</h2><div class="card" id="first-half"><div class="muted">La lecture du premier mi-temps apparaîtra ici.</div></div></section><section class="section"><h2>Résultat réel</h2><div class="row"><div class="field"><label>Vainqueur réel</label><select id="realWinner"><option value="">Choisir</option><option value="M1">M1</option><option value="M7">M7</option><option value="Nul">Nul</option></select></div><div class="field"><label>Score réel</label><input id="realScore" placeholder="ex: 2-1" /></div><div class="field"><label>Premier but réel</label><select id="realFirstGoal"><option value="">Choisir</option><option value="M1">M1</option><option value="M7">M7</option><option value="None">Aucun</option></select></div><div class="field"><label>Rouge / pénalty réel</label><select id="realPenalty"><option value="">Choisir</option><option value="yes">Oui</option><option value="no">Non</option></select></div></div><div class="row"><button class="btn-primary" onclick="compareWithReality()">Comparer au résultat réel</button><button class="btn-secondary" onclick="resetCorrections()">Réinitialiser les corrections</button></div></section><section class="section"><h2>Diagnostic d'erreur</h2><div class="card" id="diagnostic-panel"><div class="muted">Comparer avec le résultat réel pour afficher les écarts.</div></div></section><section class="section"><h2>Corrections proposées</h2><div class="card" id="correction-panel"><div class="muted">Les corrections ciblées apparaîtront ici après comparaison.</div></div></section><section class="section" style="display:none;"><h2>Tirage complet</h2><div class="card"><pre id="full-draw">Le tirage complet apparaîtra ici.</pre></div></section></div>
 <script>
 
+// MAINTENANCE (03/09/26) : échappement HTML centralisé — avant ce correctif,
+// plusieurs points d'injection (renderQuestionContext, historique des thèmes
+// sauvegardés) inséraient team1/team2/stadium/postalCode/questionLibre/
+// realScore/interpretation directement dans innerHTML sans échappement,
+// permettant une injection HTML/JS (XSS) via un simple champ de formulaire
+// (ex. nom d'équipe). Toute donnée saisie par l'utilisateur et réinjectée
+// dans du HTML doit désormais passer par escHtml().
+function escHtml(v){
+  return String(v==null?'':v).replace(/[&<>"']/g,function(s){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s];
+  });
+}
+
 const TEAM_NAMES_LIST = [
   "Paris Saint-Germain F.C.",
   "Olympique de Marseille",
@@ -3252,7 +3265,7 @@ function toggleAutoTestXOR() {
     html += '<div class="muted" style="font-size:11px; margin-top:4px;">Maison paire : la résultante reste dans la boucle (terre → front/identité, air → binôme/bouclier). Maison impaire : elle vient d\'en face. L\'agresseur (±3) n\'est engendré que par M1, M3, M5, M11, M13 — jamais par une maison air ou terre.</div>';
     panel.innerHTML = html;
     panel.style.display = 'block';
-    try { renderBouclesAntagonistesR1R7Panel(currentTheme || null); } catch(e) {}
+    try { renderBouclesAntagonistesR1R7Panel(currentTheme || null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   } else {
     panel.style.display = 'none';
   }
@@ -7583,7 +7596,7 @@ function toggleThemeVerification(){
       var vf = verdictFinal(vt);
       var rp = rangParole(vf);
       html += '<div class="kv" style="margin-top:8px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>Verdict (sur ce thème de vérification) :</b> ' + vf.label + ' <span style="font-size:11px; opacity:.7;">(rang ' + rp.rang + '/5, ' + rp.etage + ')</span></div>';
-    } catch(e) {}
+    } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     panel.innerHTML = html;
     renderMiniTheme(vt, 'verif-theme-grid', 46);
     panel.style.display = 'block';
@@ -7597,7 +7610,7 @@ function toggleThemeVerification(){
 }
 
 function buildQuestionContext(){const questions=Array.from(document.querySelectorAll('.userQuestionCb:checked')).map(o=>o.value); const compSel=document.getElementById('competitionMode'); const domEl=document.getElementById('matchDomicile'); const favEl=document.getElementById('matchFavorite'); const qTextEl=document.getElementById('userQuestionText'); return {team1:(document.getElementById('team1').value||'').trim(),team2:(document.getElementById('team2').value||'').trim(),date:document.getElementById('matchDate').value,time:document.getElementById('matchTime').value,stadium:(document.getElementById('stadium').value||'').trim(),postalCode:(document.getElementById('postalCode').value||'').trim(),competition:compSel?compSel.value:'fra_l1',domicile:domEl?domEl.value:'none',favorite:favEl?favEl.value:'none',questionLabels:questions,questionLibre:(qTextEl?qTextEl.value:'').trim(),valid:true};}
-function renderQuestionContext(c){const el=document.getElementById('question-context'); if(!c){el.innerHTML='<div class="muted">Sélectionne le match, puis lance le thème (les questions sont facultatives).</div>'; return;} const compEntry=COMPETITION_INDEX[c.competition]||{label:'France — Ligue 1',tier:1}; const compTier=TIER_CONFIG[compEntry.tier]||TIER_CONFIG[1]; const compCfg={label:compEntry.label,enjeu:compTier.enjeu,tension:compTier.tension}; const domLabel=c.domicile==='team1'?(c.team1||'Équipe 1'):c.domicile==='team2'?(c.team2||'Équipe 2'):'non renseignée'; const favLabel=c.favorite==='team1'?(c.team1||'Équipe 1'):c.favorite==='team2'?(c.team2||'Équipe 2'):'aucun favori net'; el.innerHTML=`<div class="kv"><b>Match ciblé :</b> ${c.team1||'Équipe 1'} vs ${c.team2||'Équipe 2'}</div><div class="kv"><b>Compétition :</b> <span class="ok">${compCfg.label}</span> (enjeu x${compCfg.enjeu}, tension x${compCfg.tension})</div><div class="kv"><b>Date :</b> ${c.date||'non renseignée'}</div><div class="kv"><b>Heure :</b> ${c.time||'non renseignée'}</div><div class="kv"><b>Lieu :</b> ${c.stadium||'non renseigné'}</div><div class="kv"><b>Code postal :</b> ${c.postalCode||'non renseigné'}</div><div class="kv"><b>Équipe à domicile :</b> ${domLabel}</div><div class="kv"><b>Favori du match :</b> <span class="ok">${favLabel}</span></div><div class="kv"><b>Questions retenues :</b> ${c.questionLabels.length?c.questionLabels.join(' | '):'aucune'}</div>${c.questionLibre?'<div class="kv"><b>Ta question :</b> <span class="ok">'+c.questionLibre+'</span></div>':''}`;}
+function renderQuestionContext(c){const el=document.getElementById('question-context'); if(!c){el.innerHTML='<div class="muted">Sélectionne le match, puis lance le thème (les questions sont facultatives).</div>'; return;} const compEntry=COMPETITION_INDEX[c.competition]||{label:'France — Ligue 1',tier:1}; const compTier=TIER_CONFIG[compEntry.tier]||TIER_CONFIG[1]; const compCfg={label:compEntry.label,enjeu:compTier.enjeu,tension:compTier.tension}; const team1Safe=escHtml(c.team1||'Équipe 1'), team2Safe=escHtml(c.team2||'Équipe 2'); const domLabel=c.domicile==='team1'?team1Safe:c.domicile==='team2'?team2Safe:'non renseignée'; const favLabel=c.favorite==='team1'?team1Safe:c.favorite==='team2'?team2Safe:'aucun favori net'; el.innerHTML=`<div class="kv"><b>Match ciblé :</b> ${team1Safe} vs ${team2Safe}</div><div class="kv"><b>Compétition :</b> <span class="ok">${escHtml(compCfg.label)}</span> (enjeu x${compCfg.enjeu}, tension x${compCfg.tension})</div><div class="kv"><b>Date :</b> ${escHtml(c.date)||'non renseignée'}</div><div class="kv"><b>Heure :</b> ${escHtml(c.time)||'non renseignée'}</div><div class="kv"><b>Lieu :</b> ${escHtml(c.stadium)||'non renseigné'}</div><div class="kv"><b>Code postal :</b> ${escHtml(c.postalCode)||'non renseigné'}</div><div class="kv"><b>Équipe à domicile :</b> ${domLabel}</div><div class="kv"><b>Favori du match :</b> <span class="ok">${favLabel}</span></div><div class="kv"><b>Questions retenues :</b> ${c.questionLabels.length?escHtml(c.questionLabels.join(' | ')):'aucune'}</div>${c.questionLibre?'<div class="kv"><b>Ta question :</b> <span class="ok">'+escHtml(c.questionLibre)+'</span></div>':''}`;}
 
 // AJOUTÉ (demande utilisateur) : les "questions à traiter" cochées par
 // l'utilisateur étaient collectées et listées (renderQuestionContext),
@@ -14187,7 +14200,7 @@ function lectureAxesV7Brut(theme) {
 var __axeDeplie = null;
 function basculerAxeV7(cle) {
   __axeDeplie = (__axeDeplie === cle) ? null : cle;
-  try { renderAxesPanel(currentTheme); } catch (e) {}
+  try { renderAxesPanel(currentTheme); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
 }
 
 // « si on clique sur un axe, si le thème change, le verdict suit la
@@ -15619,7 +15632,7 @@ function consensusTiragesV7(themes) {
     var d = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
     tally[d] += 1;
     var nv = 0;
-    try { nv = niveauValiditeV7(t).niveau; } catch (e) {}
+    try { nv = niveauValiditeV7(t).niveau; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     if (v.rejete) rejetes += 1;
     lignes.push({ n: i + 1, meres: m, dit: d, score: v.scoreMain, niveau: nv, rejete: !!v.rejete });
   });
@@ -15815,19 +15828,19 @@ function comparerDeuxThemesV7(themeA, themeB) {
       var v = getVerdictAfficheReel(t);
       o.verdict = v.nulActif ? 'nul' : v.winner;
       o.score = v.scoreMain;
-    } catch (e) {}
-    try { var nv = niveauValiditeV7(t); o.niveau = nv ? nv.niveau : null; } catch (e) {}
-    try { var pc = porteConfianceV7(t); if (pc) { o.axesDerives = pc.nbAxes; o.binomesDerives = pc.nbBinomes; } } catch (e) {}
-    try { var d = nulDeuxPortesV7(t); if (d) { o.porte = nulParPorteV7(t); o.k = d.k; } } catch (e) {}
-    try { var f = faisceauNulV7(t); o.faisceau = f ? f.n : null; } catch (e) {}
+    } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var nv = niveauValiditeV7(t); o.niveau = nv ? nv.niveau : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var pc = porteConfianceV7(t); if (pc) { o.axesDerives = pc.nbAxes; o.binomesDerives = pc.nbBinomes; } } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var d = nulDeuxPortesV7(t); if (d) { o.porte = nulParPorteV7(t); o.k = d.k; } } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var f = faisceauNulV7(t); o.faisceau = f ? f.n : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     try {
       var ax = lectureAxesV7(t);
       if (ax && ax.axes) {
         o.axesValides = ax.axes.filter(function (a) { return a.applicable && a.valide; }).length;
         o.axesAncres = ax.axes.filter(function (a) { return a.applicable && a.ancree; }).length;
       }
-    } catch (e) {}
-    try { var sa = sommesAxesIncidentV7(t); o.sommesIncident = sa ? sa.nb : 0; } catch (e) {}
+    } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var sa = sommesAxesIncidentV7(t); o.sommesIncident = sa ? sa.nb : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     return o;
   }
   var a = lire(themeA), b = lire(themeB);
@@ -15907,12 +15920,12 @@ function criteresPaireV7(theme) {
   try {
     var v = getVerdictAfficheReel(theme);
     o.verdict = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-  } catch (e) {}
-  try { var nv = niveauValiditeV7(theme); o.niveau = nv.niveau; o.complet = nv.complet ? 1 : 0; } catch (e) {}
-  try { var pc = porteConfianceV7(theme); if (pc) o.axes = pc.nbAxes; } catch (e) {}
-  try { var f = faisceauNulV7(theme); if (f) o.faisceau = f.n; } catch (e) {}
-  try { var cd = campDoubleV7(theme); o.theoreme = (cd && cd.applicable) ? 1 : 0; } catch (e) {}
-  try { var r = getRotationCombat(theme); o.cadent = (r && [3, 6, 9, 12].indexOf(r.hR1) >= 0) ? 1 : 0; } catch (e) {}
+  } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var nv = niveauValiditeV7(theme); o.niveau = nv.niveau; o.complet = nv.complet ? 1 : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var pc = porteConfianceV7(theme); if (pc) o.axes = pc.nbAxes; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var f = faisceauNulV7(theme); if (f) o.faisceau = f.n; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var cd = campDoubleV7(theme); o.theoreme = (cd && cd.applicable) ? 1 : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var r = getRotationCombat(theme); o.cadent = (r && [3, 6, 9, 12].indexOf(r.hR1) >= 0) ? 1 : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   return o;
 }
 
@@ -16014,12 +16027,12 @@ function balayageSeparationV7() {
     var juste = (dit === c.camp);
     nT += 1; if (juste) nJ += 1;
     var nv = null, pc = null, f = null, r = null, cd = null, ac = null;
-    try { nv = niveauValiditeV7(t); } catch (e) {}
-    try { pc = porteConfianceV7(t); } catch (e) {}
-    try { f = faisceauNulV7(t); } catch (e) {}
-    try { r = getRotationCombat(t); } catch (e) {}
-    try { cd = campDoubleV7(t); } catch (e) {}
-    try { ac = accordCampV7(t); } catch (e) {}
+    try { nv = niveauValiditeV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { pc = porteConfianceV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { f = faisceauNulV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { r = getRotationCombat(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { cd = campDoubleV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { ac = accordCampV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     if (nv) { add('validité 3/3', nv.niveau >= 3, juste); add('figure du jour présente', !!nv.complet, juste); }
     if (pc) { add('3 dérivés d\'axe sur 3', pc.nbAxes >= 3, juste); add('3 binômes sur 3', pc.nbBinomes >= 3, juste); }
     if (f) add('faisceau ≥ 4/7', f.n >= 4, juste);
@@ -16038,7 +16051,7 @@ function balayageSeparationV7() {
     add('verdict annoncé = nul', dit === 'nul', juste);
     add('verdict annoncé = R1', dit === 'R1', juste);
     if (typeof v.btts === 'boolean') add('les deux marquent annoncé', v.btts === true, juste);
-    try { add('sommes d\'incident > 0', sommesAxesIncidentV7(t).nb > 0, juste); } catch (e) {}
+    try { add('sommes d\'incident > 0', sommesAxesIncidentV7(t).nb > 0, juste); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   });
   var lignes = [];
   Object.keys(props).forEach(function (k) {
@@ -16100,15 +16113,15 @@ function arbitrageMoteursV7() {
     var t;
     try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
     var pil = null, autres = [];
-    try { var mc = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); pil = mc && mc.camp ? mc.camp : null; } catch (e) {}
+    try { var mc = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); pil = mc && mc.camp ? mc.camp : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     if (!pil) return;
     function pousse(v) { if (v === 'R1' || v === 'R7') autres.push(v); }
-    try { var m = moteurF4P4V7(t); pousse(m && m.applicable ? m.avantage : null); } catch (e) {}
-    try { var sg = lectureSiegesR1R7(t); pousse(sg && sg.applicable ? sg.winner : null); } catch (e) {}
-    try { var an = analyseAncrageDeveloppe(t); pousse(an && an.applicable ? an.avantage : null); } catch (e) {}
-    try { var rz = analyserReseauAncrageV2(t); pousse(rz ? rz.winner : null); } catch (e) {}
-    try { var pr = comparerBouclesAntagonistesR1R7(t); pousse(pr && pr.applicable ? pr.winner : null); } catch (e) {}
-    try { var tp = tablePolesV7(t); pousse(tp ? (tp.winner || tp.camp) : null); } catch (e) {}
+    try { var m = moteurF4P4V7(t); pousse(m && m.applicable ? m.avantage : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var sg = lectureSiegesR1R7(t); pousse(sg && sg.applicable ? sg.winner : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var an = analyseAncrageDeveloppe(t); pousse(an && an.applicable ? an.avantage : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var rz = analyserReseauAncrageV2(t); pousse(rz ? rz.winner : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var pr = comparerBouclesAntagonistesR1R7(t); pousse(pr && pr.applicable ? pr.winner : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var tp = tablePolesV7(t); pousse(tp ? (tp.winner || tp.camp) : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     if (autres.length < 3) return;
     var n1 = 0;
     autres.forEach(function (x) { if (x === 'R1') n1 += 1; });
@@ -16184,7 +16197,7 @@ function validiteParFamilleV7() {
     var t, v;
     try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
     var rj = null;
-    try { rj = themeRejeteV7(t); } catch (e) {}
+    try { rj = themeRejeteV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     var valide = !(rj && rj.rejete);
     try { v = avecFormatV7(c.format || formatMatchV7(), function () { return getVerdictAfficheReel(t); }); }
     catch (e) { return; }
@@ -16206,7 +16219,7 @@ function validiteParFamilleV7() {
     }
     if (typeof c.incident === 'boolean') {
       var sg = null;
-      try { sg = sommesAxesIncidentV7(t); } catch (e) {}
+      try { sg = sommesAxesIncidentV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
       if (sg) add('incident (somme d\'axes)', valide, sg.signal === c.incident);
     }
   });
@@ -19762,7 +19775,7 @@ function renderMoteursPanel(theme) {
     var e1 = document.getElementById('team1'), e7 = document.getElementById('team2');
     if (e1 && e1.value) t1 = e1.value;
     if (e7 && e7.value) t7 = e7.value;
-  } catch (e) {}
+  } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
 
   function barre(juste, total, teinte) {
     var pct = Math.round(100 * juste / total);
@@ -19899,7 +19912,7 @@ function profilScoreV7(quandPret) {
         ecarts[d] = (ecarts[d] || 0) + 1;
         totaux[som] = (totaux[som] || 0) + 1;
         n++;
-      } catch (e) {}
+      } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     }
     if (i < graines.length) { setTimeout(tranche, 0); return; }
     _profilScoreV7 = { n: n, ecarts: ecarts, totaux: totaux };
@@ -20381,7 +20394,7 @@ function renderBancPanel() {
     + 'forceCampV7 a fait tomber chaîne, ancrage et duel de 5/7 à 3–4/7 sans que rien ne l\'affiche.</div>';
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
   // une seule fois par session, après le rendu
-  try { profilScoreV7(); } catch (e) {}
+  try { profilScoreV7(); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -22672,7 +22685,7 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
           + (l.camp === 'M1' ? 'CONTRE l\'équipe 1' : 'CONTRE l\'équipe 2')
           + (l.mars ? ' — AGGRAVÉ (Mars)' : '')});
     });
-  } catch (e) {}
+  } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
 
   // PUER + BINÔME (16/07/26, doctrine utilisateur, n=1 réel confirmé) —
   // Puer chaotique en M7 (feu/eau, toujours vrai dès que theme[7]='puer')
@@ -23895,8 +23908,8 @@ function bilanAccordV7() {
     if (!c || !c.camp || c.camp === 'nul') return;
     var t, f4 = null, cr = null;
     try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    try { var m = moteurF4P4V7(t); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch (e) {}
-    try { var q = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); cr = q && q.camp ? q.camp : null; } catch (e) {}
+    try { var m = moteurF4P4V7(t); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { var q = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); cr = q && q.camp ? q.camp : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     if (!f4 || !cr) return;
     // ⚠️ Ne PAS rejouer getVerdictAfficheReel ici. Mesuré au chronomètre,
     // premier lancement / lancement suivant :
@@ -23932,8 +23945,8 @@ function bilanAccordV7() {
 
 function accordCampV7(theme) {
   var f4 = null, cr = null;
-  try { var m = moteurF4P4V7(theme); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch (e) {}
-  try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch (e) {}
+  try { var m = moteurF4P4V7(theme); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   if (!f4 || !cr) return { lisible: false, f4p4: f4, criteres: cr };
   var b = bilanAccordV7();
   var cle = (f4 === cr) ? 'accord' : 'desaccord';
@@ -26022,7 +26035,7 @@ function verdictStandardV7(theme, teamA, teamB) {
   var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
   var p = String(v.scoreMain || '').match(/^(\d+)-(\d+)$/);
   var g1 = p ? +p[1] : null, g7 = p ? +p[2] : null;
-  var r = null; try { r = getRotationCombat(theme); } catch (e) {}
+  var r = null; try { r = getRotationCombat(theme); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
 
   // 3 · double chance : on exclut l'issue que le verdict écarte le plus.
   var dc = (dit === 'R7') ? 'X2' : '1X';
@@ -26056,8 +26069,8 @@ function verdictStandardV7(theme, teamA, teamB) {
 
   // 9 · incidents — la somme d'axes (6/8) contre les dérivés, on dit les deux
   var incS = null, incD = null, incRouge = 0;
-  try { var sa = sommesAxesIncidentV7(theme); if (sa) incS = sa.signal; } catch (e) {}
-  try { var dd = incidentDerivesV7(theme); if (dd) { incD = dd.moyenne >= 50; incRouge = dd.rouges; } } catch (e) {}
+  try { var sa = sommesAxesIncidentV7(theme); if (sa) incS = sa.signal; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var dd = incidentDerivesV7(theme); if (dd) { incD = dd.moyenne >= 50; incRouge = dd.rouges; } } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   var incTexte;
   if (incS === null && incD === null) incTexte = '—';
   else if (incS && incD) incTexte = (incRouge > 0) ? 'penalty ET rouge' : 'penalty ou rouge';
@@ -26471,7 +26484,7 @@ function renderRegressionReference(theme){
       const v=verdictV7(theme);
       if(v && v.scoreMain) engine=v.scoreMain;
     }
-  }catch(e){}
+  }catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   el.innerHTML='<h3 style="margin-bottom:8px;color:#c4b5fd;">🧪 Contrôle de régression — cas validé</h3>'+
     '<div class="kv"><b>Date :</b> '+r.date+' à '+r.time+'</div>'+ 
     '<div class="kv"><b>Thème :</b> Fortuna Minor · Aquisitio · Carcer · Albus</div>'+ 
@@ -26490,6 +26503,12 @@ function renderRegressionReference(theme){
 function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme, q, sdn, axeNul, nulActif) {
   var el=document.getElementById(containerId); if(!el) return;
   q=q||{}; sdn=sdn||{};
+  // MAINTENANCE (03/09/26) : teamA/teamB viennent directement des champs
+  // #team1/#team2 sans validation et sont réinjectés tels quels dans le HTML
+  // de cette carte à de nombreux endroits plus bas (winnerName, cardWinner,
+  // markLabel, etc.) — échappés une seule fois ici pour couvrir tous les
+  // usages en aval sans devoir toucher chaque site d'injection séparément.
+  teamA = escHtml(teamA); teamB = escHtml(teamB);
   var active=!!q.applicable;
   var s1=Number(q.scoreR1||0), s7=Number(q.scoreR7||0);
   // ☠️ 30/08/26 — LA BARRE POUVAIT AFFICHER « R7 107,1 % » ET « R1 -7,1 % ».
@@ -27930,10 +27949,10 @@ function appliquerMeresImportees(lancer) {
       if (typeof dst.oninput === 'function') dst.oninput();
     }
   });
-  try { if (typeof updatePlaneteJourIndicator === 'function') updatePlaneteJourIndicator(); } catch (e) {}
+  try { if (typeof updatePlaneteJourIndicator === 'function') updatePlaneteJourIndicator(); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   try { if (typeof updateEquipe1QuestionLabel === 'function') {
     const t1 = document.getElementById('team1'); if (t1) updateEquipe1QuestionLabel(t1.value);
-  } } catch (e) {}
+  } } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   const mode = document.getElementById('drawMode');
   if (mode && mode.value !== 'manual') { mode.value = 'manual'; toggleDrawMode(); }
   fermerImportImage();
@@ -28378,8 +28397,8 @@ function renderTheme(){
         const safeV=verdictFinal(currentTheme);
         if (safeV) {
           if (safeV.type==='abstention') safeLabel='MAUVAIS THÈME';
-          else if (safeV.winner==='M1') safeLabel=team1+' gagne';
-          else if (safeV.winner==='M7') safeLabel=team2+' gagne';
+          else if (safeV.winner==='M1') safeLabel=escHtml(team1)+' gagne';
+          else if (safeV.winner==='M7') safeLabel=escHtml(team2)+' gagne';
           else if (safeV.winner==='Nul') safeLabel='NUL';
           else if (safeV.winnerRotation==='R1') safeLabel='R1 gagne';
           else if (safeV.winnerRotation==='R7') safeLabel='R7 gagne';
@@ -28423,7 +28442,7 @@ function _getList(key) {
   try { var r = localStorage.getItem(key); return r ? JSON.parse(r) : []; } catch(e) { return []; }
 }
 function _setList(key, list) {
-  try { localStorage.setItem(key, JSON.stringify(list)); } catch(e) {}
+  try { localStorage.setItem(key, JSON.stringify(list)); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
 }
 function getHistoryList() { return _getList(HISTORY_KEY); }
 function setHistoryList(l) { _setList(HISTORY_KEY, l); }
@@ -28431,7 +28450,7 @@ function getSavedList()    { return _getList(SAVE_KEY); }
 function setSavedList(l)   {
   // Toute écriture invalide le cache de cohérence (un score saisi ou
   // effacé change le verdict de l'entrée) — cf. evalCoherence.
-  try { _cacheCoherenceV7 = {}; } catch (e) {}
+  try { _cacheCoherenceV7 = {}; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   _setList(SAVE_KEY, l);
 }
 
@@ -29213,7 +29232,7 @@ function renderCurrentList() {
     var eid = entry.id, tab = currentTab;
     var h = '<div class="history-item" onclick="loadEntry(\'' + eid + '\',\'' + tab + '\')">';
     h += '<div class="history-item-top">';
-    h += '<span class="history-item-teams">' + entry.team1 + ' vs ' + entry.team2 + '</span>';
+    h += '<span class="history-item-teams">' + escHtml(entry.team1) + ' vs ' + escHtml(entry.team2) + '</span>';
     h += '<span class="history-item-date">' + formatHistoryDate(entry.savedAt) + '</span>';
     h += '</div>';
     if (dl) h += '<div class="history-item-date">Match: ' + dl + '</div>';
@@ -29223,21 +29242,21 @@ function renderCurrentList() {
     if (entry.interpretation && entry.interpretation.trim()) {
       var apercu = entry.interpretation.trim();
       if (apercu.length > 140) apercu = apercu.slice(0,140) + '…';
-      h += '<div style="font-size:12px; font-style:italic; color:#94a3b8; margin-top:4px; white-space:pre-wrap;">📝 ' + apercu + '</div>';
+      h += '<div style="font-size:12px; font-style:italic; color:#94a3b8; margin-top:4px; white-space:pre-wrap;">📝 ' + escHtml(apercu) + '</div>';
     }
     h += '<div class="history-item-result">';
     h += '<span class="history-item-score">' + entry.verdict.scoreMain + ' (predit)</span>';
-    h += '<span>' + wl + '</span>';
+    h += '<span>' + escHtml(wl) + '</span>';
     h += '<button class="history-delete-btn" onclick="event.stopPropagation();' + deleteFn + '(\'' + eid + '\')">Supprimer</button>';
     h += '</div>';
 
     if (tab === 'save') {
       var coh = evalCoherence(entry);
       h += '<div onclick="event.stopPropagation();" style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;">';
-      h += '<input type="text" placeholder="Score reel ex: 2-1" value="' + (entry.realScore || '') + '" ';
+      h += '<input type="text" placeholder="Score reel ex: 2-1" value="' + escHtml(entry.realScore || '') + '" ';
       h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:120px;" ';
       h += 'onchange="setRealScore(\'' + eid + '\', this.value)" />';
-      h += '<input type="text" placeholder="Mi-temps ex: 1-0" value="' + (entry.realHtScore || '') + '" ';
+      h += '<input type="text" placeholder="Mi-temps ex: 1-0" value="' + escHtml(entry.realHtScore || '') + '" ';
       h += 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;width:120px;" ';
       h += 'onchange="setRealHtScore(\'' + eid + '\', this.value)" />';
       h += '<select onchange="setRealPenalty(\'' + eid + '\', this.value)" '
@@ -29251,35 +29270,35 @@ function renderCurrentList() {
         + (entry.realPenalty === 'no' ? ' disabled' : '') + '>'
         + '<option value=""' + (!entry.realIncidentCamp ? ' selected' : '') + '>Contre qui ?</option>'
         + '<option value="M1"' + (entry.realIncidentCamp === 'M1' ? ' selected' : '') + '>'
-        + String(entry.team1 || 'M1').slice(0, 10) + '</option>'
+        + escHtml(String(entry.team1 || 'M1').slice(0, 10)) + '</option>'
         + '<option value="M7"' + (entry.realIncidentCamp === 'M7' ? ' selected' : '') + '>'
-        + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
+        + escHtml(String(entry.team2 || 'M7').slice(0, 10)) + '</option>'
         + '</select>';
       h += '<select onchange="setRealCsc(\'' + eid + '\', this.value)" '
         + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;">'
         + '<option value=""' + (!entry.realCsc ? ' selected' : '') + '>CSC ? (hors incident)</option>'
         + '<option value="M1"' + (entry.realCsc === 'M1' ? ' selected' : '') + '>CSC de '
-        + String(entry.team1 || 'M1').slice(0, 10) + '</option>'
+        + escHtml(String(entry.team1 || 'M1').slice(0, 10)) + '</option>'
         + '<option value="M7"' + (entry.realCsc === 'M7' ? ' selected' : '') + '>CSC de '
-        + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
+        + escHtml(String(entry.team2 || 'M7').slice(0, 10)) + '</option>'
         + '</select>';
       h += '<select onchange="setRealPenaltyCamp(\'' + eid + '\', this.value)" '
         + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;"'
         + (entry.realPenalty === 'no' ? ' disabled' : '') + '>'
         + '<option value=""' + (!entry.realPenaltyCamp ? ' selected' : '') + '>Penalty concédé par ?</option>'
         + '<option value="M1"' + (entry.realPenaltyCamp === 'M1' ? ' selected' : '') + '>'
-        + String(entry.team1 || 'M1').slice(0, 10) + '</option>'
+        + escHtml(String(entry.team1 || 'M1').slice(0, 10)) + '</option>'
         + '<option value="M7"' + (entry.realPenaltyCamp === 'M7' ? ' selected' : '') + '>'
-        + String(entry.team2 || 'M7').slice(0, 10) + '</option>'
+        + escHtml(String(entry.team2 || 'M7').slice(0, 10)) + '</option>'
         + '</select>';
       var champCorner = function (cote, val, ph) {
-        return '<input type="number" min="0" max="30" step="1" placeholder="' + ph + '" value="' + (val || '') + '" '
+        return '<input type="number" min="0" max="30" step="1" placeholder="' + ph + '" value="' + escHtml(val || '') + '" '
           + 'style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;'
           + 'color:#e2e8f0;font-size:12px;width:92px;" '
           + 'onchange="setRealCornersCamp(\'' + eid + '\', \'' + cote + '\', this.value)" />';
       };
-      h += champCorner('A', entry.realCornersM1, 'Corners ' + (entry.team1 || 'éq.1').slice(0, 7));
-      h += champCorner('B', entry.realCornersM7, 'Corners ' + (entry.team2 || 'éq.2').slice(0, 7));
+      h += champCorner('A', entry.realCornersM1, 'Corners ' + escHtml((entry.team1 || 'éq.1').slice(0, 7)));
+      h += champCorner('B', entry.realCornersM7, 'Corners ' + escHtml((entry.team2 || 'éq.2').slice(0, 7)));
       if (entry.realCorners) {
         var cornPred = null, vcRef = null;
         try {
@@ -29301,8 +29320,8 @@ function renderCurrentList() {
             var dc = domReel === null ? '#64748b' : okDom ? '#22c55e' : '#ef4444';
             h += '<span style="background:' + dc + '22;color:' + dc + ';border:1px solid ' + dc
               + ';border-radius:6px;padding:3px 8px;font-size:11px;font-weight:bold;">dominant prédit '
-              + (vcRef.cornersDominant === 'M1' ? (entry.team1 || 'éq.1') : (entry.team2 || 'éq.2'))
-              + ' · réel ' + (domReel === null ? 'égalité' : domReel === 'M1' ? (entry.team1 || 'éq.1') : (entry.team2 || 'éq.2'))
+              + escHtml(vcRef.cornersDominant === 'M1' ? (entry.team1 || 'éq.1') : (entry.team2 || 'éq.2'))
+              + ' · réel ' + escHtml(domReel === null ? 'égalité' : domReel === 'M1' ? (entry.team1 || 'éq.1') : (entry.team2 || 'éq.2'))
               + (domReel === null ? '' : okDom ? ' ✔' : ' ✘') + '</span>';
           }
         }
@@ -30153,7 +30172,7 @@ function showHouseResult(pos){if(!currentTheme) return; selectedHouse=pos; rende
   // du front et du protecteur au bout de 3 secondes. On le réapplique sur la
   // maison sélectionnée pour que la lecture reste à l'écran tant qu'on n'a
   // pas cliqué ailleurs.
-  setTimeout(()=>{ try { if(currentTheme) showRelationArrows(pos); } catch(e){} }, 0);
+  setTimeout(()=>{ try { if(currentTheme) showRelationArrows(pos); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); } }, 0);
 },3000);}
 function calculateHouseSum(){if(!currentTheme){document.getElementById('sum-result').innerHTML='<div class="bad">Lance le theme d abord.</div>'; return;} const mode=document.getElementById('sumModeBottom').value; const selected=sumSlots.map(slot=>{const raw=document.getElementById(`${slot}Bottom`).value; return raw===''?null:Number(raw);}).filter(Boolean); if(!selected.length){document.getElementById('sum-result').innerHTML='<div class="warn">Sélectionne au moins une maison.</div>'; return;} let figs=[],labels=[]; if(mode==='fixed'){figs=selected.map(h=>currentTheme[h]); labels=selected.map(h=>`M${h}`);} else {const order=getRotationOrderFromRepos(currentTheme[1]); const rotated=selected.map(h=>order[h-1]); figs=rotated.map(h=>currentTheme[h]); labels=rotated.map((h,i)=>`R${selected[i]} → M${h}`);} const result=combineMany(figs); const exists=figureExistsInTheme(result,currentTheme); document.getElementById('sum-result').innerHTML=`<div class="kv"><b>Mode :</b> ${mode==='fixed'?'fixe':'rotation'}</div>${labels.map((l,i)=>`<div class="kv"><b>${l} :</b> ${FL[figs[i]]}</div>`).join('')}<div class="kv"><b>Somme :</b> <span class="${exists?'good':'bad'}">${FL[result]}</span> ${exists?'existe dans le thème':'absente du thème'}</div><div class="kv"><b>Symbole :</b><br>${symb(result)}</div>`;}
 // ═══════════════════════════════════════════════════════════════
@@ -30541,7 +30560,7 @@ function exportThemeJSON() {
   }
 
   var vf = null, rp = null;
-  try { vf = verdictFinal(currentTheme); rp = rangParole(vf); } catch(e) {}
+  try { vf = verdictFinal(currentTheme); rp = rangParole(vf); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   var rt = radicaliteTirage(date, time, themeCastAt, timezone);
 
   var data = {
@@ -31014,7 +31033,7 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
         var axis=function(name,homes){
           var fig='—';
           try{ fig=combineMany(homes.map(function(m){return t[m];})); }
-          catch(e){ try{ fig=combine(t[homes[0]],t[homes[1]]); }catch(_){} }
+          catch(e){ try{ fig=combine(t[homes[0]],t[homes[1]]); }catch(_){ console.debug('[maintenance] erreur ignorée:', _); } }
           return '<div class="ui-axis-row"><b>'+name+'</b><span>'+homes.map(function(m){return 'M'+m+' · '+esc(label(t[m]));}).join(' &nbsp;|&nbsp; ')+'</span><strong>→ '+esc(label(fig))+'</strong></div>';
         };
         ax.innerHTML=axis('AXE ANGULAIRE (1-4-7-10)',[1,4,7,10])
@@ -31035,7 +31054,7 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
             a=Math.max(0,Math.min(100,Number(c.domPctA)||50));
             b=Math.max(0,Math.min(100,Number(c.domPctB)||100-a));
           }
-        }catch(e){}
+        }catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
         var ranges=[[0,20,'r1','0–20%'],[20,40,'r2','20–40%'],[40,60,'r3','40–60%'],[60,80,'r4','60–80%'],[80,100,'r5','80–100%']];
         function rangeFill(p,lo,hi){
           if(p<=lo) return 0;
@@ -31066,7 +31085,7 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
         // dignité) a été remplacée par zonesTrajectoiresV7 (zones notées
         // aux trajectoires fortes). currentTheme est déjà canonique ici.
         var cv=null;
-        try{cv=typeof zonesTrajectoiresV7==='function'?zonesTrajectoiresV7(currentTheme):null;}catch(e){}
+        try{cv=typeof zonesTrajectoiresV7==='function'?zonesTrajectoiresV7(currentTheme):null;}catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
         sh+='<div class="ui-square-result">Verdict du carré : '
           +esc(cv&&!cv.erreur?(cv.camp||'égalité'):'—')
           +(cv&&!cv.erreur?' · fortes '+esc(cv.nbFortes1)+'/'+esc(cv.nbFortes7)+' · force '+esc(cv.total1)+'/'+esc(cv.total7)+' ('+esc(cv.mode)+')':'')
