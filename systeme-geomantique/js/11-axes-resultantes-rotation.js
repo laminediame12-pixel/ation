@@ -560,6 +560,100 @@ function distanceAxeMaisons(p, maisonsAxe) {
 // important — deux axes sur six seulement portent une loi, et ce sont la
 // défense et l'attaque.
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// L'AXE DU PARTAGE ET LES BUTS (04/09/26) — Ellemine_D : « c'est l'axe
+// 3-5-9-11 par interaction avec l'axe 1-4-7-10 qui explique les buts.
+// m3 découle de m4 et m10, m11 découle de m5 et m6. »
+//
+// ── SES TROIS DÉRIVATIONS SONT EXACTES, LES TROIS ──
+//   ★ M3  = M4 ⊕ M10    65536/65536
+//   ★ M11 = M5 ⊕ M6     65536/65536
+//   ★ M9  = M1 ⊕ M2     65536/65536
+// (M5 est une FILLE — une colonne transposée des mères — elle ne dérive
+// d'aucun XOR. C'est la seule des quatre maisons du Partage qui ne soit
+// pas une différence.)
+//
+// ── ET LES DEUX AXES NE SONT PAS LIÉS ENTRE EUX ──
+// Partage = Cardinal, Partage ⊕ Cardinal = Succédent, = Cadent, =
+// Populus… : toutes ces relations sortent à 4096/65536, soit 1/16, le
+// pur hasard. L'axe du Partage est structurellement INDÉPENDANT du
+// Cardinal. Leur « interaction » est donc une vraie question empirique,
+// pas une identité algébrique déguisée — ce qui rend l'hypothèse
+// testable, et c'est à son crédit.
+//
+// ── LA MESURE COUPE L'HYPOTHÈSE EN DEUX ──
+// 49 matchs au score connu (41 archive + 8 du 04/09), test F par
+// permutation, aucun groupe choisi à la main :
+//     M9 SEULE ........................ F=1,086  p=0,0046  ★
+//     axe du Partage COMPLET (3-5-9-11)  F=0,638  p=0,098
+//     axe du Partage SANS M9 (3-5-11) .. F=0,347  p=0,535
+//     axe CARDINAL (1-4-7-10) ......... F=0,202  p=0,965   ← inerte
+//     Partage ⊕ Cardinal .............. F=0,341  p=0,721
+//     couple (Partage, Cardinal) ...... p=0,219
+//     éléments Partage → Cardinal ..... p=0,673
+//     nb de figures communes aux 2 axes  p=0,719
+//   témoins (quadruplets qui ne sont pas le Partage) :
+//     4-6-10-12 p=0,486 · 2-6-8-12 p=0,722 · 1-5-7-11 p=0,827
+//
+// ✔ SA LOCALISATION EST BONNE : les buts sont bien dans l'axe 3-5-9-11,
+//   et pas dans un quadruplet quelconque — les trois témoins ne disent
+//   rien.
+// ✘ MAIS TOUT LE SIGNAL EST DANS UNE SEULE DE SES QUATRE MAISONS. Ôter
+//   M9 de l'axe le tue : p passe de 0,098 à 0,535. Et ajouter n'importe
+//   quelle autre maison à M9 la dilue (M3⊕M9 p=0,382, M5⊕M9 p=0,812,
+//   M9⊕M11 p=0,844).
+// ✘ ET L'INTERACTION AVEC LE CARDINAL N'EXISTE PAS. L'axe 1-4-7-10 est
+//   le DERNIER des treize facteurs testés (p=0,965), et les quatre
+//   formes d'interaction essayées ne donnent rien.
+//
+// Ce qui reste : les buts se lisent en M9, c'est-à-dire dans M1 ⊕ M2 —
+// le chef du camp 1 combiné à sa maison de ressource.
+//
+// ── LA RÈGLE, ET POURQUOI ELLE NE VAUT RIEN ENCORE ──
+//     M9 HAUT (Albus, Conjunctio, Rubeus, Tristitia, Acquisitio)
+//         n=15 · 5,40 buts/match · 100 % au-dessus de 2,5
+//     M9 BAS  (Amissio, Laetitia, Puella, Populus)
+//         n=13 · 1,69 buts/match ·  15 % au-dessus de 2,5
+//     règle juste sur 26/28, Fisher p < 0,0001
+//
+// ☠️ CE 26/28 EST UN CHIFFRE D'AJUSTEMENT, PAS UNE PERFORMANCE. J'ai
+// composé les deux listes EN REGARDANT le tableau des buts par figure de
+// M9 : j'ai pris le haut et le bas. Choisir les groupes sur le résultat
+// puis mesurer sur les mêmes données ne prouve rien, et un p < 0,0001
+// obtenu ainsi est un artefact de méthode, pas une découverte.
+//   Et le rappel du jour est frais : ce matin « M3 négative → R7 exclu »
+//   sortait à p = 0,009 et il est mort à 15 heures d'intervalle, réfuté
+//   3 fois sur 4 hors échantillon. M9 est dans la même zone de danger —
+//   p brut 0,0046, mais 13 maisons ont été balayées, donc ~0,06 corrigé.
+//
+// ── DONC : INSCRIT D'AVANCE, SUR LES 5 MATCHS SANS RÉSULTAT ──
+//     Aveley/Cheshunt ......... M9 Rubeus        → HAUT, plus de 2,5 buts
+//     Quorn/Shepshed .......... M9 Acquisitio    → HAUT, plus de 2,5 buts
+//     ThreeBridges/Kingstonian  M9 Acquisitio    → HAUT, plus de 2,5 buts
+//     Ossett/Pontefract ....... M9 Populus       → BAS,  moins de 2,5 buts
+//     Flackwell/Hanwell ....... M9 Fortuna Major → la règle SE TAIT
+// Quatre prédictions fermes, écrites avant. La règle n'est branchée sur
+// aucun calcul et ne doit pas l'être avant d'avoir survécu hors
+// échantillon. Si elle rate deux de ces quatre, elle rejoint la règle M3.
+// ═══════════════════════════════════════════════════════════════
+var M9_BUTS_HAUT_V7 = ['albus', 'conjunctio', 'rubeus', 'tristitia', 'acquisitio'];
+var M9_BUTS_BAS_V7  = ['amissio', 'laetitia', 'puella', 'populus'];
+function lectureButsM9V7(theme) {
+  if (!theme || !theme[9]) return null;
+  var f = theme[9];
+  var sens = M9_BUTS_HAUT_V7.indexOf(f) >= 0 ? 'haut'
+          : M9_BUTS_BAS_V7.indexOf(f) >= 0 ? 'bas' : null;
+  return {
+    m9: f, origine: 'M9 = M1 ⊕ M2', sens: sens,
+    annonce: sens === 'haut' ? 'plus de 2,5 buts'
+           : sens === 'bas' ? 'moins de 2,5 buts' : 'la règle se tait',
+    enEchantillon: sens === 'haut' ? '5,40 buts, 100 % au-dessus de 2,5 (n=15)'
+                 : sens === 'bas' ? '1,69 buts, 15 % au-dessus de 2,5 (n=13)' : null,
+    statut: 'NON DÉMONTRÉ — groupes choisis sur les mêmes données, 26/28 est un chiffre d\'ajustement',
+    branche: false
+  };
+}
+
 function gouverneursAxesV7(theme) {
   if (!theme || !theme[3]) return null;
   var NEG = (typeof FIGURES_NEGATIVES_V7 !== 'undefined') ? FIGURES_NEGATIVES_V7 : {};
