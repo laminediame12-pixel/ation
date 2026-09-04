@@ -15873,10 +15873,18 @@ var CAS_REFERENCE_V7 = [
   { nom: 'CaputCarcCaputPuer', meres: ['caput_draconis','carcer','caput_draconis','puer'],
     score: '1-2', camp: 'R7', btts: true, incident: true, incidentCamp: 'M1',
     note: 'Vainqueur R7 ✔ (1-2) · aucune naissance de Mars, détecteur de signaux de repli seul en cause · incident annoncé côté M7 (Cauda Draconis en R7/M9) — FAUX, carton réel côté M1/R1 · appuie l\'hypothèse que la fiabilité du camp d\'incident dépend de la source (naissance de Mars fiable, détecteur de signaux seul moins fiable)' },
-  // ─── 04/09/26 — PENALTY DES DEUX CÔTÉS : LA DENSITÉ D'INCIDENT ÉTAIT
-  // UNANIME MAIS INCOMPLÈTE ─── FIFA (esport), 2-1 pour R1. densiteIncidentV7
-  // donnait 5/5 mécanismes nommant un camp d'accord à 100% sur M1 — et
-  // pourtant le penalty réel est tombé DES DEUX CÔTÉS, pas seulement M1.
+  // ─── 04/09/26 — CORRIGÉ : LE VRAI SCORE EST 5-2 POUR R7, PAS 2-1 POUR R1
+  // ─── Première version archivée avec le mauvais camp et le mauvais score
+  // (confusion sur l'ordre d'annonce) ; corrigé sur confirmation explicite.
+  // Verdict affiché (getVerdictAfficheReel) prédisait M1 gagnant 1-0/2-0 —
+  // donc pas seulement le camp faux, un écart énorme avec la réalité (5-2
+  // pour le camp opposé). PENALTY DES DEUX CÔTÉS, aucun carton — voir
+  // l'analyse ci-dessous, qui reste valable : elle porte sur QUI CONCÈDE UN
+  // INCIDENT (structure des antagonistes/protecteurs), pas sur qui gagne.
+  // densiteIncidentV7 donnait 5/5 mécanismes nommant un camp d'accord à
+  // 100% sur M1 pour l'incident — et le penalty réel est bien tombé DES
+  // DEUX CÔTÉS, pas seulement M1 : la densité voyait juste sur le fait
+  // qu'un incident touchait M1, mais ratait celui côté M7.
   // Structure trouvée a posteriori (analyserProtectionV7) : les DEUX chefs
   // subissent l'attaque de leur antagoniste direct —
   //   Carcer (M1, en repos en M10, maison X « la royauté ») attaqué par
@@ -15885,14 +15893,16 @@ var CAS_REFERENCE_V7 = [
   // Mais les deux ont leur protecteur présent (Albus pour Carcer, Tristitia
   // — en repos en M8 — pour Puella) : statut « protégé » des deux côtés,
   // ni l'un ni l'autre « vulnérable ». D'où penalty des deux côtés (attaque
-  // réelle) mais AUCUN carton rouge (attaque contenue par la protection).
-  // ⚠️ CE QUE ÇA MONTRE : l'unanimité à 100% d'un détecteur ne garantit pas
-  // l'exhaustivité — tous nos mécanismes votent pour UN SEUL camp par
-  // construction, aucun n'est conçu pour détecter un incident symétrique
-  // des deux côtés à la fois. Densité et cohérence élevées ≠ image complète.
+  // réelle) mais AUCUN carton rouge (attaque contenue par la protection) —
+  // cette partie-là tient toujours, elle explique les penalties, pas le score.
+  // ⚠️ CE QUE ÇA MONTRE, EN PLUS DE L'ERREUR DE SCORE : l'unanimité à 100%
+  // d'un détecteur ne garantit pas l'exhaustivité (mécanismes construits
+  // pour voter UN SEUL camp), ET un thème peut afficher un incident bien
+  // expliqué tout en ratant complètement le vainqueur — deux couches
+  // séparées, deux fiabilités séparées.
   { nom: 'AmisRubConjVia', meres: ['amissio','rubeus','conjunctio','via'],
-    score: '2-1', camp: 'R1', btts: true, esport: true, incident: true, incidentCamp: null,
-    note: 'FIFA (esport) · vainqueur R1 ✔ (2-1) · BTTS ✔ · PENALTY DES DEUX CÔTÉS, pas de carton — aucun camp unique ne peut être coché ici. densiteIncidentV7 : 5/5 mécanismes nommant un camp étaient d\'accord à 100% sur M1, mais ont raté le penalty côté M7. Expliqué a posteriori : Carcer (M1, en repos M10) et Puella (M7) sont TOUS LES DEUX attaqués par leur antagoniste direct (Rubeus ×2 pour Carcer, Conjunctio ×1 pour Puella) ET TOUS LES DEUX protégés (Albus, Tristitia en repos M8) — attaque réelle des deux côtés, mais contenue par la protection des deux côtés, d\'où penalty × 2 et aucun rouge.' }
+    score: '2-5', camp: 'R7', btts: true, esport: true, incident: true, incidentCamp: null,
+    note: 'FIFA (esport) · CORRIGÉ : vainqueur réel R7 (5-2), pas R1 comme archivé d\'abord · verdict affiché prédisait M1 1-0/2-0 — raté total, écart énorme · BTTS ✔ · PENALTY DES DEUX CÔTÉS, pas de carton — aucun camp unique ne peut être coché pour l\'incident. densiteIncidentV7 : 5/5 mécanismes nommant un camp étaient d\'accord à 100% sur M1 pour l\'incident (juste sur le fait, incomplet sur l\'exhaustivité — a raté le penalty côté M7). Expliqué a posteriori : Carcer (M1, en repos M10) et Puella (M7) sont TOUS LES DEUX attaqués par leur antagoniste direct (Rubeus ×2 pour Carcer, Conjunctio ×1 pour Puella) ET TOUS LES DEUX protégés (Albus, Tristitia en repos M8) — explique les deux penalties et l\'absence de rouge, mais ne dit rien sur le vainqueur, qui reste un raté complet du moteur de verdict.' }
 ];
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
