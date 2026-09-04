@@ -626,15 +626,35 @@ function distanceAxeMaisons(p, maisonsAxe) {
 //   3 fois sur 4 hors échantillon. M9 est dans la même zone de danger —
 //   p brut 0,0046, mais 13 maisons ont été balayées, donc ~0,06 corrigé.
 //
-// ── DONC : INSCRIT D'AVANCE, SUR LES 5 MATCHS SANS RÉSULTAT ──
-//     Aveley/Cheshunt ......... M9 Rubeus        → HAUT, plus de 2,5 buts
-//     Quorn/Shepshed .......... M9 Acquisitio    → HAUT, plus de 2,5 buts
-//     ThreeBridges/Kingstonian  M9 Acquisitio    → HAUT, plus de 2,5 buts
-//     Ossett/Pontefract ....... M9 Populus       → BAS,  moins de 2,5 buts
-//     Flackwell/Hanwell ....... M9 Fortuna Major → la règle SE TAIT
-// Quatre prédictions fermes, écrites avant. La règle n'est branchée sur
-// aucun calcul et ne doit pas l'être avant d'avoir survécu hors
-// échantillon. Si elle rate deux de ces quatre, elle rejoint la règle M3.
+// ── INSCRIT D'AVANCE SUR 5 MATCHS · TROIS RÉSULTATS SONT TOMBÉS ──
+//     ✓ Aveley/Cheshunt ..... M9 Rubeus     · annoncé PLUS de 2,5 · réel 4-2 = 6 buts
+//     ✓ Quorn/Shepshed ...... M9 Acquisitio · annoncé PLUS de 2,5 · réel 2-1 = 3 buts
+//     ✓ Ossett/Pontefract ... M9 Populus    · annoncé MOINS de 2,5 · réel 1-0 = 1 but
+//   3 sur 3, HORS ÉCHANTILLON.
+//   Restent : ThreeBridges/Kingstonian (M9 Acquisitio → plus de 2,5) et
+//   Flackwell/Hanwell (M9 Fortuna Major → la règle se tait).
+//
+// CE QUE VAUT CE 3/3, EXACTEMENT. Le taux de base « plus de 2,5 buts »
+// est de 57,1 % sur les 49 cas antérieurs. Les trois annonces étaient
+// deux « plus » et un « moins » ; sous le seul hasard, les trois tombent
+// justes avec probabilité 0,571 × 0,571 × 0,429 = 14,0 %. Ce n'est donc
+// PAS une confirmation : une chance sur sept de voir ça sans aucun
+// signal. Le 26/28 en échantillon reste, lui, sans valeur probante.
+//
+// ✔ MAIS ELLE A SURVÉCU LÀ OÙ L'AUTRE EST MORTE, et c'est la seule chose
+// que cette soirée établit vraiment. Le même jour, sur le même protocole
+// d'inscription préalable :
+//     « M3 négative → R7 exclu »  archive 1/14 = 7 %  →  hors échantillon
+//         3 R7 sur 5 = 60 %. RÉFUTÉE.
+//     « M9 haut/bas → plus/moins de 2,5 buts »  →  3/3. SURVIT.
+// Deux pistes nées le même jour du même fichier, l'une tuée en quinze
+// heures, l'autre encore debout. C'est à ça que sert d'écrire avant.
+//
+// ➜ TOUJOURS PAS BRANCHÉE. Il faut d'autres matchs, et surtout des
+// tirages À LA MAIN : les onze cas de contrôle sont des thèmes de
+// hachage, aveugles au match par construction. Si la règle tient aussi
+// sur des tirages à la main, elle deviendra intéressante. Prochain seuil
+// raisonnable : dix annonces fermes hors échantillon.
 // ═══════════════════════════════════════════════════════════════
 var M9_BUTS_HAUT_V7 = ['albus', 'conjunctio', 'rubeus', 'tristitia', 'acquisitio'];
 var M9_BUTS_BAS_V7  = ['amissio', 'laetitia', 'puella', 'populus'];

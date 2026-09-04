@@ -1215,10 +1215,10 @@ var CAS_HACHAGE_V7 = [
   { nom: 'Al-Shabab/Al-Hilal', meres: ['puella', 'populus', 'carcer', 'tristitia'], pronostic: 'R7', heure: '18:00' , camp: 'R7', score: '0-2', btts: false, miTemps: '0-0',
     cornersM1: 4, cornersM7: 18, cornersTotal: 22,
     incident: true, incidentCamp: 'M1', noteResultat: 'penalty pour M7 en 2e — concédé par M1' },
-  { nom: 'Aveley/Cheshunt',    meres: ['rubeus', 'populus', 'carcer', 'fortuna_major'], pronostic: 'R1', heure: '18:45' },
+  { nom: 'Aveley/Cheshunt',    meres: ['rubeus', 'populus', 'carcer', 'fortuna_major'], pronostic: 'R1', heure: '18:45' , camp: 'R1', score: '4-2', btts: true },
   { nom: 'Flackwell/Hanwell',  meres: ['puella', 'laetitia', 'amissio', 'puella'], pronostic: 'R7', heure: '18:45' },
-  { nom: 'Ossett/Pontefract',  meres: ['carcer', 'carcer', 'via', 'acquisitio'], pronostic: 'R7', heure: '18:45' },
-  { nom: 'Quorn/Shepshed',     meres: ['cauda_draconis', 'puella', 'caput_draconis', 'conjunctio'], pronostic: 'R7', heure: '18:45' },
+  { nom: 'Ossett/Pontefract',  meres: ['carcer', 'carcer', 'via', 'acquisitio'], pronostic: 'R7', heure: '18:45' , camp: 'R1', score: '1-0', btts: false },
+  { nom: 'Quorn/Shepshed',     meres: ['cauda_draconis', 'puella', 'caput_draconis', 'conjunctio'], pronostic: 'R7', heure: '18:45' , camp: 'R1', score: '2-1', btts: true },
   { nom: 'ThreeBridges/Kingstonian', meres: ['acquisitio', 'populus', 'albus', 'amissio'], pronostic: 'R1', heure: '18:45' }
 ];
 // Même origine pour tous : hachage du 04/09/26, date '2026-09-04' plus
