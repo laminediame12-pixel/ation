@@ -8124,6 +8124,64 @@ function signalJugePopulusChaosV7(theme){
   return {applicable: true, axes: axes, nbChargees: chargees.length, chargees: chargees};
 }
 // ═══════════════════════════════════════════════════════════════
+// DENSITÉ DE L'INCIDENT (04/09/26, demande Ellemine_D : « vérifie la
+// densité de l'incident ») — le chiffre affiché à l'écran (incidentPct)
+// ne vient que du détecteur de signaux seul. Cette fonction rassemble
+// TOUS les mécanismes d'incident du fichier (comme faisceauNulV7 le fait
+// pour le nul) : combien se déclenchent (densité), et parmi ceux qui
+// nomment un camp, sont-ils d'accord (cohérence) ? Le témoin constant
+// « toujours M1 » de MOTEURS_INCIDENT_CAMP_V7 est exclu — il n'apporte
+// aucune lecture du thème. Purement informatif, aucun poids sur le
+// verdict — sert à voir si un incidentPct modéré cache en fait un
+// accord large entre mécanismes indépendants, ou l'inverse.
+function densiteIncidentV7(theme){
+  var factuels = [];
+  function safe(fn){ try { return fn(); } catch(e){ return null; } }
+
+  var nm = safe(function(){ return naissancesMarsV7(theme); });
+  factuels.push({nom: 'Naissance de Mars (fait)', declenche: !!(nm && nm.length)});
+
+  var air = safe(function(){ return analyserIncidentR1R7(theme); });
+  factuels.push({nom: 'Analyse R1/R7', declenche: !!air});
+
+  var sa = safe(function(){ return sommesAxesIncidentV7(theme); });
+  factuels.push({nom: 'Sommes des axes', declenche: !!(sa && sa.signal)});
+
+  var idv = safe(function(){ return incidentDerivesV7(theme); });
+  factuels.push({nom: 'Dérivés d\'axes', declenche: !!(idv && (idv.rouges > 0 || idv.moyenne >= 50))});
+
+  var fil = safe(function(){ return filiationIncidentV7(theme); });
+  factuels.push({nom: 'Filiation', declenche: !!(fil && fil.applicable)});
+
+  var spm = safe(function(){ return signalPlanetesIncidentM13(theme); });
+  factuels.push({nom: 'Signal planètes M13', declenche: !!(spm && spm.signal)});
+
+  var camps = [];
+  if (air && (air.campRisque === 'R1' || air.campRisque === 'R7')) {
+    camps.push({nom: 'Analyse R1/R7', camp: air.campRisque === 'R1' ? 'M1' : 'M7'});
+  }
+  if (fil && fil.camp) camps.push({nom: 'Filiation', camp: fil.camp});
+  if (typeof MOTEURS_INCIDENT_CAMP_V7 !== 'undefined') {
+    MOTEURS_INCIDENT_CAMP_V7.forEach(function(m){
+      if (m.cle === 'inc_camp_temoin') return; // témoin constant : exclu, n'apporte rien
+      var v = safe(function(){ return m.verdict(theme); });
+      if (v && v.camp) camps.push({nom: m.nom, camp: v.camp});
+    });
+  }
+
+  var nbDeclenches = factuels.filter(function(f){ return f.declenche; }).length;
+  var comptes = {};
+  camps.forEach(function(c){ comptes[c.camp] = (comptes[c.camp] || 0) + 1; });
+  var campMajoritaire = null, maxCompte = 0;
+  Object.keys(comptes).forEach(function(k){ if (comptes[k] > maxCompte) { maxCompte = comptes[k]; campMajoritaire = k; } });
+
+  return {
+    factuels: factuels, nbDeclenches: nbDeclenches, surFactuels: factuels.length,
+    camps: camps, nbCamps: camps.length,
+    campMajoritaire: campMajoritaire, accordPct: camps.length ? Math.round(maxCompte / camps.length * 100) : null
+  };
+}
+// ═══════════════════════════════════════════════════════════════
 // GÉOMÉTRIE DES DEUX POINTS D'INTERSECTION SUR LA LIGNE M1-M7 (03/09/26,
 // observation Ellemine_D : « m2 et m6 sont liés à m10, m8 et m12 sont
 // liés à m4 ... il crée deux points d'intersection sur la ligne m1 et
@@ -27686,6 +27744,21 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           + s.nbChargees + '/3 axes chargés (Mars ou négatif) — ' + detail
           + '. Sens de lecture NON établi (3 cas connus, résultat contraire à l\'attendu) — informatif seulement.</div>';
       })())
+    // DENSITÉ DE L'INCIDENT (04/09/26) — cf. densiteIncidentV7 : combien
+    // de mécanismes d'incident se déclenchent, et sont-ils d'accord sur
+    // le camp ? Le incidentPct affiché plus haut ne vient que du
+    // détecteur de signaux seul. Aucun poids sur le verdict.
+    +((function(){
+        var d; try { d = densiteIncidentV7(theme); } catch(e){ d = null; }
+        if (!d || !d.nbDeclenches) return '';
+        var campNom = d.campMajoritaire === 'M1' ? teamA : (d.campMajoritaire === 'M7' ? teamB : null);
+        return '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #38bdf8; border-radius:7px; '
+          + 'background:rgba(56,189,248,.10); font-size:11px; color:#bae6fd; text-align:left;">'
+          + '📊 <b>DENSITÉ DE L\'INCIDENT</b> — ' + d.nbDeclenches + '/' + d.surFactuels + ' mécanismes se déclenchent'
+          + (d.nbCamps ? ' · ' + d.nbCamps + ' nomment un camp, ' + d.accordPct + '% d\'accord sur '
+              + (campNom || d.campMajoritaire) : ' · aucun ne nomme de camp')
+          + '. Purement informatif, aucun poids sur le verdict.</div>';
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29951,6 +30024,8 @@ function addToHistory() {
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalJugePopulusChaosV7.
     signalJugePopulusChaos: (function(){ try { return signalJugePopulusChaosV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. densiteIncidentV7.
+    densiteIncident: (function(){ try { return densiteIncidentV7(currentTheme); } catch(e){ return null; } })(),
     // Géométrie acquise, contenu encore à l'étude — cf. geometrieIntersectionsM1M7V7.
     geometrieIntersectionsM1M7: (function(){ try { return geometrieIntersectionsM1M7V7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
@@ -30032,6 +30107,8 @@ function saveManuel() {
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalJugePopulusChaosV7.
     signalJugePopulusChaos: (function(){ try { return signalJugePopulusChaosV7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. densiteIncidentV7.
+    densiteIncident: (function(){ try { return densiteIncidentV7(currentTheme); } catch(e){ return null; } })(),
     // Géométrie acquise, contenu encore à l'étude — cf. geometrieIntersectionsM1M7V7.
     geometrieIntersectionsM1M7: (function(){ try { return geometrieIntersectionsM1M7V7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
