@@ -16300,8 +16300,11 @@ function consensusTiragesV7(themes) {
     tally[d] += 1;
     var nv = 0;
     try { nv = niveauValiditeV7(t).niveau; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    if (v.rejete) rejetes += 1;
-    lignes.push({ n: i + 1, meres: m, dit: d, score: v.scoreMain, niveau: nv, rejete: !!v.rejete });
+    // Le critère nu (sousSeuil), pas la porte : la colonne « niveau » doit
+    // rester lisible en rouge/vert même le rejet levé. Cf. 04/09/26.
+    var sous = (v.sousSeuil !== undefined) ? !!v.sousSeuil : !!v.rejete;
+    if (sous) rejetes += 1;
+    lignes.push({ n: i + 1, meres: m, dit: d, score: v.scoreMain, niveau: nv, rejete: sous });
   });
   var n = tally.R1 + tally.R7 + tally.nul;
   if (!n) return null;
@@ -16863,8 +16866,12 @@ function validiteParFamilleV7() {
   cas.forEach(function (c) {
     var t, v;
     try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    // ⚠️ sousSeuilValiditeV7 et NON themeRejeteV7 : depuis que le rejet est
+    // levé (04/09/26) la porte renvoie null, et lire la porte ici ferait
+    // passer TOUS les thèmes pour valides — le banc mesurerait le drapeau
+    // au lieu de mesurer le critère qui a servi à le lever.
     var rj = null;
-    try { rj = themeRejeteV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+    try { rj = sousSeuilValiditeV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
     var valide = !(rj && rj.rejete);
     try { v = avecFormatV7(c.format || formatMatchV7(), function () { return getVerdictAfficheReel(t); }); }
     catch (e) { return; }
@@ -24500,10 +24507,73 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
 // des cas de référence, on perdrait la seule chose qui permet de savoir
 // si ce filtre sert à quelque chose. Le rejet porte sur le VERDICT
 // AFFICHÉ, jamais sur la mesure.
-var REJET_THEME_INVALIDE_V7 = true;
+//
+// ═══════════════════════════════════════════════════════════════
+// ☠️ LE FILTRE EST LEVÉ (04/09/26) — Ellemine_D : « oui »
+//
+// Il ne disparaît pas : il cesse de FAIRE TAIRE. Le niveau de validité,
+// les axes, les binômes, la figure du jour, le panneau de validité et la
+// porte de confiance restent calculés et affichés — mot pour mot comme
+// avant. Ce qui change : un niveau bas INFORME au lieu de CENSURER.
+//
+// CE QUE LE FILTRE COÛTAIT. Sur 2000 tirages aléatoires il en rejetait
+// 1836 — 91,8 %. Sur l'archive, 45 cas sur 56 — 80 %. Rejeté, l'écran
+// remplaçait le nom du vainqueur par « ⛔ NON VALIDE » et supprimait les
+// dix lignes du verdict. Neuf verdicts sur dix éteints.
+//
+// CE QU'IL RAPPORTAIT, RECALCULÉ AU BANC SUR 58 CAS (validiteParFamilleV7,
+// cascade M4/M10 → V8 → carré) :
+//     camp (vainqueur/nul) ..... 64 % (7/11) valides   contre  69 % (31/45) rejetés   p = 0,732
+//     le nul (oui/non) ......... 73 % (8/11)           contre  87 % (39/45)           p = 0,358
+//     les deux marquent ........ 50 % (4/8)            contre  71 % (27/38)           p = 0,407
+//     score exact .............. 25 % (2/8)            contre  28 % (11/40)           p = 1,000
+//     match serré (écart ≤ 1) .. 75 % (6/8)            contre  63 % (25/40)           p = 0,694
+// QUATRE familles lisibles sur CINQ penchent du côté des thèmes REJETÉS.
+// C'est la troisième mesure d'affilée — n = 35, n = 50, n = 58 — et la
+// direction n'a jamais changé de sens.
+//
+// ET LE SEUIL N'A PAS DE BON RÉGLAGE. Justesse du camp par niveau :
+//     0/3 ... 61,5 % (8/13)      2/3 ... 33,3 % (1/3)
+//     1/3 ... 75,9 % (22/29)     3/3 ... 63,6 % (7/11)
+// Par nombre d'axes de dérivé présents : 0 → 33 %, 1 → 70 %, 2 → 78 %,
+// 3 → 56 %. Le sommet est au MILIEU dans les deux cas. Une porte monte ;
+// elle ne fait pas une bosse. Descendre le seuil à 1 pour attraper le
+// 75,9 % serait tailler une règle sur un creux à n = 3. Donc : pas de
+// re-seuillage, et pas de rejet par famille (déjà écarté au banc).
+//   Détail dans le même sens : les thèmes DÉTRUITS (Rubeus/Cauda en M1,
+//   niveau forcé à 0) sont justes 3 fois sur 4 — au-dessus de la moyenne
+//   générale de 67,9 %.
+//
+// L'EXEMPLE QUI A EMPORTÉ LA DÉCISION. Amissio / Rubeus / Conjunctio /
+// Via — son match 5-2 pour R7. Le moteur V8 tranche R7 : JUSTE. L'écran
+// affichait « ⛔ THÈME REJETÉ » parce que le niveau est 0/3. Le système
+// avait raison et se taisait.
+//
+// ➜ OÙ LA VALIDITÉ RESTE DEBOUT : le DÉPARTAGE DE DEUX TIRAGES DU MÊME
+// MATCH. « Entre deux thèmes du même match, lequel croire ? » n'est pas
+// « un thème isolé est-il plus juste ? » — l'archive ne teste que la
+// seconde question. Le registre PAIRES_V7 teste la première : 9 paires,
+// 3 informatives, le critère « niveau » y est à 2 justes / 1 faux. C'est
+// là que la validité continue de se jouer, et nulle part ailleurs.
+//
+// ⚠️ LE BANC, LUI, DOIT CONTINUER À MESURER LE CRITÈRE. C'est le piège de
+// ce changement : validiteParFamilleV7 et le panneau de consensus se
+// servaient de themeRejeteV7 pour séparer « valides » et « rejetés ».
+// Le drapeau à false, cette fonction renvoie null et TOUT deviendrait
+// « valide » — la mesure qui justifie la décision s'effacerait avec elle.
+// D'où la séparation ci-dessous : sousSeuilValiditeV7 calcule le critère
+// SANS regarder le drapeau (c'est lui que le banc lit), themeRejeteV7
+// n'est plus qu'une porte au-dessus (c'est elle que l'ÉCRAN lit).
+// ═══════════════════════════════════════════════════════════════
+var REJET_THEME_INVALIDE_V7 = false;
 var SEUIL_VALIDITE_V7 = 3;
+// La porte de l'écran : elle ne parle que si le rejet est armé.
 function themeRejeteV7(theme) {
   if (!REJET_THEME_INVALIDE_V7) return null;
+  return sousSeuilValiditeV7(theme);
+}
+// Le critère pur, toujours calculé, jamais gouverné par le drapeau.
+function sousSeuilValiditeV7(theme) {
   var nv = null;
   try { nv = niveauValiditeV7(theme); } catch (e) { return null; }
   if (!nv || !nv.applicable) return null;
@@ -27285,6 +27355,13 @@ function getVerdictAfficheReel(theme, favorite) {
     rejete: (function () {
       try { var rj = themeRejeteV7(theme); return !!(rj && rj.rejete); } catch (e) { return false; }
     })(),
+    // Depuis le 04/09/26 « rejete » ne dit plus que l'état de l'ÉCRAN (et
+    // vaut donc false partout tant que le drapeau est levé). Le critère
+    // lui-même vit ici, pour que le consensus et le journal continuent de
+    // le montrer. Cf. le bloc de sousSeuilValiditeV7.
+    sousSeuil: (function () {
+      try { var sv = sousSeuilValiditeV7(theme); return !!(sv && sv.rejete); } catch (e) { return false; }
+    })(),
     btts: carteR.btts === true ? true : carteR.btts === false ? false : null,
     bttsSource: carteR.bttsSource || null,
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
@@ -27662,6 +27739,14 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var _rej = null;
   try { _rej = themeRejeteV7(theme); } catch (e) { _rej = null; }
   var _refuse = !!(_rej && _rej.rejete);
+  // LE NIVEAU INFORME MAINTENANT AU LIEU DE CENSURER (04/09/26). Le rejet
+  // levé, _refuse vaut false partout — mais le critère continue d'être
+  // calculé et de s'afficher, en bandeau, avec le chiffre qui a servi à
+  // lever la porte. Rien n'est caché : ni le niveau, ni ce qui manque, ni
+  // le fait que ce niveau n'a jamais prédit quoi que ce soit.
+  var _sousSeuil = null;
+  try { _sousSeuil = (!_refuse) ? sousSeuilValiditeV7(theme) : null; } catch (e) { _sousSeuil = null; }
+  if (_sousSeuil && !_sousSeuil.rejete) _sousSeuil = null;
   // ─── LE VERDICT STANDARD EN DIX LIGNES (31/08/26) ───
   // Son format, en tête de carte, chaque ligne avec son taux mesuré.
   (function () {
@@ -27723,6 +27808,20 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + 'Thème ignoré : ni vainqueur ni score. Les autres lectures restent affichées plus bas.'
         + '</div></div>'
       : '<div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>')
+    +(_sousSeuil ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #64748b; border-radius:7px; '
+      + 'background:rgba(100,116,139,.12); font-size:11px; color:#cbd5e1; text-align:left;">'
+      + '🗓️ <b>VALIDATION ' + _sousSeuil.niveau + '/3</b> — sous le seuil traditionnel de '
+      + _sousSeuil.seuil + '/3. <b>Le verdict est annoncé quand même</b>, et c\'est délibéré : '
+      + 'sur 58 cas au banc, les thèmes sous le seuil sont justes <b>69 %</b> du temps sur le camp, '
+      + 'contre 64 % pour les thèmes au seuil (p = 0,732), et ils gagnent aussi sur le nul (87 % / 73 %) '
+      + 'et sur les deux marquent (71 % / 50 %). Quatre familles lisibles sur cinq penchent de ce côté-ci. '
+      + 'Le niveau reste affiché parce qu\'il fait partie de la lecture, pas parce qu\'il prédit.'
+      + (_sousSeuil.manques && _sousSeuil.manques.length
+        ? '<div style="font-size:10px; color:#94a3b8; margin-top:5px;">'
+          + _sousSeuil.manques.slice(0, 4).map(function (m) { return '• ' + esc(m); }).join('<br>')
+          + (_sousSeuil.manques.length > 4 ? '<br>• … et ' + (_sousSeuil.manques.length - 4) + ' autre(s)' : '')
+          + '</div>' : '')
+      + '</div>' : '')
     +(_alerteNul ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #f59e0b; border-radius:7px; '
       + 'background:rgba(245,158,11,.12); font-size:11px; color:#fbbf24; text-align:left;">'
       + '<b>⚠️ ALERTE NUL</b> — la porte du nul est ouverte, mais R1 n\'est pas en maison cadente. '
