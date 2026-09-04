@@ -1134,87 +1134,91 @@ var CAS_REFERENCE_V7 = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// L'ARCHIVE DU HACHAGE (04/09/26) — 13 matchs du 04/09/26
+// LES 13 MATCHS DU 04/09/26 — TIRAGE PAR HACHAGE, RÉSULTATS EN ATTENTE
 //
-// Ellemine_D a donné treize matchs et leurs résultats réels, sans
-// tirage. Les quatre mères viennent donc de tirageDepuisMatchV7 : un
-// hachage du nom des équipes, de la date et de l'heure.
+// ☠️ ERREUR CORRIGÉE LE 04/09 AU SOIR, ET ELLE INVALIDAIT TOUT.
+// Ellemine_D a donné treize matchs avec, en face de chacun, un nom
+// d'équipe. J'ai lu ces noms comme des RÉSULTATS et je les ai archivés
+// dans un champ `camp`. C'étaient ses PRONOSTICS : les matchs se jouent
+// le 04/09 même, il l'a dit — « les 13 sont aujourd'hui, je te donnerai
+// les résultats après match ».
 //
-// ☠️ POURQUOI CES TREIZE CAS NE SONT PAS DANS CAS_REFERENCE_V7, ET NE
-// DOIVENT JAMAIS Y ENTRER. Un thème tiré par hachage ne connaît pas le
-// match : par construction, il ne peut porter aucune information sur
-// l'issue. Les verser au banc mélangerait des thèmes machine à des
-// thèmes tirés à la main, et TOUTES les mesures du fichier changeraient
-// de valeur en silence — la justesse des moteurs, la validité par
-// famille, les sept critères, le journal. On perdrait la seule chose que
-// l'archive sait faire. Ils vivent donc ici, à côté, et tousCasBancV7()
-// ne les voit pas.
+// Conséquence : tout ce que j'avais calculé là-dessus mesurait l'accord
+// du système avec SES PRÉVISIONS, pas avec la réalité. Les 6/13 = 46,2 %,
+// l'écart de −21,7 points, le Fisher p = 0,367 contre la base machine, la
+// phrase « premier chiffre du plan apparié » — tout portait sur la
+// mauvaise chose et tout est retiré. Le champ s'appelle maintenant
+// `pronostic`, il n'y a PAS de champ `camp`, et aucune fonction de mesure
+// ne peut donc les compter par accident.
 //
-// ✔ CE À QUOI ILS SERVENT : LE BRAS DE CONTRÔLE.
+// CE QUI RESTE VRAI ET NE DÉPENDAIT PAS DE CETTE ERREUR :
+//   · la base machine, mesurée par tirage aux dés — 33,2 % sur les 56 cas
+//     de l'archive (3723/11200), 38,0 % sur ces 13 matchs (988/2600) ;
+//   · le tirage par hachage se comporte comme un tirage aléatoire — R7
+//     707/1500 contre 708/1500 : le hachage est un générateur propre ;
+//   · le système penche vers R7 (47 %) contre R1 (28 %) sur un thème
+//     quelconque, alors qu'il est équilibré sur l'archive à la main ;
+//   · sur les 13, les verdicts de deux tirages machine (hachage contre
+//     dés) DIFFÈRENT 9 fois sur 13 — quand le tirage est machine, le
+//     verdict est une propriété du tirage, pas du match.
+// Aucune de ces quatre mesures ne regardait les résultats : elles tenaient
+// à la distribution des verdicts seule. Elles restent.
 //
-// ☠️ ET J'AI D'ABORD MAL LU CE QU'ILS DISAIENT. Le 04/09 au matin j'ai
-// écrit ici que le hachage à 46,2 % contre l'archive à 67,9 % « allait
-// dans le sens de la prémisse » — que le tirage à la main porte quelque
-// chose. C'était comparer un chiffre à un autre SANS BASE. Il manquait
-// la seule question qui compte : que ferait un tirage machine sur ces
-// mêmes matchs ? Mesuré l'après-midi même, et tout change.
+// ⚠️ CE QUE CES 13 CAS NE DOIVENT JAMAIS DEVENIR. Même quand les vrais
+// résultats arriveront, ils N'ENTRENT PAS dans CAS_REFERENCE_V7 : un thème
+// tiré par hachage ne connaît pas le match, il ne peut porter aucune
+// information sur l'issue, et les mélanger aux thèmes tirés à la main
+// ferait changer en silence toutes les mesures du fichier. Ils resteront
+// ici, comme bras de contrôle, à comparer à la base machine — jamais à
+// l'archive.
 //
-//   ── LA BASE MACHINE, mesurée par tirage aux dés du système ──
-//   sur les 13 matchs du 04/09 ..... 988/2600  = 38,0 %  (200 tirages/match)
-//   sur les 56 cas de l'archive .. 3723/11200  = 33,2 %  (200 tirages/cas)
-//
-//   ── CE QUE ÇA REPOSITIONNE ──
-//   hachage sur les 13 ....... 6/13 = 46,2 %  contre une base de 38,0 %
-//                              P(X ≥ 6) = 0,367 — RIEN. Le hachage se
-//                              comporte comme ce qu'il est : un tirage
-//                              quelconque. Il ne montre rien, ni pour
-//                              ni contre la prémisse.
-//   tirage système, 1 par match  2/13 = 15,4 %  contre 38,0 %
-//                              P(X ≤ 2) = 0,077 — sous la base, mais un
-//                              seul tirage par match : la variance est
-//                              énorme, on ne conclut pas.
-//   archive à la main ....... 38/56 = 67,9 %  contre une base de 33,2 %
-//                              sur LES MÊMES 56 MATCHS. +34,7 points,
-//                              P(X ≥ 38) = 1,2·10⁻⁷.
-//
-// ⚠️ ET CE 1,2·10⁻⁷ NE PROUVE PAS LA DIVINATION, IL MESURE L'AJUSTEMENT.
-// Toutes les règles du fichier ont été découvertes SUR ces 56 cas. Un
-// modèle ajusté sur un jeu bat toujours le hasard sur ce jeu — c'est ce
-// que le chiffre dit, et rien d'autre. La case qui manque est la seule
-// qui trancherait : DES TIRAGES À LA MAIN, SUR DES MATCHS QUE LES RÈGLES
-// N'ONT JAMAIS VUS. Ni le hachage ni les dés ne peuvent la remplir.
-//
-// ── LES PAIRES DU 04/09, ET CE QU'ELLES DISENT DÉJÀ ──
-// Pour chacun des 13 matchs, deux thèmes : A par hachage, B par tirage
-// aux dés du système. Les deux verdicts DIFFÈRENT sur 9 matchs sur 13.
-// Autrement dit, quand le tirage est machine, le verdict est une
-// propriété DU TIRAGE et non du match — ce qui est attendu, puisque rien
-// dans le calcul ne connaît les équipes. C'est précisément pourquoi la
-// question ne se joue que sur des tirages à la main.
-//
-// Pas de score : seuls les vainqueurs ont été donnés.
+// POUR INSCRIRE UN RÉSULTAT : ajouter `camp: 'R1' | 'R7' | 'nul'` à la
+// ligne concernée, et le score s'il est connu. Tant que `camp` est absent,
+// resultatsHachageV7() refuse de produire un taux.
 var CAS_HACHAGE_V7 = [
-  { nom: 'Ipswich/Liverpool',  meres: ['conjunctio', 'conjunctio', 'cauda_draconis', 'acquisitio'], camp: 'R7', heure: '19:00' },
-  { nom: 'RealBetis/RealMadrid', meres: ['puer', 'amissio', 'rubeus', 'tristitia'], camp: 'R7', heure: '19:00' },
-  { nom: 'Genoa/Como',         meres: ['cauda_draconis', 'puella', 'puer', 'fortuna_minor'], camp: 'nul', heure: '18:45' },
-  { nom: 'Stuttgart/Koln',     meres: ['tristitia', 'albus', 'fortuna_minor', 'conjunctio'], camp: 'R1', heure: '18:30' },
-  { nom: 'Lyon/Auxerre',       meres: ['laetitia', 'via', 'albus', 'acquisitio'], camp: 'R1', heure: '17:00' },
-  { nom: 'Abha/Al-Ettifaq',    meres: ['fortuna_major', 'rubeus', 'albus', 'albus'], camp: 'nul', heure: '16:00' },
-  { nom: 'Al-Ahli/Al-Riyadh',  meres: ['tristitia', 'populus', 'conjunctio', 'fortuna_major'], camp: 'R1', heure: '18:00' },
-  { nom: 'Al-Shabab/Al-Hilal', meres: ['puella', 'populus', 'carcer', 'tristitia'], camp: 'R7', heure: '18:00' },
-  { nom: 'Aveley/Cheshunt',    meres: ['rubeus', 'populus', 'carcer', 'fortuna_major'], camp: 'R1', heure: '18:45' },
-  { nom: 'Flackwell/Hanwell',  meres: ['puella', 'laetitia', 'amissio', 'puella'], camp: 'R7', heure: '18:45' },
-  { nom: 'Ossett/Pontefract',  meres: ['carcer', 'carcer', 'via', 'acquisitio'], camp: 'R7', heure: '18:45' },
-  { nom: 'Quorn/Shepshed',     meres: ['cauda_draconis', 'puella', 'caput_draconis', 'conjunctio'], camp: 'R7', heure: '18:45' },
-  { nom: 'ThreeBridges/Kingstonian', meres: ['acquisitio', 'populus', 'albus', 'amissio'], camp: 'R1', heure: '18:45' }
+  { nom: 'Ipswich/Liverpool',  meres: ['conjunctio', 'conjunctio', 'cauda_draconis', 'acquisitio'], pronostic: 'R7', heure: '19:00' },
+  { nom: 'RealBetis/RealMadrid', meres: ['puer', 'amissio', 'rubeus', 'tristitia'], pronostic: 'R7', heure: '19:00' },
+  { nom: 'Genoa/Como',         meres: ['cauda_draconis', 'puella', 'puer', 'fortuna_minor'], pronostic: 'nul', heure: '18:45' },
+  { nom: 'Stuttgart/Koln',     meres: ['tristitia', 'albus', 'fortuna_minor', 'conjunctio'], pronostic: 'R1', heure: '18:30' },
+  { nom: 'Lyon/Auxerre',       meres: ['laetitia', 'via', 'albus', 'acquisitio'], pronostic: 'R1', heure: '17:00' },
+  { nom: 'Abha/Al-Ettifaq',    meres: ['fortuna_major', 'rubeus', 'albus', 'albus'], pronostic: 'nul', heure: '16:00' },
+  { nom: 'Al-Ahli/Al-Riyadh',  meres: ['tristitia', 'populus', 'conjunctio', 'fortuna_major'], pronostic: 'R1', heure: '18:00' },
+  { nom: 'Al-Shabab/Al-Hilal', meres: ['puella', 'populus', 'carcer', 'tristitia'], pronostic: 'R7', heure: '18:00' },
+  { nom: 'Aveley/Cheshunt',    meres: ['rubeus', 'populus', 'carcer', 'fortuna_major'], pronostic: 'R1', heure: '18:45' },
+  { nom: 'Flackwell/Hanwell',  meres: ['puella', 'laetitia', 'amissio', 'puella'], pronostic: 'R7', heure: '18:45' },
+  { nom: 'Ossett/Pontefract',  meres: ['carcer', 'carcer', 'via', 'acquisitio'], pronostic: 'R7', heure: '18:45' },
+  { nom: 'Quorn/Shepshed',     meres: ['cauda_draconis', 'puella', 'caput_draconis', 'conjunctio'], pronostic: 'R7', heure: '18:45' },
+  { nom: 'ThreeBridges/Kingstonian', meres: ['acquisitio', 'populus', 'albus', 'amissio'], pronostic: 'R1', heure: '18:45' }
 ];
 // Même origine pour tous : hachage du 04/09/26, date '2026-09-04' plus
 // l'heure du coup d'envoi. Reproductible ligne à ligne — mêmes équipes,
 // même date, même heure → mêmes quatre mères, toujours.
 CAS_HACHAGE_V7.forEach(function (c) { c.tirage = 'hachage'; c.date = '2026-09-04'; });
 
-// Rejoue le système sur l'archive du hachage et la compare à l'archive
-// tirée à la main : la mesure du plan apparié.
+// Le bilan de ces 13 cas. Il REFUSE de rendre un taux tant que des
+// résultats manquent — c'est le garde-fou de l'erreur du 04/09 : sans lui
+// on recompte des pronostics et on croit mesurer un système.
+function resultatsHachageV7() {
+  var connus = CAS_HACHAGE_V7.filter(function (c) { return !!c.camp; });
+  var attente = CAS_HACHAGE_V7.length - connus.length;
+  if (!connus.length) {
+    return { complet: false, connus: 0, attente: attente, taux: null,
+      note: 'aucun résultat réel saisi — les 13 lignes ne portent que des pronostics' };
+  }
+  var j = 0, erreurs = [];
+  connus.forEach(function (c) {
+    var t = null;
+    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var v = null;
+    try { v = avecFormatV7(c.format || 'reel', function () { return getVerdictAfficheReel(t); }); } catch (e) { return; }
+    var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+    if (dit === c.camp) j += 1; else erreurs.push({ nom: c.nom, dit: dit, reel: c.camp });
+  });
+  return { complet: attente === 0, connus: connus.length, attente: attente,
+    juste: j, sur: connus.length, taux: j / connus.length, erreurs: erreurs,
+    note: attente ? (attente + ' match(s) encore sans résultat — taux partiel') : null };
+}
+
 // Le bras de contrôle : ce que fait un TIRAGE MACHINE sur un jeu de cas
 // donné. C'est la mesure qui manquait au matin du 04/09 et sans laquelle
 // aucune comparaison de taux ne veut rien dire (cf. le bloc ci-dessus).
@@ -1240,30 +1244,14 @@ function baseMachineV7(cas, nParCas) {
   return { juste: j, sur: n, taux: n ? j / n : null };
 }
 
-function comparaisonHachageMainV7() {
-  function passe(cas) {
-    var j = 0, n = 0, erreurs = [];
-    (cas || []).forEach(function (c) {
-      if (!c.camp) return;
-      var t = null;
-      try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-      var v = null;
-      try { v = avecFormatV7(c.format || (c.esport ? 'esport' : 'reel'), function () { return getVerdictAfficheReel(t); }); }
-      catch (e) { return; }
-      var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-      n += 1;
-      if (dit === c.camp) j += 1; else erreurs.push({ nom: c.nom, dit: dit, reel: c.camp });
-    });
-    return { juste: j, sur: n, taux: n ? j / n : null, erreurs: erreurs };
-  }
-  var main = passe(tousCasBancV7());
-  var hach = passe(CAS_HACHAGE_V7);
-  var p = null;
-  try { p = fisherExactV7(main.juste, main.sur - main.juste, hach.juste, hach.sur - hach.juste); }
-  catch (e) { p = null; }
-  return { main: main, hachage: hach,
-    ecart: (main.taux != null && hach.taux != null) ? main.taux - hach.taux : null, p: p };
-}
+// ⚠️ comparaisonHachageMainV7() a été RETIRÉE le 04/09 au soir. Elle
+// comparait l'archive à la main aux 13 cas de hachage en lisant leur
+// champ `camp` — qui contenait des pronostics, pas des résultats. Elle
+// rendait donc un écart et un p qui ne mesuraient rien. Quand les vrais
+// résultats seront saisis, la comparaison se refait avec
+// resultatsHachageV7() d'un côté et baseMachineV7() de l'autre : c'est la
+// base machine qui est le bon terme de comparaison pour un tirage
+// machine, pas l'archive tirée à la main.
 
 
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
