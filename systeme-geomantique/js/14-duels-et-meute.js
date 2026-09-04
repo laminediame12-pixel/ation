@@ -1447,6 +1447,37 @@ function analyzeValidation(theme){
 //   Fortuna Major → le favori s'impose (3-2 Belgique favorite)
 // Le vainqueur = récit du Juge × statut favori (champ matchFavorite)
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// ☠️ DEUX ENTRÉES DE CETTE TABLE NE PEUVENT PAS ÊTRE FAUSSES
+// (constaté le 04/09/26 sur Abha–Al-Ettifaq, en direct)
+//
+// Populus porte « vainqueur: selon_chaos » et le texte « nul, SAUF si rôle
+// Chaotique : accident décisif ». Le match a fini 0-2 pour R7 après 80
+// minutes de 0-0, débloqué par un BUT CONTRE SON CAMP. On pourrait écrire
+// que Populus a vu juste : il y a eu un accident, l'accident a désigné le
+// vainqueur.
+//
+// C'EST PRÉCISÉMENT CE QU'IL NE FAUT PAS ÉCRIRE. « Nul, ou sinon celui que
+// l'accident favorise » couvre les trois issues : pas de but → juste ;
+// un but pour M1 → juste ; un but pour M7 → juste. Une phrase qui ne peut
+// pas échouer ne prédit rien. Compter ça comme une réussite, c'est
+// exactement la maladie que ce fichier traque depuis le premier jour —
+// une règle écrite après le résultat.
+//
+// Les entrées concernées, à ne JAMAIS porter au crédit d'un moteur :
+//   · populus ......... vainqueur: 'selon_chaos'
+//   · les entrées 'indetermine' (albus, puella, conjunctio…), qui disent
+//     « nul ou victoire courte » : elles ne tranchent pas non plus.
+// Elles restent dans la table parce qu'elles décrivent un CLIMAT et que
+// leur champ `nul: true` est, lui, testable. Mais leur champ `vainqueur`
+// ne doit entrer dans aucun décompte de justesse.
+//
+// CE QUI RESTE FALSIFIABLE DANS LA TABLE, et qui doit porter les mesures :
+//   · le champ `nul` (vrai/faux, vérifiable au coup de sifflet)
+//   · les `vainqueur` qui NOMMENT quelqu'un : 'favori', 'outsider',
+//     'premier_marqueur', 'dominant_structurel'. Ceux-là peuvent se
+//     tromper, donc ceux-là valent quelque chose.
+// ═══════════════════════════════════════════════════════════════
 const JUGE_RECIT = {
   fortuna_major:  {denouement:'Le favori s impose par la force établie', vainqueur:'favori', nul:false},
   fortuna_minor:  {denouement:'Renversement — l outsider ou celui qui est mené finit par l emporter', vainqueur:'outsider', nul:false},

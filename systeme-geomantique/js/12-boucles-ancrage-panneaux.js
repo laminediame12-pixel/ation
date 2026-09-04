@@ -1520,6 +1520,43 @@ function signalJugePopulusChaosV7(theme){
 // aucune lecture du thème. Purement informatif, aucun poids sur le
 // verdict — sert à voir si un incidentPct modéré cache en fait un
 // accord large entre mécanismes indépendants, ou l'inverse.
+// ═══════════════════════════════════════════════════════════════
+// ☠️ L'ATTRIBUTION DU CAMP DE L'INCIDENT EST BATTUE PAR UNE CONSTANTE
+// (mesuré le 04/09/26, en direct sur Abha–Al-Ettifaq)
+//
+// RAPPEL DE SÉMANTIQUE, parce que je l'ai moi-même mal dite en direct :
+// incidentCamp désigne le camp qui SUBIT l'incident — le rouge est de son
+// côté, le penalty est concédé par lui. Pas celui qui en profite.
+//
+// Les 7 cas de l'archive au camp d'incident connu :
+//     ✓ Bologna .............. réel M1   annoncé M1
+//     ✓ Jeudi 27/08 .......... réel M1   annoncé M1
+//     ✓ PuerRubeus ........... réel M1   annoncé M1
+//     ✗ PopFortMin ........... réel M1   annoncé M7
+//     ✗ LaetPop .............. réel M1   annoncé M7
+//     ✓ AmisAmisCarcLaet ..... réel M7   annoncé M7
+//     ✗ CaputCarcCaputPuer ... réel M1   annoncé M7
+//   4/7 juste, et LES TROIS ERREURS VONT DANS LE MÊME SENS : annoncé M7,
+//   réel M1.
+//
+// Abha–Al-Ettifaq du 04/09 ajoute la quatrième, identique : densité
+// annoncée M7 avec 100 % d'accord entre ses mécanismes, et l'accident réel
+// est un BUT CONTRE SON CAMP d'Abha — donc côté M1. Quatre erreurs, quatre
+// fois la même direction.
+//
+// LE CHIFFRE QUI CONDAMNE : dans la réalité l'incident tombe côté M1 six
+// fois sur sept ; le système annonce M7 quatre fois sur sept. Dire
+// « toujours M1 » sans rien calculer donnerait 6/7 = 86 %, contre 57 %
+// pour le détecteur. Un détecteur battu par une constante ne détecte pas —
+// il ajoute du bruit à un taux de base.
+//
+// ⚠️ NE PAS CÂBLER « TOUJOURS M1 » POUR AUTANT. n = 7, et ce 6/7 peut
+// n'être qu'un déséquilibre de l'archive (les incidents notés viennent
+// surtout de matchs où c'est le camp 1 qui a craqué). Ce qui est établi,
+// c'est que l'attribution actuelle n'a rien démontré et se trompe toujours
+// du même côté. La présence de l'incident et son CAMP sont deux questions
+// distinctes : la première tient encore, la seconde est à l'arrêt.
+// ═══════════════════════════════════════════════════════════════
 function densiteIncidentV7(theme){
   var factuels = [];
   function safe(fn){ try { return fn(); } catch(e){ return null; } }
