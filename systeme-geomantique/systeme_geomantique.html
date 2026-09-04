@@ -26990,9 +26990,13 @@ var MODE_CARRE_V7 = 'fixe';
 // moteur pilote — puisque les trois passent par zonesTrajectoiresV7 ou
 // par mapCarreV7. Un seul interrupteur, aucun réglage à retrouver
 // ailleurs.
-// ⚠️ Le mode CHANGE LE VERDICT quand le carré pilote (PILOTE_VERDICT_V7
-// = 'carre') : c'est voulu, et la ligne « source décisive » du panneau
-// VERDICT nomme le cadre qui a tranché.
+// ⚠️ CORRIGÉ LE 04/09/26 : ce commentaire disait « le mode CHANGE LE
+// VERDICT quand le carré pilote ». Ce n'est plus vrai depuis que la
+// cascade est passée à ORDRE_VERDICT_V7 = ['m4m10','v8','carre'] : le
+// carré est désormais DERNIER RECOURS, donc le mode fixe/rotation ne
+// peut plus changer le verdict que dans les thèmes où M4/M10 ET V8 se
+// taisent tous les deux. Il change toujours l'affichage du carré et sa
+// lecture, comme avant.
 window.setModeCarreV7 = function (mode) {
   MODE_CARRE_V7 = (mode === 'fixe') ? 'fixe' : 'rotation';
   var sel = document.getElementById('carreModeSelect');
@@ -27110,12 +27114,11 @@ function moteurCarreV7(theme) {
 // EFFET DE CASCADE MESURÉ :
 //   avant  carré → V8 .................... 27/44 = 61,4 %
 //   après  M4/M10 → carré → V8 ........... 31/44 = 70,5 %  (+4 cas)
-// ⚠️ L'ORDRE EN DESSOUS N'EST PAS TOUCHÉ. La mesure dit qu'une variante
-// M4/M10 → V8 → carré ferait encore mieux (33/44 = 75,0 %), et que V8
-// SEUL (72,7 %) bat déjà la cascade actuelle : autrement dit le carré,
-// comme pilote, coûte plus qu'il ne rapporte. Mais PILOTE_VERDICT_V7 =
-// 'carre' est un choix explicite d'Ellemine_D — il n'est pas modifié ici
-// sans sa décision. Seul M4/M10 est ajouté, au-dessus.
+// ⚠️ SUITE, LE 04/09/26 : après avoir vu ces chiffres, Ellemine_D a
+// tranché — « oui, mets M4/M10 → V8 → carré ». Le carré est donc passé
+// de pilote à dernier recours, et la cascade complète est maintenant
+// décrite en toutes lettres dans ORDRE_VERDICT_V7 juste en dessous
+// (33/44 = 75,0 %, contre 61,4 % avant ce branchement).
 // ⚠️ RÉSERVES HONNÊTES : n = 13 cas où la règle s'applique, c'est peu ;
 // la mesure est faite sur l'archive qui a servi à formuler la règle
 // (risque de surapprentissage, atténué par le fait que la règle vient
@@ -27127,6 +27130,28 @@ function moteurCarreV7(theme) {
 // obligatoire — sans elle le branchement serait silencieusement inerte.
 var M4M10_PILOTE_VERDICT_V7 = true;   // false = retour au comportement d'avant
 
+// ═══════════════════════════════════════════════════════════════
+// L'ORDRE DE LA CASCADE, EN TOUTES LETTRES (04/09/26, sa décision :
+// « oui, mets M4/M10 → V8 → carré »)
+// Le PREMIER moteur qui répond tranche ; les suivants ne sont pas
+// interrogés. Mesuré sur les 44 cas de l'archive au camp tranché :
+//   ['carre','v8'] .............. 27/44 = 61,4 %  (l'ordre d'avant)
+//   ['m4m10','carre','v8'] ...... 31/44 = 70,5 %
+//   ['m4m10','v8','carre'] ...... 33/44 = 75,0 %  ← retenu
+//   ['v8'] seul ................. 32/44 = 72,7 %
+// ☠️ CE QUE CE CHOIX ACTE : le carré passe de pilote à dernier recours.
+// Il n'est plus consulté que si M4/M10 ET V8 se taisent tous les deux.
+// C'est mesuré, pas esthétique : sur les 13 cas où M4/M10 s'applique, le
+// carré tombait à 5/11 = 45,5 %, et V8 seul battait déjà la cascade
+// pilotée par le carré de 11 points.
+// ⚠️ CONSÉQUENCE À CONNAÎTRE : le sélecteur « Mode du carré »
+// (fixe/rotation) ne peut plus changer le verdict que dans les rares
+// thèmes où les deux premiers moteurs sont muets — voir setModeCarreV7,
+// dont le commentaire a été corrigé en conséquence.
+// 🔧 POUR REVENIR EN ARRIÈRE : remettre ORDRE_VERDICT_V7 à
+// ['carre','v8'] et M4M10_PILOTE_VERDICT_V7 à false.
+var ORDRE_VERDICT_V7 = ['m4m10', 'v8', 'carre'];
+
 function moteurM4M10VerdictV7(theme) {
   if (!M4M10_PILOTE_VERDICT_V7) return null;
   var s = null;
@@ -27137,20 +27162,55 @@ function moteurM4M10VerdictV7(theme) {
 
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
-  // M4/M10 passe en premier quand il s'applique (29 % des thèmes) ;
-  // sinon la cascade d'origine reprend telle quelle.
-  var mM4 = moteurM4M10VerdictV7(theme);
-  if (mM4) return mM4;
-  var m8 = null;
-  try { m8 = moteurV8V7(theme); } catch (e) { m8 = null; }
-  if (PILOTE_VERDICT_V7 === 'carre') {
-    var mc = null;
-    try { mc = moteurCarreV7(theme); } catch (e) { mc = null; }
-    if (mc && mc.camp) return mc.camp;
-    // carré muet : V8 répond plutôt que de laisser le verdict sans pilote.
-    return (m8 && m8.camp) ? m8.camp : null;
+  var d = decideurVerdictV7(theme, nulActif);
+  return d ? d.camp : null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE DÉCIDEUR, ET SON NOM, AU MÊME ENDROIT (04/09/26)
+// ☠️ POURQUOI CETTE FONCTION EXISTE. Le panneau VERDICT nomme la
+// « source décisive ». Cette ligne a DÉJÀ menti une fois dans l'histoire
+// du fichier — elle nommait un moteur qui ne décidait plus rien, parce
+// qu'elle refaisait la cascade dans son coin au lieu de demander au
+// décideur. En réordonnant la cascade le 04/09 (M4/M10 → V8 → carré),
+// le même bug est revenu aussitôt : l'écran annonçait « Carré
+// géomantique » alors que le carré était devenu dernier recours et
+// n'avait pas tranché.
+// La cascade n'est donc plus écrite qu'ICI. overrideVerdictV7 en prend
+// le camp, l'affichage en prend le nom : les deux ne peuvent plus
+// diverger, parce qu'ils lisent le même objet.
+function decideurVerdictV7(theme, nulActif) {
+  if (nulActif) return { camp: null, moteur: 'nul', nom: 'Porte du nul — nul imposé' };
+  var ordre = ORDRE_VERDICT_V7;
+  // Ancien interrupteur conservé et toujours actif : 'v8' retire le
+  // carré de la cascade, exactement comme avant.
+  if (PILOTE_VERDICT_V7 === 'v8') {
+    ordre = ordre.filter(function (n) { return n !== 'carre'; });
   }
-  return (m8 && m8.camp) ? m8.camp : null;
+  var mutisme = [];
+  for (var i = 0; i < ordre.length; i++) {
+    var camp = null, nom = null;
+    try {
+      if (ordre[i] === 'm4m10') {
+        camp = moteurM4M10VerdictV7(theme);
+        nom = 'Signal M4/M10 — les deux maisons défensives dans la boucle du camp soutenu';
+      } else if (ordre[i] === 'v8') {
+        var m8 = moteurV8V7(theme);
+        camp = m8 && m8.camp ? m8.camp : null;
+        nom = 'Moteur V8 — ' + ((m8 && m8.voie) || 'partage de la synthèse');
+      } else if (ordre[i] === 'carre') {
+        var mc = moteurCarreV7(theme);
+        camp = mc && mc.camp ? mc.camp : null;
+        nom = 'Carré géomantique — ' + ((mc && mc.voie) || 'trajectoires fortes');
+      }
+    } catch (e) { camp = null; }
+    if (camp) {
+      return { camp: camp, moteur: ordre[i],
+        nom: nom + (mutisme.length ? ' (après ' + mutisme.join(' et ') + ' muet' + (mutisme.length > 1 ? 's' : '') + ')' : '') };
+    }
+    mutisme.push(ordre[i] === 'm4m10' ? 'M4/M10' : ordre[i] === 'v8' ? 'V8' : 'carré');
+  }
+  return { camp: null, moteur: null, nom: 'aucun décideur' };
 }
 
 function getVerdictAfficheReel(theme, favorite) {
@@ -29292,17 +29352,14 @@ function renderTheme(){
     // 03/09/26 : le carré est devenu le pilote (PILOTE_VERDICT_V7). La
     // ligne nomme donc CELUI QUI A TRANCHÉ POUR DE BON — carré quand il
     // parle, V8 quand le carré est muet — et jamais celui qui aurait pu.
-    var m8Top = null, mcTop = null;
-    try { m8Top = moteurV8V7(currentTheme); } catch (e) { m8Top = null; }
-    if (PILOTE_VERDICT_V7 === 'carre') {
-      try { mcTop = moteurCarreV7(currentTheme); } catch (e) { mcTop = null; }
-    }
-    carteR.sourceDecisive = nulActifTop ? 'Porte du nul — nul imposé'
-      : (mcTop && mcTop.camp) ? 'Carré géomantique — ' + mcTop.voie
-      : (m8Top && m8Top.camp) ? (PILOTE_VERDICT_V7 === 'carre'
-          ? 'Moteur V8 (secours — ' + (mcTop ? 'carré muet' : 'carré indisponible') + ') — ' + (m8Top.voie || 'partage de la synthèse')
-          : 'Moteur V8 — ' + (m8Top.voie || 'partage de la synthèse'))
-      : 'aucun décideur';
+    // 04/09/26 : cette ligne refaisait la cascade dans son coin et
+    // rementait dès qu'on changeait l'ordre (elle a annoncé « Carré
+    // géomantique » alors que le carré était passé dernier recours et
+    // n'avait pas tranché). Elle demande maintenant son nom au décideur
+    // lui-même — voir decideurVerdictV7, seule écriture de la cascade.
+    var decideurTop = null;
+    try { decideurTop = decideurVerdictV7(currentTheme, nulActifTop); } catch (e) { decideurTop = null; }
+    carteR.sourceDecisive = decideurTop ? decideurTop.nom : 'aucun décideur';
     carteR.reseauSynthese = reseauTop.synthese;
     carteR.nulActifReseau = nulActifReseauTop;
     carteR.protocoleWinnerCompare = protocoleWinner;
