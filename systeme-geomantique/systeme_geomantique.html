@@ -27097,8 +27097,50 @@ function moteurCarreV7(theme) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// M4/M10 BRANCHÉ EN TÊTE DU VERDICT (04/09/26, sa demande explicite :
+// « branche le signal M4/M10 boucle dans le verdict »)
+// C'est le PREMIER signal de ce fichier à passer du banc à la décision.
+// MESURÉ AVANT DE BRANCHER, sur les 44 cas de l'archive au camp tranché :
+//   moteurCarreV7 (pilote actuel) ..... 25/41 = 61,0 %
+//   moteurV8V7 (repli) ................ 32/44 = 72,7 %
+//   signalM4M10BoucleV7 ............... 10/13 = 76,9 % (s'applique 13/44)
+// Et sur les 13 cas où M4/M10 parle, le carré tombe à 5/11 = 45,5 %.
+// Sur leurs 7 désaccords directs : M4/M10 a raison 5 fois, le carré 2.
+// EFFET DE CASCADE MESURÉ :
+//   avant  carré → V8 .................... 27/44 = 61,4 %
+//   après  M4/M10 → carré → V8 ........... 31/44 = 70,5 %  (+4 cas)
+// ⚠️ L'ORDRE EN DESSOUS N'EST PAS TOUCHÉ. La mesure dit qu'une variante
+// M4/M10 → V8 → carré ferait encore mieux (33/44 = 75,0 %), et que V8
+// SEUL (72,7 %) bat déjà la cascade actuelle : autrement dit le carré,
+// comme pilote, coûte plus qu'il ne rapporte. Mais PILOTE_VERDICT_V7 =
+// 'carre' est un choix explicite d'Ellemine_D — il n'est pas modifié ici
+// sans sa décision. Seul M4/M10 est ajouté, au-dessus.
+// ⚠️ RÉSERVES HONNÊTES : n = 13 cas où la règle s'applique, c'est peu ;
+// la mesure est faite sur l'archive qui a servi à formuler la règle
+// (risque de surapprentissage, atténué par le fait que la règle vient
+// d'une doctrine énoncée avant le test) ; et un contre-exemple est déjà
+// archivé (Caput/Tristitia/Tristitia/Laetitia : M4/M10 disait M7, réel
+// M1 4-2). Le drapeau ci-dessous permet de tout débrancher d'un mot.
+// ⚠️ ESPACES DE NOMS : signalM4M10BoucleV7 répond en M1/M7, alors que
+// moteurCarreV7 et moteurV8V7 répondent en R1/R7. La conversion est
+// obligatoire — sans elle le branchement serait silencieusement inerte.
+var M4M10_PILOTE_VERDICT_V7 = true;   // false = retour au comportement d'avant
+
+function moteurM4M10VerdictV7(theme) {
+  if (!M4M10_PILOTE_VERDICT_V7) return null;
+  var s = null;
+  try { s = signalM4M10BoucleV7(theme); } catch (e) { return null; }
+  if (!s || !s.applicable || !s.campSoutenu) return null;
+  return s.campSoutenu === 'M1' ? 'R1' : (s.campSoutenu === 'M7' ? 'R7' : null);
+}
+
 function overrideVerdictV7(theme, nulActif) {
   if (nulActif) return null;
+  // M4/M10 passe en premier quand il s'applique (29 % des thèmes) ;
+  // sinon la cascade d'origine reprend telle quelle.
+  var mM4 = moteurM4M10VerdictV7(theme);
+  if (mM4) return mM4;
   var m8 = null;
   try { m8 = moteurV8V7(theme); } catch (e) { m8 = null; }
   if (PILOTE_VERDICT_V7 === 'carre') {
