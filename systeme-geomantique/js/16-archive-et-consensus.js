@@ -1175,6 +1175,36 @@ var CAS_REFERENCE_V7 = [
 // POUR INSCRIRE UN RÉSULTAT : ajouter `camp: 'R1' | 'R7' | 'nul'` à la
 // ligne concernée, et le score s'il est connu. Tant que `camp` est absent,
 // resultatsHachageV7() refuse de produire un taux.
+// ── LE BILAN DES 11 RÉSULTATS (04/09/26 au soir) ──
+// Camp : 4/11 = 36,4 %, contre une base machine mesurée à 38,0 % sur ces
+// mêmes matchs. Le verdict d'un tirage machine vaut donc exactement le
+// hasard — attendu, et désormais vérifié sur des résultats réels et non
+// plus par simulation.
+//
+// ⚠️ LA SOIRÉE ÉTAIT PENCHÉE À DOMICILE : 7 R1, 4 R7, 0 nul. Le système,
+// lui, a annoncé R7 six fois, nul trois fois, R1 deux fois — son penchant
+// R7 (47 % sur un thème quelconque) est tombé sur une soirée R1.
+// « Toujours R1 » aurait fait 7/11. Ce n'est PAS une règle à retenir :
+// onze matchs d'un seul soir, et la tirer comme règle serait exactement
+// la faute commise le matin même avec M3.
+//
+// ☠️ CORRECTION DU CHIFFRE DES CORNERS, publié une heure trop vite.
+// J'avais annoncé « sous-estimés de 4,9 » sur les 8 matchs du soir seuls.
+// Avec les 3 cas d'archive qui ont aussi un vrai total, n = 11 et le
+// biais tombe à 2,2 — ces trois-là vont dans l'autre sens (dit 11/réel 6,
+// dit 9/réel 6, dit 11/réel 4).
+// ET LE BIAIS N'EST PAS LE PROBLÈME : Spearman = 0,10 sur les 11. La
+// prédiction de corners ne porte AUCUN ordre — elle ne distingue pas un
+// match à 4 corners d'un match à 22. Erreur absolue moyenne 6,00 pour une
+// moyenne réelle de 10,7 ; corriger le biais la ramène à 5,80. Gagner
+// 0,2 corner sur une erreur de 6, ce n'est pas une calibration, c'est de
+// la décoration.
+//   ➜ NE PAS CÂBLER DE CORRECTION DE BIAIS sur les corners.
+//
+// Ce qui a marché ce soir : la règle des buts en M9 (3/3 hors
+// échantillon, cf. lectureButsM9V7 dans js/11) et le camp de l'incident
+// (4/5). Ce qui n'a pas marché : le camp (4/11), le score exact (0/8),
+// les corners (rho 0,10).
 var CAS_HACHAGE_V7 = [
   { nom: 'Ipswich/Liverpool',  meres: ['conjunctio', 'conjunctio', 'cauda_draconis', 'acquisitio'], pronostic: 'R7', heure: '19:00' , camp: 'R7', score: '0-2', btts: false, miTemps: '0-2',
     cornersM1: 4, cornersM7: 3, cornersTotal: 7,

@@ -451,6 +451,30 @@ function moteurCarreV7(theme) {
 // ⚠️ ESPACES DE NOMS : signalM4M10BoucleV7 répond en M1/M7, alors que
 // moteurCarreV7 et moteurV8V7 répondent en R1/R7. La conversion est
 // obligatoire — sans elle le branchement serait silencieusement inerte.
+// ═══════════════════════════════════════════════════════════════
+// ☠️ CE BRANCHEMENT NE RAPPORTE RIEN — MESURÉ LE 04/09/26 AU SOIR
+//
+// Le 03/09, sur demande d'Ellemine_D, le signal M4/M10 a été mis en tête
+// de la cascade du verdict (M4/M10 → V8 → carré). Onze résultats réels
+// plus tard, voici son bilan, drapeau levé contre drapeau baissé :
+//     archive (56 cas) ... AVEC 38/56   SANS 37/56    +1
+//     soir    (11 cas) ... AVEC  4/11   SANS  5/11    −1
+//     cumulé  (67 cas) ... AVEC 42/67   SANS 42/67     0
+// Exactement zéro. Il gagne un cas sur l'archive où il a été ajusté, il
+// en perd un hors échantillon. C'est la signature d'un réglage qui a
+// appris le bruit de son propre jeu d'entraînement.
+//
+// Quand il tranche, il est à 9/13 sur l'archive (69 %) mais 0/2 le soir.
+// Et depuis le 04/09 on sait pourquoi ce signal ne peut pas être ce
+// qu'on croyait : M4 ⊕ M10 = M3 sur 65 536 thèmes, donc « les deux
+// maisons défensives dans la même boucle » n'est pas une lecture de deux
+// maisons indépendantes — c'est un énoncé sur M3, déguisé.
+//
+// ➜ RECOMMANDATION : repasser M4M10_PILOTE_VERDICT_V7 à false. Le
+//   drapeau reste à true tant qu'Ellemine_D ne l'a pas dit, parce que
+//   c'est lui qui a demandé le branchement. Rien n'est changé ici sans
+//   sa décision — seul le chiffre est inscrit.
+// ═══════════════════════════════════════════════════════════════
 var M4M10_PILOTE_VERDICT_V7 = true;   // false = retour au comportement d'avant
 
 // ═══════════════════════════════════════════════════════════════
