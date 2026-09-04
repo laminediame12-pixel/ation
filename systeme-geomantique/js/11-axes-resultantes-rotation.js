@@ -480,6 +480,102 @@ function distanceAxeMaisons(p, maisonsAxe) {
   return Math.min.apply(null, maisonsAxe.map(function (h) { return distanceMaisons(p, h); }));
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LES DEUX AXES QUI PORTENT UNE LOI (04/09/26) — Ellemine_D :
+// « pour m10 - m4 et les axes offensives, si tu portes attention à ces
+// axes je sais que tu vas découvrir quelque chose. »
+//
+// Il avait raison, et ce n'est pas une statistique : c'est exact.
+//
+// ── LE FAIT ──
+// Le thème a six axes d'opposition, M(h) ↔ M(h+6). Balayage exhaustif des
+// 65 536 thèmes, en énumération directe :
+//     M1 ⊕ M7  ..... aucune loi exacte
+//     M2 ⊕ M8  ..... aucune loi exacte
+//     M3 ⊕ M9  ..... aucune loi exacte
+//   ★ M4 ⊕ M10 = M3    65536/65536
+//   ★ M5 ⊕ M11 = M6    65536/65536
+//     M6 ⊕ M12 ..... aucune loi exacte
+// DEUX axes sur six portent une loi. Et ce sont exactement la DÉFENSE et
+// l'ATTAQUE : M4 est la 4e maison depuis M1 et M10 la 4e depuis M7 — les
+// deux buts ; M5 est la 5e depuis M1 et M11 la 5e depuis M7 — les deux
+// attaques. Les quatre autres axes dépendent du tirage ; ces deux-là non.
+//
+// Conséquence directe : les deux maisons défensives NE SONT PAS
+// INDÉPENDANTES. Tout signal construit sur le couple (M4, M10) est, qu'on
+// le sache ou non, un énoncé sur M3. Idem pour (M5, M11) et M6. C'est
+// pourquoi ces deux maisons sont nommées ici les GOUVERNEURS.
+//     M3 « Les Frères »  gouverne l'axe défensif   — camp 1
+//     M6 « La Maladie »  gouverne l'axe offensif   — camp 2
+// M3 ⊕ M6 n'est, lui, lié à rien : vérifié, aucune loi exacte.
+//
+// ⚠️ CE N'EST PAS UNE LOI NOUVELLE, C'EST UNE DÉCOMPOSITION. Le fichier
+// savait déjà que Cardinal ⊕ Succédent = Cadent. Ce qu'on ignorait, c'est
+// que cette loi globale se casse en quatre lois locales — M3 = M4⊕M10,
+// M6 = M5⊕M11, M9 = M1⊕M2, M12 = M7⊕M8 — et que parmi les six axes
+// d'opposition, seuls la défense et l'attaque en portent une.
+//
+// ── CE QUE ÇA DONNE À LA MESURE : UNE PISTE, PAS UN RÉSULTAT ──
+// 28 tests passés sur les 48 cas réels de l'archive (camp connu, hors
+// e-sport). Un seul sort du lot :
+//     M3 NÉGATIVE  (n=14) : R1 7 · R7 1 · nul 6     → R7 = 7,1 %
+//     M3 autre     (n=34) : R1 13 · R7 16 · nul 5   → R7 = 47,1 %
+//     Fisher exact bilatéral p = 0,009
+// Autrement dit : quand le gouverneur de la défense est une figure
+// négative (Cauda Draconis, Carcer, Tristitia, Amissio, Rubeus, Puer —
+// 37,5 % des thèmes), le camp 2 ne gagne pratiquement jamais. Le seul
+// contre-exemple de l'archive est VillaMain (Carcer).
+//
+// ☠️ ET CE p = 0,009 N'ÉTABLIT RIEN. C'est un test parmi 28 : corrigé du
+// nombre d'essais il vaut ~0,25. n = 14 dans la cellule qui décide. Ce
+// n'est pas une règle, c'est le meilleur candidat trouvé sur l'axe que
+// Ellemine_D désignait — rien de plus, et il n'est branché sur AUCUN
+// calcul.
+//   (Écarté au passage : « M3 de Mars → incident », 2/2, p = 0,019. Deux
+//   cas. Le p ne vient que de la rareté de l'incident dans l'archive.)
+//
+// ── LE TEST EST POSÉ D'AVANCE, ET C'EST LÀ SA VALEUR ──
+// Sur les 13 matchs du 04/09 (CAS_HACHAGE_V7), M3 est négative six fois,
+// et dans CINQ de ces six le moteur annonce R7 malgré la règle :
+//     Ipswich/Liverpool ..... M3 Cauda Draconis · moteur R7
+//     Genoa/Como ............ M3 Puer           · moteur R7
+//     Al-Shabab/Al-Hilal .... M3 Carcer         · moteur R7
+//     Aveley/Cheshunt ....... M3 Carcer         · moteur R7
+//     Flackwell/Hanwell ..... M3 Amissio        · moteur R7
+//     (RealBetis/RealMadrid . M3 Rubeus         · moteur nul — accord)
+// Règle et moteur se contredisent frontalement sur cinq matchs dont les
+// résultats tombent ce soir. Si ces cinq finissent majoritairement R7, la
+// règle meurt et c'est réglé. Sinon elle mérite d'être reprise sur un jeu
+// plus large. Écrit AVANT les résultats — c'est la seule façon que ce
+// chiffre vaille quelque chose.
+// ═══════════════════════════════════════════════════════════════
+function gouverneursAxesV7(theme) {
+  if (!theme || !theme[3]) return null;
+  var NEG = (typeof FIGURES_NEGATIVES_V7 !== 'undefined') ? FIGURES_NEGATIVES_V7 : {};
+  var g = {
+    defense: { gouverneur: theme[3], maisons: [4, 10],
+      figures: [theme[4], theme[10]], negatif: !!NEG[theme[3]] },
+    attaque: { gouverneur: theme[6], maisons: [5, 11],
+      figures: [theme[5], theme[11]], negatif: !!NEG[theme[6]] }
+  };
+  // Contrôle des deux lois à chaque appel : si l'une tombe, c'est que la
+  // construction du thème a changé quelque part et il faut le savoir.
+  try {
+    if (combine(theme[4], theme[10]) !== theme[3]
+      || combine(theme[5], theme[11]) !== theme[6]) {
+      console.warn('\u26a0\ufe0f Loi des axes gouvernés violée — la construction du thème a changé');
+      g.loiRompue = true;
+    }
+  } catch (e) { g.loiRompue = null; }
+  // La piste, explicitement marquée non démontrée.
+  g.pisteR7Exclu = g.defense.negatif
+    ? { exclut: 'R7', archive: '1/14 = 7,1 % contre 47,1 %', p: 0.009,
+        statut: 'NON DÉMONTRÉ — 1 test sur 28, corrigé p ≈ 0,25, n = 14',
+        branche: false }
+    : null;
+  return g;
+}
+
 function reseauAncrageAxeV7(axeKey, theme, profondeur) {
   profondeur = profondeur || 5;
   var def = AXES_VALIDITE_DEFS.filter(function (a) { return a.key === axeKey; })[0];
