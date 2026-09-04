@@ -8092,6 +8092,33 @@ function signalFragiliteM4M10V7(theme){
   return {applicable: fragileM4 || fragileM10, fragileM4: fragileM4, fragileM10: fragileM10, m4: theme[4], m10: theme[10]};
 }
 // ═══════════════════════════════════════════════════════════════
+// SIGNAL M4 — DOCTRINE JUGE_RECIT APPLIQUÉE À M4 (04/09/26, demande
+// Ellemine_D : « Via en M4 implique souvent les deux marquent, Fortuna
+// Major en M4 est bon en défensive, Fortuna Minor et Via pour les deux
+// marquent ») — JUGE_RECIT décrit le dénouement propre à chaque figure,
+// écrit AVANT tout test statistique. Quatre figures y disent, chacune à
+// sa façon, "les deux camps marquent" :
+//   Via         : « issue par le flux (buts des deux côtés) » — explicite
+//   Conjunctio  : « les deux camps se répondent »
+//   Amissio     : « celui qui mène finit par perdre » — suppose que
+//                 les deux ont marqué, sinon pas de retournement possible
+//   Fortuna Minor : « renversement, l'outsider finit par l'emporter » — idem
+// La piste d'origine (Via + Fortuna Minor) a été élargie à Conjunctio et
+// Amissio en relisant JUGE_RECIT en entier, pas en re-fouillant l'archive.
+// MESURÉ SUR 45 CAS AU BTTS CONNU (baseline 53,3 %) :
+//   M4 dans ce groupe de 4 (n=12) ......... 75,0 % (9/12), Fisher p≈0,10
+//   M4 = Carcer/Tristitia/Albus (n=8) ..... 50,0 % (4/8) — proche baseline
+//   toutes les autres figures (n=25) ...... 44,0 % (11/25)
+// ⚠️ Fortuna Major (« le favori s'impose par la force établie », donc
+// PAS un scénario à deux marqueurs) n'a qu'1 seul cas dans l'archive —
+// pas assez pour juger sa piste "bon en défensive" séparément ; non
+// retenue ici, à revoir avec plus de cas. Aucun poids sur le verdict.
+function signalM4JugeRecitBttsV7(theme){
+  var FAVORABLE_BTTS = ['via', 'conjunctio', 'amissio', 'fortuna_minor'];
+  var m4 = theme[4];
+  return {applicable: FAVORABLE_BTTS.indexOf(m4) >= 0, m4: m4};
+}
+// ═══════════════════════════════════════════════════════════════
 // SIGNAL JUGE POPULUS + AXES CHARGÉS (04/09/26, demande Ellemine_D) —
 // JUGE_RECIT dit du Juge Populus : « miroir/neutralité — nul, SAUF rôle
 // Chaotique : accident décisif (penalty/rouge) ». Trouvé sur un thème
@@ -27755,6 +27782,27 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         }
         return html;
       })())
+    // SIGNAL M4 — DOCTRINE JUGE_RECIT (04/09/26) — cf.
+    // signalM4JugeRecitBttsV7 : M4 dans {Via, Conjunctio, Amissio,
+    // Fortuna Minor} penche vers le BTTS (75% contre 44-50% sinon, n=45,
+    // p≈0,10). Fondé sur le texte doctrinal JUGE_RECIT, pas sur une
+    // corrélation pêchée dans les données. Aucun poids sur le verdict.
+    +((function(){
+        var s; try { s = signalM4JugeRecitBttsV7(theme); } catch(e){ s = {applicable:false}; }
+        if (!s.applicable) return '';
+        var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
+          + 'background:rgba(52,211,153,.10); font-size:11px; color:#a7f3d0; text-align:left;">'
+          + '📖 <b>SIGNAL M4 — DOCTRINE JUGE_RECIT</b> — M4 (' + (FL[s.m4] || s.m4) + ') fait partie des figures '
+          + 'dont le dénouement suppose des buts des deux côtés. Sur l\'archive : 75% contre 44-50% sinon '
+          + '(n=45, p≈0,10). Aucun poids sur le verdict.</div>';
+        if (card.btts === false) {
+          html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
+            + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
+            + '⚠️ <b>SIGNAL M4 CONTREDIT LE VERDICT</b> — le verdict ci-dessus exclut le BTTS, '
+            + 'le signal penche vers les deux équipes qui marquent.</div>';
+        }
+        return html;
+      })())
     // SIGNAL JUGE POPULUS + AXES CHARGÉS (04/09/26) — cf.
     // signalJugePopulusChaosV7 : ne s'affiche que si le Juge est Populus
     // (1/8 des thèmes). Sens de lecture NON établi — vérifié sur les 3
@@ -30052,6 +30100,8 @@ function addToHistory() {
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalM4JugeRecitBttsV7.
+    signalM4JugeRecitBtts: (function(){ try { return signalM4JugeRecitBttsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalJugePopulusChaosV7.
     signalJugePopulusChaos: (function(){ try { return signalJugePopulusChaosV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. densiteIncidentV7.
@@ -30135,6 +30185,8 @@ function saveManuel() {
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalM4JugeRecitBttsV7.
+    signalM4JugeRecitBtts: (function(){ try { return signalM4JugeRecitBttsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalJugePopulusChaosV7.
     signalJugePopulusChaos: (function(){ try { return signalJugePopulusChaosV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. densiteIncidentV7.
