@@ -1315,6 +1315,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
     <div class="field"><label>Une trajectoire précise</label>
       <select id="carreTrajUne" onchange="var s=document.getElementById('carreTrajSelect'); if(s) s.value='une'; redessinerCarreGeoV7();"></select></div>
   </div>
+  <div id="carre-geo-somme" style="font-size:11px; margin:0 auto 8px; max-width:560px; text-align:left;"></div>
   <svg id="carre-geo-svg" viewBox="0 0 400 400"></svg>
   <div id="carre-geo-legende" style="font-size:11px; margin:8px auto 0; max-width:560px; line-height:1.9;"></div>
   <div id="carre-geo-lecture" style="margin:10px auto 0; max-width:560px;"></div>
@@ -2248,7 +2249,8 @@ function renderCarreGeomantique(theme){
       + T.nom + '</text>';
   });
   svg.innerHTML = html;
-  majLegendeCarreV7(AXES_CARRE_V7, aTracer, theme);
+  renderSommeCampsEtJugeV7(theme);
+  majLegendeCarreV7(AXES_CARRE_V7, aTracer);
   majLectureCarreV7(theme, aTracer);
 }
 
@@ -2501,7 +2503,7 @@ function sommeCampsEtJugeV7(theme) {
 }
 window.sommeCampsEtJugeV7 = sommeCampsEtJugeV7;
 
-function majLegendeCarreV7(axes, traj, theme) {
+function majLegendeCarreV7(axes, traj) {
   var el = document.getElementById('carre-geo-legende');
   if (!el) return;
   // La légende est TOUJOURS là dès qu'il y a deux séries : l'identité ne
@@ -2522,24 +2524,30 @@ function majLegendeCarreV7(axes, traj, theme) {
       + '<span style="color:#cbd5e1;">' + traj.length + ' trajectoire' + (traj.length > 1 ? 's' : '')
       + ' — ' + traj.map(function (T) { return T.nom; }).join(' · ') + '</span></span>';
   }
-  // ─── SOMME DES 8 MAISONS DE CHAQUE CAMP, LE JUGE JUSTE APRÈS ───
-  // (04/09/26, sa demande) — cf. sommeCampsEtJugeV7. Purement
-  // observationnel, affiché juste sous la légende des axes.
-  if (theme) {
-    var sc = null;
-    try { sc = sommeCampsEtJugeV7(theme); } catch (e) { sc = null; }
-    if (sc) {
-      var nomFig = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
-      h += '<div style="width:100%; margin-top:8px; padding-top:8px; border-top:1px solid #1e293b; '
-        + 'font-size:11px; color:#cbd5e1;">'
-        + '<b>Somme des 8 maisons</b> — Camp 1 : <b>' + nomFig(sc.sommeCamp1) + '</b> · '
-        + 'Camp 2 : <b>' + nomFig(sc.sommeCamp2) + '</b>'
-        + ' &nbsp;·&nbsp; <b>Juge (M15)</b> : <b>' + nomFig(sc.juge) + '</b>'
-        + ' — face au Camp 1 : ' + sc.jugeVsCamp1 + ', face au Camp 2 : ' + sc.jugeVsCamp2
-        + '</div>';
-    }
-  }
   el.innerHTML = h;
+}
+
+// ─── SOMME DES 8 MAISONS DE CHAQUE CAMP, LE JUGE JUSTE APRÈS (04/09/26,
+// sa demande) — cf. sommeCampsEtJugeV7. D'ABORD DANS LA MAUVAISE CASE :
+// posé sous la légende des axes, donc sous le carré lui-même. Sa demande
+// exacte était l'inverse : la FENÊTRE du carré doit venir APRÈS cette
+// somme, pas avant. Déplacé dans #carre-geo-somme, posé dans le HTML
+// avant le <svg> — purement un changement d'ordre d'affichage, aucun
+// changement de calcul.
+function renderSommeCampsEtJugeV7(theme) {
+  var el = document.getElementById('carre-geo-somme');
+  if (!el) return;
+  var sc = null;
+  try { sc = sommeCampsEtJugeV7(theme); } catch (e) { sc = null; }
+  if (!sc) { el.innerHTML = ''; return; }
+  var nomFig = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+  el.innerHTML = '<div style="padding:7px 10px; border:1px solid #1e293b; border-radius:8px; '
+    + 'background:#0f172a; font-size:11px; color:#cbd5e1;">'
+    + '<b>Somme des 8 maisons</b> — Camp 1 : <b>' + nomFig(sc.sommeCamp1) + '</b> · '
+    + 'Camp 2 : <b>' + nomFig(sc.sommeCamp2) + '</b>'
+    + ' &nbsp;·&nbsp; <b>Juge (M15)</b> : <b>' + nomFig(sc.juge) + '</b>'
+    + ' — face au Camp 1 : ' + sc.jugeVsCamp1 + ', face au Camp 2 : ' + sc.jugeVsCamp2
+    + '</div>';
 }
 
 // 5) CLIC INTERACTIF (03/08/26, demande Ellemine_D) — même esprit que le
