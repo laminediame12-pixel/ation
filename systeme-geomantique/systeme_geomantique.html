@@ -7905,17 +7905,28 @@ function evaluerAxesValidite(theme){
 
 // ═══════════════════════════════════════════════════════════════
 // COÏNCIDENCE JUGE / 3 AXES (03/09/26, piste d'Ellemine_D : « le Juge est
-// l'ensemble des figures des 3 axes ») — vérifié EXHAUSTIVEMENT sur les
-// 65 536 thèmes possibles : ce n'est PAS une identité (le Juge n'égale pas
-// systématiquement combine(Axe Cardinal, Axe Succédent, Axe Cadent)), mais
-// ça arrive exactement 8192/65536 = 1/8 des thèmes — deux fois le taux
-// (1/16) auquel deux figures indépendantes coïncideraient par pur hasard
-// combinatoire. Un vrai lien structurel existe donc, mais partiel.
-// Sur l'archive réelle (45 cas décidés), la coïncidence n'est arrivée que
-// 2 fois (Torino 0-1, FortMajTrist 3-3 nul) — bien trop peu pour conclure,
-// mais les deux étaient des scores serrés. Ajouté comme signal purement
-// informatif pour accumuler des cas au fil du temps ; AUCUN poids sur le
-// verdict tant que l'archive ne dépasse pas quelques dizaines d'occurrences.
+// l'ensemble des figures des 3 axes »)
+// ⚠️ CORRIGÉ LE 04/09/26 — LA LECTURE D'ORIGINE ÉTAIT FAUSSE. Elle
+// disait : « ce n'est pas une identité, mais ça arrive 8192/65536 = 1/8
+// des thèmes — deux fois le taux du hasard — donc un vrai lien
+// structurel existe, partiel ». En creusant « Somme des 3 axes » puis
+// « Cardinal + Succédent = Cadent » (demande Ellemine_D), on a prouvé
+// EXHAUSTIVEMENT (cf. la loi du triplet → Populus, juste avant
+// autoTestLoiMaisonV7) que combineMany([Cardinal, Succédent, Cadent])
+// est TOUJOURS Populus, sur les 65 536 thèmes sans exception — parce
+// que les 3 axes partagent exactement les maisons M1-M12 en 3 groupes
+// de 4, et que combiner un triplet parent-parent-enfant redonne
+// toujours Populus.
+// CETTE FONCTION NE MESURE DONC QU'UNE SEULE CHOSE : la fréquence à
+// laquelle le Juge (M15) tombe sur Populus — 8192/65536 = 1/8 exactement
+// (vérifié directement, sans passer par les axes). Ce n'est pas un lien
+// entre le Juge et « l'ensemble des axes » : c'est la distribution de
+// M15 elle-même, qui n'est pas uniforme (1/8 au lieu de 1/16 si les 16
+// figures étaient équiprobables en M15) — une question intéressante en
+// soi, mais différente de celle posée à l'origine.
+// Le calcul, son résultat (true/false par thème) et son statut
+// (informatif, aucun poids sur le verdict) restent inchangés : seule la
+// lecture du POURQUOI était trompeuse.
 function coincidenceJugeAxesV7(theme){
   var axeCard = combineMany([theme[1], theme[4], theme[7], theme[10]]);
   var axeSucc = combineMany([theme[2], theme[5], theme[8], theme[11]]);
@@ -8895,6 +8906,45 @@ function autoTestLoiMaisonV7() {
 (function() {
   var t = autoTestLoiMaisonV7();
   if (!t.ok) { console.warn('⚠️ Loi de la résultante au siège violée :', t.fautes); }
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// LOI DU TRIPLET → POPULUS (04/09/26, découverte en creusant « Somme des
+// 3 axes » puis « Cardinal + Succédent = Cadent » sur demande
+// Ellemine_D) — PAS UNE PISTE STATISTIQUE, UNE IDENTITÉ ALGÉBRIQUE DE
+// combine() LUI-MÊME, vérifiée EXHAUSTIVEMENT :
+//     Pour DEUX figures a, b QUELCONQUES : combine(a, b, combine(a,b))
+//     = POPULUS, TOUJOURS (256/256 couples testés, 100%).
+// Conséquence directe : n'importe quel triplet parent-parent-enfant de
+// l'arbre géomantique (M9+M10+M13, M11+M12+M14, M13+M14+M15,
+// M15+M1+M16 — vérifié sur un thème réel) redonne Populus. Et les 3 axes
+// du carré (Cardinal, Succédent, Cadent) SE PARTAGENT EXACTEMENT les
+// maisons M1-M12 en 3 groupes de 4, donc :
+//     Cardinal ⊕ Succédent = Cadent   (et les 2 permutations)
+// sont aussi des identités à 100% (65 536/65 536 thèmes testés) — PAS
+// une propriété du hasard des figures tirées, une propriété de la
+// PARTITION des maisons.
+// ⚠️ CE QUE ÇA CORRIGE : coincidenceJugeAxesV7, plus bas, compare le
+// Juge à combineMany([Cardinal, Succédent, Cadent]) — et cette somme
+// est TOUJOURS Populus, quel que soit le thème (loi ci-dessus). Le
+// commentaire d'origine parlait d'un « lien structurel partiel » entre
+// le Juge et « l'ensemble des 3 axes » ; en réalité la fonction ne
+// mesure qu'UNE SEULE CHOSE, plus simple qu'annoncé : la fréquence à
+// laquelle le Juge (M15) tombe sur Populus. Le calcul et son résultat
+// (8192/65536 = 1/8, deux fois le taux d'une coïncidence entre deux
+// figures indépendantes) restent corrects et inchangés — c'est la
+// LECTURE qui était trompeuse, pas le nombre.
+function loiTripletPopulusV7(a, b) {
+  return combineMany([a, b, combine(a, b)]) === 'populus';
+}
+(function() {
+  var manque = [];
+  FIGS.forEach(function (a) {
+    FIGS.forEach(function (b) {
+      if (!loiTripletPopulusV7(a, b)) manque.push({ a: a, b: b });
+    });
+  });
+  if (manque.length) { console.warn('⚠️ Loi du triplet → Populus violée :', manque); }
 })();
 
 
