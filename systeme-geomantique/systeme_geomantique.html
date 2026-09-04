@@ -8082,6 +8082,38 @@ function signalFragiliteM4M10V7(theme){
   return {applicable: fragileM4 || fragileM10, fragileM4: fragileM4, fragileM10: fragileM10, m4: theme[4], m10: theme[10]};
 }
 // ═══════════════════════════════════════════════════════════════
+// SIGNAL JUGE POPULUS + AXES CHARGÉS (04/09/26, demande Ellemine_D) —
+// JUGE_RECIT dit du Juge Populus : « miroir/neutralité — nul, SAUF rôle
+// Chaotique : accident décisif (penalty/rouge) ». Trouvé sur un thème
+// réel (Laetitia/Laetitia/Caput/Carcer) que Cardinal et Cadent y étaient
+// Puer et Rubeus — les deux SEULES figures de Mars du système
+// (FIGURES_MARS_V7) — et que ce thème affichait justement un incident à
+// 58 % avec penalty ET rouge signalés ensemble. Hypothèse : compter,
+// parmi Cardinal/Succédent/Cadent, combien sont des figures de Mars ou
+// négatives (FIGURES_NEGATIVES_V7) donnerait une mesure du risque
+// « accident » qui explique l'exception de la doctrine.
+// ⚠️ VÉRIFIÉ SUR LES 3 SEULS CAS DE L'ARCHIVE À JUGE POPULUS, ET ÇA NE
+// TIENT PAS — dans le mauvais sens en plus :
+//   Torino (2 axes chargés) ......... AUCUN incident, vainqueur net
+//   FortMajTrist (1 axe chargé) ..... AUCUN incident, NUL (le cas qui
+//                                     colle le mieux à la doctrine)
+//   AmisAmisCarcLaet (0 axe chargé) . INCIDENT réel, vainqueur net
+// Le cas avec le PLUS d'axes chargés n'a pas eu d'incident ; celui avec
+// AUCUN axe chargé, si. n=3 est beaucoup trop petit pour conclure quoi
+// que ce soit, mais la belle histoire du thème d'origine ne se généralise
+// pas telle quelle. Gardé comme signal informatif à réévaluer à chaque
+// nouveau cas Juge=Populus (rare : 1/8 des thèmes) ; AUCUN poids sur le
+// verdict, et pas encore de sens de lecture fiable.
+function signalJugePopulusChaosV7(theme){
+  if (theme[15] !== 'populus') return {applicable: false};
+  var axeCard = combineMany([theme[1], theme[4], theme[7], theme[10]]);
+  var axeSucc = combineMany([theme[2], theme[5], theme[8], theme[11]]);
+  var axeCad = combineMany([theme[3], theme[6], theme[9], theme[12]]);
+  var axes = [{nom: 'Cardinal', fig: axeCard}, {nom: 'Succédent', fig: axeSucc}, {nom: 'Cadent', fig: axeCad}];
+  var chargees = axes.filter(function (a) { return !!(FIGURES_MARS_V7[a.fig] || FIGURES_NEGATIVES_V7[a.fig]); });
+  return {applicable: true, axes: axes, nbChargees: chargees.length, chargees: chargees};
+}
+// ═══════════════════════════════════════════════════════════════
 // GÉOMÉTRIE DES DEUX POINTS D'INTERSECTION SUR LA LIGNE M1-M7 (03/09/26,
 // observation Ellemine_D : « m2 et m6 sont liés à m10, m8 et m12 sont
 // liés à m4 ... il crée deux points d'intersection sur la ligne m1 et
@@ -27625,6 +27657,25 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         }
         return html;
       })())
+    // SIGNAL JUGE POPULUS + AXES CHARGÉS (04/09/26) — cf.
+    // signalJugePopulusChaosV7 : ne s'affiche que si le Juge est Populus
+    // (1/8 des thèmes). Sens de lecture NON établi — vérifié sur les 3
+    // seuls cas connus, et ça ne tient pas (voir le commentaire de la
+    // fonction). Affiché à titre purement informatif pour accumuler des
+    // cas ; aucune alerte de contradiction, aucun poids sur le verdict.
+    +((function(){
+        var s; try { s = signalJugePopulusChaosV7(theme); } catch(e){ s = {applicable:false}; }
+        if (!s.applicable) return '';
+        var detail = s.axes.map(function(a){
+          var charge = FIGURES_MARS_V7[a.fig] || FIGURES_NEGATIVES_V7[a.fig];
+          return a.nom + ' : ' + (FL[a.fig] || a.fig) + (charge ? ' ⚠' : '');
+        }).join(' · ');
+        return '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #94a3b8; border-radius:7px; '
+          + 'background:rgba(148,163,184,.10); font-size:11px; color:#cbd5e1; text-align:left;">'
+          + '🪞 <b>JUGE POPULUS</b> — doctrine : miroir/neutralité, nul sauf accident chaotique. '
+          + s.nbChargees + '/3 axes chargés (Mars ou négatif) — ' + detail
+          + '. Sens de lecture NON établi (3 cas connus, résultat contraire à l\'attendu) — informatif seulement.</div>';
+      })())
     +'</div>';
   // ─── LA BANNIÈRE DU GEL (30/08/26) ───
   // Elle est ici, sous le vainqueur, parce que c'est le seul endroit qu'on
@@ -29888,6 +29939,8 @@ function addToHistory() {
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalJugePopulusChaosV7.
+    signalJugePopulusChaos: (function(){ try { return signalJugePopulusChaosV7(currentTheme); } catch(e){ return null; } })(),
     // Géométrie acquise, contenu encore à l'étude — cf. geometrieIntersectionsM1M7V7.
     geometrieIntersectionsM1M7: (function(){ try { return geometrieIntersectionsM1M7V7(currentTheme); } catch(e){ return null; } })(),
     // ─── CORRIGÉ LE 28/08/26, SUR SIGNALEMENT D'ELLEMINE_D ───
@@ -29967,6 +30020,8 @@ function saveManuel() {
     signalRecouvrementCamps: (function(){ try { return signalRecouvrementCampsV7(currentTheme); } catch(e){ return null; } })(),
     // Signal informatif en cours d'observation, cf. signalFragiliteM4M10V7.
     signalFragiliteM4M10: (function(){ try { return signalFragiliteM4M10V7(currentTheme); } catch(e){ return null; } })(),
+    // Signal informatif en cours d'observation, cf. signalJugePopulusChaosV7.
+    signalJugePopulusChaos: (function(){ try { return signalJugePopulusChaosV7(currentTheme); } catch(e){ return null; } })(),
     // Géométrie acquise, contenu encore à l'étude — cf. geometrieIntersectionsM1M7V7.
     geometrieIntersectionsM1M7: (function(){ try { return geometrieIntersectionsM1M7V7(currentTheme); } catch(e){ return null; } })(),
     // Même correction qu'au-dessus, en pire : ici le score venait de
