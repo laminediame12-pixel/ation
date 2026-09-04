@@ -2248,7 +2248,7 @@ function renderCarreGeomantique(theme){
       + T.nom + '</text>';
   });
   svg.innerHTML = html;
-  majLegendeCarreV7(AXES_CARRE_V7, aTracer);
+  majLegendeCarreV7(AXES_CARRE_V7, aTracer, theme);
   majLectureCarreV7(theme, aTracer);
 }
 
@@ -2475,7 +2475,33 @@ function majLectureCarreV7(theme, traj) {
   el.innerHTML = h;
 }
 
-function majLegendeCarreV7(axes, traj) {
+// ═══════════════════════════════════════════════════════════════
+// SOMME DES 8 MAISONS DE CHAQUE CAMP, ET LE JUGE JUSTE APRÈS (04/09/26,
+// demande Ellemine_D) — combineMany des 8 maisons de CAMP1 et des 8
+// maisons de CAMP2 (les mêmes groupes que signalRecouvrementCampsV7),
+// puis relation du Juge (M15) à chacune des deux sommes : identique,
+// binôme, antagoniste, ou neutre. Affiché juste sous le carré, à la
+// suite de sa légende. Purement observationnel, aucun poids sur le
+// verdict — à suivre au fil des cas, comme les autres pistes du fichier.
+function sommeCampsEtJugeV7(theme) {
+  function canon(fig) { return NORM_FIG_LOOP[fig] || fig; }
+  var sommeCamp1 = combineMany(CAMP1.map(function (h) { return canon(theme[h]); }));
+  var sommeCamp2 = combineMany(CAMP2.map(function (h) { return canon(theme[h]); }));
+  var juge = canon(theme[15]);
+  function relation(fig) {
+    if (fig === juge) return 'identique';
+    if (BINOMES_V7[fig] === juge || BINOMES_V7[juge] === fig) return 'binôme';
+    if (ANTAGONISTES_V7[fig] === juge || ANTAGONISTES_V7[juge] === fig) return 'antagoniste';
+    return 'neutre';
+  }
+  return {
+    sommeCamp1: sommeCamp1, sommeCamp2: sommeCamp2, juge: juge,
+    jugeVsCamp1: relation(sommeCamp1), jugeVsCamp2: relation(sommeCamp2)
+  };
+}
+window.sommeCampsEtJugeV7 = sommeCampsEtJugeV7;
+
+function majLegendeCarreV7(axes, traj, theme) {
   var el = document.getElementById('carre-geo-legende');
   if (!el) return;
   // La légende est TOUJOURS là dès qu'il y a deux séries : l'identité ne
@@ -2495,6 +2521,23 @@ function majLegendeCarreV7(axes, traj) {
       + '<span style="display:inline-block; width:18px; height:0; border-top:2px dashed #e2e8f0;"></span>'
       + '<span style="color:#cbd5e1;">' + traj.length + ' trajectoire' + (traj.length > 1 ? 's' : '')
       + ' — ' + traj.map(function (T) { return T.nom; }).join(' · ') + '</span></span>';
+  }
+  // ─── SOMME DES 8 MAISONS DE CHAQUE CAMP, LE JUGE JUSTE APRÈS ───
+  // (04/09/26, sa demande) — cf. sommeCampsEtJugeV7. Purement
+  // observationnel, affiché juste sous la légende des axes.
+  if (theme) {
+    var sc = null;
+    try { sc = sommeCampsEtJugeV7(theme); } catch (e) { sc = null; }
+    if (sc) {
+      var nomFig = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
+      h += '<div style="width:100%; margin-top:8px; padding-top:8px; border-top:1px solid #1e293b; '
+        + 'font-size:11px; color:#cbd5e1;">'
+        + '<b>Somme des 8 maisons</b> — Camp 1 : <b>' + nomFig(sc.sommeCamp1) + '</b> · '
+        + 'Camp 2 : <b>' + nomFig(sc.sommeCamp2) + '</b>'
+        + ' &nbsp;·&nbsp; <b>Juge (M15)</b> : <b>' + nomFig(sc.juge) + '</b>'
+        + ' — face au Camp 1 : ' + sc.jugeVsCamp1 + ', face au Camp 2 : ' + sc.jugeVsCamp2
+        + '</div>';
+    }
   }
   el.innerHTML = h;
 }
