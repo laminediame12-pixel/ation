@@ -1133,6 +1133,98 @@ var CAS_REFERENCE_V7 = [
     note: 'FIFA (esport) · CORRIGÉ : vainqueur réel R7 (5-2), pas R1 comme archivé d\'abord · verdict affiché prédisait M1 1-0/2-0 — raté total, écart énorme · BTTS ✔ · PENALTY DES DEUX CÔTÉS, pas de carton — aucun camp unique ne peut être coché pour l\'incident. densiteIncidentV7 : 5/5 mécanismes nommant un camp étaient d\'accord à 100% sur M1 pour l\'incident (juste sur le fait, incomplet sur l\'exhaustivité — a raté le penalty côté M7). Expliqué a posteriori : Carcer (M1, en repos M10) et Puella (M7) sont TOUS LES DEUX attaqués par leur antagoniste direct (Rubeus ×2 pour Carcer, Conjunctio ×1 pour Puella) ET TOUS LES DEUX protégés (Albus, Tristitia en repos M8) — explique les deux penalties et l\'absence de rouge, mais ne dit rien sur le vainqueur, qui reste un raté complet du moteur de verdict.' }
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// L'ARCHIVE DU HACHAGE (04/09/26) — 13 matchs du 04/09/26
+//
+// Ellemine_D a donné treize matchs et leurs résultats réels, sans
+// tirage. Les quatre mères viennent donc de tirageDepuisMatchV7 : un
+// hachage du nom des équipes, de la date et de l'heure.
+//
+// ☠️ POURQUOI CES TREIZE CAS NE SONT PAS DANS CAS_REFERENCE_V7, ET NE
+// DOIVENT JAMAIS Y ENTRER. Un thème tiré par hachage ne connaît pas le
+// match : par construction, il ne peut porter aucune information sur
+// l'issue. Les verser au banc mélangerait des thèmes machine à des
+// thèmes tirés à la main, et TOUTES les mesures du fichier changeraient
+// de valeur en silence — la justesse des moteurs, la validité par
+// famille, les sept critères, le journal. On perdrait la seule chose que
+// l'archive sait faire. Ils vivent donc ici, à côté, et tousCasBancV7()
+// ne les voit pas.
+//
+// ✔ CE À QUOI ILS SERVENT, ET C'EST LA PREMIÈRE FOIS : LE PLAN APPARIÉ.
+// Le fichier pose depuis le premier jour une prémisse jamais testée —
+// que le tirage à la main porte quelque chose qu'un tirage quelconque ne
+// porte pas. Ces treize cas la touchent enfin.
+//
+//     système sur l'archive à la main (56 cas) ..... 38/56 = 67,9 %
+//     système sur ces 13 thèmes de hachage ......... 6/13 = 46,2 %
+//
+// −21,7 points. À n = 13 ça ne prouve rien — un seul match qui bascule
+// déplace le chiffre de 8 points — mais c'est le premier chiffre qui
+// existe sur cette question, et il va dans le sens de la prémisse. Les
+// sept erreurs : R7 dit six fois de trop (Genoa, Lyon, Al-Ahli, Aveley,
+// Three Bridges) et deux nuls qui n'en étaient pas (Real Betis, Ossett).
+//
+// ⚠️ ET IL Y A UN AUTRE CANDIDAT POUR EXPLIQUER CET ÉCART, mesuré le
+// même jour. Sur 1500 thèmes quelconques le système dit R7 dans 47 % des
+// cas contre R1 dans 27 %, alors que sur l'archive à la main ses
+// verdicts sont équilibrés (20 R1 / 23 R7 / 13 nul). Le tirage par
+// hachage se comporte EXACTEMENT comme un tirage aléatoire — R7 707/1500
+// contre 708/1500, le hachage lui-même est donc propre. Les 46,2 %
+// peuvent donc venir de la prémisse, OU simplement de ce que le système
+// penche vers R7 sur un thème quelconque pendant que ces treize matchs
+// comptaient cinq victoires à domicile. Les deux lectures tiennent à
+// n = 13. Il faut des PAIRES — le même match tiré à la main ET par
+// hachage — c'est le seul plan qui sépare les deux explications.
+//
+// Pas de score : seuls les vainqueurs ont été donnés.
+var CAS_HACHAGE_V7 = [
+  { nom: 'Ipswich/Liverpool',  meres: ['conjunctio', 'conjunctio', 'cauda_draconis', 'acquisitio'], camp: 'R7', heure: '19:00' },
+  { nom: 'RealBetis/RealMadrid', meres: ['puer', 'amissio', 'rubeus', 'tristitia'], camp: 'R7', heure: '19:00' },
+  { nom: 'Genoa/Como',         meres: ['cauda_draconis', 'puella', 'puer', 'fortuna_minor'], camp: 'nul', heure: '18:45' },
+  { nom: 'Stuttgart/Koln',     meres: ['tristitia', 'albus', 'fortuna_minor', 'conjunctio'], camp: 'R1', heure: '18:30' },
+  { nom: 'Lyon/Auxerre',       meres: ['laetitia', 'via', 'albus', 'acquisitio'], camp: 'R1', heure: '17:00' },
+  { nom: 'Abha/Al-Ettifaq',    meres: ['fortuna_major', 'rubeus', 'albus', 'albus'], camp: 'nul', heure: '16:00' },
+  { nom: 'Al-Ahli/Al-Riyadh',  meres: ['tristitia', 'populus', 'conjunctio', 'fortuna_major'], camp: 'R1', heure: '18:00' },
+  { nom: 'Al-Shabab/Al-Hilal', meres: ['puella', 'populus', 'carcer', 'tristitia'], camp: 'R7', heure: '18:00' },
+  { nom: 'Aveley/Cheshunt',    meres: ['rubeus', 'populus', 'carcer', 'fortuna_major'], camp: 'R1', heure: '18:45' },
+  { nom: 'Flackwell/Hanwell',  meres: ['puella', 'laetitia', 'amissio', 'puella'], camp: 'R7', heure: '18:45' },
+  { nom: 'Ossett/Pontefract',  meres: ['carcer', 'carcer', 'via', 'acquisitio'], camp: 'R7', heure: '18:45' },
+  { nom: 'Quorn/Shepshed',     meres: ['cauda_draconis', 'puella', 'caput_draconis', 'conjunctio'], camp: 'R7', heure: '18:45' },
+  { nom: 'ThreeBridges/Kingstonian', meres: ['acquisitio', 'populus', 'albus', 'amissio'], camp: 'R1', heure: '18:45' }
+];
+// Même origine pour tous : hachage du 04/09/26, date '2026-09-04' plus
+// l'heure du coup d'envoi. Reproductible ligne à ligne — mêmes équipes,
+// même date, même heure → mêmes quatre mères, toujours.
+CAS_HACHAGE_V7.forEach(function (c) { c.tirage = 'hachage'; c.date = '2026-09-04'; });
+
+// Rejoue le système sur l'archive du hachage et la compare à l'archive
+// tirée à la main : la mesure du plan apparié.
+function comparaisonHachageMainV7() {
+  function passe(cas) {
+    var j = 0, n = 0, erreurs = [];
+    (cas || []).forEach(function (c) {
+      if (!c.camp) return;
+      var t = null;
+      try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+      var v = null;
+      try { v = avecFormatV7(c.format || (c.esport ? 'esport' : 'reel'), function () { return getVerdictAfficheReel(t); }); }
+      catch (e) { return; }
+      var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+      n += 1;
+      if (dit === c.camp) j += 1; else erreurs.push({ nom: c.nom, dit: dit, reel: c.camp });
+    });
+    return { juste: j, sur: n, taux: n ? j / n : null, erreurs: erreurs };
+  }
+  var main = passe(tousCasBancV7());
+  var hach = passe(CAS_HACHAGE_V7);
+  var p = null;
+  try { p = fisherExactV7(main.juste, main.sur - main.juste, hach.juste, hach.sur - hach.juste); }
+  catch (e) { p = null; }
+  return { main: main, hachage: hach,
+    ecart: (main.taux != null && hach.taux != null) ? main.taux - hach.taux : null, p: p };
+}
+
+
 // ─── LES MATCHS QUE TU AS SAISIS ENTRENT DANS LE BANC (27/08/26) ───
 // Ellemine_D : « on aboutit à rien malgré les heures ». La cause n'était
 // pas le code : c'est qu'on mesurait sur sept cas, où 5/7 ne se
