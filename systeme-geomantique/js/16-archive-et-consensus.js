@@ -1181,7 +1181,21 @@ var CAS_HACHAGE_V7 = [
   { nom: 'Genoa/Como',         meres: ['cauda_draconis', 'puella', 'puer', 'fortuna_minor'], pronostic: 'nul', heure: '18:45' },
   { nom: 'Stuttgart/Koln',     meres: ['tristitia', 'albus', 'fortuna_minor', 'conjunctio'], pronostic: 'R1', heure: '18:30' },
   { nom: 'Lyon/Auxerre',       meres: ['laetitia', 'via', 'albus', 'acquisitio'], pronostic: 'R1', heure: '17:00' },
-  { nom: 'Abha/Al-Ettifaq',    meres: ['fortuna_major', 'rubeus', 'albus', 'albus'], pronostic: 'nul', heure: '16:00' },
+  // ─── PREMIER RÉSULTAT RÉEL DE CES 13 (04/09/26, suivi en direct) ───
+  // 0-0 jusqu'à la 80e, puis deux buts pour R7 dont un CONTRE SON CAMP
+  // d'Abha ; un des deux buts a été annulé, FT 0-1. Lequel des deux a
+  // été annulé n'a pas été précisé, et ça n'est PAS un détail : si le
+  // CSC a compté, le nul est tombé par un accident et la clause de
+  // Populus garde son objet ; si c'est le but ordinaire qui a compté,
+  // la brèche s'est faite par le jeu et M10 Populus « fermée » avait
+  // tort. Même score, deux mécanismes opposés — d'où `mecanisme: null`.
+  //   verdict nul .......... ✘ (R7 gagne)
+  //   score 0-0, alt 1-1 ... ✘
+  //   BTTS non ............. ✔ (Abha n'a jamais marqué pour elle-même)
+  //   camp d'incident M7 ... ✘ si le CSC a compté (l'accident était côté M1)
+  { nom: 'Abha/Al-Ettifaq',    meres: ['fortuna_major', 'rubeus', 'albus', 'albus'],
+    pronostic: 'nul', heure: '16:00',
+    camp: 'R7', score: '0-1', btts: false, mecanisme: null },
   { nom: 'Al-Ahli/Al-Riyadh',  meres: ['tristitia', 'populus', 'conjunctio', 'fortuna_major'], pronostic: 'R1', heure: '18:00' },
   { nom: 'Al-Shabab/Al-Hilal', meres: ['puella', 'populus', 'carcer', 'tristitia'], pronostic: 'R7', heure: '18:00' },
   { nom: 'Aveley/Cheshunt',    meres: ['rubeus', 'populus', 'carcer', 'fortuna_major'], pronostic: 'R1', heure: '18:45' },
