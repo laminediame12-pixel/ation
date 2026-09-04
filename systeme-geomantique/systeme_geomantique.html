@@ -5003,6 +5003,62 @@ function reseauAncrageR1R7(chef, hSiege, theme, profondeur) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// RÉSEAU D'ANCRAGE PAR AXE (04/09/26, demande Ellemine_D : « pour les
+// axes peux-tu en faire des ancrage ») — même moteur que
+// reseauAncrageR1R7 juste au-dessus (chaîne famille de binômes contre
+// chaîne ombre de leurs antagonistes, pondérée par proximité au siège),
+// mais appliqué à la figure de CHAQUE axe (Cardinal, Succédent, Cadent,
+// Partage — cf. AXES_VALIDITE_DEFS) plutôt qu'à un chef unique R1/R7.
+// ⚠️ DIFFÉRENCE OBLIGÉE : un axe n'a pas UNE maison de siège, il en a 4.
+// La distance à « la maison du chef » devient donc la distance à LA PLUS
+// PROCHE des 4 maisons de l'axe (distanceAxeMaisons) — tout le reste
+// (chaîne, score, proximité) est identique à reseauAncrageR1R7.
+// 📚 étude, prototype non encore testé sur l'archive. Aucun poids sur
+// le verdict.
+function distanceAxeMaisons(p, maisonsAxe) {
+  return Math.min.apply(null, maisonsAxe.map(function (h) { return distanceMaisons(p, h); }));
+}
+
+function reseauAncrageAxeV7(axeKey, theme, profondeur) {
+  profondeur = profondeur || 5;
+  var def = AXES_VALIDITE_DEFS.filter(function (a) { return a.key === axeKey; })[0];
+  if (!def) return null;
+  var maisonsAxe = def.houses;
+  var chef = combineMany(maisonsAxe.map(function (h) { return theme[h]; }));
+  var chaineChef = construireBoucleBinome(chef).slice(0, profondeur);
+  var chaineOmbre = chaineChef.map(function (f) { return ANTAGONISTES_V7[f]; });
+
+  function scorerChaine(chaine) {
+    var total = 0, detail = [];
+    chaine.forEach(function (fig) {
+      positionsBaseEtResultantes(fig, theme).forEach(function (posStr) {
+        var p = parseInt(posStr.replace('M', '').replace('r', ''), 10);
+        var enRepos = (FIGS_V7[p - 1] === fig);
+        var concordance = enRepos ? 1 : concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[p]);
+        var dist = distanceAxeMaisons(p, maisonsAxe);
+        var proxi = poidsProximiteMaison(dist);
+        var base = enRepos ? 100 : 20 * concordance;
+        var score = base * proxi;
+        total += score;
+        detail.push({ fig: fig, position: p, enRepos: enRepos, concordance: concordance, distance: dist, proxi: proxi, score: Math.round(score * 100) / 100 });
+      });
+    });
+    return { total: Math.round(total * 100) / 100, detail: detail };
+  }
+
+  var famille = scorerChaine(chaineChef);
+  var ombre = scorerChaine(chaineOmbre);
+  return { axe: def.label, maisons: maisonsAxe, figure: chef,
+    chaineChef: chaineChef, chaineOmbre: chaineOmbre,
+    famille: famille, ombre: ombre, net: Math.round((famille.total - ombre.total) * 100) / 100 };
+}
+
+// Les 4 ancrages d'un coup, pour comparer les axes entre eux.
+function reseauAncrageTousAxesV7(theme, profondeur) {
+  return AXES_VALIDITE_DEFS.map(function (a) { return reseauAncrageAxeV7(a.key, theme, profondeur); });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // PIÈGE CHEF+BINÔME (05/08/26, demande explicite Ellemine_D) — un camp
 // est "piégé" quand SON PROPRE chef (R1 ou R7) ET son binôme sont TOUS
 // LES DEUX pris en tenaille par la chaîne famille adverse (même maison,
