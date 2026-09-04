@@ -1150,31 +1150,47 @@ var CAS_REFERENCE_V7 = [
 // l'archive sait faire. Ils vivent donc ici, à côté, et tousCasBancV7()
 // ne les voit pas.
 //
-// ✔ CE À QUOI ILS SERVENT, ET C'EST LA PREMIÈRE FOIS : LE PLAN APPARIÉ.
-// Le fichier pose depuis le premier jour une prémisse jamais testée —
-// que le tirage à la main porte quelque chose qu'un tirage quelconque ne
-// porte pas. Ces treize cas la touchent enfin.
+// ✔ CE À QUOI ILS SERVENT : LE BRAS DE CONTRÔLE.
 //
-//     système sur l'archive à la main (56 cas) ..... 38/56 = 67,9 %
-//     système sur ces 13 thèmes de hachage ......... 6/13 = 46,2 %
+// ☠️ ET J'AI D'ABORD MAL LU CE QU'ILS DISAIENT. Le 04/09 au matin j'ai
+// écrit ici que le hachage à 46,2 % contre l'archive à 67,9 % « allait
+// dans le sens de la prémisse » — que le tirage à la main porte quelque
+// chose. C'était comparer un chiffre à un autre SANS BASE. Il manquait
+// la seule question qui compte : que ferait un tirage machine sur ces
+// mêmes matchs ? Mesuré l'après-midi même, et tout change.
 //
-// −21,7 points. À n = 13 ça ne prouve rien — un seul match qui bascule
-// déplace le chiffre de 8 points — mais c'est le premier chiffre qui
-// existe sur cette question, et il va dans le sens de la prémisse. Les
-// sept erreurs : R7 dit six fois de trop (Genoa, Lyon, Al-Ahli, Aveley,
-// Three Bridges) et deux nuls qui n'en étaient pas (Real Betis, Ossett).
+//   ── LA BASE MACHINE, mesurée par tirage aux dés du système ──
+//   sur les 13 matchs du 04/09 ..... 988/2600  = 38,0 %  (200 tirages/match)
+//   sur les 56 cas de l'archive .. 3723/11200  = 33,2 %  (200 tirages/cas)
 //
-// ⚠️ ET IL Y A UN AUTRE CANDIDAT POUR EXPLIQUER CET ÉCART, mesuré le
-// même jour. Sur 1500 thèmes quelconques le système dit R7 dans 47 % des
-// cas contre R1 dans 27 %, alors que sur l'archive à la main ses
-// verdicts sont équilibrés (20 R1 / 23 R7 / 13 nul). Le tirage par
-// hachage se comporte EXACTEMENT comme un tirage aléatoire — R7 707/1500
-// contre 708/1500, le hachage lui-même est donc propre. Les 46,2 %
-// peuvent donc venir de la prémisse, OU simplement de ce que le système
-// penche vers R7 sur un thème quelconque pendant que ces treize matchs
-// comptaient cinq victoires à domicile. Les deux lectures tiennent à
-// n = 13. Il faut des PAIRES — le même match tiré à la main ET par
-// hachage — c'est le seul plan qui sépare les deux explications.
+//   ── CE QUE ÇA REPOSITIONNE ──
+//   hachage sur les 13 ....... 6/13 = 46,2 %  contre une base de 38,0 %
+//                              P(X ≥ 6) = 0,367 — RIEN. Le hachage se
+//                              comporte comme ce qu'il est : un tirage
+//                              quelconque. Il ne montre rien, ni pour
+//                              ni contre la prémisse.
+//   tirage système, 1 par match  2/13 = 15,4 %  contre 38,0 %
+//                              P(X ≤ 2) = 0,077 — sous la base, mais un
+//                              seul tirage par match : la variance est
+//                              énorme, on ne conclut pas.
+//   archive à la main ....... 38/56 = 67,9 %  contre une base de 33,2 %
+//                              sur LES MÊMES 56 MATCHS. +34,7 points,
+//                              P(X ≥ 38) = 1,2·10⁻⁷.
+//
+// ⚠️ ET CE 1,2·10⁻⁷ NE PROUVE PAS LA DIVINATION, IL MESURE L'AJUSTEMENT.
+// Toutes les règles du fichier ont été découvertes SUR ces 56 cas. Un
+// modèle ajusté sur un jeu bat toujours le hasard sur ce jeu — c'est ce
+// que le chiffre dit, et rien d'autre. La case qui manque est la seule
+// qui trancherait : DES TIRAGES À LA MAIN, SUR DES MATCHS QUE LES RÈGLES
+// N'ONT JAMAIS VUS. Ni le hachage ni les dés ne peuvent la remplir.
+//
+// ── LES PAIRES DU 04/09, ET CE QU'ELLES DISENT DÉJÀ ──
+// Pour chacun des 13 matchs, deux thèmes : A par hachage, B par tirage
+// aux dés du système. Les deux verdicts DIFFÈRENT sur 9 matchs sur 13.
+// Autrement dit, quand le tirage est machine, le verdict est une
+// propriété DU TIRAGE et non du match — ce qui est attendu, puisque rien
+// dans le calcul ne connaît les équipes. C'est précisément pourquoi la
+// question ne se joue que sur des tirages à la main.
 //
 // Pas de score : seuls les vainqueurs ont été donnés.
 var CAS_HACHAGE_V7 = [
@@ -1199,6 +1215,31 @@ CAS_HACHAGE_V7.forEach(function (c) { c.tirage = 'hachage'; c.date = '2026-09-04
 
 // Rejoue le système sur l'archive du hachage et la compare à l'archive
 // tirée à la main : la mesure du plan apparié.
+// Le bras de contrôle : ce que fait un TIRAGE MACHINE sur un jeu de cas
+// donné. C'est la mesure qui manquait au matin du 04/09 et sans laquelle
+// aucune comparaison de taux ne veut rien dire (cf. le bloc ci-dessus).
+// nParCas tirages aux dés par cas ; 200 donne déjà un taux stable au
+// point de pourcentage près.
+function baseMachineV7(cas, nParCas) {
+  nParCas = nParCas || 200;
+  var j = 0, n = 0;
+  (cas || []).forEach(function (c) {
+    if (!c.camp) return;
+    var fmt = c.format || (c.esport ? 'esport' : 'reel');
+    for (var i = 0; i < nParCas; i++) {
+      var meres = [rollOneMother(), rollOneMother(), rollOneMother(), rollOneMother()]
+        .map(function (x) { return x.figure; });
+      var t = null;
+      try { t = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]); } catch (e) { continue; }
+      var v = null;
+      try { v = avecFormatV7(fmt, function () { return getVerdictAfficheReel(t); }); } catch (e) { continue; }
+      var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+      n += 1; if (dit === c.camp) j += 1;
+    }
+  });
+  return { juste: j, sur: n, taux: n ? j / n : null };
+}
+
 function comparaisonHachageMainV7() {
   function passe(cas) {
     var j = 0, n = 0, erreurs = [];
