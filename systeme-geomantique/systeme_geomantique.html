@@ -8055,11 +8055,21 @@ function signalRecouvrementCampsV7(theme){
 // ═══════════════════════════════════════════════════════════════
 // SIGNAL DE FRAGILITÉ M4/M10 — MOTIF DU "LES DEUX MARQUENT" (03/09/26,
 // demande Ellemine_D : « pour que les deux marquent découle de la
-// fragilité de M4 et M10 ») — M4 et M10 forment la ligne défensive
-// commune aux deux camps (déjà établi pour figDefensiveM1/M7 dans
-// tableauReferenceBTTS). Une figure "fragile" ici = mobile ET ouverte à
-// la fois (tables traditionnelles MOBILITE_FIGURE / OUVERTURE_FIGURE) :
-// une défense qui bouge et qui laisse passer.
+// fragilité de M4 et M10 »)
+// ⚠️ CORRIGÉ LE 04/09/26 (sa question directe : « M4 et M10 sont pour
+// quel camp ? ») — ce commentaire disait « M4 et M10 forment la ligne
+// défensive commune aux deux camps ». FAUX au sens de CAMP1/CAMP2
+// (const CAMP1=[1,2,3,4,9,10,13,16]) : M4 ET M10 appartiennent TOUS LES
+// DEUX à CAMP1, aucun des deux n'est dans CAMP2. « Commune aux deux
+// camps » venait d'un AUTRE découpage, purement visuel, celui du carré
+// (ZONE_M1_MAISONS/ZONE_M7_MAISONS/ZONE_NEUTRE_MAISONS=[4,10]) où M4 et
+// M10 sont NEUTRES parce qu'ils tombent exactement sur l'axe central du
+// dessin — rien à voir avec CAMP1/CAMP2. Le signal ci-dessous ne s'appuie
+// sur AUCUN des deux découpages de camp : il regarde seulement si LA
+// FIGURE en M4 ou M10 est mobile et ouverte, quel que soit le camp
+// auquel la maison appartient. Une figure "fragile" ici = mobile ET
+// ouverte à la fois (tables traditionnelles MOBILITE_FIGURE /
+// OUVERTURE_FIGURE) : une défense qui bouge et qui laisse passer.
 // MESURÉ SUR 45 CAS AU BTTS CONNU (baseline 53,3 %) :
 //   M4 ou M10 mobile+ouverte ......... 64,5 % (20/31) — Fisher p≈0,05
 //   ni l'une ni l'autre ............... 28,6 % (4/14)
