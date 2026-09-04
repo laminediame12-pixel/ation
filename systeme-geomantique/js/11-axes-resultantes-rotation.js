@@ -534,20 +534,31 @@ function distanceAxeMaisons(p, maisonsAxe) {
 //   (Écarté au passage : « M3 de Mars → incident », 2/2, p = 0,019. Deux
 //   cas. Le p ne vient que de la rareté de l'incident dans l'archive.)
 //
-// ── LE TEST EST POSÉ D'AVANCE, ET C'EST LÀ SA VALEUR ──
-// Sur les 13 matchs du 04/09 (CAS_HACHAGE_V7), M3 est négative six fois,
-// et dans CINQ de ces six le moteur annonce R7 malgré la règle :
-//     Ipswich/Liverpool ..... M3 Cauda Draconis · moteur R7
-//     Genoa/Como ............ M3 Puer           · moteur R7
-//     Al-Shabab/Al-Hilal .... M3 Carcer         · moteur R7
-//     Aveley/Cheshunt ....... M3 Carcer         · moteur R7
-//     Flackwell/Hanwell ..... M3 Amissio        · moteur R7
-//     (RealBetis/RealMadrid . M3 Rubeus         · moteur nul — accord)
-// Règle et moteur se contredisent frontalement sur cinq matchs dont les
-// résultats tombent ce soir. Si ces cinq finissent majoritairement R7, la
-// règle meurt et c'est réglé. Sinon elle mérite d'être reprise sur un jeu
-// plus large. Écrit AVANT les résultats — c'est la seule façon que ce
-// chiffre vaille quelque chose.
+// ── LE TEST ÉTAIT POSÉ D'AVANCE. LA RÈGLE EST MORTE LE SOIR MÊME. ──
+// Écrit le 04/09 avant les résultats : M3 est négative sur six des treize
+// matchs, et dans cinq de ces six le moteur annonçait R7 malgré la règle.
+// Huit résultats sont tombés le soir même, dont quatre sur des thèmes à M3
+// négative :
+//     Ipswich/Liverpool ..... M3 Cauda Draconis · réel R7   ← violée
+//     Genoa/Como ............ M3 Puer           · réel R7   ← violée
+//     Al-Shabab/Al-Hilal .... M3 Carcer         · réel R7   ← violée
+//     RealBetis/RealMadrid .. M3 Rubeus         · réel R1   ✓ respectée
+// R7 sur 3 des 4. L'archive donnait 1 sur 14 (7 %) ; la réalité hors
+// échantillon donne 75 %. Cumulé : 4/18 = 22 %.
+//
+// ☠️ LA RÈGLE EST RÉFUTÉE, ET C'EST EXACTEMENT CE QU'ON VOULAIT D'ELLE.
+// Un p = 0,009 tiré de 28 essais sur 48 cas a survécu douze heures. Sans
+// l'écrire à l'avance on aurait pu la garder des mois, la « confirmer » en
+// choisissant des cas, et finir par la brancher. Écrite d'avance, elle est
+// morte en une soirée pour le prix d'un commentaire.
+//   ➜ NE PAS LA RESSUSCITER en changeant la liste des figures négatives ou
+//     en ajoutant une condition. Ce serait la retailler sur les cas qui
+//     l'ont tuée. Elle est fermée.
+//
+// CE QUI SURVIT DE CE BLOC : la LOI, pas la piste. M4 ⊕ M10 = M3 et
+// M5 ⊕ M11 = M6 restent vraies sur 65 536 thèmes, et restent le fait
+// important — deux axes sur six seulement portent une loi, et ce sont la
+// défense et l'attaque.
 // ═══════════════════════════════════════════════════════════════
 function gouverneursAxesV7(theme) {
   if (!theme || !theme[3]) return null;
@@ -567,12 +578,13 @@ function gouverneursAxesV7(theme) {
       g.loiRompue = true;
     }
   } catch (e) { g.loiRompue = null; }
-  // La piste, explicitement marquée non démontrée.
-  g.pisteR7Exclu = g.defense.negatif
-    ? { exclut: 'R7', archive: '1/14 = 7,1 % contre 47,1 %', p: 0.009,
-        statut: 'NON DÉMONTRÉ — 1 test sur 28, corrigé p ≈ 0,25, n = 14',
-        branche: false }
-    : null;
+  // La piste « M3 négative → R7 exclu » a été RÉFUTÉE le 04/09 au soir
+  // (3 R7 sur 4 hors échantillon contre 1/14 dans l'archive). Le champ
+  // reste, à false, pour que personne ne la redécouvre en croyant qu'elle
+  // est neuve. Cf. le bloc au-dessus.
+  g.pisteR7Exclu = null;
+  g.pisteR7ExcluRefutee = { quand: '04/09/26', archive: '1/14', horsEchantillon: '3/4 R7',
+    verdict: 'RÉFUTÉE — ne pas rouvrir en modifiant la liste des figures négatives' };
   return g;
 }
 

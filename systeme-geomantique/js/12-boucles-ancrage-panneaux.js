@@ -1551,11 +1551,25 @@ function signalJugePopulusChaosV7(theme){
 // il ajoute du bruit à un taux de base.
 //
 // ⚠️ NE PAS CÂBLER « TOUJOURS M1 » POUR AUTANT. n = 7, et ce 6/7 peut
-// n'être qu'un déséquilibre de l'archive (les incidents notés viennent
-// surtout de matchs où c'est le camp 1 qui a craqué). Ce qui est établi,
-// c'est que l'attribution actuelle n'a rien démontré et se trompe toujours
-// du même côté. La présence de l'incident et son CAMP sont deux questions
-// distinctes : la première tient encore, la seconde est à l'arrêt.
+// n'être qu'un déséquilibre de l'archive.
+//
+// ── CORRECTION DU SOIR MÊME (04/09/26) : J'AI CONCLU TROP VITE ──
+// Cinq incidents réels sont tombés le soir, et le détecteur en a lu
+// QUATRE justes :
+//     RealBetis/RealMadrid . dit M1 → réel M1  ✓ (penalty manqué de M7, concédé par M1)
+//     Stuttgart/Koln ....... dit M7 → réel M7  ✓ (CSC contre M7)
+//     Al-Ahli/Al-Riyadh .... dit M7 → réel M7  ✓ (deux penalties concédés par M7)
+//     Al-Shabab/Al-Hilal ... dit M1 → réel M1  ✓ (penalty concédé par M1)
+//     Abha/Al-Ettifaq ...... dit M7 → réel M1  ✘ (CSC d'Abha)
+// Cumul archive + soir : détecteur 8/12 = 67 %, « toujours M1 » 9/12 =
+// 75 %. L'écart tombe de 29 points à 8, soit UN cas. Ma phrase de
+// l'après-midi — « un détecteur battu par une constante » — était juste
+// sur les 7 cas que j'avais alors, et elle est devenue trop dure dès que
+// cinq cas de plus sont arrivés. C'est ce que valent les conclusions à
+// n = 7 ; je la corrige plutôt que de la laisser vieillir.
+// Ce qui reste vrai : le détecteur n'a toujours rien DÉMONTRÉ, et son
+// avantage sur une constante n'est pas établi. Ce qui n'est plus vrai :
+// qu'il fasse pire qu'elle.
 // ═══════════════════════════════════════════════════════════════
 function densiteIncidentV7(theme){
   var factuels = [];
