@@ -2158,6 +2158,37 @@ var BRANCHES_V7 = {
       + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
       + 'avant tout branchement.' },
 
+  miroir_m5: {
+    actif: false,
+    nom: 'Le partage qui commence en M5 pilote ou contrôle le verdict',
+    cible: 'le camp',
+    demande: 'Ellemine_D, 05/09 : « maintenant branche-le au verdict ».',
+    refus: 'MESURÉ, ET CE N\'EST PAS UNE QUESTION DE PREUVE : LE MIROIR N\'EST PAS UNE '
+      + 'SYMÉTRIE DU VERDICT. Le branchement naturel aurait été un contrôle de cohérence — '
+      + 'lire le thème depuis l\'autre bord doit donner le même match, camps échangés. '
+      + 'Testé, et l\'attente est fausse :',
+    mesures: {
+      'camps inversés (attendu)': '4,4 % (45 / 1024)',
+      'camps identiques': '56,7 % (581 / 1024)',
+      'sommes des camps échangées': '0,8 % (128 / 16384)',
+      'rotation suivant le miroir': '8,6 % (1408 / 16384)' },
+    cause: 'le miroir échange SEPT des huit maisons de chaque camp, mais CAMP1 contient M16 '
+      + 'et CAMP2 contient M15 — précisément les deux maisons où il casse (M15 est fixe, M16 '
+      + 'ne revient que si M1 = M5). La huitième maison suffit à rompre l\'échange. Et le '
+      + 'verdict ne tourne pas sur les camps : il tourne sur R1/R7, des positions de '
+      + 'ROTATION, qui ne suivent pas le miroir (8,6 %).',
+    cequiRESTEVRAI: 'la correspondance maison par maison est EXACTE, 65536/65536 : '
+      + 'M1↔M5, M2↔M6, M3↔M7, M4↔M8, M9↔M11, M10↔M12, M13↔M14, M15 fixe. Ce n\'est pas '
+      + 'la loi qui est fausse, c\'est l\'usage que je voulais en faire.',
+    usageJuste: 'miroirM5V7 sert à TRANSPOSER une règle : toute règle écrite pour le camp 1 '
+      + 'se lit pour le camp 7 en passant par le miroir, sans la réécrire à la main et sans '
+      + 'risquer une asymétrie par inadvertance. C\'est un outil de construction, pas une '
+      + 'entrée du verdict.',
+    pourLActiver: 'BRANCHES_V7.miroir_m5.actif = true afficherait le verdict du thème '
+      + 'miroir à côté du verdict direct. Ce serait une SECONDE LECTURE, pas un contrôle : '
+      + 'les deux ne sont pas censés s\'accorder, et exiger qu\'ils s\'accordent ferait '
+      + 'signaler 57 % des thèmes à tort.' },
+
   parite_m15: {
     actif: true,
     nom: 'M15 est toujours paire — huit valeurs possibles, pas seize',

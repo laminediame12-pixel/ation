@@ -1749,7 +1749,40 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
         +'La Réconciliation M16 est la seule cassure : elle vaut M15⊕M1 à l\'endroit et '
         +'M15⊕M5 à l\'envers, donc elle ne revient que si M1 = M5 — un thème sur huit. '
-        +'Ici '+(mi.m16Revient?'elle revient':'elle ne revient pas')+'. '
+        +'Ici '+(mi.m16Revient?'elle revient':'elle ne revient pas')+'.</div>'
+        // ── POURQUOI CE MIROIR N'EST PAS BRANCHÉ AU VERDICT (05/09) ──
+        // Demande d'Ellemine_D. Le branchement naturel — « lire depuis
+        // l'autre bord doit donner le même match, camps échangés » — a
+        // été mesuré, et l'attente est FAUSSE. Ce n'est pas une question
+        // de preuve : le miroir n'est pas une symétrie du verdict.
+        +(function(){
+          var act=false;
+          try{ act=!!(BRANCHES_V7.miroir_m5 && BRANCHES_V7.miroir_m5.actif); }catch(e){}
+          var vm=null;
+          if(act){ try{ vm=avecFormatV7('reel',function(){return getVerdictAfficheReel(mi.theme);}); }catch(e){} }
+          return '<div style="font-size:10px; color:#94a3b8; margin-top:5px; border-top:1px solid rgba(148,163,184,.2); padding-top:5px;">'
+            +'<b style="color:#fbbf24;">Pourquoi ce miroir n\'entre PAS dans le verdict.</b> '
+            +'Le contrôle qui semblait s\'imposer — les deux lectures doivent donner le même '
+            +'match, camps échangés — a été mesuré et l\'attente est fausse : camps inversés '
+            +'seulement <b>4,4 %</b> du temps, identiques <b>56,7 %</b>, sommes des camps '
+            +'échangées <b>0,8 %</b>, rotation suivant le miroir <b>8,6 %</b>. '
+            +'La cause est écrite plus haut : le miroir échange sept maisons sur huit par camp, '
+            +'et la huitième — M15 fixe, M16 cassée — suffit à rompre l\'échange. Le verdict, '
+            +'lui, ne tourne pas sur les camps mais sur la ROTATION, qui ne suit pas le miroir. '
+            +'<b>La loi reste exacte ; c\'est l\'usage qui était faux.</b> '
+            +'miroirM5V7 sert à TRANSPOSER une règle du camp 1 vers le camp 7 sans la '
+            +'réécrire — un outil de construction, pas une entrée du verdict.'
+            +(act && vm
+              ? '<div style="color:#a78bfa; margin-top:4px;">Seconde lecture affichée '
+                +'(BRANCHES_V7.miroir_m5.actif = true) : le thème miroir donne <b>'
+                +(vm.nulActif?'nul':(vm.winner==='M1'?'R1':'R7'))+' '+esc(vm.scoreMain)
+                +'</b>. À lire comme un autre point de vue, PAS comme une confirmation ni '
+                +'une contradiction — les deux ne sont pas censés s\'accorder.</div>'
+              : '<div style="margin-top:3px;">Pour afficher quand même la seconde lecture : '
+                +'BRANCHES_V7.miroir_m5.actif = true.</div>')
+            +'</div>';
+        })()
+        +'<div style="display:none;">'
         +'<b>Et l\'encadrement d\'Ellemine_D est exact</b> : M4 et M10 sont les SEULES '
         +'maisons dont les deux voisines sont dans l\'axe offensif {3,5,9,11}, et ce sont '
         +'les deux maisons défensives. Les deux seules lois d\'opposition du carré, '
