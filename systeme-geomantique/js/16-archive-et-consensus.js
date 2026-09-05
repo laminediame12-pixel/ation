@@ -1246,6 +1246,44 @@ try {
     });
   }
 } catch (e) { console.warn('annonces de contrôle non rejouées : ' + e.message); }
+// ── LE BRAS À LA MAIN, FIGÉ AU FUR ET À MESURE ──
+// Ellemine_D envoie les quatre mères, je les écris ici avant le coup
+// d'envoi, et le commit date l'écriture. Le tableau se remplit match par
+// match : ce qui n'y figure pas n'a pas été annoncé à temps et ne compte
+// pas. C'est volontaire — un créneau vide est une donnée, pas un oubli.
+//
+// Contrairement au contrôle, ces mères NE se recalculent pas : elles
+// viennent des dés, pas du hachage. Ce qui les date, c'est le commit.
+var ANNONCES_MAIN_PL_V7 = [
+  { n: 1, match: 'Newcastle United – AFC Bournemouth', coupEnvoi: '12:30',
+    ecritLe: '2026-09-05T03:44:55.168Z', margeMinutes: 465,
+    meres: ['tristitia', 'amissio', 'cauda_draconis', 'laetitia'],
+    camp: 'R1', score: '1-0', scoreAlt: '2-0', btts: false,
+    incident: 'Faible', incidentPct: 20,
+    regles: { m9_buts: 'moins de 2,5 buts', laetitia_m2: 'la règle se tait',
+      m4_jugerecit: 'la règle se tait' },
+    // Relevé au moment de l'annonce, pour que le désaccord soit lisible
+    // après coup sans avoir à rejouer le thème.
+    note: 'validité 3/3 · M4 Laetitia (forte, ouverte, non fragile) · '
+      + 'M10 Conjunctio (forte, fermée, non fragile) · M3 Cauda Draconis '
+      + '(gouverneur défensif négatif) · M9 Puella → bas · '
+      + 'rotation : repos de Tristitia en M8, donc R1 = M8 Laetitia contre '
+      + 'R7 = M14 Puella' },
+];
+try {
+  if (ENSEMBLE_PL_MAIN_V7) {
+    ANNONCES_MAIN_PL_V7.forEach(function (a) {
+      var m = ENSEMBLE_PL_MAIN_V7.matchs[a.n - 1];
+      if (!m || m.annonce) return;
+      m.annonce = { ecritLe: a.ecritLe, coupEnvoi: null, margeMinutes: a.margeMinutes,
+        origineTirage: 'tirage à la main — Ellemine_D', meres: a.meres,
+        camp: a.camp, score: a.score, scoreAlt: a.scoreAlt, btts: a.btts,
+        incident: a.incident, incidentPct: a.incidentPct, regles: a.regles,
+        note: a.note };
+    });
+  }
+} catch (e) { console.warn('annonces à la main non rejouées : ' + e.message); }
+
 
 function enregistrerEnsembleV7(nom, date, matchs) {
   // matchs : [{ e1, e2, coupEnvoi: 'HH:MM', fuseau: '+01:00' }, ...]
