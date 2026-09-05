@@ -1144,6 +1144,42 @@ var CAS_REFERENCE_V7 = [
 // tiers, et un commit ne se réécrit pas sans que ça se voie.
 var ENSEMBLES_V7 = [];
 
+// ═══════════════════════════════════════════════════════════════
+// PREMIER ENSEMBLE — PREMIER LEAGUE, SAMEDI 5 SEPTEMBRE 2026
+// Fixé et commité à 03 h 30 UTC, soit HUIT HEURES avant le premier coup
+// d'envoi (12:30 BST = 11:30 UTC). C'est l'horodatage du commit qui fait
+// foi, pas cette phrase.
+//
+// PROVENANCE DE LA LISTE : recherche web, deux requêtes indépendantes
+// donnant les mêmes sept affiches, plus une troisième confirmant les
+// horaires de 12:30 et 17:30. Les cinq matchs de 15:00 occupent le
+// créneau standard du samedi. Les fetch directs (premierleague.com,
+// ESPN, Wikipédia) sont bloqués par le proxy réseau de cette session :
+// la liste n'a donc PAS pu être vérifiée sur la source officielle, et
+// Ellemine_D doit la confirmer. Toute correction sera ajoutée VISIBLEMENT
+// ici, jamais par réécriture silencieuse.
+//
+// Les deux autres matchs de la journée — Everton/Manchester United et
+// Arsenal/Chelsea — se jouent le DIMANCHE 6 : hors ensemble, puisque
+// l'ensemble déclaré est « samedi 5, tous les matchs ». Ils ne seront
+// pas rattrapés après coup.
+var PL_5_SEPT_2026 = [
+  { e1: 'Newcastle United',      e2: 'AFC Bournemouth',   coupEnvoi: '12:30', fuseau: '+01:00' },
+  { e1: 'Brentford',             e2: 'Sunderland',        coupEnvoi: '15:00', fuseau: '+01:00' },
+  { e1: 'Brighton & Hove Albion', e2: 'Leeds United',     coupEnvoi: '15:00', fuseau: '+01:00' },
+  { e1: 'Fulham',                e2: 'Crystal Palace',    coupEnvoi: '15:00', fuseau: '+01:00' },
+  { e1: 'Manchester City',       e2: 'Coventry City',     coupEnvoi: '15:00', fuseau: '+01:00' },
+  { e1: 'Nottingham Forest',     e2: 'Tottenham Hotspur', coupEnvoi: '15:00', fuseau: '+01:00' },
+  { e1: 'Hull City',             e2: 'Aston Villa',       coupEnvoi: '17:30', fuseau: '+01:00' }
+];
+
+// Ouvert au chargement : l'ensemble existe dès maintenant, complet et
+// figé à sept. Si un huitième match apparaissait, nbFige le trahirait.
+var ENSEMBLE_PL_V7 = null;
+try {
+  ENSEMBLE_PL_V7 = enregistrerEnsembleV7('Premier League — samedi', '2026-09-05', PL_5_SEPT_2026);
+} catch (e) { console.warn('ensemble PL non ouvert : ' + e.message); }
+
 function enregistrerEnsembleV7(nom, date, matchs) {
   // matchs : [{ e1, e2, coupEnvoi: 'HH:MM', fuseau: '+01:00' }, ...]
   var e = { nom: nom, date: date, ouvertLe: new Date().toISOString(),
