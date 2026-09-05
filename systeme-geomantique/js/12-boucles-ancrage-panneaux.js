@@ -2811,6 +2811,97 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
 // Elle est donc TROISIÈME : derrière V8 et M4/M10, devant le carré.
 // C'est un classement, pas un rejet : la doctrine est vraie comme FAIT
 // (l'inversion existe et se mesure) sans être la meilleure RÈGLE.
+// ═══════════════════════════════════════════════════════════════
+// « CREUSE EN FOND » — l'inversion est-elle un PRINCIPE du carré ?
+// Étude complète du 05/09/26, seize maisons, quatre propriétés
+// ═══════════════════════════════════════════════════════════════
+//
+// La doctrine tenait sur l'axe cardinal. Question de fond : est-ce un
+// PRINCIPE du carré, valable partout, ou un effet local ? Trois tests,
+// et ils tranchent dans trois directions différentes.
+//
+// ─── TEST 1 : LE SIGNE SUIT-IL LE CAMP, SUR LES SEIZE MAISONS ? ───
+// Pour chaque propriété, moyenne des rho sur les 8 maisons de CAMP1
+// contre les 8 de CAMP2, permutation à 100 000 tirages :
+//   force ...... camp1 +0,044 · camp2 +0,011 · écart +0,034 · p = 0,6005
+//   ouverture .. camp1 +0,077 · camp2 −0,049 · écart +0,125 · p = 0,2466
+//   mobilité ... camp1 −0,028 · camp2 +0,086 · écart −0,113 · p = 0,2063
+//   active ..... camp1 +0,040 · camp2 −0,019 · écart +0,059 · p = 0,4770
+// Meilleur p 0,2063, Bonferroni sur quatre 0,8252. NON.
+// L'inversion n'est pas un principe général du carré : elle ne suit pas
+// l'appartenance au camp quand on regarde les seize maisons.
+//
+// ─── TEST 2 : MAX-T SUR LES 64 CELLULES ───
+// 4 propriétés × 16 maisons, 5 000 permutations du vainqueur.
+//   plus fort observé : mobilité en M5, rho = +0,402
+//   p(max-T) = 0,4405
+//   seuil à 5 % sous le nul : |rho| = 0,498 · médiane du max : 0,388
+//   cellules dépassant le seuil : ZÉRO sur 64
+// À n = 44, le maximum d'une table de 64 corrélations vaut 0,39 en
+// moyenne PAR PUR HASARD. Toute la table maison-par-maison est
+// indiscernable du bruit — Y COMPRIS mon +0,349 pour l'ouverture en M1
+// si on le prend comme une trouvaille d'exploration.
+//
+// ─── CE QUI SURVIT, ET POURQUOI SEULEMENT ÇA ───
+// Le contraste M1 − M7 sur l'ouverture garde son statut : rho +0,382,
+// p = 0,0129, Bonferroni sur les QUATRE propriétés 0,0516. Il survit
+// parce qu'il n'a pas été pêché dans les 64 : la doctrine d'Ellemine_D
+// DÉSIGNAIT le contraste d'avance (« bon pour R1, mauvais pour R7 »),
+// et la seule liberté restante était le choix de la propriété. C'est
+// toute la différence entre une prédiction et une pêche. Mais c'est UN
+// résultat au bord, pas une loi.
+//
+// ─── TEST 3 : ET SI L'INVERSION SUIVAIT LE MIROIR ? ───
+// L'autre partition naturelle du carré : M1↔M5, M2↔M6, M3↔M7, M4↔M8,
+// M9↔M11, M10↔M12, M13↔M14. Si la doctrine y tenait, rho(h) et
+// rho(miroir h) seraient de signes OPPOSÉS.
+//   force ...... corrélation +0,818 · 1 paire opposée sur 7
+//   ouverture .. corrélation +0,270 · 3 sur 7
+//   mobilité ... corrélation +0,669 · 3 sur 7
+//   active ..... corrélation +0,623 · 2 sur 7
+//   toutes ..... corrélation +0,412 · 9 opposées sur 28 · binomial 0,0872
+// C'est L'INVERSE de la doctrine : les maisons miroir traitent les
+// figures de la MÊME façon (19 paires sur 28), elles ne s'opposent pas.
+// ⚠️ ET JE NE LE REVENDIQUE PAS. Contrôle fait sur les 65 536 thèmes :
+// une propriété est déjà couplée structurellement entre maisons miroir
+// (moyenne 0,076, mais jusqu'à +0,563 pour « active » entre M2 et M6,
+// +0,250 pour force M1/M5, mobilité M9/M11 et M10/M12, ouverture
+// M13/M14). Une partie du +0,412 vient donc du bouclier, pas des
+// matchs. Direction notée, rien de plus.
+//
+// ─── CE QU'IL FAUDRAIT POUR TRANCHER, CHIFFRÉ ───
+// Pour confirmer le contraste M1/M7 seul (rho vrai ≈ 0,38, p < 0,05,
+// puissance 80 %) : environ 52 matchs à vainqueur connu. On en a 44 —
+// il en manque HUIT.
+// Pour que l'exploration des 64 cellules ait un sens (un vrai rho de
+// 0,35 devant dépasser le seuil max-T qui décroît en 3,3/racine(n)) :
+// environ 90 matchs à vainqueur connu. On est à moins de la moitié.
+// Autrement dit : la question précise se tranche bientôt, la question
+// générale demande de doubler l'archive.
+var FOND_INVERSION_V7 = {
+  question: 'l\'inversion figure/maison est-elle un principe du carré, ou un effet local ?',
+  parCamp: { force: { ecart: 0.034, p: 0.6005 }, ouverture: { ecart: 0.125, p: 0.2466 },
+    mobilite: { ecart: -0.113, p: 0.2063 }, active: { ecart: 0.059, p: 0.4770 },
+    verdict: 'NON — meilleur p 0,2063, Bonferroni 0,8252' },
+  maxT: { cellules: 64, plusFort: 'mobilité en M5, rho +0,402', p: 0.4405,
+    seuil5pct: 0.498, medianeDuMaxSousLeNul: 0.388, cellulesAuDessus: 0,
+    verdict: 'toute la table maison-par-maison est indiscernable du bruit à n = 44' },
+  ceQuiSurvit: { contraste: 'M1 − M7 sur l\'ouverture', rho: 0.382, p: 0.0129,
+    bonferroni4: 0.0516,
+    pourquoi: 'la doctrine DÉSIGNAIT le contraste d\'avance ; la seule liberté restante '
+      + 'était le choix de la propriété. Une prédiction n\'est pas une pêche. Mais c\'est '
+      + 'UN résultat au bord, pas une loi.' },
+  partitionMiroir: { correlations: { force: 0.818, ouverture: 0.270, mobilite: 0.669, active: 0.623 },
+    global: 0.412, opposees: '9/28', binomial: 0.0872,
+    sens: 'INVERSE de la doctrine — les maisons miroir traitent les figures de la MÊME façon',
+    controle: 'couplage structurel déjà présent sur les 65 536 thèmes : moyenne 0,076, '
+      + 'jusqu\'à +0,563 (active M2/M6). Une partie de l\'effet vient du bouclier. '
+      + 'NON REVENDIQUÉ.' },
+  ceQuilFaut: { pourLeContrasteM1M7: 52, pourLExploration64: 90, onEnA: 44,
+    lecture: 'la question précise se tranche dans huit matchs, la question générale '
+      + 'demande de doubler l\'archive' }
+};
+
 var DOCTRINE_MAISON_FIGURE_V7 = {
   enonce: 'la maison influence la figure — une même figure peut être bonne pour R1 et '
     + 'mauvaise pour R7 selon la maison qu\'elle occupe',

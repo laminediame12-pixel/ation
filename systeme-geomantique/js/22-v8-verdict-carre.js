@@ -1978,7 +1978,24 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +'V8 fait 80,0 %. En tête de la cascade d\'origine : 38/57 → 36/57 (McNemar 4 contre '
         +'6). <span style="color:#5eead4;">En revanche elle bat le carré : avec le carré en '
         +'tête, 30/57 → 32/57.</span> Pour l\'activer : '
-        +'<code>BRANCHES_V7.ouverture_camp.actif = true</code>.</div></div></div>';
+        +'<code>BRANCHES_V7.ouverture_camp.actif = true</code>.</div>'
+        +'<div style="margin-top:5px; border-top:1px solid rgba(148,163,184,.2); '
+        +'padding-top:4px;"><b style="color:#f87171;">ET CE N\'EST PAS UN PRINCIPE GÉNÉRAL '
+        +'DU CARRÉ.</b> Creusé sur les seize maisons : le signe ne suit PAS l\'appartenance '
+        +'au camp (meilleur p 0,206, Bonferroni 0,825), et le <b>max-T sur les 64 cellules '
+        +'donne p = 0,44</b> — zéro cellule dépasse le seuil. À n = 44, le maximum d\'une '
+        +'table de 64 corrélations vaut 0,39 par pur hasard : toute la table est du bruit, '
+        +'<b>y compris le +0,349 de M1</b> si on le prend comme une trouvaille. '
+        +'Seul le contraste M1−M7 survit, parce que ta doctrine le DÉSIGNAIT d\'avance — '
+        +'une prédiction n\'est pas une pêche.'
+        +'<div style="margin-top:3px;">Testé aussi sous la partition MIROIR : les signes '
+        +'s\'accordent (19 paires sur 28) au lieu de s\'opposer — l\'inverse de la doctrine. '
+        +'Non revendiqué : le contrôle sur 65 536 thèmes montre un couplage structurel qui '
+        +'en explique une partie.</div>'
+        +'<div style="margin-top:3px; color:#93c5fd;"><b>Ce qu\'il faut pour trancher :</b> '
+        +'<b>52</b> matchs à vainqueur connu pour confirmer le contraste M1/M7 seul — on en '
+        +'a <b>44</b>, il en manque <b>huit</b>. Et <b>90</b> pour que l\'exploration des '
+        +'seize maisons ait un sens.</div></div></div></div>';
     })();
     // ─── QUI PILOTE CE VERDICT-CI (05/09/26) ───
     // Demande d'Ellemine_D : « quel moteur pilote le verdict final ».
