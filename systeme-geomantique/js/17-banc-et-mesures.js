@@ -299,6 +299,108 @@ function _arbitrageMoteursV7() {
 // finesse à un tri qui n'en a aucune. Le choix reste entier et il est à
 // lui : garder le filtre (il coûte peu et il le rassure) ou le lever.
 // Ce qui est écarté, c'est la troisième voie — elle n'a pas de base.
+// ═══════════════════════════════════════════════════════════════
+// LE REGISTRE DES PISTES (05/09/26) — Ellemine_D : « chaque piste est
+// une piste pour une autre piste. mais toi tu détruis les pistes sans
+// proposer une piste concrète, juste semer le doute dans les faits. »
+//
+// Le reproche est fondé et le fichier en porte la preuve : 10 mentions
+// « réfuté », 24 « aucun poids sur le verdict », 16 « ne dit rien », 16
+// « écarté », 15 « p = 1,000 » — pour 63 fonctions de signal. On a
+// beaucoup mieux tué que bâti, et surtout on a tué SANS GARDER LA CARTE.
+//
+// Une règle morte n'est pas une maison morte. « M3 négative → R7 exclu »
+// est réfutée ; M3 n'a jamais été testée sur les buts, ni le BTTS, ni le
+// score, ni l'incident — uniquement sur le camp. La réfutation ferme UNE
+// PORTE, pas le bâtiment. C'est ce que ce registre enregistre : pour
+// chaque piste morte, ce que sa mort N'EXCLUT PAS.
+//
+// Règle d'usage : on n'efface jamais une ligne. Une piste réfutée reste,
+// avec son chiffre et sa date, pour qu'on ne la redécouvre pas dans six
+// mois en croyant qu'elle est neuve — et pour que son « non exclu »
+// serve de point de départ à la suivante.
+var PISTES_V7 = [
+  { cle: 'm9_buts', nom: 'M9 (= M1 ⊕ M2) annonce le volume de buts',
+    auteur: 'trouvée au balayage des 13 maisons, 04/09', etat: 'VIVANTE',
+    chiffre: '3/3 hors échantillon · 26/28 en échantillon (sans valeur) · p ≈ 0,14 pour le 3/3 seul',
+    seuil: '10 annonces fermes hors échantillon avant tout branchement',
+    suite: 'la tester sur des tirages À LA MAIN — les 11 cas de contrôle sont des thèmes de hachage' },
+
+  { cle: 'm3_r7', nom: 'M3 négative → R7 exclu',
+    auteur: 'trouvée le 04/09 au matin', etat: 'RÉFUTÉE le 04/09 au soir',
+    chiffre: 'archive 1/14 = 7 % · hors échantillon 3 R7 sur 5 = 60 %',
+    nonExclu: 'M3 n\'a été testée QUE sur le camp. Jamais sur les buts, le BTTS, '
+      + 'le score, l\'incident, ni les corners. La porte fermée est étroite.',
+    suite: 'passer M3 au balayage des buts comme on l\'a fait pour les 13 maisons' },
+
+  { cle: 'm12_m6_buts', nom: 'M12 et M6 sur les buts',
+    auteur: 'apparues 2e et 3e au balayage du 04/09, jamais suivies', etat: 'À SUIVRE',
+    chiffre: 'M12 p = 0,055 · M6 p = 0,067 · Puella en M12 : 5,43 buts (n=7) · Caput Draconis en M6 : 5,80 (n=5)',
+    suite: 'même protocole que M9 : composer les listes, puis INSCRIRE AVANT sur les prochains matchs' },
+
+  { cle: 'juge_outsider', nom: 'Juge « outsider » contre défense « dominante »',
+    auteur: 'proposée par Claude le 04/09 après Lyon et Al-Ahli', etat: 'MORTE',
+    chiffre: 'R1 5/9 en conflit contre 22/50 ailleurs · p = 0,719',
+    nonExclu: 'testée sur le CAMP seulement. Le renversement en cours de match — '
+      + 'mener puis perdre — n\'a pas été testé, faute de scores de mi-temps en nombre.',
+    suite: 'reprendre quand l\'archive aura 20 mi-temps saisies' },
+
+  { cle: 'corners_total', nom: 'Le total de corners annoncé',
+    auteur: 'sortie historique du moteur', etat: 'SANS INFORMATION',
+    chiffre: 'n=11 · Spearman 0,10 · erreur absolue 6,00 pour une moyenne réelle de 10,7',
+    nonExclu: 'seul le TOTAL a été mesuré. La DOMINANCE aux corners (quel camp en a plus) '
+      + 'n\'a jamais été prédite, et elle va avec le vainqueur 7 fois sur 11.',
+    suite: 'prédire le camp dominant aux corners, pas le total' },
+
+  { cle: 'm4m10_cascade', nom: 'Signal M4/M10 en tête de la cascade du verdict',
+    auteur: 'branché le 03/09 sur demande d\'Ellemine_D', etat: 'GAIN NUL',
+    chiffre: 'AVEC 42/67 · SANS 42/67 · (+1 sur l\'archive d\'ajustement, −1 hors échantillon)',
+    nonExclu: 'le signal reste à 9/13 quand il tranche sur l\'archive. C\'est sa PLACE EN TÊTE '
+      + 'qui ne rapporte rien, pas nécessairement sa lecture.',
+    suite: 'essayer en dernier recours plutôt qu\'en tête, et mesurer' },
+
+  { cle: 'validite', nom: 'Le filtre de validité du thème',
+    auteur: 'doctrine ancienne', etat: 'LEVÉ le 04/09',
+    chiffre: 'aucune famille gagnée sur 58 cas · camp 64 % valides contre 69 % rejetés · p = 0,732',
+    nonExclu: 'la validité n\'a jamais été testée sur la seule question qu\'elle prétend trancher : '
+      + 'entre DEUX tirages du MÊME match, lequel croire. Le registre des paires est à 3 informatives sur 9.',
+    suite: 'accumuler des paires, viser 6 informatives' },
+
+  { cle: 'incident_camp', nom: 'Le camp qui subit l\'incident',
+    auteur: 'doctrine ancienne', etat: 'NON DÉMONTRÉ',
+    chiffre: '8/12 = 67 % · « toujours M1 » ferait 9/12 = 75 % · un seul cas d\'écart',
+    nonExclu: 'la PRÉSENCE de l\'incident et son CAMP sont deux questions distinctes. '
+      + 'La présence n\'a pas été réfutée.',
+    suite: 'accumuler ; ne pas câbler « toujours M1 », n = 12' },
+
+  { cle: 'fragilite_m4m10', nom: 'Fragilité M4/M10 (mobile+ouverte des deux côtés) → BTTS',
+    auteur: 'Ellemine_D, 03/09', etat: 'À RETESTER',
+    chiffre: '64,5 % contre 28,6 % sur l\'archive · JAMAIS retestée depuis les 11 cas du 04/09',
+    suite: 'la repasser sur les 60 cas maintenant disponibles — dette la plus facile à payer' },
+
+  { cle: 'm4_doctrine', nom: 'Albus/Carcer en M4 tiennent les buts, Via les ouvre',
+    auteur: 'Ellemine_D, 04/09', etat: 'DIRECTION JUSTE, SEUIL NON ATTEINT',
+    chiffre: 'Albus/Carcer 2,50 buts contre 3,49 (p = 0,255) · Via 4,17 contre 3,21 (p = 0,321) · '
+      + 'contrôle : les mêmes figures en M10 ne font rien (p = 0,958)',
+    nonExclu: 'les deux moitiés vont dans le bon sens et le contrôle positionnel tient. '
+      + 'Seul l\'effectif manque : n=8 et n=6.',
+    suite: 'accumuler des matchs ; c\'est une des rares pistes où le CONTRÔLE a déjà réussi' }
+];
+
+// Ce que le registre sait dire de lui-même.
+function bilanPistesV7() {
+  var par = {};
+  PISTES_V7.forEach(function (p) { par[p.etat] = (par[p.etat] || 0) + 1; });
+  return {
+    total: PISTES_V7.length, parEtat: par,
+    vivantes: PISTES_V7.filter(function (p) { return p.etat === 'VIVANTE' || p.etat === 'À SUIVRE' || p.etat === 'À RETESTER'; }),
+    // Une piste morte qui laisse une porte ouverte n'est pas une impasse :
+    // c'est là que se trouve le travail suivant.
+    portesOuvertes: PISTES_V7.filter(function (p) { return !!p.nonExclu; })
+      .map(function (p) { return { piste: p.nom, ouvre: p.nonExclu, suite: p.suite }; })
+  };
+}
+
 function validiteParFamilleV7() { return memoArchiveV7('validiteParFamilleV7', _validiteParFamilleV7); }
 function _validiteParFamilleV7() {
   var cas = [];
