@@ -2384,3 +2384,145 @@ function duelCyclesV7(posA, posB, theme) {
   };
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// FIXE OU MOBILE EN DÉFENSE ? LA RÉPONSE (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D : « est-ce les figures fixes qui sont bonnes en défense,
+// ou encore les mobiles ouvertes, comment favorisent-elles les buts ?
+// Via n'est pas bonne en défense, elle bouge trop. »
+//
+// CONTRÔLE FAIT D'ABORD, parce qu'il pouvait tout invalider : le moteur
+// BTTS utilise DÉJÀ mobilité et ouverture sur M4 et M10 (« CAS 1 : M4 et
+// M10 sont toutes deux mobiles ET ouvertes », voir 20-points-guerre).
+// Mesurer ça sur le MOTEUR aurait donc été circulaire. Tout ce qui suit
+// est mesuré sur les VRAIS SCORES de l'archive, pas sur ses verdicts.
+//
+// L'INDICE, opérationnalisation directe de ta doctrine :
+//        DÉFENSE TENUE = fermée + passive + fixe, sur M4 ET M10
+//        (un point par propriété tenue, de 0 à 6)
+//
+//        rho = −0,336 contre les buts réels, p unilatéral = 0,0101
+//        quatre tests menés, donc 0,040 après Bonferroni — ça tient.
+//
+//        buts moyens par niveau (n = 48) :
+//          1/6 → 5,00    2/6 → 5,56    3/6 → 4,50
+//          4/6 → 3,29    5/6 → 0,75 buts et 0 % de BTTS (n = 4)
+//
+// ── LA RÉPONSE À TA QUESTION, ET ELLE CORRIGE LE CADRE ──
+// Décomposé propriété par propriété, contre les buts réels :
+//        FERMETURE seule (M4+M10) ..... rho −0,280   p = 0,027   PORTE
+//        PASSIVITÉ seule (M4+M10) ..... rho −0,277   p = 0,029   PORTE
+//        FIXITÉ    seule (M4+M10) ..... rho −0,079   p = 0,296   NE PORTE PAS
+//
+// Ce ne sont donc PAS les figures fixes qui défendent. C'est le FERMÉ et
+// le PASSIF. La mobilité, prise seule, ne dit rien. Ton intuition sur
+// Via était juste, mais pas pour la raison que tu donnais : Via nuit en
+// défense parce qu'elle est OUVERTE et ACTIVE, pas parce qu'elle bouge.
+//
+// ── ET IL FAUT LES DEUX MAISONS ──
+//        M4 seule (0 à 3) ..... rho −0,184   p = 0,103
+//        M10 seule (0 à 3) .... rho −0,195   p = 0,091
+//        les deux ensemble .... rho −0,336   p = 0,010
+// Ni l'une ni l'autre n'atteint le seuil seule. C'est l'AXE qui parle,
+// pas la maison — ce qui est cohérent avec la loi M4 ⊕ M10 = M3.
+//
+// ── L'ATTAQUE, EN REVANCHE, NE RÉPOND PAS ──
+//        ATTAQUE VIVE = ouverte + active + mobile, sur M5 et M11
+//        rho = +0,156 contre les buts, p = 0,143. RIEN.
+// La symétrie que tu supposais n'existe pas dans les chiffres : on sait
+// mesurer ce qui FERME un match, pas ce qui l'ouvre.
+//
+// CE QUI CLOCHE ET QUE JE NE PEUX PAS RÉPARER : la DIRECTION était
+// donnée par ta doctrine avant toute mesure, mais la composition exacte
+// de l'indice — ces trois propriétés-là, ces deux maisons-là — a été
+// choisie APRÈS avoir vu le tableau des 64 croisements. Seules des
+// rencontres annoncées à l'avance lèveront ça.
+var DEFENSE_PROPRIETES_V7 = {
+  indice: 'fermée + passive + fixe, sur M4 et M10, de 0 à 6',
+  contreLesButs: { rho: -0.336, p: 0.0101, n: 48, bonferroni4: 0.040 },
+  decomposition: {
+    fermeture: { rho: -0.280, p: 0.0267, porte: true },
+    passivite: { rho: -0.277, p: 0.0285, porte: true },
+    fixite:    { rho: -0.079, p: 0.2956, porte: false } },
+  parMaison: { M4: { rho: -0.184, p: 0.103 }, M10: { rho: -0.195, p: 0.091 } },
+  attaque: { indice: 'ouverte + active + mobile sur M5 et M11',
+    rho: 0.156, p: 0.143, porte: false },
+  reponse: 'ce ne sont PAS les fixes qui défendent, ce sont les FERMÉES et les '
+    + 'PASSIVES ; la mobilité seule ne dit rien, et il faut les DEUX maisons '
+    + 'de l\'axe, aucune ne suffit seule',
+  circularite: 'écarté — le moteur BTTS utilise mobilité et ouverture sur M4/M10, '
+    + 'donc tout est mesuré sur les VRAIS SCORES, pas sur ses verdicts',
+  faiblesse: 'la direction venait de la doctrine, mais la composition exacte a été '
+    + 'choisie après avoir vu les 64 croisements'
+};
+
+// L'indice sur un thème, plus son niveau et ce qu'on en sait.
+function defenseTenueV7(theme) {
+  if (!theme || typeof OUVERTURE_FIGURE === 'undefined') return null;
+  var det = [];
+  var n = 0;
+  [4, 10].forEach(function (h) {
+    var f = theme[h];
+    var fe = OUVERTURE_FIGURE[f] === 'fermee';
+    var pa = ACTIVE_PASSIVE_FIGURE[f] === 'passive';
+    var fi = MOBILITE_FIGURE[f] === 'fixe';
+    if (fe) n++; if (pa) n++; if (fi) n++;
+    det.push({ maison: 'M' + h, figure: f, fermee: fe, passive: pa, fixe: fi,
+      tenu: (fe ? 1 : 0) + (pa ? 1 : 0) + (fi ? 1 : 0) });
+  });
+  return { indice: n, sur: 6, detail: det,
+    lecture: n >= 5 ? 'défense très tenue — sur l\'archive ce niveau donne 0,75 but'
+      : n >= 4 ? 'défense tenue — 3,29 buts en moyenne'
+      : n >= 2 ? 'défense ouverte — 4,5 à 5,6 buts'
+      : 'défense béante',
+    ceQuiPorte: 'la fermeture et la passivité ; la fixité ne porte rien (p = 0,296)' };
+}
+
+// Rejoué sur TA base, pas sur les 48 du dépôt.
+function defenseTenueLiveV7() {
+  var CAS = [];
+  try { CAS = tousCasBancV7() || []; } catch (e) { return null; }
+  var pts = [];
+  CAS.forEach(function (c) {
+    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
+    if (!g || !c.meres) return;
+    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var d = defenseTenueV7(t);
+    if (d) pts.push({ x: d.indice, y: +g[1] + +g[2] });
+  });
+  if (pts.length < 12) return null;
+  function rangs(v) {
+    var i2 = v.map(function (_, i) { return i; });
+    i2.sort(function (a, b) { return v[a] - v[b]; });
+    var r = new Array(v.length), i = 0;
+    while (i < i2.length) {
+      var j = i;
+      while (j + 1 < i2.length && v[i2[j + 1]] === v[i2[i]]) j++;
+      var m = (i + j) / 2 + 1;
+      for (var k = i; k <= j; k++) r[i2[k]] = m;
+      i = j + 1;
+    }
+    return r;
+  }
+  var xr = rangs(pts.map(function (p) { return p.x; }));
+  var yr = rangs(pts.map(function (p) { return p.y; }));
+  var n = pts.length, mx = 0, my = 0, i;
+  for (i = 0; i < n; i++) { mx += xr[i]; my += yr[i]; }
+  mx /= n; my /= n;
+  var num = 0, dx = 0, dy = 0;
+  for (i = 0; i < n; i++) {
+    var a = xr[i] - mx, b = yr[i] - my; num += a * b; dx += a * a; dy += b * b;
+  }
+  var rho = (dx > 0 && dy > 0) ? num / Math.sqrt(dx * dy) : 0;
+  var parNiveau = {};
+  pts.forEach(function (p) {
+    var o = parNiveau[p.x] || (parNiveau[p.x] = { n: 0, buts: 0 });
+    o.n++; o.buts += p.y;
+  });
+  Object.keys(parNiveau).forEach(function (k) {
+    parNiveau[k].moyenne = Math.round(100 * parNiveau[k].buts / parNiveau[k].n) / 100;
+  });
+  return { n: n, rho: Math.round(rho * 1000) / 1000, parNiveau: parNiveau,
+    gele: { n: 48, rho: -0.336, p: 0.0101 } };
+}

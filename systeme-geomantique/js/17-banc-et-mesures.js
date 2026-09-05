@@ -411,6 +411,42 @@ function verifierRegistreSignauxV7(theme) {
 // mois en croyant qu'elle est neuve — et pour que son « non exclu »
 // serve de point de départ à la suivante.
 var PISTES_V7 = [
+  { cle: 'defense_fermee_passive', nom: 'La défense se tient par le FERMÉ et le PASSIF, pas par le fixe',
+    auteur: 'Ellemine_D, 05/09 — « est-ce les figures fixes qui sont bonnes en défense ? »',
+    etat: 'MESURÉE SUR LES VRAIS SCORES — la plus propre du fichier, et non démontrée',
+    chiffre: 'indice « défense tenue » = fermée + passive + fixe sur M4 ET M10, de 0 à 6. '
+      + 'Contre les buts réels : rho = −0,336, p unilatéral = 0,0101 sur 48 cas, soit 0,040 '
+      + 'après Bonferroni sur les quatre tests menés. Gradient : 2/6 → 5,56 buts, 4/6 → 3,29, '
+      + '5/6 → 0,75 but et 0 % de BTTS (n = 4).',
+    reponseALaQuestion: 'NON, ce ne sont pas les fixes. Décomposé : fermeture rho −0,280 '
+      + '(p = 0,027) PORTE, passivité rho −0,277 (p = 0,029) PORTE, fixité rho −0,079 '
+      + '(p = 0,296) NE PORTE RIEN. L\'intuition sur Via était juste, mais pas pour la '
+      + 'raison donnée : Via nuit en défense parce qu\'elle est OUVERTE et ACTIVE, pas '
+      + 'parce qu\'elle bouge.',
+    axeEtPasMaison: 'M4 seule rho −0,184 (p = 0,103), M10 seule rho −0,195 (p = 0,091) : '
+      + 'aucune n\'atteint le seuil seule, c\'est l\'AXE qui parle. Cohérent avec M4 ⊕ M10 = M3.',
+    attaque: 'l\'indice symétrique — ouverte + active + mobile sur M5 et M11 — ne donne RIEN '
+      + '(rho +0,156, p = 0,143). On sait mesurer ce qui ferme un match, pas ce qui l\'ouvre.',
+    circularite: 'ÉCARTÉE, et il fallait la vérifier : le moteur BTTS utilise déjà mobilité et '
+      + 'ouverture sur M4/M10. Tout est donc mesuré sur les VRAIS SCORES, jamais sur ses verdicts.',
+    piege: 'la DIRECTION venait de la doctrine d\'Ellemine_D avant toute mesure, mais la '
+      + 'composition exacte — ces trois propriétés, ces deux maisons — a été choisie APRÈS '
+      + 'avoir vu le tableau des 64 croisements. C\'est la faiblesse qui reste.',
+    seuil: '25 rencontres annoncées avant coup d\'envoi avec l\'indice écrit à côté. '
+      + 'defenseTenueLiveV7() rejoue déjà le rho sur ta base complète à chaque appel.' },
+
+  { cle: 'figures_dangereuses', nom: 'Les figures dangereuses en M6/M8/M11/M12 donnent-elles les incidents ?',
+    auteur: 'Ellemine_D, 05/09', etat: 'IMPOSSIBLE À TRANCHER — ce n\'est pas la piste qui manque, ce sont les données',
+    chiffre: 'Rubeus, Puer, Cauda Draconis, Amissio comptées en M6/M8/M11/M12, contre '
+      + 'l\'incident réel : rho +0,175, p = 0,508. Comptées PARTOUT dans le thème : '
+      + 'rho +0,571, p = 0,055 — le plus fort, mais deuxième de trois tests.',
+    blocage: 'SEULEMENT 11 CAS portent un champ `incident` renseigné dans l\'archive, et 9 '
+      + 'des 11 sont des incidents (82 %). Avec un taux de base pareil et onze points, '
+      + 'aucune mesure n\'est possible — ni pour, ni contre.',
+    aFaire: 'noter incident oui/non sur CHAQUE match saisi, comme le score l\'est déjà. '
+      + 'Trente cas suffiraient à commencer. C\'est la donnée la moins chère à produire et '
+      + 'la seule qui manque vraiment.' },
+
   { cle: 'protocole_serre', nom: 'Le protocole R1/R7 réduit aux deux figures qui combattent',
     auteur: 'Ellemine_D, 05/09 — « élagage plus protocole de comparaison R1 et R7 »',
     etat: 'PISTE — NON BRANCHÉE, ET LE SEUL SIGNE DE VIE DE CE CHANTIER',

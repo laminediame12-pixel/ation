@@ -1732,6 +1732,33 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'Pour l\'activer quand même : BRANCHES_V7.protocole_pilote.actif = true.')
         +'</div></div>';
     })();
+    // La défense par les propriétés — mesuré sur les VRAIS scores.
+    (function(){
+      var dt=null; try{ dt=defenseTenueV7(theme); }catch(e){ dt=null; }
+      if(!dt) return;
+      var col = dt.indice>=5?'#4ade80':(dt.indice>=4?'#84cc16':(dt.indice>=2?'#fbbf24':'#f87171'));
+      var live=null; try{ live=defenseTenueLiveV7(); }catch(e){}
+      html+='<div style="padding:7px 10px; margin:0 0 8px; border-left:4px solid '+col+'; background:rgba(148,163,184,.08);">'
+        +'🛡️ <b style="font-size:12px;">Défense tenue : '+dt.indice+' / 6</b>'
+        +' <span style="font-size:11px; color:'+col+';">'+esc(dt.lecture)+'</span>'
+        +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+        + dt.detail.map(function(d){
+            return d.maison+' '+label(d.figure)+' — '
+              +(d.fermee?'<span style="color:#4ade80;">fermée</span>':'<span style="color:#f87171;">ouverte</span>')
+              +' · '+(d.passive?'<span style="color:#4ade80;">passive</span>':'<span style="color:#f87171;">active</span>')
+              +' · '+(d.fixe?'fixe':'mobile')+' → '+d.tenu+'/3';
+          }).join('<br>')
+        +'</div>'
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+        +'Mesuré sur les VRAIS SCORES, pas sur les verdicts du moteur — la vérification '
+        +'importait, le moteur BTTS utilisant déjà ouverture et mobilité sur M4/M10. '
+        +'rho = −0,336 contre les buts (p = 0,0101 sur 48 cas, 0,040 après Bonferroni). '
+        +'<b>Ce ne sont PAS les figures fixes qui défendent</b> : la fermeture porte '
+        +'(p = 0,027), la passivité porte (p = 0,029), la fixité ne porte rien (p = 0,296). '
+        +'Et il faut les DEUX maisons — ni M4 ni M10 n\'y arrive seule.'
+        +(live?' <b>Rejoué sur ta base ('+live.n+' cas) : rho = '+live.rho.toFixed(3)+'.</b>':'')
+        +' L\'indice symétrique en attaque (M5/M11) ne donne rien. NON BRANCHÉ.</div></div>';
+    })();
     // La loi des boucles M1/M4 — le plus gros effet du moteur.
     (function(){
       var lb=null; try{ lb=lectureBouclesV7(theme); }catch(e){ lb=null; }
