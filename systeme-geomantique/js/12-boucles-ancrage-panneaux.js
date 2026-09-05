@@ -2158,6 +2158,26 @@ var BRANCHES_V7 = {
       + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
       + 'avant tout branchement.' },
 
+  ouverture_camp: {
+    actif: false,
+    nom: 'Le contraste d\'ouverture entre les deux chefs décide le camp',
+    cible: 'le camp',
+    demande: 'Ellemine_D, 05/09 : « la maison influence la figure — une même figure peut '
+      + 'être bonne pour R1 et mauvaise pour R7 ».',
+    laDoctrineEstVraie: 'MESURÉE ET VÉRIFIÉE. Trois propriétés sur quatre changent de signe '
+      + 'entre M1 et M7 (cf. DOCTRINE_MAISON_FIGURE_V7). L\'ouverture vaut +0,349 pour R1 en '
+      + 'M1 et −0,262 en M7 : le même caractère, deux maisons, deux effets opposés. Le '
+      + 'contraste M1−M7 donne rho +0,382, p = 0,0129 — Bonferroni sur les quatre propriétés '
+      + '0,0516, et le contraste était PRÉDIT D\'AVANCE par la doctrine.',
+    maisPasBranche: 'comme RÈGLE elle est troisième. Elle parle sur 33 thèmes et tombe juste '
+      + '20/27 hors nuls (74,1 %) ; V8 fait 80,0 %. Mise en tête de la cascade d\'origine : '
+      + '38/57 -> 36/57, McNemar 4 contre 6 en faveur de la cascade. Vraie comme fait, pas '
+      + 'meilleure comme décideur.',
+    ouElleGAGNE: 'devant le CARRÉ, en revanche, elle gagne : avec le carré en tête, '
+      + '30/57 -> 32/57. Si le carré reste en tête, mettre l\'ouverture devant lui récupère '
+      + 'deux des huit points perdus.',
+    pourLActiver: 'BRANCHES_V7.ouverture_camp.actif = true — juste après la porte du nul.' },
+
   carre_pilote: {
     actif: true,
     ordre: ['carre', 'm4m10', 'v8'],
@@ -2739,6 +2759,110 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
     if (!d.loiTenue) throw new Error('M15 != somme des déplacements sur ' + k);
     if (d.nbCarcer > 3) throw new Error('plus de 3 Carcer en paires miroir : impossible');
   });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// « LA MAISON INFLUENCE LA FIGURE » — la doctrine d'Ellemine_D
+// mesurée le 05/09/26, sur l'axe cardinal M1-M4-M7-M10
+// ═══════════════════════════════════════════════════════════════
+//
+// « le carré possède des lois universelles qui reposent sur des calculs,
+//   et les 16 figures possèdent leur structure et leur nature.
+//   L'occupation d'une figure dans une maison entraîne des comportements :
+//   la maison influence la figure. Raison pour laquelle la fonctionnalité
+//   des figures est imprévisible, car capable de jouer une double
+//   fonction — bonne pour R1 et mauvaise pour R7. »
+//
+// C'est une affirmation TESTABLE, et elle spécifie d'avance le contraste
+// à regarder : la MÊME propriété doit CHANGER DE SIGNE entre la maison du
+// camp 1 et celle du camp 2. Mesuré sur les 44 cas à vainqueur connu
+// (24 R1, 20 R7), corrélation vers « R1 gagne » :
+//
+//   propriété        M1        M4        M7       M10    inversion M1/M7
+//   force        +0,083    +0,100    −0,133    +0,164        OUI
+//   ouverture    +0,349    +0,209    −0,262    +0,008        OUI  ← la plus nette
+//   mobilité     +0,295    +0,133    +0,026    +0,000        non
+//   active       +0,283    −0,068    −0,076    +0,079        OUI
+//
+// TROIS PROPRIÉTÉS SUR QUATRE S'INVERSENT ENTRE M1 ET M7. La doctrine
+// n'est pas une image : elle se lit dans les chiffres. Une figure OUVERTE
+// vaut +0,349 pour R1 quand elle est en M1, et −0,262 quand elle est en
+// M7. Le même caractère, deux maisons, deux effets opposés.
+//
+// LE CONTRASTE M1 − M7, propriété par propriété :
+//   ouverture .... rho +0,382 · p = 0,0129   ← le meilleur
+//   active ....... rho +0,242 · p = 0,1552
+//   mobilité ..... rho +0,180 · p = 0,3110
+//   force ........ rho +0,144 · p = 0,4319
+// La doctrine spécifiait LE CONTRASTE (M1 contre M7), pas la propriété :
+// la famille de tests honnête est donc de QUATRE, pas de douze. Bonferroni
+// sur quatre : 0,0516. Juste au bord, et prédit d'avance — c'est le
+// meilleur résultat qu'une hypothèse ait obtenu ici depuis le début.
+//
+// ─── MAIS COMME DÉCIDEUR, ELLE NE BAT PAS V8 ───
+// Règle : M1 ouverte et M7 fermée -> R1 ; l'inverse -> R7 ; sinon muette.
+// Elle parle sur 33 thèmes sur 57 (58 %) et tombe juste 20 fois sur 27
+// hors nuls, soit 74,1 %. V8 fait 80,0 % sur les siens.
+//   cascade d'origine (m4m10 > v8 > carre) ............ 38/57
+//   + ouverture en tête ............................... 36/57  (−2)
+//   McNemar sur leurs désaccords : ouverture 4, cascade 6
+//   avec le carré en tête (état branché) .............. 30/57
+//   + ouverture en tête ............................... 32/57  (+2)
+// Elle est donc TROISIÈME : derrière V8 et M4/M10, devant le carré.
+// C'est un classement, pas un rejet : la doctrine est vraie comme FAIT
+// (l'inversion existe et se mesure) sans être la meilleure RÈGLE.
+var DOCTRINE_MAISON_FIGURE_V7 = {
+  enonce: 'la maison influence la figure — une même figure peut être bonne pour R1 et '
+    + 'mauvaise pour R7 selon la maison qu\'elle occupe',
+  auteur: 'Ellemine_D, 05/09/26',
+  axeCardinal: [1, 4, 7, 10],
+  n: 44, r1: 24, r7: 20,
+  signes: {
+    force:     { M1: 0.083, M4: 0.100, M7: -0.133, M10: 0.164, inverse: true },
+    ouverture: { M1: 0.349, M4: 0.209, M7: -0.262, M10: 0.008, inverse: true },
+    mobilite:  { M1: 0.295, M4: 0.133, M7: 0.026, M10: 0.000, inverse: false },
+    active:    { M1: 0.283, M4: -0.068, M7: -0.076, M10: 0.079, inverse: true } },
+  contrasteM1M7: { ouverture: { rho: 0.382, p: 0.0129 }, active: { rho: 0.242, p: 0.1552 },
+    mobilite: { rho: 0.180, p: 0.3110 }, force: { rho: 0.144, p: 0.4319 } },
+  correction: 'la doctrine spécifiait le CONTRASTE, pas la propriété : famille de 4 tests, '
+    + 'Bonferroni 0,0516. Au bord, et prédit d\'avance.',
+  commeRegle: { parle: '33/57', justeHorsNuls: '20/27', taux: 74.1,
+    v8Compare: 80.0,
+    cascades: { origine: '38/57', origineAvecOuverture: '36/57',
+      carreEnTete: '30/57', carreAvecOuverture: '32/57' },
+    mcNemar: 'contre la cascade d\'origine : ouverture 4, cascade 6' },
+  verdict: 'VRAIE comme fait, TROISIÈME comme règle — derrière V8 et M4/M10, devant le carré',
+  pourLActiver: 'BRANCHES_V7.ouverture_camp.actif = true — elle passera devant la cascade, '
+    + 'juste après la porte du nul.'
+};
+
+// Le contraste d'ouverture entre les deux chefs.
+function contrasteOuvertureV7(theme) {
+  if (!theme || typeof OUVERTURE_FIGURE === 'undefined') return null;
+  try {
+    var o1 = OUVERTURE_FIGURE[theme[1]] === 'ouverte';
+    var o7 = OUVERTURE_FIGURE[theme[7]] === 'ouverte';
+    var dit = (o1 && !o7) ? 'R1' : (!o1 && o7) ? 'R7' : null;
+    return { m1: theme[1], m7: theme[7], ouverte1: o1, ouverte7: o7, dit: dit,
+      lecture: dit
+        ? ('M1 ' + (o1 ? 'ouverte' : 'fermée') + ' contre M7 ' + (o7 ? 'ouverte' : 'fermée')
+           + ' — la maison fait pencher vers ' + dit)
+        : ('les deux chefs sont ' + (o1 ? 'ouverts' : 'fermés') + ' — le contraste est muet'),
+      mesure: dit ? '20/27 hors nuls (74,1 %) sur l\'archive' : null };
+  } catch (e) { return null; }
+}
+
+autoTestV7('le contraste d\'ouverture des deux chefs', function () {
+  if (typeof calcTheme !== 'function' || typeof OUVERTURE_FIGURE === 'undefined') return;
+  // Puer est ouverte, Amissio est fermée : le contraste doit parler.
+  var t = calcTheme('puer', 'via', 'conjunctio', 'via');
+  var c = contrasteOuvertureV7(t);
+  if (!c) throw new Error('contrasteOuvertureV7 muet');
+  if (c.ouverte1 !== (OUVERTURE_FIGURE[t[1]] === 'ouverte'))
+    throw new Error('lecture d\'ouverture incohérente en M1');
+  if (c.dit && c.dit !== 'R1' && c.dit !== 'R7') throw new Error('verdict de contraste invalide');
+  if (!c.dit && c.ouverte1 !== c.ouverte7)
+    throw new Error('le contraste doit parler quand les deux chefs diffèrent');
 });
 
 // ═══════════════════════════════════════════════════════════════

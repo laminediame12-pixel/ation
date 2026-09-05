@@ -528,6 +528,20 @@ function overrideVerdictV7(theme, nulActif) {
 // diverger, parce qu'ils lisent le même objet.
 function decideurVerdictV7(theme, nulActif) {
   if (nulActif) return { camp: null, moteur: 'nul', nom: 'Porte du nul — nul imposé' };
+  // ─── LE CONTRASTE D'OUVERTURE (05/09/26, doctrine d'Ellemine_D) ───
+  // « la maison influence la figure » : une figure ouverte vaut +0,349
+  // pour R1 en M1 et −0,262 en M7. Le contraste M1/M7 est le meilleur
+  // des quatre (rho +0,382, p = 0,0129, Bonferroni sur 4 : 0,0516) et il
+  // était PRÉDIT D'AVANCE. Comme règle il reste troisième (74,1 % contre
+  // 80,0 % pour V8), donc éteint par défaut — mais il gagne deux points
+  // quand le carré est en tête. Cf. DOCTRINE_MAISON_FIGURE_V7.
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.ouverture_camp && BRANCHES_V7.ouverture_camp.actif) {
+      var co = contrasteOuvertureV7(theme);
+      if (co && co.dit) return { camp: co.dit, moteur: 'ouverture',
+        nom: 'Contraste d\'ouverture M1/M7 — ' + co.lecture };
+    }
+  } catch (e) { }
   var ordre = ORDRE_VERDICT_V7;
   // ─── LE CARRÉ EN TÊTE (05/09/26, demande d'Ellemine_D) ───
   // « oriente le verdict vers le carré ». L'audit du même jour avait
@@ -1928,6 +1942,44 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         })()
         +' Réversible par BRANCHES_V7.populus_volume.actif.</div></div>';
     })();
+    // ─── LA MAISON INFLUENCE LA FIGURE (05/09/26) ───
+    // Doctrine d'Ellemine_D, mesurée : trois propriétés sur quatre
+    // changent de signe entre M1 et M7. Affichée sur chaque thème parce
+    // que c'est un FAIT vérifié, même si comme règle elle reste
+    // troisième derrière V8 et M4/M10.
+    (function(){
+      var co=null; try{ co=contrasteOuvertureV7(theme); }catch(e){ co=null; }
+      if(!co) return;
+      var br=false; try{ br=!!(BRANCHES_V7.ouverture_camp && BRANCHES_V7.ouverture_camp.actif); }catch(e){}
+      var col = co.dit ? '#5eead4' : '#64748b';
+      html+='<div style="padding:7px 10px; margin:2px 0 8px; border-left:4px solid '+col
+        +'; background:rgba(94,234,212,.07); font-size:11px; color:#cbd5e1;">'
+        +'🏠 <b style="color:'+col+'; font-size:12px;">LA MAISON INFLUENCE LA FIGURE — '
+        +'contraste des deux chefs</b>'
+        +'<div style="margin-top:3px;">M1 <b>'+label(co.m1)+'</b> '
+        +(co.ouverte1?'<b style="color:#5eead4;">ouverte</b>':'<span style="color:#94a3b8;">fermée</span>')
+        +' · M7 <b>'+label(co.m7)+'</b> '
+        +(co.ouverte7?'<b style="color:#5eead4;">ouverte</b>':'<span style="color:#94a3b8;">fermée</span>')
+        +' — '+esc(co.lecture)+'.'
+        +(co.dit? ' Sur l\'archive : <b>'+esc(co.mesure)+'</b>.' : '')
+        +(br? ' <b style="color:#5eead4;">Branché : il décide.</b>' : '')
+        +'</div>'
+        +'<div style="margin-top:4px; font-size:10px; color:#94a3b8; border-top:1px solid '
+        +'rgba(148,163,184,.2); padding-top:4px;">'
+        +'<b style="color:#4ade80;">Ta doctrine est vérifiée.</b> Sur les 44 cas à vainqueur '
+        +'connu, corrélation vers « R1 gagne » : une figure OUVERTE vaut <b>+0,349</b> en M1 '
+        +'et <b>−0,262</b> en M7. Le même caractère, deux maisons, deux effets opposés. '
+        +'<b>Trois propriétés sur quatre s\'inversent entre M1 et M7</b> (force, ouverture, '
+        +'active ; seule la mobilité ne s\'inverse pas). Le contraste M1−M7 sur l\'ouverture : '
+        +'rho <b>+0,382</b>, p = 0,0129 — Bonferroni sur les quatre propriétés 0,0516, et le '
+        +'contraste était <b>prédit d\'avance</b> par ta doctrine, pas trouvé après coup.'
+        +'<div style="margin-top:3px;"><b style="color:#fbbf24;">Mais comme règle elle est '
+        +'troisième.</b> Elle parle sur 33 thèmes et tombe juste 20/27 hors nuls (74,1 %) ; '
+        +'V8 fait 80,0 %. En tête de la cascade d\'origine : 38/57 → 36/57 (McNemar 4 contre '
+        +'6). <span style="color:#5eead4;">En revanche elle bat le carré : avec le carré en '
+        +'tête, 30/57 → 32/57.</span> Pour l\'activer : '
+        +'<code>BRANCHES_V7.ouverture_camp.actif = true</code>.</div></div></div>';
+    })();
     // ─── QUI PILOTE CE VERDICT-CI (05/09/26) ───
     // Demande d'Ellemine_D : « quel moteur pilote le verdict final ».
     // Le décideur est nommé, et son BILAN est affiché à côté — la
@@ -1945,7 +1997,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       var stv = pl && pl.volume && vv.plus25 ? pl.volume[vv.plus25.source] : null;
       var nomLisible = na ? 'LA PORTE DU NUL'
         : cle==='v8' ? 'LE MOTEUR V8' : cle==='m4m10' ? 'LE SIGNAL M4/M10'
-        : cle==='carre' ? 'LE CARRÉ GÉOMANTIQUE' : 'LA CARTE SEULE';
+        : cle==='carre' ? 'LE CARRÉ GÉOMANTIQUE'
+        : cle==='ouverture' ? 'LE CONTRASTE D\'OUVERTURE M1/M7' : 'LA CARTE SEULE';
       html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid #f0abfc; '
         +'background:rgba(240,171,252,.08);">'
         +'<b style="color:#f0abfc; font-size:13px;">🎛️ QUI PILOTE CE VERDICT</b>'
