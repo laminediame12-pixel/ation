@@ -157,6 +157,54 @@ function renderBancPanel() {
               }).join('')
             + '</div>';
         }
+        // ─── LE BALAYAGE MAX-T (05/09/26) ───
+        // Le balayage de séparation ci-dessous demande « quel thème
+        // croire ». Celui-ci demande autre chose : « une propriété du
+        // thème prédit-elle le RÉSULTAT ? » — 297 prédicteurs déclarés
+        // d'avance, seuil par permutation de la réalité (max-T de
+        // Westfall-Young), qui est la bonne correction quand les
+        // prédicteurs sont corrélés entre eux. Il tourne sur
+        // tousCasBancV7(), donc sur les thèmes sauvegardés aussi.
+        var mxt = null;
+        try { mxt = balayageMaxTV7(); } catch (e) { mxt = null; }
+        var blocMxt = '';
+        if (mxt && mxt.familles && mxt.familles.length) {
+          var passe = !!mxt.auMoinsUneSurvivante;
+          var colM = passe ? '#4ade80' : '#94a3b8';
+          blocMxt = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid ' + colM + '; '
+            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
+            + '<div style="font-size:12px; font-weight:800; color:' + colM + ';">🧪 BALAYAGE MAX-T — '
+            + mxt.predicteurs + ' prédicteurs sur ' + mxt.casUtilisables + ' cas</div>'
+            + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+            + 'Une propriété du thème prédit-elle le <b>résultat</b> ? On permute la réalité '
+            + mxt.permutations + ' fois, on recalcule les ' + mxt.predicteurs + ' corrélations, '
+            + 'et on garde le MAXIMUM : c\'est lui le seuil du hasard. Bonferroni serait faux ici, '
+            + 'les prédicteurs étant fortement corrélés.</div>'
+            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:6px;">'
+            + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 6px;">famille</th>'
+            + '<th style="padding:3px 6px;">n</th><th style="text-align:left; padding:3px 6px;">meilleur</th>'
+            + '<th style="padding:3px 6px;">rho</th><th style="padding:3px 6px;">seuil</th>'
+            + '<th style="padding:3px 6px;">p</th></tr>'
+            + mxt.familles.map(function (f) {
+                if (f.verdict) return '<tr><td style="padding:3px 6px;">' + esc(f.nom)
+                  + '</td><td colspan="5" style="padding:3px 6px; color:#64748b;">' + esc(f.verdict) + '</td></tr>';
+                var c2 = f.survit ? '#4ade80' : '#cbd5e1';
+                return '<tr><td style="padding:3px 6px; color:' + c2 + ';">' + esc(f.nom) + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + f.n + '</td>'
+                  + '<td style="padding:3px 6px; color:#e2e8f0;">' + esc(f.meilleur) + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center;">' + f.rho.toFixed(3) + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center; color:#94a3b8;">' + f.seuil95.toFixed(3) + '</td>'
+                  + '<td style="padding:3px 6px; text-align:center; color:' + c2 + ';">' + f.pFamille.toFixed(3)
+                  + (f.survit ? ' ✔' : '') + '</td></tr>';
+              }).join('')
+            + '</table>'
+            + '<div style="font-size:10px; color:' + (passe ? '#4ade80' : '#fbbf24') + '; margin-top:5px;">'
+            + esc(mxt.lecture) + '</div>'
+            + '<div style="font-size:9.5px; color:#64748b; margin-top:4px;">'
+            + 'Le balayage du 05/09 tournait hors du fichier, sur les 56 cas du dépôt seulement, et '
+            + 'concluait qu\'il faudrait 100 cas. Celui-ci lit ' + mxt.casDisponibles + ' cas — archive '
+            + 'plus tes thèmes sauvegardés. Rejoué à chaque fois que tu saisis un score.</div></div>';
+        }
         // ─── LE BALAYAGE DE SÉPARATION (30/08/26) ───
         // « Comment séparer les thèmes qui tiennent le vrai verdict ? »
         // La réponse se recalcule à chaque ouverture du banc.
@@ -291,7 +339,7 @@ function renderBancPanel() {
             + 'Le filtre reste branché parce que c\'est un choix assumé, pas parce qu\'il est démontré.'
             + '</div></div>';
         }
-        var tete = alerteCoh + blocBal + blocArb + blocVpf + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
+        var tete = alerteCoh + blocMxt + blocBal + blocArb + blocVpf + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
           + 'border-radius:10px; background:rgba(251,191,36,.07);">'
           + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
           + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'

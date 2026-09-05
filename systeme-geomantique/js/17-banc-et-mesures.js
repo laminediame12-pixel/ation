@@ -2891,3 +2891,171 @@ function porteeDesMesuresV7() {
         + ' cas, pas sur 56.'
       : 'Il manque ' + (100 - tous) + ' cas pour que le balayage tranche seul.' };
 }
+
+// ═══════════════════════════════════════════════════════════════
+// LE BALAYAGE MAX-T, PORTÉ DANS LE FICHIER (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+// Le balayage du matin tournait sur les 56 cas du dépôt, dans un script
+// hors du fichier. Il concluait « rien ne survit » et « il faudrait 100
+// cas ». Or le banc en a 105 : 58 d'archive plus les thèmes sauvegardés
+// du téléphone, que ce script ne pouvait pas atteindre.
+//
+// Celui-ci tourne DANS le fichier, sur tousCasBancV7(). C'est le même
+// protocole, à la lettre :
+//   · 299 prédicteurs STRUCTURELS déclarés d'avance, sans choix : les
+//     256 « Mh = figure », les 16 « Mh au repos », les 16 « Mh paire »,
+//     plus rang des mères, nombre de Populus, zéro Populus, maisons au
+//     repos, figures distinctes, même boucle R1/R7, R1 angulaire,
+//     R1 cadente, décalage R1->R7 ;
+//   · quatre familles : camp R1/R7, nul, plus de 2,5 buts, BTTS ;
+//   · permutation max-T de Westfall-Young : on permute la RÉALITÉ, on
+//     recalcule les 299 corrélations de rang, on garde le MAXIMUM, et
+//     ce maximum est le seuil. Bonferroni serait faux ici, les
+//     prédicteurs étant fortement corrélés entre eux.
+//
+// À LANCER À LA MAIN — c'est lourd (299 × n × permutations) et ça n'a
+// pas sa place dans un rendu de thème :
+//        balayageMaxTV7()            → 2000 permutations
+//        balayageMaxTV7(500)         → plus rapide, moins fin
+// Le résultat dit, famille par famille, le meilleur prédicteur, le
+// seuil du hasard, et si quelque chose passe enfin.
+function _predicteursV7() {
+  var P = [];
+  for (var h = 1; h <= 16; h++) {
+    (function (hh) {
+      FIGS_V7.forEach(function (f) {
+        P.push({ nom: 'M' + hh + '=' + f, f: function (t) { return t[hh] === f ? 1 : 0; } });
+      });
+      P.push({ nom: 'M' + hh + ' au repos',
+        f: function (t) { return t[hh] === FIGS_V7[hh - 1] ? 1 : 0; } });
+      P.push({ nom: 'M' + hh + ' paire',
+        f: function (t) {
+          var p = MAP_GEO[t[hh]]; if (!p) return 0;
+          var s = 0; for (var i = 0; i < p.length; i++) s += p[i];
+          return s % 2 === 0 ? 1 : 0; } });
+    })(h);
+  }
+  P.push({ nom: 'rang des mères', f: function (t) { return rangMeresV7(t) || 0; } });
+  P.push({ nom: 'nombre de Populus', f: function (t) { return nbPopulusV7(t) || 0; } });
+  P.push({ nom: 'zéro Populus', f: function (t) { return nbPopulusV7(t) === 0 ? 1 : 0; } });
+  P.push({ nom: 'maisons au repos', f: function (t) {
+    var n = 0; for (var h = 1; h <= 16; h++) if (t[h] === FIGS_V7[h - 1]) n++; return n; } });
+  P.push({ nom: 'figures distinctes', f: function (t) {
+    var s = {}; for (var h = 1; h <= 16; h++) s[t[h]] = 1; return Object.keys(s).length; } });
+  P.push({ nom: 'R1 et R7 même boucle', f: function (t) {
+    var r = getRotationOrderFromRepos(t[1]);
+    return loopOf(t[r[0]]) === loopOf(t[r[6]]) ? 1 : 0; } });
+  P.push({ nom: 'R1 en maison angulaire', f: function (t) {
+    var r = getRotationOrderFromRepos(t[1]);
+    return [1, 4, 7, 10].indexOf(r[0]) >= 0 ? 1 : 0; } });
+  P.push({ nom: 'R1 en maison cadente', f: function (t) {
+    var r = getRotationOrderFromRepos(t[1]);
+    return [3, 6, 9, 12].indexOf(r[0]) >= 0 ? 1 : 0; } });
+  P.push({ nom: 'décalage R1->R7', f: function (t) {
+    var r = getRotationOrderFromRepos(t[1]);
+    var a = FIGS_V7.indexOf(t[r[0]]), b = FIGS_V7.indexOf(t[r[6]]);
+    return (((b - a) % 16) + 16) % 16; } });
+  return P;
+}
+
+function balayageMaxTV7(permutations) { return (permutations || 2000) === 2000
+  ? memoArchiveV7('balayageMaxTV7', function () { return _balayageMaxTV7(2000); })
+  : _balayageMaxTV7(permutations); }
+function _balayageMaxTV7(permutations) {
+  if (typeof tousCasBancV7 !== 'function') return null;
+  var T = permutations || 2000;
+  var CAS = tousCasBancV7() || [];
+  var P = _predicteursV7();
+  // ── construction de la matrice, une seule fois ──
+  var lignes = [];
+  CAS.forEach(function (c) {
+    if (!c || !c.meres) return;
+    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
+    lignes.push({ nom: c.nom, camp: c.camp,
+      tot: g ? (+g[1] + +g[2]) : null,
+      btts: g ? ((+g[1] > 0 && +g[2] > 0) ? 1 : 0) : null,
+      x: P.map(function (p) { try { return p.f(t); } catch (e) { return 0; } }) });
+  });
+  function rangs(v) {
+    var idx = v.map(function (_, i) { return i; });
+    idx.sort(function (a, b) { return v[a] - v[b]; });
+    var r = new Array(v.length), i = 0;
+    while (i < idx.length) {
+      var j = i;
+      while (j + 1 < idx.length && v[idx[j + 1]] === v[idx[i]]) j++;
+      var m = (i + j) / 2 + 1;
+      for (var k = i; k <= j; k++) r[idx[k]] = m;
+      i = j + 1;
+    }
+    return r;
+  }
+  function correl(xr, yr) {
+    var n = yr.length, mx = 0, my = 0, i;
+    for (i = 0; i < n; i++) { mx += xr[i]; my += yr[i]; }
+    mx /= n; my /= n;
+    var num = 0, dx = 0, dy = 0;
+    for (i = 0; i < n; i++) {
+      var a = xr[i] - mx, b = yr[i] - my;
+      num += a * b; dx += a * a; dy += b * b;
+    }
+    return (dx > 0 && dy > 0) ? num / Math.sqrt(dx * dy) : 0;
+  }
+  var cibles = [
+    { nom: 'camp R1 contre R7', garde: function (r) { return r.camp === 'R1' || r.camp === 'R7'; },
+      y: function (r) { return r.camp === 'R1' ? 1 : 0; } },
+    { nom: 'nul ou pas', garde: function (r) { return !!r.camp; },
+      y: function (r) { return r.camp === 'nul' ? 1 : 0; } },
+    { nom: 'plus de 2,5 buts', garde: function (r) { return r.tot !== null; },
+      y: function (r) { return r.tot > 2.5 ? 1 : 0; } },
+    { nom: 'les deux marquent', garde: function (r) { return r.btts !== null; },
+      y: function (r) { return r.btts; } }
+  ];
+  var sortie = { casDisponibles: CAS.length, casUtilisables: lignes.length,
+    predicteurs: P.length, permutations: T, familles: [] };
+  cibles.forEach(function (cb) {
+    var L = lignes.filter(cb.garde);
+    if (L.length < 12) {
+      sortie.familles.push({ nom: cb.nom, n: L.length, verdict: 'trop peu de cas' });
+      return;
+    }
+    var yr = rangs(L.map(cb.y));
+    var XR = P.map(function (_, j) { return rangs(L.map(function (r) { return r.x[j]; })); });
+    var obs = XR.map(function (xr) { return Math.abs(correl(xr, yr)); });
+    var best = 0;
+    for (var j = 1; j < obs.length; j++) if (obs[j] > obs[best]) best = j;
+    var depasse = 0, maxNull = [];
+    for (var s = 0; s < T; s++) {
+      var yp = yr.slice();
+      for (var i = yp.length - 1; i > 0; i--) {
+        var k = Math.floor(Math.random() * (i + 1)), tmp = yp[i]; yp[i] = yp[k]; yp[k] = tmp;
+      }
+      var mx = 0;
+      for (var j2 = 0; j2 < XR.length; j2++) {
+        var a = Math.abs(correl(XR[j2], yp)); if (a > mx) mx = a;
+      }
+      maxNull.push(mx);
+      if (mx >= obs[best]) depasse++;
+    }
+    maxNull.sort(function (a, b) { return a - b; });
+    var seuil = maxNull[Math.floor(0.95 * maxNull.length)];
+    var ordre = obs.map(function (v, i) { return [v, i]; })
+      .sort(function (a, b) { return b[0] - a[0]; }).slice(0, 5);
+    sortie.familles.push({ nom: cb.nom, n: L.length,
+      meilleur: P[best].nom, rho: Math.round(obs[best] * 1000) / 1000,
+      seuil95: Math.round(seuil * 1000) / 1000,
+      pFamille: Math.round(((depasse + 1) / (T + 1)) * 10000) / 10000,
+      survit: (depasse + 1) / (T + 1) < 0.05,
+      cinqPremiers: ordre.map(function (o) {
+        return P[o[1]].nom + ' ' + (Math.round(o[0] * 100) / 100); }) });
+  });
+  sortie.auMoinsUneSurvivante = sortie.familles.some(function (f) { return f.survit; });
+  sortie.lecture = sortie.auMoinsUneSurvivante
+    ? 'AU MOINS UNE FAMILLE PASSE le seuil du hasard sur tes cas. '
+      + 'C\'est la première fois — le balayage du matin, sur 56 cas seulement, n\'en '
+      + 'trouvait aucune. Vérifie le nombre de cas avant de crier victoire.'
+    : 'Aucune famille ne passe. Sur ' + sortie.casUtilisables + ' cas et '
+      + sortie.predicteurs + ' prédicteurs, le hasard fait aussi bien que notre meilleur. '
+      + 'Ce n\'est pas que les pistes sont fausses : c\'est qu\'on ne peut pas encore trancher.';
+  return sortie;
+}
