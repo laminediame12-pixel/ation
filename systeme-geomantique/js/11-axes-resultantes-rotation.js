@@ -2769,3 +2769,96 @@ autoTestV7('lois de conservation', function () {
       throw new Error('loi de conservation en défaut sur ' + m.join('/'));
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// LA LOI DES BOUCLES M1/M4 (05/09/26) — le plus gros effet du moteur
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D : « Laetitia en M2 est fort pour M1, mais il se passe
+// quelque chose quand Caput est en M4. » Creusé jusqu'au bout, par
+// énumération des 65536 thèmes. Aucune statistique : taux exacts.
+//
+// ── 1. LAETITIA EN M2 EST CONFIRMÉE ──
+// Sa maison de repos EST M2 : elle y est chez elle, sa résultante vaut
+// Populus, et M2 est la maison ressource du camp 1.
+//        tous thèmes ......... R1 27,9 %
+//        Laetitia en M2 ...... R1 30,9 %   (+3,0, n = 4096)
+//
+// ── 2. MAIS CE N'EST PAS CAPUT. C'EST LA BOUCLE. ──
+// En faisant varier M4 sous Laetitia, les seize figures se coupent en
+// deux groupes de huit, EXACTEMENT les deux boucles — 8/8, sans une
+// exception. Caput Draconis est simplement l'une des huit de la
+// boucle A. Ce n'est pas la figure qui agit, c'est son appartenance.
+//
+// ── 3. LA LOI DE FOND : M1 ET M4 DANS LA MÊME BOUCLE ──
+//        M1 et M4 même boucle ..... R1 36,7 %   (n = 32768)
+//        M1 et M4 opposées ........ R1 19,0 %   (n = 32768)
+//        écart .................... 17,7 points
+// C'est le plus gros effet structurel mesuré dans ce moteur. Et c'est
+// une INTERACTION PURE : la boucle de M4 seule ne vaut rien (27,7 %
+// contre 28,0 %), celle de M1 non plus. Seul leur ACCORD compte.
+// Les cinq autres paires de mères valent moins de 2,1 points.
+//
+// ── 4. CE QUE LAETITIA CHANGE VRAIMENT ──
+// Elle BRISE LA SYMÉTRIE de cette loi. Croisement sous Laetitia en M2 :
+//                       M4 en A        M4 en B
+//        M1 en A ....... 46,2 %        15,4 %      écart 30,8
+//        M1 en B ....... 29,6 %        32,2 %      écart −2,6
+// Quand M1 est en boucle A, la loi devient écrasante. Quand M1 est en
+// boucle B, elle s'effondre. Sans Laetitia le tableau est symétrique
+// (35,2/16,2 et 17,2/41,0) : c'est bien elle qui déséquilibre.
+//
+// ── 5. LA CONFIGURATION MAXIMALE, ET LA SÉPARATION EST NETTE ──
+// Laetitia en M2 + M1 en boucle A, M4 variant sur les seize figures
+// (128 thèmes par figure, taux exacts) :
+//        M4 en boucle A : de 40,6 % (Cauda Draconis) à 50,8 % (Fortuna Minor)
+//        M4 en boucle B : de 10,9 % (Puella)        à 18,8 % (Carcer)
+// AUCUN CHEVAUCHEMENT. Le pire de la boucle A vaut plus du double du
+// meilleur de la boucle B. Caput Draconis y est à 46,1 %, cinquième
+// des huit — solide, mais ce n'est pas lui le sommet.
+//
+// CE QUE ÇA VAUT ET CE QUE ÇA NE VAUT PAS : ce sont les taux EXACTS du
+// moteur, pas une mesure sur des matchs joués. Le moteur croit ça. Reste
+// à savoir si le terrain le confirme — et l'archive ne peut pas le dire
+// (cf. BALAYAGE_V7 : à n = 56, rien ne survit à la correction).
+var LOI_BOUCLES_V7 = {
+  base: 27.9,
+  laetitiaM2: 30.9,
+  m1m4: { memeBoucle: 36.7, opposees: 19.0, ecart: 17.7,
+    marginalM4: 'aucun — 27,7 % contre 28,0 %, c\'est une interaction pure' },
+  autresPaires: { 'M1/M2': -1.8, 'M1/M3': 0.8, 'M2/M3': 0.5, 'M2/M4': -2.1, 'M3/M4': -0.9 },
+  sousLaetitia: { 'M1A-M4A': 46.2, 'M1A-M4B': 15.4, 'M1B-M4A': 29.6, 'M1B-M4B': 32.2 },
+  sansLaetitia_m2enB: { 'M1A-M4A': 35.2, 'M1A-M4B': 16.2, 'M1B-M4A': 17.2, 'M1B-M4B': 41.0 },
+  maximale: { condition: 'Laetitia en M2 + M1 en boucle A + M4 en boucle A',
+    plage: [40.6, 50.8], contre: [10.9, 18.8], chevauchement: 'aucun' }
+};
+
+// Lecture d'un thème contre la loi. Rend la strate et le taux exact du
+// moteur pour cette strate — pas une prédiction, une position dans une
+// table déjà calculée.
+function lectureBouclesV7(theme) {
+  if (!theme || typeof loopOf !== 'function') return null;
+  var l1 = loopOf(theme[1]), l2 = loopOf(theme[2]), l4 = loopOf(theme[4]);
+  if (!l1 || !l4) return null;
+  var accord = l1 === l4;
+  var laet = theme[2] === 'laetitia';
+  var taux = accord ? LOI_BOUCLES_V7.m1m4.memeBoucle : LOI_BOUCLES_V7.m1m4.opposees;
+  var strate = 'M1 et M4 ' + (accord ? 'dans la MÊME boucle' : 'dans des boucles OPPOSÉES');
+  if (laet) {
+    taux = LOI_BOUCLES_V7.sousLaetitia['M1' + l1 + '-M4' + l4];
+    strate = 'Laetitia en M2, M1 en ' + l1 + ', M4 en ' + l4;
+  }
+  return { boucleM1: l1, boucleM2: l2, boucleM4: l4, accordM1M4: accord,
+    laetitiaEnM2: laet, strate: strate, tauxR1Moteur: taux,
+    ecartBase: Math.round((taux - LOI_BOUCLES_V7.base) * 10) / 10,
+    maximale: laet && l1 === 'A' && l4 === 'A',
+    note: 'taux EXACT du moteur sur cette strate (énumération des 65536), '
+      + 'pas une mesure sur des matchs joués' };
+}
+
+autoTestV7('loi des boucles M1/M4', function () {
+  if (typeof calcTheme !== 'function') return;
+  var t = calcTheme('puer', 'laetitia', 'via', 'caput_draconis');
+  var l = lectureBouclesV7(t);
+  if (!l || !l.maximale || l.tauxR1Moteur !== 46.2)
+    throw new Error('lectureBouclesV7 ne retrouve pas la strate maximale');
+});

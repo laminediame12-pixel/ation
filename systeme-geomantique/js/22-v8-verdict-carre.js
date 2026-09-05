@@ -1688,6 +1688,26 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'Pour l\'activer quand même : BRANCHES_V7.protocole_pilote.actif = true.')
         +'</div></div>';
     })();
+    // La loi des boucles M1/M4 — le plus gros effet du moteur.
+    (function(){
+      var lb=null; try{ lb=lectureBouclesV7(theme); }catch(e){ lb=null; }
+      if(!lb) return;
+      var col = lb.ecartBase>=8 ? '#4ade80' : (lb.ecartBase<=-8 ? '#f87171' : '#94a3b8');
+      html+='<div style="padding:7px 10px; margin:0 0 8px; border-left:4px solid '+col+'; background:rgba(148,163,184,.08);">'
+        +'🔁 <b style="font-size:12px;">Boucles : M1 en '+lb.boucleM1+', M4 en '+lb.boucleM4+' — '
+        +(lb.accordM1M4?'ACCORD':'désaccord')+'</b>'
+        +' <span style="font-size:11px; color:'+col+';">R1 '+lb.tauxR1Moteur.toFixed(1)+' % sur cette strate '
+        +'('+(lb.ecartBase>=0?'+':'')+lb.ecartBase.toFixed(1)+' contre 27,9 % de base)</span>'
+        +(lb.maximale?'<div style="font-size:11px; color:#4ade80; margin-top:3px;">★ STRATE MAXIMALE — '
+          +'Laetitia en M2, M1 en boucle A, M4 en boucle A. Le meilleur R1 du moteur.</div>':'')
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+        +esc(lb.strate)+'. La loi de fond : M1 et M4 dans la même boucle donnent R1 36,7 %, '
+        +'opposées 19,0 % — 17,7 points, le plus gros effet structurel du moteur, et c\'est une '
+        +'INTERACTION PURE (la boucle de M4 seule ne vaut rien, 27,7 contre 28,0). '
+        +'<b>Laetitia en M2 brise la symétrie</b> : avec M1 en boucle A la loi passe à 30,8 points '
+        +'d\'écart, avec M1 en boucle B elle s\'effondre à −2,6. '
+        +'Taux EXACTS du moteur sur les 65 536 thèmes — pas une mesure sur des matchs joués.</div></div>';
+    })();
     // La soudure des chefs — exacte, sans statistique.
     (function(){
       var sd=null; try{ sd=soudureChefsV7(theme); }catch(e){ sd=null; }
