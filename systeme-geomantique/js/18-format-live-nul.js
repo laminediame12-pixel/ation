@@ -820,6 +820,14 @@ function alerteNulV7(theme) {
   return !!(niv && niv.niveau === 'fort');
 }
 
+// Taux de déclenchement exacts des sept signaux du faisceau, obtenus
+// par énumération des 65536 thèmes (05/09/26). Constantes du système.
+// `fige` vaut 50 % et non 25 % à cause de la loi de parité : M15 ne
+// peut porter que huit figures, et les quatre symétriques sont toutes
+// paires — voir LOIS_PARITE_V7.
+var TAUX_BASE_FAISCEAU_V7 = { cadente: 0.2500, binome: 0.0742, boucle: 0.5000,
+  partage: 0.3984, juge: 0.1387, fige: 0.5000, structure: 0.2500 };
+
 function faisceauNulV7(theme) {
   var rot = null;
   try { rot = getRotationCombat(theme); } catch (e) { return null; }
@@ -849,7 +857,32 @@ function faisceauNulV7(theme) {
     { cle: 'structure', nom: 'structure du nul (M13 = M14 ou équilibre)', on: structure,
       detail: structure ? 'détectée' : 'aucune' }
   ];
+  // ── LES SEPT SIGNAUX N'ONT PAS LA MÊME RARETÉ (05/09/26) ──
+  // Taux mesurés par ÉNUMÉRATION EXHAUSTIVE des 65536 thèmes, pas sur
+  // l'archive : ce sont des constantes du système, pas des estimations.
+  //   même boucle              50,00 %      symétriques (fige)  50,00 %
+  //   3 rôles partagés         39,84 %      R1 cadente          25,00 %
+  //   structure du nul         25,00 %      juge des deux camps 13,87 %
+  //   R7 binôme de R1           7,42 %
+  // Le compte n/7 les additionne à poids égal. Un signal qui tombe une
+  // fois sur deux y pèse donc autant qu'un qui tombe une fois sur
+  // treize, et deux thèmes à « 3 sur 7 » peuvent être sans rapport.
+  // On ne touche PAS au compte — le verdict continue de s'appuyer
+  // dessus — mais on publie à côté de quoi il est fait.
+  signaux.forEach(function (x) { x.tauxBase = TAUX_BASE_FAISCEAU_V7[x.cle]; });
   var n = signaux.filter(function (x) { return x.on; }).length;
+  // Rareté du tirage, en bits : -log2(taux) sommé sur les signaux
+  // allumés. Ce n'est PAS une prédiction de nul, c'est une mesure de
+  // combien la configuration est inhabituelle.
+  var bits = 0;
+  signaux.forEach(function (x) {
+    if (x.on && x.tauxBase) bits += -Math.log(x.tauxBase) / Math.LN2; });
+  // Compte restreint aux signaux dont le taux n'est pas exactement
+  // 50 % — critère décidé sur le calcul exhaustif SEUL, sans regarder
+  // un seul résultat. Il retire `boucle` et `fige`. Publié en piste,
+  // pas encore utilisé par le verdict : voir PISTES_V7.
+  var nElague = signaux.filter(function (x) {
+    return x.on && x.tauxBase !== 0.5; }).length;
   // ─── L'ÉCHELLE EST CALCULÉE, PLUS ÉCRITE À LA MAIN (29/08/26) ───
   // Elle était figée : { 0:0, 1:13, 2:21, 3:25, 4:40, 5:67, 6:100, 7:100 },
   // mesurée sur 29 cas. À 35 cas elle était fausse partout — elle annonçait
@@ -864,6 +897,7 @@ function faisceauNulV7(theme) {
   });
   var niveau = n >= 5 ? 'FORTE ALERTE' : (n >= 4 ? 'alerte' : (n >= 2 ? 'veille' : 'aucun signe'));
   return { n: n, sur: 7, signaux: signaux, niveau: niveau,
+    bits: Math.round(bits * 100) / 100, nElague: nElague, surElague: 5,
     precision: cell.n ? Math.round(cell.nul * 100 / cell.n) : null,
     casNiveau: cell.n, nulsNiveau: cell.nul,
     precisionCumul: cum.n ? Math.round(cum.nul * 100 / cum.n) : null,

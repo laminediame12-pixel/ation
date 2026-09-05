@@ -411,6 +411,35 @@ function verifierRegistreSignauxV7(theme) {
 // mois en croyant qu'elle est neuve — et pour que son « non exclu »
 // serve de point de départ à la suivante.
 var PISTES_V7 = [
+  { cle: 'parite_m15', nom: 'M15 est toujours paire — huit figures possibles, pas seize',
+    auteur: 'calcul, 05/09', etat: 'ACQUISE — LOI EXACTE, PAS UNE PISTE',
+    chiffre: '65536/65536, aucune exception ; cause démontrée, pas mesurée : '
+      + 'la parité s\'additionne sous combine, et les filles M5–M8 étant la transposée '
+      + 'des mères M1–M4, les deux moitiés de M15 = M1⊕…⊕M8 portent la même parité et s\'annulent',
+    consequence: 'toute règle « M15 est X » a un taux de base de 1/8, pas 1/16. '
+      + 'Deux mesures du fichier valaient le double du taux supposé : « le Juge est Via ou '
+      + 'Populus » 25 % et non 12,5 %, « M15 est une des quatre symétriques » 50 % et non 25 %.',
+    suite: 'aucune — c\'est établi. Voir LOIS_PARITE_V7 et verifierLoisPariteV7(true).' },
+
+  { cle: 'faisceau_elague', nom: 'Faisceau du nul restreint aux signaux dont le taux ≠ 50 %',
+    auteur: 'calcul, 05/09', etat: 'PRÉ-ENREGISTRÉE — NON DÉMONTRÉE',
+    chiffre: 'les sept signaux vont de 7,42 % (R7 binôme de R1) à 50,00 % (même boucle, '
+      + 'symétriques), mesurés exhaustivement sur 65536 thèmes. Le compte n/7 les additionne '
+      + 'à poids égal.',
+    nonExclu: 'sur les 56 cas d\'archive : compte actuel p = 0,177 ; compte restreint aux cinq '
+      + 'signaux gardés p = 0,073 ; rareté en bits sur ces cinq p = 0,053. AUCUN n\'atteint le '
+      + 'seuil. Le critère d\'élagage a été décidé sur le calcul exhaustif seul, sans regarder '
+      + 'un résultat — et il retire `boucle` qui aidait (+16 pts) autant que `fige` qui nuisait '
+      + '(−13 pts), donc le gain n\'est pas un réglage.',
+    piege: 'les variantes « sans fige » et « fige à l\'envers » ont été essayées APRÈS avoir vu '
+      + 'que fige avait le mauvais signe. Leurs p (0,063 et 0,019) sont des artefacts de '
+      + 'sélection et ne comptent pas. Elles sont notées ici pour qu\'on ne les ressorte pas '
+      + 'plus tard comme des preuves.',
+    seuil: 'annoncer nElague AVANT le match sur 15 rencontres, puis comparer à n/7 sur les '
+      + 'mêmes rencontres. Sans ça, on ne saura pas trancher.',
+    suite: 'faisceauNulV7 publie déjà nElague et bits ; le verdict, lui, continue de s\'appuyer '
+      + 'sur n/7 tant que rien n\'est démontré.' },
+
   { cle: 'm9_buts', nom: 'M9 (= M1 ⊕ M2) annonce le volume de buts',
     auteur: 'trouvée au balayage des 13 maisons, 04/09', etat: 'VIVANTE',
     chiffre: '3/3 hors échantillon · 26/28 en échantillon (sans valeur) · p ≈ 0,14 pour le 3/3 seul',

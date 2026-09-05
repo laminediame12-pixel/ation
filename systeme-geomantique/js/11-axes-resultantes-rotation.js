@@ -2409,3 +2409,78 @@ function analyserConfrontationDirecteV7(theme, figR1, figR7) {
 // binôme) ET la RÉSULTANTE produite est l'antagoniste direct de
 // l'autre camp Y — la maison héberge visiblement un allié de X tout en
 // produisant secrètement une attaque contre Y.
+
+// ═══════════════════════════════════════════════════════════════
+// LOIS DE PARITÉ (05/09/26) — trois lois exactes, 65536/65536
+// ═══════════════════════════════════════════════════════════════
+// La PARITÉ d'une figure = son nombre de points, pair ou impair.
+// Puer 5, Laetitia 7, Via 4, Populus 8, etc.
+//
+// La parité s'ADDITIONNE sous combine(). Démonstration : écrivons 1
+// pour une ligne à un point et 0 pour une ligne à deux points ; combine
+// donne deux points quand les lignes s'accordent, un point sinon, donc
+// le vecteur du résultat est le XOR des deux vecteurs, et son poids se
+// somme modulo 2. La parité est donc un morphisme vers Z2.
+//
+// CONSÉQUENCE PRINCIPALE — M15 EST TOUJOURS PAIRE.
+// M15 = M1⊕M2⊕…⊕M8. Or les filles M5–M8 sont la TRANSPOSÉE des mères
+// M1–M4 : les deux moitiés contiennent exactement les mêmes seize
+// points, donc la même parité, donc elles s'annulent. Le Juge ne peut
+// porter que l'une des huit figures paires. Les huit impaires y sont
+// structurellement impossibles — vérifié sur les 65536 thèmes.
+//
+// CE QUE ÇA CHANGE, CONCRÈTEMENT : toute règle de la forme « M15 est
+// X » a pour taux de base 1/8, pas 1/16. Le fichier contenait deux
+// mesures qui valaient le double de ce qu'on aurait cru :
+//   « le Juge est Via ou Populus »            25 %, pas 12,5 %
+//   « M15 est une des quatre symétriques »    50 %, pas 25 %
+// La seconde se déclenche donc sur la moitié des thèmes : comme
+// critère, elle ne trie rien. Sur n'importe quelle autre maison, la
+// même condition ferait bien 25 %.
+var FIGURES_PAIRES_V7 = ['via', 'amissio', 'fortuna_minor', 'carcer',
+  'conjunctio', 'fortuna_major', 'acquisitio', 'populus'];
+
+function pariteFigureV7(fig) {
+  if (!fig || typeof MAP_GEO === 'undefined' || !MAP_GEO[fig]) return null;
+  var s = 0, p = MAP_GEO[fig];
+  for (var i = 0; i < p.length; i++) s += p[i];
+  return s % 2 === 0 ? 'paire' : 'impaire';
+}
+
+var LOIS_PARITE_V7 = [
+  { nom: 'M15 est toujours paire',
+    enonce: 'le Juge ne prend jamais que l\'une des huit figures paires',
+    test: function (t) { return pariteFigureV7(t[15]) === 'paire'; },
+    cause: 'M15 = M1⊕…⊕M8, et M5–M8 sont la transposée de M1–M4 : '
+      + 'mêmes seize points des deux côtés, les parités s\'annulent' },
+  { nom: 'parité(M13) = parité(M14)',
+    enonce: 'les deux témoins ont toujours la même parité',
+    test: function (t) { return pariteFigureV7(t[13]) === pariteFigureV7(t[14]); },
+    cause: 'conséquence directe : M15 = M13⊕M14 est paire' },
+  { nom: 'parité(M16) = parité(M1)',
+    enonce: 'la Réconciliation a toujours la parité de la première maison',
+    test: function (t) { return pariteFigureV7(t[16]) === pariteFigureV7(t[1]); },
+    cause: 'M16 = M15⊕M1, et M15 est paire — élément neutre de parité' }
+];
+
+// Vérification exhaustive à la demande : 65536 thèmes, aucune exception
+// tolérée. Sert de garde-fou si le moteur de calcul change un jour.
+function verifierLoisPariteV7(exhaustif) {
+  if (typeof FIGS_V7 === 'undefined' || typeof calcTheme !== 'function') return null;
+  var res = LOIS_PARITE_V7.map(function (l) {
+    return { nom: l.nom, teste: 0, echecs: 0, cause: l.cause }; });
+  var figs = FIGS_V7, lim = exhaustif ? figs.length : 4;
+  for (var a = 0; a < lim; a++) for (var b = 0; b < figs.length; b++)
+    for (var c = 0; c < figs.length; c++) for (var d = 0; d < figs.length; d++) {
+      var t = calcTheme(figs[a], figs[b], figs[c], figs[d]);
+      LOIS_PARITE_V7.forEach(function (l, i) {
+        res[i].teste++; if (!l.test(t)) res[i].echecs++; });
+    }
+  return { exhaustif: !!exhaustif, lois: res,
+    toutesExactes: res.every(function (r) { return r.echecs === 0; }) };
+}
+
+autoTestV7('lois de parité', function () {
+  var v = verifierLoisPariteV7(false);
+  if (!v || !v.toutesExactes) throw new Error('une loi de parité est tombée en défaut');
+});
