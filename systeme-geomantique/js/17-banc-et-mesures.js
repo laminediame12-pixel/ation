@@ -923,6 +923,10 @@ function bancMoteursV7(force) {
   // Un moteur est juste sur un cas si l'écart au réel ne dépasse pas
   // BANC_TOLERANCE_CORNERS_V7.
   function passeNum(liste, attendu, tolerance) {
+    // Même filtre que passe() : les corners passaient par ici et
+    // restaient donc à l'écran malgré leur désactivation. Trouvé en
+    // recomptant ce qui s'affiche vraiment, pas ce que je croyais.
+    liste = moteursActifsV7(liste);
     return liste.map(function (m) {
       var juste = 0, total = 0, ecartTotal = 0;
       var details = CAS.map(function (c, i) {
@@ -2711,3 +2715,96 @@ function moteursActifsV7(liste) {
   if (!liste || !liste.filter) return liste;
   return liste.filter(function (m) { return !moteurDesactiveV7(m.cle); });
 }
+
+// ── DEUXIÈME PASSE (05/09/26) : « je vois toujours les autres à l'écran » ──
+// Juste. La première passe n'écartait que 7 moteurs sur 70 ; 63 restaient
+// affichés. Le vrai critère manquait, et c'est le plus simple de tous :
+//
+//        ON NE PEUT PAS NOTER CE QU'ON N'ENREGISTRE PAS.
+//
+// Résultats réellement présents dans l'archive, comptés :
+//        camp .......... 56      incident par camp ....... 14
+//        btts .......... 46      mi-temps ................  8
+//        incident ...... 11*     corners total ...........  8
+//                                penalty par camp ........  7
+//                                corners dominant ........  4
+//        (* 32 champs `incident` mais 11 seulement notables par les moteurs)
+//
+// Une famille jugée sur 4 à 14 matchs n'affiche pas une mesure, elle
+// affiche du bruit habillé en pourcentage. Barre fixée à 30 résultats
+// enregistrés. SEPT FAMILLES tombent en dessous et sortent de l'écran
+// en entier — pas parce que leurs moteurs sont mauvais, parce que
+// PERSONNE NE PEUT LE SAVOIR. Elles reviendront le jour où l'archive
+// portera des scores de mi-temps, des comptes de corners et des camps
+// de penalty.
+//
+// Dans les cinq familles jugeables, on garde LE MEILLEUR et SON TÉMOIN —
+// le témoin reste, sinon il n'y a plus de barre à battre.
+//
+// CE QUI EST ASSUMÉ ET DIT : dans ces cinq familles, le classement entre
+// les gardés et les coupés N'EST PAS ÉTABLI (McNemar les donne indécis à
+// n = 56). Garder le mieux noté est un CHOIX de lisibilité, pas une
+// conclusion. Il se défait en retirant une clé.
+//
+// Résultat : 10 moteurs à l'écran au lieu de 70.
+(function () {
+  var horsPortee = {
+    // famille -> raison commune
+    corners_dom: 4, corners_dom_vainqueur: 4, corners_dom_temoin: 4,
+    mt_deux_cartes: 8, mt_match_ouvert: 8, mt_ht_signal_ferme: 8, mt_temoin: 8,
+    mtd_signal: 8, mtd_temoin: 8,
+    corners_moteur: 8, corners_ouvert: 8, corners_temoin: 8,
+    pen_camp_v7: 7, pen_camp_temoin: 7, pen_camp_temoin_m1: 7,
+    inc_camp_naissance_rot: 14, inc_camp_mars: 14, inc_camp_affiche: 14,
+    inc_camp_detecteur: 14, inc_camp_temoin: 14,
+    incident_sommes_axes: 11, incident_derives: 11, incident_derives_rouge: 11,
+    incident_signaux: 11, incident_binome: 11, incident_filiation: 11
+  };
+  Object.keys(horsPortee).forEach(function (c) {
+    MOTEURS_DESACTIVES_V7[c] = 'famille non jugeable : seulement ' + horsPortee[c]
+      + ' résultats de ce type dans l\'archive (barre : 30). Ce n\'est pas un jugement '
+      + 'sur le moteur, c\'est l\'aveu qu\'on ne peut pas le juger. À rouvrir quand '
+      + 'l\'archive portera ces résultats.';
+  });
+  // Dans les familles jugeables : tout sauf le meilleur et son témoin.
+  var moinsBons = {
+    destruction_directe: 'MOTEURS_V7 — 6/9, et sa propre note dit « piste gelée, ne '
+      + 'décide de rien ». Gardé : partage_synthese (32/44).',
+    f4p4_moins_assaillant: 'conditionnels 24/44', majorite_purs: 'conditionnels 24/44',
+    crit_sans_concordance: 'conditionnels 23/44', crit_sans_conc_env: 'conditionnels 25/44',
+    f4p4_avec_adverse: 'conditionnels 26/44', decalage_oblique: 'conditionnels 14/25',
+    carcer_m10: 'conditionnels 3/4 — le taux est flatteur mais il ne parle que sur '
+      + '3,3 % des thèmes : quatre matchs ne décident de rien',
+    nul_fusion_partage: 'nul 19/34', nul_fusion_et_porte: 'nul 27/34',
+    nul_r1_cadente: 'nul 36/56', nul_structure: 'nul 40/56', nul_r7_binome: 'nul 43/56',
+    nul_meme_boucle: 'nul 33/56', nul_juge_partage: 'nul 44/56 — à égalité EXACTE avec '
+      + 'le témoin, donc il n\'apporte rien de plus que « jamais de nul »',
+    nul_faisceau4: 'nul 40/56', nul_faisceau5: 'nul 42/56',
+    nul_saturne_siege: 'nul 33/56 — p = 0,0347 contre le témoin, ne survit pas à '
+      + 'Bonferroni mais reste le plus faible des gardés',
+    btts_trois_etages: 'btts 31/48', btts_cadent_conj: 'btts 28/48',
+    btts_puer_m8: 'btts 23/48', btts_puer: 'btts 24/48', btts_cadent: 'btts 29/48',
+    btts_chaine: 'btts 29/48', btts_rotation: 'btts 25/48',
+    serre_m6m9: 'serré 23/48', serre_temoin_non: 'serré 21/48 — second témoin, '
+      + 'redondant avec serre_temoin'
+  };
+  Object.keys(moinsBons).forEach(function (c) {
+    MOTEURS_DESACTIVES_V7[c] = 'famille jugeable, mais pas le meilleur : ' + moinsBons[c]
+      + '. CHOIX DE LISIBILITÉ, pas une conclusion — McNemar donne ces écarts indécis '
+      + 'à n = 56. Retirer la clé le réaffiche.';
+  });
+})();
+
+// Ce qui reste à l'écran, et pourquoi. À relire avant d'en couper d'autres.
+var MOTEURS_GARDES_V7 = {
+  partage_synthese:      'camp — 32/44, le meilleur de sa famille',
+  crit_cohabitation:     'camp conditionnel — 21/32, le meilleur de sa famille',
+  nul_deux_portes_large: 'nul — 47/56, le meilleur du fichier',
+  nul_binome_et_juge:    'nul — 45/56',
+  nul_deux_portes:       'nul — 45/56, la version stricte, branchée au verdict le 29/08',
+  nul_temoin:            'nul — TÉMOIN 44/56, la barre à battre. Ne jamais le couper.',
+  btts_conjunctio:       'btts — 33/48, le meilleur de sa famille',
+  btts_score:            'btts — TÉMOIN 27/48. Ne jamais le couper.',
+  serre_r1_cadente:      'serré — 29/48, le meilleur de sa famille',
+  serre_temoin:          'serré — TÉMOIN 27/48. Ne jamais le couper.'
+};
