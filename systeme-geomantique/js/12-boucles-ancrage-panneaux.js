@@ -2712,6 +2712,126 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
 });
 
 // ═══════════════════════════════════════════════════════════════
+// QUI PILOTE VRAIMENT LE VERDICT — audit du 05/09/26
+// ═══════════════════════════════════════════════════════════════
+//
+// Ellemine_D : « vérifie pour moi le verdict final, quel moteur le
+// pilote ». Chemin tracé dans le code PUIS recompté sur le banc, parce
+// que lire la cascade ne suffit pas : elle a déjà menti une fois.
+//
+// ─── LE CAMP — 57 cas au camp connu ───
+//   moteur                 décide      juste
+//   V8 ................... 25 (43,9 %)  20/25 = 80,0 %   ← le vrai pilote
+//   Porte du NUL ......... 22 (38,6 %)  11/22 = 50,0 %
+//   Signal M4/M10 ........ 10 (17,5 %)   7/10 = 70,0 %
+//   CARRÉ GÉOMANTIQUE .....  0 ( 0,0 %)      —
+//   total 38/57
+//
+// ⚠️ LE CARRÉ NE DÉCIDE JAMAIS. Pas « rarement » : JAMAIS. Vérifié sur
+// 4 096 thèmes variés, il n'a pas tranché une seule fois, parce que
+// M4/M10 ou V8 répondent toujours avant lui et qu'il est dernier de la
+// cascade ORDRE_VERDICT_V7 = ['m4m10','v8','carre']. C'est pourtant la
+// pièce la plus visible de l'écran — le carré, ses trajectoires, ses
+// trigones, son bandeau de sommes. Tout ça est de la LECTURE, pas de la
+// décision. Il faut le savoir avant de passer du temps à le régler.
+// Le troisième étage de la cascade est du code mort.
+//
+// ─── LE VOLUME — 49 cas au score connu ───
+//   règle                             décide      juste
+//   zéro Populus ................ 22 (44,9 %)  19/22 = 86,4 %
+//   axe offensif (2 sommes) ..... 14 (28,6 %)  10/14 = 71,4 %
+//   miroir M5 ................... 13 (26,5 %)   7/13 = 53,8 %
+//   LE MOTEUR LUI-MÊME ..........  0 ( 0,0 %)      —
+//   total 36/49
+// Le score du moteur ne sert plus JAMAIS à annoncer le volume : les
+// trois règles branchées couvrent 100 % des thèmes. Il ne sert plus qu'à
+// afficher le score et à nourrir la lecture directe du miroir.
+//
+// ─── LES TROIS PORTES DU NUL — sur les 22 nuls annoncés ───
+//   porte principale seule ..... 11
+//   porte CARCER seule .........  9   ← branchée le 05/09, déjà 41 %
+//   les deux ...................  2
+//
+// ⚠️ ET LE PRIX STRUCTUREL DE LA PORTE CARCER, qui ne se voyait pas sur
+// le banc : par énumération des 65 536 thèmes, le système annonçait le
+// nul sur 25,39 % des thèmes AVANT, il l'annonce sur 41,60 % APRÈS.
+// Il en annonce donc presque DEUX FOIS PLUS que le taux réel de nuls
+// dans l'archive (22,8 %). Sur les 57 cas le total ne bouge pas
+// (38/57), mais structurellement la porte a rendu le système beaucoup
+// plus bavard sur le nul. À savoir avant de miser dessus — et à
+// rappeler quand on relira le levier de 2,19x, qui a été mesuré sur ces
+// 22 annonces-là et pas sur un système qui en ferait moins.
+var PILOTAGE_V7 = {
+  cascadeCamp: ['m4m10', 'v8', 'carre'],
+  camp: { n: 57, total: '38/57',
+    v8: { decide: 25, pct: 43.9, juste: '20/25', taux: 80.0 },
+    nul: { decide: 22, pct: 38.6, juste: '11/22', taux: 50.0 },
+    m4m10: { decide: 10, pct: 17.5, juste: '7/10', taux: 70.0 },
+    carre: { decide: 0, pct: 0, note: 'JAMAIS — vérifié sur 4096 thèmes' } },
+  volume: { n: 49, total: '36/49',
+    populus: { decide: 22, pct: 44.9, juste: '19/22', taux: 86.4 },
+    axe: { decide: 14, pct: 28.6, juste: '10/14', taux: 71.4 },
+    miroir: { decide: 13, pct: 26.5, juste: '7/13', taux: 53.8 },
+    moteur: { decide: 0, pct: 0, note: 'le moteur n\'annonce plus jamais le volume' } },
+  portesDuNul: { principaleSeule: 11, carcerSeule: 9, lesDeux: 2, total: 22 },
+  tauxNulExhaustif: { sansCarcer: 25.39, avecCarcer: 41.60, reelArchive: 22.8,
+    note: 'la porte Carcer a fait passer le système de 25 % à 42 % de nuls annoncés sur '
+      + 'les 65 536 thèmes — presque le double du taux réel. Invisible sur le banc '
+      + '(38/57 avant comme après), bien visible en énumération.' },
+  leCarreEstMuet: 'le carré, ses trajectoires, ses trigones et son bandeau de sommes sont '
+    + 'de la LECTURE, pas de la décision. Le troisième étage de la cascade est du code mort.'
+};
+
+// Recompté sur la base courante — la cascade a déjà menti une fois,
+// elle ne doit plus pouvoir le refaire en silence.
+var _CACHE_PILOTE_V7 = null;
+function piloteVerdictLiveV7() {
+  var CAS = [];
+  try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.meres; }); }
+  catch (e) { return null; }
+  if (_CACHE_PILOTE_V7 && _CACHE_PILOTE_V7.cle === CAS.length) return _CACHE_PILOTE_V7.val;
+  if (_MESURE_EN_COURS_V7 || _GARDE_MIROIR_V7) return null;
+  return _sousMesureV7(function () {
+    var camp = {}, vol = {}, nC = 0, nV = 0;
+    var bump = function (o, k, ok) {
+      if (!o[k]) o[k] = { decide: 0, juste: 0 };
+      o[k].decide++; if (ok) o[k].juste++;
+    };
+    CAS.forEach(function (c) {
+      var t;
+      try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+      var v; try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); }); }
+      catch (e) { return; }
+      if (!v) return;
+      if (c.camp) {
+        nC++;
+        var na = v.nulActif;
+        var src = na ? 'porte du nul' : 'moteur inconnu';
+        if (!na) { try { var d = decideurVerdictV7(t, false); src = d && d.moteur ? d.moteur : 'carte seule'; }
+          catch (e) { } }
+        var dit = na ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+        bump(camp, src, dit === c.camp);
+      }
+      var g = /^(\d+)-(\d+)$/.exec(c.score || '');
+      if (g && v.plus25) {
+        nV++;
+        bump(vol, v.plus25.source, v.plus25.valeur === ((+g[1] + +g[2]) > 2.5));
+      }
+    });
+    var fin = function (o, n) {
+      Object.keys(o).forEach(function (k) {
+        o[k].pct = Math.round(1000 * o[k].decide / n) / 10;
+        o[k].taux = Math.round(1000 * o[k].juste / o[k].decide) / 10;
+      });
+      return o;
+    };
+    var val = { nCamp: nC, nVolume: nV, camp: fin(camp, nC), volume: fin(vol, nV) };
+    if (nC || nV) _CACHE_PILOTE_V7 = { cle: CAS.length, val: val };
+    return val;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // CE QUE LE PANNEAU « SOMME DES 8 MAISONS » CACHAIT (05/09/26)
 // ═══════════════════════════════════════════════════════════════
 //

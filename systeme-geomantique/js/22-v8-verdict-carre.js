@@ -1895,6 +1895,58 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         })()
         +' Réversible par BRANCHES_V7.populus_volume.actif.</div></div>';
     })();
+    // ─── QUI PILOTE CE VERDICT-CI (05/09/26) ───
+    // Demande d'Ellemine_D : « quel moteur pilote le verdict final ».
+    // Le décideur est nommé, et son BILAN est affiché à côté — la
+    // cascade a déjà menti une fois sur son propre nom, elle ne doit
+    // plus pouvoir le refaire.
+    (function(){
+      var na=false, dec=null, vv=null;
+      try{ vv=avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);}); }catch(e){}
+      if(!vv) return;
+      na = !!vv.nulActif;
+      try{ dec = decideurVerdictV7(theme, na); }catch(e){}
+      var pl=null; try{ pl=piloteVerdictLiveV7(); }catch(e){}
+      var cle = na ? 'porte du nul' : (dec && dec.moteur ? dec.moteur : 'carte seule');
+      var st = pl && pl.camp ? pl.camp[cle] : null;
+      var stv = pl && pl.volume && vv.plus25 ? pl.volume[vv.plus25.source] : null;
+      var nomLisible = na ? 'LA PORTE DU NUL'
+        : cle==='v8' ? 'LE MOTEUR V8' : cle==='m4m10' ? 'LE SIGNAL M4/M10'
+        : cle==='carre' ? 'LE CARRÉ GÉOMANTIQUE' : 'LA CARTE SEULE';
+      html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid #f0abfc; '
+        +'background:rgba(240,171,252,.08);">'
+        +'<b style="color:#f0abfc; font-size:13px;">🎛️ QUI PILOTE CE VERDICT</b>'
+        +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+        +'Le camp est décidé par <b style="color:#f0abfc;">'+nomLisible+'</b>'
+        +(dec && dec.nom && !na ? ' — '+esc(dec.nom) : '')+'.'
+        +(st? ' Sur ta base il décide <b>'+st.decide+'</b> verdicts ('+st.pct+' %) et tombe '
+             +'juste <b>'+st.juste+'/'+st.decide+'</b> = <b>'+st.taux+' %</b>.' : '')
+        +'</div>'
+        +(vv.plus25
+          ? '<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+            +'Le volume est décidé par <b style="color:#f0abfc;">'+esc(vv.plus25.source)+'</b>.'
+            +(stv? ' Il décide <b>'+stv.decide+'</b> annonces ('+stv.pct+' %) et tombe juste '
+                  +'<b>'+stv.juste+'/'+stv.decide+'</b> = <b>'+stv.taux+' %</b>.' : '')
+            +'</div>'
+          : '')
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:5px; border-top:1px solid '
+        +'rgba(148,163,184,.2); padding-top:4px;">'
+        +'<b style="color:#fbbf24;">Le carré géomantique ne décide JAMAIS.</b> Pas rarement : '
+        +'jamais — vérifié sur 4 096 thèmes, il n\'a pas tranché une fois. Il est dernier '
+        +'de la cascade et M4/M10 ou V8 répondent toujours avant lui. Le carré, ses '
+        +'trajectoires, ses trigones et son bandeau de sommes sont de la <b>lecture</b>, '
+        +'pas de la décision.'
+        +'<div style="margin-top:3px;">Répartition sur le banc — camp : <b>V8 43,9 %</b> '
+        +'(juste 80,0 %) · <b>porte du nul 38,6 %</b> (50,0 %) · <b>M4/M10 17,5 %</b> '
+        +'(70,0 %) · carré 0 %. Volume : <b>zéro Populus 44,9 %</b> (86,4 %) · '
+        +'<b>axe 28,6 %</b> (71,4 %) · <b>miroir 26,5 %</b> (53,8 %) · le moteur seul '
+        +'n\'annonce plus jamais rien.</div>'
+        +'<div style="margin-top:3px; color:#fbbf24;">⚠️ Depuis la porte Carcer, le système '
+        +'annonce le nul sur <b>41,6 %</b> des 65 536 thèmes contre <b>25,4 %</b> avant — '
+        +'presque le double du taux réel de nuls dans l\'archive (22,8 %). Invisible sur le '
+        +'banc, où le total ne bouge pas (38/57), bien visible en énumération.</div>'
+        +'</div></div>';
+    })();
     // ─── LES DEUX TÉMOINS M13 / M14 (05/09/26) ───
     // Demande d'Ellemine_D : « pourquoi quand elles sont miroir elles
     // impliquent nul ». Réponse mesurée : elles ne l'impliquent pas
