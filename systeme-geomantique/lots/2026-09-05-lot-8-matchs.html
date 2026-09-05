@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lot gelé — 05/09/2026</title>
+<style>
+:root{--bg:#0b1120;--card:#111a2e;--line:#1e2a44;--txt:#e2e8f0;--mut:#94a3b8;
+--or:#fbbf24;--vert:#4ade80;--rouge:#f87171;--bleu:#60a5fa;--vio:#a78bfa;--cyan:#5eead4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:14px}
+h1{font-size:19px;margin:0 0 2px}
+.sub{color:var(--mut);font-size:12px;margin-bottom:14px}
+.gel{background:rgba(251,191,36,.10);border-left:4px solid var(--or);
+padding:9px 11px;border-radius:6px;font-size:12px;margin-bottom:16px}
+.m{background:var(--card);border:1px solid var(--line);border-radius:11px;
+padding:12px;margin-bottom:13px}
+.tete{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.nom{font-weight:800;font-size:16px}
+.rang{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.r1{background:rgba(74,222,128,.18);color:var(--vert)}
+.r2{background:rgba(96,165,250,.18);color:var(--bleu)}
+.r3{background:rgba(248,113,113,.18);color:var(--rouge)}
+.meres{color:var(--vio);font-size:12px;margin:5px 0 9px;letter-spacing:.2px}
+.verdict{font-size:17px;font-weight:800;margin:8px 0 3px}
+.attendu{color:var(--cyan);font-size:13px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+td{padding:3px 0;vertical-align:top}
+td:first-child{color:var(--mut);width:44%;padding-right:8px}
+.fiab{background:rgba(148,163,184,.08);border-radius:7px;padding:8px 10px;margin:9px 0;font-size:12px}
+.bar{height:6px;background:#1e2a44;border-radius:99px;overflow:hidden;margin:4px 0 7px}
+.bar i{display:block;height:100%;border-radius:99px}
+.note{font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:7px;margin-top:8px}
+.res{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}
+.res label{display:block;font-size:11px;color:var(--mut);margin-bottom:3px}
+.row{display:flex;gap:7px;flex-wrap:wrap}
+input,select{background:#0b1220;border:1px solid var(--line);color:var(--txt);
+border-radius:7px;padding:7px 9px;font-size:14px;font-family:inherit}
+input{width:82px}select{flex:1;min-width:110px}
+.gros{background:rgba(74,222,128,.09);border-color:rgba(74,222,128,.35)}
+footer{margin-top:22px;font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:12px}
+b.v{color:var(--vert)}b.r{color:var(--rouge)}b.o{color:var(--or)}b.c{color:var(--cyan)}
+</style></head><body>
+
+<h1>Lot gelé — 8 matchs</h1>
+<div class="sub">Tirages du 05/09/2026 · format <code>CAS_HACHAGE_V7</code> · annoncés AVANT les résultats</div>
+
+<div class="gel"><b>Pourquoi c'est gelé.</b> Chaque pronostic ci-dessous est écrit avant le
+coup d'envoi et ne bougera plus. Le classement par fiabilité vient de la <b>correspondance
+mesurée sur les 49 matchs de l'archive</b> — pas d'une impression. Saisis les résultats en bas
+de chaque carte : ils restent sur ton téléphone.</div>
+
+<div id="app"></div>
+
+<footer>
+<b>Ce qui a été corrigé aujourd'hui, et qui change ces pronostics.</b><br>
+Le <b>score exact du moteur ne vaut rien</b> — corrélation aux buts réels −0,089 côté 1, +0,246
+côté 2, écart de signe inverse, 6 scores exacts sur 49. Et son échelle est fausse d'un facteur
+2,5 (il annonce 1,66 but au total quand il s'en joue 4,16). Les scores affichés ici ne viennent
+donc PAS du moteur : ils viennent de la moyenne réelle observée dans chaque cellule de l'archive.<br><br>
+<b>Le nul n'est bon que dans une seule cellule.</b> « nul + plus de 2,5 » : 7 camps justes sur 10.
+« nul + moins de 2,5 » : 3 sur 10. Quarante points d'écart, sur 20 cas, Fisher p ≈ 0,18 —
+<b>pas démontré</b>, mais c'est la piste la plus nette de la soirée.<br><br>
+<b>À noter absolument :</b> le score, le camp, et <b>incident oui/non</b>. L'archive ne compte
+que 12 cas au champ incident renseigné, dont 10 AVEC incident — tant que les matchs sans
+incident ne sont pas enregistrés, aucun calcul ne peut trancher cette famille.
+</footer>
+
+<script>
+const M=[
+{n:"Toronto – Chicago",r:1,meres:"Conjunctio · Acquisitio · Puella · Caput Draconis",juge:"Fortuna Minor",
+ v:"NUL",sc:"2-2",vol:"plus de 2,5",volc:1,pc:70,pv:80,cell:"nul + plus · n=10",
+ att:"2,80 – 2,00 · scores vus : 2-2 ×2, 3-3 ×2",
+ m4:"Caput Draconis (8/16)",m10:"Fortuna Minor (2/16)",inc:"58,6 % — élevé, côté Chicago",
+ cor:"4 (2-2)",btts:"non",pil:"porte du nul",
+ note:"<b class='v'>Le meilleur pronostic du lot.</b> Le moteur affiche 0-0 : c'est le calibrage cassé, pas la doctrine. Joue 2-2 ou 3-3."},
+{n:"Charlotte – Houston",r:2,meres:"Acquisitio · Conjunctio · Via · Fortuna Major",juge:"Via",
+ v:"CHARLOTTE",sc:"2-0",vol:"moins de 2,5",volc:0,pc:60,pv:60,cell:"R1 + moins · n=5",
+ att:"1,60 – 2,20 · scores vus : 2-0 ×2, 1-0",
+ m4:"Fortuna Major (5/16)",m10:"Fortuna Minor (2/16)",inc:"59,9 % — élevé, tiré par Houston",
+ cor:"11 (8-3)",btts:"non",pil:"carré",
+ note:"<b class='o'>Le protocole crie Houston à −27,8</b> et les boucles donnent 19 % au camp 1. Camp fragile."},
+{n:"Columbus – Colorado",r:2,meres:"Amissio · Cauda Draconis · Amissio · Albus",juge:"Carcer",
+ v:"COLUMBUS",sc:"2-0",vol:"moins de 2,5",volc:0,pc:60,pv:60,cell:"R1 + moins · n=5",
+ att:"1,60 – 2,20 · scores vus : 2-0 ×2, 1-0",
+ m4:"Albus (1/16) — au repos",m10:"Laetitia (10/16)",inc:"51,7 % — moyen",
+ cor:"9 (5-4)",btts:"non",pil:"carré",
+ note:"<b class='v'>Albus en M4, premier sur seize et à son repos</b> — la meilleure défense du lot. Les deux lectures du volume s'accordent sur « moins »."},
+{n:"Cincinnati – DC United",r:2,meres:"Puer · Puella · Caput Draconis · Tristitia",juge:"Via",
+ v:"CINCINNATI",sc:"2-0",vol:"moins de 2,5",volc:0,pc:60,pv:60,cell:"R1 + moins · n=5",
+ att:"1,60 – 2,20 · scores vus : 2-0 ×2, 1-0",
+ m4:"Tristitia (6/16)",m10:"Conjunctio (16/16 — la pire)",inc:"58,3 % — élevé côté Cincinnati",
+ cor:"7 (5-2)",btts:"non",pil:"carré",
+ note:"<b class='c'>Défense 5/6, la plus tenue du lot</b> (0,75 but sur l'archive) et <b>les quatre trigones présents</b> — carré saturé. Deux signaux pour un match fermé."},
+{n:"Inter Miami – Atlanta",r:3,meres:"Laetitia · Populus · Albus · Puella",juge:"Amissio",
+ v:"ATLANTA",sc:"1-0",vol:"moins de 2,5",volc:0,pc:44,pv:67,cell:"R7 + moins · n=9",
+ att:"1,00 – 1,22 · scores vus : 1-0 ×3, 0-1 ×2",
+ m4:"Puella (12/16)",m10:"Carcer (13/16) — au repos",inc:"48,2 % — le plus calme du lot",
+ cor:"11 (5-6)",btts:"non",pil:"carré",
+ note:"Accord des deux lectures sur « moins », 4/4 trigones. Cohérent de bout en bout, mais la cellule ne rend que 44 % sur le camp."},
+{n:"Roma – Atalanta",r:3,meres:"Populus · Via · Amissio · Puer",juge:"Carcer",
+ v:"ROMA",sc:"3-2",vol:"plus de 2,5",volc:1,pc:33,pv:100,cell:"R1 + plus · n=6",
+ att:"2,83 – 2,33 · total moyen 5,17",
+ m4:"Puer (4/16)",m10:"Caput Draconis (14/16)",inc:"20 % — faible, côté Roma",
+ cor:"7 (2-5)",btts:"non",pil:"carré",
+ note:"<b class='r'>Camp à jeter — 2/6 dans cette cellule, pire que le hasard.</b> <b class='v'>Mais le volume est à 6/6.</b> Ne mise pas Roma, mise le plus de 2,5. Témoins en renversement (Laetitia/Tristitia) : <b>7e cas de la classe qu'on compte</b>."},
+{n:"Orlando – San Diego",r:3,meres:"Laetitia · Caput Draconis · Laetitia · Populus",juge:"Carcer",
+ v:"NUL",sc:"—",vol:"moins de 2,5",volc:0,pc:30,pv:50,cell:"nul + moins · n=10",
+ att:"réel moyen 1,70 – 0,80 : la cellule finit souvent par un vainqueur",
+ m4:"Populus (3/16)",m10:"Laetitia (10/16)",inc:"95 % — TRÈS ÉLEVÉ, côté San Diego",
+ cor:"9 (6-3)",btts:"non",pil:"porte du nul",
+ note:"<b class='r'>Pire cellule du système : 30 % sur le camp, 50 % sur le volume.</b> Ne mise rien. Deux choses à noter quand même : <b>témoins en renversement — 8e cas</b>, et l'incident à 95 %, le maximum du moteur. Thème sous le seuil de validité."},
+{n:"Philadelphia – Montréal",r:3,meres:"Populus · Puella · Conjunctio · Fortuna Major",juge:"Amissio",
+ v:"NUL",sc:"—",vol:"moins de 2,5",volc:0,pc:30,pv:50,cell:"nul + moins · n=10",
+ att:"réel moyen 1,70 – 0,80 : la cellule finit souvent par un vainqueur",
+ m4:"Fortuna Major (5/16)",m10:"Acquisitio (11/16)",inc:"55,4 % — moyen-haut",
+ cor:"9 (2-7)",btts:"non",pil:"porte <b>Carcer</b> seule",
+ note:"<b class='r'>Même cellule à 30 %.</b> Le nul vient de la <b>porte Carcer seule</b> — la porte branchée hier, qui décide ici sans la porte principale."}];
+
+const RANG={1:["★ le mieux placé","r1"],2:["correct","r2"],3:["faible — prudence","r3"]};
+const K='lot0509';
+let R={}; try{R=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(R))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+document.getElementById('app').innerHTML = M.map((m,i)=>{
+  const [lab,cls]=RANG[m.r];
+  const col = m.pc>=65?'var(--vert)':m.pc>=50?'var(--bleu)':'var(--rouge)';
+  const r=R[i]||{};
+  return `<div class="m">
+   <div class="tete"><span class="nom">${esc(m.n)}</span><span class="rang ${cls}">${lab}</span></div>
+   <div class="meres">${esc(m.meres)} &nbsp;|&nbsp; Juge <b>${esc(m.juge)}</b></div>
+   <div class="verdict">${esc(m.v)}${m.sc!=='—'?' &nbsp;'+esc(m.sc):''}
+     &nbsp;·&nbsp; <span style="color:${m.volc?'var(--vert)':'var(--mut)'}">${esc(m.vol)}</span></div>
+   <div class="attendu">${esc(m.att)}</div>
+   <div class="fiab">
+     <div>camp juste dans cette cellule : <b style="color:${col}">${m.pc} %</b></div>
+     <div class="bar"><i style="width:${m.pc}%;background:${col}"></i></div>
+     <div>volume juste : <b>${m.pv} %</b></div>
+     <div class="bar"><i style="width:${m.pv}%;background:var(--bleu)"></i></div>
+     <div style="color:var(--mut);font-size:11px">${esc(m.cell)}</div>
+   </div>
+   <table>
+    <tr><td>M4 — défense camp 1</td><td>${esc(m.m4)}</td></tr>
+    <tr><td>M10 — défense camp 2</td><td>${esc(m.m10)}</td></tr>
+    <tr><td>incident annoncé</td><td>${esc(m.inc)}</td></tr>
+    <tr><td>corners · BTTS</td><td>${esc(m.cor)} · ${esc(m.btts)}</td></tr>
+    <tr><td>décidé par</td><td>${m.pil}</td></tr>
+   </table>
+   <div class="note">${m.note}</div>
+   <div class="res">
+     <label>Résultat réel</label>
+     <div class="row">
+       <input id="s${i}" placeholder="0-0" value="${esc(r.s||'')}">
+       <select id="c${i}">
+         <option value="">camp…</option>
+         ${['R1','R7','nul'].map(v=>`<option value="${v}"${r.c===v?' selected':''}>${v}</option>`).join('')}
+       </select>
+       <select id="i${i}">
+         <option value="">incident…</option>
+         ${[['oui','incident OUI'],['non','incident NON']].map(([v,t])=>
+           `<option value="${v}"${r.i===v?' selected':''}>${t}</option>`).join('')}
+       </select>
+     </div>
+   </div></div>`;
+}).join('');
+
+M.forEach((m,i)=>['s','c','i'].forEach(k=>{
+  const el=document.getElementById(k+i);
+  el.addEventListener('input',()=>{ R[i]=R[i]||{}; R[i][k]=el.value; save(); });
+  el.addEventListener('change',()=>{ R[i]=R[i]||{}; R[i][k]=el.value; save(); });
+}));
+</script>
+</body></html>
