@@ -561,6 +561,80 @@ function distanceAxeMaisons(p, maisonsAxe) {
 // défense et l'attaque.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
+// LE TRIPLET DÉFENSIF D'ELLEMINE_D (05/09/26)
+// « m1,4,10 ensemble constitue la défense m1 et m7,4,10 ensemble
+// constitue la défense m7. la fragilité de la défense m1 ou m7 ne réside
+// pas dans une seule maison — m4 et m10 déterminent les NIVEAUX de
+// défense, la MANIÈRE de défendre dépend de m1 et m7. »
+//
+// ── LE MODÈLE SE SIMPLIFIE TOUT SEUL ──
+// Par la loi M4 ⊕ M10 = M3, son triplet se réduit :
+//   ★ M1 ⊕ M4 ⊕ M10 = M1 ⊕ M3    65536/65536
+//   ★ M7 ⊕ M4 ⊕ M10 = M7 ⊕ M3    65536/65536
+// La défense d'un camp n'est donc pas trois maisons : c'est SON CHEF
+// COMBINÉ À M3. M4 et M10 n'y entrent que par leur différence — ce qui
+// est exactement ce qu'il décrit quand il dit que les deux maisons
+// donnent le NIVEAU et que le chef donne la MANIÈRE.
+//
+// ── LA MESURE, AVEC LA CORRECTION QUI CHANGE TOUT ──
+// 52 matchs, deux camps chacun. Premier test : permutation ligne à ligne
+// — FAUX, les deux camps d'un même match ne sont pas indépendants.
+// Refait en permutant les THÈMES ENTIERS, les deux camps solidaires :
+//     M9 → buts MARQUÉS ....................... F=0,306  p = 0,0019  ★
+//     triplet défensif → buts MARQUÉS ......... F=0,345  p = 0,0344  ★
+//     le chef seul → buts encaissés ........... F=0,268  p = 0,110
+//     axe offensif 3-5-9-11 → buts marqués .... F=0,188  p = 0,116
+//     triplet défensif → buts ENCAISSÉS ....... F=0,146  p = 0,495
+//     le chef seul → buts marqués ............. F=0,104  p = 0,852
+//
+// ☠️ LE RÉSULTAT EST À L'ENVERS DE SON NOM, ET C'EST LE POINT. Le triplet
+// DÉFENSIF ne dit rien de ce que le camp ENCAISSE (p = 0,495). Il dit ce
+// que le camp MARQUE (p = 0,034). J'avais mis « buts marqués » comme
+// simple contrôle ; c'est le contrôle qui a parlé.
+//
+// Et ce n'est pas le chef seul (p = 0,852 sur les buts marqués) ni M3
+// seule (muette sur six cibles le 05/09). C'est leur COMBINAISON. Une
+// interaction, exactement ce qu'il décrit : ni le niveau seul, ni la
+// manière seule.
+//
+// ── M9 EST LE PLUS SOLIDE DE TOUTE LA SEMAINE ──
+// p = 0,0019 en permutation par match. Six tests dans ce bloc, donc
+// 0,0019 × 6 = 0,011 après Bonferroni : IL SURVIT À LA CORRECTION, le
+// seul de la semaine. Et il arrive avec trois choses que rien d'autre
+// n'a réunies :
+//   · une mesure hors échantillon : 3/3 le 04/09, annoncée avant ;
+//   · une mesure interne robuste : p = 0,0046 au balayage des 13 maisons,
+//     puis p = 0,0019 en clustering correct ;
+//   · une EXPLICATION DOCTRINALE ARRIVÉE APRÈS LA MESURE — Ellemine_D :
+//     « m1-m2 = m9, initial + ressource de l'équipe m1 = le rythme du
+//     match qui détermine le niveau des buts ». Je n'avais aucune
+//     explication de M9 quand je l'ai trouvé ; il l'a fournie ensuite.
+//     Une doctrine qui explique une mesure déjà faite vaut plus qu'une
+//     doctrine qui la précède, parce qu'elle ne peut pas l'avoir orientée.
+//
+// ➜ TOUJOURS RIEN DE CÂBLÉ. Le triplet à p = 0,034 ne survit pas à la
+// correction (0,21). M9 la passe, mais il lui manque les sept annonces
+// hors échantillon du seuil posé le 04/09 — il en a trois.
+// ═══════════════════════════════════════════════════════════════
+function tripletDefensifV7(theme, camp) {
+  if (!theme) return null;
+  var chef = (camp === 'M7' || camp === 'R7') ? theme[7] : theme[1];
+  var trip = null, court = null;
+  try { trip = combineMany([chef, theme[4], theme[10]]); court = combine(chef, theme[3]); }
+  catch (e) { return null; }
+  return { camp: (camp === 'M7' || camp === 'R7') ? 'M7' : 'M1',
+    chef: chef, m4: theme[4], m10: theme[10], m3: theme[3],
+    triplet: trip,
+    // Contrôle de la simplification à chaque appel : si elle tombe, la
+    // construction du thème a changé.
+    equivautChefM3: (trip === court),
+    lecture: 'M4 et M10 donnent le NIVEAU, le chef donne la MANIÈRE',
+    mesure: 'prédit les buts MARQUÉS par ce camp (p = 0,034), pas les encaissés (p = 0,495)',
+    statut: 'NON DÉMONTRÉ — ne survit pas à la correction pour tests multiples (0,21)',
+    branche: false };
+}
+
+// ═══════════════════════════════════════════════════════════════
 // L'AXE DU PARTAGE ET LES BUTS (04/09/26) — Ellemine_D : « c'est l'axe
 // 3-5-9-11 par interaction avec l'axe 1-4-7-10 qui explique les buts.
 // m3 découle de m4 et m10, m11 découle de m5 et m6. »

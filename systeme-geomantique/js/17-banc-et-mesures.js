@@ -324,7 +324,27 @@ var PISTES_V7 = [
     auteur: 'trouvée au balayage des 13 maisons, 04/09', etat: 'VIVANTE',
     chiffre: '3/3 hors échantillon · 26/28 en échantillon (sans valeur) · p ≈ 0,14 pour le 3/3 seul',
     seuil: '10 annonces fermes hors échantillon avant tout branchement',
+    renforce: '05/09 — p = 0,0019 en permutation par match sur les buts marqués, SURVIT à Bonferroni '
+      + '(0,011 sur six tests) ; et Ellemine_D en a donné l\'explication APRÈS la mesure : '
+      + 'M9 = M1 ⊕ M2 = initial + ressource = le rythme du match. Une doctrine qui explique une '
+      + 'mesure déjà faite ne peut pas l\'avoir orientée.',
     suite: 'la tester sur des tirages À LA MAIN — les 11 cas de contrôle sont des thèmes de hachage' },
+
+  { cle: 'triplet_defensif', nom: 'Triplet défensif : chef ⊕ M4 ⊕ M10 (= chef ⊕ M3)',
+    auteur: 'Ellemine_D, 05/09', etat: 'À SUIVRE — RÉSULTAT À L\'ENVERS DE SON NOM',
+    chiffre: 'prédit les buts MARQUÉS (p = 0,034) et non les encaissés (p = 0,495) · '
+      + 'ni le chef seul (p = 0,852) ni M3 seule ne disent rien : c\'est leur combinaison',
+    nonExclu: 'la loi M4 ⊕ M10 = M3 réduit le triplet à « chef ⊕ M3 », vérifié 65536/65536. '
+      + 'Le modèle d\'Ellemine_D est donc structurellement exact ; seul le RÔLE qu\'il lui donne '
+      + '(défensif) est démenti par la mesure.',
+    suite: 'ne survit pas à la correction pour tests multiples (0,21) — accumuler' },
+
+  { cle: 'antagonistes_orientes', nom: 'Les tables antagonistes et binômes ne sont PAS symétriques',
+    auteur: 'découvert le 05/09 en testant l\'exemple d\'Ellemine_D', etat: 'FAIT STRUCTUREL',
+    chiffre: '16 figures sur 16 : ennemi(Puer) = Puella mais ennemi(Albus) = Puer. Idem pour les binômes.',
+    nonExclu: 'AUCUN signal du fichier ne tient compte de l\'orientation. Tous lisent ANT[x] === y '
+      + 'sans jamais tester ANT[y] === x. La moitié des relations est donc invisible au moteur.',
+    suite: 'audit des signaux qui lisent ANTAGONISTES_V7 et BINOMES_V7 — chantier ouvert' },
 
   { cle: 'm3_r7', nom: 'M3 négative → R7 exclu',
     auteur: 'trouvée le 04/09 au matin', etat: 'RÉFUTÉE le 04/09 au soir',
