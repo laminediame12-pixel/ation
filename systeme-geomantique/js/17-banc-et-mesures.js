@@ -2917,20 +2917,35 @@ function mesurePopulusLiveV7() {
     var zero;
     try { zero = nbPopulusV7(t) === 0; } catch (e) { return; }
     var dit;
+    // « Moteur seul » doit vraiment vouloir dire le moteur seul : on éteint
+    // TOUTES les branches du volume, pas seulement Populus. Sans le miroir
+    // dans cette liste, ce compteur affichait 31/48 au lieu de 26/48 — la
+    // mesure de Populus se serait crédité le gain du miroir.
+    //
+    // ☠️ ET CE TRY/FINALLY N'EST PAS DÉCORATIF. Le 05/09, la restauration
+    // était à la fin d'un bloc try dont le catch faisait « return » : une
+    // exception entre l'extinction et la restauration laissait les
+    // branches ÉTEINTES POUR TOUTE LA SESSION. Symptôme observé : le
+    // verdict annonçait « moteur (règle Populus auto-retirée) » alors que
+    // la mesure donnait un gain de +11 — l'état global était corrompu, pas
+    // la règle. Aucune erreur visible, juste des branches mortes en
+    // silence. Un auto-test vérifie maintenant que les drapeaux sont
+    // intacts après un verdict.
+    var etait = BRANCHES_V7.populus_volume.actif;
+    var etaitM = BRANCHES_V7.miroir_volume ? BRANCHES_V7.miroir_volume.actif : null;
+    var etaitA = BRANCHES_V7.axe_volume ? BRANCHES_V7.axe_volume.actif : null;
     try {
-      // « Moteur seul » doit vraiment vouloir dire le moteur seul : on éteint
-      // les DEUX branches du volume, pas seulement Populus. Sans le miroir
-      // dans cette liste, ce compteur affichait 31/48 au lieu de 26/48 — la
-      // mesure de Populus se serait crédité le gain du miroir.
-      var etait = BRANCHES_V7.populus_volume.actif;
-      var etaitM = BRANCHES_V7.miroir_volume ? BRANCHES_V7.miroir_volume.actif : null;
       BRANCHES_V7.populus_volume.actif = false;
       if (BRANCHES_V7.miroir_volume) BRANCHES_V7.miroir_volume.actif = false;
+      if (BRANCHES_V7.axe_volume) BRANCHES_V7.axe_volume.actif = false;
       var v0 = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
+      dit = v0 && v0.plus25 ? v0.plus25.valeur : null;
+    } catch (e) { dit = null; }
+    finally {
       BRANCHES_V7.populus_volume.actif = etait;
       if (BRANCHES_V7.miroir_volume) BRANCHES_V7.miroir_volume.actif = etaitM;
-      dit = v0 && v0.plus25 ? v0.plus25.valeur : null;
-    } catch (e) { return; }
+      if (BRANCHES_V7.axe_volume) BRANCHES_V7.axe_volume.actif = etaitA;
+    }
     if (dit === null) return;
     total++;
     if (dit === vrai) moteur++;

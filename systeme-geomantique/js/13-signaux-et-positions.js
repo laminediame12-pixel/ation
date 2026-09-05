@@ -612,6 +612,94 @@ function updateCompetitionList() {
 // pipeline d'un coup ; mais aucun panneau ne doit présenter le score
 // exact comme une prédiction, et le champ scoreMain est à lire comme
 // un indicateur de FORME (qui domine), jamais comme un pronostic.
+// ═══════════════════════════════════════════════════════════════
+// LE SCORE CORRIGÉ (05/09/26) — sur la cellule, pas sur les figures
+// ═══════════════════════════════════════════════════════════════
+//
+// Ellemine_D : « corrige le moteur et intègre ça au verdict final ».
+//
+// LE PRINCIPE. Le moteur de score construit les buts à partir des
+// figures (BUTS_FIGURE, la meute, les planètes) et il ne marche pas.
+// Le score corrigé abandonne les figures et part de ce que le système
+// annonce déjà de FIABLE : le CAMP et le VOLUME. Pour chaque
+// combinaison des deux, on prend la moyenne des buts RÉELLEMENT
+// marqués dans l'archive.
+//
+//   cellule          n     camp1 – camp2    affiché   camp juste
+//   R1  + plus       6     2,83 – 2,33        3-2        2/6
+//   R1  + moins      5     1,60 – 2,20        2-2        3/5
+//   R7  + plus       9     4,22 – 2,56        4-3        4/9
+//   R7  + moins      9     1,22 – 1,00        1-1        4/9
+//   nul + plus      10     2,80 – 2,00        3-2       7/10
+//   nul + moins     10     1,30 – 1,20        1-1       3/10
+//
+// ⚠️ DEUX CELLULES SONT « À L'ENVERS » ET C'EST VOULU : en « R1 + moins »
+// et en « R7 + plus », le camp annoncé vainqueur marque MOINS que
+// l'autre. Ce n'est pas une erreur de table, c'est la conséquence
+// directe du taux de camp (3/5 et 4/9) : dans ces cellules le système
+// se trompe assez souvent pour que la moyenne bascule. Le chiffre le
+// DIT au lieu de le cacher. Il faut donc lire « buts attendus », pas
+// « score du vainqueur ».
+//
+// ─── VALIDÉ EN LEAVE-ONE-OUT, pas sur ses propres cas ───
+// Chaque match prédit à partir des 48 autres :
+//                              erreur/but   erreur/total   score exact
+//   moteur actuel                 1,64          2,80          6/49
+//   TABLE DE CELLULES             1,48          2,37          2/49
+//   moteur simplement × 2,5       1,95          2,97          1/49
+//
+// GAIN : −10 % d'erreur par but, −15 % sur le total. Et le recalibrage
+// naïf « × 2,5 » que j'avais proposé est MESURÉ PIRE que ne rien faire
+// (1,95 contre 1,64) — l'échelle n'était pas le vrai problème.
+//
+// LE PRIX : le score exact tombe de 6/49 à 2/49. La table prédit des
+// moyennes, elle ne tape pas dans le mille. Si l'objectif est le score
+// exact, le moteur reste meilleur — à 12 %, ce qui ne vaut rien non
+// plus. Si l'objectif est d'être PRÈS, la table gagne. Les deux sont
+// affichés.
+//
+// ─── CE QUE JE NE TOUCHE PAS, ET POURQUOI ───
+// scoreMain reste produit par le moteur. Le miroir M5 lit ce score brut
+// et son seuil de 2 est la médiane STRUCTURELLE des scores bruts ; la
+// règle Populus, l'axe, tout le banc et les 36/49 du volume sont
+// calibrés dessus. Remplacer scoreMain, c'est invalider d'un coup
+// chaque mesure du fichier. Le score corrigé s'AJOUTE, il ne se
+// substitue pas : le verdict porte les deux, corrigé en tête.
+var SCORE_CELLULES_V7 = {
+  table: {
+    'R1_plus':   { g1: 2.83, g7: 2.33, n: 6,  campJuste: '2/6' },
+    'R1_moins':  { g1: 1.60, g7: 2.20, n: 5,  campJuste: '3/5' },
+    'R7_plus':   { g1: 4.22, g7: 2.56, n: 9,  campJuste: '4/9' },
+    'R7_moins':  { g1: 1.22, g7: 1.00, n: 9,  campJuste: '4/9' },
+    'nul_plus':  { g1: 2.80, g7: 2.00, n: 10, campJuste: '7/10' },
+    'nul_moins': { g1: 1.30, g7: 1.20, n: 10, campJuste: '3/10' } },
+  validation: { methode: 'leave-one-out sur 49 matchs',
+    moteur: { erreurBut: 1.64, erreurTotal: 2.80, exact: '6/49' },
+    cellules: { erreurBut: 1.48, erreurTotal: 2.37, exact: '2/49' },
+    recalibrageNaif: { erreurBut: 1.95, erreurTotal: 2.97, exact: '1/49',
+      note: 'le « × 2,5 » est PIRE que ne rien faire — l\'échelle n\'était pas le problème' },
+    gain: '−10 % par but, −15 % sur le total ; mais le score exact tombe de 6/49 à 2/49' },
+  cellulesInversees: 'en « R1 + moins » et « R7 + plus », le camp annoncé marque MOINS que '
+    + 'l\'autre — conséquence directe du taux de camp dans ces cellules (3/5 et 4/9). '
+    + 'À lire « buts attendus », pas « score du vainqueur ».',
+  nonSubstitution: 'scoreMain reste produit par le moteur : le seuil du miroir, la règle '
+    + 'Populus, l\'axe et les 36/49 du volume sont calibrés dessus. Le score corrigé s\'ajoute.'
+};
+
+// Le score corrigé, à partir du camp et du volume annoncés.
+function scoreCorrigeV7(camp, volumePlus) {
+  if (!camp) return null;
+  var cle = (camp === 'Nul' || camp === 'nul' ? 'nul' : camp === 'M1' ? 'R1' : camp === 'M7' ? 'R7' : camp)
+    + '_' + (volumePlus ? 'plus' : 'moins');
+  var e = SCORE_CELLULES_V7.table[cle];
+  if (!e) return null;
+  var a = Math.round(e.g1), b = Math.round(e.g7);
+  return { cle: cle, g1: e.g1, g7: e.g7, n: e.n, campJuste: e.campJuste,
+    score: a + '-' + b, total: Math.round((e.g1 + e.g7) * 10) / 10,
+    inversee: (cle === 'R1_moins' || cle === 'R7_plus'),
+    lecture: 'moyenne réelle des ' + e.n + ' cas de l\'archive dans cette cellule' };
+}
+
 var SCORE_MOTEUR_V7 = {
   source: 'BUTS_FIGURE (12/07/26, doctrine Ellemine_D) -> calculerButsCamp -> buildVerdictCard',
   n: 49,
@@ -2688,3 +2776,48 @@ var AXE_OFFENSIF_V7 = {
     + 'en M9 — ce sont deux questions différentes',
   lecture: 'le thème sait dire comment un match SE FERME, pas comment il S\'OUVRE'
 };
+
+autoTestV7('le score corrigé et ses six cellules', function () {
+  if (typeof scoreCorrigeV7 !== 'function') return;
+  // Les six cellules existent et rendent un score lisible.
+  ['R1', 'R7', 'nul'].forEach(function (c) {
+    [true, false].forEach(function (v) {
+      var r = scoreCorrigeV7(c, v);
+      if (!r) throw new Error('cellule manquante : ' + c + '/' + v);
+      if (!/^\d+-\d+$/.test(r.score)) throw new Error('score illisible : ' + r.score);
+      if (!r.n) throw new Error('cellule sans effectif : ' + r.cle);
+    });
+  });
+  // Les deux cellules inversées sont bien signalées — c'est ce qui
+  // empêche de lire « buts attendus » comme « score du vainqueur ».
+  if (!scoreCorrigeV7('R1', false).inversee) throw new Error('R1+moins doit être signalée inversée');
+  if (!scoreCorrigeV7('R7', true).inversee) throw new Error('R7+plus doit être signalée inversée');
+  if (scoreCorrigeV7('nul', true).inversee) throw new Error('nul+plus n\'est pas inversée');
+  // Les alias du camp doivent tomber sur la même cellule.
+  if (scoreCorrigeV7('M1', true).cle !== scoreCorrigeV7('R1', true).cle)
+    throw new Error('M1 et R1 doivent viser la même cellule');
+  if (scoreCorrigeV7('Nul', true).cle !== scoreCorrigeV7('nul', true).cle)
+    throw new Error('Nul et nul doivent viser la même cellule');
+});
+
+autoTestV7('la cellule du score corrigé suit l\'annonce du volume', function () {
+  if (typeof calcTheme !== 'function' || typeof getVerdictAfficheReel !== 'function') return;
+  // Le piège du 05/09 : la cellule était calculée avec le volume du
+  // MOTEUR au lieu du volume ANNONCÉ, et Roma-Atalanta se rangeait en
+  // « R1 + moins » pendant que le verdict affichait « plus de 2,5 ».
+  ['populus,via,amissio,puer', 'laetitia,fortuna_minor,amissio,via',
+   'albus,laetitia,populus,acquisitio', 'puella,via,conjunctio,via',
+   'conjunctio,acquisitio,puella,caput_draconis'].forEach(function (k) {
+    var m = k.split(',');
+    var t = calcTheme(m[0], m[1], m[2], m[3]);
+    var v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
+    if (!v || !v.plus25 || !v.scoreCorrige) return;
+    var celluleDitPlus = /_plus$/.test(v.scoreCorrige.cle);
+    if (celluleDitPlus !== v.plus25.valeur)
+      throw new Error('la cellule (' + v.scoreCorrige.cle + ') contredit l\'annonce du volume ('
+        + v.plus25.annonce + ') sur ' + k);
+    var celluleDitNul = /^nul_/.test(v.scoreCorrige.cle);
+    if (celluleDitNul !== !!v.nulActif)
+      throw new Error('la cellule contredit le camp annoncé sur ' + k);
+  });
+});

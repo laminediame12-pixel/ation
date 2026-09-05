@@ -690,6 +690,184 @@ function getVerdictAfficheReel(theme, favorite) {
     if (protoPilote && !nulActif) winnerOverride = protoPilote;
   }
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
+  // plus25 est calculé AVANT le retour : le score corrigé le relit
+  // au lieu de refaire la chaîne du volume dans son coin.
+  var _p25 = (function () {
+        // Le score LU ICI doit être celui que l'écran affiche, pas le score
+        // brut de la carte : quand le nul est actif, scoreAfficheV7 force un
+        // score de parité et les deux divergent. Lire la carte brute faisait
+        // annoncer un volume incohérent avec le score affiché juste à côté —
+        // et déplaçait la mesure de référence de 26/48 à 28/48. Attrapé en
+        // faisant recalculer le gain par le fichier lui-même au lieu de me
+        // fier à mon script.
+        var moteur = null;
+        try {
+          var g2 = String(scoreAfficheV7(carteR, nulActif).main || '0-0').split('-').map(Number);
+          moteur = ((g2[0] || 0) + (g2[1] || 0)) > 2.5;
+        } catch (e) { moteur = null; }
+        var zero = null;
+        try { var lp2 = lecturePopulusV7(theme); zero = lp2 ? lp2.zeroPopulus : null; }
+        catch (e) { zero = null; }
+        // ── LA BRANCHE SE VÉRIFIE ELLE-MÊME (05/09/26, deuxième passe) ──
+        // Elle a été branchée le matin sur 26/48 contre 34/48, mesuré sur
+        // les 56 cas du dépôt. Le balayage max-T rejoué sur les 105 cas
+        // réels d'Ellemine_D a montré que « zéro Populus » n'est même plus
+        // le meilleur prédicteur de sa famille : rho 0,390 à 56 cas, le
+        // meilleur de la famille tombe à 0,272 à 95 cas. C'est la
+        // signature d'un effet qui régresse vers la moyenne.
+        // Une règle branchée sur un chiffre gelé qui a cessé d'être vrai
+        // est pire qu'une règle absente. Celle-ci REFAIT SON PROPRE
+        // COMPTAGE sur la base courante et se retire toute seule si elle
+        // n'y gagne plus rien.
+        var branche = (typeof BRANCHES_V7 !== 'undefined')
+          && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif;
+        var autoRetrait = null;
+        if (branche) {
+          try {
+            var mv = mesurePopulusLiveV7();
+            if (mv && mv.gain <= 0) {
+              branche = false;
+              autoRetrait = 'retirée d\'elle-même : sur les ' + mv.n + ' cas au score connu de '
+                + 'ta base, elle fait ' + mv.moteurPlusRegle + '/' + mv.n + ' contre '
+                + mv.moteurSeul + '/' + mv.n + ' pour le moteur seul — gain ' + mv.gain
+                + '. Elle avait été branchée sur un gain de +8 mesuré sur 48 cas du dépôt.';
+            }
+          } catch (e) { }
+        }
+        if (branche && zero === true) {
+          return { annonce: 'plus de 2,5 buts', valeur: true, source: 'zéro Populus',
+            moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
+            contreditLeMoteur: moteur === false };
+        }
+        // ─── L'AXE OFFENSIF, SI ON LE BRANCHE (05/09/26) ───
+        // Il prend place ENTRE zéro Populus et le miroir : c'est sa
+        // meilleure position mesurée (38/49 contre 37/49). Éteint par
+        // défaut — ce +1 a été trouvé au neuvième placement essayé, et un
+        // +1 trouvé au neuvième essai est du bruit de sélection, pas un
+        // gain. Le booléen est là pour qu'Ellemine_D en décide, pas moi.
+        try {
+          var brAxe = !!(BRANCHES_V7 && BRANCHES_V7.axe_volume && BRANCHES_V7.axe_volume.actif);
+          var retAxe = null;
+          if (brAxe) {
+            // Même garde-fou que les autres : la branche rejoue la chaîne
+            // entière sur la base courante et se retire si elle n'y gagne plus.
+            var ca = axeChaineLiveV7();
+            if (ca && ca.gain < 0) {
+              brAxe = false;
+              retAxe = 'retiré de lui-même : sur les ' + ca.n + ' cas au score connu de ta '
+                + 'base, la chaîne avec l\'axe fait ' + ca.avecAxe + '/' + ca.n + ' contre '
+                + ca.sansAxe + '/' + ca.n + ' sans lui — gain ' + ca.gain + '.';
+            }
+          }
+          if (brAxe) {
+            var ax = axeVolumeV7(theme);
+            if (ax && ax.ferme) {
+              return { annonce: 'moins de 2,5 buts', valeur: false,
+                source: 'axe offensif (les deux sommes présentes en base)',
+                axe: { somme1: ax.somme1, somme7: ax.somme7, nbPresentes: 2,
+                  attendu: ax.attendu },
+                moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
+                contreditLeMoteur: moteur === true };
+            }
+          }
+          if (retAxe) autoRetrait = (autoRetrait ? autoRetrait + ' · ' : '') + retAxe;
+        } catch (e) { }
+        // ─── 05/09/26 : LE MIROIR M5 EST BRANCHÉ AU VOLUME DE BUTS ───
+        // Demande d'Ellemine_D : « branche ce qu'on a découvert sur le miroir ».
+        // J'avais refusé une première fois en testant autre chose que ce qui
+        // était demandé (le miroir comme symétrie du CAMP, qui est faux et le
+        // reste — cf. BRANCHES_V7.miroir_m5). La bonne mesure était celle-ci.
+        //
+        // LA RÈGLE : on rebâtit le bouclier sur M5..M8 — l'involution qui
+        // échange M1↔M5, M2↔M6, M3↔M7, M4↔M8 et laisse le juge M15 fixe — puis
+        // on ADDITIONNE les deux totaux de buts annoncés. Au-dessus de 2, c'est
+        // « plus de 2,5 buts ».
+        //
+        // POURQUOI LE SEUIL EST 2 : c'est la médiane structurelle de la somme,
+        // obtenue en énumérant les thèmes. Il ne vient pas des résultats — c'est
+        // la seule chose qui distingue ce branchement d'un ajustement.
+        //
+        // CE QUI A ÉTÉ MESURÉ, sur les 48 cas au score connu du dépôt :
+        //   lecture directe seule ................ 26/48   (54 %)
+        //   somme des deux lectures > 2 .......... 31/48   (65 %)   +5
+        //   corrélation aux buts réels : directe rho +0,238 (p 0,104)
+        //                                miroir   rho +0,297 (p 0,041)
+        //                                somme    rho +0,362 (p 0,012)
+        // Et elle discrimine — ce n'est pas la règle idiote déguisée :
+        //   quand elle dit plus  (20 cas) : 85 % au-dessus de 2,5 · 5,20 buts
+        //   quand elle dit moins (28 cas) : 50 % au-dessus de 2,5 · 3,36 buts
+        //
+        // MAIS LE CHIFFRE QUI COMPTE EST CELUI DE LA CHAÎNE ENTIÈRE, parce que
+        // « zéro Populus » est déjà branché devant et fait mieux que lui :
+        //   chaîne sans le miroir ................ 34/48
+        //   chaîne avec le miroir ................ 36/48   +2 (2 gagnés, 0 perdu)
+        // Le +5 se mesure contre le moteur nu, qui n'est plus l'état du système.
+        // Le gain réel du branchement est +2, McNemar p = 0,50 — petit, mais il
+        // ne casse aucun cas qui marchait.
+        //
+        // SA FAIBLESSE, ÉCRITE ICI ET PAS AILLEURS : McNemar apparié gagne 6
+        // perd 1, p = 0,125 — pas significatif à n = 48. Et dix-huit tests ont
+        // été menés dans cet exercice ; le p de 0,012 ne survit pas à une
+        // correction sur dix-huit. C'est pour ça que la branche REFAIT SON
+        // PROPRE COMPTAGE sur la base courante, chaîne entière comprise, et se
+        // retire d'elle-même si elle n'y gagne plus rien.
+        //
+        // ELLE PASSE APRÈS ZÉRO POPULUS parce que Populus gagne +8 sur la même
+        // base et le miroir +5 : le miroir prend la place du moteur, pas celle
+        // d'une règle qui fait mieux que lui. Sur le camp, le nul et le BTTS il
+        // dégrade — il ne touche que les buts.
+        var brMir = (typeof BRANCHES_V7 !== 'undefined')
+          && BRANCHES_V7.miroir_volume && BRANCHES_V7.miroir_volume.actif
+          && typeof totalMiroirSeulV7 === 'function'
+          && typeof _GARDE_MIROIR_V7 !== 'undefined' && !_GARDE_MIROIR_V7;
+        var retraitMir = null;
+        if (brMir) {
+          try {
+            var cm = volumeMiroirChaineLiveV7();
+            if (cm && cm.gain <= 0) {
+              brMir = false;
+              retraitMir = 'retiré de lui-même : sur les ' + cm.n + ' cas au score connu de '
+                + 'ta base, la chaîne avec le miroir fait ' + cm.avecMiroir + '/' + cm.n
+                + ' contre ' + cm.sansMiroir + '/' + cm.n + ' sans lui — gain ' + cm.gain
+                + ' (' + cm.gagnes + ' gagné' + (cm.gagnes > 1 ? 's' : '') + ', ' + cm.perdus
+                + ' perdu' + (cm.perdus > 1 ? 's' : '') + '). Il avait été branché sur un gain '
+                + 'de +2 sur la chaîne, mesuré sur 48 cas du dépôt.';
+            }
+          } catch (e) { }
+        }
+        if (brMir && moteur !== null) {
+          var tm7 = null;
+          try { tm7 = totalMiroirSeulV7(theme); } catch (e) { tm7 = null; }
+          if (tm7) {
+            var td7 = 0;
+            try {
+              var g7 = String(scoreAfficheV7(carteR, nulActif).main || '0-0').split('-').map(Number);
+              td7 = (g7[0] || 0) + (g7[1] || 0);
+            } catch (e) { td7 = null; }
+            if (td7 !== null) {
+              var som7 = td7 + tm7.total;
+              var seu7 = (typeof MIROIR_VOLUME_V7 !== 'undefined') ? MIROIR_VOLUME_V7.seuil : 2;
+              var dit7 = som7 > seu7;
+              return { annonce: dit7 ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: dit7,
+                source: 'miroir M5 (somme des deux lectures)',
+                miroir: { direct: td7, miroir: tm7.total, scoreMiroir: tm7.score,
+                  somme: som7, seuil: seu7,
+                  attendu: dit7 ? '5,20 buts en moyenne sur l\'archive'
+                    : '3,36 buts en moyenne sur l\'archive' },
+                moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
+                contreditLeMoteur: dit7 !== moteur };
+            }
+          }
+        }
+        if (moteur === null) return null;
+        return { annonce: moteur ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: moteur,
+          source: autoRetrait ? 'moteur (règle Populus auto-retirée)'
+            : retraitMir ? 'moteur (miroir auto-retiré)' : 'moteur',
+          autoRetrait: autoRetrait,
+          retraitMiroir: retraitMir,
+          moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
+          contreditLeMoteur: false };
+  })();
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
   // (voir commentaire "VIA EN M4" plus haut) -> goals[0]=camp M1, goals[1]=camp M7.
@@ -698,6 +876,30 @@ function getVerdictAfficheReel(theme, favorite) {
     goalM1: goals[0] || 0, goalM7: goals[1] || 0,
     scoreMain: scoreAfficheV7(carteR, nulActif).main,
     scoreAlt: scoreAfficheV7(carteR, nulActif).alt,
+    // ─── LE SCORE CORRIGÉ (05/09/26, demande d'Ellemine_D) ───
+    // Le moteur de score est mesuré défaillant (cf. SCORE_MOTEUR_V7 :
+    // écart de signe inverse, 6 scores exacts sur 49, échelle fausse
+    // d'un facteur 2,5). Le score corrigé abandonne les figures et part
+    // du CAMP et du VOLUME annoncés, avec la moyenne réelle de la
+    // cellule correspondante dans l'archive. Validé en leave-one-out :
+    // −10 % d'erreur par but, −15 % sur le total. Il s'AJOUTE à
+    // scoreMain, il ne le remplace pas — tout le fichier est calibré
+    // sur le score brut (cf. SCORE_CELLULES_V7.nonSubstitution).
+    scoreCorrige: (function () {
+      // Relit le volume DÉJÀ décidé par plus25 (hoisté en _p25 plus haut)
+      // au lieu de refaire la chaîne. Refaire la chaîne ici coûtait deux
+      // verdicts de plus PAR verdict — la page ne finissait plus de
+      // charger — et surtout la copie pouvait diverger de l'original :
+      // c'est exactement ce qui rangeait Roma-Atalanta en « R1 + moins »
+      // pendant que l'écran affichait « plus de 2,5 ». Une seule source,
+      // plus de divergence possible.
+      try {
+        if (!BRANCHES_V7.score_corrige || !BRANCHES_V7.score_corrige.actif) return null;
+        if (!_p25) return null;
+        var camp = nulActif ? 'nul' : (carteR.winner === 'R1' ? 'M1' : 'M7');
+        return scoreCorrigeV7(camp, !!_p25.valeur);
+      } catch (e) { return null; }
+    })(),
     // ─── LE BTTS ENTRE DANS LE VERDICT RENVOYÉ (29/08/26) ───
     // Il n'y était pas. Conséquence : ni le journal, ni le comparateur,
     // ni le contrôle de divergence ne pouvaient le voir — c'est la seule
@@ -757,182 +959,7 @@ function getVerdictAfficheReel(theme, favorite) {
     // les données. Le branchement est réversible d'un booléen
     // (BRANCHES_V7.populus_volume.actif) et le champ dit toujours d'où
     // vient l'annonce, pour qu'on puisse la débrancher sur mesure.
-    plus25: (function () {
-      // Le score LU ICI doit être celui que l'écran affiche, pas le score
-      // brut de la carte : quand le nul est actif, scoreAfficheV7 force un
-      // score de parité et les deux divergent. Lire la carte brute faisait
-      // annoncer un volume incohérent avec le score affiché juste à côté —
-      // et déplaçait la mesure de référence de 26/48 à 28/48. Attrapé en
-      // faisant recalculer le gain par le fichier lui-même au lieu de me
-      // fier à mon script.
-      var moteur = null;
-      try {
-        var g2 = String(scoreAfficheV7(carteR, nulActif).main || '0-0').split('-').map(Number);
-        moteur = ((g2[0] || 0) + (g2[1] || 0)) > 2.5;
-      } catch (e) { moteur = null; }
-      var zero = null;
-      try { var lp2 = lecturePopulusV7(theme); zero = lp2 ? lp2.zeroPopulus : null; }
-      catch (e) { zero = null; }
-      // ── LA BRANCHE SE VÉRIFIE ELLE-MÊME (05/09/26, deuxième passe) ──
-      // Elle a été branchée le matin sur 26/48 contre 34/48, mesuré sur
-      // les 56 cas du dépôt. Le balayage max-T rejoué sur les 105 cas
-      // réels d'Ellemine_D a montré que « zéro Populus » n'est même plus
-      // le meilleur prédicteur de sa famille : rho 0,390 à 56 cas, le
-      // meilleur de la famille tombe à 0,272 à 95 cas. C'est la
-      // signature d'un effet qui régresse vers la moyenne.
-      // Une règle branchée sur un chiffre gelé qui a cessé d'être vrai
-      // est pire qu'une règle absente. Celle-ci REFAIT SON PROPRE
-      // COMPTAGE sur la base courante et se retire toute seule si elle
-      // n'y gagne plus rien.
-      var branche = (typeof BRANCHES_V7 !== 'undefined')
-        && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif;
-      var autoRetrait = null;
-      if (branche) {
-        try {
-          var mv = mesurePopulusLiveV7();
-          if (mv && mv.gain <= 0) {
-            branche = false;
-            autoRetrait = 'retirée d\'elle-même : sur les ' + mv.n + ' cas au score connu de '
-              + 'ta base, elle fait ' + mv.moteurPlusRegle + '/' + mv.n + ' contre '
-              + mv.moteurSeul + '/' + mv.n + ' pour le moteur seul — gain ' + mv.gain
-              + '. Elle avait été branchée sur un gain de +8 mesuré sur 48 cas du dépôt.';
-          }
-        } catch (e) { }
-      }
-      if (branche && zero === true) {
-        return { annonce: 'plus de 2,5 buts', valeur: true, source: 'zéro Populus',
-          moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
-          contreditLeMoteur: moteur === false };
-      }
-      // ─── L'AXE OFFENSIF, SI ON LE BRANCHE (05/09/26) ───
-      // Il prend place ENTRE zéro Populus et le miroir : c'est sa
-      // meilleure position mesurée (38/49 contre 37/49). Éteint par
-      // défaut — ce +1 a été trouvé au neuvième placement essayé, et un
-      // +1 trouvé au neuvième essai est du bruit de sélection, pas un
-      // gain. Le booléen est là pour qu'Ellemine_D en décide, pas moi.
-      try {
-        var brAxe = !!(BRANCHES_V7 && BRANCHES_V7.axe_volume && BRANCHES_V7.axe_volume.actif);
-        var retAxe = null;
-        if (brAxe) {
-          // Même garde-fou que les autres : la branche rejoue la chaîne
-          // entière sur la base courante et se retire si elle n'y gagne plus.
-          var ca = axeChaineLiveV7();
-          if (ca && ca.gain < 0) {
-            brAxe = false;
-            retAxe = 'retiré de lui-même : sur les ' + ca.n + ' cas au score connu de ta '
-              + 'base, la chaîne avec l\'axe fait ' + ca.avecAxe + '/' + ca.n + ' contre '
-              + ca.sansAxe + '/' + ca.n + ' sans lui — gain ' + ca.gain + '.';
-          }
-        }
-        if (brAxe) {
-          var ax = axeVolumeV7(theme);
-          if (ax && ax.ferme) {
-            return { annonce: 'moins de 2,5 buts', valeur: false,
-              source: 'axe offensif (les deux sommes présentes en base)',
-              axe: { somme1: ax.somme1, somme7: ax.somme7, nbPresentes: 2,
-                attendu: ax.attendu },
-              moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
-              contreditLeMoteur: moteur === true };
-          }
-        }
-        if (retAxe) autoRetrait = (autoRetrait ? autoRetrait + ' · ' : '') + retAxe;
-      } catch (e) { }
-      // ─── 05/09/26 : LE MIROIR M5 EST BRANCHÉ AU VOLUME DE BUTS ───
-      // Demande d'Ellemine_D : « branche ce qu'on a découvert sur le miroir ».
-      // J'avais refusé une première fois en testant autre chose que ce qui
-      // était demandé (le miroir comme symétrie du CAMP, qui est faux et le
-      // reste — cf. BRANCHES_V7.miroir_m5). La bonne mesure était celle-ci.
-      //
-      // LA RÈGLE : on rebâtit le bouclier sur M5..M8 — l'involution qui
-      // échange M1↔M5, M2↔M6, M3↔M7, M4↔M8 et laisse le juge M15 fixe — puis
-      // on ADDITIONNE les deux totaux de buts annoncés. Au-dessus de 2, c'est
-      // « plus de 2,5 buts ».
-      //
-      // POURQUOI LE SEUIL EST 2 : c'est la médiane structurelle de la somme,
-      // obtenue en énumérant les thèmes. Il ne vient pas des résultats — c'est
-      // la seule chose qui distingue ce branchement d'un ajustement.
-      //
-      // CE QUI A ÉTÉ MESURÉ, sur les 48 cas au score connu du dépôt :
-      //   lecture directe seule ................ 26/48   (54 %)
-      //   somme des deux lectures > 2 .......... 31/48   (65 %)   +5
-      //   corrélation aux buts réels : directe rho +0,238 (p 0,104)
-      //                                miroir   rho +0,297 (p 0,041)
-      //                                somme    rho +0,362 (p 0,012)
-      // Et elle discrimine — ce n'est pas la règle idiote déguisée :
-      //   quand elle dit plus  (20 cas) : 85 % au-dessus de 2,5 · 5,20 buts
-      //   quand elle dit moins (28 cas) : 50 % au-dessus de 2,5 · 3,36 buts
-      //
-      // MAIS LE CHIFFRE QUI COMPTE EST CELUI DE LA CHAÎNE ENTIÈRE, parce que
-      // « zéro Populus » est déjà branché devant et fait mieux que lui :
-      //   chaîne sans le miroir ................ 34/48
-      //   chaîne avec le miroir ................ 36/48   +2 (2 gagnés, 0 perdu)
-      // Le +5 se mesure contre le moteur nu, qui n'est plus l'état du système.
-      // Le gain réel du branchement est +2, McNemar p = 0,50 — petit, mais il
-      // ne casse aucun cas qui marchait.
-      //
-      // SA FAIBLESSE, ÉCRITE ICI ET PAS AILLEURS : McNemar apparié gagne 6
-      // perd 1, p = 0,125 — pas significatif à n = 48. Et dix-huit tests ont
-      // été menés dans cet exercice ; le p de 0,012 ne survit pas à une
-      // correction sur dix-huit. C'est pour ça que la branche REFAIT SON
-      // PROPRE COMPTAGE sur la base courante, chaîne entière comprise, et se
-      // retire d'elle-même si elle n'y gagne plus rien.
-      //
-      // ELLE PASSE APRÈS ZÉRO POPULUS parce que Populus gagne +8 sur la même
-      // base et le miroir +5 : le miroir prend la place du moteur, pas celle
-      // d'une règle qui fait mieux que lui. Sur le camp, le nul et le BTTS il
-      // dégrade — il ne touche que les buts.
-      var brMir = (typeof BRANCHES_V7 !== 'undefined')
-        && BRANCHES_V7.miroir_volume && BRANCHES_V7.miroir_volume.actif
-        && typeof totalMiroirSeulV7 === 'function'
-        && typeof _GARDE_MIROIR_V7 !== 'undefined' && !_GARDE_MIROIR_V7;
-      var retraitMir = null;
-      if (brMir) {
-        try {
-          var cm = volumeMiroirChaineLiveV7();
-          if (cm && cm.gain <= 0) {
-            brMir = false;
-            retraitMir = 'retiré de lui-même : sur les ' + cm.n + ' cas au score connu de '
-              + 'ta base, la chaîne avec le miroir fait ' + cm.avecMiroir + '/' + cm.n
-              + ' contre ' + cm.sansMiroir + '/' + cm.n + ' sans lui — gain ' + cm.gain
-              + ' (' + cm.gagnes + ' gagné' + (cm.gagnes > 1 ? 's' : '') + ', ' + cm.perdus
-              + ' perdu' + (cm.perdus > 1 ? 's' : '') + '). Il avait été branché sur un gain '
-              + 'de +2 sur la chaîne, mesuré sur 48 cas du dépôt.';
-          }
-        } catch (e) { }
-      }
-      if (brMir && moteur !== null) {
-        var tm7 = null;
-        try { tm7 = totalMiroirSeulV7(theme); } catch (e) { tm7 = null; }
-        if (tm7) {
-          var td7 = 0;
-          try {
-            var g7 = String(scoreAfficheV7(carteR, nulActif).main || '0-0').split('-').map(Number);
-            td7 = (g7[0] || 0) + (g7[1] || 0);
-          } catch (e) { td7 = null; }
-          if (td7 !== null) {
-            var som7 = td7 + tm7.total;
-            var seu7 = (typeof MIROIR_VOLUME_V7 !== 'undefined') ? MIROIR_VOLUME_V7.seuil : 2;
-            var dit7 = som7 > seu7;
-            return { annonce: dit7 ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: dit7,
-              source: 'miroir M5 (somme des deux lectures)',
-              miroir: { direct: td7, miroir: tm7.total, scoreMiroir: tm7.score,
-                somme: som7, seuil: seu7,
-                attendu: dit7 ? '5,20 buts en moyenne sur l\'archive'
-                  : '3,36 buts en moyenne sur l\'archive' },
-              moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
-              contreditLeMoteur: dit7 !== moteur };
-          }
-        }
-      }
-      if (moteur === null) return null;
-      return { annonce: moteur ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: moteur,
-        source: autoRetrait ? 'moteur (règle Populus auto-retirée)'
-          : retraitMir ? 'moteur (miroir auto-retiré)' : 'moteur',
-        autoRetrait: autoRetrait,
-        retraitMiroir: retraitMir,
-        moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
-        contreditLeMoteur: false };
-    })(),
+    plus25: _p25,
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
     // le concept exact de "vainqueur de la 1ère mi-temps" du moteur V7
     // legacy n'a pas d'équivalent direct dans le pipeline R1/R7.
@@ -1391,7 +1418,29 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + '<div style="font-size:10px; color:#94a3b8; margin-top:6px; text-align:left;">'
         + 'Thème ignoré : ni vainqueur ni score. Les autres lectures restent affichées plus bas.'
         + '</div></div>'
-      : '<div class="tek-score">Score prédit : '+esc(scoreMain)+'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>')
+      : (function(){
+          // ─── LE SCORE CORRIGÉ PASSE DEVANT (05/09/26) ───
+          // Le score du moteur ne prédit rien (6/49 exact, écart de
+          // signe inverse). Celui de la cellule fait 10 % d'erreur en
+          // moins. C'est donc lui la tête d'affiche ; le brut reste
+          // dessous, en petit, parce que tout le reste du fichier est
+          // calibré dessus.
+          var sc=null;
+          try{ var vv3=avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);});
+               sc = vv3 ? vv3.scoreCorrige : null; }catch(e){ sc=null; }
+          if(!sc) return '<div class="tek-score">Score prédit : '+esc(scoreMain)
+            +'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>';
+          return '<div class="tek-score">Buts attendus : '+esc(sc.score)
+            +'<div style="font-size:11px;color:#94a3b8;font-weight:600;line-height:1.5;margin-top:4px">'
+            +'moyenne réelle de la cellule <b>'+esc(sc.cle.replace('_',' + '))+'</b> — '
+            +sc.g1.toFixed(2)+' – '+sc.g7.toFixed(2)+' sur '+sc.n+' cas · '
+            +'camp juste '+esc(sc.campJuste)
+            +(sc.inversee? '<br><span style="color:#fbbf24">⚠️ cellule inversée : le camp annoncé '
+              +'marque MOINS que l\'autre — le taux de camp de cette cellule le veut ainsi</span>':'')
+            +'<br><span style="color:#64748b">score brut du moteur : '+esc(scoreMain)
+            +' (mesuré à 6 exacts sur 49 — ne pas le lire comme un pronostic)</span>'
+            +'</div></div>';
+        })())
     +(_sousSeuil ? '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #64748b; border-radius:7px; '
       + 'background:rgba(100,116,139,.12); font-size:11px; color:#cbd5e1; text-align:left;">'
       + '🗓️ <b>VALIDATION ' + _sousSeuil.niveau + '/3</b> — sous le seuil traditionnel de '

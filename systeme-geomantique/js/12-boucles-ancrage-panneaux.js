@@ -2178,6 +2178,27 @@ var BRANCHES_V7 = {
       + 'deux des huit points perdus.',
     pourLActiver: 'BRANCHES_V7.ouverture_camp.actif = true — juste après la porte du nul.' },
 
+  score_corrige: {
+    actif: true,
+    nom: 'Le score affiché vient de la cellule (camp × volume), plus des figures',
+    cible: 'le score',
+    demande: 'Ellemine_D, 05/09 : « corrige le moteur et intègre ça au verdict final lié au '
+      + 'moteur carré qui affiche le score ».',
+    pourquoi: 'le moteur de score est mesuré défaillant — écart de signe INVERSE (rho −0,132), '
+      + '6 scores exacts sur 49, échelle fausse d\'un facteur 2,5. Cf. SCORE_MOTEUR_V7.',
+    laCorrection: 'abandonner les figures et partir du CAMP et du VOLUME annoncés, avec la '
+      + 'moyenne réelle de la cellule correspondante dans l\'archive. Cf. SCORE_CELLULES_V7.',
+    validation: 'LEAVE-ONE-OUT sur 49 matchs — erreur par but 1,64 -> 1,48 (−10 %), erreur sur '
+      + 'le total 2,80 -> 2,37 (−15 %). Le score exact tombe en revanche de 6/49 à 2/49 : la '
+      + 'table prédit des moyennes, elle ne tape pas dans le mille.',
+    ceQuiAEteRejete: 'le recalibrage naïf « × 2,5 » que j\'avais proposé le matin même : '
+      + 'mesuré à 1,95 d\'erreur par but, soit PIRE que ne rien faire. L\'échelle n\'était '
+      + 'pas le vrai problème, et je m\'étais trompé en le suggérant.',
+    nonSubstitution: 'scoreMain reste produit par le moteur et reste lu par le miroir, la '
+      + 'règle Populus, l\'axe et tout le banc — leur calibrage en dépend. Le score corrigé '
+      + 'passe DEVANT à l\'affichage, le brut reste dessous en petit avec son 6/49.',
+    pourRevenir: 'BRANCHES_V7.score_corrige.actif = false' },
+
   carre_pilote: {
     actif: true,
     ordre: ['carre', 'm4m10', 'v8'],
@@ -3712,5 +3733,31 @@ autoTestV7('les mesures vivantes ne se figent jamais à vide', function () {
     if (!x[1]) return;
     var r = x[1]();
     if (!r || !r.n) throw new Error(x[0] + ' renvoie une mesure vide');
+  });
+});
+
+autoTestV7('les drapeaux de branche survivent à un verdict', function () {
+  if (typeof calcTheme !== 'function' || typeof getVerdictAfficheReel !== 'function') return;
+  // ☠️ Le bug du 05/09 : mesurePopulusLiveV7 éteint les branches pour
+  // mesurer « le moteur seul » et les rallume après. La restauration
+  // était dans un try dont le catch faisait return — une exception au
+  // milieu laissait les branches ÉTEINTES pour toute la session, sans
+  // aucune erreur visible. Le verdict annonçait « règle auto-retirée »
+  // alors que la mesure donnait +11. Ce test attrape la corruption.
+  var cles = ['populus_volume', 'miroir_volume', 'axe_volume', 'carcer_miroir',
+    'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige'];
+  var avant = {};
+  cles.forEach(function (k) { if (BRANCHES_V7[k]) avant[k] = BRANCHES_V7[k].actif; });
+  ['populus,via,albus,puella', 'conjunctio,acquisitio,puella,caput_draconis',
+   'populus,via,amissio,puer'].forEach(function (kk) {
+    var m = kk.split(',');
+    try { avecFormatV7('reel', function () { return getVerdictAfficheReel(calcTheme(m[0], m[1], m[2], m[3])); }); }
+    catch (e) { }
+  });
+  cles.forEach(function (k) {
+    if (!BRANCHES_V7[k]) return;
+    if (BRANCHES_V7[k].actif !== avant[k])
+      throw new Error('le drapeau ' + k + ' a été laissé à ' + BRANCHES_V7[k].actif
+        + ' après un verdict (attendu ' + avant[k] + ') — état global corrompu');
   });
 });
