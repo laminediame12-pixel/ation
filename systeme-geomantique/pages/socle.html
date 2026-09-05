@@ -34,6 +34,29 @@ tr.on td{background:rgba(167,139,250,.14);font-weight:700}
 .mid{background:rgba(251,191,36,.18);color:var(--or)}
 b.v{color:var(--vert)}b.r{color:var(--rouge)}b.o{color:var(--or)}b.b{color:var(--bleu)}
 code{background:#0a1220;padding:1px 5px;border-radius:4px;font-size:12px}
+/* ── LA FENÊTRE DE VERDICT ── */
+.win{background:linear-gradient(160deg,#141f38 0%,#0d1526 100%);
+border:1px solid #2b3d63;border-radius:16px;padding:0;margin-bottom:14px;overflow:hidden;
+box-shadow:0 10px 34px rgba(0,0,0,.45)}
+.win-top{padding:15px 15px 13px;background:linear-gradient(160deg,rgba(167,139,250,.16),transparent);
+border-bottom:1px solid #24344f}
+.win-lab{font-size:10.5px;letter-spacing:.16em;color:var(--vio);font-weight:800}
+.win-win{font-size:31px;font-weight:900;line-height:1.06;margin:5px 0 2px}
+.win-src{font-size:11.5px;color:var(--mut)}
+.win-conf{display:flex;align-items:center;gap:8px;margin-top:9px}
+.ring{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:grid;place-items:center;
+font-size:12px;font-weight:900}
+.rows{padding:4px 15px 13px}
+.r{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(143,163,191,.11)}
+.r:last-child{border-bottom:0}
+.r-k{flex:0 0 92px;font-size:10.5px;letter-spacing:.1em;color:var(--mut);font-weight:700}
+.r-v{flex:1 1 auto;font-size:15px;font-weight:700;min-width:0}
+.r-v small{display:block;font-size:11px;font-weight:500;color:var(--mut);margin-top:2px;line-height:1.4}
+.r-f{flex:0 0 74px;text-align:right}
+.r-f b{font-size:15px;font-weight:900;display:block;line-height:1.1}
+.r-f i{font-style:normal;font-size:9.5px;color:var(--mut);display:block}
+.r-f .mini{height:4px;background:#16233c;border-radius:99px;margin-top:4px;overflow:hidden}
+.r-f .mini u{display:block;height:100%;text-decoration:none}
 </style></head><body>
 
 <h1>Socle — deux moteurs</h1>
@@ -63,6 +86,7 @@ const MAP={puer:[1,1,2,1],laetitia:[1,2,2,2],caput_draconis:[2,1,1,1],albus:[2,2
 amissio:[1,2,1,2],rubeus:[2,1,2,2],tristitia:[2,2,2,1],fortuna_minor:[1,1,2,2],carcer:[1,2,2,1],
 conjunctio:[2,1,1,2],fortuna_major:[2,2,1,1],cauda_draconis:[1,1,1,2],puella:[1,2,1,1],
 acquisitio:[2,1,2,1],populus:[2,2,2,2]};
+const OUV=['puer','puella','rubeus','albus','cauda_draconis','laetitia','acquisitio','via'];
 const LOOP_A=["puer","caput_draconis","via","rubeus","fortuna_minor","conjunctio","cauda_draconis","acquisitio"];
 const loopOf=f=>LOOP_A.indexOf(f)!==-1?'A':'B';
 const INV={}; FIGS.forEach(f=>INV[MAP[f].join('')]=f);
@@ -107,6 +131,53 @@ const M2={
               ['M10 et M7 même boucle',-0.234,0.434],['active M1−M7',0.175,0.514]]}
 };
 
+/* ═══ FENÊTRE DE VERDICT — chiffres mesurés ═══ */
+const CAD=[3,6,9,12], SUC=[2,5,8,11];
+const CELL_SCORES={ R1_plus:['1-2','7-0'], R1_moins:['2-0','1-0'], R7_plus:['6-1','0-2'],
+  R7_moins:['0-1','1-0'], nul_plus:['2-2','3-3'], nul_moins:['0-1','0-0'] };
+const CELL_BUTS={ R1_plus:[2.83,2.33,6], R1_moins:[1.60,2.20,5], R7_plus:[4.22,2.56,9],
+  R7_moins:[1.22,1.00,9], nul_plus:[2.80,2.00,10], nul_moins:[1.30,1.20,10] };
+const FIAB={
+  score2:{p:18.4,n:49,note:'les 2 plus fréquents de TOUTE l\'archive font aussi 18,4 % — la cellule n\'ajoute rien'},
+  btts:{p:63.0,n:54,note:'base « jamais » 51,9 % · Fisher p = 0,096'},
+  volume:{p:86.7,n:30,note:'ne parle que sur 30 thèmes sur 49 — elle se tait sur les cas durs'},
+  incident:{p:null,n:12,note:'12 cas renseignés dont 10 AVEC incident : la famille est inmesurable'},
+  corners:{p:null,n:3,note:'3 cas renseignés dans toute l\'archive'},
+  cartons:{p:null,n:0,note:'ZÉRO carton jaune enregistré — le moteur compte des signaux, rien ne l\'a jamais vérifié'}
+};
+function bttsDe(t,r){
+  let conj=false; for(let h=1;h<=16;h++) if(t[h]==='conjunctio') conj=true;
+  if(!conj) return {v:false,z:'Conjunctio absent — pas d\'échange (9 cas sur 10)'};
+  if(CAD.indexOf(r.hR1)>=0) return {v:true,z:'R1 en maison cadente + Conjunctio (8 cas sur 9)'};
+  const ps=SUC.some(h=>t[h]==='puer');
+  return {v:ps,z:ps?'Puer en maison succédente (4 BTTS sur 6)':'ni cadent ni Puer succédent (2 sur 7)'};
+}
+function volumeDe(t){
+  let np=0; for(let h=1;h<=16;h++) if(t[h]==='populus') np++;
+  if(np===0) return {v:true,z:'zéro Populus dans le thème',f:86.4,n:22};
+  const dans=f=>{for(let h=1;h<=16;h++) if(t[h]===f) return true; return false;};
+  const s3=(a,b,c)=>comb(comb(t[a],t[b]),t[c]);
+  const tri=[[1,5,9],[2,6,10],[3,7,11],[4,8,12]].map(x=>s3(x[0],x[1],x[2]));
+  const nb=tri.filter(dans).length;
+  if(nb===4) return {v:false,z:'les quatre trigones sont saturés',f:87.5,n:8};
+  return {v:null,z:np+' Populus, '+nb+' trigone'+(nb>1?'s':'')+' sur 4 — le volume se tait',f:null,n:0};
+}
+function ringHTML(p,col){
+  if(p===null) return `<div class="ring" style="background:rgba(143,163,191,.14);color:var(--mut)">—</div>`;
+  return `<div class="ring" style="background:conic-gradient(${col} ${p*3.6}deg,#16233c 0);color:${col}">`+
+    `<div style="background:#101a2d;width:34px;height:34px;border-radius:50%;display:grid;place-items:center">`+
+    `${Math.round(p)}%</div></div>`;
+}
+function ligne(k,val,sous,f,n,col){
+  const c = f===null?'var(--mut)':col;
+  return `<div class="r"><div class="r-k">${k}</div>`+
+    `<div class="r-v" style="color:${f===null?'var(--mut)':'var(--txt)'}">${val}`+
+    (sous?`<small>${sous}</small>`:'')+`</div>`+
+    `<div class="r-f"><b style="color:${c}">${f===null?'—':Math.round(f*10)/10+' %'}</b>`+
+    `<i>${n?'n = '+n:'jamais vérifié'}</i>`+
+    `<div class="mini"><u style="width:${f===null?0:f}%;background:${c}"></u></div></div></div>`;
+}
+
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const pct=(a,b)=>b?Math.round(1000*a/b)/10:0;
 
@@ -135,7 +206,55 @@ function go(){
     `<tr><td>${esc(nom)}</td><td class="n">${rho>0?'+':''}${rho.toFixed(3)}</td>`+
     `<td class="n">${p.toFixed(4)}${p<0.05?' ★':''}</td></tr>`).join('');
 
-  document.getElementById('out').innerHTML=`
+  /* ── LA FENÊTRE DE VERDICT ── */
+  const bt=bttsDe(t,r), vo=volumeDe(t);
+  // le vainqueur, et d'où il sort
+  let vq,vqSrc,vqF,vqN,vqCol;
+  if(dit && arc && !memeM){ vq='NUL'; vqSrc='arc proche k='+r.k+' et M1/M7 en boucles différentes';
+    vqF=80.0; vqN=5; vqCol='var(--vert)'; }
+  else if(dit && r.k===11){ vq='NUL'; vqSrc='décalage 11'; vqF=100; vqN=2; vqCol='var(--or)'; }
+  else {
+    const o1=OUV.indexOf(t[1])>=0, o7=OUV.indexOf(t[7])>=0;
+    if(o1&&!o7){ vq='CAMP 1'; vqSrc='contraste d\'ouverture : M1 ouverte, M7 fermée';
+      vqF=74.1; vqN=27; vqCol='var(--bleu)'; }
+    else if(!o1&&o7){ vq='CAMP 2'; vqSrc='contraste d\'ouverture : M1 fermée, M7 ouverte';
+      vqF=74.1; vqN=27; vqCol='var(--bleu)'; }
+    else { vq='LE MOTEUR SE TAIT'; vqSrc='les deux chefs sont '+(o1?'ouverts':'fermés')+
+      ' — aucune case mesurée ne parle'; vqF=null; vqN=0; vqCol='var(--mut)'; }
+  }
+  // la cellule score : camp × volume
+  const campK = vq==='NUL'?'nul':(vq==='CAMP 1'?'R1':(vq==='CAMP 2'?'R7':null));
+  const volK = vo.v===null?null:(vo.v?'plus':'moins');
+  const ck = (campK&&volK)? campK+'_'+volK : null;
+  const sc = ck?CELL_SCORES[ck]:null, cb = ck?CELL_BUTS[ck]:null;
+
+  const fen = `<div class="win">
+    <div class="win-top">
+      <div class="win-lab">VERDICT</div>
+      <div class="win-win" style="color:${vqCol}">${vq}</div>
+      <div class="win-src">${esc(vqSrc)}</div>
+      <div class="win-conf">${ringHTML(vqF,vqCol)}
+        <div style="font-size:11.5px;color:var(--mut);line-height:1.45">
+          ${vqF===null?'Aucun pourcentage : cette configuration n\'a pas de case mesurée.'
+            :`<b style="color:${vqCol}">${vqF} %</b> de justesse sur <b>${vqN}</b> cas de l\'archive`+
+             (vqN<6?` — <b class="o">effectif très faible, à lire comme une piste</b>`:'')}
+        </div></div>
+    </div>
+    <div class="rows">
+      ${ligne('SCORE ×2', sc?`${sc[0]} &nbsp;ou&nbsp; ${sc[1]}`:'—',
+        cb?`buts attendus ${cb[0].toFixed(2)} – ${cb[1].toFixed(2)} sur ${cb[2]} cas · ${FIAB.score2.note}`
+           :'le camp ou le volume ne parle pas : pas de cellule',
+        sc?FIAB.score2.p:null, sc?FIAB.score2.n:0, 'var(--rouge)')}
+      ${ligne('VOLUME', vo.v===null?'se tait':(vo.v?'plus de 2,5 buts':'moins de 2,5 buts'),
+        esc(vo.z)+(vo.f?' · '+FIAB.volume.note:''), vo.f, vo.n, 'var(--vert)')}
+      ${ligne('BTTS', bt.v?'OUI':'NON', esc(bt.z)+' · '+FIAB.btts.note,
+        FIAB.btts.p, FIAB.btts.n, 'var(--bleu)')}
+      ${ligne('INCIDENTS', 'non mesurable', FIAB.incident.note, null, FIAB.incident.n, '')}
+      ${ligne('CORNERS', 'non mesurable', FIAB.corners.note, null, FIAB.corners.n, '')}
+      ${ligne('CARTONS J.', 'non mesurable', FIAB.cartons.note, null, 0, '')}
+    </div></div>`;
+
+  document.getElementById('out').innerHTML= fen + `
   <div class="card">
     <h2>Le carré</h2>
     <table>
