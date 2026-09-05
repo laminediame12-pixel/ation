@@ -1970,3 +1970,103 @@ var LOIS_REPOS_V7 = {
     'caput_draconis@3+carcer@10': 'cauda_draconis@4' },
   pairesDeFigs: 'combine(FIGS[2k], FIGS[2k+1]) = Acquisitio pour k = 0..7'
 };
+
+// ═══════════════════════════════════════════════════════════════
+// POPULUS, LE RANG DES MÈRES, ET UN EFFET QUE LE MOTEUR IGNORE
+// ═══════════════════════════════════════════════════════════════
+// Parti de « Populus en M10 est le plus gros verrou de la table
+// défensive ». C'était une tranche d'autre chose.
+//
+// 1. POPULUS EST LE NEUTRE. combine(populus, X) = X. Donc dans toute
+//    maison dérivée, Populus signifie que ses DEUX PARENTS SONT
+//    IDENTIQUES : M10 = Populus équivaut exactement à M3 = M4, M9 à
+//    M1 = M2, M11 à M5 = M6, et ainsi de suite. Vérifié : les lignes
+//    « jumelle » et « pop@ » coïncident au thème près.
+//
+// 2. CE N'EST PAS M10, C'EST PARTOUT. Populus assèche les buts dans
+//    14 maisons sur 16 (exceptions M14 et M16, qui les augmentent).
+//    Le plus fort n'est pas M10 mais M1 : 0,85 but et 5,1 % de BTTS
+//    contre 1,29 et 27,2 % de base.
+//
+// 3. LA CAUSE EST LE RANG DES MÈRES. En écrivant chaque figure comme
+//    un vecteur de Z2 puissance 4, le rang des quatre mères BORNE le
+//    nombre de Populus du thème — exact sur les 65536 :
+//      rang 4 : 0 ou 1 Populus, jamais plus   (20160 thèmes)
+//      rang 3 : 0 à 4                         (37800)
+//      rang 2 : 0 à 8                         ( 7350)
+//      rang 1 : 4 à 12                        (  225)
+//      rang 0 : exactement 16                 (    1, les 4 mères Populus)
+//    Et le moteur suit ce rang de façon monotone :
+//      rang 1  0,85 but  BTTS  1,3 %
+//      rang 2  1,03      BTTS 13,2 %
+//      rang 3  1,27      BTTS 26,2 %
+//      rang 4  1,43      BTTS 34,5 %
+//
+// 4. L'ARCHIVE NE PEUT PAS TESTER LE RANG : 47 cas sur 48 sont de rang
+//    3 ou 4. Un tirage réel ne descend presque jamais plus bas. Le
+//    gradient le plus net du moteur est donc, en l'état, invérifiable.
+//
+// 5. MAIS À RANG FIXÉ, LE COMPTE DE POPULUS DIT QUELQUE CHOSE QUE LE
+//    MOTEUR N'ENCODE PAS. Voir PISTES_V7, entrée `populus_zero`.
+var RANG_ET_POPULUS_V7 = {
+  bornes: { 4: [0, 1], 3: [0, 4], 2: [0, 8], 1: [4, 12], 0: [16, 16] },
+  effectifs: { 4: 20160, 3: 37800, 2: 7350, 1: 225, 0: 1 },
+  moteurParRang: {
+    1: { buts: 0.85, btts: 1.3 }, 2: { buts: 1.03, btts: 13.2 },
+    3: { buts: 1.27, btts: 26.2 }, 4: { buts: 1.43, btts: 34.5 } },
+  base: { buts: 1.29, btts: 27.2 }
+};
+
+// Rang des quatre mères sur Z2 : 0 à 4. Une figure devient un vecteur
+// en notant 1 la ligne à un point et 0 la ligne à deux.
+function rangMeresV7(theme) {
+  if (!theme || typeof MAP_GEO === 'undefined') return null;
+  var m = [1, 2, 3, 4].map(function (h) {
+    var p = MAP_GEO[theme[h]];
+    return p ? p.map(function (v) { return v === 1 ? 1 : 0; }) : null; });
+  if (m.indexOf(null) >= 0) return null;
+  var r = 0;
+  for (var c = 0; c < 4; c++) {
+    var piv = -1;
+    for (var i = r; i < m.length; i++) if (m[i][c]) { piv = i; break; }
+    if (piv < 0) continue;
+    var t = m[r]; m[r] = m[piv]; m[piv] = t;
+    for (var k = 0; k < m.length; k++) if (k !== r && m[k][c])
+      for (var j = 0; j < 4; j++) m[k][j] ^= m[r][j];
+    r++;
+  }
+  return r;
+}
+
+function nbPopulusV7(theme) {
+  if (!theme) return null;
+  var n = 0;
+  for (var h = 1; h <= 16; h++) if (theme[h] === 'populus') n++;
+  return n;
+}
+
+// Lecture combinée, avec le garde-fou de la borne : si le compte sort
+// des bornes du rang, le calcul du thème est cassé quelque part.
+function lecturePopulusV7(theme) {
+  var rg = rangMeresV7(theme), np = nbPopulusV7(theme);
+  if (rg === null || np === null) return null;
+  var b = RANG_ET_POPULUS_V7.bornes[rg];
+  return { rang: rg, nbPopulus: np, bornes: b,
+    coherent: !!b && np >= b[0] && np <= b[1],
+    moteurAttendu: RANG_ET_POPULUS_V7.moteurParRang[rg] || null,
+    // La condition pré-enregistrée. 38 % des thèmes la remplissent
+    // (25004 sur 65536) : c'est fréquent, donc utilisable.
+    zeroPopulus: np === 0 };
+}
+
+autoTestV7('rang des mères et bornes de Populus', function () {
+  if (typeof calcTheme !== 'function' || typeof FIGS_V7 === 'undefined') return;
+  var essais = [['puer', 'laetitia', 'caput_draconis', 'albus'],
+    ['populus', 'populus', 'populus', 'populus'],
+    ['via', 'via', 'via', 'via'], ['tristitia', 'amissio', 'cauda_draconis', 'laetitia']];
+  essais.forEach(function (m) {
+    var l = lecturePopulusV7(calcTheme(m[0], m[1], m[2], m[3]));
+    if (!l || !l.coherent)
+      throw new Error('nb de Populus hors des bornes du rang pour ' + m.join('/'));
+  });
+});

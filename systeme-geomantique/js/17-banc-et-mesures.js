@@ -411,6 +411,33 @@ function verifierRegistreSignauxV7(theme) {
 // mois en croyant qu'elle est neuve — et pour que son « non exclu »
 // serve de point de départ à la suivante.
 var PISTES_V7 = [
+  { cle: 'populus_zero', nom: 'Un thème SANS AUCUN Populus annonce plus de buts',
+    auteur: 'calcul du 05/09, en creusant « Populus en M10 » demandé par Ellemine_D',
+    etat: 'PRÉ-ENREGISTRÉE — LA PLUS FORTE DU FICHIER APRÈS M9, ET NON DÉMONTRÉE',
+    chiffre: 'archive, stratifié par le rang des mères : 0 Populus = 5,57 buts contre '
+      + '3,00 pour au moins un, écart +2,57, p unilatéral = 0,0027 (permutation À '
+      + 'L\'INTÉRIEUR de chaque strate de rang, 200 000 tirages).',
+    robustesse: 'survit au retrait des gros scores, contrairement à sa version non '
+      + 'stratifiée : sans les 3 plus gros p = 0,0333, sans les 5 plus gros p = 0,0414. '
+      + 'Les médianes disent la même chose — rang 3 : 5,0 contre 3,0 ; rang 4 : 6,5 '
+      + 'contre 1,0 — donc ce ne sont pas quelques matchs à forte marque.',
+    controles: 'ce n\'est PAS la règle M9 déguisée (Populus n\'est en M9 que dans 3 cas '
+      + 'sur 48 ; en retirant M9 du compte, rho reste −0,246, p = 0,0465). Ce n\'est PAS '
+      + 'un effet de provenance (les 21 « zéro » et les 27 autres viennent tous de '
+      + 'CAS_REFERENCE_V7). Et surtout ce n\'est PAS circulaire : LE MOTEUR NE PRÉDIT PAS '
+      + 'CET ÉCART — à rang 3 il annonce +0,18 but, à rang 4 il annonce −0,05, quand '
+      + 'l\'archive donne +2,22 et +4,67. Si la règle tient, le fichier lui manque une loi.',
+    piege: 'le découpage « zéro contre au moins un » a été choisi APRÈS avoir vu que la '
+      + 'dose du moteur ne se retrouvait pas dans l\'archive (au-delà de 1 Populus la '
+      + 'pente s\'inverse, rho = +0,377). C\'est la faiblesse qui reste, et aucune '
+      + 'correction ne la répare : seul un test hors échantillon la lèvera. Une douzaine '
+      + 'de tests ont été menés dans ce fil ; à 12, Bonferroni laisse 0,0027 × 12 = 0,032.',
+    seuil: '30 rencontres annoncées AVANT le coup d\'envoi, dont au moins 10 sans aucun '
+      + 'Populus et 10 avec, puis le même test stratifié. En dessous, on ne saura pas.',
+    utilisable: 'la condition n\'est pas rare : 25004 thèmes sur 65536, soit 38 %.',
+    suite: 'lecturePopulusV7(theme) rend déjà rang, compte et le drapeau zeroPopulus. '
+      + 'Le verdict n\'y touche pas tant que rien n\'est démontré.' },
+
   { cle: 'parite_m15', nom: 'M15 est toujours paire — huit figures possibles, pas seize',
     auteur: 'calcul, 05/09', etat: 'ACQUISE — LOI EXACTE, PAS UNE PISTE',
     chiffre: '65536/65536, aucune exception ; cause démontrée, pas mesurée : '
