@@ -451,6 +451,14 @@ var PISTES_V7 = [
     auteur: 'calcul du 05/09, en creusant « Populus en M10 » demandé par Ellemine_D',
     etat: 'BRANCHÉE AU VERDICT LE 05/09 (famille plus/moins de 2,5 buts) — '
       + 'ET TOUJOURS NON DÉMONTRÉE. Les deux à la fois : elle décide, et elle reste à prouver.',
+    balayage: 'ATTENTION — au balayage max-T du 05/09 (299 prédicteurs déclarés, 4000 '
+      + 'permutations), cette règle est LE MEILLEUR prédicteur de toute la grille pour sa '
+      + 'cible (|rho| = 0,390) et elle reste SOUS le seuil de 0,467. Le p = 0,0137 publié '
+      + 'en la branchant supposait qu\'elle était la seule hypothèse testée ; elle ne '
+      + 'l\'était pas. Elle n\'est pas réfutée, elle est INDÉMONTRABLE SUR CETTE ARCHIVE. '
+      + 'Budget pour trancher : 38 rencontres annoncées avant coup d\'envoi — voir '
+      + 'BALAYAGE_V7 et budgetPistesV7(). Elle reste branchée parce qu\'elle gagne 26->34 '
+      + 'sur l\'archive et qu\'aucune autre ne fait mieux, pas parce qu\'elle est prouvée.',
     branchement: 'mesuré avant, comme le nul l\'avait été le 29/08 : moteur seul 26/48 (54 %), '
       + 'règle idiote « toujours plus de 2,5 » 31/48, moteur + zéro Populus 34/48 (71 %). '
       + '10 gagnés, 2 perdus (Roma 2 buts et CarcAlbus 0-0, deux thèmes à zéro Populus restés '
@@ -2521,3 +2529,104 @@ var MOTEURS_BTTS_V7 = [
     verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
 ];
 
+
+// ═══════════════════════════════════════════════════════════════
+// LE BALAYAGE COMPLET (05/09/26) — ce que cette archive peut porter,
+// et ce qu'elle ne peut pas
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D : « j'ai bien proposé des pistes mais rien — à toi de
+// faire la différence. » Reproche juste : dans cette séance j'ai tué
+// six pistes et j'en ai branché une. C'est un rôle d'huissier, pas de
+// chercheur.
+//
+// Alors au lieu de tester une hypothèse à la fois, une seule question,
+// posée pour la première fois dans ce fichier :
+//
+//        CETTE ARCHIVE CONTIENT-ELLE PLUS DE STRUCTURE QUE LE HASARD ?
+//
+// MÉTHODE. 299 prédicteurs STRUCTURELS déclarés avant tout résultat,
+// sans choix ni exception : les 256 conditions « Mh = figure », les 16
+// « Mh au repos », les 16 « Mh paire », plus le rang des mères, le
+// compte de Populus, le nombre de figures distinctes, la boucle de
+// R1/R7, la maison de R1, le décalage R1->R7, l'écart du protocole
+// serré et le faisceau. Quatre familles : camp R1/R7, nul, plus de
+// 2,5 buts, les deux marquent.
+// Test : permutation max-T (Westfall-Young), 4000 permutations. On
+// permute la RÉALITÉ, on recalcule les 299 corrélations, on garde le
+// MAXIMUM. Ce maximum-là est le seuil. C'est la bonne correction ici :
+// Bonferroni serait faux, les prédicteurs étant fortement corrélés
+// entre eux.
+//
+// RÉSULTAT — RIEN NE SURVIT, Y COMPRIS CE QUE J'AI BRANCHÉ :
+//   camp R1/R7 ....... meilleur M3=Amissio        0,327   seuil 0,467   p = 0,947
+//   nul .............. meilleur M7 au repos       0,369   seuil 0,531   p = 0,945
+//   plus de 2,5 buts . meilleur ZÉRO POPULUS      0,390   seuil 0,467   p = 0,537
+//   les deux marquent  meilleur M15=Fortuna Major 0,394   seuil 0,453   p = 0,239
+// Sur 56 cas et 299 prédicteurs, le hasard produit couramment une
+// corrélation de 0,45 à 0,53. Aucun de nos meilleurs n'y arrive.
+//
+// CE QUE ÇA DIT DE MA PROPRE RÈGLE. « Zéro Populus » est le MEILLEUR
+// prédicteur de toute la grille pour sa cible — et il reste sous le
+// seuil. Le p = 0,0137 que j'ai publié en le branchant supposait qu'il
+// était la seule hypothèse testée. Il ne l'était pas. Il n'est pas
+// réfuté : il est INDÉMONTRABLE SUR CETTE ARCHIVE. La nuance compte,
+// et elle vaut pour toutes les pistes du fichier, pas seulement pour
+// les siennes.
+//
+// ── ET VOICI CE QUI SERT : LE BUDGET ──
+// Combien de rencontres faut-il, précisément, pour trancher ? Calculé
+// par simulation, 80 % de puissance, test unilatéral (le sens est
+// prédit d'avance).
+//
+//   EN PRÉ-ENREGISTRÉ (une hypothèse fixée avant, pas de grille) :
+//     zéro Populus -> plus de 2,5 buts .......  38 rencontres
+//     M9 -> volume de buts ...................  66 rencontres
+//     protocole serré, même boucle ...........  28 rencontres À MÊME BOUCLE
+//       (et 69 s'il n'est qu'à 65 %, 158 s'il n'est qu'à 60 %)
+//
+//   EN REPÊCHANT DANS LA GRILLE (le prix de la pêche) — seuil max-T
+//   que |rho| doit dépasser, il baisse quand l'archive grossit :
+//     n =  56  ->  0,498      n = 200  ->  0,263
+//     n = 100  ->  0,375      n = 300  ->  0,214
+//     n = 150  ->  0,306      n = 500  ->  0,170
+//   Notre meilleur observé vaut 0,390. À CENT CAS D'ARCHIVE, le
+//   balayage entier devient décisif tout seul, sans rien pré-enregistrer.
+//
+// LA CONCLUSION QUI CHANGE LA MÉTHODE. Le pré-enregistrement n'est pas
+// une formalité : c'est une remise d'un facteur trois. Repêchée dans la
+// grille, la règle du zéro Populus demande d'attendre 100 cas
+// d'archive. Annoncée à l'avance, elle demande 38 rencontres. Deux
+// annonces existent déjà (ENSEMBLE_PL_MAIN_V7). Il en manque 36.
+var BALAYAGE_V7 = {
+  date: '2026-09-05', predicteurs: 299, cas: 56, permutations: 4000,
+  methode: 'max-T de Westfall-Young sur rangs',
+  familles: {
+    'camp R1/R7':        { n: 44, meilleur: 'M3=amissio',           rho: 0.327, seuil: 0.467, p: 0.947 },
+    'nul':               { n: 56, meilleur: 'M7 au repos',          rho: 0.369, seuil: 0.531, p: 0.945 },
+    'plus de 2,5 buts':  { n: 48, meilleur: 'zéro Populus',         rho: 0.390, seuil: 0.467, p: 0.537 },
+    'les deux marquent': { n: 48, meilleur: 'M15=fortuna_major',    rho: 0.394, seuil: 0.453, p: 0.239 } },
+  aucuneSurvivante: true,
+  budgetPreEnregistre: { 'populus_zero': 38, 'm9_buts': 66, 'protocole_serre': 28 },
+  seuilMaxTParTaille: { 56: 0.498, 100: 0.375, 150: 0.306, 200: 0.263, 300: 0.214, 500: 0.170 },
+  archivePourQueLeBalayageTranche: 100
+};
+
+// Combien de rencontres manque-t-il, à cette minute, pour chaque piste
+// chiffrée. Se recalcule sur les annonces réellement écrites, pour que
+// le compte ne vieillisse pas à la main.
+function budgetPistesV7() {
+  var faites = 0;
+  try {
+    (ENSEMBLES_V7 || []).forEach(function (e) {
+      (e.matchs || []).forEach(function (m) { if (m.annonce) faites++; });
+    });
+  } catch (e) { faites = 0; }
+  var b = BALAYAGE_V7.budgetPreEnregistre, out = [];
+  Object.keys(b).forEach(function (k) {
+    out.push({ piste: k, requis: b[k], annoncees: faites,
+      manque: Math.max(0, b[k] - faites) });
+  });
+  return { annoncesProspectives: faites, pistes: out,
+    casArchive: BALAYAGE_V7.cas,
+    manquePourBalayage: Math.max(0, BALAYAGE_V7.archivePourQueLeBalayageTranche - BALAYAGE_V7.cas) };
+}
