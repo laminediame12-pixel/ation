@@ -726,8 +726,32 @@ function getVerdictAfficheReel(theme, favorite) {
       var zero = null;
       try { var lp2 = lecturePopulusV7(theme); zero = lp2 ? lp2.zeroPopulus : null; }
       catch (e) { zero = null; }
+      // ── LA BRANCHE SE VÉRIFIE ELLE-MÊME (05/09/26, deuxième passe) ──
+      // Elle a été branchée le matin sur 26/48 contre 34/48, mesuré sur
+      // les 56 cas du dépôt. Le balayage max-T rejoué sur les 105 cas
+      // réels d'Ellemine_D a montré que « zéro Populus » n'est même plus
+      // le meilleur prédicteur de sa famille : rho 0,390 à 56 cas, le
+      // meilleur de la famille tombe à 0,272 à 95 cas. C'est la
+      // signature d'un effet qui régresse vers la moyenne.
+      // Une règle branchée sur un chiffre gelé qui a cessé d'être vrai
+      // est pire qu'une règle absente. Celle-ci REFAIT SON PROPRE
+      // COMPTAGE sur la base courante et se retire toute seule si elle
+      // n'y gagne plus rien.
       var branche = (typeof BRANCHES_V7 !== 'undefined')
         && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif;
+      var autoRetrait = null;
+      if (branche) {
+        try {
+          var mv = mesurePopulusLiveV7();
+          if (mv && mv.gain <= 0) {
+            branche = false;
+            autoRetrait = 'retirée d\'elle-même : sur les ' + mv.n + ' cas au score connu de '
+              + 'ta base, elle fait ' + mv.moteurPlusRegle + '/' + mv.n + ' contre '
+              + mv.moteurSeul + '/' + mv.n + ' pour le moteur seul — gain ' + mv.gain
+              + '. Elle avait été branchée sur un gain de +8 mesuré sur 48 cas du dépôt.';
+          }
+        } catch (e) { }
+      }
       if (branche && zero === true) {
         return { annonce: 'plus de 2,5 buts', valeur: true, source: 'zéro Populus',
           moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
@@ -735,7 +759,9 @@ function getVerdictAfficheReel(theme, favorite) {
       }
       if (moteur === null) return null;
       return { annonce: moteur ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: moteur,
-        source: 'moteur', moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
+        source: autoRetrait ? 'moteur (règle Populus auto-retirée)' : 'moteur',
+        autoRetrait: autoRetrait,
+        moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
         contreditLeMoteur: false };
     })(),
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
@@ -1632,11 +1658,16 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     (function(){
       var pv=null; try{ pv=(avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);})||{}).plus25; }catch(e){ pv=null; }
       if(!pv) return;
-      var col = pv.contreditLeMoteur ? '#fbbf24' : '#38bdf8';
+      var col = pv.autoRetrait ? '#f87171' : (pv.contreditLeMoteur ? '#fbbf24' : '#38bdf8');
       html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid '+col+'; background:rgba(56,189,248,.10);">'
         +'<b style="color:'+col+'; font-size:13px;">VOLUME DE BUTS : '+esc(pv.annonce.toUpperCase())+'</b>'
         +' <span style="font-size:11px; color:#94a3b8;">— branché au verdict, source : <b>'+esc(pv.source)+'</b></span>'
-        +(pv.contreditLeMoteur
+        +(pv.autoRetrait
+          ? '<div style="font-size:11px; color:#f87171; margin-top:3px;">🛑 <b>LA RÈGLE ZÉRO POPULUS '
+            +'S\'EST RETIRÉE TOUTE SEULE</b> — ' + esc(pv.autoRetrait)
+            +' Le verdict revient au moteur. Rien à faire : c\'est le garde-fou qui a joué.</div>'
+          : '')
+        +(!pv.autoRetrait && pv.contreditLeMoteur
           ? '<div style="font-size:11px; color:#fbbf24; margin-top:3px;">⚠️ La règle CONTREDIT le moteur, '
             +'qui annonçait « '+esc(pv.moteurDisait)+' ». Sur l\'archive c\'est la règle qui gagne ce '
             +'duel 10 fois contre 2.</div>'

@@ -3059,3 +3059,56 @@ function _balayageMaxTV7(permutations) {
       + 'Ce n\'est pas que les pistes sont fausses : c\'est qu\'on ne peut pas encore trancher.';
   return sortie;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// LE BALAYAGE SUR LES 105 CAS RÉELS (05/09/26, soir) — la réponse
+// ═══════════════════════════════════════════════════════════════
+// Relevé sur l'écran d'Ellemine_D, base complète : 58 d'archive + 47
+// thèmes sauvegardés. C'est la première mesure du fichier faite sur
+// TOUTE la base, et elle remplace celle de la matinée.
+//
+//   famille              n     meilleur              rho     seuil     p
+//   camp R1/R7          85   M13 paire             0,326    0,358   0,178
+//   nul                103   M1 = Fortuna Minor    0,306    0,420   0,720
+//   plus de 2,5 buts    95   M5 = Fortuna Minor    0,272    0,375   0,872
+//   les deux marquent   95   M5 = Puella           0,270    0,353   0,748
+//
+// AUCUNE FAMILLE NE PASSE. Et il faut lire les deux mouvements, pas un
+// seul :
+//   · LES SEUILS ONT BAISSÉ, exactement comme prévu — 0,358 au lieu de
+//     0,467 sur le camp. La méthode fait ce qu'elle promet : plus de
+//     cas, barre plus basse.
+//   · MAIS LES RHO ONT BAISSÉ PLUS VITE. Le meilleur de la famille
+//     « plus de 2,5 buts » tombe de 0,390 à 0,272.
+//
+// CE QUE ÇA DIT DE « ZÉRO POPULUS », la règle branchée le matin même :
+// à 56 cas elle était LE meilleur prédicteur de sa famille avec 0,390.
+// À 95 cas elle n'est plus en tête du tout, et le meilleur de la
+// famille fait 0,272. C'est la signature d'une régression vers la
+// moyenne : l'effet était en grande partie du bruit, et le p = 0,0027
+// que j'ai publié le matin ne tenait qu'à la petite taille.
+//
+// CE QUI EN A ÉTÉ TIRÉ, et c'est le vrai apport : la branche ne
+// s'appuie plus sur un chiffre gelé. Elle REFAIT son propre comptage
+// sur tousCasBancV7() à chaque verdict, et SE RETIRE TOUTE SEULE dès
+// que son gain tombe à zéro ou moins — voir plus25 dans
+// getVerdictAfficheReel. Une règle branchée sur une mesure périmée est
+// pire qu'une règle absente ; celle-ci ne peut plus l'être.
+//
+// LE PLUS PROCHE DU SEUIL : le camp, à p = 0,178 avec « M13 paire ».
+// C'est le seul endroit où la structure du thème approche quelque
+// chose. Ce n'est pas démontré et ne doit rien décider — mais si une
+// piste doit être suivie, c'est celle-là, pas les buts.
+BALAYAGE_V7.surBaseComplete = {
+  date: '2026-09-05 (soir)', cas: 105, predicteurs: 297, permutations: 2000,
+  familles: {
+    'camp R1/R7':        { n: 85,  meilleur: 'M13 paire',        rho: 0.326, seuil: 0.358, p: 0.178 },
+    'nul':               { n: 103, meilleur: 'M1=fortuna_minor', rho: 0.306, seuil: 0.420, p: 0.720 },
+    'plus de 2,5 buts':  { n: 95,  meilleur: 'M5=fortuna_minor', rho: 0.272, seuil: 0.375, p: 0.872 },
+    'les deux marquent': { n: 95,  meilleur: 'M5=puella',        rho: 0.270, seuil: 0.353, p: 0.748 } },
+  aucuneSurvivante: true,
+  lecture: 'les seuils ont baissé comme prévu, mais les rho ont baissé plus vite — '
+    + 'régression vers la moyenne. « Zéro Populus » n\'est plus le meilleur de sa famille.',
+  consequence: 'la branche populus_volume se re-mesure et se retire d\'elle-même ; '
+    + 'la seule piste encore proche du seuil est le CAMP (p = 0,178, « M13 paire »).'
+};
