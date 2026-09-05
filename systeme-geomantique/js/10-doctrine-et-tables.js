@@ -786,7 +786,12 @@ function analyseFigureBoucleR1R7(fig, theme){
 function comparerBouclesAntagonistesR1R7(theme){
   if(!theme||!theme[1]) return {applicable:false,reason:'Thème non disponible.'};
   const rot=getRotationOrderFromRepos(theme[1]),hR1=rot[0],hR7=rot[6],r1=theme[hR1],r7=theme[hR7],l1=loopOf(r1),l7=loopOf(r7);
-  if(!l1||!l7||l1===l7) return {applicable:false,hR1,hR7,r1,r7,reason:'R1 et R7 ne sont pas dans deux boucles différentes.'};
+  // Les boucles sont RENDUES même quand le protocole se tait : sans
+  // elles, le panneau affichait « Boucle : — » et « 0.00 / 100 », ce qui
+  // se lit comme une mesure nulle alors que c'est une abstention. Vu sur
+  // une capture d'écran d'Ellemine_D le 05/09.
+  if(!l1||!l7||l1===l7) return {applicable:false,hR1,hR7,r1,r7,l1:l1,l7:l7,
+    reason:'R1 et R7 ne sont pas dans deux boucles différentes.'};
   const loop1=l1==='A'?LOOP_A:LOOP_B,loop7=l7==='A'?LOOP_A:LOOP_B,a1=loop1.map(f=>analyseFigureBoucleR1R7(f,theme)),a7=loop7.map(f=>analyseFigureBoucleR1R7(f,theme));
   const synth=a=>a.reduce((t,x)=>t+x.forcePositions+(x.reposPresent?2:0)+Math.min(x.tous.length,3)*.5+x.binPos.length*.5+x.resultantesPropres*.75-x.resultantesAdverses*1.25,0);
   const duel=[]; const seen=new Set();

@@ -1641,10 +1641,23 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'qui annonçait « '+esc(pv.moteurDisait)+' ». Sur l\'archive c\'est la règle qui gagne ce '
             +'duel 10 fois contre 2.</div>'
           : '')
-        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">Mesuré avant d\'être branché, sur les '
-        +'48 cas au score connu : moteur seul <b>26/48</b>, règle idiote « toujours plus de 2,5 » <b>31/48</b>, '
-        +'moteur + zéro Populus <b>34/48</b>. Fisher p = 0,0137. Réversible par '
-        +'BRANCHES_V7.populus_volume.actif.</div></div>';
+        +(function(){
+          // Les chiffres se REJOUENT sur tes cas, pas sur les 56 du dépôt.
+          var m=null; try{ m=mesurePopulusLiveV7(); }catch(e){ m=null; }
+          var p2=null; try{ p2=porteeDesMesuresV7(); }catch(e){ p2=null; }
+          if(!m) return 'Mesuré sur les 48 cas au score connu du dépôt : moteur seul '
+            +'<b>26/48</b>, règle idiote <b>31/48</b>, moteur + zéro Populus <b>34/48</b>.';
+          return 'Rejoué à l\'instant sur <b>'+m.n+' cas au score connu</b>'
+            +(p2&&p2.dontSaisisParToi?' (dont '+p2.dontSaisisParToi+' saisis par toi)':'')
+            +' : moteur seul <b>'+m.moteurSeul+'/'+m.n+'</b>, règle idiote « toujours plus de '
+            +'2,5 » <b>'+m.regleIdiote+'/'+m.n+'</b>, moteur + zéro Populus <b>'
+            +m.moteurPlusRegle+'/'+m.n+'</b> — gain <b>'+(m.gain>=0?'+':'')+m.gain+'</b>.'
+            +'<br>zéro Populus : '+m.zero.plus+'/'+m.zero.n+' au-dessus de 2,5 ('+m.zero.taux+' %) '
+            +'contre '+m.autre.plus+'/'+m.autre.n+' ('+m.autre.taux+' %) pour les autres.'
+            +'<br><span style="color:#fbbf24;">Les chiffres gelés du 05/09 (26/48, 31/48, 34/48) '
+            +'ne portaient que sur les 56 cas du dépôt — tes thèmes sauvegardés n\'y étaient pas.</span>';
+        })()
+        +' Réversible par BRANCHES_V7.populus_volume.actif.</div></div>';
     })();
     // Le protocole de comparaison, et pourquoi il ne pilote pas.
     (function(){
@@ -1803,8 +1816,29 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     html+='</div>';
   })();
   html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
-  html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
-  html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
+  // ── UN ZÉRO N'EST PAS UNE MESURE (05/09/26) ──
+  // Quand R1 et R7 sont dans la MÊME boucle, ce protocole ne se prononce
+  // pas — c'est la moitié des thèmes. Le panneau affichait pourtant
+  // « 0.00 / 100 » des deux côtés et concluait « Indécis, aucune avance
+  // décisive », ce qui se lit comme un calcul serré alors que c'est une
+  // ABSTENTION. Vu sur une capture d'écran d'Ellemine_D.
+  var muet = !q.applicable;
+  function score(v) {
+    return muet ? '<span style="font-size:15px; color:#64748b;">ne se prononce pas</span>'
+      : (n(v) + ' / 100');
+  }
+  html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+score(s1)+'</div></div>';
+  html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+score(s7)+'</div></div></div>';
+  if (muet) {
+    html+='<div style="margin-top:8px; padding:8px 10px; border-left:4px solid #64748b; '
+      +'background:rgba(100,116,139,.12); font-size:11px; color:#cbd5e1;">'
+      +'⚖️ <b>Ce protocole NE SE PRONONCE PAS sur ce thème</b> — '+esc(q.reason||'')
+      +' Il ne parle que sur la moitié des thèmes (32 768 sur 65 536, mesuré). '
+      +'<b>Les zéros affichés auparavant n\'étaient pas des scores</b>, c\'était une '
+      +'abstention lue comme une égalité — et « Indécis » plus bas est à lire comme '
+      +'« pas d\'avis », pas comme « match serré ». La version serrée du protocole, '
+      +'elle, parle : voir le panneau Structure.</div>';
+  }
   html+='<div class="tek-progress"><div style="width:'+p1+'%;background:#2563eb">R1 '+p1.toFixed(1)+'%</div><div style="width:'+p7+'%;background:#f59e0b">R7 '+p7.toFixed(1)+'%</div></div>';
   html+='<div class="tek-meta" style="margin-top:7px;text-align:center">R1 : base / résultantes '+(q.a1||[]).length+' maillons · R7 : base / résultantes '+(q.a7||[]).length+' maillons</div></div>';
   html+='<div class="tek-tables">';

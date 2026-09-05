@@ -2808,3 +2808,86 @@ var MOTEURS_GARDES_V7 = {
   serre_r1_cadente:      'serré — 29/48, le meilleur de sa famille',
   serre_temoin:          'serré — TÉMOIN 27/48. Ne jamais le couper.'
 };
+
+// ═══════════════════════════════════════════════════════════════
+// LES MESURES SE REJOUENT SUR TES CAS, PAS SUR 56 (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+// Défaut vu sur une capture d'écran d'Ellemine_D : le banc affiche
+// « 105 cas — 58 d'archive + 47 saisis dans tes thèmes sauvegardés »,
+// et le balayage de séparation travaille sur 103 verdicts. Or TOUTES
+// les mesures que j'ai écrites aujourd'hui — le 26/48 contre 34/48 du
+// zéro Populus, les scores des moteurs, le seuil max-T, le budget des
+// pistes — ont été calculées sur CAS_REFERENCE_V7 + CAS_HACHAGE_V7,
+// c'est-à-dire 56 cas. Les 47 autres vivent dans le localStorage du
+// téléphone : je ne peux pas les lire depuis le dépôt, mais le FICHIER,
+// lui, les a sous la main.
+//
+// Conséquence directe et importante : j'ai conclu qu'il fallait « 100
+// cas d'archive pour que le balayage tranche tout seul ». Ils existent
+// déjà. C'était une limite de MA mesure, pas de la base.
+//
+// Donc les chiffres qui décident ne doivent plus être écrits en dur.
+// Ceux-ci se recalculent à chaque ouverture sur tousCasBancV7().
+function mesurePopulusLiveV7() {
+  var CAS = [];
+  try { CAS = tousCasBancV7(); } catch (e) { return null; }
+  var moteur = 0, avecRegle = 0, idiote = 0, total = 0;
+  var zeroPlus = 0, zeroTot = 0, autrePlus = 0, autreTot = 0;
+  CAS.forEach(function (c) {
+    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
+    if (!g || !c.meres) return;
+    var vrai = (+g[1] + +g[2]) > 2.5;
+    var t;
+    try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var zero;
+    try { zero = nbPopulusV7(t) === 0; } catch (e) { return; }
+    var dit;
+    try {
+      var etait = BRANCHES_V7.populus_volume.actif;
+      BRANCHES_V7.populus_volume.actif = false;
+      var v0 = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
+      BRANCHES_V7.populus_volume.actif = etait;
+      dit = v0 && v0.plus25 ? v0.plus25.valeur : null;
+    } catch (e) { return; }
+    if (dit === null) return;
+    total++;
+    if (dit === vrai) moteur++;
+    if ((zero ? true : dit) === vrai) avecRegle++;
+    if (vrai) idiote++;
+    if (zero) { zeroTot++; if (vrai) zeroPlus++; }
+    else { autreTot++; if (vrai) autrePlus++; }
+  });
+  if (!total) return null;
+  return { n: total,
+    moteurSeul: moteur, regleIdiote: idiote, moteurPlusRegle: avecRegle,
+    gain: avecRegle - moteur,
+    zero: { n: zeroTot, plus: zeroPlus, taux: zeroTot ? Math.round(1000 * zeroPlus / zeroTot) / 10 : null },
+    autre: { n: autreTot, plus: autrePlus, taux: autreTot ? Math.round(1000 * autrePlus / autreTot) / 10 : null },
+    gele: { n: 48, moteurSeul: 26, regleIdiote: 31, moteurPlusRegle: 34,
+      note: 'les chiffres du 05/09, calculés sur les 56 cas du dépôt seulement' } };
+}
+
+// Combien de cas le fichier a-t-il VRAIMENT sous la main, et combien
+// mes mesures gelées en ont vu. À afficher pour qu'on ne relise jamais
+// un chiffre en croyant qu'il porte sur tout.
+function porteeDesMesuresV7() {
+  var tous = 0, saisis = 0;
+  try { tous = tousCasBancV7().length; } catch (e) { }
+  try { saisis = casSauvegardesV7().length; } catch (e) { }
+  var avecScore = 0;
+  try {
+    tousCasBancV7().forEach(function (c) {
+      if (/^\d+-\d+$/.test(c.score || '')) avecScore++;
+    });
+  } catch (e) { }
+  return { casDisponibles: tous, dontSaisisParToi: saisis, avecScore: avecScore,
+    casVusParMesMesuresGelees: 56,
+    manque: Math.max(0, tous - 56),
+    seuilMaxT: 'à n = 56 le seuil du hasard vaut 0,498 ; à n = 100, 0,375 ; '
+      + 'à n = 150, 0,306. Le meilleur prédicteur observé vaut 0,390 — '
+      + 'donc au-delà de 100 cas il PASSE, et le balayage tranche seul.',
+    aFaire: tous >= 100
+      ? 'Tu as déjà de quoi trancher : refaire le balayage sur ces ' + tous
+        + ' cas, pas sur 56.'
+      : 'Il manque ' + (100 - tous) + ' cas pour que le balayage tranche seul.' };
+}
