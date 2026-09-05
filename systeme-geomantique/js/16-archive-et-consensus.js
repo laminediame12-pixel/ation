@@ -1134,6 +1134,129 @@ var CAS_REFERENCE_V7 = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// L'ENREGISTREMENT DES ANNONCES (05/09/26) — la condition 1 rendue
+// CONTRAIGNANTE. Une promesse de « j'ai écrit avant » ne vaut rien ;
+// une fonction qui REFUSE d'enregistrer après le coup d'envoi, si.
+//
+// annoncerMatchV7 horodate au moment de l'appel et compare à l'heure du
+// coup d'envoi. Après, elle rend { refuse: true } et n'écrit rien. Le
+// dépôt git fait le reste : l'horodatage du commit est vérifiable par un
+// tiers, et un commit ne se réécrit pas sans que ça se voie.
+var ENSEMBLES_V7 = [];
+
+function enregistrerEnsembleV7(nom, date, matchs) {
+  // matchs : [{ e1, e2, coupEnvoi: 'HH:MM', fuseau: '+01:00' }, ...]
+  var e = { nom: nom, date: date, ouvertLe: new Date().toISOString(),
+    matchs: (matchs || []).map(function (m) {
+      return { e1: m.e1, e2: m.e2, coupEnvoi: m.coupEnvoi, fuseau: m.fuseau || '+00:00',
+        annonce: null, resultat: null };
+    }),
+    // La règle 3 exige un ensemble COMPLET. Le nombre est figé ici : si
+    // un match apparaît plus tard, on le verra.
+    nbFige: (matchs || []).length };
+  ENSEMBLES_V7.push(e);
+  return e;
+}
+
+function _instantCoupEnvoiV7(m, date) {
+  try { return new Date(date + 'T' + m.coupEnvoi + ':00' + m.fuseau); }
+  catch (e) { return null; }
+}
+
+// Écrit l'annonce complète d'un match. Le thème doit venir d'un tirage
+// déjà fait. Refuse si le coup d'envoi est passé.
+function annoncerMatchV7(ensemble, index, theme, origineTirage) {
+  var m = ensemble && ensemble.matchs ? ensemble.matchs[index] : null;
+  if (!m) return { refuse: true, raison: 'match inconnu' };
+  var ko = _instantCoupEnvoiV7(m, ensemble.date);
+  var maintenant = new Date();
+  if (ko && maintenant >= ko) {
+    return { refuse: true, raison: 'coup d\'envoi passé (' + m.coupEnvoi + ') — '
+      + 'cette annonce ne peut plus entrer dans la base prospective' };
+  }
+  if (m.annonce) return { refuse: true, raison: 'déjà annoncé le ' + m.annonce.ecritLe };
+
+  var v = null;
+  try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(theme); }); }
+  catch (e) { return { refuse: true, raison: 'verdict illisible' }; }
+
+  function regle(cle) {
+    try {
+      if (cle === 'm9_buts') { var r = lectureButsM9V7(theme); return r ? r.annonce : null; }
+      if (cle === 'laetitia_m2') {
+        return theme[2] === 'laetitia' ? 'M1 gagne' : 'la règle se tait';
+      }
+      if (cle === 'm4_jugerecit') {
+        var s2 = signalM4JugeRecitBttsV7(theme);
+        return s2 && s2.applicable ? 'les deux marquent' : 'la règle se tait';
+      }
+    } catch (e) { return null; }
+    return null;
+  }
+
+  m.annonce = {
+    ecritLe: maintenant.toISOString(),
+    coupEnvoi: ko ? ko.toISOString() : null,
+    margeMinutes: ko ? Math.round((ko - maintenant) / 60000) : null,
+    origineTirage: origineTirage || 'non précisée',
+    meres: [theme[1], theme[2], theme[3], theme[4]],
+    camp: v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7'),
+    score: v.scoreMain, scoreAlt: v.scoreAlt, btts: v.btts,
+    incident: v.incidentNiveau, incidentPct: v.incidentPct,
+    regles: { m9_buts: regle('m9_buts'), laetitia_m2: regle('laetitia_m2'),
+      m4_jugerecit: regle('m4_jugerecit') }
+  };
+  return { refuse: false, annonce: m.annonce };
+}
+
+// Le résultat, saisi après. Il ne peut pas modifier l'annonce.
+function resultatMatchV7(ensemble, index, camp, score) {
+  var m = ensemble && ensemble.matchs ? ensemble.matchs[index] : null;
+  if (!m) return { erreur: 'match inconnu' };
+  if (!m.annonce) return { erreur: 'aucune annonce écrite avant le coup d\'envoi — '
+    + 'ce match ne compte pas dans la base prospective' };
+  m.resultat = { camp: camp, score: score, saisiLe: new Date().toISOString() };
+  var a = m.annonce, g = /^(\d+)-(\d+)$/.exec(String(score || ''));
+  var tot = g ? (+g[1] + +g[2]) : null;
+  var btts = g ? (+g[1] > 0 && +g[2] > 0) : null;
+  m.resultat.bilan = {
+    camp: a.camp === camp,
+    score: String(a.score) === String(score),
+    btts: (a.btts !== null && btts !== null) ? (a.btts === btts) : null,
+    m9: (a.regles.m9_buts && tot !== null)
+      ? (a.regles.m9_buts.indexOf('plus') === 0 ? tot > 2.5 : tot < 2.5) : null,
+    laetitia_m2: (a.regles.laetitia_m2 === 'M1 gagne') ? (camp === 'R1') : null,
+    m4_jugerecit: (a.regles.m4_jugerecit === 'les deux marquent' && btts !== null)
+      ? (btts === true) : null
+  };
+  return m.resultat;
+}
+
+function bilanEnsembleV7(ensemble) {
+  if (!ensemble) return null;
+  var annonces = ensemble.matchs.filter(function (m) { return !!m.annonce; });
+  var joues = ensemble.matchs.filter(function (m) { return !!m.resultat; });
+  var c = { camp: [0, 0], score: [0, 0], btts: [0, 0], m9: [0, 0],
+    laetitia_m2: [0, 0], m4_jugerecit: [0, 0] };
+  joues.forEach(function (m) {
+    Object.keys(c).forEach(function (k) {
+      var v = m.resultat.bilan[k];
+      if (v === true) c[k][0]++; else if (v === false) c[k][1]++;
+    });
+  });
+  var out = { ensemble: ensemble.nom, date: ensemble.date,
+    matchs: ensemble.matchs.length, annonces: annonces.length, joues: joues.length,
+    // Un match sans annonce préalable est PERDU pour la base — il faut le
+    // savoir, pas le rattraper.
+    perdus: ensemble.matchs.length - annonces.length, familles: {} };
+  Object.keys(c).forEach(function (k) {
+    var n = c[k][0] + c[k][1];
+    out.familles[k] = n ? (c[k][0] + '/' + n) : '—';
+  });
+  return out;
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LA BASE PROSPECTIVE (05/09/26) — Ellemine_D : « il faut qu'on fasse une
 // liste de matchs sur laquelle reposera notre travail. je crains que se
 // baser sur un thème invalide erronne les pistes. soit je choisis la
