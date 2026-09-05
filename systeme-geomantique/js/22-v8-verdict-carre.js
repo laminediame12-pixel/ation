@@ -529,9 +529,42 @@ function overrideVerdictV7(theme, nulActif) {
 function decideurVerdictV7(theme, nulActif) {
   if (nulActif) return { camp: null, moteur: 'nul', nom: 'Porte du nul — nul imposé' };
   var ordre = ORDRE_VERDICT_V7;
-  // Ancien interrupteur conservé et toujours actif : 'v8' retire le
-  // carré de la cascade, exactement comme avant.
-  if (PILOTE_VERDICT_V7 === 'v8') {
+  // ─── LE CARRÉ EN TÊTE (05/09/26, demande d'Ellemine_D) ───
+  // « oriente le verdict vers le carré ». L'audit du même jour avait
+  // montré que le carré ne tranchait JAMAIS : dernier de la cascade,
+  // M4/M10 ou V8 répondaient toujours avant lui. Le mettre en tête lui
+  // rend la décision — et coûte ce que ça coûte, écrit ici et à l'écran.
+  //
+  // MESURÉ SUR LES 57 CAS AU CAMP CONNU, avant de brancher :
+  //   ordre                      mode rotation   mode fixe
+  //   m4m10 > v8 > carre (avant)    38/57          38/57
+  //   CARRE > m4m10 > v8            26/57          30/57   ← branché
+  //   carre > v8 > m4m10            26/57          29/57
+  //   m4m10 > carre > v8            28/57          32/57
+  //   v8 > carre > m4m10            38/57          38/57  (carré muet)
+  //   carré seul                    25/57          29/57
+  // Le carré, quand il décide : 14/34 (41,2 %) en rotation, 16/32
+  // (50,0 %) en fixe. V8, qu'il remplace : 20/25 (80,0 %).
+  //
+  // LE PRIX EST DE HUIT POINTS en mode fixe (38 -> 30), DOUZE en mode
+  // rotation (38 -> 26). Le mode compte donc autant que l'ordre, et
+  // MODE_CARRE_V7 = 'fixe' est le meilleur des deux pour ce branchement.
+  // Aucun auto-retrait ici, contrairement aux branches du volume : ces
+  // branches-là s'étaient justifiées par un gain et devaient se retirer
+  // si le gain disparaissait. Celle-ci est un CHOIX pris contre la
+  // mesure, en connaissance de cause. Une règle qui se retirerait toute
+  // seule d'un choix assumé serait juste une façon de le refuser en
+  // douce. Le coût reste affiché en permanence à la place.
+  var brCarre = false;
+  try { brCarre = !!(BRANCHES_V7 && BRANCHES_V7.carre_pilote && BRANCHES_V7.carre_pilote.actif); }
+  catch (e) { brCarre = false; }
+  if (brCarre) {
+    try {
+      var oc = BRANCHES_V7.carre_pilote.ordre;
+      if (oc && oc.length) ordre = oc.slice();
+    } catch (e) { }
+  } else if (PILOTE_VERDICT_V7 === 'v8') {
+    // Ancien interrupteur conservé : 'v8' retire le carré de la cascade.
     ordre = ordre.filter(function (n) { return n !== 'carre'; });
   }
   var mutisme = [];
@@ -1931,11 +1964,34 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           : '')
         +'<div style="font-size:10px; color:#94a3b8; margin-top:5px; border-top:1px solid '
         +'rgba(148,163,184,.2); padding-top:4px;">'
-        +'<b style="color:#fbbf24;">Le carré géomantique ne décide JAMAIS.</b> Pas rarement : '
-        +'jamais — vérifié sur 4 096 thèmes, il n\'a pas tranché une fois. Il est dernier '
-        +'de la cascade et M4/M10 ou V8 répondent toujours avant lui. Le carré, ses '
-        +'trajectoires, ses trigones et son bandeau de sommes sont de la <b>lecture</b>, '
-        +'pas de la décision.'
+        +(function(){
+          var br=false; try{ br=!!(BRANCHES_V7.carre_pilote && BRANCHES_V7.carre_pilote.actif); }catch(e){}
+          if(!br) return '<b style="color:#fbbf24;">Le carré géomantique ne décide JAMAIS.</b> '
+            +'Pas rarement : jamais — vérifié sur 4 096 thèmes, il n\'a pas tranché une fois. '
+            +'Il est dernier de la cascade et M4/M10 ou V8 répondent toujours avant lui. '
+            +'Le carré, ses trajectoires, ses trigones et son bandeau de sommes sont de la '
+            +'<b>lecture</b>, pas de la décision.';
+          var mode = (typeof MODE_CARRE_V7!=='undefined') ? MODE_CARRE_V7 : 'rotation';
+          return '<b style="color:#f0abfc;">LE CARRÉ EST EN TÊTE DE CASCADE</b> — il décide '
+            +'le camp le premier, à ta demande. Avant ce branchement il ne tranchait JAMAIS '
+            +'(0 cas sur 57, vérifié sur 4 096 thèmes).'
+            +'<div style="margin-top:3px; color:#f87171;"><b>Ce que ça coûte, mesuré avant de '
+            +'le brancher :</b> le camp passe de <b>38/57</b> à <b>'
+            +(mode==='fixe'?'30/57':'26/57')+'</b> en mode <b>'+esc(mode)+'</b> — '
+            +(mode==='fixe'?'huit':'douze')+' points. Le carré, quand il décide, tombe juste '
+            +(mode==='fixe'?'16/32 (50,0 %)':'14/34 (41,2 %)')+' ; V8, qu\'il remplace, '
+            +'faisait 20/25 (80,0 %).</div>'
+            +(mode!=='fixe'
+              ? '<div style="margin-top:3px; color:#fbbf24;">Le mode <b>fixe</b> vaut '
+                +'<b>4 points de plus</b> que rotation pour ce branchement (30/57 contre '
+                +'26/57). Il change aussi le dessin du carré — à toi de voir.</div>'
+              : '')
+            +'<div style="margin-top:3px; color:#94a3b8;">Si tu veux du poids pour le carré '
+            +'sans payer huit points : l\'ordre <b>m4m10 → carré → V8</b> en mode fixe fait '
+            +'<b>32/57</b> (−6) et laisse quand même le carré décider 24 cas sur 57. C\'est '
+            +'le meilleur compromis mesuré. Retour en arrière : '
+            +'<code>BRANCHES_V7.carre_pilote.actif = false</code>.</div>';
+        })()
         +'<div style="margin-top:3px;">Répartition sur le banc — camp : <b>V8 43,9 %</b> '
         +'(juste 80,0 %) · <b>porte du nul 38,6 %</b> (50,0 %) · <b>M4/M10 17,5 %</b> '
         +'(70,0 %) · carré 0 %. Volume : <b>zéro Populus 44,9 %</b> (86,4 %) · '

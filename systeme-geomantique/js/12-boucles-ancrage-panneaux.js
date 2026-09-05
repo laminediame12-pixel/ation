@@ -2158,6 +2158,36 @@ var BRANCHES_V7 = {
       + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
       + 'avant tout branchement.' },
 
+  carre_pilote: {
+    actif: true,
+    ordre: ['carre', 'm4m10', 'v8'],
+    nom: 'Le carré géomantique en tête de cascade — il décide le camp',
+    cible: 'le camp',
+    demande: 'Ellemine_D, 05/09 : « oriente le verdict vers le carré », après l\'audit qui '
+      + 'a montré que le carré ne tranchait JAMAIS (0 cas sur 57, dernier de la cascade).',
+    lePrix: 'HUIT POINTS, et c\'est écrit gros. Sur les 57 cas au camp connu : 38/57 avant, '
+      + '30/57 avec le carré en tête en mode fixe, 26/57 en mode rotation. Le carré quand il '
+      + 'décide : 16/32 (50,0 %) en fixe, 14/34 (41,2 %) en rotation. V8, qu\'il remplace : '
+      + '20/25 (80,0 %).',
+    tableComplete: { 'm4m10>v8>carre (avant)': { rotation: '38/57', fixe: '38/57' },
+      'carre>m4m10>v8 (branché)': { rotation: '26/57', fixe: '30/57' },
+      'carre>v8>m4m10': { rotation: '26/57', fixe: '29/57' },
+      'm4m10>carre>v8': { rotation: '28/57', fixe: '32/57' },
+      'v8>carre>m4m10': { rotation: '38/57', fixe: '38/57', note: 'le carré redevient muet' },
+      'carré seul': { rotation: '25/57', fixe: '29/57' } },
+    leMode: 'MODE_CARRE_V7 = \'fixe\' vaut 4 points de plus que \'rotation\' pour ce '
+      + 'branchement (30/57 contre 26/57). Le mode n\'est pas changé automatiquement : il '
+      + 'change aussi le dessin du carré à l\'écran, et ça c\'est à Ellemine_D de le voir.',
+    moinsMauvais: 'si le but est de donner du poids au carré SANS payer huit points, '
+      + 'l\'ordre m4m10 > carre > v8 en mode fixe fait 32/57 (−6) et laisse quand même le '
+      + 'carré décider 24 cas sur 57. C\'est le meilleur compromis mesuré.',
+    pasDAutoRetrait: 'les branches du volume se retirent toutes seules si leur gain '
+      + 'disparaît — elles s\'étaient justifiées par un gain. Celle-ci est un CHOIX pris '
+      + 'CONTRE la mesure, en connaissance de cause. Une règle qui se retirerait toute seule '
+      + 'd\'un choix assumé serait une façon de le refuser en douce. Le coût est affiché en '
+      + 'permanence à la place.',
+    pourRevenir: 'BRANCHES_V7.carre_pilote.actif = false rend la cascade d\'origine.' },
+
   axe_volume: {
     actif: true,
     quatreTrigones: false,
