@@ -1847,3 +1847,126 @@ function findFigureTargetByBinomeWitness(fig){return Object.keys(BINOMES).find(k
 // sert de témoin ailleurs a-t-elle son énergie "engagée" hors de M1/M7, ou
 // au contraire cette charge de renfort la rend-elle plus forte ? Pur
 // diagnostic pour l'instant — ne pèse sur AUCUN verdict, cf. renderStatsTab.
+
+// ═══════════════════════════════════════════════════════════════
+// LE CLASSEMENT DÉFENSIF DU MOTEUR (05/09/26) — table exacte
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D, de mémoire : « ce qui sont très bons pour la défense :
+// Albus, Carcer en M4 ». Et de fait, la maison de repos d'Albus EST M4,
+// celle de Carcer EST M10 — les deux maisons défensives. Restait à
+// savoir ce que le moteur, lui, en fait.
+//
+// Mesuré par ÉNUMÉRATION DES 65536 THÈMES : pour chaque figure et
+// chacune des deux maisons défensives, getVerdictAfficheReel a été
+// rejoué sur les 4096 thèmes concernés. Aucune incertitude
+// d'échantillonnage : ce sont les taux EXACTS du moteur, pas des
+// estimations, et aucun p n'aurait de sens ici.
+//
+// CE QUE ÇA MESURE, ET CE QUE ÇA NE MESURE PAS. C'est la croyance du
+// FICHIER, dérivée des tables de doctrine — pas une mesure sur des
+// matchs joués. Personne ne l'avait jamais calculée : le classement
+// défensif du moteur était invisible, y compris pour qui l'a écrit.
+//
+// Vérifié avant de publier : aucune règle n'écrit « Albus en M4 » ni
+// « Carcer en M10 » dans le chemin du verdict. La seule règle en dur,
+// carcer_m10, vit dans MOTEURS_CONDITIONNELS_V7, qui ne sert qu'au banc.
+// Les écarts ci-dessous sont donc ÉMERGENTS, pas programmés.
+//
+// Base sur les 65536 : buts 1,29 - BTTS 27,2 - incident 55,6 - nul 25,4
+//
+// CE QUE LA TABLE CONFIRME ET CE QU'ELLE CONTREDIT :
+//   . Albus — CONFIRMÉ, et au-delà. 1er en M4, 3e en M10, et c'est lui
+//     qui écrase le plus les incidents (40,0 en M10 contre 55,6 de
+//     base, le plus bas des deux tables). Albus défend partout, pas
+//     seulement dans sa maison de repos.
+//   . Carcer — CONTREDIT. 15e sur 16 en M4, 13e sur 16 en M10. Dans les
+//     deux maisons défensives il OUVRE le match, y compris chez lui.
+//     À trancher : soit la doctrine du fichier se trompe sur Carcer,
+//     soit le souvenir de terrain porte sur autre chose que ces deux
+//     maisons. Ne pas enterrer l'un pour sauver l'autre.
+//   . Populus en M10 — le vrai verrou, que personne n'avait nommé.
+//     BTTS 9,6 contre 27,2 : le plus gros écart des deux tables.
+var DEFENSE_M4_V7 = {
+  albus          : { buts: 1.15, btts: 20.4, incident: 52.3, nul: 26.0 },
+  cauda_draconis : { buts: 1.17, btts: 21.8, incident: 58.0, nul: 26.8 },
+  populus        : { buts: 1.20, btts: 22.0, incident: 58.3, nul: 24.0 },
+  puer           : { buts: 1.21, btts: 22.9, incident: 62.4, nul: 24.4 },
+  fortuna_major  : { buts: 1.24, btts: 26.0, incident: 51.5, nul: 27.9 },
+  tristitia      : { buts: 1.25, btts: 23.7, incident: 62.2, nul: 22.1 },
+  fortuna_minor  : { buts: 1.29, btts: 25.3, incident: 57.3, nul: 21.7 },
+  caput_draconis : { buts: 1.29, btts: 27.7, incident: 48.9, nul: 26.4 },
+  via            : { buts: 1.29, btts: 26.7, incident: 51.5, nul: 24.0 },
+  rubeus         : { buts: 1.30, btts: 27.6, incident: 62.9, nul: 25.6 },
+  acquisitio     : { buts: 1.31, btts: 29.5, incident: 56.0, nul: 28.3 },
+  puella         : { buts: 1.33, btts: 30.3, incident: 48.2, nul: 27.1 },
+  amissio        : { buts: 1.34, btts: 29.4, incident: 55.5, nul: 25.2 },
+  laetitia       : { buts: 1.38, btts: 31.2, incident: 54.3, nul: 24.8 },
+  carcer         : { buts: 1.41, btts: 31.8, incident: 59.3, nul: 22.9 },
+  conjunctio     : { buts: 1.49, btts: 39.1, incident: 51.4, nul: 29.1 },
+};
+var DEFENSE_M10_V7 = {
+  populus        : { buts: 0.90, btts: 9.6, incident: 56.7, nul: 28.7 },
+  fortuna_minor  : { buts: 1.11, btts: 20.5, incident: 68.2, nul: 29.7 },
+  albus          : { buts: 1.13, btts: 18.0, incident: 40.0, nul: 22.9 },
+  fortuna_major  : { buts: 1.14, btts: 18.6, incident: 52.5, nul: 23.2 },
+  tristitia      : { buts: 1.19, btts: 23.1, incident: 46.0, nul: 26.8 },
+  cauda_draconis : { buts: 1.26, btts: 26.2, incident: 61.6, nul: 27.0 },
+  rubeus         : { buts: 1.26, btts: 25.4, incident: 63.2, nul: 24.8 },
+  via            : { buts: 1.29, btts: 27.3, incident: 66.4, nul: 25.8 },
+  puer           : { buts: 1.29, btts: 30.7, incident: 65.5, nul: 32.4 },
+  laetitia       : { buts: 1.33, btts: 29.5, incident: 51.1, nul: 26.2 },
+  acquisitio     : { buts: 1.36, btts: 31.9, incident: 59.2, nul: 27.5 },
+  amissio        : { buts: 1.42, btts: 31.1, incident: 43.2, nul: 20.3 },
+  carcer         : { buts: 1.44, btts: 35.1, incident: 48.1, nul: 25.8 },
+  caput_draconis : { buts: 1.45, btts: 32.5, incident: 62.1, nul: 20.1 },
+  puella         : { buts: 1.52, btts: 36.9, incident: 51.8, nul: 22.3 },
+  conjunctio     : { buts: 1.55, btts: 39.1, incident: 54.3, nul: 22.9 },
+};
+
+// Lecture d'un thème contre la table : rang (1 = plus défensif) et
+// écart à la base, pour les deux maisons défensives.
+function lectureDefensiveV7(theme) {
+  if (!theme || !theme[4] || !theme[10]) return null;
+  var BASE = { buts: 1.29, btts: 27.2, incident: 55.6, nul: 25.4 };
+  function lire(table, fig) {
+    var rangs = Object.keys(table).sort(function (a, b) {
+      return table[a].buts - table[b].buts; });
+    var e = table[fig];
+    if (!e) return null;
+    return { figure: fig, rang: rangs.indexOf(fig) + 1, sur: rangs.length,
+      buts: e.buts, btts: e.btts, incident: e.incident, nul: e.nul,
+      ecartButs: Math.round((e.buts - BASE.buts) * 100) / 100,
+      ecartBtts: Math.round((e.btts - BASE.btts) * 10) / 10,
+      ecartIncident: Math.round((e.incident - BASE.incident) * 10) / 10 };
+  }
+  return { base: BASE, m4: lire(DEFENSE_M4_V7, theme[4]),
+    m10: lire(DEFENSE_M10_V7, theme[10]),
+    auRepos: { m4: theme[4] === 'albus', m10: theme[10] === 'carcer' },
+    // Contrainte exacte : les trois maisons de l'axe défensif ne
+    // peuvent JAMAIS être au repos ensemble. Si M4 et M10 le sont, la
+    // loi M4 + M10 = M3 force M3 à Puella, qui n'est pas chez elle.
+    m3Force: (theme[4] === 'albus' && theme[10] === 'carcer') ? 'puella' : null };
+}
+
+// ── UNE SEULE LOI SUR 24 SURVIT AU REPOS SIMULTANÉ ──
+// Question posée le 05/09 : peut-on avoir les trois maisons d'une loi
+// occupées chacune par sa propre figure de repos ? Réponse par
+// énumération des 24 lois de paires : NON, sauf une.
+//   M13 + M14 = M15   Cauda Draconis + Puella = Acquisitio   ✓
+// Les 23 autres l'interdisent. Sur l'axe défensif en particulier, au
+// plus DEUX des trois maisons peuvent être au repos, jamais les trois,
+// et la troisième est alors forcée à une figure déterminée :
+//   Albus en M4 + Carcer en M10          -> M3  = Puella
+//   Caput Draconis en M3 + Albus en M4   -> M10 = Acquisitio
+//   Caput Draconis en M3 + Carcer en M10 -> M4  = Cauda Draconis
+// L'ordre de FIGS n'est d'ailleurs pas conventionnel : ses huit paires
+// consécutives donnent TOUTES Acquisitio par combinaison (8 sur 8).
+var LOIS_REPOS_V7 = {
+  seuleLoiSurvivante: { maisons: [13, 14, 15],
+    figures: ['cauda_draconis', 'puella', 'acquisitio'] },
+  axeDefensif: {
+    'albus@4+carcer@10': 'puella@3',
+    'caput_draconis@3+albus@4': 'acquisitio@10',
+    'caput_draconis@3+carcer@10': 'cauda_draconis@4' },
+  pairesDeFigs: 'combine(FIGS[2k], FIGS[2k+1]) = Acquisitio pour k = 0..7'
+};
