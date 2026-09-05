@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Socle — deux moteurs</title>
+<style>
+:root{--bg:#0a0f1c;--card:#111a2e;--line:#1e2a44;--txt:#e6edf7;--mut:#8fa3bf;
+--vert:#4ade80;--or:#fbbf24;--rouge:#f87171;--bleu:#60a5fa;--vio:#a78bfa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);padding:14px;
+font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+h1{font-size:20px;margin:0 0 2px}
+.sub{color:var(--mut);font-size:12px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:13px}
+.card h2{font-size:15px;margin:0 0 9px;letter-spacing:.02em}
+label{display:block;font-size:11px;color:var(--mut);margin:0 0 3px}
+select{width:100%;background:#0a1220;border:1px solid var(--line);color:var(--txt);
+border-radius:8px;padding:9px;font-size:14px;font-family:inherit}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{width:100%;margin-top:10px;background:var(--vio);color:#0a0f1c;border:0;
+border-radius:9px;padding:12px;font-size:15px;font-weight:800;font-family:inherit}
+.verdict{font-size:22px;font-weight:900;margin:2px 0 4px}
+.socle{font-size:12px;color:var(--mut);margin-bottom:9px}
+.bar{height:7px;background:#16233c;border-radius:99px;overflow:hidden;margin:5px 0 3px}
+.bar i{display:block;height:100%;border-radius:99px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:7px}
+td,th{padding:4px 3px;text-align:left;border-bottom:1px solid rgba(143,163,191,.13)}
+th{color:var(--mut);font-weight:600;font-size:11px}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.on td{background:rgba(167,139,250,.14);font-weight:700}
+.pt{font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:8px;margin-top:9px}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:99px;margin-left:6px}
+.ok{background:rgba(74,222,128,.18);color:var(--vert)}
+.no{background:rgba(248,113,113,.18);color:var(--rouge)}
+.mid{background:rgba(251,191,36,.18);color:var(--or)}
+b.v{color:var(--vert)}b.r{color:var(--rouge)}b.o{color:var(--or)}b.b{color:var(--bleu)}
+code{background:#0a1220;padding:1px 5px;border-radius:4px;font-size:12px}
+</style></head><body>
+
+<h1>Socle — deux moteurs</h1>
+<div class="sub">Page neuve · seulement ce qui est mesuré, avec son effectif · archive 57 cas au camp connu, 13 nuls (base 22,8 %)</div>
+
+<div class="card">
+  <h2>Le tirage</h2>
+  <div class="grid4">
+    <div><label>Mère 1</label><select id="m1"></select></div>
+    <div><label>Mère 2</label><select id="m2"></select></div>
+    <div><label>Mère 3</label><select id="m3"></select></div>
+    <div><label>Mère 4</label><select id="m4"></select></div>
+  </div>
+  <button onclick="go()">Lire</button>
+</div>
+
+<div id="out"></div>
+
+<script>
+const FIGS=['puer','laetitia','caput_draconis','albus','via','amissio','rubeus','tristitia',
+'fortuna_minor','carcer','conjunctio','fortuna_major','cauda_draconis','puella','acquisitio','populus'];
+const FL={puer:'Puer',laetitia:'Laetitia',caput_draconis:'Caput Draconis',albus:'Albus',via:'Via',
+amissio:'Amissio',rubeus:'Rubeus',tristitia:'Tristitia',fortuna_minor:'Fortuna Minor',carcer:'Carcer',
+conjunctio:'Conjunctio',fortuna_major:'Fortuna Major',cauda_draconis:'Cauda Draconis',puella:'Puella',
+acquisitio:'Acquisitio',populus:'Populus'};
+const MAP={puer:[1,1,2,1],laetitia:[1,2,2,2],caput_draconis:[2,1,1,1],albus:[2,2,1,2],via:[1,1,1,1],
+amissio:[1,2,1,2],rubeus:[2,1,2,2],tristitia:[2,2,2,1],fortuna_minor:[1,1,2,2],carcer:[1,2,2,1],
+conjunctio:[2,1,1,2],fortuna_major:[2,2,1,1],cauda_draconis:[1,1,1,2],puella:[1,2,1,1],
+acquisitio:[2,1,2,1],populus:[2,2,2,2]};
+const LOOP_A=["puer","caput_draconis","via","rubeus","fortuna_minor","conjunctio","cauda_draconis","acquisitio"];
+const loopOf=f=>LOOP_A.indexOf(f)!==-1?'A':'B';
+const INV={}; FIGS.forEach(f=>INV[MAP[f].join('')]=f);
+const comb=(a,b)=>INV[MAP[a].map((v,i)=>v===MAP[b][i]?2:1).join('')];
+
+function theme(m){
+  const t={}; m.forEach((f,i)=>t[i+1]=f);
+  for(let j=0;j<4;j++) t[5+j]=INV[[0,1,2,3].map(i=>MAP[m[i]][j]).join('')];
+  t[9]=comb(t[1],t[2]); t[10]=comb(t[3],t[4]);
+  t[11]=comb(t[5],t[6]); t[12]=comb(t[7],t[8]);
+  t[13]=comb(t[9],t[10]); t[14]=comb(t[11],t[12]);
+  t[15]=comb(t[13],t[14]); t[16]=comb(t[15],t[1]);
+  return t;
+}
+function rotation(t){
+  const start=FIGS.indexOf(t[1])+1;
+  const order=Array.from({length:16},(_,i)=>((start-1+i)%16)+1);
+  const hR1=order[0], hR7=order[6];
+  const r1=t[hR1], r7=t[hR7];
+  return {hR1,hR7,r1,r7,k:(((FIGS.indexOf(r7)-FIGS.indexOf(r1))%16)+16)%16};
+}
+
+/* ═══ LES CHIFFRES MESURÉS — archive 57 cas, 13 nuls, base 22,8 % ═══ */
+const K_TABLE=[[1,8,0],[2,5,2],[3,5,1],[4,3,2],[5,3,0],[6,3,2],[7,2,0],[8,2,1],
+[9,4,1],[10,8,1],[11,2,2],[12,3,0],[13,5,0],[14,3,0],[15,1,1]];
+const M1={
+  arcProche:{n:11,nul:6,taux:54.5,ailleurs:15.2,p:0.0115},
+  arcDiff:{n:5,nul:4,taux:80.0,ailleurs:17.3,p:0.0078,bonf:0.0469},
+  arcMeme:{n:6,nul:2,taux:33.3},
+  k11:{n:2,nul:2},
+  prod:{j:8,fa:5,ra:5,just:82.5,prec:61.5},
+  corr:{j:6,fa:1,ra:7,just:86.0,prec:85.7},
+  mcnemar:'corrigée gagne 4, production gagne 2 — binomial p = 0,6875'
+};
+const M2={
+  structurel:50.00,
+  meme:{n:25,nul:7,tauxNul:28.0,buts:4.67,plus:'14/21',
+        best:[['active M1−M7',0.439,0.128],['Carcer miroir',0.355,0.242],
+              ['mobilité M1−M7',0.327,0.217],['ouverture M1−M7',0.306,0.344]]},
+  diff:{n:32,nul:6,tauxNul:18.8,buts:3.79,plus:'18/28',
+        best:[['ouverture M1−M7',0.430,0.0423],['M4 et M1 même boucle',0.309,0.240],
+              ['M10 et M7 même boucle',-0.234,0.434],['active M1−M7',0.175,0.514]]}
+};
+
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const pct=(a,b)=>b?Math.round(1000*a/b)/10:0;
+
+function go(){
+  const m=['m1','m2','m3','m4'].map(id=>document.getElementById(id).value);
+  const t=theme(m), r=rotation(t);
+  const b1=loopOf(t[1]), b7=loopOf(t[7]), memeM=b1===b7;
+  const arc=(r.k===2||r.k===4||r.k===6);
+  const paire=r.k%2===0;
+
+  /* ── MOTEUR 1 : LE NUL ── */
+  let dit,cellule,st,coul;
+  if(arc && !memeM){ dit=true; cellule=M1.arcDiff; st='arc proche ET M1/M7 en boucles DIFFÉRENTES'; coul='var(--vert)'; }
+  else if(arc && memeM){ dit=false; cellule=M1.arcMeme; st='arc proche mais M1/M7 dans la MÊME boucle'; coul='var(--rouge)'; }
+  else if(r.k===11){ dit=true; cellule=M1.k11; st='décalage 11'; coul='var(--or)'; }
+  else { dit=false; cellule=null; st='hors des cases qui parlent (k = '+r.k+')'; coul='var(--mut)'; }
+
+  const lignesK=K_TABLE.map(([k,n,nl])=>
+    `<tr class="${k===r.k?'on':''}"><td>${k}</td><td class="n">${n}</td><td class="n">${nl}</td>`+
+    `<td class="n">${pct(nl,n)} %</td></tr>`).join('');
+
+  /* ── MOTEUR 2 : DEUX BRANCHES ── */
+  const B=memeM?M2.meme:M2.diff;
+  const nomB=memeM?'MÊME boucle':'boucles DIFFÉRENTES';
+  const lignesB=B.best.map(([nom,rho,p])=>
+    `<tr><td>${esc(nom)}</td><td class="n">${rho>0?'+':''}${rho.toFixed(3)}</td>`+
+    `<td class="n">${p.toFixed(4)}${p<0.05?' ★':''}</td></tr>`).join('');
+
+  document.getElementById('out').innerHTML=`
+  <div class="card">
+    <h2>Le carré</h2>
+    <table>
+      <tr><td>M1 <b>${FL[t[1]]}</b> · boucle ${b1}</td><td>M7 <b>${FL[t[7]]}</b> · boucle ${b7}</td></tr>
+      <tr><td>R1 = maison ${r.hR1} · <b>${FL[r.r1]}</b></td><td>R7 = maison ${r.hR7} · <b>${FL[r.r7]}</b></td></tr>
+      <tr><td>décalage <b>k = ${r.k}</b> ${paire?'(pair — R1/R7 même boucle)':'(impair — R1/R7 boucles différentes)'}</td>
+          <td>Juge M15 <b>${FL[t[15]]}</b></td></tr>
+    </table>
+    <div class="pt">⚠️ Deux notions de « même boucle » coexistent et ne coïncident que sur
+    <b>54,4 %</b> des cas : celle de <b>R1/R7</b> (parité de k, utilisée par la porte du nul) et celle de
+    <b>M1/M7</b> (les mères, ta coupure). La page les tient séparées.</div>
+  </div>
+
+  <div class="card">
+    <h2>MOTEUR 1 — le nul</h2>
+    <div class="verdict" style="color:${coul}">${dit?'NUL':'PAS DE NUL'}</div>
+    <div class="socle">${esc(st)}</div>
+    ${cellule?`
+      <div>taux de nul dans cette case : <b style="color:${coul}">${cellule.taux!==undefined?cellule.taux:pct(cellule.nul,cellule.n)} %</b>
+        sur <b>${cellule.n}</b> cas${cellule.ailleurs!==undefined?` — contre ${cellule.ailleurs} % ailleurs`:''}</div>
+      <div class="bar"><i style="width:${cellule.taux!==undefined?cellule.taux:pct(cellule.nul,cellule.n)}%;background:${coul}"></i></div>
+      ${cellule.p!==undefined?`<div style="font-size:12px;color:var(--mut)">Fisher p = <b>${cellule.p}</b>${cellule.bonf!==undefined?` · Bonferroni sur 6 tests = <b class="v">${cellule.bonf}</b> — <b class="v">survit</b>`:''}</div>`:''}
+    `:'<div style="color:var(--mut);font-size:13px">Aucune case mesurée ne couvre ce décalage. Le moteur se tait.</div>'}
+    <table><tr><th>k</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>${lignesK}</table>
+    <div class="pt">
+      <b>La seule case forte :</b> arc proche <code>k ∈ {2,4,6}</code> <b>et</b> M1/M7 en boucles différentes —
+      <b class="v">4 nuls sur 5 (80 %)</b> contre 17,3 % ailleurs, p = 0,0078, et c'est le
+      <b>premier résultat du projet qui survive à Bonferroni</b> (0,047 sur 6 tests).<br><br>
+      <b>La case à l'envers :</b> le même arc proche quand M1/M7 sont dans la <b>même</b> boucle donne
+      <b class="r">2 nuls sur 6 (33 %)</b> — sous la base. La porte en production annonce dans les deux cas.<br><br>
+      <b>Ce que ça vaut :</b> porte en production 8 justes / 5 faux (justesse 82,5 %, précision 61,5 %) ·
+      porte corrigée <b class="v">6 justes / 1 faux</b> (justesse <b>86,0 %</b>, précision <b>85,7 %</b>).
+      McNemar : ${esc(M1.mcnemar)} — <b class="o">le gain n'est pas démontré</b>, seule la case l'est.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>MOTEUR 2 — branche « ${nomB} »<span class="tag ${memeM?'mid':'ok'}">${memeM?'25 cas':'32 cas'}</span></h2>
+    <div class="socle">M1 en boucle ${b1}, M7 en boucle ${b7} — la coupure vaut exactement
+      <b>50,00 %</b> des 65 536 thèmes.</div>
+    <table>
+      <tr><td>nuls dans cette branche</td><td class="n"><b>${B.nul}/${B.n}</b> = ${B.tauxNul} %</td></tr>
+      <tr><td>buts moyens</td><td class="n"><b>${B.buts}</b></td></tr>
+      <tr><td>au-dessus de 2,5</td><td class="n"><b>${B.plus}</b></td></tr>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--mut)">Ce qui prédit le vainqueur, dans cette branche :</div>
+    <table><tr><th>lecture</th><th class="n">rho</th><th class="n">p</th></tr>${lignesB}</table>
+    <div class="pt">
+      ${memeM
+        ? `<b class="o">Dans cette branche, rien n'atteint le seuil.</b> Le meilleur est
+           « active M1−M7 » à p = 0,128 sur 18 matchs à vainqueur connu. Le moteur 2 ne décide pas ici :
+           il montre la branche et se tait.`
+        : `<b class="v">Le contraste d'ouverture M1−M7 vit ici.</b> rho +0,430, p = 0,0423 sur 26 matchs
+           à vainqueur connu — contre +0,306 et p = 0,34 dans l'autre branche. C'est la même lecture,
+           et elle ne porte que d'un côté de la coupure.`}
+      <br><br><b>Honnêteté sur la correction :</b> 8 lectures × 2 branches = 16 tests.
+      Bonferroni ramène le 0,0423 à 0,68 — <b class="o">l'exploration ne démontre rien</b>.
+      Ce qui tient, c'est que le contraste d'ouverture était <b>prédit d'avance</b> par ta doctrine
+      (« bonne pour R1, mauvaise pour R7 ») et qu'il se concentre dans une seule branche.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Ce que cette page ne fait pas</h2>
+    <div style="font-size:12.5px;color:var(--mut);line-height:1.6">
+      Pas de score exact — mesuré à 6 sur 49, écart de signe inverse, échelle fausse d'un facteur 2,5.<br>
+      Pas de corners — rho 0,10 sur l'archive.<br>
+      Pas d'incident — 12 cas renseignés dont 10 avec incident, la famille est inmesurable.<br>
+      Pas de carré, pas de trajectoires, pas de trigones : mesurés, ils ne décident rien.<br><br>
+      <b>Deux moteurs, deux chiffres, chacun avec son effectif.</b> Tout le reste est resté dans l'autre page.
+    </div>
+  </div>`;
+}
+
+['m1','m2','m3','m4'].forEach((id,i)=>{
+  const s=document.getElementById(id);
+  s.innerHTML=FIGS.map(f=>`<option value="${f}">${FL[f]}</option>`).join('');
+  s.value=['populus','via','amissio','puer'][i];
+});
+go();
+</script>
+</body></html>
