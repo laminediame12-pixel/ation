@@ -787,6 +787,54 @@ autoTestV7('loi du triplet → Populus', function() {
 // PLANÈTES — tradition géomantique arabe médiévale
 // ═══════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════
+// ⚠️ LE SENS DE LECTURE DES ANTAGONISTES (05/09/26) — rectifié par
+// Ellemine_D : « Albus n'est pas ennemi de Puer, c'est Puer qui est
+// l'ennemi d'Albus. »
+//
+// ANTAGONISTES_V7[X] NOMME L'AGRESSEUR DE X, pas sa victime.
+//     ANTAGONISTES_V7['albus'] === 'puer'   se lit  « Puer agresse Albus »
+//     ANTAGONISTES_V7['puer']  === 'puella' se lit  « Puella agresse Puer »
+// La table est donc ORIENTÉE, et elle n'est pas symétrique : vérifié sur
+// les 16 figures, A[A[f]] !== f dans les 16 cas. Idem pour BINOMES_V7.
+//
+// ☠️ CONSÉQUENCE POUR TOUT LE FICHIER. Une centaine d'endroits lisent
+// ANTAGONISTES_V7[x] === y sans jamais tester ANTAGONISTES_V7[y] === x.
+// La moitié des relations est donc invisible au moteur, et un test écrit
+// dans le mauvais sens ne mesure pas ce qu'il croit. Je l'ai fait le
+// 05/09 : j'ai testé « le chef voit sa défense comme ennemie » alors que
+// l'exemple d'Ellemine_D dit l'inverse — « la défense a le chef pour
+// agresseur ». Les deux lectures donnent des groupes différents.
+// Audit non fait : chantier ouvert au registre des pistes.
+//
+// ── L'HYPOTHÈSE DE L'ÉPARGNE, TESTÉE ET NON CONCLUANTE ──
+// « Est-il possible que Puer, au lieu de détruire, épargne, car Albus est
+// dans le camp de Puer ? » Faute de savoir ce qui met une FIGURE dans le
+// camp d'une autre — Puer et Albus ne partagent ni l'élément (feu/eau),
+// ni la planète (Mars/Mercure), ni le binôme, ni la boucle (A contre B) —
+// j'ai lu « camp » comme la MAISON occupée : une figure dont l'agresseur
+// est le chef du camp auquel sa maison appartient serait épargnée.
+// Sur 118 observations (deux camps par match) :
+//     ≥1 maison épargnée par son propre chef ... 48,7 % contre 36,7 %  p = 0,236
+//     ≥2 épargnées ............................ 16,7 % (n=6) contre 42,0 %
+//     ≥1 agressée par le chef adverse ......... 41,9 % contre 40,0 %  p = 0,848
+//     plus d'épargnées que d'agressées ........ 46,7 % contre 38,6 %  p = 0,520
+// Direction juste sur la première, rien de significatif. ⚠️ ET MON
+// OPÉRATIONNALISATION EST PEUT-ÊTRE FAUSSE : si « le camp de Puer » ne
+// désigne pas la maison occupée, ce test ne teste pas sa règle. À
+// reprendre quand la définition sera fixée.
+//
+// ── CE QUI SORT, EN REVANCHE : LAETITIA EN M2 ──
+// « quand Laetitia est en m2, très souvent m1 gagne. »
+//     Laetitia en M2 → R1 ..... 100 % (3/3) contre 42,9 %   p = 0,090
+//   et le contrôle POSITIONNEL passe, ce qui est rare :
+//     Laetitia en M8 (la ressource de M7) → R1 ... 50 % (3/6) contre 45,3 %  p = 1,000
+//     Laetitia n'importe où en I-XII → R1 ........ 50 % (14/28) contre 41,9 % p = 0,606
+// L'effet n'est donc pas « Laetitia favorise M1 » : il est propre à M2.
+// n = 3 — c'est une piste à inscrire d'avance, pas un résultat. M2 est la
+// ressource de M1 et M9 = M1 ⊕ M2 : la maison touche directement celle du
+// rythme, la seule qui ait survécu à Bonferroni cette semaine.
+// ═══════════════════════════════════════════════════════════════
 const PLANETES_V7 = {
   puer:'Mars', rubeus:'Mars', cauda_draconis:'Mars',
   puella:'Vénus', amissio:'Vénus', caput_draconis:'Vénus',

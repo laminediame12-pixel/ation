@@ -430,9 +430,27 @@ var PISTES_V7 = [
       + '(défensif) est démenti par la mesure.',
     suite: 'ne survit pas à la correction pour tests multiples (0,21) — accumuler' },
 
+  { cle: 'laetitia_m2', nom: 'Laetitia en M2 → M1 gagne',
+    auteur: 'Ellemine_D, 05/09', etat: 'À INSCRIRE D\'AVANCE',
+    chiffre: '100 % (3/3) contre 42,9 %, p = 0,090 · contrôle positionnel PASSÉ : Laetitia en M8 '
+      + '(ressource de M7) ne donne rien (50 % contre 45 %, p = 1,000), Laetitia n\'importe où non plus '
+      + '(50 % contre 42 %, p = 0,606)',
+    nonExclu: 'n = 3. Mais M2 est la ressource de M1 et M9 = M1 ⊕ M2 — la maison touche directement '
+      + 'celle du rythme, la seule qui ait survécu à Bonferroni.',
+    suite: 'annoncer d\'avance sur les prochains matchs où M2 est Laetitia (environ 1 tirage sur 16)' },
+
+  { cle: 'epargne_agresseur', nom: 'L\'agresseur épargne quand sa victime sert dans son camp',
+    auteur: 'Ellemine_D, 05/09', etat: 'TESTÉ, NON CONCLUANT — ET PEUT-ÊTRE MAL COMPRIS',
+    chiffre: '≥1 maison épargnée par son chef : 48,7 % contre 36,7 %, p = 0,236 (n=118 observations)',
+    nonExclu: 'Puer et Albus ne partagent ni élément, ni planète, ni binôme, ni boucle (A contre B). '
+      + 'J\'ai donc lu « camp » comme la MAISON occupée, faute de mieux. Si ce n\'est pas ça, le test '
+      + 'ne teste pas la règle.',
+    suite: 'faire préciser ce qui met une FIGURE dans le camp d\'une autre, puis refaire' },
+
   { cle: 'antagonistes_orientes', nom: 'Les tables antagonistes et binômes ne sont PAS symétriques',
     auteur: 'découvert le 05/09 en testant l\'exemple d\'Ellemine_D', etat: 'FAIT STRUCTUREL',
-    chiffre: '16 figures sur 16 : ennemi(Puer) = Puella mais ennemi(Albus) = Puer. Idem pour les binômes.',
+    chiffre: '16 figures sur 16. SENS RECTIFIÉ par Ellemine_D le 05/09 : ANTAGONISTES_V7[X] nomme '
+      + 'l\'AGRESSEUR de X. A[albus] = puer se lit « Puer agresse Albus », pas l\'inverse.',
     nonExclu: 'AUCUN signal du fichier ne tient compte de l\'orientation. Tous lisent ANT[x] === y '
       + 'sans jamais tester ANT[y] === x. La moitié des relations est donc invisible au moteur.',
     suite: 'audit des signaux qui lisent ANTAGONISTES_V7 et BINOMES_V7 — chantier ouvert' },
