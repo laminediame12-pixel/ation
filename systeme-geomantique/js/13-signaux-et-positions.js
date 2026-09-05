@@ -2526,3 +2526,94 @@ function defenseTenueLiveV7() {
   return { n: n, rho: Math.round(rho * 1000) / 1000, parNiveau: parNiveau,
     gele: { n: 48, rho: -0.336, p: 0.0101 } };
 }
+
+// ═══════════════════════════════════════════════════════════════
+// L'AXE OFFENSIF 3-5-9-11 : CE QU'IL FAIT RÉELLEMENT (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D : « M3 est le point de départ de l'axe offensif 3-5-9-11 ;
+// le triplet offensif de M7 est M5 et M9 ; M5 maison de l'action, M9 le
+// rythme. Creuse pour voir ce que ça fait réellement. »
+//
+// ── 1. LA STRUCTURE NE TRANCHE PAS ──
+// L'axe {M3, M5, M9, M11} : rang 12/16, AUCUNE loi de conservation —
+// exactement comme l'axe défensif {M1, M4, M7, M10} (rang 13/16, pas de
+// loi non plus). Dans ses quatre maisons, UNE SEULE loi : M5 ⊕ M11 = M6,
+// déjà connue et déjà l'un des deux axes d'opposition porteurs.
+// Et les DEUX LECTURES du triplet sont structurellement INDISCERNABLES :
+//   lecture A (maisons dérivées) camp1 {M1,M3,M5} · camp7 {M7,M9,M11}
+//   lecture B (tes mots)         camp7 {M7,M5,M9} · camp1 {M1,M11,M3}
+//   rang 10/12 dans les quatre cas. L'algèbre ne choisit pas.
+// Seuls les vrais scores pouvaient répondre.
+//
+// ── 2. SUR LES VRAIS SCORES, L'AXE OFFENSIF NE DIT RIEN ──
+// Même logique de propriétés qu'en défense, mais à l'endroit : ouvert +
+// actif compté par maison, contre les buts réels (n = 48).
+//   les quatre M3+M5+M9+M11 ............ rho +0,110   p = 0,229
+//   lecture A camp 1 {M3,M5} ........... rho +0,031   p = 0,417
+//   lecture A camp 7 {M9,M11} .......... rho +0,155   p = 0,144
+//   lecture B camp 7 {M5,M9} ........... rho +0,063   p = 0,333
+//   lecture B camp 1 {M3,M11} .......... rho +0,115   p = 0,215
+// Et maison par maison, tes deux rôles nommés :
+//   M3, départ de l'axe ................ rho +0,049   p = 0,370
+//   M5, la maison de l'action .......... rho −0,021   p = 0,556   (et à l'envers)
+//   M9, le rythme ...................... rho +0,083   p = 0,286
+//   M11 ................................ rho +0,123   p = 0,201
+// Rien. Aucune lecture, aucune maison.
+//
+// PRÉCISION IMPORTANTE : ceci ne réfute PAS la règle M9 du fichier
+// (M9_BUTS_HAUT/BAS, mesurée à p = 0,0019 le 05/09). Ce test-ci porte
+// sur les PROPRIÉTÉS de la figure en M9 — ouverte, active — pas sur
+// l'appartenance aux listes. Deux questions différentes.
+//
+// ── 3. TON HYPOTHÈSE DE L'INTERACTION : LA MOITIÉ EST VRAIE ──
+// « C'est l'axe 3-5-9-11 par interaction avec 1-4-7-10 qui explique les
+// buts. » Testé de trois façons :
+//   défense tenue seule ................ rho −0,336   p = 0,0103
+//   attaque × défense percée ........... rho +0,320   p = 0,0139
+//   attaque − défense .................. rho +0,301   p = 0,0192
+//   attaque ouverte seule .............. rho +0,110   p = 0,229
+// Les versions mêlées SEMBLENT marcher — mais elles sont TOUTES PLUS
+// FAIBLES que la défense seule. Mélanger l'attaque à la défense DÉGRADE
+// le signal au lieu de l'enrichir.
+//
+// La corrélation partielle le dit sans appel :
+//   attaque -> buts, DÉFENSE RETIRÉE ... rho +0,113   p = 0,223  → rien
+//   défense -> buts, ATTAQUE RETIRÉE ... rho −0,337   p = 0,0107 → intacte
+// Et les deux indices sont INDÉPENDANTS l'un de l'autre (rho −0,010) :
+// ce n'est donc pas que l'attaque ferait double emploi avec la défense.
+// C'est qu'elle ne porte aucun signal, point.
+//
+// ── CE QUE ÇA DIT DU CARRÉ, ET C'EST LA VRAIE RÉPONSE ──
+// Sur 48 matchs réels, le thème géomantique sait dire comment un match
+// SE FERME, et ne sait rien dire de comment il S'OUVRE. La moitié
+// défensive de ta doctrine se mesure ; la moitié offensive, non — ni par
+// l'axe entier, ni par le triplet dans l'une ou l'autre lecture, ni par
+// M5 « action », ni par M9 « rythme ».
+// Ce n'est pas une réfutation de la doctrine : c'est la limite de ce que
+// 48 scores peuvent montrer. Mais c'est la deuxième fois que l'attaque
+// ne répond pas (la première : ouverte+active+mobile sur M5/M11, p =
+// 0,143), et deux échecs indépendants sur la même moitié, ça compte.
+var AXE_OFFENSIF_V7 = {
+  structure: { maisons: [3, 5, 9, 11], rang: 12, loiPropre: false,
+    seuleLoiInterne: 'M5 ⊕ M11 = M6',
+    lecturesIndiscernables: 'A {M1,M3,M5}/{M7,M9,M11} et B {M7,M5,M9}/{M1,M11,M3} : rang 10/12 partout' },
+  surLesVraisScores: {
+    axeEntier: { rho: 0.110, p: 0.229 },
+    lectureA: { camp1: { rho: 0.031, p: 0.417 }, camp7: { rho: 0.155, p: 0.144 } },
+    lectureB: { camp7: { rho: 0.063, p: 0.333 }, camp1: { rho: 0.115, p: 0.215 } },
+    parMaison: { M3: { rho: 0.049, p: 0.370 }, M5: { rho: -0.021, p: 0.556 },
+                 M9: { rho: 0.083, p: 0.286 }, M11: { rho: 0.123, p: 0.201 } } },
+  interaction: {
+    defenseSeule: { rho: -0.336, p: 0.0103 },
+    produit: { rho: 0.320, p: 0.0139 },
+    difference: { rho: 0.301, p: 0.0192 },
+    partielAttaque: { rho: 0.113, p: 0.223 },
+    partielDefense: { rho: -0.337, p: 0.0107 },
+    correlationEntreIndices: -0.010,
+    verdict: 'la moitié est vraie : 1-4-7-10 explique, 3-5-9-11 n\'ajoute rien, '
+      + 'et les mélanger DÉGRADE le signal (0,336 -> 0,320 -> 0,301)' },
+  neRefutePas: 'la règle M9 du fichier (M9_BUTS_HAUT/BAS, p = 0,0019) porte sur '
+    + 'l\'appartenance aux listes, pas sur les propriétés ouverte/active de la figure '
+    + 'en M9 — ce sont deux questions différentes',
+  lecture: 'le thème sait dire comment un match SE FERME, pas comment il S\'OUVRE'
+};

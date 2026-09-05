@@ -411,6 +411,36 @@ function verifierRegistreSignauxV7(theme) {
 // mois en croyant qu'elle est neuve — et pour que son « non exclu »
 // serve de point de départ à la suivante.
 var PISTES_V7 = [
+  { cle: 'axe_offensif_3_5_9_11', nom: 'L\'axe offensif 3-5-9-11 — ce qu\'il fait réellement',
+    auteur: 'Ellemine_D, 05/09 — « M3 est le point de départ, M5 l\'action, M9 le rythme »',
+    etat: 'MESURÉE ET NÉGATIVE — l\'axe offensif ne porte rien sur 48 scores réels',
+    structure: 'l\'axe {M3,M5,M9,M11} a un rang de 12/16 et AUCUNE loi de conservation, '
+      + 'comme l\'axe défensif (13/16). Une seule loi interne, M5 ⊕ M11 = M6, déjà connue. '
+      + 'Et les DEUX lectures du triplet sont structurellement indiscernables (rang 10/12 '
+      + 'partout) : l\'algèbre ne choisit pas entre elles.',
+    chiffre: 'ouvert + actif par maison contre les buts réels (n = 48) : l\'axe entier '
+      + 'rho +0,110 (p = 0,229) ; lecture A camp1 {M3,M5} p = 0,417, camp7 {M9,M11} '
+      + 'p = 0,144 ; lecture B camp7 {M5,M9} p = 0,333, camp1 {M3,M11} p = 0,215. '
+      + 'Maison par maison : M3 p = 0,370 · M5 « action » p = 0,556 et rho NÉGATIF · '
+      + 'M9 « rythme » p = 0,286 · M11 p = 0,201. Rien nulle part.',
+    interaction: 'l\'hypothèse « c\'est 3-5-9-11 EN INTERACTION avec 1-4-7-10 qui explique '
+      + 'les buts » est vraie À MOITIÉ. Les versions mêlées semblent marcher (produit '
+      + 'rho +0,320 p = 0,0139 ; différence +0,301 p = 0,0192) mais elles sont TOUTES PLUS '
+      + 'FAIBLES que la défense seule (−0,336). En corrélation partielle : attaque une fois '
+      + 'la défense retirée rho +0,113 (p = 0,223, rien) ; défense une fois l\'attaque '
+      + 'retirée rho −0,337 (p = 0,0107, intacte). Les deux indices sont INDÉPENDANTS '
+      + '(rho −0,010) : l\'attaque ne fait pas double emploi, elle ne porte simplement rien. '
+      + 'Mélanger DÉGRADE le signal.',
+    neRefutePas: 'la règle M9 du fichier (M9_BUTS_HAUT/BAS, p = 0,0019) n\'est pas touchée : '
+      + 'elle porte sur l\'appartenance aux listes, ce test-ci sur les propriétés ouverte/'
+      + 'active de la figure en M9. Deux questions différentes.',
+    lecture: 'sur 48 matchs, le thème sait dire comment un match SE FERME et rien de comment '
+      + 'il S\'OUVRE. Deuxième échec indépendant de la moitié offensive (le premier : '
+      + 'ouverte+active+mobile sur M5/M11, p = 0,143).',
+    aFaire: 'si la doctrine offensive doit être sauvée, ce sera par une AUTRE lecture que '
+      + 'les propriétés des figures — celles-ci ont été essayées deux fois et n\'ont rien '
+      + 'donné. Le rythme M9 par les listes reste vivant, lui.' },
+
   { cle: 'defense_fermee_passive', nom: 'La défense se tient par le FERMÉ et le PASSIF, pas par le fixe',
     auteur: 'Ellemine_D, 05/09 — « est-ce les figures fixes qui sont bonnes en défense ? »',
     etat: 'MESURÉE SUR LES VRAIS SCORES — la plus propre du fichier, et non démontrée',
