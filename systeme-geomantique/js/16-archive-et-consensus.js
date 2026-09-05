@@ -1175,10 +1175,77 @@ var PL_5_SEPT_2026 = [
 
 // Ouvert au chargement : l'ensemble existe dès maintenant, complet et
 // figé à sept. Si un huitième match apparaissait, nbFige le trahirait.
-var ENSEMBLE_PL_V7 = null;
+//
+// DEUX BRAS SUR LE MÊME ENSEMBLE. Un seul objet ne suffisait pas : les
+// annonces du contrôle occupaient les créneaux et faisaient refuser les
+// tirages à la main pour « déjà annoncé ». Défaut vu et corrigé avant le
+// premier coup d'envoi.
+//   · ENSEMBLE_PL_MAIN_V7     — les tirages À LA MAIN d'Ellemine_D. C'est
+//                               le bras qui teste la prémisse du fichier.
+//   · ENSEMBLE_PL_CONTROLE_V7 — le tirage par hachage, reproductible par
+//                               un tiers, qui donne la ligne de base.
+// Même sept matchs, deux tirages, les deux annoncés avant le coup
+// d'envoi : c'est le plan apparié que ce fichier attend depuis le premier
+// jour, et il n'avait jamais été monté proprement.
+var ENSEMBLE_PL_MAIN_V7 = null, ENSEMBLE_PL_CONTROLE_V7 = null;
 try {
-  ENSEMBLE_PL_V7 = enregistrerEnsembleV7('Premier League — samedi', '2026-09-05', PL_5_SEPT_2026);
-} catch (e) { console.warn('ensemble PL non ouvert : ' + e.message); }
+  ENSEMBLE_PL_MAIN_V7 = enregistrerEnsembleV7('Premier League samedi — tirage à la main',
+    '2026-09-05', PL_5_SEPT_2026);
+  ENSEMBLE_PL_CONTROLE_V7 = enregistrerEnsembleV7('Premier League samedi — contrôle par hachage',
+    '2026-09-05', PL_5_SEPT_2026);
+} catch (e) { console.warn('ensembles PL non ouverts : ' + e.message); }
+
+// ── LE BRAS DE CONTRÔLE, FIGÉ DANS LE FICHIER ──
+// Écrit et commité le 05/09 vers 03 h 35 UTC, soit près de huit heures
+// avant le premier coup d'envoi (11:30 UTC). Ces sept annonces sont donc
+// datées par le dépôt, pas par une déclaration. Les mères se recalculent
+// à l'identique : tirageDepuisMatchV7(equipe1, equipe2, '2026-09-05',
+// heure) — n'importe qui peut vérifier qu'elles n'ont pas été retouchées.
+var ANNONCES_CONTROLE_PL_V7 = [
+  { n: 1, match: 'Newcastle United – AFC Bournemouth', coupEnvoi: '12:30',
+    meres: ['Tristitia', 'Conjunctio', 'Acquisitio', 'Carcer'],
+    camp: 'nul', score: '0-0', scoreAlt: '1-1', btts: false, incident: 'Aucun 0%',
+    regles: { m9: 'la règle se tait', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+  { n: 2, match: 'Brentford – Sunderland', coupEnvoi: '15:00',
+    meres: ['Acquisitio', 'Fortuna Minor', 'Amissio', 'Populus'],
+    camp: 'R7', score: '0-1', scoreAlt: '0-2', btts: false, incident: 'Faible 8%',
+    regles: { m9: 'la règle se tait', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+  { n: 3, match: 'Brighton & Hove Albion – Leeds United', coupEnvoi: '15:00',
+    meres: ['Acquisitio', 'Acquisitio', 'Acquisitio', 'Tristitia'],
+    camp: 'R7', score: '0-1', scoreAlt: '0-2', btts: false, incident: 'Élevé 53%',
+    regles: { m9: 'moins de 2,5 buts', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+  { n: 4, match: 'Fulham – Crystal Palace', coupEnvoi: '15:00',
+    meres: ['Fortuna Major', 'Puella', 'Tristitia', 'Cauda Draconis'],
+    camp: 'nul', score: '0-0', scoreAlt: '1-1', btts: false, incident: 'Très élevé 95%',
+    regles: { m9: 'moins de 2,5 buts', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+  { n: 5, match: 'Manchester City – Coventry City', coupEnvoi: '15:00',
+    meres: ['Puella', 'Fortuna Major', 'Tristitia', 'Fortuna Major'],
+    camp: 'nul', score: '0-0', scoreAlt: '1-1', btts: false, incident: 'Très élevé 95%',
+    regles: { m9: 'moins de 2,5 buts', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+  { n: 6, match: 'Nottingham Forest – Tottenham Hotspur', coupEnvoi: '15:00',
+    meres: ['Caput Draconis', 'Populus', 'Populus', 'Caput Draconis'],
+    camp: 'R1', score: '1-0', scoreAlt: '2-0', btts: false, incident: 'Très élevé 95%',
+    regles: { m9: 'la règle se tait', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+  { n: 7, match: 'Hull City – Aston Villa', coupEnvoi: '17:30',
+    meres: ['Amissio', 'Carcer', 'Tristitia', 'Fortuna Major'],
+    camp: 'R7', score: '0-1', scoreAlt: '0-2', btts: false, incident: 'Modéré 48%',
+    regles: { m9: 'la règle se tait', laetitia_m2: 'la règle se tait', m4_jugerecit: 'la règle se tait' } },
+];
+// Rejoué au chargement dans l'ensemble de contrôle, pour que le bilan et
+// les compteurs les voient comme de vraies annonces.
+try {
+  if (ENSEMBLE_PL_CONTROLE_V7) {
+    ANNONCES_CONTROLE_PL_V7.forEach(function (a, i) {
+      var m = ENSEMBLE_PL_CONTROLE_V7.matchs[i];
+      if (!m) return;
+      m.annonce = { ecritLe: '2026-09-05T03:35:00.000Z', origineTirage: 'hachage — bras de contrôle',
+        meres: a.meres, camp: a.camp, score: a.score, scoreAlt: a.scoreAlt, btts: a.btts,
+        incident: a.incident,
+        regles: { m9_buts: a.regles.m9, laetitia_m2: a.regles.laetitia_m2,
+          m4_jugerecit: a.regles.m4_jugerecit } };
+    });
+  }
+} catch (e) { console.warn('annonces de contrôle non rejouées : ' + e.message); }
 
 function enregistrerEnsembleV7(nom, date, matchs) {
   // matchs : [{ e1, e2, coupEnvoi: 'HH:MM', fuseau: '+01:00' }, ...]
