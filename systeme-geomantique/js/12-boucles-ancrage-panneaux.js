@@ -2691,6 +2691,130 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
 });
 
 // ═══════════════════════════════════════════════════════════════
+// LA FIABILITÉ DU VERDICT — testée le 05/09/26 sur l'hypothèse
+// d'Ellemine_D : « si un thème se contredit, la fiabilité est faible »
+// ═══════════════════════════════════════════════════════════════
+//
+// ─── L'HYPOTHÈSE EST FAUSSE SUR L'ARCHIVE, ET C'EST MESURÉ ───
+// Indice de contradiction construit en comptant, pour chaque thème, le
+// nombre de lectures indépendantes qui contredisent l'annonce :
+//   sur le VOLUME (5 voix : moteur, Populus, miroir, axe, défense)
+//     0 voix contre : 9/12  (75,0 %)     3 voix contre : 5/5 (100 %)
+//     1 voix contre : 13/19 (68,4 %)     4 voix contre : 1/1 (100 %)
+//     2 voix contre : 8/12  (66,7 %)
+//     rho = +0,080 · p = 0,594 — et le SIGNE est à l'envers
+//   sur le CAMP (4 voix : protocole, corners, boucles, protocole serré)
+//     rho = −0,142 · p = 0,297
+//   indice global (volume + camp) -> camp : rho −0,046 · p = 0,757
+//   indice global -> volume ............... rho +0,015 · p = 0,922
+// Un thème qui se contredit n'est PAS moins fiable. Compter les
+// désaccords ne mesure rien.
+//
+// ⚠️ ET LA MÊME MESURE DÉGONFLE MA PROPRE COUCHE DE LA VEILLE. L'accord
+// axe/miroir que j'avais branché comme « mesure de confiance » (14/18
+// quand elles s'accordent contre 5-4 sinon) donne Fisher p = 0,3748 sur
+// ses 27 cas. Ce n'est pas significatif non plus. Elle appartient à la
+// même classe que l'hypothèse d'Ellemine_D — direction plausible, preuve
+// mince — et elle ne mérite pas d'être traitée autrement parce que c'est
+// moi qui l'ai écrite. Elle reste affichée, avec ce p à côté.
+//
+// ─── CE QUI EST VRAI, ET QUI EST LE VRAI INDICATEUR ───
+// Ce n'est pas la contradiction, c'est CE QUE LE VERDICT ANNONCE. Et il
+// faut lire le LEVIER SUR LA BASE, pas le pourcentage brut : un taux de
+// 50 % sur un événement qui arrive 22,8 % du temps vaut mieux qu'un taux
+// de 78 % sur un événement qui arrive 42 % du temps.
+//
+//   CAMP (57 cas)        juste      base     levier
+//     dit R1 .......  14/18 77,8 %  42,1 %   1,85x   (+35,7 pts)
+//     dit R7 .......  13/17 76,5 %  35,1 %   2,18x   (+41,4 pts)
+//     dit NUL ......  11/22 50,0 %  22,8 %   2,19x   (+27,2 pts)
+//   VOLUME (49 cas)
+//     dit PLUS .....  22/25 88,0 %  65,3 %   1,35x   (+22,7 pts)
+//     dit MOINS ....  14/24 58,3 %  34,7 %   1,68x   (+23,6 pts)
+//
+// LE RENVERSEMENT : les deux annonces qui SEMBLENT les plus faibles —
+// le nul à 50 % et le « moins de 2,5 » à 58 % — sont en fait celles qui
+// apportent LE PLUS d'information. Le nul à 50 % est à 2,19x sa base,
+// autant que R7 et mieux que R1. Le « plus de 2,5 » à 88 % n'est qu'à
+// 1,35x, parce que 65 % des matchs de l'archive passent 2,5 buts de
+// toute façon. Juger une annonce à son pourcentage brut, c'est confondre
+// la fréquence de l'événement avec la valeur de l'annonce.
+// Fisher : camp nul contre camp gagnant p = 0,0460 ; volume plus contre
+// moins p = 0,0009 — les DEUX écarts bruts sont réels, et les DEUX
+// disparaissent une fois la base retirée. C'est le point.
+var FIABILITE_VERDICT_V7 = {
+  hypothese: 'Ellemine_D, 05/09 : « si un thème se contredit, la fiabilité du verdict est faible »',
+  verdict: 'FAUSSE sur l\'archive — compter les désaccords ne prédit rien',
+  mesures: { volume: { rho: 0.080, p: 0.594 }, camp: { rho: -0.142, p: 0.297 },
+    global: { versCamp: { rho: -0.046, p: 0.757 }, versVolume: { rho: 0.015, p: 0.922 } } },
+  maProprCouche: 'l\'accord axe/miroir branché la veille : Fisher p = 0,3748 sur 27 cas. '
+    + 'Pas plus démontré que l\'hypothèse ci-dessus. Écrit ici pour ne pas m\'accorder un '
+    + 'traitement de faveur.',
+  leVrai: 'ce n\'est pas la contradiction, c\'est CE QUE LE VERDICT ANNONCE, lu en LEVIER '
+    + 'SUR LA BASE et jamais en pourcentage brut',
+  table: {
+    R1:    { juste: '14/18', taux: 77.8, base: 42.1, levier: 1.85 },
+    R7:    { juste: '13/17', taux: 76.5, base: 35.1, levier: 2.18 },
+    nul:   { juste: '11/22', taux: 50.0, base: 22.8, levier: 2.19 },
+    plus:  { juste: '22/25', taux: 88.0, base: 65.3, levier: 1.35 },
+    moins: { juste: '14/24', taux: 58.3, base: 34.7, levier: 1.68 } },
+  renversement: 'le nul à 50 % et le « moins » à 58 % — les deux annonces qui semblent les '
+    + 'plus faibles — sont celles qui apportent le plus d\'information. Le « plus de 2,5 » '
+    + 'à 88 % n\'est qu\'à 1,35x sa base, parce que 65 % des matchs y passent de toute façon.'
+};
+
+// Le levier de l'annonce courante, rejoué sur la base d'Ellemine_D.
+var _CACHE_FIAB_V7 = null;
+function fiabiliteAnnonceV7() {
+  var CAS = [];
+  try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.meres; }); }
+  catch (e) { return null; }
+  var cle = CAS.length;
+  if (_CACHE_FIAB_V7 && _CACHE_FIAB_V7.cle === cle) return _CACHE_FIAB_V7.val;
+  if (_MESURE_EN_COURS_V7 || _GARDE_MIROIR_V7) return null;
+  return _sousMesureV7(function () {
+    var camp = { R1: [0, 0, 0], R7: [0, 0, 0], nul: [0, 0, 0] }, nC = 0;
+    var vol = { plus: [0, 0, 0], moins: [0, 0, 0] }, nV = 0;
+    CAS.forEach(function (c) {
+      var t;
+      try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+      var v; try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); }); }
+      catch (e) { return; }
+      if (!v) return;
+      if (c.camp) {
+        nC++;
+        var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
+        camp[dit][0]++; if (dit === c.camp) camp[dit][1]++;
+        if (camp[c.camp]) camp[c.camp][2]++;
+      }
+      var g = /^(\d+)-(\d+)$/.exec(c.score || '');
+      if (g && v.plus25) {
+        nV++;
+        var vrai = (+g[1] + +g[2]) > 2.5;
+        var k = v.plus25.valeur ? 'plus' : 'moins';
+        vol[k][0]++; if (v.plus25.valeur === vrai) vol[k][1]++;
+        vol[vrai ? 'plus' : 'moins'][2]++;
+      }
+    });
+    var fin = function (o, n) {
+      var r = {};
+      Object.keys(o).forEach(function (k) {
+        var a = o[k];
+        if (!a[0] || !n) { r[k] = null; return; }
+        var taux = 100 * a[1] / a[0], base = 100 * a[2] / n;
+        r[k] = { annonces: a[0], justes: a[1], taux: Math.round(taux * 10) / 10,
+          base: Math.round(base * 10) / 10,
+          levier: base ? Math.round(100 * taux / base) / 100 : null };
+      });
+      return r;
+    };
+    var val = { nCamp: nC, nVolume: nV, camp: fin(camp, nC), volume: fin(vol, nV) };
+    if (nC || nV) _CACHE_FIAB_V7 = { cle: cle, val: val };
+    return val;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LE DRAPEAU DE MESURE — sans lui, le fichier ne se charge plus
 // ═══════════════════════════════════════════════════════════════
 // Chaque branche du volume se rejoue sur le banc pour savoir si elle

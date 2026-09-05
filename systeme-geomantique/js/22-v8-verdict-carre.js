@@ -1895,6 +1895,47 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         })()
         +' Réversible par BRANCHES_V7.populus_volume.actif.</div></div>';
     })();
+    // ─── LE LEVIER DE L'ANNONCE (05/09/26) ───
+    // Réponse mesurée à « si un thème se contredit, la fiabilité est
+    // faible » : c'est faux (cf. FIABILITE_VERDICT_V7). Ce qui prédit la
+    // fiabilité, c'est CE QUE le verdict annonce — et il faut le lire en
+    // levier sur la base, jamais en pourcentage brut.
+    (function(){
+      var f=null; try{ f=fiabiliteAnnonceV7(); }catch(e){ f=null; }
+      if(!f) return;
+      var vv=null; try{ vv=avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);}); }catch(e){}
+      if(!vv) return;
+      var kc = vv.nulActif?'nul':(vv.winner==='M1'?'R1':'R7');
+      var kv = (vv.plus25 && vv.plus25.valeur) ? 'plus' : 'moins';
+      var c=f.camp[kc], v2=f.volume[kv];
+      var lig=function(t,o){ if(!o) return '';
+        var fort = o.levier && o.levier >= 2;
+        return '<div style="margin-top:3px;">'+t+' <b style="color:'+(fort?'#4ade80':'#cbd5e1')+';">'
+          +o.taux+' %</b> juste ('+o.justes+'/'+o.annonces+') · base <b>'+o.base+' %</b> · '
+          +'<b style="color:'+(fort?'#4ade80':'#93c5fd')+';">levier '+o.levier+'x</b></div>'; };
+      html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid #93c5fd; '
+        +'background:rgba(147,197,253,.08);">'
+        +'<b style="color:#93c5fd; font-size:13px;">📏 CE QUE VAUT CETTE ANNONCE-LÀ</b>'
+        +'<div style="font-size:11px; color:#cbd5e1;">Rejoué sur '+f.nCamp+' cas au camp connu '
+        +'et '+f.nVolume+' au score connu.</div>'
+        +'<div style="font-size:11px; color:#cbd5e1;">'
+        +lig('Il dit <b>'+(kc==='nul'?'NUL':kc)+'</b> :', c)
+        +lig('Il dit <b>'+(kv==='plus'?'PLUS de 2,5':'MOINS de 2,5')+'</b> :', v2)
+        +'</div>'
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:5px; border-top:1px solid '
+        +'rgba(148,163,184,.2); padding-top:4px;">'
+        +'<b>Lis le levier, pas le pourcentage.</b> Un nul juste à 50 % sur un événement qui '
+        +'arrive 22,8 % du temps (levier 2,19x) vaut mieux qu\'un « plus de 2,5 » juste à '
+        +'88 % sur un événement qui arrive 65 % du temps (levier 1,35x). Les deux annonces '
+        +'qui SEMBLENT les plus faibles sont celles qui apportent le plus d\'information.'
+        +'<div style="margin-top:3px;"><b style="color:#fbbf24;">Et l\'hypothèse « un thème '
+        +'qui se contredit est moins fiable » est FAUSSE</b> : mesurée en comptant les '
+        +'lectures qui contredisent l\'annonce, rho +0,08 sur le volume (p = 0,59), −0,14 sur '
+        +'le camp (p = 0,30), indice global plat (p = 0,76 et 0,92). Le nombre de désaccords '
+        +'ne prédit rien. <span style="color:#94a3b8;">Ma propre couche d\'accord axe/miroir '
+        +'ne fait pas mieux : Fisher p = 0,3748 sur 27 cas. Elle reste affichée avec ce '
+        +'chiffre à côté.</span></div></div></div>';
+    })();
     // ─── LES DEUX LECTURES D'ELLEMINE_D (05/09/26) ───
     // L'axe offensif et le miroir sont deux lectures indépendantes du
     // volume, et elles se valent. Ce qui sort de la mesure, ce n'est pas
@@ -1936,10 +1977,11 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           +'miroir M5 : <b>'+(ac.miroir?'plus':'moins')+'</b>. '
           +(ac.accord
             ? 'Sur les 27 cas où zéro Populus se tait — la région où elles décident — quand elles s\'accordent elles sont '
-              +'justes <b>14 fois sur 18</b> (et 5 sur 5 quand elles disent toutes deux plus '
+              +'justes <b>14 fois sur 18</b> — <b>Fisher p = 0,3748, pas significatif</b> '
+              +'(et 5 sur 5 quand elles disent toutes deux plus '
               +'— <b>cinq cas seulement</b>, ne lis pas ça comme une certitude).'
             : 'Sur ces mêmes cas, quand elles se contredisent c\'est <b>5 contre 4</b> : un '
-              +'pile ou face. <b>Le volume n\'est pas lisible sur ce thème.</b> Le verdict '
+              +'pile ou face — <b>mais Fisher p = 0,3748, ce n\'est pas démontré</b>. Le verdict '
               +'annonce quand même — il faut bien qu\'il annonce — mais c\'est ici qu\'il '
               +'faut s\'abstenir.')
           +'</div>';
