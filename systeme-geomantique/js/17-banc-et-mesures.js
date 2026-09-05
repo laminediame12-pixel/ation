@@ -329,9 +329,11 @@ var PISTES_V7 = [
   { cle: 'm3_r7', nom: 'M3 négative → R7 exclu',
     auteur: 'trouvée le 04/09 au matin', etat: 'RÉFUTÉE le 04/09 au soir',
     chiffre: 'archive 1/14 = 7 % · hors échantillon 3 R7 sur 5 = 60 %',
-    nonExclu: 'M3 n\'a été testée QUE sur le camp. Jamais sur les buts, le BTTS, '
-      + 'le score, l\'incident, ni les corners. La porte fermée est étroite.',
-    suite: 'passer M3 au balayage des buts comme on l\'a fait pour les 13 maisons' },
+    nonExclu: 'PORTE REFERMÉE le 05/09. M3 est passée au balayage systématique sur SIX cibles : '
+      + 'buts p = 0,43 · incident p = 0,45 · dominance corners p = 0,73 · nul p = 0,86 · '
+      + 'BTTS p = 0,92 · R1 p = 0,92. Rien nulle part.',
+    suite: 'aucune. Piste explicable : M4 ⊕ M10 = M3, or M4 porte et M10 non — M3 mélange '
+      + 'un porteur et un muet, ce qui pourrait suffire à la rendre sourde.' },
 
   { cle: 'm12_m6_buts', nom: 'M12 et M6 sur les buts',
     auteur: 'apparues 2e et 3e au balayage du 04/09, jamais suivies', etat: 'À SUIVRE',
@@ -348,9 +350,9 @@ var PISTES_V7 = [
   { cle: 'corners_total', nom: 'Le total de corners annoncé',
     auteur: 'sortie historique du moteur', etat: 'SANS INFORMATION',
     chiffre: 'n=11 · Spearman 0,10 · erreur absolue 6,00 pour une moyenne réelle de 10,7',
-    nonExclu: 'seul le TOTAL a été mesuré. La DOMINANCE aux corners (quel camp en a plus) '
-      + 'n\'a jamais été prédite, et elle va avec le vainqueur 7 fois sur 11.',
-    suite: 'prédire le camp dominant aux corners, pas le total' },
+    nonExclu: 'PORTE REFERMÉE le 05/09. La dominance a été testée sur la sortie cornersDominant '
+      + 'que le moteur produit déjà : 3/9, PIRE que le hasard (il dit M1 cinq fois, le réel est M1 trois fois).',
+    suite: 'aucune sur les corners tant que l\'archive n\'en aura pas trente' },
 
   { cle: 'm4m10_cascade', nom: 'Signal M4/M10 en tête de la cascade du verdict',
     auteur: 'branché le 03/09 sur demande d\'Ellemine_D', etat: 'GAIN NUL',
@@ -373,10 +375,15 @@ var PISTES_V7 = [
       + 'La présence n\'a pas été réfutée.',
     suite: 'accumuler ; ne pas câbler « toujours M1 », n = 12' },
 
-  { cle: 'fragilite_m4m10', nom: 'Fragilité M4/M10 (mobile+ouverte des deux côtés) → BTTS',
-    auteur: 'Ellemine_D, 03/09', etat: 'À RETESTER',
-    chiffre: '64,5 % contre 28,6 % sur l\'archive · JAMAIS retestée depuis les 11 cas du 04/09',
-    suite: 'la repasser sur les 60 cas maintenant disponibles — dette la plus facile à payer' },
+  { cle: 'fragilite_m4m10', nom: 'Fragilité M4/M10 → BTTS',
+    auteur: 'Ellemine_D, 03/09', etat: 'RETESTÉE le 05/09 — LE COUPLE NE PORTE PAS',
+    chiffre: '52 cas · OU 51,9 % contre 44,0 % (p = 0,592) · ET 50,0 % contre 47,8 % (p = 1,000)',
+    nonExclu: 'M4 SEULE donne 63,2 % contre 39,4 % (p = 0,150) pendant que M10 SEULE va en sens '
+      + 'inverse (35,7 % contre 52,6 %). Les apparier annule le signal. Et deux autres mesures '
+      + 'faites pour d\'autres raisons disent la même asymétrie : M10 est dernière des 13 maisons '
+      + 'sur les buts (p = 0,958), et la doctrine du M4 d\'Ellemine_D ne marche qu\'en M4 (p = 0,643 en M10).',
+    suite: 'lire les signaux défensifs sur M4 SEULE ; M4 seul n\'a jamais été testé hors '
+      + 'échantillon (n = 19, un seul cas dans les 11 du soir) — accumuler avant de recâbler' },
 
   { cle: 'm4_doctrine', nom: 'Albus/Carcer en M4 tiennent les buts, Via les ouvre',
     auteur: 'Ellemine_D, 04/09', etat: 'DIRECTION JUSTE, SEUIL NON ATTEINT',

@@ -1445,6 +1445,54 @@ function signalRecouvrementCampsV7(theme){
 //     côtés) — nulle, ne discrimine rien, seule ou combinée.
 // Seul le signal M4/M10 survit à ces deux vérifications ; c'est le seul
 // retenu ici. Aucun poids sur le verdict.
+// ═══════════════════════════════════════════════════════════════
+// M4 PORTE, M10 NE PORTE PAS — ET LES APPARIER ANNULE LE SIGNAL
+// (05/09/26, après les 11 résultats réels du 04/09)
+//
+// ☠️ D'ABORD UNE ERREUR DE LECTURE, LA MIENNE, RÉPÉTÉE TOUTE LA JOURNÉE.
+// Cette fonction renvoie { applicable, fragileM4, fragileM10, m4, m10 }.
+// Il n'y a AUCUN champ `fragile`. J'ai lu `s.fragile` dans tous mes tests
+// du 04/09 — sur Abha, sur Lyon, dans le tableau des 13 matchs — et
+// `undefined` s'évalue à false. Chaque « fragilité : false » rapporté ce
+// jour-là ne portait sur rien. Le signal n'était pas en cause.
+//
+// ── LE VRAI TEST, SUR 52 CAS AU BTTS CONNU (41 archive + 11 du soir) ──
+//     OU  — M4 ou M10 fragile (ce que le code fait) . 51,9 % contre 44,0 %  p = 0,592
+//     ET  — M4 ET M10 fragiles ...................... 50,0 % contre 47,8 %  p = 1,000
+//     M4 fragile SEULE .............................. 63,2 % contre 39,4 %  p = 0,150
+//     M10 fragile SEULE ............................. 35,7 % contre 52,6 %  (sens INVERSE)
+//
+// Les deux maisons tirent en SENS CONTRAIRE. M4 fragile pousse le BTTS
+// vers le haut, M10 fragile le pousse vers le bas. C'est exactement pour
+// ça que le OU et le ET s'annulent : on additionne deux forces opposées
+// et on obtient zéro.
+//
+// ── ET CE N'EST PAS UN ACCIDENT : TROIS MESURES INDÉPENDANTES DISENT LA
+//    MÊME CHOSE, chacune faite pour une autre raison ──
+//   1. Balayage des 13 maisons sur les buts (04/09) :
+//      M4 p = 0,285 · M10 p = 0,958, DERNIÈRE des treize.
+//   2. Doctrine d'Ellemine_D sur M4 (04/09) : Albus/Carcer en M4 tiennent
+//      les buts (2,50 contre 3,49) ; les mêmes figures en M10 ne font
+//      rien (p = 0,643). Le contrôle positionnel était déjà là.
+//   3. Ce test-ci : M4 fragile +24 points de BTTS, M10 fragile −17.
+//
+// Trois protocoles différents, trois fois la même asymétrie. Aucun des
+// trois n'atteint seul la significativité — mais ils ne sont pas
+// indépendants par hasard : ils pointent tous le même endroit.
+//
+// ➜ CE QUE ÇA PROPOSE, ET CE QUE ÇA N'AUTORISE PAS ENCORE.
+//   Proposition : les signaux « défensifs » devraient se lire sur M4
+//   SEULE. Apparier M4 à M10 n'ajoute pas d'information — ça en retire.
+//   Ce qui manque : le M4 seul n'a JAMAIS été testé hors échantillon
+//   (n = 19, presque tous d'archive ; un seul cas dans les 11 du soir).
+//   Donc : ne rien recâbler. Inscrire, et attendre des cas.
+//
+//   ⚠️ Et se souvenir du 04/09 : M4 ⊕ M10 = M3 sur 65 536 thèmes. Si M4
+//   porte et M10 non, alors M3 — leur différence — mélange un porteur et
+//   un muet. Ça pourrait expliquer pourquoi M3 ne dit rien nulle part
+//   (balayage du 05/09 : buts p = 0,43, BTTS p = 0,92, nul p = 0,86,
+//   R1 p = 0,92, incident p = 0,45, corners p = 0,73 — six cibles, rien).
+// ═══════════════════════════════════════════════════════════════
 function signalFragiliteM4M10V7(theme){
   function fragile(fig){ return MOBILITE_FIGURE[fig] === 'mobile' && OUVERTURE_FIGURE[fig] === 'ouverte'; }
   var fragileM4 = fragile(theme[4]), fragileM10 = fragile(theme[10]);
