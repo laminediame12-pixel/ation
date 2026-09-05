@@ -2070,3 +2070,75 @@ autoTestV7('rang des mères et bornes de Populus', function () {
       throw new Error('nb de Populus hors des bornes du rang pour ' + m.join('/'));
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// REGISTRE DES BRANCHEMENTS (05/09/26) — ce qui décide, et ce qui non
+// ═══════════════════════════════════════════════════════════════
+// « Branche-les au verdict » — Ellemine_D. Quatre trouvailles étaient
+// sur la table. Une seule a été branchée, et pas par prudence : les
+// trois autres ont été MESURÉES et ne le méritent pas, ou ne peuvent
+// pas l'être. Chacune garde son booléen, pour qu'on puisse rouvrir le
+// débat avec un chiffre plutôt qu'un avis.
+var BRANCHES_V7 = {
+
+  populus_volume: {
+    actif: true,
+    nom: 'Zéro Populus dans le thème -> plus de 2,5 buts',
+    cible: 'famille plus/moins de 2,5 buts',
+    mesureAvant: '26/48 (54 %) — moins bon que la règle idiote « toujours plus », 31/48',
+    mesureApres: '34/48 (71 %)',
+    detail: '10 gagnés, 2 perdus. Fisher 2x2 p = 0,0137 ; binomial sur les 12 '
+      + 'discordants p = 0,039.',
+    prixPaye: 'Roma (2 buts) et CarcAlbus (0-0) : deux thèmes à zéro Populus qui '
+      + 'n\'ont pas marqué. Le moteur avait juste sur eux, la règle les casse.',
+    faiblesse: 'le découpage « zéro contre au moins un » a été choisi APRÈS avoir vu '
+      + 'les données. Le brancher ne répare pas ça — voir PISTES_V7.populus_zero. '
+      + '30 rencontres annoncées avant coup d\'envoi restent le seul juge.' },
+
+  faisceau_elague: {
+    actif: false,
+    nom: 'Faisceau du nul restreint aux signaux dont le taux n\'est pas 50 %',
+    cible: 'le camp, via l\'imposition du nul',
+    refus: 'MESURÉ, ET ÇA NUIT. Camp actuel 32/48. Avec nElague >= 2 : 29/48, huit '
+      + 'thèmes basculés, deux gagnés cinq perdus. Avec >= 3 : 30/48. Avec >= 4 ou '
+      + '5 : aucun thème basculé, le branchement ne fait rien du tout. L\'élagage '
+      + 'avait amélioré le p (0,177 -> 0,073) sans améliorer le verdict : les deux '
+      + 'ne sont pas la même question, et c\'est le verdict qui compte ici.',
+    rouvrir: 'si l\'archive dépasse 100 cas, refaire la mesure — trois nuls de plus '
+      + 'au bon endroit renverseraient le compte.' },
+
+  defense_m4_m10: {
+    actif: false,
+    nom: 'Table du rang défensif de M4 et M10',
+    cible: 'buts, BTTS, incident',
+    refus: 'INBRANCHABLE, ET CE N\'EST PAS UNE QUESTION DE PREUVE. La table a été '
+      + 'construite en rejouant getVerdictAfficheReel sur les 65536 thèmes : elle '
+      + 'est la SORTIE du verdict. La rebrancher en ENTRÉE ferait boucler le moteur '
+      + 'sur ses propres croyances — il se confirmerait lui-même, et la table '
+      + 'mesurerait alors sa propre influence au lieu de la doctrine. Aucun chiffre '
+      + 'ne peut sortir de ce circuit.',
+    utile: 'elle reste juste et utile en LECTURE : elle rend visible ce que le '
+      + 'fichier croit, ce qui a déjà permis de voir que Carcer y est classé ouvrant '
+      + '(15e sur 16 en M4) alors que la doctrine de terrain le dit fermant. C\'est '
+      + 'une contradiction à trancher, pas un moteur à brancher.',
+    rouvrir: 'seulement en la reconstruisant à partir de RÉSULTATS RÉELS, pas des '
+      + 'verdicts du moteur. Il faudrait des centaines de matchs par figure.' },
+
+  parite_m15: {
+    actif: true,
+    nom: 'M15 est toujours paire — huit valeurs possibles, pas seize',
+    cible: 'les taux de base, pas le verdict',
+    note: 'RIEN À BRANCHER : ce n\'est pas une règle de prédiction, c\'est une '
+      + 'correction de dénominateur. Elle est déjà appliquée partout où un taux de '
+      + 'base est affiché (TAUX_BASE_FAISCEAU_V7, pied du panneau Structure). '
+      + 'Marquée active parce qu\'elle EST en vigueur — pas parce qu\'elle décide.' }
+};
+
+// Ce que le verdict annonce en plus depuis le branchement, en une ligne
+// lisible par le banc et par les annonces prospectives.
+function annonceVolumeV7(theme) {
+  var v = null;
+  try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(theme); }); }
+  catch (e) { return null; }
+  return v ? v.plus25 : null;
+}

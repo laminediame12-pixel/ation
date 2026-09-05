@@ -641,6 +641,67 @@ function getVerdictAfficheReel(theme, favorite) {
     })(),
     btts: carteR.btts === true ? true : carteR.btts === false ? false : null,
     bttsSource: carteR.bttsSource || null,
+    // ═══ LE VOLUME DE BUTS EST BRANCHÉ AU VERDICT (05/09/26) ═══
+    // Demande d'Ellemine_D : « branche-les au verdict ». Mesuré avant,
+    // comme le nul l'avait été le 29/08 — sur les 48 cas d'archive au
+    // score connu, famille plus/moins de 2,5 buts :
+    //   moteur seul .................................. 26/48  (54 %)
+    //   règle idiote « toujours plus de 2,5 » ........ 31/48  (65 %)
+    //   zéro Populus -> plus, sinon moteur ........... 34/48  (71 %)  <- branché
+    //   zéro -> plus ET au moins un -> moins ......... 32/48
+    // Le moteur seul était donc MOINS BON qu'une règle idiote sur cette
+    // famille : il annonce « moins de 2,5 » dans 73 % des cas quand la
+    // réalité est au-dessus dans 65 %. Ce n'est pas un détail de
+    // réglage, c'est un biais d'échelle — 1,52 but annoncé en moyenne
+    // contre 4,12 réels.
+    // Ce que le branchement change, cas par cas : 10 gagnés, 2 perdus.
+    //   gagnés  Milan 7, City/Madrid 11, AmisPuer 8, Gel2Machine 9,
+    //           Milan-like… tous à zéro Populus, tous annoncés « moins »
+    //   perdus  Roma 2 buts, CarcAlbus 0-0 — deux thèmes à zéro Populus
+    //           qui n'ont pas marqué. C'est le prix payé, il est écrit.
+    // Fisher sur le 2x2 : p = 0,0137. Binomial sur les 12 discordants
+    // (10 contre 2) : p = 0,039.
+    //
+    // CE QUI RESTE FAUX ET QUE LE BRANCHEMENT N'ARRANGE PAS : les 14
+    // erreurs restantes sont presque toutes des thèmes AVEC du Populus
+    // qui ont quand même beaucoup marqué (CarcCaput 7, AcqFortMaj 7,
+    // Gel2Main 9). La règle ne sait rien dire d'eux — elle ne parle que
+    // du groupe « zéro ».
+    //
+    // POURQUOI CETTE RÈGLE ET PAS UNE AUTRE : voir PISTES_V7.populus_zero
+    // pour sa faiblesse, qui n'a pas disparu en la branchant — le
+    // découpage « zéro contre au moins un » a été choisi après avoir vu
+    // les données. Le branchement est réversible d'un booléen
+    // (BRANCHES_V7.populus_volume.actif) et le champ dit toujours d'où
+    // vient l'annonce, pour qu'on puisse la débrancher sur mesure.
+    plus25: (function () {
+      // Le score LU ICI doit être celui que l'écran affiche, pas le score
+      // brut de la carte : quand le nul est actif, scoreAfficheV7 force un
+      // score de parité et les deux divergent. Lire la carte brute faisait
+      // annoncer un volume incohérent avec le score affiché juste à côté —
+      // et déplaçait la mesure de référence de 26/48 à 28/48. Attrapé en
+      // faisant recalculer le gain par le fichier lui-même au lieu de me
+      // fier à mon script.
+      var moteur = null;
+      try {
+        var g2 = String(scoreAfficheV7(carteR, nulActif).main || '0-0').split('-').map(Number);
+        moteur = ((g2[0] || 0) + (g2[1] || 0)) > 2.5;
+      } catch (e) { moteur = null; }
+      var zero = null;
+      try { var lp2 = lecturePopulusV7(theme); zero = lp2 ? lp2.zeroPopulus : null; }
+      catch (e) { zero = null; }
+      var branche = (typeof BRANCHES_V7 !== 'undefined')
+        && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif;
+      if (branche && zero === true) {
+        return { annonce: 'plus de 2,5 buts', valeur: true, source: 'zéro Populus',
+          moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
+          contreditLeMoteur: moteur === false };
+      }
+      if (moteur === null) return null;
+      return { annonce: moteur ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: moteur,
+        source: 'moteur', moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
+        contreditLeMoteur: false };
+    })(),
     // htWinner : approximation (BTTS comme proxy "les deux marquent"),
     // le concept exact de "vainqueur de la 1ère mi-temps" du moteur V7
     // legacy n'a pas d'équivalent direct dans le pipeline R1/R7.
@@ -1514,7 +1575,26 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     try{ lp=lecturePopulusV7(theme); }catch(e){ lp=null; }
     try{ ld=lectureDefensiveV7(theme); }catch(e){ ld=null; }
     if(!lp && !ld) return;
-    html+='<div class="tek-section"><div class="tek-title">🧱 STRUCTURE DU THÈME — faits exacts, hors verdict</div>';
+    html+='<div class="tek-section"><div class="tek-title">🧱 STRUCTURE DU THÈME</div>';
+    // Le volume de buts est BRANCHÉ depuis le 05/09 : il s'affiche donc
+    // en tête du panneau, et en disant d'où il vient.
+    (function(){
+      var pv=null; try{ pv=(avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);})||{}).plus25; }catch(e){ pv=null; }
+      if(!pv) return;
+      var col = pv.contreditLeMoteur ? '#fbbf24' : '#38bdf8';
+      html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid '+col+'; background:rgba(56,189,248,.10);">'
+        +'<b style="color:'+col+'; font-size:13px;">VOLUME DE BUTS : '+esc(pv.annonce.toUpperCase())+'</b>'
+        +' <span style="font-size:11px; color:#94a3b8;">— branché au verdict, source : <b>'+esc(pv.source)+'</b></span>'
+        +(pv.contreditLeMoteur
+          ? '<div style="font-size:11px; color:#fbbf24; margin-top:3px;">⚠️ La règle CONTREDIT le moteur, '
+            +'qui annonçait « '+esc(pv.moteurDisait)+' ». Sur l\'archive c\'est la règle qui gagne ce '
+            +'duel 10 fois contre 2.</div>'
+          : '')
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">Mesuré avant d\'être branché, sur les '
+        +'48 cas au score connu : moteur seul <b>26/48</b>, règle idiote « toujours plus de 2,5 » <b>31/48</b>, '
+        +'moteur + zéro Populus <b>34/48</b>. Fisher p = 0,0137. Réversible par '
+        +'BRANCHES_V7.populus_volume.actif.</div></div>';
+    })();
     if(lp){
       var attendu = lp.moteurAttendu || {buts:'—',btts:'—'};
       var tz = lp.zeroPopulus ? '#f59e0b' : '#64748b';
@@ -1542,7 +1622,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +'quand l\'archive donne +2,22 et +4,67. Si la règle tient, c\'est une loi qui manque au fichier. '
         +'<b style="color:#f87171;">Ce qui cloche :</b> le découpage « zéro contre au moins un » a été '
         +'choisi APRÈS avoir vu les données. Seules 30 rencontres annoncées avant coup d\'envoi, '
-        +'10 de chaque côté, le trancheront. Le verdict n\'y touche pas.</div></div>';
+        +'10 de chaque côté, le trancheront. <b style="color:#38bdf8;">Depuis le 05/09 cette règle EST '
+        +'branchée au verdict</b> sur la famille plus/moins de 2,5 buts — mesurée avant '
+        +'(26/48 sans elle, 34/48 avec), réversible par BRANCHES_V7. Sa faiblesse n\'a pas '
+        +'disparu en la branchant.</div></div>';
     }
     if(ld && ld.m4 && ld.m10){
       function ligne(l,maison,repos){

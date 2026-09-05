@@ -413,7 +413,13 @@ function verifierRegistreSignauxV7(theme) {
 var PISTES_V7 = [
   { cle: 'populus_zero', nom: 'Un thème SANS AUCUN Populus annonce plus de buts',
     auteur: 'calcul du 05/09, en creusant « Populus en M10 » demandé par Ellemine_D',
-    etat: 'PRÉ-ENREGISTRÉE — LA PLUS FORTE DU FICHIER APRÈS M9, ET NON DÉMONTRÉE',
+    etat: 'BRANCHÉE AU VERDICT LE 05/09 (famille plus/moins de 2,5 buts) — '
+      + 'ET TOUJOURS NON DÉMONTRÉE. Les deux à la fois : elle décide, et elle reste à prouver.',
+    branchement: 'mesuré avant, comme le nul l\'avait été le 29/08 : moteur seul 26/48 (54 %), '
+      + 'règle idiote « toujours plus de 2,5 » 31/48, moteur + zéro Populus 34/48 (71 %). '
+      + '10 gagnés, 2 perdus (Roma 2 buts et CarcAlbus 0-0, deux thèmes à zéro Populus restés '
+      + 'muets). Fisher 2x2 p = 0,0137, binomial sur les 12 discordants p = 0,039. '
+      + 'Réversible : BRANCHES_V7.populus_volume.actif = false.',
     chiffre: 'archive, stratifié par le rang des mères : 0 Populus = 5,57 buts contre '
       + '3,00 pour au moins un, écart +2,57, p unilatéral = 0,0027 (permutation À '
       + 'L\'INTÉRIEUR de chaque strate de rang, 200 000 tirages).',
@@ -435,8 +441,11 @@ var PISTES_V7 = [
     seuil: '30 rencontres annoncées AVANT le coup d\'envoi, dont au moins 10 sans aucun '
       + 'Populus et 10 avec, puis le même test stratifié. En dessous, on ne saura pas.',
     utilisable: 'la condition n\'est pas rare : 25004 thèmes sur 65536, soit 38 %.',
-    suite: 'lecturePopulusV7(theme) rend déjà rang, compte et le drapeau zeroPopulus. '
-      + 'Le verdict n\'y touche pas tant que rien n\'est démontré.' },
+    suite: 'lecturePopulusV7(theme) rend rang, compte et le drapeau zeroPopulus ; le verdict '
+      + 'expose plus25 {annonce, source, contreditLeMoteur} ; annoncerMatchV7 l\'écrit dans '
+      + 'chaque annonce prospective et resultatMatchV7 le note. Le seuil des 30 rencontres '
+      + 'reste le juge — le branchement ne le remplace pas, il rend seulement la règle '
+      + 'mesurable en conditions réelles au lieu de la laisser dormir.' },
 
   { cle: 'parite_m15', nom: 'M15 est toujours paire — huit figures possibles, pas seize',
     auteur: 'calcul, 05/09', etat: 'ACQUISE — LOI EXACTE, PAS UNE PISTE',

@@ -1364,6 +1364,13 @@ function annoncerMatchV7(ensemble, index, theme, origineTirage) {
     camp: v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7'),
     score: v.scoreMain, scoreAlt: v.scoreAlt, btts: v.btts,
     incident: v.incidentNiveau, incidentPct: v.incidentPct,
+    // Branché au verdict le 05/09 : le volume de buts est désormais une
+    // AFFIRMATION du système, donc elle doit être annoncée avant le coup
+    // d'envoi et notée après, comme le camp et le BTTS. Sans ça le
+    // branchement ne se mesurerait jamais.
+    plus25: v.plus25 ? v.plus25.annonce : null,
+    plus25Source: v.plus25 ? v.plus25.source : null,
+    plus25ContreMoteur: v.plus25 ? !!v.plus25.contreditLeMoteur : null,
     regles: { m9_buts: regle('m9_buts'), laetitia_m2: regle('laetitia_m2'),
       m4_jugerecit: regle('m4_jugerecit') }
   };
@@ -1384,6 +1391,10 @@ function resultatMatchV7(ensemble, index, camp, score) {
     camp: a.camp === camp,
     score: String(a.score) === String(score),
     btts: (a.btts !== null && btts !== null) ? (a.btts === btts) : null,
+    // Le volume branché : juste si l'annonce et le total réel sont du
+    // même côté de 2,5.
+    plus25: (a.plus25 && tot !== null)
+      ? ((a.plus25.indexOf('plus') === 0) === (tot > 2.5)) : null,
     m9: (a.regles.m9_buts && tot !== null)
       ? (a.regles.m9_buts.indexOf('plus') === 0 ? tot > 2.5 : tot < 2.5) : null,
     laetitia_m2: (a.regles.laetitia_m2 === 'M1 gagne') ? (camp === 'R1') : null,
@@ -1397,7 +1408,7 @@ function bilanEnsembleV7(ensemble) {
   if (!ensemble) return null;
   var annonces = ensemble.matchs.filter(function (m) { return !!m.annonce; });
   var joues = ensemble.matchs.filter(function (m) { return !!m.resultat; });
-  var c = { camp: [0, 0], score: [0, 0], btts: [0, 0], m9: [0, 0],
+  var c = { camp: [0, 0], score: [0, 0], btts: [0, 0], plus25: [0, 0], m9: [0, 0],
     laetitia_m2: [0, 0], m4_jugerecit: [0, 0] };
   joues.forEach(function (m) {
     Object.keys(c).forEach(function (k) {
