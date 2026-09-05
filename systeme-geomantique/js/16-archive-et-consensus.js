@@ -1262,6 +1262,7 @@ var ANNONCES_MAIN_PL_V7 = [
     incident: 'Faible', incidentPct: 20,
     regles: { m9_buts: 'moins de 2,5 buts', laetitia_m2: 'la règle se tait',
       m4_jugerecit: 'la règle se tait' },
+    validite: { niveau: 3, seuil: 3, rejete: false, manques: [] },
     // Relevé au moment de l'annonce, pour que le désaccord soit lisible
     // après coup sans avoir à rejouer le thème.
     note: 'validité 3/3 · M4 Laetitia (forte, ouverte, non fragile) · '
@@ -1269,6 +1270,25 @@ var ANNONCES_MAIN_PL_V7 = [
       + '(gouverneur défensif négatif) · M9 Puella → bas · '
       + 'rotation : repos de Tristitia en M8, donc R1 = M8 Laetitia contre '
       + 'R7 = M14 Puella' },
+  { n: 2, match: 'Brentford – Sunderland', coupEnvoi: '15:00',
+    ecritLe: '2026-09-05T03:49:05.687Z', margeMinutes: 611,
+    meres: ['fortuna_minor', 'tristitia', 'fortuna_major', 'rubeus'],
+    camp: 'nul', score: '1-1', scoreAlt: '2-2', btts: true,
+    incident: 'Élevé', incidentPct: 70,
+    regles: { m9_buts: 'la règle se tait', laetitia_m2: 'la règle se tait',
+      m4_jugerecit: 'la règle se tait' },
+    // THÈME INVALIDE — 2/3, la figure du jour (Puella) est absente.
+    // Annoncé quand même, et marqué. Le retirer après avoir vu le verdict
+    // serait un tri a posteriori : ça viderait le bras de sa valeur. Le
+    // champ `validite` permet au contraire de séparer valides et invalides
+    // APRÈS les résultats, ce qui est une mesure, pas une sélection.
+    validite: { niveau: 2, seuil: 3, rejete: true, manques: ['figure du jour (Puella) absente'] },
+    note: 'validité 2/3 (fdj Puella absente) · M4 Rubeus (faible, ouverte, '
+      + 'FRAGILE) · M10 Caput Draconis (forte, fermée, non fragile) · '
+      + 'M3 Fortuna Major (gouverneur défensif, positif) · gouverneur '
+      + 'offensif Carcer, négatif · M9 Puer → la règle se tait · '
+      + 'rotation : repos de Fortuna Minor en M9, donc R1 = M9 Puer contre '
+      + 'R7 = M15 Via' },
 ];
 try {
   if (ENSEMBLE_PL_MAIN_V7) {
@@ -1279,7 +1299,7 @@ try {
         origineTirage: 'tirage à la main — Ellemine_D', meres: a.meres,
         camp: a.camp, score: a.score, scoreAlt: a.scoreAlt, btts: a.btts,
         incident: a.incident, incidentPct: a.incidentPct, regles: a.regles,
-        note: a.note };
+        validite: a.validite, note: a.note };
     });
   }
 } catch (e) { console.warn('annonces à la main non rejouées : ' + e.message); }
