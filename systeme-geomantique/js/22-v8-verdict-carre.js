@@ -606,6 +606,42 @@ function getVerdictAfficheReel(theme, favorite) {
   // moteurs par verdict, pour rien. Retirés sur le constat d'Ellemine_D.
   // Les panneaux qui les affichent appellent directement leur moteur.
   var winnerOverride = overrideVerdictV7(theme, nulActif);
+  // ─── LE PROTOCOLE PEUT PILOTER LE CAMP (05/09/26, demande d'Ellemine_D) ───
+  // Le mécanisme est ici, complet et testé. L'interrupteur est
+  // BRANCHES_V7.protocole_pilote.actif, et il est à false.
+  //
+  // POURQUOI IL EST À FALSE, ce n'est pas de la prudence, c'est la
+  // mesure : camp 38/56 aujourd'hui, 27/56 si le protocole décide dès
+  // qu'il parle sans réserve. La variante écrite ici est la MOINS
+  // MAUVAISE des deux — le nul garde la priorité, donc 29/56 — et elle
+  // coûte quand même NEUF points. Vérifié en basculant le booléen à
+  // chaud : 38/56 éteint, 29/56 allumé, 38/56 au retour.
+  // Il ne s'exprime que quand
+  // R1 et R7 sont dans des boucles différentes (50,00 % des thèmes) et,
+  // sur ces cas-là, il tombe juste 12 fois sur 29 quand le verdict en
+  // réussit 23. Hors des 4 nuls réels qu'il ne peut jamais annoncer :
+  // 12/25 tel quel, 13/25 inversé, p = 1,0000. Ce n'est pas un signal
+  // au signe retourné, c'est un pile ou face.
+  //
+  // Le détail complet, les huit autres cibles testées et le défaut
+  // trouvé au passage (le nombre de duels vaut 16 sur tous les thèmes)
+  // sont dans BRANCHES_V7.protocole_pilote. Un seul booléen à basculer
+  // le jour où ces chiffres changent.
+  var protoPilote = null;
+  if (typeof BRANCHES_V7 !== 'undefined' && BRANCHES_V7.protocole_pilote
+      && BRANCHES_V7.protocole_pilote.actif) {
+    try {
+      var qp = comparerBouclesAntagonistesR1R7(theme);
+      if (qp && qp.applicable) {
+        var ps1 = Number(qp.scoreR1 || 0), ps7 = Number(qp.scoreR7 || 0);
+        if (ps1 !== ps7) protoPilote = ps1 > ps7 ? 'R1' : 'R7';
+      }
+    } catch (e) { protoPilote = null; }
+    // Le nul garde la priorité : il est branché depuis le 29/08 sur une
+    // mesure qui, elle, avait gagné (18/30 -> 21/30). Le protocole ne
+    // peut pas annoncer de nul, il ne doit donc pas pouvoir en effacer un.
+    if (protoPilote && !nulActif) winnerOverride = protoPilote;
+  }
   var carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', theme, winnerOverride, undefined, true);
   var goals = String(carteR.scoreMain || '0-0').split('-').map(Number);
   // posA porte toujours le camp M1 par convention de buildVerdictCard
@@ -725,6 +761,21 @@ function getVerdictAfficheReel(theme, favorite) {
     cornersDominant: carteR.cornersDominant === 'R1' ? 'M1'
       : carteR.cornersDominant === 'R7' ? 'M7' : (carteR.cornersDominant || null),
     corners: carteR.corners || null,
+    // La lecture du protocole est renvoyée QUOI QU'IL ARRIVE, branchée
+    // ou non : c'est la seule façon de continuer à mesurer si elle
+    // s'améliore, et de voir sur quels thèmes elle contredit le verdict.
+    protocole: (function () {
+      try {
+        var qq = comparerBouclesAntagonistesR1R7(theme);
+        if (!qq || !qq.applicable) return { applicable: false,
+          raison: qq && qq.reason ? qq.reason : 'R1 et R7 dans la même boucle' };
+        var a = Number(qq.scoreR1 || 0), b2 = Number(qq.scoreR7 || 0);
+        return { applicable: true, scoreR1: a, scoreR7: b2, ecart: a - b2,
+          dit: a > b2 ? 'R1' : b2 > a ? 'R7' : 'égalité',
+          pilote: !!(typeof BRANCHES_V7 !== 'undefined' && BRANCHES_V7.protocole_pilote
+            && BRANCHES_V7.protocole_pilote.actif) };
+      } catch (e) { return null; }
+    })(),
     corrected: carteR.corrected, nulActif: nulActif
   };
 }
@@ -1594,6 +1645,32 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +'48 cas au score connu : moteur seul <b>26/48</b>, règle idiote « toujours plus de 2,5 » <b>31/48</b>, '
         +'moteur + zéro Populus <b>34/48</b>. Fisher p = 0,0137. Réversible par '
         +'BRANCHES_V7.populus_volume.actif.</div></div>';
+    })();
+    // Le protocole de comparaison, et pourquoi il ne pilote pas.
+    (function(){
+      var pr=null; try{ pr=(avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);})||{}).protocole; }catch(e){ pr=null; }
+      if(!pr) return;
+      if(!pr.applicable){
+        html+='<div style="font-size:11px; color:#64748b; margin:0 0 8px;">'
+          +'⚖️ <b>Protocole de comparaison : muet sur ce thème</b> — '+esc(pr.raison)
+          +'. Il ne parle que sur la moitié des thèmes (32 768 sur 65 536, mesuré).</div>';
+        return;
+      }
+      var dit=pr.dit, pil=pr.pilote;
+      html+='<div style="padding:7px 10px; margin:0 0 8px; border-left:4px solid '+(pil?'#f87171':'#64748b')+'; background:rgba(100,116,139,.10);">'
+        +'⚖️ <b style="font-size:12px;">Protocole de comparaison : '+esc(dit)+'</b>'
+        +' <span style="font-size:11px; color:#94a3b8;">— R1 '+pr.scoreR1.toFixed(2)
+        +' contre R7 '+pr.scoreR7.toFixed(2)+', écart '+(pr.ecart>=0?'+':'')+pr.ecart.toFixed(2)+'</span>'
+        +'<div style="font-size:10px; color:'+(pil?'#f87171':'#94a3b8')+'; margin-top:4px;">'
+        +(pil
+          ? '<b>IL PILOTE LE VERDICT</b> (BRANCHES_V7.protocole_pilote.actif = true). '
+            +'Mesuré : le camp tombe de 38/56 à 29/56.'
+          : '<b>Il ne pilote PAS le verdict</b>, et c\'est mesuré, pas prudent : sur les 29 cas '
+            +'d\'archive où il parle, il tombe juste 12 fois (41 %) quand le verdict en réussit '
+            +'23 (79 %) ; sur leurs 18 désaccords, protocole 3, verdict 14. L\'hypothèse d\'un '
+            +'signe inversé a été testée et rejetée (12/25 tel quel, 13/25 inversé, p = 1,0000). '
+            +'Pour l\'activer quand même : BRANCHES_V7.protocole_pilote.actif = true.')
+        +'</div></div>';
     })();
     if(lp){
       var attendu = lp.moteurAttendu || {buts:'—',btts:'—'};

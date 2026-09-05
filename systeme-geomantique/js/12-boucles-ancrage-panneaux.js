@@ -2124,6 +2124,40 @@ var BRANCHES_V7 = {
     rouvrir: 'seulement en la reconstruisant à partir de RÉSULTATS RÉELS, pas des '
       + 'verdicts du moteur. Il faudrait des centaines de matchs par figure.' },
 
+  protocole_pilote: {
+    actif: false,
+    nom: 'Le protocole de comparaison R1/R7 pilote le verdict final',
+    cible: 'le camp',
+    demande: 'Ellemine_D, 05/09 : « le protocole de comparaison doit piloter le verdict final ».',
+    refus: 'MESURÉ, ET C\'EST LE CHANGEMENT LE PLUS NUISIBLE DE LA SÉANCE. Camp actuel '
+      + '38/56. Si le protocole décide dès qu\'il parle : 27/56 (−11), 3 gagnés contre 14 '
+      + 'perdus. Même en le bloquant quand le nul est imposé : 29/56 (−9).',
+    pourquoi: 'le protocole ne parle que si R1 et R7 sont dans des boucles différentes — '
+      + 'exactement 50,00 % des thèmes (32768 sur 65536), et 29 des 56 cas d\'archive. '
+      + 'Sur ces 29 cas il tombe juste 12 fois (41 %) quand le verdict actuel en réussit 23 '
+      + '(79 %). Sur leurs 18 désaccords : protocole 3, verdict 14.',
+    inversionEcartee: 'l\'hypothèse d\'un signe inversé a été testée et REJETÉE : en écartant '
+      + 'les 4 nuls réels (que le protocole ne peut jamais annoncer), il fait 12/25 tel quel '
+      + 'et 13/25 inversé — binomial bilatéral p = 1,0000. L\'amplitude de l\'écart n\'aide pas '
+      + 'davantage : à |écart| >= 50 il fait 3/5, à >= 10 il fait 7/16. Ce n\'est pas un signe '
+      + 'à retourner, c\'est un pile ou face.',
+    autresCibles: 'testé contre huit autres familles pour voir s\'il visait ailleurs — écart '
+      + 'vers le nul, |écart| vers le nul, somme vers les buts, somme vers le BTTS, |écart| '
+      + 'vers les buts, |écart| vers le BTTS, duels vers les buts, duels vers le nul. Rien : '
+      + 'le meilleur est écart -> nul à p = 0,064, ce qui ne survit à aucune correction sur '
+      + 'huit tests.',
+    defautTrouve: 'le nombre de duels vaut 16 sur TOUS les thèmes testés — c\'est une '
+      + 'constante structurelle, pas une mesure. Et la somme s1+s7 ne varie qu\'entre 47,50 '
+      + 'et 60,75 : le protocole est un partage à somme presque fixe. Il produit une '
+      + 'grandeur qui varie réellement (écart de −12,25 à +67,00) mais qui ne corrèle avec '
+      + 'rien de ce qui est mesuré.',
+    pourLActiver: 'BRANCHES_V7.protocole_pilote.actif = true. Le code est écrit et testé ; '
+      + 'seul le booléen le retient. Il coûtera 11 points sur 56 tant que ces chiffres '
+      + 'tiennent — c\'est écrit ici pour que la décision se prenne avec, pas contre.',
+    rouvrir: 'si le protocole est REPENSÉ (la somme quasi fixe et les 16 duels constants '
+      + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
+      + 'avant tout branchement.' },
+
   parite_m15: {
     actif: true,
     nom: 'M15 est toujours paire — huit valeurs possibles, pas seize',
