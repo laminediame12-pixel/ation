@@ -1732,6 +1732,30 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'Pour l\'activer quand même : BRANCHES_V7.protocole_pilote.actif = true.')
         +'</div></div>';
     })();
+    // Le miroir M5 — exact, et il touche directement la doctrine des camps.
+    (function(){
+      var mi=null; try{ mi=miroirM5V7(theme); }catch(e){ mi=null; }
+      if(!mi) return;
+      html+='<div style="padding:7px 10px; margin:0 0 8px; border-left:4px solid #a78bfa; background:rgba(167,139,250,.10);">'
+        +'🪞 <b style="font-size:12px;">Le partage qui commence en M5 — le thème vu du camp adverse</b>'
+        +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+        +'En reconstruisant tout le bouclier sur M5-M8 : les mères et les filles '
+        +'s\'échangent, les neveux aussi (M9↔M11, M10↔M12), les témoins aussi (M13↔M14). '
+        +'<b>Sept des huit maisons du camp 1 deviennent des maisons du camp 2.</b></div>'
+        +'<div style="font-size:11px; margin-top:4px; color:'+(mi.jugeIdentique?'#4ade80':'#f87171')+';">'
+        +'⚖️ Le Juge M15 ('+label(theme[15])+') est '+(mi.jugeIdentique?'INCHANGÉ':'CHANGÉ — anomalie')
+        +' — c\'est la seule maison que les deux camps lisent à l\'identique. '
+        +'Vérifié 65 536 fois sur 65 536.</div>'
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+        +'La Réconciliation M16 est la seule cassure : elle vaut M15⊕M1 à l\'endroit et '
+        +'M15⊕M5 à l\'envers, donc elle ne revient que si M1 = M5 — un thème sur huit. '
+        +'Ici '+(mi.m16Revient?'elle revient':'elle ne revient pas')+'. '
+        +'<b>Et l\'encadrement d\'Ellemine_D est exact</b> : M4 et M10 sont les SEULES '
+        +'maisons dont les deux voisines sont dans l\'axe offensif {3,5,9,11}, et ce sont '
+        +'les deux maisons défensives. Les deux seules lois d\'opposition du carré, '
+        +'M4⊕M10=M3 et M5⊕M11=M6, sont portées par les maisons VOISINES M4 et M5 et '
+        +'produisent M3 et M6, qui encadrent la paire.</div></div>';
+    })();
     // La défense par les propriétés — mesuré sur les VRAIS scores.
     (function(){
       var dt=null; try{ dt=defenseTenueV7(theme); }catch(e){ dt=null; }

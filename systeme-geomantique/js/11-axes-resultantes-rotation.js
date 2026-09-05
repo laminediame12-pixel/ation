@@ -2862,3 +2862,110 @@ autoTestV7('loi des boucles M1/M4', function () {
   if (!l || !l.maximale || l.tauxR1Moteur !== 46.2)
     throw new Error('lectureBouclesV7 ne retrouve pas la strate maximale');
 });
+
+// ═══════════════════════════════════════════════════════════════
+// LE PARTAGE QUI COMMENCE EN M5 (05/09/26) — une involution exacte
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D a insisté, et il avait raison sur les trois points.
+//
+// ── 1. L'ENCADREMENT N'EST PAS UNE COÏNCIDENCE ──
+// « Regarde la numérotation : 1 --- 3-4-5 --- 7 --- 9-10-11. À part
+// M1-M7, M4 et M10 sont entourées de l'axe offensif complet. »
+// Vérifié sur les seize maisons : M4 et M10 sont les SEULES dont les
+// DEUX voisines appartiennent à l'axe {M3, M5, M9, M11}. Et ce sont
+// exactement les deux maisons défensives. Aucune autre maison du carré
+// n'a cette propriété.
+//
+// ── 2. CE QUE J'AI TROUVÉ EN CREUSANT PLUS LOIN ──
+// Sur les six axes d'opposition M(h)/M(h+6), DEUX SEULEMENT portent une
+// loi : M4 ⊕ M10 = M3 et M5 ⊕ M11 = M6. Or M4 et M5 sont VOISINES, M10
+// et M11 aussi, et leurs deux résultats — M3 et M6 — sont exactement
+// les deux maisons qui ENCADRENT la paire {M4, M5} :
+//
+//              M3   [ M4   M5 ]   M6
+//               ↑                  ↑
+//          M4 ⊕ M10 = M3      M5 ⊕ M11 = M6
+//
+// Les deux seules lois d'opposition du carré sont donc portées par deux
+// maisons COLLÉES, et elles produisent les deux maisons qui les
+// encadrent. Ce n'est pas une lecture, c'est de l'arithmétique.
+//
+// ── 3. LE PARTAGE QUI COMMENCE EN M5 : UNE INVOLUTION EXACTE ──
+// « Il y a une manière de diviser le thème qui commence en M5. »
+// Pris au mot : on prend M5, M6, M7, M8 comme nouvelles mères et on
+// refait tout le bouclier. Résultat, vérifié sur les 65536 thèmes,
+// sans une exception :
+//      nouvelle M1..M4   =  ancienne M5..M8      mères et filles
+//      nouvelle M5..M8   =  ancienne M1..M4      s'échangent
+//      nouvelle M9, M10  =  ancienne M11, M12    neveux échangés
+//      nouvelle M11, M12 =  ancienne M9, M10
+//      nouvelle M13      =  ancienne M14         témoins échangés
+//      nouvelle M14      =  ancienne M13
+//      nouvelle M15      =  ancienne M15         LE JUGE NE BOUGE PAS
+//      nouvelle M16      =  aucune maison fixe   seule cassure
+//
+// CE QUE ÇA VEUT DIRE. CAMP1 = {1,2,3,4,9,10,13,16} et CAMP2 =
+// {5,6,7,8,11,12,14,15}. L'involution envoie 1→5, 2→6, 3→7, 4→8, 9→11,
+// 10→12, 13→14 : SEPT des huit maisons du camp 1 deviennent des maisons
+// du camp 2. Le partage qui commence en M5 est donc l'ÉCHANGE DES DEUX
+// CAMPS — c'est le même thème lu depuis l'autre bord.
+//
+// Et les deux seules exceptions sont les deux sommets :
+//   · M15 est FIXE. C'est la seule maison que les deux camps lisent à
+//     l'identique. Le Juge est neutre au sens propre, et démontré.
+//   · M16 casse. Elle vaut M15 ⊕ M1 à l'endroit et M15 ⊕ M5 à l'envers,
+//     donc elle ne revient que si M1 = M5 — exactement 8192 thèmes sur
+//     65536, soit un sur huit.
+//
+// ── UNE CORRECTION, PRÉCISE ──
+// « M1 + M2 = M3 » : non. M1 ⊕ M2 = M9. La suite exacte est
+//      M1 ⊕ M2 = M9    M3 ⊕ M4 = M10    M5 ⊕ M6 = M11    M7 ⊕ M8 = M12
+// « M5 + M6 = M11 », en revanche, est JUSTE.
+var MIROIR_M5_V7 = {
+  correspondance: { 1: 5, 2: 6, 3: 7, 4: 8, 5: 1, 6: 2, 7: 3, 8: 4,
+    9: 11, 10: 12, 11: 9, 12: 10, 13: 14, 14: 13, 15: 15, 16: null },
+  verifie: '65536/65536, aucune exception',
+  jugeFixe: true,
+  m16Casse: 'ne revient que si M1 = M5, soit 8192 thèmes sur 65536',
+  sens: 'le partage qui commence en M5 ÉCHANGE LES DEUX CAMPS : sept des huit '
+    + 'maisons du camp 1 deviennent des maisons du camp 2. C\'est le même thème '
+    + 'lu depuis l\'autre bord, et le Juge est le seul point commun aux deux lectures.',
+  encadrement: 'M4 et M10 sont les SEULES maisons dont les deux voisines sont dans '
+    + 'l\'axe offensif {3,5,9,11} — et ce sont les deux maisons défensives',
+  loisCollees: 'les deux seules lois d\'opposition, M4⊕M10=M3 et M5⊕M11=M6, sont '
+    + 'portées par les maisons VOISINES M4 et M5, et produisent M3 et M6 qui '
+    + 'encadrent la paire {M4,M5}',
+  correction: 'M1 ⊕ M2 = M9, pas M3. La suite est M1⊕M2=M9, M3⊕M4=M10, '
+    + 'M5⊕M6=M11, M7⊕M8=M12. « M5 ⊕ M6 = M11 » était juste.'
+};
+
+// Le thème vu depuis l'autre bord. Ce n'est pas une approximation :
+// c'est le bouclier reconstruit sur M5..M8, et la correspondance
+// ci-dessus est exacte sur les 65536 thèmes.
+function miroirM5V7(theme) {
+  if (!theme || typeof calcTheme !== 'function') return null;
+  var u = calcTheme(theme[5], theme[6], theme[7], theme[8]);
+  var C = MIROIR_M5_V7.correspondance, ecarts = [];
+  for (var h = 1; h <= 16; h++) {
+    var att = C[h];
+    if (att && u[h] !== theme[att]) ecarts.push('M' + h + ' devrait valoir M' + att);
+  }
+  return { theme: u, jugeIdentique: u[15] === theme[15],
+    m16Revient: u[16] === theme[16],
+    coherent: ecarts.length === 0, ecarts: ecarts,
+    lecture: 'le même thème lu depuis le camp adverse ; seul le Juge M15 est commun '
+      + 'aux deux lectures' };
+}
+
+autoTestV7('miroir M5 — involution exacte', function () {
+  if (typeof calcTheme !== 'function' || typeof FIGS_V7 === 'undefined') return;
+  var essais = [['puer', 'laetitia', 'caput_draconis', 'albus'],
+    ['tristitia', 'amissio', 'cauda_draconis', 'laetitia'],
+    ['via', 'rubeus', 'carcer', 'puella'], ['populus', 'via', 'albus', 'conjunctio']];
+  essais.forEach(function (m) {
+    var t = calcTheme(m[0], m[1], m[2], m[3]);
+    var r = miroirM5V7(t);
+    if (!r || !r.coherent) throw new Error('miroir M5 incohérent sur ' + m.join('/'));
+    if (!r.jugeIdentique) throw new Error('le Juge devrait être fixe sous le miroir M5');
+  });
+});
