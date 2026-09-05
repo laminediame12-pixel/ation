@@ -1249,30 +1249,48 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         if (s.fragileM10) maisons.push('M10 (' + (FL[s.m10] || s.m10) + ')');
         var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
           + 'background:rgba(52,211,153,.10); font-size:11px; color:#a7f3d0; text-align:left;">'
-          + '🥅 <b>SIGNAL DE FRAGILITÉ DÉFENSIVE (M4/M10)</b> — ' + maisons.join(' et ')
-          + ' mobile(s) et ouverte(s). Sur l\'archive, ce profil penche vers les deux équipes qui marquent '
-          + '(65% contre 29% sinon, n=45, p≈0,05). Aucun poids sur le verdict.</div>';
-        if (card.btts === false) {
+          + '🥅 <b>SIGNAL DE FRAGILITÉ DÉFENSIVE</b> — ' + maisons.join(' et ')
+          + ' mobile(s) et ouverte(s).'
+          + (s.fragileM4
+            ? ' <b>M4 est celle qui porte</b> : 63 % de BTTS contre 39 % sinon (n=52, p=0,150).'
+            : '')
+          + (s.fragileM10 && !s.fragileM4
+            ? ' <b>Seule M10 l\'est, et M10 va en SENS INVERSE</b> : 36 % de BTTS contre 53 % sinon.'
+            : '')
+          + ' <span style="color:#fbbf24;">Chiffre corrigé le 05/09 : le « 65 % contre 29 %, n=45, p≈0,05 » '
+          + 'affiché jusqu\'ici était périmé — sur 52 cas, M4 OU M10 donne 52 % contre 44 %, p=0,592. '
+          + 'Les deux maisons tirent en sens contraire et s\'annulent.</span> Aucun poids sur le verdict.</div>';
+        // La contradiction ne se signale plus que sur M4, la seule des deux
+        // maisons qui porte quelque chose (05/09/26).
+        if (card.btts === false && s.fragileM4) {
           html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
             + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'
-            + '⚠️ <b>SIGNAL DE FRAGILITÉ CONTREDIT LE VERDICT</b> — le verdict ci-dessus exclut le BTTS, '
-            + 'le signal penche vers les deux équipes qui marquent.</div>';
+            + '⚠️ <b>M4 FRAGILE CONTREDIT LE VERDICT</b> — le verdict ci-dessus exclut le BTTS, '
+            + 'et M4 mobile+ouverte penche vers les deux équipes qui marquent (63 % contre 39 %).</div>';
         }
         return html;
       })())
     // SIGNAL M4 — DOCTRINE JUGE_RECIT (04/09/26) — cf.
     // signalM4JugeRecitBttsV7 : M4 dans {Via, Conjunctio, Amissio,
-    // Fortuna Minor} penche vers le BTTS (75% contre 44-50% sinon, n=45,
-    // p≈0,10). Fondé sur le texte doctrinal JUGE_RECIT, pas sur une
-    // corrélation pêchée dans les données. Aucun poids sur le verdict.
+    // Fortuna Minor} penche vers le BTTS. REMESURÉ le 05/09 sur 52 cas
+    // (41 archive + 11 du 04/09) : 77 % contre 38 %, p = 0,025 — le
+    // signal a MONTÉ avec les cas neufs, il était à 75 % contre 44-50 %
+    // sur 45. C'est à ce jour le plus fort des signaux mesurés du
+    // fichier, et il est fondé sur le TEXTE doctrinal JUGE_RECIT, écrit
+    // avant toute statistique — pas sur une corrélation pêchée dans les
+    // données. Aucun poids sur le verdict tant qu'il n'a pas été annoncé
+    // d'avance sur dix matchs (protocole du 04/09).
     +((function(){
         var s; try { s = signalM4JugeRecitBttsV7(theme); } catch(e){ s = {applicable:false}; }
         if (!s.applicable) return '';
         var html = '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #34d399; border-radius:7px; '
           + 'background:rgba(52,211,153,.10); font-size:11px; color:#a7f3d0; text-align:left;">'
           + '📖 <b>SIGNAL M4 — DOCTRINE JUGE_RECIT</b> — M4 (' + (FL[s.m4] || s.m4) + ') fait partie des figures '
-          + 'dont le dénouement suppose des buts des deux côtés. Sur l\'archive : 75% contre 44-50% sinon '
-          + '(n=45, p≈0,10). Aucun poids sur le verdict.</div>';
+          + 'dont le dénouement suppose des buts des deux côtés. <b>77 % contre 38 % sinon</b> '
+          + '(n=52, p = 0,025) — remesuré le 05/09, le signal a MONTÉ avec les onze cas neufs. '
+          + 'Le plus fort du fichier à ce jour, et fondé sur le texte doctrinal, pas sur une '
+          + 'corrélation pêchée. Aucun poids sur le verdict tant qu\'il n\'aura pas été annoncé '
+          + 'd\'avance sur dix matchs.</div>';
         if (card.btts === false) {
           html += '<div style="margin:6px 8px 2px; padding:5px 8px; border:1px solid #fbbf24; border-radius:7px; '
             + 'background:rgba(251,191,36,.12); font-size:11px; color:#fde68a; text-align:left;">'

@@ -300,6 +300,97 @@ function _arbitrageMoteursV7() {
 // lui : garder le filtre (il coûte peu et il le rassure) ou le lever.
 // Ce qui est écarté, c'est la troisième voie — elle n'a pas de base.
 // ═══════════════════════════════════════════════════════════════
+// LE REGISTRE DES SIGNAUX (05/09/26) — un champ de vérité, un chiffre,
+// une date. Ellemine_D : « intègre ce qui est évident d'abord ».
+//
+// ☠️ POURQUOI CE REGISTRE EXISTE. En deux jours j'ai lu TROIS FOIS un
+// champ qui n'existait pas, en le devinant au lieu de lire la fonction :
+//   · s.fragile   sur signalFragiliteM4M10V7  (le champ est fragileM4/fragileM10)
+//   · s.signal    sur signalM4JugeRecitBttsV7 (le champ est applicable)
+//   · s.fragile   à nouveau, dans trois scripts d'affilée
+// `undefined` vaut false en silence : le signal paraissait ne jamais se
+// déclencher et j'ai failli conclure qu'il ne valait rien. Ce n'est plus
+// une étourderie à ce stade, c'est un défaut de structure — d'où cette
+// table. Un seul endroit dit, pour chaque signal, QUEL CHAMP porte la
+// vérité et CE QU'IL VAUT.
+//
+// ⚠️ ET LES CHIFFRES AFFICHÉS À L'ÉCRAN ÉTAIENT PÉRIMÉS. Le badge de
+// fragilité annonçait « 65 % contre 29 %, n=45, p≈0,05 » ; remesuré sur
+// 52 cas le 05/09, le OU donne 52 % contre 44 %, p = 0,592. L'app
+// montrait un chiffre faux. Les valeurs ci-dessous sont celles du 05/09
+// et remplacent tout ce qui traîne ailleurs.
+var SIGNAUX_V7 = [
+  { fn: 'signalM4JugeRecitBttsV7', champ: 'applicable', cible: 'BTTS',
+    nom: 'M4 dans {Via, Conjunctio, Amissio, Fortuna Minor} → les deux marquent',
+    oui: 77, non: 38, n: 52, nOui: 13, p: 0.025, date: '05/09/26',
+    origine: 'doctrine JUGE_RECIT d\'Ellemine_D, écrite AVANT toute mesure',
+    note: 'le plus fort des signaux mesurés ; il a MONTÉ avec les 11 cas neufs (75 % sur 12 → 77 % sur 13)' },
+
+  { fn: 'signalRecouvrementCampsV7', champ: 'eleve', cible: 'nul',
+    nom: 'recouvrement des camps ≥ 3 → nul',
+    oui: 26, non: 7, n: 61, nOui: 34, p: 0.092, date: '05/09/26',
+    note: 'tient avec les cas neufs (était 30 % / 9 %)' },
+
+  { fn: 'signalFragiliteM4M10V7', champ: 'fragileM4', cible: 'BTTS',
+    nom: 'M4 SEULE mobile+ouverte → les deux marquent',
+    oui: 63, non: 39, n: 52, nOui: 19, p: 0.150, date: '05/09/26',
+    note: 'c\'est M4 SEULE qui porte ; M10 seule va en sens inverse (36 % / 53 %) '
+      + 'et le OU des deux s\'annule à 52 % / 44 %, p = 0,592' },
+
+  { fn: 'signalFragiliteM4M10V7', champ: 'applicable', cible: 'BTTS',
+    nom: 'M4 OU M10 mobile+ouverte → les deux marquent  [ANCIENNE LECTURE]',
+    oui: 52, non: 44, n: 52, nOui: 27, p: 0.592, date: '05/09/26',
+    note: 'REMPLACE le « 65 % contre 29 %, n=45, p≈0,05 » affiché jusqu\'ici — périmé' },
+
+  { fn: 'signalM4M10BoucleV7', champ: 'applicable', cible: 'match tranché',
+    nom: 'M4 et M10 dans la boucle d\'un camp',
+    oui: 84, non: 81, n: 61, nOui: 19, p: 1.000, date: '05/09/26',
+    note: 'ne discrimine pas ; et son branchement en tête de cascade ne rapporte rien (42/67 avec comme sans)' },
+
+  { fn: 'signalM15M16BoucleV7', champ: 'applicable', cible: 'match tranché',
+    oui: 79, non: 83, n: 61, nOui: 19, p: 0.726, date: '05/09/26' },
+
+  { fn: 'signalAxeCadentInverseV7', champ: 'applicable', cible: 'match tranché',
+    oui: 80, non: 88, n: 61, nOui: 45, p: 0.711, date: '05/09/26' }
+];
+
+// Lit un signal SANS deviner son champ. Si le champ déclaré n'existe pas
+// dans l'objet renvoyé, on le dit tout haut au lieu de renvoyer false.
+function lireSignalV7(nomFn, theme) {
+  var def = null;
+  for (var i = 0; i < SIGNAUX_V7.length; i++) {
+    if (SIGNAUX_V7[i].fn === nomFn) { def = SIGNAUX_V7[i]; break; }
+  }
+  if (!def) { console.warn('⚠️ signal inconnu du registre : ' + nomFn); return null; }
+  var fn = (typeof window !== 'undefined') ? window[nomFn] : null;
+  if (typeof fn !== 'function') { console.warn('⚠️ fonction absente : ' + nomFn); return null; }
+  var o = null;
+  try { o = fn(theme); } catch (e) { return null; }
+  if (!o || !Object.prototype.hasOwnProperty.call(o, def.champ)) {
+    console.warn('⚠️ le champ « ' + def.champ + " » n'existe pas dans le retour de "
+      + nomFn + ' — le registre est à corriger, PAS à contourner');
+    return null;
+  }
+  return { actif: !!o[def.champ], brut: o, def: def };
+}
+
+// Contrôle d'intégrité : tous les champs déclarés existent-ils vraiment ?
+function verifierRegistreSignauxV7(theme) {
+  var t = theme;
+  if (!t) { try { t = buildThemeFromMothers('via', 'via', 'via', 'via'); } catch (e) { return null; } }
+  var manquants = [];
+  SIGNAUX_V7.forEach(function (d) {
+    var fn = (typeof window !== 'undefined') ? window[d.fn] : null;
+    if (typeof fn !== 'function') { manquants.push(d.fn + ' : fonction absente'); return; }
+    var o = null; try { o = fn(t); } catch (e) { manquants.push(d.fn + ' : lève ' + e.message); return; }
+    if (!o || !Object.prototype.hasOwnProperty.call(o, d.champ)) {
+      manquants.push(d.fn + ' : champ « ' + d.champ + ' » absent');
+    }
+  });
+  return { ok: manquants.length === 0, manquants: manquants, nb: SIGNAUX_V7.length };
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LE REGISTRE DES PISTES (05/09/26) — Ellemine_D : « chaque piste est
 // une piste pour une autre piste. mais toi tu détruis les pistes sans
 // proposer une piste concrète, juste semer le doute dans les faits. »
