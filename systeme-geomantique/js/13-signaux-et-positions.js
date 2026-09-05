@@ -563,6 +563,77 @@ function updateCompetitionList() {
   }).join('');
 }
 
+// ═══════════════════════════════════════════════════════════════
+// BUTS_FIGURE — LA TABLE D'ELLEMINE_D, ENFIN MESURÉE (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+//
+// « je pense j'avais inscrit la quantité de marquage de but de chaque
+//   figure — fouille. »
+//
+// Elle est là, écrite le 12/07/26, marquée « doctrine utilisateur ».
+// Elle n'avait JAMAIS été mesurée en presque deux mois. Elle l'est
+// maintenant, et le résultat est mauvais — il faut le dire clairement
+// parce que cette table PRODUIT LE SCORE QUE L'ÉCRAN AFFICHE
+// (BUTS_FIGURE -> calculerButsCamp -> buildVerdictCard).
+//
+// ─── L'ÉTUDE ISOLÉE butsGuerreDes16, sur 49 matchs au score connu ───
+// « M4+M10 pour le camp 1, M5+M11 pour le camp 2 », somme des .max :
+//   M4+M10 -> buts du camp 1 ....... rho +0,046 · p = 0,7506
+//   M5+M11 -> buts du camp 2 ....... rho −0,079 · p = 0,5863
+//   (A−B)  -> écart de buts ........ rho +0,099 · p = 0,4998
+//   (A+B)  -> total du match ....... rho +0,013 · p = 0,9271
+// Et onze autres façons de lire la table (les chefs seuls, les trigones
+// offensifs, les huit maisons de chaque camp, la somme des seize) :
+// douze tests, meilleur p brut 0,0846, Bonferroni 1,0000. RIEN.
+//
+// ─── ET LE SCORE QU'ELLE PRODUIT, LUI AUSSI, NE PRÉDIT RIEN ───
+//   score affiché camp 1 -> buts réels camp 1 ... rho −0,089 · p = 0,549
+//   score affiché camp 2 -> buts réels camp 2 ... rho +0,246 · p = 0,089
+//   total prédit -> total réel .................. rho +0,136 · p = 0,349
+//   ÉCART prédit -> ÉCART réel .................. rho −0,132 · p = 0,365
+//                                                 (signe INVERSE)
+//   score exact trouvé : 6 sur 49 (12 %)
+//
+// ⚠️ ET L'ÉCHELLE EST FAUSSE D'UN FACTEUR 2,5. Le moteur annonce en
+// moyenne 0,80 but pour le camp 1 et 0,86 pour le camp 2 — soit 1,66 au
+// total — quand les matchs réels en donnent 2,35 et 1,82, soit 4,16.
+// C'est pour ça que le verdict affiche sans cesse des 1-0 et des 0-0
+// pendant que la règle du volume annonce « plus de 2,5 » à côté : ce
+// n'est pas une contradiction de doctrine, c'est un moteur de score
+// calibré deux fois et demie trop bas.
+//
+// ─── CE QU'IL FAUT EN CONCLURE, SANS ADOUCIR ───
+// Le SCORE EXACT du fichier ne vaut rien : ni en niveau, ni en écart,
+// ni en corrélation. Il ne faut pas le lire. Ce qui marche dans la
+// famille des buts, c'est le VOLUME (plus/moins 2,5), et il est porté
+// par des règles qui n'utilisent PAS cette table : zéro Populus
+// (19/22), l'axe des trigones (10/14), le miroir M5 (7/13).
+// La table reste en place parce que l'arracher changerait tout le
+// pipeline d'un coup ; mais aucun panneau ne doit présenter le score
+// exact comme une prédiction, et le champ scoreMain est à lire comme
+// un indicateur de FORME (qui domine), jamais comme un pronostic.
+var SCORE_MOTEUR_V7 = {
+  source: 'BUTS_FIGURE (12/07/26, doctrine Ellemine_D) -> calculerButsCamp -> buildVerdictCard',
+  n: 49,
+  etudeButsGuerreDes16: { 'M4+M10 -> camp1': { rho: 0.046, p: 0.7506 },
+    'M5+M11 -> camp2': { rho: -0.079, p: 0.5863 },
+    'A-B -> écart': { rho: 0.099, p: 0.4998 },
+    'A+B -> total': { rho: 0.013, p: 0.9271 } },
+  douzeLectures: 'meilleur p brut 0,0846 (trigone offensif du camp 1), Bonferroni 1,0000',
+  scoreProduit: { camp1: { rho: -0.089, p: 0.549 }, camp2: { rho: 0.246, p: 0.089 },
+    total: { rho: 0.136, p: 0.349 }, ecart: { rho: -0.132, p: 0.365, note: 'signe INVERSE' },
+    exact: '6/49' },
+  echelle: { preditCamp1: 0.80, preditCamp2: 0.86, preditTotal: 1.66,
+    reelCamp1: 2.35, reelCamp2: 1.82, reelTotal: 4.16,
+    facteur: 2.5,
+    consequence: 'les 1-0 et 0-0 permanents ne sont pas une doctrine, c\'est un '
+      + 'calibrage deux fois et demie trop bas' },
+  conclusion: 'le SCORE EXACT ne vaut rien — ni niveau, ni écart, ni corrélation. '
+    + 'À lire comme un indicateur de forme (qui domine), jamais comme un pronostic. '
+    + 'Ce qui marche dans la famille des buts, c\'est le VOLUME, porté par des règles '
+    + 'qui n\'utilisent pas cette table.'
+};
+
 const BUTS_FIGURE = {
   puella:         {min:2, max:2, label:'2'},
   albus:          {min:2, max:4, label:'2-4'},
