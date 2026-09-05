@@ -1134,6 +1134,90 @@ var CAS_REFERENCE_V7 = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// LA BASE PROSPECTIVE (05/09/26) — Ellemine_D : « il faut qu'on fasse une
+// liste de matchs sur laquelle reposera notre travail. je crains que se
+// baser sur un thème invalide erronne les pistes. soit je choisis la
+// liste, soit tu tries les thèmes. »
+//
+// NI L'UN NI L'AUTRE, et pour deux raisons mesurées.
+//
+// 1. TRIER PAR VALIDITÉ NE NETTOIE RIEN. Mesuré trois fois (n = 35, 50,
+//    58) : accepté 63,6 % contre rejeté 68,9 %, p = 0,732. Le filtre n'a
+//    jamais gagné une seule famille. Et 43 des 58 cas sont DÉJÀ au niveau
+//    3/3 — trier retirerait quinze cas au hasard, pas les mauvais.
+//
+// 2. CHOISIR LA LISTE À LA MAIN EST LE PIRE BIAIS DISPONIBLE. Celui qui
+//    tient les hypothèses ne peut pas choisir les cas qui les testent,
+//    dans un sens comme dans l'autre. Ça vaut pour lui comme pour moi :
+//    j'ai déjà composé deux groupes en regardant le tableau (04/09,
+//    Albus/Carcer/Populus/Tristitia à p = 0,003) et ces chiffres ne
+//    valaient rien.
+//
+// ── LE VRAI DÉFAUT DE L'ARCHIVE ──
+// Elle porte 58 cas. TROIS disent « annoncé AVANT le résultat ». Les 55
+// autres ont été inscrits en connaissant l'issue : le thème pouvait être
+// choisi, et les règles ont été inventées dessus. C'est ça qui erronne
+// les pistes — pas la validité. Et rien ne peut le réparer après coup :
+// on ne rend pas rétroactivement une prédiction à un cas déjà connu.
+//
+// ── LA RÈGLE DE COMPOSITION, ÉCRITE AVANT D'ÊTRE UTILISÉE ──
+// Pour qu'un match entre dans la base prospective, les cinq conditions,
+// toutes vérifiables par un tiers :
+//   1. le TIRAGE est fait et enregistré AVANT le coup d'envoi ;
+//   2. l'ANNONCE est écrite avant le coup d'envoi — camp, score, BTTS, et
+//      toute règle en cours de test, nommée ;
+//   3. le match appartient à un ENSEMBLE DÉFINI D'AVANCE (une journée
+//      entière, une compétition entière) — jamais un match choisi ;
+//   4. le résultat est saisi QUEL QU'IL SOIT, y compris quand il fait mal ;
+//   5. rien n'est retiré ensuite, pour aucune raison.
+// La condition 3 est celle qui interdit le cherry-picking aux DEUX : on
+// prend tout ce que l'ensemble contient, ou on ne prend rien.
+//
+// ── CE QUE DEVIENT L'ARCHIVE EXISTANTE ──
+// Elle reste, entière, et garde son rôle : PROPOSER des hypothèses. Elle
+// ne peut plus en CONFIRMER aucune, parce qu'elle les a vues naître. Deux
+// bancs séparés, deux verbes séparés.
+var LISTE_PROSPECTIVE_V7 = [
+  // Les 13 du 04/09 sont le premier lot conforme à la règle 3 (journée
+  // entière, tirages faits avant les coups d'envoi) — mais par HACHAGE,
+  // donc aveugles au match par construction. Ils restent dans
+  // CAS_HACHAGE_V7 comme bras de contrôle, pas ici : cette liste-ci
+  // attend des tirages À LA MAIN.
+];
+
+// Les règles annoncées d'avance, avec leur compteur. Une piste ne peut
+// être branchée qu'après avoir atteint son seuil ICI, jamais sur
+// l'archive rétrospective.
+var ANNONCES_V7 = [
+  { cle: 'm9_buts', regle: 'M9 dans {Albus, Conjunctio, Rubeus, Tristitia, Acquisitio} → plus de 2,5 buts ; '
+      + 'dans {Amissio, Laetitia, Puella, Populus} → moins',
+    seuil: 10, faites: 3, justes: 3,
+    detail: ['Aveley/Cheshunt 4-2 = 6 buts ✓', 'Quorn/Shepshed 2-1 = 3 buts ✓', 'Ossett/Pontefract 1-0 = 1 but ✓'],
+    note: 'les trois sont des tirages par hachage — à refaire sur des tirages à la main' },
+  { cle: 'laetitia_m2', regle: 'Laetitia en M2 (sa maison de repos) → M1 gagne',
+    seuil: 10, faites: 0, justes: 0,
+    detail: [], note: '3/3 en rétrospectif, contrôle positionnel passé — rien en prospectif' },
+  { cle: 'm4_jugerecit', regle: 'M4 dans {Via, Conjunctio, Amissio, Fortuna Minor} → les deux marquent',
+    seuil: 10, faites: 0, justes: 0,
+    detail: [], note: '77 % contre 38 % (p = 0,025, n=52) en rétrospectif — le plus fort du fichier, jamais annoncé d\'avance' }
+];
+
+function bilanProspectifV7() {
+  return {
+    matchs: LISTE_PROSPECTIVE_V7.length,
+    annonces: ANNONCES_V7.map(function (a) {
+      return { regle: a.regle, avancement: a.faites + '/' + a.seuil,
+        justes: a.faites ? (a.justes + '/' + a.faites) : '—',
+        pret: a.faites >= a.seuil };
+    }),
+    // Tant que la base prospective est vide, AUCUNE règle n'est prête.
+    // C'est la réponse à « on aura quoi en fin de compte » : on aura ce
+    // qu'on aura annoncé d'avance, et rien d'autre.
+    pretesABrancher: ANNONCES_V7.filter(function (a) { return a.faites >= a.seuil; }).length
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LES 13 MATCHS DU 04/09/26 — TIRAGE PAR HACHAGE, RÉSULTATS EN ATTENTE
 //
 // ☠️ ERREUR CORRIGÉE LE 04/09 AU SOIR, ET ELLE INVALIDAIT TOUT.
