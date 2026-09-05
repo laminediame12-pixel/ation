@@ -1740,7 +1740,7 @@ function densiteIncidentV7(theme){
   }
   if (fil && fil.camp) camps.push({nom: 'Filiation', camp: fil.camp});
   if (typeof MOTEURS_INCIDENT_CAMP_V7 !== 'undefined') {
-    MOTEURS_INCIDENT_CAMP_V7.forEach(function(m){
+    moteursActifsV7(MOTEURS_INCIDENT_CAMP_V7).forEach(function(m){
       if (m.cle === 'inc_camp_temoin') return; // témoin constant : exclu, n'apporte rien
       var v = safe(function(){ return m.verdict(theme); });
       if (v && v.camp) camps.push({nom: m.nom, camp: v.camp});

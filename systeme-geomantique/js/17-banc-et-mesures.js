@@ -960,7 +960,10 @@ function bancMoteursV7(force) {
   // nombre d'abstentions est affiché à côté. Un moteur muet n'a donc pas
   // tort — mais il ne se cache pas non plus : on voit sa couverture.
   function passe(liste, champ, attendu) {
-    return liste.map(function (m) {
+    // Les moteurs désactivés (mesurés, cf. MOTEURS_DESACTIVES_V7) sortent
+    // du banc comme de l'écran : sinon on continuerait à lire des scores
+    // pour des moteurs qu'on a décidé de ne plus regarder.
+    return moteursActifsV7(liste).map(function (m) {
       var juste = 0, total = 0, abstentions = 0;
       var details = CAS.map(function (c, i) {
         var reel = attendu(c);
@@ -2629,4 +2632,82 @@ function budgetPistesV7() {
   return { annoncesProspectives: faites, pistes: out,
     casArchive: BALAYAGE_V7.cas,
     manquePourBalayage: Math.max(0, BALAYAGE_V7.archivePourQueLeBalayageTranche - BALAYAGE_V7.cas) };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOTEURS DÉSACTIVÉS (05/09/26) — mesuré, pas trié à vue
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D : « les moteurs suivent tous la même direction, difficile
+// de savoir lequel garder — lesquels désactiver et enlever de l'UI ? »
+//
+// LES 70 MOTEURS ONT ÉTÉ REJOUÉS sur 16384 thèmes pour la redondance et
+// sur les 56 cas d'archive pour la justesse. Deux critères seulement ont
+// été retenus, parce que ce sont les deux qui se démontrent :
+//
+//   A. SUBSUMPTION — un moteur est supprimable si, PARTOUT où il parle,
+//      un autre parle aussi et dit exactement la même chose. Il
+//      n'apporte alors rien, et c'est vrai sans aucune statistique.
+//
+//   B. PIRE QUE SON TÉMOIN — chaque famille a un témoin, une règle
+//      idiote à réponse constante. Testé en apparié (McNemar, cas par
+//      cas), un moteur significativement plus faible que le témoin
+//      nuit : il vaudrait mieux ne rien afficher.
+//
+// CE QUE LA MESURE A REFUSÉ DE ME LAISSER FAIRE. Sur les 26 moteurs des
+// familles à témoin, TROIS seulement sont prouvés pires, et AUCUN n'est
+// prouvé meilleur. Les 23 autres sont indécis : n = 56 ne tranche pas.
+// J'avais d'abord une liste de 16 « à couper » fondée sur les taux
+// bruts — le test apparié en a invalidé 13. Un écart de 75 % à 79 % sur
+// 56 cas, c'est deux matchs.
+//
+// Et un défaut de ma propre mesure, attrapé en route : les moteurs de
+// corners renvoient { n }, pas { total }. Mon premier balayage les
+// déclarait « muets, ne parlent jamais » et j'ai failli proposer de les
+// supprimer tous les trois. C'est mon extracteur qui était sourd.
+//
+// POUR RÉACTIVER : retirer la clé de MOTEURS_DESACTIVES_V7. Rien n'est
+// supprimé du code — un moteur écarté reste lisible et réexécutable.
+var MOTEURS_DESACTIVES_V7 = {
+  // ── B. prouvés PIRES que leur témoin, en apparié ──
+  nul_juge_fige: 'McNemar contre nul_temoin : juste 4 fois là où le témoin se '
+    + 'trompe, faux 23 fois là où il a raison. p = 0,0003, et survit à Bonferroni '
+    + 'sur les 15 tests de la famille (0,0045). 25/56 contre 44/56.',
+  nul_saturne_cadent: 'McNemar : b = 6, c = 27, p = 0,0003, survit à Bonferroni '
+    + '(0,0045). 23/56 contre 44/56 — le plus faible de tout le fichier.',
+
+  // ── A. strictement subsumés : ils ne disent jamais rien de neuf ──
+  partage_r1_ferme: 'strictement contenu dans partage_synthese sur 16384 thèmes : '
+    + 'partout où il parle (25,8 %), l\'autre parle et dit pareil. À NOTER quand même : '
+    + 'sur son sous-ensemble, partage_synthese fait 13/15 (87 %) contre 32/44 (73 %) '
+    + 'partout. Ce moteur n\'est donc pas un rival, c\'est un FILTRE DE CONFIANCE mal '
+    + 'rangé — à ressortir un jour comme tel, pas comme moteur.',
+  mt_ht_signal: 'strictement contenu dans mt_ht_signal_ferme (parle 57,2 % contre 100 %) '
+    + 'et de surcroît à réponse constante.',
+  pen_camp_m12: 'strictement contenu dans pen_camp_v7 (parle 12,5 % contre 47 %) '
+    + 'et à réponse constante.',
+  inc_camp_naissance: 'strictement contenu dans inc_camp_affiche (48 % contre 79,2 %).',
+  inc_camp_mars_hors: 'strictement contenu dans inc_camp_mars (8,2 % contre 20,9 %).'
+};
+
+// Les cas limites, gardés exprès, pour qu'on ne les recoupe pas plus tard
+// en croyant que personne n'avait regardé.
+var MOTEURS_SOUS_SURVEILLANCE_V7 = {
+  nul_saturne_siege: 'b = 6, c = 17, p = 0,0347 — pire que le témoin, mais NE SURVIT '
+    + 'PAS à Bonferroni sur 15 tests (0,52). Gardé. À recouper à 100 cas d\'archive.',
+  nul_meme_boucle: 'b = 8, c = 19, p = 0,0522 — au bord. Gardé.',
+  nul_r1_cadente: 'b = 5, c = 13, p = 0,0963. Gardé.',
+  nul_fusion_partage: 'b = 4, c = 12, p = 0,0768. Gardé.',
+  familleEntiere: 'MOTEURS_NUL_V7 est LA famille à surveiller : 16 moteurs, un témoin '
+    + 'à 79 % que seuls 3 dépassent en taux brut et AUCUN en apparié, et c\'est elle '
+    + 'qui pilote le verdict depuis le 29/08. C\'est là qu\'il faut concentrer l\'effort, '
+    + 'pas sur les corners ou les mi-temps.'
+};
+
+function moteurDesactiveV7(cle) {
+  return !!(MOTEURS_DESACTIVES_V7 && MOTEURS_DESACTIVES_V7[cle]);
+}
+// À appliquer à chaque endroit qui consomme une liste de moteurs.
+function moteursActifsV7(liste) {
+  if (!liste || !liste.filter) return liste;
+  return liste.filter(function (m) { return !moteurDesactiveV7(m.cle); });
 }

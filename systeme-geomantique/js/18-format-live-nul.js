@@ -1850,7 +1850,7 @@ function renderMoteursPanel(theme) {
     + 'background:linear-gradient(160deg,#0b1220 0%,#111827 100%);';
 
   // 1. verdicts de chaque moteur
-  var res = MOTEURS_V7.map(function (m) {
+  var res = moteursActifsV7(MOTEURS_V7).map(function (m) {
     var v = null;
     try { v = m.verdict(theme); } catch (e) { v = null; }
     return { m: m, v: v };
@@ -1899,7 +1899,7 @@ function renderMoteursPanel(theme) {
       + '</div>';
   }
 
-  var bttsRes = MOTEURS_BTTS_V7.map(function (m) {
+  var bttsRes = moteursActifsV7(MOTEURS_BTTS_V7).map(function (m) {
     var v = null; try { v = m.verdict(theme); } catch (e) { v = null; }
     return { m: m, v: v };
   });
