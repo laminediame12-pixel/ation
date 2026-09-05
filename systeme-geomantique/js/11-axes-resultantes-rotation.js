@@ -2633,3 +2633,139 @@ autoTestV7('points de contact mère/fille', function () {
     }
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// LA COUCHE DES RÉSULTANTES (05/09/26) — le dernier étage du calcul
+// ═══════════════════════════════════════════════════════════════
+// getResultant(fig, pos) = combine(fig, FIGS[pos-1]). Or FIGS[pos-1]
+// est exactement la FIGURE AU REPOS de la maison pos. Donc :
+//
+//        R(h) = M(h) ⊕ figure au repos de h
+//
+// La couche est AFFINE : linéaire, plus une constante par maison. Elle
+// n'ajoute donc aucune non-linéarité au système — tout le bouclier,
+// résultantes comprises, tient dans l'algèbre linéaire sur GF(2).
+//
+// ── 1. CE QUE LA RÉSULTANTE MESURE VRAIMENT ──
+// Populus est le neutre. Donc R(h) = Populus EXACTEMENT quand M(h)
+// porte sa propre figure de repos. La résultante n'est pas une
+// « autre figure » : c'est L'ÉCART AU REPOS de la maison, mesuré dans
+// le groupe. Une maison chez elle a une résultante nulle.
+//
+// ── 2. LES SEIZE CONSTANTES ──
+// M(h) ⊕ R(h) = figure au repos de h, une constante qui NE DÉPEND PAS
+// du thème. Seize maisons, seize constantes, toutes distinctes — huit
+// paires, huit impaires, l'équilibre exact du groupe. Une maison et sa
+// résultante forment donc un couple rigide : connaître l'une donne
+// l'autre, sans calcul.
+//
+// ── 3. UNE SEULE MAISON EST SA PROPRE RÉSULTANTE ──
+// R(16) = M(16), toujours, parce que la figure au repos de M16 est
+// Populus, le neutre. C'est la seule.
+//
+// ── 4. LES LOIS SURVIVENT-ELLES DANS LES RÉSULTANTES ? ──
+// R(i) ⊕ R(j) = R(k) exige la loi de base ET que les trois figures au
+// repos vérifient la même relation. Sur les 24 lois de base, TROIS
+// survivent — et ce sont la même, dite trois fois :
+//        R13 ⊕ R14 = R15    (Cauda Draconis ⊕ Puella = Acquisitio)
+// Les 23 autres sont décalées d'une constante fixe, par exemple
+// R1 ⊕ R2 = R9 ⊕ Carcer, ou R3 ⊕ R4 = R10 ⊕ Fortuna Minor. C'est le
+// même triplet {M13, M14, M15} qui survivait déjà au repos simultané :
+// les deux résultats se recoupent, ce qui est un contrôle et pas une
+// coïncidence.
+//
+// ── 5. BALAYAGE COMPLET DES 32 QUANTITÉS ──
+// En cherchant TOUTES les lois de triplet sur les 16 maisons plus les
+// 16 résultantes : 24 tout en base, 3 tout en résultante, 3 mixtes —
+// et les trois mixtes sont M1 ⊕ M15 = R16 et ses réécritures, qui ne
+// disent rien de neuf puisque R16 = M16. Total 30, pas une de plus.
+// La couche des résultantes n'ouvre AUCUNE loi nouvelle.
+//
+// ── 6. LA PARITÉ PASSE ──
+// R(15) = M(15) ⊕ Acquisitio. M15 est toujours paire, Acquisitio aussi,
+// et la parité s'additionne : R(15) est TOUJOURS PAIRE. Le Juge et sa
+// résultante ne prennent chacun que 8 valeurs sur 16. Conséquence à ne
+// pas rater en mesurant : « M15 au repos », c'est-à-dire R15 = Populus,
+// a pour taux de base 1/8 et non 1/16.
+var RESULTANTES_V7 = {
+  formule: 'R(h) = M(h) ⊕ figure au repos de h — application affine',
+  sens: 'la résultante est l\'ÉCART AU REPOS de la maison ; elle vaut Populus '
+    + 'exactement quand la maison porte sa propre figure de repos',
+  seuleAutoResultante: 16,
+  loisSurvivantes: [[13, 14, 15]],
+  loisTotales: { base: 24, resultantes: 3, mixtes: 3, somme: 30 },
+  pariteR15: 'toujours paire — 8 valeurs possibles, donc R15 = Populus vaut 1/8',
+  constantes: 'M(h) ⊕ R(h) = FIGS_V7[h-1], indépendant du thème'
+};
+
+// ═══════════════════════════════════════════════════════════════
+// LES LOIS DE CONSERVATION — la liste est close
+// ═══════════════════════════════════════════════════════════════
+// Question posée en balayant les 65535 sous-ensembles de maisons :
+// lesquels ont une somme qui NE DÉPEND PAS du thème ?
+// Réponse : exactement 255, soit un espace de DIMENSION 8. Et ses huit
+// générateurs sont, très exactement, les huit règles de construction du
+// bouclier :
+//   {M1,M2,M9} {M3,M4,M10} {M5,M6,M11} {M7,M8,M12}
+//   {M9,M10,M13} {M11,M12,M14} {M13,M14,M15} {M1,M15,M16}
+// Autrement dit : LE BOUCLIER N'A PAS D'AUTRE STRUCTURE QUE SA
+// CONSTRUCTION. Toute régularité exacte qu'on y trouvera un jour sera
+// une combinaison de ces huit-là. Les 24 lois de paires trouvées le
+// 04/09 sont précisément les membres à trois maisons de cet espace
+// (8 triplets × 3 réécritures) — la boucle se referme.
+//
+// DEUX CONSÉQUENCES QUI PARLENT À LA DOCTRINE :
+//
+//   M1 ⊕ M2 ⊕ … ⊕ M12 = POPULUS
+//   Les douze premières maisons — la roue entière, mères + filles +
+//   neveux — se somment toujours au neutre. Or ces douze maisons SONT
+//   les quatre trigones {1,5,9} {2,6,10} {3,7,11} {4,8,12}. Donc les
+//   QUATRE TRIPLETS DE MOUVEMENT SONT LIÉS : en connaître trois
+//   détermine le quatrième, dans tout thème. Aucune PAIRE de trigones
+//   n'est liée en revanche — le lien n'existe qu'à quatre.
+//
+//   M1..M8 ⊕ M9..M12 = POPULUS
+//   La somme des huit maisons de base égale toujours celle des quatre
+//   neveux. L'étage des neveux ne fait que redire la base, en bloc.
+var CONSERVATION_V7 = {
+  nombre: 255, dimension: 8,
+  generateurs: [[1, 2, 9], [3, 4, 10], [5, 6, 11], [7, 8, 12],
+    [9, 10, 13], [11, 12, 14], [13, 14, 15], [1, 15, 16]],
+  trigones: { lies: true, ensemble: [1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12],
+    parPaire: false,
+    lecture: 'les quatre trigones se somment à Populus ; trois déterminent le quatrième' },
+  baseEtNeveux: 'M1..M8 et M9..M12 ont toujours la même somme',
+  ferme: 'le bouclier n\'a pas d\'autre structure exacte que sa construction'
+};
+
+// Vérifie une loi de conservation sur un thème réel. Sert de garde-fou :
+// si une somme cesse d'être Populus, le calcul du thème est cassé.
+function verifierConservationV7(theme) {
+  if (!theme || typeof combineMany !== 'function') return null;
+  var out = [], ok = true;
+  CONSERVATION_V7.generateurs.forEach(function (g) {
+    var s = combineMany(g.map(function (h) { return theme[h]; }));
+    var bon = s === 'populus';
+    if (!bon) ok = false;
+    out.push({ maisons: g, somme: s, conforme: bon });
+  });
+  var douze = [];
+  for (var h = 1; h <= 12; h++) douze.push(theme[h]);
+  var s12 = combineMany(douze);
+  if (s12 !== 'populus') ok = false;
+  return { generateurs: out, lesDouze: s12, trigonesLies: s12 === 'populus',
+    toutConforme: ok };
+}
+
+autoTestV7('lois de conservation', function () {
+  if (typeof calcTheme !== 'function' || typeof FIGS_V7 === 'undefined') return;
+  var essais = [['puer', 'laetitia', 'caput_draconis', 'albus'],
+    ['tristitia', 'amissio', 'cauda_draconis', 'laetitia'],
+    ['populus', 'populus', 'populus', 'populus'],
+    ['via', 'rubeus', 'carcer', 'puella']];
+  essais.forEach(function (m) {
+    var v = verifierConservationV7(calcTheme(m[0], m[1], m[2], m[3]));
+    if (!v || !v.toutConforme)
+      throw new Error('loi de conservation en défaut sur ' + m.join('/'));
+  });
+});
