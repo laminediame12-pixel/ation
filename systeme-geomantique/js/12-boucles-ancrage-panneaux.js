@@ -2160,6 +2160,14 @@ var BRANCHES_V7 = {
 
   axe_volume: {
     actif: true,
+    quatreTrigones: false,
+    formeCorrigee: 'CE N\'EST PAS L\'AXE OFFENSIF, ce sont LES QUATRE TRIGONES (cf. '
+      + 'TRIGONES_V7) : 1-5-9, 2-6-10, 3-7-11, 4-8-12. Quand les quatre sommes existent '
+      + 'déjà dans le thème, le carré est saturé et le match se ferme — rien à voir avec '
+      + 'l\'attaque. La version à quatre est un sous-ensemble strict de celle à deux (13 '
+      + 'thèmes dans 20) et donne EXACTEMENT le même résultat sur la chaîne : 36/49 des '
+      + 'deux côtés, McNemar 0 contre 0. quatreTrigones = true bascule dessus : deux fois '
+      + 'moins d\'annonces, concept plus clair, aucune mesure pour départager.',
     branchePar: 'Ellemine_D, 05/09 : « branche-les », les chiffres sous les yeux. Elle prend '
       + 'sa place mesurée : entre zéro Populus et le miroir. 38/49 contre 37/49.',
     ceQueJAvaisDit: 'j\'avais laissé le booléen à false en disant qu\'un +1 trouvé au '
@@ -2632,6 +2640,19 @@ function axeVolumeV7(theme) {
     var s1 = s(1, 5, 9), s7 = s(7, 11, 3);
     var p1 = dansBase(s1), p7 = dansBase(s7);
     var n = (p1 ? 1 : 0) + (p7 ? 1 : 0);
+    // Le sélecteur d'Ellemine_D : la même règle dite sur les QUATRE
+    // trigones au lieu des deux « offensifs ». Même résultat mesuré sur
+    // le banc, deux fois moins d'annonces (cf. TRIGONES_V7).
+    var quatre = false;
+    try { quatre = !!(BRANCHES_V7.axe_volume && BRANCHES_V7.axe_volume.quatreTrigones); }
+    catch (e) { }
+    if (quatre) {
+      var tg = trigonesV7(theme);
+      if (tg) return { somme1: s1, somme7: s7, presente1: p1, presente7: p7,
+        nbPresentes: tg.nbPresentes, surQuatreTrigones: true, detailTrigones: tg.detail,
+        ferme: tg.sature, valeur: !tg.sature,
+        annonce: tg.annonce, attendu: tg.attendu };
+    }
     return { somme1: s1, somme7: s7, presente1: p1, presente7: p7, nbPresentes: n,
       ferme: n === 2, valeur: n !== 2,
       annonce: n === 2 ? 'moins de 2,5 buts' : 'plus de 2,5 buts',
@@ -2687,6 +2708,135 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
     if (!d) throw new Error('deplacementsMiroirV7 muet sur ' + k);
     if (!d.loiTenue) throw new Error('M15 != somme des déplacements sur ' + k);
     if (d.nbCarcer > 3) throw new Error('plus de 3 Carcer en paires miroir : impossible');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// CE QUE LE PANNEAU « SOMME DES 8 MAISONS » CACHAIT (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+//
+// Ellemine_D montre trois captures du carré et demande de vérifier ce
+// qu'on en apprend. Le bandeau affichait « Camp 1 : Amissio · Camp 2 :
+// Amissio » — les deux camps de même poids. Trois lois exactes sortent
+// de là, et personne ne les avait écrites.
+//
+// ─── LOIS, VÉRIFIÉES 65 536 SUR 65 536 ───
+// avec CAMP1 = {1,2,3,4,9,10,13,16} et CAMP2 = {5,6,7,8,11,12,14,15} :
+//
+//   somme(CAMP 2) = M13                          — toujours
+//   somme(CAMP 1) = M1 ⊕ M14                     — toujours
+//   somme(CAMP 1) = somme(CAMP 2)  ⟺  M16 = POPULUS  ⟺  M1 = M15
+//
+// La somme des huit maisons du camp 2 s'effondre entièrement sur le
+// PREMIER TÉMOIN. Huit maisons pour une figure déjà là. Et les deux
+// camps ne pèsent le même poids que lorsque la Réconciliation M16 est
+// à Populus, c'est-à-dire au repos : exactement 4 096 thèmes sur
+// 65 536, UN SUR SEIZE. La capture d'Ellemine_D en montrait un.
+// Ce n'était pas une coïncidence d'affichage, c'est la configuration
+// d'égalité la plus rare que le carré sache produire — et elle a un
+// sens propre : les deux camps s'équilibrent quand la maison de la
+// réconciliation est vide.
+//
+// ─── ET POURTANT ÇA NE DONNE PAS LE NUL ───
+// Sur 57 cas (13 nuls, base 22,8 %) : camps de même somme, 0 nul sur 5.
+// Le Juge face aux sommes (identique, binôme, antagoniste, neutre, des
+// deux côtés) : 11 tests, meilleur p brut 0,1496, Bonferroni 1,0000.
+// La plus belle égalité du carré ne prédit pas l'égalité du match.
+var SOMMES_CAMPS_V7 = {
+  lois: { 'somme(CAMP2)': 'M13, toujours',
+    'somme(CAMP1)': 'M1 ⊕ M14, toujours',
+    'égalité des deux camps': 'M16 = Populus, autrement dit M1 = M15' },
+  verifie: '65536/65536',
+  rarete: { egalites: 4096, sur: 65536, pct: 6.25, lecture: 'un thème sur seize' },
+  mesureNul: { n: 57, base: 22.8, campsEgaux: '0/5', tests: 11,
+    meilleurP: 0.1496, bonferroni: 1.0 },
+  conclusion: 'la plus belle égalité du carré ne prédit pas l\'égalité du match'
+};
+
+// ═══════════════════════════════════════════════════════════════
+// LES QUATRE TRIGONES — la vraie forme de la règle d'axe (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+//
+// Le sélecteur de trajectoires d'Ellemine_D nomme « les 4 trigones (les
+// seuls équilatéraux) » : 1-5-9 · 2-6-10 · 3-7-11 · 4-8-12. En les
+// mesurant tous les quatre au lieu des deux « offensifs », la règle
+// branchée le 05/09 se révèle être un cas particulier d'une règle plus
+// simple — et mieux dite.
+//
+//   sommes de trigone présentes dans la base       buts    plus de 2,5
+//     0 présente ...........  1 match              9,00     1/1
+//     1 présente ...........  2 matchs             4,50     2/2
+//     2 présentes .......... 16 matchs             4,38    12/16  75,0 %
+//     3 présentes .......... 17 matchs             4,88    12/17  70,6 %
+//     4 PRÉSENTES .......... 13 matchs             2,54     5/13  38,5 %
+//   rho = −0,335 · p = 0,0212 (permutation) · Fisher 38,5 % contre
+//   75,0 % : p = 0,0383
+//
+// CE QUE ÇA CORRIGE DANS MA PROPRE LECTURE. J'avais écrit « l'axe
+// offensif ferme le match ». C'est faux comme explication : ce ne sont
+// pas les axes OFFENSIFS, ce sont LES QUATRE trigones, offensifs et
+// défensifs confondus. Quand les quatre sommes existent déjà dans le
+// thème, le carré est SATURÉ — il ne peut plus rien produire de neuf,
+// et le match se ferme. Ça n'a rien à voir avec l'attaque.
+//
+// ⚠️ MAIS ÇA NE CHANGE RIEN AU VERDICT, et il faut le dire : « les
+// quatre trigones » est un SOUS-ENSEMBLE STRICT de « les deux axes
+// offensifs » (13 thèmes contre 20, et les 13 sont dans les 20). Sur la
+// chaîne : 36/49 avec l'une, 36/49 avec l'autre, McNemar 0 contre 0 —
+// rigoureusement le même résultat. La version à quatre trigones est
+// plus sélective (13 annonces au lieu de 20) et statistiquement un peu
+// plus propre (p 0,0212 contre 0,0234), mais aucune mesure ne permet de
+// la préférer : seule la clarté du concept le permet. Le booléen est là
+// pour qu'Ellemine_D tranche, pas moi.
+var TRIGONES_V7 = {
+  trigones: [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]],
+  nom: 'les quatre trigones équilatéraux du carré',
+  table: { 0: { n: 1, buts: 9.00 }, 1: { n: 2, buts: 4.50 },
+    2: { n: 16, buts: 4.38, plus: '12/16' }, 3: { n: 17, buts: 4.88, plus: '12/17' },
+    4: { n: 13, buts: 2.54, plus: '5/13' } },
+  correlation: { rho: -0.335, p: 0.0212 },
+  fisher: { quatre: '5/13 = 38,5 %', moins: '27/36 = 75,0 %', p: 0.0383 },
+  lecture: 'quand les QUATRE sommes de trigone existent déjà dans le thème, le carré est '
+    + 'saturé : il ne peut plus rien produire de neuf, et le match se ferme. Ce ne sont pas '
+    + 'les axes OFFENSIFS — c\'est les quatre, offensifs et défensifs confondus.',
+  equivalence: 'sous-ensemble strict de la règle branchée à deux axes (13 thèmes dans 20). '
+    + 'Sur la chaîne : 36/49 des deux côtés, McNemar 0 contre 0. Rigoureusement identique.',
+  pourBasculer: 'BRANCHES_V7.axe_volume.quatreTrigones = true — même résultat mesuré, '
+    + 'concept plus clair, deux fois moins d\'annonces.'
+};
+
+function trigonesV7(theme) {
+  if (!theme) return null;
+  try {
+    var dansBase = function (f) {
+      for (var h = 1; h <= 16; h++) if (theme[h] === f) return true;
+      return false;
+    };
+    var det = TRIGONES_V7.trigones.map(function (tr) {
+      var somme = combine(combine(theme[tr[0]], theme[tr[1]]), theme[tr[2]]);
+      return { maisons: tr, somme: somme, presente: dansBase(somme) };
+    });
+    var n = det.filter(function (x) { return x.presente; }).length;
+    return { detail: det, nbPresentes: n, sature: n === 4,
+      annonce: n === 4 ? 'moins de 2,5 buts' : 'plus de 2,5 buts',
+      attendu: n === 4 ? '2,54 buts en moyenne · 38,5 % au-dessus de 2,5'
+        : '4,7 buts en moyenne · 75,0 % au-dessus de 2,5' };
+  } catch (e) { return null; }
+}
+
+autoTestV7('sommes des camps et trigones', function () {
+  if (typeof calcTheme !== 'function' || typeof sommeCampsEtJugeV7 !== 'function') return;
+  ['albus,laetitia,populus,acquisitio', 'puella,via,conjunctio,via',
+   'amissio,puer,conjunctio,puella'].forEach(function (k) {
+    var m = k.split(',');
+    var t = calcTheme(m[0], m[1], m[2], m[3]);
+    var sc = sommeCampsEtJugeV7(t);
+    if (sc.sommeCamp2 !== t[13]) throw new Error('somme(CAMP2) doit valoir M13 — ' + k);
+    if (sc.sommeCamp1 !== combine(t[1], t[14])) throw new Error('somme(CAMP1) doit valoir M1⊕M14 — ' + k);
+    if ((sc.sommeCamp1 === sc.sommeCamp2) !== (t[16] === 'populus'))
+      throw new Error('égalité des camps doit équivaloir à M16 = Populus — ' + k);
+    var tg = trigonesV7(t);
+    if (!tg || tg.detail.length !== 4) throw new Error('trigonesV7 doit rendre 4 trigones');
   });
 });
 
