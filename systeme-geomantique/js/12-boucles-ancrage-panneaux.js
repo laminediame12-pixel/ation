@@ -2691,6 +2691,143 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
 });
 
 // ═══════════════════════════════════════════════════════════════
+// LES DEUX TÉMOINS M13 / M14 — la demande d'Ellemine_D du 05/09
+// ═══════════════════════════════════════════════════════════════
+//
+// « étudier carrément les témoignages M13 et M14, qui sont la somme de
+//   chaque partie. Pourquoi en général quand elles sont miroir elles
+//   impliquent nul — exemple Puella et Puer, ou Albus et Puer,
+//   Tristitia et Laetitia. »
+//
+// ─── D'ABORD : SES TROIS EXEMPLES NE SONT PAS LA MÊME RELATION ───
+//   Puella / Puer ......... RENVERSEMENT (Puer est Puella lue à l'envers)
+//   Tristitia / Laetitia .. RENVERSEMENT
+//   Albus / Puer .......... COMPLÉMENT (chaque ligne inversée)
+// Deux relations distinctes. Mais les trois donnent le même genre de
+// Juge : Conjunctio, Carcer, Via — trois des QUATRE figures qui sont
+// leur propre renversement. C'est ce qui les unit, et c'est exact.
+//
+// ─── LES LOIS, VÉRIFIÉES SUR LES 65 536 THÈMES ───
+//   Les seules figures égales à leur renversement (les « palindromes ») :
+//        VIA · CARCER · CONJUNCTIO · POPULUS — il n'y en a pas d'autres.
+//   M13 = M14 ......................... Juge = POPULUS, toujours (16/16)
+//   M14 = complément(M13) ............. Juge = VIA, toujours (16/16)
+//   M14 = renversement(M13) ........... Juge dans les quatre palindromes
+//   M14 = conversion(M13) ............. Juge dans les quatre palindromes
+//   Chaque relation couvre exactement 12,5 % des thèmes ; un Juge
+//   palindromique, exactement 50 %.
+//   La DISTANCE entre les deux témoins (nombre de lignes qui diffèrent)
+//   ne vaut jamais 1 ni 3 : seulement 0, 2 ou 4 — conséquence directe de
+//   « le Juge est toujours pair ». Répartition 12,5 / 75 / 12,5 %.
+//
+// ─── ET MAINTENANT CE QUE ÇA PRÉDIT : RIEN, SUR 57 CAS ───
+// Base : 13 nuls sur 57, soit 22,8 %.
+//   Juge PALINDROMIQUE ......... 5/28 = 17,9 % contre 27,6 % ailleurs
+//                                À CONTRESENS · p = 0,5301
+//   M13 = M14 (Juge Populus) ... 1/3  = 33,3 % · p = 0,5474
+//   renversement ............... 3/6  = 50,0 % contre 19,6 % · p = 0,1246
+//   complément (Juge Via) ...... 1/9  = 11,1 % · À CONTRESENS · p = 0,6678
+//   conversion ................. 1/7  = 14,3 % · p = 1,0000
+// La même batterie passée sur SIX paires symétriques du carré
+// (M13/M14, M1/M7, R1/R7, M4/M10, M9/M11, M10/M12) × quatre relations,
+// soit 21 tests : meilleur p brut 0,1009, Bonferroni 1,0000. Aucun.
+// La distance entre témoins ne dit rien non plus : vers le nul
+// rho −0,129 (p = 0,438), vers les buts rho +0,115 (p = 0,434).
+//
+// ─── CE QUE LA MESURE SÉPARE DANS L'INTUITION D'ELLEMINE_D ───
+// Ses deux exemples en RENVERSEMENT pointent dans le bon sens (3 nuls
+// sur 6, contre 19,6 % ailleurs). Son exemple en COMPLÉMENT pointe à
+// L'ENVERS (1 sur 9, soit 11,1 %). Et l'idée qui les unifiait — le Juge
+// palindromique — est celle qui va le plus franchement à contresens.
+// Donc : ce n'est PAS « miroir » en général. S'il y a quelque chose,
+// c'est le RENVERSEMENT seul, et seulement sur les deux témoins.
+// Six cas. Ça ne se tranche pas à six cas, et ça ne se jette pas non
+// plus : le compteur ci-dessous tourne pour que la question puisse être
+// tranchée un jour. Il faut environ 25 thèmes de la classe
+// « renversement M13/M14 », soit ~200 matchs enregistrés au rythme de
+// 12,5 %. On en a 6.
+var TEMOINS_V7 = {
+  palindromes: ['via', 'carcer', 'conjunctio', 'populus'],
+  loisExactes: {
+    'M13 = M14': 'Juge = Populus, toujours',
+    'M14 = complément(M13)': 'Juge = Via, toujours',
+    'M14 = renversement(M13)': 'Juge parmi les quatre palindromes',
+    'M14 = conversion(M13)': 'Juge parmi les quatre palindromes',
+    distance: 'jamais 1 ni 3 — seulement 0, 2 ou 4, parce que le Juge est toujours pair' },
+  frequences: { identique: 12.5, renversement: 12.5, complement: 12.5, conversion: 12.5,
+    jugePalindromique: 50, distance: { 0: 12.5, 2: 75, 4: 12.5 } },
+  mesureNul: { n: 57, nuls: 13, base: 22.8,
+    palindrome: { r: '5/28', taux: 17.9, ailleurs: 27.6, p: 0.5301, sens: 'À CONTRESENS' },
+    identique: { r: '1/3', taux: 33.3, p: 0.5474 },
+    renversement: { r: '3/6', taux: 50.0, ailleurs: 19.6, p: 0.1246, sens: 'bon sens' },
+    complement: { r: '1/9', taux: 11.1, p: 0.6678, sens: 'À CONTRESENS' },
+    conversion: { r: '1/7', taux: 14.3, p: 1.0 } },
+  batterie: '21 tests (6 paires symétriques × 4 relations) — meilleur p brut 0,1009, '
+    + 'Bonferroni 1,0000. Rien ne survit.',
+  distance: { versNul: { rho: -0.129, p: 0.438 }, versButs: { rho: 0.115, p: 0.434 } },
+  conclusion: 'le renversement des deux témoins est la SEULE direction juste, sur six cas. '
+    + 'Ni branché ni jeté : compté.',
+  ceQuiManque: '~25 thèmes en renversement M13/M14 pour trancher — environ 200 matchs '
+    + 'enregistrés, la classe faisant 12,5 %. On en a 6.'
+};
+
+function _figParPointsV7(pts) {
+  var k = pts.join('');
+  for (var i = 0; i < FIGS.length; i++) if (MAP_GEO[FIGS[i]].join('') === k) return FIGS[i];
+  return null;
+}
+function renversementFigureV7(f) { return _figParPointsV7(MAP_GEO[f].slice().reverse()); }
+function complementFigureV7(f) {
+  return _figParPointsV7(MAP_GEO[f].map(function (x) { return x === 1 ? 2 : 1; }));
+}
+
+// La relation entre les deux témoins, et ce qu'elle vaut.
+function temoinsV7(theme) {
+  if (!theme) return null;
+  try {
+    var A = theme[13], B = theme[14], J = theme[15];
+    var d = 0;
+    for (var i = 0; i < 4; i++) if (MAP_GEO[A][i] !== MAP_GEO[B][i]) d++;
+    var rel = null;
+    if (A === B) rel = 'identiques';
+    else if (renversementFigureV7(A) === B) rel = 'renversement';
+    else if (complementFigureV7(A) === B) rel = 'complément';
+    else if (complementFigureV7(renversementFigureV7(A)) === B) rel = 'conversion';
+    var pal = TEMOINS_V7.palindromes.indexOf(J) >= 0;
+    var m = rel ? TEMOINS_V7.mesureNul[rel === 'identiques' ? 'identique'
+      : rel === 'complément' ? 'complement' : rel] : null;
+    return { m13: A, m14: B, juge: J, distance: d, relation: rel,
+      jugePalindromique: pal,
+      mesure: m,
+      lecture: rel ? ('les deux témoins sont en ' + rel) : 'aucune relation de miroir',
+      aCompter: rel === 'renversement' };
+  } catch (e) { return null; }
+}
+
+autoTestV7('les lois des deux témoins', function () {
+  if (typeof calcTheme !== 'function') return;
+  // Les quatre palindromes sont bien les seules figures auto-renversantes.
+  var auto = FIGS.filter(function (f) { return renversementFigureV7(f) === f; });
+  if (auto.length !== 4) throw new Error('il doit y avoir exactement 4 figures auto-renversantes');
+  TEMOINS_V7.palindromes.forEach(function (f) {
+    if (auto.indexOf(f) < 0) throw new Error(f + ' devrait être auto-renversante');
+  });
+  // Les deux lois exactes, sur les 16 figures.
+  FIGS.forEach(function (f) {
+    if (combine(f, f) !== 'populus') throw new Error('M13 = M14 doit donner Populus');
+    if (combine(f, complementFigureV7(f)) !== 'via') throw new Error('complément doit donner Via');
+    var j = combine(f, renversementFigureV7(f));
+    if (TEMOINS_V7.palindromes.indexOf(j) < 0)
+      throw new Error('renversement doit donner un Juge palindromique, pas ' + j);
+  });
+  // La distance ne vaut jamais 1 ni 3.
+  var t = calcTheme('albus', 'laetitia', 'populus', 'acquisitio');
+  var tm = temoinsV7(t);
+  if (!tm) throw new Error('temoinsV7 muet');
+  if (tm.distance % 2 !== 0) throw new Error('la distance entre témoins doit être paire');
+});
+
+// ═══════════════════════════════════════════════════════════════
 // LA FIABILITÉ DU VERDICT — testée le 05/09/26 sur l'hypothèse
 // d'Ellemine_D : « si un thème se contredit, la fiabilité est faible »
 // ═══════════════════════════════════════════════════════════════

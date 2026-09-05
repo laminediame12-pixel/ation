@@ -1895,6 +1895,56 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         })()
         +' Réversible par BRANCHES_V7.populus_volume.actif.</div></div>';
     })();
+    // ─── LES DEUX TÉMOINS M13 / M14 (05/09/26) ───
+    // Demande d'Ellemine_D : « pourquoi quand elles sont miroir elles
+    // impliquent nul ». Réponse mesurée : elles ne l'impliquent pas
+    // (cf. TEMOINS_V7). Mais les LOIS derrière sont exactes, et le
+    // renversement — la seule direction juste — se compte ici pour
+    // qu'un jour la question puisse être tranchée.
+    (function(){
+      var tm=null; try{ tm=temoinsV7(theme); }catch(e){ tm=null; }
+      if(!tm) return;
+      var col = tm.relation==='renversement' ? '#a78bfa'
+              : tm.relation ? '#94a3b8' : '#64748b';
+      html+='<div style="padding:7px 10px; margin:2px 0 8px; border-left:4px solid '+col
+        +'; background:rgba(148,163,184,.08); font-size:11px; color:#cbd5e1;">'
+        +'⚖️ <b style="color:'+col+'; font-size:12px;">LES DEUX TÉMOINS — '
+        +label(tm.m13)+' et '+label(tm.m14)+'</b>'
+        +'<div style="margin-top:3px;">'
+        +(tm.relation
+          ? 'Elles sont en <b style="color:'+col+'">'+esc(tm.relation).toUpperCase()+'</b>'
+            +' — distance '+tm.distance+' ligne'+(tm.distance>1?'s':'')+'. '
+            +'Juge : <b>'+label(tm.juge)+'</b>'
+            +(tm.jugePalindromique?' (palindromique — égale à son propre renversement)':'')+'.'
+          : 'Aucune relation de miroir entre elles — distance '+tm.distance+' ligne'
+            +(tm.distance>1?'s':'')+'. Juge : <b>'+label(tm.juge)+'</b>'
+            +(tm.jugePalindromique?' (palindromique)':'')+'.')
+        +'</div>'
+        +(tm.mesure
+          ? '<div style="margin-top:3px; color:#94a3b8;">Sur l\'archive, cette relation donne '
+            +'<b>'+esc(tm.mesure.r)+'</b> nuls ('+tm.mesure.taux+' %) contre '
+            +(tm.mesure.ailleurs!=null?tm.mesure.ailleurs+' %':'22,8 %')+' de base — '
+            +'<b style="color:'+(tm.mesure.sens==='À CONTRESENS'?'#f87171':'#94a3b8')+';">'
+            +'p = '+tm.mesure.p+(tm.mesure.sens?' · '+esc(tm.mesure.sens):'')+'</b>. '
+            +(tm.aCompter
+              ? '<span style="color:#a78bfa;">C\'est la SEULE relation qui pointe dans le bon '
+                +'sens. Six cas — on en veut vingt-cinq. Note bien ce match.</span>'
+              : '')
+            +'</div>'
+          : '')
+        +'<div style="margin-top:4px; font-size:10px; color:#94a3b8; border-top:1px solid '
+        +'rgba(148,163,184,.2); padding-top:4px;">'
+        +'<b>Les lois sont exactes</b> (65 536/65 536) : M13 = M14 donne toujours le Juge '
+        +'<b>Populus</b> ; M14 = complément de M13 donne toujours <b>Via</b> ; le '
+        +'renversement et la conversion donnent toujours l\'un des quatre palindromes '
+        +'<b>Via, Carcer, Conjunctio, Populus</b> — les seules figures égales à leur propre '
+        +'renversement. Et la distance entre témoins ne vaut jamais 1 ni 3, seulement 0, 2 '
+        +'ou 4, parce que le Juge est toujours pair.'
+        +'<div style="margin-top:3px;"><b style="color:#fbbf24;">Mais ça ne prédit pas le '
+        +'nul.</b> Juge palindromique : 17,9 % de nuls contre 27,6 % ailleurs — à contresens. '
+        +'21 tests (6 paires symétriques × 4 relations), meilleur p brut 0,10, Bonferroni '
+        +'1,00. La distance non plus (rho −0,13, p = 0,44).</div></div></div>';
+    })();
     // ─── LE LEVIER DE L'ANNONCE (05/09/26) ───
     // Réponse mesurée à « si un thème se contredit, la fiabilité est
     // faible » : c'est faux (cf. FIABILITE_VERDICT_V7). Ce qui prédit la
