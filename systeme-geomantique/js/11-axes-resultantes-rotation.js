@@ -2484,3 +2484,152 @@ autoTestV7('lois de parité', function () {
   var v = verifierLoisPariteV7(false);
   if (!v || !v.toutesExactes) throw new Error('une loi de parité est tombée en défaut');
 });
+
+// ═══════════════════════════════════════════════════════════════
+// LE CALCUL DU MOUVEMENT (05/09/26) — comment les figures se
+// déplacent et s'influencent. Tout est exact, rien n'attend un match.
+// ═══════════════════════════════════════════════════════════════
+// Demande d'Ellemine_D : « concentrons sur le calcul, comment les
+// figures se déplacent, s'influencent, dans les axes et le couplage des
+// triplets de mouvement ». Rien ici ne vient de l'archive.
+//
+// LE POINT DE DÉPART. Le bouclier est une APPLICATION LINÉAIRE SUR
+// GF(2). En notant 1 la ligne à un point et 0 la ligne à deux, combine
+// est le XOR, et les filles sont la transposée du carré des mères.
+// Donc chacune des 64 lignes du thème est une somme exacte des 16
+// points des mères. Rang de l'application : 16 sur 16 — elle est
+// surjective, aucune information n'est perdue, et 48 des 64 lignes
+// sont redondantes.
+//
+// ── 1. LE POINT DE CONTACT : la seule rencontre mère/fille ──
+// La mère Mi et la fille M(4+j) partagent EXACTEMENT UN POINT, celui
+// en position (i, j) du carré des mères. Vérifié sur les 16 paires,
+// sans exception : ligne j de Mi = ligne i de M(4+j).
+// CE QUE ÇA CHANGE POUR LA DOCTRINE : M1 et M7 ne sont pas deux camps
+// indépendants. La 3e ligne de M1 EST la 1re ligne de M7 — les deux
+// chefs sont soudés en un de leurs quatre points, dans tout thème.
+// Pareil pour M2 et M8 (4e ligne de M2 = 2e ligne de M8).
+//
+// ── 2. POURQUOI SEULS DEUX AXES D'OPPOSITION SONT SOUDÉS ──
+// Sur les six axes M(h) <-> M(h+6) :
+//   M1<->M7   mère/fille   rang 7/8   SOUDÉS au point m1 ligne 3
+//   M2<->M8   mère/fille   rang 7/8   SOUDÉS au point m2 ligne 4
+//   M3<->M9   mère/neveu   rang 8/8   libres
+//   M4<->M10  mère/neveu   rang 8/8   libres, mais LOI M4 ⊕ M10 = M3
+//   M5<->M11  fille/neveu  rang 8/8   libres, mais LOI M5 ⊕ M11 = M6
+//   M6<->M12  fille/neveu  rang 8/8   libres
+// Un neveu est une somme : il ne partage jamais une ligne entière.
+// Les deux axes soudés et les deux axes porteurs de loi sont DISJOINTS.
+// L'axe défensif M4/M10 porte une loi mais aucune soudure ; l'axe des
+// chefs M1/M7 porte une soudure mais aucune loi. Ce sont deux formes de
+// lien différentes, à ne pas confondre.
+//
+// ── 3. LA MATRICE DU MOUVEMENT ──
+// Changer UN point d'une mère déplace 6, 7 ou 8 maisons. Les points de
+// la DIAGONALE (m1l1, m2l2, m3l3, m4l4) en déplacent le moins — 7, 6,
+// 6, 6 — et AUCUN des quatre n'atteint le Juge M15. Tout autre point en
+// déplace 8. La diagonale est la partie silencieuse du carré.
+//
+// ── 4. OÙ VIT LA LOI DE PARITÉ ──
+// Les quatre lignes de M15 se somment à ZÉRO : la quatrième est la
+// somme des trois autres, donc le Juge n'a qu'un rang de 3 sur 4. C'est
+// exactement la loi « M15 est toujours paire », localisée à la ligne
+// près. M13, M14 et M16 sont de rang plein.
+//
+// ── 5. LES CINQ ÉTAGES ET LES DEUX CAMPS ──
+//   étage 1  mères M1-M4                 camp 1 : M1,M2,M3,M4
+//   étage 2  filles M5-M8                camp 2 : M5,M6,M7,M8
+//   étage 3  neveux M9-M12               camp 1 : M9,M10   camp 2 : M11,M12
+//   étage 4  témoins M13-M14             camp 1 : M13      camp 2 : M14
+//   étage 5  juge et réconciliation      camp 1 : M16      camp 2 : M15
+// Chaque camp habite QUATRE paliers sur les cinq étages : une base
+// pleine, deux neveux, un témoin, un sommet. Le camp 1 monte par les
+// mères, le camp 2 par les filles — c'est-à-dire par les COLONNES du
+// même carré. Les deux camps lisent la même matière dans deux sens.
+//
+// ── 6. LE COUPLAGE DES DEUX CAMPS, PALIER PAR PALIER ──
+// Rang partagé entre le palier du camp 1 et celui du camp 2 :
+//   base     M1-M4 contre M5-M8      partagé 16 sur 16   (même matière)
+//   neveux   M9,M10 contre M11,M12   partagé  4 sur 8
+//   témoins  M13 contre M14          partagé  1 sur 4
+//   sommets  M16 contre M15          partagé  0
+// Le couplage DÉCROÎT en montant : total à la base, moitié aux neveux,
+// un quart aux témoins, NUL aux sommets. Les deux camps partent de la
+// même matière et finissent étrangers l'un à l'autre.
+//
+// ── 7. LES TRIGONES {k, k+4, k+8} — les triplets de mouvement ──
+// Une mère, une fille, un neveu : un étage de chacun des trois premiers.
+//   {M1, M5, M9 }  feu     rang 10/12   aucune loi   1 point commun aux trois
+//   {M2, M6, M10}  air     rang 10/12   aucune loi   0
+//   {M3, M7, M11}  eau     rang 10/12   aucune loi   0
+//   {M4, M8, M12}  terre   rang 10/12   aucune loi   1 point commun aux trois
+// AUCUN trigone ne porte de loi exacte, et les quatre ont le même rang.
+// Mais ils NE SONT PAS ÉGAUX : feu et terre ont un point commun à leurs
+// trois maisons (leur point diagonal, m1l1 et m4l4), air et eau n'en
+// ont aucun. La raison est que le neveu du trigone feu (M9 = M1 ⊕ M2)
+// contient les points de m1, et celui du trigone terre (M12 = M7 ⊕ M8)
+// ceux de la colonne 4 ; pour air et eau, le neveu vient de l'autre
+// moitié du carré et ne recoupe pas.
+var MOUVEMENT_V7 = {
+  rangApplication: 16,
+  contactMereFille: 'ligne j de Mi = ligne i de M(4+j) — un point, toujours',
+  axesSoudes: { 'M1-M7': 'm1 ligne 3', 'M2-M8': 'm2 ligne 4' },
+  axesAvecLoi: { 'M4-M10': 'M3', 'M5-M11': 'M6' },
+  diagonaleSilencieuse: ['m1l1', 'm2l2', 'm3l3', 'm4l4'],
+  maisonsDeplaceesParPoint: { 'm1l1': 7, 'm2l2': 6, 'm3l3': 6, 'm4l4': 6, 'autres': 8 },
+  rangDuJuge: 3,
+  etages: { 1: 'mères M1-M4', 2: 'filles M5-M8', 3: 'neveux M9-M12',
+            4: 'témoins M13-M14', 5: 'juge M15 et réconciliation M16' },
+  campParEtage: { camp1: { 1: [1, 2, 3, 4], 3: [9, 10], 4: [13], 5: [16] },
+                  camp2: { 2: [5, 6, 7, 8], 3: [11, 12], 4: [14], 5: [15] } },
+  couplageParPalier: { base: 16, neveux: 4, temoins: 1, sommets: 0 },
+  trigones: {
+    feu:   { maisons: [1, 5, 9],  rang: 10, pointsCommuns: 1, point: 'm1l1' },
+    air:   { maisons: [2, 6, 10], rang: 10, pointsCommuns: 0, point: null },
+    eau:   { maisons: [3, 7, 11], rang: 10, pointsCommuns: 0, point: null },
+    terre: { maisons: [4, 8, 12], rang: 10, pointsCommuns: 1, point: 'm4l4' } }
+};
+
+// Le point où la mère i et la fille j se touchent, avec sa VALEUR dans
+// un thème donné. C'est le seul point que les deux partagent.
+function pointContactV7(theme, i, j) {
+  if (!theme || i < 1 || i > 4 || j < 1 || j > 4) return null;
+  var mere = theme[i], fille = theme[4 + j];
+  if (typeof MAP_GEO === 'undefined' || !MAP_GEO[mere] || !MAP_GEO[fille]) return null;
+  var vMere = MAP_GEO[mere][j - 1], vFille = MAP_GEO[fille][i - 1];
+  return { mere: 'M' + i, figMere: mere, ligneDansMere: j,
+    fille: 'M' + (4 + j), figFille: fille, ligneDansFille: i,
+    point: 'm' + i + ' ligne ' + j, valeur: vMere,
+    // garde-fou : les deux lectures doivent coïncider, sinon le calcul
+    // des filles est cassé quelque part.
+    coherent: vMere === vFille };
+}
+
+// La soudure de l'axe des chefs. M1 et M7 partagent toujours un point ;
+// ce point est le seul endroit où les deux camps se touchent directement,
+// sans passer par une somme.
+function soudureChefsV7(theme) {
+  var a = pointContactV7(theme, 1, 3);   // M1 ligne 3 = M7 ligne 1
+  var b = pointContactV7(theme, 2, 4);   // M2 ligne 4 = M8 ligne 2
+  if (!a || !b) return null;
+  return { m1m7: a, m2m8: b,
+    lecture: 'la 3e ligne de M1 EST la 1re ligne de M7 : les deux chefs sont '
+      + 'soudés en un point. Ni M4/M10 ni M5/M11 n\'ont cette soudure — eux '
+      + 'portent une loi, ce qui est un lien d\'une autre nature.',
+    coherent: a.coherent && b.coherent };
+}
+
+autoTestV7('points de contact mère/fille', function () {
+  if (typeof calcTheme !== 'function' || typeof FIGS_V7 === 'undefined') return;
+  var essais = [['puer', 'laetitia', 'caput_draconis', 'albus'],
+    ['tristitia', 'amissio', 'cauda_draconis', 'laetitia'],
+    ['populus', 'via', 'rubeus', 'carcer']];
+  essais.forEach(function (m) {
+    var t = calcTheme(m[0], m[1], m[2], m[3]);
+    for (var i = 1; i <= 4; i++) for (var j = 1; j <= 4; j++) {
+      var c = pointContactV7(t, i, j);
+      if (!c || !c.coherent)
+        throw new Error('point de contact (' + i + ',' + j + ') incohérent sur ' + m.join('/'));
+    }
+  });
+});

@@ -1688,6 +1688,27 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'Pour l\'activer quand même : BRANCHES_V7.protocole_pilote.actif = true.')
         +'</div></div>';
     })();
+    // La soudure des chefs — exacte, sans statistique.
+    (function(){
+      var sd=null; try{ sd=soudureChefsV7(theme); }catch(e){ sd=null; }
+      if(!sd) return;
+      var a=sd.m1m7;
+      html+='<div style="padding:7px 10px; margin:0 0 8px; border-left:4px solid #34d399; background:rgba(52,211,153,.10);">'
+        +'🔗 <b style="font-size:12px;">Soudure des chefs : M1 et M7 partagent un point</b>'
+        +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+        +'La <b>3e ligne de '+label(a.figMere)+' (M1)</b> EST la <b>1re ligne de '+label(a.figFille)+' (M7)</b> — '
+        +'valeur '+a.valeur+(a.valeur===1?' point':' points')+'. '
+        +(sd.coherent?'':'<b style="color:#ef4444;"> INCOHÉRENT — le calcul des filles est cassé.</b>')
+        +'</div>'
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+        +'Exact, sur tout thème : la mère Mi et la fille M(4+j) se touchent au point (i,j) du '
+        +'carré — 16 paires, 16 points de contact, aucune exception. C\'est la SEULE façon dont '
+        +'une mère et une fille se rencontrent, et ça vaut aussi pour M2/M8 (4e ligne de M2 = '
+        +'2e ligne de M8). <b>M1 et M7 ne sont donc pas deux camps indépendants.</b> '
+        +'Ni M4/M10 ni M5/M11 n\'ont cette soudure : eux portent une LOI (M4⊕M10=M3, '
+        +'M5⊕M11=M6), ce qui est un lien d\'une autre nature. Soudure et loi ne tombent '
+        +'jamais sur le même axe.</div></div>';
+    })();
     if(lp){
       var attendu = lp.moteurAttendu || {buts:'—',btts:'—'};
       var tz = lp.zeroPopulus ? '#f59e0b' : '#64748b';
