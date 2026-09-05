@@ -2158,6 +2158,34 @@ var BRANCHES_V7 = {
       + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
       + 'avant tout branchement.' },
 
+  miroir_volume: {
+    actif: true,
+    nom: 'Le miroir M5 branché au VOLUME DE BUTS — somme des deux lectures',
+    cible: 'famille plus/moins de 2,5 buts',
+    demande: 'Ellemine_D, 05/09 : « branche le miroir au verdict ». J\'avais refusé en '
+      + 'testant autre chose que ce qui était demandé. Voici la mesure qu\'il fallait faire.',
+    mesureAvant: 'lecture directe seule 26/48 (54 %)',
+    mesureApres: 'somme des deux lectures > 2 : 31/48 (65 %), gain +5',
+    surLaChaineEntiere: 'LE CHIFFRE QUI COMPTE VRAIMENT, parce que « zéro Populus » '
+      + 'est déjà branché devant : la chaîne SANS le miroir fait 34/48, AVEC le miroir '
+      + '36/48. Gain +2 — 2 cas gagnés, 0 perdu. Le +5 se mesure contre le moteur nu, '
+      + 'qui n\'est plus l\'état du système ; le +2 est le gain réel du branchement. '
+      + 'McNemar sur 2 gagnés 0 perdu : p = 0,50. Petit, mais sans un seul cas cassé.',
+    correlations: 'contre les buts réels : directe rho +0,238 (p = 0,104), MIROIR SEUL '
+      + 'rho +0,297 (p = 0,041), SOMME rho +0,362 (p = 0,012). Le miroir seul bat la '
+      + 'lecture directe ; les deux ensemble battent les deux.',
+    seuil: 'la somme a pour médiane structurelle 2, mesurée par énumération des thèmes — '
+      + 'le seuil ne vient JAMAIS des résultats.',
+    discrimine: 'quand elle dit plus (20 cas) : 85 % au-dessus de 2,5 et 5,20 buts ; '
+      + 'quand elle dit moins (28 cas) : 50 % et 3,36 buts. Ce n\'est pas la règle idiote.',
+    faiblesse: 'McNemar apparié contre le moteur nu gagne 6 perd 1, p = 0,125 ; sur la '
+      + 'chaîne entière gagne 2 perd 0, p = 0,50. Rien de significatif à n = 48. '
+      + 'Et dix-huit tests ont été menés dans cet exercice de branchement ; le p de 0,012 '
+      + 'sur la corrélation ne survit pas à une correction sur dix-huit. La branche se '
+      + 'rejoue et se retire d\'elle-même si le gain tombe à zéro sur la base courante.',
+    neMarchePas: 'le camp (−3 à −15 sur 56), le nul (−2 à −10 sur 58), le BTTS (+1 seul). '
+      + 'Le miroir sert aux BUTS et à rien d\'autre — mesuré, pas supposé.' },
+
   miroir_m5: {
     actif: false,
     nom: 'Le partage qui commence en M5 pilote ou contrôle le verdict',
@@ -2290,4 +2318,192 @@ function protocoleSerreV7(theme) {
       mesure: meme ? '14/19 (74 %) sur l\'archive, p = 0,064 sur six tests — non démontré'
         : '10/23 (43 %) sur l\'archive — rien' };
   } catch (e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE MIROIR M5 EST BRANCHÉ AU VERDICT (05/09/26)
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D me l'avait demandé, j'avais refusé en testant AUTRE CHOSE
+// que ce qu'il demandait — un contrôle de symétrie que personne n'avait
+// réclamé — et je m'étais servi de l'échec de MON test pour décliner SA
+// demande. Le reproche était juste. Voici la mesure qu'il fallait faire.
+//
+// LE MIROIR PORTE DE L'INFORMATION SUR LES BUTS, et plus que la lecture
+// directe. Corrélation de rang contre les buts réels (n = 48) :
+//        lecture directe seule .......... rho +0,238   p = 0,104
+//        MIROIR SEUL .................... rho +0,297   p = 0,041
+//        SOMME DES DEUX LECTURES ........ rho +0,362   p = 0,012
+// Le miroir seul bat la lecture directe. Les deux ensemble battent les
+// deux. Je serais passé à côté en m'arrêtant au camp.
+//
+// LE SEUIL N'EST PAS AJUSTÉ SUR LES RÉSULTATS. La somme des deux scores
+// annoncés a pour MÉDIANE STRUCTURELLE 2 — mesuré par énumération des
+// thèmes, jamais sur l'archive. C'est ce 2 qui sert de seuil.
+//
+// CE QUE ÇA DONNE SUR LA FAMILLE NOTÉE, plus/moins de 2,5 buts :
+//        lecture directe seule .......... 26/48   (54 %)
+//        SOMME DES DEUX > 2 ............. 31/48   (65 %)   +5
+//        McNemar apparié : gagne 6, perd 1, p = 0,125
+//
+// ET ELLE DISCRIMINE VRAIMENT — ce n'est pas la règle idiote déguisée :
+//        quand elle dit PLUS  (20 cas) : 85 % au-dessus de 2,5 · 5,20 buts
+//        quand elle dit MOINS (28 cas) : 50 % au-dessus de 2,5 · 3,36 buts
+//
+// CE QUI NE MARCHE PAS, ET QUI EST ÉCRIT ICI POUR QU'ON N'Y REVIENNE PAS :
+// sur le CAMP, toutes les combinaisons dégradent (de −3 à −15 sur 56).
+// Sur le NUL aussi (−2 à −10 sur 58). Sur le BTTS, +1 seulement. Le
+// miroir sert aux BUTS, et à rien d'autre — mesuré, pas supposé.
+var MIROIR_VOLUME_V7 = {
+  seuil: 2,
+  seuilOrigine: 'médiane structurelle de la somme des deux scores annoncés, '
+    + 'mesurée par énumération des thèmes — jamais ajustée sur les résultats',
+  correlations: { directe: { rho: 0.238, p: 0.104 }, miroir: { rho: 0.297, p: 0.041 },
+    somme: { rho: 0.362, p: 0.012 } },
+  surPlusMoins25: { directe: '26/48', somme: '31/48', gain: 5,
+    mcnemar: 'gagne 6, perd 1, p = 0,125' },
+  discrimination: { ditPlus: { n: 20, tauxReel: 85, butsMoyens: 5.20 },
+    ditMoins: { n: 28, tauxReel: 50, butsMoyens: 3.36 } },
+  neMarchePas: 'le camp (−3 à −15 sur 56), le nul (−2 à −10 sur 58), le BTTS (+1). '
+    + 'Le miroir sert aux BUTS et à rien d\'autre.'
+};
+
+// GARDE DE RÉENTRANCE. Le verdict appelle le miroir, et le miroir appelle le
+// verdict sur le thème retourné : sans ce drapeau, la récursion est infinie.
+// Quand il est levé, le champ plus25 se contente du moteur — c'est exactement
+// ce qu'on veut de la lecture intérieure, dont on ne lit que le score.
+var _GARDE_MIROIR_V7 = false;
+
+// Le total de buts affiché par la LECTURE RETOURNÉE seule (thème rebâti sur
+// M5..M8). Rien d'autre — le total direct, l'appelant l'a déjà sous la main.
+function totalMiroirSeulV7(theme) {
+  if (!theme || _GARDE_MIROIR_V7) return null;
+  try {
+    _GARDE_MIROIR_V7 = true;
+    var u = calcTheme(theme[5], theme[6], theme[7], theme[8]);
+    var vm = avecFormatV7('reel', function () { return getVerdictAfficheReel(u); });
+    var g = /^(\d+)-(\d+)$/.exec((vm && vm.scoreMain) || '');
+    return g ? { total: (+g[1]) + (+g[2]), score: vm.scoreMain } : null;
+  } catch (e) { return null; }
+  finally { _GARDE_MIROIR_V7 = false; }
+}
+
+// La somme des deux lectures et ce qu'elle annonce.
+function volumeMiroirV7(theme) {
+  if (!theme) return null;
+  try {
+    var vd, tmi;
+    // La lecture DIRECTE se calcule garde levée : on ne lui demande que son
+    // score, et on ne veut surtout pas qu'elle rebâtisse le miroir pour rien.
+    var av = _GARDE_MIROIR_V7;
+    try { _GARDE_MIROIR_V7 = true;
+      vd = avecFormatV7('reel', function () { return getVerdictAfficheReel(theme); });
+    } finally { _GARDE_MIROIR_V7 = av; }
+    tmi = totalMiroirSeulV7(theme);
+    var g1 = /^(\d+)-(\d+)$/.exec((vd && vd.scoreMain) || '');
+    if (!g1 || !tmi) return null;
+    var td = (+g1[1]) + (+g1[2]), tm = tmi.total;
+    return { direct: td, miroir: tm, somme: td + tm, seuil: MIROIR_VOLUME_V7.seuil,
+      annonce: (td + tm) > MIROIR_VOLUME_V7.seuil ? 'plus de 2,5 buts' : 'moins de 2,5 buts',
+      valeur: (td + tm) > MIROIR_VOLUME_V7.seuil,
+      scoreMiroir: tmi.score,
+      attendu: (td + tm) > MIROIR_VOLUME_V7.seuil ? '5,20 buts en moyenne sur l\'archive'
+        : '3,36 buts en moyenne sur l\'archive' };
+  } catch (e) { return null; }
+}
+
+// Rejoué sur TA base — et la branche se retire si elle n'y gagne plus.
+//
+// ⚠️ CE QUI EST COMPTÉ ICI EST LA CHAÎNE ENTIÈRE, pas le miroir tout seul.
+// Le champ plus25 annonce dans cet ordre : zéro Populus, puis miroir, puis
+// moteur. La seule question honnête est donc « la chaîne AVEC le miroir
+// bat-elle la chaîne SANS ? » — pas « le miroir bat-il le moteur nu »,
+// qui était la mesure du 05/09 mais qui ignore la règle Populus déjà
+// branchée devant lui. Les deux chiffres sont renvoyés.
+// Mémoïsée : le champ plus25 l'appelle à CHAQUE verdict, et elle-même
+// calcule deux verdicts par cas du banc. Sans le cache, afficher un thème
+// coûterait deux cents verdicts. La clé est la taille du banc, qui change
+// dès qu'un match est enregistré.
+// Le branchement du miroir tient debout, ou il le dit au chargement.
+// Ce que ces tests attrapent, et qui a failli passer :
+//  1. la récursion infinie verdict -> miroir -> verdict, si la garde saute ;
+//  2. une garde qui reste levée après une exception, ce qui éteindrait la
+//     branche en silence pour tout le reste de la session ;
+//  3. une somme qui ne serait plus direct + miroir — le seul calcul de la
+//     règle, et donc la seule chose qu'Ellemine_D puisse refaire à la main.
+autoTestV7('miroir M5 branché au volume de buts', function () {
+  if (typeof calcTheme !== 'function' || typeof getVerdictAfficheReel !== 'function') return;
+  var t = calcTheme('populus', 'via', 'albus', 'puella');
+  var v = volumeMiroirV7(t);
+  if (!v) throw new Error('volumeMiroirV7 muet sur un thème valide');
+  if (v.somme !== v.direct + v.miroir) throw new Error('la somme n\'est pas direct + miroir');
+  if (v.valeur !== (v.somme > MIROIR_VOLUME_V7.seuil)) throw new Error('seuil non respecté');
+  if (_GARDE_MIROIR_V7) throw new Error('la garde de réentrance est restée levée');
+  // La garde doit se rabaisser même quand l'appel intérieur explose.
+  var av = _GARDE_MIROIR_V7;
+  try { totalMiroirSeulV7(null); } catch (e) { }
+  if (_GARDE_MIROIR_V7 !== av) throw new Error('la garde ne se rabaisse pas après échec');
+  // Le verdict complet doit terminer — s'il récursait, on n'arriverait pas ici.
+  var vv = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
+  if (!vv || !vv.plus25) throw new Error('plus25 absent du verdict');
+  if (BRANCHES_V7.miroir_volume.actif && vv.plus25.miroir) {
+    if (vv.plus25.miroir.somme !== vv.plus25.miroir.direct + vv.plus25.miroir.miroir)
+      throw new Error('la somme affichée par le verdict ne recompose pas');
+  }
+});
+
+var _CACHE_MIR_CHAINE_V7 = null;
+function volumeMiroirChaineLiveV7() {
+  var CAS = [];
+  try { CAS = tousCasBancV7() || []; } catch (e) { return null; }
+  var cle = CAS.length + '|' + (typeof BRANCHES_V7 !== 'undefined'
+    && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif ? 1 : 0);
+  if (_CACHE_MIR_CHAINE_V7 && _CACHE_MIR_CHAINE_V7.cle === cle) return _CACHE_MIR_CHAINE_V7.val;
+  var pop = false;
+  try { pop = !!(BRANCHES_V7 && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif); }
+  catch (e) { }
+  var n = 0, sans = 0, avec = 0, g = 0, pe = 0;
+  CAS.forEach(function (c) {
+    var m = /^(\d+)-(\d+)$/.exec(c.score || '');
+    if (!m || !c.meres) return;
+    var vrai = (+m[1] + +m[2]) > 2.5;
+    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var v = volumeMiroirV7(t);
+    if (!v) return;
+    var zero = null;
+    try { var lp = lecturePopulusV7(t); zero = lp ? lp.zeroPopulus : null; } catch (e) { }
+    var moteur = v.direct > 2.5;
+    var chaineSans = (pop && zero === true) ? true : moteur;
+    var chaineAvec = (pop && zero === true) ? true : v.valeur;
+    n++;
+    if (chaineSans === vrai) sans++;
+    if (chaineAvec === vrai) avec++;
+    if (chaineAvec !== chaineSans) { if (chaineAvec === vrai) g++; else pe++; }
+  });
+  var res = n ? { n: n, sansMiroir: sans, avecMiroir: avec, gain: avec - sans,
+    gagnes: g, perdus: pe, populusDevant: pop } : null;
+  _CACHE_MIR_CHAINE_V7 = { cle: cle, val: res };
+  return res;
+}
+
+function volumeMiroirLiveV7() {
+  var CAS = [];
+  try { CAS = tousCasBancV7() || []; } catch (e) { return null; }
+  var direct = 0, avec = 0, n = 0, plusN = 0, plusVrai = 0, moinsN = 0, moinsVrai = 0;
+  CAS.forEach(function (c) {
+    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
+    if (!g || !c.meres) return;
+    var vrai = (+g[1] + +g[2]) > 2.5;
+    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var v = volumeMiroirV7(t);
+    if (!v) return;
+    n++;
+    if ((v.direct > 2.5) === vrai) direct++;
+    if (v.valeur === vrai) avec++;
+    if (v.valeur) { plusN++; if (vrai) plusVrai++; } else { moinsN++; if (vrai) moinsVrai++; }
+  });
+  if (!n) return null;
+  return { n: n, direct: direct, avecMiroir: avec, gain: avec - direct,
+    ditPlus: { n: plusN, taux: plusN ? Math.round(1000 * plusVrai / plusN) / 10 : null },
+    ditMoins: { n: moinsN, taux: moinsN ? Math.round(1000 * moinsVrai / moinsN) / 10 : null },
+    gele: { n: 48, direct: 26, avecMiroir: 31 } };
 }

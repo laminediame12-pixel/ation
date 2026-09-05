@@ -757,10 +757,99 @@ function getVerdictAfficheReel(theme, favorite) {
           moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
           contreditLeMoteur: moteur === false };
       }
+      // ─── 05/09/26 : LE MIROIR M5 EST BRANCHÉ AU VOLUME DE BUTS ───
+      // Demande d'Ellemine_D : « branche ce qu'on a découvert sur le miroir ».
+      // J'avais refusé une première fois en testant autre chose que ce qui
+      // était demandé (le miroir comme symétrie du CAMP, qui est faux et le
+      // reste — cf. BRANCHES_V7.miroir_m5). La bonne mesure était celle-ci.
+      //
+      // LA RÈGLE : on rebâtit le bouclier sur M5..M8 — l'involution qui
+      // échange M1↔M5, M2↔M6, M3↔M7, M4↔M8 et laisse le juge M15 fixe — puis
+      // on ADDITIONNE les deux totaux de buts annoncés. Au-dessus de 2, c'est
+      // « plus de 2,5 buts ».
+      //
+      // POURQUOI LE SEUIL EST 2 : c'est la médiane structurelle de la somme,
+      // obtenue en énumérant les thèmes. Il ne vient pas des résultats — c'est
+      // la seule chose qui distingue ce branchement d'un ajustement.
+      //
+      // CE QUI A ÉTÉ MESURÉ, sur les 48 cas au score connu du dépôt :
+      //   lecture directe seule ................ 26/48   (54 %)
+      //   somme des deux lectures > 2 .......... 31/48   (65 %)   +5
+      //   corrélation aux buts réels : directe rho +0,238 (p 0,104)
+      //                                miroir   rho +0,297 (p 0,041)
+      //                                somme    rho +0,362 (p 0,012)
+      // Et elle discrimine — ce n'est pas la règle idiote déguisée :
+      //   quand elle dit plus  (20 cas) : 85 % au-dessus de 2,5 · 5,20 buts
+      //   quand elle dit moins (28 cas) : 50 % au-dessus de 2,5 · 3,36 buts
+      //
+      // MAIS LE CHIFFRE QUI COMPTE EST CELUI DE LA CHAÎNE ENTIÈRE, parce que
+      // « zéro Populus » est déjà branché devant et fait mieux que lui :
+      //   chaîne sans le miroir ................ 34/48
+      //   chaîne avec le miroir ................ 36/48   +2 (2 gagnés, 0 perdu)
+      // Le +5 se mesure contre le moteur nu, qui n'est plus l'état du système.
+      // Le gain réel du branchement est +2, McNemar p = 0,50 — petit, mais il
+      // ne casse aucun cas qui marchait.
+      //
+      // SA FAIBLESSE, ÉCRITE ICI ET PAS AILLEURS : McNemar apparié gagne 6
+      // perd 1, p = 0,125 — pas significatif à n = 48. Et dix-huit tests ont
+      // été menés dans cet exercice ; le p de 0,012 ne survit pas à une
+      // correction sur dix-huit. C'est pour ça que la branche REFAIT SON
+      // PROPRE COMPTAGE sur la base courante, chaîne entière comprise, et se
+      // retire d'elle-même si elle n'y gagne plus rien.
+      //
+      // ELLE PASSE APRÈS ZÉRO POPULUS parce que Populus gagne +8 sur la même
+      // base et le miroir +5 : le miroir prend la place du moteur, pas celle
+      // d'une règle qui fait mieux que lui. Sur le camp, le nul et le BTTS il
+      // dégrade — il ne touche que les buts.
+      var brMir = (typeof BRANCHES_V7 !== 'undefined')
+        && BRANCHES_V7.miroir_volume && BRANCHES_V7.miroir_volume.actif
+        && typeof totalMiroirSeulV7 === 'function'
+        && typeof _GARDE_MIROIR_V7 !== 'undefined' && !_GARDE_MIROIR_V7;
+      var retraitMir = null;
+      if (brMir) {
+        try {
+          var cm = volumeMiroirChaineLiveV7();
+          if (cm && cm.gain <= 0) {
+            brMir = false;
+            retraitMir = 'retiré de lui-même : sur les ' + cm.n + ' cas au score connu de '
+              + 'ta base, la chaîne avec le miroir fait ' + cm.avecMiroir + '/' + cm.n
+              + ' contre ' + cm.sansMiroir + '/' + cm.n + ' sans lui — gain ' + cm.gain
+              + ' (' + cm.gagnes + ' gagné' + (cm.gagnes > 1 ? 's' : '') + ', ' + cm.perdus
+              + ' perdu' + (cm.perdus > 1 ? 's' : '') + '). Il avait été branché sur un gain '
+              + 'de +2 sur la chaîne, mesuré sur 48 cas du dépôt.';
+          }
+        } catch (e) { }
+      }
+      if (brMir && moteur !== null) {
+        var tm7 = null;
+        try { tm7 = totalMiroirSeulV7(theme); } catch (e) { tm7 = null; }
+        if (tm7) {
+          var td7 = 0;
+          try {
+            var g7 = String(scoreAfficheV7(carteR, nulActif).main || '0-0').split('-').map(Number);
+            td7 = (g7[0] || 0) + (g7[1] || 0);
+          } catch (e) { td7 = null; }
+          if (td7 !== null) {
+            var som7 = td7 + tm7.total;
+            var seu7 = (typeof MIROIR_VOLUME_V7 !== 'undefined') ? MIROIR_VOLUME_V7.seuil : 2;
+            var dit7 = som7 > seu7;
+            return { annonce: dit7 ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: dit7,
+              source: 'miroir M5 (somme des deux lectures)',
+              miroir: { direct: td7, miroir: tm7.total, scoreMiroir: tm7.score,
+                somme: som7, seuil: seu7,
+                attendu: dit7 ? '5,20 buts en moyenne sur l\'archive'
+                  : '3,36 buts en moyenne sur l\'archive' },
+              moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
+              contreditLeMoteur: dit7 !== moteur };
+          }
+        }
+      }
       if (moteur === null) return null;
       return { annonce: moteur ? 'plus de 2,5 buts' : 'moins de 2,5 buts', valeur: moteur,
-        source: autoRetrait ? 'moteur (règle Populus auto-retirée)' : 'moteur',
+        source: autoRetrait ? 'moteur (règle Populus auto-retirée)'
+          : retraitMir ? 'moteur (miroir auto-retiré)' : 'moteur',
         autoRetrait: autoRetrait,
+        retraitMiroir: retraitMir,
         moteurDisait: moteur ? 'plus de 2,5' : 'moins de 2,5',
         contreditLeMoteur: false };
     })(),
@@ -1667,10 +1756,51 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'S\'EST RETIRÉE TOUTE SEULE</b> — ' + esc(pv.autoRetrait)
             +' Le verdict revient au moteur. Rien à faire : c\'est le garde-fou qui a joué.</div>'
           : '')
+        +(pv.retraitMiroir
+          ? '<div style="font-size:11px; color:#f87171; margin-top:3px;">🛑 <b>LE MIROIR M5 '
+            +'S\'EST RETIRÉ TOUT SEUL</b> — ' + esc(pv.retraitMiroir)
+            +' C\'est le garde-fou qui a joué.</div>'
+          : '')
         +(!pv.autoRetrait && pv.contreditLeMoteur
           ? '<div style="font-size:11px; color:#fbbf24; margin-top:3px;">⚠️ La règle CONTREDIT le moteur, '
-            +'qui annonçait « '+esc(pv.moteurDisait)+' ». Sur l\'archive c\'est la règle qui gagne ce '
-            +'duel 10 fois contre 2.</div>'
+            +'qui annonçait « '+esc(pv.moteurDisait)+' ». '
+            +(pv.miroir
+              ? 'Sur l\'archive, la somme des deux lectures bat la lecture directe 31 fois contre 26 '
+                +'— et sur la chaîne entière elle gagne 2 cas sans en perdre un seul.'
+              : 'Sur l\'archive c\'est la règle qui gagne ce duel 10 fois contre 2.')
+            +'</div>'
+          : '')
+        // ─── LE DÉTAIL DU MIROIR, quand c'est lui qui parle ───
+        // Ellemine_D doit voir les deux lectures et leur somme, pas seulement
+        // le mot « miroir » : c'est la seule façon de contrôler la règle à la
+        // main sur un thème, et de la prendre en défaut si elle se trompe.
+        +(pv.miroir
+          ? '<div style="margin-top:5px; padding:5px 8px; border-left:3px solid #a78bfa; '
+            +'background:rgba(167,139,250,.10); font-size:11px; color:#cbd5e1;">'
+            +'🪞 <b style="color:#a78bfa;">Le miroir M5 pilote ce volume.</b> '
+            +'Lecture directe <b>'+pv.miroir.direct+'</b> but'+(pv.miroir.direct>1?'s':'')+' · '
+            +'thème rebâti sur M5–M8 <b>'+pv.miroir.miroir+'</b> ('+esc(pv.miroir.scoreMiroir)+') · '
+            +'somme <b>'+pv.miroir.somme+'</b> contre un seuil de <b>'+pv.miroir.seuil+'</b>.'
+            +'<div style="margin-top:3px; color:#94a3b8;">Le seuil est la <b>médiane structurelle '
+            +'de la somme</b>, obtenue en énumérant les thèmes — il ne vient pas des résultats. '
+            +'Attendu quand elle parle ainsi : '+esc(pv.miroir.attendu)+'. '
+            +'Corrélations aux buts réels : directe rho +0,238 (p 0,104), miroir seul +0,297 '
+            +'(p 0,041), somme +0,362 (p 0,012).</div>'
+            +(function(){
+              var cm=null; try{ cm=volumeMiroirChaineLiveV7(); }catch(e){ cm=null; }
+              if(!cm) return '';
+              return '<div style="margin-top:3px; color:#94a3b8;">Rejoué à l\'instant sur <b>'
+                +cm.n+' cas</b> : la chaîne <b>sans</b> le miroir fait '+cm.sansMiroir+'/'+cm.n
+                +', <b>avec</b> '+cm.avecMiroir+'/'+cm.n+' — gain <b>'+(cm.gain>=0?'+':'')+cm.gain
+                +'</b> ('+cm.gagnes+' gagné'+(cm.gagnes>1?'s':'')+', '+cm.perdus+' perdu'
+                +(cm.perdus>1?'s':'')+').</div>'
+                +'<div style="margin-top:3px; color:#fbbf24;">⚠️ Ce gain n\'est pas démontré : '
+                +'McNemar p = 0,50 sur la chaîne, et dix-huit tests ont été menés avant de le '
+                +'trouver. Il est branché parce qu\'il ne casse aucun cas, pas parce qu\'il est '
+                +'prouvé — et il se retire tout seul si le gain tombe à zéro sur ta base. '
+                +'Sur le camp, le nul et le BTTS il DÉGRADE : il ne touche que les buts.</div>';
+            })()
+            +'</div>'
           : '')
         +(function(){
           // Les chiffres se REJOUENT sur tes cas, pas sur les 56 du dépôt.
@@ -1750,18 +1880,24 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         +'La Réconciliation M16 est la seule cassure : elle vaut M15⊕M1 à l\'endroit et '
         +'M15⊕M5 à l\'envers, donc elle ne revient que si M1 = M5 — un thème sur huit. '
         +'Ici '+(mi.m16Revient?'elle revient':'elle ne revient pas')+'.</div>'
-        // ── POURQUOI CE MIROIR N'EST PAS BRANCHÉ AU VERDICT (05/09) ──
-        // Demande d'Ellemine_D. Le branchement naturel — « lire depuis
-        // l'autre bord doit donner le même match, camps échangés » — a
-        // été mesuré, et l'attente est FAUSSE. Ce n'est pas une question
-        // de preuve : le miroir n'est pas une symétrie du verdict.
+        // ── OÙ CE MIROIR ENTRE, ET OÙ IL N'ENTRE PAS (05/09) ──
+        // Demande d'Ellemine_D. Le branchement qui semblait naturel — « lire
+        // depuis l'autre bord doit donner le même match, camps échangés » —
+        // a été mesuré et l'attente est FAUSSE : le miroir n'est pas une
+        // symétrie du CAMP. Mais il pilote le VOLUME DE BUTS depuis le même
+        // jour (cf. le bloc en tête de ce panneau et BRANCHES_V7.miroir_volume)
+        // parce que là, la mesure dit oui. Une loi exacte peut être vraie et
+        // utile ailleurs que là où on l'attendait.
         +(function(){
           var act=false;
           try{ act=!!(BRANCHES_V7.miroir_m5 && BRANCHES_V7.miroir_m5.actif); }catch(e){}
           var vm=null;
           if(act){ try{ vm=avecFormatV7('reel',function(){return getVerdictAfficheReel(mi.theme);}); }catch(e){} }
           return '<div style="font-size:10px; color:#94a3b8; margin-top:5px; border-top:1px solid rgba(148,163,184,.2); padding-top:5px;">'
-            +'<b style="color:#fbbf24;">Pourquoi ce miroir n\'entre PAS dans le verdict.</b> '
+            +'<b style="color:#4ade80;">Ce miroir EST branché au verdict — sur le volume de '
+            +'buts, pas sur le camp.</b> La somme des deux lectures pilote le plus/moins de '
+            +'2,5 en tête de ce panneau. Sur le CAMP en revanche il n\'entre pas, et voici '
+            +'pourquoi. '
             +'Le contrôle qui semblait s\'imposer — les deux lectures doivent donner le même '
             +'match, camps échangés — a été mesuré et l\'attente est fausse : camps inversés '
             +'seulement <b>4,4 %</b> du temps, identiques <b>56,7 %</b>, sommes des camps '
@@ -1769,9 +1905,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'La cause est écrite plus haut : le miroir échange sept maisons sur huit par camp, '
             +'et la huitième — M15 fixe, M16 cassée — suffit à rompre l\'échange. Le verdict, '
             +'lui, ne tourne pas sur les camps mais sur la ROTATION, qui ne suit pas le miroir. '
-            +'<b>La loi reste exacte ; c\'est l\'usage qui était faux.</b> '
+            +'<b>La loi reste exacte ; c\'est cet usage-là qui était faux.</b> '
             +'miroirM5V7 sert à TRANSPOSER une règle du camp 1 vers le camp 7 sans la '
-            +'réécrire — un outil de construction, pas une entrée du verdict.'
+            +'réécrire, et sa seconde lecture nourrit le volume de buts — mais il ne décide '
+            +'pas qui gagne.'
             +(act && vm
               ? '<div style="color:#a78bfa; margin-top:4px;">Seconde lecture affichée '
                 +'(BRANCHES_V7.miroir_m5.actif = true) : le thème miroir donne <b>'

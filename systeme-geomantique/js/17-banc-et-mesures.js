@@ -2894,9 +2894,16 @@ var MOTEURS_GARDES_V7 = {
 //
 // Donc les chiffres qui décident ne doivent plus être écrits en dur.
 // Ceux-ci se recalculent à chaque ouverture sur tousCasBancV7().
+// Mémoïsée. Elle est appelée par le champ plus25 à chaque verdict, et elle
+// calcule elle-même un verdict par cas du banc : imbriquée dans la mesure du
+// miroir, qui en calcule deux par cas, elle coûtait n² verdicts — 22 000 sur
+// une base de 105. Le cache est invalidé dès que le banc change de taille.
+var _CACHE_POP_LIVE_V7 = null;
 function mesurePopulusLiveV7() {
   var CAS = [];
   try { CAS = tousCasBancV7(); } catch (e) { return null; }
+  var cle = CAS.length;
+  if (_CACHE_POP_LIVE_V7 && _CACHE_POP_LIVE_V7.cle === cle) return _CACHE_POP_LIVE_V7.val;
   var moteur = 0, avecRegle = 0, idiote = 0, total = 0;
   var zeroPlus = 0, zeroTot = 0, autrePlus = 0, autreTot = 0;
   CAS.forEach(function (c) {
@@ -2909,10 +2916,17 @@ function mesurePopulusLiveV7() {
     try { zero = nbPopulusV7(t) === 0; } catch (e) { return; }
     var dit;
     try {
+      // « Moteur seul » doit vraiment vouloir dire le moteur seul : on éteint
+      // les DEUX branches du volume, pas seulement Populus. Sans le miroir
+      // dans cette liste, ce compteur affichait 31/48 au lieu de 26/48 — la
+      // mesure de Populus se serait crédité le gain du miroir.
       var etait = BRANCHES_V7.populus_volume.actif;
+      var etaitM = BRANCHES_V7.miroir_volume ? BRANCHES_V7.miroir_volume.actif : null;
       BRANCHES_V7.populus_volume.actif = false;
+      if (BRANCHES_V7.miroir_volume) BRANCHES_V7.miroir_volume.actif = false;
       var v0 = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
       BRANCHES_V7.populus_volume.actif = etait;
+      if (BRANCHES_V7.miroir_volume) BRANCHES_V7.miroir_volume.actif = etaitM;
       dit = v0 && v0.plus25 ? v0.plus25.valeur : null;
     } catch (e) { return; }
     if (dit === null) return;
@@ -2923,14 +2937,16 @@ function mesurePopulusLiveV7() {
     if (zero) { zeroTot++; if (vrai) zeroPlus++; }
     else { autreTot++; if (vrai) autrePlus++; }
   });
-  if (!total) return null;
-  return { n: total,
+  if (!total) { _CACHE_POP_LIVE_V7 = { cle: cle, val: null }; return null; }
+  var _res = { n: total,
     moteurSeul: moteur, regleIdiote: idiote, moteurPlusRegle: avecRegle,
     gain: avecRegle - moteur,
     zero: { n: zeroTot, plus: zeroPlus, taux: zeroTot ? Math.round(1000 * zeroPlus / zeroTot) / 10 : null },
     autre: { n: autreTot, plus: autrePlus, taux: autreTot ? Math.round(1000 * autrePlus / autreTot) / 10 : null },
     gele: { n: 48, moteurSeul: 26, regleIdiote: 31, moteurPlusRegle: 34,
       note: 'les chiffres du 05/09, calculés sur les 56 cas du dépôt seulement' } };
+  _CACHE_POP_LIVE_V7 = { cle: cle, val: _res };
+  return _res;
 }
 
 // Combien de cas le fichier a-t-il VRAIMENT sous la main, et combien
