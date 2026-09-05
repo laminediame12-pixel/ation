@@ -1651,9 +1651,25 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       var pr=null; try{ pr=(avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);})||{}).protocole; }catch(e){ pr=null; }
       if(!pr) return;
       if(!pr.applicable){
+        // Muet — mais c'est justement le domaine où la version serrée
+        // montre quelque chose. On l'affiche à la place.
+        var ps=null; try{ ps=protocoleSerreV7(theme); }catch(e){ ps=null; }
         html+='<div style="font-size:11px; color:#64748b; margin:0 0 8px;">'
           +'⚖️ <b>Protocole de comparaison : muet sur ce thème</b> — '+esc(pr.raison)
-          +'. Il ne parle que sur la moitié des thèmes (32 768 sur 65 536, mesuré).</div>';
+          +' Il ne parle que sur la moitié des thèmes (32 768 sur 65 536, mesuré).'
+          +(ps && ps.domainePorteur
+            ? '<div style="margin-top:5px; padding:5px 8px; border-left:3px solid #a78bfa; background:rgba(167,139,250,.10); color:#cbd5e1;">'
+              +'🔎 <b style="color:#a78bfa;">Version serrée — R1 contre R7 seules : '+esc(ps.dit)+'</b>'
+              +' ('+label(ps.figR1)+' '+ps.scoreR1.toFixed(2)+' contre '+label(ps.figR7)+' '+ps.scoreR7.toFixed(2)
+              +', écart '+(ps.ecart>=0?'+':'')+ps.ecart.toFixed(2)+')'
+              +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">C\'est ICI que l\'élagage '
+              +'montre quelque chose : sur les thèmes à même boucle, où le protocole large renonce, '
+              +'la comparaison des deux seules figures tombe juste 14 fois sur 19 (74 %) dans '
+              +'l\'archive. Six tests menés, meilleur p = 0,064 — <b>rien n\'est démontré</b>, et '
+              +'branchée comme override elle ne gagnerait qu\'un point sur 56. NON BRANCHÉE. '
+              +'Seuil pour trancher : 25 rencontres à même boucle annoncées à l\'avance.</div></div>'
+            : '')
+          +'</div>';
         return;
       }
       var dit=pr.dit, pil=pr.pilote;

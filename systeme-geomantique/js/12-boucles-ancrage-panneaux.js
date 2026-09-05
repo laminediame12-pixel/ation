@@ -2176,3 +2176,87 @@ function annonceVolumeV7(theme) {
   catch (e) { return null; }
   return v ? v.plus25 : null;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// L'ÉLAGAGE DU PROTOCOLE R1/R7 (05/09/26) — question fermée avec
+// des chiffres, pas avec un avis
+// ═══════════════════════════════════════════════════════════════
+// Ellemine_D : « élagage plus protocole de comparaison R1 et R7 ».
+// Deux lectures, les deux faites.
+//
+// 1) LES DEUX BRANCHEMENTS ENSEMBLE — mesuré sur les 56 cas au camp
+//    connu, huit combinaisons :
+//      élagage aucun · protocole non ..... 38/56   <- l'état actuel
+//      élagage aucun · protocole OUI ..... 29/56   (−9)
+//      élagage >=2   · protocole non ..... 34/56   (−4)
+//      élagage >=2   · protocole OUI ..... 26/56   (−12)
+//      élagage >=3   · protocole OUI ..... 27/56   (−11)
+//      élagage >=4   · protocole OUI ..... 29/56   (−9)
+//    Ils ne se compensent pas, ils s'additionnent en mal.
+//
+// 2) L'ÉLAGAGE APPLIQUÉ AU PROTOCOLE LUI-MÊME. Sa formule somme six
+//    termes sur les huit figures de chaque boucle. Chaque terme testé
+//    seul, hors les 4 nuls réels (n = 25, choix binaire) :
+//      force     12/24   p = 1,0000        repos     9/17   p = 1,0000
+//      presence  10/23   p = 0,6776        binome    8/18   p = 0,8145
+//      propres    9/25   p = 0,2295        adverses 10/18   p = 0,8145
+//    AUCUN terme ne porte d'information sur le camp. Il n'y a rien à
+//    garder après élagage : la somme est vide parce que chaque part
+//    l'est.
+//
+// 3) LE DÉFAUT EXACT TROUVÉ EN CHEMIN. L'appareil des duels — seize
+//    paires, deux scores chacune, la moitié du code du protocole — est
+//    une MULTIPLICATION PAR TROIS de l'écart brut. Démontré : les 16
+//    duels couvrent les 16 figures une fois chacune, donc la somme des
+//    (scoreA − scoreB) vaut exactement (s1brut − s7brut), et l'écart
+//    final vaut 3 fois l'écart brut. Vérifié sur 4608 thèmes :
+//    4608/4608, sans une exception. Il n'ajoute aucune information,
+//    seulement une échelle.
+//
+// 4) L'ÉLAGAGE POUSSÉ AU BOUT — ne garder que les deux figures qui
+//    combattent, R1 contre R7, au lieu des huit de chaque boucle. Et
+//    là, un motif : ça marche exactement où le protocole actuel SE
+//    TAIT.
+//      boucles différentes (le protocole parle) ....... 10/23  (43 %)
+//      même boucle (le protocole est muet) ............ 14/19  (74 %)  p = 0,064
+//    Six tests menés ici, donc 0,064 ne démontre rien. Et surtout,
+//    branché comme override du verdict sur les thèmes à même boucle :
+//    38/56 -> 39/56, quatre gagnés (ConjCaput, RubCarcer, ConjCaput2,
+//    CaputCarcCaputPuer) contre trois perdus (Fiorentina, FortMajLaet,
+//    CarcCaput). +1 sur 56, c'est du bruit.
+//    Gardé en PISTE, pas branché : voir PISTES_V7.protocole_serre.
+//
+// CE QUE ÇA DIT DE LA DOCTRINE, et c'est le vrai résultat : le
+// protocole repose sur « la boucle la plus forte gagne ». Sur 56 cas,
+// cette idée ne tient pas — et pas parce qu'elle serait inversée
+// (12/25 tel quel, 13/25 inversé, p = 1,0000), parce qu'elle est
+// muette. Comparer deux AGRÉGATS de boucles conflue ce qui ne se
+// compare pas. Comparer deux FIGURES de la même boucle, en revanche,
+// donne le seul signe de vie de tout ce chantier.
+
+// Le protocole réduit aux deux figures qui combattent. Rendu disponible
+// pour que la piste reste testable, et parce qu'il parle sur les thèmes
+// où l'autre se tait — la moitié d'entre eux.
+function protocoleSerreV7(theme) {
+  if (!theme || !theme[1]) return null;
+  try {
+    var S = function (x) {
+      return x.forcePositions + (x.reposPresent ? 2 : 0)
+        + Math.min(x.tous.length, 3) * 0.5 + x.binPos.length * 0.5
+        + x.resultantesPropres * 0.75 - x.resultantesAdverses * 1.25; };
+    var rot = getRotationOrderFromRepos(theme[1]);
+    var r1 = theme[rot[0]], r7 = theme[rot[6]];
+    var s1 = S(analyseFigureBoucleR1R7(r1, theme));
+    var s7 = S(analyseFigureBoucleR1R7(r7, theme));
+    var meme = loopOf(r1) === loopOf(r7);
+    return { figR1: r1, figR7: r7, scoreR1: s1, scoreR7: s7, ecart: s1 - s7,
+      memeBoucle: meme,
+      dit: Math.abs(s1 - s7) < 1e-9 ? 'égalité' : (s1 > s7 ? 'R1' : 'R7'),
+      // Le domaine où il montre quelque chose est celui où le protocole
+      // large est muet. C'est l'inverse d'un hasard commode : c'est la
+      // seule chose de ce chantier qui ressemble à un signal.
+      domainePorteur: meme,
+      mesure: meme ? '14/19 (74 %) sur l\'archive, p = 0,064 sur six tests — non démontré'
+        : '10/23 (43 %) sur l\'archive — rien' };
+  } catch (e) { return null; }
+}

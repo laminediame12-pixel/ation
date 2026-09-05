@@ -411,6 +411,42 @@ function verifierRegistreSignauxV7(theme) {
 // mois en croyant qu'elle est neuve — et pour que son « non exclu »
 // serve de point de départ à la suivante.
 var PISTES_V7 = [
+  { cle: 'protocole_serre', nom: 'Le protocole R1/R7 réduit aux deux figures qui combattent',
+    auteur: 'Ellemine_D, 05/09 — « élagage plus protocole de comparaison R1 et R7 »',
+    etat: 'PISTE — NON BRANCHÉE, ET LE SEUL SIGNE DE VIE DE CE CHANTIER',
+    chiffre: 'le protocole large somme six termes sur les HUIT figures de chaque boucle. '
+      + 'Réduit aux deux figures réellement en combat (R1 contre R7), il tombe juste '
+      + '14 fois sur 19 (74 %) là où le protocole large SE TAIT — c\'est-à-dire quand R1 et '
+      + 'R7 sont dans la même boucle, soit la moitié des thèmes. Là où le large parle, il '
+      + 'fait 10/23 (43 %).',
+    piege: 'six tests menés dans ce fil, meilleur p = 0,064 : rien n\'est démontré. Et '
+      + 'branché comme override sur les thèmes à même boucle, il fait passer le camp de '
+      + '38/56 à 39/56 — quatre gagnés (ConjCaput, RubCarcer, ConjCaput2, '
+      + 'CaputCarcCaputPuer) contre trois perdus (Fiorentina, FortMajLaet, CarcCaput). '
+      + '+1 sur 56, c\'est du bruit. C\'est pour ça qu\'il n\'est pas branché.',
+    pourquoiCEstCredible: 'le domaine où il fonctionne est exactement celui où l\'autre '
+      + 'renonce, et la raison est doctrinale : comparer deux AGRÉGATS de boucles conflue ce '
+      + 'qui ne se compare pas, comparer deux FIGURES de la même boucle compare comparable. '
+      + 'L\'hypothèse n\'a pas été fabriquée après coup pour sauver le protocole — elle sort '
+      + 'de l\'élagage demandé.',
+    seuil: '25 rencontres À MÊME BOUCLE, annoncées avant coup d\'envoi, avec le camp de '
+      + 'protocoleSerreV7 écrit à côté du verdict. En dessous de 20 sur 25, la piste meurt.',
+    suite: 'protocoleSerreV7(theme) rend figR1, figR7, scoreR1, scoreR7, ecart, memeBoucle, '
+      + 'dit et domainePorteur. Rien ne le branche.' },
+
+  { cle: 'protocole_duels_x3', nom: 'Les seize duels du protocole ne sont qu\'un facteur 3',
+    auteur: 'calcul, 05/09', etat: 'ACQUISE — DÉFAUT EXACT, PAS UNE PISTE',
+    chiffre: '4608 thèmes testés, 4608 fois l\'égalité écart_final = 3 × écart_brut. '
+      + 'Démonstration : les 16 duels couvrent les 16 figures une fois chacune, donc la '
+      + 'somme des (scoreA − scoreB) vaut exactement (s1brut − s7brut).',
+    consequence: 'la moitié du code du protocole — construction des paires, dédoublonnage '
+      + 'par clé triée, double calcul de score — produit une multiplication par trois. '
+      + 'Elle n\'ajoute aucune information, seulement une échelle. Tout classement, tout '
+      + 'seuil ou toute corrélation bâtis sur l\'écart final valent exactement ce qu\'ils '
+      + 'valent sur l\'écart brut.',
+    suite: 'ne pas supprimer le code sans vérifier qui lit encore duel[] pour l\'affichage ; '
+      + 'mais ne plus jamais traiter les duels comme un signal indépendant.' },
+
   { cle: 'populus_zero', nom: 'Un thème SANS AUCUN Populus annonce plus de buts',
     auteur: 'calcul du 05/09, en creusant « Populus en M10 » demandé par Ellemine_D',
     etat: 'BRANCHÉE AU VERDICT LE 05/09 (famille plus/moins de 2,5 buts) — '
