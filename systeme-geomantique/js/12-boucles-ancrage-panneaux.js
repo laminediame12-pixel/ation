@@ -1446,6 +1446,99 @@ function signalRecouvrementCampsV7(theme){
 // Seul le signal M4/M10 survit à ces deux vérifications ; c'est le seul
 // retenu ici. Aucun poids sur le verdict.
 // ═══════════════════════════════════════════════════════════════
+// COMMENT ON LIT M4 ET M10, ÉTAPE PAR ÉTAPE (05/09/26)
+// Ellemine_D : « comment tu analyses m4 et m10, étape par étape ».
+// La procédure est écrite ici en fonction exécutable plutôt qu'en
+// commentaire, pour qu'elle soit vérifiable sur n'importe quel thème et
+// qu'elle porte ses propres pièges.
+// ═══════════════════════════════════════════════════════════════
+function analyseM4M10V7(theme) {
+  if (!theme || !theme[4] || !theme[10]) return null;
+  var E = [];
+  var f4 = theme[4], f10 = theme[10];
+  var nom = function (f) { return FL[f] || f; };
+
+  // ÉTAPE 1 — QUI EST DANS CHAQUE MAISON, ET DE QUI ELLE EST LA DÉFENSE.
+  // M4 est la 4e maison comptée depuis M1 : la défense du camp 1.
+  // M10 est la 4e comptée depuis M7 (7→8→9→10) : la défense du camp 2.
+  // C'est la lecture en maisons dérivées, pas une convention arbitraire.
+  E.push({ n: 1, titre: 'Qui garde quel but',
+    m4: nom(f4) + ' — 4e depuis M1, défense du camp 1',
+    m10: nom(f10) + ' — 4e depuis M7, défense du camp 2' });
+
+  // ÉTAPE 2 — LE PIÈGE DES CAMPS, dans lequel je suis tombé le 03/09.
+  // M4 ET M10 SONT TOUTES LES DEUX DANS CAMP1 (=[1,2,3,4,9,10,13,16]).
+  // Elles ne sont donc PAS « une maison par camp » au sens du tableau des
+  // camps, même si elles gardent chacune un but. Confondre les deux
+  // lectures fait écrire des faussetés — j'en ai écrit une ce jour-là.
+  E.push({ n: 2, titre: 'Le piège des camps',
+    fait: 'M4 et M10 appartiennent TOUTES DEUX à CAMP1',
+    consequence: 'lecture « maison dérivée » ≠ lecture « tableau des camps » — ne pas les mélanger' });
+
+  // ÉTAPE 3 — LA LOI. M4 ⊕ M10 = M3, vérifié sur 65 536 thèmes.
+  // Conséquence pratique : les deux maisons ne sont pas indépendantes.
+  // Tout énoncé sur le COUPLE (M4, M10) est un énoncé sur M3, déguisé.
+  var loi = null;
+  try { loi = (combine(f4, f10) === theme[3]); } catch (e) { loi = null; }
+  E.push({ n: 3, titre: 'La loi qui les lie',
+    formule: 'M4 ⊕ M10 = M3', verifie: loi, m3: nom(theme[3]),
+    consequence: 'un signal bâti sur le COUPLE parle en réalité de M3' });
+
+  // ÉTAPE 4 — LES PROPRIÉTÉS DOCTRINALES DE CHAQUE FIGURE, séparément.
+  // Mobilité, ouverture, force, planète, et le dénouement de JUGE_RECIT.
+  function props(f) {
+    var jr = (typeof JUGE_RECIT !== 'undefined') ? JUGE_RECIT[f] : null;
+    return { figure: nom(f),
+      mobilite: MOBILITE_FIGURE[f], ouverture: OUVERTURE_FIGURE[f],
+      force: (typeof FORCE_FIGURE !== 'undefined') ? FORCE_FIGURE[f] : null,
+      planete: (typeof PLANETES_V7 !== 'undefined') ? PLANETES_V7[f] : null,
+      denouement: jr ? jr.denouement : null,
+      vainqueur: jr ? jr.vainqueur : null,
+      // ⚠️ seuls 'favori', 'outsider', 'premier_marqueur' et
+      // 'dominant_structurel' NOMMENT quelqu'un et sont donc
+      // falsifiables. 'selon_chaos' et 'indetermine' ne peuvent pas
+      // échouer et ne doivent entrer dans aucun décompte (cf. 04/09).
+      falsifiable: jr ? ['favori', 'outsider', 'premier_marqueur', 'dominant_structurel']
+        .indexOf(jr.vainqueur) >= 0 : null };
+  }
+  E.push({ n: 4, titre: 'Ce que dit chaque figure, séparément',
+    m4: props(f4), m10: props(f10) });
+
+  // ÉTAPE 5 — LA FRAGILITÉ, ET SON PIÈGE DE LECTURE.
+  // « mobile ET ouverte » = la maison laisse passer. Le signal existant
+  // renvoie applicable = fragileM4 OU fragileM10, et n'a PAS de champ
+  // `fragile` — lire s.fragile renvoie undefined, donc false. J'ai fait
+  // l'erreur toute la journée du 04/09.
+  var sig = null;
+  try { sig = signalFragiliteM4M10V7(theme); } catch (e) { sig = null; }
+  E.push({ n: 5, titre: 'Fragilité',
+    m4Fragile: sig ? !!sig.fragileM4 : null,
+    m10Fragile: sig ? !!sig.fragileM10 : null,
+    piege: 'le champ `fragile` N\'EXISTE PAS — lire fragileM4 et fragileM10 séparément' });
+
+  // ÉTAPE 6 — LA LECTURE SÉPARÉE, qui est la seule que les mesures
+  // soutiennent. Trois protocoles différents disent que M4 porte et que
+  // M10 ne porte pas :
+  //   · balayage des 13 maisons sur les buts : M4 p=0,285 · M10 p=0,958 (dernière)
+  //   · doctrine du M4 : Albus/Carcer marchent en M4, rien en M10 (p=0,643)
+  //   · fragilité : M4 seule +24 pts de BTTS, M10 seule −17 pts
+  // Donc on lit M4, on note M10, et on ne les additionne pas.
+  E.push({ n: 6, titre: 'Le poids à leur donner',
+    m4: 'PORTE — c\'est elle qu\'on lit',
+    m10: 'NE PORTE PAS sur les mesures faites à ce jour — on la note, on ne s\'appuie pas dessus',
+    interdit: 'ne PAS additionner les deux : elles tirent en sens contraire et s\'annulent',
+    statut: 'aucune des trois mesures n\'atteint seule la significativité — c\'est leur convergence qui parle' });
+
+  // ÉTAPE 7 — CE QU'ON NE SAIT TOUJOURS PAS, dit explicitement.
+  E.push({ n: 7, titre: 'Ce qui reste ignoré',
+    points: ['M4 seule n\'a jamais été testée hors échantillon (n=19, un seul cas dans les 11 du 04/09)',
+             'pourquoi M10 est muette n\'est pas expliqué',
+             'M3, leur différence, ne dit rien sur six cibles testées le 05/09'] });
+
+  return { m4: nom(f4), m10: nom(f10), m3: nom(theme[3]), loiVerifiee: loi, etapes: E };
+}
+
+// ═══════════════════════════════════════════════════════════════
 // M4 PORTE, M10 NE PORTE PAS — ET LES APPARIER ANNULE LE SIGNAL
 // (05/09/26, après les 11 résultats réels du 04/09)
 //
