@@ -2158,6 +2158,29 @@ var BRANCHES_V7 = {
       + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
       + 'avant tout branchement.' },
 
+  nul_seconde_porte: {
+    actif: false,
+    nom: 'La seconde porte du nul — structureDuNul remise en service à côté des deux portes',
+    cible: 'le nul',
+    demande: 'Ellemine_D, 22/02/2026 : match 3-3 que le verdict a donné 0-1 pour M7. '
+      + 'La règle branchée a dit « pas de nul » ; la règle DÉBRANCHÉE a vu le nul.',
+    mesure: 'sur 57 cas au camp connu, 13 nuls réels (base 22,8 %) — deux portes '
+      + '(branchée) 8 justes / 5 faux / 5 ratés, justesse 82,5 % · union avec la seconde '
+      + 'porte 10 justes / 10 faux / 3 ratés, justesse 77,2 %.',
+    pasBranche: 'PAS parce que ce n\'est pas prouvé — parce que c\'est MESURÉ NÉGATIF sur '
+      + 'la justesse : −3 points. L\'union attrape 2 nuls de plus et annonce 5 faux de plus.',
+    maisPourquoiCEstAffiche: 'ces deux critères ne sont pas le même. « Avoir raison le plus '
+      + 'souvent » dit non ; « ne pas rater un nul » dit oui, +2 sur 13. Le second n\'est pas '
+      + 'à moi de trancher : la seconde porte est donc CALCULÉE et AFFICHÉE chaque fois '
+      + 'qu\'elle contredit la porte branchée, avec ses chiffres rejoués sur la base '
+      + 'courante. Ellemine_D voit le désaccord au moment où il compte, match après match, '
+      + 'et décide avec les chiffres sous les yeux au lieu de les recevoir tranchés.',
+    complementaires: 'ce n\'est pas un doublon : les deux portes attrapent des nuls '
+      + 'DIFFÉRENTS. Sur les 13 nuls réels, la première en voit 8 que la seconde rate, la '
+      + 'seconde en voit 3 que la première rate (FortMajTrist, LaetPop, et le 22/02).',
+    pourLActiver: 'BRANCHES_V7.nul_seconde_porte.actif = true — le code est écrit et le '
+      + 'nul sera alors imposé aussi par la seconde porte.' },
+
   miroir_volume: {
     actif: true,
     nom: 'Le miroir M5 branché au VOLUME DE BUTS — somme des deux lectures',

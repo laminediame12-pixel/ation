@@ -806,9 +806,123 @@ function nulActifV7(theme, structureNul, nulAxe) {
   } else {
     parLeNul = nulParPorteV7(theme);
   }
-  return !!(parLeNul
+  // La seconde porte n'impose le nul que si elle est branchée. Elle ne
+  // l'est pas par défaut (−3 points de justesse, cf. SECONDE_PORTE_NUL_V7),
+  // mais elle est affichée dès qu'elle contredit celle-ci : c'est le choix
+  // d'Ellemine_D, pas le mien, et il se prend avec les chiffres à l'écran.
+  var parSeconde = false;
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.nul_seconde_porte && BRANCHES_V7.nul_seconde_porte.actif) {
+      var sp = secondePorteNulV7(theme);
+      parSeconde = !!(sp && sp.secondePorte);
+    }
+  } catch (e) { parSeconde = false; }
+  return !!(parLeNul || parSeconde
     || (STRUCTURE_NUL_DECISIVE && structureNul && structureNul.nulDetecte)
     || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LA SECONDE PORTE DU NUL — celle qu'on avait jetée, et qui a eu
+// raison le 22/02/2026 (écrit le 05/09/26)
+// ═══════════════════════════════════════════════════════════════
+//
+// Ce que le match Laetitia/Fortuna Minor/Amissio/Via a montré : 3-3,
+// et la règle BRANCHÉE (les deux portes) a dit « pas de nul » pendant
+// que structureDuNul — DÉBRANCHÉE le 24/08 pour n'avoir trouvé qu'un
+// nul sur cinq — voyait le nul par OPPOSITION. La règle qu'on garde
+// s'est trompée, celle qu'on a jetée avait raison.
+//
+// Les deux règles rejouées sur les 57 cas au camp connu (13 nuls réels,
+// base 22,8 %) — la deuxième porte n'est PAS un doublon de la première,
+// elles attrapent des nuls DIFFÉRENTS :
+//
+//   règle                          annonce  justes  faux  ratés  justesse
+//   deux portes (branchée) ......    13       8      5     5      82,5 %
+//   structureDuNul (débranchée) .    11       4      7     9      71,9 %
+//   opposition seule ............     8       3      5    10      73,7 %
+//   UNION portes OU opposition ..    20      10     10     3      77,2 %
+//
+// ⚖️ LE CHOIX N'EST PAS À MOI. Brancher l'union attrape 10 nuls sur 13
+// au lieu de 8 — mais annonce 10 faux nuls au lieu de 5, et la JUSTESSE
+// GLOBALE TOMBE de 82,5 % à 77,2 %. Sur le critère « avoir raison le
+// plus souvent », c'est un recul de 3 points : je ne la branche pas.
+// Sur le critère « ne pas rater un nul », c'est +2 nuls sur 13.
+// Ces deux critères ne sont pas le même, et le second n'est pas le
+// mien à trancher. D'où ce qui suit : la seconde porte est CALCULÉE et
+// AFFICHÉE à chaque fois qu'elle contredit la porte branchée, avec ses
+// chiffres rejoués sur la base courante. Un booléen la branche.
+//
+// ⚠️ HONNÊTETÉ SUR LA MESURE : ces chiffres incluent le match du 22/02
+// qui a fait poser la question. Sur 56 cas sans lui, l'union faisait
+// 9 nuls sur 12 pour 10 faux. L'écart de justesse ne vient donc pas
+// de ce cas — mais le fait que je regarde ici, si.
+var SECONDE_PORTE_NUL_V7 = {
+  gelees: { n: 57, nuls: 13, base: 22.8,
+    portes: { annonce: 13, justes: 8, faux: 5, rates: 5, justesse: 82.5 },
+    structure: { annonce: 11, justes: 4, faux: 7, rates: 9, justesse: 71.9 },
+    opposition: { annonce: 8, justes: 3, faux: 5, rates: 10, justesse: 73.7 },
+    union: { annonce: 20, justes: 10, faux: 10, rates: 3, justesse: 77.2 } },
+  cout: 'l\'union attrape 2 nuls de plus sur 13 et annonce 5 faux nuls de plus ; '
+    + 'la justesse globale passe de 82,5 % à 77,2 %',
+  pourLActiver: 'BRANCHES_V7.nul_seconde_porte.actif = true'
+};
+
+// La seconde porte, calculée à part de la première.
+function secondePorteNulV7(theme) {
+  if (!theme) return null;
+  var sd = null, dp = null;
+  try { sd = structureDuNul(theme); } catch (e) { return null; }
+  try { dp = nulDeuxPortesV7(theme); } catch (e) { dp = null; }
+  if (!sd) return null;
+  // LA SECONDE PORTE EST L'OPPOSITION SEULE, pas structureDuNul entière.
+  // C'est l'opposition qui a vu le nul du 22/02, et c'est elle seule qui a
+  // été mesurée. L'identité est une TROISIÈME porte, plus faible (1 juste
+  // pour 2 faux sur 57 cas) : elle est renvoyée pour information, elle
+  // n'ouvre rien. Sans cette séparation, le compteur affichait le coût de
+  // l'identité en plus (−7,1 points au lieu de −5,3) sous le nom de la
+  // règle qu'on discute.
+  var ouverte = !!sd.nulParOpposition, ident = !!sd.nulParIdentite;
+  var portesOui = !!(dp && dp.oui);
+  return { opposition: ouverte, identite: ident, secondePorte: ouverte,
+    premierePorte: portesOui,
+    contredit: ouverte && !portesOui,
+    juge1: sd.juge1, juge2: sd.juge2, sentence: sd.sentence,
+    reconstruction: sd.reconstruction,
+    lecture: ouverte ? 'nul par OPPOSITION des deux témoins'
+      : 'la seconde porte est fermée' };
+}
+
+// Les deux portes rejouées sur la base courante — mémoïsée, elle calcule
+// deux lectures par cas et le panneau l'appelle à chaque verdict.
+var _CACHE_PORTES_V7 = null;
+function comparerPortesNulV7() {
+  var CAS = [];
+  try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.camp && c.meres; }); }
+  catch (e) { return null; }
+  if (_CACHE_PORTES_V7 && _CACHE_PORTES_V7.cle === CAS.length) return _CACHE_PORTES_V7.val;
+  var n = 0, nuls = 0;
+  var P = { j: 0, f: 0, r: 0 }, S = { j: 0, f: 0, r: 0 }, U = { j: 0, f: 0, r: 0 };
+  CAS.forEach(function (c) {
+    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var sp; try { sp = secondePorteNulV7(t); } catch (e) { return; }
+    if (!sp) return;
+    var vrai = c.camp === 'nul';
+    n++; if (vrai) nuls++;
+    var p = sp.premierePorte, s = sp.secondePorte, u = p || s;
+    [[p, P], [s, S], [u, U]].forEach(function (x) {
+      if (x[0] && vrai) x[1].j++; else if (x[0] && !vrai) x[1].f++; else if (!x[0] && vrai) x[1].r++;
+    });
+  });
+  if (!n) { _CACHE_PORTES_V7 = { cle: CAS.length, val: null }; return null; }
+  var pct = function (o) { return Math.round(1000 * (n - o.f - o.r) / n) / 10; };
+  var val = { n: n, nuls: nuls, base: Math.round(1000 * nuls / n) / 10,
+    portes: { annonce: P.j + P.f, justes: P.j, faux: P.f, rates: P.r, justesse: pct(P) },
+    seconde: { annonce: S.j + S.f, justes: S.j, faux: S.f, rates: S.r, justesse: pct(S) },
+    union: { annonce: U.j + U.f, justes: U.j, faux: U.f, rates: U.r, justesse: pct(U) },
+    gainNuls: U.j - P.j, coutFaux: U.f - P.f, gainJustesse: pct(U) - pct(P) };
+  _CACHE_PORTES_V7 = { cle: CAS.length, val: val };
+  return val;
 }
 
 // L'alerte : la porte est ouverte mais R1 n'est pas en maison cadente.

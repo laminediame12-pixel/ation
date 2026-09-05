@@ -1742,6 +1742,48 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     try{ ld=lectureDefensiveV7(theme); }catch(e){ ld=null; }
     if(!lp && !ld) return;
     html+='<div class="tek-section"><div class="tek-title">🧱 STRUCTURE DU THÈME</div>';
+    // ─── LA SECONDE PORTE DU NUL (05/09/26) ───
+    // Le 22/02/2026 : match 3-3, verdict 0-1 pour M7. La règle branchée a
+    // dit « pas de nul », la règle DÉBRANCHÉE a vu le nul par opposition.
+    // Je ne branche pas l'union — mesurée à −3 points de justesse — mais
+    // je ne décide plus seul non plus : dès que la seconde porte contredit
+    // la première, elle s'affiche ici avec ses chiffres rejoués.
+    (function(){
+      var sp=null; try{ sp=secondePorteNulV7(theme); }catch(e){ sp=null; }
+      if(!sp || !sp.contredit) return;
+      var cp=null; try{ cp=comparerPortesNulV7(); }catch(e){ cp=null; }
+      html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid #fbbf24; '
+        +'background:rgba(251,191,36,.10);">'
+        +'<b style="color:#fbbf24; font-size:13px;">⚖️ LA SECONDE PORTE DU NUL EST OUVERTE, '
+        +'ET LE VERDICT NE LA SUIT PAS</b>'
+        +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+        +esc(sp.lecture)+' — témoins '+label(sp.juge1)+' et '+label(sp.juge2)+'. '
+        +'La porte branchée (les deux portes) dit <b>pas de nul</b> ; celle-ci dit <b>nul</b>. '
+        +'Le verdict affiché suit la première.</div>'
+        +(cp
+          ? '<div style="font-size:11px; color:#94a3b8; margin-top:4px;">Rejoué à l\'instant sur '
+            +'<b>'+cp.n+' cas au camp connu</b> ('+cp.nuls+' nuls réels, base '+cp.base+' %) :'
+            +'<br>· porte branchée : '+cp.portes.annonce+' annonces, <b>'+cp.portes.justes
+            +'</b> justes, '+cp.portes.faux+' faux, '+cp.portes.rates+' ratés — justesse <b>'
+            +cp.portes.justesse+' %</b>'
+            +'<br>· avec la seconde : '+cp.union.annonce+' annonces, <b>'+cp.union.justes
+            +'</b> justes, '+cp.union.faux+' faux, '+cp.union.rates+' ratés — justesse <b>'
+            +cp.union.justesse+' %</b>'
+            +'<br><b style="color:#fbbf24;">Le marché : '+(cp.gainNuls>=0?'+':'')+cp.gainNuls
+            +' nul'+(Math.abs(cp.gainNuls)>1?'s':'')+' attrapé'+(Math.abs(cp.gainNuls)>1?'s':'')
+            +' contre '+(cp.coutFaux>=0?'+':'')+cp.coutFaux+' faux nul'
+            +(Math.abs(cp.coutFaux)>1?'s':'')+' annoncé'+(Math.abs(cp.coutFaux)>1?'s':'')
+            +', soit '+(cp.gainJustesse>=0?'+':'')+(Math.round(cp.gainJustesse*10)/10)
+            +' point'+(Math.abs(cp.gainJustesse)>1?'s':'')+' de justesse globale.</b></div>'
+          : '')
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px; border-top:1px solid '
+        +'rgba(148,163,184,.2); padding-top:4px;">Je ne la branche pas : sur le critère '
+        +'« avoir raison le plus souvent » elle fait perdre des points, et c\'est mesuré, '
+        +'pas supposé. Mais sur le critère « ne pas rater un nul » elle en gagne — et ce '
+        +'critère-là n\'est pas à moi de trancher. Les deux portes attrapent des nuls '
+        +'<b>différents</b> : ce n\'est pas un doublon. Pour la brancher : '
+        +'<code>BRANCHES_V7.nul_seconde_porte.actif = true</code>.</div></div>';
+    })();
     // Le volume de buts est BRANCHÉ depuis le 05/09 : il s'affiche donc
     // en tête du panneau, et en disant d'où il vient.
     (function(){

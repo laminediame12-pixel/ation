@@ -1130,7 +1130,37 @@ var CAS_REFERENCE_V7 = [
   // séparées, deux fiabilités séparées.
   { nom: 'AmisRubConjVia', meres: ['amissio','rubeus','conjunctio','via'],
     score: '2-5', camp: 'R7', btts: true, esport: true, incident: true, incidentCamp: null,
-    note: 'FIFA (esport) · CORRIGÉ : vainqueur réel R7 (5-2), pas R1 comme archivé d\'abord · verdict affiché prédisait M1 1-0/2-0 — raté total, écart énorme · BTTS ✔ · PENALTY DES DEUX CÔTÉS, pas de carton — aucun camp unique ne peut être coché pour l\'incident. densiteIncidentV7 : 5/5 mécanismes nommant un camp étaient d\'accord à 100% sur M1 pour l\'incident (juste sur le fait, incomplet sur l\'exhaustivité — a raté le penalty côté M7). Expliqué a posteriori : Carcer (M1, en repos M10) et Puella (M7) sont TOUS LES DEUX attaqués par leur antagoniste direct (Rubeus ×2 pour Carcer, Conjunctio ×1 pour Puella) ET TOUS LES DEUX protégés (Albus, Tristitia en repos M8) — explique les deux penalties et l\'absence de rouge, mais ne dit rien sur le vainqueur, qui reste un raté complet du moteur de verdict.' }
+    note: 'FIFA (esport) · CORRIGÉ : vainqueur réel R7 (5-2), pas R1 comme archivé d\'abord · verdict affiché prédisait M1 1-0/2-0 — raté total, écart énorme · BTTS ✔ · PENALTY DES DEUX CÔTÉS, pas de carton — aucun camp unique ne peut être coché pour l\'incident. densiteIncidentV7 : 5/5 mécanismes nommant un camp étaient d\'accord à 100% sur M1 pour l\'incident (juste sur le fait, incomplet sur l\'exhaustivité — a raté le penalty côté M7). Expliqué a posteriori : Carcer (M1, en repos M10) et Puella (M7) sont TOUS LES DEUX attaqués par leur antagoniste direct (Rubeus ×2 pour Carcer, Conjunctio ×1 pour Puella) ET TOUS LES DEUX protégés (Albus, Tristitia en repos M8) — explique les deux penalties et l\'absence de rouge, mais ne dit rien sur le vainqueur, qui reste un raté complet du moteur de verdict.' },
+  // ─── 22/02/2026 — LE MATCH QUI CASSE LE VERDICT ET DONNE RAISON À
+  //     UNE RÈGLE DÉBRANCHÉE (enregistré le 05/09/26) ───
+  // Laetitia / Fortuna Minor / Amissio / Via. Réel : 3-3, PENALTY côté M7.
+  // Le verdict affiché disait : M7 gagne 0-1, BTTS non, incident 23 %
+  // « Faible » côté M1, pas de nul. Sur cinq annonces, UNE seule est juste.
+  //
+  //   camp ......... nul réel, M7 annoncé .................... ✘
+  //   score ........ 3-3 réel, 0-1 annoncé ................... ✘
+  //   BTTS ......... oui réel, non annoncé .................. ✘
+  //   volume ....... 6 buts, « plus de 2,5 » annoncé ......... ✔
+  //   incident ..... penalty M7, « faible » côté M1 annoncé .. ✘
+  //
+  // ET VOICI CE QUE CE CAS APPREND, qui ne se voyait sur aucun autre :
+  // structureDuNul — DÉBRANCHÉE depuis le 24/08 pour n'avoir trouvé qu'un
+  // nul sur cinq — a détecté ce nul (nul par OPPOSITION). La règle
+  // BRANCHÉE, les deux portes, a dit non (décalage +15, sa porte est +11).
+  // La règle qu'on garde s'est trompée, celle qu'on a jetée avait raison.
+  // C'est la première fois que les deux se séparent dans ce sens.
+  { nom: 'LaetFortMinAmisVia', meres: ['laetitia','fortuna_minor','amissio','via'],
+    date: '2026-02-22',
+    score: '3-3', camp: 'nul', btts: true,
+    incident: true, incidentCamp: 'M7', penaltyCamp: 'M7',
+    note: 'Match du 22/02/2026 · verdict affiché M7 0-1 : camp ✘ (nul), score ✘, '
+      + 'BTTS ✘ (annoncé non, réel oui), incident ✘ (annoncé 23 % « faible » côté M1, '
+      + 'réel penalty côté M7). SEULE annonce juste : le volume, « plus de 2,5 » par '
+      + 'la règle zéro Populus, contre le moteur qui disait 0-1 — 6 buts. '
+      + 'LE POINT IMPORTANT : structureDuNul (débranchée) a vu le nul par opposition ; '
+      + 'nulDeuxPortesV7 (branchée) l\'a manqué. Le miroir M5, s\'il avait parlé, '
+      + 'aurait dit « moins de 2,5 » (somme 2, pile sous le seuil) — faux aussi. '
+      + 'Thème signalé sous le seuil de validité (niveau 2 sur 3 au 22/02).' }
 ];
 
 // ═══════════════════════════════════════════════════════════════
