@@ -1503,6 +1503,88 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       +'<b style="color:#fbbf24;">Attention</b> : le 0-0 du 14/02/2026 n\'allume AUCUN signal. Le faisceau attrape '
       +'3 nuls sur 4 — il sert à oser quand il parle, pas à se rassurer quand il se tait.</div></div>';
   })();
+  // ─── LA STRUCTURE DU THÈME (05/09/26) — panneau des faits exacts ───
+  // Trois choses que le fichier savait calculer sans jamais les montrer :
+  // le rang des mères, le compte de Populus, et le rang défensif de M4
+  // et M10. Rien ici n'entre dans le verdict : ce sont des faits exacts
+  // (énumération des 65536) et une piste pré-enregistrée, affichés pour
+  // qu'on puisse les contredire.
+  (function(){
+    var lp=null, ld=null;
+    try{ lp=lecturePopulusV7(theme); }catch(e){ lp=null; }
+    try{ ld=lectureDefensiveV7(theme); }catch(e){ ld=null; }
+    if(!lp && !ld) return;
+    html+='<div class="tek-section"><div class="tek-title">🧱 STRUCTURE DU THÈME — faits exacts, hors verdict</div>';
+    if(lp){
+      var attendu = lp.moteurAttendu || {buts:'—',btts:'—'};
+      var tz = lp.zeroPopulus ? '#f59e0b' : '#64748b';
+      html+='<div style="padding:6px 2px; font-size:12px;">'
+        +'<b>Rang des quatre mères : '+lp.rang+' / 4</b>'
+        +' <span style="color:#94a3b8;">— indépendance linéaire des mères sur Z2. '
+        +'Il BORNE le nombre de Populus du thème : ici '+lp.bornes[0]+' à '+lp.bornes[1]+'.</span>'
+        +'<div style="margin-top:4px;">Populus dans le thème : <b>'+lp.nbPopulus+'</b>'
+        +(lp.coherent?'':' <b style="color:#ef4444;">HORS BORNES — le calcul du thème est cassé</b>')
+        +'</div>'
+        +'<div style="margin-top:4px; color:#cbd5e1;">Le moteur, sur les 65 536 thèmes de ce rang : '
+        +'<b>'+attendu.buts+'</b> but(s) · BTTS <b>'+attendu.btts+' %</b> '
+        +'<span style="color:#94a3b8;">(base tous rangs : 1,29 et 27,2 %)</span></div>'
+        +'</div>';
+      html+='<div style="padding:6px 8px; margin:6px 0; border-left:3px solid '+tz+'; background:rgba(148,163,184,.08);">'
+        +'<b style="color:'+tz+'; font-size:12px;">PISTE PRÉ-ENREGISTRÉE — '
+        +(lp.zeroPopulus?'CE THÈME EST DANS LE GROUPE « ZÉRO POPULUS »':'ce thème contient du Populus, la règle le classe « peu de buts »')
+        +'</b>'
+        +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">Sur l\'archive, à rang fixé : '
+        +'<b>zéro Populus = 5,57 buts</b>, au moins un = 3,00. Écart +2,57, p = 0,0027 en permutation '
+        +'à l\'intérieur de chaque strate de rang. Survit au retrait des cinq plus gros scores '
+        +'(p = 0,0414) et les médianes disent pareil.</div>'
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
+        +'<b>Ce n\'est PAS le moteur qui parle.</b> Lui annonce +0,18 but à rang 3 et −0,05 à rang 4, '
+        +'quand l\'archive donne +2,22 et +4,67. Si la règle tient, c\'est une loi qui manque au fichier. '
+        +'<b style="color:#f87171;">Ce qui cloche :</b> le découpage « zéro contre au moins un » a été '
+        +'choisi APRÈS avoir vu les données. Seules 30 rencontres annoncées avant coup d\'envoi, '
+        +'10 de chaque côté, le trancheront. Le verdict n\'y touche pas.</div></div>';
+    }
+    if(ld && ld.m4 && ld.m10){
+      function ligne(l,maison,repos){
+        var col = l.rang<=5 ? '#4ade80' : (l.rang>=12 ? '#f87171' : '#cbd5e1');
+        return '<tr><td>M'+maison+'</td><td><b>'+label(l.figure)+'</b>'
+          +(l.figure===repos?' <span style="color:#fbbf24;">(sa maison de repos)</span>':'')+'</td>'
+          +'<td style="color:'+col+';"><b>'+l.rang+'ᵉ / '+l.sur+'</b></td>'
+          +'<td>'+l.buts.toFixed(2)+' <span style="color:#94a3b8;">('+(l.ecartButs>=0?'+':'')+l.ecartButs.toFixed(2)+')</span></td>'
+          +'<td>'+l.btts.toFixed(1)+' % <span style="color:#94a3b8;">('+(l.ecartBtts>=0?'+':'')+l.ecartBtts.toFixed(1)+')</span></td>'
+          +'<td>'+l.incident.toFixed(1)+' %</td></tr>';
+      }
+      html+='<div style="margin-top:8px;"><b style="font-size:12px;">Rang défensif de M4 et M10</b>'
+        +' <span style="font-size:10px; color:#94a3b8;">— ce que LE MOTEUR croit, mesuré par énumération '
+        +'des 65 536 thèmes (4096 par ligne). Taux exacts, aucun p n\'aurait de sens. Ce n\'est pas une '
+        +'mesure sur des matchs joués.</span>'
+        +'<table class="tek-table" style="margin-top:4px;"><tr><th>maison</th><th>figure</th><th>rang défensif</th>'
+        +'<th>buts</th><th>BTTS</th><th>incident</th></tr>'
+        + ligne(ld.m4,4,'albus') + ligne(ld.m10,10,'carcer') + '</table>'
+        +'<div style="font-size:10px; color:#94a3b8; margin-top:3px;">1ᵉʳ = le plus défensif. '
+        +'Albus est 1ᵉʳ en M4 et 3ᵉ en M10 : il défend dans les deux maisons. '
+        +'<b>Carcer est 15ᵉ sur 16 en M4 et 13ᵉ en M10</b> — le moteur le dit ouvrant, y compris dans sa '
+        +'propre maison de repos. Contradiction assumée avec la doctrine de terrain, à trancher.</div>'
+        + (ld.m3Force ? '<div style="font-size:11px; color:#fbbf24; margin-top:4px;">'
+            +'⚙️ Albus en M4 ET Carcer en M10 : la loi M4 ⊕ M10 = M3 force M3 = '+label(ld.m3Force)+'. '
+            +'Les trois maisons de l\'axe défensif ne peuvent JAMAIS être au repos ensemble — une seule '
+            +'loi sur 24 le permet, M13 ⊕ M14 = M15.</div>' : '')
+        +'</div>';
+    }
+    // La parité de M15, pour que personne ne remesure contre 1/16.
+    try{
+      if(typeof pariteFigureV7==='function'){
+        html+='<div style="font-size:10px; color:#94a3b8; margin-top:8px; border-top:1px solid rgba(148,163,184,.2); padding-top:6px;">'
+          +'<b>M15 est '+label(theme[15])+', et M15 est TOUJOURS paire</b> — 65 536 thèmes sur 65 536, '
+          +'sans exception : les filles M5–M8 étant la transposée des mères, les deux moitiés de '
+          +'M15 = M1⊕…⊕M8 portent la même parité et s\'annulent. Le Juge ne prend donc que 8 valeurs '
+          +'sur 16. Conséquence à ne pas oublier en mesurant : « M15 est X » vaut 1/8 et non 1/16, '
+          +'et « M15 est une des quatre symétriques » tombe sur <b>la moitié</b> des thèmes, pas un quart.'
+          +'</div>';
+      }
+    }catch(e){}
+    html+='</div>';
+  })();
   html+='<div class="tek-section"><div class="tek-title">⚔️ PROTOCOLE DE COMPARAISON R1 / R7</div><div class="tek-camps">';
   html+='<div class="tek-camp"><h4>R1 — '+esc(teamA)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r1)+'</b><br>Position : <b>M'+q.hR1+'</b><br>Boucle : <b>'+esc(q.l1||'—')+'</b></div><div class="tek-bigscore">'+n(s1)+' / 100</div></div>';
   html+='<div class="tek-camp r7"><h4>R7 — '+esc(teamB)+'</h4><div class="tek-meta">Figure : <b>'+label(q.r7)+'</b><br>Position : <b>M'+q.hR7+'</b><br>Boucle : <b>'+esc(q.l7||'—')+'</b></div><div class="tek-bigscore">'+n(s7)+' / 100</div></div></div>';
