@@ -2158,6 +2158,57 @@ var BRANCHES_V7 = {
       + 'suggèrent qu\'il mesure une propriété des boucles, pas du thème), refaire la mesure '
       + 'avant tout branchement.' },
 
+  axe_volume: {
+    actif: false,
+    nom: 'L\'axe offensif — les deux sommes de trigone présentes en base ferment le match',
+    cible: 'famille plus/moins de 2,5 buts',
+    demande: 'Ellemine_D, 05/09 : « l\'axe offensif peut marquer si et seulement si la '
+      + 'figure somme est présente dans le thème résultant ou base. Creuse sur ces pistes '
+      + 'et ne cherche pas à les réfuter automatiquement. »',
+    ceQuiEstVrai: 'IL Y A UN EFFET, ET IL EST FORT — mais pas celui annoncé. Le sens est '
+      + 'INVERSÉ (somme présente = MOINS de buts) et ce n\'est pas un effet de CAMP mais de '
+      + 'MATCH : le test apparié à l\'intérieur des matchs donne 7 contre 8, p = 1,0000. '
+      + 'Le nombre de sommes présentes (0, 1 ou 2) corrèle au total du match : rho −0,319, '
+      + 'p = 0,0234 par permutation.',
+    laRegle: 'quand les DEUX axes ont leur somme présente en base : 2,90 buts, 9/20 '
+      + 'au-dessus de 2,5. Au plus une : 5,0 buts, 23/29.',
+    ouElleEstForte: 'là où zéro Populus se tait — 28,6 % contre 69,2 % au-dessus de 2,5, '
+      + '40 points d\'écart dans la seule région où le système n\'avait rien.',
+    pasBranche: 'en tête de chaîne elle écrase Populus : 37/49 -> 34/49. À sa meilleure '
+      + 'place (Populus > axe > miroir) elle fait 38/49, soit +1 — après NEUF placements '
+      + 'essayés. Un +1 trouvé au neuvième essai n\'est pas un gain, c\'est de la sélection. '
+      + 'Je ne rebranche pas la chaîne dessus.',
+    ceQuiEstBranche: 'ce qui SORT de cette piste et qui est branché, c\'est l\'ACCORD entre '
+      + 'l\'axe et le miroir — deux lectures indépendantes qui se valent (19/27 contre '
+      + '18/27, McNemar 5-4). Quand elles s\'accordent : 14/18 justes. Quand elles se '
+      + 'contredisent : 5 contre 4, rien. Le panneau le dit, le verdict ne change pas.',
+    pourLActiver: 'BRANCHES_V7.axe_volume.actif = true — elle prendra alors la place entre '
+      + 'zéro Populus et le miroir.' },
+
+  carcer_miroir: {
+    actif: false,
+    nom: 'Carcer en paires miroir — le blocage comme somme de deux maisons opposées',
+    cible: 'le nul',
+    demande: 'Ellemine_D, 05/09 : « les maisons miroir donnent — exemple Carcer, '
+      + 'contrainte, blocage. Si elles sont en maisons miroir elles ont tendance à donner '
+      + 'même force. »',
+    ceQuiEstExact: 'LA LOI DERRIÈRE EST EXACTE ET ELLE EST BELLE : M15 = (M1⊕M5) ⊕ (M2⊕M6) '
+      + '⊕ (M3⊕M7) ⊕ (M4⊕M8), vérifié 65 536 fois sur 65 536. Le Juge ne juge pas les seize '
+      + 'maisons : il mesure de combien le thème s\'écarte de son propre miroir. Et la '
+      + 'liste de paires d\'Ellemine_D était juste (Caput+Cauda, Laetitia+Tristitia, '
+      + 'Amissio+Fortuna Major sont bien trois des huit paires qui donnent Carcer).',
+    mesure: 'sur 57 cas au camp connu, 13 nuls, base 22,8 % — « >= 1 Carcer hors M13/M14 » '
+      + 'donne 4 nuls sur 11 (36,4 %) contre 9 sur 46 (19,6 %). Direction juste, écart de '
+      + '17 points, Fisher p = 0,2508.',
+    pasBranche: 'p = 0,25 sur 11 annonces. Pas parce que l\'idée est mauvaise — parce que '
+      + 'le compteur n\'a pas assez tourné. Il faudrait environ 25 thèmes de cette classe.',
+    laDistinctionQuiCompte: 'la lecture CLASSIQUE — « Juge Carcer donc blocage donc nul » — '
+      + 'est FAUSSE ici : 1 nul sur 6 (16,7 %) contre 23,5 %, elle penche du mauvais côté. '
+      + 'C\'est la lecture d\'Ellemine_D, Carcer comme SOMME DE DEUX MAISONS MIROIR, qui '
+      + 'pointe dans le bon sens. Sa version bat la version classique.',
+    affiche: 'le compte de Carcer en paires miroir est affiché sur chaque thème avec sa '
+      + 'rareté et le taux courant, pour que le compteur tourne au lieu de dormir.' },
+
   nul_seconde_porte: {
     actif: false,
     nom: 'La seconde porte du nul — structureDuNul remise en service à côté des deux portes',
@@ -2389,6 +2440,229 @@ var MIROIR_VOLUME_V7 = {
   neMarchePas: 'le camp (−3 à −15 sur 56), le nul (−2 à −10 sur 58), le BTTS (+1). '
     + 'Le miroir sert aux BUTS et à rien d\'autre.'
 };
+
+// ═══════════════════════════════════════════════════════════════
+// LES DEUX PISTES D'ELLEMINE_D DU 05/09 — MESURÉES, PAS RÉFUTÉES
+// ═══════════════════════════════════════════════════════════════
+//
+// « il n'y a pas une seule structure pour le nul, tout dépend du calcul.
+//   les maisons miroir donnent — exemple Carcer, contrainte, blocage.
+//   quelles figures peuvent donner Carcer : Cauda et Caput, Tristitia et
+//   Laetitia, Fortuna Major et Amissio. Si elles sont en maisons miroir
+//   elles ont tendance à donner même force. »
+//
+// ─── CE QUI EST EXACT, ET QUI EST UNE LOI, PAS UNE MESURE ───
+//
+// LE JUGE EST LA SOMME DES QUATRE DÉPLACEMENTS MIROIR.
+//     M15 = (M1⊕M5) ⊕ (M2⊕M6) ⊕ (M3⊕M7) ⊕ (M4⊕M8)
+// Vérifié par énumération : 65 536 sur 65 536, aucune exception.
+// L'intuition d'Ellemine_D — « lire le thème par ses maisons miroir » —
+// n'est pas une lecture parmi d'autres : c'est EXACTEMENT ce que le Juge
+// calcule. Le Juge ne juge pas les seize maisons, il mesure de combien le
+// thème s'écarte de son propre miroir.
+//
+// Et sa liste de paires était juste. Les huit paires qui donnent Carcer :
+//   Puer+Rubeus · Laetitia+Tristitia · Caput+Cauda · Albus+Puella
+//   Via+Conjunctio · Amissio+Fortuna Major · Fortuna Minor+Acquisitio
+//   Carcer+Populus
+// (Toute figure a exactement UNE partenaire pour un total donné : la
+// somme est une bijection. Il y a donc 8 paires pour Carcer, comme pour
+// n'importe quelle autre figure.)
+//
+// Combien de Carcer parmi les 7 paires miroir, sur les 65 536 thèmes :
+//   0 Carcer : 46 080 (70,3 %) · 1 : 15 360 (23,4 %)
+//   2 Carcer :  3 072  (4,7 %) · 3 :  1 024  (1,6 %) · jamais plus de 3.
+// Le thème du 22/02 (3-3) en a TROIS. Ellemine_D disait « un thème aussi
+// miroir qu'aucun autre » — il est dans les 1,6 % les plus rares. Ce
+// n'était pas une impression.
+//
+// ─── CE QUE ÇA PRÉDIT, HONNÊTEMENT : PAS ENCORE ASSEZ ───
+// Sur les 57 cas au camp connu (13 nuls, base 22,8 %) :
+//   Juge M15 = Carcer .............. 1/6  (16,7 %) — Fisher p = 1,00
+//   >= 1 Carcer (7 paires) ......... 4/14 (28,6 %) — p = 0,71
+//   >= 1 Carcer HORS M13/M14 ....... 4/11 (36,4 %) — p = 0,25   ← le mieux
+// La direction est celle qu'annonce Ellemine_D, l'écart est de 17 points,
+// et RIEN n'est significatif à ces effectifs. Ce n'est pas un refus :
+// c'est un compteur qui a besoin de cas. À 11 annonces, il faudrait
+// environ 25 thèmes « >= 1 Carcer hors M13/M14 » pour que 36 % contre
+// 20 % passe sous p = 0,05.
+//
+// ⚠️ ET UNE DISTINCTION QUI COMPTE : la lecture CLASSIQUE — « Juge Carcer
+// donc blocage donc nul » — est FAUSSE ici (16,7 % contre 23,5 %, elle
+// penche du mauvais côté). C'est la lecture d'Ellemine_D, Carcer comme
+// SOMME DE DEUX MAISONS MIROIR, qui pointe dans le bon sens. Les deux ne
+// sont pas la même chose, et la sienne est la meilleure des deux.
+var LOI_MIROIR_JUGE_V7 = {
+  enonce: 'M15 = (M1⊕M5) ⊕ (M2⊕M6) ⊕ (M3⊕M7) ⊕ (M4⊕M8)',
+  verifie: '65536/65536',
+  lecture: 'le Juge est la somme des quatre déplacements miroir du thème',
+  pairesMiroir: [[1, 5], [2, 6], [3, 7], [4, 8], [9, 11], [10, 12], [13, 14]],
+  note: 'la paire M13/M14 n\'est pas libre : sa somme EST le Juge, par construction. '
+    + 'Les six autres sont les seules qui apportent une information nouvelle.',
+  distributionCarcer: { 0: 46080, 1: 15360, 2: 3072, 3: 1024 },
+  mesureNul: { n: 57, nuls: 13, base: 22.8,
+    jugeCarcer: { oui: '1/6', taux: 16.7, p: 1.0, sens: 'à contresens' },
+    auMoinsUn: { oui: '4/14', taux: 28.6, p: 0.71 },
+    horsJuge: { oui: '4/11', taux: 36.4, contre: 19.6, p: 0.2508 } },
+  ceQuiManque: 'environ 25 thèmes à « >= 1 Carcer hors M13/M14 » pour trancher à p < 0,05'
+};
+
+// Les huit paires de figures dont la somme vaut Carcer.
+var PAIRES_CARCER_V7 = [['puer', 'rubeus'], ['laetitia', 'tristitia'],
+  ['caput_draconis', 'cauda_draconis'], ['albus', 'puella'], ['via', 'conjunctio'],
+  ['amissio', 'fortuna_major'], ['fortuna_minor', 'acquisitio'], ['carcer', 'populus']];
+
+// Les quatre déplacements miroir, leur somme (= le Juge), et le compte
+// de Carcer parmi les sept paires.
+function deplacementsMiroirV7(theme) {
+  if (!theme) return null;
+  try {
+    var d = [combine(theme[1], theme[5]), combine(theme[2], theme[6]),
+             combine(theme[3], theme[7]), combine(theme[4], theme[8])];
+    var total = combine(combine(d[0], d[1]), combine(d[2], d[3]));
+    var paires = LOI_MIROIR_JUGE_V7.pairesMiroir.map(function (pr) {
+      return { maisons: pr, somme: combine(theme[pr[0]], theme[pr[1]]),
+        carcer: combine(theme[pr[0]], theme[pr[1]]) === 'carcer' };
+    });
+    var nC = paires.filter(function (x) { return x.carcer; }).length;
+    var nHorsJuge = paires.filter(function (x, i) { return x.carcer && i < 6; }).length;
+    return { deplacements: d, total: total, juge: theme[15],
+      loiTenue: total === theme[15], paires: paires,
+      nbCarcer: nC, nbCarcerHorsJuge: nHorsJuge,
+      rarete: LOI_MIROIR_JUGE_V7.distributionCarcer[nC] || 0,
+      raretePct: Math.round(1000 * (LOI_MIROIR_JUGE_V7.distributionCarcer[nC] || 0) / 65536) / 10 };
+  } catch (e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// L'AXE OFFENSIF — LA RÈGLE D'ELLEMINE_D, RETOURNÉE PAR LA MESURE
+// ═══════════════════════════════════════════════════════════════
+//
+// « axe offensif : on confirme que cet axe peut marquer si et seulement
+//   si la figure somme est présente dans le thème résultant ou base. »
+//
+// Les deux trigones offensifs, tels qu'Ellemine_D les a posés :
+//   camp 1 : M1 + M5 + M9      camp 7 : M7 + M11 + M3
+//
+// ─── CE QUE LA MESURE DIT, ET ELLE DIT DEUX CHOSES ───
+//
+// 1. LE SENS EST INVERSÉ. Sur 98 observations (49 matchs × 2 camps),
+//    somme présente dans le thème de base : marque 70,3 % du temps,
+//    1,78 but ; somme ABSENTE : marque 85,3 %, 2,65 buts. L'axe marque
+//    PLUS quand sa somme est absente, pas moins. Ce n'est pas l'effet
+//    Populus déguisé : en écartant les sommes qui valent Populus,
+//    l'écart tient (70,3 % / 1,78 contre 83,3 % / 2,40).
+//    Et c'est la BASE qui porte, pas les résultantes (78 % contre 71,8 %,
+//    l'autre sens et sans force).
+//
+// 2. CE N'EST PAS UN EFFET DE CAMP, C'EST UN EFFET DE MATCH. Test
+//    APPARIÉ à l'intérieur de chaque match, sur les 24 matchs où un seul
+//    des deux camps a sa somme présente : le camp à somme absente marque
+//    plus 7 fois, le camp à somme présente 8 fois, 9 égalités —
+//    p = 1,0000. Le camp n'y est pour rien. C'est le NOMBRE de sommes
+//    présentes qui parle, et il parle du total du match :
+//        0 somme présente ..  5 matchs · 4,80 buts · 4/5  au-dessus de 2,5
+//        1 somme présente .. 24 matchs · 5,08 buts · 19/24
+//        2 sommes présentes  20 matchs · 2,90 buts · 9/20
+//        rho = −0,319 · p = 0,0234 (permutation, 20 000 tirages)
+//
+// LA RÈGLE UTILE, TELLE QUE MESURÉE : quand les DEUX axes offensifs ont
+// leur somme présente dans le thème de base, le match est fermé.
+//
+// ─── OÙ ELLE SERT, ET OÙ ELLE NE SERT PAS ───
+// Elle recoupe largement « zéro Populus », déjà branché devant : mise en
+// tête de chaîne elle écrase Populus et fait perdre 3 points (37 -> 34).
+// Sa vraie place est LÀ OÙ POPULUS SE TAIT, et là elle est forte :
+//        2 sommes présentes .. 14 cas · 28,6 % au-dessus de 2,5 · 2,21 buts
+//        au plus 1 ........... 13 cas · 69,2 % · 3,85 buts
+// Soit 40 points d'écart dans la seule région où le système n'avait rien.
+// Sur la chaîne entière : Populus > axe > miroir fait 38/49 contre 37/49
+// pour la chaîne actuelle. +1 après avoir essayé NEUF placements — je ne
+// prends pas ce +1 pour un gain, et je ne rebranche pas la chaîne dessus.
+var AXE_VOLUME_V7 = {
+  axes: { camp1: [1, 5, 9], camp7: [7, 11, 3] },
+  regleEllemine: 'l\'axe marque si et seulement si sa somme est présente',
+  mesure: 'RETOURNÉE : présente -> 70,3 % et 1,78 but · absente -> 85,3 % et 2,65 buts',
+  pasUnEffetDeCamp: 'test apparié sur 24 matchs : 7 contre 8, p = 1,0000. '
+    + 'C\'est le nombre de sommes présentes qui parle, et il parle du MATCH.',
+  parNombre: { 0: { n: 5, buts: 4.80, plus: '4/5' }, 1: { n: 24, buts: 5.08, plus: '19/24' },
+    2: { n: 20, buts: 2.90, plus: '9/20' } },
+  correlation: { rho: -0.319, p: 0.0234, methode: 'permutation, 20 000 tirages' },
+  ouPopulusSeTait: { deux: { n: 14, taux: 28.6, buts: 2.21 },
+    auPlusUne: { n: 13, taux: 69.2, buts: 3.85 } },
+  surLaChaine: 'Populus > axe > miroir : 38/49 contre 37/49 — +1 après neuf '
+    + 'placements essayés, ce n\'est pas un gain, c\'est du bruit de sélection.',
+  pourLActiver: 'BRANCHES_V7.axe_volume.actif = true'
+};
+
+function axeVolumeV7(theme) {
+  if (!theme) return null;
+  try {
+    var dansBase = function (f) {
+      for (var h = 1; h <= 16; h++) if (theme[h] === f) return true;
+      return false;
+    };
+    var s = function (a, b, c) { return combine(combine(theme[a], theme[b]), theme[c]); };
+    var s1 = s(1, 5, 9), s7 = s(7, 11, 3);
+    var p1 = dansBase(s1), p7 = dansBase(s7);
+    var n = (p1 ? 1 : 0) + (p7 ? 1 : 0);
+    return { somme1: s1, somme7: s7, presente1: p1, presente7: p7, nbPresentes: n,
+      ferme: n === 2, valeur: n !== 2,
+      annonce: n === 2 ? 'moins de 2,5 buts' : 'plus de 2,5 buts',
+      attendu: n === 2 ? '2,90 buts en moyenne sur l\'archive'
+        : '5,0 buts en moyenne sur l\'archive' };
+  } catch (e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// L'ACCORD DES DEUX LECTURES — CE QUI SORT VRAIMENT DE CES DEUX PISTES
+// ═══════════════════════════════════════════════════════════════
+//
+// L'axe et le miroir sont deux lectures INDÉPENDANTES du volume, et
+// elles se valent : dans la région où Populus se tait, 19/27 pour l'axe,
+// 18/27 pour le miroir, McNemar 5 contre 4 — un pile ou face entre les
+// deux. Aucune ne mérite de remplacer l'autre.
+//
+// MAIS LEUR ACCORD, LUI, DIT QUELQUE CHOSE. Sur ces 27 cas :
+//     ils s'accordent (18 cas) ................. 14/18 justes (78 %)
+//        et quand tous deux disent PLUS (5 cas) : 5/5 au-dessus de 2,5
+//        et quand tous deux disent MOINS (13)  : 9/13 justes
+//     ils se contredisent (9 cas) .............. 5 contre 4 — RIEN
+//
+// C'est ça, le résultat de ces deux pistes : pas une règle de plus, une
+// mesure de CONFIANCE. Quand les deux lectures se contredisent, le
+// système ne sait pas, et il vaut mieux qu'il le dise que qu'il devine.
+// Le verdict ne change pas — l'annonce reste celle de la chaîne — mais
+// le panneau prévient. Les 5/5 portent sur CINQ cas : c'est écrit gros
+// pour qu'on ne le lise pas comme une certitude.
+function accordVolumeV7(theme) {
+  if (!theme) return null;
+  var av = null, mv = null;
+  try { av = axeVolumeV7(theme); } catch (e) { }
+  try { mv = volumeMiroirV7(theme); } catch (e) { }
+  if (!av || !mv) return null;
+  var accord = av.valeur === mv.valeur;
+  return { axe: av.valeur, miroir: mv.valeur, accord: accord,
+    sens: accord ? (av.valeur ? 'plus' : 'moins') : null,
+    confiance: accord ? (av.valeur ? 'les deux lectures disent PLUS' : 'les deux disent MOINS')
+      : 'LES DEUX LECTURES SE CONTREDISENT',
+    mesure: accord ? '14/18 justes quand elles s\'accordent'
+      : '5 contre 4 quand elles se contredisent — pile ou face',
+    fiable: accord };
+}
+
+autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
+  if (typeof calcTheme !== 'function') return;
+  ['populus,via,albus,puella', 'laetitia,fortuna_minor,amissio,via',
+   'puer,rubeus,carcer,acquisitio'].forEach(function (k) {
+    var m = k.split(',');
+    var t = calcTheme(m[0], m[1], m[2], m[3]);
+    var d = deplacementsMiroirV7(t);
+    if (!d) throw new Error('deplacementsMiroirV7 muet sur ' + k);
+    if (!d.loiTenue) throw new Error('M15 != somme des déplacements sur ' + k);
+    if (d.nbCarcer > 3) throw new Error('plus de 3 Carcer en paires miroir : impossible');
+  });
+});
 
 // GARDE DE RÉENTRANCE. Le verdict appelle le miroir, et le miroir appelle le
 // verdict sur le thème retourné : sans ce drapeau, la récursion est infinie.

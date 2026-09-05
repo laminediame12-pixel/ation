@@ -757,6 +757,25 @@ function getVerdictAfficheReel(theme, favorite) {
           moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
           contreditLeMoteur: moteur === false };
       }
+      // ─── L'AXE OFFENSIF, SI ON LE BRANCHE (05/09/26) ───
+      // Il prend place ENTRE zéro Populus et le miroir : c'est sa
+      // meilleure position mesurée (38/49 contre 37/49). Éteint par
+      // défaut — ce +1 a été trouvé au neuvième placement essayé, et un
+      // +1 trouvé au neuvième essai est du bruit de sélection, pas un
+      // gain. Le booléen est là pour qu'Ellemine_D en décide, pas moi.
+      try {
+        if (BRANCHES_V7 && BRANCHES_V7.axe_volume && BRANCHES_V7.axe_volume.actif) {
+          var ax = axeVolumeV7(theme);
+          if (ax && ax.ferme) {
+            return { annonce: 'moins de 2,5 buts', valeur: false,
+              source: 'axe offensif (les deux sommes présentes en base)',
+              axe: { somme1: ax.somme1, somme7: ax.somme7, nbPresentes: 2,
+                attendu: ax.attendu },
+              moteurDisait: moteur === null ? null : (moteur ? 'plus de 2,5' : 'moins de 2,5'),
+              contreditLeMoteur: moteur === true };
+          }
+        }
+      } catch (e) { }
       // ─── 05/09/26 : LE MIROIR M5 EST BRANCHÉ AU VOLUME DE BUTS ───
       // Demande d'Ellemine_D : « branche ce qu'on a découvert sur le miroir ».
       // J'avais refusé une première fois en testant autre chose que ce qui
@@ -1861,6 +1880,93 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +'ne portaient que sur les 56 cas du dépôt — tes thèmes sauvegardés n\'y étaient pas.</span>';
         })()
         +' Réversible par BRANCHES_V7.populus_volume.actif.</div></div>';
+    })();
+    // ─── LES DEUX LECTURES D'ELLEMINE_D (05/09/26) ───
+    // L'axe offensif et le miroir sont deux lectures indépendantes du
+    // volume, et elles se valent. Ce qui sort de la mesure, ce n'est pas
+    // une règle de plus : c'est leur ACCORD. Quand elles se contredisent,
+    // le système ne sait pas — et il vaut mieux qu'il le dise.
+    (function(){
+      var ac=null, av=null, dm=null;
+      try{ ac=accordVolumeV7(theme); }catch(e){}
+      try{ av=axeVolumeV7(theme); }catch(e){}
+      try{ dm=deplacementsMiroirV7(theme); }catch(e){}
+      if(!ac && !av && !dm) return;
+      // ⚠️ Le 14/18 et le 5-4 sont mesurés SUR LA RÉGION OÙ ZÉRO POPULUS SE
+      // TAIT — c'est là que ces deux lectures décident. Quand Populus parle,
+      // c'est lui qui annonce et ces chiffres ne s'appliquent pas au thème
+      // affiché. Sans ce garde-fou le panneau donnait une confiance mesurée
+      // ailleurs à un thème où elle ne vaut rien : sur le 22/02 lui-même,
+      // les deux lectures disent MOINS et le match a fait 6 buts.
+      var popParle=false;
+      try{ var lpx=lecturePopulusV7(theme); popParle = !!(lpx && lpx.zeroPopulus
+        && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif); }catch(e){}
+      var col = popParle ? '#94a3b8' : (ac ? (ac.accord ? '#4ade80' : '#fbbf24') : '#94a3b8');
+      html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid '+col
+        +'; background:rgba(148,163,184,.08);">';
+      if(ac){
+        html+='<b style="color:'+col+'; font-size:13px;">'
+          +(ac.accord ? '🤝 LES DEUX LECTURES DU VOLUME S\'ACCORDENT — '
+              +(ac.sens==='plus'?'PLUS':'MOINS')+' DE 2,5'
+            : '⚠️ LES DEUX LECTURES DU VOLUME SE CONTREDISENT')+'</b>'
+          +(popParle
+            ? '<div style="font-size:11px; color:#94a3b8; margin-top:3px;"><b>Mais elles ne '
+              +'décident pas ce thème</b> : zéro Populus parle et c\'est lui qui annonce le '
+              +'volume. Les chiffres ci-dessous sont mesurés sur les thèmes où Populus se '
+              +'tait — ils ne s\'appliquent pas ici. À lire comme un second avis, rien de plus. '
+              +'<span style="color:#fbbf24;">Le 22/02 (3-3, six buts) était exactement ce '
+              +'cas : les deux lectures disaient MOINS, toutes les deux à côté.</span></div>'
+            : '')
+          +'<div style="font-size:11px; color:#cbd5e1; margin-top:3px;">'
+          +'Axe offensif : <b>'+(ac.axe?'plus':'moins')+'</b> · '
+          +'miroir M5 : <b>'+(ac.miroir?'plus':'moins')+'</b>. '
+          +(ac.accord
+            ? 'Sur les 27 cas où zéro Populus se tait — la région où elles décident — quand elles s\'accordent elles sont '
+              +'justes <b>14 fois sur 18</b> (et 5 sur 5 quand elles disent toutes deux plus '
+              +'— <b>cinq cas seulement</b>, ne lis pas ça comme une certitude).'
+            : 'Sur ces mêmes cas, quand elles se contredisent c\'est <b>5 contre 4</b> : un '
+              +'pile ou face. <b>Le volume n\'est pas lisible sur ce thème.</b> Le verdict '
+              +'annonce quand même — il faut bien qu\'il annonce — mais c\'est ici qu\'il '
+              +'faut s\'abstenir.')
+          +'</div>';
+      }
+      if(av){
+        html+='<div style="font-size:11px; color:#94a3b8; margin-top:5px; border-top:1px '
+          +'solid rgba(148,163,184,.2); padding-top:4px;">'
+          +'🎯 <b>Axe offensif</b> — camp 1 (M1+M5+M9) = '+label(av.somme1)+' '
+          +(av.presente1?'<b style="color:#f87171;">présente</b>':'<span style="color:#4ade80;">absente</span>')
+          +' · camp 7 (M7+M11+M3) = '+label(av.somme7)+' '
+          +(av.presente7?'<b style="color:#f87171;">présente</b>':'<span style="color:#4ade80;">absente</span>')
+          +' dans le thème de base.'
+          +'<div style="margin-top:3px;">Ta règle disait « l\'axe marque si et seulement si '
+          +'sa somme est présente ». La mesure la <b>retourne</b> : présente → 70,3 % de '
+          +'chances de marquer et 1,78 but ; absente → 85,3 % et 2,65 buts. Et ce n\'est pas '
+          +'un effet de CAMP (test apparié dans les matchs : 7 contre 8, p = 1,0000) mais de '
+          +'MATCH : 0 ou 1 somme présente → 5,0 buts ; <b>2 sommes présentes → 2,90 buts</b> '
+          +'(rho −0,319, p = 0,0234). Ici : <b>'+av.nbPresentes+' présente'
+          +(av.nbPresentes>1?'s':'')+'</b> → '+esc(av.annonce)+'.</div></div>';
+      }
+      if(dm){
+        html+='<div style="font-size:11px; color:#94a3b8; margin-top:5px; border-top:1px '
+          +'solid rgba(148,163,184,.2); padding-top:4px;">'
+          +'🪞 <b>Maisons miroir et Carcer</b> — <b style="color:#a78bfa;">'+dm.nbCarcer
+          +' Carcer</b> parmi les 7 paires miroir'
+          +(dm.nbCarcerHorsJuge!==dm.nbCarcer ? ' (dont '+dm.nbCarcerHorsJuge+' hors M13/M14)' : '')
+          +' — classe à <b>'+dm.raretePct+' %</b> des thèmes.'
+          +'<div style="margin-top:3px;"><b>La loi derrière est exacte</b> : le Juge M15 ('
+          +label(dm.juge)+') EST la somme des quatre déplacements miroir '
+          +'(M1⊕M5) ⊕ (M2⊕M6) ⊕ (M3⊕M7) ⊕ (M4⊕M8) — vérifié 65 536 fois sur 65 536. '
+          +'Le Juge ne juge pas les seize maisons : il mesure de combien le thème s\'écarte '
+          +'de son propre miroir.</div>'
+          +'<div style="margin-top:3px;">Pour le nul : « au moins 1 Carcer hors M13/M14 » '
+          +'donne <b>4 nuls sur 11 (36,4 %)</b> contre 9 sur 46 (19,6 %) — direction juste, '
+          +'17 points d\'écart, mais <b>Fisher p = 0,25</b>. Pas branché : le compteur n\'a '
+          +'pas assez tourné, il faudrait ~25 thèmes de cette classe. '
+          +'<span style="color:#4ade80;">Ta lecture bat la lecture classique</span> : '
+          +'« Juge = Carcer » tout seul donne 1 nul sur 6 (16,7 %), soit du mauvais côté.</div>'
+          +'</div>';
+      }
+      html+='</div>';
     })();
     // Le protocole de comparaison, et pourquoi il ne pilote pas.
     (function(){
