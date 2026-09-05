@@ -2904,6 +2904,8 @@ function mesurePopulusLiveV7() {
   try { CAS = tousCasBancV7(); } catch (e) { return null; }
   var cle = CAS.length;
   if (_CACHE_POP_LIVE_V7 && _CACHE_POP_LIVE_V7.cle === cle) return _CACHE_POP_LIVE_V7.val;
+  if (typeof _MESURE_EN_COURS_V7 !== 'undefined' && _MESURE_EN_COURS_V7) return null;
+  return _sousMesureV7(function () {
   var moteur = 0, avecRegle = 0, idiote = 0, total = 0;
   var zeroPlus = 0, zeroTot = 0, autrePlus = 0, autreTot = 0;
   CAS.forEach(function (c) {
@@ -2945,8 +2947,9 @@ function mesurePopulusLiveV7() {
     autre: { n: autreTot, plus: autrePlus, taux: autreTot ? Math.round(1000 * autrePlus / autreTot) / 10 : null },
     gele: { n: 48, moteurSeul: 26, regleIdiote: 31, moteurPlusRegle: 34,
       note: 'les chiffres du 05/09, calculés sur les 56 cas du dépôt seulement' } };
-  _CACHE_POP_LIVE_V7 = { cle: cle, val: _res };
+  if (_res) _CACHE_POP_LIVE_V7 = { cle: cle, val: _res };
   return _res;
+  });
 }
 
 // Combien de cas le fichier a-t-il VRAIMENT sous la main, et combien

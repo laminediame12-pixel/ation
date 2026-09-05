@@ -764,7 +764,20 @@ function getVerdictAfficheReel(theme, favorite) {
       // +1 trouvé au neuvième essai est du bruit de sélection, pas un
       // gain. Le booléen est là pour qu'Ellemine_D en décide, pas moi.
       try {
-        if (BRANCHES_V7 && BRANCHES_V7.axe_volume && BRANCHES_V7.axe_volume.actif) {
+        var brAxe = !!(BRANCHES_V7 && BRANCHES_V7.axe_volume && BRANCHES_V7.axe_volume.actif);
+        var retAxe = null;
+        if (brAxe) {
+          // Même garde-fou que les autres : la branche rejoue la chaîne
+          // entière sur la base courante et se retire si elle n'y gagne plus.
+          var ca = axeChaineLiveV7();
+          if (ca && ca.gain < 0) {
+            brAxe = false;
+            retAxe = 'retiré de lui-même : sur les ' + ca.n + ' cas au score connu de ta '
+              + 'base, la chaîne avec l\'axe fait ' + ca.avecAxe + '/' + ca.n + ' contre '
+              + ca.sansAxe + '/' + ca.n + ' sans lui — gain ' + ca.gain + '.';
+          }
+        }
+        if (brAxe) {
           var ax = axeVolumeV7(theme);
           if (ax && ax.ferme) {
             return { annonce: 'moins de 2,5 buts', valeur: false,
@@ -775,6 +788,7 @@ function getVerdictAfficheReel(theme, favorite) {
               contreditLeMoteur: moteur === true };
           }
         }
+        if (retAxe) autoRetrait = (autoRetrait ? autoRetrait + ' · ' : '') + retAxe;
       } catch (e) { }
       // ─── 05/09/26 : LE MIROIR M5 EST BRANCHÉ AU VOLUME DE BUTS ───
       // Demande d'Ellemine_D : « branche ce qu'on a découvert sur le miroir ».
@@ -1796,7 +1810,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             +' point'+(Math.abs(cp.gainJustesse)>1?'s':'')+' de justesse globale.</b></div>'
           : '')
         +'<div style="font-size:10px; color:#94a3b8; margin-top:4px; border-top:1px solid '
-        +'rgba(148,163,184,.2); padding-top:4px;">Je ne la branche pas : sur le critère '
+        +'rgba(148,163,184,.2); padding-top:4px;">Cette porte-ci reste éteinte : sur le critère '
         +'« avoir raison le plus souvent » elle fait perdre des points, et c\'est mesuré, '
         +'pas supposé. Mais sur le critère « ne pas rater un nul » elle en gagne — et ce '
         +'critère-là n\'est pas à moi de trancher. Les deux portes attrapent des nuls '

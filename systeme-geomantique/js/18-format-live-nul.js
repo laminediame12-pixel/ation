@@ -817,7 +817,16 @@ function nulActifV7(theme, structureNul, nulAxe) {
       parSeconde = !!(sp && sp.secondePorte);
     }
   } catch (e) { parSeconde = false; }
-  return !!(parLeNul || parSeconde
+  // La troisième porte : Carcer en maisons miroir. Branchée à la demande
+  // d'Ellemine_D le 05/09, chiffres affichés (cf. nulCarcerMiroirV7).
+  var parCarcer = false;
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.actif) {
+      var cm = nulCarcerMiroirV7(theme);
+      parCarcer = !!(cm && cm.oui);
+    }
+  } catch (e) { parCarcer = false; }
+  return !!(parLeNul || parSeconde || parCarcer
     || (STRUCTURE_NUL_DECISIVE && structureNul && structureNul.nulDetecte)
     || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
 }
@@ -893,6 +902,65 @@ function secondePorteNulV7(theme) {
       : 'la seconde porte est fermée' };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LA TROISIÈME PORTE — CARCER EN MAISONS MIROIR (branchée le 05/09/26)
+// ═══════════════════════════════════════════════════════════════
+//
+// Ellemine_D : « les maisons miroir donnent — Carcer, contrainte,
+// blocage. Si elles sont en maisons miroir elles ont tendance à donner
+// même force. » Puis, les chiffres sous les yeux : « branche-les ».
+//
+// LA RÈGLE : au moins une des SIX paires miroir libres (M1/M5, M2/M6,
+// M3/M7, M4/M8, M9/M11, M10/M12) a pour somme Carcer. La septième paire,
+// M13/M14, est exclue : sa somme EST le Juge par construction, ce n'est
+// pas une information nouvelle — et prise seule elle penche du MAUVAIS
+// côté (1 nul sur 6, 16,7 %, contre 23,5 % de base).
+//
+// CE QU'ELLE COÛTE ET CE QU'ELLE RAPPORTE, sur 57 cas (13 nuls, 22,8 %) :
+//   deux portes seules (avant) ..... 13 annonces · 8 justes · 5 faux · 5 ratés · 82,5 %
+//   Carcer seule ................... 11 annonces · 4 justes · 7 faux · 9 ratés · 71,9 %
+//   deux portes OU Carcer .......... 22 annonces · 11 justes · 11 faux · 2 ratés · 77,2 %
+//
+// ⚠️ MAIS CE −5,3 N'EST PAS LE PRIX RÉEL, ET JE L'AVAIS ANNONCÉ DE TRAVERS.
+// Ces chiffres traitent la règle du nul comme un classifieur isolé. Sur le
+// CAMP QUE L'ÉCRAN AFFICHE, le total ne bouge pas : 38/57 avant, 38/57
+// après. Les faux nuls supplémentaires tombent surtout sur des thèmes dont
+// le camp était déjà annoncé de travers. Décompte exact : +3 nuls attrapés,
+// −3 pronostics justes perdus, net ZÉRO.
+//
+// LE MARCHÉ, CORRIGÉ : +3 nuls attrapés (8 -> 11 sur 13), +6 faux nuls,
+// justesse du camp inchangée. Ce que ça change, c'est la FORME des erreurs. C'est le choix d'Ellemine_D,
+// pris avec ces chiffres affichés, et c'est un choix défendable : rater
+// 2 nuls sur 13 au lieu de 5 n'a pas le même prix qu'annoncer 11 nuls
+// faux, selon ce qu'on fait du pronostic. Ce n'est pas à moi d'en décider.
+//
+// ⚠️ CE QUE JE N'AI PAS BRANCHÉ, ET POURQUOI. La variante « deux portes
+// OU (Carcer ET opposition) » fait 84,2 % — MIEUX que l'état d'avant.
+// Mais la conjonction ne s'allume qu'UNE SEULE FOIS sur tout le banc, et
+// c'est sur le match du 22/02 qui a fait poser la question. Une règle ne
+// peut pas se valider sur le cas qui l'a fabriquée. Elle est écrite ici
+// pour le jour où un deuxième thème de cette classe arrivera :
+// BRANCHES_V7.carcer_miroir.conjonction = true la met en service.
+function nulCarcerMiroirV7(theme) {
+  if (!theme) return null;
+  var dm = null;
+  try { dm = deplacementsMiroirV7(theme); } catch (e) { return null; }
+  if (!dm) return null;
+  var conj = false;
+  try { conj = !!(BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.conjonction); }
+  catch (e) { }
+  var sp = null;
+  if (conj) { try { sp = secondePorteNulV7(theme); } catch (e) { } }
+  var brut = dm.nbCarcerHorsJuge >= 1;
+  var oui = conj ? (brut && !!(sp && sp.secondePorte)) : brut;
+  return { oui: oui, nbCarcer: dm.nbCarcerHorsJuge, nbCarcerTotal: dm.nbCarcer,
+    conjonction: conj, rarete: dm.raretePct,
+    paires: dm.paires.filter(function (x, i) { return x.carcer && i < 6; })
+      .map(function (x) { return 'M' + x.maisons[0] + '/M' + x.maisons[1]; }),
+    lecture: oui ? 'Carcer en maison miroir — les deux maisons se tiennent en force égale'
+      : 'aucune paire miroir ne donne Carcer' };
+}
+
 // Les deux portes rejouées sur la base courante — mémoïsée, elle calcule
 // deux lectures par cas et le panneau l'appelle à chaque verdict.
 var _CACHE_PORTES_V7 = null;
@@ -900,28 +968,47 @@ function comparerPortesNulV7() {
   var CAS = [];
   try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.camp && c.meres; }); }
   catch (e) { return null; }
-  if (_CACHE_PORTES_V7 && _CACHE_PORTES_V7.cle === CAS.length) return _CACHE_PORTES_V7.val;
+  var _cle = CAS.length + '|';
+  try { _cle += (BRANCHES_V7.nul_seconde_porte && BRANCHES_V7.nul_seconde_porte.actif ? 1 : 0)
+    + (BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.actif ? 2 : 0); } catch (e) { }
+  if (_CACHE_PORTES_V7 && _CACHE_PORTES_V7.cle === _cle) return _CACHE_PORTES_V7.val;
+  if (typeof _MESURE_EN_COURS_V7 !== 'undefined' && _MESURE_EN_COURS_V7) return null;
   var n = 0, nuls = 0;
   var P = { j: 0, f: 0, r: 0 }, S = { j: 0, f: 0, r: 0 }, U = { j: 0, f: 0, r: 0 };
+  var CA = { j: 0, f: 0, r: 0 }, AC = { j: 0, f: 0, r: 0 };
   CAS.forEach(function (c) {
     var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
     var sp; try { sp = secondePorteNulV7(t); } catch (e) { return; }
     if (!sp) return;
     var vrai = c.camp === 'nul';
     n++; if (vrai) nuls++;
-    var p = sp.premierePorte, s = sp.secondePorte, u = p || s;
+    var cm = null; try { cm = nulCarcerMiroirV7(t); } catch (e) { }
+    var p = sp.premierePorte, s = sp.secondePorte, ca = !!(cm && cm.oui);
+    var u = p || s;
+    // La chaîne RÉELLEMENT branchée, portes actives seulement.
+    var act = p;
+    try {
+      if (BRANCHES_V7.nul_seconde_porte && BRANCHES_V7.nul_seconde_porte.actif) act = act || s;
+      if (BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.actif) act = act || ca;
+    } catch (e) { }
+    [[ca, CA], [act, AC]].forEach(function (x) {
+      if (x[0] && vrai) x[1].j++; else if (x[0] && !vrai) x[1].f++; else if (!x[0] && vrai) x[1].r++;
+    });
     [[p, P], [s, S], [u, U]].forEach(function (x) {
       if (x[0] && vrai) x[1].j++; else if (x[0] && !vrai) x[1].f++; else if (!x[0] && vrai) x[1].r++;
     });
   });
-  if (!n) { _CACHE_PORTES_V7 = { cle: CAS.length, val: null }; return null; }
+  if (!n) { _CACHE_PORTES_V7 = { cle: _cle, val: null }; return null; }
   var pct = function (o) { return Math.round(1000 * (n - o.f - o.r) / n) / 10; };
   var val = { n: n, nuls: nuls, base: Math.round(1000 * nuls / n) / 10,
     portes: { annonce: P.j + P.f, justes: P.j, faux: P.f, rates: P.r, justesse: pct(P) },
     seconde: { annonce: S.j + S.f, justes: S.j, faux: S.f, rates: S.r, justesse: pct(S) },
     union: { annonce: U.j + U.f, justes: U.j, faux: U.f, rates: U.r, justesse: pct(U) },
-    gainNuls: U.j - P.j, coutFaux: U.f - P.f, gainJustesse: pct(U) - pct(P) };
-  _CACHE_PORTES_V7 = { cle: CAS.length, val: val };
+    carcer: { annonce: CA.j + CA.f, justes: CA.j, faux: CA.f, rates: CA.r, justesse: pct(CA) },
+    branchee: { annonce: AC.j + AC.f, justes: AC.j, faux: AC.f, rates: AC.r, justesse: pct(AC) },
+    gainNuls: U.j - P.j, coutFaux: U.f - P.f, gainJustesse: pct(U) - pct(P),
+    gainBranche: AC.j - P.j, coutBranche: AC.f - P.f, justesseBranchee: pct(AC) - pct(P) };
+  _CACHE_PORTES_V7 = { cle: _cle, val: val };
   return val;
 }
 

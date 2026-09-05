@@ -2159,7 +2159,15 @@ var BRANCHES_V7 = {
       + 'avant tout branchement.' },
 
   axe_volume: {
-    actif: false,
+    actif: true,
+    branchePar: 'Ellemine_D, 05/09 : « branche-les », les chiffres sous les yeux. Elle prend '
+      + 'sa place mesurée : entre zéro Populus et le miroir. 38/49 contre 37/49.',
+    ceQueJAvaisDit: 'j\'avais laissé le booléen à false en disant qu\'un +1 trouvé au '
+      + 'neuvième placement est du bruit de sélection. Ça reste vrai et c\'est écrit ici : '
+      + 'le gain de +1 n\'est pas démontré. Mais l\'effet SOUS la règle l\'est (rho −0,319, '
+      + 'p = 0,0234 par permutation, et 40 points d\'écart là où Populus se tait) — ce qui '
+      + 'n\'est pas démontré, c\'est le placement, pas le signal. La branche se rejoue et '
+      + 'se retire d\'elle-même si elle ne gagne plus rien.',
     nom: 'L\'axe offensif — les deux sommes de trigone présentes en base ferment le match',
     cible: 'famille plus/moins de 2,5 buts',
     demande: 'Ellemine_D, 05/09 : « l\'axe offensif peut marquer si et seulement si la '
@@ -2186,7 +2194,25 @@ var BRANCHES_V7 = {
       + 'zéro Populus et le miroir.' },
 
   carcer_miroir: {
-    actif: false,
+    actif: true,
+    conjonction: false,
+    branchePar: 'Ellemine_D, 05/09 : « branche-les ». Troisième porte du nul : au moins une '
+      + 'des SIX paires miroir libres a pour somme Carcer.',
+    lePrix: 'MESURÉ SUR LE VERDICT AFFICHÉ, ET J\'AVAIS ANNONCÉ PIRE QUE LA RÉALITÉ. '
+      + 'Sur la règle du nul prise isolément : 8 justes / 5 faux / 5 ratés (82,5 %) avant, '
+      + '11 / 11 / 2 (77,2 %) après — d\'où le « −5,3 points » que j\'avais donné. Mais sur '
+      + 'le CAMP RÉELLEMENT AFFICHÉ, le total ne bouge pas : 38/57 avant, 38/57 après. '
+      + 'Les 6 faux nuls supplémentaires tombent en grande partie sur des thèmes où le camp '
+      + 'était DÉJÀ annoncé de travers. Le décompte exact : +3 nuls attrapés (8 -> 11 sur 13) '
+      + 'et −3 pronostics de camp justes perdus. Net zéro en justesse brute, et la FORME des '
+      + 'erreurs change : le système rate 2 nuls sur 13 au lieu de 5, et en annonce 11 faux '
+      + 'au lieu de 5. C\'est un arbitrage réel, pas un cadeau — mais il ne coûte pas les '
+      + '5,3 points que j\'avais annoncés.',
+    conjonctionEnAttente: 'la variante « deux portes OU (Carcer ET opposition) » fait 84,2 %, '
+      + 'MIEUX que l\'état d\'avant — mais la conjonction ne s\'allume qu\'UNE fois sur tout '
+      + 'le banc, et c\'est sur le 22/02 qui a fait poser la question. Une règle ne peut pas '
+      + 'se valider sur le cas qui l\'a fabriquée. Dès qu\'un deuxième thème de cette classe '
+      + 'arrive, refaire la mesure et passer conjonction = true si elle tient.',
     nom: 'Carcer en paires miroir — le blocage comme somme de deux maisons opposées',
     cible: 'le nul',
     demande: 'Ellemine_D, 05/09 : « les maisons miroir donnent — exemple Carcer, '
@@ -2664,6 +2690,26 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
   });
 });
 
+// ═══════════════════════════════════════════════════════════════
+// LE DRAPEAU DE MESURE — sans lui, le fichier ne se charge plus
+// ═══════════════════════════════════════════════════════════════
+// Chaque branche du volume se rejoue sur le banc pour savoir si elle
+// gagne encore : elle calcule donc un ou deux VERDICTS par cas. Mais
+// chacun de ces verdicts repasse par le champ plus25, qui relance les
+// mêmes mesures — et comme le cache n'est écrit qu'à la FIN de la
+// boucle, rien ne l'arrête. Attrapé en branchant l'axe : la page ne
+// finissait plus de charger (timeout au chargement, pas une erreur —
+// donc silencieux si on ne l'ouvre pas).
+// Ce drapeau est levé pendant toute mesure : à l'intérieur, plus25
+// prend les branches telles quelles et ne recompte rien. On ne lit de
+// ces verdicts intérieurs que leur score, jamais leur auto-retrait.
+var _MESURE_EN_COURS_V7 = false;
+function _sousMesureV7(fn) {
+  var av = _MESURE_EN_COURS_V7;
+  try { _MESURE_EN_COURS_V7 = true; return fn(); }
+  finally { _MESURE_EN_COURS_V7 = av; }
+}
+
 // GARDE DE RÉENTRANCE. Le verdict appelle le miroir, et le miroir appelle le
 // verdict sur le thème retourné : sans ce drapeau, la récursion est infinie.
 // Quand il est levé, le champ plus25 se contente du moteur — c'est exactement
@@ -2755,6 +2801,8 @@ function volumeMiroirChaineLiveV7() {
   var cle = CAS.length + '|' + (typeof BRANCHES_V7 !== 'undefined'
     && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif ? 1 : 0);
   if (_CACHE_MIR_CHAINE_V7 && _CACHE_MIR_CHAINE_V7.cle === cle) return _CACHE_MIR_CHAINE_V7.val;
+  if (_MESURE_EN_COURS_V7) return null;
+  return _sousMesureV7(function () {
   var pop = false;
   try { pop = !!(BRANCHES_V7 && BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif); }
   catch (e) { }
@@ -2778,8 +2826,10 @@ function volumeMiroirChaineLiveV7() {
   });
   var res = n ? { n: n, sansMiroir: sans, avecMiroir: avec, gain: avec - sans,
     gagnes: g, perdus: pe, populusDevant: pop } : null;
-  _CACHE_MIR_CHAINE_V7 = { cle: cle, val: res };
+  // Jamais de résultat vide en cache : cf. le commentaire d'axeChaineLiveV7.
+  if (res) _CACHE_MIR_CHAINE_V7 = { cle: cle, val: res };
   return res;
+  });
 }
 
 function volumeMiroirLiveV7() {
@@ -2804,3 +2854,87 @@ function volumeMiroirLiveV7() {
     ditMoins: { n: moinsN, taux: moinsN ? Math.round(1000 * moinsVrai / moinsN) / 10 : null },
     gele: { n: 48, direct: 26, avecMiroir: 31 } };
 }
+
+// ═══════════════════════════════════════════════════════════════
+// L'AXE OFFENSIF REJOUÉ SUR LA BASE COURANTE — le garde-fou de sa branche
+// ═══════════════════════════════════════════════════════════════
+// Même contrat que le miroir : la branche recompte la CHAÎNE ENTIÈRE sur
+// les cas d'Ellemine_D et se retire d'elle-même si elle n'y gagne plus.
+// Mémoïsée sur la taille du banc et l'état des booléens : le champ plus25
+// l'appelle à chaque verdict, et elle calcule un verdict par cas.
+var _CACHE_AXE_CHAINE_V7 = null;
+function axeChaineLiveV7() {
+  var CAS = [];
+  try {
+    CAS = (tousCasBancV7() || []).filter(function (c) {
+      return c.meres && /^\d+-\d+$/.test(c.score || '');
+    });
+  } catch (e) { return null; }
+  var cle = CAS.length;
+  if (_CACHE_AXE_CHAINE_V7 && _CACHE_AXE_CHAINE_V7.cle === cle) return _CACHE_AXE_CHAINE_V7.val;
+  // Deux sorties, et la seconde a coûté cher à trouver. La garde du miroir
+  // peut être levée quand on arrive ici (le verdict intérieur du miroir
+  // repasse par plus25) : dans cet état volumeMiroirV7 renvoie null pour
+  // TOUS les cas, la boucle compte zéro, et le résultat vide se figeait
+  // dans le cache pour toute la session — la branche paraissait morte
+  // alors qu'elle marchait. Rien ne le signalait : pas d'erreur, juste un
+  // null. D'où la sortie ci-dessous ET la règle « on ne met en cache que
+  // ce qui a compté au moins un cas ».
+  if (_MESURE_EN_COURS_V7 || _GARDE_MIROIR_V7) return null;
+  return _sousMesureV7(function () {
+  var n = 0, sans = 0, avec = 0, g = 0, pe = 0;
+  CAS.forEach(function (c) {
+    var t;
+    try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
+    var m = /^(\d+)-(\d+)$/.exec(c.score);
+    var vrai = (+m[1] + +m[2]) > 2.5;
+    var zero = null;
+    try { var lp = lecturePopulusV7(t); zero = lp ? lp.zeroPopulus : null; } catch (e) { }
+    var mv = null; try { mv = volumeMiroirV7(t); } catch (e) { }
+    var ax = null; try { ax = axeVolumeV7(t); } catch (e) { }
+    if (!mv || !ax) return;
+    var pop = false;
+    try { pop = !!(BRANCHES_V7.populus_volume && BRANCHES_V7.populus_volume.actif); } catch (e) { }
+    var base = (pop && zero === true) ? true : mv.valeur;
+    var aveq = (pop && zero === true) ? true : (ax.ferme ? false : mv.valeur);
+    n++;
+    if (base === vrai) sans++;
+    if (aveq === vrai) avec++;
+    if (aveq !== base) { if (aveq === vrai) g++; else pe++; }
+  });
+  var val = n ? { n: n, sansAxe: sans, avecAxe: avec, gain: avec - sans,
+    gagnes: g, perdus: pe } : null;
+  if (val) _CACHE_AXE_CHAINE_V7 = { cle: cle, val: val };
+  return val;
+  });
+}
+
+autoTestV7('les trois portes du nul et l\'axe branché', function () {
+  if (typeof calcTheme !== 'function') return;
+  var t = calcTheme('laetitia', 'fortuna_minor', 'amissio', 'via');
+  var cm = nulCarcerMiroirV7(t);
+  if (!cm) throw new Error('nulCarcerMiroirV7 muet');
+  if (cm.nbCarcer < 1) throw new Error('le thème du 22/02 doit avoir >= 1 Carcer hors M13/M14');
+  if (!cm.oui) throw new Error('la troisième porte doit s\'ouvrir sur le 22/02');
+  if (!nulActifV7(t, structureDuNul(t), null)) throw new Error('le nul doit être actif sur le 22/02');
+  var ax = axeVolumeV7(t);
+  if (!ax || ax.nbPresentes !== 2) throw new Error('les deux sommes d\'axe doivent être présentes');
+  var v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
+  if (!v || !v.plus25) throw new Error('plus25 absent');
+});
+
+autoTestV7('les mesures vivantes ne se figent jamais à vide', function () {
+  if (typeof tousCasBancV7 !== 'function') return;
+  // Le piège attrapé le 05/09 : une mesure lancée pendant qu'une garde est
+  // levée compte zéro cas, et son résultat vide reste en cache pour la
+  // session. Chaque mesure doit renvoyer un compte non nul quand on
+  // l'appelle proprement — et ne rien mettre en cache sinon.
+  [['axeChaineLiveV7', typeof axeChaineLiveV7 === 'function' ? axeChaineLiveV7 : null],
+   ['volumeMiroirChaineLiveV7', typeof volumeMiroirChaineLiveV7 === 'function' ? volumeMiroirChaineLiveV7 : null],
+   ['mesurePopulusLiveV7', typeof mesurePopulusLiveV7 === 'function' ? mesurePopulusLiveV7 : null]
+  ].forEach(function (x) {
+    if (!x[1]) return;
+    var r = x[1]();
+    if (!r || !r.n) throw new Error(x[0] + ' renvoie une mesure vide');
+  });
+});
