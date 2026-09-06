@@ -91,6 +91,19 @@ const LOOP_A=["puer","caput_draconis","via","rubeus","fortuna_minor","conjunctio
 const loopOf=f=>LOOP_A.indexOf(f)!==-1?'A':'B';
 const INV={}; FIGS.forEach(f=>INV[MAP[f].join('')]=f);
 const comb=(a,b)=>INV[MAP[a].map((v,i)=>v===MAP[b][i]?2:1).join('')];
+const PALIN=['via','carcer','conjunctio','populus'];
+const renvF=f=>INV[MAP[f].slice().reverse().join('')];
+const compF=f=>INV[MAP[f].map(v=>v===1?2:1).join('')];
+const convF=f=>renvF(compF(f));
+/* la relation entre les deux témoins — c'est elle qui porte la troisième porte */
+function relTemoins(t){
+  const a=t[13], b=t[14];
+  if(a===b) return 'identiques';
+  if(b===renvF(a)) return 'renversement';
+  if(b===compF(a)) return 'complément';
+  if(b===convF(a)) return 'conversion';
+  return 'aucune relation';
+}
 
 function theme(m){
   const t={}; m.forEach((f,i)=>t[i+1]=f);
@@ -123,6 +136,60 @@ const M1={
   corr:{j:6,fa:1,ra:7,just:86.0,prec:85.7},
   mcnemar:'corrigée gagne 4, production gagne 2 — binomial p = 0,6875'
 };
+/* ═══ TOUT CE QU'ON A DE CONCRET SUR LE NUL — 06/09/26 ═══
+   Rien ici n'est une idée : chaque ligne est un compte sur les 57 cas
+   au camp connu de l'archive, 13 nuls, base 22,8 %. */
+const NUL={
+  bilan:{ tire:6, justes:6, faux:0, rates:7, justesse:87.7, precision:100, rappel:46.2 },
+  /* les 13 nuls, un par un, avec ce qui les voit — la table la plus utile
+     de la page : elle dit exactement où le système est aveugle */
+  cas:[
+   ['Roma',              1,'1-1', 2,1,11,1,0,null],
+   ['CaputPuella',       1,'2-2',11,0,11,0,0,'conversion'],
+   ['CarcAlbus',         1,'0-0',11,1,10,0,0,null],
+   ['FortMajConj',       1,null,  4,1, 9,0,0,null],
+   ['PopFortMaj',        1,'0-0', 6,1,11,0,0,null],
+   ['TristCaput',        1,'3-3', 4,1,11,0,0,null],
+   ['AmisPuer',          0,'4-4', 2,0, 8,0,1,'renversement'],
+   ['PuerFortMaj',       0,'0-0', 6,0,10,0,0,null],
+   ['FortMajTrist',      0,'3-3', 9,0, 9,1,0,'identiques'],
+   ['PuerRubeus',        0,'2-2', 3,1,10,1,0,null],
+   ['PopFortMin',        0,'2-2',10,0, 9,0,0,null],
+   ['LaetPop',           0,'1-1', 8,0,11,0,1,'renversement'],
+   ['LaetFortMinAmisVia',0,'3-3',15,0,10,2,1,'renversement']],
+  /* colonnes : nom · vu ? · score · k · chefs différents · figures
+     distinctes · paires Carcer miroir · seconde porte · relation témoins */
+  temoins:{
+    renversement:{n:6,nul:3,taux:50.0,p:0.1246},
+    identiques:{n:3,nul:1,taux:33.3},
+    conversion:{n:4,nul:1,taux:25.0},
+    'aucune relation':{n:37,nul:8,taux:21.6},
+    'complément':{n:7,nul:0,taux:0.0}},
+  troisieme:{
+    nom:'témoins en renversement',
+    seul:{tire:6,justes:3,faux:3,prec:50.0,p:0.1246},
+    avecLaPorte:{tire:12,justes:9,faux:3,just:87.7,prec:75.0,rappel:69.2},
+    rattrape:['AmisPuer','LaetPop','LaetFortMinAmisVia'],
+    note:'le renversement est un SOUS-ENSEMBLE strict de la seconde porte : les six '
+      +'cas de renversement déclenchent tous structureDuNul, qui en ajoute deux autres, '
+      +'tous deux non-nuls. Le renversement est donc la seconde porte débarrassée de '
+      +'deux faux.'},
+  seconde:{tire:8,justes:3,faux:5,prec:37.5,p:0.3653,
+    avecLaPorte:{tire:14,justes:9,faux:5,just:84.2,prec:64.3}},
+  carcerEteinte:{tire:11,nul:4,gagnes:6,perdus:3,
+    perdusNoms:['FortMajTrist','PuerRubeus','LaetFortMinAmisVia']},
+  cadence:{n:18,nul:5,taux:27.8},
+  ferme:[
+    ['famille activation',38,'max-T 4000 permutations','0 survivant · meilleur p = 0,114'],
+    ['famille structurelle',41,'102 coupures binaires, max-T','0 survivant · meilleur p = 0,102']],
+  loisTemoins:[
+    'la distance entre les deux témoins n\'est JAMAIS 1 ni 3 — seulement 0, 2 ou 4, parce que le Juge est toujours pair',
+    'M13 = M14 → le Juge est Populus, toujours',
+    'M14 = complément(M13) → le Juge est Via, toujours',
+    'M14 = renversement(M13) ou conversion(M13) → le Juge est palindromique (Via, Carcer, Conjunctio ou Populus)',
+    'les seules figures palindromiques sont Via, Carcer, Conjunctio et Populus']
+};
+
 const M2={
   structurel:50.00,
   meme:{n:25,nul:7,tauxNul:28.0,buts:4.67,plus:'14/21',
@@ -134,7 +201,7 @@ const M2={
 };
 
 /* ═══ FENÊTRE DE VERDICT — chiffres mesurés ═══ */
-const CAD=[3,6,9,12], SUC=[2,5,8,11];
+const CAD=[3,6,9,12], SUC=[2,6,8,12]; /* succédent corrigé le 06/09 — cf. MAISONS_SUCCEDENT_V7 */
 const CELL_SCORES={ R1_plus:['1-2','7-0'], R1_moins:['2-0','1-0'], R7_plus:['6-1','0-2'],
   R7_moins:['0-1','1-0'], nul_plus:['2-2','3-3'], nul_moins:['0-1','0-0'] };
 const CELL_BUTS={ R1_plus:[2.83,2.33,6], R1_moins:[1.60,2.20,5], R7_plus:[4.22,2.56,9],
@@ -194,6 +261,9 @@ function go(){
   // le veto de répétition : compte des figures distinctes sur les 16 maisons
   const distinctes=new Set(Array.from({length:16},(_,i)=>t[i+1])).size;
   const veto=distinctes>=M1.veto.seuil;
+
+  const relT=relTemoins(t);
+  const troisieme = relT==='renversement' && !veto;
 
   let dit,cellule,st,coul;
   if(veto){ dit=false; cellule=M1.veto.sur; st='VETO de répétition — '+distinctes+' figures distinctes sur 16'; coul='var(--rouge)'; }
@@ -286,6 +356,30 @@ function go(){
       ${cellule.p!==undefined?`<div style="font-size:12px;color:var(--mut)">Fisher p = <b>${cellule.p}</b>${cellule.bonf!==undefined?` · Bonferroni sur 6 tests = <b class="v">${cellule.bonf}</b> — <b class="v">survit</b>`:''}</div>`:''}
     `:'<div style="color:var(--mut);font-size:13px">Aucune case mesurée ne couvre ce décalage. Le moteur se tait.</div>'}
     <table><tr><th>k</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>${lignesK}</table>
+    <div class="pt" style="border-left:3px solid ${troisieme?'var(--or)':'var(--mut)'};padding-left:10px">
+      <b>LA TROISIÈME PORTE, CANDIDATE — les témoins</b><br>
+      Témoins de ce tirage : <b>${FL[t[13]]}</b> et <b>${FL[t[14]]}</b> → relation
+      <b style="color:${troisieme?'var(--or)':'var(--mut)'}">${esc(relT)}</b>${troisieme?' — <b class="o">elle parlerait</b>':''}<br><br>
+      <table><tr><th>relation des deux témoins</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>
+      ${Object.keys(NUL.temoins).map(k=>{const x=NUL.temoins[k];
+        return `<tr class="${k===relT?'on':''}"><td>${esc(k)}</td><td class="n">${x.n}</td>`+
+        `<td class="n">${x.nul}</td><td class="n"><b style="color:${x.taux>=40?'var(--vert)':(x.taux<10?'var(--rouge)':'var(--mut)')}">${x.taux} %</b></td></tr>`;}).join('')}
+      </table>
+      Le <b>renversement</b> fait <b class="v">3 nuls sur 6 (50 %)</b> contre 19,6 % ailleurs — mais
+      Fisher p = <b class="o">0,1246</b>, ce n'est pas significatif. Le <b>complément</b> fait
+      <b class="r">0 sur 7</b>, le sens inverse.<br><br>
+      <b>Ce qu'elle rattraperait :</b> les trois nuls sont AmisPuer (4-4), LaetPop (1-1) et
+      <b class="o">LaetFortMinAmisVia — le 22/02</b>, tous les trois ratés aujourd'hui.
+      Branchée à côté de la porte : <b>9 justes / 3 faux</b>, justesse <b>87,7 %</b> (identique),
+      précision 100 % → <b>75 %</b>, rappel 46 % → <b class="v">69 %</b>.
+      <b>Même justesse, trois nuls de plus, trois faux de plus.</b> C'est un arbitrage, pas un gain —
+      il n'est pas à moi de le prendre.<br><br>
+      <span style="color:var(--mut)">Le renversement est un sous-ensemble strict de la seconde porte
+      (structureDuNul) : les six cas de renversement la déclenchent tous, et elle en ajoute deux de
+      plus, tous deux non-nuls. Seconde porte entière à côté de la porte : 9 justes / 5 faux,
+      justesse 84,2 %. Le renversement, c'est elle débarrassée de deux faux.</span>
+    </div>
+
     <div class="pt" style="border-left:3px solid var(--rouge);padding-left:10px">
       <b>LE VETO DE RÉPÉTITION</b> — ton mot du 22/02, « un thème aussi miroir qu'aucun autre thème ».
       Il se compte : <b>${distinctes} figures distinctes</b> sur les 16 maisons de ce tirage.<br>
@@ -326,7 +420,84 @@ function go(){
   </div>
 
   <div class="card">
-    <h2>CE QUI A ÉTÉ FERMÉ — les niveaux d'activation<span class="tag no">0 survivant</span></h2>
+    <h2>LES TREIZE NULS, UN PAR UN<span class="tag ${NUL.bilan.justes>=6?'ok':'mid'}">${NUL.bilan.justes} vus sur 13</span></h2>
+    <div class="socle">Où le système voit, et où il est aveugle. Chaque ligne est un match réel de
+      l'archive. C'est la table à regarder avant d'ajouter une règle : elle dit ce qui manque.</div>
+    <div style="overflow-x:auto">
+    <table>
+      <tr><th>match</th><th class="n">score</th><th>vu ?</th><th class="n">k</th><th class="n">chefs</th>
+          <th class="n">fig.</th><th class="n">Carcer</th><th class="n">2<sup>e</sup></th><th>témoins</th></tr>
+      ${NUL.cas.map(c=>{const [nom,vu,sc,k,cd,di,ca,sp,rel]=c;
+        return `<tr><td>${esc(nom)}</td><td class="n">${sc||'—'}</td>`+
+        `<td><b style="color:${vu?'var(--vert)':'var(--rouge)'}">${vu?'VU':'raté'}</b></td>`+
+        `<td class="n">${k}</td><td class="n">${cd?'≠':'='}</td><td class="n">${di}</td>`+
+        `<td class="n">${ca||'—'}</td><td class="n">${sp?'✓':'—'}</td>`+
+        `<td style="color:${rel==='renversement'?'var(--or)':'var(--mut)'}">${rel||'—'}</td></tr>`;}).join('')}
+    </table></div>
+    <div class="pt">
+      <b>Le bilan du moteur aujourd'hui :</b> il annonce le nul <b>${NUL.bilan.tire}</b> fois,
+      <b class="v">${NUL.bilan.justes} justes</b>, <b>${NUL.bilan.faux} faux</b> —
+      précision <b class="v">${NUL.bilan.precision} %</b>, justesse <b>${NUL.bilan.justesse} %</b>.
+      Mais il en <b class="r">rate ${NUL.bilan.rates} sur 13</b> : rappel ${NUL.bilan.rappel} %.
+      Le moteur du nul ne se trompe jamais quand il parle, et il se tait plus d'une fois sur deux.<br><br>
+      <b>Colonnes :</b> <code>k</code> décalage R1→R7 · <code>chefs</code> ≠ si M1 et M7 sont en
+      boucles différentes · <code>fig.</code> figures distinctes (veto à 12) · <code>Carcer</code>
+      paires miroir de somme Carcer (porte éteinte le 06/09) · <code>2<sup>e</sup></code> la seconde
+      porte, structureDuNul, débranchée.<br><br>
+      <b>Ce que la table montre d'un coup d'œil :</b> les six vus le sont tous par l'arc proche
+      (k = 2, 4, 6) avec chefs ≠, ou par k = 11. Sur les sept ratés, <b class="o">trois portent la
+      marque du renversement</b> et rien d'autre ne les distingue ; les quatre derniers —
+      PuerFortMaj, FortMajTrist, PopFortMin, PuerRubeus — <b class="r">ne sont vus par aucune règle
+      connue, ni branchée ni candidate</b>. C'est là qu'est le travail restant.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>LES LOIS EXACTES DES TÉMOINS<span class="tag ok">65 536/65 536</span></h2>
+    <div class="socle">Elles ne prédisent rien — ce sont des vérités de structure, vérifiées sur
+      la totalité des thèmes possibles. Elles bornent ce qu'une règle sur les témoins PEUT dire.</div>
+    <ul style="margin:10px 0 0 18px;padding:0;font-size:13px;line-height:1.75">
+      ${NUL.loisTemoins.map(x=>`<li>${esc(x)}</li>`).join('')}
+    </ul>
+    <div class="pt">Conséquence pratique : une règle du nul fondée sur « les témoins se ressemblent »
+      ne dispose que de <b>cinq états</b> — identiques, renversement, complément, conversion, aucune
+      relation — et quatre d'entre eux forcent la nature du Juge. Il n'y a pas de sixième case à
+      chercher.</div>
+  </div>
+
+  <div class="card">
+    <h2>CE QUI A ÉTÉ ÉTEINT — la porte Carcer<span class="tag no">06/09</span></h2>
+    <div class="socle">Branchée le 05/09 après le 22/02, éteinte le 06/09 avec les chiffres sous
+      les yeux. Elle tirait sur <b>${NUL.carcerEteinte.tire}</b> cas pour
+      <b>${NUL.carcerEteinte.nul}</b> nuls.</div>
+    <div class="pt">
+      En l'éteignant : <b class="v">${NUL.carcerEteinte.gagnes} pronostics gagnés</b>,
+      <b class="r">${NUL.carcerEteinte.perdus} perdus</b> — ${NUL.carcerEteinte.perdusNoms.map(esc).join(', ')}.
+      Le dernier est le <b>22/02</b>, le match qui l'avait fait naître. Elle n'était pas du bruit :
+      elle voyait trois nuls que rien d'autre ne voit. Elle en annonçait sept faux à côté, et c'est
+      ce compte-là qui a tranché. Camp affiché 30/57 → 33/57, puis 34/57 avec le veto.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>CE QUI A ÉTÉ CHERCHÉ ET N'EXISTE PAS<span class="tag no">0 survivant</span></h2>
+    <div class="socle">Deux balayages corrigés par max-T de Westfall-Young. Enregistrés ici pour
+      qu'on ne les recommence pas : sans archive neuve, les rejouer ne peut rien donner de plus.</div>
+    <table>
+      <tr><th>famille</th><th class="n">prédicteurs</th><th>méthode</th><th>résultat</th></tr>
+      ${NUL.ferme.map(f=>`<tr><td>${esc(f[0])}</td><td class="n">${f[1]}</td><td>${esc(f[2])}</td>`+
+        `<td><b class="r">${esc(f[3])}</b></td></tr>`).join('')}
+    </table>
+    <div class="pt">La famille <b>activation</b> couvrait les points actifs par groupe et par niveau,
+      les niveaux purs Via et Populus, les lignes Feu et Terre des chefs et des témoins. La famille
+      <b>structurelle</b> couvrait les déplacements miroir, les témoins, le Juge, la rotation, les
+      points, les répétitions — et toutes les coupures binaires qu'ils permettent. Le meilleur de
+      tout ça, <code>figures distinctes ≤ 11</code>, est devenu le veto ci-dessus : gardé non pas
+      parce qu'il survit (il ne survit pas), mais parce qu'un veto ne peut rien coûter.</div>
+  </div>
+
+  <div class="card">
+    <h2>LE DÉTAIL DU BALAYAGE — les niveaux d'activation<span class="tag no">0 survivant</span></h2>
     <div class="socle">Balayage max-T de Westfall-Young, 38 prédicteurs de la famille « activation »,
       4000 permutations, sur l'archive entière puis dans chaque branche de boucle.</div>
     <table>
