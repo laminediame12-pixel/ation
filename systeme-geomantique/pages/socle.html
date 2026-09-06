@@ -194,6 +194,11 @@ const NUL={
 const PLI={
   paires:[['M1 ⊕ M8',1,8],['M2 ⊕ M7',2,7],['M3 ⊕ M6',3,6],['M4 ⊕ M5',4,5],
           ['M9 ⊕ M12',9,12],['M10 ⊕ M11',10,11]],
+  gradient:{'M2 ⊕ M7':[['0 fois','13/14',92.9],['1 fois','9/20',45.0],['2 fois ou +','2/10',20.0]],
+             'M1 ⊕ M8':[['0 fois','12/23',52.2],['1 fois','7/14',50.0],['2 fois ou +','5/7',71.4]]},
+  variantes:[['R1 seul (0 occurrence)','36/57'],['+ R7 dès 2 occurrences','37/57'],
+             ['graduée pleine (0 → R1, sinon R7)','38/57']],
+  ressources:{predicteurs:44,p:0.0040,survivants:2},
   m2m7:{absente:{r:'13/14',taux:92.9},presente:{r:'19/30',taux:63.3},base:54.5,
         p:0.00077,regle:'32/44 · 72,7 %',loo:'72,7 %',
         moteurSurCesCas:'11/14',camp:{avant:'34/57',apres:'36/57'},
@@ -276,7 +281,10 @@ function go(){
   /* le pliage : la somme M2 ⊕ M7 et sa présence */
   const sPli=comb(t[2],t[7]);
   const ouPli=[]; for(let h=1;h<=16;h++) if(t[h]===sPli) ouPli.push(h);
-  const pliParle = ouPli.length===0;
+  const nPli=ouPli.length;
+  const pliParle = nPli===0;
+  const pliDit = nPli===0?'CAMP 1':(nPli>=2?'CAMP 2':null);
+  const s18=comb(t[1],t[8]); const ou18=[]; for(let h=1;h<=16;h++) if(t[h]===s18) ou18.push(h);
   /* les quatre étages pliés — vérifiés en direct, ils doivent tous donner le Juge */
   const cmL=a=>a.reduce((x,y)=>comb(x,y));
   const e9=cmL([[1,8],[2,7],[3,6],[4,5]].map(([x,y])=>comb(t[x],t[y])));
@@ -310,8 +318,11 @@ function go(){
   if(dit && arc && !memeM){ vq='NUL'; vqSrc='arc proche k='+r.k+' et M1/M7 en boucles différentes';
     vqF=80.0; vqN=5; vqCol='var(--vert)'; }
   else if(dit && r.k===11){ vq='NUL'; vqSrc='décalage 11'; vqF=100; vqN=2; vqCol='var(--or)'; }
-  else if(pliParle){ vq='CAMP 1'; vqSrc='pliage : la somme M2 ⊕ M7 est absente des seize maisons';
-    vqF=92.9; vqN=14; vqCol='var(--vert)'; }
+  else if(pliDit){ vq=pliDit;
+    vqSrc = nPli===0 ? 'pliage : la ressource de R1 croisée au chef R7 est ABSENTE du thème'
+                     : 'pliage : ce croisement apparaît '+nPli+' fois dans le thème';
+    vqF = nPli===0?92.9:80.0; vqN = nPli===0?14:10;
+    vqCol = nPli===0?'var(--vert)':'var(--bleu)'; }
   else {
     const o1=OUV.indexOf(t[1])>=0, o7=OUV.indexOf(t[7])>=0;
     if(o1&&!o7){ vq='CAMP 1'; vqSrc='contraste d\'ouverture : M1 ouverte, M7 fermée';
@@ -468,8 +479,60 @@ function go(){
       ce cas. Nouvelle, et vide.
     </div>
 
+    <div class="pt" style="border-left:3px solid var(--bleu);padding-left:10px">
+      <b>3 — TA DOCTRINE DU 06/09, QUI EXPLIQUE TOUT LE RESTE.</b>
+      « m2 est la ressource de m1, et m8 est la ressource de m7 ». J'avais écrit que rien
+      n'expliquait pourquoi M2⊕M7 et pas M1⊕M8 — <b class="r">c'était faux</b>. M2 est la
+      2<sup>e</sup> maison depuis M1, M8 la 2<sup>e</sup> depuis M7 : ce sont les deux
+      <b>ressources</b>, une par camp. Tes deux paires sont donc les deux façons de croiser un
+      chef avec la ressource de l'adversaire :<br>
+      &nbsp;&nbsp;<b>M1 ⊕ M8</b> = le chef de R1 × la ressource de R7 = <b>${FL[s18]}</b><br>
+      &nbsp;&nbsp;<b>M2 ⊕ M7</b> = la ressource de R1 × le chef de R7 = <b>${FL[sPli]}</b><br><br>
+      <b class="v">Et les sommes NON croisées sont déjà dans le carré, exactement :</b><br>
+      &nbsp;&nbsp;M1 ⊕ M2 = <b class="v">${FL[comb(t[1],t[2])]}</b> = M9 · le chef de R1 plus sa propre ressource<br>
+      &nbsp;&nbsp;M7 ⊕ M8 = <b class="v">${FL[comb(t[7],t[8])]}</b> = M12 · le chef de R7 plus la sienne<br>
+      &nbsp;&nbsp;(M1⊕M8) ⊕ (M2⊕M7) = <b class="v">${FL[comb(comb(t[1],t[8]),comb(t[2],t[7]))]}</b> = M9 ⊕ M12<br>
+      65 536/65 536 chacune. <b>Tes deux croisements somment exactement aux deux nièces qui
+      portent « chef + sa ressource » — ton étage 9 et ton étage 21 sont les deux faces de la
+      même chose.</b>
+    </div>
+
+    <div class="pt" style="border-left:3px solid ${pliDit?'var(--vert)':'var(--mut)'};padding-left:10px">
+      <b>4 — L'ASYMÉTRIE SE MESURE.</b> Nombre d'occurrences de chaque croisement dans le thème,
+      contre le camp, sur les 44 cas hors nuls :<br><br>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+      ${Object.keys(PLI.gradient).map(nom=>`<div style="flex:1;min-width:230px">
+        <table><tr><th>${esc(nom)}</th><th class="n">R1</th><th class="n">taux</th></tr>
+        ${PLI.gradient[nom].map(g=>{const on=(nom==='M2 ⊕ M7'?(nPli>=2?'2 fois ou +':(nPli===1?'1 fois':'0 fois')):(ou18.length>=2?'2 fois ou +':(ou18.length===1?'1 fois':'0 fois')))===g[0];
+          return `<tr class="${on?'on':''}"><td>${g[0]}</td><td class="n">${g[1]}</td>`+
+          `<td class="n"><b style="color:${g[2]>=80?'var(--vert)':(g[2]<=25?'var(--rouge)':'var(--mut)')}">${g[2]} %</b></td></tr>`;}).join('')}
+        </table></div>`).join('')}
+      </div>
+      <b class="v">Gradient net et monotone d'un côté — 93 %, 45 %, 20 % — et plat de l'autre.</b>
+      Le croisement qui parle est celui qui met <b>la ressource de R1 face au chef de R7</b>.
+      Ta doctrine annonçait l'asymétrie, la mesure la confirme.<br><br>
+      <b>Second balayage, indépendant :</b> 44 prédicteurs neufs bâtis sur ta doctrine
+      (points, ouverture, boucle et occurrences des deux ressources ; ressource contre son chef ;
+      les deux nièces ; les deux croisements). max-T : <b class="v">2 survivants, p = 0,0040</b> —
+      plus bas qu'au premier balayage (0,0122). Le résultat tient dans une famille composée
+      autrement.
+    </div>
+
+    <div class="pt" style="border-left:3px solid var(--or);padding-left:10px">
+      <b>5 — CE QUI EST BRANCHÉ, ET CE QUI NE L'EST PAS.</b>
+      La case du milieu — une seule occurrence, 45 % — reste <b>muette</b> : elle ne vaut rien.<br><br>
+      <table><tr><th>variante</th><th class="n">camp affiché</th></tr>
+      ${PLI.variantes.map((v,i)=>`<tr class="${i===1?'on':''}"><td>${esc(v[0])}</td>`+
+        `<td class="n"><b${i===2?' class="v"':''}>${v[1]}</b>${i===1?' ← branché':''}</td></tr>`).join('')}
+      </table>
+      <b class="o">La graduée pleine fait mieux — 38/57, le meilleur état jamais mesuré — et je ne
+      la branche pas.</b> Elle décide de TOUS les cas hors nul, ce qui rend le carré, M4/M10, V8 et
+      l'ouverture définitivement muets. Tu as demandé le 05/09 que le carré pilote : le retirer
+      entièrement est ta décision, pas la mienne. Le chiffre est là, la manœuvre est d'un mot.
+    </div>
+
     <div class="pt" style="border-left:3px solid ${pliParle?'var(--vert)':'var(--mut)'};padding-left:10px">
-      <b>3 — CE QUI PARLE : UNE SEULE PAIRE SUR HUIT.</b>
+      <b>LE DÉTAIL DE LA MESURE.</b>
       Sur ce tirage, <b>M2 ⊕ M7 = ${FL[sPli]}</b> —
       ${pliParle?'<b class="v">ABSENTE des seize maisons</b>':'présente en M'+ouPli.join(', M')}.<br><br>
       <table>

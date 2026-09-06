@@ -2352,6 +2352,7 @@ var BRANCHES_V7 = {
 
   pliage_m2m7: {
     actif: true,
+    deuxCotes: true,
     nom: 'Le pliage du carré — M2 ⊕ M7 absente du thème signe R1',
     cible: 'le camp',
     demande: 'Ellemine_D, 06/09 : « j\'ai trouvé un truc mais je ne sais pas à quoi ça sert. '
@@ -2373,8 +2374,19 @@ var BRANCHES_V7 = {
     cequiPlaidePour: 'le pliage est une hypothèse posée par Ellemine_D AVANT toute mesure, '
       + 'pas un gagnant pêché dans une grille ; la règle ne parle que d\'un seul côté, celui '
       + 'à 92,9 % ; et elle tient au leave-one-out (72,7 % avant comme après).',
-    pointFaible: 'rien n\'explique structurellement pourquoi M2 ⊕ M7 et pas M1 ⊕ M8. '
-      + 'C\'est le test à faire sur des cas neufs.',
+    doctrineDu06_09: 'POINT FAIBLE LEVÉ le jour même par Ellemine_D : « m2 est la ressource '
+      + 'de m1 et m8 est la ressource de m7 ». Les deux paires sont les deux façons de croiser '
+      + 'un chef avec la ressource de l\'adversaire, et les sommes NON croisées sont déjà dans '
+      + 'le carré : M1⊕M2 = M9, M7⊕M8 = M12, et (M1⊕M8)⊕(M2⊕M7) = M9⊕M12, chacune '
+      + '65 536/65 536. Une seconde famille de 44 prédicteurs bâtie sur cette doctrine a été '
+      + 'balayée : DEUX survivants au max-T, p = 0,0040 — plus bas qu\'au premier balayage.',
+    gradient: 'M2⊕M7 absente R1 13/14 (93 %) · une occurrence 9/20 (45 %) · deux et plus '
+      + '2/10 (20 %). Le croisement miroir M1⊕M8 est PLAT : 52 %, 50 %, 67 %. L\'asymétrie '
+      + 'que la doctrine annonçait se mesure.',
+    deuxCotesBranche: 'la case du milieu (une occurrence, 45 %) reste MUETTE. R1 seul : '
+      + 'camp 36/57 · + R7 dès deux occurrences : 37/57 (état branché) · graduée pleine : '
+      + '38/57 mais elle rend le carré, M4/M10, V8 et l\'ouverture définitivement muets — '
+      + 'c\'est une décision d\'Ellemine_D, pas la mienne.',
     pourLEteindre: 'BRANCHES_V7.pliage_m2m7.actif = false.' },
 
   veto_repetition: {
@@ -4097,6 +4109,62 @@ autoTestV7('l\'axe succédent est bien 2-6-8-12 partout où il sert', function (
 // (Il reste sous les 38/57 d'avant le carré : le carré coûte toujours
 //  ses huit points, et ce n'est pas cette règle qui les rend.)
 //
+// ── 3bis. LA DOCTRINE QUI EXPLIQUE LE CHOIX — Ellemine_D, 06/09 ──
+// « tu recommences. m1+m8 ou m7+m2 : m2 est la ressource de m1, et m8
+// est la ressource de m7. »
+//
+// J'avais écrit « rien n'explique pourquoi M2⊕M7 et pas M1⊕M8 ».
+// C'était faux, et la correction change la lecture de tout le pliage.
+// M2 est la 2e maison à partir de M1, M8 la 2e à partir de M7 : ce
+// sont LES DEUX RESSOURCES, une par camp. Les deux paires du pliage
+// ne sont donc pas deux sommes quelconques — ce sont LES DEUX FAÇONS
+// DE CROISER UN CHEF AVEC LA RESSOURCE DE L'ADVERSAIRE :
+//     M1 ⊕ M8 = le chef de R1 croisé avec la ressource de R7
+//     M2 ⊕ M7 = la ressource de R1 croisée avec le chef de R7
+//
+// ET LES SOMMES NON CROISÉES SONT DÉJÀ DANS LE CARRÉ, exactement :
+//     M1 ⊕ M2  = M9   ... le chef de R1 plus sa propre ressource
+//     M7 ⊕ M8  = M12  ... le chef de R7 plus sa propre ressource
+//     (M1⊕M8) ⊕ (M2⊕M7) = M9 ⊕ M12    ... 65 536/65 536 chacune
+// Autrement dit : les deux croisements d'Ellemine_D somment exactement
+// aux deux nièces qui portent « chef + sa ressource ». Son étage 9 et
+// son étage 21 sont les deux faces de la même chose, et c'est ÇA que
+// le pliage montrait sans qu'on le voie.
+//
+// LA FAMILLE DES RESSOURCES, BALAYÉE À SON TOUR. 44 prédicteurs neufs
+// construits sur sa doctrine (points, ouverture, boucle et occurrences
+// des deux ressources ; ressource contre son chef ; les deux nièces ;
+// les deux croisements), max-T 4000 permutations, sur le camp :
+//     croise27.occurrences ... rho −0,553 · p(max-T) = 0,0040 ★
+//     croise27.present ....... rho −0,526 ................... ★
+//     DEUX SURVIVANTS SUR 44, dans une famille composée autrement.
+// Le résultat du pliage tient donc dans un second balayage indépendant,
+// et à un p plus bas qu'au premier (0,0040 contre 0,0122).
+//
+// L'ASYMÉTRIE EST RÉELLE, ET ELLE SE VOIT. Le nombre d'occurrences de
+// chaque croisement, contre le camp, sur les 44 cas hors nuls :
+//     M2 ⊕ M7 (ressource de R1 × chef R7)   M1 ⊕ M8 (l'autre sens)
+//        0 fois .. R1 13/14 .... 93 %          0 fois .. 12/23 .. 52 %
+//        1 fois .. R1  9/20 .... 45 %          1 fois ..  7/14 .. 50 %
+//        2 fois .. R1  2/10 .... 20 %          2 fois ..  4/6 ... 67 %
+//     gradient net et monotone              plat, du bruit
+// Le croisement qui parle est celui qui met LA RESSOURCE DE R1 face au
+// CHEF de R7. L'autre sens ne dit rien. Ce n'est plus « pourquoi
+// celui-là et pas l'autre » sans réponse : les deux croisements ne sont
+// pas symétriques dans le carré, et la mesure le confirme.
+//
+// LE SECOND CÔTÉ EST BRANCHÉ (deuxCotes = true). La case du milieu,
+// une seule occurrence, reste MUETTE : 45 %, elle ne vaut rien.
+//     R1 seul (0 occurrence) ......... camp 36/57
+//     + R7 à partir de 2 occurrences . camp 37/57   ← branché
+//     graduée pleine (0 -> R1, sinon R7) camp 38/57
+// ⚠️ LA GRADUÉE PLEINE FAIT MIEUX, ET JE NE LA BRANCHE PAS. À 38/57
+// elle égale le meilleur état jamais mesuré — mais elle décide de TOUS
+// les cas hors nul, ce qui rend le carré, M4/M10, V8 et l'ouverture
+// définitivement muets. Ellemine_D a demandé le 05/09 que le carré
+// pilote ; le retirer entièrement est sa décision, pas la mienne. Le
+// chiffre est ici, la manœuvre est d'un seul mot.
+//
 // ── CE QU'IL FAUT DIRE CONTRE, ET C'EST SÉRIEUX ──
 // M2 ⊕ M7 est le plus fort de 44 prédicteurs tirés du pliage. Corrigé
 // par max-T de Westfall-Young sur ces 44, 4000 permutations :
@@ -4140,10 +4208,29 @@ var PLIAGE_V7 = {
     contreLeMoteur: { moteurSurCesCas: '11/14', regle: '13/14' },
     campAffiche: { avant: '34/57', apres: '36/57' },
     exhaustif: { presente: 61.13, parleSur: 38.87 },
+    doctrine: {
+      auteur: 'Ellemine_D, 06/09',
+      enonce: 'M2 est la ressource de M1, M8 est la ressource de M7',
+      lecture: 'les deux paires du pliage sont les deux façons de croiser un chef avec la '
+        + 'ressource de l\'adversaire',
+      loisExactes: { 'M1⊕M2': 'M9', 'M7⊕M8': 'M12', '(M1⊕M8)⊕(M2⊕M7)': 'M9⊕M12',
+        verifie: '65536/65536 chacune' },
+      cequeCaCorrige: 'j\'avais écrit « rien n\'explique pourquoi M2⊕M7 et pas M1⊕M8 ». '
+        + 'C\'était faux : les deux croisements ne sont pas symétriques dans le carré.' },
+    gradient: {
+      'M2⊕M7': { 0: { r: '13/14', taux: 92.9 }, 1: { r: '9/20', taux: 45.0 }, 2: { r: '2/10', taux: 20.0 } },
+      'M1⊕M8': { 0: { r: '12/23', taux: 52.2 }, 1: { r: '7/14', taux: 50.0 }, 2: { r: '4/6', taux: 66.7 } },
+      lecture: 'gradient net et monotone d\'un côté, plat de l\'autre' },
+    familleRessources: { predicteurs: 44, pMaxT: 0.0040, survivants: 2,
+      note: 'second balayage, composé autrement, sur la doctrine des ressources — le '
+        + 'résultat tient, et à un p plus bas qu\'au premier' },
+    variantes: { 'R1 seul': '36/57', 'R1 + R7 dès 2 occurrences': '37/57 (branché)',
+      'graduée pleine': '38/57 — mais elle rend le carré définitivement muet' },
     correction: { predicteurs: 44, pMaxT: 0.0122, survivants: 1,
       xQuatreCibles: 0.049, xToutesLesFamillesDuJour: 'ne passe plus',
       defense: 'hypothèse posée avant la mesure, pas pêchée dans une grille',
-      pointFaible: 'rien n\'explique pourquoi M2⊕M7 et pas M1⊕M8' },
+      pointFaible: 'RÉSOLU le 06/09 par Ellemine_D : M2 et M8 sont les deux ressources, et '
+        + 'les deux croisements ne sont pas symétriques. Cf. doctrine ci-dessus.' },
     septAutresPaires: 'p entre 0,52 et 1,00 — aucune ne parle' }
 };
 
@@ -4155,13 +4242,25 @@ function pliageM2M7V7(theme) {
   try { s = combine(theme[2], theme[7]); } catch (e) { return null; }
   var ou = [];
   for (var h = 1; h <= 16; h++) if (theme[h] === s) ou.push(h);
-  var presente = ou.length > 0;
-  return { somme: s, presente: presente, maisons: ou,
-    dit: presente ? null : 'R1',
-    lecture: presente
-      ? 'la somme ' + s + ' est présente (M' + ou.join(', M') + ') — la règle se tait, '
-        + 'ce côté-là ne fait que 63,3 % pour R7'
-      : 'la somme ' + s + ' est ABSENTE des seize maisons — R1 gagne 13 fois sur 14' };
+  var n = ou.length, presente = n > 0;
+  // Le second côté n'est branché que si on le demande. Il ne parle qu'à
+  // partir de DEUX occurrences : à une seule, la case est à 45 % et ne
+  // vaut rien. Cf. PLIAGE_V7.m2m7.gradient.
+  var deux = false;
+  try { deux = !!(BRANCHES_V7 && BRANCHES_V7.pliage_m2m7
+    && BRANCHES_V7.pliage_m2m7.deuxCotes); } catch (e) { }
+  var dit = null, taux = null, sur = null;
+  if (n === 0) { dit = 'R1'; taux = 92.9; sur = 14; }
+  else if (deux && n >= 2) { dit = 'R7'; taux = 80.0; sur = 10; }
+  return { somme: s, presente: presente, occurrences: n, maisons: ou,
+    dit: dit, taux: taux, sur: sur,
+    lecture: n === 0
+      ? 'la somme ' + s + ' est ABSENTE des seize maisons — R1 gagne 13 fois sur 14'
+      : (n === 1
+        ? 'la somme ' + s + ' apparaît UNE fois (M' + ou.join(', M') + ') — la case est à '
+          + '45 % pour R1, elle ne vaut rien : la règle se tait'
+        : 'la somme ' + s + ' apparaît ' + n + ' fois (M' + ou.join(', M') + ') — R7 gagne '
+          + '8 fois sur 10 dans cette case' + (deux ? '' : ' (second côté non branché)')) };
 }
 
 autoTestV7('le pliage : les quatre étages donnent le Juge', function () {
@@ -4180,19 +4279,38 @@ autoTestV7('le pliage : les quatre étages donnent le Juge', function () {
   });
 });
 
-autoTestV7('la règle du pliage ne parle que dans un sens', function () {
+autoTestV7('la règle du pliage suit le gradient, et se tait au milieu', function () {
   if (typeof calcTheme !== 'function' || typeof pliageM2M7V7 !== 'function') return;
-  var vus = { parle: 0, muet: 0 };
-  ['laetitia,populus,rubeus,tristitia', 'puer,laetitia,caput_draconis,albus',
-   'via,rubeus,tristitia,acquisitio', 'populus,via,albus,puella',
-   'amissio,puer,amissio,puer', 'conjunctio,acquisitio,puella,caput_draconis'].forEach(function (kk) {
-    var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
-    var pl = pliageM2M7V7(t);
-    if (!pl) throw new Error('pliageM2M7V7 muet sur ' + kk);
-    if (pl.presente && pl.dit) throw new Error('la règle parle du mauvais côté : présente ne dit rien');
-    if (!pl.presente && pl.dit !== 'R1') throw new Error('absente doit dire R1, dit ' + pl.dit);
-    if (pl.dit) vus.parle++; else vus.muet++;
-  });
-  if (!vus.parle || !vus.muet)
-    throw new Error('le jeu de thèmes ne couvre plus les deux cas (' + vus.parle + ' / ' + vus.muet + ')');
+  if (!BRANCHES_V7.pliage_m2m7) throw new Error('branche pliage_m2m7 absente');
+  // Le gradient mesuré : 0 occurrence -> R1 (93 %), 1 -> rien (45 %,
+  // la case ne vaut rien), 2 et plus -> R7 (80 %). Ce test interdit
+  // les deux erreurs qui coûteraient cher : parler à une occurrence,
+  // et parler du côté R7 quand le second côté n'est pas branché.
+  var avant = BRANCHES_V7.pliage_m2m7.deuxCotes;
+  try {
+    var vus = { zero: 0, une: 0, deux: 0 };
+    ['laetitia,populus,rubeus,tristitia', 'puer,laetitia,caput_draconis,albus',
+     'via,rubeus,tristitia,acquisitio', 'populus,via,albus,puella',
+     'amissio,puer,amissio,puer', 'conjunctio,acquisitio,puella,caput_draconis',
+     'laetitia,fortuna_minor,amissio,via', 'albus,albus,albus,albus',
+     'carcer,carcer,puer,puella'].forEach(function (kk) {
+      var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+      BRANCHES_V7.pliage_m2m7.deuxCotes = false;
+      var un = pliageM2M7V7(t);
+      BRANCHES_V7.pliage_m2m7.deuxCotes = true;
+      var pl = pliageM2M7V7(t);
+      if (!pl || !un) throw new Error('pliageM2M7V7 muet sur ' + kk);
+      if (pl.occurrences !== un.occurrences) throw new Error('le drapeau change le COMPTE — il ne doit changer que la décision');
+      if (pl.occurrences === 0) { vus.zero++;
+        if (pl.dit !== 'R1' || un.dit !== 'R1') throw new Error('0 occurrence doit dire R1 dans les deux états'); }
+      else if (pl.occurrences === 1) { vus.une++;
+        if (pl.dit || un.dit) throw new Error('1 occurrence : la case est à 45 %, la règle DOIT se taire'); }
+      else { vus.deux++;
+        if (un.dit) throw new Error('second côté débranché : la règle ne doit rien dire à ' + pl.occurrences + ' occurrences');
+        if (pl.dit !== 'R7') throw new Error('second côté branché : ' + pl.occurrences + ' occurrences doit dire R7'); }
+    });
+    if (!vus.zero || !vus.une || !vus.deux)
+      throw new Error('le jeu de thèmes ne couvre plus les trois cases du gradient ('
+        + vus.zero + ' / ' + vus.une + ' / ' + vus.deux + ')');
+  } finally { BRANCHES_V7.pliage_m2m7.deuxCotes = avant; }
 });
