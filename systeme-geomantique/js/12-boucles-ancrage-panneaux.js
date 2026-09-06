@@ -2389,6 +2389,67 @@ var BRANCHES_V7 = {
       + 'c\'est une décision d\'Ellemine_D, pas la mienne.',
     pourLEteindre: 'BRANCHES_V7.pliage_m2m7.actif = false.' },
 
+  // ── LA MESURE DU 06/09 AU SOIR, POSÉE ICI SANS RIEN CHANGER ──
+  // « l'axe qu'on avait corrigé hier, est-ce que certains de ces matchs
+  // le respectent ? peut-être c'est ce qui a causé les ratés »
+  // (Ellemine_D, après les résultats du lot).
+  //
+  // Réponse à sa question : NON. Les SEPT matchs du lot passent les
+  // trois axes, Cardinal, Succédent (2-6-8-12) et Cadent, et même le
+  // Partage. La validité n'explique aucun raté du lot.
+  //
+  // MAIS SA QUESTION A OUVERT AUTRE CHOSE. Sur les 63 cas au camp connu,
+  // la justesse par nombre d'axes valides :
+  //      1 sur 3 ....  2/2  ... 100 %
+  //      2 sur 3 ....  8/9  ...  89 %
+  //      3 sur 3 ... 33/52  ...  63 %
+  // Monotone, et À L'ENVERS de la doctrine : plus le thème est valide,
+  // moins le moteur a raison. (p = 0,1505, pas significatif, onze cas
+  // seulement du côté « pas valide » — mais le fichier le notait déjà
+  // trois fois à la main depuis le 29/08, et c'est mesuré maintenant.)
+  //
+  // ET LA CAUSE N'EST PAS LA VALIDITÉ, C'EST LE CARRÉ. Justesse par
+  // moteur qui décide, sur ces mêmes 63 cas :
+  //      pliage (M2⊕M7) .... 21/26 ... 81 %
+  //      porte du nul ...... 12/17 ... 71 %
+  //      m4m10 ..............  1/1  .. 100 %
+  //      CARRÉ ..............  9/19 ... 47 %   ← pire que pile ou face
+  // Les thèmes VALIDES sont précisément ceux qui tombent sur le carré :
+  // il décide 17 fois sur les 52 thèmes 3/3, et n'y fait que 41 %.
+  // L'anti-corrélation de la validité est un effet de ce report.
+  //
+  // CE QUE ÇA COÛTE, MESURÉ EN DÉBRANCHANT :
+  //      carré en tête (état actuel) ........ 43/63 = 68,3 %
+  //      carré débranché de la tête ......... 47/63 = 74,6 %
+  //      + contraste d'ouverture branché .... 44/63 = 69,8 %  (pire)
+  //   gagnés en débranchant : Juventus, PSG/Bayer, FortMajVia,
+  //     ViaCaput, CarcPuella, CarcCaput — six.
+  //   perdus : ConjCaput, CarcAmis — deux.
+  //
+  // ⚠️ JE NE DÉBRANCHE PAS. Le carré est en tête parce qu'Ellemine_D l'a
+  // demandé le 05/09 (« oriente le verdict vers le carré »), en sachant
+  // déjà que ça coûtait huit points. La mesure est plus lourde
+  // aujourd'hui — quatre points de plus, et le lot pré-enregistré
+  // par-dessus — mais renverser sa décision est à lui, pas à moi.
+  // Le chiffre est ici, la manœuvre est d'un mot.
+  carre_pilote_cout_0609: {
+    question: 'Ellemine_D, 06/09 : la validité des axes explique-t-elle les ratés du lot ?',
+    reponse: 'NON — les sept matchs du lot passent les trois axes ET le Partage',
+    validiteAntiCorrelee: { '1 sur 3': '2/2 · 100 %', '2 sur 3': '8/9 · 89 %',
+      '3 sur 3': '33/52 · 63 %', fisher: 0.1505,
+      note: 'monotone et à l\'envers de la doctrine ; noté trois fois à la main depuis '
+        + 'le 29/08, mesuré seulement maintenant' },
+    justesseParMoteur: { pliage: '21/26 · 81 %', nul: '12/17 · 71 %',
+      m4m10: '1/1', carre: '9/19 · 47 %' },
+    laVraieCause: 'les thèmes valides sont ceux qui tombent sur le carré — il décide '
+      + '17 fois sur les 52 thèmes 3/3 et n\'y fait que 41 %',
+    coutMesure: { carreEnTete: '43/63 · 68,3 %', carreDebranche: '47/63 · 74,6 %',
+      avecOuverture: '44/63 · 69,8 % (pire)',
+      gagnes: ['Juventus', 'PSG/Bayer', 'FortMajVia', 'ViaCaput', 'CarcPuella', 'CarcCaput'],
+      perdus: ['ConjCaput', 'CarcAmis'] },
+    pasDebranche: 'décision d\'Ellemine_D du 05/09, prise en connaissance du coût. '
+      + 'BRANCHES_V7.carre_pilote.actif = false suffit à le retirer.' },
+
   porte_612: {
     actif: true,
     nom: 'La porte 6/12 — l\'usure d\'un camp est les ennemis cachés de l\'autre',
