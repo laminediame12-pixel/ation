@@ -150,7 +150,7 @@ document.getElementById('app').innerHTML = M.map((m,i)=>{
    <div class="res">
      <label>Résultat réel</label>
      <div class="row">
-       <input id="s${i}" placeholder="0-0" value="${esc(r.s||'')}">
+       <input id="s${i}" placeholder="score 0-0" value="${esc(r.s||'')}">
        <select id="c${i}">
          <option value="">camp…</option>
          ${['R1','R7','nul'].map(v=>`<option value="${v}"${r.c===v?' selected':''}>${v}</option>`).join('')}
@@ -161,13 +161,67 @@ document.getElementById('app').innerHTML = M.map((m,i)=>{
            `<option value="${v}"${r.i===v?' selected':''}>${t}</option>`).join('')}
        </select>
      </div>
+     <label style="margin-top:9px">Le détail — c'est lui qui manque à l'archive</label>
+     <div class="row">
+       <select id="p${i}"><option value="">penalty…</option>
+         ${[['','aucun'],['M1','peno pour R1'],['M7','peno pour R7'],['deux','les deux']].slice(1)
+           .map(([v,t])=>`<option value="${v}"${r.p===v?' selected':''}>${t}</option>`).join('')}</select>
+       <select id="g${i}"><option value="">rouge…</option>
+         ${[['M1','rouge côté R1'],['M7','rouge côté R7'],['deux','les deux']]
+           .map(([v,t])=>`<option value="${v}"${r.g===v?' selected':''}>${t}</option>`).join('')}</select>
+     </div>
+     <div class="row" style="margin-top:7px">
+       <input id="j${i}" type="number" min="0" placeholder="jaunes R1" value="${r.j!=null?esc(r.j):''}">
+       <input id="k${i}" type="number" min="0" placeholder="jaunes R7" value="${r.k!=null?esc(r.k):''}">
+       <input id="u${i}" type="number" min="0" placeholder="corners R1" value="${r.u!=null?esc(r.u):''}">
+       <input id="w${i}" type="number" min="0" placeholder="corners R7" value="${r.w!=null?esc(r.w):''}">
+     </div>
    </div></div>`;
 }).join('');
 
-M.forEach((m,i)=>['s','c','i'].forEach(k=>{
+M.forEach((m,i)=>['s','c','i','p','g','j','k','u','w'].forEach(k=>{
   const el=document.getElementById(k+i);
   el.addEventListener('input',()=>{ R[i]=R[i]||{}; R[i][k]=el.value; save(); });
   el.addEventListener('change',()=>{ R[i]=R[i]||{}; R[i][k]=el.value; save(); });
 }));
+
+/* ── Le bloc à recopier dans l'archive ── */
+const NOMS=['LotToronto','LotCharlotte','LotColumbus','LotCincinnati','LotMiami','LotRoma','LotOrlando','LotPhiladelphia'];
+const MERES=[['conjunctio','acquisitio','puella','caput_draconis'],
+ ['acquisitio','conjunctio','via','fortuna_major'],['amissio','cauda_draconis','amissio','albus'],
+ ['puer','puella','caput_draconis','tristitia'],['laetitia','populus','albus','puella'],
+ ['populus','via','amissio','puer'],['laetitia','caput_draconis','laetitia','populus'],
+ ['populus','puella','conjunctio','fortuna_major']];
+function bloc(){
+  const out=[];
+  M.forEach((m,i)=>{
+    const r=R[i]||{}; if(!r.s&&!r.c&&!r.i) return;
+    const l=[];
+    l.push("  { nom: '"+NOMS[i]+"', meres: ['"+MERES[i].join("','")+"'],");
+    const p=[];
+    if(r.s) p.push("score: '"+r.s+"'");
+    if(r.c) p.push("camp: '"+r.c+"'");
+    if(r.i) p.push("incident: "+(r.i==='oui'?'true':'false'));
+    if(r.p) p.push("penaltyCamp: '"+r.p+"'");
+    if(r.g) p.push("rougeCamp: '"+r.g+"'");
+    if(r.j!=null&&r.j!==''||r.k!=null&&r.k!=='')
+      p.push("cartonsJaunes: "+((+r.j||0)+(+r.k||0))+", cjM1: "+(+r.j||0)+", cjM7: "+(+r.k||0));
+    if(r.u!=null&&r.u!==''||r.w!=null&&r.w!=='')
+      p.push("corners: "+((+r.u||0)+(+r.w||0))+", cornersM1: "+(+r.u||0)+", cornersM7: "+(+r.w||0)
+        +", cornersDominant: '"+((+r.u||0)>(+r.w||0)?'R1':((+r.w||0)>(+r.u||0)?'R7':'égal'))+"'");
+    l.push("    "+p.join(', ')+", date: '2026-09-05',");
+    l.push("    note: 'LOT GELÉ DU 05/09 — annoncé AVANT le match · pronostic "+m.v.replace(/'/g,"")
+      +" "+(m.sc!=='—'?m.sc:'')+" "+m.vol+"' },");
+    out.push(l.join('\n'));
+  });
+  return out.length?out.join('\n'):'— aucun résultat saisi —';
+}
+const zone=document.createElement('div');
+zone.style.cssText='max-width:640px;margin:18px auto;padding:14px;border:1px solid rgba(143,163,191,.18);border-radius:12px;background:#101a2d';
+zone.innerHTML='<div style="font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#8fa3bf;font-weight:700;margin-bottom:9px">À recopier dans l\'archive</div><pre id="blocsortie" style="background:#0a1220;border:1px solid rgba(143,163,191,.14);border-radius:8px;padding:11px;font-size:11px;overflow-x:auto;white-space:pre-wrap;color:#4ade80;margin:0"></pre>';
+document.body.appendChild(zone);
+function majBloc(){ document.getElementById('blocsortie').textContent = bloc(); }
+majBloc();
+document.addEventListener('input',majBloc); document.addEventListener('change',majBloc);
 </script>
 </body></html>
