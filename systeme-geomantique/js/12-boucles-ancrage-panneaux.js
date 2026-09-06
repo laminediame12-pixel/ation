@@ -2273,8 +2273,21 @@ var BRANCHES_V7 = {
       + 'zéro Populus et le miroir.' },
 
   carcer_miroir: {
-    actif: true,
+    actif: false,
     conjonction: false,
+    eteintLe: 'Ellemine_D, 06/09 : « vas éteint le ». Décision prise avec les chiffres '
+      + 'sous les yeux, après la mesure qui montrait que cette porte mangeait le gain de '
+      + 'la porte filtrée. Ce qu\'elle rend en s\'éteignant, mesuré sur les 57 cas : '
+      + 'règle du nul 9 justes / 8 faux / 4 ratés (78,9 %, précision 52,9 %) -> '
+      + '6 / 1 / 7 (86,0 %, précision 85,7 %) · CAMP AFFICHÉ 30/57 -> 33/57. '
+      + 'Six pronostics gagnés (Inter, Bologna, Jeudi 27/08, CarcAmis, FortMajLaet2, '
+      + 'ConjCaput2), trois perdus.',
+    ceQueCaCouteVraiment: '⚠️ PARMI LES TROIS PERDUS IL Y A LE 22/02 (LaetFortMinAmisVia, '
+      + 'le 3-3 avec penalty). C\'est le match qui avait fait naître cette porte, et c\'est '
+      + 'le match qu\'on reperd en l\'éteignant. Les deux autres sont FortMajTrist et '
+      + 'PuerRubeus. La porte Carcer n\'était pas du bruit : elle attrapait 3 nuls que rien '
+      + 'd\'autre ne voit. Elle en annonçait sept faux à côté, et c\'est ce compte-là qui a '
+      + 'tranché. Pour la rallumer : BRANCHES_V7.carcer_miroir.actif = true.',
     branchePar: 'Ellemine_D, 05/09 : « branche-les ». Troisième porte du nul : au moins une '
       + 'des SIX paires miroir libres a pour somme Carcer.',
     lePrix: 'MESURÉ SUR LE VERDICT AFFICHÉ, ET J\'AVAIS ANNONCÉ PIRE QUE LA RÉALITÉ. '
@@ -2361,10 +2374,12 @@ var BRANCHES_V7 = {
       + 'avant, 9/8/4 à 78,9 % après, soit +1,7 point. Le gain de la porte filtrée prise '
       + 'seule (+3,5 points, précision 61,5 -> 85,7) est mangé par la porte Carcer, qui '
       + 'rouvre huit faux nuls derrière. Les deux branches se marchent dessus.',
-    ceQuiEnDecoule: 'si Ellemine_D veut la précision du nul, c\'est carcer_miroir qu\'il '
-      + 'faut éteindre, pas autre chose : porte filtrée SEULE = 6 justes / 1 faux, 86,0 % '
-      + 'de justesse et 85,7 % de précision, le meilleur état jamais mesuré pour le nul. '
-      + 'Je ne l\'éteins pas de moi-même : elle a été branchée sur sa demande du 05/09.',
+    ceQuiEnDecoule: 'FAIT LE 06/09 — Ellemine_D a répondu « vas éteint le ». '
+      + 'carcer_miroir est passée à false et la porte filtrée tourne désormais seule : '
+      + '6 justes / 1 faux, 86,0 % de justesse et 85,7 % de précision sur la règle du nul, '
+      + 'et 33/57 sur le camp affiché contre 30/57 la veille. C\'est le meilleur état '
+      + 'mesuré depuis que le carré a été mis en tête de cascade. Le détail du prix est '
+      + 'dans BRANCHES_V7.carcer_miroir.ceQueCaCouteVraiment — le 22/02 en fait partie.',
     survitALaCorrection: 'OUI, et c\'est le SEUL résultat du projet dans ce cas. Fisher '
       + 'exact sur arc proche × boucles des chefs : p = 0,0078, soit 0,0469 après '
       + 'Bonferroni sur les 6 découpages essayés. Tout le reste — famille activation '
@@ -3748,7 +3763,21 @@ autoTestV7('les trois portes du nul et l\'axe branché', function () {
   if (!cm) throw new Error('nulCarcerMiroirV7 muet');
   if (cm.nbCarcer < 1) throw new Error('le thème du 22/02 doit avoir >= 1 Carcer hors M13/M14');
   if (!cm.oui) throw new Error('la troisième porte doit s\'ouvrir sur le 22/02');
-  if (!nulActifV7(t, structureDuNul(t), null)) throw new Error('le nul doit être actif sur le 22/02');
+  // ⚠️ 06/09 : ce test exigeait « le nul doit être actif sur le 22/02 ».
+  // Il a échoué le jour où Ellemine_D a éteint carcer_miroir, et il avait
+  // RAISON d'échouer : éteindre cette porte reperd le 22/02. On ne
+  // supprime pas le constat, on l'attache au drapeau — le test vérifie
+  // maintenant les DEUX états, et c'est lui qui documente le prix.
+  var avantC = BRANCHES_V7.carcer_miroir.actif;
+  try {
+    BRANCHES_V7.carcer_miroir.actif = true;
+    if (!nulActifV7(t, structureDuNul(t), null))
+      throw new Error('carcer_miroir allumée : le nul doit être actif sur le 22/02');
+    BRANCHES_V7.carcer_miroir.actif = false;
+    if (nulActifV7(t, structureDuNul(t), null))
+      throw new Error('carcer_miroir éteinte : plus rien ne voit le 22/02 — si ça change, '
+        + 'c\'est qu\'une autre porte l\'a rattrapé, et il faut le mesurer, pas le subir');
+  } finally { BRANCHES_V7.carcer_miroir.actif = avantC; }
   var ax = axeVolumeV7(t);
   if (!ax || ax.nbPresentes !== 2) throw new Error('les deux sommes d\'axe doivent être présentes');
   var v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });

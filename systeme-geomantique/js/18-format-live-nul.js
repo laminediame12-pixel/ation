@@ -2292,11 +2292,17 @@ function htmlProfilScoreV7(p) {
 // Le prix est réel : la porte parle presque deux fois moins, et deux
 // nuls de plus lui échappent (AmisPuer, PuerFortMaj).
 //
-// ET EN BOUT DE CHAÎNE, RIEN. Sur le camp réellement affiché : 30/57
-// avant, 30/57 après. Deux gagnés, deux perdus. Le gain de la porte est
-// absorbé par la porte Carcer branchée le 05/09, qui rouvre huit faux
-// nuls derrière elle. Les deux branches se marchent dessus, et c'est
-// écrit tel quel dans BRANCHES_V7.porte_nul_corrigee.
+// EN BOUT DE CHAÎNE, D'ABORD RIEN, PUIS QUELQUE CHOSE. Tant que la porte
+// Carcer du 05/09 tournait à côté, le camp affiché restait à 30/57 :
+// elle rouvrait huit faux nuls derrière le filtre et mangeait tout le
+// gain. Ellemine_D l'a éteinte le 06/09 (« vas éteint le »), et la porte
+// filtrée tourne seule :
+//   règle du nul .... 9/8/4 · 78,9 % · précision 52,9 %   (Carcer allumée)
+//                     6/1/7 · 86,0 % · précision 85,7 %   (Carcer éteinte)
+//   camp affiché .... 30/57 -> 33/57
+// Six pronostics gagnés, trois perdus — et parmi les trois perdus il y a
+// le 22/02, le 3-3 qui avait fait naître la porte Carcer. Le détail est
+// dans BRANCHES_V7.carcer_miroir.ceQueCaCouteVraiment.
 // ═══════════════════════════════════════════════════════════════
 var PORTE_NUL_CORRIGEE_V7 = {
   date: '2026-09-06', n: 57, nuls: 13, base: 22.8,
@@ -2309,10 +2315,14 @@ var PORTE_NUL_CORRIGEE_V7 = {
     avant: { ouvre: 13, justes: 8, faux: 5, rates: 5, justesse: 82.5, precision: 61.5 },
     apres: { ouvre: 7, justes: 6, faux: 1, rates: 7, justesse: 86.0, precision: 85.7 } },
   reglieNulComplete: {
-    avant: { justes: 11, faux: 11, rates: 2, justesse: 77.2, precision: 50.0 },
-    apres: { justes: 9, faux: 8, rates: 4, justesse: 78.9, precision: 52.9 } },
-  campAffiche: { avant: '30/57', apres: '30/57',
-    gagnes: ['TristPop', 'Gel2Machine'], perdus: ['AmisPuer', 'PuerFortMaj'] },
+    avecCarcer: { justes: 9, faux: 8, rates: 4, justesse: 78.9, precision: 52.9 },
+    sansCarcer: { justes: 6, faux: 1, rates: 7, justesse: 86.0, precision: 85.7 } },
+  campAffiche: { avantFiltre: '30/57', avecFiltreEtCarcer: '30/57',
+    filtreSeul: '33/57',
+    gagnesEnEteignantCarcer: ['Inter', 'Bologna', 'Jeudi 27/08', 'CarcAmis',
+      'FortMajLaet2', 'ConjCaput2'],
+    perdusEnEteignantCarcer: ['FortMajTrist', 'PuerRubeus', 'LaetFortMinAmisVia'],
+    note: 'LaetFortMinAmisVia est le 22/02 — le match qui avait fait naître la porte Carcer' },
   deuxNotionsDeBoucle: { accord: 54.4,
     note: 'parité de k = boucle de R1/R7 ; loopOf(M1) vs loopOf(M7) = boucle des chefs' }
 };
