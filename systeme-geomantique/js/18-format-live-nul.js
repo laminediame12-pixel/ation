@@ -497,10 +497,29 @@ function nulDeuxPortesV7(theme) {
   var k = (((i7 - i1) % 16) + 16) % 16;
   var meme = (k % 2 === 0);
   var oui = false, force = 'aucun', porte, detail;
+  // ─── LE FILTRE DU 06/09 : l'arc proche ne parle que si M1 et M7 sont
+  //     dans des boucles DIFFÉRENTES (cf. PORTE_NUL_CORRIGEE_V7). Deux
+  //     coupures distinctes se superposent ici et il ne faut pas les
+  //     confondre : la parité de k dit si R1 et R7 sont dans la même
+  //     boucle ; loopOf(M1) vs loopOf(M7) dit si les deux CHEFS le sont.
+  //     Les deux ne coïncident que 54,4 % du temps, et toute la valeur
+  //     de l'arc proche est dans une seule des deux cases.
+  var chefsDiff = null;
+  try {
+    var b1 = loopOf(theme[1]), b7 = loopOf(theme[7]);
+    if (b1 && b7) chefsDiff = (b1 !== b7);
+  } catch (e) { chefsDiff = null; }
+  var filtre = !!(typeof BRANCHES_V7 !== 'undefined' && BRANCHES_V7.porte_nul_corrigee
+    && BRANCHES_V7.porte_nul_corrigee.actif && chefsDiff !== null);
+
   if (meme) {
     porte = 'même boucle';
-    if (k === 2 || k === 4 || k === 6) { oui = true; force = 'ÉTABLIE';
-      detail = 'R7 est à ' + k + ' pas devant R1 — dans l\'arc proche (2, 4 ou 6), où tombent TOUS les nuls de même boucle'; }
+    if ((k === 2 || k === 4 || k === 6) && filtre && !chefsDiff) {
+      force = 'FERMÉE PAR LE FILTRE';
+      detail = 'arc proche (+' + k + ') mais M1 et M7 sont dans la MÊME boucle — 2 nuls sur 6 dans cette case, la porte reste fermée'; }
+    else if (k === 2 || k === 4 || k === 6) { oui = true; force = 'ÉTABLIE';
+      detail = 'R7 est à ' + k + ' pas devant R1 — dans l\'arc proche (2, 4 ou 6)'
+        + (filtre ? ', et M1/M7 en boucles différentes : 4 nuls sur 5' : ', où tombent TOUS les nuls de même boucle'); }
     else if (k === 8 || k === 10) {
       detail = 'R7 est trop loin devant (+' + k + ', ' + (k === 8 ? 'front du front' : 'bouclier') + ') — 0 nul sur 5 cas'; }
     else if (k === 12 || k === 14) {
@@ -512,7 +531,8 @@ function nulDeuxPortesV7(theme) {
       detail = 'R7 est le front du front de la victime de R1 — 2 tirs, 2 nuls, mais 15,4 % de chance au hasard'; }
     else { detail = 'décalage +' + k + ' — la porte de cette branche est +11'; }
   }
-  return { porte: porte, k: k, memeBoucle: meme, oui: oui, force: force, detail: detail };
+  return { porte: porte, k: k, memeBoucle: meme, oui: oui, force: force, detail: detail,
+    chefsDiff: chefsDiff, filtreActif: filtre };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2238,3 +2258,100 @@ function htmlProfilScoreV7(p) {
     + 'quel que soit le moteur de camp.</div>';
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// LA PORTE DU NUL CORRIGÉE — L'ARC PROCHE FILTRÉ PAR LES CHEFS
+// (06/09/26)
+//
+// « la nouvelle page aura deux moteur, l'un pour analyse du nul et
+// l'autre aura deux branches quand m1 et m7 sont dans la même boucle
+// et l'autre quand non » (Ellemine_D, 05/09)
+//
+// Sa coupure appliquée à la porte. ATTENTION AUX DEUX « MÊME BOUCLE »,
+// qui ne sont pas la même chose et ne coïncident que 54,4 % du temps :
+//   • la parité de k dit si R1 et R7 sont dans la même boucle. C'est
+//     ce que nulDeuxPortesV7 appelait « même boucle » depuis toujours.
+//   • loopOf(M1) vs loopOf(M7) dit si les deux CHEFS y sont. C'est la
+//     coupure d'Ellemine_D, et c'est une autre question.
+// La porte tirait sur les onze cas d'arc proche sans distinguer. Coupés
+// en deux par la boucle des chefs, ces onze cas se séparent net :
+//     M1/M7 boucles DIFFÉRENTES ... 4 nuls / 5 cas .. 80,0 %
+//     M1/M7 MÊME boucle ........... 2 nuls / 6 cas .. 33,3 %
+//     (base de l'archive : 13 nuls / 57 = 22,8 %)
+// Fisher exact sur ce croisement : p = 0,0078. Six découpages ont été
+// essayés sur la porte, donc p corrigé de Bonferroni = 0,0469. Il
+// PASSE, de justesse. C'est le SEUL résultat du projet qui survive à la
+// correction de multiplicité — la famille activation entière, elle,
+// meurt (cf. NIVEAUX_ACTIVATION_V7).
+//
+// CE QUE ÇA VAUT, PORTE CONTRE PORTE :
+//   avant (arc proche entier + k=11) . ouvre 13 · 8 justes · 5 faux
+//                                      justesse 82,5 % · précision 61,5 %
+//   après (arc proche filtré + k=11) . ouvre  7 · 6 justes · 1 faux
+//                                      justesse 86,0 % · précision 85,7 %
+// Le prix est réel : la porte parle presque deux fois moins, et deux
+// nuls de plus lui échappent (AmisPuer, PuerFortMaj).
+//
+// ET EN BOUT DE CHAÎNE, RIEN. Sur le camp réellement affiché : 30/57
+// avant, 30/57 après. Deux gagnés, deux perdus. Le gain de la porte est
+// absorbé par la porte Carcer branchée le 05/09, qui rouvre huit faux
+// nuls derrière elle. Les deux branches se marchent dessus, et c'est
+// écrit tel quel dans BRANCHES_V7.porte_nul_corrigee.
+// ═══════════════════════════════════════════════════════════════
+var PORTE_NUL_CORRIGEE_V7 = {
+  date: '2026-09-06', n: 57, nuls: 13, base: 22.8,
+  arcProche: { total: { r: '6/11', taux: 54.5 },
+    chefsDifferents: { r: '4/5', taux: 80.0, cas: ['Roma', 'VillaMain', 'FortMajConj', 'PopFortMaj', 'TristCaput'] },
+    chefsMemeBoucle: { r: '2/6', taux: 33.3, cas: ['PuerCaput', 'AmisPuer', 'PuerFortMaj', 'TristPop', 'FortMajLaet2', 'Gel2Machine'] },
+    fisher: 0.0078, bonferroni: 0.0469, decoupagesEssayes: 6 },
+  k11: { r: '2/2' },
+  porteSeule: {
+    avant: { ouvre: 13, justes: 8, faux: 5, rates: 5, justesse: 82.5, precision: 61.5 },
+    apres: { ouvre: 7, justes: 6, faux: 1, rates: 7, justesse: 86.0, precision: 85.7 } },
+  reglieNulComplete: {
+    avant: { justes: 11, faux: 11, rates: 2, justesse: 77.2, precision: 50.0 },
+    apres: { justes: 9, faux: 8, rates: 4, justesse: 78.9, precision: 52.9 } },
+  campAffiche: { avant: '30/57', apres: '30/57',
+    gagnes: ['TristPop', 'Gel2Machine'], perdus: ['AmisPuer', 'PuerFortMaj'] },
+  deuxNotionsDeBoucle: { accord: 54.4,
+    note: 'parité de k = boucle de R1/R7 ; loopOf(M1) vs loopOf(M7) = boucle des chefs' }
+};
+
+autoTestV7('le filtre de la porte du nul distingue bien les deux boucles', function () {
+  if (typeof calcTheme !== 'function' || typeof BRANCHES_V7 === 'undefined') return;
+  if (!BRANCHES_V7.porte_nul_corrigee) throw new Error('branche porte_nul_corrigee absente');
+  var avant = BRANCHES_V7.porte_nul_corrigee.actif;
+  try {
+    // Un thème d'arc proche dont les CHEFS sont dans la même boucle doit
+    // voir sa porte se fermer quand le filtre est branché, et pas avant.
+    var vus = { ferme: 0, ouvertSansFiltre: 0, ouvertAvecChefsDiff: 0 };
+    ['puer,caput_draconis,puer,caput_draconis', 'tristitia,populus,tristitia,populus',
+     'amissio,puer,amissio,puer', 'populus,via,albus,puella',
+     'conjunctio,acquisitio,puella,caput_draconis'].forEach(function (kk) {
+      var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+      var memeChefs = (loopOf(t[1]) === loopOf(t[7]));
+      BRANCHES_V7.porte_nul_corrigee.actif = false;
+      var d0 = nulDeuxPortesV7(t);
+      BRANCHES_V7.porte_nul_corrigee.actif = true;
+      var d1 = nulDeuxPortesV7(t);
+      if (!d0 || !d1) return;
+      if (d0.k !== d1.k) throw new Error('le filtre a changé k — il ne doit toucher que la décision');
+      if ([2, 4, 6].indexOf(d0.k) < 0) return;
+      vus.ouvertSansFiltre++;
+      if (!d0.oui) throw new Error('arc proche fermé sans filtre — la porte de base a bougé');
+      if (memeChefs) {
+        if (d1.oui) throw new Error('arc proche + chefs MÊME boucle : la porte doit se fermer sous filtre');
+        vus.ferme++;
+      } else {
+        if (!d1.oui) throw new Error('arc proche + chefs DIFFÉRENTS : la porte doit rester ouverte sous filtre');
+        vus.ouvertAvecChefsDiff++;
+      }
+    });
+    // Un test qui ne teste rien est pire qu'aucun test : ces thèmes sont
+    // choisis pour couvrir les deux côtés de la coupure, et le jour où
+    // l'un d'eux change de case, c'est ici que ça doit se voir.
+    if (!vus.ferme || !vus.ouvertAvecChefsDiff)
+      throw new Error('le jeu de thèmes ne couvre plus les deux côtés du filtre ('
+        + vus.ferme + ' fermé, ' + vus.ouvertAvecChefsDiff + ' ouvert) — test devenu creux');
+  } finally { BRANCHES_V7.porte_nul_corrigee.actif = avant; }
+});

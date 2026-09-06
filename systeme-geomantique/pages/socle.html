@@ -284,10 +284,42 @@ function go(){
       <b class="v">4 nuls sur 5 (80 %)</b> contre 17,3 % ailleurs, p = 0,0078, et c'est le
       <b>premier résultat du projet qui survive à Bonferroni</b> (0,047 sur 6 tests).<br><br>
       <b>La case à l'envers :</b> le même arc proche quand M1/M7 sont dans la <b>même</b> boucle donne
-      <b class="r">2 nuls sur 6 (33 %)</b> — sous la base. La porte en production annonce dans les deux cas.<br><br>
+      <b class="r">2 nuls sur 6 (33 %)</b> — sous la base. <b class="v">Depuis le 06/09 le moteur principal
+      applique ce filtre</b> (branche <code>porte_nul_corrigee</code>) : il n'annonce plus l'arc proche
+      quand M1 et M7 sont dans la même boucle.<br><br>
       <b>Ce que ça vaut :</b> porte en production 8 justes / 5 faux (justesse 82,5 %, précision 61,5 %) ·
       porte corrigée <b class="v">6 justes / 1 faux</b> (justesse <b>86,0 %</b>, précision <b>85,7 %</b>).
-      McNemar : ${esc(M1.mcnemar)} — <b class="o">le gain n'est pas démontré</b>, seule la case l'est.
+      McNemar : ${esc(M1.mcnemar)} — <b class="o">le gain n'est pas démontré</b>, seule la case l'est.<br><br>
+      <b class="o">Et en bout de chaîne, rien.</b> Sur le camp réellement affiché par le moteur principal :
+      <b>30/57 avant, 30/57 après</b>. Deux gagnés (TristPop, Gel2Machine), deux perdus (AmisPuer,
+      PuerFortMaj). Le gain de la porte est absorbé par la porte Carcer branchée le 05/09, qui rouvre
+      huit faux nuls derrière. Porte filtrée <b>seule</b>, sans Carcer : 86,0 % de justesse et 85,7 %
+      de précision — le meilleur état jamais mesuré pour le nul.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>CE QUI A ÉTÉ FERMÉ — les niveaux d'activation<span class="tag no">0 survivant</span></h2>
+    <div class="socle">Balayage max-T de Westfall-Young, 38 prédicteurs de la famille « activation »,
+      4000 permutations, sur l'archive entière puis dans chaque branche de boucle.</div>
+    <table>
+      <tr><th>strate</th><th class="n">n</th><th>plus fort</th><th class="n">rho</th><th class="n">seuil 5 %</th><th class="n">p</th></tr>
+      <tr><td>tout</td><td class="n">57</td><td>zéro niveau Via</td><td class="n">+0,342</td><td class="n">0,410</td><td class="n">0,235</td></tr>
+      <tr><td>boucles différentes</td><td class="n">32</td><td>zéro niveau Via</td><td class="n">+0,495</td><td class="n">0,514</td><td class="n">0,114</td></tr>
+      <tr><td>même boucle</td><td class="n">25</td><td>actifs des nièces</td><td class="n">−0,522</td><td class="n">0,604</td><td class="n">0,234</td></tr>
+    </table>
+    <div class="pt">
+      <b>La loi, elle, est exacte :</b> le niveau Feu des mères <b>est</b> M5, Air M6, Eau M7, Terre M8 —
+      et pour les filles, M1 à M4. 65 536 sur 65 536. Les niveaux d'activation ne sont pas un calcul
+      de plus : ce sont des maisons déjà présentes dans le carré, donc ils n'apportent aucune
+      information neuve.<br><br>
+      <b>Les égalités remarquées</b> (Feu des mères = Terre des filles, Feu + Terre = le Juge) valent
+      chacune <b>6,25 %</b>, soit exactement 1/16 : du hasard. Elles étaient vraies ensemble dans le
+      thème d'exemple, ce qui arrive 512 fois sur 65 536 — remarquable à l'œil, sans loi derrière.<br><br>
+      <b class="r">Aucun prédicteur ne survit</b>, y compris « zéro niveau Via » que j'avais mis en avant :
+      45,5 % contre 4,8 % en boucles différentes, p isolé 0,0112, mais c'est le meilleur de 38 essais
+      et il passe sous le seuil de famille. Ça veut dire « peut-être », pas « oui ». La famille est
+      fermée : pour la rouvrir il faudrait l'annoncer à l'avance sur ~30 rencontres, ou doubler l'archive.
     </div>
   </div>
 

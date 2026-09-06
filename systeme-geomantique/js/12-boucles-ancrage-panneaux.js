@@ -2337,6 +2337,41 @@ var BRANCHES_V7 = {
     pourLActiver: 'BRANCHES_V7.nul_seconde_porte.actif = true — le code est écrit et le '
       + 'nul sera alors imposé aussi par la seconde porte.' },
 
+  porte_nul_corrigee: {
+    actif: true,
+    nom: 'L\'arc proche filtré par les boucles de M1 et M7',
+    cible: 'le nul',
+    demande: 'Ellemine_D, 05/09 : « la nouvelle page aura deux moteur l\'un pour analyse '
+      + 'du nul et l\'autre aura deux branches quand m1 et m7 sont dans la même boucle et '
+      + 'l\'autre quand non. » Sa coupure appliquée à la porte du nul.',
+    mesure: 'sur 57 cas au camp connu, 13 nuls (base 22,8 %). La porte tirait sur les '
+      + 'onze cas d\'arc proche : 6 nuls sur 11. Coupée en deux par la boucle des CHEFS : '
+      + 'M1/M7 en boucles DIFFÉRENTES 4 nuls sur 5 (80 %) · M1/M7 dans la MÊME boucle '
+      + '2 nuls sur 6 (33 %). Toute la valeur de l\'arc proche est dans une seule case.',
+    bilan: 'porte actuelle — ouvre 13 fois, 8 justes, 5 faux, 5 ratés, justesse 82,5 %, '
+      + 'précision 61,5 %. Porte filtrée (+ k=11) — ouvre 7 fois, 6 justes, 1 faux, '
+      + '7 ratés, justesse 86,0 %, précision 85,7 %.',
+    cequeCaCoute: 'deux nuls de plus ratés (AmisPuer et PuerFortMaj, tous deux en arc '
+      + 'proche avec M1/M7 dans la même boucle). Ce n\'est pas gratuit : la porte parle '
+      + 'presque deux fois moins souvent. Elle a raison bien plus souvent quand elle parle.',
+    etEnBoutDeChaine: 'MESURÉ AUSSI SUR LE CAMP RÉELLEMENT AFFICHÉ, et là il faut être '
+      + 'net : 30/57 avant, 30/57 après. Rigoureusement rien. Le filtre gagne TristPop et '
+      + 'Gel2Machine, il perd AmisPuer et PuerFortMaj — deux contre deux. Sur la règle du '
+      + 'nul telle qu\'elle sort aujourd\'hui (porte + Carcer miroir) : 11/11/2 à 77,2 % '
+      + 'avant, 9/8/4 à 78,9 % après, soit +1,7 point. Le gain de la porte filtrée prise '
+      + 'seule (+3,5 points, précision 61,5 -> 85,7) est mangé par la porte Carcer, qui '
+      + 'rouvre huit faux nuls derrière. Les deux branches se marchent dessus.',
+    ceQuiEnDecoule: 'si Ellemine_D veut la précision du nul, c\'est carcer_miroir qu\'il '
+      + 'faut éteindre, pas autre chose : porte filtrée SEULE = 6 justes / 1 faux, 86,0 % '
+      + 'de justesse et 85,7 % de précision, le meilleur état jamais mesuré pour le nul. '
+      + 'Je ne l\'éteins pas de moi-même : elle a été branchée sur sa demande du 05/09.',
+    survitALaCorrection: 'OUI, et c\'est le SEUL résultat du projet dans ce cas. Fisher '
+      + 'exact sur arc proche × boucles des chefs : p = 0,0078, soit 0,0469 après '
+      + 'Bonferroni sur les 6 découpages essayés. Tout le reste — famille activation '
+      + 'comprise, cf. NIVEAUX_ACTIVATION_V7 — meurt à la correction.',
+    pourLEteindre: 'BRANCHES_V7.porte_nul_corrigee.actif = false — la porte redevient '
+      + 'l\'arc proche entier, 8 justes et 5 faux.' },
+
   miroir_volume: {
     actif: true,
     nom: 'Le miroir M5 branché au VOLUME DE BUTS — somme des deux lectures',
@@ -3745,7 +3780,8 @@ autoTestV7('les drapeaux de branche survivent à un verdict', function () {
   // aucune erreur visible. Le verdict annonçait « règle auto-retirée »
   // alors que la mesure donnait +11. Ce test attrape la corruption.
   var cles = ['populus_volume', 'miroir_volume', 'axe_volume', 'carcer_miroir',
-    'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige'];
+    'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige',
+    'porte_nul_corrigee'];
   var avant = {};
   cles.forEach(function (k) { if (BRANCHES_V7[k]) avant[k] = BRANCHES_V7[k].actif; });
   ['populus,via,albus,puella', 'conjunctio,acquisitio,puella,caput_draconis',
@@ -3759,5 +3795,126 @@ autoTestV7('les drapeaux de branche survivent à un verdict', function () {
     if (BRANCHES_V7[k].actif !== avant[k])
       throw new Error('le drapeau ' + k + ' a été laissé à ' + BRANCHES_V7[k].actif
         + ' après un verdict (attendu ' + avant[k] + ') — état global corrompu');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// LES QUATRE NIVEAUX D'ACTIVATION — CE QUI EST UNE LOI, CE QUI EST
+// UNE COÏNCIDENCE, ET CE QUI NE PRÉDIT RIEN (06/09/26)
+//
+// « le remarque que j'ai fait ça concerne le niveau feu et terre des
+// figures du thème. niveau feu des mères donne une Figure et niveau
+// terre des mères donne une Figure. les fils pareil. dans mon exemple
+// dans les mères et fils feu plus terre me donne directement le juge.
+// feu des mères egal terre des fils. creuse pour voir » (Ellemine_D)
+//
+// Creusé, exhaustivement, sur les 65 536 thèmes. Il y a trois étages
+// dans cette intuition, et ils ne valent pas la même chose.
+//
+// ÉTAGE 1 — LA LOI. Elle est exacte, 65 536 sur 65 536 :
+//     niveau Feu des mères  = M5      niveau Feu des filles  = M1
+//     niveau Air des mères  = M6      niveau Air des filles  = M2
+//     niveau Eau des mères  = M7      niveau Eau des filles  = M3
+//     niveau Terre des mères= M8      niveau Terre des filles= M4
+// Autrement dit : LES QUATRE NIVEAUX D'ACTIVATION DES MÈRES SONT LES
+// QUATRE FILLES, et réciproquement. Ce n'est pas une tendance, c'est
+// la définition même du dépliage — les filles sont la transposée des
+// mères, et lire « le niveau Feu de la colonne des mères » c'est lire
+// la première ligne, c'est-à-dire M5. L'intuition d'Ellemine_D touche
+// donc quelque chose de vrai et de structurel : les niveaux ne sont
+// pas un calcul de plus, ce sont des maisons déjà présentes dans le
+// carré. Mais du coup ils n'apportent AUCUNE information nouvelle :
+// tout ce qu'on lirait « au niveau Feu » est déjà lisible en M5.
+//
+// ÉTAGE 2 — LES COÏNCIDENCES. Les deux égalités remarquées dans le
+// thème d'exemple (Acquisitio / Amissio / Tristitia / Rubeus) sont
+// vraies dans ce thème-là, et fausses quinze fois sur seize ailleurs.
+// Chacune tombe exactement à 1/16 — c'est le hasard pur :
+//     Feu(mères) = Terre(filles) .......... 4096/65536 = 6,25 %
+//     Feu(filles) = Terre(mères) .......... 4096/65536 = 6,25 %
+//     Feu(mères) + Terre(mères) = Juge .... 4096/65536 = 6,25 %
+//     Feu(filles) + Terre(filles) = Juge .. 4096/65536 = 6,25 %
+//     Feu(témoins+) + Terre(...) = Juge ... 4096/65536 = 6,25 %
+// Et les cinq ensembles sont indépendants entre eux (recoupements
+// 256 à 512 pour 256 attendus). Que plusieurs tombent ENSEMBLE dans
+// un même thème arrive dans 512 cas sur 65 536, soit 0,78 % : rare,
+// remarquable à l'œil, mais sans loi derrière. Le thème d'exemple
+// était un de ces 512. Il ne fallait pas en tirer une règle.
+//   (À comparer avec ce qui EST une loi de somme, déjà enregistrée
+//    dans LOI_MIROIR_JUGE_V7 : M15 = somme des quatre déplacements
+//    miroir, 65 536/65 536. C'est la bonne forme de la même idée.)
+//
+// ÉTAGE 3 — LE POUVOIR PRÉDICTIF : NUL. Balayage max-T de
+// Westfall-Young, 38 prédicteurs tirés de toute la famille
+// activation (nombre de points actifs par groupe × niveau, niveaux
+// purs Via et Populus, totaux par groupe et par niveau, lignes Feu et
+// Terre de M1, M7, M13, M14), 4000 permutations, sur l'archive
+// entière puis dans chaque branche de boucle :
+//     57 cas, 13 nuls ... plus fort « zéro niveau Via » rho +0,342
+//                         p(max-T) 0,2354 · seuil 5 % à 0,410 · 0 survivant
+//     boucles DIFF ...... plus fort « zéro niveau Via » rho +0,495
+//                         p(max-T) 0,1135 · seuil 5 % à 0,514 · 0 survivant
+//     même boucle ....... plus fort « actifs nièces » rho −0,522
+//                         p(max-T) 0,2339 · seuil 5 % à 0,604 · 0 survivant
+// AUCUN prédicteur de la famille ne survit à la correction, dans
+// aucune strate. Y COMPRIS celui que j'avais moi-même mis en avant
+// hier : « aucun niveau tout actif » fait 5 nuls sur 11 contre 1 sur
+// 21 dans la branche boucles différentes (45,5 % contre 4,8 %,
+// p isolé 0,0112) — mais c'est le meilleur de 38 essais, et le seuil
+// de la famille est à 0,514 quand il vaut 0,495. Il passe à un
+// cheveu. Ça veut dire « peut-être », pas « oui ».
+//
+// CE QU'IL RESTE. Une seule piste du nul tient après correction, et
+// elle n'est pas dans cette famille : arc proche ET M1/M7 en boucles
+// différentes (PORTE_NUL_CORRIGEE_V7, dans 18-format-live-nul.js).
+// La famille
+// activation est fermée : ne pas la rebalayer sans archive neuve.
+// Pour que « zéro niveau Via » tranche seul, il faudrait soit
+// l'annoncer À L'AVANCE sur ~30 rencontres, soit doubler l'archive.
+// ═══════════════════════════════════════════════════════════════
+var NIVEAUX_ACTIVATION_V7 = {
+  date: '2026-09-06',
+  loiExacte: {
+    'Feu(mères)': 'M5', 'Air(mères)': 'M6', 'Eau(mères)': 'M7', 'Terre(mères)': 'M8',
+    'Feu(filles)': 'M1', 'Air(filles)': 'M2', 'Eau(filles)': 'M3', 'Terre(filles)': 'M4',
+    verifie: '65536/65536',
+    consequence: 'les niveaux d\'activation n\'ajoutent aucune information : ce sont des maisons déjà lues'
+  },
+  coincidences: {
+    'Feu(mères)=Terre(filles)': 6.25, 'Feu(filles)=Terre(mères)': 6.25,
+    'Feu(mères)+Terre(mères)=Juge': 6.25, 'Feu(filles)+Terre(filles)=Juge': 6.25,
+    'Feu(témoins)+Terre(témoins)=Juge': 6.25,
+    independantes: true, plusieursALaFois: 0.78,
+    note: 'chacune vaut exactement 1/16 — le thème d\'exemple en cumulait plusieurs, ce qui arrive 512 fois sur 65536'
+  },
+  balayageNul: {
+    methode: 'max-T de Westfall-Young sur rangs, 4000 permutations', predicteurs: 38,
+    strates: {
+      'tout':            { n: 57, nuls: 13, meilleur: 'aucunVia', rho: 0.342, seuil: 0.410, p: 0.2354 },
+      'boucles diff':    { n: 32, nuls: 6,  meilleur: 'aucunVia', rho: 0.495, seuil: 0.514, p: 0.1135 },
+      'même boucle':     { n: 25, nuls: 7,  meilleur: 'actifs.nièces', rho: -0.522, seuil: 0.604, p: 0.2339 }
+    },
+    aucuneSurvivante: true,
+    aucunViaIsole: { branche: 'boucles différentes', dedans: '5/11', taux: 45.5,
+      dehors: '1/21', tauxDehors: 4.8, pIsole: 0.0112,
+      verdict: 'meilleur de 38 essais, sous le seuil de famille — non retenu' },
+    familleFermee: true
+  }
+};
+
+autoTestV7('les niveaux d\'activation sont les maisons transposées', function () {
+  if (typeof calcTheme !== 'function') return;
+  var t = calcTheme('acquisitio', 'amissio', 'tristitia', 'rubeus');
+  var lignes = { meres: [1, 2, 3, 4], filles: [5, 6, 7, 8] };
+  var attendu = { meres: [5, 6, 7, 8], filles: [1, 2, 3, 4] };
+  ['meres', 'filles'].forEach(function (g) {
+    for (var lv = 0; lv < 4; lv++) {
+      var bits = lignes[g].map(function (h) { return MAP_GEO[t[h]][lv]; }).join('');
+      var fig = null;
+      FIGS_V7.forEach(function (f) { if (MAP_GEO[f].join('') === bits) fig = f; });
+      if (fig !== t[attendu[g][lv]])
+        throw new Error('niveau ' + lv + ' des ' + g + ' = ' + fig
+          + ', attendu M' + attendu[g][lv] + ' = ' + t[attendu[g][lv]]);
+    }
   });
 });
