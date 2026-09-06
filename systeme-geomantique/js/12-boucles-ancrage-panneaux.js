@@ -2200,8 +2200,34 @@ var BRANCHES_V7 = {
     pourRevenir: 'BRANCHES_V7.score_corrige.actif = false' },
 
   carre_pilote: {
-    actif: true,
+    actif: false,
     ordre: ['carre', 'm4m10', 'v8'],
+    retireLe: '2026-09-06 au soir — « corriges ça » (Ellemine_D). Il l\'avait mis en tête le '
+      + '05/09 en sachant que ça coûtait huit points ; il le retire le 06/09 quand la facture '
+      + 'a été chiffrée sur trois fronts à la fois.',
+    pourquoiRetire: 'CAMP AFFICHÉ 43/63 (68,3 %) -> 47/63 (74,6 %). Six pronostics gagnés '
+      + '(Juventus, PSG/Bayer, FortMajVia, ViaCaput, CarcPuella, CarcCaput), deux perdus '
+      + '(ConjCaput, CarcAmis). Et surtout la raison, mesurée : quand le carré décide, il fait '
+      + '9/19 = 47 % — pire que pile ou face — contre 81 % pour le pliage (21/26) et 71 % pour '
+      + 'la porte du nul (12/17). Le lot pré-enregistré du 05/09, où le camp n\'a fait que '
+      + '2/6 à l\'aveugle, a été le troisième front.',
+    laDecouverteQuiLADEBUSQUE: 'Ellemine_D cherchait si la validité des axes expliquait les '
+      + 'ratés du lot. Non — les sept matchs passent les trois axes. Mais la question a montré '
+      + 'que la justesse DESCEND avec la validité (3/3 : 63 %, 2/3 : 89 %, 1/3 : 100 %), et la '
+      + 'cause était que les thèmes valides sont ceux qui tombent sur le carré : il y décide '
+      + '17 fois sur 52 et n\'y fait que 41 %.',
+    cinqOrdresEssayes: 'carré retiré, cinq ordres de cascade essayés : m4m10>v8>carre 47/63, '
+      + 'v8>m4m10>carre 48, m4m10>carre>v8 45, v8>carre>m4m10 48, carre>m4m10>v8 43. Le '
+      + 'meilleur ne gagne QU\'UN cas sur l\'ordre par défaut — choisir le meilleur de cinq '
+      + 'ordres sur 63 cas, c\'est du bruit. ORDRE_VERDICT_V7 reste inchangé.',
+    pourLeRebrancher: 'BRANCHES_V7.carre_pilote.actif = true — le carré reprend la tête et '
+      + 'le camp redescend à 43/63.',
+    ceQuiNeSAmelioreePAS: '⚠️ HONNÊTETÉ SUR LA PORTÉE DU GAIN. Le lot pré-enregistré du 05/09, '
+      + 'rejoué avec le moteur corrigé, fait TOUJOURS 2/6 — exactement comme la version gelée. '
+      + 'Il gagne Philadelphia et perd Columbus, c\'est tout. Le gain de 43 à 48 sur 63 est '
+      + 'donc mesuré SUR L\'ARCHIVE, qui a servi à le trouver : une partie peut être du '
+      + 'sur-mesure. Le seul juge propre reste le prochain lot annoncé à l\'avance. Six cas '
+      + 'ne départagent rien, mais ils ne confirment rien non plus, et ça doit être dit.',
     nom: 'Le carré géomantique en tête de cascade — il décide le camp',
     cible: 'le camp',
     demande: 'Ellemine_D, 05/09 : « oriente le verdict vers le carré », après l\'audit qui '
@@ -2352,7 +2378,14 @@ var BRANCHES_V7 = {
 
   pliage_m2m7: {
     actif: true,
-    deuxCotes: true,
+    deuxCotes: false,
+    deuxCotesRetireLe: '2026-09-06 au soir, en même temps que le carré. Le second côté '
+      + '(« deux occurrences ou plus -> R7 ») avait été branché parce qu\'il valait +1 point '
+      + 'AVEC le carré en tête : 36/57 -> 37/57. Le carré retiré, il vaut −1 : côté R1 seul '
+      + '48/63, deux côtés 47/63. Sa seule justification était ce +1, et il s\'est inversé. '
+      + 'On garde le côté qui porte la preuve — R1 quand la somme est absente, 13/14 = 92,9 %, '
+      + 'Fisher p = 0,0008 — et on lâche celui qui ne tenait qu\'à un cas (8/10 = 80 %). '
+      + 'Pour le remettre : deuxCotes = true.',
     nom: 'Le pliage du carré — M2 ⊕ M7 absente du thème signe R1',
     cible: 'le camp',
     demande: 'Ellemine_D, 06/09 : « j\'ai trouvé un truc mais je ne sais pas à quoi ça sert. '
