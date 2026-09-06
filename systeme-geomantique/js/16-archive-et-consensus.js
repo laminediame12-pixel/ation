@@ -1160,7 +1160,73 @@ var CAS_REFERENCE_V7 = [
       + 'LE POINT IMPORTANT : structureDuNul (débranchée) a vu le nul par opposition ; '
       + 'nulDeuxPortesV7 (branchée) l\'a manqué. Le miroir M5, s\'il avait parlé, '
       + 'aurait dit « moins de 2,5 » (somme 2, pile sous le seuil) — faux aussi. '
-      + 'Thème signalé sous le seuil de validité (niveau 2 sur 3 au 22/02).' }
+      + 'Thème signalé sous le seuil de validité (niveau 2 sur 3 au 22/02).' },
+
+  // ═══════════════════════════════════════════════════════════════
+  // LE LOT GELÉ DU 05/09/26 — RÉSULTATS RENTRÉS LE 06/09
+  //
+  // Huit thèmes annoncés AVANT les matchs, dans lots/2026-09-05-lot-8-matchs.html.
+  // C'est le premier vrai test pré-enregistré du projet : les pronostics
+  // étaient écrits et figés, personne ne pouvait les ajuster après coup.
+  // Cincinnati – DC United a été REPORTÉ : sept thèmes exploitables.
+  //
+  // ⚠️ ET C'EST LE LOT QUI APPORTE ENFIN DES NON-INCIDENTS. L'archive en
+  // avait DEUX. Elle en a maintenant CINQ (Columbus, Orlando, Philadelphia
+  // s'ajoutent à PuellaAlbus et CaputPop). C'est le déblocage que
+  // INCIDENTS_AUDIT_V7 attendait. Les cartons jaunes passent de ZÉRO à
+  // cinq matchs, les corners de trois à neuf.
+  // ═══════════════════════════════════════════════════════════════
+  { nom: 'LotToronto', meres: ['conjunctio', 'acquisitio', 'puella', 'caput_draconis'],
+    score: '4-4', htScore: '2-1', camp: 'nul', btts: true,
+    incident: true, incidentCamp: 'M7', csc: true, cscCamp: 'M7',
+    corners: 6, cartonsJaunes: 4, date: '2026-09-05',
+    note: 'LOT GELÉ 05/09, annoncé AVANT — pronostic NUL 2-2, plus de 2,5. '
+      + 'CAMP ✔ (le nul est tombé) · VOLUME ✔ (8 buts) · score ✘ · BTTS ✘ (annoncé non). '
+      + 'Le meilleur pronostic du lot, et il tient : porte du nul + zéro Populus.' },
+  { nom: 'LotCharlotte', meres: ['acquisitio', 'conjunctio', 'via', 'fortuna_major'],
+    score: '0-0', camp: 'nul', btts: false,
+    incident: true, incidentCamp: 'M1', rougeCamp: 'M1',
+    corners: 14, cartonsJaunes: 9, date: '2026-09-05',
+    note: 'LOT GELÉ 05/09 — pronostic CHARLOTTE 2-0, moins de 2,5. CAMP ✘ (nul 0-0) · '
+      + 'VOLUME ✔ · BTTS ✔. Rouge côté M1 à la 71e. Le protocole criait Houston à -27,8 '
+      + 'et les boucles donnaient 19 % au camp 1 : les deux avaient raison de douter.' },
+  { nom: 'LotColumbus', meres: ['amissio', 'cauda_draconis', 'amissio', 'albus'],
+    score: '3-0', camp: 'R1', btts: false,
+    incident: false, corners: 4, date: '2026-09-05',
+    note: 'LOT GELÉ 05/09 — pronostic COLUMBUS 2-0, moins de 2,5. CAMP ✔ · VOLUME ✘ '
+      + '(3 buts) · BTTS ✔. ⭐ SANS INCIDENT — le moteur annonçait 51,7 %. '
+      + 'Albus en M4 au repos, la meilleure défense du lot : elle a tenu le clean sheet, '
+      + 'pas le total de buts.' },
+  { nom: 'LotMiami', meres: ['laetitia', 'populus', 'albus', 'puella'],
+    score: '2-2', camp: 'nul', btts: true,
+    incident: true, incidentCamp: 'M7', penaltyCamp: 'M7',
+    corners: 8, cartonsJaunes: 12, date: '2026-09-05',
+    note: 'LOT GELÉ 05/09 — pronostic ATLANTA 1-0, moins de 2,5. CAMP ✘ (nul) · '
+      + 'VOLUME ✘ (4 buts) · BTTS ✘. Deux penalties pour Atlanta (M7), 12 cartons jaunes : '
+      + 'le match le plus tendu du lot, et le moteur l\'annonçait « le plus calme » à 48,2 %. '
+      + '⚠️ LIBELLÉ À CONFIRMER : Ellemine_D a écrit « 2-2 pour orlando » sur cette ligne. '
+      + 'Le score 2-2 et les chiffres sont pris, le nom de l\'équipe est à revérifier.' },
+  { nom: 'LotOrlando', meres: ['laetitia', 'caput_draconis', 'laetitia', 'populus'],
+    score: '1-0', camp: 'R1', btts: false,
+    incident: false, corners: 10, cartonsJaunes: 5, date: '2026-09-05',
+    note: 'LOT GELÉ 05/09 — pronostic NUL, moins de 2,5. CAMP ✘ · VOLUME ✔ · BTTS ✔. '
+      + '☠️ LE CAS QUI ENFONCE LE DÉTECTEUR D\'INCIDENT : il annonçait 95 %, SON MAXIMUM, '
+      + 'et il ne s\'est RIEN passé. Aucun penalty, aucun rouge, aucun CSC.' },
+  { nom: 'LotPhiladelphia', meres: ['populus', 'puella', 'conjunctio', 'fortuna_major'],
+    score: '2-0', camp: 'R1', btts: false,
+    incident: false, corners: 7, cartonsJaunes: 8, date: '2026-09-05',
+    note: 'LOT GELÉ 05/09 — pronostic NUL, moins de 2,5. CAMP ✘ · VOLUME ✔ · BTTS ✔. '
+      + '⭐ SANS INCIDENT. Le nul venait de la porte Carcer SEULE, éteinte depuis le 06/09 : '
+      + 'l\'extinction de cette porte aurait évité ce faux nul.' },
+  { nom: 'LotRoma', meres: ['populus', 'via', 'amissio', 'puer'],
+    incident: true, incidentCamp: 'M7', rougeCamp: 'M7', date: '2026-09-05',
+    note: 'LOT GELÉ 05/09 — pronostic ROMA 3-2, plus de 2,5. Rouge côté M7 au temps '
+      + 'additionnel. ⚠️ SCORE ET CAMP NON ENCORE FOURNIS : cette ligne ne compte donc PAS '
+      + 'dans le banc du camp, seulement dans la famille incident. Le moteur annonçait 20 % '
+      + 'd\'incident, LE PLUS BAS DU LOT, et côté M1 : faux sur la probabilité et sur le camp.' }
+  // Cincinnati – DC United (Puer · Puella · Caput Draconis · Tristitia) : match REPORTÉ,
+  // aucun résultat. Le thème reste gelé pour le jour où il se joue.
+
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -2378,3 +2444,79 @@ function comparerDeuxThemesV7(themeA, themeB) {
 // met à jour le tableau, et le jour où un critère sera à 5 ou 6 sur 6,
 // le départage sera acquis sans avoir été inventé. En attendant, quand
 // tous les critères sont à égalité, le panneau le dit franchement.
+
+// ═══════════════════════════════════════════════════════════════
+// LE LOT GELÉ DU 05/09 — LE VERDICT DU PREMIER TEST PRÉ-ENREGISTRÉ
+//
+// Huit thèmes annoncés la veille, figés dans un fichier, impossibles à
+// retoucher après coup. C'est le seul chiffre du projet qui ne doive
+// rien à un ajustement rétrospectif — et c'est donc le seul qui compte
+// vraiment. Cincinnati – DC United reporté, Roma sans score fourni :
+// six matchs jugeables sur le camp.
+//
+//   CAMP ....... 2/6 = 33 %   (l'archive donnait 60 %)
+//   VOLUME ..... 4/6 = 67 %   (l'archive donnait 73 %)
+//   BTTS ....... 4/6 = 67 %   (l'archive donnait 63 %)
+//   INCIDENT ... 3/7 = 43 %   (en coupant la jauge à 55 %)
+//
+// ⚠️ LE CAMP S'EFFONDRE À L'AVEUGLE. 33 % contre 60 % annoncés. Six
+// cas, l'intervalle est large — mais c'est exactement l'écart que le
+// pré-enregistrement sert à révéler, et il va dans le mauvais sens.
+// Le volume et le BTTS, eux, tiennent leurs chiffres.
+//
+// LE DÉTAIL DES NULS, ET IL EST INSTRUCTIF :
+//   nuls RÉELS ...... 3 sur 6 — Toronto 4-4, Charlotte 0-0, Miami 2-2
+//   nuls ANNONCÉS ... 3 — Toronto ✔, Orlando ✘, Philadelphia ✘
+// Un sur trois dans les deux sens. Et Philadelphia, faux nul, était
+// décidé par la PORTE CARCER SEULE — celle qu'Ellemine_D a éteinte le
+// 06/09. L'extinction, décidée sur d'autres chiffres, aurait évité
+// celui-là aussi.
+//
+// CE QUE LE LOT A VRAIMENT APPORTÉ. Pas un bon score : cinq matchs de
+// données neuves sur la famille incident, dont TROIS SANS INCIDENT.
+// L'archive en avait deux en tout. Les cartons jaunes passent de zéro
+// à cinq matchs, les corners de trois à neuf. Le lot vaut plus par ce
+// qu'il enregistre que par ce qu'il a prédit.
+// ═══════════════════════════════════════════════════════════════
+var LOT_0509_RESULTAT_V7 = {
+  date: '2026-09-05', resultatsLe: '2026-09-06',
+  annonces: 8, joues: 7, reporte: 'Cincinnati – DC United',
+  sansScore: 'Roma – Atalanta (rouge M7 au temps additionnel enregistré)',
+  bilan: {
+    camp: { r: '2/6', taux: 33, archive: 60 },
+    volume: { r: '4/6', taux: 67, archive: 73 },
+    btts: { r: '4/6', taux: 67, archive: 63 },
+    incident: { r: '3/7', taux: 43, seuil: '55 %' } },
+  nuls: { reels: 3, annonces: 3, communs: 1,
+    reelsNoms: ['Toronto 4-4', 'Charlotte 0-0', 'Miami 2-2'],
+    annoncesNoms: ['Toronto ✔', 'Orlando ✘', 'Philadelphia ✘'],
+    note: 'Philadelphia était décidé par la porte Carcer SEULE, éteinte le 06/09 sur '
+      + 'd\'autres chiffres — l\'extinction aurait évité ce faux nul aussi' },
+  cequeCaApporte: {
+    incidentsNeufs: 5, dontSansIncident: 3,
+    cartonsJaunes: 'de 0 à 5 matchs', corners: 'de 3 à 9 matchs',
+    verdict: 'le lot vaut plus par ce qu\'il enregistre que par ce qu\'il a prédit' },
+  aVerifier: 'la ligne Inter Miami – Atlanta a été donnée comme « 2-2 pour orlando » : '
+    + 'le score et les chiffres sont pris, le nom de l\'équipe est à confirmer'
+};
+
+autoTestV7('le lot gelé du 05/09 est enregistré tel qu\'il a été annoncé', function () {
+  if (typeof tousCasBancV7 !== 'function') return;
+  var cas = tousCasBancV7().filter(function (c) {
+    return c.nom && c.nom.indexOf('Lot') === 0; });
+  if (cas.length !== 7)
+    throw new Error('le lot doit compter 7 cas enregistrés, il en a ' + cas.length);
+  // Un pré-enregistrement se juge sur ce qui était écrit AVANT. Si une
+  // note perd la mention du gel, le lot cesse d'être une preuve.
+  cas.forEach(function (c) {
+    if (!c.note || c.note.indexOf('LOT GELÉ') < 0)
+      throw new Error(c.nom + ' a perdu la mention « LOT GELÉ » — le pré-enregistrement '
+        + 'n\'est plus lisible dans l\'archive');
+    if (c.date !== '2026-09-05')
+      throw new Error(c.nom + ' n\'a pas la date du gel');
+  });
+  // Trois sans incident : c'est le déblocage, il ne doit pas disparaître.
+  var sans = cas.filter(function (c) { return c.incident === false; }).length;
+  if (sans !== 3)
+    throw new Error('le lot doit apporter 3 matchs SANS incident, il en a ' + sans);
+});

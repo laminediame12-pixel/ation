@@ -2883,24 +2883,87 @@ autoTestV7('la cellule du score corrigé suit l\'annonce du volume', function ()
 // qui n'affiche aucune prédiction pour que la notation ne soit pas
 // influencée par ce que le système annonçait.
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// REFAIT LE 06/09 AU SOIR — LE LOT DU 05/09 A DÉBLOQUÉ LA FAMILLE
+//
+// L'auto-test a sonné à l'instant où les sept résultats sont entrés,
+// exactement comme il devait. Voici la mesure refaite.
+//
+// L'ARCHIVE A CHANGÉ D'ÉCHELLE :
+//     incidents renseignés ... 12 -> 19   (14 avec, 5 SANS)
+//     corners ................  3 ->  9
+//     cartons jaunes .........  0 ->  5   (les premiers du projet)
+//     taux de base ........... 83 % -> 73,7 %
+//
+// 1. L'INVERSION TIENT, ET ELLE S'AGGRAVE. Avec deux non-incidents on
+//    ne pouvait rien dire. Avec cinq :
+//        incidentPct moyen · AVEC incident .... 57,0 %  (n=14)
+//        incidentPct moyen · SANS incident .... 76,4 %  (n=5)
+//    Les cinq matchs sans incident ont reçu 95, 95, 78, 76 et 38 %.
+//    QUATRE DES CINQ sont au-dessus de 76 %. Deux d'entre eux ont reçu
+//    95 %, le MAXIMUM que le moteur sait produire — dont LotOrlando,
+//    annoncé la veille comme « incident 95 %, TRÈS ÉLEVÉ », et où il ne
+//    s'est strictement rien passé.
+//
+// 2. LIRE LA JAUGE À L'ENVERS MARCHE MIEUX QUE LA LIRE À L'ENDROIT :
+//        pct >= 70 % .... 5 incidents / 9 cas .... 56 %
+//        pct <  70 % .... 9 incidents / 10 cas ... 90 %
+//    Fisher p = 0,1409 — pas significatif, et le seuil est choisi parmi
+//    huit essayés, donc ça ne vaut RIEN comme règle. Mais ça vaut comme
+//    constat : le signal n'est pas absent, il pointe du mauvais côté.
+//    NE PAS BRANCHER l'inverse pour autant : une jauge inversée sur 19
+//    cas dont le seuil est pêché dans une grille, c'est du surapprentissage.
+//
+// 3. penalty.hasPen N'A AUCUN LIEN AVEC LA RÉALITÉ. 11 justes, 4 faux,
+//    3 ratés — justesse 63 %, contre 74 % pour « toujours oui ».
+//    Fisher exact entre hasPen et l'incident réel : p = 1,0000. Pas
+//    « faible » : NUL. Le détecteur et le terrain sont indépendants.
+//
+// 4. LES CORNERS SONT UNE CONSTANTE DÉGUISÉE. Sur les neuf cas connus,
+//    le moteur annonce 11 huit fois. Corrélation prédit/réel : +0,145.
+//    Moyenne annoncée 10,2 contre 7,2 réels — surestimation de 42 %.
+//
+// 5. LES CINQ PREMIERS CARTONS JAUNES SONT ENREGISTRÉS : 4, 9, 12, 5, 8.
+//    Le moteur n'expose même pas son compte dans le verdict affiché, et
+//    ce qu'il calcule en interne n'est pas un nombre de cartons (cf.
+//    CARTONS_MENSONGE_V7). Rien à comparer encore.
+//
+// CE QU'IL RESTE À FAIRE : 16 rencontres. On est à 19 sur les 35 qu'il
+// faut pour qu'une règle séparant 83 % de 30 % soit détectable.
+// ═══════════════════════════════════════════════════════════════
 var INCIDENTS_AUDIT_V7 = {
   date: '2026-09-06',
-  archive: { cas: 59, incident: 12, incidentOui: 10, incidentNon: 2,
-    incidentCamp: 9, penaltyCamp: 5, rouge: 0, cartonsJaunes: 0, corners: 3,
-    tauxDeBase: 83.3 },
+  archive: { cas: 66, incident: 19, incidentOui: 14, incidentNon: 5,
+    incidentCamp: 14, penaltyCamp: 6, rouge: 2, cartonsJaunes: 5, corners: 9,
+    tauxDeBase: 73.7,
+    avantLeLot: { cas: 59, incident: 12, incidentOui: 10, incidentNon: 2,
+      cartonsJaunes: 0, corners: 3, tauxDeBase: 83.3 } },
   moteur: {
-    incidentPct: { avecIncident: 61.8, sansIncident: 86.5, verdict: 'INVERSÉ' },
-    hasPen: { ditOuiSur: '43/59 thèmes (73 %)', justes: '8/12 (67 %)',
-      regleToujoursOui: '10/12 (83 %)', verdict: 'MOINS BON QUE DE TOUJOURS DIRE OUI' },
-    corners: { cas: 3, annonce: [11, 11, 11], reel: [6, 6, 4],
-      dominantJuste: '0/3', valeursDistinctesSur59: [4, 10, 11, 13],
-      verdict: 'FAUX SUR LES TROIS CAS CONNUS, ET QUASI CONSTANT' },
-    cartonsJaunes: { source: 'incidentDetect.signals.length',
-      verdict: 'CE N\'EST PAS UN NOMBRE DE CARTONS, c\'est un nombre de signaux' } },
+    incidentPct: { avecIncident: 57.0, sansIncident: 76.4, n: 19, verdict: 'INVERSÉ',
+      lesCinqSansIncident: { PuellaAlbus: 95, LotOrlando: 95, CaputPop: 78,
+        LotColumbus: 76, LotPhiladelphia: 38 },
+      note: 'quatre des cinq matchs SANS incident sont au-dessus de 76 %, deux à 95 %, '
+        + 'le maximum que le moteur sait produire' },
+    jaugeInversee: { 'pct >= 70 %': '5 incidents / 9 = 56 %',
+      'pct < 70 %': '9 incidents / 10 = 90 %', fisher: 0.1409, seuilsEssayes: 8,
+      verdict: 'lire la jauge À L\'ENVERS marche mieux que la lire à l\'endroit — '
+        + 'mais p = 0,14 et le seuil est pêché dans une grille : NE PAS BRANCHER' },
+    hasPen: { justes: 11, faux: 4, rates: 3, justesse: 63, precision: 73,
+      fisher: 1.0, regleToujoursOui: '14/19 (74 %)',
+      verdict: 'AUCUN LIEN. Fisher p = 1,0000 — pas « faible », NUL. Le détecteur et le '
+        + 'terrain sont indépendants, et « toujours oui » fait mieux.' },
+    corners: { cas: 9, annonce11FoisSur: '8/9', correlation: 0.145,
+      moyenneAnnoncee: 10.2, moyenneReelle: 7.2, surestimation: '42 %',
+      verdict: 'UNE CONSTANTE DÉGUISÉE' },
+    cartonsJaunes: { source: 'incidentDetect.signals.length', casEnregistres: 5,
+      valeursReelles: [4, 9, 12, 5, 8],
+      verdict: 'CE N\'EST PAS UN NOMBRE DE CARTONS, c\'est un nombre de signaux — et il '
+        + 'n\'est même pas exposé dans le verdict affiché. Rien à comparer encore.' } },
   budget: { '83 % contre 30 %': 35, '83 % contre 45 %': 55, '83 % contre 60 %': 125,
-    meilleurPAtteignableAujourdhui: 0.0152,
-    condition: 'et seulement si une règle isolait parfaitement les DEUX non-incidents' },
-  cequiBloque: 'le nombre de matchs SANS incident : il y en a deux',
+    acquis: 19, manque: 16,
+    note: 'le lot du 05/09 a fait passer l\'archive de 12 à 19, et les non-incidents de '
+      + '2 à 5. Il en manque seize pour le premier seuil.' },
+  cequiBloque: 'toujours le nombre de matchs SANS incident, mais on est passé de 2 à 5',
   outilDeSaisie: 'pages/saisie-incidents.html — fiche aveugle',
   aucuneRegleBranchee: true
 };
