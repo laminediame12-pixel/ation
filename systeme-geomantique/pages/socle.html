@@ -196,6 +196,15 @@ const PLI={
           ['M9 ⊕ M12',9,12],['M10 ⊕ M11',10,11]],
   gradient:{'M2 ⊕ M7':[['0 fois','13/14',92.9],['1 fois','9/20',45.0],['2 fois ou +','2/10',20.0]],
              'M1 ⊕ M8':[['0 fois','12/23',52.2],['1 fois','7/14',50.0],['2 fois ou +','5/7',71.4]]},
+  liste:[
+    [[1,8],'R1 × la ressource de R7',['12/23 · 52 %','7/14 · 50 %','5/7 · 71 %'],0.7709,0],
+    [[2,7],'la ressource de R1 × R7',['13/14 · 93 %','9/20 · 45 %','2/10 · 20 %'],0.0008,1],
+    [[3,6],'les frères de R1 (3ᵉ) × les ennemis cachés de R7 (12ᵉ)',['10/20 · 50 %','7/15 · 47 %','7/9 · 78 %'],0.7619,0],
+    [[4,5],'le foyer de R1 (4ᵉ) × les appuis de R7 (11ᵉ)',['9/14 · 64 %','10/19 · 53 %','5/11 · 45 %'],0.5186,0],
+    [[9,12],'chef+ressource de R1 × chef+ressource de R7',['6/12 · 50 %','11/19 · 58 %','7/13 · 54 %'],0.7456,0],
+    [[10,11],'M3⊕M4 × M5⊕M6',['7/13 · 54 %','11/22 · 50 %','6/9 · 67 %'],1.0,0],
+    [[13,14],'les deux témoins — somme = le Juge',['jamais absente','12/22 · 55 %','12/22 · 55 %'],1.0,0],
+    [[15,16],'le Juge × le réconciliateur — somme = M1',['jamais absente','10/16 · 62 %','14/28 · 50 %'],1.0,0]],
   variantes:[['R1 seul (0 occurrence)','36/57'],['+ R7 dès 2 occurrences','37/57'],
              ['graduée pleine (0 → R1, sinon R7)','38/57']],
   ressources:{predicteurs:44,p:0.0040,survivants:2},
@@ -518,8 +527,32 @@ function go(){
       autrement.
     </div>
 
+    <div class="pt">
+      <b>5 — TOUTE TA LISTE, NOMMÉE ET MESURÉE.</b> Huit paires, chacune lue en maisons
+      dérivées — depuis R1 la N<sup>e</sup> maison est la maison N ; depuis R7 c'est
+      ((7+N−2) mod 12)+1. Sur le camp, 44 cas hors nul, base R1 54,5 % :
+      <div style="overflow-x:auto"><table>
+        <tr><th>paire</th><th>ce que c'est</th><th class="n">0 fois</th><th class="n">1 fois</th>
+            <th class="n">2 fois +</th><th class="n">p</th></tr>
+        ${PLI.liste.map(L=>{const [a,b]=L[0]; const s2=comb(t[a],t[b]);
+          let n2=0; for(let h=1;h<=16;h++) if(t[h]===s2) n2++;
+          const cls=L[4]?'on':'';
+          return `<tr class="${cls}"><td><b>M${a} + M${b}</b><br><span style="color:var(--mut);font-size:11px">${FL[s2]} · ${n2} fois ici</span></td>`+
+          `<td style="font-size:11.5px">${esc(L[1])}</td>`+
+          L[2].map((g,i)=>`<td class="n"${L[4]&&i===0?' style="color:var(--vert);font-weight:800"':''}>${g}</td>`).join('')+
+          `<td class="n"><b style="color:${L[3]<0.05?'var(--vert)':'var(--mut)'}">${L[3]<0.001?'0,0008':L[3].toFixed(2).replace('.',',')}</b>${L[3]<0.05?' ★':''}</td></tr>`;}).join('')}
+      </table></div>
+      <b>Le compte :</b> <b class="mut">deux paires ne peuvent JAMAIS être absentes</b> — M13+M14
+      somme au Juge qui occupe M15, M15+M16 somme à M1 : les lois du pliage le leur interdisent.
+      <b>Cinq sont plates</b> (p entre 0,52 et 1,00). <b class="v">Une seule parle.</b><br><br>
+      <b>Et sur le nul ?</b> Aucune. M1+M8 p=0,53 · M2+M7 p=0,73 · M3+M6 p=0,75 · M4+M5 p=0,74 ·
+      M9+M12 p=0,31 · M10+M11 p=0,74. <b>Ton pliage parle du CAMP, pas du nul</b> — et d'une
+      seule paire. Mais c'est le pliage qui l'a fait trouver, et ta doctrine des ressources qui
+      a dit laquelle.
+    </div>
+
     <div class="pt" style="border-left:3px solid var(--or);padding-left:10px">
-      <b>5 — CE QUI EST BRANCHÉ, ET CE QUI NE L'EST PAS.</b>
+      <b>6 — CE QUI EST BRANCHÉ, ET CE QUI NE L'EST PAS.</b>
       La case du milieu — une seule occurrence, 45 % — reste <b>muette</b> : elle ne vaut rien.<br><br>
       <table><tr><th>variante</th><th class="n">camp affiché</th></tr>
       ${PLI.variantes.map((v,i)=>`<tr class="${i===1?'on':''}"><td>${esc(v[0])}</td>`+

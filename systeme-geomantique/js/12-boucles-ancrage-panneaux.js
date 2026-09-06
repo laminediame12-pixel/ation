@@ -4200,6 +4200,47 @@ var PLIAGE_V7 = {
     camp: { present: 56, absent: 53, p: 1.0 },
     proprieteUnique: 'n\'est égale à aucune maison ni à aucune somme de deux maisons — '
       + 'la seule quantité du système dans ce cas, et elle ne prédit rien' },
+  // ── TOUTE LA LISTE, NOMMÉE ET MESURÉE (06/09, « pourquoi tu n'as pas
+  //    toute la liste que je t'ai donnée » — Ellemine_D avait raison,
+  //    je n'avais interprété qu'une paire sur huit) ──
+  // Chaque paire est nommée en maisons dérivées : depuis R1 la Nᵉ maison
+  // est la maison N ; depuis R7 c'est ((7+N−2) mod 12)+1. Sur le CAMP,
+  // 44 cas hors nul, base R1 54,5 % :
+  listeComplete: [
+    { paire: 'M1 + M8', sens: 'R1 × la ressource de R7',
+      gradient: ['12/23 · 52 %', '7/14 · 50 %', '5/7 · 71 %'], p: 0.7709, parle: false },
+    { paire: 'M2 + M7', sens: 'la ressource de R1 × R7',
+      gradient: ['13/14 · 93 %', '9/20 · 45 %', '2/10 · 20 %'], p: 0.0008, parle: true },
+    { paire: 'M3 + M6', sens: 'les frères de R1 (3e) × les ennemis cachés de R7 (12e)',
+      gradient: ['10/20 · 50 %', '7/15 · 47 %', '7/9 · 78 %'], p: 0.7619, parle: false },
+    { paire: 'M4 + M5', sens: 'le foyer de R1 (4e) × les appuis de R7 (11e)',
+      gradient: ['9/14 · 64 %', '10/19 · 53 %', '5/11 · 45 %'], p: 0.5186, parle: false },
+    { paire: 'M9 + M12', sens: 'chef+ressource de R1 × chef+ressource de R7',
+      gradient: ['6/12 · 50 %', '11/19 · 58 %', '7/13 · 54 %'], p: 0.7456, parle: false },
+    { paire: 'M10 + M11', sens: 'M3⊕M4 × M5⊕M6',
+      gradient: ['7/13 · 54 %', '11/22 · 50 %', '6/9 · 67 %'], p: 1.0, parle: false },
+    { paire: 'M13 + M14', sens: 'les deux témoins',
+      gradient: ['jamais absente', '12/22 · 55 %', '12/22 · 55 %'], p: 1.0, parle: false,
+      pourquoiJamaisAbsente: 'sa somme EST le Juge, qui occupe M15 — la loi du pliage lui interdit d\'être absente' },
+    { paire: 'M15 + M16', sens: 'le Juge × le réconciliateur',
+      gradient: ['jamais absente', '10/16 · 62 %', '14/28 · 50 %'], p: 1.0, parle: false,
+      pourquoiJamaisAbsente: 'sa somme EST M1 — même raison' }
+  ],
+  listeSurLeNul: {
+    'M1+M8': { absente: '5/28 · 18 %', presente: '8/29 · 28 %', p: 0.5301 },
+    'M2+M7': { absente: '3/17 · 18 %', presente: '10/40 · 25 %', p: 0.7342 },
+    'M3+M6': { absente: '7/27 · 26 %', presente: '6/30 · 20 %', p: 0.7539 },
+    'M4+M5': { absente: '5/19 · 26 %', presente: '8/38 · 21 %', p: 0.7419 },
+    'M9+M12': { absente: '6/18 · 33 %', presente: '7/39 · 18 %', p: 0.3079 },
+    'M10+M11': { absente: '5/18 · 28 %', presente: '8/39 · 21 %', p: 0.7351 },
+    conclusion: 'AUCUNE paire du pliage ne dit rien sur le nul. Le pliage parle du CAMP, '
+      + 'pas du nul — et d\'une seule paire.' },
+  conclusionListe: 'Sur les huit paires, DEUX ne peuvent jamais être absentes (les lois du '
+    + 'pliage le leur interdisent), CINQ sont plates (p entre 0,52 et 1,00), et UNE parle : '
+    + 'M2 ⊕ M7, la ressource de R1 croisée au chef de R7, p = 0,0008. Le pliage entier tient '
+    + 'donc dans une seule paire — mais c\'est le pliage qui l\'a fait trouver, et la '
+    + 'doctrine des ressources qui a dit laquelle.',
+
   m2m7: {
     n: 44, base: 54.5,
     absente: { r: '13/14', taux: 92.9, dit: 'R1' },
