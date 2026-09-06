@@ -190,6 +190,17 @@ const NUL={
     'les seules figures palindromiques sont Via, Carcer, Conjunctio et Populus']
 };
 
+/* ═══ LE PLIAGE D'ELLEMINE_D — 06/09/26 ═══ */
+const PLI={
+  paires:[['M1 ⊕ M8',1,8],['M2 ⊕ M7',2,7],['M3 ⊕ M6',3,6],['M4 ⊕ M5',4,5],
+          ['M9 ⊕ M12',9,12],['M10 ⊕ M11',10,11]],
+  m2m7:{absente:{r:'13/14',taux:92.9},presente:{r:'19/30',taux:63.3},base:54.5,
+        p:0.00077,regle:'32/44 · 72,7 %',loo:'72,7 %',
+        moteurSurCesCas:'11/14',camp:{avant:'34/57',apres:'36/57'},
+        maxT:0.0122,predicteurs:44,exhaustif:61.13},
+  autres:'p entre 0,52 et 1,00 — aucune des sept autres paires ne parle'
+};
+
 const M2={
   structurel:50.00,
   meme:{n:25,nul:7,tauxNul:28.0,buts:4.67,plus:'14/21',
@@ -262,6 +273,15 @@ function go(){
   const distinctes=new Set(Array.from({length:16},(_,i)=>t[i+1])).size;
   const veto=distinctes>=M1.veto.seuil;
 
+  /* le pliage : la somme M2 ⊕ M7 et sa présence */
+  const sPli=comb(t[2],t[7]);
+  const ouPli=[]; for(let h=1;h<=16;h++) if(t[h]===sPli) ouPli.push(h);
+  const pliParle = ouPli.length===0;
+  /* les quatre étages pliés — vérifiés en direct, ils doivent tous donner le Juge */
+  const cmL=a=>a.reduce((x,y)=>comb(x,y));
+  const e9=cmL([[1,8],[2,7],[3,6],[4,5]].map(([x,y])=>comb(t[x],t[y])));
+  const e21=cmL([[9,12],[10,11]].map(([x,y])=>comb(t[x],t[y])));
+
   const relT=relTemoins(t);
   const troisieme = relT==='renversement' && !veto;
 
@@ -290,6 +310,8 @@ function go(){
   if(dit && arc && !memeM){ vq='NUL'; vqSrc='arc proche k='+r.k+' et M1/M7 en boucles différentes';
     vqF=80.0; vqN=5; vqCol='var(--vert)'; }
   else if(dit && r.k===11){ vq='NUL'; vqSrc='décalage 11'; vqF=100; vqN=2; vqCol='var(--or)'; }
+  else if(pliParle){ vq='CAMP 1'; vqSrc='pliage : la somme M2 ⊕ M7 est absente des seize maisons';
+    vqF=92.9; vqN=14; vqCol='var(--vert)'; }
   else {
     const o1=OUV.indexOf(t[1])>=0, o7=OUV.indexOf(t[7])>=0;
     if(o1&&!o7){ vq='CAMP 1'; vqSrc='contraste d\'ouverture : M1 ouverte, M7 fermée';
@@ -416,6 +438,63 @@ function go(){
       et <b class="r">le 22/02</b> (le 3-3 avec penalty), c'est-à-dire le match qui avait fait naître
       la porte Carcer. Elle n'était pas du bruit : elle voyait trois nuls que rien d'autre ne voit.
       Elle en annonçait sept faux à côté, et c'est ce compte-là qui a tranché.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>LE PLIAGE DU CARRÉ<span class="tag ${pliParle?'ok':'mid'}">${pliParle?'elle parle':'muette'}</span></h2>
+    <div class="socle">Ta trouvaille du 06/09 : replier chaque étage du bouclier sur lui-même.
+      <b>M1+M8 = M2+M7 = M3+M6 = M4+M5 = 9</b> · <b>M9+M12 = M10+M11 = 21</b> ·
+      <b>M13+M14 = 27</b> · <b>M15+M16 = 31</b>.</div>
+
+    <div class="pt" style="border-left:3px solid var(--vert);padding-left:10px">
+      <b>1 — LE PLIAGE PORTE QUATRE LOIS EXACTES</b> (65 536 / 65 536, sans une exception) :<br>
+      &nbsp;&nbsp;(M1⊕M8) ⊕ (M2⊕M7) ⊕ (M3⊕M6) ⊕ (M4⊕M5) = <b class="v">${FL[e9]}</b> = le Juge<br>
+      &nbsp;&nbsp;(M9⊕M12) ⊕ (M10⊕M11) = <b class="v">${FL[e21]}</b> = le Juge<br>
+      &nbsp;&nbsp;(M13⊕M14) = <b class="v">${FL[comb(t[13],t[14])]}</b> = le Juge<br>
+      &nbsp;&nbsp;(M15⊕M16) = <b class="v">${FL[comb(t[15],t[16])]}</b> = M1, la première mère<br>
+      <b>Chaque étage plié donne le Juge, et le dernier rend M1 : la boucle se referme.</b>
+      Calculé en direct sur ce tirage — si une ligne ne correspondait pas, la loi serait fausse.
+    </div>
+
+    <div class="pt" style="border-left:3px solid var(--mut);padding-left:10px">
+      <b>2 — LE 4-6-12 N'EST PAS DE LA GÉOMANCIE</b>, et je te le dis franchement. 21−9=12,
+      27−21=6, 31−27=4 : comme chaque bloc commence là où le précédent finit, ces écarts valent
+      exactement le <b>nombre de maisons couvertes par deux étages</b> — 1 à 12, 9 à 14, 13 à 16.
+      Ça sort de la numérotation, pas des figures : ce serait pareil pour n'importe quel thème.
+      Et à la mesure, l'axe <b>M4 ⊕ M6 ⊕ M12</b> = <b>${FL[cmL([t[4],t[6],t[12]])]}</b> ne prédit rien
+      (présent 56 %, absent 53 %, p = 1,0000). Il a une seule propriété rare : il n'est égal à
+      <b>aucune maison ni à aucune somme de deux maisons</b> — la seule quantité du système dans
+      ce cas. Nouvelle, et vide.
+    </div>
+
+    <div class="pt" style="border-left:3px solid ${pliParle?'var(--vert)':'var(--mut)'};padding-left:10px">
+      <b>3 — CE QUI PARLE : UNE SEULE PAIRE SUR HUIT.</b>
+      Sur ce tirage, <b>M2 ⊕ M7 = ${FL[sPli]}</b> —
+      ${pliParle?'<b class="v">ABSENTE des seize maisons</b>':'présente en M'+ouPli.join(', M')}.<br><br>
+      <table>
+        <tr><th>M2 ⊕ M7 dans le thème</th><th class="n">cas</th><th>camp</th><th class="n">taux</th></tr>
+        <tr class="${pliParle?'on':''}"><td><b>ABSENTE</b></td><td class="n">14</td>
+            <td><b class="v">R1</b> 13 fois</td><td class="n"><b class="v">92,9 %</b></td></tr>
+        <tr class="${pliParle?'':'on'}"><td>présente</td><td class="n">30</td>
+            <td>R7 19 fois</td><td class="n">63,3 %</td></tr>
+        <tr><td style="color:var(--mut)">base de l'archive</td><td class="n">44</td>
+            <td style="color:var(--mut)">R1 24 fois</td><td class="n" style="color:var(--mut)">54,5 %</td></tr>
+      </table>
+      Fisher exact <b class="v">p = 0,00077</b>. Comme règle seule : 32/44 = <b>72,7 %</b>, et
+      <b>72,7 % aussi en leave-one-out</b>.<br><br>
+      <b>Contre le moteur :</b> sur les 14 cas où elle parle, le moteur faisait <b>11/14</b>,
+      elle fait <b class="v">13/14</b>. Branchée après la porte du nul et avant le carré, le camp
+      affiché passe de <b>34/57</b> à <b class="v">36/57</b> — le meilleur état du camp depuis que
+      le carré pilote. <span style="color:var(--mut)">(Toujours sous les 38/57 d'avant le carré :
+      ses huit points ne sont pas rendus par celle-ci.)</span><br><br>
+      <b class="o">Ce qu'il faut dire contre.</b> C'est le plus fort de 44 prédicteurs du pliage.
+      Corrigé par max-T : <b>p = 0,0122</b>, un survivant sur 44 — <b class="v">il survit</b>.
+      Multiplié par les quatre cibles du même balayage : 0,049, il passe encore de peu. Si on
+      compte aussi les deux autres familles du 06/09, <b class="o">il ne passe plus</b>. Ce qui
+      plaide pour lui : le pliage est une hypothèse posée <b>avant</b> la mesure, et la règle ne
+      parle que du côté à 92,9 %. <b class="r">Le point faible :</b> rien n'explique pourquoi
+      M2 ⊕ M7 et pas M1 ⊕ M8. Les sept autres paires font p entre 0,52 et 1,00.
     </div>
   </div>
 

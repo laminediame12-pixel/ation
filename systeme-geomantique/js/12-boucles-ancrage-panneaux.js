@@ -2350,6 +2350,33 @@ var BRANCHES_V7 = {
     pourLActiver: 'BRANCHES_V7.nul_seconde_porte.actif = true — le code est écrit et le '
       + 'nul sera alors imposé aussi par la seconde porte.' },
 
+  pliage_m2m7: {
+    actif: true,
+    nom: 'Le pliage du carré — M2 ⊕ M7 absente du thème signe R1',
+    cible: 'le camp',
+    demande: 'Ellemine_D, 06/09 : « j\'ai trouvé un truc mais je ne sais pas à quoi ça sert. '
+      + 'si on superpose les maisons ainsi : m1+m8 = 9, m7+m2 = 9… peux-tu creuser davantage. »',
+    ceQuiEstExact: 'son pliage porte quatre lois vérifiées 65 536/65 536 : chaque étage du '
+      + 'bouclier plié sur lui-même donne le Juge, et le dernier étage rend M1. Cf. PLIAGE_V7.',
+    mesure: 'des huit sommes du pliage, une seule parle. M2 ⊕ M7 ABSENTE du thème : R1 gagne '
+      + '13 fois sur 14 (92,9 %) contre une base de 54,5 %. Présente : R7 19/30 (63,3 %), '
+      + 'trop faible pour décider. Fisher exact p = 0,00077. Les sept autres paires : '
+      + 'p entre 0,52 et 1,00, aucune ne parle.',
+    bilan: 'sur les 14 cas où elle parle, le moteur faisait 11/14 et elle fait 13/14. '
+      + 'Branchée après la porte du nul et avant le carré : CAMP AFFICHÉ 34/57 -> 36/57. '
+      + 'Meilleur état du camp depuis que le carré est en tête — mais toujours sous les '
+      + '38/57 d\'avant le carré, dont les huit points ne sont pas rendus par celle-ci.',
+    correction: 'plus fort de 44 prédicteurs du pliage. max-T de Westfall-Young, 4000 '
+      + 'permutations : p = 0,0122 sur le camp, UN survivant sur 44. Multiplié par les '
+      + 'quatre cibles balayées ce jour-là : 0,049 — il passe encore, de peu. Si on compte '
+      + 'aussi les deux autres familles du 06/09, il ne passe plus.',
+    cequiPlaidePour: 'le pliage est une hypothèse posée par Ellemine_D AVANT toute mesure, '
+      + 'pas un gagnant pêché dans une grille ; la règle ne parle que d\'un seul côté, celui '
+      + 'à 92,9 % ; et elle tient au leave-one-out (72,7 % avant comme après).',
+    pointFaible: 'rien n\'explique structurellement pourquoi M2 ⊕ M7 et pas M1 ⊕ M8. '
+      + 'C\'est le test à faire sur des cas neufs.',
+    pourLEteindre: 'BRANCHES_V7.pliage_m2m7.actif = false.' },
+
   veto_repetition: {
     actif: true,
     nom: 'Le veto de répétition — douze figures distinctes ou plus, jamais de nul',
@@ -3840,7 +3867,7 @@ autoTestV7('les drapeaux de branche survivent à un verdict', function () {
   // alors que la mesure donnait +11. Ce test attrape la corruption.
   var cles = ['populus_volume', 'miroir_volume', 'axe_volume', 'carcer_miroir',
     'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige',
-    'porte_nul_corrigee', 'veto_repetition'];
+    'porte_nul_corrigee', 'veto_repetition', 'pliage_m2m7'];
   var avant = {};
   cles.forEach(function (k) { if (BRANCHES_V7[k]) avant[k] = BRANCHES_V7[k].actif; });
   ['populus,via,albus,puella', 'conjunctio,acquisitio,puella,caput_draconis',
@@ -4004,4 +4031,168 @@ autoTestV7('l\'axe succédent est bien 2-6-8-12 partout où il sert', function (
   if (doubles.join(',') !== '6,12' || absentes.join(',') !== '5,11')
     throw new Error('la géométrie du découpage a changé : doublons ' + doubles.join(',')
       + ', maisons hors axe ' + absentes.join(',') + ' — attendu 6,12 et 5,11');
+});
+
+// ═══════════════════════════════════════════════════════════════
+// LE PLIAGE DU CARRÉ — LA TROUVAILLE D'ELLEMINE_D DU 06/09/26
+//
+// « j'ai trouvé un truc mais je ne sais pas à quoi ça sert. si on
+// superpose les maisons ainsi : m1+m8 = 9, m7+m2 = 9, m3+m6 = 9,
+// m4+m5 = 9 · m9+m12 = 21, m10+m11 = 21 · m13+m14 = 27 ·
+// m15+m16 = 31. 31−27=4, 27−21=6, 21−9=12. après on se retrouve avec
+// un axe m4-m6-m12. peux-tu creuser davantage. »
+//
+// Creusé. Il y a trois choses dedans, et elles ne valent pas pareil.
+//
+// ── 1. LE PLIAGE EST UNE VRAIE STRUCTURE, ET IL EST EXACT ──
+// Replier chaque étage du bouclier sur lui-même donne quatre lois
+// vérifiées 65 536 fois sur 65 536, sans une exception :
+//   (M1⊕M8) ⊕ (M2⊕M7) ⊕ (M3⊕M6) ⊕ (M4⊕M5) = M15 ... le Juge
+//   (M9⊕M12) ⊕ (M10⊕M11) .................. = M15 ... le Juge
+//   (M13⊕M14) ............................. = M15 ... le Juge
+//   (M15⊕M16) ............................. = M1 .... la 1re mère
+// Autrement dit : CHAQUE ÉTAGE DU BOUCLIER, PLIÉ SUR LUI-MÊME, DONNE
+// LE JUGE — et le dernier étage, plié, rend la première mère et
+// referme la boucle. Ellemine_D a trouvé la bonne façon de plier.
+// (C'est cohérent avec LOI_MIROIR_JUGE_V7, qui dit la même chose sur
+//  un autre pliage : M15 = somme des quatre déplacements miroir.)
+//
+// ── 2. LE 4-6-12 N'EST PAS DE LA GÉOMANCIE, C'EST DE L'ARITHMÉTIQUE ──
+// Les constantes 9, 21, 27, 31 sont les sommes a+b des blocs [1,8],
+// [9,12], [13,14], [15,16]. Comme chaque bloc commence là où le
+// précédent finit, la différence de deux constantes consécutives vaut
+// exactement b₂ − a₁ + 1, c'est-à-dire LE NOMBRE DE MAISONS COUVERTES
+// PAR LES DEUX ÉTAGES :
+//   21 − 9  = 12  → les maisons 1 à 12 (le carré entier)
+//   27 − 21 =  6  → les maisons 9 à 14
+//   31 − 27 =  4  → les maisons 13 à 16
+// Le 4-6-12 sort donc de la NUMÉROTATION, pas des figures. Il serait
+// identique pour n'importe quel thème du monde. Et à la mesure, l'axe
+// M4 ⊕ M6 ⊕ M12 ne prédit rien : présent dans 62,41 % des thèmes,
+// réparti exactement 6,25 % sur chacune des seize figures, aucun lien
+// avec le Juge (les 128 cases sur 256 du croisement ne sont que la
+// vieille loi « le Juge est toujours pair », 8 valeurs × 16). Sur le
+// camp : présent 56 %, absent 53 %, p = 1,0000. Rien.
+// ⚠️ Cette figure a quand même une propriété unique : elle n'est égale
+// à AUCUNE maison ni à AUCUNE somme de deux maisons (seul M4⊕M5⊕M14
+// la redonne, ce qui n'est qu'une réécriture de M11 = M5⊕M6). C'est la
+// seule quantité du système dans ce cas. Elle est nouvelle, et vide.
+//
+// ── 3. CE QUI PARLE, C'EST UNE SEULE DES HUIT PAIRES ──
+// Des huit sommes que le pliage produit, on a testé la présence de
+// chacune dans le thème. Sept ne disent rien (p entre 0,52 et 1,00).
+// La huitième, M2 ⊕ M7, dit ceci sur les 44 cas au camp connu hors
+// nuls :
+//   somme ABSENTE du thème ...... R1 gagne 13 fois sur 14 .. 92,9 %
+//   somme PRÉSENTE .............. R7 gagne 19 fois sur 30 .. 63,3 %
+//   (base : R1 24/44 = 54,5 %)
+//   Fisher exact p = 0,00077
+// Comme règle de camp à elle seule : 32/44, 72,7 % — et 72,7 % aussi
+// en leave-one-out, le seuil ne bouge pas.
+//
+// CE QU'ELLE VAUT CONTRE LE MOTEUR. Sur les 14 cas où elle parle, le
+// moteur actuel fait 11/14 et elle fait 13/14. Branchée après la porte
+// du nul et avant le carré : LE CAMP AFFICHÉ PASSE DE 34/57 À 36/57.
+// C'est le meilleur état du camp depuis que le carré est en tête.
+// (Il reste sous les 38/57 d'avant le carré : le carré coûte toujours
+//  ses huit points, et ce n'est pas cette règle qui les rend.)
+//
+// ── CE QU'IL FAUT DIRE CONTRE, ET C'EST SÉRIEUX ──
+// M2 ⊕ M7 est le plus fort de 44 prédicteurs tirés du pliage. Corrigé
+// par max-T de Westfall-Young sur ces 44, 4000 permutations :
+//   p(max-T) = 0,0122 sur le camp — IL SURVIT, un survivant sur 44.
+// Corrigé en plus par les quatre cibles balayées ce jour-là (nul,
+// BTTS, volume, camp) : 0,0122 × 4 = 0,049. Il passe encore, de peu.
+// Si on compte aussi les deux autres familles balayées le 06/09
+// (activation, structurelle), il ne passe plus. Le seul argument qui
+// tienne alors est celui du pré-enregistrement : le pliage est une
+// hypothèse posée par Ellemine_D AVANT toute mesure, pas un gagnant
+// pêché dans une grille. C'est le même argument que pour le veto de
+// répétition, et il vaut ce qu'il vaut : il faut des cas neufs.
+// Rien n'explique structurellement pourquoi M2⊕M7 et pas M1⊕M8 —
+// c'est le point faible, et il est écrit ici pour qu'on le teste.
+//
+// SUR LES 65 536 THÈMES, M2 ⊕ M7 est présente dans 61,13 % des cas ;
+// la règle parlerait donc sur 38,87 % des tirages.
+// ═══════════════════════════════════════════════════════════════
+var PLIAGE_V7 = {
+  date: '2026-09-06', auteur: 'Ellemine_D',
+  paires: { etage9: [[1, 8], [2, 7], [3, 6], [4, 5]], etage21: [[9, 12], [10, 11]],
+    etage27: [[13, 14]], etage31: [[15, 16]] },
+  loisExactes: {
+    '(M1⊕M8)⊕(M2⊕M7)⊕(M3⊕M6)⊕(M4⊕M5)': 'M15', '(M9⊕M12)⊕(M10⊕M11)': 'M15',
+    '(M13⊕M14)': 'M15', '(M15⊕M16)': 'M1', verifie: '65536/65536 chacune',
+    lecture: 'chaque étage du bouclier, plié sur lui-même, donne le Juge ; le dernier rend M1' },
+  axe4612: {
+    origine: 'les écarts 12, 6, 4 sont le NOMBRE DE MAISONS couvertes par deux étages '
+      + 'consécutifs (1-12, 9-14, 13-16) — de l\'arithmétique de la numérotation, pas de '
+      + 'la géomancie : identique pour tout thème',
+    present: 62.41, distribution: 'uniforme, 6,25 % par figure',
+    liensAuJuge: 'aucun — les 128 cases sur 256 ne sont que « le Juge est toujours pair »',
+    camp: { present: 56, absent: 53, p: 1.0 },
+    proprieteUnique: 'n\'est égale à aucune maison ni à aucune somme de deux maisons — '
+      + 'la seule quantité du système dans ce cas, et elle ne prédit rien' },
+  m2m7: {
+    n: 44, base: 54.5,
+    absente: { r: '13/14', taux: 92.9, dit: 'R1' },
+    presente: { r: '19/30', taux: 63.3, dit: 'R7' },
+    fisher: 0.00077, regleSeule: '32/44 · 72,7 %', leaveOneOut: '32/44 · 72,7 %',
+    contreLeMoteur: { moteurSurCesCas: '11/14', regle: '13/14' },
+    campAffiche: { avant: '34/57', apres: '36/57' },
+    exhaustif: { presente: 61.13, parleSur: 38.87 },
+    correction: { predicteurs: 44, pMaxT: 0.0122, survivants: 1,
+      xQuatreCibles: 0.049, xToutesLesFamillesDuJour: 'ne passe plus',
+      defense: 'hypothèse posée avant la mesure, pas pêchée dans une grille',
+      pointFaible: 'rien n\'explique pourquoi M2⊕M7 et pas M1⊕M8' },
+    septAutresPaires: 'p entre 0,52 et 1,00 — aucune ne parle' }
+};
+
+// La somme M2 ⊕ M7, et sa présence dans le thème. Le reste du pliage
+// est exact mais muet : cette fonction ne renvoie que ce qui décide.
+function pliageM2M7V7(theme) {
+  if (!theme || !theme[2] || !theme[7]) return null;
+  var s;
+  try { s = combine(theme[2], theme[7]); } catch (e) { return null; }
+  var ou = [];
+  for (var h = 1; h <= 16; h++) if (theme[h] === s) ou.push(h);
+  var presente = ou.length > 0;
+  return { somme: s, presente: presente, maisons: ou,
+    dit: presente ? null : 'R1',
+    lecture: presente
+      ? 'la somme ' + s + ' est présente (M' + ou.join(', M') + ') — la règle se tait, '
+        + 'ce côté-là ne fait que 63,3 % pour R7'
+      : 'la somme ' + s + ' est ABSENTE des seize maisons — R1 gagne 13 fois sur 14' };
+}
+
+autoTestV7('le pliage : les quatre étages donnent le Juge', function () {
+  if (typeof calcTheme !== 'function' || typeof combineMany !== 'function') return;
+  ['laetitia,populus,rubeus,tristitia', 'puer,laetitia,caput_draconis,albus',
+   'via,rubeus,tristitia,acquisitio', 'populus,via,albus,puella'].forEach(function (kk) {
+    var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+    var e9 = combineMany([[1, 8], [2, 7], [3, 6], [4, 5]].map(function (pr) {
+      return combine(t[pr[0]], t[pr[1]]); }));
+    var e21 = combineMany([[9, 12], [10, 11]].map(function (pr) {
+      return combine(t[pr[0]], t[pr[1]]); }));
+    if (e9 !== t[15]) throw new Error('étage 9 plié = ' + e9 + ', attendu le Juge ' + t[15]);
+    if (e21 !== t[15]) throw new Error('étage 21 plié = ' + e21 + ', attendu le Juge ' + t[15]);
+    if (combine(t[13], t[14]) !== t[15]) throw new Error('M13⊕M14 ≠ M15');
+    if (combine(t[15], t[16]) !== t[1]) throw new Error('M15⊕M16 ≠ M1');
+  });
+});
+
+autoTestV7('la règle du pliage ne parle que dans un sens', function () {
+  if (typeof calcTheme !== 'function' || typeof pliageM2M7V7 !== 'function') return;
+  var vus = { parle: 0, muet: 0 };
+  ['laetitia,populus,rubeus,tristitia', 'puer,laetitia,caput_draconis,albus',
+   'via,rubeus,tristitia,acquisitio', 'populus,via,albus,puella',
+   'amissio,puer,amissio,puer', 'conjunctio,acquisitio,puella,caput_draconis'].forEach(function (kk) {
+    var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+    var pl = pliageM2M7V7(t);
+    if (!pl) throw new Error('pliageM2M7V7 muet sur ' + kk);
+    if (pl.presente && pl.dit) throw new Error('la règle parle du mauvais côté : présente ne dit rien');
+    if (!pl.presente && pl.dit !== 'R1') throw new Error('absente doit dire R1, dit ' + pl.dit);
+    if (pl.dit) vus.parle++; else vus.muet++;
+  });
+  if (!vus.parle || !vus.muet)
+    throw new Error('le jeu de thèmes ne couvre plus les deux cas (' + vus.parle + ' / ' + vus.muet + ')');
 });

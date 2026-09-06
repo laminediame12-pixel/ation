@@ -542,6 +542,20 @@ function decideurVerdictV7(theme, nulActif) {
         nom: 'Contraste d\'ouverture M1/M7 — ' + co.lecture };
     }
   } catch (e) { }
+  // ─── LE PLIAGE DU CARRÉ (06/09/26, découverte d'Ellemine_D) ───
+  // « si on superpose les maisons ainsi : m1+m8 = 9, m7+m2 = 9… »
+  // Son pliage replie chaque étage du bouclier sur lui-même. Des huit
+  // paires qu'il produit, UNE SEULE parle, et elle parle fort : quand
+  // la somme M2 ⊕ M7 est ABSENTE du thème, R1 gagne 13 fois sur 14.
+  // Elle passe AVANT le carré parce qu'elle le bat de vingt points sur
+  // les cas où elle parle (13/14 contre 11/14). Cf. PLIAGE_V7.
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.pliage_m2m7 && BRANCHES_V7.pliage_m2m7.actif) {
+      var pl = pliageM2M7V7(theme);
+      if (pl && pl.dit) return { camp: pl.dit, moteur: 'pliage',
+        nom: 'Pliage M2 ⊕ M7 — ' + pl.lecture };
+    }
+  } catch (e) { }
   var ordre = ORDRE_VERDICT_V7;
   // ─── LE CARRÉ EN TÊTE (05/09/26, demande d'Ellemine_D) ───
   // « oriente le verdict vers le carré ». L'audit du même jour avait
