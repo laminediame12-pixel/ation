@@ -4403,3 +4403,117 @@ autoTestV7('la règle du pliage suit le gradient, et se tait au milieu', functio
         + vus.zero + ' / ' + vus.une + ' / ' + vus.deux + ')');
   } finally { BRANCHES_V7.pliage_m2m7.deuxCotes = avant; }
 });
+
+// ═══════════════════════════════════════════════════════════════
+// TOUTES LES FIGURES DÉRIVÉES, EN UN SEUL ENDROIT (06/09/26)
+//
+// « intègre proprement et livre les figures » (Ellemine_D).
+//
+// Le système calcule une trentaine de figures à partir des quatre
+// mères, éparpillées dans dix fichiers. Aucune liste n'existait. Voici
+// la liste, et c'est désormais LA source : tout affichage de figure
+// dérivée doit passer par ici plutôt que refaire la somme dans son
+// coin. Chaque entrée dit ce que la figure est, d'où elle sort, si
+// elle est présente dans le thème, et CE QU'ELLE DÉCIDE — « muet »
+// quand elle ne décide rien, ce qui est le cas de la plupart.
+// ═══════════════════════════════════════════════════════════════
+function figuresDeriveesV7(theme) {
+  if (!theme || !theme[1]) return null;
+  var C = function () {
+    var a = Array.prototype.slice.call(arguments).map(function (h) { return theme[h]; });
+    return a.reduce(function (x, y) { return combine(x, y); });
+  };
+  var occ = function (f) {
+    var n = 0;
+    for (var h = 1; h <= 16; h++) if (theme[h] === f) n++;
+    return n;
+  };
+  var L = [], add = function (groupe, nom, maisons, fig, decide) {
+    L.push({ groupe: groupe, nom: nom, maisons: maisons, figure: fig,
+      occurrences: occ(fig), presente: occ(fig) > 0, decide: decide || null });
+  };
+
+  // ── LE PLIAGE D'ELLEMINE_D — huit paires, une seule décide ──
+  add('pliage', 'M1 ⊕ M8 — R1 × la ressource de R7', [1, 8], C(1, 8), null);
+  add('pliage', 'M2 ⊕ M7 — la ressource de R1 × R7', [2, 7], C(2, 7), 'CAMP');
+  add('pliage', 'M3 ⊕ M6 — frères de R1 × ennemis cachés de R7', [3, 6], C(3, 6), null);
+  add('pliage', 'M4 ⊕ M5 — foyer de R1 × appuis de R7', [4, 5], C(4, 5), null);
+  add('pliage', 'M9 ⊕ M12 — chef+ressource des deux camps', [9, 12], C(9, 12), null);
+  add('pliage', 'M10 ⊕ M11', [10, 11], C(10, 11), null);
+  add('pliage', 'M13 ⊕ M14 — les deux témoins (= le Juge)', [13, 14], C(13, 14), null);
+  add('pliage', 'M15 ⊕ M16 — Juge × réconciliateur (= M1)', [15, 16], C(15, 16), null);
+
+  // ── L'AXE D'ELLEMINE_D, LU EN MAISONS DÉRIVÉES ──
+  add('axe', 'M6 ⊕ M12 — l\'usure d\'un camp × les ennemis cachés de l\'autre',
+    [6, 12], C(6, 12), 'NUL');
+  add('axe', 'M4 ⊕ M6 ⊕ M12 — l\'axe entier', [4, 6, 12], C(4, 6, 12), null);
+
+  // ── LES QUATRE TRIGONES ──
+  [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]].forEach(function (tg) {
+    add('trigone', 'trigone ' + tg.join('-'), tg, C(tg[0], tg[1], tg[2]), 'VOLUME');
+  });
+
+  // ── LES AXES OFFENSIFS (les deux camps) ──
+  add('offensif', 'axe offensif de R1 (1-5-9)', [1, 5, 9], C(1, 5, 9), 'VOLUME');
+  add('offensif', 'axe offensif de R7 (7-11-3)', [7, 11, 3], C(7, 11, 3), 'VOLUME');
+
+  // ── LES AXES DE VALIDITÉ ──
+  add('validite', 'Cardinal (1-4-7-10)', [1, 4, 7, 10], C(1, 4, 7, 10), 'VALIDITÉ');
+  var SU = (typeof MAISONS_SUCCEDENT_V7 !== 'undefined') ? MAISONS_SUCCEDENT_V7 : [2, 6, 8, 12];
+  add('validite', 'Succédent (' + SU.join('-') + ')', SU.slice(),
+    C.apply(null, SU), 'VALIDITÉ');
+  add('validite', 'Cadent (3-6-9-12)', [3, 6, 9, 12], C(3, 6, 9, 12), 'VALIDITÉ');
+  add('validite', 'Partage (3-5-9-11)', [3, 5, 9, 11], C(3, 5, 9, 11), 'VALIDITÉ');
+
+  // ── LES SEPT DÉPLACEMENTS MIROIR ──
+  [[1, 5], [2, 6], [3, 7], [4, 8], [9, 11], [10, 12], [13, 14]].forEach(function (pr) {
+    add('miroir', 'miroir M' + pr[0] + '/M' + pr[1], pr, C(pr[0], pr[1]), null);
+  });
+
+  // ── LES QUATRE NIVEAUX D'ACTIVATION (qui sont des maisons) ──
+  ['Feu', 'Air', 'Eau', 'Terre'].forEach(function (nv, i) {
+    add('niveau', 'niveau ' + nv + ' des mères (= M' + (5 + i) + ')', [5 + i], theme[5 + i], null);
+    add('niveau', 'niveau ' + nv + ' des filles (= M' + (1 + i) + ')', [1 + i], theme[1 + i], null);
+  });
+
+  return { liste: L,
+    parGroupe: function (g) { return L.filter(function (x) { return x.groupe === g; }); },
+    quiDecide: L.filter(function (x) { return x.decide; }),
+    muettes: L.filter(function (x) { return !x.decide; }).length };
+}
+
+autoTestV7('les figures dérivées sont cohérentes avec les moteurs', function () {
+  if (typeof calcTheme !== 'function' || typeof figuresDeriveesV7 !== 'function') return;
+  ['laetitia,populus,rubeus,tristitia', 'via,rubeus,tristitia,acquisitio',
+   'populus,via,albus,puella', 'laetitia,fortuna_minor,amissio,via'].forEach(function (kk) {
+    var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+    var F = figuresDeriveesV7(t);
+    if (!F || !F.liste.length) throw new Error('figuresDeriveesV7 vide sur ' + kk);
+    var trouve = function (frag) {
+      var r = F.liste.filter(function (x) { return x.nom.indexOf(frag) >= 0; })[0];
+      if (!r) throw new Error('figure « ' + frag + ' » absente de la liste');
+      return r;
+    };
+    // La liste ne doit JAMAIS diverger des fonctions qui décident.
+    var p7 = pliageM2M7V7(t), f7 = trouve('M2 ⊕ M7');
+    if (p7.somme !== f7.figure || p7.occurrences !== f7.occurrences)
+      throw new Error('M2 ⊕ M7 diverge entre la liste et pliageM2M7V7 sur ' + kk);
+    var p6 = porte612V7(t), f6 = trouve('M6 ⊕ M12');
+    if (p6.somme !== f6.figure || p6.occurrences !== f6.occurrences)
+      throw new Error('M6 ⊕ M12 diverge entre la liste et porte612V7 sur ' + kk);
+    // Les lois du pliage doivent se voir DANS la liste.
+    if (trouve('M13 ⊕ M14').figure !== t[15])
+      throw new Error('M13 ⊕ M14 doit valoir le Juge');
+    if (trouve('M15 ⊕ M16').figure !== t[1])
+      throw new Error('M15 ⊕ M16 doit valoir M1');
+    // Les niveaux d'activation sont des maisons, pas des sommes.
+    if (trouve('niveau Feu des mères').figure !== t[5])
+      throw new Error('le niveau Feu des mères doit être M5');
+    if (trouve('niveau Terre des filles').figure !== t[4])
+      throw new Error('le niveau Terre des filles doit être M4');
+    // Le succédent suit la correction du 06/09.
+    var su = trouve('Succédent');
+    if (su.maisons.join(',') !== '2,6,8,12')
+      throw new Error('le succédent de la liste est ' + su.maisons.join(',') + ', attendu 2,6,8,12');
+  });
+});

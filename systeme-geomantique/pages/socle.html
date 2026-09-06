@@ -28,6 +28,15 @@ th{color:var(--mut);font-weight:600;font-size:11px}
 td.n{text-align:right;font-variant-numeric:tabular-nums}
 tr.on td{background:rgba(167,139,250,.14);font-weight:700}
 .pt{font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:8px;margin-top:9px}
+details.repli{padding:0}
+details.repli>summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:12.5px;
+ font-weight:700;letter-spacing:.02em;color:var(--mut);display:flex;align-items:center;gap:8px}
+details.repli>summary::-webkit-details-marker{display:none}
+details.repli>summary::before{content:'▸';font-size:11px;color:var(--mut)}
+details.repli[open]>summary::before{content:'▾'}
+details.repli[open]>summary{color:var(--txt);border-bottom:1px solid rgba(143,163,191,.11)}
+details.repli>*:not(summary){padding-left:16px;padding-right:16px}
+details.repli>*:last-child{padding-bottom:16px}
 .tag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:99px;margin-left:6px}
 .ok{background:rgba(74,222,128,.18);color:var(--vert)}
 .no{background:rgba(248,113,113,.18);color:var(--rouge)}
@@ -96,6 +105,41 @@ const renvF=f=>INV[MAP[f].slice().reverse().join('')];
 const compF=f=>INV[MAP[f].map(v=>v===1?2:1).join('')];
 const convF=f=>renvF(compF(f));
 /* la relation entre les deux témoins — c'est elle qui porte la troisième porte */
+const CAD=[3,6,9,12], SUC=[2,6,8,12]; /* succédent corrigé le 06/09 — cf. MAISONS_SUCCEDENT_V7 */
+/* ═══ TOUTES LES FIGURES DÉRIVÉES — miroir de figuresDeriveesV7 du moteur ═══ */
+function figuresDe(t){
+  const C=(...hs)=>hs.map(h=>t[h]).reduce((x,y)=>comb(x,y));
+  const occ=f=>{let n=0;for(let h=1;h<=16;h++) if(t[h]===f)n++;return n;};
+  const L=[],add=(g,nom,mm,f,d)=>L.push({g,nom,mm,f,occ:occ(f),d:d||null});
+  add('pliage','M1 ⊕ M8',[1,8],C(1,8),null);
+  add('pliage','M2 ⊕ M7',[2,7],C(2,7),'CAMP');
+  add('pliage','M3 ⊕ M6',[3,6],C(3,6),null);
+  add('pliage','M4 ⊕ M5',[4,5],C(4,5),null);
+  add('pliage','M9 ⊕ M12',[9,12],C(9,12),null);
+  add('pliage','M10 ⊕ M11',[10,11],C(10,11),null);
+  add('pliage','M13 ⊕ M14',[13,14],C(13,14),null);
+  add('pliage','M15 ⊕ M16',[15,16],C(15,16),null);
+  add('axe','M6 ⊕ M12',[6,12],C(6,12),'NUL');
+  add('axe','M4 ⊕ M6 ⊕ M12',[4,6,12],C(4,6,12),null);
+  [[1,5,9],[2,6,10],[3,7,11],[4,8,12]].forEach(g=>add('trigone','trigone '+g.join('-'),g,C(...g),'VOLUME'));
+  add('offensif','offensif R1 (1-5-9)',[1,5,9],C(1,5,9),'VOLUME');
+  add('offensif','offensif R7 (7-11-3)',[7,11,3],C(7,11,3),'VOLUME');
+  add('validite','Cardinal (1-4-7-10)',[1,4,7,10],C(1,4,7,10),'VALIDITÉ');
+  add('validite','Succédent (2-6-8-12)',SUC,C(...SUC),'VALIDITÉ');
+  add('validite','Cadent (3-6-9-12)',[3,6,9,12],C(3,6,9,12),'VALIDITÉ');
+  add('validite','Partage (3-5-9-11)',[3,5,9,11],C(3,5,9,11),'VALIDITÉ');
+  [[1,5],[2,6],[3,7],[4,8],[9,11],[10,12],[13,14]].forEach(pr=>
+    add('miroir','miroir M'+pr[0]+'/M'+pr[1],pr,C(...pr),null));
+  ['Feu','Air','Eau','Terre'].forEach((nv,i)=>{
+    add('niveau','niveau '+nv+' des mères',[5+i],t[5+i],null);
+    add('niveau','niveau '+nv+' des filles',[1+i],t[1+i],null);});
+  return L;
+}
+const GROUPES={pliage:'LE PLIAGE — huit paires',axe:'TON AXE',trigone:'LES QUATRE TRIGONES',
+  offensif:'LES AXES OFFENSIFS',validite:'LES AXES DE VALIDITÉ',miroir:'LES SEPT MIROIRS',
+  niveau:'LES NIVEAUX D\'ACTIVATION'};
+const COUL_DECIDE={CAMP:'var(--bleu)',NUL:'var(--vert)',VOLUME:'var(--or)','VALIDITÉ':'var(--mut)'};
+
 function relTemoins(t){
   const a=t[13], b=t[14];
   if(a===b) return 'identiques';
@@ -234,7 +278,7 @@ const M2={
 };
 
 /* ═══ FENÊTRE DE VERDICT — chiffres mesurés ═══ */
-const CAD=[3,6,9,12], SUC=[2,6,8,12]; /* succédent corrigé le 06/09 — cf. MAISONS_SUCCEDENT_V7 */
+/* CAD et SUC sont déclarés plus haut, avant figuresDe */
 const CELL_SCORES={ R1_plus:['1-2','7-0'], R1_moins:['2-0','1-0'], R7_plus:['6-1','0-2'],
   R7_moins:['0-1','1-0'], nul_plus:['2-2','3-3'], nul_moins:['0-1','0-0'] };
 const CELL_BUTS={ R1_plus:[2.83,2.33,6], R1_moins:[1.60,2.20,5], R7_plus:[4.22,2.56,9],
@@ -306,6 +350,8 @@ function go(){
   const cmL=a=>a.reduce((x,y)=>comb(x,y));
   const e9=cmL([[1,8],[2,7],[3,6],[4,5]].map(([x,y])=>comb(t[x],t[y])));
   const e21=cmL([[9,12],[10,11]].map(([x,y])=>comb(t[x],t[y])));
+
+  const FIG=figuresDe(t);
 
   /* la porte 6/12 : l'usure d'un camp est les ennemis cachés de l'autre */
   const s612=comb(t[6],t[12]); const ou612=[];
@@ -404,6 +450,40 @@ function go(){
   </div>
 
   <div class="card">
+    <h2>LES FIGURES<span class="tag ok">${FIG.filter(x=>x.d).length} décident · ${FIG.filter(x=>!x.d).length} muettes</span></h2>
+    <div class="socle">Toutes les figures que le système tire de tes quatre mères, à plat.
+      La colonne <b>décide</b> dit ce que chacune pilote — <b>muette</b> veut dire qu'elle est
+      calculée et qu'elle ne sert à rien, et c'est le cas de la plupart.</div>
+    <div style="overflow-x:auto"><table>
+      ${Object.keys(GROUPES).map(g=>{
+        const rows=FIG.filter(x=>x.g===g);
+        return `<tr><td colspan="4" style="padding-top:12px;font-size:10.5px;letter-spacing:.09em;
+          font-weight:800;color:var(--mut)">${esc(GROUPES[g])}</td></tr>`+
+        rows.map(x=>`<tr${x.d?' class="on"':''}>`+
+          `<td style="font-size:12px">${esc(x.nom)}</td>`+
+          `<td><b>${FL[x.f]}</b></td>`+
+          `<td class="n" style="color:${x.occ?'var(--txt)':'var(--vert)'};font-weight:${x.occ?400:800}">`+
+            `${x.occ?x.occ+' fois':'ABSENTE'}</td>`+
+          `<td class="n" style="font-size:11px;font-weight:800;color:${x.d?COUL_DECIDE[x.d]:'var(--mut)'}">`+
+            `${x.d||'muette'}</td></tr>`).join('');}).join('')}
+    </table></div>
+    <div class="pt">
+      <b>Les quatre qui décident vraiment sur ce tirage :</b><br>
+      &nbsp;&nbsp;<b class="b">M2 ⊕ M7 = ${FL[sPli]}</b>, ${nPli?nPli+' fois':'ABSENTE'} →
+      ${pliDit?('<b class="b">'+pliDit+'</b>'):'la règle se tait'}<br>
+      &nbsp;&nbsp;<b class="v">M6 ⊕ M12 = ${FL[s612]}</b>, ${ou612.length?ou612.length+' fois':'ABSENTE'} →
+      ${p612?'<b class="v">NUL</b>':'la porte reste fermée'}<br>
+      &nbsp;&nbsp;<b class="o">les trigones</b> : ${[[1,5,9],[2,6,10],[3,7,11],[4,8,12]]
+        .map(g=>{const f=cmL(g.map(h=>t[h]));let n=0;for(let h=1;h<=16;h++)if(t[h]===f)n++;
+          return `<span style="color:${n?'var(--txt)':'var(--vert)'}">${FL[f]}</span>`;}).join(' · ')}<br>
+      &nbsp;&nbsp;<b>validité</b> : ${['Cardinal','Succédent','Cadent'].map((n2,i)=>{
+        const mm=[[1,4,7,10],SUC,[3,6,9,12]][i]; const f=cmL(mm.map(h=>t[h]));
+        let pr=false;for(let h=1;h<=16;h++) if(t[h]===f)pr=true;
+        return `${n2} <b style="color:${pr?'var(--vert)':'var(--rouge)'}">${FL[f]}${pr?'':' ✗'}</b>`;}).join(' · ')}
+    </div>
+  </div>
+
+  <div class="card">
     <h2>MOTEUR 1 — le nul</h2>
     <div class="verdict" style="color:${coul}">${dit?'NUL':'PAS DE NUL'}</div>
     <div class="socle">${esc(st)}</div>
@@ -413,6 +493,7 @@ function go(){
       <div class="bar"><i style="width:${cellule.taux!==undefined?cellule.taux:pct(cellule.nul,cellule.n)}%;background:${coul}"></i></div>
       ${cellule.p!==undefined?`<div style="font-size:12px;color:var(--mut)">Fisher p = <b>${cellule.p}</b>${cellule.bonf!==undefined?` · Bonferroni sur 6 tests = <b class="v">${cellule.bonf}</b> — <b class="v">survit</b>`:''}</div>`:''}
     `:'<div style="color:var(--mut);font-size:13px">Aucune case mesurée ne couvre ce décalage. Le moteur se tait.</div>'}
+    <details class="repli" style="margin-top:12px"><summary>Le détail du nul — la table des k, la porte 6/12, le veto, les témoins</summary>
     <table><tr><th>k</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>${lignesK}</table>
     <div class="pt" style="border-left:3px solid ${p612?'var(--vert)':'var(--mut)'};padding-left:10px">
       <b>LA PORTE 6/12 — TON AXE, LU EN MAISONS DÉRIVÉES</b><br>
@@ -513,10 +594,11 @@ function go(){
       la porte Carcer. Elle n'était pas du bruit : elle voyait trois nuls que rien d'autre ne voit.
       Elle en annonçait sept faux à côté, et c'est ce compte-là qui a tranché.
     </div>
+    </details>
   </div>
 
-  <div class="card">
-    <h2>LE PLIAGE DU CARRÉ<span class="tag ${pliParle?'ok':'mid'}">${pliParle?'elle parle':'muette'}</span></h2>
+  <details class="card repli"><summary>Le pliage — les quatre lois, ta doctrine, les huit paires<span class="tag ${pliParle?'ok':'mid'}">${pliParle?'elle parle':'muette'}</span></summary>
+    
     <div class="socle">Ta trouvaille du 06/09 : replier chaque étage du bouclier sur lui-même.
       <b>M1+M8 = M2+M7 = M3+M6 = M4+M5 = 9</b> · <b>M9+M12 = M10+M11 = 21</b> ·
       <b>M13+M14 = 27</b> · <b>M15+M16 = 31</b>.</div>
@@ -646,10 +728,10 @@ function go(){
       parle que du côté à 92,9 %. <b class="r">Le point faible :</b> rien n'explique pourquoi
       M2 ⊕ M7 et pas M1 ⊕ M8. Les sept autres paires font p entre 0,52 et 1,00.
     </div>
-  </div>
+  </details>
 
-  <div class="card">
-    <h2>LES TREIZE NULS, UN PAR UN<span class="tag ${NUL.bilan.justes>=10?'ok':'mid'}">${NUL.bilan.justes} vus sur 13</span></h2>
+  <details class="card repli"><summary>Les treize nuls, un par un — où le système voit et où il est aveugle<span class="tag ${NUL.bilan.justes>=10?'ok':'mid'}">${NUL.bilan.justes} vus sur 13</span></summary>
+    
     <div class="socle">Où le système voit, et où il est aveugle. Chaque ligne est un match réel de
       l'archive. C'est la table à regarder avant d'ajouter une règle : elle dit ce qui manque.</div>
     <div style="overflow-x:auto">
@@ -683,10 +765,10 @@ function go(){
       dans la même boucle, et un k hors de l'arc. C'est là qu'est le travail restant, et il ne
       reste que deux cas.
     </div>
-  </div>
+  </details>
 
-  <div class="card">
-    <h2>LES LOIS EXACTES DES TÉMOINS<span class="tag ok">65 536/65 536</span></h2>
+  <details class="card repli"><summary>Les lois exactes des témoins<span class="tag ok">65 536/65 536</span></summary>
+    
     <div class="socle">Elles ne prédisent rien — ce sont des vérités de structure, vérifiées sur
       la totalité des thèmes possibles. Elles bornent ce qu'une règle sur les témoins PEUT dire.</div>
     <ul style="margin:10px 0 0 18px;padding:0;font-size:13px;line-height:1.75">
@@ -696,10 +778,10 @@ function go(){
       ne dispose que de <b>cinq états</b> — identiques, renversement, complément, conversion, aucune
       relation — et quatre d'entre eux forcent la nature du Juge. Il n'y a pas de sixième case à
       chercher.</div>
-  </div>
+  </details>
 
-  <div class="card">
-    <h2>CE QUI A ÉTÉ ÉTEINT — la porte Carcer<span class="tag no">06/09</span></h2>
+  <details class="card repli"><summary>Ce qui a été éteint — la porte Carcer<span class="tag no">06/09</span></summary>
+    
     <div class="socle">Branchée le 05/09 après le 22/02, éteinte le 06/09 avec les chiffres sous
       les yeux. Elle tirait sur <b>${NUL.carcerEteinte.tire}</b> cas pour
       <b>${NUL.carcerEteinte.nul}</b> nuls.</div>
@@ -710,10 +792,10 @@ function go(){
       elle voyait trois nuls que rien d'autre ne voit. Elle en annonçait sept faux à côté, et c'est
       ce compte-là qui a tranché. Camp affiché 30/57 → 33/57, puis 34/57 avec le veto.
     </div>
-  </div>
+  </details>
 
-  <div class="card">
-    <h2>CE QUI A ÉTÉ CHERCHÉ ET N'EXISTE PAS<span class="tag no">0 survivant</span></h2>
+  <details class="card repli"><summary>Ce qui a été cherché et n'existe pas<span class="tag no">0 survivant</span></summary>
+    
     <div class="socle">Deux balayages corrigés par max-T de Westfall-Young. Enregistrés ici pour
       qu'on ne les recommence pas : sans archive neuve, les rejouer ne peut rien donner de plus.</div>
     <table>
@@ -727,10 +809,10 @@ function go(){
       points, les répétitions — et toutes les coupures binaires qu'ils permettent. Le meilleur de
       tout ça, <code>figures distinctes ≤ 11</code>, est devenu le veto ci-dessus : gardé non pas
       parce qu'il survit (il ne survit pas), mais parce qu'un veto ne peut rien coûter.</div>
-  </div>
+  </details>
 
-  <div class="card">
-    <h2>LE DÉTAIL DU BALAYAGE — les niveaux d'activation<span class="tag no">0 survivant</span></h2>
+  <details class="card repli"><summary>Le détail du balayage — les niveaux d'activation<span class="tag no">0 survivant</span></summary>
+    
     <div class="socle">Balayage max-T de Westfall-Young, 38 prédicteurs de la famille « activation »,
       4000 permutations, sur l'archive entière puis dans chaque branche de boucle.</div>
     <table>
@@ -752,7 +834,7 @@ function go(){
       et il passe sous le seuil de famille. Ça veut dire « peut-être », pas « oui ». La famille est
       fermée : pour la rouvrir il faudrait l'annoncer à l'avance sur ~30 rencontres, ou doubler l'archive.
     </div>
-  </div>
+  </details>
 
   <div class="card">
     <h2>MOTEUR 2 — branche « ${nomB} »<span class="tag ${memeM?'mid':'ok'}">${memeM?'25 cas':'32 cas'}</span></h2>
