@@ -287,9 +287,9 @@ const FIAB={
   score2:{p:18.4,n:49,note:'les 2 plus fréquents de TOUTE l\'archive font aussi 18,4 % — la cellule n\'ajoute rien'},
   btts:{p:63.0,n:54,note:'base « jamais » 51,9 % · Fisher p = 0,096'},
   volume:{p:86.7,n:30,note:'ne parle que sur 30 thèmes sur 49 — elle se tait sur les cas durs'},
-  incident:{p:null,n:12,note:'12 cas renseignés dont 10 AVEC incident : la famille est inmesurable'},
-  corners:{p:null,n:3,note:'3 cas renseignés dans toute l\'archive'},
-  cartons:{p:null,n:0,note:'ZÉRO carton jaune enregistré — le moteur compte des signaux, rien ne l\'a jamais vérifié'}
+  incident:{p:null,n:12,note:'12 cas dont 10 AVEC — et le pourcentage du moteur est INVERSÉ : 61,8 % de moyenne sur les incidents réels, 86,5 % sur les non-incidents'},
+  corners:{p:null,n:3,note:'3 cas · le moteur a annoncé 11 aux trois (réels 6, 6, 4) et s\'est trompé de camp 3 fois sur 3'},
+  cartons:{p:null,n:0,note:'ZÉRO carton enregistré — et le nombre affiché n\'est pas des cartons, c\'est le nombre de signaux du détecteur'}
 };
 function bttsDe(t,r){
   let conj=false; for(let h=1;h<=16;h++) if(t[h]==='conjunctio') conj=true;
@@ -433,6 +433,13 @@ function go(){
       ${ligne('INCIDENTS', 'non mesurable', FIAB.incident.note, null, FIAB.incident.n, '')}
       ${ligne('CORNERS', 'non mesurable', FIAB.corners.note, null, FIAB.corners.n, '')}
       ${ligne('CARTONS J.', 'non mesurable', FIAB.cartons.note, null, 0, '')}
+      <div style="padding:12px 0 2px;font-size:11.5px;color:var(--mut);border-top:1px solid var(--bord);margin-top:6px">
+        <b class="o">Les trois dernières lignes ne sont pas « pas encore calculées » — elles sont
+        AUDITÉES ET FAUSSES.</b> Il manque <b>2 seulement</b> de matchs SANS incident dans toute
+        l'archive : c'est ce chiffre-là qui bloque, pas le nombre de matchs. Il en faut
+        <b>35</b> pour qu'une règle devienne détectable. Fiche de saisie :
+        <code>pages/saisie-incidents.html</code>.
+      </div>
     </div></div>`;
 
   document.getElementById('out').innerHTML= fen + `

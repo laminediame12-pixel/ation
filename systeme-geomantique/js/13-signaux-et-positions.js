@@ -2821,3 +2821,120 @@ autoTestV7('la cellule du score corrigé suit l\'annonce du volume', function ()
       throw new Error('la cellule contredit le camp annoncé sur ' + k);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// INCIDENTS, PENALTY, ROUGE, CARTONS, CORNERS — L'AUDIT (06/09/26)
+//
+// « maintenant on travaille sur les incidents, peno et rouge, carton
+// jaune et corners » (Ellemine_D). Avant de construire quoi que ce
+// soit : ce que l'archive contient, et ce que le moteur en fait.
+// Le résultat est mauvais et il est écrit ici en entier.
+//
+// ── CE QUE L'ARCHIVE CONTIENT, SUR 59 CAS ──
+//   incident renseigné ...... 12 cas — dont 10 AVEC, 2 SANS
+//   camp de l'incident ....... 9 cas
+//   penalty (camp) ........... 5 cas — 4 pour M1, 1 pour M7
+//   carton rouge ............. 0 cas — le champ n'existe même pas
+//   cartons jaunes ........... 0 cas
+//   corners .................. 3 cas
+// Rien n'est mesurable là-dedans. Le taux d'incident de l'archive est
+// de 83 % (10/12) : la règle « il y aura un incident », dite sans rien
+// calculer, fait 10 sur 12.
+//
+// ── CE QUE LE MOTEUR ANNONCE, MESURÉ CONTRE ÇA ──
+// 1. incidentPct EST INVERSÉ.
+//      moyenne sur les 10 matchs AVEC incident .... 61,8 %
+//      moyenne sur les  2 matchs SANS incident .... 86,5 %
+//    Les deux seuls matchs sans incident sont les deux que le moteur
+//    annonce le plus fort (PuellaAlbus 95 %, CaputPop 78 %, tous deux
+//    « Très élevé »). Sur deux cas ça ne prouve rien — mais ça ne
+//    permet surtout pas de prétendre que le pourcentage marche.
+// 2. penalty.hasPen DIT OUI À TOUT : 43 thèmes sur 59, soit 73 %.
+//    Sur les 12 cas renseignés il fait 8 justes sur 12 (67 %), donc
+//    MOINS BIEN que la règle « toujours oui » (83 %).
+// 3. LES CORNERS SONT FAUX SUR LES TROIS CAS CONNUS.
+//      VillaMachine .. annoncé 11, réel 6 · dominant M1, réel R7
+//      VillaMain ..... annoncé 11, réel 6 · dominant M1, réel R7
+//      PuellaAlbus ... annoncé 11, réel 4 · dominant M1, réel R7
+//    Trois fois le même total, trois fois le mauvais camp. Le moteur
+//    ne produit que quatre valeurs distinctes de cornersTotal sur les
+//    59 thèmes du banc (4, 10, 11, 13) : c'est quasiment une constante.
+// 4. ☠️ « cartonsJaunes » N'EST PAS UN NOMBRE DE CARTONS. Dans
+//    20-points-guerre-binomes.js la valeur affichée est
+//    `incidentDetect.signals.length` — le NOMBRE DE SIGNAUX trouvés par
+//    le détecteur d'incident. Ça n'a jamais été un compte de cartons,
+//    et aucun carton jaune n'a jamais été enregistré pour le vérifier.
+//    Le champ est renommé à l'affichage (cf. CARTONS_MENSONGE_V7).
+//
+// ── COMBIEN IL EN FAUT POUR QUE ÇA DEVIENNE MESURABLE ──
+// Simulation, puissance 80 % à alpha 5 %, pour une règle qui coupe
+// l'archive en deux moitiés :
+//      taux 83 % contre 30 % ......  35 rencontres
+//      taux 83 % contre 45 % ......  55 rencontres
+//      taux 83 % contre 60 % ...... 125 rencontres
+// Avec les 12 cas actuels, le meilleur p atteignable est 0,0152 — et
+// seulement si une règle isolait PARFAITEMENT les deux non-incidents.
+// Une règle qui n'en isolerait qu'un tombe déjà à p = 0,1667.
+//
+// ⚠️ CE QUI BLOQUE N'EST PAS LE NOMBRE DE MATCHS, C'EST LE NOMBRE DE
+// MATCHS SANS INCIDENT. Il y en a deux. Chaque match SANS incident
+// enregistré vaut aujourd'hui plus qu'un match avec.
+// L'outil de saisie est pages/saisie-incidents.html — fiche AVEUGLE,
+// qui n'affiche aucune prédiction pour que la notation ne soit pas
+// influencée par ce que le système annonçait.
+// ═══════════════════════════════════════════════════════════════
+var INCIDENTS_AUDIT_V7 = {
+  date: '2026-09-06',
+  archive: { cas: 59, incident: 12, incidentOui: 10, incidentNon: 2,
+    incidentCamp: 9, penaltyCamp: 5, rouge: 0, cartonsJaunes: 0, corners: 3,
+    tauxDeBase: 83.3 },
+  moteur: {
+    incidentPct: { avecIncident: 61.8, sansIncident: 86.5, verdict: 'INVERSÉ' },
+    hasPen: { ditOuiSur: '43/59 thèmes (73 %)', justes: '8/12 (67 %)',
+      regleToujoursOui: '10/12 (83 %)', verdict: 'MOINS BON QUE DE TOUJOURS DIRE OUI' },
+    corners: { cas: 3, annonce: [11, 11, 11], reel: [6, 6, 4],
+      dominantJuste: '0/3', valeursDistinctesSur59: [4, 10, 11, 13],
+      verdict: 'FAUX SUR LES TROIS CAS CONNUS, ET QUASI CONSTANT' },
+    cartonsJaunes: { source: 'incidentDetect.signals.length',
+      verdict: 'CE N\'EST PAS UN NOMBRE DE CARTONS, c\'est un nombre de signaux' } },
+  budget: { '83 % contre 30 %': 35, '83 % contre 45 %': 55, '83 % contre 60 %': 125,
+    meilleurPAtteignableAujourdhui: 0.0152,
+    condition: 'et seulement si une règle isolait parfaitement les DEUX non-incidents' },
+  cequiBloque: 'le nombre de matchs SANS incident : il y en a deux',
+  outilDeSaisie: 'pages/saisie-incidents.html — fiche aveugle',
+  aucuneRegleBranchee: true
+};
+
+// Le champ « cartons jaunes » n'a jamais compté de cartons. Tant qu'il
+// n'y a pas un seul résultat pour le vérifier, il ne doit pas s'afficher
+// comme un nombre de cartons. Ce libellé est lu par le rendu.
+var CARTONS_MENSONGE_V7 = {
+  champ: 'cartonsJaunes',
+  cequeCest: 'le nombre de signaux trouvés par le détecteur d\'incident',
+  cequeCeNestPas: 'un nombre de cartons jaunes',
+  libelleHonnete: 'signaux de tension (PAS un nombre de cartons — 0 vérification)',
+  resultatsEnregistres: 0
+};
+
+autoTestV7('la famille incident ne prétend rien qu\'elle ne mesure', function () {
+  if (typeof INCIDENTS_AUDIT_V7 === 'undefined') return;
+  // Ce test tombe le jour où l'archive grossit : c'est voulu. Il force
+  // à REFAIRE la mesure au lieu de laisser l'audit vieillir en silence.
+  if (typeof tousCasBancV7 !== 'function') return;
+  var cas = tousCasBancV7().filter(function (c) { return c.meres; });
+  var inc = cas.filter(function (c) { return c.incident !== undefined; });
+  var non = inc.filter(function (c) { return c.incident === false; }).length;
+  var co = cas.filter(function (c) {
+    return c.corners !== undefined || c.cornersTotal !== undefined; }).length;
+  var cj = cas.filter(function (c) { return c.cartonsJaunes !== undefined; }).length;
+  var A = INCIDENTS_AUDIT_V7.archive;
+  if (inc.length !== A.incident || non !== A.incidentNon || co !== A.corners
+      || cj !== A.cartonsJaunes)
+    throw new Error('l\'archive a bougé (incidents ' + inc.length + ' dont ' + non
+      + ' sans, corners ' + co + ', cartons ' + cj + ') — REFAIRE la mesure de '
+      + 'INCIDENTS_AUDIT_V7 avant d\'annoncer quoi que ce soit sur cette famille');
+  // Et tant que rien n'est mesuré, aucune règle de cette famille ne doit
+  // décider quoi que ce soit dans le verdict.
+  if (!INCIDENTS_AUDIT_V7.aucuneRegleBranchee)
+    throw new Error('une règle incident a été branchée sans mesure — impossible aujourd\'hui');
+});
