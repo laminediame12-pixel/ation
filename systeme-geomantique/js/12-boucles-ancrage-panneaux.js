@@ -360,7 +360,7 @@ function toggleValiditePanel() {
     }
 
     var html = '<h3 style="margin-bottom:2px;">🗓️ Validité du thème &amp; figure du jour</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Les TROIS axes du carré — Cardinal M1+M4+M7+M10 (angulaire), Succédent M2+M5+M8+M11, Cadent M3+M6+M9+M12 — plus l\'Axe du Partage M3+M5+M9+M11 ajouté le 31/08/26 — doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide, protocole appliqué en direct au verdict. Les trois premiers sont les seules classes de pas 3 : prolonger un axe y ramène (4-7-10-1 = 1-4-7-10). Le quatrième n\'est pas une classe de pas 3 et ne prétend pas l\'être : c\'est le rectangle de deux oppositions croisées (3-9 et 5-11), dont les diagonales coupent celles du carré cardinal aux quatre paires, et qui est la part PARTAGÉE par les deux trigones de M1 et M7 — trigone(M1) ⊕ trigone(M7) = ce rectangle ⊕ M1 ⊕ M7, vérifié 2000/2000 (loi N). Coût mesuré : le taux de thèmes valides passe de 72,3 % à 63,6 %. L\'ancien « Axe Temporel » M3+M5+M11+M15, lui, reste retiré : il empruntait M15, un témoin hors du carré des douze. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
+    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Les TROIS axes du carré — Cardinal M1+M4+M7+M10 (angulaire), Succédent M2+M6+M8+M12, Cadent M3+M6+M9+M12 — plus l\'Axe du Partage M3+M5+M9+M11 ajouté le 31/08/26 — doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide, protocole appliqué en direct au verdict. ⚠️ Le Succédent est passé de M2+M5+M8+M11 à M2+M6+M8+M12 le 06/09/26 sur correction d\'Ellemine_D. Conséquence géométrique, dite sans la cacher : les trois axes ne sont plus les trois classes de pas 3 et ne partitionnent plus les douze maisons (M6 et M12 sont partagées avec le Cadent, M5 et M11 ne sont dans aucun axe), et la loi exacte Cardinal ⊕ Succédent = Cadent, vraie 65 536 fois sur 65 536 avec l\'ancien découpage, tombe à 6,25 % avec le nouveau. À la mesure la correction ne coûte rien et gagne un point sur le BTTS (cf. LOI_TROIS_AXES_V7). Le quatrième n\'est pas une classe de pas 3 et ne prétend pas l\'être : c\'est le rectangle de deux oppositions croisées (3-9 et 5-11), dont les diagonales coupent celles du carré cardinal aux quatre paires, et qui est la part PARTAGÉE par les deux trigones de M1 et M7 — trigone(M1) ⊕ trigone(M7) = ce rectangle ⊕ M1 ⊕ M7, vérifié 2000/2000 (loi N). Coût mesuré : le taux de thèmes valides passe de 72,3 % à 63,6 %. L\'ancien « Axe Temporel » M3+M5+M11+M15, lui, reste retiré : il empruntait M15, un témoin hors du carré des douze. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
 
     html += '<div style="border-radius:10px; padding:12px 16px; margin-bottom:14px; font-weight:600; text-align:center; '
       + (invalide ? 'background:#7f1d1d; color:#fecaca;' : 'background:#166534; color:#bbf7d0;') + '">'
@@ -404,7 +404,7 @@ function toggleValiditePanel() {
     }
     html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:14px;">';
     html += condCard('Axe Cardinal (angulaire)', 'M1 + M4 + M7 + M10', axeC, posAxeC);
-    html += condCard('Axe Succédent', 'M2 + M5 + M8 + M11', axeS, posAxeS);
+    html += condCard('Axe Succédent', 'M2 + M6 + M8 + M12', axeS, posAxeS);
     html += condCard('Axe Cadent', 'M3 + M6 + M9 + M12', axeCad, posAxeCad);
     html += condCard('Axe du Partage', 'M3 + M5 + M9 + M11', axePartage, posAxePartage);
     html += condCard('Binôme de M1 (indicatif)', 'BINOMES[' + FL[theme[1]] + ']', binM1, posBinM1);
@@ -1250,7 +1250,7 @@ function combineMany(arr){return arr.slice(1).reduce((acc,f)=>combine(acc,f),arr
 // une seule mise à jour future suffit à les garder synchronisées.
 const AXES_VALIDITE_DEFS = [
   {key:'cardinal',  label:'Axe Cardinal (M1 + M4 + M7 + M10)',   houses:[1,4,7,10]},
-  {key:'succedent', label:'Axe Succédent (M2 + M5 + M8 + M11)',  houses:[2,5,8,11]},
+  {key:'succedent', label:'Axe Succédent (M2 + M6 + M8 + M12)',  houses:MAISONS_SUCCEDENT_V7},
   {key:'cadent',    label:'Axe Cadent (M3 + M6 + M9 + M12)',     houses:[3,6,9,12]},
   {key:'partage',   label:"Axe du Partage (M3 + M5 + M9 + M11)", houses:[3,5,9,11]}
 ];
@@ -3976,4 +3976,32 @@ autoTestV7('les niveaux d\'activation sont les maisons transposées', function (
           + ', attendu M' + attendu[g][lv] + ' = ' + t[attendu[g][lv]]);
     }
   });
+});
+
+autoTestV7('l\'axe succédent est bien 2-6-8-12 partout où il sert', function () {
+  if (typeof MAISONS_SUCCEDENT_V7 === 'undefined') throw new Error('MAISONS_SUCCEDENT_V7 absente');
+  if (MAISONS_SUCCEDENT_V7.join(',') !== '2,6,8,12')
+    throw new Error('succédent = ' + MAISONS_SUCCEDENT_V7.join(',') + ' — corrigé en 2,6,8,12 le 06/09');
+  // Une seule source : aucun endroit ne doit avoir gardé l'ancien tableau
+  // en dur. On le vérifie là où il DÉCIDE (le BTTS Puer succédent) en
+  // déplaçant Puer d'une maison de l'ancien axe vers une du nouveau.
+  if (typeof calcTheme !== 'function' || typeof AXES_VALIDITE_DEFS === 'undefined') return;
+  var def = AXES_VALIDITE_DEFS.filter(function (a) { return a.key === 'succedent'; })[0];
+  if (!def) throw new Error('axe succédent absent de AXES_VALIDITE_DEFS');
+  if (def.houses.join(',') !== '2,6,8,12')
+    throw new Error('AXES_VALIDITE_DEFS garde l\'ancien succédent : ' + def.houses.join(','));
+  if (/M5|M11/.test(def.label))
+    throw new Error('le libellé du succédent parle encore de M5/M11 : ' + def.label);
+  // La conséquence géométrique, écrite pour qu'on ne la redécouvre pas :
+  // les trois axes ne partitionnent plus les douze maisons.
+  var vues = {};
+  [[1, 4, 7, 10], MAISONS_SUCCEDENT_V7, [3, 6, 9, 12]].forEach(function (ax) {
+    ax.forEach(function (h) { vues[h] = (vues[h] || 0) + 1; });
+  });
+  var doubles = Object.keys(vues).filter(function (h) { return vues[h] > 1; });
+  var absentes = [];
+  for (var h = 1; h <= 12; h++) if (!vues[h]) absentes.push(h);
+  if (doubles.join(',') !== '6,12' || absentes.join(',') !== '5,11')
+    throw new Error('la géométrie du découpage a changé : doublons ' + doubles.join(',')
+      + ', maisons hors axe ' + absentes.join(',') + ' — attendu 6,12 et 5,11');
 });

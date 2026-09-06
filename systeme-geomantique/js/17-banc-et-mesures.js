@@ -2535,7 +2535,7 @@ var MOTEURS_BTTS_V7 = [
       if (!conj) return { oui: false, detail: 'Conjunctio absent — pas d\'échange' };
       var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
       if (cad) return { oui: true, detail: 'R1 en M' + r.hR1 + ' cadente + Conjunctio' };
-      var suc = [2, 5, 8, 11].some(function (h) { return t[h] === 'puer'; });
+      var suc = MAISONS_SUCCEDENT_V7.some(function (h) { return t[h] === 'puer'; });
       return { oui: suc, detail: 'zone faible · Puer succédent ' + (suc ? 'oui' : 'non') };
     } },
   { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent (sans Puer)', icone: '🔗', teinte: '#84cc16',
@@ -2567,7 +2567,7 @@ var MOTEURS_BTTS_V7 = [
       var vu = [];
       for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
       if (!vu.length) return { oui: false, detail: 'Puer absent du thème' };
-      var suc = vu.filter(function (h) { return [2, 5, 8, 11].indexOf(h) >= 0; });
+      var suc = vu.filter(function (h) { return MAISONS_SUCCEDENT_V7.indexOf(h) >= 0; });
       return { oui: suc.length > 0,
         detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
     } },

@@ -1560,7 +1560,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   var bttsPuerSuc = false;
   try {
     for (var _hp = 0; _hp < 4; _hp++) {
-      var _mh = [2, 5, 8, 11][_hp];
+      var _mh = MAISONS_SUCCEDENT_V7[_hp];
       if (theme[_mh] === 'puer') { bttsPuerSuc = true; break; }
     }
   } catch (e) { bttsPuerSuc = false; }

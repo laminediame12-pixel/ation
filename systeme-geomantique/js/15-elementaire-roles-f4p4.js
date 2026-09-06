@@ -1610,7 +1610,8 @@ function scoreRolesExercesV7(chef, adverse, theme, siegeImpose) {
 // Vérifié : les douze maisons du carré se partagent EXACTEMENT en trois
 // classes de pas 3, qui sont les classes de restes modulo 3.
 //     1-4-7-10  (reste 1) — angulaire
-//     2-5-8-11  (reste 2) — succédent
+//     2-5-8-11  (reste 2) — ANCIEN succédent ; corrigé en 2-6-8-12 le 06/09/26,
+//               ce qui le fait sortir des classes de pas 3 (cf. LOI_TROIS_AXES_V7)
 //     3-6-9-12  (reste 0) — cadent
 // Il ne peut pas y en avoir de quatrième, et prolonger un axe y ramène :
 // 4-7-10-1 est le même ensemble que 1-4-7-10.
@@ -2004,7 +2005,7 @@ function lectureLieuxMarquageV7(theme) {
 // témoin, hors du carré des douze. Retiré partout, validation comprise.
 var AXES_V7 = [
   { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: [1, 4, 7, 10],  note: 'angulaire' },
-  { cle: 'succedent', nom: 'Axe Succédent', maisons: [2, 5, 8, 11],  note: 'succédent — signal de nul validé' },
+  { cle: 'succedent', nom: 'Axe Succédent', maisons: MAISONS_SUCCEDENT_V7,  note: 'succédent — corrigé 2-6-8-12 le 06/09 ; le signal de nul dérivé fait 1/6, sous la base' },
   { cle: 'cadent',    nom: 'Axe Cadent',    maisons: [3, 6, 9, 12],  note: 'cadent' }
 ];
 

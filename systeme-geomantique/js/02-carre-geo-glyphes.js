@@ -642,7 +642,7 @@ function renderVerdictCarreGeomantique(theme){
 // trois retenues sont les plus proches qui passent.
 var AXES_CARRE_V7 = [
   { nom: 'Cardinal', maisons: [1, 4, 7, 10], couleur: '#008300' },
-  { nom: 'Succédent', maisons: [2, 5, 8, 11], couleur: '#c98500' },
+  { nom: 'Succédent', maisons: MAISONS_SUCCEDENT_V7, couleur: '#c98500' },
   { nom: 'Cadent', maisons: [3, 6, 9, 12], couleur: '#e34948' }
 ];
 function COULEUR_AXE_CARRE_V7(m) {

@@ -72,7 +72,7 @@
           return '<div class="ui-axis-row"><b>'+name+'</b><span>'+homes.map(function(m){return 'M'+m+' · '+esc(label(t[m]));}).join(' &nbsp;|&nbsp; ')+'</span><strong>→ '+esc(label(fig))+'</strong></div>';
         };
         ax.innerHTML=axis('AXE ANGULAIRE (1-4-7-10)',[1,4,7,10])
-          +axis('AXE SUCCÉDENT (2-5-8-11)',[2,5,8,11])
+          +axis('AXE SUCCÉDENT (2-6-8-12)',MAISONS_SUCCEDENT_V7)
           +axis('AXE CADENT (3-6-9-12)',[3,6,9,12]);
       }
 

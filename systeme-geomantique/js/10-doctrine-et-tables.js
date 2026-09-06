@@ -1762,7 +1762,8 @@ function structureDuNul(theme) {
 // ═══════════════════════════════════════════════════════════════
 // AXE SUCCÉDENT COMME 4 MÈRES — SIGNAL DE NUL VALIDÉ (05/08/26, demande
 // Ellemine_D : "essaie les axes comme les 4 mères"). Prend M2+M5+M8+M11
-// (l'Axe Succédent) et les traite comme 4 nouvelles mères pour générer
+// (l'Axe Succédent — devenu M2+M6+M8+M12 le 06/09/26, cf.
+// MAISONS_SUCCEDENT_V7) et les traite comme 4 nouvelles mères pour générer
 // un THÈME DÉRIVÉ complet (même moteur buildThemeFromMothers). Si le
 // M13/M14 de CE thème dérivé forment une paire d'opposition (équilibre),
 // signal de nul.
@@ -1778,3 +1779,14 @@ function structureDuNul(theme) {
 // PAS branchée, contrairement à l'opposition.
 // Statut : signal le mieux validé du système à ce jour, mais échantillon
 // encore petit (7 cas) — à recroiser à mesure que l'archive grandit.
+//
+// ☠️ RECROISÉ LE 06/09/26, ET LE STATUT NE TIENT PLUS. L'archive a été
+// corrigée plusieurs fois depuis le 05/08 (mères refaites, cas retirés).
+// Rejoué dessus, le signal fait 1 nul sur 6 déclenchements — 16,7 %,
+// SOUS le taux de base de 22,8 %. Il ne double plus rien, il fait pire
+// que ne rien dire. La phrase « le mieux validé du système » ci-dessus
+// est périmée : elle décrit une mesure de 7 cas qui n'existe plus.
+// (Avec le succédent corrigé en 2-6-8-12 le même jour : 1 sur 8.)
+// Il reste calculé et affiché, il ne décide toujours pas —
+// AXE_SUCCEDENT_DECISIF est à false depuis le 30/08 et doit y rester.
+// Les 4 maisons lues sont désormais MAISONS_SUCCEDENT_V7.

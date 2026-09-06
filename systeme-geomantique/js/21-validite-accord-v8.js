@@ -855,6 +855,8 @@ var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucl
 //             trigone M7  3-7-11 ...... = M3 ⊕ M5 ⊕ M6 ⊕ M7
 //             rectangle 3-5-9-11 ...... = M1 ⊕ M2 ⊕ M3 ⊕ M6
 //             succédent 2-5-8-11 ...... = M2 ⊕ M6 ⊕ M8
+//             ⚠️ décomposition valable pour l'ANCIEN découpage. Le succédent
+//             est 2-6-8-12 depuis le 06/09/26 et cette identité ne le décrit plus.
 //             cadent 3-6-9-12 ......... = M1⊕M2⊕M3⊕M6⊕M7⊕M8
 //         ☠️ LE TRIGONE DE M1 ANNULE M1. 1-5-9 ne dépend NI de M1 NI de
 //         M9 : il vaut M2 ⊕ M5, deux mères. La « trajectoire de M1 » est

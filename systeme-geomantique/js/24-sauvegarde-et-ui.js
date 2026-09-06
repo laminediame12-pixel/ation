@@ -683,7 +683,7 @@ function zoomTheme(delta) {
 }
 
 function getAxisThemeFromBase(baseTheme, axisKey){
-  const axes={meres:[1,2,3,4],angulaire:[1,4,7,10],succedent:[2,5,8,11],cadent:[3,6,9,12]};
+  const axes={meres:[1,2,3,4],angulaire:[1,4,7,10],succedent:MAISONS_SUCCEDENT_V7,cadent:[3,6,9,12]};
   const h=axes[axisKey]||axes.meres;
   return buildThemeFromMothers(baseTheme[h[0]],baseTheme[h[1]],baseTheme[h[2]],baseTheme[h[3]]);
 }
@@ -1413,7 +1413,7 @@ function lectureTrajectoireV7(theme, maisons) {
 // (M13 et M14 y figuraient deux fois : combinées, elles s'annulaient).
 // Ils sont remplacés par les structures de la récolte, qui ont un nom :
 //   1D · Cardinal ...... M1 + M4 + M7 + M10, les angulaires
-//   2D · Succédent ..... M2 + M5 + M8 + M11
+//   2D · Succédent ..... M2 + M6 + M8 + M12  (corrigé le 06/09/26)
 //   3D · Cadent ........ M3 + M6 + M9 + M12
 //   4D · offensive 1 ... M1 + M5 + M9, le trigone de M1
 //   3B · offensive 7 ... M7 + M3 + M11, le trigone de M7
@@ -1430,7 +1430,7 @@ function lectureTrajectoireV7(theme, maisons) {
 // personne ne croie lire la somme de ce que la trajectoire traverse.
 var PRESETS_SOMME_V7 = {
   '1D':  { maisons: [1, 4, 7, 10], nom: 'Axe Cardinal (les angulaires)' },
-  '2D':  { maisons: [2, 5, 8, 11], nom: 'Axe Succédent' },
+  '2D':  { maisons: MAISONS_SUCCEDENT_V7, nom: 'Axe Succédent' },
   '3D':  { maisons: [3, 6, 9, 12], nom: 'Axe Cadent' },
   '4D':  { maisons: [1, 5, 9],     nom: 'Trigone offensif de M1 / R1', reduit: 'M2 ⊕ M5' },
   '3B':  { maisons: [7, 3, 11],    nom: 'Trigone offensif de M7 / R7', reduit: 'M3 ⊕ M5 ⊕ M6 ⊕ M7' },

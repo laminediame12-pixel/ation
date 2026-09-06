@@ -35,7 +35,8 @@
 var AXE_SUCCEDENT_DECISIF = false;
 
 function themeAxeSuccedent(theme) {
-  return buildThemeFromMothers(theme[2], theme[5], theme[8], theme[11]);
+  var S = MAISONS_SUCCEDENT_V7;
+  return buildThemeFromMothers(theme[S[0]], theme[S[1]], theme[S[2]], theme[S[3]]);
 }
 
 function signalAxeSuccedentOpposition(theme) {

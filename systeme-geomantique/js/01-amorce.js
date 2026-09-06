@@ -6,6 +6,66 @@
 // ═══════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════
+// L'AXE SUCCÉDENT — CORRIGÉ LE 06/09/26 : M2 + M6 + M8 + M12
+//
+// « succèdent 2-6-8-12, corriges » (Ellemine_D). Le fichier portait
+// M2+M5+M8+M11 depuis l'import de doctrine du 03/08. Correction faite,
+// et déclarée ICI, en un seul endroit, parce que le découpage en
+// fichiers ne hoiste plus les valeurs : la constante doit exister avant
+// que 02-carre-geo-glyphes la lise.
+//
+// ⚠️ CE QUE LA CORRECTION CASSE, ET QUI N'EST PAS RIEN.
+// L'ancien découpage était l'une des trois classes de pas 3 —
+// 1-4-7-10, 2-5-8-11, 3-6-9-12 — et il en découlait une loi EXACTE :
+//     Cardinal ⊕ Succédent = Cadent ..... 65 536 / 65 536
+// Avec 2-6-8-12 cette loi tombe à 4096/65 536, soit 6,25 % : le hasard
+// pur. Le nouveau découpage n'est plus une partition des douze maisons
+// — il partage M6 et M12 avec le Cadent, et laisse M5 et M11 hors de
+// tout axe. C'est un fait géométrique, pas une objection : la doctrine
+// est à Ellemine_D, le calcul est à moi, et je dis ce que le calcul dit.
+// Les quatre lois LOCALES, elles, survivent intactes parce qu'elles ne
+// dépendent d'aucun nommage : M3 = M4⊕M10, M6 = M5⊕M11, M9 = M1⊕M2,
+// M12 = M7⊕M8.
+//
+// CE QUE LA CORRECTION CHANGE À LA MESURE — tout a été rejoué sur
+// l'archive avant de toucher au code :
+//   BTTS « Puer en maison succédente » (RÈGLE BRANCHÉE, elle décide) :
+//     règle seule .. 2-5-8-11 : 11 tirs, 7 justes · accord 24/47
+//                    2-6-8-12 : 10 tirs, 7 justes · accord 25/47
+//     BTTS AFFICHÉ, chaîne entière, de bout en bout :
+//                    2-5-8-11 : 31/47   ->   2-6-8-12 : 32/47
+//     La correction gagne un point, et c'est la seule des trois qui pèse
+//     sur ce que l'écran annonce.
+//   Thème dérivé « les 4 maisons succédentes comme 4 mères », signal
+//   de nul par opposition M13/M14 (calculé, non décisif) :
+//       2-5-8-11 .. 6 déclenchements, 1 nul · 2-6-8-12 .. 8 pour 1 nul
+//     ⚠️ Au passage : ce signal était annoncé dans 10-doctrine comme
+//     « le mieux validé du système », 43 % de précision sur 7 cas au
+//     05/08. Rejoué aujourd'hui sur l'archive corrigée il fait 1/6,
+//     soit 16,7 %, SOUS le taux de base de 22,8 %. Le commentaire du
+//     05/08 est périmé et il est corrigé là-bas.
+//   Validité du thème (les 3 axes présents) : 51/59 -> 48/59 en
+//     archive, 72,47 % -> 71,48 % sur les 65 536 thèmes. Et la validité
+//     ne prédit rien de mesurable (49 valides 61,2 % de camp juste
+//     contre 8 invalides à 50 % — huit cas, aucun écart démontrable).
+// ═══════════════════════════════════════════════════════════════
+var MAISONS_SUCCEDENT_V7 = [2, 6, 8, 12];
+var MAISONS_SUCCEDENT_HISTORIQUE_V7 = [2, 5, 8, 11];
+var LOI_TROIS_AXES_V7 = {
+  cardinal: [1, 4, 7, 10], cadent: [3, 6, 9, 12],
+  succedentAvant: [2, 5, 8, 11], succedentApres: [2, 6, 8, 12],
+  loiXOR: { 'avec 2-5-8-11': '65536/65536', 'avec 2-6-8-12': '4096/65536 (6,25 %)' },
+  loisLocalesIntactes: ['M3 = M4⊕M10', 'M6 = M5⊕M11', 'M9 = M1⊕M2', 'M12 = M7⊕M8'],
+  partition: 'avec 2-6-8-12 les trois axes ne partitionnent plus les douze maisons : '
+    + 'M6 et M12 sont partagées avec le Cadent, M5 et M11 ne sont dans aucun axe',
+  mesures: {
+    bttsPuerSuccedent: { avant: '7/11 · accord 24/47 · BTTS affiché 31/47',
+      apres: '7/10 · accord 25/47 · BTTS affiché 32/47' },
+    nulThemeDerive: { avant: '1/6', apres: '1/8', base: 22.8 },
+    validite: { archive: '51/59 -> 48/59', exhaustif: '72,47 % -> 71,48 %' } }
+};
+
+// ═══════════════════════════════════════════════════════════════
 // LES AUTO-TESTS ATTENDENT QUE TOUT SOIT CHARGÉ (04/09/26)
 //
 // Le système était UN SEUL <script> de 29 000 lignes : le hoisting des
