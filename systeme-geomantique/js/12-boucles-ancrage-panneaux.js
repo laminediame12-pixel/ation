@@ -2389,6 +2389,40 @@ var BRANCHES_V7 = {
       + 'c\'est une décision d\'Ellemine_D, pas la mienne.',
     pourLEteindre: 'BRANCHES_V7.pliage_m2m7.actif = false.' },
 
+  porte_612: {
+    actif: true,
+    nom: 'La porte 6/12 — l\'usure d\'un camp est les ennemis cachés de l\'autre',
+    cible: 'le nul',
+    demande: 'Ellemine_D, 06/09 : « comme ça tu fais pour qu\'on ignore les détails. le calcul '
+      + 'et l\'axe qui en découle, tu en fais quoi ? » Il avait raison : j\'avais testé la '
+      + 'SOMME M4⊕M6⊕M12, trouvé zéro, et écrit « vide ». Jamais l\'axe maison par maison.',
+    lecture: 'en maisons dérivées, M6 est la 6e de R1 ET la 12e de R7 ; M12 est la 12e de R1 '
+      + 'ET la 6e de R7. Les deux sont la même chose vue des deux camps, croisée.',
+    mesure: 'M6 ⊕ M12 ABSENTE du thème : 8 nuls sur 15 (53,3 %) contre 5 sur 42 (11,9 %) '
+      + 'ailleurs, base 22,8 %. Fisher exact p = 0,0025. Gradient 53 / 12 / 12 / 0 % — la '
+      + 'marche est entre zéro et une occurrence, la règle est donc binaire.',
+    correction: 'max-T de Westfall-Young sur les 48 prédicteurs de l\'axe, 4000 permutations : '
+      + 'p = 0,0342, UN survivant sur 48. Deuxième résultat du projet à survivre sur le nul, '
+      + 'après l\'arc proche filtré — et il vient de son axe à lui.',
+    bilan: 'porte seule 6 justes / 0 faux / 7 ratés (87,7 %, précision 100 %, rappel 46 %) -> '
+      + 'avec la porte 6/12 : 11 justes / 3 faux / 2 ratés (91,2 %, précision 78,6 %, '
+      + 'rappel 85 %). Meilleur état du nul depuis le début, et le premier qui voie plus de '
+      + 'la moitié des nuls.',
+    leVingtDeux: 'elle rattrape CINQ des sept nuls que le moteur ratait — AmisPuer, '
+      + 'PuerFortMaj, PopFortMin, LaetPop, et LaetFortMinAmisVia, LE 22/02. Le match qui avait '
+      + 'mis Ellemine_D en colère revient par son propre axe. Restent invisibles : '
+      + 'FortMajTrist et PuerRubeus.',
+    leVetoFaitLeTri: 'sur les sept faux de cette porte, QUATRE ont douze figures distinctes '
+      + 'ou plus (Milan, Atalanta, FortMajVia, ViaRubeus) : le veto de répétition, déjà '
+      + 'branché, les refuse sans qu\'on ajoute un réglage. La porte 6/12 est placée AVANT le '
+      + 'veto dans nulActifV7. (« chefs dans la même boucle » donne exactement le même bilan.)',
+    cequOnPerd: '⚠️ la précision. La porte du nul ne se trompait JAMAIS quand elle parlait ; '
+      + 'maintenant elle se trompe trois fois sur quatorze. Trois faux restent — ConjVia, '
+      + 'PuerCaput, AmisRubConjVia — et rien de mesuré ne les distingue des vrais. '
+      + 'L\'arbitrage est pris dans le sens du rappel : rater sept nuls sur treize était le '
+      + 'vrai défaut du système.',
+    pourLEteindre: 'BRANCHES_V7.porte_612.actif = false.' },
+
   veto_repetition: {
     actif: true,
     nom: 'Le veto de répétition — douze figures distinctes ou plus, jamais de nul',
@@ -3837,16 +3871,30 @@ autoTestV7('les trois portes du nul et l\'axe branché', function () {
   // RAISON d'échouer : éteindre cette porte reperd le 22/02. On ne
   // supprime pas le constat, on l'attache au drapeau — le test vérifie
   // maintenant les DEUX états, et c'est lui qui documente le prix.
+  // ✅ 06/09 AU SOIR : ce test exigeait « carcer éteinte -> plus rien ne
+  // voit le 22/02 », et il a SONNÉ le jour même. Il avait raison de
+  // sonner : la porte 6/12, tirée de l'axe d'Ellemine_D, l'a rattrapé.
+  // Le 22/02 est donc de nouveau vu, et par une règle qui survit au
+  // max-T alors que Carcer n'y survivait pas. Le test garde les deux
+  // constats et surveille désormais QUI le voit.
   var avantC = BRANCHES_V7.carcer_miroir.actif;
+  var avant6 = BRANCHES_V7.porte_612.actif;
   try {
-    BRANCHES_V7.carcer_miroir.actif = true;
+    BRANCHES_V7.carcer_miroir.actif = true; BRANCHES_V7.porte_612.actif = false;
     if (!nulActifV7(t, structureDuNul(t), null))
       throw new Error('carcer_miroir allumée : le nul doit être actif sur le 22/02');
     BRANCHES_V7.carcer_miroir.actif = false;
     if (nulActifV7(t, structureDuNul(t), null))
-      throw new Error('carcer_miroir éteinte : plus rien ne voit le 22/02 — si ça change, '
-        + 'c\'est qu\'une autre porte l\'a rattrapé, et il faut le mesurer, pas le subir');
-  } finally { BRANCHES_V7.carcer_miroir.actif = avantC; }
+      throw new Error('carcer et 6/12 éteintes : rien d\'autre ne doit voir le 22/02');
+    BRANCHES_V7.porte_612.actif = true;
+    if (!nulActifV7(t, structureDuNul(t), null))
+      throw new Error('la porte 6/12 doit rattraper le 22/02 à elle seule');
+    var p6 = porte612V7(t);
+    if (!p6 || !p6.oui)
+      throw new Error('sur le 22/02, M6 ⊕ M12 doit être ABSENTE du thème');
+  } finally {
+    BRANCHES_V7.carcer_miroir.actif = avantC; BRANCHES_V7.porte_612.actif = avant6;
+  }
   var ax = axeVolumeV7(t);
   if (!ax || ax.nbPresentes !== 2) throw new Error('les deux sommes d\'axe doivent être présentes');
   var v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); });
@@ -3879,7 +3927,7 @@ autoTestV7('les drapeaux de branche survivent à un verdict', function () {
   // alors que la mesure donnait +11. Ce test attrape la corruption.
   var cles = ['populus_volume', 'miroir_volume', 'axe_volume', 'carcer_miroir',
     'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige',
-    'porte_nul_corrigee', 'veto_repetition', 'pliage_m2m7'];
+    'porte_nul_corrigee', 'veto_repetition', 'pliage_m2m7', 'porte_612'];
   var avant = {};
   cles.forEach(function (k) { if (BRANCHES_V7[k]) avant[k] = BRANCHES_V7[k].actif; });
   ['populus,via,albus,puella', 'conjunctio,acquisitio,puella,caput_draconis',

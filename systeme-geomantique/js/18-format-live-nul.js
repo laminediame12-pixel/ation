@@ -846,6 +846,20 @@ function nulActifV7(theme, structureNul, nulAxe) {
       parCarcer = !!(cm && cm.oui);
     }
   } catch (e) { parCarcer = false; }
+  // ─── LA PORTE 6/12 (06/09, l'axe d'Ellemine_D) ───
+  // La 6e maison de R1 est la 12e de R7, et réciproquement : M6 et M12
+  // sont l'usure d'un camp et les ennemis cachés de l'autre, croisés.
+  // Quand leur somme est ABSENTE du thème, 8 nuls sur 15. Elle passe
+  // AVANT le veto — qui la filtre juste après et lui retire quatre de
+  // ses sept faux. Cf. PORTE_612_V7.
+  var par612 = false;
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.porte_612 && BRANCHES_V7.porte_612.actif) {
+      var p6 = porte612V7(theme);
+      par612 = !!(p6 && p6.oui);
+    }
+  } catch (e) { par612 = false; }
+
   // ─── LE VETO DE RÉPÉTITION (06/09) ───
   // Un thème qui ne se répète pas ne fait pas nul. Douze figures
   // distinctes ou plus sur les seize maisons : 0 nul sur 19 dans
@@ -860,7 +874,7 @@ function nulActifV7(theme, structureNul, nulAxe) {
   } catch (e) { vete = false; }
   if (vete) return false;
 
-  return !!(parLeNul || parSeconde || parCarcer
+  return !!(parLeNul || parSeconde || parCarcer || par612
     || (STRUCTURE_NUL_DECISIVE && structureNul && structureNul.nulDetecte)
     || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
 }
@@ -2504,4 +2518,145 @@ autoTestV7('le veto de répétition ne peut qu\'annuler, jamais annoncer', funct
     if (!vus.intact)
       throw new Error('le veto annule tout — le jeu de thèmes ne teste plus rien');
   } finally { BRANCHES_V7.veto_repetition.actif = avant; }
+});
+
+
+// ═══════════════════════════════════════════════════════════════
+// LA PORTE 6/12 — L'AXE D'ELLEMINE_D, LU EN MAISONS DÉRIVÉES
+// (06/09/26)
+//
+// « comme ça tu fais pour qu'on ignore les détails. le calcul et l'axe
+// qui en découle, tu en fais quoi ? » (Ellemine_D)
+//
+// Il avait raison de me reprendre. J'avais testé LA SOMME des trois
+// maisons de son axe, M4 ⊕ M6 ⊕ M12, trouvé zéro, et écrit « nouvelle
+// et vide ». Je n'avais jamais testé L'AXE LUI-MÊME, maison par
+// maison — alors que sa doctrine des ressources dit exactement quoi y
+// chercher. En maisons dérivées (depuis R1 la Ne maison est la maison
+// N ; depuis R7 c'est ((7+N−2) mod 12)+1) :
+//     M4  = la 4e de R1 (le fond, la fin) ... et la 10e de R7 (son but)
+//     M6  = la 6e de R1 (l'usure) .......... et la 12e de R7 (ses ennemis cachés)
+//     M12 = la 12e de R1 (ses ennemis cachés) et la 6e de R7 (son usure)
+// M6 et M12 sont donc LA MÊME CHOSE VUE DES DEUX CAMPS, croisée.
+// C'est ce croisement-là qu'il fallait tester, et pas la somme des
+// trois.
+//
+// LA MESURE. Sur les 57 cas au camp connu, 13 nuls, base 22,8 % :
+//     M6 ⊕ M12 ABSENTE du thème ... 8 nuls / 15 cas .... 53,3 %
+//     présente .................... 5 nuls / 42 cas .... 11,9 %
+//     Fisher exact p = 0,0025
+// Balayage max-T de Westfall-Young sur les 48 prédicteurs de l'axe
+// (chaque maison prise seule : points, actifs, ouverture, palindrome,
+// occurrences, boucle ; le croisement 6/12 sous toutes ses formes ;
+// M4 croisée à chacune ; la somme des trois ; l'axe comme groupe),
+// 4000 permutations : p = 0,0342 sur le nul, UN SURVIVANT SUR 48.
+// C'est le deuxième résultat du projet à survivre sur le nul, après
+// l'arc proche filtré — et il vient de son axe.
+//
+// LE GRADIENT : 0 fois 53 % · 1 fois 12 % · 2 fois 12 % · 3 fois 0 %.
+// La marche est entre zéro et une occurrence, pas au-delà. La règle
+// est donc binaire, comme celle du pliage.
+//
+// ELLE ATTRAPE CINQ DES SEPT NULS QUE LE MOTEUR RATAIT : AmisPuer,
+// PuerFortMaj, PopFortMin, LaetPop et LaetFortMinAmisVia — LE 22/02.
+// Le match qui avait mis Ellemine_D en colère le 22 février, que la
+// porte Carcer avait attrapé puis reperdu en s'éteignant, revient par
+// son propre axe. Il ne reste que deux nuls invisibles : FortMajTrist
+// et PuerRubeus.
+//
+// ET LE VETO FAIT LE TRI TOUT SEUL. Sur les sept faux de cette porte,
+// QUATRE ont douze figures distinctes ou plus (Milan, Atalanta,
+// FortMajVia, ViaRubeus) : le veto de répétition, déjà branché, les
+// refuse sans qu'on ajoute quoi que ce soit. La porte 6/12 est donc
+// placée AVANT le veto dans nulActifV7, et il la filtre derrière.
+//     porte seule .......... 6 justes / 0 faux / 7 ratés · 87,7 %
+//     + porte 6/12 ......... 11 justes / 3 faux / 2 ratés · 91,2 %
+//     justesse 87,7 -> 91,2 % · rappel 46 -> 85 % · précision 100 -> 78,6 %
+// C'est le meilleur état du nul depuis le début, et le seul qui voie
+// plus de la moitié des nuls.
+//
+// ⚠️ CE QU'ON PERD : la précision. La porte du nul ne se trompait
+// jamais quand elle parlait ; maintenant elle se trompe trois fois sur
+// quatorze. Trois faux restent — ConjVia, PuerCaput, AmisRubConjVia —
+// et rien de mesuré ne les distingue des vrais. C'est un arbitrage,
+// et il est pris dans le sens du rappel parce que rater sept nuls sur
+// treize était le vrai défaut du système.
+//
+// (« chefs dans la même boucle » donne EXACTEMENT le même bilan que le
+//  veto, 11/3/2 — les quatre faux qu'il retire sont les mêmes. On garde
+//  le veto : il est déjà branché, ça n'ajoute aucun réglage.)
+// ═══════════════════════════════════════════════════════════════
+var PORTE_612_V7 = {
+  date: '2026-09-06', auteur: 'Ellemine_D — son axe M4-M6-M12',
+  lectureDerivee: { M4: '4e de R1 / 10e de R7', M6: '6e de R1 / 12e de R7',
+    M12: '12e de R1 / 6e de R7',
+    cle: 'M6 et M12 sont la même chose vue des deux camps, croisée' },
+  monErreur: 'j\'avais testé la SOMME M4⊕M6⊕M12, trouvé zéro, et écrit « vide ». '
+    + 'Je n\'avais jamais testé l\'axe maison par maison.',
+  mesure: { n: 57, nuls: 13, base: 22.8,
+    absente: { r: '8/15', taux: 53.3 }, presente: { r: '5/42', taux: 11.9 },
+    fisher: 0.0025 },
+  gradient: { 0: 53, 1: 12, 2: 12, 3: 0, note: 'la marche est entre zéro et une occurrence' },
+  correction: { predicteurs: 48, pMaxT: 0.0342, survivants: 1,
+    rang: 'deuxième résultat du projet à survivre sur le nul, après l\'arc proche filtré' },
+  rattrape: ['AmisPuer', 'PuerFortMaj', 'PopFortMin', 'LaetPop', 'LaetFortMinAmisVia'],
+  leVingtDeux: 'LaetFortMinAmisVia, le 3-3 du 22/02, revient par l\'axe d\'Ellemine_D',
+  restentInvisibles: ['FortMajTrist', 'PuerRubeus'],
+  veto: { fauxRetires: 4, noms: ['Milan', 'Atalanta', 'FortMajVia', 'ViaRubeus'],
+    note: 'le veto de répétition, déjà branché, refuse quatre des sept faux sans rien ajouter' },
+  bilan: {
+    avant: { justes: 6, faux: 0, rates: 7, justesse: 87.7, precision: 100, rappel: 46.2 },
+    apres: { justes: 11, faux: 3, rates: 2, justesse: 91.2, precision: 78.6, rappel: 84.6 } },
+  cequOnPerd: 'la précision : 100 % -> 78,6 %. Trois faux restent (ConjVia, PuerCaput, '
+    + 'AmisRubConjVia) et rien de mesuré ne les distingue des vrais.',
+  varianteEquivalente: '« chefs dans la même boucle » donne exactement le même bilan (11/3/2) — '
+    + 'on garde le veto, déjà branché'
+};
+
+// La somme M6 ⊕ M12 et sa présence. Absente : le nul est imposé.
+function porte612V7(theme) {
+  if (!theme || !theme[6] || !theme[12]) return null;
+  var s;
+  try { s = combine(theme[6], theme[12]); } catch (e) { return null; }
+  var ou = [];
+  for (var h = 1; h <= 16; h++) if (theme[h] === s) ou.push(h);
+  var n = ou.length;
+  return { somme: s, occurrences: n, maisons: ou, oui: n === 0,
+    lecture: n === 0
+      ? 'M6 ⊕ M12 = ' + s + ', ABSENTE des seize maisons — 8 nuls sur 15 dans cette case, '
+        + 'contre 11,9 % ailleurs'
+      : 'M6 ⊕ M12 = ' + s + ', présente ' + n + ' fois (M' + ou.join(', M')
+        + ') — 11,9 % de nuls, la porte reste fermée' };
+}
+
+autoTestV7('la porte 6/12 est bien filtrée par le veto', function () {
+  if (typeof calcTheme !== 'function' || typeof porte612V7 !== 'function') return;
+  if (!BRANCHES_V7.porte_612) throw new Error('branche porte_612 absente');
+  var av6 = BRANCHES_V7.porte_612.actif, avV = BRANCHES_V7.veto_repetition.actif;
+  try {
+    var vus = { ouvre: 0, ferme: 0, veteApres: 0 };
+    ['puer,caput_draconis,puer,caput_draconis', 'laetitia,fortuna_minor,amissio,via',
+     'laetitia,populus,rubeus,tristitia', 'via,rubeus,tristitia,acquisitio',
+     'populus,via,albus,puella', 'albus,albus,albus,albus',
+     'puer,laetitia,caput_draconis,albus'].forEach(function (kk) {
+      var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+      var p6 = porte612V7(t);
+      if (!p6) throw new Error('porte612V7 muette sur ' + kk);
+      if (p6.oui !== (p6.occurrences === 0))
+        throw new Error('la porte 6/12 ne suit pas son propre compte sur ' + kk);
+      if (p6.oui) vus.ouvre++; else vus.ferme++;
+      // le veto doit passer APRÈS : un thème veté ne peut pas sortir nul
+      var vr = vetoRepetitionV7(t);
+      if (vr && vr.veto) {
+        BRANCHES_V7.porte_612.actif = true; BRANCHES_V7.veto_repetition.actif = true;
+        if (nulActifV7(t, structureDuNul(t), null))
+          throw new Error('thème veté (' + vr.distinctes + ' figures) mais le nul passe quand même sur ' + kk);
+        vus.veteApres++;
+      }
+    });
+    if (!vus.ouvre || !vus.ferme)
+      throw new Error('le jeu de thèmes ne couvre plus les deux cases de la porte 6/12');
+  } finally {
+    BRANCHES_V7.porte_612.actif = av6; BRANCHES_V7.veto_repetition.actif = avV;
+  }
 });

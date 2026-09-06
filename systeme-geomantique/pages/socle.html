@@ -140,23 +140,31 @@ const M1={
    Rien ici n'est une idée : chaque ligne est un compte sur les 57 cas
    au camp connu de l'archive, 13 nuls, base 22,8 %. */
 const NUL={
-  bilan:{ tire:6, justes:6, faux:0, rates:7, justesse:87.7, precision:100, rappel:46.2 },
+  bilan:{ tire:14, justes:11, faux:3, rates:2, justesse:91.2, precision:78.6, rappel:84.6 },
+  p612:{absente:{r:'8/15',taux:53.3},presente:{r:'5/42',taux:11.9},base:22.8,p:0.0025,
+        maxT:0.0342,predicteurs:48,
+        rattrape:['AmisPuer','PuerFortMaj','PopFortMin','LaetPop','LaetFortMinAmisVia'],
+        vetoRetire:['Milan','Atalanta','FortMajVia','ViaRubeus'],
+        restent:['FortMajTrist','PuerRubeus'],
+        fauxRestants:['ConjVia','PuerCaput','AmisRubConjVia'],
+        avant:{j:6,f:0,r:7,just:87.7,prec:100,rap:46},
+        apres:{j:11,f:3,r:2,just:91.2,prec:78.6,rap:85}},
   /* les 13 nuls, un par un, avec ce qui les voit — la table la plus utile
      de la page : elle dit exactement où le système est aveugle */
   cas:[
-   ['Roma',              1,'1-1', 2,1,11,1,0,null],
-   ['CaputPuella',       1,'2-2',11,0,11,0,0,'conversion'],
-   ['CarcAlbus',         1,'0-0',11,1,10,0,0,null],
-   ['FortMajConj',       1,null,  4,1, 9,0,0,null],
-   ['PopFortMaj',        1,'0-0', 6,1,11,0,0,null],
-   ['TristCaput',        1,'3-3', 4,1,11,0,0,null],
-   ['AmisPuer',          0,'4-4', 2,0, 8,0,1,'renversement'],
-   ['PuerFortMaj',       0,'0-0', 6,0,10,0,0,null],
-   ['FortMajTrist',      0,'3-3', 9,0, 9,1,0,'identiques'],
-   ['PuerRubeus',        0,'2-2', 3,1,10,1,0,null],
-   ['PopFortMin',        0,'2-2',10,0, 9,0,0,null],
-   ['LaetPop',           0,'1-1', 8,0,11,0,1,'renversement'],
-   ['LaetFortMinAmisVia',0,'3-3',15,0,10,2,1,'renversement']],
+   ['Roma',              1,'1-1', 2,1,11,1,0,null,1],
+   ['CaputPuella',       1,'2-2',11,0,11,0,0,'conversion',1],
+   ['CarcAlbus',         1,'0-0',11,1,10,0,0,null,0],
+   ['FortMajConj',       1,null,  4,1, 9,0,0,null,0],
+   ['PopFortMaj',        1,'0-0', 6,1,11,0,0,null,1],
+   ['TristCaput',        1,'3-3', 4,1,11,0,0,null,0],
+   ['AmisPuer',          1,'4-4', 2,0, 8,0,1,'renversement',0],
+   ['PuerFortMaj',       1,'0-0', 6,0,10,0,0,null,0],
+   ['PopFortMin',        1,'2-2',10,0, 9,0,0,null,0],
+   ['LaetPop',           1,'1-1', 8,0,11,0,1,'renversement',0],
+   ['LaetFortMinAmisVia',1,'3-3',15,0,10,2,1,'renversement',0],
+   ['FortMajTrist',      0,'3-3', 9,0, 9,1,0,'identiques',2],
+   ['PuerRubeus',        0,'2-2', 3,1,10,1,0,null,1]],
   /* colonnes : nom · vu ? · score · k · chefs différents · figures
      distinctes · paires Carcer miroir · seconde porte · relation témoins */
   temoins:{
@@ -299,12 +307,18 @@ function go(){
   const e9=cmL([[1,8],[2,7],[3,6],[4,5]].map(([x,y])=>comb(t[x],t[y])));
   const e21=cmL([[9,12],[10,11]].map(([x,y])=>comb(t[x],t[y])));
 
+  /* la porte 6/12 : l'usure d'un camp est les ennemis cachés de l'autre */
+  const s612=comb(t[6],t[12]); const ou612=[];
+  for(let h=1;h<=16;h++) if(t[h]===s612) ou612.push(h);
+  const p612 = ou612.length===0;
+
   const relT=relTemoins(t);
   const troisieme = relT==='renversement' && !veto;
 
   let dit,cellule,st,coul;
   if(veto){ dit=false; cellule=M1.veto.sur; st='VETO de répétition — '+distinctes+' figures distinctes sur 16'; coul='var(--rouge)'; }
   else if(arc && !memeM){ dit=true; cellule=M1.arcDiff; st='arc proche ET M1/M7 en boucles DIFFÉRENTES'; coul='var(--vert)'; }
+  else if(p612){ dit=true; cellule={n:15,nul:8,taux:53.3,ailleurs:11.9,p:0.0025}; st='porte 6/12 — M6 ⊕ M12 ABSENTE du thème'; coul='var(--vert)'; }
   else if(arc && memeM){ dit=false; cellule=M1.arcMeme; st='arc proche mais M1/M7 dans la MÊME boucle'; coul='var(--rouge)'; }
   else if(r.k===11){ dit=true; cellule=M1.k11; st='décalage 11'; coul='var(--or)'; }
   else { dit=false; cellule=null; st='hors des cases qui parlent (k = '+r.k+')'; coul='var(--mut)'; }
@@ -326,6 +340,8 @@ function go(){
   let vq,vqSrc,vqF,vqN,vqCol;
   if(dit && arc && !memeM){ vq='NUL'; vqSrc='arc proche k='+r.k+' et M1/M7 en boucles différentes';
     vqF=80.0; vqN=5; vqCol='var(--vert)'; }
+  else if(dit && p612){ vq='NUL'; vqSrc='porte 6/12 : M6 ⊕ M12 est absente des seize maisons';
+    vqF=53.3; vqN=15; vqCol='var(--vert)'; }
   else if(dit && r.k===11){ vq='NUL'; vqSrc='décalage 11'; vqF=100; vqN=2; vqCol='var(--or)'; }
   else if(pliDit){ vq=pliDit;
     vqSrc = nPli===0 ? 'pliage : la ressource de R1 croisée au chef R7 est ABSENTE du thème'
@@ -398,8 +414,46 @@ function go(){
       ${cellule.p!==undefined?`<div style="font-size:12px;color:var(--mut)">Fisher p = <b>${cellule.p}</b>${cellule.bonf!==undefined?` · Bonferroni sur 6 tests = <b class="v">${cellule.bonf}</b> — <b class="v">survit</b>`:''}</div>`:''}
     `:'<div style="color:var(--mut);font-size:13px">Aucune case mesurée ne couvre ce décalage. Le moteur se tait.</div>'}
     <table><tr><th>k</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>${lignesK}</table>
+    <div class="pt" style="border-left:3px solid ${p612?'var(--vert)':'var(--mut)'};padding-left:10px">
+      <b>LA PORTE 6/12 — TON AXE, LU EN MAISONS DÉRIVÉES</b><br>
+      Tu m'as repris : j'avais testé <b>la somme</b> M4⊕M6⊕M12, trouvé zéro, et écrit « vide ».
+      Je n'avais jamais testé <b>l'axe maison par maison</b>. Or dans ta doctrine :<br>
+      &nbsp;&nbsp;<b>M4</b> = la 4<sup>e</sup> de R1 (le fond) — et la 10<sup>e</sup> de R7 (son but)<br>
+      &nbsp;&nbsp;<b>M6</b> = la 6<sup>e</sup> de R1 (l'usure) — et la 12<sup>e</sup> de R7 (ses ennemis cachés)<br>
+      &nbsp;&nbsp;<b>M12</b> = la 12<sup>e</sup> de R1 (ses ennemis cachés) — et la 6<sup>e</sup> de R7 (son usure)<br>
+      <b class="v">M6 et M12 sont la même chose vue des deux camps, croisée.</b> C'est ce
+      croisement-là qu'il fallait tester.<br><br>
+      Sur ce tirage : <b>M6 ⊕ M12 = ${FL[s612]}</b> —
+      ${p612?'<b class="v">ABSENTE des seize maisons</b>':'présente en M'+ou612.join(', M')}.<br><br>
+      <table>
+        <tr><th>M6 ⊕ M12</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>
+        <tr class="${p612?'on':''}"><td><b>ABSENTE</b></td><td class="n">15</td><td class="n">8</td>
+            <td class="n"><b class="v">53,3 %</b></td></tr>
+        <tr class="${p612?'':'on'}"><td>présente</td><td class="n">42</td><td class="n">5</td>
+            <td class="n">11,9 %</td></tr>
+        <tr><td style="color:var(--mut)">base</td><td class="n">57</td><td class="n">13</td>
+            <td class="n" style="color:var(--mut)">22,8 %</td></tr>
+      </table>
+      Fisher <b class="v">p = 0,0025</b> · max-T sur les <b>48 prédicteurs de l'axe</b> :
+      <b class="v">p = 0,0342, un survivant</b> — deuxième résultat du projet à survivre sur le
+      nul, après l'arc proche.<br><br>
+      <b class="v">Elle rattrape CINQ des sept nuls que le moteur ratait</b> : AmisPuer,
+      PuerFortMaj, PopFortMin, LaetPop — et <b class="o">LaetFortMinAmisVia, le 22/02</b>.
+      Le match qui t'avait mis en colère revient par ton propre axe.
+      Restent invisibles : FortMajTrist et PuerRubeus.<br><br>
+      <b>Et le veto fait le tri tout seul :</b> sur les sept faux de cette porte, quatre ont
+      douze figures distinctes ou plus (Milan, Atalanta, FortMajVia, ViaRubeus) — le veto,
+      déjà branché, les refuse sans qu'on ajoute un réglage.<br>
+      &nbsp;&nbsp;avant : 6 justes / 0 faux / 7 ratés · <b>87,7 %</b> · précision 100 % · rappel 46 %<br>
+      &nbsp;&nbsp;après : <b class="v">11 justes / 3 faux / 2 ratés · 91,2 %</b> · précision 78,6 % · rappel <b class="v">85 %</b><br><br>
+      <b class="o">⚠️ Ce qu'on perd : la précision.</b> La porte ne se trompait jamais quand elle
+      parlait ; maintenant elle se trompe 3 fois sur 14. Les trois faux — ConjVia, PuerCaput,
+      AmisRubConjVia — ne se distinguent par rien de mesuré. L'arbitrage est pris dans le sens du
+      rappel : rater sept nuls sur treize était le vrai défaut du système.
+    </div>
+
     <div class="pt" style="border-left:3px solid ${troisieme?'var(--or)':'var(--mut)'};padding-left:10px">
-      <b>LA TROISIÈME PORTE, CANDIDATE — les témoins</b><br>
+      <b>LA QUATRIÈME PORTE, CANDIDATE — les témoins</b><br>
       Témoins de ce tirage : <b>${FL[t[13]]}</b> et <b>${FL[t[14]]}</b> → relation
       <b style="color:${troisieme?'var(--or)':'var(--mut)'}">${esc(relT)}</b>${troisieme?' — <b class="o">elle parlerait</b>':''}<br><br>
       <table><tr><th>relation des deux témoins</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>
@@ -595,17 +649,19 @@ function go(){
   </div>
 
   <div class="card">
-    <h2>LES TREIZE NULS, UN PAR UN<span class="tag ${NUL.bilan.justes>=6?'ok':'mid'}">${NUL.bilan.justes} vus sur 13</span></h2>
+    <h2>LES TREIZE NULS, UN PAR UN<span class="tag ${NUL.bilan.justes>=10?'ok':'mid'}">${NUL.bilan.justes} vus sur 13</span></h2>
     <div class="socle">Où le système voit, et où il est aveugle. Chaque ligne est un match réel de
       l'archive. C'est la table à regarder avant d'ajouter une règle : elle dit ce qui manque.</div>
     <div style="overflow-x:auto">
     <table>
       <tr><th>match</th><th class="n">score</th><th>vu ?</th><th class="n">k</th><th class="n">chefs</th>
-          <th class="n">fig.</th><th class="n">Carcer</th><th class="n">2<sup>e</sup></th><th>témoins</th></tr>
-      ${NUL.cas.map(c=>{const [nom,vu,sc,k,cd,di,ca,sp,rel]=c;
+          <th class="n">fig.</th><th class="n">6/12</th><th class="n">Carcer</th>
+          <th class="n">2<sup>e</sup></th><th>témoins</th></tr>
+      ${NUL.cas.map(c=>{const [nom,vu,sc,k,cd,di,ca,sp,rel,o6]=c;
         return `<tr><td>${esc(nom)}</td><td class="n">${sc||'—'}</td>`+
         `<td><b style="color:${vu?'var(--vert)':'var(--rouge)'}">${vu?'VU':'raté'}</b></td>`+
         `<td class="n">${k}</td><td class="n">${cd?'≠':'='}</td><td class="n">${di}</td>`+
+        `<td class="n"${o6===0?' style="color:var(--vert);font-weight:800"':''}>${o6}</td>`+
         `<td class="n">${ca||'—'}</td><td class="n">${sp?'✓':'—'}</td>`+
         `<td style="color:${rel==='renversement'?'var(--or)':'var(--mut)'}">${rel||'—'}</td></tr>`;}).join('')}
     </table></div>
@@ -616,14 +672,16 @@ function go(){
       Mais il en <b class="r">rate ${NUL.bilan.rates} sur 13</b> : rappel ${NUL.bilan.rappel} %.
       Le moteur du nul ne se trompe jamais quand il parle, et il se tait plus d'une fois sur deux.<br><br>
       <b>Colonnes :</b> <code>k</code> décalage R1→R7 · <code>chefs</code> ≠ si M1 et M7 sont en
-      boucles différentes · <code>fig.</code> figures distinctes (veto à 12) · <code>Carcer</code>
-      paires miroir de somme Carcer (porte éteinte le 06/09) · <code>2<sup>e</sup></code> la seconde
-      porte, structureDuNul, débranchée.<br><br>
-      <b>Ce que la table montre d'un coup d'œil :</b> les six vus le sont tous par l'arc proche
-      (k = 2, 4, 6) avec chefs ≠, ou par k = 11. Sur les sept ratés, <b class="o">trois portent la
-      marque du renversement</b> et rien d'autre ne les distingue ; les quatre derniers —
-      PuerFortMaj, FortMajTrist, PopFortMin, PuerRubeus — <b class="r">ne sont vus par aucune règle
-      connue, ni branchée ni candidate</b>. C'est là qu'est le travail restant.
+      boucles différentes · <code>fig.</code> figures distinctes (veto à 12) · <code>6/12</code>
+      occurrences de M6 ⊕ M12 — <b class="v">zéro = la porte 6/12 s'ouvre</b> ·
+      <code>Carcer</code> paires miroir de somme Carcer (porte éteinte le 06/09) ·
+      <code>2<sup>e</sup></code> la seconde porte, structureDuNul, débranchée.<br><br>
+      <b>Regarde la colonne 6/12.</b> Huit des treize nuls ont un zéro, et c'est ta porte qui les
+      prend. Avant elle le système en voyait six ; il en voit <b class="v">onze sur treize</b>.
+      <b class="r">Il n'en reste que deux d'invisibles : FortMajTrist et PuerRubeus</b> — et ce
+      sont les deux seuls nuls qui ont à la fois une occurrence ou plus de M6 ⊕ M12, des chefs
+      dans la même boucle, et un k hors de l'arc. C'est là qu'est le travail restant, et il ne
+      reste que deux cas.
     </div>
   </div>
 
