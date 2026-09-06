@@ -846,6 +846,20 @@ function nulActifV7(theme, structureNul, nulAxe) {
       parCarcer = !!(cm && cm.oui);
     }
   } catch (e) { parCarcer = false; }
+  // ─── LE VETO DE RÉPÉTITION (06/09) ───
+  // Un thème qui ne se répète pas ne fait pas nul. Douze figures
+  // distinctes ou plus sur les seize maisons : 0 nul sur 19 dans
+  // l'archive. Ce n'est pas une porte, c'est un frein — il ne peut
+  // qu'ANNULER un nul, jamais en créer un. Voir VETO_REPETITION_V7.
+  var vete = false;
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.veto_repetition && BRANCHES_V7.veto_repetition.actif) {
+      var vr = vetoRepetitionV7(theme);
+      vete = !!(vr && vr.veto);
+    }
+  } catch (e) { vete = false; }
+  if (vete) return false;
+
   return !!(parLeNul || parSeconde || parCarcer
     || (STRUCTURE_NUL_DECISIVE && structureNul && structureNul.nulDetecte)
     || (AXE_SUCCEDENT_DECISIF && nulAxe && nulAxe.confirmed));
@@ -2364,4 +2378,130 @@ autoTestV7('le filtre de la porte du nul distingue bien les deux boucles', funct
       throw new Error('le jeu de thèmes ne couvre plus les deux côtés du filtre ('
         + vus.ferme + ' fermé, ' + vus.ouvertAvecChefsDiff + ' ouvert) — test devenu creux');
   } finally { BRANCHES_V7.porte_nul_corrigee.actif = avant; }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// LE VETO DE RÉPÉTITION — « un thème aussi miroir qu'aucun autre »
+// (06/09/26)
+//
+// Ellemine_D, le 22/02, à propos du 3-3 que le système avait raté :
+// « un thème aussi miroir qu'aucun autre thème. » Il parlait de la
+// répétition : ce thème-là ramenait sans cesse les mêmes figures.
+// C'était une hypothèse posée AVANT toute mesure. Elle se compte, et
+// elle est le signal structurel le plus fort de toute l'archive après
+// l'arc proche — mais elle ne marche pas dans le sens espéré.
+//
+// LE COMPTE. Nombre de figures DISTINCTES parmi les seize maisons :
+//     <= 11 distinctes .... 13 nuls / 38 cas .... 34,2 %
+//     >= 12 distinctes .... 0 nul  / 19 cas ..... 0,0 %
+// Fisher exact p = 0,0026. Un thème qui ne se répète pas n'a JAMAIS
+// fait match nul dans l'archive.
+//
+// CE N'EST PAS UNE PORTE, C'EST UN FREIN. La règle ne dit pas « voilà
+// un nul » — elle dit « ici, sûrement pas ». Elle ne peut donc rien
+// gagner en attrapant des nuls : elle ne peut que retirer des faux.
+// Et elle en retire exactement un, le seul qui restait :
+//     porte filtrée seule ..... 6 justes / 1 faux · précision 85,7 %
+//     + veto de répétition .... 6 justes / 0 faux · précision 100 %
+// Le faux était VillaMain, 13 figures distinctes. Le veto n'en touche
+// aucun autre : les six nuls justes ont 9, 10, 11, 11, 11 et 11
+// figures distinctes, tous sous le seuil.
+//
+// VALIDATION CROISÉE. Le seuil n'est pas choisi à la main : il est
+// réappris 57 fois, chaque fois sur les 56 autres cas, comme « le plus
+// grand nombre de figures distinctes jamais vu sur un nul ». Il tombe
+// sur 11 les 57 fois, et ne met JAMAIS son veto sur un vrai nul.
+// Zéro erreur en leave-one-out.
+//
+// CE QU'IL FAUT DIRE CONTRE. Le seuil 11 est le meilleur de 102
+// coupures binaires essayées sur 41 prédicteurs structurels. Corrigé
+// par max-T sur toutes ces coupures : p = 0,102. IL NE SURVIT PAS à la
+// correction de multiplicité, contrairement à l'arc proche filtré.
+// Ce qui plaide quand même pour lui : l'hypothèse a été posée par
+// Ellemine_D le 22/02, avant la mesure ; le seuil résiste au
+// leave-one-out ; et surtout le veto ne peut RIEN COÛTER — il n'annule
+// que des nuls annoncés, et il n'y en a pas un seul de vrai dans sa
+// zone. Le pire cas est qu'il ne serve à rien.
+//
+// SUR LES 65 536 THÈMES, le veto couvre 18,80 % des cas (12 322).
+// Dans l'archive il en couvre 33,3 % (19/57) — la sur-représentation
+// est à surveiller quand l'archive grossira.
+//
+// ⚠️ CE QU'IL NE FAIT PAS. Il ne rattrape pas le 22/02. Ce thème a 10
+// figures distinctes : il est du bon côté du veto, mais rien ne
+// l'ANNONCE pour autant. La répétition qu'Ellemine_D avait vue est
+// réelle et elle est mesurable — elle dit seulement où le nul est
+// impossible, pas où il est. Le 22/02 reste raté (cf.
+// BRANCHES_V7.carcer_miroir.ceQueCaCouteVraiment).
+// ═══════════════════════════════════════════════════════════════
+var VETO_REPETITION_V7 = {
+  date: '2026-09-06', seuil: 12,
+  hypothese: 'Ellemine_D, 22/02 : « un thème aussi miroir qu\'aucun autre thème »',
+  archive: { n: 57, nuls: 13,
+    sousLeSeuil: { r: '13/38', taux: 34.2 }, auDessus: { r: '0/19', taux: 0.0 },
+    fisher: 0.0026 },
+  effetSurLaPorte: {
+    avant: { justes: 6, faux: 1, precision: 85.7, justesse: 86.0 },
+    apres: { justes: 6, faux: 0, precision: 100.0, justesse: 87.7 },
+    fauxRetire: 'VillaMain (13 figures distinctes)' },
+  leaveOneOut: { seuilReappris: 57, toujours: 11, nulsVetesAtort: 0 },
+  correction: { coupuresEssayees: 102, predicteurs: 41, pMaxT: 0.102,
+    survit: false,
+    pourquoiOnLeGardeQuandMeme: 'hypothèse posée avant la mesure, seuil stable en '
+      + 'leave-one-out, et un veto ne peut rien coûter : il n\'annule que des nuls '
+      + 'annoncés, et il n\'y a pas un seul vrai nul dans sa zone' },
+  exhaustif: { themesCouverts: 12322, sur: 65536, pct: 18.80 },
+  neRattrapePas: 'le 22/02 (10 figures distinctes) — il est du bon côté du veto, mais '
+    + 'aucune règle ne l\'annonce pour autant'
+};
+
+// Le compte, isolé : combien de figures différentes occupent les seize
+// maisons, et quelle est la plus répétée.
+function vetoRepetitionV7(theme) {
+  if (!theme) return null;
+  var vus = {}, max = 0, n = 0;
+  for (var h = 1; h <= 16; h++) {
+    var f = theme[h];
+    if (!f) return null;
+    vus[f] = (vus[f] || 0) + 1;
+    if (vus[f] > max) max = vus[f];
+  }
+  n = Object.keys(vus).length;
+  var veto = n >= VETO_REPETITION_V7.seuil;
+  return { distinctes: n, plusRepetee: max, veto: veto,
+    lecture: veto
+      ? n + ' figures distinctes sur 16 — le thème ne se répète pas, et aucun nul de '
+        + 'l\'archive n\'est venu de là (0 sur 19). Le nul est refusé.'
+      : n + ' figures distinctes sur 16 — le thème se répète assez pour qu\'un nul soit '
+        + 'possible (34,2 % des cas de cette zone en sont).' };
+}
+
+autoTestV7('le veto de répétition ne peut qu\'annuler, jamais annoncer', function () {
+  if (typeof calcTheme !== 'function' || typeof BRANCHES_V7 === 'undefined') return;
+  if (!BRANCHES_V7.veto_repetition) throw new Error('branche veto_repetition absente');
+  var avant = BRANCHES_V7.veto_repetition.actif;
+  try {
+    var vus = { annule: 0, intact: 0 };
+    ['laetitia,fortuna_minor,amissio,via', 'populus,via,albus,puella',
+     'conjunctio,acquisitio,puella,caput_draconis', 'amissio,puer,amissio,puer',
+     'puer,laetitia,caput_draconis,albus', 'via,rubeus,tristitia,acquisitio'].forEach(function (kk) {
+      var m = kk.split(','), t = calcTheme(m[0], m[1], m[2], m[3]);
+      var vr = vetoRepetitionV7(t);
+      if (!vr) throw new Error('vetoRepetitionV7 muet');
+      if (vr.distinctes < 1 || vr.distinctes > 16)
+        throw new Error('compte de figures distinctes aberrant : ' + vr.distinctes);
+      BRANCHES_V7.veto_repetition.actif = false;
+      var sans = nulActifV7(t, structureDuNul(t), null);
+      BRANCHES_V7.veto_repetition.actif = true;
+      var avec = nulActifV7(t, structureDuNul(t), null);
+      // Un frein ne crée rien : avec le veto, on ne peut que perdre un nul.
+      if (avec && !sans)
+        throw new Error('le veto a CRÉÉ un nul sur ' + kk + ' — ce n\'est pas un frein');
+      if (vr.veto && avec)
+        throw new Error('veto levé mais le nul passe quand même sur ' + kk);
+      if (sans !== avec) vus.annule++; else vus.intact++;
+    });
+    if (!vus.intact)
+      throw new Error('le veto annule tout — le jeu de thèmes ne teste plus rien');
+  } finally { BRANCHES_V7.veto_repetition.actif = avant; }
 });

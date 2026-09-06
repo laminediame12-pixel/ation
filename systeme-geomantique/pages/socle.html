@@ -116,6 +116,8 @@ const M1={
   arcProche:{n:11,nul:6,taux:54.5,ailleurs:15.2,p:0.0115},
   arcDiff:{n:5,nul:4,taux:80.0,ailleurs:17.3,p:0.0078,bonf:0.0469},
   arcMeme:{n:6,nul:2,taux:33.3},
+  veto:{seuil:12,sous:{n:38,nul:13,taux:34.2},sur:{n:19,nul:0,taux:0},p:0.0026,
+        exhaustif:18.80,loo:'seuil réappris 57 fois, toujours 11, 0 vrai nul veté'},
   k11:{n:2,nul:2},
   prod:{j:8,fa:5,ra:5,just:82.5,prec:61.5},
   corr:{j:6,fa:1,ra:7,just:86.0,prec:85.7},
@@ -189,8 +191,13 @@ function go(){
   const paire=r.k%2===0;
 
   /* ── MOTEUR 1 : LE NUL ── */
+  // le veto de répétition : compte des figures distinctes sur les 16 maisons
+  const distinctes=new Set(Array.from({length:16},(_,i)=>t[i+1])).size;
+  const veto=distinctes>=M1.veto.seuil;
+
   let dit,cellule,st,coul;
-  if(arc && !memeM){ dit=true; cellule=M1.arcDiff; st='arc proche ET M1/M7 en boucles DIFFÉRENTES'; coul='var(--vert)'; }
+  if(veto){ dit=false; cellule=M1.veto.sur; st='VETO de répétition — '+distinctes+' figures distinctes sur 16'; coul='var(--rouge)'; }
+  else if(arc && !memeM){ dit=true; cellule=M1.arcDiff; st='arc proche ET M1/M7 en boucles DIFFÉRENTES'; coul='var(--vert)'; }
   else if(arc && memeM){ dit=false; cellule=M1.arcMeme; st='arc proche mais M1/M7 dans la MÊME boucle'; coul='var(--rouge)'; }
   else if(r.k===11){ dit=true; cellule=M1.k11; st='décalage 11'; coul='var(--or)'; }
   else { dit=false; cellule=null; st='hors des cases qui parlent (k = '+r.k+')'; coul='var(--mut)'; }
@@ -279,6 +286,19 @@ function go(){
       ${cellule.p!==undefined?`<div style="font-size:12px;color:var(--mut)">Fisher p = <b>${cellule.p}</b>${cellule.bonf!==undefined?` · Bonferroni sur 6 tests = <b class="v">${cellule.bonf}</b> — <b class="v">survit</b>`:''}</div>`:''}
     `:'<div style="color:var(--mut);font-size:13px">Aucune case mesurée ne couvre ce décalage. Le moteur se tait.</div>'}
     <table><tr><th>k</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>${lignesK}</table>
+    <div class="pt" style="border-left:3px solid var(--rouge);padding-left:10px">
+      <b>LE VETO DE RÉPÉTITION</b> — ton mot du 22/02, « un thème aussi miroir qu'aucun autre thème ».
+      Il se compte : <b>${distinctes} figures distinctes</b> sur les 16 maisons de ce tirage.<br>
+      &nbsp;&nbsp;• ≤ 11 distinctes → <b>13 nuls / 38 cas (34,2 %)</b><br>
+      &nbsp;&nbsp;• ≥ 12 distinctes → <b class="r">0 nul / 19 cas</b> · Fisher p = 0,0026<br>
+      Ce n'est pas une porte, c'est un <b>frein</b> : il ne peut qu'annuler un nul, jamais en créer un.
+      Il retire le seul faux qui restait (VillaMain, 13 distinctes) — la porte passe à
+      <b class="v">6 justes / 0 faux, précision 100 %</b>. Seuil réappris 57 fois en leave-one-out :
+      toujours 11, jamais un vrai nul veté. <b class="o">Mais</b> c'est le meilleur de 102 coupures
+      essayées, et corrigé il donne p = 0,102 — il ne survit pas. On le garde parce qu'un veto ne peut
+      rien coûter. <b class="r">Il ne rattrape pas le 22/02</b> (10 distinctes) : la répétition dit où
+      le nul est impossible, pas où il est.
+    </div>
     <div class="pt">
       <b>La seule case forte :</b> arc proche <code>k ∈ {2,4,6}</code> <b>et</b> M1/M7 en boucles différentes —
       <b class="v">4 nuls sur 5 (80 %)</b> contre 17,3 % ailleurs, p = 0,0078, et c'est le
@@ -296,7 +316,7 @@ function go(){
       ce que fait cette page :<br>
       &nbsp;&nbsp;• règle du nul : 9/8/4 à 78,9 % (précision 52,9 %) → <b class="v">6/1/7 à 86,0 %
       (précision 85,7 %)</b><br>
-      &nbsp;&nbsp;• camp affiché : 30/57 → <b class="v">33/57</b><br><br>
+      &nbsp;&nbsp;• camp affiché : 30/57 → <b class="v">33/57</b>, puis <b class="v">34/57</b> avec le veto ci-dessous<br><br>
       <b class="o">Ce que ça coûte, sans l'arrondir :</b> six pronostics gagnés (Inter, Bologna,
       Jeudi 27/08, CarcAmis, FortMajLaet2, ConjCaput2), <b>trois perdus</b> — FortMajTrist, PuerRubeus,
       et <b class="r">le 22/02</b> (le 3-3 avec penalty), c'est-à-dire le match qui avait fait naître

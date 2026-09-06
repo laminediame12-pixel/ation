@@ -2350,6 +2350,36 @@ var BRANCHES_V7 = {
     pourLActiver: 'BRANCHES_V7.nul_seconde_porte.actif = true — le code est écrit et le '
       + 'nul sera alors imposé aussi par la seconde porte.' },
 
+  veto_repetition: {
+    actif: true,
+    nom: 'Le veto de répétition — douze figures distinctes ou plus, jamais de nul',
+    cible: 'le nul',
+    demande: 'Ellemine_D, 22/02, sur le 3-3 que le système avait raté : « un thème aussi '
+      + 'miroir qu\'aucun autre thème. » Hypothèse posée avant toute mesure ; elle se '
+      + 'compte en nombre de figures DISTINCTES parmi les seize maisons.',
+    mesure: '<= 11 distinctes : 13 nuls / 38 cas (34,2 %) · >= 12 distinctes : 0 nul / 19 '
+      + 'cas (0,0 %). Fisher exact p = 0,0026. Sur les 65 536 thèmes, le veto couvre '
+      + '18,80 % des cas.',
+    cequeCaChange: 'ce n\'est pas une porte, c\'est un FREIN : il ne peut qu\'annuler un '
+      + 'nul annoncé, jamais en créer un. Il retire exactement le seul faux qui restait — '
+      + 'VillaMain, 13 figures distinctes. Porte filtrée seule 6 justes / 1 faux '
+      + '(précision 85,7 %, justesse 86,0 %) -> avec le veto 6 justes / 0 faux '
+      + '(précision 100 %, justesse 87,7 %).',
+    validationCroisee: 'le seuil n\'est pas choisi à la main : réappris 57 fois sur 56 cas '
+      + 'comme « le plus grand nombre de figures distinctes jamais vu sur un nul », il tombe '
+      + 'sur 11 les 57 fois et ne veto JAMAIS un vrai nul. Zéro erreur en leave-one-out.',
+    ceQuiPlaideContre: 'le seuil 11 est le MEILLEUR de 102 coupures binaires sur 41 '
+      + 'prédicteurs structurels. Corrigé par max-T sur toutes ces coupures : p = 0,102. '
+      + 'IL NE SURVIT PAS à la correction, contrairement à l\'arc proche filtré. Branché '
+      + 'quand même parce qu\'un veto ne peut rien coûter : il n\'annule que des nuls '
+      + 'annoncés et il n\'y a pas un seul vrai nul dans sa zone. Le pire cas est qu\'il '
+      + 'ne serve à rien.',
+    neRattrapePas: '⚠️ il ne rattrape PAS le 22/02. Ce thème a 10 figures distinctes : il '
+      + 'est du bon côté du veto, mais rien ne l\'annonce pour autant. La répétition '
+      + 'qu\'Ellemine_D avait vue est réelle et mesurable — elle dit où le nul est '
+      + 'IMPOSSIBLE, pas où il est.',
+    pourLEteindre: 'BRANCHES_V7.veto_repetition.actif = false.' },
+
   porte_nul_corrigee: {
     actif: true,
     nom: 'L\'arc proche filtré par les boucles de M1 et M7',
@@ -3810,7 +3840,7 @@ autoTestV7('les drapeaux de branche survivent à un verdict', function () {
   // alors que la mesure donnait +11. Ce test attrape la corruption.
   var cles = ['populus_volume', 'miroir_volume', 'axe_volume', 'carcer_miroir',
     'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige',
-    'porte_nul_corrigee'];
+    'porte_nul_corrigee', 'veto_repetition'];
   var avant = {};
   cles.forEach(function (k) { if (BRANCHES_V7[k]) avant[k] = BRANCHES_V7[k].actif; });
   ['populus,via,albus,puella', 'conjunctio,acquisitio,puella,caput_draconis',
