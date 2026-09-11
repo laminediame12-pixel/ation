@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Socle — deux moteurs</title>
+<style>
+:root{--bg:#0a0f1c;--card:#111a2e;--line:#1e2a44;--txt:#e6edf7;--mut:#8fa3bf;
+--vert:#4ade80;--or:#fbbf24;--rouge:#f87171;--bleu:#60a5fa;--vio:#a78bfa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);padding:14px;
+font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+h1{font-size:20px;margin:0 0 2px}
+.sub{color:var(--mut);font-size:12px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:13px}
+.card h2{font-size:15px;margin:0 0 9px;letter-spacing:.02em}
+label{display:block;font-size:11px;color:var(--mut);margin:0 0 3px}
+select{width:100%;background:#0a1220;border:1px solid var(--line);color:var(--txt);
+border-radius:8px;padding:9px;font-size:14px;font-family:inherit}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{width:100%;margin-top:10px;background:var(--vio);color:#0a0f1c;border:0;
+border-radius:9px;padding:12px;font-size:15px;font-weight:800;font-family:inherit}
+.verdict{font-size:22px;font-weight:900;margin:2px 0 4px}
+.socle{font-size:12px;color:var(--mut);margin-bottom:9px}
+.bar{height:7px;background:#16233c;border-radius:99px;overflow:hidden;margin:5px 0 3px}
+.bar i{display:block;height:100%;border-radius:99px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:7px}
+td,th{padding:4px 3px;text-align:left;border-bottom:1px solid rgba(143,163,191,.13)}
+th{color:var(--mut);font-weight:600;font-size:11px}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.on td{background:rgba(167,139,250,.14);font-weight:700}
+.pt{font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:8px;margin-top:9px}
+details.repli{padding:0}
+details.repli>summary{cursor:pointer;list-style:none;padding:14px 16px;font-size:12.5px;
+ font-weight:700;letter-spacing:.02em;color:var(--mut);display:flex;align-items:center;gap:8px}
+details.repli>summary::-webkit-details-marker{display:none}
+details.repli>summary::before{content:'▸';font-size:11px;color:var(--mut)}
+details.repli[open]>summary::before{content:'▾'}
+details.repli[open]>summary{color:var(--txt);border-bottom:1px solid rgba(143,163,191,.11)}
+details.repli>*:not(summary){padding-left:16px;padding-right:16px}
+details.repli>*:last-child{padding-bottom:16px}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:99px;margin-left:6px}
+.ok{background:rgba(74,222,128,.18);color:var(--vert)}
+.no{background:rgba(248,113,113,.18);color:var(--rouge)}
+.mid{background:rgba(251,191,36,.18);color:var(--or)}
+b.v{color:var(--vert)}b.r{color:var(--rouge)}b.o{color:var(--or)}b.b{color:var(--bleu)}
+code{background:#0a1220;padding:1px 5px;border-radius:4px;font-size:12px}
+/* ── LA FENÊTRE DE VERDICT ── */
+.win{background:linear-gradient(160deg,#141f38 0%,#0d1526 100%);
+border:1px solid #2b3d63;border-radius:16px;padding:0;margin-bottom:14px;overflow:hidden;
+box-shadow:0 10px 34px rgba(0,0,0,.45)}
+.win-top{padding:15px 15px 13px;background:linear-gradient(160deg,rgba(167,139,250,.16),transparent);
+border-bottom:1px solid #24344f}
+.win-lab{font-size:10.5px;letter-spacing:.16em;color:var(--vio);font-weight:800}
+.win-win{font-size:31px;font-weight:900;line-height:1.06;margin:5px 0 2px}
+.win-src{font-size:11.5px;color:var(--mut)}
+.win-conf{display:flex;align-items:center;gap:8px;margin-top:9px}
+.ring{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:grid;place-items:center;
+font-size:12px;font-weight:900}
+.rows{padding:4px 15px 13px}
+.r{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(143,163,191,.11)}
+.r:last-child{border-bottom:0}
+.r-k{flex:0 0 92px;font-size:10.5px;letter-spacing:.1em;color:var(--mut);font-weight:700}
+.r-v{flex:1 1 auto;font-size:15px;font-weight:700;min-width:0}
+.r-v small{display:block;font-size:11px;font-weight:500;color:var(--mut);margin-top:2px;line-height:1.4}
+.r-f{flex:0 0 74px;text-align:right}
+.r-f b{font-size:15px;font-weight:900;display:block;line-height:1.1}
+.r-f i{font-style:normal;font-size:9.5px;color:var(--mut);display:block}
+.r-f .mini{height:4px;background:#16233c;border-radius:99px;margin-top:4px;overflow:hidden}
+.r-f .mini u{display:block;height:100%;text-decoration:none}
+</style></head><body>
+
+<h1>Socle — deux moteurs</h1>
+<div class="sub">Page neuve · seulement ce qui est mesuré, avec son effectif · archive 57 cas au camp connu, 13 nuls (base 22,8 %)</div>
+
+<div class="card">
+  <h2>Le tirage</h2>
+  <div class="grid4">
+    <div><label>Mère 1</label><select id="m1"></select></div>
+    <div><label>Mère 2</label><select id="m2"></select></div>
+    <div><label>Mère 3</label><select id="m3"></select></div>
+    <div><label>Mère 4</label><select id="m4"></select></div>
+  </div>
+  <button onclick="go()">Lire</button>
+</div>
+
+<div id="out"></div>
+
+<script>
+const FIGS=['puer','laetitia','caput_draconis','albus','via','amissio','rubeus','tristitia',
+'fortuna_minor','carcer','conjunctio','fortuna_major','cauda_draconis','puella','acquisitio','populus'];
+const FL={puer:'Puer',laetitia:'Laetitia',caput_draconis:'Caput Draconis',albus:'Albus',via:'Via',
+amissio:'Amissio',rubeus:'Rubeus',tristitia:'Tristitia',fortuna_minor:'Fortuna Minor',carcer:'Carcer',
+conjunctio:'Conjunctio',fortuna_major:'Fortuna Major',cauda_draconis:'Cauda Draconis',puella:'Puella',
+acquisitio:'Acquisitio',populus:'Populus'};
+const MAP={puer:[1,1,2,1],laetitia:[1,2,2,2],caput_draconis:[2,1,1,1],albus:[2,2,1,2],via:[1,1,1,1],
+amissio:[1,2,1,2],rubeus:[2,1,2,2],tristitia:[2,2,2,1],fortuna_minor:[1,1,2,2],carcer:[1,2,2,1],
+conjunctio:[2,1,1,2],fortuna_major:[2,2,1,1],cauda_draconis:[1,1,1,2],puella:[1,2,1,1],
+acquisitio:[2,1,2,1],populus:[2,2,2,2]};
+const OUV=['puer','puella','rubeus','albus','cauda_draconis','laetitia','acquisitio','via'];
+const LOOP_A=["puer","caput_draconis","via","rubeus","fortuna_minor","conjunctio","cauda_draconis","acquisitio"];
+const loopOf=f=>LOOP_A.indexOf(f)!==-1?'A':'B';
+const INV={}; FIGS.forEach(f=>INV[MAP[f].join('')]=f);
+const comb=(a,b)=>INV[MAP[a].map((v,i)=>v===MAP[b][i]?2:1).join('')];
+const PALIN=['via','carcer','conjunctio','populus'];
+const renvF=f=>INV[MAP[f].slice().reverse().join('')];
+const compF=f=>INV[MAP[f].map(v=>v===1?2:1).join('')];
+const convF=f=>renvF(compF(f));
+/* la relation entre les deux témoins — c'est elle qui porte la troisième porte */
+const CAD=[3,6,9,12], SUC=[2,6,8,12]; /* succédent corrigé le 06/09 — cf. MAISONS_SUCCEDENT_V7 */
+/* ═══ TOUTES LES FIGURES DÉRIVÉES — miroir de figuresDeriveesV7 du moteur ═══ */
+function figuresDe(t){
+  const C=(...hs)=>hs.map(h=>t[h]).reduce((x,y)=>comb(x,y));
+  const occ=f=>{let n=0;for(let h=1;h<=16;h++) if(t[h]===f)n++;return n;};
+  const L=[],add=(g,nom,mm,f,d)=>L.push({g,nom,mm,f,occ:occ(f),d:d||null});
+  add('pliage','M1 ⊕ M8',[1,8],C(1,8),null);
+  add('pliage','M2 ⊕ M7',[2,7],C(2,7),'CAMP');
+  add('pliage','M3 ⊕ M6',[3,6],C(3,6),null);
+  add('pliage','M4 ⊕ M5',[4,5],C(4,5),null);
+  add('pliage','M9 ⊕ M12',[9,12],C(9,12),null);
+  add('pliage','M10 ⊕ M11',[10,11],C(10,11),null);
+  add('pliage','M13 ⊕ M14',[13,14],C(13,14),null);
+  add('pliage','M15 ⊕ M16',[15,16],C(15,16),null);
+  add('axe','M6 ⊕ M12',[6,12],C(6,12),'NUL');
+  add('axe','M4 ⊕ M6 ⊕ M12',[4,6,12],C(4,6,12),null);
+  [[1,5,9],[2,6,10],[3,7,11],[4,8,12]].forEach(g=>add('trigone','trigone '+g.join('-'),g,C(...g),'VOLUME'));
+  add('offensif','offensif R1 (1-5-9)',[1,5,9],C(1,5,9),'VOLUME');
+  add('offensif','offensif R7 (7-11-3)',[7,11,3],C(7,11,3),'VOLUME');
+  add('validite','Cardinal (1-4-7-10)',[1,4,7,10],C(1,4,7,10),'VALIDITÉ');
+  add('validite','Succédent (2-6-8-12)',SUC,C(...SUC),'VALIDITÉ');
+  add('validite','Cadent (3-6-9-12)',[3,6,9,12],C(3,6,9,12),'VALIDITÉ');
+  add('validite','Partage (3-5-9-11)',[3,5,9,11],C(3,5,9,11),'VALIDITÉ');
+  [[1,5],[2,6],[3,7],[4,8],[9,11],[10,12],[13,14]].forEach(pr=>
+    add('miroir','miroir M'+pr[0]+'/M'+pr[1],pr,C(...pr),null));
+  ['Feu','Air','Eau','Terre'].forEach((nv,i)=>{
+    add('niveau','niveau '+nv+' des mères',[5+i],t[5+i],null);
+    add('niveau','niveau '+nv+' des filles',[1+i],t[1+i],null);});
+  return L;
+}
+const GROUPES={pliage:'LE PLIAGE — huit paires',axe:'TON AXE',trigone:'LES QUATRE TRIGONES',
+  offensif:'LES AXES OFFENSIFS',validite:'LES AXES DE VALIDITÉ',miroir:'LES SEPT MIROIRS',
+  niveau:'LES NIVEAUX D\'ACTIVATION'};
+const COUL_DECIDE={CAMP:'var(--bleu)',NUL:'var(--vert)',VOLUME:'var(--or)','VALIDITÉ':'var(--mut)'};
+
+function relTemoins(t){
+  const a=t[13], b=t[14];
+  if(a===b) return 'identiques';
+  if(b===renvF(a)) return 'renversement';
+  if(b===compF(a)) return 'complément';
+  if(b===convF(a)) return 'conversion';
+  return 'aucune relation';
+}
+
+function theme(m){
+  const t={}; m.forEach((f,i)=>t[i+1]=f);
+  for(let j=0;j<4;j++) t[5+j]=INV[[0,1,2,3].map(i=>MAP[m[i]][j]).join('')];
+  t[9]=comb(t[1],t[2]); t[10]=comb(t[3],t[4]);
+  t[11]=comb(t[5],t[6]); t[12]=comb(t[7],t[8]);
+  t[13]=comb(t[9],t[10]); t[14]=comb(t[11],t[12]);
+  t[15]=comb(t[13],t[14]); t[16]=comb(t[15],t[1]);
+  return t;
+}
+function rotation(t){
+  const start=FIGS.indexOf(t[1])+1;
+  const order=Array.from({length:16},(_,i)=>((start-1+i)%16)+1);
+  const hR1=order[0], hR7=order[6];
+  const r1=t[hR1], r7=t[hR7];
+  return {hR1,hR7,r1,r7,k:(((FIGS.indexOf(r7)-FIGS.indexOf(r1))%16)+16)%16};
+}
+
+/* ═══ LES CHIFFRES MESURÉS — archive 57 cas, 13 nuls, base 22,8 % ═══ */
+const K_TABLE=[[1,8,0],[2,5,2],[3,5,1],[4,3,2],[5,3,0],[6,3,2],[7,2,0],[8,2,1],
+[9,4,1],[10,8,1],[11,2,2],[12,3,0],[13,5,0],[14,3,0],[15,1,1]];
+const M1={
+  arcProche:{n:11,nul:6,taux:54.5,ailleurs:15.2,p:0.0115},
+  arcDiff:{n:5,nul:4,taux:80.0,ailleurs:17.3,p:0.0078,bonf:0.0469},
+  arcMeme:{n:6,nul:2,taux:33.3},
+  veto:{seuil:12,sous:{n:38,nul:13,taux:34.2},sur:{n:19,nul:0,taux:0},p:0.0026,
+        exhaustif:18.80,loo:'seuil réappris 57 fois, toujours 11, 0 vrai nul veté'},
+  k11:{n:2,nul:2},
+  prod:{j:8,fa:5,ra:5,just:82.5,prec:61.5},
+  corr:{j:6,fa:1,ra:7,just:86.0,prec:85.7},
+  mcnemar:'corrigée gagne 4, production gagne 2 — binomial p = 0,6875'
+};
+/* ═══ TOUT CE QU'ON A DE CONCRET SUR LE NUL — 06/09/26 ═══
+   Rien ici n'est une idée : chaque ligne est un compte sur les 57 cas
+   au camp connu de l'archive, 13 nuls, base 22,8 %. */
+const NUL={
+  bilan:{ tire:14, justes:11, faux:3, rates:2, justesse:91.2, precision:78.6, rappel:84.6 },
+  p612:{absente:{r:'8/15',taux:53.3},presente:{r:'5/42',taux:11.9},base:22.8,p:0.0025,
+        maxT:0.0342,predicteurs:48,
+        rattrape:['AmisPuer','PuerFortMaj','PopFortMin','LaetPop','LaetFortMinAmisVia'],
+        vetoRetire:['Milan','Atalanta','FortMajVia','ViaRubeus'],
+        restent:['FortMajTrist','PuerRubeus'],
+        fauxRestants:['ConjVia','PuerCaput','AmisRubConjVia'],
+        avant:{j:6,f:0,r:7,just:87.7,prec:100,rap:46},
+        apres:{j:11,f:3,r:2,just:91.2,prec:78.6,rap:85}},
+  /* les 13 nuls, un par un, avec ce qui les voit — la table la plus utile
+     de la page : elle dit exactement où le système est aveugle */
+  cas:[
+   ['Roma',              1,'1-1', 2,1,11,1,0,null,1],
+   ['CaputPuella',       1,'2-2',11,0,11,0,0,'conversion',1],
+   ['CarcAlbus',         1,'0-0',11,1,10,0,0,null,0],
+   ['FortMajConj',       1,null,  4,1, 9,0,0,null,0],
+   ['PopFortMaj',        1,'0-0', 6,1,11,0,0,null,1],
+   ['TristCaput',        1,'3-3', 4,1,11,0,0,null,0],
+   ['AmisPuer',          1,'4-4', 2,0, 8,0,1,'renversement',0],
+   ['PuerFortMaj',       1,'0-0', 6,0,10,0,0,null,0],
+   ['PopFortMin',        1,'2-2',10,0, 9,0,0,null,0],
+   ['LaetPop',           1,'1-1', 8,0,11,0,1,'renversement',0],
+   ['LaetFortMinAmisVia',1,'3-3',15,0,10,2,1,'renversement',0],
+   ['FortMajTrist',      0,'3-3', 9,0, 9,1,0,'identiques',2],
+   ['PuerRubeus',        0,'2-2', 3,1,10,1,0,null,1]],
+  /* colonnes : nom · vu ? · score · k · chefs différents · figures
+     distinctes · paires Carcer miroir · seconde porte · relation témoins */
+  temoins:{
+    renversement:{n:6,nul:3,taux:50.0,p:0.1246},
+    identiques:{n:3,nul:1,taux:33.3},
+    conversion:{n:4,nul:1,taux:25.0},
+    'aucune relation':{n:37,nul:8,taux:21.6},
+    'complément':{n:7,nul:0,taux:0.0}},
+  troisieme:{
+    nom:'témoins en renversement',
+    seul:{tire:6,justes:3,faux:3,prec:50.0,p:0.1246},
+    avecLaPorte:{tire:12,justes:9,faux:3,just:87.7,prec:75.0,rappel:69.2},
+    rattrape:['AmisPuer','LaetPop','LaetFortMinAmisVia'],
+    note:'le renversement est un SOUS-ENSEMBLE strict de la seconde porte : les six '
+      +'cas de renversement déclenchent tous structureDuNul, qui en ajoute deux autres, '
+      +'tous deux non-nuls. Le renversement est donc la seconde porte débarrassée de '
+      +'deux faux.'},
+  seconde:{tire:8,justes:3,faux:5,prec:37.5,p:0.3653,
+    avecLaPorte:{tire:14,justes:9,faux:5,just:84.2,prec:64.3}},
+  carcerEteinte:{tire:11,nul:4,gagnes:6,perdus:3,
+    perdusNoms:['FortMajTrist','PuerRubeus','LaetFortMinAmisVia']},
+  cadence:{n:18,nul:5,taux:27.8},
+  ferme:[
+    ['famille activation',38,'max-T 4000 permutations','0 survivant · meilleur p = 0,114'],
+    ['famille structurelle',41,'102 coupures binaires, max-T','0 survivant · meilleur p = 0,102']],
+  loisTemoins:[
+    'la distance entre les deux témoins n\'est JAMAIS 1 ni 3 — seulement 0, 2 ou 4, parce que le Juge est toujours pair',
+    'M13 = M14 → le Juge est Populus, toujours',
+    'M14 = complément(M13) → le Juge est Via, toujours',
+    'M14 = renversement(M13) ou conversion(M13) → le Juge est palindromique (Via, Carcer, Conjunctio ou Populus)',
+    'les seules figures palindromiques sont Via, Carcer, Conjunctio et Populus']
+};
+
+/* ═══ LE PLIAGE D'ELLEMINE_D — 06/09/26 ═══ */
+const PLI={
+  paires:[['M1 ⊕ M8',1,8],['M2 ⊕ M7',2,7],['M3 ⊕ M6',3,6],['M4 ⊕ M5',4,5],
+          ['M9 ⊕ M12',9,12],['M10 ⊕ M11',10,11]],
+  gradient:{'M2 ⊕ M7':[['0 fois','13/14',92.9],['1 fois','9/20',45.0],['2 fois ou +','2/10',20.0]],
+             'M1 ⊕ M8':[['0 fois','12/23',52.2],['1 fois','7/14',50.0],['2 fois ou +','5/7',71.4]]},
+  liste:[
+    [[1,8],'R1 × la ressource de R7',['12/23 · 52 %','7/14 · 50 %','5/7 · 71 %'],0.7709,0],
+    [[2,7],'la ressource de R1 × R7',['13/14 · 93 %','9/20 · 45 %','2/10 · 20 %'],0.0008,1],
+    [[3,6],'les frères de R1 (3ᵉ) × les ennemis cachés de R7 (12ᵉ)',['10/20 · 50 %','7/15 · 47 %','7/9 · 78 %'],0.7619,0],
+    [[4,5],'le foyer de R1 (4ᵉ) × les appuis de R7 (11ᵉ)',['9/14 · 64 %','10/19 · 53 %','5/11 · 45 %'],0.5186,0],
+    [[9,12],'chef+ressource de R1 × chef+ressource de R7',['6/12 · 50 %','11/19 · 58 %','7/13 · 54 %'],0.7456,0],
+    [[10,11],'M3⊕M4 × M5⊕M6',['7/13 · 54 %','11/22 · 50 %','6/9 · 67 %'],1.0,0],
+    [[13,14],'les deux témoins — somme = le Juge',['jamais absente','12/22 · 55 %','12/22 · 55 %'],1.0,0],
+    [[15,16],'le Juge × le réconciliateur — somme = M1',['jamais absente','10/16 · 62 %','14/28 · 50 %'],1.0,0]],
+  variantes:[['R1 seul (0 occurrence)','36/57'],['+ R7 dès 2 occurrences','37/57'],
+             ['graduée pleine (0 → R1, sinon R7)','38/57']],
+  ressources:{predicteurs:44,p:0.0040,survivants:2},
+  m2m7:{absente:{r:'13/14',taux:92.9},presente:{r:'19/30',taux:63.3},base:54.5,
+        p:0.00077,regle:'32/44 · 72,7 %',loo:'72,7 %',
+        moteurSurCesCas:'11/14',camp:{avant:'34/57',apres:'36/57'},
+        maxT:0.0122,predicteurs:44,exhaustif:61.13},
+  autres:'p entre 0,52 et 1,00 — aucune des sept autres paires ne parle'
+};
+
+const M2={
+  structurel:50.00,
+  meme:{n:25,nul:7,tauxNul:28.0,buts:4.67,plus:'14/21',
+        best:[['active M1−M7',0.439,0.128],['Carcer miroir',0.355,0.242],
+              ['mobilité M1−M7',0.327,0.217],['ouverture M1−M7',0.306,0.344]]},
+  diff:{n:32,nul:6,tauxNul:18.8,buts:3.79,plus:'18/28',
+        best:[['ouverture M1−M7',0.430,0.0423],['M4 et M1 même boucle',0.309,0.240],
+              ['M10 et M7 même boucle',-0.234,0.434],['active M1−M7',0.175,0.514]]}
+};
+
+/* ═══ FENÊTRE DE VERDICT — chiffres mesurés ═══ */
+/* CAD et SUC sont déclarés plus haut, avant figuresDe */
+const CELL_SCORES={ R1_plus:['1-2','7-0'], R1_moins:['2-0','1-0'], R7_plus:['6-1','0-2'],
+  R7_moins:['0-1','1-0'], nul_plus:['2-2','3-3'], nul_moins:['0-1','0-0'] };
+const CELL_BUTS={ R1_plus:[2.83,2.33,6], R1_moins:[1.60,2.20,5], R7_plus:[4.22,2.56,9],
+  R7_moins:[1.22,1.00,9], nul_plus:[2.80,2.00,10], nul_moins:[1.30,1.20,10] };
+const FIAB={
+  score2:{p:18.4,n:49,note:'les 2 plus fréquents de TOUTE l\'archive font aussi 18,4 % — la cellule n\'ajoute rien'},
+  btts:{p:63.0,n:54,note:'base « jamais » 51,9 % · Fisher p = 0,096'},
+  volume:{p:86.7,n:30,note:'ne parle que sur 30 thèmes sur 49 — elle se tait sur les cas durs'},
+  incident:{p:null,n:12,note:'12 cas dont 10 AVEC — et le pourcentage du moteur est INVERSÉ : 61,8 % de moyenne sur les incidents réels, 86,5 % sur les non-incidents'},
+  corners:{p:null,n:3,note:'3 cas · le moteur a annoncé 11 aux trois (réels 6, 6, 4) et s\'est trompé de camp 3 fois sur 3'},
+  cartons:{p:null,n:0,note:'ZÉRO carton enregistré — et le nombre affiché n\'est pas des cartons, c\'est le nombre de signaux du détecteur'}
+};
+function bttsDe(t,r){
+  let conj=false; for(let h=1;h<=16;h++) if(t[h]==='conjunctio') conj=true;
+  if(!conj) return {v:false,z:'Conjunctio absent — pas d\'échange (9 cas sur 10)'};
+  if(CAD.indexOf(r.hR1)>=0) return {v:true,z:'R1 en maison cadente + Conjunctio (8 cas sur 9)'};
+  const ps=SUC.some(h=>t[h]==='puer');
+  return {v:ps,z:ps?'Puer en maison succédente (4 BTTS sur 6)':'ni cadent ni Puer succédent (2 sur 7)'};
+}
+function volumeDe(t){
+  let np=0; for(let h=1;h<=16;h++) if(t[h]==='populus') np++;
+  if(np===0) return {v:true,z:'zéro Populus dans le thème',f:86.4,n:22};
+  const dans=f=>{for(let h=1;h<=16;h++) if(t[h]===f) return true; return false;};
+  const s3=(a,b,c)=>comb(comb(t[a],t[b]),t[c]);
+  const tri=[[1,5,9],[2,6,10],[3,7,11],[4,8,12]].map(x=>s3(x[0],x[1],x[2]));
+  const nb=tri.filter(dans).length;
+  if(nb===4) return {v:false,z:'les quatre trigones sont saturés',f:87.5,n:8};
+  return {v:null,z:np+' Populus, '+nb+' trigone'+(nb>1?'s':'')+' sur 4 — le volume se tait',f:null,n:0};
+}
+function ringHTML(p,col){
+  if(p===null) return `<div class="ring" style="background:rgba(143,163,191,.14);color:var(--mut)">—</div>`;
+  return `<div class="ring" style="background:conic-gradient(${col} ${p*3.6}deg,#16233c 0);color:${col}">`+
+    `<div style="background:#101a2d;width:34px;height:34px;border-radius:50%;display:grid;place-items:center">`+
+    `${Math.round(p)}%</div></div>`;
+}
+function ligne(k,val,sous,f,n,col){
+  const c = f===null?'var(--mut)':col;
+  return `<div class="r"><div class="r-k">${k}</div>`+
+    `<div class="r-v" style="color:${f===null?'var(--mut)':'var(--txt)'}">${val}`+
+    (sous?`<small>${sous}</small>`:'')+`</div>`+
+    `<div class="r-f"><b style="color:${c}">${f===null?'—':Math.round(f*10)/10+' %'}</b>`+
+    `<i>${n?'n = '+n:'jamais vérifié'}</i>`+
+    `<div class="mini"><u style="width:${f===null?0:f}%;background:${c}"></u></div></div></div>`;
+}
+
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const pct=(a,b)=>b?Math.round(1000*a/b)/10:0;
+
+function go(){
+  const m=['m1','m2','m3','m4'].map(id=>document.getElementById(id).value);
+  const t=theme(m), r=rotation(t);
+  const b1=loopOf(t[1]), b7=loopOf(t[7]), memeM=b1===b7;
+  const arc=(r.k===2||r.k===4||r.k===6);
+  const paire=r.k%2===0;
+
+  /* ── MOTEUR 1 : LE NUL ── */
+  // le veto de répétition : compte des figures distinctes sur les 16 maisons
+  const distinctes=new Set(Array.from({length:16},(_,i)=>t[i+1])).size;
+  const veto=distinctes>=M1.veto.seuil;
+
+  /* le pliage : la somme M2 ⊕ M7 et sa présence */
+  const sPli=comb(t[2],t[7]);
+  const ouPli=[]; for(let h=1;h<=16;h++) if(t[h]===sPli) ouPli.push(h);
+  const nPli=ouPli.length;
+  const pliParle = nPli===0;
+  const pliDit = nPli===0?'CAMP 1':(nPli>=2?'CAMP 2':null);
+  const s18=comb(t[1],t[8]); const ou18=[]; for(let h=1;h<=16;h++) if(t[h]===s18) ou18.push(h);
+  /* les quatre étages pliés — vérifiés en direct, ils doivent tous donner le Juge */
+  const cmL=a=>a.reduce((x,y)=>comb(x,y));
+  const e9=cmL([[1,8],[2,7],[3,6],[4,5]].map(([x,y])=>comb(t[x],t[y])));
+  const e21=cmL([[9,12],[10,11]].map(([x,y])=>comb(t[x],t[y])));
+
+  const FIG=figuresDe(t);
+
+  /* la porte 6/12 : l'usure d'un camp est les ennemis cachés de l'autre */
+  const s612=comb(t[6],t[12]); const ou612=[];
+  for(let h=1;h<=16;h++) if(t[h]===s612) ou612.push(h);
+  const p612 = ou612.length===0;
+
+  const relT=relTemoins(t);
+  const troisieme = relT==='renversement' && !veto;
+
+  let dit,cellule,st,coul;
+  if(veto){ dit=false; cellule=M1.veto.sur; st='VETO de répétition — '+distinctes+' figures distinctes sur 16'; coul='var(--rouge)'; }
+  else if(arc && !memeM){ dit=true; cellule=M1.arcDiff; st='arc proche ET M1/M7 en boucles DIFFÉRENTES'; coul='var(--vert)'; }
+  else if(p612){ dit=true; cellule={n:15,nul:8,taux:53.3,ailleurs:11.9,p:0.0025}; st='porte 6/12 — M6 ⊕ M12 ABSENTE du thème'; coul='var(--vert)'; }
+  else if(arc && memeM){ dit=false; cellule=M1.arcMeme; st='arc proche mais M1/M7 dans la MÊME boucle'; coul='var(--rouge)'; }
+  else if(r.k===11){ dit=true; cellule=M1.k11; st='décalage 11'; coul='var(--or)'; }
+  else { dit=false; cellule=null; st='hors des cases qui parlent (k = '+r.k+')'; coul='var(--mut)'; }
+
+  const lignesK=K_TABLE.map(([k,n,nl])=>
+    `<tr class="${k===r.k?'on':''}"><td>${k}</td><td class="n">${n}</td><td class="n">${nl}</td>`+
+    `<td class="n">${pct(nl,n)} %</td></tr>`).join('');
+
+  /* ── MOTEUR 2 : DEUX BRANCHES ── */
+  const B=memeM?M2.meme:M2.diff;
+  const nomB=memeM?'MÊME boucle':'boucles DIFFÉRENTES';
+  const lignesB=B.best.map(([nom,rho,p])=>
+    `<tr><td>${esc(nom)}</td><td class="n">${rho>0?'+':''}${rho.toFixed(3)}</td>`+
+    `<td class="n">${p.toFixed(4)}${p<0.05?' ★':''}</td></tr>`).join('');
+
+  /* ── LA FENÊTRE DE VERDICT ── */
+  const bt=bttsDe(t,r), vo=volumeDe(t);
+  // le vainqueur, et d'où il sort
+  let vq,vqSrc,vqF,vqN,vqCol;
+  if(dit && arc && !memeM){ vq='NUL'; vqSrc='arc proche k='+r.k+' et M1/M7 en boucles différentes';
+    vqF=80.0; vqN=5; vqCol='var(--vert)'; }
+  else if(dit && p612){ vq='NUL'; vqSrc='porte 6/12 : M6 ⊕ M12 est absente des seize maisons';
+    vqF=53.3; vqN=15; vqCol='var(--vert)'; }
+  else if(dit && r.k===11){ vq='NUL'; vqSrc='décalage 11'; vqF=100; vqN=2; vqCol='var(--or)'; }
+  else if(pliDit){ vq=pliDit;
+    vqSrc = nPli===0 ? 'pliage : la ressource de R1 croisée au chef R7 est ABSENTE du thème'
+                     : 'pliage : ce croisement apparaît '+nPli+' fois dans le thème';
+    vqF = nPli===0?92.9:80.0; vqN = nPli===0?14:10;
+    vqCol = nPli===0?'var(--vert)':'var(--bleu)'; }
+  else {
+    const o1=OUV.indexOf(t[1])>=0, o7=OUV.indexOf(t[7])>=0;
+    if(o1&&!o7){ vq='CAMP 1'; vqSrc='contraste d\'ouverture : M1 ouverte, M7 fermée';
+      vqF=74.1; vqN=27; vqCol='var(--bleu)'; }
+    else if(!o1&&o7){ vq='CAMP 2'; vqSrc='contraste d\'ouverture : M1 fermée, M7 ouverte';
+      vqF=74.1; vqN=27; vqCol='var(--bleu)'; }
+    else { vq='LE MOTEUR SE TAIT'; vqSrc='les deux chefs sont '+(o1?'ouverts':'fermés')+
+      ' — aucune case mesurée ne parle'; vqF=null; vqN=0; vqCol='var(--mut)'; }
+  }
+  // la cellule score : camp × volume
+  const campK = vq==='NUL'?'nul':(vq==='CAMP 1'?'R1':(vq==='CAMP 2'?'R7':null));
+  const volK = vo.v===null?null:(vo.v?'plus':'moins');
+  const ck = (campK&&volK)? campK+'_'+volK : null;
+  const sc = ck?CELL_SCORES[ck]:null, cb = ck?CELL_BUTS[ck]:null;
+
+  const fen = `<div class="win">
+    <div class="win-top">
+      <div class="win-lab">VERDICT</div>
+      <div class="win-win" style="color:${vqCol}">${vq}</div>
+      <div class="win-src">${esc(vqSrc)}</div>
+      <div class="win-conf">${ringHTML(vqF,vqCol)}
+        <div style="font-size:11.5px;color:var(--mut);line-height:1.45">
+          ${vqF===null?'Aucun pourcentage : cette configuration n\'a pas de case mesurée.'
+            :`<b style="color:${vqCol}">${vqF} %</b> de justesse sur <b>${vqN}</b> cas de l\'archive`+
+             (vqN<6?` — <b class="o">effectif très faible, à lire comme une piste</b>`:'')}
+        </div></div>
+    </div>
+    <div class="rows">
+      ${ligne('SCORE ×2', sc?`${sc[0]} &nbsp;ou&nbsp; ${sc[1]}`:'—',
+        cb?`buts attendus ${cb[0].toFixed(2)} – ${cb[1].toFixed(2)} sur ${cb[2]} cas · ${FIAB.score2.note}`
+           :'le camp ou le volume ne parle pas : pas de cellule',
+        sc?FIAB.score2.p:null, sc?FIAB.score2.n:0, 'var(--rouge)')}
+      ${ligne('VOLUME', vo.v===null?'se tait':(vo.v?'plus de 2,5 buts':'moins de 2,5 buts'),
+        esc(vo.z)+(vo.f?' · '+FIAB.volume.note:''), vo.f, vo.n, 'var(--vert)')}
+      ${ligne('BTTS', bt.v?'OUI':'NON', esc(bt.z)+' · '+FIAB.btts.note,
+        FIAB.btts.p, FIAB.btts.n, 'var(--bleu)')}
+      ${ligne('INCIDENTS', 'non mesurable', FIAB.incident.note, null, FIAB.incident.n, '')}
+      ${ligne('CORNERS', 'non mesurable', FIAB.corners.note, null, FIAB.corners.n, '')}
+      ${ligne('CARTONS J.', 'non mesurable', FIAB.cartons.note, null, 0, '')}
+      <div style="padding:12px 0 2px;font-size:11.5px;color:var(--mut);border-top:1px solid var(--bord);margin-top:6px">
+        <b class="o">Les trois dernières lignes ne sont pas « pas encore calculées » — elles sont
+        AUDITÉES ET FAUSSES.</b> Il manque <b>2 seulement</b> de matchs SANS incident dans toute
+        l'archive : c'est ce chiffre-là qui bloque, pas le nombre de matchs. Il en faut
+        <b>35</b> pour qu'une règle devienne détectable. Fiche de saisie :
+        <code>pages/saisie-incidents.html</code>.
+      </div>
+    </div></div>`;
+
+  document.getElementById('out').innerHTML= fen + `
+  <div class="card">
+    <h2>Le carré</h2>
+    <table>
+      <tr><td>M1 <b>${FL[t[1]]}</b> · boucle ${b1}</td><td>M7 <b>${FL[t[7]]}</b> · boucle ${b7}</td></tr>
+      <tr><td>R1 = maison ${r.hR1} · <b>${FL[r.r1]}</b></td><td>R7 = maison ${r.hR7} · <b>${FL[r.r7]}</b></td></tr>
+      <tr><td>décalage <b>k = ${r.k}</b> ${paire?'(pair — R1/R7 même boucle)':'(impair — R1/R7 boucles différentes)'}</td>
+          <td>Juge M15 <b>${FL[t[15]]}</b></td></tr>
+    </table>
+    <div class="pt">⚠️ Deux notions de « même boucle » coexistent et ne coïncident que sur
+    <b>54,4 %</b> des cas : celle de <b>R1/R7</b> (parité de k, utilisée par la porte du nul) et celle de
+    <b>M1/M7</b> (les mères, ta coupure). La page les tient séparées.</div>
+  </div>
+
+  <div class="card">
+    <h2>LES FIGURES<span class="tag ok">${FIG.filter(x=>x.d).length} décident · ${FIG.filter(x=>!x.d).length} muettes</span></h2>
+    <div class="socle">Toutes les figures que le système tire de tes quatre mères, à plat.
+      La colonne <b>décide</b> dit ce que chacune pilote — <b>muette</b> veut dire qu'elle est
+      calculée et qu'elle ne sert à rien, et c'est le cas de la plupart.</div>
+    <div style="overflow-x:auto"><table>
+      ${Object.keys(GROUPES).map(g=>{
+        const rows=FIG.filter(x=>x.g===g);
+        return `<tr><td colspan="4" style="padding-top:12px;font-size:10.5px;letter-spacing:.09em;
+          font-weight:800;color:var(--mut)">${esc(GROUPES[g])}</td></tr>`+
+        rows.map(x=>`<tr${x.d?' class="on"':''}>`+
+          `<td style="font-size:12px">${esc(x.nom)}</td>`+
+          `<td><b>${FL[x.f]}</b></td>`+
+          `<td class="n" style="color:${x.occ?'var(--txt)':'var(--vert)'};font-weight:${x.occ?400:800}">`+
+            `${x.occ?x.occ+' fois':'ABSENTE'}</td>`+
+          `<td class="n" style="font-size:11px;font-weight:800;color:${x.d?COUL_DECIDE[x.d]:'var(--mut)'}">`+
+            `${x.d||'muette'}</td></tr>`).join('');}).join('')}
+    </table></div>
+    <div class="pt">
+      <b>Les quatre qui décident vraiment sur ce tirage :</b><br>
+      &nbsp;&nbsp;<b class="b">M2 ⊕ M7 = ${FL[sPli]}</b>, ${nPli?nPli+' fois':'ABSENTE'} →
+      ${pliDit?('<b class="b">'+pliDit+'</b>'):'la règle se tait'}<br>
+      &nbsp;&nbsp;<b class="v">M6 ⊕ M12 = ${FL[s612]}</b>, ${ou612.length?ou612.length+' fois':'ABSENTE'} →
+      ${p612?'<b class="v">NUL</b>':'la porte reste fermée'}<br>
+      &nbsp;&nbsp;<b class="o">les trigones</b> : ${[[1,5,9],[2,6,10],[3,7,11],[4,8,12]]
+        .map(g=>{const f=cmL(g.map(h=>t[h]));let n=0;for(let h=1;h<=16;h++)if(t[h]===f)n++;
+          return `<span style="color:${n?'var(--txt)':'var(--vert)'}">${FL[f]}</span>`;}).join(' · ')}<br>
+      &nbsp;&nbsp;<b>validité</b> : ${['Cardinal','Succédent','Cadent'].map((n2,i)=>{
+        const mm=[[1,4,7,10],SUC,[3,6,9,12]][i]; const f=cmL(mm.map(h=>t[h]));
+        let pr=false;for(let h=1;h<=16;h++) if(t[h]===f)pr=true;
+        return `${n2} <b style="color:${pr?'var(--vert)':'var(--rouge)'}">${FL[f]}${pr?'':' ✗'}</b>`;}).join(' · ')}
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>MOTEUR 1 — le nul</h2>
+    <div class="verdict" style="color:${coul}">${dit?'NUL':'PAS DE NUL'}</div>
+    <div class="socle">${esc(st)}</div>
+    ${cellule?`
+      <div>taux de nul dans cette case : <b style="color:${coul}">${cellule.taux!==undefined?cellule.taux:pct(cellule.nul,cellule.n)} %</b>
+        sur <b>${cellule.n}</b> cas${cellule.ailleurs!==undefined?` — contre ${cellule.ailleurs} % ailleurs`:''}</div>
+      <div class="bar"><i style="width:${cellule.taux!==undefined?cellule.taux:pct(cellule.nul,cellule.n)}%;background:${coul}"></i></div>
+      ${cellule.p!==undefined?`<div style="font-size:12px;color:var(--mut)">Fisher p = <b>${cellule.p}</b>${cellule.bonf!==undefined?` · Bonferroni sur 6 tests = <b class="v">${cellule.bonf}</b> — <b class="v">survit</b>`:''}</div>`:''}
+    `:'<div style="color:var(--mut);font-size:13px">Aucune case mesurée ne couvre ce décalage. Le moteur se tait.</div>'}
+    <details class="repli" style="margin-top:12px"><summary>Le détail du nul — la table des k, la porte 6/12, le veto, les témoins</summary>
+    <table><tr><th>k</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>${lignesK}</table>
+    <div class="pt" style="border-left:3px solid ${p612?'var(--vert)':'var(--mut)'};padding-left:10px">
+      <b>LA PORTE 6/12 — TON AXE, LU EN MAISONS DÉRIVÉES</b><br>
+      Tu m'as repris : j'avais testé <b>la somme</b> M4⊕M6⊕M12, trouvé zéro, et écrit « vide ».
+      Je n'avais jamais testé <b>l'axe maison par maison</b>. Or dans ta doctrine :<br>
+      &nbsp;&nbsp;<b>M4</b> = la 4<sup>e</sup> de R1 (le fond) — et la 10<sup>e</sup> de R7 (son but)<br>
+      &nbsp;&nbsp;<b>M6</b> = la 6<sup>e</sup> de R1 (l'usure) — et la 12<sup>e</sup> de R7 (ses ennemis cachés)<br>
+      &nbsp;&nbsp;<b>M12</b> = la 12<sup>e</sup> de R1 (ses ennemis cachés) — et la 6<sup>e</sup> de R7 (son usure)<br>
+      <b class="v">M6 et M12 sont la même chose vue des deux camps, croisée.</b> C'est ce
+      croisement-là qu'il fallait tester.<br><br>
+      Sur ce tirage : <b>M6 ⊕ M12 = ${FL[s612]}</b> —
+      ${p612?'<b class="v">ABSENTE des seize maisons</b>':'présente en M'+ou612.join(', M')}.<br><br>
+      <table>
+        <tr><th>M6 ⊕ M12</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>
+        <tr class="${p612?'on':''}"><td><b>ABSENTE</b></td><td class="n">15</td><td class="n">8</td>
+            <td class="n"><b class="v">53,3 %</b></td></tr>
+        <tr class="${p612?'':'on'}"><td>présente</td><td class="n">42</td><td class="n">5</td>
+            <td class="n">11,9 %</td></tr>
+        <tr><td style="color:var(--mut)">base</td><td class="n">57</td><td class="n">13</td>
+            <td class="n" style="color:var(--mut)">22,8 %</td></tr>
+      </table>
+      Fisher <b class="v">p = 0,0025</b> · max-T sur les <b>48 prédicteurs de l'axe</b> :
+      <b class="v">p = 0,0342, un survivant</b> — deuxième résultat du projet à survivre sur le
+      nul, après l'arc proche.<br><br>
+      <b class="v">Elle rattrape CINQ des sept nuls que le moteur ratait</b> : AmisPuer,
+      PuerFortMaj, PopFortMin, LaetPop — et <b class="o">LaetFortMinAmisVia, le 22/02</b>.
+      Le match qui t'avait mis en colère revient par ton propre axe.
+      Restent invisibles : FortMajTrist et PuerRubeus.<br><br>
+      <b>Et le veto fait le tri tout seul :</b> sur les sept faux de cette porte, quatre ont
+      douze figures distinctes ou plus (Milan, Atalanta, FortMajVia, ViaRubeus) — le veto,
+      déjà branché, les refuse sans qu'on ajoute un réglage.<br>
+      &nbsp;&nbsp;avant : 6 justes / 0 faux / 7 ratés · <b>87,7 %</b> · précision 100 % · rappel 46 %<br>
+      &nbsp;&nbsp;après : <b class="v">11 justes / 3 faux / 2 ratés · 91,2 %</b> · précision 78,6 % · rappel <b class="v">85 %</b><br><br>
+      <b class="o">⚠️ Ce qu'on perd : la précision.</b> La porte ne se trompait jamais quand elle
+      parlait ; maintenant elle se trompe 3 fois sur 14. Les trois faux — ConjVia, PuerCaput,
+      AmisRubConjVia — ne se distinguent par rien de mesuré. L'arbitrage est pris dans le sens du
+      rappel : rater sept nuls sur treize était le vrai défaut du système.
+    </div>
+
+    <div class="pt" style="border-left:3px solid ${troisieme?'var(--or)':'var(--mut)'};padding-left:10px">
+      <b>LA QUATRIÈME PORTE, CANDIDATE — les témoins</b><br>
+      Témoins de ce tirage : <b>${FL[t[13]]}</b> et <b>${FL[t[14]]}</b> → relation
+      <b style="color:${troisieme?'var(--or)':'var(--mut)'}">${esc(relT)}</b>${troisieme?' — <b class="o">elle parlerait</b>':''}<br><br>
+      <table><tr><th>relation des deux témoins</th><th class="n">cas</th><th class="n">nuls</th><th class="n">taux</th></tr>
+      ${Object.keys(NUL.temoins).map(k=>{const x=NUL.temoins[k];
+        return `<tr class="${k===relT?'on':''}"><td>${esc(k)}</td><td class="n">${x.n}</td>`+
+        `<td class="n">${x.nul}</td><td class="n"><b style="color:${x.taux>=40?'var(--vert)':(x.taux<10?'var(--rouge)':'var(--mut)')}">${x.taux} %</b></td></tr>`;}).join('')}
+      </table>
+      Le <b>renversement</b> fait <b class="v">3 nuls sur 6 (50 %)</b> contre 19,6 % ailleurs — mais
+      Fisher p = <b class="o">0,1246</b>, ce n'est pas significatif. Le <b>complément</b> fait
+      <b class="r">0 sur 7</b>, le sens inverse.<br><br>
+      <b>Ce qu'elle rattraperait :</b> les trois nuls sont AmisPuer (4-4), LaetPop (1-1) et
+      <b class="o">LaetFortMinAmisVia — le 22/02</b>, tous les trois ratés aujourd'hui.
+      Branchée à côté de la porte : <b>9 justes / 3 faux</b>, justesse <b>87,7 %</b> (identique),
+      précision 100 % → <b>75 %</b>, rappel 46 % → <b class="v">69 %</b>.
+      <b>Même justesse, trois nuls de plus, trois faux de plus.</b> C'est un arbitrage, pas un gain —
+      il n'est pas à moi de le prendre.<br><br>
+      <span style="color:var(--mut)">Le renversement est un sous-ensemble strict de la seconde porte
+      (structureDuNul) : les six cas de renversement la déclenchent tous, et elle en ajoute deux de
+      plus, tous deux non-nuls. Seconde porte entière à côté de la porte : 9 justes / 5 faux,
+      justesse 84,2 %. Le renversement, c'est elle débarrassée de deux faux.</span>
+    </div>
+
+    <div class="pt" style="border-left:3px solid var(--rouge);padding-left:10px">
+      <b>LE VETO DE RÉPÉTITION</b> — ton mot du 22/02, « un thème aussi miroir qu'aucun autre thème ».
+      Il se compte : <b>${distinctes} figures distinctes</b> sur les 16 maisons de ce tirage.<br>
+      &nbsp;&nbsp;• ≤ 11 distinctes → <b>13 nuls / 38 cas (34,2 %)</b><br>
+      &nbsp;&nbsp;• ≥ 12 distinctes → <b class="r">0 nul / 19 cas</b> · Fisher p = 0,0026<br>
+      Ce n'est pas une porte, c'est un <b>frein</b> : il ne peut qu'annuler un nul, jamais en créer un.
+      Il retire le seul faux qui restait (VillaMain, 13 distinctes) — la porte passe à
+      <b class="v">6 justes / 0 faux, précision 100 %</b>. Seuil réappris 57 fois en leave-one-out :
+      toujours 11, jamais un vrai nul veté. <b class="o">Mais</b> c'est le meilleur de 102 coupures
+      essayées, et corrigé il donne p = 0,102 — il ne survit pas. On le garde parce qu'un veto ne peut
+      rien coûter. <b class="r">Il ne rattrape pas le 22/02</b> (10 distinctes) : la répétition dit où
+      le nul est impossible, pas où il est.
+    </div>
+    <div class="pt">
+      <b>La seule case forte :</b> arc proche <code>k ∈ {2,4,6}</code> <b>et</b> M1/M7 en boucles différentes —
+      <b class="v">4 nuls sur 5 (80 %)</b> contre 17,3 % ailleurs, p = 0,0078, et c'est le
+      <b>premier résultat du projet qui survive à Bonferroni</b> (0,047 sur 6 tests).<br><br>
+      <b>La case à l'envers :</b> le même arc proche quand M1/M7 sont dans la <b>même</b> boucle donne
+      <b class="r">2 nuls sur 6 (33 %)</b> — sous la base. <b class="v">Depuis le 06/09 le moteur principal
+      applique ce filtre</b> (branche <code>porte_nul_corrigee</code>) : il n'annonce plus l'arc proche
+      quand M1 et M7 sont dans la même boucle.<br><br>
+      <b>Ce que ça vaut :</b> porte en production 8 justes / 5 faux (justesse 82,5 %, précision 61,5 %) ·
+      porte corrigée <b class="v">6 justes / 1 faux</b> (justesse <b>86,0 %</b>, précision <b>85,7 %</b>).
+      McNemar : ${esc(M1.mcnemar)} — <b class="o">le gain n'est pas démontré</b>, seule la case l'est.<br><br>
+      <b>En bout de chaîne, d'abord rien.</b> Tant que la porte Carcer du 05/09 tournait à côté, le
+      camp affiché restait à 30/57 : elle rouvrait huit faux nuls derrière le filtre. <b class="v">Éteinte
+      le 06/09 sur ta décision</b>, la porte filtrée tourne seule et le moteur principal fait exactement
+      ce que fait cette page :<br>
+      &nbsp;&nbsp;• règle du nul : 9/8/4 à 78,9 % (précision 52,9 %) → <b class="v">6/1/7 à 86,0 %
+      (précision 85,7 %)</b><br>
+      &nbsp;&nbsp;• camp affiché : 30/57 → <b class="v">33/57</b>, puis <b class="v">34/57</b> avec le veto ci-dessous<br><br>
+      <b class="o">Ce que ça coûte, sans l'arrondir :</b> six pronostics gagnés (Inter, Bologna,
+      Jeudi 27/08, CarcAmis, FortMajLaet2, ConjCaput2), <b>trois perdus</b> — FortMajTrist, PuerRubeus,
+      et <b class="r">le 22/02</b> (le 3-3 avec penalty), c'est-à-dire le match qui avait fait naître
+      la porte Carcer. Elle n'était pas du bruit : elle voyait trois nuls que rien d'autre ne voit.
+      Elle en annonçait sept faux à côté, et c'est ce compte-là qui a tranché.
+    </div>
+    </details>
+  </div>
+
+  <details class="card repli"><summary>Le pliage — les quatre lois, ta doctrine, les huit paires<span class="tag ${pliParle?'ok':'mid'}">${pliParle?'elle parle':'muette'}</span></summary>
+    
+    <div class="socle">Ta trouvaille du 06/09 : replier chaque étage du bouclier sur lui-même.
+      <b>M1+M8 = M2+M7 = M3+M6 = M4+M5 = 9</b> · <b>M9+M12 = M10+M11 = 21</b> ·
+      <b>M13+M14 = 27</b> · <b>M15+M16 = 31</b>.</div>
+
+    <div class="pt" style="border-left:3px solid var(--vert);padding-left:10px">
+      <b>1 — LE PLIAGE PORTE QUATRE LOIS EXACTES</b> (65 536 / 65 536, sans une exception) :<br>
+      &nbsp;&nbsp;(M1⊕M8) ⊕ (M2⊕M7) ⊕ (M3⊕M6) ⊕ (M4⊕M5) = <b class="v">${FL[e9]}</b> = le Juge<br>
+      &nbsp;&nbsp;(M9⊕M12) ⊕ (M10⊕M11) = <b class="v">${FL[e21]}</b> = le Juge<br>
+      &nbsp;&nbsp;(M13⊕M14) = <b class="v">${FL[comb(t[13],t[14])]}</b> = le Juge<br>
+      &nbsp;&nbsp;(M15⊕M16) = <b class="v">${FL[comb(t[15],t[16])]}</b> = M1, la première mère<br>
+      <b>Chaque étage plié donne le Juge, et le dernier rend M1 : la boucle se referme.</b>
+      Calculé en direct sur ce tirage — si une ligne ne correspondait pas, la loi serait fausse.
+    </div>
+
+    <div class="pt" style="border-left:3px solid var(--mut);padding-left:10px">
+      <b>2 — LE 4-6-12 N'EST PAS DE LA GÉOMANCIE</b>, et je te le dis franchement. 21−9=12,
+      27−21=6, 31−27=4 : comme chaque bloc commence là où le précédent finit, ces écarts valent
+      exactement le <b>nombre de maisons couvertes par deux étages</b> — 1 à 12, 9 à 14, 13 à 16.
+      Ça sort de la numérotation, pas des figures : ce serait pareil pour n'importe quel thème.
+      Et à la mesure, l'axe <b>M4 ⊕ M6 ⊕ M12</b> = <b>${FL[cmL([t[4],t[6],t[12]])]}</b> ne prédit rien
+      (présent 56 %, absent 53 %, p = 1,0000). Il a une seule propriété rare : il n'est égal à
+      <b>aucune maison ni à aucune somme de deux maisons</b> — la seule quantité du système dans
+      ce cas. Nouvelle, et vide.
+    </div>
+
+    <div class="pt" style="border-left:3px solid var(--bleu);padding-left:10px">
+      <b>3 — TA DOCTRINE DU 06/09, QUI EXPLIQUE TOUT LE RESTE.</b>
+      « m2 est la ressource de m1, et m8 est la ressource de m7 ». J'avais écrit que rien
+      n'expliquait pourquoi M2⊕M7 et pas M1⊕M8 — <b class="r">c'était faux</b>. M2 est la
+      2<sup>e</sup> maison depuis M1, M8 la 2<sup>e</sup> depuis M7 : ce sont les deux
+      <b>ressources</b>, une par camp. Tes deux paires sont donc les deux façons de croiser un
+      chef avec la ressource de l'adversaire :<br>
+      &nbsp;&nbsp;<b>M1 ⊕ M8</b> = le chef de R1 × la ressource de R7 = <b>${FL[s18]}</b><br>
+      &nbsp;&nbsp;<b>M2 ⊕ M7</b> = la ressource de R1 × le chef de R7 = <b>${FL[sPli]}</b><br><br>
+      <b class="v">Et les sommes NON croisées sont déjà dans le carré, exactement :</b><br>
+      &nbsp;&nbsp;M1 ⊕ M2 = <b class="v">${FL[comb(t[1],t[2])]}</b> = M9 · le chef de R1 plus sa propre ressource<br>
+      &nbsp;&nbsp;M7 ⊕ M8 = <b class="v">${FL[comb(t[7],t[8])]}</b> = M12 · le chef de R7 plus la sienne<br>
+      &nbsp;&nbsp;(M1⊕M8) ⊕ (M2⊕M7) = <b class="v">${FL[comb(comb(t[1],t[8]),comb(t[2],t[7]))]}</b> = M9 ⊕ M12<br>
+      65 536/65 536 chacune. <b>Tes deux croisements somment exactement aux deux nièces qui
+      portent « chef + sa ressource » — ton étage 9 et ton étage 21 sont les deux faces de la
+      même chose.</b>
+    </div>
+
+    <div class="pt" style="border-left:3px solid ${pliDit?'var(--vert)':'var(--mut)'};padding-left:10px">
+      <b>4 — L'ASYMÉTRIE SE MESURE.</b> Nombre d'occurrences de chaque croisement dans le thème,
+      contre le camp, sur les 44 cas hors nuls :<br><br>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+      ${Object.keys(PLI.gradient).map(nom=>`<div style="flex:1;min-width:230px">
+        <table><tr><th>${esc(nom)}</th><th class="n">R1</th><th class="n">taux</th></tr>
+        ${PLI.gradient[nom].map(g=>{const on=(nom==='M2 ⊕ M7'?(nPli>=2?'2 fois ou +':(nPli===1?'1 fois':'0 fois')):(ou18.length>=2?'2 fois ou +':(ou18.length===1?'1 fois':'0 fois')))===g[0];
+          return `<tr class="${on?'on':''}"><td>${g[0]}</td><td class="n">${g[1]}</td>`+
+          `<td class="n"><b style="color:${g[2]>=80?'var(--vert)':(g[2]<=25?'var(--rouge)':'var(--mut)')}">${g[2]} %</b></td></tr>`;}).join('')}
+        </table></div>`).join('')}
+      </div>
+      <b class="v">Gradient net et monotone d'un côté — 93 %, 45 %, 20 % — et plat de l'autre.</b>
+      Le croisement qui parle est celui qui met <b>la ressource de R1 face au chef de R7</b>.
+      Ta doctrine annonçait l'asymétrie, la mesure la confirme.<br><br>
+      <b>Second balayage, indépendant :</b> 44 prédicteurs neufs bâtis sur ta doctrine
+      (points, ouverture, boucle et occurrences des deux ressources ; ressource contre son chef ;
+      les deux nièces ; les deux croisements). max-T : <b class="v">2 survivants, p = 0,0040</b> —
+      plus bas qu'au premier balayage (0,0122). Le résultat tient dans une famille composée
+      autrement.
+    </div>
+
+    <div class="pt">
+      <b>5 — TOUTE TA LISTE, NOMMÉE ET MESURÉE.</b> Huit paires, chacune lue en maisons
+      dérivées — depuis R1 la N<sup>e</sup> maison est la maison N ; depuis R7 c'est
+      ((7+N−2) mod 12)+1. Sur le camp, 44 cas hors nul, base R1 54,5 % :
+      <div style="overflow-x:auto"><table>
+        <tr><th>paire</th><th>ce que c'est</th><th class="n">0 fois</th><th class="n">1 fois</th>
+            <th class="n">2 fois +</th><th class="n">p</th></tr>
+        ${PLI.liste.map(L=>{const [a,b]=L[0]; const s2=comb(t[a],t[b]);
+          let n2=0; for(let h=1;h<=16;h++) if(t[h]===s2) n2++;
+          const cls=L[4]?'on':'';
+          return `<tr class="${cls}"><td><b>M${a} + M${b}</b><br><span style="color:var(--mut);font-size:11px">${FL[s2]} · ${n2} fois ici</span></td>`+
+          `<td style="font-size:11.5px">${esc(L[1])}</td>`+
+          L[2].map((g,i)=>`<td class="n"${L[4]&&i===0?' style="color:var(--vert);font-weight:800"':''}>${g}</td>`).join('')+
+          `<td class="n"><b style="color:${L[3]<0.05?'var(--vert)':'var(--mut)'}">${L[3]<0.001?'0,0008':L[3].toFixed(2).replace('.',',')}</b>${L[3]<0.05?' ★':''}</td></tr>`;}).join('')}
+      </table></div>
+      <b>Le compte :</b> <b class="mut">deux paires ne peuvent JAMAIS être absentes</b> — M13+M14
+      somme au Juge qui occupe M15, M15+M16 somme à M1 : les lois du pliage le leur interdisent.
+      <b>Cinq sont plates</b> (p entre 0,52 et 1,00). <b class="v">Une seule parle.</b><br><br>
+      <b>Et sur le nul ?</b> Aucune. M1+M8 p=0,53 · M2+M7 p=0,73 · M3+M6 p=0,75 · M4+M5 p=0,74 ·
+      M9+M12 p=0,31 · M10+M11 p=0,74. <b>Ton pliage parle du CAMP, pas du nul</b> — et d'une
+      seule paire. Mais c'est le pliage qui l'a fait trouver, et ta doctrine des ressources qui
+      a dit laquelle.
+    </div>
+
+    <div class="pt" style="border-left:3px solid var(--or);padding-left:10px">
+      <b>6 — CE QUI EST BRANCHÉ, ET CE QUI NE L'EST PAS.</b>
+      La case du milieu — une seule occurrence, 45 % — reste <b>muette</b> : elle ne vaut rien.<br><br>
+      <table><tr><th>variante</th><th class="n">camp affiché</th></tr>
+      ${PLI.variantes.map((v,i)=>`<tr class="${i===1?'on':''}"><td>${esc(v[0])}</td>`+
+        `<td class="n"><b${i===2?' class="v"':''}>${v[1]}</b>${i===1?' ← branché':''}</td></tr>`).join('')}
+      </table>
+      <b class="o">La graduée pleine fait mieux — 38/57, le meilleur état jamais mesuré — et je ne
+      la branche pas.</b> Elle décide de TOUS les cas hors nul, ce qui rend le carré, M4/M10, V8 et
+      l'ouverture définitivement muets. Tu as demandé le 05/09 que le carré pilote : le retirer
+      entièrement est ta décision, pas la mienne. Le chiffre est là, la manœuvre est d'un mot.
+    </div>
+
+    <div class="pt" style="border-left:3px solid ${pliParle?'var(--vert)':'var(--mut)'};padding-left:10px">
+      <b>LE DÉTAIL DE LA MESURE.</b>
+      Sur ce tirage, <b>M2 ⊕ M7 = ${FL[sPli]}</b> —
+      ${pliParle?'<b class="v">ABSENTE des seize maisons</b>':'présente en M'+ouPli.join(', M')}.<br><br>
+      <table>
+        <tr><th>M2 ⊕ M7 dans le thème</th><th class="n">cas</th><th>camp</th><th class="n">taux</th></tr>
+        <tr class="${pliParle?'on':''}"><td><b>ABSENTE</b></td><td class="n">14</td>
+            <td><b class="v">R1</b> 13 fois</td><td class="n"><b class="v">92,9 %</b></td></tr>
+        <tr class="${pliParle?'':'on'}"><td>présente</td><td class="n">30</td>
+            <td>R7 19 fois</td><td class="n">63,3 %</td></tr>
+        <tr><td style="color:var(--mut)">base de l'archive</td><td class="n">44</td>
+            <td style="color:var(--mut)">R1 24 fois</td><td class="n" style="color:var(--mut)">54,5 %</td></tr>
+      </table>
+      Fisher exact <b class="v">p = 0,00077</b>. Comme règle seule : 32/44 = <b>72,7 %</b>, et
+      <b>72,7 % aussi en leave-one-out</b>.<br><br>
+      <b>Contre le moteur :</b> sur les 14 cas où elle parle, le moteur faisait <b>11/14</b>,
+      elle fait <b class="v">13/14</b>. Branchée après la porte du nul et avant le carré, le camp
+      affiché passe de <b>34/57</b> à <b class="v">36/57</b> — le meilleur état du camp depuis que
+      le carré pilote. <span style="color:var(--mut)">(Toujours sous les 38/57 d'avant le carré :
+      ses huit points ne sont pas rendus par celle-ci.)</span><br><br>
+      <b class="o">Ce qu'il faut dire contre.</b> C'est le plus fort de 44 prédicteurs du pliage.
+      Corrigé par max-T : <b>p = 0,0122</b>, un survivant sur 44 — <b class="v">il survit</b>.
+      Multiplié par les quatre cibles du même balayage : 0,049, il passe encore de peu. Si on
+      compte aussi les deux autres familles du 06/09, <b class="o">il ne passe plus</b>. Ce qui
+      plaide pour lui : le pliage est une hypothèse posée <b>avant</b> la mesure, et la règle ne
+      parle que du côté à 92,9 %. <b class="r">Le point faible :</b> rien n'explique pourquoi
+      M2 ⊕ M7 et pas M1 ⊕ M8. Les sept autres paires font p entre 0,52 et 1,00.
+    </div>
+  </details>
+
+  <details class="card repli"><summary>Les treize nuls, un par un — où le système voit et où il est aveugle<span class="tag ${NUL.bilan.justes>=10?'ok':'mid'}">${NUL.bilan.justes} vus sur 13</span></summary>
+    
+    <div class="socle">Où le système voit, et où il est aveugle. Chaque ligne est un match réel de
+      l'archive. C'est la table à regarder avant d'ajouter une règle : elle dit ce qui manque.</div>
+    <div style="overflow-x:auto">
+    <table>
+      <tr><th>match</th><th class="n">score</th><th>vu ?</th><th class="n">k</th><th class="n">chefs</th>
+          <th class="n">fig.</th><th class="n">6/12</th><th class="n">Carcer</th>
+          <th class="n">2<sup>e</sup></th><th>témoins</th></tr>
+      ${NUL.cas.map(c=>{const [nom,vu,sc,k,cd,di,ca,sp,rel,o6]=c;
+        return `<tr><td>${esc(nom)}</td><td class="n">${sc||'—'}</td>`+
+        `<td><b style="color:${vu?'var(--vert)':'var(--rouge)'}">${vu?'VU':'raté'}</b></td>`+
+        `<td class="n">${k}</td><td class="n">${cd?'≠':'='}</td><td class="n">${di}</td>`+
+        `<td class="n"${o6===0?' style="color:var(--vert);font-weight:800"':''}>${o6}</td>`+
+        `<td class="n">${ca||'—'}</td><td class="n">${sp?'✓':'—'}</td>`+
+        `<td style="color:${rel==='renversement'?'var(--or)':'var(--mut)'}">${rel||'—'}</td></tr>`;}).join('')}
+    </table></div>
+    <div class="pt">
+      <b>Le bilan du moteur aujourd'hui :</b> il annonce le nul <b>${NUL.bilan.tire}</b> fois,
+      <b class="v">${NUL.bilan.justes} justes</b>, <b>${NUL.bilan.faux} faux</b> —
+      précision <b class="v">${NUL.bilan.precision} %</b>, justesse <b>${NUL.bilan.justesse} %</b>.
+      Mais il en <b class="r">rate ${NUL.bilan.rates} sur 13</b> : rappel ${NUL.bilan.rappel} %.
+      Le moteur du nul ne se trompe jamais quand il parle, et il se tait plus d'une fois sur deux.<br><br>
+      <b>Colonnes :</b> <code>k</code> décalage R1→R7 · <code>chefs</code> ≠ si M1 et M7 sont en
+      boucles différentes · <code>fig.</code> figures distinctes (veto à 12) · <code>6/12</code>
+      occurrences de M6 ⊕ M12 — <b class="v">zéro = la porte 6/12 s'ouvre</b> ·
+      <code>Carcer</code> paires miroir de somme Carcer (porte éteinte le 06/09) ·
+      <code>2<sup>e</sup></code> la seconde porte, structureDuNul, débranchée.<br><br>
+      <b>Regarde la colonne 6/12.</b> Huit des treize nuls ont un zéro, et c'est ta porte qui les
+      prend. Avant elle le système en voyait six ; il en voit <b class="v">onze sur treize</b>.
+      <b class="r">Il n'en reste que deux d'invisibles : FortMajTrist et PuerRubeus</b> — et ce
+      sont les deux seuls nuls qui ont à la fois une occurrence ou plus de M6 ⊕ M12, des chefs
+      dans la même boucle, et un k hors de l'arc. C'est là qu'est le travail restant, et il ne
+      reste que deux cas.
+    </div>
+  </details>
+
+  <details class="card repli"><summary>Les lois exactes des témoins<span class="tag ok">65 536/65 536</span></summary>
+    
+    <div class="socle">Elles ne prédisent rien — ce sont des vérités de structure, vérifiées sur
+      la totalité des thèmes possibles. Elles bornent ce qu'une règle sur les témoins PEUT dire.</div>
+    <ul style="margin:10px 0 0 18px;padding:0;font-size:13px;line-height:1.75">
+      ${NUL.loisTemoins.map(x=>`<li>${esc(x)}</li>`).join('')}
+    </ul>
+    <div class="pt">Conséquence pratique : une règle du nul fondée sur « les témoins se ressemblent »
+      ne dispose que de <b>cinq états</b> — identiques, renversement, complément, conversion, aucune
+      relation — et quatre d'entre eux forcent la nature du Juge. Il n'y a pas de sixième case à
+      chercher.</div>
+  </details>
+
+  <details class="card repli"><summary>Ce qui a été éteint — la porte Carcer<span class="tag no">06/09</span></summary>
+    
+    <div class="socle">Branchée le 05/09 après le 22/02, éteinte le 06/09 avec les chiffres sous
+      les yeux. Elle tirait sur <b>${NUL.carcerEteinte.tire}</b> cas pour
+      <b>${NUL.carcerEteinte.nul}</b> nuls.</div>
+    <div class="pt">
+      En l'éteignant : <b class="v">${NUL.carcerEteinte.gagnes} pronostics gagnés</b>,
+      <b class="r">${NUL.carcerEteinte.perdus} perdus</b> — ${NUL.carcerEteinte.perdusNoms.map(esc).join(', ')}.
+      Le dernier est le <b>22/02</b>, le match qui l'avait fait naître. Elle n'était pas du bruit :
+      elle voyait trois nuls que rien d'autre ne voit. Elle en annonçait sept faux à côté, et c'est
+      ce compte-là qui a tranché. Camp affiché 30/57 → 33/57, puis 34/57 avec le veto.
+    </div>
+  </details>
+
+  <details class="card repli"><summary>Ce qui a été cherché et n'existe pas<span class="tag no">0 survivant</span></summary>
+    
+    <div class="socle">Deux balayages corrigés par max-T de Westfall-Young. Enregistrés ici pour
+      qu'on ne les recommence pas : sans archive neuve, les rejouer ne peut rien donner de plus.</div>
+    <table>
+      <tr><th>famille</th><th class="n">prédicteurs</th><th>méthode</th><th>résultat</th></tr>
+      ${NUL.ferme.map(f=>`<tr><td>${esc(f[0])}</td><td class="n">${f[1]}</td><td>${esc(f[2])}</td>`+
+        `<td><b class="r">${esc(f[3])}</b></td></tr>`).join('')}
+    </table>
+    <div class="pt">La famille <b>activation</b> couvrait les points actifs par groupe et par niveau,
+      les niveaux purs Via et Populus, les lignes Feu et Terre des chefs et des témoins. La famille
+      <b>structurelle</b> couvrait les déplacements miroir, les témoins, le Juge, la rotation, les
+      points, les répétitions — et toutes les coupures binaires qu'ils permettent. Le meilleur de
+      tout ça, <code>figures distinctes ≤ 11</code>, est devenu le veto ci-dessus : gardé non pas
+      parce qu'il survit (il ne survit pas), mais parce qu'un veto ne peut rien coûter.</div>
+  </details>
+
+  <details class="card repli"><summary>Le détail du balayage — les niveaux d'activation<span class="tag no">0 survivant</span></summary>
+    
+    <div class="socle">Balayage max-T de Westfall-Young, 38 prédicteurs de la famille « activation »,
+      4000 permutations, sur l'archive entière puis dans chaque branche de boucle.</div>
+    <table>
+      <tr><th>strate</th><th class="n">n</th><th>plus fort</th><th class="n">rho</th><th class="n">seuil 5 %</th><th class="n">p</th></tr>
+      <tr><td>tout</td><td class="n">57</td><td>zéro niveau Via</td><td class="n">+0,342</td><td class="n">0,410</td><td class="n">0,235</td></tr>
+      <tr><td>boucles différentes</td><td class="n">32</td><td>zéro niveau Via</td><td class="n">+0,495</td><td class="n">0,514</td><td class="n">0,114</td></tr>
+      <tr><td>même boucle</td><td class="n">25</td><td>actifs des nièces</td><td class="n">−0,522</td><td class="n">0,604</td><td class="n">0,234</td></tr>
+    </table>
+    <div class="pt">
+      <b>La loi, elle, est exacte :</b> le niveau Feu des mères <b>est</b> M5, Air M6, Eau M7, Terre M8 —
+      et pour les filles, M1 à M4. 65 536 sur 65 536. Les niveaux d'activation ne sont pas un calcul
+      de plus : ce sont des maisons déjà présentes dans le carré, donc ils n'apportent aucune
+      information neuve.<br><br>
+      <b>Les égalités remarquées</b> (Feu des mères = Terre des filles, Feu + Terre = le Juge) valent
+      chacune <b>6,25 %</b>, soit exactement 1/16 : du hasard. Elles étaient vraies ensemble dans le
+      thème d'exemple, ce qui arrive 512 fois sur 65 536 — remarquable à l'œil, sans loi derrière.<br><br>
+      <b class="r">Aucun prédicteur ne survit</b>, y compris « zéro niveau Via » que j'avais mis en avant :
+      45,5 % contre 4,8 % en boucles différentes, p isolé 0,0112, mais c'est le meilleur de 38 essais
+      et il passe sous le seuil de famille. Ça veut dire « peut-être », pas « oui ». La famille est
+      fermée : pour la rouvrir il faudrait l'annoncer à l'avance sur ~30 rencontres, ou doubler l'archive.
+    </div>
+  </details>
+
+  <div class="card">
+    <h2>MOTEUR 2 — branche « ${nomB} »<span class="tag ${memeM?'mid':'ok'}">${memeM?'25 cas':'32 cas'}</span></h2>
+    <div class="socle">M1 en boucle ${b1}, M7 en boucle ${b7} — la coupure vaut exactement
+      <b>50,00 %</b> des 65 536 thèmes.</div>
+    <table>
+      <tr><td>nuls dans cette branche</td><td class="n"><b>${B.nul}/${B.n}</b> = ${B.tauxNul} %</td></tr>
+      <tr><td>buts moyens</td><td class="n"><b>${B.buts}</b></td></tr>
+      <tr><td>au-dessus de 2,5</td><td class="n"><b>${B.plus}</b></td></tr>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--mut)">Ce qui prédit le vainqueur, dans cette branche :</div>
+    <table><tr><th>lecture</th><th class="n">rho</th><th class="n">p</th></tr>${lignesB}</table>
+    <div class="pt">
+      ${memeM
+        ? `<b class="o">Dans cette branche, rien n'atteint le seuil.</b> Le meilleur est
+           « active M1−M7 » à p = 0,128 sur 18 matchs à vainqueur connu. Le moteur 2 ne décide pas ici :
+           il montre la branche et se tait.`
+        : `<b class="v">Le contraste d'ouverture M1−M7 vit ici.</b> rho +0,430, p = 0,0423 sur 26 matchs
+           à vainqueur connu — contre +0,306 et p = 0,34 dans l'autre branche. C'est la même lecture,
+           et elle ne porte que d'un côté de la coupure.`}
+      <br><br><b>Honnêteté sur la correction :</b> 8 lectures × 2 branches = 16 tests.
+      Bonferroni ramène le 0,0423 à 0,68 — <b class="o">l'exploration ne démontre rien</b>.
+      Ce qui tient, c'est que le contraste d'ouverture était <b>prédit d'avance</b> par ta doctrine
+      (« bonne pour R1, mauvaise pour R7 ») et qu'il se concentre dans une seule branche.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Ce que cette page ne fait pas</h2>
+    <div style="font-size:12.5px;color:var(--mut);line-height:1.6">
+      Pas de score exact — mesuré à 6 sur 49, écart de signe inverse, échelle fausse d'un facteur 2,5.<br>
+      Pas de corners — rho 0,10 sur l'archive.<br>
+      Pas d'incident — 12 cas renseignés dont 10 avec incident, la famille est inmesurable.<br>
+      Pas de carré, pas de trajectoires, pas de trigones : mesurés, ils ne décident rien.<br><br>
+      <b>Deux moteurs, deux chiffres, chacun avec son effectif.</b> Tout le reste est resté dans l'autre page.
+    </div>
+  </div>`;
+}
+
+['m1','m2','m3','m4'].forEach((id,i)=>{
+  const s=document.getElementById(id);
+  s.innerHTML=FIGS.map(f=>`<option value="${f}">${FL[f]}</option>`).join('');
+  s.value=['populus','via','amissio','puer'][i];
+});
+go();
+</script>
+</body></html>
