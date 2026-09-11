@@ -27333,6 +27333,55 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // Effet secondaire recherché : forcer le perdant à 0 quand « un seul
   // marque » produit enfin des 1-0, 2-0, 3-0 — des scores que le
   // générateur ne savait pas atteindre.
+  // ═══════════════════════════════════════════════════════════════
+  // LE CAMP MUET CORRIGE LE CAMP (11/09/26, Ellemine_D : « intègre la
+  // correction »)
+  //
+  // bttsAxesResidenceV7 lit séparément si la voie offensive de R1, ou celle
+  // de R7, est bloquée — pas de résidence concordante, face à une défense
+  // adverse fermée et passive. Le code jetait ce « lequel » et posait le
+  // zéro sur le PERDANT par défaut, sans jamais demander quel camp la
+  // lecture désignait. Mesuré sur les 65 536 thèmes : sur les 2 914 où un
+  // blocage est lu, le camp muet est celui que le moteur de camp donne
+  // VAINQUEUR dans 1 500 cas — 51 %. Une fois sur deux, le zéro allait donc
+  // au camp opposé à celui que la lecture nommait.
+  //
+  // La correction n'invente aucune règle, elle applique une impossibilité :
+  // UN CAMP QUI NE MARQUE PAS NE PEUT PAS GAGNER. Quand la lecture nomme
+  // muet le camp que le 1N2 donnait vainqueur, le vainqueur bascule. Quand
+  // les DEUX sont lus muets, le score est 0-0 : c'est un nul, et il migre
+  // vers le moteur Nul pour confirmation, exactement comme l'indice de nul
+  // du 1N2.
+  //
+  // Rien d'autre n'est touché : le générateur calibré plus bas donne déjà
+  // zéro au perdant quand le BTTS est non, et zéro partout quand le camp
+  // est 'Nul'. Il suffit donc que le camp soit juste AVANT lui — le zéro
+  // tombe alors tout seul sur le camp que la lecture a nommé.
+  //
+  // Réservé à la carte de rotation : sur la carte M1/M7 les étiquettes ne
+  // désignent pas les mêmes maisons, la lecture n'y serait pas valable.
+  var campMuetCode = null;
+  if (labelA === 'R1' && bttsAxes && bttsAxes.applicable) {
+    if (bttsAxes.bloqueR1 && bttsAxes.bloqueR7) campMuetCode = 'AB';
+    else if (bttsAxes.bloqueR1) campMuetCode = 'A';
+    else if (bttsAxes.bloqueR7) campMuetCode = 'B';
+  }
+  var campMuetCorrige = null, campMuetNul = null;
+  if (campMuetCode === 'AB') {
+    campMuetNul = { avant: winner };
+    try {
+      campMuetNul.confirme = (typeof nulActifV7 === 'function') ? !!nulActifV7(theme) : null;
+    } catch (e) { campMuetNul.confirme = null; }
+    winner = 'Nul';
+    scWinnerCode = 'Nul';
+  } else if (campMuetCode && campMuetCode === scWinnerCode) {
+    var _autre = campMuetCode === 'A' ? 'B' : 'A';
+    campMuetCorrige = { avant: winner, muet: campMuetCode === 'A' ? labelA : labelB };
+    winner = _autre === 'A' ? labelA : labelB;
+    scWinnerCode = _autre;
+    campMuetCorrige.apres = winner;
+  }
+
   if (btts === false) {
     if (scWinnerCode === 'A' && goalB > 0) goalB = 0;
     else if (scWinnerCode === 'B' && goalA > 0) goalA = 0;
@@ -27600,6 +27649,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // seul 1 481 (2,26 %), les deux 81 (0,12 %), aucun 62 622 (95,55 %).
     // Réservé à la carte de rotation : sur la carte M1/M7 les étiquettes ne
     // désignent pas les mêmes maisons, la lecture n'y serait pas valable.
+    bttsCampMuetCorrige: campMuetCorrige,
+    bttsCampMuetNul: campMuetNul,
     bttsCampMuet: (labelA === 'R1' && bttsAxes && bttsAxes.applicable)
       ? (bttsAxes.bloqueR1 && bttsAxes.bloqueR7 ? 'les deux'
         : bttsAxes.bloqueR1 ? 'R1'
@@ -30158,11 +30209,17 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     muetTxt = _mu === 'les deux'
       ? 'les DEUX camps sont lus muets'
       : 'camp muet : <b>' + esc(_nom(_mu)) + '</b> (voie offensive sans résidence concordante, défense adverse fermée et passive)';
-    var _gagnant = card.winner;
-    if (_mu === 'les deux' || (_gagnant && _gagnant === _mu)) {
-      muetAlerte = 'Le camp lu muet est celui que le moteur de camp donne VAINQUEUR : '
-        + 'les deux lectures se contredisent. Le score affiché n\'applique pas le zéro — '
-        + 'il reste à calibrer laquelle des deux prime.';
+    if (card.bttsCampMuetNul) {
+      muetAlerte = 'Les DEUX voies offensives sont bloquées : le score est 0-0, donc un NUL. '
+        + 'Le camp annoncé était ' + esc(card.bttsCampMuetNul.avant || '—') + '. '
+        + 'Migration vers le moteur Nul : '
+        + (card.bttsCampMuetNul.confirme === true ? 'CONFIRMÉ.'
+          : card.bttsCampMuetNul.confirme === false ? 'non confirmé — le nul tient quand même par le score.'
+          : 'indisponible.');
+    } else if (card.bttsCampMuetCorrige) {
+      muetAlerte = 'CAMP CORRIGÉ : le moteur 1N2 donnait ' + esc(card.bttsCampMuetCorrige.avant)
+        + ', mais la lecture des axes le lit muet. Un camp qui ne marque pas ne peut pas '
+        + 'gagner — le vainqueur devient ' + esc(card.bttsCampMuetCorrige.apres) + '.';
     }
   }
   html += '<div data-btts-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+bttsPrincipalColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
@@ -31340,9 +31397,20 @@ function renderTheme(){
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
     // L'en-tête nomme le critère qui a RÉELLEMENT tranché, pas seulement le
     // moteur : c'est la seule façon de relire un verdict après coup.
-    carteR.sourceDecisive = duel1N2Top
-      ? 'Moteur 1N2 — ' + duel1N2Top.critere
-      : 'Moteur 1N2';
+    // L'en-tête doit nommer ce qui a RÉELLEMENT tranché. Quand la lecture du
+    // camp muet a corrigé le camp après coup (un camp qui ne marque pas ne
+    // peut pas gagner), annoncer « Moteur 1N2 » serait rejouer la faute
+    // corrigée quatre fois dans ce fichier : nommer un moteur, en appliquer
+    // un autre.
+    carteR.sourceDecisive = carteR.bttsCampMuetNul
+      ? 'Camp muet des deux côtés — 0-0, donc nul'
+      : carteR.bttsCampMuetCorrige
+        ? ('Camp muet — ' + carteR.bttsCampMuetCorrige.avant + ' lu muet, corrigé en '
+           + carteR.bttsCampMuetCorrige.apres
+           + (duel1N2Top ? ' (le 1N2 disait ' + duel1N2Top.critere + ')' : ''))
+        : duel1N2Top
+          ? 'Moteur 1N2 — ' + duel1N2Top.critere
+          : 'Moteur 1N2';
     carteR.duel1N2 = duel1N2Top;
     // MODE LIVE (03/09/26) — voir appliquerEtatLiveV7 : plancher de score au
     // score déjà connu + signal de cohérence, sans toucher au verdict.

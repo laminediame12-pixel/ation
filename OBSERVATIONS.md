@@ -274,3 +274,41 @@ Les deux options, pour mémoire :
 
 Seul le test prospectif peut départager : c'est exactement une question à
 pré-enregistrer avant les 150 matchs, pas après.
+
+### La correction est intégrée (11/09/2026)
+
+« Intègre la correction. » Le zéro va désormais au camp que la lecture désigne,
+et non plus au perdant par défaut.
+
+La correction n'invente aucune règle. Elle applique une impossibilité :
+**un camp qui ne marque pas ne peut pas gagner.**
+
+- **Le camp lu muet est le perdant** → rien ne change, le zéro était déjà au bon
+  endroit (64 392 thèmes).
+- **Le camp lu muet est le vainqueur** → le vainqueur bascule (**1 063 thèmes,
+  1,6 %**). L'en-tête nomme la correction au lieu d'annoncer le 1N2.
+- **Les deux camps sont lus muets** → le score est 0-0, donc un **nul**, et il
+  migre vers le moteur Nul pour confirmation, comme l'indice de nul du 1N2
+  (**81 thèmes**, dont **22 confirmés**).
+
+Une seule ligne de logique a été ajoutée en amont du générateur de score : le
+générateur calibré donnait déjà zéro au perdant quand le BTTS est non, et zéro
+partout quand le camp est « Nul ». Il suffit que le camp soit juste avant lui —
+le zéro tombe alors tout seul au bon endroit. Aucune arithmétique nouvelle.
+
+**Effet sur les 65 536 thèmes :**
+
+| | avant | après |
+|---|---|---|
+| R1 | 27 939 | 27 871 |
+| R7 | 23 261 | 23 270 |
+| Nul | 14 336 | 14 395 |
+| score 1-0 | 1 532 | 1 464 |
+| score 0-1 | 1 171 | 1 180 |
+| score 0-0 | 757 | 816 |
+
+Les bascules sont quasi symétriques : le total bouge de 68 thèmes pour
+1 063 corrections. Ce n'est pas un biais, c'est une réassignation.
+
+Le moteur 1N2 lui-même est inchangé (R1 36 057 / R7 29 479) : la correction est
+en aval, dans la carte, et elle est nommée là où elle s'applique.
