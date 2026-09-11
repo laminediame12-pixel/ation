@@ -393,7 +393,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
      maintenant directement sous la fenêtre d'export. Aucun identifiant n'a
      changé — les mêmes sumHouse1Bottom..8Bottom, donc updateSumHouseLabels,
      calculateHouseSum et applyPresetSum continuent de la trouver. -->
-<section class="section sum-section"><h2>Somme de 8 maisons</h2><div class="row"><div class="field"><label>Mode</label><select id="sumModeBottom" onchange="updateSumHouseLabels()"><option value="fixed">Mode fixe</option><option value="rotation">Mode rotation</option></select></div><div class="field"><label>Maison 1</label><select id="sumHouse1Bottom"></select></div><div class="field"><label>Maison 2</label><select id="sumHouse2Bottom"></select></div><div class="field"><label>Maison 3</label><select id="sumHouse3Bottom"></select></div><div class="field"><label>Maison 4</label><select id="sumHouse4Bottom"></select></div><div class="field"><label>Maison 5</label><select id="sumHouse5Bottom"></select></div><div class="field"><label>Maison 6</label><select id="sumHouse6Bottom"></select></div><div class="field"><label>Maison 7</label><select id="sumHouse7Bottom"></select></div><div class="field"><label>Maison 8</label><select id="sumHouse8Bottom"></select></div></div><div class="row"><button class="btn-primary" onclick="calculateHouseSum()">Calculer la somme</button><button class="btn-secondary" title="Axe Cardinal — M1 + M4 + M7 + M10 (les angulaires)" onclick="applyPresetSum('1D')">1D · Cardinal</button><button class="btn-secondary" title="Axe Succédent — M2 + M5 + M8 + M11" onclick="applyPresetSum('2D')">2D · Succédent</button><button class="btn-secondary" title="Axe Cadent — M3 + M6 + M9 + M12" onclick="applyPresetSum('3D')">3D · Cadent</button><button class="btn-secondary" title="Trigone offensif de M1 / R1 — M1 + M5 + M9" onclick="applyPresetSum('4D')">4D · offensive 1</button><button class="btn-secondary" title="Trigone offensif de M7 / R7 — M7 + M3 + M11" onclick="applyPresetSum('3B')">3B · offensive 7</button><button class="btn-secondary" onclick="applyPresetSum('V-1')">V-1</button><button class="btn-secondary" onclick="applyPresetSum('V-2')">V-2</button></div><div class="card" id="sum-result"><div class="muted">Aucun calcul pour le moment.</div></div></section>
+<section class="section sum-section"><h2>Somme de 8 maisons</h2><div class="row"><div class="field"><label>Mode</label><select id="sumModeBottom" onchange="updateSumHouseLabels()"><option value="fixed">Mode fixe</option><option value="rotation">Mode rotation</option></select></div><div class="field"><label>Maison 1</label><select id="sumHouse1Bottom"></select></div><div class="field"><label>Maison 2</label><select id="sumHouse2Bottom"></select></div><div class="field"><label>Maison 3</label><select id="sumHouse3Bottom"></select></div><div class="field"><label>Maison 4</label><select id="sumHouse4Bottom"></select></div><div class="field"><label>Maison 5</label><select id="sumHouse5Bottom"></select></div><div class="field"><label>Maison 6</label><select id="sumHouse6Bottom"></select></div><div class="field"><label>Maison 7</label><select id="sumHouse7Bottom"></select></div><div class="field"><label>Maison 8</label><select id="sumHouse8Bottom"></select></div></div><div class="row"><button class="btn-primary" onclick="calculateHouseSum()">Calculer la somme</button><button class="btn-secondary" title="Axe Cardinal — M1 + M4 + M7 + M10 (les angulaires)" onclick="applyPresetSum('1D')">1D · Cardinal</button><button class="btn-secondary" title="Axe Succédent — M2 + M6 + M8 + M12" onclick="applyPresetSum('2D')">2D · Succédent</button><button class="btn-secondary" title="Axe Cadent — M3 + M5 + M9 + M11" onclick="applyPresetSum('3D')">3D · Cadent</button><button class="btn-secondary" title="Trigone offensif de M1 / R1 — M1 + M5 + M9" onclick="applyPresetSum('4D')">4D · offensive 1</button><button class="btn-secondary" title="Trigone offensif de M7 / R7 — M7 + M3 + M11" onclick="applyPresetSum('3B')">3B · offensive 7</button><button class="btn-secondary" onclick="applyPresetSum('V-1')">V-1</button><button class="btn-secondary" onclick="applyPresetSum('V-2')">V-2</button></div><div class="card" id="sum-result"><div class="muted">Aucun calcul pour le moment.</div></div></section>
 
 </section>
 <section id="geomtx-outil-section" style="background:#0f0d18;margin-bottom:12px;padding:8px 0;border-top:3px solid #8E5FC7;">
@@ -2004,10 +2004,18 @@ function renderVerdictCarreGeomantique(theme){
 // et REFUSÉES : jaune contre rouge à ΔE 13,0 en vision normale, sous le
 // plancher de 15 — deux lecteurs sur deux les auraient confondues. Les
 // trois retenues sont les plus proches qui passent.
+// ─── AXES CORRIGÉS (11/09/26, Ellemine_D : « Succédent 2-6-8-12,
+// Cadent 3-5-9-11 ») ───
+// Les trois axes restent une partition exacte de M1 à M12 en trois groupes
+// de quatre, mais ce ne sont PAS les classes modulo 3 de l'astrologie.
+// Ne pas confondre avec les tests d'appartenance « R1 en maison cadente »
+// ([3,6,9,12]) et « Puer en maison succédente » ([2,5,8,11]) employés par
+// le BTTS, le nul et les incidents : ceux-là disent OÙ SE TROUVE une
+// maison, pas quelles maisons se somment. Ils sont inchangés.
 var AXES_CARRE_V7 = [
   { nom: 'Cardinal', maisons: [1, 4, 7, 10], couleur: '#008300' },
-  { nom: 'Succédent', maisons: [2, 5, 8, 11], couleur: '#c98500' },
-  { nom: 'Cadent', maisons: [3, 6, 9, 12], couleur: '#e34948' }
+  { nom: 'Succédent', maisons: [2, 6, 8, 12], couleur: '#c98500' },
+  { nom: 'Cadent', maisons: [3, 5, 9, 11], couleur: '#e34948' }
 ];
 function COULEUR_AXE_CARRE_V7(m) {
   var a = AXES_CARRE_V7[(m - 1) % 3];
@@ -8507,11 +8515,19 @@ function combineMany(arr){return arr.slice(1).reduce((acc,f)=>combine(acc,f),arr
 // désynchronisées une fois (une copie à 3 axes pendant que les autres
 // étaient passées à 4). Les 5 s'appuient désormais sur ce calcul unique ;
 // une seule mise à jour future suffit à les garder synchronisées.
+// ─── CORRECTION DU 11/09/26 (Ellemine_D) : « Succédent 2-6-8-12,
+// Cadent 3-5-9-11 » ───
+// L'« Axe du Partage » ajouté le 31/08/26 portait M3+M5+M9+M11, c'est-à-dire
+// EXACTEMENT le Cadent corrigé : ce n'était pas un quatrième axe, c'était le
+// Cadent, classé sous un autre nom pendant que la place du Cadent était
+// occupée par M3+M6+M9+M12. Ce qui explique après coup pourquoi ce « 4e axe »
+// faisait tomber des thèmes que les trois autres laissaient passer : il
+// testait quelque chose de réel. Il fusionne donc dans le Cadent, et la
+// validité redevient un test à TROIS axes — les trois seuls qui existent.
 const AXES_VALIDITE_DEFS = [
-  {key:'cardinal',  label:'Axe Cardinal (M1 + M4 + M7 + M10)',   houses:[1,4,7,10]},
-  {key:'succedent', label:'Axe Succédent (M2 + M5 + M8 + M11)',  houses:[2,5,8,11]},
-  {key:'cadent',    label:'Axe Cadent (M3 + M6 + M9 + M12)',     houses:[3,6,9,12]},
-  {key:'partage',   label:"Axe du Partage (M3 + M5 + M9 + M11)", houses:[3,5,9,11]}
+  {key:'cardinal',  label:'Axe Cardinal (M1 + M4 + M7 + M10)',  houses:[1,4,7,10]},
+  {key:'succedent', label:'Axe Succédent (M2 + M6 + M8 + M12)', houses:[2,6,8,12]},
+  {key:'cadent',    label:'Axe Cadent (M3 + M5 + M9 + M11)',    houses:[3,5,9,11]}
 ];
 function evaluerAxesValidite(theme){
   return AXES_VALIDITE_DEFS.map(function(def){
@@ -14698,11 +14714,10 @@ function verdictV7Rotation(theme) {
 
 // figureExistsBaseOnly supprimee (11/09/26) - code mort, plus aucun appelant.
 function analyzeValidation(theme){
-  // Les 4 axes de validité (3 classes modulo 3 du carré + l'Axe du Partage,
-  // ajouté le 31/08/26) sont désormais définis une seule fois dans
+  // Les 3 axes de validité sont définis une seule fois dans
   // AXES_VALIDITE_DEFS/evaluerAxesValidite (cf. commentaire à leur
-  // déclaration, près de combineMany) — voir là-bas pour l'historique et la
-  // justification de chaque axe.
+  // déclaration, près de combineMany) — voir là-bas pour la correction du
+  // 11/09/26 et la fusion de l'ancien « Axe du Partage » dans le Cadent.
   // Condition binôme de M1 RETIRÉE (27/07/26, demande explicite Ellemine_D :
   // "on laisse les figures faire le choix") — on ne garde que les axes.
   const results=evaluerAxesValidite(theme);
@@ -17077,15 +17092,18 @@ var LIEUX_MARQUAGE_V7 = [1, 4, 5, 7, 8, 9, 10];
 // ne décide pas.
 // ═══════════════════════════════════════════════════════════════
 
-// TROIS axes, pas quatre (25/08/26, correction Ellemine_D) : les douze
-// maisons se partagent en exactement trois classes de pas 3, et prolonger
-// un axe y ramène (4-7-10-1 = 1-4-7-10). L'ancien Axe Temporel
-// M3+M5+M11+M15 mélangeait deux classes et empruntait M15, qui est un
-// témoin, hors du carré des douze. Retiré partout, validation comprise.
+// TROIS axes, pas quatre (25/08/26, correction Ellemine_D). L'ancien Axe
+// Temporel M3+M5+M11+M15 empruntait M15, qui est un témoin, hors du carré
+// des douze. Retiré partout, validation comprise.
+// MAISONS CORRIGÉES LE 11/09/26 (Ellemine_D) : Succédent 2-6-8-12,
+// Cadent 3-5-9-11. Les trois axes partitionnent toujours exactement M1 à
+// M12, mais ce ne sont pas les classes modulo 3 : seul le Cardinal l'est.
+// Maisons corrigées le 11/09/26 (Ellemine_D) : Succédent 2-6-8-12,
+// Cadent 3-5-9-11.
 var AXES_V7 = [
   { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: [1, 4, 7, 10],  note: 'angulaire' },
-  { cle: 'succedent', nom: 'Axe Succédent', maisons: [2, 5, 8, 11],  note: 'succédent — signal de nul validé' },
-  { cle: 'cadent',    nom: 'Axe Cadent',    maisons: [3, 6, 9, 12],  note: 'cadent' }
+  { cle: 'succedent', nom: 'Axe Succédent', maisons: [2, 6, 8, 12],  note: 'succédent — signal de nul validé' },
+  { cle: 'cadent',    nom: 'Axe Cadent',    maisons: [3, 5, 9, 11],  note: 'cadent' }
 ];
 
 function lectureUnAxeV7(theme, axe) {
@@ -23806,8 +23824,8 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
 // d'incident : si oui ça confirme le thème principal, si non le signal
 // est peu fiable. »
 //
-// Chaque axe du carré — cardinal (M1,4,7,10), succédent (M2,5,8,11),
-// cadent (M3,6,9,12) — donne quatre mères et donc un thème dérivé
+// Chaque axe du carré — cardinal (M1,4,7,10), succédent (M2,6,8,12),
+// cadent (M3,5,9,11) — donne quatre mères et donc un thème dérivé
 // complet, qui a son propre pourcentage d'incident.
 //
 // MESURÉ SUR LES CINQ CAS OÙ L'ON SAIT CE QUI S'EST PASSÉ :
@@ -23856,14 +23874,31 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
 // que le carré produit sur cet axe. Les figures d'incident du fichier
 // sont RUBEUS (Mars), CARCER et TRISTITIA (Saturne).
 //
-// MESURÉ SUR LES CINQ CAS AU RÉSULTAT CONNU :
+// ⚠️ LE « 5/5 » CI-DESSOUS EST PÉRIMÉ DEUX FOIS — 11/09/26.
+// Il avait été mesuré (a) sur cinq cas choisis parmi les vingt que le
+// fichier contient, et (b) avec les ANCIENNES maisons d'axes. Ellemine_D
+// a corrigé les axes le 11/09/26 (Succédent 2-6-8-12, Cadent 3-5-9-11).
+// Remesuré sur LES VINGT cas d'archive au résultat connu :
+//   axes corrigés (actuels) ....... 10/20 = 50 %
+//   anciennes maisons d'axes ...... 13/20 = 65 %
+//   témoin « toujours incident » .. 15/20 = 75 %   ← bat les deux
+// Sur les cinq cas d'origine seuls, la règle passe de 5/5 à 2/5 avec les
+// maisons corrigées. Autrement dit : le 5/5 était un sous-ensemble de
+// cinq cas tiré d'un lot de vingt où la règle faisait déjà 13/20, et il
+// tenait à des maisons d'axes fausses. Ce n'était pas une mesure, c'était
+// une coïncidence lisible après coup.
+// La règle reste branchée telle quelle — on ne la débranche pas sur une
+// archive, ce serait refaire l'erreur dans l'autre sens. Elle est au
+// programme du test prospectif de PROTOCOLE.md, seuil ≥ 112/150.
+//
+// MESURE D'ORIGINE, CONSERVÉE POUR MÉMOIRE (cinq cas, anciennes maisons) :
 //   Bologna    incident   cadent = Tristitia ★
 //   Jeudi      incident   cardinal = Carcer ★ · succédent = Tristitia ★
 //   PuellaVia  incident   succédent = Rubeus ★
 //   PuellaAlbus  rien     aucune somme d'incident
 //   CaputPop     rien     aucune somme d'incident
 //   → « AU MOINS UNE DES TROIS SOMMES EST UNE FIGURE D'INCIDENT » : 5/5
-// Aucune erreur. Comparé à tout le reste :
+// Comparé à tout le reste, sur ces mêmes cinq cas :
 //   au moins une somme d'incident ......... 5/5   ← sa doctrine
 //   filiation double-négative ............. 4/5
 //   somme du succédent seule .............. 4/5
@@ -23873,19 +23908,27 @@ var MOTEURS_INCIDENT_CAMP_V7 = [
 //   dérivé cardinal seul ≥ 50 % ........... 2/5
 //   signaux du thème principal ............ 1/5
 //
-// ET ELLE DISCRIMINE VRAIMENT. Vérifié sur les 65 536 thèmes possibles :
+// SA FRÉQUENCE DE DÉCLENCHEMENT, elle, reste exacte. Vérifié sur les
+// 65 536 thèmes, avant ET après la correction des axes — les chiffres sont
+// rigoureusement identiques, parce que les trois axes partitionnent M1-M12
+// dans les deux cas et que la seule contrainte structurelle (la somme des
+// trois axes vaut toujours Populus) ne dépend pas du découpage choisi :
 //   somme d'un axe donné = figure d'incident ....... 18,8 %
 //   au moins une des trois ......................... 45,7 %
 //   au moins deux .................................. 10,5 %
 //   les trois ...................................... 0,0 % (impossible)
+// En revanche, thème par thème, le découpage change tout : 44,7 % des
+// 65 536 thèmes n'ont plus le même nombre d'axes d'incident qu'avant.
 // Se déclencher sur 46 % des thèmes, c'est trancher : une règle qui
 // dirait oui à 90 % ne vaudrait rien à 5/5.
 //
-// ⚠️ n = 5, dont 3 incidents. Une règle qui répond oui sur 3 cas et juste
-// sur les 5 a une chance sur dix d'y arriver par hasard. Ce qui la sauve
-// n'est pas ce chiffre : c'est qu'elle a été ÉNONCÉE AVANT d'être
-// mesurée, par Ellemine_D, et qu'elle bat les huit autres lectures.
-// C'est branché au verdict — mais chaque nouveau cas peut la défaire.
+// ⚠️ Ce qui reste vrai de cette règle après le 11/09/26 : elle a été
+// ÉNONCÉE AVANT d'être mesurée, par Ellemine_D, et elle se déclenche sur
+// 46 % des thèmes seulement — donc elle tranche, elle ne dit pas oui à
+// tout le monde. Ce qui ne tient plus : le score d'archive. Sur les vingt
+// cas connus elle fait 10/20 et le témoin idiot fait 15/20.
+// C'est branché au verdict, et ça le restera jusqu'à ce qu'un test
+// prospectif — pas une archive — tranche pour de bon.
 function sommesAxesIncidentV7(theme) {
   if (!theme || !theme[1] || typeof AXES_V7 === 'undefined') return null;
   var INC = { rubeus: 1, carcer: 1, tristitia: 1 };
@@ -33286,8 +33329,8 @@ function lectureTrajectoireV7(theme, maisons) {
 // personne ne croie lire la somme de ce que la trajectoire traverse.
 var PRESETS_SOMME_V7 = {
   '1D':  { maisons: [1, 4, 7, 10], nom: 'Axe Cardinal (les angulaires)' },
-  '2D':  { maisons: [2, 5, 8, 11], nom: 'Axe Succédent' },
-  '3D':  { maisons: [3, 6, 9, 12], nom: 'Axe Cadent' },
+  '2D':  { maisons: [2, 6, 8, 12], nom: 'Axe Succédent' },
+  '3D':  { maisons: [3, 5, 9, 11], nom: 'Axe Cadent' },
   '4D':  { maisons: [1, 5, 9],     nom: 'Trigone offensif de M1 / R1', reduit: 'M2 ⊕ M5' },
   '3B':  { maisons: [7, 3, 11],    nom: 'Trigone offensif de M7 / R7', reduit: 'M3 ⊕ M5 ⊕ M6 ⊕ M7' },
   'V-1': { maisons: [1, 2, 3, 4, 9, 10, 13, 15], nom: 'V-1' },

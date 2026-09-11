@@ -37,3 +37,42 @@ Hypothèse née de ce match, à pré-enregistrer avant d'être testée, jamais
 après : quand les DEUX concordances valent 0 ou 0,25, le critère Concordance
 départage deux mauvaises résidences et pourrait n'être que du bruit. Ne pas
 toucher au moteur sur cette base — n = 1.
+
+---
+
+## Correction des axes — 11/09/2026
+
+Ellemine_D : « Succédent 2-6-8-12, Cadent 3-5-9-11. » Cardinal inchangé (1-4-7-10).
+
+L'« Axe du Partage » ajouté le 31/08/26 portait M3+M5+M9+M11 : c'était le Cadent,
+classé sous un autre nom pendant que sa place était occupée par M3+M6+M9+M12.
+Il fusionne dans le Cadent ; la validité redevient un test à trois axes.
+
+Effet mesuré sur les 65 536 thèmes :
+
+| | avant | après |
+|---|---|---|
+| thèmes valides | 41 983 | 46 483 |
+| thèmes dont le nombre d'axes d'incident change | — | 29 280 (44,7 %) |
+| déclenchement « au moins un axe d'incident » | 45,7 % | 45,7 % |
+
+La fréquence de déclenchement est rigoureusement inchangée : les trois axes
+partitionnent M1-M12 dans les deux cas, et la seule contrainte structurelle
+(somme des trois axes = Populus, toujours) ne dépend pas du découpage.
+
+**Ce que la correction a mis au jour.** Le moteur « une somme d'axe est figure
+d'incident » était documenté 5/5. Remesuré sur les VINGT cas d'archive du
+fichier, et non plus sur cinq :
+
+| lecture | score |
+|---|---|
+| axes corrigés | **10/20 = 50 %** |
+| anciennes maisons d'axes | 13/20 = 65 % |
+| témoin « toujours incident » | **15/20 = 75 %** |
+
+Le témoin idiot bat les deux. Le 5/5 était cinq cas choisis dans un lot de vingt
+où la règle faisait déjà 13/20, et il tenait à des maisons d'axes fausses.
+
+La règle reste branchée. On ne débranche pas un moteur sur une archive — ce
+serait refaire la même erreur dans l'autre sens. Elle est au programme du test
+prospectif, seuil ≥ 112/150.
