@@ -29874,6 +29874,18 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + ' · répét. ' + b.repetitions + ' · ancrage ' + b.ancrageRepos
         + ' · résult. ' + b.resultantesPropres + ' · antag. ' + b.expositionAntagonistes;
     };
+    // Figures identiques : la concordance ET la charge sont neutralisées.
+    // Ellemine_D : « le canal M2 est beaucoup plus favorable à Acquisitio que
+    // M12, MAIS ce signal est neutralisé comme critère discriminant puisque
+    // R1 et R7 sont la même figure ». Les afficher comme des chiffres
+    // ordinaires laissait lire un avantage que le moteur ignore : ils sont
+    // maintenant barrés et étiquetés.
+    var mort = d.figuresIdentiques;
+    var val = function (txt) {
+      return mort
+        ? '<span style="text-decoration:line-through; color:#64748b;">' + txt + '</span>'
+        : '<b>' + txt + '</b>';
+    };
     var ligne = function (nom, c, gagne) {
       var niv = (typeof MAP_GEO !== 'undefined' && MAP_GEO[c.figure]) ? MAP_GEO[c.figure] : null;
       return '<div style="flex:1; min-width:190px; padding:7px 9px; border-radius:8px; '
@@ -29889,8 +29901,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + '<br>filiation : transmet <b>' + c.filiation.transmission + '</b>'
         + ' · engendrée <b>' + c.filiation.engendre + '</b>'
         + '<br>environnement : ' + boucleTxt(c) + ' · cohab. ' + c.boucle.cohabitation
-        + '<br><span style="font-size:11.5px;">concordance <b>' + c.concordance + '</b>'
-        + ' · charge active <b>' + c.charge.valeur + '/4</b></span>'
+        + '<br><span style="font-size:11.5px;">concordance ' + val(c.concordance)
+        + ' · charge active ' + val(c.charge.valeur + '/4')
+        + (mort ? ' <i style="color:#f59e0b; font-size:10px;">neutralisées</i>' : '')
+        + '</span>'
         + '</div></div>';
     };
     html += '<div style="margin-top:10px; padding:9px 12px; border:1px solid #7c3aed; '
@@ -29902,7 +29916,22 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '<div style="display:flex; gap:8px; flex-wrap:wrap;">'
       + ligne('R1', d.r1, d.verdict === 'R1') + ligne('R7', d.r7, d.verdict === 'R7')
       + '</div>'
+      + (d.figuresIdentiques
+        ? '<div style="margin-top:6px; padding:6px 9px; border:1px solid #f59e0b; border-radius:7px; '
+          + 'background:rgba(245,158,11,.10); font-size:10px; color:#fcd34d;">'
+          + '⚠️ R1 et R7 portent la MÊME figure. La concordance et la charge sont '
+          + 'donc NEUTRALISÉES : elles ne peuvent pas départager deux occurrences '
+          + 'd\'une même figure, et la charge est identique par construction. Le canal '
+          + 'le plus favorable reste vrai à la lecture, mais il ne compte pas comme '
+          + 'critère discriminant — c\'est le pôle NM rotatif qui tranche.</div>'
+        : '')
       + '<div style="font-size:10px; color:#cbd5e1; margin-top:6px;">' + esc(d.detail) + '</div>'
+      + (d.pole && d.pole.detailR1
+        ? '<div style="font-size:9.5px; color:#cbd5e1; margin-top:4px;">'
+          + 'Pôle R1 (M1+M4+M13) : ' + esc(d.pole.detailR1.join(' + ')) + ' = <b>' + d.pole.poleR1.toFixed(1) + '</b>'
+          + ' &nbsp;·&nbsp; Pôle R7 (M7+M10+M14) : ' + esc(d.pole.detailR7.join(' + ')) + ' = <b>' + d.pole.poleR7.toFixed(1) + '</b>'
+          + ' &nbsp;·&nbsp; écart <b>' + d.pole.ecart.toFixed(1) + '</b> (seuil 1,5)</div>'
+        : '')
       + '<div style="font-size:9px; color:#94a3b8; margin-top:4px; line-height:1.6;">'
       + 'Canaux : ' + pastille('feu', 'Feu M1·M5·M9·M13') + ' ' + esc(SENS.feu)
       + ' — ' + pastille('air', 'Air M2·M6·M10·M14') + ' ' + esc(SENS.air)
