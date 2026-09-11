@@ -34340,14 +34340,27 @@ function renderTheme(){
     // restent définies : elles sont toujours utilisées ailleurs (banc,
     // comparateur de moteurs, panneaux F4P4/moteurs séparés).
     const nulActifReseauTop = nulActifTop;
-    const rWinnerOverride = overrideVerdictV7(currentTheme, nulActifTop);
+    // ─── LE VRAI PILOTE EST LE MOTEUR NM ROTATIF (11/09/26) ───
+    // overrideVerdictV7/decideurVerdictV7 rejouaient l'ANCIENNE cascade
+    // M4/M10 -> V8 -> carré pour décider ET nommer le vainqueur affiché
+    // — exactement le moteur que la bannière du haut de page annonce
+    // comme remplacé. Vérifié sur tirages reproductibles : les deux
+    // cascades divergent (verdictFinal().winnerRotation donnait R7 quand
+    // la vieille cascade et la carte affichée donnaient R1). La carte
+    // suit désormais verdictFinal (moteur NM rotatif) et rien d'autre ;
+    // decideurVerdictV7/overrideVerdictV7 restent définies mais ne sont
+    // plus appelées ici.
+    var vfRotationTop = null;
+    if (!nulActifTop) { try { vfRotationTop = verdictFinal(currentTheme); } catch (e) { vfRotationTop = null; } }
+    // Si le moteur NM rotatif est lui-même indécis (winnerRotation === 'Nul'
+    // sans que nulActifV7 déclare le nul actif), on force 'Nul' plutôt que
+    // de laisser buildVerdictCard retomber sur son propre calcul de duel
+    // brut — sinon un vainqueur non voulu par le moteur NM réapparaît.
+    const rWinnerOverride = !vfRotationTop ? null
+      : (vfRotationTop.winnerRotation === 'R1' || vfRotationTop.winnerRotation === 'R7') ? vfRotationTop.winnerRotation
+      : 'Nul';
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
-    // ─── L'EN-TÊTE DIT LE VRAI DÉCIDEUR (01/09/26) ───
-    // Voir decideurVerdictV7, seule écriture de la cascade qui tranche
-    // réellement le vainqueur affiché.
-    var decideurTop = null;
-    try { decideurTop = decideurVerdictV7(currentTheme, nulActifTop); } catch (e) { decideurTop = null; }
-    carteR.sourceDecisive = decideurTop ? decideurTop.nom : 'aucun décideur';
+    carteR.sourceDecisive = 'Moteur NM rotatif';
     // MODE LIVE (03/09/26) — voir appliquerEtatLiveV7 : plancher de score au
     // score déjà connu + signal de cohérence, sans toucher au verdict.
     try { appliquerEtatLiveV7(carteR, currentTheme); } catch(e) { console.debug('[maintenance] erreur ignorée:', e); }
