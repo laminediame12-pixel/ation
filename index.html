@@ -32949,6 +32949,32 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + (_dp.force === 'EN PROBATION' ? ' (2 tirs seulement, 15,4 % au hasard — à confirmer)' : '');
     }
   } catch (e) { nulPorteTxt=''; }
+  // GARDE-FOU RAISON DU NUL (11/09/26) : nulActifV7 peut aussi être
+  // déclenché par la troisième porte (Carcer en paires miroir, branchée
+  // par défaut) ou par la seconde porte (débranchée par défaut), pas
+  // seulement par la porte principale ou l'identité/opposition M13-M14.
+  // Sans ce complément, la bannière NUL affichait parfois « OUI » suivi
+  // d'« Aucune identité ni opposition » — qui n'explique rien puisque
+  // ce n'est même pas ce qui a déclenché le nul.
+  var nulCarcerTxt = '';
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.actif) {
+      var _cm = nulCarcerMiroirV7(theme);
+      if (_cm && _cm.oui) {
+        nulCarcerTxt = 'Carcer en paires miroir — ' + _cm.nbCarcer + '/' + _cm.nbCarcerTotal
+          + ' paire(s) (' + esc(_cm.paires.join(', ')) + ')';
+      }
+    }
+  } catch (e) { nulCarcerTxt=''; }
+  var nulSecondeTxt = '';
+  try {
+    if (BRANCHES_V7 && BRANCHES_V7.nul_seconde_porte && BRANCHES_V7.nul_seconde_porte.actif) {
+      var _sp = secondePorteNulV7(theme);
+      if (_sp && _sp.secondePorte) {
+        nulSecondeTxt = 'Seconde porte du nul ouverte' + (_sp.lecture ? ' — ' + esc(_sp.lecture) : '');
+      }
+    }
+  } catch (e) { nulSecondeTxt=''; }
   var nullStatus=nulActif?'NUL ACTIF':'NUL NON ACTIF';
   var nullColor=nulActif?'#fbbf24':'#22c55e';
   var nullReason=sdn.nulParIdentite?'Identité M13 = M14':sdn.nulParOpposition?'Opposition / paire d’équilibre M13 ↔ M14':'Aucune identité ni opposition directe entre les juges';
@@ -33093,7 +33119,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // nul (nulPorteTxt, le signal le plus parlant) et retombe sur la
   // lecture d'identite/opposition des juges (nullReason) si la porte
   // n'est pas ouverte.
-  var nulRaisonTxt = nulPorteTxt || nullReason;
+  var nulRaisonTxt = nulPorteTxt || nulCarcerTxt || nulSecondeTxt
+    || (nulActif ? 'Nul détecté (signal combiné, cf. niveauNulV7)' : nullReason);
   html += '<div data-nul-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+nullColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
     + '<div style="font-size:12px; font-weight:900;">⚖️ NUL <span style="color:'+nullColor+'; font-size:15px;">'+(nulActif?'OUI':'NON')+'</span></div>'
     + '<div style="font-size:11px; color:#cbd5e1;">'+esc(nulRaisonTxt)+'</div>'
