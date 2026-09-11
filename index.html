@@ -24275,14 +24275,12 @@ var NUL_CROISEMENT_V7 = true;
 // L'UNIQUE décision de nul du fichier. Tout ce qui affiche ou mesure un
 // verdict doit passer par elle — ne jamais réécrire ce test ailleurs.
 function nulActifV7(theme, structureNul, nulAxe) {
+  // MOTEUR « PORTE DU NUL » SORTI DU SYSTÈME (11/09/26, demande
+  // d'Ellemine_D) : nulParPorteV7/nulDeuxPortesV7/niveauNulV7 ne
+  // pèsent plus sur nulActifV7. Les fonctions restent définies
+  // (utilisées par du code d'observation déjà débranché de l'UI) mais
+  // ne sont plus appelées ici.
   var parLeNul = false;
-  if (NUL_CROISEMENT_V7) {
-    var niv = null;
-    try { niv = niveauNulV7(theme); } catch (e) { niv = null; }
-    parLeNul = !!(niv && niv.niveau === 'MAXIMAL');
-  } else {
-    parLeNul = nulParPorteV7(theme);
-  }
   // La seconde porte n'impose le nul que si elle est branchée. Elle ne
   // l'est pas par défaut (−3 points de justesse, cf. SECONDE_PORTE_NUL_V7),
   // mais elle est affichée dès qu'elle contredit celle-ci : c'est le choix
@@ -32940,15 +32938,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '');
   }
   var yellow=card&&card.cartonsJaunes!=null?card.cartonsJaunes:'—';
+  // « Porte du nul » sortie du système (11/09/26) : ne pèse plus sur
+  // nulActifV7, donc plus de texte de raison basé dessus non plus.
   var nulPorteTxt='';
-  try {
-    var _dp = nulDeuxPortesV7(theme);
-    if (_dp && nulParPorteV7(theme)) {
-      nulPorteTxt = 'Porte du nul ouverte — branche « ' + _dp.porte + ' », décalage +' + _dp.k
-        + ' · porte ' + _dp.force
-        + (_dp.force === 'EN PROBATION' ? ' (2 tirs seulement, 15,4 % au hasard — à confirmer)' : '');
-    }
-  } catch (e) { nulPorteTxt=''; }
   // GARDE-FOU RAISON DU NUL (11/09/26) : nulActifV7 peut aussi être
   // déclenché par la troisième porte (Carcer en paires miroir, branchée
   // par défaut) ou par la seconde porte (débranchée par défaut), pas
