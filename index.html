@@ -20666,39 +20666,10 @@ var SIGNAUX_V7 = [
 
 // Lit un signal SANS deviner son champ. Si le champ déclaré n'existe pas
 // dans l'objet renvoyé, on le dit tout haut au lieu de renvoyer false.
-function lireSignalV7(nomFn, theme) {
-  var def = null;
-  for (var i = 0; i < SIGNAUX_V7.length; i++) {
-    if (SIGNAUX_V7[i].fn === nomFn) { def = SIGNAUX_V7[i]; break; }
-  }
-  if (!def) { console.warn('⚠️ signal inconnu du registre : ' + nomFn); return null; }
-  var fn = (typeof window !== 'undefined') ? window[nomFn] : null;
-  if (typeof fn !== 'function') { console.warn('⚠️ fonction absente : ' + nomFn); return null; }
-  var o = null;
-  try { o = fn(theme); } catch (e) { return null; }
-  if (!o || !Object.prototype.hasOwnProperty.call(o, def.champ)) {
-    console.warn('⚠️ le champ « ' + def.champ + " » n'existe pas dans le retour de "
-      + nomFn + ' — le registre est à corriger, PAS à contourner');
-    return null;
-  }
-  return { actif: !!o[def.champ], brut: o, def: def };
-}
+// lireSignalV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Contrôle d'intégrité : tous les champs déclarés existent-ils vraiment ?
-function verifierRegistreSignauxV7(theme) {
-  var t = theme;
-  if (!t) { try { t = buildThemeFromMothers('via', 'via', 'via', 'via'); } catch (e) { return null; } }
-  var manquants = [];
-  SIGNAUX_V7.forEach(function (d) {
-    var fn = (typeof window !== 'undefined') ? window[d.fn] : null;
-    if (typeof fn !== 'function') { manquants.push(d.fn + ' : fonction absente'); return; }
-    var o = null; try { o = fn(t); } catch (e) { manquants.push(d.fn + ' : lève ' + e.message); return; }
-    if (!o || !Object.prototype.hasOwnProperty.call(o, d.champ)) {
-      manquants.push(d.fn + ' : champ « ' + d.champ + ' » absent');
-    }
-  });
-  return { ok: manquants.length === 0, manquants: manquants, nb: SIGNAUX_V7.length };
-}
+// verifierRegistreSignauxV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // LE REGISTRE DES PISTES (05/09/26) — Ellemine_D : « chaque piste est
@@ -21009,18 +20980,7 @@ var PISTES_V7 = [
 ];
 
 // Ce que le registre sait dire de lui-même.
-function bilanPistesV7() {
-  var par = {};
-  PISTES_V7.forEach(function (p) { par[p.etat] = (par[p.etat] || 0) + 1; });
-  return {
-    total: PISTES_V7.length, parEtat: par,
-    vivantes: PISTES_V7.filter(function (p) { return p.etat === 'VIVANTE' || p.etat === 'À SUIVRE' || p.etat === 'À RETESTER'; }),
-    // Une piste morte qui laisse une porte ouverte n'est pas une impasse :
-    // c'est là que se trouve le travail suivant.
-    portesOuvertes: PISTES_V7.filter(function (p) { return !!p.nonExclu; })
-      .map(function (p) { return { piste: p.nom, ouvre: p.nonExclu, suite: p.suite }; })
-  };
-}
+// bilanPistesV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 function validiteParFamilleV7() { return memoArchiveV7('validiteParFamilleV7', _validiteParFamilleV7); }
 function _validiteParFamilleV7() {
@@ -21241,7 +21201,7 @@ function memoArchiveV7(nom, calcul) {
 }
 // À appeler si un jour un calcul d'archive devient dépendant d'autre
 // chose que les trois clés ci-dessus.
-function viderMemoArchiveV7() { _memoArchiveV7 = {}; }
+// viderMemoArchiveV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Rejoue tous les moteurs sur tous les cas. Mémoïsé : le banc ne dépend
 // pas du thème courant, seulement du code.
@@ -21985,24 +21945,7 @@ function campDoubleV7(theme) {
 // maisons (%12) alors que le pas du moteur est +6 sur SEIZE. Il validait
 // une table imaginaire. Il applique désormais le vrai pas, et ne compte
 // que les positions où les deux camps restent dans les douze maisons.
-function autoTestConfusionV7() {
-  var manques = [], ok = 0, hors = 0;
-  for (var h = 1; h <= 16; h++) {
-    var h7 = ((h - 1 + 6) % 16) + 1;
-    if (h > 12 || h7 > 12) { hors += 1; continue; }
-    if (maisonConfusionV7(h) === maisonConfusionV7(h7)) manques.push('M' + h + '→M' + h7);
-    else ok += 1;
-  }
-  // la confusion doit coïncider avec les maisons à deux éléments
-  var doubles = [], conf = [];
-  for (var k = 1; k <= 12; k++) {
-    if ((ELEMENT_MAISON_V7[k] || '').length === 2) doubles.push(k);
-    if (maisonConfusionV7(k)) conf.push(k);
-  }
-  return { ok: ok, sur: ok + manques.length, hors: hors, manques: manques,
-    memesMaisons: doubles.join(',') === conf.join(','),
-    doubles: doubles, conf: conf };
-}
+// autoTestConfusionV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 function autoTestRelationsFiguresV7() {
   var F = FIGS_V7, idx = {};
@@ -25446,133 +25389,7 @@ var MOTEURS_INCIDENT_V7 = [
 // pendant que le camp venait en réalité de moteurV8V7. Le champ
 // sourceDecisive nommait un décideur qui ne décidait plus. Corrigé en
 // même temps : il nomme maintenant ce qui décide vraiment.
-function renderMoteursPanel(theme) {
-  var ancien = document.getElementById('moteurs-panel');
-  if (ancien) ancien.remove();
-  if (!theme) return;
-  // Même chaîne d'accueil que les autres panneaux : la carte de verdict
-  // vit dans une grille à deux colonnes, s'y insérer directement fait
-  // chevaucher le tableau avec le formulaire (constaté à l'écran).
-  var hote = document.getElementById('f4p4-panel')
-          || document.getElementById('duel-bouclier-panel')
-          || document.getElementById('lieux-marquage-panel')
-          || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
-
-  var panneau = document.createElement('div');
-  panneau.id = 'moteurs-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:12px; border:1px solid #475569; '
-    + 'background:linear-gradient(160deg,#0b1220 0%,#111827 100%);';
-
-  // 1. verdicts de chaque moteur
-  var res = moteursActifsV7(MOTEURS_V7).map(function (m) {
-    var v = null;
-    try { v = m.verdict(theme); } catch (e) { v = null; }
-    return { m: m, v: v };
-  });
-  var nR1 = res.filter(function (r) { return r.v && r.v.camp === 'R1'; }).length;
-  var nR7 = res.filter(function (r) { return r.v && r.v.camp === 'R7'; }).length;
-  var majorite = nR1 > nR7 ? 'R1' : nR7 > nR1 ? 'R7' : null;
-
-  // 2. noms d'équipe si disponibles
-  var t1 = 'R1', t7 = 'R7';
-  try {
-    var e1 = document.getElementById('team1'), e7 = document.getElementById('team2');
-    if (e1 && e1.value) t1 = e1.value;
-    if (e7 && e7.value) t7 = e7.value;
-  } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-
-  function barre(juste, total, teinte) {
-    var pct = Math.round(100 * juste / total);
-    return '<div style="height:4px; border-radius:3px; background:#1e293b; overflow:hidden; margin-top:4px;">'
-      + '<div style="height:100%; width:' + pct + '%; background:' + teinte + ';"></div></div>';
-  }
-
-  function carte(r) {
-    var m = r.m, v = r.v;
-    var j = justesseMoteurV7(m, 'camp');
-    var camp = v && v.camp;
-    var accord = majorite && camp && camp === majorite;
-    var coulCamp = camp === 'R1' ? '#38bdf8' : camp === 'R7' ? '#fb923c' : '#64748b';
-    return '<div style="border:1px solid '
-      + (accord ? '#334155' : '#475569') + '; border-left:3px solid ' + m.teinte + '; '
-      + 'border-radius:8px; padding:8px 10px; background:#0f172a;">'
-      + '<div style="display:flex; align-items:baseline; gap:6px;">'
-      + '<span style="font-size:13px;">' + m.icone + '</span>'
-      + '<span style="font-size:11px; font-weight:700; flex:1;">' + m.nom + '</span>'
-      + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';"'
-      + ' title="' + (j.mesure ? 'justesse rejouée sur le banc' : 'chiffre consigné, non rejoué') + '">'
-      + j.juste + '/' + j.total + (j.mesure ? '' : ' ?') + '</span></div>'
-      + barre(j.juste, j.total, m.teinte)
-      + '<div style="margin-top:7px; font-size:17px; font-weight:800; color:' + coulCamp + '; letter-spacing:.5px;">'
-      + (camp ? (camp === 'R1' ? t1 : t7) : 'sans avis') + '</div>'
-      + (v && v.detail ? '<div class="muted" style="font-size:9px; line-height:1.35; margin-top:2px;">'
-          + v.detail + '</div>' : '')
-      + '<div class="muted" style="font-size:8.5px; margin-top:5px; opacity:.75;">' + m.note + '</div>'
-      + (majorite && camp && !accord
-          ? '<div style="font-size:8.5px; color:#fbbf24; margin-top:3px;">⚡ contre la majorité</div>' : '')
-      + '</div>';
-  }
-
-  var bttsRes = moteursActifsV7(MOTEURS_BTTS_V7).map(function (m) {
-    var v = null; try { v = m.verdict(theme); } catch (e) { v = null; }
-    return { m: m, v: v };
-  });
-  function carteB(r) {
-    var m = r.m, v = r.v;
-    var j = justesseMoteurV7(m, 'btts');
-    var oui = v && v.oui;
-    return '<div style="border:1px solid #334155; '
-      + 'border-left:3px solid ' + m.teinte + '; border-radius:8px; padding:7px 10px; background:#0f172a;">'
-      + '<div style="display:flex; align-items:baseline; gap:6px;">'
-      + '<span style="font-size:12px;">' + m.icone + '</span>'
-      + '<span style="font-size:10.5px; font-weight:700; flex:1;">' + m.nom + '</span>'
-      + '<span style="font-size:10px; font-weight:700; color:' + m.teinte + ';">'
-      + j.juste + '/' + j.total + (j.mesure ? '' : ' ?') + '</span></div>'
-      + barre(j.juste, j.total, m.teinte)
-      + '<div style="margin-top:6px; font-size:15px; font-weight:800; color:'
-      + (v ? (oui ? '#4ade80' : '#f87171') : '#64748b') + ';">'
-      + (v ? (oui ? 'LES DEUX' : 'UN SEUL') : 'sans avis') + '</div>'
-      + (v && v.detail ? '<div class="muted" style="font-size:9px;">' + v.detail + '</div>' : '')
-      + '<div class="muted" style="font-size:8.5px; margin-top:4px; opacity:.75;">' + m.note + '</div>'
-      + '</div>';
-  }
-
-  var ordre = res.slice().sort(function (a, b) {
-    var ja = justesseMoteurV7(a.m, 'camp'), jb = justesseMoteurV7(b.m, 'camp');
-    return (jb.juste / (jb.total || 1)) - (ja.juste / (ja.total || 1));
-  });
-
-  panneau.innerHTML =
-      '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:3px;">'
-    + '<h3 style="margin:0;">🏁 Les moteurs gelés</h3>'
-    + '<span class="muted" style="font-size:10px;">classés par justesse sur les cas réels</span></div>'
-    // ─── PLUS DE « MAJORITÉ » ICI (01/09/26) ───
-    // Ce panneau annonçait « majorité R1 » comme si le compte tranchait.
-    // Il ne reste que les trois moteurs horsVote, dont la documentation
-    // dit qu'ils ne décident de RIEN : afficher leur majorité serait
-    // refaire, en plus petit, le mensonge d'écran qu'on vient d'enlever.
-    + '<div style="font-size:11px; margin-bottom:9px; color:#94a3b8;">'
-    + '<b style="color:#38bdf8;">' + t1 + '</b> ' + nR1 + '  ·  '
-    + '<b style="color:#fb923c;">' + t7 + '</b> ' + nR7
-    + '  —  <b>aucun de ces moteurs ne décide du verdict.</b> '
-    + 'Le camp vient du moteur V8 ; ceux-ci sont en cours de vérification '
-    + 'à l\'aveugle sur les matchs gelés.</div>'
-    + '<div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill,minmax(215px,1fr));">'
-    + ordre.map(carte).join('') + '</div>'
-    + '<div style="margin:12px 0 5px; font-size:11px; font-weight:700; color:#94a3b8;">Les deux marquent</div>'
-    + '<div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill,minmax(215px,1fr));">'
-    + bttsRes.map(carteB).join('') + '</div>'
-    + '<div class="hint" style="margin-top:9px; font-size:9px;">'
-    + 'Les scores sont désormais REJOUÉS à chaque affichage sur les cas de '
-    + 'CAS_REFERENCE_V7 (voir le banc, plus bas) — ils suivent le code au lieu d\'être '
-    + 'recopiés à la main. Aucun moteur ne dépasse 6/7, et 5/7 sur sept cas ne se '
-    + 'distingue pas d\'un tirage à pile ou face — ce tableau sert à accumuler, pas à conclure. '
-    + 'Un moteur « contre la majorité » n\'a pas tort pour autant : c\'est là que se gagnent '
-    + 'les départages.</div>';
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
+// renderMoteursPanel supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // LE PROFIL DU SCORE — ce que le générateur de score produit VRAIMENT.
@@ -26388,369 +26205,13 @@ function renderF4P4Panel(theme) {
   hote.parentNode.insertBefore(panneau, hote.nextSibling);
 }
 
-function renderDuelBouclierPanel(theme) {
-  const ancien = document.getElementById('duel-bouclier-panel');
-  if (ancien) ancien.remove();
-  if (!theme) return;
-  const hote = document.getElementById('lieux-marquage-panel')
-            || document.getElementById('deux-marquent-panel')
-            || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
+// renderDuelBouclierPanel supprimee (11/09/26) - code mort, plus aucun appelant.
 
-  const panneau = document.createElement('div');
-  panneau.id = 'duel-bouclier-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:10px; border:1px solid #a16207;';
+// renderLieuxMarquagePanel supprimee (11/09/26) - code mort, plus aucun appelant.
 
-  let anc = null;
-  try { anc = analyseAncrageDeveloppe(theme); } catch (e) { anc = null; }
-  if (!anc || !anc.applicable) {
-    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🛡️ Duel du bouclier</h3>'
-      + '<div class="muted" style="font-size:11.5px;">Rotation non applicable sur ce thème.</div>';
-    hote.parentNode.insertBefore(panneau, hote.nextSibling);
-    return;
-  }
-  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
+// renderDeuxMarquentPanel supprimee (11/09/26) - code mort, plus aucun appelant.
 
-  function camp(c) {
-    const ligne = function (x) {
-      if (!x.present) return '<div style="font-size:9.5px; color:#64748b;">'
-        + nom(x.fig) + ' — absente</div>';
-      return '<div style="font-size:9.5px;"><b>' + nom(x.fig) + '</b> '
-        + x.detail.map(function (o) {
-            return '<span style="color:' + (o.resultante ? '#94a3b8' : '#e2e8f0') + ';">'
-              + 'M' + o.pos + (o.resultante ? 'r' : '') + '</span> '
-              + '<span style="color:' + (o.conc >= 0.5 ? '#4ade80' : o.conc > 0 ? '#fbbf24' : '#f87171') + ';">'
-              + o.conc + '</span>'
-              + '<span style="color:#818cf8;">/' + o.align + '</span>';
-          }).join(' · ')
-        + '</div>';
-    };
-    return ligne(c.soi) + ligne(c.appui);
-  }
-
-  function bloc(cote, fig) {
-    const d = duelBouclierV7(fig, theme);
-    if (!d) return '';
-    const coul = d.tenu ? '#4ade80' : '#f87171';
-    return '<div style="flex:1; min-width:230px;">'
-      + '<div style="font-size:11px; font-weight:700; margin-bottom:3px;">'
-      + cote + ' · ' + nom(fig) + '</div>'
-      + '<div style="font-size:10px; color:#cbd5e1; margin-bottom:4px;">bouclier <b>'
-      + nom(d.bouclier) + '</b></div>'
-      + '<div style="font-size:10px; color:#f87171; margin-bottom:1px;">⚔ assaillant '
-      + nom(d.assaillant) + ' — <b>' + d.campAssaillant.total + '</b></div>'
-      + camp(d.campAssaillant)
-      + '<div style="font-size:10px; color:#38bdf8; margin:4px 0 1px;">🛡 défenseur (= front) '
-      + nom(d.defenseur) + ' — <b>' + d.campDefenseur.total + '</b></div>'
-      + camp(d.campDefenseur)
-      + '<div style="margin-top:5px; font-size:11px; font-weight:700; color:' + coul + ';">'
-      + (d.tenu ? 'BOUCLIER TENU' : 'BOUCLIER ROMPU') + ' (' + (d.marge > 0 ? '+' : '') + d.marge + ')'
-      + (d.bouclierPresent ? '' : ' — absent du thème, rompu d\'office')
-      + '</div>'
-      + (d.tenu ? '' : '<div style="font-size:9.5px; color:#fbbf24;">→ libère '
-          + nom(d.libere) + ', l\'antagoniste de ' + nom(fig) + '</div>')
-      + (function () {
-          const g = regenerationSiegeV7(fig, cote === 'R1' ? anc.hR1 : anc.hR7);
-          if (!g) return '';
-          const c2 = g.allie ? '#4ade80' : g.hostile ? '#f87171' : '#94a3b8';
-          return '<div style="margin-top:5px; font-size:10px; color:' + c2 + ';">'
-            + '↻ à son siège M' + g.house + ' elle régénère <b>' + nom(g.resultante)
-            + '</b> — ' + g.role
-            + (g.score ? ' (' + (g.score > 0 ? '+' : '') + g.score + ')' : '')
-            + '<br><span style="font-size:9px;">'
-            + (g.dansReseau
-                ? 'dans son réseau, ' + g.pas + ' pas — aucun passage par l\'antagoniste'
-                : 'hors réseau — le chemin passe par l\'antagoniste')
-            + ' · ' + nom(g.resultante) + ' en M' + g.house + ' : concordance '
-            + g.concordance + ', alignement ' + g.alignement + '</span></div>';
-        })()
-      + '</div>';
-  }
-
-  panneau.innerHTML = '<h3 style="margin-bottom:2px;">🛡️ Duel du bouclier</h3>'
-    + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
-    + 'Le défenseur du bouclier <b>est</b> la figure de front (vérifié 16/16). '
-    + 'Chiffres : concordance / niveaux alignés actifs, binôme compris. '
-    + 'Gris = résultante.</div>'
-    + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
-    + bloc('R1', anc.figR1) + bloc('R7', anc.figR7)
-    + '</div>'
-    + '<div class="hint" style="margin-top:7px; font-size:9.5px;">'
-    + '<b>Branché au verdict</b> — un bouclier dont le duel est perdu ne '
-    + 'compte plus que pour moitié dans la chaîne (COEF_BOUCLIER_ROMPU_V7 = '
-    + COEF_BOUCLIER_ROMPU_V7 + '). '
-    + 'Le bouclier d\'une figure est toujours l\'antagoniste de son antagoniste — '
-    + 'le rompre libère donc toujours l\'assaut.</div>';
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
-
-function renderLieuxMarquagePanel(theme) {
-  const ancien = document.getElementById('lieux-marquage-panel');
-  if (ancien) ancien.remove();
-  if (!theme) return;
-  const hote = document.getElementById('deux-marquent-panel')
-            || document.getElementById('roles-exerces-panel')
-            || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
-
-  const d = lectureLieuxMarquageV7(theme);
-  const panneau = document.createElement('div');
-  panneau.id = 'lieux-marquage-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:10px; border:1px solid #0d9488;';
-  if (!d.applicable) {
-    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🥅 Lieux de marquage</h3>'
-      + '<div class="muted" style="font-size:11.5px;">' + d.raison + '</div>';
-    hote.parentNode.insertBefore(panneau, hote.nextSibling);
-    return;
-  }
-
-  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
-  // Teintes NEUTRES quant aux buts : elles disent l'installation, pas une
-  // prédiction — l'étude dit justement que l'installation va à contresens.
-  function teinte(v) { return v >= 15 ? '#38bdf8' : v > 0 ? '#94a3b8' : '#fbbf24'; }
-
-  function pole(p, libelle) {
-    const c = p.rang === 2 ? '#4ade80' : p.rang === 1 ? '#818cf8' : '#64748b';
-    return '<div style="display:flex; gap:5px;">'
-      + '<span class="muted" style="font-size:9.5px; min-width:58px;">' + libelle + '</span>'
-      + '<span style="flex:1; font-size:10px;">' + nom(p.fig)
-      + ' <span style="color:' + c + ';">' + p.libelle + '</span></span></div>';
-  }
-
-  function carte(l) {
-    const badges = (l.estR1 ? '<span style="font-size:9px;padding:0 3px;border-radius:2px;background:#1d4ed8;color:#fff;margin-left:3px;">R1</span>' : '')
-      + (l.estR7 ? '<span style="font-size:9px;padding:0 3px;border-radius:2px;background:#c2410c;color:#fff;margin-left:3px;">R7</span>' : '')
-      + (l.figureDeButs ? '<span style="font-size:9px;padding:0 3px;border-radius:2px;background:#065f46;color:#fff;margin-left:3px;">figure à buts</span>' : '');
-    return '<div style="border:1px solid rgba(148,163,184,.22); border-radius:5px; padding:6px 8px;'
-      + (l.horsListe ? ' background:rgba(29,78,216,.07);' : '') + '">'
-      + '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:6px;">'
-      + '<span><b style="font-size:11.5px;">M' + l.house + '</b> ' + nom(l.fig) + badges + '</span>'
-      + '<b style="color:' + teinte(l.installation) + '; font-size:12px;">' + l.installation + '</b></div>'
-      + '<div class="muted" style="font-size:9.5px; margin:2px 0 4px;">'
-      + l.ouverture + (l.active ? ', active' : ', inactive') + ' · ' + l.etat
-      + (l.horsListe ? ' · siège hors liste' : '') + '</div>'
-      + pole(l.antagoniste, 'frappée par') + pole(l.protecteur, 'bouclier') + pole(l.front, 'front')
-      + '</div>';
-  }
-
-  panneau.innerHTML =
-    '<h3 style="margin-bottom:2px;">🥅 Lieux de marquage</h3>'
-    + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.5;">'
-    + 'Les sept maisons désignées — M1, M4, M5, M7, M8, M9, M10 — plus les sièges R1/R7 s\'ils tombent '
-    + 'ailleurs (fond bleuté). Le chiffre est l\'<b>installation locale</b> de la figure : les six niveaux '
-    + 'lus dans cette maison-là, pas dans tout le thème. En dessous, l\'état de ses trois pôles.<br>'
-    + '<b>Lecture seule.</b> Mesuré sur les 5 thèmes au score connu : l\'état libre/tenue ne prédit ni les '
-    + 'buts ni le BTTS, et l\'installation va à <b>contresens</b> du nombre de buts — mieux les figures sont '
-    + 'installées ici, moins il y a de buts (7 paires sur 9). Les deux totaux ci-dessous sont là pour que '
-    + 'chaque nouveau score confirme ou casse ce renversement.</div>'
-    + '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:9px;">'
-    + '<div style="flex:1; min-width:120px; border:1px solid rgba(13,148,136,.4); border-radius:5px; padding:6px 9px;">'
-    + '<div class="muted" style="font-size:9.5px;">Somme des installations</div>'
-    + '<b style="font-size:16px; color:#2dd4bf;">' + d.sommeInstallation + '</b>'
-    + '<div class="muted" style="font-size:9.5px;">repères réels : 32,7 → 7 buts · 100,4 → 5 buts · 79,6 → 1 but</div></div>'
-    + '<div style="flex:1; min-width:120px; border:1px solid rgba(13,148,136,.4); border-radius:5px; padding:6px 9px;">'
-    + '<div class="muted" style="font-size:9.5px;">Lieux à installation positive</div>'
-    + '<b style="font-size:16px; color:#2dd4bf;">' + d.lieuxPositifs + ' / ' + d.nbLieux + '</b>'
-    + '<div class="muted" style="font-size:9.5px;">repères réels : 4 → 7 buts · 7 → 1 but</div></div></div>'
-    + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(205px,1fr)); gap:7px;">'
-    + d.lieux.map(carte).join('') + '</div>'
-    + (d.figuresDeButsPresentes.length
-        ? '<div class="muted" style="font-size:10px; margin-top:7px;">Figures à buts présentes en base dans le thème : '
-          + d.figuresDeButsPresentes.map(nom).join(', ') + '</div>'
-        : '<div class="muted" style="font-size:10px; margin-top:7px;">Aucune figure à buts présente en base.</div>');
-
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
-
-function renderDeuxMarquentPanel(theme) {
-  const ancien = document.getElementById('deux-marquent-panel');
-  if (ancien) ancien.remove();
-  if (!theme) return;
-  const hote = document.getElementById('roles-exerces-panel')
-            || document.getElementById('sikidy-elementaire-panel')
-            || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
-
-  const d = lectureDeuxMarquentV7(theme);
-  const panneau = document.createElement('div');
-  panneau.id = 'deux-marquent-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:10px; border:1px solid #b45309;';
-
-  if (!d.applicable) {
-    panneau.innerHTML = '<h3 style="margin-bottom:2px;">⚽ Les deux marquent — piste</h3>'
-      + '<div class="muted" style="font-size:11.5px;">' + d.raison + '</div>';
-    hote.parentNode.insertBefore(panneau, hote.nextSibling);
-    return;
-  }
-
-  const vert = '#4ade80', rouge = '#f87171';
-  const c = d.lesDeuxMarquent ? vert : rouge;
-  function route(actif, titre, texte) {
-    return '<div style="display:flex; gap:6px; align-items:baseline; margin-top:3px;">'
-      + '<span style="color:' + (actif ? rouge : '#64748b') + '; font-size:11px;">'
-      + (actif ? '✗' : '·') + '</span>'
-      + '<span style="flex:1;"><b style="font-size:11px;">' + titre + '</b> '
-      + '<span class="muted" style="font-size:10.5px;">' + texte + '</span></span></div>';
-  }
-
-  panneau.innerHTML =
-    '<h3 style="margin-bottom:2px;">⚽ Les deux marquent — piste</h3>'
-    + '<div class="muted" style="font-size:11px; margin-bottom:8px; line-height:1.5;">'
-    + 'La question n\'est pas si le match est serré — le cas réel 6-1 a vu les deux marquer. '
-    + 'Elle est de savoir si le <b>perdant garde la capacité de frapper une fois</b>. Deux façons de '
-    + 'la lui retirer : le vainqueur l\'anéantit, ou sa propre chaîne est percée. '
-    + '<b>Seconde lecture</b> — depuis le 25/08 le verdict BTTS est rendu par l\'ouverture des '
-    + 'sièges (bloc du bas) ; celle-ci reste en comparaison.</div>'
-    + '<div style="font-size:13px; font-weight:700; color:' + c + '; margin-bottom:6px;">'
-    + (d.lesDeuxMarquent ? '⚽⚽ Les deux marquent' : '⚽ Un seul marque') + '</div>'
-    + '<div class="muted" style="font-size:10.5px;">Vainqueur ' + FL[d.vainqueur]
-    + ' · perdant ' + FL[d.perdant] + '</div>'
-    + route(d.aneantiParLaFrappe, 'Frappe du vainqueur',
-        d.frappe ? (FL[d.frappe.cible] + ' — ' + d.frappe.portee
-          + (d.frappe.viseCamp ? ', camp du perdant' : ', hors du camp du perdant')) : '—')
-    + route(d.chainePerdantPercee, 'Chaîne du perdant',
-        (d.chainePerdant !== null ? 'total ' + d.chainePerdant + ' — ' : '')
-        + (d.chainePerdantPercee ? 'percée' : 'intacte'));
-
-  // ── Seconde lecture : la doctrine d'ouverture des sièges ──
-  // Les deux règles ne s'accordent que sur la moitié des thèmes : elles ne
-  // regardent pas la même chose. Le désaccord est montré, pas masqué —
-  // même traitement que chaîne contre sièges pour le verdict.
-  const o = lectureOuvertureButsV7(theme);
-  const oAutre = lectureOuvertureButsV7(theme, o.cadre === 'fixe' ? 'rotation' : 'fixe');
-  if (o.applicable) {
-    const co = o.lesDeuxMarquent ? vert : rouge;
-    const accord = o.lesDeuxMarquent === d.lesDeuxMarquent;
-    function siege(s, nom, coul) {
-      return '<div style="display:flex; gap:6px; align-items:baseline; margin-top:3px;">'
-        + '<span style="color:' + (s.ouvert ? vert : rouge) + '; font-size:11px;">'
-        + (s.ouvert ? '⚽' : '·') + '</span>'
-        + '<span style="flex:1;"><b style="font-size:11px; color:' + coul + ';">' + nom + '</b> '
-        + FL[s.fig] + ' <span class="muted" style="font-size:10.5px;">M' + s.house
-        + ' — ' + (s.ouverture || '?') + (s.active ? ', active' : ', inactive')
-        + (s.figureDeButs ? ', figure à buts' : '') + '</span></span></div>';
-    }
-    panneau.innerHTML +=
-      '<div style="margin-top:11px; padding-top:9px; border-top:1px solid rgba(148,163,184,.25);">'
-      + '<div style="font-size:12px; font-weight:700; color:' + co + ';">'
-      + (o.lesDeuxMarquent ? '⚽⚽ Les deux marquent' : '⚽ Un seul marque')
-      + ' <span class="muted" style="font-weight:400; font-size:10.5px;">— ouverture des sièges R1/R7 · <b>c\'est elle qui rend le verdict</b></span></div>'
-      + siege(o.R1, 'R1', '#60a5fa') + siege(o.R7, 'R7', '#fb923c')
-      + (o.bonusM5M8.length
-          ? '<div class="muted" style="font-size:10px; margin-top:4px;">Bonus signalé : '
-            + o.bonusM5M8.join(', ') + ' — <b>affiché, non compté</b> : ajouté au verdict il fait '
-            + 'tomber le score sur les cas réels (il rend Milan 7-0 et Napoli 0-1 faussement positifs).</div>'
-          : '')
-      // Le cadre n'est PAS tranché : les deux se valent sur les cas réels et
-      // divergent sur 40% des thèmes. On montre systématiquement l'autre
-      // lecture pour que chaque nouveau résultat réel départage.
-      + (oAutre.applicable
-          ? '<div style="margin-top:6px; padding:5px 7px; border-radius:5px; font-size:10.5px; background:rgba(148,163,184,.08); border:1px solid rgba(148,163,184,.28);">'
-            + '<b>Autre cadre — ' + (oAutre.cadre === 'fixe' ? 'maisons fixes M1/M7' : 'sièges R1/R7 de la rotation') + ' :</b> '
-            + '<span style="color:' + (oAutre.lesDeuxMarquent ? vert : rouge) + ';">'
-            + (oAutre.lesDeuxMarquent ? 'les deux marquent' : 'un seul marque') + '</span>'
-            + (oAutre.lesDeuxMarquent === o.lesDeuxMarquent
-                ? ' — même conclusion.'
-                : ' — <b>conclusion opposée.</b> Les deux cadres sont à égalité (4/6 chacun) et divergent sur 40% des thèmes : le choix n\'est pas tranché. Interrupteur BTTS_CADRE.')
-            + '<div class="muted" style="margin-top:2px;">' + oAutre.synthese + '</div></div>'
-          : '')
-      + '<div style="margin-top:6px; padding:5px 7px; border-radius:5px; font-size:10.5px; background:'
-      + (accord ? 'rgba(34,197,94,.10)' : 'rgba(248,113,113,.10)') + '; border:1px solid '
-      + (accord ? 'rgba(34,197,94,.35)' : 'rgba(248,113,113,.35)') + ';">'
-      + (accord
-          ? '✅ Les deux lectures concordent.'
-          : '⚠️ <b>Les deux lectures se contredisent.</b> Elles ne s\'accordent que sur 50% des thèmes — '
-            + 'elles ne mesurent pas la même chose. Sur les 5 cas réels : ouverture des sièges 4/5 '
-            + '(non ajustée), perdant muet 5/5 (ajustée sur ces cas, donc moins probante).')
-      + '</div></div>';
-  }
-
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
-
-function renderRolesExercesPanel(theme) {
-  const ancien = document.getElementById('roles-exerces-panel');
-  if (ancien) ancien.remove();
-  if (!theme) return;
-  const hote = document.getElementById('sikidy-elementaire-panel')
-            || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
-
-  const d = rolesExercesTheme(theme);
-  if (!d.applicable) return;
-
-  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
-  const COUL = {effectif: '#4ade80', affaibli: '#fbbf24', latent: '#818cf8',
-                'contrée': '#38bdf8', 'à vide': '#64748b'};
-  const badge = function (t) {
-    return '<span style="font-size:9px; padding:1px 4px; border-radius:2px; background:'
-      + (t === 'R1' ? '#1d4ed8' : t === 'R7' ? '#c2410c' : '#6d28d9')
-      + '; color:#fff;">' + t + '</span>';
-  };
-
-  // Une carte par figure plutôt qu'un tableau à cinq colonnes : à 430 px
-  // le tableau se coupait, et les rôles sont plus lisibles empilés.
-  function ligneRole(ro) {
-    const c = ro.portee === 'effectif' ? (ro.hostile ? '#f87171' : COUL.effectif) : COUL[ro.portee];
-    return '<div style="display:flex; gap:5px; align-items:baseline;">'
-      + '<span class="muted" style="font-size:10px; min-width:62px;">' + ro.libelle + '</span>'
-      + '<span style="flex:1;"><span style="color:' + c + ';">' + nom(ro.dest) + '</span>'
-      + (ro.surChef ? ' ' + badge(ro.surChef) : '')
-      + (ro.compte
-          ? '<span style="font-size:9px; padding:0 3px; border-radius:2px; margin-left:3px; background:'
-            + (ro.hostile ? '#166534' : '#7f1d1d') + '; color:#fff;">'
-            + (ro.hostile ? 'frappe le camp adverse' : 'sert le camp adverse') + '</span>'
-          : '')
-      + '<span class="muted" style="font-size:10px;"> — ' + ro.etat.libelle + '</span>'
-      + ' <span style="color:' + c + '; font-size:10px;">' + ro.portee + '</span></span></div>';
-  }
-
-  function carte(l) {
-    const sol = l.solide
-      ? '<span style="color:#4ade80;">solide</span>'
-      : '<span style="color:#fbbf24;">fragile</span>';
-    const etatSoi = l.etatSoi.libelle
-      + (l.siege ? ' · siège M' + l.siege + (l.siegeSecond ? ' et M' + l.siegeSecond : '') : '');
-    return '<div style="border:1px solid rgba(148,163,184,.22); border-radius:5px; padding:7px 8px;'
-      + (l.chef ? ' background:rgba(124,58,237,.08);' : '') + '">'
-      + '<div style="margin-bottom:4px;">' + (l.chef ? badge(l.chef) + ' ' : '')
-      + '<b>' + nom(l.fig) + '</b></div>'
-      + '<div class="muted" style="font-size:10px; margin-bottom:5px;">' + etatSoi + ' · ' + sol
-      + (l.scoreSoi !== null ? ' (' + l.scoreSoi + ')' : '') + '</div>'
-      + l.roles.map(ligneRole).join('')
-      + '</div>';
-  }
-
-  const panneau = document.createElement('div');
-  panneau.id = 'roles-exerces-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:10px; border:1px solid #7c3aed;';
-  panneau.innerHTML =
-    '<h3 style="margin-bottom:2px;">🎭 Rôles exercés par chaque figure</h3>'
-    + '<div class="muted" style="font-size:11px; margin-bottom:9px; line-height:1.55;">'
-    + 'Chaque figure tient les quatre rôles à la fois : elle <b>frappe</b> la figure placée trois crans plus loin, '
-    + 'et sert de <b>binôme</b>, de <b>bouclier</b> et de <b>front</b> à trois autres. Le rôle hostile porte toujours '
-    + 'sur l\'autre boucle, les trois rôles alliés sur la sienne. Portée d\'un rôle : '
-    + '<span style="color:#4ade80;">effectif</span> (destinataire ancré en base, exerçante debout) · '
-    + '<span style="color:#818cf8;">latent</span> (destinataire seulement en résultante) · '
-    + '<span style="color:#fbbf24;">affaibli</span> (exerçante fragile) · '
-    + '<span style="color:#38bdf8;">contrée</span> (frappe sur une cible à son repos, qui résiste) · '
-    + '<span style="color:#64748b;">à vide</span> (destinataire absent). '
-    + '<b>Branché au verdict depuis le 25/08.</b> Pour R1 et R7, deux comptes s\'ajoutent à la solidité '
-    + 'de chaîne : les rôles <b>reçus</b> (bouclier, front, binôme, moins la frappe subie), et les rôles '
-    + '<b>exercés</b> — dont seuls comptent ceux qui touchent le camp d\'en face, signalés ici : '
-    + '<span style="background:#166534; color:#fff; padding:0 3px; border-radius:2px; font-size:9px;">frappe le camp adverse</span> rapporte, '
-    + '<span style="background:#7f1d1d; color:#fff; padding:0 3px; border-radius:2px; font-size:9px;">sert le camp adverse</span> coûte. '
-    + 'Les autres figures restent en lecture.</div>'
-    + '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:7px; font-size:11.5px; line-height:1.5;">'
-    + d.lignes.map(carte).join('')
-    + '</div>';
-
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
+// renderRolesExercesPanel supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // RETIRÉ (24/08/26) : un premier essai avait branché la figure de front
 // comme pénalité additive dans verdictFamilialEngine, avec un panneau
@@ -26766,28 +26227,7 @@ function renderRolesExercesPanel(theme) {
 // Elle ne remplace pas les familles : elle fournit d'abord un équilibre
 // élémentaire, puis sert de départage lorsque le moteur principal est égal.
 // ═══════════════════════════════════════════════════════════════
-function procedureR1R7(theme, figR1, hR1, figR7, hR7){
-  const r1=puissanceElementaireR1R7(figR1,hR1,theme);
-  const r7=puissanceElementaireR1R7(figR7,hR7,theme);
-  const n=neutralisationElementaireR1R7(r1,r7);
-  const c1=n.restA.length, c7=n.restB.length;
-  const sameRemainder=c1===c7 && n.restA.slice().sort().join(',')===n.restB.slice().sort().join(',');
-  let balance=0;
-  if(c1>c7) balance=1;
-  else if(c7>c1) balance=-1;
-  else if(!sameRemainder){
-    // Même quantité, mais composition différente : on ne force pas un
-    // vainqueur. La composition reste une information de contrôle.
-    balance=0;
-  }
-  return {
-    r1:r1,r7:r7,neutralisation:n,
-    remainderR1:n.restA.slice(), remainderR7:n.restB.slice(),
-    balance:balance,
-    balanced:balance===0,
-    rule:'F↔E ; A↔T ; 1=actif ; 2=passif ; L1=Feu/L2=Air/L3=Eau/L4=Terre'
-  };
-}
+// procedureR1R7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 
@@ -26796,51 +26236,7 @@ function procedureR1R7(theme, figR1, hR1, figR7, hR7){
 // La résultante d'une figure dans sa maison est calculée avec FIGS[pos-1]
 // (fonction getResultant). Le colocataire est ensuite relié au repos de
 // l'adversaire et à la figure elle-même via BINOMES_V7/ANTAGONISTES_V7.
-function coucheRelationnelleR1R7(figR1,hR1,figR7,hR7,theme){
-  const resultante = (fig,pos) => getResultant(fig,pos);
-  const r1Res = resultante(figR1,hR1);
-  const r7Res = resultante(figR7,hR7);
-  const reposR1 = FIGS_V7[hR1-1];
-  const reposR7 = FIGS_V7[hR7-1];
-  const positions = fig => {
-    const out=[];
-    for(let m=1;m<=16;m++) if(theme[m]===fig) out.push(m);
-    return out;
-  };
-  const rel = (res, fig, ownRepos, oppFig, oppRepos) => {
-    const ownBin = BINOMES_V7[fig];
-    const ownAnt = ANTAGONISTES_V7[fig];
-    const oppBin = BINOMES_V7[oppFig];
-    const oppAnt = ANTAGONISTES_V7[oppFig];
-    let score=0, signals=[];
-    const posRes=positions(res);
-    if(posRes.length){ score += 1.5; signals.push('résultante ancrée dans le thème'); }
-    if(res===ownBin){ score += 3; signals.push('colocataire = binôme direct de sa figure'); }
-    if(res===ownAnt){ score -= 3; signals.push('colocataire = antagoniste direct de sa figure'); }
-    if(res===oppBin){ score += 2; signals.push('colocataire = binôme direct de R7/R1 adverse'); }
-    if(res===oppAnt){ score += 2.5; signals.push('colocataire = antagoniste direct de R7/R1 adverse'); }
-    // Chaîne spécifique de repos : la résultante attaque la figure de repos
-    // qui porte l'adversaire. C'est la relation observée dans le cas R7 Via→Amissio.
-    if(res===ANTAGONISTES_V7[oppRepos]){
-      score += 4;
-      signals.push('colocataire = antagoniste de la figure de repos de l’adversaire');
-    }
-    // Chaîne inverse : la résultante est le binôme de la figure de repos adverse.
-    if(res===BINOMES_V7[oppRepos]){
-      score += 2.5;
-      signals.push('colocataire = binôme de la figure de repos de l’adversaire');
-    }
-    return {score,signals,posRes,ownBin,ownAnt,oppBin,oppAnt,ownRepos,oppRepos};
-  };
-  const r1=rel(r1Res,figR1,reposR1,figR7,reposR7);
-  const r7=rel(r7Res,figR7,reposR7,figR1,reposR1);
-  const env = fig => {
-    const set=[];
-    [hR1,hR7].forEach(h=>{ if(Math.abs(h-hR1)<=2 || Math.abs(h-hR7)<=2) set.push({house:h,fig:theme[h]}); });
-    return set;
-  };
-  return {r1:{figure:figR1,house:hR1,resultante:r1Res,...r1,environment:env(figR1)},r7:{figure:figR7,house:hR7,resultante:r7Res,...r7,environment:env(figR7)},ecart:r1.score-r7.score};
-}
+// coucheRelationnelleR1R7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // MOTEUR NM ROTATIF — REMPLACEMENT DU MOTEUR DE VERDICT
@@ -26942,11 +26338,7 @@ function nmFigureEnergy(fig){
   const row = nmFigurePoints(fig);
   return row ? row.reduce((a,b)=>a+Number(b||0),0) : 6;
 }
-function nmConductiveState(fig, element){
-  const row = nmFigurePoints(fig);
-  const idx = {Feu:0,Air:1,Eau:2,Terre:3}[element];
-  return row && idx!==undefined && Number(row[idx])===1 ? 1 : 0;
-}
+// nmConductiveState supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // MOTEUR G_VOL — version intégrée de la matrice fournie par l'utilisateur.
 // Corrections des confusions de figures :
@@ -27201,7 +26593,7 @@ function moteurVainqueurPredictif(theme){
 }
 
 // Compatibilité : ancien nom conservé, mais il appelle désormais le moteur prédictif.
-function moteurVainqueurCircuit(theme){ return moteurVainqueurPredictif(theme); }
+// moteurVainqueurCircuit supprimee (11/09/26) - code mort, plus aucun appelant.
 
 function verdictFamilialEngine(theme){
   // Compatibilité technique : le nom historique reste disponible pour les
@@ -27376,16 +26768,7 @@ function armementChaos(campPos, theme){
 // (échecs : M10 écart 1 → nul réel; M13 7-0 l'irréductible).
 // STATUT : signal INFORMATIF, sans pouvoir décisionnel — tracké en stats.
 // ═══════════════════════════════════════════════════════════════
-function figureAlignee(fig, pos, theme){
-  if (fig === FIGS_V7[pos-1]) return true; // repos absolu
-  const reposFig = FIGS_V7[pos-1];
-  const cycleOf = f => (FIGS_V7.indexOf(f) % 2 === 0) ? 'impair' : 'pair';
-  if (cycleOf(fig) !== cycleOf(reposFig)) return false;
-  const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
-  const e1 = els[fig], e2 = MAISON_ELEM_V7[pos];
-  if (e1===e2) return true;
-  return (e1==='feu'&&e2==='air')||(e1==='air'&&e2==='feu')||(e1==='terre'&&e2==='eau')||(e1==='eau'&&e2==='terre');
-}
+// figureAlignee supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // NŒUDS D'ÉCHANGE — une maison (N'IMPORTE laquelle des 16) dont la
@@ -27398,20 +26781,7 @@ function figureAlignee(fig, pos, theme){
 // F.Minor renverse; Real: nœud M7 écrasé par juge-favori).
 // STATUT : signal informatif.
 // ═══════════════════════════════════════════════════════════════
-function noeudsEchange(campPos, theme){
-  const campFig = theme[campPos];
-  const aval = BINOMES_V7[campFig];
-  let amont = null;
-  for (const f in BINOMES_V7) { if (BINOMES_V7[f]===campFig) { amont = f; break; } }
-  const noeuds = [];
-  for(let p=1;p<=16;p++){
-    const base = theme[p], res = combine(theme[p], FIGS_V7[p-1]);
-    if((base===amont&&res===aval)||(base===aval&&res===amont)){
-      noeuds.push({p, base, res, aligne: figureAlignee(base, p, theme)});
-    }
-  }
-  return noeuds;
-}
+// noeudsEchange supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 
@@ -27441,22 +26811,9 @@ function noeudsEchange(campPos, theme){
 // pas encore contre-testé sur l'archive — ne pèse pas dans verdictFinal
 // tant que non validé.
 // ═══════════════════════════════════════════════════════════════
-function scoreNegativiteFig(fig){
-  var s = 0;
-  if (!isForte(fig)) s += 1;
-  if (!isOuverte(fig)) s += 1;
-  if (!isActive(fig)) s += 1;
-  return s;
-}
-function figureNegativeDangereuse(fig){
-  return scoreNegativiteFig(fig) >= 2; // majorité de traits négatifs (faible/fermée/passive)
-}
-function binomeConfirmeDansTheme(fig, theme){
-  var bin = BINOMES_V7[fig];
-  if(!bin) return false;
-  for(var p=1;p<=16;p++) if(theme[p]===bin) return true;
-  return false;
-}
+// scoreNegativiteFig supprimee (11/09/26) - code mort, plus aucun appelant.
+// figureNegativeDangereuse supprimee (11/09/26) - code mort, plus aucun appelant.
+// binomeConfirmeDansTheme supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 
@@ -27719,25 +27076,7 @@ function forceFigure(fig, theme){
 // souveraine de la tradition. JAMAIS observée sur 16 thèmes (max 1
 // maillon) : signal rarissime, incontesté, dormant.
 // ═══════════════════════════════════════════════════════════════
-function chaineDeRepos(theme){
-  // Chaîne LIBRE : plus longue suite consécutive (ordre binôme) de figures
-  // chacune chez elle (base OU résultante dans sa maison de repos),
-  // départ depuis n'importe quelle figure. Seuil souverain : ≥3 maillons.
-  const chezElle = f => {
-    const m = FIGS_V7.indexOf(f)+1;
-    return theme[m]===f || combine(theme[m], FIGS_V7[m-1])===f;
-  };
-  let best = {n:0, membres:[], aval:null};
-  FIGS_V7.forEach(start=>{
-    let f=start, n=0; const membres=[];
-    for(let i=0;i<8;i++){
-      if(chezElle(f)){ n++; membres.push(f); f=BINOMES_V7[f]; }
-      else break;
-    }
-    if(n>best.n) best={n, membres, aval:f};
-  });
-  return best;
-}
+// chaineDeRepos supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // ORIENTATION DES FORCES (04/07/26) — « la concordance rend la figure
@@ -27844,17 +27183,8 @@ var POINTS_FIG = (function(){
   if(mg){ for(var k in mg){ v[k] = mg[k].reduce(function(s,x){return s+x;},0); } }
   return v;
 })();
-function reductionTheo(n){ while(n>9){ n = String(n).split('').reduce(function(s,d){return s + (+d);},0); } return n; }
-function methodePoints(theme){
-  var CAMP1=[1,2,3,4,9,10,13,16], CAMP2=[5,6,7,8,11,12,14,15];
-  var p1=0,p7=0;
-  CAMP1.forEach(function(p){ p1 += POINTS_FIG[theme[p]]||0; });
-  CAMP2.forEach(function(p){ p7 += POINTS_FIG[theme[p]]||0; });
-  var r1=reductionTheo(p1), r7=reductionTheo(p7);
-  var egal = (r1===r7);
-  return {p1:p1, p7:p7, r1:r1, r7:r7, egal:egal,
-    resume:'🔢 Méthode des points (du maître) : Camp M1 = '+p1+' points (réduit '+r1+') | Camp M7 = '+p7+' points (réduit '+r7+')'+(egal?' → ÉGALITÉ des réductions : signal de NUL (arithmétique de Pietro d Abano)':' → M'+(p1>p7?'1':'7')+' a plus de points')};
-}
+// reductionTheo supprimee (11/09/26) - code mort, plus aucun appelant.
+// methodePoints supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 
@@ -27877,23 +27207,9 @@ function methodePoints(theme){
 // empiriquement isolément -> signal d'étude uniquement, aucun poids
 // dans verdictFinal tant qu'aucune validation rétrospective n'est faite.
 // ═══════════════════════════════════════════════════════════════
-function autoNourritBinome(fig, pos){
-  if (fig === FIGS_V7[pos-1]) return false; // deja son propre repos : couvert ailleurs, pas ce signal
-  return AUTO_CONSTRUCT_HOUSE[fig] === pos;
-}
-function autoDetruitAntagoniste(fig, pos){
-  if (fig === FIGS_V7[pos-1]) return false;
-  return AUTO_DESTRUCT_HOUSE[fig] === pos;
-}
-function signauxAutoNourriture(theme){
-  const nourrit = [], detruit = [];
-  for (let pos=1; pos<=16; pos++){
-    const fig = theme[pos];
-    if (autoNourritBinome(fig,pos)) nourrit.push({pos, fig, binome:BINOMES_V7[fig]});
-    if (autoDetruitAntagoniste(fig,pos)) detruit.push({pos, fig, antagoniste:ANTAGONISTES_V7[fig]});
-  }
-  return {nourrit, detruit};
-}
+// autoNourritBinome supprimee (11/09/26) - code mort, plus aucun appelant.
+// autoDetruitAntagoniste supprimee (11/09/26) - code mort, plus aucun appelant.
+// signauxAutoNourriture supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 
@@ -28035,11 +27351,7 @@ function detecteurGuerreDes16(theme){
 // dans ce scénario. Somme des BUTS_FIGURE.max des deux figures par camp
 // — pas encore mêlée au calcul principal (calculerButsCamp), exposée
 // séparément pour suivi avant intégration.
-function butsGuerreDes16(theme){
-  const bA = (BUTS_FIGURE[theme[4]]||{max:0}).max + (BUTS_FIGURE[theme[10]]||{max:0}).max;
-  const bB = (BUTS_FIGURE[theme[5]]||{max:0}).max + (BUTS_FIGURE[theme[11]]||{max:0}).max;
-  return {campA:bA, campB:bB, detail:'M4('+FL[theme[4]]+')+M10('+FL[theme[10]]+')='+bA+' vs M5('+FL[theme[5]]+')+M11('+FL[theme[11]]+')='+bB};
-}
+// butsGuerreDes16 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // DUEL DES BINÔMES DIRECTS — départage des guerres civiles (03/07/26)
@@ -31632,18 +30944,11 @@ function detruitV7(fig) {
   return FIGS_V7[(i + 3) % 16];
 }
 // La voie d'une attaque : la combinaison des deux combattants.
-function voieAttaqueV7(fig) {
-  var c = detruitV7(fig);
-  return c ? combine(fig, c) : null;
-}
+// voieAttaqueV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // La ligne du dessin d'Ellemine_D (loi K) : impaires a gauche, Puer
 // collee au trait ; paires a droite, Laetitia collee au trait.
-function positionLigneV7(fig) {
-  var h = FIGS_V7.indexOf(fig) + 1;
-  if (h < 1) return null;
-  return (h % 2 === 1) ? 8 - (h - 1) / 2 : 8 + h / 2;
-}
+// positionLigneV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Les trajectoires d'Ellemine_D (loi N) : la combinaison des maisons
 // qu'une trajectoire traverse. Elle ne sert qu'a la recolte et a
@@ -31658,582 +30963,9 @@ var TRAJECTOIRES_V7 = [
   { cle: 'tri4710', nom: 'triangle 4-7-10', maisons: [4, 7, 10], reduit: [3, 7] },
   { cle: 'tri4110', nom: 'triangle 4-1-10', maisons: [4, 1, 10], reduit: [1, 3] }
 ];
-function trajectoireV7(theme, maisons) {
-  if (!theme) return null;
-  var r = null;
-  for (var i = 0; i < maisons.length; i++) {
-    var f = theme[maisons[i]];
-    if (!f) return null;
-    r = (r === null) ? f : combine(r, f);
-  }
-  return r;
-}
+// trajectoireV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
-function autoTestAlternanceV7() {
-  function rep(h) { return FIGS_V7[((h - 1) % 16 + 16) % 16]; }
-  var AXE = { puer: 1, via: 1, cauda_draconis: 1 };
-  var r = { impairAcq: 0, pairAxe: 0, recon: 0, d8: 0, pasPairs: [] };
-  for (var h = 1; h <= 16; h++) {
-    var pas = combine(rep(h), rep(h + 1));
-    if (h % 2 === 1) { if (pas === 'acquisitio') r.impairAcq += 1; }
-    else { r.pasPairs.push(pas); if (AXE[pas]) r.pairAxe += 1; }
-    if (combine(rep(h), rep(h + 8)) === 'tristitia') r.d8 += 1;
-  }
-  // reconstruction : Puer, puis les pas alternés
-  var cour = rep(1), iPair = 0;
-  r.recon = 1;
-  for (var k = 1; k <= 15; k++) {
-    var p2 = (k % 2 === 1) ? 'acquisitio' : r.pasPairs[iPair++];
-    cour = combine(cour, p2);
-    if (cour === rep(k + 1)) r.recon += 1;
-  }
-  r.periode4 = r.pasPairs.slice(0, 4).join() === r.pasPairs.slice(4, 8).join();
-  // ── les lois de la récolte, vérifiées à l'exécution ──
-  r.pariteBoucle = 0;
-  for (var m = 1; m <= 16; m++) {
-    var att = (m % 2 === 1) ? 'A' : 'B';
-    if (loopOf(FIGS_V7[m - 1]) === att) r.pariteBoucle += 1;
-  }
-  r.composition = 0;
-  for (var i = 0; i < 16; i++) for (var j = 0; j < 16; j++) {
-    var a = FIGS_V7[i], b = FIGS_V7[j];
-    var attendu = (loopOf(a) === loopOf(b)) ? 'B' : 'A';
-    if (loopOf(combine(a, b)) === attendu) r.composition += 1;
-  }
-  // loi H : parité du décalage → boucle de la résultante
-  r.pariteDecalage = 0;
-  var REL_H = [[BINOMES_V7, 2], [FRONT_V7, 4], [BOUCLIER_V7, 10], [ANTAGONISTES_V7, 13]];
-  for (var k3 = 1; k3 <= 16; k3++) {
-    var f3 = FIGS_V7[k3 - 1], bonH = true;
-    REL_H.forEach(function (R) {
-      var att = (R[1] % 2 === 0) ? 'B' : 'A';
-      if (loopOf(combine(f3, R[0][f3])) !== att) bonH = false;
-    });
-    if (loopOf(combine(f3, frontDuFrontV7(f3))) !== 'B') bonH = false;
-    if (bonH) r.pariteDecalage += 1;
-  }
-  r.decalages = 0;
-  var REL = [[BINOMES_V7, 2], [FRONT_V7, 4], [BOUCLIER_V7, 10], [ANTAGONISTES_V7, 13]];
-  for (var k2 = 1; k2 <= 16; k2++) {
-    var f2 = FIGS_V7[k2 - 1], bon = true;
-    REL.forEach(function (R) {
-      if (FIGS_V7.indexOf(R[0][f2]) + 1 !== (((k2 - 1 + R[1]) % 16) + 1)) bon = false;
-    });
-    if (bon) r.decalages += 1;
-  }
-  // ── loi I : les cinq relations, la table complète ──
-  // I.1 le bouclier est le front du front du binome
-  r.boucliersBinome = 0; r.binomeBouclierTristitia = 0;
-  FIGS_V7.forEach(function (f4) {
-    if (BOUCLIER_V7[f4] === frontDuFrontV7(BINOMES_V7[f4])
-      && BOUCLIER_V7[f4] === BINOMES_V7[frontDuFrontV7(f4)]) r.boucliersBinome += 1;
-    if (combine(BINOMES_V7[f4], BOUCLIER_V7[f4]) === 'tristitia') r.binomeBouclierTristitia += 1;
-  });
-  // I.2 la loi du cardinal : impair -> permutation des 16, pair -> au plus 5
-  var ROLES_I = [function (f) { return f; },
-    function (f) { return BINOMES_V7[f]; },
-    function (f) { return FRONT_V7[f]; },
-    function (f) { return BOUCLIER_V7[f]; },
-    function (f) { return ANTAGONISTES_V7[f]; }];
-  r.cardImpair = 0; r.cardPair = 0;
-  for (var msk = 1; msk < 32; msk++) {
-    var card = 0, vus = {}, nb = 0;
-    for (var b = 0; b < 5; b++) if (msk & (1 << b)) card += 1;
-    for (var h4 = 1; h4 <= 16; h4++) {
-      var f5 = rep(h4), acc = null;
-      for (var b2 = 0; b2 < 5; b2++) if (msk & (1 << b2)) {
-        var v = ROLES_I[b2](f5); acc = (acc === null) ? v : combine(acc, v);
-      }
-      if (!vus[acc]) { vus[acc] = 1; nb += 1; }
-    }
-    if (card % 2 === 1) { if (nb === 16) r.cardImpair += 1; }
-    else if (nb <= 5) r.cardPair += 1;
-  }
-  // I.3 le quatuor est le front decale de Tristitia
-  r.quatuorTristitia = 0;
-  for (var h5 = 1; h5 <= 16; h5++) {
-    var f6 = rep(h5);
-    var q = combine(combine(combine(f6, BINOMES_V7[f6]), FRONT_V7[f6]), BOUCLIER_V7[f6]);
-    if (q === combine(combine(f6, FRONT_V7[f6]), 'tristitia')) r.quatuorTristitia += 1;
-  }
-  // I.4 la roue est double : resultante(h) === resultante(h+8), toute distance
-  r.roueDouble = 0;
-  for (var d = 1; d <= 15; d++) {
-    var okD = true;
-    for (var h6 = 1; h6 <= 16; h6++) {
-      if (combine(rep(h6), rep(h6 + d)) !== combine(rep(h6 + 8), rep(h6 + 8 + d))) okD = false;
-    }
-    if (okD) r.roueDouble += 1;
-  }
-  // I.5 les quatre maisons inatteignables par les cinq relations
-  var atteintes = {};
-  [2, 4, 8, 10, 13].forEach(function (dd) {
-    for (var h7 = 1; h7 <= 16; h7++) atteintes[FIGS_V7.indexOf(combine(rep(h7), rep(h7 + dd))) + 1] = 1;
-  });
-  r.inatteignables = [7, 9, 15, 16].filter(function (m) { return !atteintes[m]; }).length;
-  r.couvertes = Object.keys(atteintes).length;
-  // ── loi J : la relation de destruction ──
-  r.destAntag = 0; r.destPasReciproque = 0; r.destDeux = 0; r.destQuatre = 0;
-  r.bouclierTueAntag = 0; r.riposteDirecte = 0; r.riposteDeuxCoups = 0;
-  FIGS_V7.forEach(function (f7) {
-    var victime = detruitV7(f7);
-    if (ANTAGONISTES_V7[victime] === f7 && detruitV7(ANTAGONISTES_V7[f7]) === f7) r.destAntag += 1;
-    if (ANTAGONISTES_V7[ANTAGONISTES_V7[f7]] === BOUCLIER_V7[f7]) r.destPasReciproque += 1;
-    if (detruitV7(victime) === BINOMES_V7[FRONT_V7[f7]]) r.destDeux += 1;
-    if (detruitV7(detruitV7(detruitV7(victime))) === BOUCLIER_V7[BINOMES_V7[f7]]) r.destQuatre += 1;
-    if (detruitV7(BOUCLIER_V7[f7]) === ANTAGONISTES_V7[f7]) r.bouclierTueAntag += 1;
-    if (victime === ANTAGONISTES_V7[f7]) r.riposteDirecte += 1;
-    if (detruitV7(victime) === ANTAGONISTES_V7[f7]) r.riposteDeuxCoups += 1;
-  });
-  // les cinq voies, et la separation des deux familles
-  var voiesImp = {}, voiesPai = {}, toutesVoies = {};
-  for (var h8 = 1; h8 <= 16; h8++) {
-    var f8 = FIGS_V7[h8 - 1], v8 = voieAttaqueV7(f8);
-    toutesVoies[v8] = 1;
-    if (h8 % 2 === 1) voiesImp[v8] = 1; else voiesPai[v8] = 1;
-  }
-  r.nbVoies = Object.keys(toutesVoies).length;
-  r.voiesImpaires = Object.keys(voiesImp).length;
-  r.voiesPaires = Object.keys(voiesPai).length;
-  r.voiesSeparees = Object.keys(voiesImp).every(function (v) { return !voiesPai[v]; }) ? 1 : 0;
-  // les voies impaires sont exactement l'axe 1-5-13
-  r.voiesAxe = (Object.keys(voiesImp).sort().join() ===
-    ['puer', 'via', 'cauda_draconis'].sort().join()) ? 1 : 0;
-  // les cinq voies sont les cinq resultantes de l'antagoniste (loi H)
-  var resAnt = {}; FIGS_V7.forEach(function (f9) { resAnt[combine(f9, ANTAGONISTES_V7[f9])] = 1; });
-  r.voiesEgalesLoiH = (Object.keys(resAnt).length === r.nbVoies
-    && Object.keys(resAnt).every(function (v) { return toutesVoies[v]; })) ? 1 : 0;
-  // ── loi K : le dessin de la ligne ──
-  r.binomeVoisin = 0; r.binomeRetour = 0;
-  FIGS_V7.forEach(function (fk) {
-    var p1 = positionLigneV7(fk), p2 = positionLigneV7(BINOMES_V7[fk]);
-    var e = Math.abs(p2 - p1);
-    if (e === 1) r.binomeVoisin += 1; else if (e === 7) r.binomeRetour += 1;
-  });
-  var arcsK = FIGS_V7.map(function (fk2) {
-    var p3 = positionLigneV7(fk2), p4 = positionLigneV7(ANTAGONISTES_V7[fk2]);
-    return { lo: Math.min(p3, p4), hi: Math.max(p3, p4), c: (p3 + p4) / 2 };
-  });
-  var centres = {};
-  arcsK.forEach(function (A) { centres[A.c] = (centres[A.c] || 0) + 1; });
-  r.famillesArcs = Object.keys(centres).length;
-  r.croiseDedans = 0; r.croiseDehors = 0;
-  for (var ia = 0; ia < 16; ia++) for (var ja = ia + 1; ja < 16; ja++) {
-    var A1 = arcsK[ia], A2 = arcsK[ja];
-    var x = (A1.lo < A2.lo && A2.lo < A1.hi && A1.hi < A2.hi)
-      || (A2.lo < A1.lo && A1.lo < A2.hi && A2.hi < A1.hi);
-    if (x) { if (A1.c === A2.c) r.croiseDedans += 1; else r.croiseDehors += 1; }
-  }
-  r.pyramide = 0;
-  for (var xk = 1; xk <= 16; xk++) {
-    var nb2 = arcsK.filter(function (A) { return A.lo < xk && xk < A.hi; }).length;
-    if (nb2 === 2 * Math.min(xk - 1, 16 - xk)) r.pyramide += 1;
-  }
-  // ── loi L : l'energie saute la victime ──
-  r.energieSaut = 0; r.energieDirecte = 0; r.exceptionEnergie = null;
-  FIGS_V7.forEach(function (fl) {
-    var v = detruitV7(fl), w = detruitV7(v);
-    if (concordanceElement(ELEMENTS_V7[fl], ELEMENTS_V7[w]) > 0) r.energieSaut += 1;
-    else r.exceptionEnergie = fl;
-    if (concordanceElement(ELEMENTS_V7[fl], ELEMENTS_V7[v]) > 0) r.energieDirecte += 1;
-  });
-  // ── loi M : les deux demi-plans ──
-  function arcLigneV7(a, b) {
-    var p = positionLigneV7(a), q = positionLigneV7(b);
-    return { lo: Math.min(p, q), hi: Math.max(p, q) };
-  }
-  function croiseV7(P, Q) {
-    return (P.lo < Q.lo && Q.lo < P.hi && P.hi < Q.hi)
-      || (Q.lo < P.lo && P.lo < Q.hi && Q.hi < P.hi);
-  }
-  function compteCroisV7(arcs) {
-    var t = 0;
-    for (var i = 0; i < arcs.length; i++) for (var j = i + 1; j < arcs.length; j++)
-      if (croiseV7(arcs[i], arcs[j])) t += 1;
-    return t;
-  }
-  var hautM = FIGS_V7.map(function (fm) { return arcLigneV7(fm, ANTAGONISTES_V7[fm]); });
-  var retPL = arcLigneV7('populus', 'laetitia');
-  var retAP = arcLigneV7('acquisitio', 'puer');
-  var basM = FIGS_V7.filter(function (fm2) { return fm2 !== 'populus'; })
-    .map(function (fm3) { return arcLigneV7(fm3, BINOMES_V7[fm3]); });
-  r.croisHaut = compteCroisV7(hautM.concat([retPL]));
-  r.croisBas = compteCroisV7(basM);
-  r.croisHautNu = compteCroisV7(hautM);
-  r.croisHautDeux = compteCroisV7(hautM.concat([retPL, retAP]));
-  // le binome est la seule relation planaire sur cette ligne
-  r.decalagesPlanaires = 0; r.maxCrois = 0;
-  for (var dm = 1; dm <= 15; dm++) {
-    var am = FIGS_V7.map(function (fm4) {
-      return arcLigneV7(fm4, FIGS_V7[(FIGS_V7.indexOf(fm4) + dm) % 16]);
-    });
-    var cm = compteCroisV7(am);
-    if (cm === 0) r.decalagesPlanaires += 1;
-    if (cm > r.maxCrois) r.maxCrois = cm;
-  }
-  // le retour PL epargne exactement ses quatre voisins
-  r.plEpargne = 0;
-  hautM.forEach(function (am2, im) {
-    var fm5 = FIGS_V7[im], gm = ANTAGONISTES_V7[fm5];
-    var voisin = (fm5 === 'populus' || fm5 === 'laetitia' || gm === 'populus' || gm === 'laetitia');
-    if (!croiseV7(am2, retPL) === voisin) r.plEpargne += 1;
-  });
-  // le fosse : aucun arc croise entre 7 et 10 fois
-  var tousM = hautM.concat([retPL]);
-  r.fosse = 1;
-  tousM.forEach(function (am3, im2) {
-    var c2 = 0;
-    tousM.forEach(function (bm, jm) { if (im2 !== jm && croiseV7(am3, bm)) c2 += 1; });
-    if (c2 >= 7 && c2 <= 10) r.fosse = 0;
-  });
-  // le degre : 2/2 partout sauf Laetitia et Populus
-  r.degreEquilibre = 0;
-  FIGS_V7.forEach(function (fm6) {
-    var pf = positionLigneV7(fm6), h2 = 0, b2 = 0;
-    tousM.forEach(function (am4) { if (am4.lo === pf || am4.hi === pf) h2 += 1; });
-    basM.forEach(function (bm2) { if (bm2.lo === pf || bm2.hi === pf) b2 += 1; });
-    var attendu = (fm6 === 'laetitia' || fm6 === 'populus') ? [3, 1] : [2, 2];
-    if (h2 === attendu[0] && b2 === attendu[1]) r.degreEquilibre += 1;
-  });
-  // le couvercle impair enferme les sept autres arcs de gauche
-  r.couvercle = basM.filter(function (bm3) {
-    if (bm3.lo === retAP.lo && bm3.hi === retAP.hi) return false;  // le couvercle lui-meme
-    return retAP.lo <= bm3.lo && bm3.hi <= retAP.hi && !croiseV7(bm3, retAP);
-  }).length;
-  // ── loi N : les trajectoires ──
-  r.identitesTheme = 0; r.reductions = 0; r.partageTrigones = 0; r.diagonales = 0;
-  try {
-    var essais = 0, idOk = 0, redOk = 0, parOk = 0;
-    for (var it = 0; it < 60; it++) {
-      var mm = [0, 1, 2, 3].map(function () { return FIGS_V7[Math.floor(Math.random() * 16)]; });
-      var th = null;
-      try { th = buildThemeFromMothers(mm[0], mm[1], mm[2], mm[3]); } catch (e) { continue; }
-      essais += 1;
-      var IDS = [[9, 1, 2], [10, 3, 4], [11, 5, 6], [12, 7, 8], [13, 9, 10], [14, 11, 12], [15, 13, 14]];
-      var bonId = true;
-      IDS.forEach(function (P) { if (th[P[0]] !== combine(th[P[1]], th[P[2]])) bonId = false; });
-      if (bonId) idOk += 1;
-      var bonRed = true;
-      TRAJECTOIRES_V7.forEach(function (T) {
-        if (trajectoireV7(th, T.maisons) !== trajectoireV7(th, T.reduit)) bonRed = false;
-      });
-      if (bonRed) redOk += 1;
-      // trigone(M1) + trigone(M7) = rectangle + M1 + M7
-      var g = combine(trajectoireV7(th, [1, 5, 9]), trajectoireV7(th, [3, 7, 11]));
-      var dr = combine(combine(trajectoireV7(th, [3, 5, 9, 11]), th[1]), th[7]);
-      if (g === dr) parOk += 1;
-    }
-    r.identitesTheme = (essais > 0 && idOk === essais) ? 1 : 0;
-    r.reductions = (essais > 0 && redOk === essais) ? 1 : 0;
-    r.partageTrigones = (essais > 0 && parOk === essais) ? 1 : 0;
-  } catch (e) { /* le builder n'est pas la : les trois restent a 0 */ }
-  // les quatre diagonales se croisent
-  var D1 = [[1, 7], [4, 10]], D2 = [[3, 9], [5, 11]];
-  D1.forEach(function (P) {
-    D2.forEach(function (Q) {
-      if ((P[0] < Q[0] && Q[0] < P[1] && P[1] < Q[1])
-        || (Q[0] < P[0] && P[0] < Q[1] && Q[1] < P[1])) r.diagonales += 1;
-    });
-  });
-  // ── lois E et F : elles n'avaient aucun controle a l'execution, ajoute
-  //    le 31/08/26 pour que TOUTE loi de structure de la recolte soit
-  //    gardee, pas seulement decrite ──
-  // E : les quatre figures d'air se reposent en M3, M7, M11, M15
-  r.airMod4 = 0; r.partageElement = 0;
-  for (var he = 1; he <= 16; he++) {
-    var fe = FIGS_V7[he - 1];
-    if (ELEMENTS_V7[fe] === 'air' && he % 4 === 3) r.airMod4 += 1;
-    else if (ELEMENTS_V7[fe] !== 'air' && he % 4 !== 3) r.airMod4 += 1;
-    // le partage avec l'element de la maison : 4/16, soit le hasard.
-    // ⚠️ table MAISON_ELEM_V7 (celle des moteurs), pas ELEMENT_MAISON_V7
-    // qui est la table d'affichage et donne 0/16 — les deux coexistent.
-    if (typeof MAISON_ELEM_V7 !== 'undefined' && ELEMENTS_V7[fe] === MAISON_ELEM_V7[he]) r.partageElement += 1;
-  }
-  // F : la distribution des lignes a UN point est le triangle de Pascal
-  var distF = [0, 0, 0, 0, 0];
-  FIGS_V7.forEach(function (ff) {
-    var m = MAP_GEO[ff];
-    if (!m) return;
-    var k = m.filter(function (x) { return x === 1; }).length;
-    if (k >= 0 && k <= 4) distF[k] += 1;
-  });
-  r.pascal = (distF.join() === [1, 4, 6, 4, 1].join()) ? 1 : 0;
-  // ── loi P : les triangles du carre des douze maisons ──
-  function arcsTriV7(t) {
-    var a = t.slice().sort(function (x, y) { return x - y; });
-    return [a[1] - a[0], a[2] - a[1], 12 - (a[2] - a[0])].sort(function (x, y) { return x - y; });
-  }
-  function natureTriV7(t) {
-    var d = arcsTriV7(t);
-    if (d[0] === d[1] && d[1] === d[2]) return 'equilateral';
-    return (d[0] === d[1] || d[1] === d[2]) ? 'isocele' : 'scalene';
-  }
-  function axeMaisonV7(h) { return ((h - 1) % 3); }  // 0 cardinal · 1 succedent · 2 cadent
-  r.triTotal = 0; r.triEqui = 0; r.triIso = 0; r.triScal = 0;
-  r.triUnParAxeBons = 0; r.triUnParAxeSansVoisin = 0; r.triUnParAxeSansVoisinScal = 0;
-  r.triMemeAxeIso = 0; r.triMemeAxeTotal = 0;
-  r.triDeuxAxesScal = 0; r.triDeuxAxesTotal = 0;
-  for (var ta = 1; ta <= 12; ta++) for (var tb = ta + 1; tb <= 12; tb++) for (var tc = tb + 1; tc <= 12; tc++) {
-    var T = [ta, tb, tc], nat = natureTriV7(T);
-    r.triTotal += 1;
-    if (nat === 'equilateral') r.triEqui += 1; else if (nat === 'isocele') r.triIso += 1; else r.triScal += 1;
-    var ax = {}; T.forEach(function (h) { ax[axeMaisonV7(h)] = 1; });
-    var nbAxes = Object.keys(ax).length;
-    if (nbAxes === 3) {
-      if (nat !== 'scalene') r.triUnParAxeBons += 1;
-      if (arcsTriV7(T)[0] >= 2) {
-        r.triUnParAxeSansVoisin += 1;
-        if (nat === 'scalene') r.triUnParAxeSansVoisinScal += 1;
-      }
-    } else if (nbAxes === 1) {
-      r.triMemeAxeTotal += 1;
-      if (nat === 'isocele') r.triMemeAxeIso += 1;
-    } else {
-      r.triDeuxAxesTotal += 1;
-      if (nat === 'scalene') r.triDeuxAxesScal += 1;
-    }
-  }
-  // ── loi R : la règle du miroir ──
-  function apexV7(pole) {
-    var o = [];
-    for (var k = 1; k <= 5; k++) {
-      o.push([pole, ((pole + k - 1) % 12) + 1, ((pole - k - 1 + 12) % 12) + 1]
-        .sort(function (x, y) { return x - y; }));
-    }
-    return o;
-  }
-  var engendres = {}, apexCompte = {};
-  for (var pr = 1; pr <= 12; pr++) {
-    apexV7(pr).forEach(function (T) {
-      var cle = T.join('-');
-      engendres[cle] = 1;
-      apexCompte[cle] = (apexCompte[cle] || 0) + 1;
-    });
-  }
-  var isocelesCarre = {};
-  for (var ra = 1; ra <= 12; ra++) for (var rb = ra + 1; rb <= 12; rb++) for (var rc = rb + 1; rc <= 12; rc++) {
-    if (natureTriV7([ra, rb, rc]) !== 'scalene') isocelesCarre[[ra, rb, rc].join('-')] = 1;
-  }
-  r.miroirEngendres = Object.keys(engendres).length;
-  r.miroirIsoceles = Object.keys(isocelesCarre).length;
-  r.miroirIdentiques = (r.miroirEngendres === r.miroirIsoceles
-    && Object.keys(engendres).every(function (k) { return isocelesCarre[k]; })) ? 1 : 0;
-  r.miroirScalenes = Object.keys(engendres).filter(function (k) {
-    return natureTriV7(k.split('-').map(Number)) === 'scalene';
-  }).length;
-  r.miroirTroisApex = Object.keys(apexCompte).filter(function (k) { return apexCompte[k] === 3; }).length;
-  r.miroirUnApex = Object.keys(apexCompte).filter(function (k) { return apexCompte[k] === 1; }).length;
-  r.miroirPaires = 0;
-  [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]].forEach(function (P) {
-    if (((2 - P[0] - 1 + 24) % 12) + 1 === P[1]) r.miroirPaires += 1;
-  });
-  // ── loi S : le diamètre de la troisième paire, et l'angle droit ──
-  function pairesPoleV7(pole) {
-    var o = [];
-    for (var k = 1; k <= 5; k++) {
-      o.push([((pole + k - 1) % 12) + 1, ((pole - k - 1 + 12) % 12) + 1]);
-    }
-    return o;
-  }
-  function estDiametreV7(a, b) { var d = Math.abs(a - b); return Math.min(d, 12 - d) === 6; }
-  r.diamTroisieme = 0; r.diamPerp = 0; r.diamRectangles = 0;
-  var basesRect = {};
-  for (var ps = 1; ps <= 12; ps++) {
-    var P = pairesPoleV7(ps);
-    var rangs = [];
-    P.forEach(function (pr2, i) { if (estDiametreV7(pr2[0], pr2[1])) rangs.push(i + 1); });
-    if (rangs.length === 1 && rangs[0] === 3) r.diamTroisieme += 1;
-    // la 3e paire est-elle la perpendiculaire de l'axe du pôle ?
-    var att = [((ps + 3 - 1) % 12) + 1, ((ps - 3 - 1 + 12) % 12) + 1].sort(function (x, y) { return x - y; });
-    var eff = P[2].slice().sort(function (x, y) { return x - y; });
-    if (att[0] === eff[0] && att[1] === eff[1]) r.diamPerp += 1;
-    // le triangle correspondant est isocèle de forme (3,3,6)
-    var T3 = [ps, P[2][0], P[2][1]].sort(function (x, y) { return x - y; });
-    var d3 = [T3[1] - T3[0], T3[2] - T3[1], 12 - (T3[2] - T3[0])].sort(function (x, y) { return x - y; });
-    if (d3[0] === 3 && d3[1] === 3 && d3[2] === 6) r.diamRectangles += 1;
-    basesRect[eff.join('-')] = (basesRect[eff.join('-')] || 0) + 1;
-  }
-  // six diamètres, deux sommets chacun
-  r.diamBases = Object.keys(basesRect).length;
-  r.diamDeuxSommets = Object.keys(basesRect).filter(function (k) { return basesRect[k] === 2; }).length;
-  // ═══ LOI T — LES DEUX ZONES DU CARRÉ NE PEUVENT PAS SE DÉPARTAGER PAR
-  // LA CATÉGORIE (03/09/26, « revois le calcul des zones ») ═══
-  // Zone M1 = I·II·III·XI·XII, zone M7 = V·VI·VII·VIII·IX. Ce ne sont pas
-  // deux paquets quelconques : chacun porte EXACTEMENT une angulaire,
-  // deux succédentes et deux cadentes. Leur somme de catégorie vaut donc
-  // +3 des deux côtés, sur TOUS les thèmes possibles, sans exception.
-  // Conséquence : tout ce qui départage les deux camps dans le carré vient
-  // de la régence planétaire et de la concordance élémentaire — jamais de
-  // la géométrie. Ce contrôle est ici pour qu'un panneau qui perdrait de
-  // nouveau ces deux composantes (le piège des noms d'affichage) reparte
-  // en écart nul et se fasse voir tout de suite.
-  (function () {
-    var Z1 = [1, 2, 3, 11, 12], Z7 = [5, 6, 7, 8, 9];
-    function cat(l) {
-      return l.reduce(function (a, h) {
-        var c = MAISON_CATEGORIE[h];
-        return a + (c ? CATEGORIE_SCORE[c] : 0);
-      }, 0);
-    }
-    r.zoneCatM1 = cat(Z1);
-    r.zoneCatM7 = cat(Z7);
-    // Et le garde-fou de la dignité : un nom d'affichage doit être REFUSÉ,
-    // plus jamais noté au rabais.
-    var refus = 0, canon = 0;
-    ['Carcer', 'Cauda', 'Fortuna minor', 'Conjonctio'].forEach(function (n) {
-      var d = calculerDigniteAccidentelle(1, n, null);
-      if (d && d.erreur && d.total === null) refus++;
-    });
-    ['carcer', 'cauda_draconis', 'fortuna_minor', 'conjunctio'].forEach(function (n) {
-      var d = calculerDigniteAccidentelle(1, n, null);
-      if (d && !d.erreur && typeof d.total === 'number') canon++;
-    });
-    r.digniteRefuseAffichage = refus;
-    r.digniteAccepteCanonique = canon;
-  })();
-
-  // ═══ LOI U — LA BASE PARTAGÉE S'ANNULE (03/09/26, sa doctrine des
-  // « rapports de force entre m1 et m7 avec leur 5 triangles ») ═══
-  // Les cinq paires miroir sont les MÊMES des deux côtés : chacune porte
-  // un triangle d'apex M1 et un triangle d'apex M7. Donc pour TOUT score
-  // additif par maison, l'écart entre les deux triangles d'une même paire
-  // vaut score(M1) − score(M7), identique pour les cinq. Vérifié ici sur
-  // 64 thèmes tirés : les cinq écarts sont toujours égaux entre eux ET
-  // égaux à l'écart des seuls apex.
-  // ➜ Une lecture additive n'est pas cinq triangles, c'est une seule
-  // comparaison recopiée cinq fois. Seule une fonction NON additive — la
-  // somme XOR de la trajectoire, loi Q — fait vraiment cinq lectures.
-  (function () {
-    var paires = [[2, 12], [3, 11], [4, 10], [5, 9], [6, 8]];
-    var okConst = 0, okApex = 0, n = 0;
-    for (var k = 0; k < 64; k++) {
-      var m = [0, 0, 0, 0].map(function () { return FIGS_V7[Math.floor(Math.random() * 16)]; });
-      var t;
-      try { t = buildThemeFromMothers(m[0], m[1], m[2], m[3]); } catch (e) { continue; }
-      if (!t) continue;
-      n++;
-      function dig(h) {
-        var d = calculerDigniteAccidentelle(h, t[h], t);
-        return (typeof d.total === 'number') ? d.total : 0;
-      }
-      var ec = paires.map(function (p) {
-        return (dig(1) + dig(p[0]) + dig(p[1])) - (dig(7) + dig(p[0]) + dig(p[1]));
-      });
-      var ref = Math.round(ec[0] * 1e6);
-      if (ec.every(function (v) { return Math.round(v * 1e6) === ref; })) okConst++;
-      if (Math.round((dig(1) - dig(7)) * 1e6) === ref) okApex++;
-    }
-    r.baseAnnuleeConst = (n > 0 && okConst === n) ? 1 : 0;
-    r.baseAnnuleeApex = (n > 0 && okApex === n) ? 1 : 0;
-    // ET LA SOMME XOR : l'apex n'est qu'une TRANSLATION.
-    // somme(pôle, i) = figure(pôle) ⊕ base_i. Le pôle ne change donc pas
-    // combien de lectures distinctes il y a — il déplace les cinq en
-    // bloc. Trois contrôles :
-    //   · la somme du triangle est bien apex ⊕ base
-    //   · M1 et M7 ont TOUJOURS le même nombre de sommes distinctes, et
-    //     c'est celui des cinq bases
-    //   · deux triangles d'un même pôle coïncident SSI leurs bases
-    //     coïncident (mesuré 5000/5000)
-    var trad = 0, memeNb = 0, ssi = 0, ssiTot = 0, nb2 = 0;
-    for (var q = 0; q < 40; q++) {
-      var mm = [0, 0, 0, 0].map(function () { return FIGS_V7[Math.floor(Math.random() * 16)]; });
-      var tt;
-      try { tt = buildThemeFromMothers(mm[0], mm[1], mm[2], mm[3]); } catch (e) { continue; }
-      if (!tt) continue;
-      nb2++;
-      var bases = paires.map(function (p) { return combineMany([tt[p[0]], tt[p[1]]]); });
-      var s1 = paires.map(function (p) { return combineMany([tt[1], tt[p[0]], tt[p[1]]]); });
-      var s7 = paires.map(function (p) { return combineMany([tt[7], tt[p[0]], tt[p[1]]]); });
-      var okT = s1.every(function (v, i) { return v === combine(tt[1], bases[i]); })
-        && s7.every(function (v, i) { return v === combine(tt[7], bases[i]); });
-      if (okT) trad++;
-      function nd(l) { return l.filter(function (v, i) { return l.indexOf(v) === i; }).length; }
-      if (nd(s1) === nd(bases) && nd(s7) === nd(bases)) memeNb++;
-      for (var i = 0; i < 5; i++) for (var j = i + 1; j < 5; j++) {
-        ssiTot++;
-        var eb = (bases[i] === bases[j]);
-        if ((s1[i] === s1[j]) === eb && (s7[i] === s7[j]) === eb) ssi++;
-      }
-    }
-    r.trianglesTranslation = (nb2 > 0 && trad === nb2) ? 1 : 0;
-    r.trianglesMemeCollapse = (nb2 > 0 && memeNb === nb2) ? 1 : 0;
-    r.trianglesCoincidenceBase = (ssiTot > 0 && ssi === ssiTot) ? 1 : 0;
-  })();
-
-  // ═══ LOI V — LA FORCE D'UNE TRAJECTOIRE (03/09/26, sa règle) ═══
-  // Trois faits qui gardent la notation. Ils tomberaient tout de suite si
-  // la table des poids, le seuil ou le repli des maisons XIII-XVI étaient
-  // touchés sans y penser.
-  (function () {
-    var t = null;
-    try { t = buildThemeFromMothers('populus', 'populus', 'populus', 'populus'); } catch (e) { t = null; }
-    // 1) le plafond : seize maisons de la même figure
-    //    4 angulaires ×3 + 4 succédentes ×2 + 4 cadentes ×1 + 4 hors-douze ×1 = 28
-    r.forceMaxPopulus = (t && forceTrajectoireV7(t, 'populus').force) || 0;
-    // 2) force nulle SI ET SEULEMENT SI la somme est absente du thème
-    var ok = 0, n = 0;
-    for (var k = 0; k < 12; k++) {
-      var m = [0, 0, 0, 0].map(function () { return FIGS_V7[Math.floor(Math.random() * 16)]; });
-      var th;
-      try { th = buildThemeFromMothers(m[0], m[1], m[2], m[3]); } catch (e) { continue; }
-      if (!th) continue;
-      FIGS_V7.forEach(function (f) {
-        var present = false;
-        for (var h = 1; h <= 16; h++) if (th[h] === f) present = true;
-        var F = forceTrajectoireV7(th, f);
-        n++;
-        if (present === (F.force > 0)) ok++;
-      });
-    }
-    r.forceNulleSsiAbsente = (n > 0 && ok === n) ? 1 : 0;
-    // 3) le seuil de « forte » est bien celui d'une angulaire
-    r.seuilForteVautAngulaire = (SEUIL_TRAJ_FORTE_V7 === POIDS_CATEGORIE_TRAJ_V7.angulaire) ? 1 : 0;
-  })();
-
-  r.tout = (r.forceMaxPopulus === 28 && r.forceNulleSsiAbsente === 1
-    && r.seuilForteVautAngulaire === 1
-    && r.baseAnnuleeConst === 1 && r.baseAnnuleeApex === 1
-    && r.trianglesTranslation === 1 && r.trianglesMemeCollapse === 1
-    && r.trianglesCoincidenceBase === 1
-    && r.zoneCatM1 === 3 && r.zoneCatM7 === 3
-    && r.digniteRefuseAffichage === 4 && r.digniteAccepteCanonique === 4
-    && r.impairAcq === 8 && r.pairAxe === 8 && r.recon === 16 && r.d8 === 16 && r.periode4
-    && r.pariteBoucle === 16 && r.composition === 256 && r.decalages === 16
-    && r.pariteDecalage === 16
-    && r.boucliersBinome === 16 && r.binomeBouclierTristitia === 16
-    && r.cardImpair === 16 && r.cardPair === 15
-    && r.quatuorTristitia === 16 && r.roueDouble === 15
-    && r.inatteignables === 4 && r.couvertes === 12
-    && r.destAntag === 16 && r.destPasReciproque === 16
-    && r.destDeux === 16 && r.destQuatre === 16 && r.bouclierTueAntag === 16
-    && r.riposteDirecte === 0 && r.riposteDeuxCoups === 0
-    && r.nbVoies === 5 && r.voiesImpaires === 3 && r.voiesPaires === 2
-    && r.voiesSeparees === 1 && r.voiesAxe === 1 && r.voiesEgalesLoiH === 1
-    && r.binomeVoisin === 14 && r.binomeRetour === 2
-    && r.famillesArcs === 4 && r.croiseDedans === 0 && r.croiseDehors === 45
-    && r.pyramide === 16
-    && r.energieSaut === 15 && r.exceptionEnergie === 'populus'
-    && r.energieDirecte === 8
-    && r.croisBas === 0 && r.croisHautNu === 45 && r.croisHaut === 57
-    && r.croisHautDeux === 69
-    && r.decalagesPlanaires === 2 && r.maxCrois === 61
-    && r.plEpargne === 16 && r.fosse === 1
-    && r.degreEquilibre === 16 && r.couvercle === 7
-    && r.identitesTheme === 1 && r.reductions === 1 && r.partageTrigones === 1
-    && r.diagonales === 4
-    && r.airMod4 === 16 && r.partageElement === 4 && r.pascal === 1
-    && r.triTotal === 220 && r.triEqui === 4 && r.triIso === 48 && r.triScal === 168
-    && r.triUnParAxeBons === 40 && r.triUnParAxeSansVoisin === 28
-    && r.triUnParAxeSansVoisinScal === 0
-    && r.triMemeAxeTotal === 12 && r.triMemeAxeIso === 12
-    && r.triDeuxAxesTotal === 144 && r.triDeuxAxesScal === 144
-    && r.miroirEngendres === 52 && r.miroirIsoceles === 52 && r.miroirIdentiques === 1
-    && r.miroirScalenes === 0 && r.miroirTroisApex === 4 && r.miroirUnApex === 48
-    && r.miroirPaires === 5
-    && r.diamTroisieme === 12 && r.diamPerp === 12 && r.diamRectangles === 12
-    && r.diamBases === 6 && r.diamDeuxSommets === 6);
-  return r;
-}
+// autoTestAlternanceV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 </script>
 <script>
@@ -32795,34 +31527,7 @@ function getVerdictAfficheReel(theme, favorite) {
   };
 }
 
-function renderRegressionReference(theme){
-  const el=document.getElementById('regression-reference-panel');
-  if(!el || !theme) return;
-  const d=(document.getElementById('matchDate')||{}).value||'';
-  const t=(document.getElementById('matchTime')||{}).value||'';
-  const mothers=[theme[1],theme[2],theme[3],theme[4]];
-  const key=mothers.join('|');
-  const refs={
-    'fortuna_minor|acquisitio|carcer|albus':{date:'2026-08-18',time:'20:00',score:'1-1',verdict:'NUL'}
-  };
-  const r=refs[key];
-  if(!r || d!==r.date || t!==r.time){ el.style.display='none'; el.innerHTML=''; return; }
-  el.style.display='block';
-  let engine='—';
-  try{
-    if(typeof verdictV7==='function'){
-      const v=verdictV7(theme);
-      if(v && v.scoreMain) engine=v.scoreMain;
-    }
-  }catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  el.innerHTML='<h3 style="margin-bottom:8px;color:#c4b5fd;">🧪 Contrôle de régression — cas validé</h3>'+
-    '<div class="kv"><b>Date :</b> '+r.date+' à '+r.time+'</div>'+ 
-    '<div class="kv"><b>Thème :</b> Fortuna Minor · Aquisitio · Carcer · Albus</div>'+ 
-    '<div class="kv"><b>Score réel de référence :</b> <span style="font-size:20px;font-weight:800;color:#4ade80;">'+r.score+'</span></div>'+ 
-    '<div class="kv"><b>Verdict réel :</b> '+r.verdict+'</div>'+ 
-    '<div class="kv"><b>Score produit par le moteur :</b> <span style="font-weight:800;">'+engine+'</span></div>'+ 
-    '<div class="hint" style="margin-top:6px;">Ce panneau est un contrôle de régression : il n’écrase ni le verdict ni le score du moteur.</div>';
-}
+// renderRegressionReference supprimee (11/09/26) - code mort, plus aucun appelant.
 
 /* ═══════════════════════════════════════════════════════════════
    UI PRINCIPALE — PROTOCOLE DE COMPARAISON R1/R7
@@ -33112,93 +31817,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   el.innerHTML=html;
 }
 
-function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPriority) {
-  var el = document.getElementById(containerId);
-  if (!el) return;
-  // CORRIGÉ (16/07/26) : isPriority déduit avant de la card 'carte-verdict-r'
-  // en dur — devenu faux dès que la décoration "prioritaire" a commencé à
-  // basculer dynamiquement (mode fixe vs rotation, voir renderTheme), la
-  // taille de police restait figée sur la carte rotation même quand
-  // c'était la carte M1/M7 qui portait le badge. Passé en paramètre
-  // explicite désormais, calculé une seule fois par l'appelant.
-  isPriority = !!isPriority;
-  var winnerName = card.winner === card.labelA ? teamA : card.winner === card.labelB ? teamB : 'Nul';
-  var html = '<h3 style="text-align:center;">' + titre + '</h3>';
-  html += '<div style="display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:8px;">';
-  html += '<div style="background:#0f172a; border:2px solid #4ade80; border-radius:10px; padding:' + (isPriority ? '12px 22px' : '8px 16px') + '; text-align:center;"><div class="muted" style="font-size:11px;">Victoire</div><div style="font-size:' + (isPriority ? '30px' : '20px') + '; font-weight:900; color:#4ade80;' + (isPriority ? ' text-shadow:0 0 16px rgba(74,222,128,.55);' : '') + '">' + winnerName + '</div></div>';
-  html += '<div style="background:#0f172a; border:1px solid #60a5fa; border-radius:10px; padding:' + (isPriority ? '12px 22px' : '8px 16px') + '; text-align:center;"><div class="muted" style="font-size:11px;">Score</div><div style="font-size:' + (isPriority ? '30px' : '20px') + '; font-weight:900;' + (isPriority ? ' text-shadow:0 0 16px rgba(96,165,250,.45);' : '') + '">' + card.scoreMain + '</div><div class="muted" style="font-size:11px;">alt: ' + card.scoreAlt + '</div></div>';
-  if (card.incidentPct > 0) {
-    var incColor = card.incidentInevitable ? '#f87171' : card.incidentPct >= 50 ? '#fb923c' : '#facc15';
-    html += '<div style="background:#0f172a; border:2px solid ' + incColor + '; border-radius:10px; padding:' + (isPriority ? '12px 22px' : '8px 16px') + '; text-align:center;' + (card.incidentInevitable ? ' box-shadow:0 0 16px rgba(248,113,113,.55);' : '') + '"><div class="muted" style="font-size:11px;">⚠️ Penalty / Rouge</div><div style="font-size:' + (isPriority ? '30px' : '20px') + '; font-weight:900; color:' + incColor + ';">' + card.incidentPct + '%</div><div class="muted" style="font-size:11px;">' + card.incidentNiveau + (card.incidentInevitable ? ' — quasi inévitable' : '') + '</div></div>';
-  }
-  html += '</div>';
-  html += '<div style="text-align:left; margin-left:24px;">';
-  // ⚠️ 27/08/26 — renderCarteVerdict n'est appelée NULLE PART. Vérifié :
-  // une seule occurrence du nom dans tout le fichier, sa définition.
-  // C'est du code mort. J'y avais d'abord posé le détail des signaux
-  // d'incident : il ne s'affichait pas, forcément. Il vit maintenant
-  // dans renderProtocoleVerdictPrincipal, le panneau réellement rendu.
-  html += '<div class="kv"><b>Penalty/Rouge :</b> ' + (card.penaltyRouge ? 'Oui' : 'Non') +
-    (card.incidentPct > 0 ? ' — <span style="font-weight:900; color:' + (card.incidentInevitable ? '#f87171' : card.incidentPct >= 50 ? '#fb923c' : '#facc15') + ';">' + card.incidentNiveau + ' (' + card.incidentPct + '%)' + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '') + '</span>' : '') + '</div>';
-  if (card.incidentPct > 0) {
-    html += '<div class="kv muted" style="font-size:11px;">Type dominant : ' + card.incidentTypeDominant +
-      ' (penalty ' + card.incidentPctPenalty + '% / rouge ' + card.incidentPctRouge + '%)</div>';
-  }
-  html += '<div class="kv"><b>Cartons jaunes (estimé) :</b> ' + card.cartonsJaunes + '</div>';
-  // CORRIGÉ (17/07/26) : quand capaciteFiable=false, la capacité de but
-  // brute de CETTE paire (posA/posB, calculerButsCamp — calcul INDÉPENDANT
-  // de domA/domB) pointe dans le sens opposé au vainqueur affiché. Montrer
-  // "Puissance de marquage : [équipe perdante]" juste sous "Victoire :
-  // [équipe gagnante]" serait une contradiction visuelle directe — les
-  // chiffres restent affichés (rien d'inventé), mais sans les présenter
-  // comme l'explication du vainqueur.
-  if (card.capaciteFiable) {
-    var capaciteLabel = card.capaciteWinner === 'A' ? teamA : card.capaciteWinner === 'B' ? teamB : 'Égalité';
-    html += '<div class="kv"><b>Puissance de marquage :</b> ' + capaciteLabel + ' (' + card.capaciteA + ' vs ' + card.capaciteB + ')</div>';
-  } else {
-    html += '<div class="kv muted" style="font-size:11px;"><b>Puissance de marquage (ce calcul seul) :</b> ' + card.capaciteA + ' vs ' + card.capaciteB + ' — ne détermine pas le vainqueur ici, tranché par un autre mécanisme</div>';
-  }
-  html += '<div class="kv"><b>Les deux marquent (BTTS) :</b> ' + (card.btts ? 'Oui' : 'Non') +
-    (card.bttsSource ? ' <span class="muted" style="font-size:11px;">— ' + card.bttsSource + '</span>' : '') +
-    (card.bttsForce ? ' <span style="color:#94a3b8;font-size:11px;">· M4/M10 aurait dit Oui 100% (signalé, non décisif)</span>' : '') +
-    (card.bttsDefavorise ? ' <span style="color:#94a3b8;font-size:11px;">· M4/M10 aurait dit Non (signalé, non décisif)</span>' : '') + '</div>';
-  if (card.bttsRotation && card.bttsRotation.applicable) {
-    html += '<div class="kv muted" style="font-size:11px;"><b>Ouverture des sièges :</b> '
-      + card.bttsRotation.synthese + '</div>';
-  }
-  if ((card.bttsForce || card.bttsDefavorise) && card.bttsRaison) {
-    html += '<div class="kv muted" style="font-size:11px;"><b>Doctrine BTTS :</b> ' + card.bttsRaison + '</div>';
-  }
-  html += '<div class="kv"><b>Corners :</b> ' + card.corners.ht1 + ' (1MT) + ' + card.corners.ht2 + ' (2MT) = ' + card.corners.total + ' — match ' + (card.corners.ouvert ? 'ouvert' : 'fermé') + (card.corners.doctrine === 'beaucoup' ? ' — <span style="color:#facc15;">R1/R7 Feu + M10 Air/Feu : beaucoup de corners (≥10)</span>' : card.corners.doctrine === 'peu' ? ' — <span style="color:#94a3b8;">R1/R7 Terre + M10 Terre : blocage, peu de corners (≥3)</span>' : '') + '</div>';
-  if (htInfo) {
-    var htLabel = htInfo.htWinner === 'M1' ? teamA : htInfo.htWinner === 'M7' ? teamB : htInfo.htWinner === 'both' ? 'Les deux' : 'Indéterminé';
-    html += '<div class="kv"><b>Premier but (mi-temps) :</b> ' + htLabel + '</div>';
-    html += '<div class="kv"><b>But 1ère mi-temps fiable :</b> ' + (htInfo.htWinner === 'M1' || htInfo.htWinner === 'M7' || htInfo.htWinner === 'both' ? 'Oui' : 'Non') + '</div>';
-    // AJOUTÉ (16/07/26, demande utilisateur) : buts prévus en 1ère mi-temps,
-    // intégrés directement dans le verdict affiché plutôt que caché derrière
-    // le bouton "🕐 But par mi-temps". Théorie gardée active (M1/M7 gouverne
-    // la 1ère mi-temps, R1/R7 la 2e) : le score de CETTE carte (M1/M7)
-    // représente donc directement le score prévu à la mi-temps.
-    html += '<div class="kv" style="color:#93c5fd;"><b>⏱️ Buts prévus 1ère mi-temps (théorie M1/M7) :</b> ' + card.scoreMain + '</div>';
-  }
-  html += '</div>';
-  html += '<div style="text-align:center; margin-top:10px;">';
-  html += (card.source === 'doctrine'
-    ? '<div class="kv" style="color:#4ade80; font-size:12px; margin-bottom:4px;"><b>✓ Vainqueur doctrinal (verdictFinal a tranché ici)</b></div>'
-    : card.source === 'aligne'
-    ? '<div class="kv" style="color:#60a5fa; font-size:12px; margin-bottom:4px;"><b>↔️ Aligné sur le verdict final (ce niveau seul ne tranche pas — voir la carte prioritaire)</b></div>'
-    : '<div class="kv" style="color:#fbbf24; font-size:12px; margin-bottom:4px;"><b>⚠️ Estimation moteur V7 (non validé — verdictFinal indécis/muet sur ce niveau, aucune règle validée ne tranche ici)</b></div>');
-  if (card.corrected) html += '<div class="kv" style="color:#f87171; font-size:11px;">⚠️ marge ajustée (désaccord doctrine/buts bruts)</div>';
-  if (card.viaEnM4) html += '<div class="kv" style="color:#fbbf24; font-size:11px;">🚫 Via en M4 → ' + teamA + ' ne marque pas (piste n=9, 3/3 vs 0/5 sur l\'archive, non encore validée à grande échelle)</div>';
-  html += '<div class="kv" style="margin-top:6px;"><b>Domination / fiabilité :</b></div>';
-  if (!card.domFiable) html += '<div class="kv muted" style="font-size:11px;">⚠️ cette barre reflète la force propre de cette paire, pas nécessairement le mécanisme qui a désigné le vainqueur</div>';
-  html += '</div>';
-  html += '<div style="display:flex; height:22px; border-radius:6px; overflow:hidden; border:1px solid #334155; max-width:480px; margin:0 auto;">';
-  html += '<div style="width:' + card.domPctA + '%; background:#4ade80; display:flex; align-items:center; justify-content:center; font-size:11px; color:#022c22;">' + teamA + ' ' + card.domPctA + '%</div>';
-  html += '<div style="width:' + card.domPctB + '%; background:#f87171; display:flex; align-items:center; justify-content:center; font-size:11px; color:#450a0a;">' + teamB + ' ' + card.domPctB + '%</div>';
-  html += '</div>';
-  el.innerHTML = html;
-}
+// renderCarteVerdict supprimee (11/09/26) - code mort, plus aucun appelant.
 
 </script>
 <script>
@@ -33601,37 +32220,12 @@ function rollUntilValid100Draw(){
 // mesuré avec. Corrigé par un brassage final (finalizer lowbias32) qui
 // disperse les bits hauts vers les bas, et par un compteur placé AVANT
 // la graine plutôt qu'après.
-function hachageTexteV7(txt) {
-  var v = String(txt || '').toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]/g, '');
-  var h = 0x811c9dc5;
-  for (var i = 0; i < v.length; i++) {
-    h = (h ^ v.charCodeAt(i)) >>> 0;
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  // Brassage final : sans lui les bits bas restent corrélés.
-  h = (h ^ (h >>> 16)) >>> 0;
-  h = Math.imul(h, 0x7feb352d) >>> 0;
-  h = (h ^ (h >>> 15)) >>> 0;
-  h = Math.imul(h, 0x846ca68b) >>> 0;
-  h = (h ^ (h >>> 16)) >>> 0;
-  return h >>> 0;
-}
+// hachageTexteV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Les quatre mères d'un match, dérivées de ses seules données publiques.
 // L'ordre des équipes compte (équipe 1 puis équipe 2) : c'est la même
 // convention que R1/R7 dans tout le fichier.
-function tirageDepuisMatchV7(equipe1, equipe2, date, heure) {
-  var base = [equipe1, equipe2, date, heure].join('|');
-  var meres = [];
-  for (var k = 1; k <= 4; k++) {
-    // le compteur EN TÊTE : deux graines pour la même mère ne partagent
-    // plus leur fin de chaîne.
-    meres.push(FIGS_V7[hachageTexteV7('m' + k + '|' + base) % 16]);
-  }
-  return { meres: meres, graine: base };
-}
+// tirageDepuisMatchV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 function rollUntilValidDraw(){
   let attempts=0;
