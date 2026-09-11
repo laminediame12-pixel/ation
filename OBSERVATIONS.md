@@ -76,3 +76,30 @@ où la règle faisait déjà 13/20, et il tenait à des maisons d'axes fausses.
 La règle reste branchée. On ne débranche pas un moteur sur une archive — ce
 serait refaire la même erreur dans l'autre sens. Elle est au programme du test
 prospectif, seuil ≥ 112/150.
+
+### Suite — les classes de maisons suivent aussi (11/09/2026)
+
+« Oui corrige-les aussi. » Les tests d'appartenance — « R1 est-il en maison
+cadente ? », « Puer est-il en maison succédente ? » — employaient encore les
+anciennes listes. Ils suivent : cadente 3-5-9-11, succédente 2-6-8-12.
+
+Les trois listes étaient recopiées à **quatorze endroits**. Elles sont
+maintenant déclarées une seule fois (`MAISONS_CARDINALES_V7`,
+`MAISONS_SUCCEDENTES_V7`, `MAISONS_CADENTES_V7`) et tous les sites y pointent.
+
+Effet mesuré sur les 65 536 thèmes, par rapport à la seule correction des axes :
+
+| moteur | thèmes changés | total |
+|---|---|---|
+| BTTS | 147 | 62 043 → 62 076 OUI |
+| Nul | 0 | 14 336 |
+| Incidents | 0 | 64 413 |
+| Camp (1N2) | 0 | R1 36 142 / R7 29 394 |
+
+Le nul et les incidents ne bougent pas : leurs moteurs qui lisent la maison
+cadente (« Saturne dans une maison cadente », « Serré · R1 en maison cadente »)
+sont catalogués mais pas branchés sur la décision par défaut.
+
+Un comptage historique du fichier — « R1 succédente 0/11, R1 CADENTE 2/6, les
+deux nuls » — a été obtenu avec les anciennes classes. Il n'a pas été refait et
+ne vaut plus pour le code actuel ; c'est noté à côté dans le source.

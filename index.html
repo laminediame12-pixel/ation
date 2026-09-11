@@ -1362,6 +1362,29 @@ function jouerAutoTestsV7() {
 </div>
 </section>
 <script>
+// ─── LES TROIS CLASSES DE MAISONS (11/09/26, Ellemine_D : « Succédent
+// 2-6-8-12, Cadent 3-5-9-11 », puis « oui corrige-les aussi ») ───
+// Une seule déclaration pour tout le fichier. Les trois classes servent à
+// DEUX choses différentes, et les deux suivent la correction :
+//   — les AXES : la somme (XOR) des quatre maisons d'une classe ;
+//   — l'APPARTENANCE : « R1 est-il en maison cadente ? », « Puer est-il en
+//     maison succédente ? », employées par le BTTS, le nul et les incidents.
+// Ces listes étaient recopiées à quatorze endroits. Le fichier documente
+// déjà une désynchronisation passée entre copies d'une même définition
+// (cf. AXES_VALIDITE_DEFS) : elles sont centralisées ici.
+// Les trois classes partitionnent exactement M1 à M12, mais ce ne sont PAS
+// les classes modulo 3 de l'astrologie — seul le Cardinal en est une.
+//
+// ⚠️ DÉCLARÉ DANS SON PROPRE <script>, EN TÊTE, ET EN `var`. Le premier
+// essai les avait posées près d'AXES_CARRE_V7, qui vit dans un IIFE : elles
+// étaient invisibles partout ailleurs, le moteur Nul tombait à zéro sur les
+// 65 536 thèmes et trente thèmes sur trente plantaient. Ne pas les déplacer
+// à l'intérieur d'une fonction ou d'un IIFE.
+var MAISONS_CARDINALES_V7  = [1, 4, 7, 10];
+var MAISONS_SUCCEDENTES_V7 = [2, 6, 8, 12];
+var MAISONS_CADENTES_V7    = [3, 5, 9, 11];
+</script>
+<script>
 // ═══════════════════════════════════════════════════════════════
 // CARRE GEO GLYPHES
 // Extrait de systeme_geomantique.html le 04/09/26. Script CLASSIQUE :
@@ -2004,18 +2027,10 @@ function renderVerdictCarreGeomantique(theme){
 // et REFUSÉES : jaune contre rouge à ΔE 13,0 en vision normale, sous le
 // plancher de 15 — deux lecteurs sur deux les auraient confondues. Les
 // trois retenues sont les plus proches qui passent.
-// ─── AXES CORRIGÉS (11/09/26, Ellemine_D : « Succédent 2-6-8-12,
-// Cadent 3-5-9-11 ») ───
-// Les trois axes restent une partition exacte de M1 à M12 en trois groupes
-// de quatre, mais ce ne sont PAS les classes modulo 3 de l'astrologie.
-// Ne pas confondre avec les tests d'appartenance « R1 en maison cadente »
-// ([3,6,9,12]) et « Puer en maison succédente » ([2,5,8,11]) employés par
-// le BTTS, le nul et les incidents : ceux-là disent OÙ SE TROUVE une
-// maison, pas quelles maisons se somment. Ils sont inchangés.
 var AXES_CARRE_V7 = [
-  { nom: 'Cardinal', maisons: [1, 4, 7, 10], couleur: '#008300' },
-  { nom: 'Succédent', maisons: [2, 6, 8, 12], couleur: '#c98500' },
-  { nom: 'Cadent', maisons: [3, 5, 9, 11], couleur: '#e34948' }
+  { nom: 'Cardinal', maisons: MAISONS_CARDINALES_V7, couleur: '#008300' },
+  { nom: 'Succédent', maisons: MAISONS_SUCCEDENTES_V7, couleur: '#c98500' },
+  { nom: 'Cadent', maisons: MAISONS_CADENTES_V7, couleur: '#e34948' }
 ];
 function COULEUR_AXE_CARRE_V7(m) {
   var a = AXES_CARRE_V7[(m - 1) % 3];
@@ -8525,9 +8540,9 @@ function combineMany(arr){return arr.slice(1).reduce((acc,f)=>combine(acc,f),arr
 // testait quelque chose de réel. Il fusionne donc dans le Cadent, et la
 // validité redevient un test à TROIS axes — les trois seuls qui existent.
 const AXES_VALIDITE_DEFS = [
-  {key:'cardinal',  label:'Axe Cardinal (M1 + M4 + M7 + M10)',  houses:[1,4,7,10]},
-  {key:'succedent', label:'Axe Succédent (M2 + M6 + M8 + M12)', houses:[2,6,8,12]},
-  {key:'cadent',    label:'Axe Cadent (M3 + M5 + M9 + M11)',    houses:[3,5,9,11]}
+  {key:'cardinal',  label:'Axe Cardinal ('  + MAISONS_CARDINALES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')',  houses:MAISONS_CARDINALES_V7},
+  {key:'succedent', label:'Axe Succédent (' + MAISONS_SUCCEDENTES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')', houses:MAISONS_SUCCEDENTES_V7},
+  {key:'cadent',    label:'Axe Cadent ('    + MAISONS_CADENTES_V7.map(function(h){return 'M'+h;}).join(' + ')    + ')',    houses:MAISONS_CADENTES_V7}
 ];
 function evaluerAxesValidite(theme){
   return AXES_VALIDITE_DEFS.map(function(def){
@@ -17101,9 +17116,9 @@ var LIEUX_MARQUAGE_V7 = [1, 4, 5, 7, 8, 9, 10];
 // Maisons corrigées le 11/09/26 (Ellemine_D) : Succédent 2-6-8-12,
 // Cadent 3-5-9-11.
 var AXES_V7 = [
-  { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: [1, 4, 7, 10],  note: 'angulaire' },
-  { cle: 'succedent', nom: 'Axe Succédent', maisons: [2, 6, 8, 12],  note: 'succédent — signal de nul validé' },
-  { cle: 'cadent',    nom: 'Axe Cadent',    maisons: [3, 5, 9, 11],  note: 'cadent' }
+  { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: MAISONS_CARDINALES_V7,  note: 'angulaire' },
+  { cle: 'succedent', nom: 'Axe Succédent', maisons: MAISONS_SUCCEDENTES_V7, note: 'succédent — signal de nul validé' },
+  { cle: 'cadent',    nom: 'Axe Cadent',    maisons: MAISONS_CADENTES_V7,    note: 'cadent' }
 ];
 
 function lectureUnAxeV7(theme, axe) {
@@ -19571,7 +19586,7 @@ function criteresPaireV7(theme) {
   try { var pc = porteConfianceV7(theme); if (pc) o.axes = pc.nbAxes; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   try { var f = faisceauNulV7(theme); if (f) o.faisceau = f.n; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   try { var cd = campDoubleV7(theme); o.theoreme = (cd && cd.applicable) ? 1 : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  try { var r = getRotationCombat(theme); o.cadent = (r && [3, 6, 9, 12].indexOf(r.hR1) >= 0) ? 1 : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
+  try { var r = getRotationCombat(theme); o.cadent = (r && MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0) ? 1 : 0; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
   return o;
 }
 
@@ -21554,9 +21569,9 @@ var MOTEURS_BTTS_V7 = [
       var conj = false;
       for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') { conj = true; break; } }
       if (!conj) return { oui: false, detail: 'Conjunctio absent — pas d\'échange' };
-      var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
+      var cad = MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0;
       if (cad) return { oui: true, detail: 'R1 en M' + r.hR1 + ' cadente + Conjunctio' };
-      var suc = [2, 5, 8, 11].some(function (h) { return t[h] === 'puer'; });
+      var suc = MAISONS_SUCCEDENTES_V7.some(function (h) { return t[h] === 'puer'; });
       return { oui: suc, detail: 'zone faible · Puer succédent ' + (suc ? 'oui' : 'non') };
     } },
   { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent (sans Puer)', icone: '🔗', teinte: '#84cc16',
@@ -21567,7 +21582,7 @@ var MOTEURS_BTTS_V7 = [
       if (!r || !r.hR1) return null;
       var conj = false;
       for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') { conj = true; break; } }
-      var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
+      var cad = MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0;
       return { oui: cad && conj,
         detail: 'R1 en M' + r.hR1 + (cad ? ' (cadente)' : '') + ' · Conjunctio ' + (conj ? 'présent' : 'ABSENT') };
     } },
@@ -21588,7 +21603,7 @@ var MOTEURS_BTTS_V7 = [
       var vu = [];
       for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
       if (!vu.length) return { oui: false, detail: 'Puer absent du thème' };
-      var suc = vu.filter(function (h) { return [2, 5, 8, 11].indexOf(h) >= 0; });
+      var suc = vu.filter(function (h) { return MAISONS_SUCCEDENTES_V7.indexOf(h) >= 0; });
       return { oui: suc.length > 0,
         detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
     } },
@@ -21598,7 +21613,7 @@ var MOTEURS_BTTS_V7 = [
       var r = null;
       try { r = getRotationCombat(t); } catch (e) { return null; }
       if (!r || !r.hR1) return null;
-      var cad = [3, 6, 9, 12].indexOf(r.hR1) >= 0;
+      var cad = MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0;
       return { oui: cad, detail: 'R1 en M' + r.hR1 + (cad ? ' — cadente' : '') };
     } },
   { cle: 'btts_chaine', nom: 'BTTS · chaîne du perdant', icone: '⛓', teinte: '#4ade80',
@@ -22387,6 +22402,9 @@ var MOTEURS_MITEMPS_DEUX_V7 = [
 //     angulaire (M1,4,7,10) ............ 0 / 7
 //     succédente (M2,5,8,11) ........... 0 / 11
 //     CADENTE (M3,6,9,12) .............. 2 / 6   ← les DEUX nuls
+//   ⚠️ Chiffres obtenus avec les ANCIENNES maisons de classe. Les classes
+//   ont été corrigées le 11/09/26 (succédente 2-6-8-12, cadente 3-5-9-11) :
+//   ce comptage n'a pas été refait et ne vaut plus pour le code actuel.
 //     synthèse (M13-16) ................ 0 / 2
 // Roma, R1 en M9. AmisPuer, R1 en M6. Les deux nuls de l'archive sont
 // dans la même catégorie, et les vingt autres cas n'y sont pas.
@@ -23050,7 +23068,7 @@ function faisceauNulV7(theme) {
   var structure = false;
   try { var sn = structureDuNul(theme); structure = !!(sn && sn.nulDetecte); } catch (e) { structure = false; }
   var signaux = [
-    { cle: 'cadente', nom: 'R1 en maison cadente', on: [3, 6, 9, 12].indexOf(rot.hR1) >= 0,
+    { cle: 'cadente', nom: 'R1 en maison cadente', on: MAISONS_CADENTES_V7.indexOf(rot.hR1) >= 0,
       detail: 'R1 en M' + rot.hR1 },
     { cle: 'binome', nom: 'R7 est le binôme de R1', on: k === 2, detail: 'décalage +' + k },
     { cle: 'boucle', nom: 'R1 et R7 dans la même boucle', on: k !== null && k % 2 === 0,
@@ -23201,7 +23219,7 @@ var MOTEURS_NUL_V7 = [
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
       if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
-      var cadente = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
+      var cadente = MAISONS_CADENTES_V7.indexOf(rot.hR1) >= 0;
       return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
     } },
   { cle: 'nul_structure', nom: 'Nul · structure (M13=M14 ou paire d\'équilibre)', icone: '⚖', teinte: '#a78bfa',
@@ -23416,7 +23434,7 @@ var MOTEURS_NUL_V7 = [
     juste: 0, total: 0, note: 'Saturne croisé aux maisons susceptibles — parle sur 18 thèmes sur 35, 3 nuls (17 %, sous le hasard)',
     verdict: function (t) {
       var ou = [];
-      [3, 6, 9, 12].forEach(function (h) {
+      MAISONS_CADENTES_V7.forEach(function (h) {
         if (t[h] === 'carcer' || t[h] === 'tristitia') ou.push('M' + h);
       });
       return { oui: ou.length > 0, detail: ou.length ? 'Saturne en ' + ou.join(', ') : 'aucune cadente saturnienne' };
@@ -23474,7 +23492,7 @@ var MOTEURS_SERRE_V7 = [
       var rot = null;
       try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
       if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
-      var cadente = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
+      var cadente = MAISONS_CADENTES_V7.indexOf(rot.hR1) >= 0;
       return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
     } },
   { cle: 'serre_m6m9', nom: 'Serré · R1 en M6 ou M9 (le couple des nuls)', icone: '⚖', teinte: '#a78bfa',
@@ -27074,7 +27092,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   var bttsCadent = null;
   try {
     var _rotB = getRotationCombat(theme);
-    if (_rotB && _rotB.hR1) bttsCadent = [3, 6, 9, 12].indexOf(_rotB.hR1) >= 0;
+    if (_rotB && _rotB.hR1) bttsCadent = MAISONS_CADENTES_V7.indexOf(_rotB.hR1) >= 0;
   } catch (e) { bttsCadent = null; }
   // ═══════════════════════════════════════════════════════════════
   // LE VERROU DE CONJUNCTIO (30/08/26) — méthode d'Ellemine_D
@@ -27188,7 +27206,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   var bttsPuerSuc = false;
   try {
     for (var _hp = 0; _hp < 4; _hp++) {
-      var _mh = [2, 5, 8, 11][_hp];
+      var _mh = MAISONS_SUCCEDENTES_V7[_hp];
       if (theme[_mh] === 'puer') { bttsPuerSuc = true; break; }
     }
   } catch (e) { bttsPuerSuc = false; }
@@ -32582,7 +32600,8 @@ function zoomTheme(delta) {
 }
 
 function getAxisThemeFromBase(baseTheme, axisKey){
-  const axes={meres:[1,2,3,4],angulaire:[1,4,7,10],succedent:[2,5,8,11],cadent:[3,6,9,12]};
+  const axes={meres:[1,2,3,4],angulaire:MAISONS_CARDINALES_V7,
+    succedent:MAISONS_SUCCEDENTES_V7,cadent:MAISONS_CADENTES_V7};
   const h=axes[axisKey]||axes.meres;
   return buildThemeFromMothers(baseTheme[h[0]],baseTheme[h[1]],baseTheme[h[2]],baseTheme[h[3]]);
 }
@@ -33328,9 +33347,9 @@ function lectureTrajectoireV7(theme, maisons) {
 // s'annule avec lui-même. C'est affiché sous le résultat, pour que
 // personne ne croie lire la somme de ce que la trajectoire traverse.
 var PRESETS_SOMME_V7 = {
-  '1D':  { maisons: [1, 4, 7, 10], nom: 'Axe Cardinal (les angulaires)' },
-  '2D':  { maisons: [2, 6, 8, 12], nom: 'Axe Succédent' },
-  '3D':  { maisons: [3, 5, 9, 11], nom: 'Axe Cadent' },
+  '1D':  { maisons: MAISONS_CARDINALES_V7, nom: 'Axe Cardinal (les angulaires)' },
+  '2D':  { maisons: MAISONS_SUCCEDENTES_V7, nom: 'Axe Succédent' },
+  '3D':  { maisons: MAISONS_CADENTES_V7, nom: 'Axe Cadent' },
   '4D':  { maisons: [1, 5, 9],     nom: 'Trigone offensif de M1 / R1', reduit: 'M2 ⊕ M5' },
   '3B':  { maisons: [7, 3, 11],    nom: 'Trigone offensif de M7 / R7', reduit: 'M3 ⊕ M5 ⊕ M6 ⊕ M7' },
   'V-1': { maisons: [1, 2, 3, 4, 9, 10, 13, 15], nom: 'V-1' },
@@ -34078,9 +34097,10 @@ document.addEventListener('DOMContentLoaded',gfInitRefactorPanel);
           catch(e){ try{ fig=combine(t[homes[0]],t[homes[1]]); }catch(_){ console.debug('[maintenance] erreur ignorée:', _); } }
           return '<div class="ui-axis-row"><b>'+name+'</b><span>'+homes.map(function(m){return 'M'+m+' · '+esc(label(t[m]));}).join(' &nbsp;|&nbsp; ')+'</span><strong>→ '+esc(label(fig))+'</strong></div>';
         };
-        ax.innerHTML=axis('AXE ANGULAIRE (1-4-7-10)',[1,4,7,10])
-          +axis('AXE SUCCÉDENT (2-5-8-11)',[2,5,8,11])
-          +axis('AXE CADENT (3-6-9-12)',[3,6,9,12]);
+        var _ax = function (n, hs) { return axis(n + ' (' + hs.join('-') + ')', hs); };
+        ax.innerHTML=_ax('AXE ANGULAIRE',MAISONS_CARDINALES_V7)
+          +_ax('AXE SUCCÉDENT',MAISONS_SUCCEDENTES_V7)
+          +_ax('AXE CADENT',MAISONS_CADENTES_V7);
       }
 
       // Domination : cinq plages fixes 0-20 / 20-40 / 40-60 / 60-80 / 80-100.
