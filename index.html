@@ -24494,6 +24494,68 @@ function _lex1N2V7(a, b) {
   return { gagnant: null, rang: -1 };
 }
 
+// Les cinq niveaux de la doctrine, chacun une LISTE comparée dans l'ordre
+// exact qu'elle énonce — jamais une somme.
+function criteres1N2(r1, r7) {
+  return [
+    { nom: 'Concordance', a: [r1.concordance], b: [r7.concordance] },
+    { nom: 'Charge active', a: [r1.charge.valeur], b: [r7.charge.valeur] },
+    { nom: 'Filiation',
+      a: [r1.filiation.transmission, r1.filiation.engendre],
+      b: [r7.filiation.transmission, r7.filiation.engendre] },
+    { nom: 'Stabilité de boucle',
+      a: [r1.boucle.binomePresent, r1.boucle.materialisation, r1.boucle.repetitions,
+          r1.boucle.ancrageRepos, r1.boucle.resultantesPropres, -r1.boucle.expositionAntagonistes],
+      b: [r7.boucle.binomePresent, r7.boucle.materialisation, r7.boucle.repetitions,
+          r7.boucle.ancrageRepos, r7.boucle.resultantesPropres, -r7.boucle.expositionAntagonistes] },
+    // La concordance ouvre aussi l'installation locale dans la doctrine, mais
+    // à ce stade elle a forcément déjà égalisé : on part du déplacement.
+    // Moins de déplacement = mieux ancré, d'où le signe.
+    { nom: 'Installation locale',
+      a: [-r1.installation.deplacement, r1.installation.multiplicite, r1.installation.environnement,
+          r1.installation.cohabitation, r1.installation.activation, r1.installation.maisonNatale],
+      b: [-r7.installation.deplacement, r7.installation.multiplicite, r7.installation.environnement,
+          r7.installation.cohabitation, r7.installation.activation, r7.installation.maisonNatale] }
+  ];
+}
+
+// Parcourt la cascade et renvoie le premier critère réellement discriminant.
+function _cascade1N2V7(criteres) {
+  for (var i = 0; i < criteres.length; i++) {
+    var c = criteres[i];
+    var d = _lex1N2V7(c.a, c.b);
+    if (d.gagnant) {
+      return { camp: d.gagnant, critere: c.nom, rang: d.rang,
+        valA: c.a[d.rang], valB: c.b[d.rang],
+        muets: criteres.slice(0, i).map(function (x) { return x.nom; }) };
+    }
+  }
+  return null;
+}
+
+// ─── MIGRATION VERS LE MOTEUR NUL (11/09/26, Ellemine_D) ───
+// « 1N2 = soit 1 soit 2, pas de nul. Si un indice du nul apparaît, l'analyse
+// migre automatiquement vers le moteur nul pour confirmer. »
+// Le 1N2 ne prononce donc jamais le nul : il signale l'indice et interroge
+// le moteur Nul, seul habilité à confirmer.
+function _migrationNul1N2V7(theme) {
+  var confirme = false;
+  try { confirme = !!nulActifV7(theme); } catch (e) { confirme = false; }
+  var raison = '';
+  try {
+    if (confirme && typeof nulCarcerMiroirV7 === 'function') {
+      var cm = nulCarcerMiroirV7(theme);
+      if (cm && cm.oui) raison = 'Carcer en paires miroir (' + cm.nbCarcer + '/' + cm.nbCarcerTotal + ')';
+    }
+  } catch (e) { }
+  return {
+    confirme: confirme, raison: raison,
+    texte: confirme
+      ? 'NUL CONFIRMÉ' + (raison ? ' — ' + raison + '.' : '.')
+      : 'non confirmé, le camp du 1N2 tient.'
+  };
+}
+
 function moteur1N2V7(theme) {
   if (!theme || typeof getRotationCombat !== 'function') return null;
   var rot;
@@ -24537,74 +24599,89 @@ function moteur1N2V7(theme) {
       var poleInfo = { poleR1: poleR1, poleR7: poleR7, ecart: ecart, seuil: 1.5,
         detailR1: [1, 4, 13].map(function (h) { return 'M' + h + ' ' + ((typeof FL !== 'undefined' && FL[theme[h]]) || theme[h]) + ' ' + poids(h); }),
         detailR7: [7, 10, 14].map(function (h) { return 'M' + h + ' ' + ((typeof FL !== 'undefined' && FL[theme[h]]) || theme[h]) + ' ' + poids(h); }) };
+      var memeFig = ((typeof FL !== 'undefined' && FL[r1.figure]) || r1.figure);
       if (ecart > 1.5) {
         var gagnantPole = poleR1 > poleR7 ? 'R1' : 'R7';
         return { verdict: gagnantPole, camp: gagnantPole, critere: 'Pôle NM rotatif',
-          figuresIdentiques: true, pole: poleInfo,
-          detail: 'R1 et R7 portent la même figure (' + ((typeof FL!=='undefined'&&FL[r1.figure])||r1.figure)
+          figuresIdentiques: true, pole: poleInfo, indiceNul: false,
+          detail: 'R1 et R7 portent la même figure (' + memeFig
             + ') : la concordance ne peut pas les départager. Pôle NM rotatif — '
             + chiffres + ' (seuil 1,5) → ' + gagnantPole + ' l\'emporte.',
           r1: r1, r7: r7, rotation: rot };
       }
-      return { verdict: 'N', camp: 'Nul', critere: 'Pôle NM insuffisant',
+      // ─── INDICE DE NUL → MIGRATION VERS LE MOTEUR NUL (11/09/26) ───
+      // Le 1N2 ne dit jamais « nul » : il dit 1 ou 2. Mais un écart de pôle
+      // sous le seuil EST un indice de nul. L'analyse migre alors vers le
+      // moteur Nul, seul habilité à confirmer. Le camp reste nommé (le pôle
+      // le plus fort, ou la cascade si les pôles sont exactement égaux) :
+      // c'est lui qui tient si le moteur Nul ne confirme pas.
+      if (poleR1 !== poleR7) {
+        var campFaible = poleR1 > poleR7 ? 'R1' : 'R7';
+        var confirme = _migrationNul1N2V7(theme);
+        return { verdict: campFaible, camp: campFaible, critere: 'Pôle NM rotatif (écart faible)',
+          figuresIdentiques: true, pole: poleInfo,
+          indiceNul: true, nulConfirme: confirme.confirme, nulRaison: confirme.raison,
+          detail: 'R1 et R7 portent la même figure (' + memeFig
+            + ') : la concordance ne peut pas les départager. Pôle NM rotatif — '
+            + chiffres + ', SOUS le seuil de 1,5 → indice de nul. '
+            + 'Migration vers le moteur Nul : ' + confirme.texte
+            + ' Le 1N2 nomme ' + campFaible + '.',
+          r1: r1, r7: r7, rotation: rot };
+      }
+      // Pôles strictement égaux : indice de nul maximal, mais le 1N2 doit
+      // quand même nommer un camp — il redescend dans sa propre cascade.
+      var confirmeEgal = _migrationNul1N2V7(theme);
+      var suite = _cascade1N2V7(criteres1N2(r1, r7));
+      var campEgal = suite ? suite.camp : 'R1';
+      return { verdict: campEgal, camp: campEgal,
+        critere: suite ? suite.critere + ' (pôles égaux)' : 'pôles égaux',
         figuresIdentiques: true, pole: poleInfo,
-        detail: 'R1 et R7 portent la même figure (' + ((typeof FL!=='undefined'&&FL[r1.figure])||r1.figure)
-          + ') : la concordance ne peut pas les départager. Pôle NM rotatif — '
-          + chiffres + ', sous le seuil de 1,5 → aucun camp n\'est établi, nul.',
+        indiceNul: true, nulConfirme: confirmeEgal.confirme, nulRaison: confirmeEgal.raison,
+        detail: 'R1 et R7 portent la même figure (' + memeFig + ') et les pôles sont ÉGAUX ('
+          + poleR1.toFixed(1) + ') → indice de nul fort. Migration vers le moteur Nul : '
+          + confirmeEgal.texte + ' Le 1N2 nomme ' + campEgal
+          + (suite ? ' par ' + suite.critere : '') + '.',
         r1: r1, r7: r7, rotation: rot };
     }
   }
 
   // ── niveau 9 : ordre de décision, strictement lexicographique ──
-  // Chaque critère est lui-même une liste, comparée dans l'ordre exact
-  // que la doctrine énonce — jamais une somme.
-  var criteres = [
-    { nom: 'Concordance',
-      a: [r1.concordance], b: [r7.concordance] },
-    { nom: 'Charge active',
-      a: [r1.charge.valeur], b: [r7.charge.valeur] },
-    { nom: 'Filiation',
-      a: [r1.filiation.transmission, r1.filiation.engendre],
-      b: [r7.filiation.transmission, r7.filiation.engendre] },
-    { nom: 'Stabilité de boucle',
-      a: [r1.boucle.binomePresent, r1.boucle.materialisation, r1.boucle.repetitions,
-          r1.boucle.ancrageRepos, r1.boucle.resultantesPropres, -r1.boucle.expositionAntagonistes],
-      b: [r7.boucle.binomePresent, r7.boucle.materialisation, r7.boucle.repetitions,
-          r7.boucle.ancrageRepos, r7.boucle.resultantesPropres, -r7.boucle.expositionAntagonistes] },
-    // La concordance ouvre aussi l'installation locale dans la doctrine,
-    // mais à ce stade elle a forcément déjà égalisé (critère 1) : la
-    // comparer une seconde fois ne peut rien trancher, on part donc du
-    // déplacement. Moins de déplacement = mieux ancré, d'où le signe.
-    { nom: 'Installation locale',
-      a: [-r1.installation.deplacement, r1.installation.multiplicite, r1.installation.environnement,
-          r1.installation.cohabitation, r1.installation.activation, r1.installation.maisonNatale],
-      b: [-r7.installation.deplacement, r7.installation.multiplicite, r7.installation.environnement,
-          r7.installation.cohabitation, r7.installation.activation, r7.installation.maisonNatale] }
-  ];
-
-  for (var i = 0; i < criteres.length; i++) {
-    var c = criteres[i];
-    var duel = _lex1N2V7(c.a, c.b);
-    if (duel.gagnant) {
-      return {
-        verdict: duel.gagnant,
-        camp: duel.gagnant,
-        critere: c.nom,
-        rangInterne: duel.rang,
-        detail: c.nom + ' — ' + duel.gagnant + ' l\'emporte : R1 '
-          + c.a[duel.rang] + ' contre R7 ' + c.b[duel.rang],
-        r1: r1, r7: r7, rotation: rot,
-        criteresMuets: criteres.slice(0, i).map(function (x) { return x.nom; })
-      };
-    }
+  var criteres = criteres1N2(r1, r7);
+  var gagne = _cascade1N2V7(criteres);
+  if (gagne) {
+    return {
+      verdict: gagne.camp,
+      camp: gagne.camp,
+      critere: gagne.critere,
+      rangInterne: gagne.rang,
+      indiceNul: false,
+      detail: gagne.critere + ' — ' + gagne.camp + ' l\'emporte : R1 '
+        + gagne.valA + ' contre R7 ' + gagne.valB,
+      r1: r1, r7: r7, rotation: rot,
+      criteresMuets: gagne.muets
+    };
   }
-  // Aucun des cinq niveaux ne discrimine : les deux camps sont
-  // structurellement indiscernables. C'est le N du 1N2.
+  // Aucun des cinq niveaux ne discrimine (jamais observé sur les 65 536
+  // thèmes, garde-fou) : indice de nul, migration vers le moteur Nul. Le
+  // 1N2 doit tout de même nommer un camp — il prend le pôle NM, qui ne lit
+  // pas les camps mais les maisons, donc reste capable de trancher.
+  var poidsG = function (h) {
+    var f = theme[h];
+    return (typeof NM_FIGURE_POIDS !== 'undefined' && NM_FIGURE_POIDS[f] != null) ? NM_FIGURE_POIDS[f] : 0;
+  };
+  var pR1 = [1, 4, 13].reduce(function (s, h) { return s + poidsG(h); }, 0);
+  var pR7 = [7, 10, 14].reduce(function (s, h) { return s + poidsG(h); }, 0);
+  var campUltime = pR1 >= pR7 ? 'R1' : 'R7';
+  var confUltime = _migrationNul1N2V7(theme);
   return {
-    verdict: 'N', camp: 'Nul', critere: 'aucun',
+    verdict: campUltime, camp: campUltime, critere: 'Pôle NM (cascade muette)',
     rangInterne: -1,
-    detail: 'Les cinq niveaux égalisent : R1 et R7 sont structurellement '
-      + 'indiscernables — match nul.',
+    indiceNul: true, nulConfirme: confUltime.confirme, nulRaison: confUltime.raison,
+    pole: { poleR1: pR1, poleR7: pR7, ecart: Math.abs(pR1 - pR7), seuil: 1.5 },
+    detail: 'Les cinq niveaux égalisent : R1 et R7 sont structurellement indiscernables '
+      + '→ indice de nul. Migration vers le moteur Nul : ' + confUltime.texte
+      + ' Le 1N2 nomme ' + campUltime + ' par le pôle NM ('
+      + pR1.toFixed(1) + ' contre ' + pR7.toFixed(1) + ').',
     r1: r1, r7: r7, rotation: rot,
     criteresMuets: criteres.map(function (x) { return x.nom; })
   };
