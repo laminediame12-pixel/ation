@@ -103,3 +103,41 @@ sont catalogués mais pas branchés sur la décision par défaut.
 Un comptage historique du fichier — « R1 succédente 0/11, R1 CADENTE 2/6, les
 deux nuls » — a été obtenu avec les anciennes classes. Il n'a pas été refait et
 ne vaut plus pour le code actuel ; c'est noté à côté dans le source.
+
+---
+
+## Audit du repérage de R1 et R7 — 11/09/2026
+
+Vérifié exhaustivement sur les 65 536 thèmes.
+
+**Le repérage lui-même est sain.** R1 = maison de repos de la figure en M1,
+R7 = septième position de la rotation (R1 + 6). Les cinq implémentations du
+fichier — `getRotationCombat`, `getRotationOrderFromRepos`,
+`calculerR1R7Rotation`, `themeTourneR1V7`, `analyserReseauAncrageV2` —
+**s'accordent sur 65 536 thèmes sur 65 536, zéro désaccord**.
+
+La table `MAISON_REPOS_NM` est confirmée par le procédé complet lui-même : son
+§8 énumère les 16 figures dans exactement l'ordre qui donne leur maison de
+repos (Fortuna Major est la 12e de la liste, sa maison de repos est M12).
+
+**Le repli silencieux ne se déclenche jamais** dans le chemin normal (0 thème
+sur 65 536), mais il existait et il était muet : un nom de figure inconnu
+renvoyait M1 sans rien dire, et la rotation devenait triviale R1=M1 / R7=M7 —
+indiscernable à l'écran d'une rotation triviale légitime (Puer en M1 donne
+vraiment M1). Le fichier documente un cas où ça a duré, « vérifié 400/400
+tirages ». Le repli parle maintenant dans la console.
+
+**Ce qui était réellement faux : l'export image.**
+
+| | couple | moteur |
+|---|---|---|
+| écran | R1 / R7 (rotation) | 1N2 |
+| export image (avant) | M1 / M7 | `verdictFinal` |
+
+L'image exportée nommait un **autre vainqueur que l'écran sur 15 765 thèmes
+(24 %)**. Le commentaire du code disait qu'elle était « recalculée exactement
+comme la carte principale » — c'était vrai quand la carte principale était la
+carte M1/M7. Elle ne l'est plus depuis que le 1N2 pilote le verdict.
+
+Troisième occurrence de la même faute dans ce fichier : la bannière qui nommait
+un moteur et en appliquait un autre, la source du BTTS, et maintenant l'export.

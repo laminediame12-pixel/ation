@@ -30077,8 +30077,24 @@ const MAISON_REPOS_NM = {
   rubeus:7, tristitia:8, fortuna_minor:9, carcer:10, conjunctio:11,
   fortuna_major:12, cauda_draconis:13, puella:14, acquisitio:15, populus:16
 };
+// ⚠️ LE REPLI SUR M1 EST UN PIÈGE CONNU — qu'il signale sa présence.
+// Un nom de figure inconnu (nom d'affichage capitalisé, faute de frappe,
+// figure absente de la table) renvoyait 1 en silence : la rotation devenait
+// TRIVIALE, R1=M1 et R7=M7, exactement comme si le thème n'avait pas de
+// rotation. Le fichier documente déjà un cas où ça a duré (cf. le widget
+// M1/M7, corrigé le 24/08/26 : « vérifié 400/400 tirages »), parce que rien
+// ne distinguait à l'écran une rotation triviale légitime — Puer en M1 donne
+// bien M1 — d'une rotation ratée. Vérifié le 11/09/26 : sur les 65 536
+// thèmes le repli ne se déclenche jamais dans le chemin normal. Il reste
+// donc un garde-fou, mais il ne se taira plus.
 function getMaisonReposFigure(fig){
-  return Object.prototype.hasOwnProperty.call(MAISON_REPOS_NM, fig) ? MAISON_REPOS_NM[fig] : 1;
+  if (Object.prototype.hasOwnProperty.call(MAISON_REPOS_NM, fig)) return MAISON_REPOS_NM[fig];
+  try {
+    console.warn('[rotation] figure inconnue « ' + fig + ' » — maison de repos '
+      + 'inconnue, repli sur M1 : la rotation sera TRIVIALE (R1=M1, R7=M7). '
+      + 'Attendu un code en minuscules, par exemple « fortuna_major ».');
+  } catch (e) { }
+  return 1;
 }
 function getRotationOrderFromRepos(m1Fig){
   const start = getMaisonReposFigure(m1Fig);
@@ -33654,19 +33670,33 @@ function exportThemeImage() {
   var dateStr = matchDate ? matchDate + (matchTime ? ' ' + matchTime : '') : '';
   ctx.fillText(dateStr, CW/2, 40);
 
-  // Verdict — CORRECTION (revue des attaques effectives / moteur 4 meutes) :
-  // affichait v7.winner/v7.scoreMain (moteur V7 brut, piloté à 50% des thèmes
-  // par le repli "signaux" du moteur 4 meutes, jamais validé empiriquement),
-  // alors que la carte "Verdict M1/M7" principale de l'app affiche le verdict
-  // DOCTRINAL (verdictFinal, via buildVerdictCard). Les deux pouvaient donc
-  // légitimement diverger, et l'image exportée ne donnait aucune indication
-  // qu'elle utilisait une source différente et moins validée. Recalculé ici
-  // exactement comme la carte principale pour rester cohérent avec ce que
-  // l'utilisateur voit à l'écran.
+  // ─── L'EXPORT LIT LE MÊME COUPLE ET LE MÊME MOTEUR QUE L'ÉCRAN ───
+  // Historique : l'export affichait v7.winner (moteur V7 brut), puis a été
+  // recalé sur buildVerdictCard(1, 7, 'M1', 'M7', …, verdictFinal) pour
+  // suivre « la carte principale » — ce qui était juste à l'époque où la
+  // carte principale était bien la carte M1/M7 doctrinale.
+  // Elle ne l'est plus. Depuis le 11/09/26 l'écran affiche la carte R1/R7
+  // pilotée par le moteur 1N2 (cf. renderTheme), et l'export était resté sur
+  // M1/M7 + verdictFinal : deux maisons différentes, deux moteurs différents.
+  // Mesuré sur les 65 536 thèmes : l'image exportée nommait un AUTRE
+  // vainqueur que l'écran sur 15 765 d'entre eux, soit 24 %.
+  // C'est la faute déjà corrigée deux fois dans ce fichier — la bannière qui
+  // nommait un moteur et en appliquait un autre, puis la source du BTTS.
+  // L'export reconstruit donc exactement ce que renderTheme construit :
+  // couple R1/R7 issu de la rotation, vainqueur imposé par le 1N2, et 'Nul'
+  // si le moteur Nul est actif (même ordre de priorité qu'à l'écran).
   var v7 = currentAnalysis.v7;
-  var vfExport = verdictFinal(currentTheme);
-  var carteExport = buildVerdictCard(1, 7, 'M1', 'M7', currentTheme, vfExport.winner);
-  var winnerLabel = carteExport.winner==='M1' ? team1 : carteExport.winner==='M7' ? team2 : 'Nul';
+  var _ordExport = getRotationOrderFromRepos(currentTheme[1]);
+  var _nulExport = false;
+  try { _nulExport = !!nulActifV7(currentTheme); } catch (e) { _nulExport = false; }
+  var _duelExport = null;
+  if (!_nulExport) { try { _duelExport = moteur1N2V7(currentTheme); } catch (e) { _duelExport = null; } }
+  var _overrideExport = !_duelExport ? null
+    : (_duelExport.verdict === 'R1' || _duelExport.verdict === 'R7') ? _duelExport.verdict
+    : 'Nul';
+  var carteExport = buildVerdictCard(_ordExport[0], _ordExport[6], 'R1', 'R7',
+    currentTheme, _nulExport ? 'Nul' : _overrideExport, undefined, true);
+  var winnerLabel = carteExport.winner==='R1' ? team1 : carteExport.winner==='R7' ? team2 : 'Nul';
   ctx.font = 'bold 13px Arial';
   ctx.fillStyle = '#4ade80';
   ctx.fillText('Verdict : ' + winnerLabel + '   Prédit : ' + carteExport.scoreMain, CW/2, 54);
