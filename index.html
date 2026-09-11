@@ -24510,32 +24510,77 @@ function moteur1N2V7(theme) {
           r7.installation.cohabitation, r7.installation.activation, r7.installation.maisonNatale] }
   ];
 
-  for (var i = 0; i < criteres.length; i++) {
-    var c = criteres[i];
-    var duel = _lex1N2V7(c.a, c.b);
-    if (duel.gagnant) {
-      return {
-        verdict: duel.gagnant,
-        camp: duel.gagnant,
-        critere: c.nom,
-        rangInterne: duel.rang,
-        detail: c.nom + ' — ' + duel.gagnant + ' l\'emporte : R1 '
-          + c.a[duel.rang] + ' contre R7 ' + c.b[duel.rang],
-        r1: r1, r7: r7, rotation: rot,
-        criteresMuets: criteres.slice(0, i).map(function (x) { return x.nom; })
-      };
+  // ── niveau 9 : LA MÉTHODE EST EN DEUX TEMPS, PAS EN CINQ ──
+  // La doctrine le dit deux fois :
+  //   niveau 4 : « Cette concordance ne suffit cependant pas à elle seule
+  //               à déclarer le vainqueur. »
+  //   conclusion : « C'est cette interaction figure <-> maison <-> canal,
+  //               PUIS SA CONFIRMATION par filiation et boucle, qui
+  //               constitue la méthode du vainqueur. »
+  // Donc :
+  //   LECTURE      = l'interaction dans le canal — concordance, puis charge
+  //                  si la concordance égalise (niveau 5 : la charge « sert à
+  //                  départager lorsque leur concordance est comparable »).
+  //   CONFIRMATION = filiation, puis boucle si la filiation égalise.
+  //   INSTALLATION = le « dernier niveau », arbitre quand l'un des deux temps
+  //                  reste muet.
+  // Un camp ne gagne que si sa lecture EST CONFIRMÉE. Si la confirmation
+  // désigne l'autre camp, aucun camp n'est établi : c'est le N du 1N2 —
+  // il sort du principe lui-même, sans seuil inventé.
+  var resoudre = function (idxs) {
+    for (var k = 0; k < idxs.length; k++) {
+      var cc = criteres[idxs[k]];
+      var dd = _lex1N2V7(cc.a, cc.b);
+      if (dd.gagnant) return { camp: dd.gagnant, critere: cc.nom, rang: dd.rang,
+        valA: cc.a[dd.rang], valB: cc.b[dd.rang] };
     }
-  }
-  // Aucun des cinq niveaux ne discrimine : les deux camps sont
-  // structurellement indiscernables. C'est le N du 1N2.
-  return {
-    verdict: 'N', camp: 'Nul', critere: 'aucun',
-    rangInterne: -1,
-    detail: 'Les cinq niveaux égalisent : R1 et R7 sont structurellement '
-      + 'indiscernables — match nul.',
-    r1: r1, r7: r7, rotation: rot,
-    criteresMuets: criteres.map(function (x) { return x.nom; })
+    return null;
   };
+  var lecture = resoudre([0, 1]);       // concordance -> charge
+  var confirmation = resoudre([2, 3]);  // filiation  -> boucle
+  var installation = resoudre([4]);     // dernier niveau
+
+  var sortie = function (verdict, critere, detail) {
+    return { verdict: verdict, camp: verdict === 'N' ? 'Nul' : verdict,
+      critere: critere, detail: detail,
+      lecture: lecture, confirmation: confirmation, installation: installation,
+      r1: r1, r7: r7, rotation: rot };
+  };
+  var nommer = function (x) { return x ? x.critere + ' (' + x.camp + ')' : 'muet'; };
+
+  if (lecture && confirmation) {
+    if (lecture.camp === confirmation.camp) {
+      return sortie(lecture.camp, lecture.critere,
+        'Lecture ' + lecture.critere + ' (R1 ' + lecture.valA + ' contre R7 ' + lecture.valB
+        + ') CONFIRMÉE par ' + confirmation.critere + ' — ' + lecture.camp + ' l\'emporte.');
+    }
+    return sortie('N', 'lecture contredite',
+      'La lecture donne ' + lecture.camp + ' par ' + lecture.critere
+      + ', mais la confirmation donne ' + confirmation.camp + ' par ' + confirmation.critere
+      + ' : aucun camp n\'est établi — nul.');
+  }
+  // Un seul des deux temps parle : le dernier niveau doit l'appuyer.
+  var seul = lecture || confirmation;
+  if (seul) {
+    if (!installation) {
+      return sortie('N', 'non confirmée',
+        seul.critere + ' donne ' + seul.camp + ', mais rien ne le confirme ('
+        + (lecture ? 'confirmation' : 'lecture') + ' muette, installation locale muette) — nul.');
+    }
+    if (installation.camp === seul.camp) {
+      return sortie(seul.camp, seul.critere,
+        seul.critere + ' donne ' + seul.camp + ', appuyé par l\'installation locale — '
+        + seul.camp + ' l\'emporte.');
+    }
+    return sortie('N', 'lecture contredite',
+      seul.critere + ' donne ' + seul.camp + ', l\'installation locale donne '
+      + installation.camp + ' : aucun camp n\'est établi — nul.');
+  }
+  // Ni lecture ni confirmation : les deux camps sont indiscernables dans le
+  // canal ET dans la chaîne. L'installation locale ne peut rien fonder seule.
+  return sortie('N', 'indiscernables',
+    'Lecture ' + nommer(lecture) + ', confirmation ' + nommer(confirmation)
+    + ' : R1 et R7 sont structurellement indiscernables — nul.');
 }
 
 function moteurVainqueurPredictif(theme){
