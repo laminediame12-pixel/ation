@@ -15000,29 +15000,7 @@ function rangParole(vf){
   return {rang:1, etage:'récit / indécis'};
 }
 
-function themeInvalidite(theme){
-  // ─── THÈME DÉTRUIT : LA RÈGLE ÉTAIT ÉCRITE, ELLE N'ÉTAIT BRANCHÉE
-  //     NULLE PART (constat d'Ellemine_D, 28/08/26) ───
-  // themeDetruit() existait depuis le 03/07/26 et n'était appelée par
-  // AUCUNE ligne du fichier : Rubeus ou Cauda Draconis en M1 ne
-  // produisait donc aucun signal à l'écran. Elle passe en tête de la
-  // validité : c'est le premier motif d'invalidité, avant les axes.
-  const detruit = themeDetruit(theme);
-  if (detruit) return detruit;
-  // Les 4 axes (Cardinal/Succédent/Cadent + Axe du Partage) sont calculés
-  // une seule fois par evaluerAxesValidite (cf. combineMany) — même
-  // définition que celle utilisée par analyzeValidation/isThemeValideStrict/
-  // niveauValiditeV7/toggleValiditePanel.
-  const axesRes = evaluerAxesValidite(theme);
-  const byKey = {}; axesRes.forEach(function(r){ byKey[r.key] = r; });
-  const manquants = [];
-  if (!byKey.cardinal.exists) manquants.push('Axe Cardinal (M1+M4+M7+M10 = '+FL[byKey.cardinal.fig]+', absent du thème)');
-  if (!byKey.succedent.exists) manquants.push('Axe Succédent (M2+M5+M8+M11 = '+FL[byKey.succedent.fig]+', absent du thème)');
-  if (!byKey.cadent.exists) manquants.push('Axe Cadent (M3+M6+M9+M12 = '+FL[byKey.cadent.fig]+', absent du thème)');
-  if (!byKey.partage.exists) manquants.push('Axe du Partage (M3+M5+M9+M11 = '+FL[byKey.partage.fig]+', absent du thème)');
-  if (!manquants.length) return null;
-  return '⛔ THÈME INVALIDE : '+manquants.join(' ; ')+' — protocole de validité structurelle (même critère que celui utilisé pour exclure les thèmes invalides des statistiques rétrospectives, maintenant appliqué en direct).';
-}
+// themeInvalidite supprimee (11/09/26) - code mort, plus aucun appelant.
 // SUPERPOSITION ANCRE/ASSAILLANT SUR MAISON VERROUILLÉE (17/07/26, cas
 // Suisse-Colombie réel 0-0, M1=Carcer/M7=Fortuna Major binômes directs).
 // Cherche une maison en triple concordance (checkMaisonDoubleConcordance
@@ -15130,9 +15108,7 @@ function tierWeightFFEngine(fig, m, theme){
   const contra = (figElem==='feu'&&maisonElem==='eau')||(figElem==='eau'&&maisonElem==='feu')||(figElem==='air'&&maisonElem==='terre')||(figElem==='terre'&&maisonElem==='air');
   return (contra ? 1 : 3) + bonusResultante; // CONTRADICTOIRE : 1 — NEUTRE : 3
 }
-function poidsSiegeFFEngine(fig, m, theme){
-  return tierWeightFFEngine(fig, m, theme);
-}
+// poidsSiegeFFEngine supprimee (11/09/26) - code mort, plus aucun appelant.
 function poidsMembreFFEngine(fig, theme){
   const basePos = []; for(let m=1;m<=16;m++){ if(theme[m]===fig) basePos.push(m); }
 
@@ -15160,20 +15136,9 @@ function poidsMembreFFEngine(fig, theme){
   const bestBase = Math.max(...basePos.map(m => tierWeightFFEngine(fig, m, theme)));
   return Math.max(bestBase, bestReposResultante);
 }
-function poidsAttaquantFFEngine(fig, theme){
-  const base = poidsMembreFFEngine(fig, theme);
-  const monBinome = BINOMES_V7[fig];
-  if(!monBinome) return base;
-  const soutien = poidsMembreFFEngine(monBinome, theme);
-  return base + soutien/10;
-}
+// poidsAttaquantFFEngine supprimee (11/09/26) - code mort, plus aucun appelant.
 // attaqueVsResistanceEngine supprimee (11/09/26) - code mort, aucune reference dans le fichier.
-function familleTeamsEngine(fig, n){
-  const teamA=[fig]; let cur=fig;
-  for(let i=1;i<n;i++){ cur = BINOMES_V7[cur]; teamA.push(cur); }
-  const teamB = teamA.map(f => ANTAGONISTES_V7[f]);
-  return {teamA, teamB};
-}
+// familleTeamsEngine supprimee (11/09/26) - code mort, plus aucun appelant.
 // familleScoreEngine supprimee (11/09/26) - code mort, plus aucun appelant.
 // ═══════════════════════════════════════════════════════════════
 // DUALITÉ R1/R7 — FIGURE X + BINÔME/ANTAGONISTE + CHAÎNE D'ANCRAGE
@@ -15286,30 +15251,8 @@ function elementaireFigureMaison(fig, house) {
 // opposition classique F↔E, A↔T (cf. `rule` dans procedureR1R7) : une
 // charge active de R1 sur un élément est neutralisée si R7 a une charge
 // active sur l'élément OPPOSÉ, et réciproquement. ⚠️ À VALIDER.
-function neutralisationElementaireR1R7(r1, r7) {
-  const OPPOSE_LOCAL = {feu:'eau', eau:'feu', air:'terre', terre:'air'};
-  const chargeR1 = r1.natureActive ? [r1.houseNature] : [];
-  const chargeR7 = r7.natureActive ? [r7.houseNature] : [];
-  const restA = chargeR1.filter(function(e){ return chargeR7.indexOf(OPPOSE_LOCAL[e]) === -1; });
-  const restB = chargeR7.filter(function(e){ return chargeR1.indexOf(OPPOSE_LOCAL[e]) === -1; });
-  return { restA: restA, restB: restB };
-}
-function puissanceElementaireR1R7(fig, house, theme){
-  const x = elementaireFigureMaison(fig, house);
-  const vals = Object.keys(theme || {}).map(function(k){ return theme[k]; });
-  const bin = (typeof BINOMES_V7!=='undefined' ? BINOMES_V7[fig] : BINOMES[fig]) || null;
-  x.binome = bin;
-  x.binomePresent = !!bin && vals.indexOf(bin)!==-1;
-  x.natureActive = !!(x.natureLevel && x.natureLevel.active);
-  x.naturePassive = !!(x.natureLevel && x.natureLevel.passive);
-  x.maisonAccordNature = x.figureNature === x.houseNature;
-  x.pouvoirExprime = x.natureActive && x.maisonAccordNature && x.binomePresent;
-  x.pouvoirPartiel = x.natureActive && x.binomePresent;
-  x.pouvoirActiveSeul = x.natureActive && !x.pouvoirPartiel;
-  x.powerScore = x.pouvoirExprime ? 30 : x.pouvoirPartiel ? 15 : x.pouvoirActiveSeul ? 5 : 0;
-  x.powerLabel = x.pouvoirExprime ? 'POUVOIR EXPRIMÉ' : x.pouvoirPartiel ? 'POUVOIR ACTIVÉ PARTIELLEMENT' : x.pouvoirActiveSeul ? 'NATURE ACTIVE' : 'POUVOIR NON EXPRIMÉ';
-  return x;
-}
+// neutralisationElementaireR1R7 supprimee (11/09/26) - code mort, plus aucun appelant.
+// puissanceElementaireR1R7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // AJOUTÉ (24/08/26) : renderElementaireR1R7 était appelée par renderTheme()
 // mais n'existait NULLE PART dans le fichier — ReferenceError à chaque
@@ -15336,48 +15279,7 @@ function puissanceElementaireR1R7(fig, house, theme){
 // 4) l'installation locale déjà calculée par profilFigureMaison().
 // Elle est DIAGNOSTIQUE : elle ne modifie pas encore le vainqueur.
 // ═══════════════════════════════════════════════════════════════
-function lectureMaisonInfluenceFigure(theme){
-  if(!theme || !theme[1]) return {applicable:false};
-  const rot=getRotationCombat(theme);
-  function lire(h, role){
-    const fig=theme[h];
-    const bits=MAP_GEO[fig] || [2,2,2,2];
-    const ordre=['feu','air','eau','terre'];
-    const canal=(MAISON_ELEM_V7 && MAISON_ELEM_V7[h]) || null;
-    const idx=ordre.indexOf(canal);
-    const charge=idx>=0 ? bits[idx] : null;
-    let profil=null;
-    try { profil=profilFigureMaison(fig,h,theme); } catch(e) { profil=null; }
-    const concordance=canal && ELEMENTS_V7[fig] ? concordanceElement(ELEMENTS_V7[fig],canal) : null;
-    return {
-      role:role, house:h, figure:fig,
-      figureElement:ELEMENTS_V7[fig] || ELEMENTS[fig] || null,
-      houseChannel:canal,
-      charge:charge,
-      chargeLabel:charge===1?'active':charge===2?'passive':'indéterminée',
-      concordance:concordance,
-      concordanceLabel:concordance===1?'concordance forte':concordance===0.5?'concordance compatible':'concordance faible/opposée',
-      installationLocale:profil ? profil.total : null,
-      installationParts:profil ? profil.parts : null,
-      maisonNatale:profil ? profil.maisonNatale : null
-    };
-  }
-  const r1=lire(rot.hR1,'R1'), r7=lire(rot.hR7,'R7');
-  let favorisee='égalité';
-  if(r1.installationLocale!==null && r7.installationLocale!==null){
-    if(r1.installationLocale>r7.installationLocale) favorisee='R1';
-    else if(r7.installationLocale>r1.installationLocale) favorisee='R7';
-  }
-  return {
-    applicable:true,
-    rotation:rot.order,
-    hR1:rot.hR1,hR7:rot.hR7,
-    R1:r1,R7:r7,
-    memeFigure:r1.figure===r7.figure,
-    favorisee:favorisee,
-    regle:'Maison → canal de maison → influence sur la figure. Une même figure peut recevoir une expression différente selon la maison.'
-  };
-}
+// lectureMaisonInfluenceFigure supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // renderMaisonInfluenceFigure supprimee (11/09/26) - code mort, plus aucun appelant.
 
