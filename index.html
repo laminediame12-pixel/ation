@@ -29678,6 +29678,44 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var incidentCampTxt = card && card.incidentCamp ? (' · CONTRE ' + card.incidentCamp) : '';
   var incidentSourceTxt = card && card.incidentCampSource ? (' · ' + card.incidentCampSource) : '';
   var incidentNbTxt = card && card.incidentSignaux ? (' · ' + card.incidentSignaux.length + ' signal' + (card.incidentSignaux.length > 1 ? 'x' : '')) : '';
+  // ─── LA LECTURE DES CANAUX, À L'ÉCRAN (11/09/26) ───
+  // Le moteur 1N2 calculait bien le canal de chaque camp, sa position dans
+  // ce canal et la concordance figure/canal — mais rien de tout ça n'était
+  // affiché : la carte annonçait « Moteur 1N2 — Concordance » sans montrer
+  // le travail, donc sans qu'on puisse le vérifier. Ellemine_D : « le
+  // système n'a pas calculé les canaux ». Il les calculait ; il ne les
+  // montrait pas. Les voici.
+  (function () {
+    var d = card && card.duel1N2;
+    if (!d || !d.r1 || !d.r7) return;
+    var COUL = { feu: '#ef4444', air: '#eab308', eau: '#3b82f6', terre: '#a3a3a3' };
+    var ligne = function (nom, c, gagne) {
+      var col = COUL[c.canal] || '#94a3b8';
+      return '<div style="flex:1; min-width:150px; padding:7px 9px; border-radius:8px; '
+        + 'border:1px solid ' + (gagne ? '#4ade80' : '#334155') + '; background:rgba(2,8,23,.55);">'
+        + '<div style="font-size:11px; font-weight:900; color:' + (gagne ? '#4ade80' : '#cbd5e1') + ';">'
+        + nom + ' — M' + c.maison + ' · ' + label(c.figure) + (gagne ? ' ✔' : '') + '</div>'
+        + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
+        + 'figure <b>' + esc(c.element || '—') + '</b> dans canal <b style="color:' + col + ';">'
+        + esc(c.canal || '—') + '</b>'
+        + '<br>position <b>' + esc(c.position) + '</b> (' + c.rangCanal + '/4)'
+        + '<br>concordance <b style="font-size:12px;">' + c.concordance + '</b>'
+        + ' · charge <b>' + c.charge.valeur + '/4</b>'
+        + '</div></div>';
+    };
+    html += '<div style="margin-top:10px; padding:9px 12px; border:1px solid #7c3aed; '
+      + 'border-radius:10px; background:rgba(124,58,237,.08);">'
+      + '<div style="font-size:11.5px; font-weight:900; color:#c4b5fd; margin-bottom:6px;">'
+      + '🧭 LECTURE DES CANAUX — ' + esc(d.critere) + ' tranche</div>'
+      + '<div style="display:flex; gap:8px; flex-wrap:wrap;">'
+      + ligne('R1', d.r1, d.verdict === 'R1') + ligne('R7', d.r7, d.verdict === 'R7')
+      + '</div>'
+      + '<div style="font-size:10px; color:#cbd5e1; margin-top:6px;">' + esc(d.detail) + '</div>'
+      + '<div style="font-size:9px; color:#94a3b8; margin-top:3px;">'
+      + 'Canaux : Feu M1·M5·M9·M13 — Air M2·M6·M10·M14 — Eau M3·M7·M11·M15 — Terre M4·M8·M12·M16. '
+      + 'Concordance : même élément 1 · alliés 0,5 · contraires 0,25 · sans relation 0.</div>'
+      + '</div>';
+  })();
   // CORRECTION AFFICHAGE BTTS (11/09/26) — le BTTS était calculé et présent dans
   // les statistiques, mais trop bas/dépendant de la mise en page pour être visible
   // dans la fenêtre principale du verdict. Il est maintenant affiché directement
