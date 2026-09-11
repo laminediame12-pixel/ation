@@ -1994,7 +1994,146 @@ const ELEMENT_ROLE_MATRIX_V7 = {
   'feu-eau':'Chaotique', 'eau-feu':'Chaotique',
   'air-terre':'Blocage', 'terre-air':'Blocage'
 };
+
+// ═══════════════════════════════════════════════════════════════
+// LA FUSION ÉLÉMENTAIRE CORRIGÉE — DOCTRINE D'ELLEMINE_D (06/09/26)
+//
+// « je corrige : Feu+Feu → Amplification forte · Feu+Terre →
+// Déclenchement puis fixation · Terre+Terre → Stabilisation/blocage
+// fort · Terre+Eau → Stabilisation par canalisation · Eau+Eau →
+// Adaptation forte/circulation · Eau+Feu → Adaptation par régulation
+// (chaotique ou pas) · Air+Terre → Terre étouffée / stabilisation
+// perturbée. Donc la fonction d'une fusion dépend non seulement des
+// deux éléments, mais aussi de leur RAPPORT DE DOMINATION. »
+//
+// LE POINT DE FOND : la matrice d'origine est SYMÉTRIQUE — elle donne
+// la même chose à feu-eau et à eau-feu. Ellemine_D dit qu'elle ne doit
+// pas l'être : l'élément qui domine change la fonction. C'est une
+// correction de structure, pas un ajustement d'étiquette.
+//
+// ⚠️ ET ELLE TOUCHE LE CŒUR DU DÉTECTEUR D'INCIDENT. « Chaotique » est
+// son SEUL déclencheur, et il vient de deux cases : feu-eau et eau-feu.
+// Ellemine_D retire eau-feu du chaos (« adaptation par régulation,
+// chaotique ou pas »). La moitié des cases chaotiques disparaît donc.
+// Vu que le détecteur est mesuré à Fisher p = 1,0000 contre la réalité
+// (cf. INCIDENTS_AUDIT_V7), il n'y a rien à casser — mais l'effet est
+// mesuré et écrit ci-dessous plutôt que supposé.
+//
+// CONVENTION : la clé est 'élémentDeLaFigure-élémentDeLaMaison', dans
+// cet ordre. « Feu + Terre » se lit donc « figure de feu dans une
+// maison de terre ».
+//
+// LES CASES QU'ELLEMINE_D N'A PAS DONNÉES restent celles de la matrice
+// d'origine, et sont marquées héritées : on ne complète pas sa doctrine
+// à sa place.
+// ═══════════════════════════════════════════════════════════════
+var FUSION_CORRIGEE_V7 = {
+  date: '2026-09-06', auteur: 'Ellemine_D',
+  principe: 'la fonction d\'une fusion dépend des deux éléments ET de leur rapport '
+    + 'de domination — la matrice doit être ASYMÉTRIQUE',
+  convention: 'clé = élément de la FIGURE puis élément de la MAISON',
+  cellules: {
+    'feu-feu':   { role: 'Déclencheur',   lecture: 'Amplification forte', donne: true },
+    'feu-terre': { role: 'Absorbeur',     lecture: 'Déclenchement puis fixation', donne: true },
+    'terre-terre': { role: 'Stabilisateur', lecture: 'Stabilisation / blocage fort', donne: true },
+    'terre-eau': { role: 'Stabilisateur', lecture: 'Stabilisation par canalisation', donne: true },
+    'eau-eau':   { role: 'Adaptateur',    lecture: 'Adaptation forte / circulation', donne: true },
+    'eau-feu':   { role: 'Adaptateur',    lecture: 'Adaptation par régulation — CHAOTIQUE OU PAS',
+                   donne: true, changement: 'RETIRÉE DU CHAOS — c\'est la correction qui pèse' },
+    'air-terre': { role: 'Blocage',       lecture: 'Terre étouffée / stabilisation perturbée', donne: true },
+    'feu-eau':   { role: 'Chaotique',     lecture: 'non redonnée par Ellemine_D — héritée', donne: false },
+    'air-air':   { role: 'Amplificateur', lecture: 'héritée', donne: false },
+    'feu-air':   { role: 'Amplificateur', lecture: 'héritée', donne: false },
+    'air-feu':   { role: 'Amplificateur', lecture: 'héritée', donne: false },
+    'eau-terre': { role: 'Stabilisateur', lecture: 'héritée', donne: false },
+    'terre-feu': { role: 'Absorbeur',     lecture: 'héritée', donne: false },
+    'air-eau':   { role: 'Dissonant',     lecture: 'héritée', donne: false },
+    'eau-air':   { role: 'Dissonant',     lecture: 'héritée', donne: false },
+    'terre-air': { role: 'Blocage',       lecture: 'héritée', donne: false }
+  },
+  cequiChange: 'eau-feu passe de Chaotique à Adaptateur. C\'est la SEULE case dont le rôle '
+    + 'change ; les six autres corrections renomment la lecture sans changer le rôle. '
+    + 'Mais celle-là retire la moitié des déclencheurs du détecteur d\'incident.'
+};
+
+// La matrice corrigée, effectivement lue quand la branche est active.
+var ELEMENT_ROLE_MATRIX_CORRIGEE_V7 = (function () {
+  var m = {};
+  Object.keys(FUSION_CORRIGEE_V7.cellules).forEach(function (k) {
+    m[k] = FUSION_CORRIGEE_V7.cellules[k].role;
+  });
+  return m;
+})();
+
+// Le rôle élémentaire, lu dans la matrice corrigée si la branche est
+// allumée, dans l'ancienne sinon. TOUT nouveau code passe par ici.
+function roleElementaireV7(elemFigure, elemMaison) {
+  var cle = elemFigure + '-' + elemMaison;
+  var corrigee = false;
+  try { corrigee = !!(BRANCHES_V7 && BRANCHES_V7.fusion_corrigee
+    && BRANCHES_V7.fusion_corrigee.actif); } catch (e) { }
+  return (corrigee ? ELEMENT_ROLE_MATRIX_CORRIGEE_V7 : ELEMENT_ROLE_MATRIX_V7)[cle] || null;
+}
+
+// La lecture d'Ellemine_D, en toutes lettres, pour l'affichage.
+function lectureFusionV7(elemFigure, elemMaison) {
+  var c = FUSION_CORRIGEE_V7.cellules[elemFigure + '-' + elemMaison];
+  return c ? { role: c.role, lecture: c.lecture, doctrine: c.donne } : null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EFFET MESURÉ SUR LE DÉTECTEUR D'INCIDENT (06/09/26, une fois la
+// correction écrite) — retirer eau-feu du chaos change les valeurs de
+// 11 thèmes sur 19 renseignés, mais NE CORRIGE PAS L'INVERSION :
+//     avant : incidentPct moyen AVEC incident 51,9 % · SANS 74,4 %
+//     après : incidentPct moyen AVEC incident 39,4 % · SANS 64,4 %
+// Toujours inversé dans les deux états, à peu près dans les mêmes
+// proportions. Ce n'était pas la case feu/eau qui portait le défaut :
+// c'est le principe même de sommer des poids de doctrine jamais
+// calibrés (cf. INCIDENTS_AUDIT_V7, « une somme qui ne monte pas avec
+// la réalité n'est pas une probabilité »). La correction reste
+// branchée parce qu'elle est structurellement plus juste — mais elle
+// ne prétend pas réparer le détecteur, et ce n'est pas son rôle.
+// ═══════════════════════════════════════════════════════════════
+var FUSION_EFFET_DETECTEUR_V7 = {
+  date: '2026-09-06',
+  avant: { avecIncident: 51.9, sansIncident: 74.4, n: 19 },
+  apres: { avecIncident: 39.4, sansIncident: 64.4, n: 19 },
+  themesDivergents: 11,
+  verdict: 'toujours inversé dans les deux états — le défaut vient de la somme de poids '
+    + 'non calibrés, pas de la case feu/eau'
+};
+
+autoTestV7('la matrice corrigée est bien asymétrique là où Ellemine_D l\'a dit', function () {
+  var C = ELEMENT_ROLE_MATRIX_CORRIGEE_V7;
+  // La correction qui pèse : eau-feu n'est plus chaotique, feu-eau l'est toujours.
+  if (C['eau-feu'] === 'Chaotique')
+    throw new Error('eau-feu doit sortir du chaos : « adaptation par régulation »');
+  if (C['feu-eau'] !== 'Chaotique')
+    throw new Error('feu-eau n\'a pas été redonné par Ellemine_D — il reste Chaotique');
+  if (C['eau-feu'] === C['feu-eau'])
+    throw new Error('la matrice doit être ASYMÉTRIQUE sur feu/eau — c\'est tout le point');
+  // Les seize cases doivent exister, sinon un rôle sort null en production.
+  ['feu', 'air', 'eau', 'terre'].forEach(function (a) {
+    ['feu', 'air', 'eau', 'terre'].forEach(function (b) {
+      if (!C[a + '-' + b]) throw new Error('case ' + a + '-' + b + ' manquante');
+    });
+  });
+  // Et le lecteur doit suivre le drapeau, pas une copie figée.
+  if (typeof BRANCHES_V7 === 'undefined' || !BRANCHES_V7.fusion_corrigee) return;
+  var avant = BRANCHES_V7.fusion_corrigee.actif;
+  try {
+    BRANCHES_V7.fusion_corrigee.actif = false;
+    if (roleElementaireV7('eau', 'feu') !== 'Chaotique')
+      throw new Error('branche éteinte : eau-feu doit redevenir Chaotique');
+    BRANCHES_V7.fusion_corrigee.actif = true;
+    if (roleElementaireV7('eau', 'feu') !== 'Adaptateur')
+      throw new Error('branche allumée : eau-feu doit être Adaptateur');
+  } finally { BRANCHES_V7.fusion_corrigee.actif = avant; }
+});
 function getElementalRoleV7(eF, eM) {
+  // 06/09 : suit la correction d'Ellemine_D quand elle est branchée.
+  if (typeof roleElementaireV7 === 'function') return roleElementaireV7(eF, eM);
   return ELEMENT_ROLE_MATRIX_V7[eF + '-' + eM] || null;
 }
 

@@ -2483,6 +2483,25 @@ var BRANCHES_V7 = {
     pasDebranche: 'décision d\'Ellemine_D du 05/09, prise en connaissance du coût. '
       + 'BRANCHES_V7.carre_pilote.actif = false suffit à le retirer.' },
 
+  fusion_corrigee: {
+    actif: true,
+    nom: 'La fusion élémentaire asymétrique — doctrine corrigée d\'Ellemine_D',
+    cible: 'les rôles élémentaires, donc le détecteur d\'incident',
+    demande: 'Ellemine_D, 06/09 : « la fonction d\'une fusion dépend non seulement des deux '
+      + 'éléments, mais aussi de leur RAPPORT DE DOMINATION. » Eau+Feu → adaptation par '
+      + 'régulation, « chaotique ou pas ».',
+    cequiChange: 'la matrice était SYMÉTRIQUE — feu-eau et eau-feu donnaient tous deux '
+      + 'Chaotique. Elle ne l\'est plus : eau-feu devient Adaptateur, feu-eau reste Chaotique. '
+      + 'C\'est la seule case dont le RÔLE change ; les six autres corrections renomment la '
+      + 'lecture. Mais celle-là retire la moitié des déclencheurs du détecteur d\'incident.',
+    pourquoiCEstSansRisque: 'le détecteur d\'incident est mesuré à Fisher p = 1,0000 contre '
+      + 'la réalité (INCIDENTS_AUDIT_V7) : il n\'y a rien à casser. L\'effet est mesuré et '
+      + 'écrit, pas supposé.',
+    casesNonRedonnees: 'Ellemine_D n\'a pas redonné feu-eau, air-air, feu-air, air-feu, '
+      + 'eau-terre, terre-feu, air-eau, eau-air, terre-air. Elles restent celles de la matrice '
+      + 'd\'origine et sont marquées « héritées » — on ne complète pas sa doctrine à sa place.',
+    pourLEteindre: 'BRANCHES_V7.fusion_corrigee.actif = false — retour à la matrice symétrique.' },
+
   porte_612: {
     actif: true,
     nom: 'La porte 6/12 — l\'usure d\'un camp est les ennemis cachés de l\'autre',
@@ -4021,7 +4040,8 @@ autoTestV7('les drapeaux de branche survivent à un verdict', function () {
   // alors que la mesure donnait +11. Ce test attrape la corruption.
   var cles = ['populus_volume', 'miroir_volume', 'axe_volume', 'carcer_miroir',
     'carre_pilote', 'nul_seconde_porte', 'ouverture_camp', 'score_corrige',
-    'porte_nul_corrigee', 'veto_repetition', 'pliage_m2m7', 'porte_612'];
+    'porte_nul_corrigee', 'veto_repetition', 'pliage_m2m7', 'porte_612',
+    'fusion_corrigee'];
   var avant = {};
   cles.forEach(function (k) { if (BRANCHES_V7[k]) avant[k] = BRANCHES_V7[k].actif; });
   ['populus,via,albus,puella', 'conjunctio,acquisitio,puella,caput_draconis',

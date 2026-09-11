@@ -725,7 +725,11 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
   const antag = (typeof ANTAGONISTES_V7!=='undefined') ? ANTAGONISTES_V7 : ANTAGONISTES;
   const signals = [];
-  const roleAt = pos => ELEMENT_ROLE_MATRIX_V7[els[theme[pos]]+'-'+MAISON_ELEM_V7[pos]];
+  // 06/09 : passe par roleElementaireV7 pour suivre la correction
+  // d'Ellemine_D (matrice asymétrique) au lieu de lire la table en dur.
+  const roleAt = pos => (typeof roleElementaireV7==='function')
+    ? roleElementaireV7(els[theme[pos]], MAISON_ELEM_V7[pos])
+    : ELEMENT_ROLE_MATRIX_V7[els[theme[pos]]+'-'+MAISON_ELEM_V7[pos]];
   const ancresEquipe1 = posA === 1 ? [1] : [1, posA];
   const ancresEquipe2 = posB === 7 ? [7] : [7, posB];
 
