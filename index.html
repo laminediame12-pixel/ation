@@ -33959,6 +33959,18 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     + '<div style="font-size:11px; color:#cbd5e1;">⚠️ Incidents : <b>'+incidentPrincipal+incidentPrincipalCamp+'</b></div>'
     + (card && card.bttsSource ? '<div style="width:100%; text-align:center; font-size:9.5px; color:#94a3b8;">Source BTTS : '+esc(card.bttsSource)+'</div>' : '')
     + '</div>';
+  // ─── 5e MOTEUR ISOLE : LE NUL (11/09/26, demande d'Ellemine_D) ───
+  // Meme gabarit visuel que la banniere BTTS/Incidents juste au-dessus,
+  // pour que les 5 moteurs (vainqueur, volume, BTTS, incidents, nul)
+  // se lisent comme des pairs. La raison affichee prefere la porte du
+  // nul (nulPorteTxt, le signal le plus parlant) et retombe sur la
+  // lecture d'identite/opposition des juges (nullReason) si la porte
+  // n'est pas ouverte.
+  var nulRaisonTxt = nulPorteTxt || nullReason;
+  html += '<div data-nul-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+nullColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
+    + '<div style="font-size:12px; font-weight:900;">⚖️ NUL <span style="color:'+nullColor+'; font-size:15px;">'+(nulActif?'OUI':'NON')+'</span></div>'
+    + '<div style="font-size:11px; color:#cbd5e1;">'+esc(nulRaisonTxt)+'</div>'
+    + '</div>';
   html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>⚠️ Résultat incidents</span><b>'+esc(incidentResultat)+esc(incidentCampTxt)+esc(incidentSourceTxt)+esc(incidentNbTxt)+'</b></div><div class="tek-stat" data-btts-display="1"><span>⚽ Les deux marquent (BTTS)</span><b style="font-size:13px;">'+bt+'</b></div></div>'+incHtml;
   html+='</div>';
   el.innerHTML=html;
