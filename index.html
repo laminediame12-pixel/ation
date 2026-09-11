@@ -29896,13 +29896,25 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '➕ Somme des quatre mères de chaque axe — '
       + (sa.signal ? sa.nb + ' AXE(S) SUR 3 DONNENT UNE FIGURE D\'INCIDENT' : 'aucune figure d\'incident')
       + '</div>' + lignes
+      // ─── LE SCORE AFFICHÉ DOIT ÊTRE LE VRAI (11/09/26) ───
+      // Cette note annonçait « 5 justes sur 5 dans l'archive » et concluait,
+      // en cas de désaccord, « c'est elle qu'il faut croire ». Le 5/5 était
+      // mesuré sur cinq cas choisis parmi les vingt que le fichier contient,
+      // et avec les anciennes maisons d'axes. Remesuré sur les vingt, avec
+      // les axes corrigés : 10/20, quand « toujours incident » fait 15/20.
+      // Le code portait déjà la correction (cf. sommesAxesIncidentV7) ; cet
+      // affichage-ci ne l'avait pas suivie et continuait d'annoncer un score
+      // que le fichier lui-même dément. Il dit maintenant la même chose que
+      // le code, et il n'ordonne plus de la croire contre le thème principal.
       + '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
-      + 'Rubeus, Carcer et Tristitia sont les figures d\'incident. Cette lecture fait <b>5 justes sur 5</b> '
-      + 'dans l\'archive, contre 1 sur 5 pour les signaux du thème principal, et elle ne se déclenche que sur '
-      + '46 % des thèmes (vérifié sur les 65 536). '
+      + 'Rubeus, Carcer et Tristitia sont les figures d\'incident. Sur les <b>vingt</b> cas '
+      + 'de l\'archive cette lecture fait <b>10 justes sur 20</b>, quand le témoin idiot '
+      + '« toujours incident » en fait 15 sur 20 : elle ne le bat pas. Ce qui reste vrai '
+      + 'd\'elle, c\'est qu\'elle a été énoncée avant d\'être mesurée et qu\'elle ne se '
+      + 'déclenche que sur 46 % des thèmes (vérifié sur les 65 536) — donc elle tranche. '
       + (accord ? 'Ici elle est <b>d\'accord</b> avec le thème principal.'
-               : '<b style="color:#fbbf24;">Ici elle CONTREDIT le thème principal — c\'est elle qu\'il faut croire.</b>')
-      + ' n = 5, elle peut encore tomber.</div></div>';
+               : '<b style="color:#fbbf24;">Ici elle CONTREDIT le thème principal.</b>')
+      + ' Rien n\'est tranché tant que le test prospectif n\'a pas eu lieu.</div></div>';
   })();
   var incHtml = sommesHtml;
   if (card && card.penaltyRouge && card.incidentSignaux && card.incidentSignaux.length) {
