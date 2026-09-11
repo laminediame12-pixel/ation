@@ -20427,72 +20427,8 @@ function registrePairesV7() {
 // F4P4 (fausse le jour où je m'en suis servi). Le balayage reste
 // branché pour que le jour où une propriété sépare vraiment, elle se
 // signale toute seule au lieu d'être devinée.
-function balayageSeparationV7() { return memoArchiveV7('balayageSeparationV7', _balayageSeparationV7); }
-function _balayageSeparationV7() {
-  var cas = [];
-  try { cas = tousCasBancV7() || []; } catch (e) { return null; }
-  var props = {}, nJ = 0, nT = 0;
-  function add(nom, val, juste) {
-    if (val === null || val === undefined) return;
-    if (!props[nom]) props[nom] = { oui: [0, 0], non: [0, 0] };
-    var b = props[nom][val ? 'oui' : 'non'];
-    b[juste ? 0 : 1] += 1;
-  }
-  cas.forEach(function (c) {
-    if (!c || !c.camp) return;
-    var t, v;
-    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    try { v = getVerdictAfficheReel(t); } catch (e) { return; }
-    var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-    var juste = (dit === c.camp);
-    nT += 1; if (juste) nJ += 1;
-    var nv = null, pc = null, f = null, r = null, cd = null, ac = null;
-    try { nv = niveauValiditeV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { pc = porteConfianceV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { f = faisceauNulV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { r = getRotationCombat(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { cd = campDoubleV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { ac = accordCampV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    // 04/09/26 : la figure du jour étant maintenant DANS le niveau, le
-    // second critère lit fdjOk et non complet — sinon les deux lignes
-    // mesureraient exactement la même chose et le panneau afficherait
-    // deux fois le même chiffre en le faisant passer pour deux tests.
-    if (nv) { add('validité 3/3', nv.niveau >= 3, juste); add('figure du jour présente', !!nv.fdjOk, juste); }
-    if (pc) { add('3 dérivés d\'axe sur 3', pc.nbAxes >= 3, juste); add('3 binômes sur 3', pc.nbBinomes >= 3, juste); }
-    if (f) add('faisceau ≥ 4/7', f.n >= 4, juste);
-    add('porte du nul ouverte', !!nulParPorteV7(t), juste);
-    if (r && r.hR1) {
-      add('R1 en maison cadente', [3, 6, 9, 12].indexOf(r.hR1) >= 0, juste);
-      add('R1 en maison angulaire', [1, 4, 7, 10].indexOf(r.hR1) >= 0, juste);
-      if (r.hR1 <= 12) add('R1 en maison de confusion', !!maisonConfusionV7(r.hR1), juste);
-    }
-    add('théorème d\'Ellemine applicable', !!(cd && cd.applicable), juste);
-    if (ac && ac.lisible) add('F4P4 et critères d\'accord', !!ac.accord, juste);
-    add('le Juge (M15) est Via ou Populus', t[15] === 'via' || t[15] === 'populus', juste);
-    add('Conjunctio présent dans le thème', (function () {
-      for (var h = 1; h <= 16; h++) if (t[h] === 'conjunctio') return true; return false;
-    })(), juste);
-    add('verdict annoncé = nul', dit === 'nul', juste);
-    add('verdict annoncé = R1', dit === 'R1', juste);
-    if (typeof v.btts === 'boolean') add('les deux marquent annoncé', v.btts === true, juste);
-    try { add('sommes d\'incident > 0', sommesAxesIncidentV7(t).nb > 0, juste); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  });
-  var lignes = [];
-  Object.keys(props).forEach(function (k) {
-    var o = props[k].oui, n = props[k].non;
-    var no = o[0] + o[1], nn = n[0] + n[1];
-    if (no < 4 || nn < 4) return;   // moins de 4 d'un côté : illisible
-    var to = o[0] / no, tn = n[0] / nn;
-    lignes.push({ nom: k, oui: o[0], nOui: no, non: n[0], nNon: nn,
-      tauxOui: to, tauxNon: tn, ecart: to - tn, p: fisherExactV7(o[0], o[1], n[0], n[1]) });
-  });
-  lignes.sort(function (a, b) { return a.p - b.p; });
-  var k = lignes.length;
-  return { lignes: lignes, tests: k, justes: nJ, total: nT,
-    meilleurP: k ? lignes[0].p : null,
-    corrige: k ? Math.min(1, lignes[0].p * k) : null,
-    attenduSous5: Math.round(k * 0.05 * 100) / 100 };
-}
+// balayageSeparationV7 supprimee (11/09/26) - code mort, plus aucun appelant.
+// _balayageSeparationV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // L'ARBITRAGE DES MOTEURS (30/08/26) — « il y a trop de contradiction »
@@ -20528,53 +20464,8 @@ function _balayageSeparationV7() {
 // la même chose. Ce qu'il faut en faire : ne pas jouer le camp sur un
 // thème où les moteurs se contredisent — et ne pas le jouer davantage
 // quand ils s'accordent, parce que leur accord ne vaut pas mieux.
-function arbitrageMoteursV7() { return memoArchiveV7('arbitrageMoteursV7', _arbitrageMoteursV7); }
-function _arbitrageMoteursV7() {
-  var cas = [];
-  try { cas = tousCasBancV7() || []; } catch (e) { return null; }
-  var r = { pilote: [0, 0], majorite: [0, 0], divergences: [], unanime: [0, 0], unanimeContre: [0, 0], n: 0 };
-  cas.forEach(function (c) {
-    if (!c || !c.camp || c.camp === 'nul') return;
-    var t;
-    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    var pil = null, autres = [];
-    try { var mc = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); pil = mc && mc.camp ? mc.camp : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    if (!pil) return;
-    function pousse(v) { if (v === 'R1' || v === 'R7') autres.push(v); }
-    try { var m = moteurF4P4V7(t); pousse(m && m.applicable ? m.avantage : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { var sg = lectureSiegesR1R7(t); pousse(sg && sg.applicable ? sg.winner : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { var an = analyseAncrageDeveloppe(t); pousse(an && an.applicable ? an.avantage : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { var rz = analyserReseauAncrageV2(t); pousse(rz ? rz.winner : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { var pr = comparerBouclesAntagonistesR1R7(t); pousse(pr && pr.applicable ? pr.winner : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { var tp = tablePolesV7(t); pousse(tp ? (tp.winner || tp.camp) : null); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    if (autres.length < 3) return;
-    var n1 = 0;
-    autres.forEach(function (x) { if (x === 'R1') n1 += 1; });
-    var n7 = autres.length - n1;
-    if (n1 === n7) return;
-    var maj = n1 > n7 ? 'R1' : 'R7';
-    r.n += 1;
-    r.pilote[pil === c.camp ? 0 : 1] += 1;
-    r.majorite[maj === c.camp ? 0 : 1] += 1;
-    if (n1 === 0 || n7 === 0) {
-      r.unanime[maj === c.camp ? 0 : 1] += 1;
-      if (maj !== pil) r.unanimeContre[maj === c.camp ? 0 : 1] += 1;
-    }
-    if (pil !== maj) {
-      r.divergences.push({ nom: c.nom, pilote: pil, majorite: maj,
-        force: Math.max(n1, n7) + '/' + autres.length, reel: c.camp,
-        bon: maj === c.camp ? 'majorité' : 'pilote' });
-    }
-  });
-  var dp = [0, 0], dm = [0, 0];
-  r.divergences.forEach(function (d) {
-    dp[d.pilote === d.reel ? 0 : 1] += 1;
-    dm[d.majorite === d.reel ? 0 : 1] += 1;
-  });
-  r.divPilote = dp; r.divMajorite = dm;
-  r.p = fisherExactV7(dp[0], dp[1], dm[0], dm[1]);
-  return r;
-}
+// arbitrageMoteursV7 supprimee (11/09/26) - code mort, plus aucun appelant.
+// _arbitrageMoteursV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // CE QUE LA VALIDITÉ GOUVERNE, FAMILLE PAR FAMILLE (30/08/26)
@@ -20982,83 +20873,12 @@ var PISTES_V7 = [
 // Ce que le registre sait dire de lui-même.
 // bilanPistesV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
-function validiteParFamilleV7() { return memoArchiveV7('validiteParFamilleV7', _validiteParFamilleV7); }
-function _validiteParFamilleV7() {
-  var cas = [];
-  try { cas = tousCasBancV7() || []; } catch (e) { return null; }
-  var F = {}, ordre = [];
-  function add(fam, valide, juste) {
-    if (juste === null || juste === undefined) return;
-    if (!F[fam]) { F[fam] = { val: [0, 0], rej: [0, 0] }; ordre.push(fam); }
-    F[fam][valide ? 'val' : 'rej'][juste ? 0 : 1] += 1;
-  }
-  cas.forEach(function (c) {
-    var t, v;
-    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    // ⚠️ sousSeuilValiditeV7 et NON themeRejeteV7 : depuis que le rejet est
-    // levé (04/09/26) la porte renvoie null, et lire la porte ici ferait
-    // passer TOUS les thèmes pour valides — le banc mesurerait le drapeau
-    // au lieu de mesurer le critère qui a servi à le lever.
-    var rj = null;
-    try { rj = sousSeuilValiditeV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    var valide = !(rj && rj.rejete);
-    try { v = avecFormatV7(c.format || formatMatchV7(), function () { return getVerdictAfficheReel(t); }); }
-    catch (e) { return; }
-    var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-    if (c.camp) {
-      add('camp (vainqueur/nul)', valide, dit === c.camp);
-      add('le nul (oui/non)', valide, (dit === 'nul') === (c.camp === 'nul'));
-    }
-    if (typeof c.btts === 'boolean' && typeof v.btts === 'boolean') {
-      add('les deux marquent', valide, v.btts === c.btts);
-    }
-    if (c.score) {
-      add('score exact', valide, String(v.scoreMain) === String(c.score));
-      var m = String(c.score).match(/^(\d+)-(\d+)$/), mm = String(v.scoreMain).match(/^(\d+)-(\d+)$/);
-      if (m && mm) {
-        add('match serré (écart ≤ 1)', valide,
-          (Math.abs(+m[1] - +m[2]) <= 1) === (Math.abs(+mm[1] - +mm[2]) <= 1));
-      }
-    }
-    if (typeof c.incident === 'boolean') {
-      var sg = null;
-      try { sg = sommesAxesIncidentV7(t); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-      if (sg) add('incident (somme d\'axes)', valide, sg.signal === c.incident);
-    }
-  });
-  var lignes = [], pencheRejet = 0, lisibles = 0;
-  ordre.forEach(function (k) {
-    var o = F[k], nv = o.val[0] + o.val[1], nr = o.rej[0] + o.rej[1];
-    if (!nv || !nr) { lignes.push({ nom: k, val: o.val, nVal: nv, rej: o.rej, nRej: nr, lisible: false }); return; }
-    lisibles += 1;
-    var tv = o.val[0] / nv, tr = o.rej[0] / nr;
-    if (tr >= tv) pencheRejet += 1;
-    lignes.push({ nom: k, val: o.val, nVal: nv, rej: o.rej, nRej: nr, lisible: true,
-      tauxVal: tv, tauxRej: tr, ecart: tv - tr, p: fisherExactV7(o.val[0], o.val[1], o.rej[0], o.rej[1]) });
-  });
-  return { lignes: lignes, lisibles: lisibles, pencheRejet: pencheRejet };
-}
+// validiteParFamilleV7 supprimee (11/09/26) - code mort, plus aucun appelant.
+// _validiteParFamilleV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Fisher exact bilatéral sur un tableau 2×2, en log-factorielles pour
 // que les grands effectifs ne débordent pas.
-function fisherExactV7(a, b, c, d) {
-  var LF = [0];
-  function lf(n) { for (var i = LF.length; i <= n; i++) LF[i] = LF[i - 1] + Math.log(i); return LF[n]; }
-  var n = a + b + c + d;
-  if (!n) return 1;
-  lf(n);
-  function pr(x, y, z, w) {
-    return Math.exp(lf(x + y) + lf(z + w) + lf(x + z) + lf(y + w) - lf(n) - lf(x) - lf(y) - lf(z) - lf(w));
-  }
-  var p0 = pr(a, b, c, d), tot = 0;
-  var r1 = a + b, r2 = c + d, c1 = a + c;
-  var lo = Math.max(0, c1 - r2), hi = Math.min(r1, c1);
-  for (var i = lo; i <= hi; i++) {
-    var pi = pr(i, r1 - i, c1 - i, r2 - c1 + i);
-    if (pi <= p0 * (1 + 1e-9)) tot += pi;
-  }
-  return Math.min(1, tot);
-}
+// fisherExactV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // LE GARDE-FOU DE L'ARCHIVE (29/08/26, révision d'ensemble)
@@ -21072,71 +20892,14 @@ function fisherExactV7(a, b, c, d) {
 // Une contradiction pareille ne se voit pas à l'œil dans 35 lignes.
 // Elle se voit ici : coherenceArchiveV7 relit l'archive et signale tout
 // cas dont le score contredit le camp. Le banc l'affiche en rouge.
-function coherenceArchiveV7() {
-  var soucis = [];
-  var cas = [];
-  try { cas = tousCasBancV7() || []; } catch (e) { return { soucis: [], total: 0 }; }
-  cas.forEach(function (c) {
-    if (!c || !c.camp || !c.score) return;
-    var m = String(c.score).match(/^(\d+)\s*-\s*(\d+)$/);
-    if (!m) return;
-    var a = +m[1], b = +m[2];
-    var implique = a === b ? 'nul' : (a > b ? 'R1' : 'R7');
-    var declare = c.camp === 'M1' ? 'R1' : c.camp === 'M7' ? 'R7' : c.camp;
-    if (implique !== declare) {
-      soucis.push({ nom: c.nom, score: c.score, implique: implique, declare: declare });
-    }
-  });
-  return { soucis: soucis, total: cas.length };
-}
+// coherenceArchiveV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // etatGelV7 supprimée (11/09/26) — n'était appelée que par la bannière
 // "gel de prédiction" de la carte VERDICT FINAL, retirée. getSavedList/
 // themeFingerprint restent utilisées ailleurs (Thèmes sauvegardés).
 
 
-function journalPredictionsV7() {
-  var list = [];
-  try { list = getSavedList() || []; } catch (e) { return null; }
-  var lignes = [], campJ = 0, campN = 0, scoreJ = 0, scoreN = 0, nulJ = 0, nulN = 0;
-  list.forEach(function (e) {
-    if (!e || !e.verdict || !e.realScore) return;
-    var m = String(e.realScore).match(/(\d+)\s*-\s*(\d+)/);
-    if (!m) return;
-    var rA = +m[1], rB = +m[2];
-    // ─── LE VAINQUEUR SAISI PASSE AVANT LE SCORE (29/08/26) ───
-    // Le journal déduisait le camp réel du seul score et ignorait le
-    // champ « Vainqueur réel » du panneau « Résultat réel », que
-    // l'application collecte pourtant. Quand les deux se contredisent —
-    // un score noté vainqueur-en-premier, par exemple — le journal
-    // comptait un raté qui n'en était pas un. Ce que tu as déclaré
-    // toi-même l'emporte ; le score ne sert que si tu n'as rien déclaré.
-    var reelCamp;
-    if (e.realWinner === 'M1' || e.realWinner === 'M7' || e.realWinner === 'Nul') {
-      reelCamp = e.realWinner === 'Nul' ? 'nul' : e.realWinner;
-    } else {
-      reelCamp = rA === rB ? 'nul' : (rA > rB ? 'M1' : 'M7');
-    }
-    var ditCamp = e.verdict.winner === 'Nul' ? 'nul' : e.verdict.winner;
-    var ditScore = e.verdict.scoreMain || '';
-    campN++; if (ditCamp === reelCamp) campJ++;
-    if (reelCamp === 'nul' || ditCamp === 'nul') {
-      nulN++; if ((ditCamp === 'nul') === (reelCamp === 'nul')) nulJ++;
-    }
-    var p = String(ditScore).match(/^(\d+)-(\d+)$/);
-    if (p) { scoreN++; if (+p[1] === rA && +p[2] === rB) scoreJ++; }
-    lignes.push({
-      quand: (e.savedAt || '').slice(0, 10),
-      equipes: (e.team1 || '?') + ' — ' + (e.team2 || '?'),
-      ditCamp: ditCamp, ditScore: ditScore,
-      reelCamp: reelCamp, reelScore: e.realScore,
-      campJuste: ditCamp === reelCamp,
-      scoreJuste: !!(p && +p[1] === rA && +p[2] === rB)
-    });
-  });
-  return { lignes: lignes, campJuste: campJ, campTotal: campN,
-    scoreJuste: scoreJ, scoreTotal: scoreN, nulJuste: nulJ, nulTotal: nulN };
-}
+// journalPredictionsV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 function tousCasBancV7() {
   var sup = [];
@@ -21146,13 +20909,7 @@ function tousCasBancV7() {
 
 // Signature des cas saisis : sert à invalider le cache quand tu ajoutes
 // ou modifies un score, sans avoir à recharger la page.
-function signatureCasV7() {
-  try {
-    return casSauvegardesV7().map(function (c) {
-      return c.meres.join('|') + '=' + c.score;
-    }).join(';');
-  } catch (e) { return ''; }
-}
+// signatureCasV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // LE MÉMO D'ARCHIVE (04/09/26) — ce qui rendait le système lent
@@ -21185,20 +20942,8 @@ function signatureCasV7() {
 // Oublier l'un des trois ne casse rien de visible : ça sert simplement
 // un résultat périmé. C'est pour ça qu'ils sont énumérés ici.
 var _memoArchiveV7 = {};
-function cleMemoArchiveV7() {
-  var sig = '', fmt = '', jour = '';
-  try { sig = signatureCasV7(); } catch (e) { sig = '?'; }
-  try { fmt = formatMatchV7(); } catch (e) { fmt = '?'; }
-  try { jour = figureDuJour(); } catch (e) { jour = '?'; }
-  return sig + '§' + fmt + '§' + jour;
-}
-function memoArchiveV7(nom, calcul) {
-  var cle = nom + '§' + cleMemoArchiveV7();
-  if (Object.prototype.hasOwnProperty.call(_memoArchiveV7, cle)) return _memoArchiveV7[cle];
-  var v = calcul();
-  _memoArchiveV7[cle] = v;
-  return v;
-}
+// cleMemoArchiveV7 supprimee (11/09/26) - code mort, plus aucun appelant.
+// memoArchiveV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 // À appeler si un jour un calcul d'archive devient dépendant d'autre
 // chose que les trois clés ci-dessus.
 // viderMemoArchiveV7 supprimee (11/09/26) - code mort, plus aucun appelant.
@@ -21207,181 +20952,11 @@ function memoArchiveV7(nom, calcul) {
 // pas du thème courant, seulement du code.
 var _bancCacheV7 = null;
 var _bancSignatureV7 = null;
-function bancMoteursV7(force) {
-  var sig = signatureCasV7();
-  if (_bancCacheV7 && !force && sig === _bancSignatureV7) return _bancCacheV7;
-  _bancSignatureV7 = sig;
-  var CAS = tousCasBancV7();
-  var themes = CAS.map(function (c) {
-    var t = null;
-    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); }
-    catch (e) { t = null; }
-    return t;
-  });
-  // Notation À TOLÉRANCE, pour les grandeurs numériques (les corners).
-  // Un moteur est juste sur un cas si l'écart au réel ne dépasse pas
-  // BANC_TOLERANCE_CORNERS_V7.
-  function passeNum(liste, attendu, tolerance) {
-    // Même filtre que passe() : les corners passaient par ici et
-    // restaient donc à l'écran malgré leur désactivation. Trouvé en
-    // recomptant ce qui s'affiche vraiment, pas ce que je croyais.
-    liste = moteursActifsV7(liste);
-    return liste.map(function (m) {
-      var juste = 0, total = 0, ecartTotal = 0;
-      var details = CAS.map(function (c, i) {
-        var reel = attendu(c);
-        if (reel === null || reel === undefined || !themes[i]) {
-          return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
-        }
-        var v = null;
-        try { v = avecFormatV7(c.esport ? 'esport' : 'reel', function () { return m.verdict(themes[i]); }); }
-        catch (e) { v = null; }
-        var dit = v && v.n != null ? v.n : null;
-        if (dit === null) {
-          return { cas: c.nom, dit: null, reel: reel, compte: false, ok: null };
-        }
-        total++;
-        var ecart = Math.abs(dit - reel);
-        ecartTotal += ecart;
-        var ok = ecart <= tolerance;
-        if (ok) juste++;
-        return { cas: c.nom, dit: dit, reel: reel, compte: true, ok: ok, ecart: ecart };
-      });
-      return { cle: m.cle, nom: m.nom, icone: m.icone, teinte: m.teinte,
-        juste: juste, total: total, details: details,
-        ecartMoyen: total ? Math.round(ecartTotal * 10 / total) / 10 : null };
-    });
-  }
-
-  // ─── L'ABSTENTION N'EST PLUS UNE ERREUR (28/08/26) ───
-  // Avant, un moteur qui ne se prononçait pas comptait comme s'étant
-  // trompé. C'était supportable tant que tous parlaient presque toujours ;
-  // ça devient absurde avec une règle conditionnelle comme « Carcer en
-  // M10 », qui ne se prononce que sur 3 % des thèmes et aurait affiché
-  // 0/8 quoi qu'elle dise.
-  // Désormais : le score porte sur les cas où le moteur PARLE, et le
-  // nombre d'abstentions est affiché à côté. Un moteur muet n'a donc pas
-  // tort — mais il ne se cache pas non plus : on voit sa couverture.
-  function passe(liste, champ, attendu) {
-    // Les moteurs désactivés (mesurés, cf. MOTEURS_DESACTIVES_V7) sortent
-    // du banc comme de l'écran : sinon on continuerait à lire des scores
-    // pour des moteurs qu'on a décidé de ne plus regarder.
-    return moteursActifsV7(liste).map(function (m) {
-      var juste = 0, total = 0, abstentions = 0;
-      var details = CAS.map(function (c, i) {
-        var reel = attendu(c);
-        if (reel === null || reel === undefined || !themes[i]) {
-          return { cas: c.nom, dit: null, reel: null, compte: false, ok: null };
-        }
-        var v = null;
-        try { v = avecFormatV7(c.esport ? 'esport' : 'reel', function () { return m.verdict(themes[i]); }); }
-        catch (e) { v = null; }
-        var dit = v ? v[champ] : null;
-        // ─── CORRIGÉ LE 28/08/26 ───
-        // Cette ligne transformait un moteur MUET (oui = null) en « non ».
-        // Un moteur qui s'abstient était donc noté comme s'étant trompé
-        // chaque fois que la réponse réelle était « oui » — l'inverse
-        // exact de la règle posée le matin même pour les autres familles.
-        // Trouvé sur la famille mi-temps : le signal de première période,
-        // muet sur son unique cas, s'affichait 0/1.
-        if (champ === 'oui' && v) dit = (typeof v.oui === 'boolean') ? v.oui : null;
-        if (dit === null || dit === undefined) {
-          abstentions++;
-          return { cas: c.nom, dit: null, reel: reel, compte: false, ok: null, abstenu: true };
-        }
-        total++;
-        var ok = dit === reel;
-        if (ok) juste++;
-        return { cas: c.nom, dit: dit, reel: reel, compte: true, ok: ok };
-      });
-      return { cle: m.cle, nom: m.nom, icone: m.icone, teinte: m.teinte,
-        juste: juste, total: total, abstentions: abstentions, details: details };
-    });
-  }
-  // Le moteur « ⚑ VOTE DES MOTEURS » est retiré du banc le 01/09/26 avec
-  // le vote lui-même : il n'y a plus de votants à compter.
-  _bancCacheV7 = {
-    camp: passe(MOTEURS_V7, 'camp', function (c) {
-      return (c.camp === 'R1' || c.camp === 'R7') ? c.camp : null;
-    }),
-    btts: passe(MOTEURS_BTTS_V7, 'oui', function (c) {
-      return (typeof c.btts === 'boolean') ? c.btts : null;
-    }),
-    incident: passe(MOTEURS_INCIDENT_V7, 'oui', function (c) {
-      return (typeof c.incident === 'boolean') ? c.incident : null;
-    }),
-    incidentCamp: passe(MOTEURS_INCIDENT_CAMP_V7, 'camp', function (c) {
-      return (c.incidentCamp === 'M1' || c.incidentCamp === 'M7') ? c.incidentCamp : null;
-    }),
-    penaltyCamp: passe(MOTEURS_PENALTY_CAMP_V7, 'camp', function (c) {
-      return (c.penaltyCamp === 'M1' || c.penaltyCamp === 'M7') ? c.penaltyCamp : null;
-    }),
-    // But dans les deux mi-temps : vrai si on a marqué avant la pause ET
-    // après. Demande les deux scores — mi-temps et final.
-    // Les DEUX camps marquent-ils en première période ? Se lit sur le
-    // seul score de mi-temps : les deux nombres non nuls.
-    miTempsDeux: passe(MOTEURS_MITEMPS_DEUX_V7, 'oui', function (c) {
-      if (!c.htScore) return null;
-      var h = String(c.htScore).match(/(\d+)-(\d+)/);
-      if (!h) return null;
-      return (+h[1]) > 0 && (+h[2]) > 0;
-    }),
-    // MATCH SERRÉ : écart de buts <= 1 (le nul compte comme serré).
-    // Demande le score exact ; muet sans lui.
-    serre: passe(MOTEURS_SERRE_V7, 'oui', function (c) {
-      if (!c.score) return null;
-      var m = String(c.score).match(/^(\d+)-(\d+)$/);
-      if (!m) return null;
-      return Math.abs((+m[1]) - (+m[2])) <= 1;
-    }),
-    // Le NUL : vrai si le score réel est égal, ou si le camp vaut 'nul'.
-    nul: passe(MOTEURS_NUL_V7, 'oui', function (c) {
-      if (c.camp === 'nul') return true;
-      if (!c.score) return c.camp ? false : null;
-      var m = String(c.score).match(/(\d+)-(\d+)/);
-      if (!m) return null;
-      return m[1] === m[2];
-    }),
-    miTemps: passe(MOTEURS_MITEMPS_V7, 'oui', function (c) {
-      // Un cas peut porter directement le fait, quand seul le fait est
-      // connu (« il y a but dans chaque mi-temps ») sans les deux scores.
-      if (typeof c.butsDeuxMiTemps === 'boolean') return c.butsDeuxMiTemps;
-      if (!c.htScore || !c.score) return null;
-      var h = String(c.htScore).match(/(\d+)-(\d+)/), f = String(c.score).match(/(\d+)-(\d+)/);
-      if (!h || !f) return null;
-      var totH = (+h[1]) + (+h[2]), totF = (+f[1]) + (+f[2]);
-      return totH > 0 && totF > totH;
-    }),
-    corners: passeNum(MOTEURS_CORNERS_V7, function (c) {
-      return (typeof c.corners === 'number') ? c.corners : null;
-    }, BANC_TOLERANCE_CORNERS_V7),
-    conditionnels: passe(MOTEURS_CONDITIONNELS_V7, 'camp', function (c) {
-      return (c.camp === 'R1' || c.camp === 'R7') ? c.camp : null;
-    }),
-    cornersDom: passe(MOTEURS_CORNERS_DOM_V7, 'camp', function (c) {
-      return (c.cornersDominant === 'R1' || c.cornersDominant === 'R7') ? c.cornersDominant : null;
-    }),
-    cas: CAS,
-    nbArchive: CAS_REFERENCE_V7.length,
-    nbSaisis: CAS.length - CAS_REFERENCE_V7.length,
-    nbEsport: CAS.filter(function (c) { return c.esport; }).length
-  };
-  return _bancCacheV7;
-}
+// bancMoteursV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Justesse mesurée d'un moteur, par sa clé. Remplace les chiffres écrits
 // en dur : si aucun cas ne s'applique, on retombe sur eux.
-function justesseMoteurV7(m, famille) {
-  var b = bancMoteursV7();
-  var l = (famille === 'btts' ? b.btts : b.camp);
-  for (var i = 0; i < l.length; i++) {
-    if (l[i].cle === m.cle) {
-      if (l[i].total > 0) return { juste: l[i].juste, total: l[i].total, mesure: true };
-      break;
-    }
-  }
-  return { juste: m.juste, total: m.total, mesure: false };
-}
+// justesseMoteurV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Les champs juste/total ci-dessous ne sont plus que des VALEURS DE
 // REPLI : justesseMoteurV7 les remplace par la justesse rejouée sur le
@@ -23213,146 +22788,10 @@ function mesurePopulusLiveV7() {
 //        balayageMaxTV7(500)         → plus rapide, moins fin
 // Le résultat dit, famille par famille, le meilleur prédicteur, le
 // seuil du hasard, et si quelque chose passe enfin.
-function _predicteursV7() {
-  var P = [];
-  for (var h = 1; h <= 16; h++) {
-    (function (hh) {
-      FIGS_V7.forEach(function (f) {
-        P.push({ nom: 'M' + hh + '=' + f, f: function (t) { return t[hh] === f ? 1 : 0; } });
-      });
-      P.push({ nom: 'M' + hh + ' au repos',
-        f: function (t) { return t[hh] === FIGS_V7[hh - 1] ? 1 : 0; } });
-      P.push({ nom: 'M' + hh + ' paire',
-        f: function (t) {
-          var p = MAP_GEO[t[hh]]; if (!p) return 0;
-          var s = 0; for (var i = 0; i < p.length; i++) s += p[i];
-          return s % 2 === 0 ? 1 : 0; } });
-    })(h);
-  }
-  P.push({ nom: 'rang des mères', f: function (t) { return rangMeresV7(t) || 0; } });
-  P.push({ nom: 'nombre de Populus', f: function (t) { return nbPopulusV7(t) || 0; } });
-  P.push({ nom: 'zéro Populus', f: function (t) { return nbPopulusV7(t) === 0 ? 1 : 0; } });
-  P.push({ nom: 'maisons au repos', f: function (t) {
-    var n = 0; for (var h = 1; h <= 16; h++) if (t[h] === FIGS_V7[h - 1]) n++; return n; } });
-  P.push({ nom: 'figures distinctes', f: function (t) {
-    var s = {}; for (var h = 1; h <= 16; h++) s[t[h]] = 1; return Object.keys(s).length; } });
-  P.push({ nom: 'R1 et R7 même boucle', f: function (t) {
-    var r = getRotationOrderFromRepos(t[1]);
-    return loopOf(t[r[0]]) === loopOf(t[r[6]]) ? 1 : 0; } });
-  P.push({ nom: 'R1 en maison angulaire', f: function (t) {
-    var r = getRotationOrderFromRepos(t[1]);
-    return [1, 4, 7, 10].indexOf(r[0]) >= 0 ? 1 : 0; } });
-  P.push({ nom: 'R1 en maison cadente', f: function (t) {
-    var r = getRotationOrderFromRepos(t[1]);
-    return [3, 6, 9, 12].indexOf(r[0]) >= 0 ? 1 : 0; } });
-  P.push({ nom: 'décalage R1->R7', f: function (t) {
-    var r = getRotationOrderFromRepos(t[1]);
-    var a = FIGS_V7.indexOf(t[r[0]]), b = FIGS_V7.indexOf(t[r[6]]);
-    return (((b - a) % 16) + 16) % 16; } });
-  return P;
-}
+// _predicteursV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
-function balayageMaxTV7(permutations) { return (permutations || 2000) === 2000
-  ? memoArchiveV7('balayageMaxTV7', function () { return _balayageMaxTV7(2000); })
-  : _balayageMaxTV7(permutations); }
-function _balayageMaxTV7(permutations) {
-  if (typeof tousCasBancV7 !== 'function') return null;
-  var T = permutations || 2000;
-  var CAS = tousCasBancV7() || [];
-  var P = _predicteursV7();
-  // ── construction de la matrice, une seule fois ──
-  var lignes = [];
-  CAS.forEach(function (c) {
-    if (!c || !c.meres) return;
-    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
-    lignes.push({ nom: c.nom, camp: c.camp,
-      tot: g ? (+g[1] + +g[2]) : null,
-      btts: g ? ((+g[1] > 0 && +g[2] > 0) ? 1 : 0) : null,
-      x: P.map(function (p) { try { return p.f(t); } catch (e) { return 0; } }) });
-  });
-  function rangs(v) {
-    var idx = v.map(function (_, i) { return i; });
-    idx.sort(function (a, b) { return v[a] - v[b]; });
-    var r = new Array(v.length), i = 0;
-    while (i < idx.length) {
-      var j = i;
-      while (j + 1 < idx.length && v[idx[j + 1]] === v[idx[i]]) j++;
-      var m = (i + j) / 2 + 1;
-      for (var k = i; k <= j; k++) r[idx[k]] = m;
-      i = j + 1;
-    }
-    return r;
-  }
-  function correl(xr, yr) {
-    var n = yr.length, mx = 0, my = 0, i;
-    for (i = 0; i < n; i++) { mx += xr[i]; my += yr[i]; }
-    mx /= n; my /= n;
-    var num = 0, dx = 0, dy = 0;
-    for (i = 0; i < n; i++) {
-      var a = xr[i] - mx, b = yr[i] - my;
-      num += a * b; dx += a * a; dy += b * b;
-    }
-    return (dx > 0 && dy > 0) ? num / Math.sqrt(dx * dy) : 0;
-  }
-  var cibles = [
-    { nom: 'camp R1 contre R7', garde: function (r) { return r.camp === 'R1' || r.camp === 'R7'; },
-      y: function (r) { return r.camp === 'R1' ? 1 : 0; } },
-    { nom: 'nul ou pas', garde: function (r) { return !!r.camp; },
-      y: function (r) { return r.camp === 'nul' ? 1 : 0; } },
-    { nom: 'plus de 2,5 buts', garde: function (r) { return r.tot !== null; },
-      y: function (r) { return r.tot > 2.5 ? 1 : 0; } },
-    { nom: 'les deux marquent', garde: function (r) { return r.btts !== null; },
-      y: function (r) { return r.btts; } }
-  ];
-  var sortie = { casDisponibles: CAS.length, casUtilisables: lignes.length,
-    predicteurs: P.length, permutations: T, familles: [] };
-  cibles.forEach(function (cb) {
-    var L = lignes.filter(cb.garde);
-    if (L.length < 12) {
-      sortie.familles.push({ nom: cb.nom, n: L.length, verdict: 'trop peu de cas' });
-      return;
-    }
-    var yr = rangs(L.map(cb.y));
-    var XR = P.map(function (_, j) { return rangs(L.map(function (r) { return r.x[j]; })); });
-    var obs = XR.map(function (xr) { return Math.abs(correl(xr, yr)); });
-    var best = 0;
-    for (var j = 1; j < obs.length; j++) if (obs[j] > obs[best]) best = j;
-    var depasse = 0, maxNull = [];
-    for (var s = 0; s < T; s++) {
-      var yp = yr.slice();
-      for (var i = yp.length - 1; i > 0; i--) {
-        var k = Math.floor(Math.random() * (i + 1)), tmp = yp[i]; yp[i] = yp[k]; yp[k] = tmp;
-      }
-      var mx = 0;
-      for (var j2 = 0; j2 < XR.length; j2++) {
-        var a = Math.abs(correl(XR[j2], yp)); if (a > mx) mx = a;
-      }
-      maxNull.push(mx);
-      if (mx >= obs[best]) depasse++;
-    }
-    maxNull.sort(function (a, b) { return a - b; });
-    var seuil = maxNull[Math.floor(0.95 * maxNull.length)];
-    var ordre = obs.map(function (v, i) { return [v, i]; })
-      .sort(function (a, b) { return b[0] - a[0]; }).slice(0, 5);
-    sortie.familles.push({ nom: cb.nom, n: L.length,
-      meilleur: P[best].nom, rho: Math.round(obs[best] * 1000) / 1000,
-      seuil95: Math.round(seuil * 1000) / 1000,
-      pFamille: Math.round(((depasse + 1) / (T + 1)) * 10000) / 10000,
-      survit: (depasse + 1) / (T + 1) < 0.05,
-      cinqPremiers: ordre.map(function (o) {
-        return P[o[1]].nom + ' ' + (Math.round(o[0] * 100) / 100); }) });
-  });
-  sortie.auMoinsUneSurvivante = sortie.familles.some(function (f) { return f.survit; });
-  sortie.lecture = sortie.auMoinsUneSurvivante
-    ? 'AU MOINS UNE FAMILLE PASSE le seuil du hasard sur tes cas. '
-      + 'C\'est la première fois — le balayage du matin, sur 56 cas seulement, n\'en '
-      + 'trouvait aucune. Vérifie le nombre de cas avant de crier victoire.'
-    : 'Aucune famille ne passe. Sur ' + sortie.casUtilisables + ' cas et '
-      + sortie.predicteurs + ' prédicteurs, le hasard fait aussi bien que notre meilleur. '
-      + 'Ce n\'est pas que les pistes sont fausses : c\'est qu\'on ne peut pas encore trancher.';
-  return sortie;
-}
+// balayageMaxTV7 supprimee (11/09/26) - code mort, plus aucun appelant.
+// _balayageMaxTV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // LE BALAYAGE SUR LES 105 CAS RÉELS (05/09/26, soir) — la réponse
@@ -24017,28 +23456,7 @@ function nulDeuxPortesV7(theme) {
 // ⚠️ L'exclusion repose sur UN seul cas, PuerCaput. C'est une condition
 // étroite avec un sens clair, pas une liste ajustée — mais un second
 // nul en paire angulaire↔angulaire la tuerait. Le fichier le dira.
-function niveauNulV7(theme) {
-  var rot = null;
-  try { rot = getRotationCombat(theme); } catch (e) { return null; }
-  if (!rot || !rot.hR1) return null;
-  // ☠️ L'EXCLUSION « LES DEUX SIÈGES ANGULAIRES » EST MORTE (29/08/26 soir).
-  // Elle reposait sur UN seul cas, PuerCaput. Le nul 0-0 d'aujourd'hui,
-  // tiré deux fois, a donné PuerFortMaj : R1 = Puer en M1, R7 = Rubeus en
-  // M7, LES DEUX ANGULAIRES, et c'est un nul. L'exclusion est donc à
-  // 1 juste et 1 fausse — un pile ou face. Retirée.
-  var porte = nulParPorteV7(theme);
-  var cadent = [3, 6, 9, 12].indexOf(rot.hR1) >= 0;
-  if (porte) return { niveau: 'MAXIMAL', taux: 73, sur: 11,
-    detail: 'porte ouverte, paire M' + rot.hR1 + '→M' + rot.hR7
-      + ' — 8 nuls sur 11 déclenchements dans l\'archive'
-      + (cadent ? ' (R1 en cadente)' : '') };
-  // ⚠️ Cette case était à 0 nul sur 5 jusqu'au 30/08. FortMajTrist l'a
-  // ouverte : R1 cadent en M12, porte fermée, et le match a fait 1-1.
-  if (cadent) return { niveau: 'faible', taux: 13, sur: 8,
-    detail: 'R1 en maison cadente mais porte fermée — 1 nul sur 8' };
-  return { niveau: 'aucun', taux: 0, sur: 23,
-    detail: 'ni porte ouverte ni maison cadente — 0 nul sur 23' };
-}
+// niveauNulV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // L'ÉCHELLE DU MATCH, SOURCE UNIQUE (30/08/26)
@@ -25412,63 +24830,9 @@ var _profilScoreV7 = null;
 var _profilScoreEnCoursV7 = false;
 var PROFIL_SCORE_ECHANTILLON_V7 = 96;
 
-function profilScoreV7(quandPret) {
-  if (_profilScoreV7) { if (quandPret) quandPret(_profilScoreV7); return _profilScoreV7; }
-  if (_profilScoreEnCoursV7) return null;
-  _profilScoreEnCoursV7 = true;
-  var ecarts = {}, totaux = {}, n = 0, i = 0;
-  var graines = [];
-  for (var a = 0; a < 16 && graines.length < PROFIL_SCORE_ECHANTILLON_V7; a++) {
-    for (var b = 0; b < 16 && graines.length < PROFIL_SCORE_ECHANTILLON_V7; b++) {
-      graines.push([FIGS_V7[a], FIGS_V7[b], FIGS_V7[(a * 5 + 3) % 16], FIGS_V7[(b * 7 + 1) % 16]]);
-    }
-  }
-  function tranche() {
-    var fin = Math.min(i + 8, graines.length);
-    for (; i < fin; i++) {
-      try {
-        var t = buildThemeFromMothers(graines[i][0], graines[i][1], graines[i][2], graines[i][3]);
-        var v = getVerdictAfficheReel(t);
-        if (!v || v.goalM1 == null) continue;
-        var d = Math.abs(Number(v.goalM1) - Number(v.goalM7));
-        var som = Number(v.goalM1) + Number(v.goalM7);
-        ecarts[d] = (ecarts[d] || 0) + 1;
-        totaux[som] = (totaux[som] || 0) + 1;
-        n++;
-      } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    }
-    if (i < graines.length) { setTimeout(tranche, 0); return; }
-    _profilScoreV7 = { n: n, ecarts: ecarts, totaux: totaux };
-    _profilScoreEnCoursV7 = false;
-    if (quandPret) quandPret(_profilScoreV7);
-    var cible = document.getElementById('banc-score-profil');
-    if (cible) cible.innerHTML = htmlProfilScoreV7(_profilScoreV7);
-  }
-  setTimeout(tranche, 0);
-  return null;
-}
+// profilScoreV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
-function htmlProfilScoreV7(p) {
-  if (!p || !p.n) return '<span class="muted">mesure indisponible</span>';
-  function top(o, libelle) {
-    var cles = Object.keys(o).sort(function (x, y) { return o[y] - o[x]; }).slice(0, 3);
-    return cles.map(function (k) {
-      var pct = Math.round(o[k] * 1000 / p.n) / 10;
-      return '<span style="display:inline-block; margin-right:10px;">'
-        + libelle + ' <b>' + k + '</b> — <b style="color:'
-        + (pct > 60 ? '#f87171' : pct > 30 ? '#fbbf24' : '#94a3b8') + ';">' + pct + '%</b></span>';
-    }).join('');
-  }
-  var e2 = p.ecarts[2] || 0;
-  return '<div>' + top(p.ecarts, 'écart') + '</div>'
-    + '<div style="margin-top:2px;">' + top(p.totaux, 'total') + '</div>'
-    + '<div style="margin-top:3px; color:#f87171;">'
-    + 'Sur ' + p.n + ' thèmes, l\'écart de buts vaut 2 dans '
-    + Math.round(e2 * 1000 / p.n) / 10 + '% des cas. Le moteur n\'annonce jamais un nul '
-    + 'ni une victoire d\'un but — soit environ la moitié des matchs réels. '
-    + 'Tant que ce profil ne bouge pas, le SCORE exact n\'est pas prédictible, '
-    + 'quel que soit le moteur de camp.</div>';
-}
+// htmlProfilScoreV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 </script>
 <script>
@@ -25482,728 +24846,13 @@ function htmlProfilScoreV7(p) {
 // LE BANC — la grille moteurs × cas, rejouée à chaque affichage.
 // C'est le garde-fou : si une modification de doctrine fait tomber un
 // moteur, la case devient rouge ici avant qu'on s'en aperçoive ailleurs.
-function renderBancPanel() {
-  var ancien = document.getElementById('banc-panel');
-  if (ancien) ancien.remove();
-  var hote = document.getElementById('moteurs-panel')
-          || document.getElementById('f4p4-panel')
-          || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
-
-  // Sans forcer : le banc ne dépend pas du thème courant, seulement du
-  // code. Le recalculer à chaque rendu coûtait neuf thèmes × onze moteurs
-  // par affichage — mesuré, c'est ce qui faisait ramer le rendu.
-  var b;
-  try { b = bancMoteursV7(); } catch (e) { return; }
-
-  var panneau = document.createElement('div');
-  panneau.id = 'banc-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:12px; border:1px solid #0f766e; '
-    + 'background:linear-gradient(160deg,#04201d 0%,#0b1220 100%);';
-
-  function entete() {
-    return '<tr><th style="text-align:left; padding:4px 6px; font-size:10px; color:#94a3b8;">moteur</th>'
-      + b.cas.map(function (c) {
-          return '<th style="padding:4px 3px; font-size:9px; color:#94a3b8; white-space:nowrap;" title="'
-            + c.nom + (c.score ? ' — ' + c.score : '') + (c.note ? ' · ' + c.note : '') + '">'
-            + '<span style="color:' + (c.esport ? '#fbbf24' : c.saisi ? '#5eead4' : '#94a3b8') + ';">'
-            + c.nom.slice(0, 5) + (c.esport ? ' ⚡' : '') + '</span></th>';
-        }).join('')
-      + '<th style="padding:4px 6px; font-size:10px; color:#94a3b8;">score</th></tr>';
-  }
-
-  function ligne(m) {
-    var pct = m.total ? m.juste / m.total : 0;
-    var coul = pct >= 0.85 ? '#4ade80' : pct >= 0.7 ? '#fbbf24' : '#f87171';
-    return '<tr style="border-top:1px solid #1e293b;">'
-      + '<td style="padding:4px 6px; font-size:10.5px; white-space:nowrap;">'
-      + (m.icone || '') + ' ' + m.nom + '</td>'
-      + m.details.map(function (d) {
-          if (!d.compte) {
-            return d.abstenu
-              ? '<td style="text-align:center; color:#64748b; font-size:10px;" '
-                + 'title="ce moteur ne se prononce pas sur ce thème">–</td>'
-              : '<td style="text-align:center; color:#334155; font-size:11px;">·</td>';
-          }
-          var t = (d.dit === null || d.dit === undefined) ? '—'
-                : (d.dit === true ? 'oui' : d.dit === false ? 'non' : d.dit);
-          return '<td style="text-align:center; padding:3px 2px;" title="dit ' + t
-            + ' · réel ' + (d.reel === true ? 'oui' : d.reel === false ? 'non' : d.reel)
-            + (d.ecart != null ? ' · écart ' + d.ecart : '') + '">'
-            + '<span style="font-size:12px; color:' + (d.ok ? '#4ade80' : '#f87171') + ';">'
-            + (d.ok ? '✔' : '✘') + '</span>'
-            + '<div style="font-size:8px; color:#64748b; line-height:1;">' + t
-            + (d.ecart != null ? ' <span style="opacity:.7;">±' + d.ecart + '</span>' : '')
-            + '</div></td>';
-        }).join('')
-      + '<td style="text-align:center; padding:4px 6px; font-weight:800; font-size:11px; color:' + coul + ';">'
-      + m.juste + '/' + m.total
-      + (m.ecartMoyen != null
-          ? '<div style="font-size:8px; font-weight:400; color:#64748b;">écart moy. '
-            + m.ecartMoyen + '</div>' : '')
-      + (m.abstentions
-          ? '<div style="font-size:8px; font-weight:400; color:#64748b;">'
-            + m.abstentions + ' muet' + (m.abstentions > 1 ? 's' : '') + '</div>' : '')
-      + '</td></tr>';
-  }
-
-  var lignesCamp = b.camp.slice().sort(function (x, y) {
-    if (x.cle === '_vote') return -1;
-    if (y.cle === '_vote') return 1;
-    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
-  }).map(ligne).join('');
-  var lignesCond = (b.conditionnels || []).map(ligne).join('');
-  var lignesBtts = b.btts.slice().sort(function (x, y) {
-    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
-  }).map(ligne).join('');
-  var lignesInc = (b.incident || []).slice().sort(function (x, y) {
-    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
-  }).map(ligne).join('');
-  var incidentSansCas = (b.incident || []).every(function (m) { return !m.total; });
-  var lignesCorners = (b.corners || []).slice().sort(function (x, y) {
-    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
-  }).map(ligne).join('');
-  var cornersSansCas = (b.corners || []).every(function (m) { return !m.total; });
-  var lignesCornersDom = (b.cornersDom || []).slice().sort(function (x, y) {
-    return (y.juste / (y.total || 1)) - (x.juste / (x.total || 1));
-  }).map(ligne).join('');
-  var cornersDomSansCas = (b.cornersDom || []).every(function (m) { return !m.total; });
-
-  var reel = '<tr style="border-top:2px solid #0f766e;">'
-    + '<td style="padding:4px 6px; font-size:10px; color:#5eead4; font-weight:700;">réel</td>'
-    + b.cas.map(function (c) {
-        return '<td style="text-align:center; padding:3px 2px; font-size:9px; color:#5eead4;">'
-          + (c.score || '—') + '<div style="font-size:8px; color:#64748b;">'
-          + (c.camp || '·') + '</div></td>';
-      }).join('')
-    + '<td></td></tr>';
-
-  panneau.innerHTML =
-      '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px; flex-wrap:wrap;">'
-    + '<h3 style="margin:0; color:#5eead4;">🧪 Le banc — moteurs × cas réels</h3>'
-    + '<span class="muted" style="font-size:10px;">rejoué à chaque affichage, jamais recopié</span></div>'
-    + '<div style="font-size:10.5px; margin-bottom:6px;">'
-    + '<b>' + b.cas.length + ' cas</b> — ' + b.nbArchive + ' d\'archive'
-    + (b.nbSaisis
-        ? ' + <b style="color:#5eead4;">' + b.nbSaisis + ' saisi'
-          + (b.nbSaisis > 1 ? 's' : '') + '</b> dans tes thèmes sauvegardés'
-        : ' · <span style="color:#fbbf24;">aucun match saisi pour l\'instant — '
-          + 'renseigne « Score reel » dans un thème sauvegardé, il entre ici automatiquement</span>')
-    + (b.nbEsport
-        ? ' · <span style="color:#fbbf24;">' + b.nbEsport + ' ⚡ e-sport '
-          + '(format arcade — le camp compte, les chiffres non)</span>' : '')
-    + '<div style="color:#64748b; margin-top:2px;">Règle d\'archive du 29/08 : un thème qui ne dit '
-    + '<b>ni le score ni le vainqueur</b> n\'entre pas ici. Lazio et AmisCarcer ont été retirés à ce '
-    + 'titre — ils ne pouvaient rien confirmer ni infirmer, et tous deux tombaient dans les maisons '
-    + 'des nuls, ce qui donnait de faux espoirs. Un thème qui dit le vainqueur sans le score reste : '
-    + 'il compte pour le camp, et se tait sur les chiffres.</div>'
-    + '</div>'
-    + (function () {
-        // Petit échappement local : renderBancPanel n'a pas de esc() dans
-        // sa portée, et les noms d'équipes viennent d'une saisie libre.
-        var esc = function (v) {
-          return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        };
-        var jp = null;
-        try { jp = journalPredictionsV7(); } catch (e) { jp = null; }
-        // ─── LE GARDE-FOU DE L'ARCHIVE, TOUT EN HAUT (29/08/26) ───
-        // Une ligne d'archive qui se contredit fausse silencieusement
-        // toutes les familles à la fois. Elle se voit ici ou nulle part.
-        var coh = null;
-        try { coh = coherenceArchiveV7(); } catch (e) { coh = null; }
-        var alerteCoh = '';
-        if (coh && coh.soucis && coh.soucis.length) {
-          alerteCoh = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #f87171; '
-            + 'border-radius:10px; background:rgba(248,113,113,.10);">'
-            + '<div style="font-size:12px; font-weight:800; color:#fca5a5;">⚠️ ARCHIVE INCOHÉRENTE — '
-            + coh.soucis.length + ' cas sur ' + coh.total + '</div>'
-            + '<div style="font-size:10.5px; color:#fecaca; margin-top:3px;">'
-            + 'Le score de ces cas contredit leur camp déclaré. Toute l\'archive écrit le score dans '
-            + 'l\'ordre <b>R1-R7</b> — le premier nombre est celui du camp 1, jamais celui du vainqueur. '
-            + 'Tant que ces lignes ne sont pas corrigées, les familles « score » et « vainqueur » lisent '
-            + 'deux vérités différentes.</div>'
-            + coh.soucis.map(function (x) {
-                return '<div style="font-size:10.5px; color:#fecaca; margin-top:2px;">• <b>' + esc(x.nom)
-                  + '</b> — score ' + esc(x.score) + ' (implique ' + esc(x.implique)
-                  + ') mais camp déclaré ' + esc(x.declare) + '</div>';
-              }).join('')
-            + '</div>';
-        }
-        // ─── LE BALAYAGE MAX-T (05/09/26) ───
-        // Le balayage de séparation ci-dessous demande « quel thème
-        // croire ». Celui-ci demande autre chose : « une propriété du
-        // thème prédit-elle le RÉSULTAT ? » — 297 prédicteurs déclarés
-        // d'avance, seuil par permutation de la réalité (max-T de
-        // Westfall-Young), qui est la bonne correction quand les
-        // prédicteurs sont corrélés entre eux. Il tourne sur
-        // tousCasBancV7(), donc sur les thèmes sauvegardés aussi.
-        var mxt = null;
-        try { mxt = balayageMaxTV7(); } catch (e) { mxt = null; }
-        var blocMxt = '';
-        if (mxt && mxt.familles && mxt.familles.length) {
-          var passe = !!mxt.auMoinsUneSurvivante;
-          var colM = passe ? '#4ade80' : '#94a3b8';
-          blocMxt = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid ' + colM + '; '
-            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
-            + '<div style="font-size:12px; font-weight:800; color:' + colM + ';">🧪 BALAYAGE MAX-T — '
-            + mxt.predicteurs + ' prédicteurs sur ' + mxt.casUtilisables + ' cas</div>'
-            + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-            + 'Une propriété du thème prédit-elle le <b>résultat</b> ? On permute la réalité '
-            + mxt.permutations + ' fois, on recalcule les ' + mxt.predicteurs + ' corrélations, '
-            + 'et on garde le MAXIMUM : c\'est lui le seuil du hasard. Bonferroni serait faux ici, '
-            + 'les prédicteurs étant fortement corrélés.</div>'
-            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:6px;">'
-            + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 6px;">famille</th>'
-            + '<th style="padding:3px 6px;">n</th><th style="text-align:left; padding:3px 6px;">meilleur</th>'
-            + '<th style="padding:3px 6px;">rho</th><th style="padding:3px 6px;">seuil</th>'
-            + '<th style="padding:3px 6px;">p</th></tr>'
-            + mxt.familles.map(function (f) {
-                if (f.verdict) return '<tr><td style="padding:3px 6px;">' + esc(f.nom)
-                  + '</td><td colspan="5" style="padding:3px 6px; color:#64748b;">' + esc(f.verdict) + '</td></tr>';
-                var c2 = f.survit ? '#4ade80' : '#cbd5e1';
-                return '<tr><td style="padding:3px 6px; color:' + c2 + ';">' + esc(f.nom) + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + f.n + '</td>'
-                  + '<td style="padding:3px 6px; color:#e2e8f0;">' + esc(f.meilleur) + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + f.rho.toFixed(3) + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center; color:#94a3b8;">' + f.seuil95.toFixed(3) + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center; color:' + c2 + ';">' + f.pFamille.toFixed(3)
-                  + (f.survit ? ' ✔' : '') + '</td></tr>';
-              }).join('')
-            + '</table>'
-            + '<div style="font-size:10px; color:' + (passe ? '#4ade80' : '#fbbf24') + '; margin-top:5px;">'
-            + esc(mxt.lecture) + '</div>'
-            + '<div style="font-size:9.5px; color:#64748b; margin-top:4px;">'
-            + 'Le balayage du 05/09 tournait hors du fichier, sur les 56 cas du dépôt seulement, et '
-            + 'concluait qu\'il faudrait 100 cas. Celui-ci lit ' + mxt.casDisponibles + ' cas — archive '
-            + 'plus tes thèmes sauvegardés. Rejoué à chaque fois que tu saisis un score.</div></div>';
-        }
-        // ─── LE BALAYAGE DE SÉPARATION (30/08/26) ───
-        // « Comment séparer les thèmes qui tiennent le vrai verdict ? »
-        // La réponse se recalcule à chaque ouverture du banc.
-        var bal = null;
-        try { bal = balayageSeparationV7(); } catch (e) { bal = null; }
-        var blocBal = '';
-        if (bal && bal.lignes.length) {
-          var gagne = bal.corrige !== null && bal.corrige < 0.05;
-          var col = gagne ? '#4ade80' : '#94a3b8';
-          blocBal = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid ' + col + '; '
-            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
-            + '<div style="font-size:12px; font-weight:800; color:' + col + ';">🔎 BALAYAGE DE SÉPARATION — '
-            + bal.tests + ' propriétés contre ' + bal.justes + '/' + bal.total + ' verdicts justes</div>'
-            + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-            + 'Une seule question, posée à chaque propriété qu\'un thème peut avoir : <b>les thèmes qui '
-            + 'l\'ont sont-ils plus souvent justes que ceux qui ne l\'ont pas ?</b> C\'est la question '
-            + '« quel thème croire », et elle n\'a pas la même réponse que « ce thème est-il beau ».</div>'
-            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:6px;">'
-            + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 6px;">propriété</th>'
-            + '<th style="padding:3px 6px;">avec</th><th style="padding:3px 6px;">sans</th>'
-            + '<th style="padding:3px 6px;">écart</th><th style="padding:3px 6px;">p</th></tr>'
-            + bal.lignes.slice(0, 6).map(function (x) {
-                var e = Math.round(100 * x.ecart);
-                return '<tr><td style="padding:3px 6px; color:#e2e8f0;">' + esc(x.nom) + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + x.oui + '/' + x.nOui
-                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxOui) + ' %</span></td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + x.non + '/' + x.nNon
-                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxNon) + ' %</span></td>'
-                  + '<td style="padding:3px 6px; text-align:center; color:' + (e >= 0 ? '#4ade80' : '#f87171')
-                  + ';">' + (e >= 0 ? '+' : '') + e + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + x.p.toFixed(3) + '</td></tr>';
-              }).join('')
-            + '</table>'
-            + '<div style="font-size:10px; color:' + (gagne ? '#4ade80' : '#fbbf24') + '; margin-top:5px;">'
-            + (gagne
-              ? '✔ Une propriété passe la correction de Bonferroni (p corrigé ' + bal.corrige.toFixed(3)
-                + ') : elle sépare vraiment. À vérifier sur les matchs suivants avant de s\'en servir.'
-              : '☠️ <b>Aucune propriété ne sépare.</b> Meilleur p brut ' + bal.meilleurP.toFixed(3)
-                + ', corrigé pour ' + bal.tests + ' tests : ' + bal.corrige.toFixed(2) + '. Sur ' + bal.tests
-                + ' propriétés testées, le hasard seul en donne ' + bal.attenduSous5
-                + ' sous p = 0,05 — un joli p brut ne veut donc rien dire ici.')
-            + '</div>'
-            + '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
-            + 'Les plus gros écarts pointent souvent <b>à l\'envers</b> : plus le thème a de signal, moins '
-            + 'il est juste. Même inversion que sur les dérivés d\'axe (1 axe 83 %, 2 axes 86 %, 3 axes '
-            + '59 %). Je n\'ai pas d\'explication — seulement le fait qu\'elle se répète.'
-            + '</div></div>';
-        }
-        // ─── L'ARBITRAGE DES MOTEURS (30/08/26) ───
-        // « Il y a trop de contradiction » — oui, et voici ce que valent
-        // les deux façons de trancher.
-        var arb = null;
-        try { arb = arbitrageMoteursV7(); } catch (e) { arb = null; }
-        var blocArb = '';
-        if (arb && arb.n) {
-          var np = arb.divPilote[0] + arb.divPilote[1];
-          var nu = arb.unanime[0] + arb.unanime[1];
-          var nuc = arb.unanimeContre[0] + arb.unanimeContre[1];
-          blocArb = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #94a3b8; '
-            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
-            + '<div style="font-size:12px; font-weight:800; color:#cbd5e1;">⚔️ ARBITRAGE DES MOTEURS — '
-            + 'le pilote contre la majorité des six autres</div>'
-            + '<div style="font-size:11px; color:#e2e8f0; margin-top:5px; line-height:1.6;">'
-            + 'les critères <b>(le pilote, ce qui s\'affiche)</b> — <b>' + arb.pilote[0] + '/' + arb.n + '</b><br>'
-            + 'la <b>majorité</b> des six autres moteurs — <b>' + arb.majorite[0] + '/' + arb.n + '</b><br>'
-            + 'ils divergent sur <b>' + np + '</b> matchs : le pilote a raison <b>' + arb.divPilote[0] + '/' + np
-            + '</b>, la majorité <b>' + arb.divMajorite[0] + '/' + np + '</b> — <b style="color:#f87171;">p = '
-            + arb.p.toFixed(3) + '</b>'
-            + (nu ? '<br>quand les six autres sont <b>unanimes</b> (' + nu + ' cas) : <b>' + arb.unanime[0] + '/' + nu + '</b>'
-                + (nuc ? ', et unanimes <b>contre</b> le pilote (' + nuc + ' cas) : <b>' + arb.unanimeContre[0] + '/' + nuc + '</b>' : '')
-              : '')
-            + '</div>'
-            + '<div style="font-size:10px; color:#fbbf24; margin-top:5px; line-height:1.55;">'
-            + '☠️ <b>La contradiction n\'est pas une énigme à résoudre, c\'est du bruit.</b> Suivre le pilote, '
-            + 'suivre la majorité ou tirer à pile ou face donnent la même chose. Ces moteurs lisent tous les '
-            + 'mêmes seize figures par des chemins voisins : quand le thème penche, ils penchent ensemble, '
-            + 'juste ou faux. <b>Leur accord n\'est pas une confirmation — c\'est le même avis compté six fois.</b>'
-            + '</div>'
-            + (arb.divergences.length
-              ? '<div style="font-size:10px; color:#94a3b8; margin-top:5px;">'
-                + arb.divergences.map(function (d) {
-                    return '• <b>' + esc(d.nom) + '</b> — pilote ' + d.pilote + ' · majorité ' + d.majorite
-                      + ' (' + d.force + ') · réel ' + d.reel + ' → <b style="color:'
-                      + (d.bon === 'majorité' ? '#4ade80' : '#60a5fa') + ';">' + d.bon + '</b>';
-                  }).join('<br>')
-                + '</div>'
-              : '')
-            + '</div>';
-        }
-        // ─── CE QUE LA VALIDITÉ GOUVERNE (30/08/26) ───
-        var vpf = null;
-        try { vpf = validiteParFamilleV7(); } catch (e) { vpf = null; }
-        var blocVpf = '';
-        if (vpf && vpf.lisibles) {
-          blocVpf = '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #94a3b8; '
-            + 'border-radius:10px; background:rgba(15,23,42,.45);">'
-            + '<div style="font-size:12px; font-weight:800; color:#cbd5e1;">🗓️ CE QUE LA VALIDITÉ GOUVERNE — '
-            + 'famille par famille</div>'
-            + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-            + 'Les thèmes que le filtre GARDE font-ils mieux que ceux qu\'il JETTE ? Une ligne par famille, '
-            + 'parce que la validité pourrait gouverner le camp sans gouverner l\'incident.</div>'
-            + '<table style="width:100%; font-size:11px; border-collapse:collapse; margin-top:6px;">'
-            + '<tr style="color:#94a3b8;"><th style="text-align:left; padding:3px 6px;">famille</th>'
-            + '<th style="padding:3px 6px;">gardés</th><th style="padding:3px 6px;">jetés</th>'
-            + '<th style="padding:3px 6px;">écart</th><th style="padding:3px 6px;">p</th></tr>'
-            + vpf.lignes.map(function (x) {
-                if (!x.lisible) {
-                  return '<tr><td style="padding:3px 6px; color:#e2e8f0;">' + esc(x.nom) + '</td>'
-                    + '<td colspan="4" style="padding:3px 6px; text-align:center; color:#64748b;">effectif trop faible</td></tr>';
-                }
-                var e = Math.round(100 * x.ecart);
-                return '<tr><td style="padding:3px 6px; color:#e2e8f0;">' + esc(x.nom) + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + x.val[0] + '/' + x.nVal
-                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxVal) + ' %</span></td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + x.rej[0] + '/' + x.nRej
-                  + ' <span style="color:#94a3b8;">' + Math.round(100 * x.tauxRej) + ' %</span></td>'
-                  + '<td style="padding:3px 6px; text-align:center; color:' + (e > 0 ? '#4ade80' : '#f87171')
-                  + ';">' + (e >= 0 ? '+' : '') + e + '</td>'
-                  + '<td style="padding:3px 6px; text-align:center;">' + x.p.toFixed(3) + '</td></tr>';
-              }).join('')
-            + '</table>'
-            + '<div style="font-size:10px; color:' + (vpf.pencheRejet >= vpf.lisibles ? '#f87171' : '#fbbf24')
-            + '; margin-top:5px; line-height:1.55;">'
-            + (vpf.pencheRejet >= vpf.lisibles
-              ? '☠️ <b>' + vpf.lisibles + ' familles sur ' + vpf.lisibles + ', l\'écart penche du côté des thèmes JETÉS.</b> '
-                + 'Pas une seule ne va dans l\'autre sens. Rien n\'est significatif — mais un filtre censé garder les bons '
-                + 'thèmes qui perd partout, ce n\'est plus « non démontré », c\'est « jamais vu marcher ».'
-              : vpf.pencheRejet + ' familles sur ' + vpf.lisibles + ' penchent du côté des thèmes jetés.')
-            + '</div>'
-            + '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">'
-            + '➜ <b>Pas de rejet par famille.</b> On ne raffine pas un signal qui n\'existe dans aucune famille. '
-            + 'Le filtre reste branché parce que c\'est un choix assumé, pas parce qu\'il est démontré.'
-            + '</div></div>';
-        }
-        var tete = alerteCoh + blocMxt + blocBal + blocArb + blocVpf + '<div style="margin:8px 0 12px; padding:9px 11px; border:2px solid #fbbf24; '
-          + 'border-radius:10px; background:rgba(251,191,36,.07);">'
-          + '<div style="font-size:12px; font-weight:800; color:#fbbf24;">📓 JOURNAL DES PRÉDICTIONS GELÉES</div>'
-          + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-          + 'Le tableau ci-dessous <b>rejoue</b> les moteurs d\'aujourd\'hui sur toute l\'archive. Chaque fois '
-          + 'qu\'une règle est corrigée après un raté — la porte du nul l\'a été deux fois, à +4 puis à +6 — '
-          + 'ces chiffres remontent, et ils remontent forcément : la règle a été taillée sur ces cas-là. '
-          + '<b>Un score de banc ne prouve pas qu\'on prédit, il prouve qu\'on décrit le passé sans se '
-          + 'contredire.</b> Le journal, lui, compare le verdict <b>gelé à l\'enregistrement</b> au score saisi '
-          + 'plus tard : rien ne peut le flatter après coup.</div>';
-        if (!jp || !jp.campTotal) {
-          return tete + '<div style="font-size:11px; color:#fbbf24; margin-top:6px;">'
-            + '<b>Journal vide.</b> Il se remplit tout seul : enregistre un thème AVANT le match, puis saisis '
-            + '« Score reel » quand tu le connais. Tant qu\'il est vide, aucun chiffre de ce fichier n\'est une '
-            + 'preuve de prédiction — c\'est la phrase la plus importante du projet.</div></div>';
-        }
-        return tete
-          + '<div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:7px; font-size:12px;">'
-          + '<div><b style="color:#4ade80; font-size:16px;">' + jp.campJuste + '/' + jp.campTotal + '</b>'
-          + ' <span style="color:#94a3b8;">camp annoncé avant le match</span></div>'
-          + '<div><b style="color:#4ade80; font-size:16px;">' + jp.scoreJuste + '/' + jp.scoreTotal + '</b>'
-          + ' <span style="color:#94a3b8;">score exact</span></div>'
-          + (jp.nulTotal ? '<div><b style="color:#4ade80; font-size:16px;">' + jp.nulJuste + '/' + jp.nulTotal + '</b>'
-            + ' <span style="color:#94a3b8;">nul / pas nul</span></div>' : '')
-          + '</div>'
-          + '<table style="width:100%; margin-top:7px; font-size:10.5px; border-collapse:collapse;">'
-          + jp.lignes.slice(0, 25).map(function (x) {
-              return '<tr><td style="padding:3px 4px; color:#64748b;">' + esc(x.quand) + '</td>'
-                + '<td style="padding:3px 4px;">' + esc(x.equipes) + '</td>'
-                + '<td style="padding:3px 4px;">annoncé <b>' + esc(x.ditCamp) + '</b> ' + esc(x.ditScore) + '</td>'
-                + '<td style="padding:3px 4px;">réel <b>' + esc(x.reelCamp) + '</b> ' + esc(x.reelScore) + '</td>'
-                + '<td style="padding:3px 4px; color:' + (x.campJuste ? '#4ade80' : '#f87171') + ';">'
-                + (x.campJuste ? '✔ camp' : '✘ camp') + (x.scoreJuste ? ' ✔ score' : '') + '</td></tr>';
-            }).join('')
-          + '</table></div>';
-      })()
-    + '<div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:520px;">'
-    + '<thead>' + entete() + '</thead><tbody>'
-    + lignesCamp
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Règles conditionnelles '
-    + '<span style="font-weight:400; color:#64748b;">— elles ne votent pas, elles ne parlent '
-    + 'que sur leur motif ; « – » = muet</span></td></tr>'
-    + lignesCond
-    + reel
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Les deux marquent'
-    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#f87171;">aucune règle ne marche ici</b> : '
-    + 'toutes les lectures par l\'ouverture sont au niveau du témoin « jamais » (13/22) ou en dessous. Réfutation '
-    + 'exacte : le 0-0 du 14/02 et Jeudi 27/08 (1-2) ont le MÊME couple de sièges fixes — M1 Carcer fermée-passive, '
-    + 'M7 Conjonctio fermée-active — pour des résultats opposés. Et rien ne prédit le nombre de buts : ancrage '
-    + 'r = 0,00, figures actives r = 0,35 sur 22 cas</span></td></tr>'
-    + lignesBtts
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Penalty / carton rouge'
-    + (incidentSansCas
-        ? ' <span style="color:#fbbf24; font-weight:400;">— aucun cas : renseigne « Rouge/pénalty ? » '
-          + 'dans tes thèmes sauvegardés, ces trois lignes se rempliront seules</span>' : '')
-    + '</td></tr>'
-    + lignesInc
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Incident — qui encaisse'
-    + ' <span style="font-weight:400; color:#64748b;">— étude du 28/08 : le siège qui '
-    + 'engendre Mars ; se tait sur 81 % des thèmes</span></td></tr>'
-    + (b.incidentCamp || []).map(ligne).join('')
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Penalty — qui concède'
-    + ' <span style="font-weight:400; color:#64748b;">— étude du 28/08 : Mars qui naît en M12, '
-    + 'la surface de réparation ; à lire avec le témoin juste en dessous</span></td></tr>'
-    + (b.penaltyCamp || []).map(ligne).join('')
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">But dans les deux mi-temps'
-    + ' <span style="font-weight:400; color:#64748b;">— demande le score à la pause ET le score final ; '
-    + 'saisis « Mi-temps ex: 1-0 » dans tes thèmes sauvegardés. Attention : l\'hypothèse « M1/M7 puis R1/R7 » '
-    + 'dit OUI sur 100 % des thèmes — elle est identique au témoin constant</span></td></tr>'
-    + (b.miTemps || []).map(ligne).join('')
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">1re mi-temps — les deux marquent'
-    + ' <span style="font-weight:400; color:#64748b;">— l\'affirmation forte de htWinner, séparée le 28/08 '
-    + 'de la question faible « y a-t-il eu un but avant la pause »</span></td></tr>'
-    + (b.miTempsDeux || []).map(ligne).join('')
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Nul'
-    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#22c55e;">LES DEUX PORTES d\'Ellemine_D '
-    + 'battent tout, témoin compris : 34/37, 8 nuls sur 9, deux faux positifs, contre 28/37 pour le témoin.</b> Le nul ne se lit pas pareil '
-    + 'selon la boucle : en MÊME BOUCLE il passe par l\'alliance (R7 binôme de R1, +2), en BOUCLES OPPOSÉES par '
-    + '+11, le front du front de la victime. La table des pôles ne sait faire que la première — son code ne peut '
-    + 'littéralement pas annoncer un nul en boucles opposées, et c\'est là qu\'étaient les deux nuls que rien '
-    + 'n\'attrapait. La forme branchée est élargie à {+2, +4, +6} : elle attrape 8 nuls sur 9, au prix de deux '
-    + 'faux positifs (PuerCaput, TristPop) — tous deux hors maison cadente, ce que le croisement rattrape. '
-    + 'Le nul qu\'elle rate (FortMajTrist, 30/08) est à +9 en boucles opposées, où seul +11 ouvre. '
-    + 'Le faisceau reste utile en gradation, et son échelle est désormais recalculée sur l\'archive à chaque '
-    + 'ouverture au lieu d\'être recopiée à la main — elle l\'était, et elle annonçait encore 40 % à quatre '
-    + 'signaux là où l\'archive dit 0 sur 2. Les fractions se lisent dans le panneau du thème'
-    + '</span>'
-    + ' <span style="font-weight:400; color:#64748b;">— <b style="color:#fbbf24;">la maison ratisse, la figure '
-    + 'confirme.</b> À 3 nuls, « R1 en maison cadente » les attrapait tous les trois ; à 9 nuls elle en attrape '
-    + '5 pour 5 faux positifs (50 % de précision). Elle dit donc « méfie-toi », jamais « c\'est nul » — et c\'est '
-    + 'exactement à ce titre qu\'elle sert : croisée avec la porte, elle écarte les DEUX faux positifs de '
-    + 'celle-ci. Ce qui repose sur la nature des figures (binôme, juge partagé) crie beaucoup moins à tort mais '
-    + 'rate davantage : 2 nuls sur 3 déclenchements pour le binôme, 4 sur 6 pour le juge partagé</span></td></tr>'
-    + (b.nul || []).map(ligne).join('')
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Match serr\u00e9 (\u00e9cart de buts \u2264 1)'
-    + ' <span style="font-weight:400; color:#64748b;">\u2014 les SEPT cas o\u00f9 R1 tombe en maison cadente sont serr\u00e9s : '
-    + '\u00e9cart moyen 0,57 contre 2,05 partout ailleurs. Quand ce moteur ose le oui il ne s\'est jamais tromp\u00e9, '
-    + '7 fois sur 7 \u2014 en revanche il rate 12 des 19 serr\u00e9s. C\'est le signal le plus s\u00fbr du fichier : '
-    + 'R1 en maison cadente veut dire <b>ne crois pas \u00e0 un gros score</b>, quel que soit l\'\u00e9cart annonc\u00e9 '
-    + 'par le moteur de camp</span></td></tr>'
-    + (b.serre || []).map(ligne).join('')
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Corners '
-    + '<span style="font-weight:400; color:#64748b;">— juste si l\'écart au réel ≤ '
-    + BANC_TOLERANCE_CORNERS_V7 + '</span>'
-    + (cornersSansCas
-        ? ' <span style="color:#fbbf24; font-weight:400;">— aucun cas : renseigne « Corners réels » '
-          + 'dans tes thèmes sauvegardés</span>' : '')
-    + '</td></tr>'
-    + lignesCorners
-    + '<tr><td colspan="' + (b.cas.length + 2) + '" style="padding:8px 6px 3px; font-size:10px; '
-    + 'font-weight:700; color:#94a3b8;">Corners — qui domine'
-    + (cornersDomSansCas
-        ? ' <span style="color:#fbbf24; font-weight:400;">— aucun cas : il faut les DEUX côtés '
-          + 'saisis pour qu\'un dominant existe</span>' : '')
-    + '</td></tr>'
-    + lignesCornersDom
-    + '</tbody></table></div>'
-    + '<div style="margin-top:10px; padding:7px 9px; border:1px solid #7f1d1d; border-radius:8px; '
-    + 'background:rgba(127,29,29,.12);">'
-    + '<div style="font-size:10.5px; font-weight:700; color:#fca5a5; margin-bottom:3px;">'
-    + '⚠ Le profil du score — pourquoi le score exact ne tombe jamais</div>'
-    + '<div id="banc-score-profil" style="font-size:9.5px; color:#cbd5e1;">'
-    + (_profilScoreV7 ? htmlProfilScoreV7(_profilScoreV7)
-                      : '<span class="muted">mesure en cours…</span>')
-    + '</div></div>'
-    + '<div class="hint" style="margin-top:9px; font-size:9px;">'
-    + 'Les colonnes <span style="color:#5eead4;">en vert</span> sont les matchs que tu as saisis : '
-    + 'chaque « Score reel » renseigné dans un thème sauvegardé entre ici tout seul, et renote les '
-    + 'moteurs sans qu\'on touche au code. '
-    + 'Un point gris = le cas ne compte pas pour ce moteur (un nul, un score inconnu, '
-    + 'des corners non saisis). Sur les corners, « toujours 10 » ne lit pas le thème : c\'est la '
-    + 'moyenne d\'un match. Un moteur qui ne le bat pas ne lit rien — c\'est le rôle qu\'a joué '
-    + '« BTTS toujours oui » pour les deux autres lectures. La tolérance de ±'
-    + BANC_TOLERANCE_CORNERS_V7 + ' est un choix, calibré sur rien. '
-    + (function () {
-        // Compté, plus écrit en dur : la phrase disait « sept cas » alors
-        // que le banc en avait huit. Un chiffre à la main ne suit pas les
-        // données — c'est la leçon même qui a fait naître ce banc.
-        var d = b.cas.filter(function (c) { return c.camp === 'R1' || c.camp === 'R7'; }).length;
-        var e = b.cas.filter(function (c) { return c.esport; }).length;
-        return d + ' cas décisifs seulement' + (e ? ' (dont ' + e + ' e-sport)' : '')
-          + ' : à ce nombre, un moteur au-dessus de la moitié ne se distingue pas encore d\'un '
-          + 'tirage à pile ou face, et le meilleur de neuf moteurs est attendu haut par simple '
-          + 'sélection. ';
-      })()
-    + 'Ce tableau sert à VOIR UNE RÉGRESSION, pas à couronner '
-    + 'un moteur. Il a été construit après en avoir manqué une : le 26/08, un changement d\'échelle dans '
-    + 'forceCampV7 a fait tomber chaîne, ancrage et duel de 5/7 à 3–4/7 sans que rien ne l\'affiche.</div>';
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-  // une seule fois par session, après le rendu
-  try { profilScoreV7(); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-}
+// renderBancPanel supprimee (11/09/26) - panneau retire de l UI, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // PANNEAU DU MOTEUR F4P4 — la démarche d'Ellemine_D, rendue lisible.
 // Trois temps par camp : la centrale à son siège, ses quatre pôles avec
 // leur résistance, puis la centrale jugée par la même mesure.
-function renderF4P4Panel(theme) {
-  const ancien = document.getElementById('f4p4-panel');
-  if (ancien) ancien.remove();
-  if (!theme) return;
-  const hote = document.getElementById('duel-bouclier-panel')
-            || document.getElementById('lieux-marquage-panel')
-            || document.getElementById('carte-verdict-r');
-  if (!hote || !hote.parentNode) return;
-
-  const panneau = document.createElement('div');
-  panneau.id = 'f4p4-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:10px; border:1px solid #7c3aed;';
-
-  let m = null;
-  try { m = moteurF4P4V7(theme); } catch (e) { m = null; }
-  if (!m || !m.applicable) {
-    panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
-      + '<div class="muted" style="font-size:11.5px;">' + ((m && m.raison) || 'Non applicable.') + '</div>';
-    hote.parentNode.insertBefore(panneau, hote.nextSibling);
-    return;
-  }
-  const nom = function (f) { return f ? (FL[f] || f) : '—'; };
-
-  // ─── PANNEAU RÉÉCRIT LE 27/08/26 ───
-  // L'ancien affichage lisait la forme de campF4P4V7 (marge, tient,
-  // force, polesAssaillant) alors que moteurF4P4V7 renvoie, depuis le
-  // passage aux cinq étapes, la forme de reseauF4P4V7 (profil, réseau,
-  // solide, frappes). Il levait donc une exception à chaque rendu et
-  // n'affichait RIEN. Il montre maintenant ce que le moteur décide
-  // vraiment : les cinq étapes, dans l'ordre.
-  function pastille(ok, txt) {
-    return '<span style="font-size:8.5px; font-weight:700; padding:1px 5px; border-radius:6px; '
-      + 'background:' + (ok ? 'rgba(74,222,128,.14)' : 'rgba(248,113,113,.12)') + '; '
-      + 'color:' + (ok ? '#4ade80' : '#f87171') + ';">' + txt + '</span>';
-  }
-
-  function lignePole(p) {
-    if (!p) return '';
-    var maisons = (p.positions || []).map(function (o) {
-      return 'M' + o.pos + (o.resultante ? 'r' : '');
-    }).join(' ') || '—';
-    return '<div style="display:flex; gap:6px; align-items:baseline; font-size:10px; '
-      + 'padding:2px 0; border-bottom:1px solid rgba(51,65,85,.5);">'
-      + '<span class="muted" style="min-width:76px; font-size:8.5px;">' + p.role + '</span>'
-      + '<span style="flex:1;">' + nom(p.fig)
-      + ' <span class="muted" style="font-size:8.5px;">' + maisons + '</span></span>'
-      + '<span style="min-width:52px; text-align:right; font-weight:700; color:'
-      + (p.ancrage >= F4P4_SEUIL_ANCRAGE_V7 ? '#e2e8f0' : '#64748b') + ';">' + p.ancrage + '</span>'
-      + '<span style="min-width:30px; text-align:right; font-size:9px; color:'
-      + (p.renfort >= F4P4_SEUIL_RENFORT_V7 ? '#94a3b8' : '#64748b') + ';">' + p.renfort + '/4</span>'
-      + '<span style="min-width:52px; text-align:right;">' + pastille(p.solide, p.solide ? 'SOLIDE' : '—') + '</span>'
-      + '</div>'
-      + (p.solide ? '' : '<div class="muted" style="font-size:8px; margin:0 0 2px 82px;">' + (p.motif || '') + '</div>');
-  }
-
-  function colonne(cote, c) {
-    const g = c.regeneration;
-    const teinte = cote === 'R1' ? '#38bdf8' : '#fb923c';
-    let h = '<div style="flex:1; min-width:270px;">'
-      // ÉTAPE 1 et 2 — la centrale à son siège, et sa boucle
-      + '<div style="font-size:12px; font-weight:700; margin-bottom:3px; color:' + teinte + ';">'
-      + cote + ' · ' + nom(c.fig)
-      + ' <span class="muted" style="font-weight:400; color:#94a3b8;">en M' + c.siege
-      + ' · boucle ' + c.boucle + '</span></div>'
-      + '<div style="font-size:9.5px; margin-bottom:4px; color:#94a3b8;">concordance <b>' + c.concordance
-      + '</b> · alignement <b>' + c.alignement + '/2</b>'
-      + ((c.lignesCompatibles || []).length
-          ? ' <span class="muted">(' + c.lignesCompatibles.join(' + ') + ')</span>' : '')
-      + '</div>';
-    if (g) {
-      h += '<div style="font-size:9px; color:' + (g.dansReseau ? '#4ade80' : '#f87171') + '; margin-bottom:6px;">'
-        + '↻ régénère <b>' + nom(g.resultante) + '</b> — ' + g.role
-        + (g.dansReseau ? ' · réseau, ' + g.pas + ' pas' : ' · HORS réseau') + '</div>';
-    }
-    // ÉTAPES 3 et 4 — chaque pôle mesuré aux sept critères, puis son réseau
-    h += '<div style="display:flex; gap:6px; font-size:8px; color:#64748b; '
-      + 'border-bottom:1px solid #334155; padding-bottom:2px;">'
-      + '<span style="min-width:76px;">pôle</span><span style="flex:1;">figure et maisons</span>'
-      + '<span style="min-width:52px; text-align:right;">profil</span>'
-      + '<span style="min-width:30px; text-align:right;">réseau</span>'
-      + '<span style="min-width:52px; text-align:right;">étape 4</span></div>';
-    h += lignePole(c.centrale);
-    c.poles.forEach(function (p) { h += lignePole(p); });
-    h += '<div style="margin-top:5px; font-size:11px; font-weight:700;">'
-      + c.solides + '/4 pôles solides'
-      + ' <span class="muted" style="font-weight:400; font-size:9.5px;">· ancrage total '
-      + c.ancrageTotal + '</span></div>';
-    // LA FRAPPE — ce que ce camp atteint chez l'autre
-    var portees = (c.frappes || []).filter(function (f) { return f && f.viseCamp; });
-    h += '<div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155;">'
-      + '<div style="font-size:9.5px; color:#fb7185; margin-bottom:2px;">⚔ ce que ce camp frappe en face — '
-      + '<b>' + c.frappesEffectives + ' portée' + (c.frappesEffectives > 1 ? 's' : '') + '</b>'
-      + ' <span class="muted">· somme ' + c.frappeSomme + '</span></div>'
-      + (portees.length
-          ? portees.map(function (f) {
-              return '<div style="font-size:8.5px; margin-left:6px; color:'
-                + (f.effective ? '#4ade80' : '#94a3b8') + ';">' + f.resume + '</div>';
-            }).join('')
-          : '<div style="font-size:8.5px; margin-left:6px; color:#64748b;">aucune frappe n\'atteint le camp adverse</div>')
-      + '</div>';
-    // ÉTAPE 5 — le réseau de l'assaillant direct
-    h += '<div style="margin-top:5px; padding-top:4px; border-top:1px solid #334155; font-size:9.5px;">'
-      + '<span class="muted">étape 5 · son assaillant direct</span> <b>' + nom(c.antagoniste) + '</b> — '
-      + pastille(c.solidesAdverse < 2, c.solidesAdverse + '/4 pôles solides')
-      + '</div></div>';
-    return h;
-  }
-
-  // ─── LE DÉCALAGE OBLIQUE (28/08/26) ───
-  // Il ne dépend que de l'écart entre les deux centrales, et il dit AVANT
-  // tout chiffre si les camps peuvent seulement se toucher.
-  // m.figR1 n'existe pas sur le chemin des cinq étapes — les figures
-  // viennent des réseaux. Et renderF4P4Panel n'a pas d'esc() local : le
-  // panneau levait « esc is not defined » et n'affichait plus RIEN.
-  // C'est le même défaut qu'en juillet, attrapé au test cette fois.
-  var esc = function (v) {
-    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  };
-  var dec = null;
-  try {
-    dec = decalageCampsV7(m.R1 ? m.R1.fig : null, m.R7 ? m.R7.fig : null);
-  } catch (e) { dec = null; }
-  var decHtml = '';
-  if (dec) {
-    var lignesDec = function (l, coul, qui) {
-      return l.length
-        ? '<div style="font-size:9px; color:' + coul + ';">' + qui + ' : '
-          + l.map(function (x) { return x.de + ' → ' + x.vers; }).join(' · ') + '</div>'
-        : '<div style="font-size:9px; color:#64748b;">' + qui + ' : aucune frappe n\'atteint le camp adverse</div>';
-    };
-    decHtml = '<div style="margin:6px 0 8px; padding:7px 9px; border-radius:8px; '
-      + 'background:rgba(96,165,250,.10); border:1px solid ' + (dec.memeBoucle ? '#475569' : '#2563eb') + ';">'
-      + '<div style="font-size:10.5px; font-weight:700; color:#93c5fd;">⚔ ' + esc(dec.resume) + '</div>'
-      + (dec.memeBoucle
-          ? '<div style="font-size:9px; color:#94a3b8; margin-top:3px;">'
-            + 'Les cinq rôles sont à des décalages pairs, la victime est à +3, impair : '
-            + 'deux camps de la même boucle ne peuvent pas se toucher. C\'est pourquoi '
-            + 'l\'étape 1 confie alors la décision aux antagonistes directs.</div>'
-          : lignesDec(dec.liaisonsR1, '#7dd3fc', 'R1') + lignesDec(dec.liaisonsR7, '#fdba74', 'R7'))
-      // ─── LE DRAPEAU « CAS DÉCISIF » (28/08/26) ───
-      // Quand le décalage et le verdict se contredisent, ce thème-là
-      // vaut plus que les autres : son résultat réel tranche une
-      // question ouverte. On le signale pour qu'il soit saisi.
-      // La comparaison se fait avec la lecture des sièges, qui est au
-      // volant : c'est le verdict affiché sur 93 % des thèmes, et elle
-      // coûte 0,03 ms là où recalculer tout le verdict en coûterait 47.
-      + (function () {
-          if (!dec.avantage) return '';
-          var sg = null;
-          try { sg = lectureSiegesR1R7(theme); } catch (e) { return ''; }
-          if (!sg || !sg.applicable || !sg.winner) return '';
-          if (sg.winner === dec.avantage) return '';
-          return '<div style="margin-top:5px; padding:4px 7px; border-radius:6px; '
-            + 'background:rgba(250,204,21,.14); border:1px solid #facc15; '
-            + 'font-size:9.5px; color:#fde68a;">'
-            + '⚑ <b>CAS DÉCISIF</b> — le décalage donne l\'avantage à ' + esc(dec.avantage)
-            + ' et les sièges annoncent ' + esc(sg.winner) + '. '
-            + (dec.avantage === 'R7'
-                ? 'Et l\'archive n\'a AUCUN cas où le décalage favorise R7 : '
-                  + 'ce match comblerait un angle mort. '
-                : '')
-            + 'Saisis son résultat, il tranchera.</div>';
-        })()
-      + '</div>';
-  }
-
-  // ─── LA CENTRALE ADVERSE DANS LE CAMP (28/08/26) ───
-  // Signalé à l'écran parce qu'aucun chiffre du panneau ne le montrait :
-  // en même boucle, l'un des deux chefs est TOUJOURS un rôle du camp de
-  // l'autre, et il compte parmi ses pôles.
-  let alerteContamination = '';
-  try {
-    const ct = contaminationCampsV7(m.figR1, m.figR7);
-    if (ct && ct.contamine) {
-      const solR7 = m.R1.poles.some(function (p) { return p.fig === m.figR7 && p.solide; });
-      const solR1 = m.R7.poles.some(function (p) { return p.fig === m.figR1 && p.solide; });
-      alerteContamination = '<div style="margin:6px 0 8px; border:1px solid #f59e0b; border-radius:9px; '
-        + 'padding:8px 10px; background:rgba(120,53,15,.18); font-size:11px; color:#fde68a;">'
-        + '<b>⚠ La centrale adverse siège dans le camp.</b> '
-        + (ct.roleR7DansR1 ? nom(m.figR7) + ' (R7) est le <b>' + ct.roleR7DansR1 + '</b> de R1'
-            + (solR7 ? ' — et il y est compté SOLIDE' : '') + '. ' : '')
-        + (ct.roleR1DansR7 ? nom(m.figR1) + ' (R1) est le <b>' + ct.roleR1DansR7 + '</b> de R7'
-            + (solR1 ? ' — et il y est compté SOLIDE' : '') + '. ' : '')
-        + ct.partages.length + '/5 rôles sont communs aux deux camps. '
-        + 'C\'est structurel : en même boucle c\'est TOUJOURS le cas (8 décalages pairs sur 8), '
-        + 'parce qu\'une boucle se coupe en deux quatuors de front disjoints — le binôme n\'est '
-        + 'jamais dans le quatuor de sa figure. Le banc mesure la lecture qui retire ce pôle '
-        + '(« F4P4 sans la centrale adverse ») : elle change 3,8 % des verdicts.'
-        + '</div>';
-    }
-  } catch (e) { alerteContamination = ''; }
-
-  panneau.innerHTML = '<h3 style="margin-bottom:2px;">🧭 Front 4 · Pôle 4</h3>'
-    + decHtml
-    + alerteContamination
-    + '<div class="muted" style="font-size:10px; margin-bottom:7px;">'
-    + 'La démarche en cinq étapes, dans l\'ordre. <b>profil</b> = les sept '
-    + 'critères d\'analyse à la meilleure position (seuil ' + F4P4_SEUIL_ANCRAGE_V7 + ') ; '
-    + '<b>réseau</b> = combien des quatre pôles de ce pôle-là sont eux-mêmes ancrés '
-    + '(étape 4, seuil ' + F4P4_SEUIL_RENFORT_V7 + ') ; un pôle n\'est <b>SOLIDE</b> '
-    + 'que s\'il tient les deux. Le 4e pôle est le front du front, et le binôme est '
-    + 'toujours le bouclier de ce front du front.</div>'
-    + '<div style="display:flex; gap:14px; flex-wrap:wrap;">'
-    + colonne('R1', m.R1) + colonne('R7', m.R7)
-    + '</div>'
-    + '<div style="margin-top:8px; font-size:11.5px; font-weight:700; color:#c4b5fd;">'
-    + 'Verdict F4P4 : ' + (m.avantage || 'nul') + '</div>'
-    + '<div class="muted" style="font-size:9.5px;">' + m.critere + '</div>'
-    + '<div class="hint" style="margin-top:6px; font-size:9px;">'
-    + 'Depuis le 27/08, F4P4 n\'est plus seul au volant : le VERDICT DU MATCH est '
-    + 'rendu par le <b>vote des huit moteurs</b>, et F4P4 ne départage qu\'en cas '
-    + 'd\'égalité (7 % des thèmes). Justesse rejouée sur le banc : <b>'
-    + (function () {
-        try { var j = justesseMoteurV7({ cle: 'f4p4', juste: 0, total: 0 }, 'camp');
-          return j.juste + '/' + j.total; } catch (e) { return '—'; }
-      })()
-    + '</b>. Les colonnes suivent les cinq étapes : la centrale à son siège et sa '
-    + 'boucle, les quatre pôles mesurés aux sept critères (profil), le réseau de '
-    + 'chaque pôle (étape 4, seuil ' + F4P4_SEUIL_RENFORT_V7 + '/4), ce que le camp '
-    + 'frappe en face, puis le réseau de l\'assaillant direct.</div>';
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
+// renderF4P4Panel supprimee (11/09/26) - panneau retire de l UI, plus aucun appelant.
 
 // renderDuelBouclierPanel supprimee (11/09/26) - code mort, plus aucun appelant.
 
@@ -29493,67 +28142,9 @@ function sousSeuilValiditeV7(theme) {
 // code est un chiffre qui ment dès le cas suivant. Il se calcule
 // maintenant sur l'archive, une fois, et se met à jour tout seul.
 var _CACHE_ACCORD_V7 = null;
-function bilanAccordV7() {
-  if (_CACHE_ACCORD_V7) return _CACHE_ACCORD_V7;
-  var vide = { accord: { juste: 0, sur: 0, taux: 0 }, desaccord: { juste: 0, sur: 0, taux: 0 }, p: 1 };
-  var cas = [];
-  try { cas = tousCasBancV7() || []; } catch (e) { return vide; }
-  var a = [0, 0], d = [0, 0];
-  // Le cache est posé AVANT la boucle : accordCampV7 est atteignable
-  // depuis getVerdictAfficheReel, et sans ça on repartirait en boucle.
-  _CACHE_ACCORD_V7 = vide;
-  cas.forEach(function (c) {
-    if (!c || !c.camp || c.camp === 'nul') return;
-    var t, f4 = null, cr = null;
-    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    try { var m = moteurF4P4V7(t); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    try { var q = moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); cr = q && q.camp ? q.camp : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-    if (!f4 || !cr) return;
-    // ⚠️ Ne PAS rejouer getVerdictAfficheReel ici. Mesuré au chronomètre,
-    // premier lancement / lancement suivant :
-    //     avant ce cache ................ 5 132 ms / 1 120 ms
-    //     cache avec la carte complète .. 6 063 ms / 1 379 ms
-    //     cache par la chaîne seule ..... 5 369 ms / 1 401 ms  ← retenu
-    // (Les 5 s du premier lancement existaient DÉJÀ : elles viennent des
-    // autres rejeux d'archive, pas d'ici. J'ai d'abord lu « 1,4 s → 6,1 s »
-    // en comparant le premier lancement au second du même build, ce qui
-    // ne compare rien. Ce cache-ci coûte ~240 ms.)
-    // Le camp affiché, quand le nul n'est pas imposé, c'est exactement ce
-    // que renvoie la chaîne de priorité : résultat identique (14/21 et
-    // 8/16) pour une fraction du coût.
-    var nulActif = false;
-    try {
-      nulActif = nulActifV7(t,
-        (typeof STRUCTURE_NUL_DECISIVE !== 'undefined' && STRUCTURE_NUL_DECISIVE) ? structureDuNul(t) : null,
-        (typeof AXE_SUCCEDENT_DECISIF !== 'undefined' && AXE_SUCCEDENT_DECISIF
-          && typeof signalAxeSuccedentOpposition === 'function') ? signalAxeSuccedentOpposition(t) : null);
-    } catch (e) { nulActif = false; }
-    var dit = 'nul';
-    if (!nulActif) { try { dit = overrideVerdictV7(t, false) || cr; } catch (e) { dit = cr; } }
-    var b = (f4 === cr) ? a : d;
-    b[dit === c.camp ? 0 : 1] += 1;
-  });
-  function pack(x) {
-    var n = x[0] + x[1];
-    return { juste: x[0], sur: n, taux: n ? Math.round(100 * x[0] / n) : 0 };
-  }
-  _CACHE_ACCORD_V7 = { accord: pack(a), desaccord: pack(d), p: fisherExactV7(a[0], a[1], d[0], d[1]) };
-  return _CACHE_ACCORD_V7;
-}
+// bilanAccordV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
-function accordCampV7(theme) {
-  var f4 = null, cr = null;
-  try { var m = moteurF4P4V7(theme); f4 = m && m.applicable && m.avantage ? m.avantage : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  try { var c = moteurCritereV7(theme, POIDS_SANS_CONC_ENV_V7); cr = c && c.camp ? c.camp : null; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  if (!f4 || !cr) return { lisible: false, f4p4: f4, criteres: cr };
-  var b = bilanAccordV7();
-  var cle = (f4 === cr) ? 'accord' : 'desaccord';
-  return { lisible: true, f4p4: f4, criteres: cr, accord: f4 === cr,
-    taux: b[cle].taux, juste: b[cle].juste, sur: b[cle].sur,
-    autreJuste: b[f4 === cr ? 'desaccord' : 'accord'].juste,
-    autreSur: b[f4 === cr ? 'desaccord' : 'accord'].sur,
-    p: b.p, mort: true };
-}
+// accordCampV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // ✦✦ LE MOTEUR V8 — LA REPRISE À ZÉRO (31/08/26) ✦✦
@@ -30975,32 +29566,12 @@ var TRAJECTOIRES_V7 = [
 // l'ordre des <script src> dans la page EST l'ordre d'origine, octet
 // pour octet — ne pas réordonner, ne pas ajouter defer/async/type=module.
 // ═══════════════════════════════════════════════════════════════
-function memeBoucleV8(theme) {
-  var r = null;
-  try { r = getRotationCombat(theme); } catch (e) { return null; }
-  if (!r || !r.figR1 || !r.figR7 || typeof loopOf !== 'function') return null;
-  var a = loopOf(r.figR1), b = loopOf(r.figR7);
-  if (!a || !b) return null;
-  return a === b;
-}
+// memeBoucleV8 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Le moteur. Il ne rend QUE le camp : le nul est décidé en amont par
 // nulActifV7, qui garde son dossier (8 nuls vus sur 12, 4 fausses
 // alertes sur 39 non-nuls) et que rien n'a battu.
-function moteurV8V7(theme) {
-  var mb = memeBoucleV8(theme);
-  var p = null;
-  try { p = partageSyntheseV7(theme); } catch (e) { p = null; }
-  if (ARCHI_V8 === 'deux' && mb === true) {
-    return { camp: 'R1', voie: 'même boucle — rien ne bat le témoin (15/25)',
-      memeBoucle: true, partage: p ? p.camp : null };
-  }
-  if (!p) return { camp: null, voie: 'partage de la synthèse indisponible', memeBoucle: mb, partage: null };
-  return { camp: p.camp, memeBoucle: mb, partage: p.camp,
-    voie: 'partage de la synthèse — M13/M14/M15 ' + p.e13 + '/' + p.e14 + '/' + p.e15
-      + (p.tousDifferents ? ' : trois différents → R1' : ' : au moins deux partagent → R7')
-      + (mb === true ? ' (même boucle : le partage n\'y rapporte rien de plus que « toujours R1 »)' : '') };
-}
+// moteurV8V7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // verdictStandardV7 (+ sa table DOSSIER_LIGNES_V7) supprimée (11/09/26)
 // — n'était appelée que par le panneau "VERDICT — LES DIX LIGNES" de la
@@ -31262,18 +29833,7 @@ function zonesTrajectoiresV7(theme) {
 
 var PILOTE_VERDICT_V7 = 'carre';   // 'carre' (sa demande) | 'v8'
 
-function moteurCarreV7(theme) {
-  var z = null;
-  try { z = zonesTrajectoiresV7(theme); } catch (e) { return null; }
-  if (!z || z.erreur) return null;
-  return {
-    camp: z.camp, voix: z.nbFortes1 - z.nbFortes7,
-    nbFortes1: z.nbFortes1, nbFortes7: z.nbFortes7,
-    total1: z.total1, total7: z.total7,
-    hR1: z.apex1, hR7: z.apex7, mode: z.mode,
-    voie: (z.mode === 'rotation' ? 'carré tourné' : 'carré en maisons fixes') + ' — ' + z.motif
-  };
-}
+// moteurCarreV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // M4/M10 BRANCHÉ EN TÊTE DU VERDICT (04/09/26, sa demande explicite :
@@ -31350,19 +29910,9 @@ var M4M10_PILOTE_VERDICT_V7 = true;   // false = retour au comportement d'avant
 // ['carre','v8'] et M4M10_PILOTE_VERDICT_V7 à false.
 var ORDRE_VERDICT_V7 = ['m4m10', 'v8', 'carre'];
 
-function moteurM4M10VerdictV7(theme) {
-  if (!M4M10_PILOTE_VERDICT_V7) return null;
-  var s = null;
-  try { s = signalM4M10BoucleV7(theme); } catch (e) { return null; }
-  if (!s || !s.applicable || !s.campSoutenu) return null;
-  return s.campSoutenu === 'M1' ? 'R1' : (s.campSoutenu === 'M7' ? 'R7' : null);
-}
+// moteurM4M10VerdictV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
-function overrideVerdictV7(theme, nulActif) {
-  if (nulActif) return null;
-  var d = decideurVerdictV7(theme, nulActif);
-  return d ? d.camp : null;
-}
+// overrideVerdictV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // LE DÉCIDEUR, ET SON NOM, AU MÊME ENDROIT (04/09/26)
@@ -31377,86 +29927,7 @@ function overrideVerdictV7(theme, nulActif) {
 // La cascade n'est donc plus écrite qu'ICI. overrideVerdictV7 en prend
 // le camp, l'affichage en prend le nom : les deux ne peuvent plus
 // diverger, parce qu'ils lisent le même objet.
-function decideurVerdictV7(theme, nulActif) {
-  if (nulActif) return { camp: null, moteur: 'nul', nom: 'Porte du nul — nul imposé' };
-  // ─── LE CONTRASTE D'OUVERTURE (05/09/26, doctrine d'Ellemine_D) ───
-  // « la maison influence la figure » : une figure ouverte vaut +0,349
-  // pour R1 en M1 et −0,262 en M7. Le contraste M1/M7 est le meilleur
-  // des quatre (rho +0,382, p = 0,0129, Bonferroni sur 4 : 0,0516) et il
-  // était PRÉDIT D'AVANCE. Comme règle il reste troisième (74,1 % contre
-  // 80,0 % pour V8), donc éteint par défaut — mais il gagne deux points
-  // quand le carré est en tête. Cf. DOCTRINE_MAISON_FIGURE_V7.
-  try {
-    if (BRANCHES_V7 && BRANCHES_V7.ouverture_camp && BRANCHES_V7.ouverture_camp.actif) {
-      var co = contrasteOuvertureV7(theme);
-      if (co && co.dit) return { camp: co.dit, moteur: 'ouverture',
-        nom: 'Contraste d\'ouverture M1/M7 — ' + co.lecture };
-    }
-  } catch (e) { }
-  var ordre = ORDRE_VERDICT_V7;
-  // ─── LE CARRÉ EN TÊTE (05/09/26, demande d'Ellemine_D) ───
-  // « oriente le verdict vers le carré ». L'audit du même jour avait
-  // montré que le carré ne tranchait JAMAIS : dernier de la cascade,
-  // M4/M10 ou V8 répondaient toujours avant lui. Le mettre en tête lui
-  // rend la décision — et coûte ce que ça coûte, écrit ici et à l'écran.
-  //
-  // MESURÉ SUR LES 57 CAS AU CAMP CONNU, avant de brancher :
-  //   ordre                      mode rotation   mode fixe
-  //   m4m10 > v8 > carre (avant)    38/57          38/57
-  //   CARRE > m4m10 > v8            26/57          30/57   ← branché
-  //   carre > v8 > m4m10            26/57          29/57
-  //   m4m10 > carre > v8            28/57          32/57
-  //   v8 > carre > m4m10            38/57          38/57  (carré muet)
-  //   carré seul                    25/57          29/57
-  // Le carré, quand il décide : 14/34 (41,2 %) en rotation, 16/32
-  // (50,0 %) en fixe. V8, qu'il remplace : 20/25 (80,0 %).
-  //
-  // LE PRIX EST DE HUIT POINTS en mode fixe (38 -> 30), DOUZE en mode
-  // rotation (38 -> 26). Le mode compte donc autant que l'ordre, et
-  // MODE_CARRE_V7 = 'fixe' est le meilleur des deux pour ce branchement.
-  // Aucun auto-retrait ici, contrairement aux branches du volume : ces
-  // branches-là s'étaient justifiées par un gain et devaient se retirer
-  // si le gain disparaissait. Celle-ci est un CHOIX pris contre la
-  // mesure, en connaissance de cause. Une règle qui se retirerait toute
-  // seule d'un choix assumé serait juste une façon de le refuser en
-  // douce. Le coût reste affiché en permanence à la place.
-  var brCarre = false;
-  try { brCarre = !!(BRANCHES_V7 && BRANCHES_V7.carre_pilote && BRANCHES_V7.carre_pilote.actif); }
-  catch (e) { brCarre = false; }
-  if (brCarre) {
-    try {
-      var oc = BRANCHES_V7.carre_pilote.ordre;
-      if (oc && oc.length) ordre = oc.slice();
-    } catch (e) { }
-  } else if (PILOTE_VERDICT_V7 === 'v8') {
-    // Ancien interrupteur conservé : 'v8' retire le carré de la cascade.
-    ordre = ordre.filter(function (n) { return n !== 'carre'; });
-  }
-  var mutisme = [];
-  for (var i = 0; i < ordre.length; i++) {
-    var camp = null, nom = null;
-    try {
-      if (ordre[i] === 'm4m10') {
-        camp = moteurM4M10VerdictV7(theme);
-        nom = 'Signal M4/M10 — les deux maisons défensives dans la boucle du camp soutenu';
-      } else if (ordre[i] === 'v8') {
-        var m8 = moteurV8V7(theme);
-        camp = m8 && m8.camp ? m8.camp : null;
-        nom = 'Moteur V8 — ' + ((m8 && m8.voie) || 'partage de la synthèse');
-      } else if (ordre[i] === 'carre') {
-        var mc = moteurCarreV7(theme);
-        camp = mc && mc.camp ? mc.camp : null;
-        nom = 'Carré géomantique — ' + ((mc && mc.voie) || 'trajectoires fortes');
-      }
-    } catch (e) { camp = null; }
-    if (camp) {
-      return { camp: camp, moteur: ordre[i],
-        nom: nom + (mutisme.length ? ' (après ' + mutisme.join(' et ') + ' muet' + (mutisme.length > 1 ? 's' : '') + ')' : '') };
-    }
-    mutisme.push(ordre[i] === 'm4m10' ? 'M4/M10' : ordre[i] === 'v8' ? 'V8' : 'carré');
-  }
-  return { camp: null, moteur: null, nom: 'aucun décideur' };
-}
+// decideurVerdictV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 function getVerdictAfficheReel(theme, favorite) {
   // SOURCE DU VERDICT AFFICHÉ : moteur Vainqueur séparé M1/R1 vs M7/R7.
@@ -31807,7 +30278,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // lecture d'identite/opposition des juges (nullReason) si la porte
   // n'est pas ouverte.
   var nulRaisonTxt = nulPorteTxt || nulCarcerTxt || nulSecondeTxt
-    || (nulActif ? 'Nul détecté (signal combiné, cf. niveauNulV7)' : nullReason);
+    || (nulActif ? 'Nul détecté (signal combiné)' : nullReason);
   html += '<div data-nul-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+nullColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
     + '<div style="font-size:12px; font-weight:900;">⚖️ NUL <span style="color:'+nullColor+'; font-size:15px;">'+(nulActif?'OUI':'NON')+'</span></div>'
     + '<div style="font-size:11px; color:#cbd5e1;">'+esc(nulRaisonTxt)+'</div>'
