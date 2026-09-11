@@ -27589,6 +27589,22 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
               : 'zone faible : ni cadent ni Puer succédent — 2 BTTS sur 7, donc non')
             : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — le fichier répond non par défaut')))
       : null,
+    // ─── QUEL CAMP NE MARQUE PAS (11/09/26, Ellemine_D : « ce qui reste à
+    // calibrer, le cas où le camp A ou B ne marque pas ») ───
+    // bttsAxesResidenceV7 calcule bloqueR1 et bloqueR7 SÉPARÉMENT — une voie
+    // offensive sans résidence concordante face à une défense adverse fermée
+    // et passive — puis les écrase aussitôt en « non = bloqueR1 || bloqueR7 ».
+    // L'information « lequel des deux reste muet » existait donc déjà et
+    // était jetée à chaque thème. Elle est nommée ici.
+    // Mesuré sur les 65 536 thèmes : R1 muet seul 1 352 (2,06 %), R7 muet
+    // seul 1 481 (2,26 %), les deux 81 (0,12 %), aucun 62 622 (95,55 %).
+    // Réservé à la carte de rotation : sur la carte M1/M7 les étiquettes ne
+    // désignent pas les mêmes maisons, la lecture n'y serait pas valable.
+    bttsCampMuet: (labelA === 'R1' && bttsAxes && bttsAxes.applicable)
+      ? (bttsAxes.bloqueR1 && bttsAxes.bloqueR7 ? 'les deux'
+        : bttsAxes.bloqueR1 ? 'R1'
+        : bttsAxes.bloqueR7 ? 'R7' : null)
+      : null,
     bttsBranche: bttsBranche,
     bttsSource: (bttsBranche === 'axes')
       ? ('axes de résidence — ' + ((bttsAxes && bttsAxes.synthese) || 'voies offensives contre verrous défensifs'))
@@ -30124,9 +30140,36 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var bttsPrincipalColor = bttsPrincipal === 'OUI' ? '#4ade80' : bttsPrincipal === 'NON' ? '#f87171' : '#fbbf24';
   var incidentPrincipal = card && card.penaltyRouge ? '⚠️ SIGNAL INCIDENT' : 'AUCUN SIGNAL';
   var incidentPrincipalCamp = card && card.incidentCamp ? ' · CONTRE ' + esc(card.incidentCamp) : '';
+  // ─── LE CAMP QUI NE MARQUE PAS (11/09/26, Ellemine_D) ───
+  // Le BTTS dit SI un camp reste à zéro ; il ne disait jamais LEQUEL. La
+  // lecture par axes le sait — elle calcule bloqueR1 et bloqueR7 séparément
+  // — et le jetait. Il est nommé ici.
+  // ⚠️ Quand le camp muet est celui que le moteur de camp donne VAINQUEUR,
+  // les deux lectures se contredisent : un vainqueur qui ne marque pas ne
+  // peut pas gagner. Mesuré sur les 65 536 thèmes, ça arrive sur 1 500 des
+  // 2 914 thèmes où un blocage est lu, soit 51 %. On ne tranche pas ici —
+  // le score n'est pas retouché — mais on ne le cache plus non plus.
+  var muetTxt = '', muetAlerte = '';
+  if (card && card.bttsCampMuet) {
+    var _mu = card.bttsCampMuet;
+    var _nom = function (c) {
+      return c === 'R1' ? (card.labelA || 'R1') : c === 'R7' ? (card.labelB || 'R7') : c;
+    };
+    muetTxt = _mu === 'les deux'
+      ? 'les DEUX camps sont lus muets'
+      : 'camp muet : <b>' + esc(_nom(_mu)) + '</b> (voie offensive sans résidence concordante, défense adverse fermée et passive)';
+    var _gagnant = card.winner;
+    if (_mu === 'les deux' || (_gagnant && _gagnant === _mu)) {
+      muetAlerte = 'Le camp lu muet est celui que le moteur de camp donne VAINQUEUR : '
+        + 'les deux lectures se contredisent. Le score affiché n\'applique pas le zéro — '
+        + 'il reste à calibrer laquelle des deux prime.';
+    }
+  }
   html += '<div data-btts-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+bttsPrincipalColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
     + '<div style="font-size:12px; font-weight:900;">⚽ BTTS <span style="color:'+bttsPrincipalColor+'; font-size:15px;">'+bttsPrincipal+'</span></div>'
     + '<div style="font-size:11px; color:#cbd5e1;">⚠️ Incidents : <b>'+incidentPrincipal+incidentPrincipalCamp+'</b></div>'
+    + (muetTxt ? '<div style="width:100%; text-align:center; font-size:11px; color:#fbbf24; margin-top:2px;">🚫 '+muetTxt+'</div>' : '')
+    + (muetAlerte ? '<div style="width:100%; text-align:center; font-size:10px; color:#f87171; margin-top:2px;">⚠️ '+muetAlerte+'</div>' : '')
     + (card && card.bttsSource ? '<div style="width:100%; text-align:center; font-size:9.5px; color:#94a3b8;">Source BTTS : '+esc(card.bttsSource)+'</div>' : '')
     + '</div>';
   // ─── 5e MOTEUR ISOLE : LE NUL (11/09/26, demande d'Ellemine_D) ───

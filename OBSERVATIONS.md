@@ -224,3 +224,53 @@ d'un match, seulement à ce que vous aviez écrit trois semaines plus tôt.
 
 **Bilan sur les 65 536 thèmes** : BTTS 0 changement, Nul 0, Camp 0,
 Incidents 186 thèmes (64 413 → 64 227).
+
+---
+
+## Le camp qui ne marque pas — 11/09/2026
+
+Ellemine_D : « Ce qui reste à calibrer, le cas où le camp A ou B ne marque pas. »
+
+Le BTTS disait **si** un camp reste à zéro. Il ne disait jamais **lequel**.
+
+Or `bttsAxesResidenceV7` calcule déjà `bloqueR1` et `bloqueR7` **séparément** — voie
+offensive sans résidence concordante face à une défense adverse fermée et passive —
+puis les écrase immédiatement en `non = bloqueR1 || bloqueR7`. L'information
+existait à chaque thème et était jetée.
+
+**Mesuré sur les 65 536 thèmes :**
+
+| | thèmes | |
+|---|---|---|
+| R1 muet seul | 1 352 | 2,06 % |
+| R7 muet seul | 1 481 | 2,26 % |
+| les deux muets | 81 | 0,12 % |
+| aucun | 62 622 | 95,55 % |
+
+Le camp muet est désormais **nommé sur la carte**.
+
+### La contradiction à calibrer
+
+Le score pose le zéro **sur le perdant, par défaut** :
+`if (winner==='A' && goalB>0) goalB=0;` — il ne demande jamais quel camp la lecture
+désigne.
+
+Sur les 2 914 thèmes où un blocage est lu, le camp muet est celui que le moteur de
+camp donne **vainqueur** dans **1 500 cas — 51 %**. Un vainqueur qui ne marque pas
+ne peut pas gagner : les deux lectures sont incompatibles une fois sur deux.
+
+Exemple : `populus/populus/albus/cauda_draconis` → « VAINQUEUR Équipe 1, score 1-0 »
+alors que la lecture dit R1 muet.
+
+**Je n'ai pas tranché.** Le score n'est pas retouché : choisir aujourd'hui laquelle
+des deux lectures prime reviendrait à inventer une règle sur un partage 51/49 sans
+la moindre donnée. La contradiction est affichée en clair sur la carte, avec la
+mention qu'elle reste à calibrer.
+
+Les deux options, pour mémoire :
+- **le blocage prime** — le zéro va au camp lu muet, et le camp verdict devient
+  douteux quand c'est le vainqueur (traitement analogue à l'indice de nul du 1N2) ;
+- **le camp prime** — le blocage ne sert qu'à dire qu'un zéro existe, jamais où.
+
+Seul le test prospectif peut départager : c'est exactement une question à
+pré-enregistrer avant les 150 matchs, pas après.
