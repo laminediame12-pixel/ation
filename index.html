@@ -341,7 +341,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
     <div id="heuresPlanetairesContent" class="history-list"></div>
   </div>
 </div>
-<div style="margin:8px 0;padding:7px 10px;border:1px solid #ef4444;border-radius:6px;color:#ef4444;font-size:11px;font-weight:700;">MODIFICATION AUTORISÉE : le camp est piloté par le MOTEUR 1N2 (canaux des maisons et des figures). INCIDENT, VOLUME et BTTS restent séparés.</div>
+<div style="margin:8px 0;padding:7px 10px;border:1px solid #ef4444;border-radius:6px;color:#ef4444;font-size:11px;font-weight:700;">MODIFICATION AUTORISÉE : le camp est piloté par le MOTEUR 1N2, procédé complet — Maison → Canal → Figure → Position → Filiation → Environnement → R1/R7. INCIDENT, VOLUME et BTTS restent séparés.</div>
 <div class="topbar-shell"><div class="topbar"><div class="topbar-title"><h1>Système géomantique</h1><div style="display:flex; gap:10px; align-items:center;"><button id="historyBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#7c3aed;" onclick="openSavedPanel()">💾 Thèmes sauvegardés</button><button id="toggleResultantsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleResultants()">🔄 Afficher résultantes</button><button id="importImageBtn" class="btn-primary" style="width:auto; padding:8px 14px; background:#0e7490;" onclick="document.getElementById('themeImageInput').click()">📷 Importer une image</button><input type="file" id="themeImageInput" accept="image/*" style="display:none" onchange="importerThemeDepuisImage(this)" /><button id="toggleTopbarBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleTopbarContent()">Masquer</button></div></div><div id="topbarContent" class="topbar-grid"><div class="topbar-panel"><h3>Match</h3><div class="row"><div class="field"><label>Date</label><input id="matchDate" type="date" onchange="updatePlaneteJourIndicator()" /></div><div class="field" id="kickoff-time-field"><label>Heure</label><input id="matchTime" type="time" /></div><div class="field" id="live-match-fields" style="display:none; gap:10px;"><div><label>Temps écoulé (minutes)</label><input id="matchElapsedMinutes" type="number" min="0" max="130" placeholder="ex: 45" /></div><div><label>Score actuel</label><input id="matchLiveScore" type="text" placeholder="ex: 1-0" /></div></div><div class="field"><label>Fuseau horaire du match (UTC)</label><select id="matchTimezone" onchange="updatePlaneteJourIndicator()"><option value="-12">UTC-12</option><option value="-11">UTC-11</option><option value="-10">UTC-10 (Hawaï)</option><option value="-9">UTC-9 (Alaska)</option><option value="-8">UTC-8 (Los Angeles)</option><option value="-7">UTC-7 (Denver)</option><option value="-6">UTC-6 (Mexico, Chicago)</option><option value="-5">UTC-5 (New York, Bogotá)</option><option value="-4">UTC-4 (Santiago)</option><option value="-3">UTC-3 (Buenos Aires, São Paulo)</option><option value="-2">UTC-2</option><option value="-1">UTC-1</option><option value="0" selected>UTC+0 (Dakar, Londres, Accra)</option><option value="1">UTC+1 (Paris, Lagos, Alger)</option><option value="2">UTC+2 (Le Caire, Johannesburg)</option><option value="3">UTC+3 (Moscou, Nairobi, Riyad)</option><option value="4">UTC+4 (Dubaï)</option><option value="5">UTC+5</option><option value="5.5">UTC+5:30 (Inde)</option><option value="6">UTC+6</option><option value="7">UTC+7 (Bangkok)</option><option value="8">UTC+8 (Pékin, Singapour)</option><option value="9">UTC+9 (Tokyo, Séoul)</option><option value="9.5">UTC+9:30 (Adélaïde)</option><option value="10">UTC+10 (Sydney)</option><option value="11">UTC+11</option><option value="12">UTC+12 (Auckland)</option><option value="13">UTC+13</option><option value="14">UTC+14</option></select></div><div class="field"><label>Équipe 1</label><input id="team1" value="Équipe 1" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value); updateEquipe1QuestionLabel(this.value);" /></div><div class="field"><label>Équipe 2</label><input id="team2" value="Équipe 2" list="team-suggestions" autocomplete="off" oninput="filterTeamSuggestions(this.value)" /></div><datalist id="team-suggestions"></datalist><div class="field"><label>Région / Pays</label><select id="competitionRegion" onchange="updateCompetitionList()"></select></div><div class="field"><label>Championnat</label><select id="competitionMode"></select></div><div class="field"><label>Lieu</label><input id="stadium" /></div><div class="field"><label>Code postal</label><input id="postalCode" /></div><div class="field"><label>Favori du match</label><select id="matchFavorite"><option value="none">Aucun favori net</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field"><label>Équipe à domicile</label><select id="matchDomicile"><option value="none">Terrain neutre / inconnu</option><option value="team1">Équipe 1</option><option value="team2">Équipe 2</option></select></div><div class="field"><label>Format du match</label><select id="matchFormat"><option value="reel">Football réel</option><option value="esport">e-sport / FiFa (arcade)</option></select><div class="muted" style="font-size:10px; margin-top:2px;">L'arcade marque 8,75 buts par match contre 2,84 pour le réel — l'échelle du score en dépend</div></div><div class="field" style="grid-column:1/-1;"><label>Questions à traiter <span style="color:#94a3b8; font-weight:normal;">(optionnel)</span></label><div id="userQuestionGroup" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;"><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="nul_ou_victoire" /> Nul ou victoire ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="penalty_ou_rouge" /> Il y aura-t-il penalty ou rouge ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="domicile_gagne" /> L'équipe à domicile va-t-elle gagner ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="premier_but" /> Qui va marquer en premier ?</label><label style="display:flex; align-items:center; gap:6px; font-weight:normal; font-size:13px;"><input type="checkbox" class="userQuestionCb" value="equipe1_gagne" /> <span id="q-equipe1-label">Équipe 1</span> va-t-il gagner ce match ?</label></div><div class="hint">Aucune sélection requise — coche uniquement les questions qui t'intéressent.</div><div style="margin-top:10px;"><label for="userQuestionText">Ta question <span style="color:#94a3b8; font-weight:normal;">(texte libre, optionnel)</span></label><textarea id="userQuestionText" rows="2" placeholder="Écris ici la question précise que tu veux poser au thème…" style="width:100%; margin-top:4px; resize:vertical;"></textarea></div></div></div></div><div class="topbar-panel"><h3>Tirage des mères</h3><div class="row"><div class="field"><label>Mode de tirage</label><select id="drawMode" onchange="toggleDrawMode()"><option value="manual">Manuel</option><option value="dice">4 dés</option><option value="live">Live (match en cours)</option></select></div></div><div class="topbar-mini" id="planeteJourIndicator" style="margin-top:6px; color:#a78bfa;">🪐 Planète gouvernante du tirage : calcul en cours...</div><button class="btn-secondary" style="width:auto; padding:6px 12px; margin-top:6px; font-size:12px;" onclick="openHeuresPlanetairesPanel()">🕐 Table des 24 heures planétaires</button><div id="manual-mothers" class="row" style="margin-top:10px;"><div class="field"><label>Mère 1</label><select id="m1"></select></div><div class="field"><label>Mère 2</label><select id="m2"></select></div><div class="field"><label>Mère 3</label><select id="m3"></select></div><div class="field"><label>Mère 4</label><select id="m4"></select></div></div><div id="dice-mothers" style="display:none; margin-top:10px;"><div class="row"><button class="btn-primary" onclick="rollAllMothersFromDice()">Tirer les 4 mères</button><button class="btn-secondary" onclick="rollUntilValidDraw()" style="font-size:16px;">بسم الله</button><button class="btn-secondary" onclick="rollUntilValid100Draw()" style="font-size:13px;" title="Tire jusqu'à un thème 3/3 : les 3 axes du thème, le binôme de M1, la figure du jour (les dérivés ne comptent plus depuis le 04/09). ⚠️ Le niveau n'est pas corrélé à la fiabilité du verdict — mesuré au banc sur 58 cas, les thèmes SOUS le seuil sont même un peu plus justes (69 % contre 64 %, p = 0,732). Voir le panneau Validité.">🎯 Thème 3/3</button></div><div id="dice-output" class="topbar-mini">Aucun tirage de dés pour le moment.</div></div><div style="margin-top:12px;"><h3>Actions</h3><div class="topbar-actions"><button class="btn-primary" onclick="launchTheme(false)">Lancer le thème</button><button class="btn-secondary" onclick="launchTheme(true)">Lancer aléatoire</button></div><div class="topbar-mini">Verdict fixe + verdict rotation + dualité des camps.</div></div><div style="margin-top:12px;"><h3>🔮 Consultation personnelle</h3><div class="row"><div class="field" style="grid-column:1/-1;"><label>Domaine de la question</label><select id="domainePerso"><option value="general">Vue générale (les 16 maisons)</option><optgroup label="Domaines de vie (I-XII)"><option value="1">I — La Vie (moi-même)</option><option value="2">II — La Richesse (argent)</option><option value="3">III — Les Frères (entourage)</option><option value="4">IV — Le Foyer (famille)</option><option value="5">V — Les Enfants</option><option value="6">VI — La Maladie (santé)</option><option value="7">VII — Le Mariage (union)</option><option value="8">VIII — La Mort (pertes)</option><option value="9">IX — La Religion (voyages)</option><option value="10">X — La Royauté (carrière)</option><option value="11">XI — Les Amis</option><option value="12">XII — Les Ennemis cachés</option></optgroup><optgroup label="Figures de synthèse (XIII-XVI)"><option value="13">XIII — Témoin de droite</option><option value="14">XIV — Témoin de gauche</option><option value="15">XV — Le Juge (verdict final)</option><option value="16">XVI — La Réconciliation</option></optgroup></select></div></div><div class="topbar-actions" style="margin-top:8px;"><button class="btn-secondary" onclick="lancerConsultationPersonnelle()">Interpréter avec les mères ci-dessus</button><button class="btn-secondary" id="toggleConsultationBtn" onclick="toggleConsultationOutput()" style="display:none;">👁️ Afficher l'interprétation</button></div><div class="topbar-mini">Utilise les mêmes 4 mères que le tirage, lues selon les 12 maisons classiques (indépendant du moteur football).</div></div></div></div></div></div>
 
 <div id="consultation-perso-output" style="display:none;"></div>
@@ -24330,38 +24330,60 @@ function nmVolumeMatrix(theme, nmResult){
 // de maison : concordance figure/canal, charge du canal, position dans le canal
 // et cohérence de la filiation qui produit la position.
 // ═══════════════════════════════════════════════════════════════
-// MOTEUR 1N2 — VAINQUEUR PAR LES CANAUX DES MAISONS ET DES FIGURES
-// Doctrine d'Ellemine_D, 11/09/26. Lecture en huit niveaux :
-//   Maison -> Canal -> Position -> Figure -> Concordance -> Charge
-//   -> Filiation -> Installation
-// puis comparaison LEXICOGRAPHIQUE de R1 contre R7 : le premier critère
-// réellement discriminant tranche. Aucun total de points n'est calculé
-// entre critères — la doctrine l'interdit explicitement pour la boucle,
-// et le principe est étendu à tous les niveaux.
+// MOTEUR 1N2 — PROCÉDÉ COMPLET
+//   MAISON → CANAL → FIGURE → POSITION → FILIATION → ENVIRONNEMENT → R1/R7
+// Procédé complet d'Ellemine_D, 11/09/26 (« Le 1N2 le procédé complet »).
+// §12, schéma final à mémoriser :
+//   MAISON → MILIEU ÉLÉMENTAIRE → CANAL → FIGURE → POSITION →
+//   FILIATION → ENVIRONNEMENT → R1 vs R7 → VERDICT
 //
-// ⚠️ UN SEUL POINT N'ÉTAIT PAS FIXÉ PAR LA DOCTRINE : la définition
-// structurelle de la charge. La doctrine dit « la charge active/passive
-// vient de la structure de la figure » sans dire laquelle. On applique la
-// règle DÉJÀ écrite dans ce fichier (cf. INDEX BINAIRE, ligne ~3150) :
-// « 1 point = OUVERT, 2 points = FERMÉ », lignes dans l'ordre feu/air/eau/terre.
-//   active  = ligne de FEU ouverte    (la figure initie)
-//   ouverte = ligne de TERRE ouverte  (la figure n'est pas scellée en bas)
-//   mobile  = feu et terre différents (la figure penche, donc elle bouge)
-//   charge  = nombre de lignes ouvertes (0 à 4) — c'est ce nombre qui départage
-// Si ce n'est pas la bonne lecture, c'est la SEULE table à corriger :
-// CHARGE_1N2_V7 ci-dessous. Rien d'autre n'en dépend.
+// §11 énumère le procédé de comparaison, et cette liste est FERMÉE :
+// QUATRE critères, dans cet ordre, comparés LEXICOGRAPHIQUEMENT — le
+// premier réellement discriminant tranche, jamais aucune somme entre eux :
+//   1. Concordance — « mesurer la compatibilité Figure × Maison »
+//   2. Charge      — « comparer la charge active/passive »
+//   3. Filiation   — « comparer la force structurelle des générations »
+//   4. Boucle      — « binôme, matérialisation, répétitions, ancrage,
+//                     résultantes propres et exposition antagoniste »
+// puis le verdict : « la résidence structurellement la plus forte domine ;
+// le cas de figures identiques revient au pôle NM rotatif validé ».
+//
+// CE QUE LE PROCÉDÉ INTERDIT, et qui a été retiré d'ici :
+// §6  « la position est structurelle et descriptive. Elle ne doit pas
+//      devenir un coefficient de victoire inventé arbitrairement. »
+// §12 « ... sans inventer de coefficient positionnel. »
+// La position est donc LUE et AFFICHÉE, jamais comparée. Le cinquième
+// critère « Installation locale » qui existait ici (déplacement jusqu'à la
+// maison de repos, concordance des maisons voisines, maison natale) était
+// précisément ce coefficient inventé : il ne figure dans aucune des douze
+// sections du procédé. Il est supprimé, lecture et comparaison.
+//
+// CHARGE — §1 tranche le seul point qui restait ouvert : « 2 points =
+// passif ; 1 point = actif », les quatre niveaux dans l'ordre fixe
+// Feu → Air → Eau → Terre. La charge active d'une figure est donc son
+// NOMBRE DE NIVEAUX À 1 POINT (0 à 4). C'est la même convention que
+// l'INDEX BINAIRE du fichier (ligne ~3150) : 1 point = ouvert.
+//
+// §8 (table des 16 figures : nature + niveaux) et §4 (élément de chaque
+// maison) ont été recollationnés contre MAP_GEO, ELEMENTS et
+// ELEMENT_OF_HOUSE : les trois tables du fichier sont conformes au
+// procédé, aucune n'a eu besoin d'être corrigée.
 // ═══════════════════════════════════════════════════════════════
 
-// Les quatre canaux, dans l'ordre de leurs quatre positions.
+// §3 — les quatre canaux élémentaires, dans l'ordre de leurs quatre
+// positions. « Le canal ne transforme jamais la nature intrinsèque de la
+// figure » : il ne fait que lui fournir son milieu.
 var CANAUX_1N2_V7 = {
   feu:   [1, 5, 9, 13],
   air:   [2, 6, 10, 14],
   eau:   [3, 7, 11, 15],
   terre: [4, 8, 12, 16]
 };
+// §6 — position de la figure dans le processus. Descriptive uniquement :
+// elle s'affiche, elle ne pondère rien.
 var POSITIONS_1N2_V7 = ['Origine', 'Transmission', 'Résultante', 'Synthèse'];
 
-// Les huit filiations binaires : [parent, parent, enfant].
+// §7 — les huit filiations binaires : [parent, parent, enfant].
 // M5-M8 sont des générations verticales issues des niveaux des quatre
 // mères : elles ne reçoivent aucun parent binaire dans cette lecture.
 var FILIATIONS_1N2_V7 = [
@@ -24390,15 +24412,17 @@ function CONCORDANCE_1N2_V7(elemFig, elemCanal) {
   return 0;                                                       // sans relation
 }
 
+// §1 : « 2 points = passif ; 1 point = actif », niveaux dans l'ordre
+// Feu → Air → Eau → Terre. La charge active est le nombre de niveaux actifs.
 function CHARGE_1N2_V7(fig) {
   var g = (typeof MAP_GEO !== 'undefined' && MAP_GEO[fig]) ? MAP_GEO[fig] : [2, 2, 2, 2];
-  var ouvert = function (i) { return g[i] === 1; };   // 1 point = ouvert
-  var ouvertes = g.filter(function (v) { return v === 1; }).length;
+  var actif = function (i) { return g[i] === 1; };   // 1 point = actif
+  var actifs = g.filter(function (v) { return v === 1; }).length;
   return {
-    active: ouvert(0),                 // ligne de feu
-    ouverte: ouvert(3),                // ligne de terre
-    mobile: ouvert(0) !== ouvert(3),   // la figure penche
-    valeur: ouvertes                   // 0..4, c'est elle qui départage
+    active: actif(0),                  // niveau de Feu — la figure initie
+    ouverte: actif(3),                 // niveau de Terre — pas scellée en bas
+    mobile: actif(0) !== actif(3),     // les deux bouts diffèrent : elle penche
+    valeur: actifs                     // 0..4 — c'est ce nombre qui départage
   };
 }
 
@@ -24411,13 +24435,13 @@ function lireCamp1N2V7(theme, maison) {
   var suite = CANAUX_1N2_V7[canal] || [];
   var idx = suite.indexOf(maison);
 
-  // ── niveau 4 : concordance figure x canal ──
+  // ── §5 — la résidence : concordance figure x milieu du canal ──
   var concordance = CONCORDANCE_1N2_V7(elemFig, canal);
 
-  // ── niveau 5 : charge ──
+  // ── §1 — la charge active de la figure ──
   var charge = CHARGE_1N2_V7(fig);
 
-  // ── niveau 6 : filiation ──
+  // ── §7 — la filiation : comment la figure est-elle produite ? ──
   // transmission = la figure du camp est parent d'une filiation dont
   // l'enfant porte cette même figure ou son binôme (elle se prolonge).
   // engendre = la maison du camp est elle-même l'enfant d'une filiation.
@@ -24431,7 +24455,9 @@ function lireCamp1N2V7(theme, maison) {
     }
   });
 
-  // ── niveau 7 : boucle structurelle ──
+  // ── §10 — l'environnement : ce qui entoure la figure ──
+  // binôme, antagoniste, cohabitation, résultante, répétition /
+  // matérialisation, ancrage, stabilité de boucle. Rien d'autre.
   var occurrences = [], resultantes = 0, antagonistes = 0;
   var ant = (typeof ANTAGONISTES !== 'undefined' && ANTAGONISTES[fig]) || null;
   for (var p = 1; p <= 16; p++) {
@@ -24451,19 +24477,12 @@ function lireCamp1N2V7(theme, maison) {
     return theme[h] === fig || (bin && theme[h] === bin);
   }).length;
 
-  // ── niveau 8 : installation locale ──
-  var deplacement = reposFig ? Math.abs(maison - reposFig) : 16;
-  var voisins = [((maison + 14) % 16) + 1, (maison % 16) + 1];
-  var environnement = voisins.reduce(function (s, h) {
-    var e = (typeof ELEMENTS !== 'undefined' && ELEMENTS[theme[h]]) || null;
-    var c = (typeof ELEMENT_OF_HOUSE !== 'undefined' && ELEMENT_OF_HOUSE[h]) || null;
-    return s + ((typeof concordanceElement === 'function' && e && c)
-      ? concordanceElement(e, c) : 0);
-  }, 0) / voisins.length;
+  // §10 — cohabitation : d'autres maisons du même canal portent-elles la
+  // figure ou son binôme ? Lue et affichée ; §11 ne l'inscrit pas dans la
+  // comparaison de boucle, elle n'y entre donc pas.
   var cohabitation = suite.filter(function (h) {
     return h !== maison && (theme[h] === fig || (bin && theme[h] === bin));
   }).length ? 1 : 0;
-  var maisonNatale = (reposFig === maison) ? 1 : 0;
 
   return {
     maison: maison, figure: fig, element: elemFig,
@@ -24474,13 +24493,10 @@ function lireCamp1N2V7(theme, maison) {
     boucle: {
       binomePresent: binomePresent, materialisation: materialisation,
       repetitions: occurrences.length, ancrageRepos: ancrageRepos,
-      resultantesPropres: resultantes, expositionAntagonistes: antagonistes
+      resultantesPropres: resultantes, expositionAntagonistes: antagonistes,
+      cohabitation: cohabitation
     },
-    installation: {
-      deplacement: deplacement, multiplicite: occurrences.length,
-      environnement: environnement, cohabitation: cohabitation,
-      activation: charge.active ? 1 : 0, maisonNatale: maisonNatale
-    }
+    maisonRepos: reposFig
   };
 }
 
@@ -24494,28 +24510,30 @@ function _lex1N2V7(a, b) {
   return { gagnant: null, rang: -1 };
 }
 
-// Les cinq niveaux de la doctrine, chacun une LISTE comparée dans l'ordre
-// exact qu'elle énonce — jamais une somme.
+// §11 — LE PROCÉDÉ DE COMPARAISON, liste fermée de quatre critères, chacun
+// une LISTE comparée dans l'ordre exact que le procédé énonce, jamais une
+// somme. Le premier critère réellement discriminant tranche ; les suivants
+// ne sont même pas consultés.
 function criteres1N2(r1, r7) {
   return [
+    // §11.5 — « Mesurer la compatibilité Figure × Maison. »
     { nom: 'Concordance', a: [r1.concordance], b: [r7.concordance] },
+    // §11.6 — « Comparer la charge active/passive. »
     { nom: 'Charge active', a: [r1.charge.valeur], b: [r7.charge.valeur] },
+    // §11.7 — « Comparer la force structurelle des générations. »
     { nom: 'Filiation',
       a: [r1.filiation.transmission, r1.filiation.engendre],
       b: [r7.filiation.transmission, r7.filiation.engendre] },
+    // §11.8 — « Comparer binôme, matérialisation, répétitions, ancrage,
+    // résultantes propres et exposition antagoniste. » Six termes, dans cet
+    // ordre ; l'exposition antagoniste est une tension, d'où le signe.
     { nom: 'Stabilité de boucle',
       a: [r1.boucle.binomePresent, r1.boucle.materialisation, r1.boucle.repetitions,
           r1.boucle.ancrageRepos, r1.boucle.resultantesPropres, -r1.boucle.expositionAntagonistes],
       b: [r7.boucle.binomePresent, r7.boucle.materialisation, r7.boucle.repetitions,
-          r7.boucle.ancrageRepos, r7.boucle.resultantesPropres, -r7.boucle.expositionAntagonistes] },
-    // La concordance ouvre aussi l'installation locale dans la doctrine, mais
-    // à ce stade elle a forcément déjà égalisé : on part du déplacement.
-    // Moins de déplacement = mieux ancré, d'où le signe.
-    { nom: 'Installation locale',
-      a: [-r1.installation.deplacement, r1.installation.multiplicite, r1.installation.environnement,
-          r1.installation.cohabitation, r1.installation.activation, r1.installation.maisonNatale],
-      b: [-r7.installation.deplacement, r7.installation.multiplicite, r7.installation.environnement,
-          r7.installation.cohabitation, r7.installation.activation, r7.installation.maisonNatale] }
+          r7.boucle.ancrageRepos, r7.boucle.resultantesPropres, -r7.boucle.expositionAntagonistes] }
+    // Il n'y a pas de cinquième critère. §11 s'arrête ici et passe au
+    // verdict ; §6 et §12 interdisent d'en inventer un de position.
   ];
 }
 
@@ -24565,7 +24583,8 @@ function moteur1N2V7(theme) {
   var r1 = lireCamp1N2V7(theme, rot.hR1);
   var r7 = lireCamp1N2V7(theme, rot.hR7);
 
-  // ─── RÈGLE DES FIGURES IDENTIQUES (11/09/26, Ellemine_D) ───
+  // ─── §11, VERDICT : « le cas de figures identiques revient au pôle NM
+  // rotatif validé » ───
   // « La concordance ne peut pas servir à départager deux occurrences de la
   // MÊME figure. Il passe donc au pôle NM rotatif. »
   // C'est cohérent de bout en bout : si R1 et R7 portent la même figure,
@@ -24645,7 +24664,7 @@ function moteur1N2V7(theme) {
     }
   }
 
-  // ── niveau 9 : ordre de décision, strictement lexicographique ──
+  // ── §11 — ordre de décision, strictement lexicographique ──
   var criteres = criteres1N2(r1, r7);
   var gagne = _cascade1N2V7(criteres);
   if (gagne) {
@@ -24661,10 +24680,12 @@ function moteur1N2V7(theme) {
       criteresMuets: gagne.muets
     };
   }
-  // Aucun des cinq niveaux ne discrimine (jamais observé sur les 65 536
-  // thèmes, garde-fou) : indice de nul, migration vers le moteur Nul. Le
-  // 1N2 doit tout de même nommer un camp — il prend le pôle NM, qui ne lit
-  // pas les camps mais les maisons, donc reste capable de trancher.
+  // Aucun des quatre critères du §11 ne discrimine : les deux résidences
+  // sont structurellement indiscernables. C'est le cas que le verdict du
+  // §11 renvoie « au pôle NM rotatif validé ». C'est aussi un indice de
+  // nul : le 1N2 le signale et interroge le moteur Nul, mais il nomme
+  // quand même un camp — le pôle NM ne lit pas les figures des camps mais
+  // le poids des maisons, il reste donc capable de trancher.
   var poidsG = function (h) {
     var f = theme[h];
     return (typeof NM_FIGURE_POIDS !== 'undefined' && NM_FIGURE_POIDS[f] != null) ? NM_FIGURE_POIDS[f] : 0;
@@ -24678,7 +24699,7 @@ function moteur1N2V7(theme) {
     rangInterne: -1,
     indiceNul: true, nulConfirme: confUltime.confirme, nulRaison: confUltime.raison,
     pole: { poleR1: pR1, poleR7: pR7, ecart: Math.abs(pR1 - pR7), seuil: 1.5 },
-    detail: 'Les cinq niveaux égalisent : R1 et R7 sont structurellement indiscernables '
+    detail: 'Les quatre critères du procédé égalisent : R1 et R7 sont structurellement indiscernables '
       + '→ indice de nul. Migration vers le moteur Nul : ' + confUltime.texte
       + ' Le 1N2 nomme ' + campUltime + ' par le pôle NM ('
       + pR1.toFixed(1) + ' contre ' + pR7.toFixed(1) + ').',
@@ -29837,32 +29858,62 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   (function () {
     var d = card && card.duel1N2;
     if (!d || !d.r1 || !d.r7) return;
-    var COUL = { feu: '#ef4444', air: '#eab308', eau: '#3b82f6', terre: '#a3a3a3' };
+    // Couleurs du procédé complet : Feu action/impulsion, Air circulation/
+    // relation, Eau réceptivité/mouvement, Terre ancrage/fixation.
+    var COUL = { feu: '#ef4444', air: '#eab308', eau: '#3b82f6', terre: '#22c55e' };
+    var SENS = { feu: 'action / impulsion', air: 'circulation / relation',
+                 eau: 'réceptivité / mouvement', terre: 'ancrage / fixation' };
+    var pastille = function (e, texte) {
+      var col = COUL[e] || '#94a3b8';
+      return '<b style="color:' + col + ';">' + esc(texte || e || '—') + '</b>';
+    };
+    // Les six termes de boucle du §11, dans l'ordre exact où ils sont comparés.
+    var boucleTxt = function (c) {
+      var b = c.boucle;
+      return 'binôme ' + b.binomePresent + ' · matér. ' + b.materialisation
+        + ' · répét. ' + b.repetitions + ' · ancrage ' + b.ancrageRepos
+        + ' · résult. ' + b.resultantesPropres + ' · antag. ' + b.expositionAntagonistes;
+    };
     var ligne = function (nom, c, gagne) {
-      var col = COUL[c.canal] || '#94a3b8';
-      return '<div style="flex:1; min-width:150px; padding:7px 9px; border-radius:8px; '
+      var niv = (typeof MAP_GEO !== 'undefined' && MAP_GEO[c.figure]) ? MAP_GEO[c.figure] : null;
+      return '<div style="flex:1; min-width:190px; padding:7px 9px; border-radius:8px; '
         + 'border:1px solid ' + (gagne ? '#4ade80' : '#334155') + '; background:rgba(2,8,23,.55);">'
         + '<div style="font-size:11px; font-weight:900; color:' + (gagne ? '#4ade80' : '#cbd5e1') + ';">'
         + nom + ' — M' + c.maison + ' · ' + label(c.figure) + (gagne ? ' ✔' : '') + '</div>'
-        + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px;">'
-        + 'figure <b>' + esc(c.element || '—') + '</b> dans canal <b style="color:' + col + ';">'
-        + esc(c.canal || '—') + '</b>'
-        + '<br>position <b>' + esc(c.position) + '</b> (' + c.rangCanal + '/4)'
-        + '<br>concordance <b style="font-size:12px;">' + c.concordance + '</b>'
-        + ' · charge <b>' + c.charge.valeur + '/4</b>'
+        + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px; line-height:1.5;">'
+        + 'maison M' + c.maison + ' → milieu ' + pastille(c.canal)
+        + ' · canal ' + pastille(c.canal, (c.canal || '—') + ' ' + ((CANAUX_1N2_V7[c.canal] || []).map(function (h) { return 'M' + h; }).join('·')))
+        + '<br>figure ' + pastille(c.element) + (niv ? ' · niveaux ' + niv.join('–') : '')
+        + '<br>position <b>' + esc(c.position) + '</b> (' + c.rangCanal + '/4) '
+        + '<i style="color:#64748b;">descriptive, non comptée</i>'
+        + '<br>filiation : transmet <b>' + c.filiation.transmission + '</b>'
+        + ' · engendrée <b>' + c.filiation.engendre + '</b>'
+        + '<br>environnement : ' + boucleTxt(c) + ' · cohab. ' + c.boucle.cohabitation
+        + '<br><span style="font-size:11.5px;">concordance <b>' + c.concordance + '</b>'
+        + ' · charge active <b>' + c.charge.valeur + '/4</b></span>'
         + '</div></div>';
     };
     html += '<div style="margin-top:10px; padding:9px 12px; border:1px solid #7c3aed; '
       + 'border-radius:10px; background:rgba(124,58,237,.08);">'
-      + '<div style="font-size:11.5px; font-weight:900; color:#c4b5fd; margin-bottom:6px;">'
-      + '🧭 LECTURE DES CANAUX — ' + esc(d.critere) + ' tranche</div>'
+      + '<div style="font-size:11.5px; font-weight:900; color:#c4b5fd; margin-bottom:2px;">'
+      + '🧭 PROCÉDÉ COMPLET 1N2 — ' + esc(d.critere) + ' tranche</div>'
+      + '<div style="font-size:9.5px; color:#a78bfa; margin-bottom:6px;">'
+      + 'MAISON → MILIEU ÉLÉMENTAIRE → CANAL → FIGURE → POSITION → FILIATION → ENVIRONNEMENT → R1 vs R7 → VERDICT</div>'
       + '<div style="display:flex; gap:8px; flex-wrap:wrap;">'
       + ligne('R1', d.r1, d.verdict === 'R1') + ligne('R7', d.r7, d.verdict === 'R7')
       + '</div>'
       + '<div style="font-size:10px; color:#cbd5e1; margin-top:6px;">' + esc(d.detail) + '</div>'
-      + '<div style="font-size:9px; color:#94a3b8; margin-top:3px;">'
-      + 'Canaux : Feu M1·M5·M9·M13 — Air M2·M6·M10·M14 — Eau M3·M7·M11·M15 — Terre M4·M8·M12·M16. '
-      + 'Concordance : même élément 1 · alliés 0,5 · contraires 0,25 · sans relation 0.</div>'
+      + '<div style="font-size:9px; color:#94a3b8; margin-top:4px; line-height:1.6;">'
+      + 'Canaux : ' + pastille('feu', 'Feu M1·M5·M9·M13') + ' ' + esc(SENS.feu)
+      + ' — ' + pastille('air', 'Air M2·M6·M10·M14') + ' ' + esc(SENS.air)
+      + ' — ' + pastille('eau', 'Eau M3·M7·M11·M15') + ' ' + esc(SENS.eau)
+      + ' — ' + pastille('terre', 'Terre M4·M8·M12·M16') + ' ' + esc(SENS.terre) + '.'
+      + '<br>Ordre de décision (§11, liste fermée) : <b>1. Concordance → 2. Charge → '
+      + '3. Filiation → 4. Boucle</b>, puis pôle NM rotatif si figures identiques. '
+      + 'Le premier critère discriminant tranche ; aucune somme entre critères.'
+      + '<br>Concordance : même élément 1 · alliés 0,5 · contraires 0,25 · sans relation 0. '
+      + 'Charge : 1 point = actif, 2 points = passif (niveaux Feu/Air/Eau/Terre). '
+      + 'Le canal ne transforme pas la figure : il lui donne son milieu.</div>'
       + '</div>';
   })();
   // CORRECTION AFFICHAGE BTTS (11/09/26) — le BTTS était calculé et présent dans
