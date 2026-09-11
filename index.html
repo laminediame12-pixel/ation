@@ -27149,20 +27149,34 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       if (theme[_mh] === 'puer') { bttsPuerSuc = true; break; }
     }
   } catch (e) { bttsPuerSuc = false; }
-  var btts;
+  // ─── LA BRANCHE QUI DECIDE EST RETENUE (11/09/26, Ellemine_D :
+  // « applique le système ») ───
+  // La cascade choisissait bien le BTTS, mais bttsSource et bttsZone
+  // etaient recalcules plus bas a partir du SEUL test « BTTS_CADENT_V7 &&
+  // bttsCadent !== null » — vrai sur presque tous les themes. La carte
+  // annoncait donc « maison de R1 + Conjunctio + Puer » meme quand ce
+  // n'etait pas cette lecture qui avait tranche. Mesure sur les 65 536
+  // themes : les axes decident 64 745 fois, la source affichait la lecture
+  // cadent 64 745 fois, et dans 45 990 cas cette lecture dit le CONTRAIRE
+  // du BTTS affiche. C'est la meme faute que l'ancienne banniere de
+  // verdict, qui nommait un moteur et en appliquait un autre.
+  // bttsBranche est desormais pose PAR la cascade, et c'est lui qui
+  // nomme la source. Le BTTS lui-meme ne change pas d'un theme.
+  var btts, bttsBranche;
   if (BTTS_AXES_DECISIF_V7 && bttsAxes && bttsAxes.applicable && bttsAxes.verdict !== null) {
-    btts = bttsAxes.verdict;
+    btts = bttsAxes.verdict; bttsBranche = 'axes';
   }
   else if (BTTS_CADENT_V7 && bttsCadent !== null) {
     if (!bttsConj) btts = false;
     else if (bttsCadent) btts = true;
     else btts = (BTTS_PUER_SUCCEDENT_V7 ? bttsPuerSuc : false);
+    bttsBranche = 'cadent';
   }
-  else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) btts = true;
-  else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) btts = false;
-  else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) btts = bttsChaine.lesDeuxMarquent;
-  else if (BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable) btts = bttsRotation.lesDeuxMarquent;
-  else btts = (goalA > 0 && goalB > 0);
+  else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.applique) { btts = true; bttsBranche = 'm4m10'; }
+  else if (BTTS_DOCTRINE_M4M10_DECISIVE && bttsDoctrine.defavorise) { btts = false; bttsBranche = 'm4m10'; }
+  else if (BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable) { btts = bttsChaine.lesDeuxMarquent; bttsBranche = 'chaine'; }
+  else if (BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable) { btts = bttsRotation.lesDeuxMarquent; bttsBranche = 'rotation'; }
+  else { btts = (goalA > 0 && goalB > 0); bttsBranche = 'score'; }
 
   // ─── LE SCORE OBÉIT AU BTTS (28/08/26) ───
   // Constat sur le cas Bologna d'Ellemine_D : la carte annonçait « 2-4 »
@@ -27422,7 +27436,10 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsDefavorise: bttsDoctrine.defavorise,
     bttsDefenseRotation: bttsDefenseRotation,
     bttsDefenseRotationLecture: bttsDefenseRotation ? ('défense après rotation ' + bttsDefenseRotation.indice + '/6 — ' + bttsDefenseRotation.lecture) : null,
-    bttsZone: (BTTS_CADENT_V7 && bttsCadent !== null)
+    // La zone cadent n'est affichée que si c'est ELLE qui a tranché :
+    // sinon elle décrivait une lecture qui n'avait pas voté, et la
+    // contredisait une fois sur deux.
+    bttsZone: (bttsBranche === 'cadent')
       ? (!bttsConj ? 'Conjunctio absent du thème — pas d\'échange, 9 cas sur 10'
         : (bttsCadent ? 'R1 cadent + Conjunctio présent — 8 cas sur 9'
           : (BTTS_PUER_SUCCEDENT_V7
@@ -27431,15 +27448,14 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
               : 'zone faible : ni cadent ni Puer succédent — 2 BTTS sur 7, donc non')
             : 'zone muette : Conjunctio est là mais R1 n\'est pas cadent — le fichier répond non par défaut')))
       : null,
-    bttsSource: (BTTS_CADENT_V7 && bttsCadent !== null)
-      ? 'maison de R1 + Conjunctio + Puer (26/32)'
-      : ((BTTS_DOCTRINE_M4M10_DECISIVE && (bttsDoctrine.applique || bttsDoctrine.defavorise))
-      ? 'doctrine M4/M10'
-      : ((BTTS_CHAINE_DECISIF && bttsChaine && bttsChaine.applicable)
-        ? 'chaîne du perdant'
-        : ((BTTS_ROTATION_DECISIF && bttsRotation && bttsRotation.applicable)
-          ? 'ouverture des sièges (rotation)'
-          : 'score brut'))),
+    bttsBranche: bttsBranche,
+    bttsSource: (bttsBranche === 'axes')
+      ? ('axes de résidence — ' + ((bttsAxes && bttsAxes.synthese) || 'voies offensives contre verrous défensifs'))
+      : (bttsBranche === 'cadent') ? 'maison de R1 + Conjunctio + Puer (26/32)'
+      : (bttsBranche === 'm4m10') ? 'doctrine M4/M10'
+      : (bttsBranche === 'chaine') ? 'chaîne du perdant'
+      : (bttsBranche === 'rotation') ? 'ouverture des sièges (rotation)'
+      : 'score brut',
     // La chaîne du perdant reste affichée en contre-lecture : c'est elle
     // qui décidait jusqu'au 29/08, et savoir quand elle diverge servira
     // le jour où la maison ratera.
