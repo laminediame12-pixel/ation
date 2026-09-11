@@ -35189,120 +35189,32 @@ function renderTheme(){
     // Ce calcul était dupliqué ici ; la copie a divergé le jour même où
     // les portes ont été branchées. Ne jamais la réécrire.
     const nulActifTop = nulActifV7(currentTheme, structureNulTop, nulAxeTop);
-    const protocoleWinner = protocoleR1R7.applicable && !nulActifTop
-      ? (protocoleR1R7.winner === 'R1' ? 'R1' : protocoleR1R7.winner === 'R7' ? 'R7' : null)
-      : null;
-    // ─── RÈGLE ELLEMINE (21/08/26) : RÉSEAU D'ANCRAGE = MOTEUR PRINCIPAL ───
-    // Demande explicite d'Ellemine_D : "je veux que le réseau d'ancrage
-    // soit le moteur principal du verdict qui affiche à l'écran."
-    // ⚠️ AVERTISSEMENT MAINTENU : le réseau d'ancrage v2 n'a été testé
-    // qu'une seule fois en conditions réelles à ce jour (n=1) au moment
-    // de ce branchement, contre 3/4 pour le protocole officiel. Les deux
-    // sont affichés — réseau d'ancrage en tête (décisif), protocole
-    // officiel juste en dessous à titre de comparaison/repli.
-    const reseauTop = analyserReseauAncrageV2(currentTheme);
-    const reseauWinnerTop = !nulActifTop && reseauTop.winner && reseauTop.winner !== 'Nul'
-      ? reseauTop.winner
-      : null;
-    // ─── RÈGLE ELLEMINE (24/08/26) : LECTURE DES SIÈGES = MOTEUR DÉCISIF ───
-    // Le Réseau d'ancrage cède la priorité à la lecture directe des deux
-    // sièges R1/R7 (cf. lectureSiegesR1R7). Motif : sur le cas réel 6-1,
-    // le réseau donnait R7 sur son score de résidence (8 contre 4,5) alors
-    // que les sièges annonçaient R1 avec « buts élevés · victoire A
-    // possible » contre « buts modérés · nul/bascule ». Le score de
-    // résidence mesure l'installation d'une figure, pas l'issue du match.
-    // Le réseau reste calculé et affiché juste en dessous, en comparaison,
-    // et sert de repli quand les deux sièges sont strictement équivalents
-    // (~10% des thèmes).
-    const siegesTop = lectureSiegesR1R7(currentTheme);
-    const siegesWinnerTop = !nulActifTop && siegesTop.applicable && siegesTop.winner
-      ? siegesTop.winner
-      : null;
-    // ─── RÈGLE ELLEMINE (24/08/26) : SOLIDITÉ DE CHAÎNE = MOTEUR DÉCISIF ───
-    // « branche la solidité de chaîne ». Elle passe devant la lecture des
-    // sièges, qui devient couche de confirmation.
-    // Bilan sur les cas réels connus : chaîne 3/3 sur le camp, dont une
-    // prédiction posée AVANT de connaître le résultat (Tristitia/Via/
-    // Conjonctio/Rubeus, annoncé R1, réel 7-0). Les sièges sont aussi 3/3.
-    // ⚠️ MESURE IMPORTANTE : sur 4000 thèmes tirés au hasard, chaîne et
-    // sièges donnent des vainqueurs DIFFÉRENTS dans 46% des cas. Les trois
-    // accords observés ne prouvent donc presque rien sur leur hiérarchie —
-    // le choix de priorité ci-dessous décide du verdict sur près d'un thème
-    // sur deux, et n'est PAS tranché par les données. Le désaccord est
-    // affiché explicitement sur la carte pour que les cas s'accumulent.
-    // ─── F4P4 EST LE MOTEUR PRINCIPAL (26/08/26, décision d'Ellemine_D,
-    // énoncée deux fois : « le moteur F4P4 sera désormais le moteur
-    // principal qui pilote le verdict principal, en remplaçant VERDICT DU
-    // MATCH — Solidité de chaîne R1/R7 ») ───
-    // La cascade d'avant ne descendait jamais : l'ancrage tranchait
-    // 1111 fois sur 1111. Elle est conservée en repli, mais F4P4 passe
-    // devant. L'ancrage reste calculé et affiché comme contre-lecture.
-    const ancrageTop = analyseAncrageDeveloppe(currentTheme);
-    const chaineWinnerTop = !nulActifTop && ancrageTop.applicable && ancrageTop.avantage
-      ? ancrageTop.avantage
-      : null;
-    let f4p4Top = null;
-    try { f4p4Top = moteurF4P4V7(currentTheme); } catch (e) { f4p4Top = null; }
-    const f4p4WinnerTop = !nulActifTop && f4p4Top && f4p4Top.applicable && f4p4Top.avantage
-      ? f4p4Top.avantage
-      : null;
-    // Le vote des moteurs est supprimé (01/09/26) — plus de votants.
-    // Repli « le réseau dit Nul et personne ne tranche » RETIRÉ le 29/08 :
-    // vérifié sur les 65 536 thèmes possibles, reseauF4P4V7 ne renvoie
-    // jamais winner === 'Nul'. C'était du code mort, et il faisait
-    // diverger l'écran du moteur pour rien.
+    // ─── NETTOYAGE (11/09/26, sur demande d'Ellemine_D) ───
+    // F4P4, solidité de chaîne, lecture des sièges, réseau d'ancrage et
+    // protocole de comparaison étaient calculés ici uniquement pour
+    // alimenter des champs carteR.* (chaineSynthese, siegesSynthese,
+    // f4p4Synthese, reseauSynthese, accord/désaccord…) lus par des
+    // panneaux de la carte ⭐ VERDICT FINAL qui ont été retirés de
+    // renderProtocoleVerdictPrincipal. Ces moteurs ne décidaient déjà pas
+    // du vainqueur affiché (seul overrideVerdictV7/moteurVainqueurPredictif
+    // le fait, cf. verdictFinal) : supprimer ce calcul mort ne change ni
+    // le vainqueur, ni le score, ni aucun des 5 moteurs isolés encore
+    // affichés. Les fonctions sous-jacentes (moteurF4P4V7,
+    // analyseAncrageDeveloppe, analyserReseauAncrageV2, lectureSiegesR1R7)
+    // restent définies : elles sont toujours utilisées ailleurs (banc,
+    // comparateur de moteurs, panneaux F4P4/moteurs séparés).
     const nulActifReseauTop = nulActifTop;
-    // Même ordre qu'en haut : les sièges d'abord (28/08/26).
-    // Même ordre qu'en haut : F4P4 d'abord (28/08/26).
-    // ─── LA MÊME CHAÎNE QUE LE MOTEUR (29/08/26) ───
-    // Cette ligne énumérait sa propre suite de replis, sans la lecture
-    // des critères ni le protocole : l'écran et le banc nommaient deux
-    // camps différents sur 23 % des thèmes. Voir overrideVerdictV7.
     const rWinnerOverride = overrideVerdictV7(currentTheme, nulActifTop);
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
-    carteR.chaineSynthese = ancrageTop.applicable ? ancrageTop.synthese : null;
-    carteR.chaineWinner = chaineWinnerTop;
-    carteR.chaineCritere = ancrageTop.applicable ? ancrageTop.critere : null;
-    carteR.siegesSynthese = siegesTop.applicable ? siegesTop.synthese : null;
-    carteR.siegesWinner = siegesWinnerTop;
-    carteR.accordSieges = !!(chaineWinnerTop && siegesWinnerTop && chaineWinnerTop === siegesWinnerTop);
-    carteR.desaccordSieges = !!(chaineWinnerTop && siegesWinnerTop && chaineWinnerTop !== siegesWinnerTop);
-    carteR.reseauWinnerCompare = reseauWinnerTop;
-    carteR.accordReseau = !!(rWinnerOverride && reseauWinnerTop && rWinnerOverride === reseauWinnerTop);
-    carteR.desaccordReseau = !!(rWinnerOverride && reseauWinnerTop && rWinnerOverride !== reseauWinnerTop);
-    carteR.f4p4Winner = f4p4WinnerTop;
-    carteR.f4p4Critere = f4p4Top && f4p4Top.applicable ? f4p4Top.critere : null;
-    carteR.f4p4Synthese = f4p4Top && f4p4Top.applicable ? f4p4Top.synthese : null;
-    carteR.accordF4P4Ancrage = !!(f4p4WinnerTop && chaineWinnerTop && f4p4WinnerTop === chaineWinnerTop);
-    carteR.desaccordF4P4Ancrage = !!(f4p4WinnerTop && chaineWinnerTop && f4p4WinnerTop !== chaineWinnerTop);
-    // ─── L'EN-TÊTE DIT MAINTENANT LA VÉRITÉ (01/09/26) ───
-    // Elle annonçait « Front 4 · Pôle 4 » ou « Vote des moteurs (repli) »
-    // alors que le camp venait de moteurV8V7 depuis la reprise à zéro.
-    // Le lecteur croyait donc lire le décideur ; il lisait un moteur qui
-    // ne décidait plus rien. C'est ce que voyait Ellemine_D.
-    // 03/09/26 : le carré est devenu le pilote (PILOTE_VERDICT_V7). La
-    // ligne nomme donc CELUI QUI A TRANCHÉ POUR DE BON — carré quand il
-    // parle, V8 quand le carré est muet — et jamais celui qui aurait pu.
-    // 04/09/26 : cette ligne refaisait la cascade dans son coin et
-    // rementait dès qu'on changeait l'ordre (elle a annoncé « Carré
-    // géomantique » alors que le carré était passé dernier recours et
-    // n'avait pas tranché). Elle demande maintenant son nom au décideur
-    // lui-même — voir decideurVerdictV7, seule écriture de la cascade.
+    // ─── L'EN-TÊTE DIT LE VRAI DÉCIDEUR (01/09/26) ───
+    // Voir decideurVerdictV7, seule écriture de la cascade qui tranche
+    // réellement le vainqueur affiché.
     var decideurTop = null;
     try { decideurTop = decideurVerdictV7(currentTheme, nulActifTop); } catch (e) { decideurTop = null; }
     carteR.sourceDecisive = decideurTop ? decideurTop.nom : 'aucun décideur';
-    carteR.reseauSynthese = reseauTop.synthese;
-    carteR.nulActifReseau = nulActifReseauTop;
-    carteR.protocoleWinnerCompare = protocoleWinner;
-    carteR.accordProtocole = !!(protocoleWinner && rWinnerOverride && protocoleWinner === rWinnerOverride);
-    carteR.desaccordProtocole = !!(protocoleWinner && rWinnerOverride && protocoleWinner !== rWinnerOverride);
     // MODE LIVE (03/09/26) — voir appliquerEtatLiveV7 : plancher de score au
     // score déjà connu + signal de cohérence, sans toucher au verdict.
     try { appliquerEtatLiveV7(carteR, currentTheme); } catch(e) { console.debug('[maintenance] erreur ignorée:', e); }
-    // SUPPRIMÉ (21/08/26, focalisation sur un seul moteur) : la bannière
-    // de contradiction contre jugementReseauR1R7 (Réseau d'ancrage V1,
-    // supprimé) faisait doublon avec accordProtocole/desaccordProtocole
-    // ci-dessus, déjà basé sur le Réseau d'ancrage V2 décisif.
 
     renderProtocoleVerdictPrincipal('carte-verdict-r', carteR, team1, team2, currentTheme, protocoleR1R7, structureNulTop, nulAxeTop, nulActifReseauTop);
     // ─── GARANTIE BTTS DANS ⭐ VERDICT FINAL (11/09/26) ───
