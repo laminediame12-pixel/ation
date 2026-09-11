@@ -34391,7 +34391,15 @@ function renderTheme(){
     } catch(e) { console.log('BTTS final display guard error', e); }
     // Contrôle de régression totalement isolé : une erreur dans ce panneau
     // ne doit jamais empêcher l'affichage du verdict principal.
-    try { renderRegressionReference(currentTheme); } catch(e) { console.log('regression reference error', e); }
+    // SUPPRIMÉ DE L'UI (11/09/26, demande d'Ellemine_D : « je ne veux plus
+    // les voir ») : renderRegressionReference, renderElementaireR1R7,
+    // renderMaisonInfluenceFigure, renderRolesExercesPanel,
+    // renderDeuxMarquentPanel, renderLieuxMarquagePanel,
+    // renderDuelBouclierPanel, renderF4P4Panel, renderMoteursPanel,
+    // renderBancPanel, renderAxesPanel — tous des panneaux d'observation
+    // (« lecture seule », « aucun effet sur le verdict ») affichés sous la
+    // carte verdict à chaque tirage. Leurs fonctions restent définies plus
+    // bas (inoffensif, jamais appelé) mais ne sont plus invoquées ici.
     // Garde-fou d'affichage : seule une carte réellement vide peut être reconstruite.
     // Le protocole R1/R7 porte l'UI principale et ne doit plus être remplacé par
     // l'ancienne carte renderCarteVerdict.
@@ -34419,32 +34427,10 @@ function renderTheme(){
           : carteR && carteR.winner === 'R7' ? 'M7'
           : (carteR && carteR.winner) || null },
       carteR, a.v7.htWinner);
-    // Couche élémentaire R1/R7 : diagnostic de concordance additionnel,
-    // ne remplace pas verdictFinal (couche de confirmation traçable).
-    // (La couche Sikidy évoquée ici auparavant a été retirée le 20/08/26,
-    // élagage demandé par Ellemine_D : code mort, jamais rendu à l'écran.)
-    try { renderElementaireR1R7(currentTheme); } catch(e) { console.log('elementaire R1/R7 error', e); }
-    try { renderMaisonInfluenceFigure(currentTheme); } catch(e) { console.log('maison→figure error', e); }
-    // Rôles exercés : lecture seule du côté ACTIF des quatre relations.
-    // Isolé comme les autres panneaux — une erreur ici ne doit jamais
-    // empêcher l'affichage du verdict.
-    try { renderRolesExercesPanel(currentTheme); } catch(e) { console.log('roles exerces error', e); }
-    // Piste « les deux marquent » : lecture seule, ne touche pas le BTTS affiché.
-    try { renderDeuxMarquentPanel(currentTheme); } catch(e) { console.log('deux marquent error', e); }
-    // Lieux de marquage : instrument d'observation, rien n'est branché.
-    try { renderLieuxMarquagePanel(currentTheme); } catch(e) { console.log('lieux marquage error', e); }
-    try { renderDuelBouclierPanel(currentTheme); } catch(e) { console.log('duel bouclier error', e); }
-    try { renderF4P4Panel(currentTheme); } catch(e) { console.log('f4p4 error', e); }
-    try { renderMoteursPanel(currentTheme); } catch(e) { console.log('moteurs error', e); }
-    // ⚠️ NE PAS DIFFÉRER CET APPEL SANS TRAITER justesseMoteurV7 (29/08/26).
-    // Essayé, mesuré, annulé : envelopper renderBancPanel dans un
-    // setTimeout ne gagne RIEN (1 415 ms → 1 385 ms, dans le bruit),
-    // parce que justesseMoteurV7 appelle bancMoteursV7() en synchrone
-    // pendant le rendu des moteurs et reconstruit le banc de toute façon.
-    // Le vrai coût est là, pas ici. Voir le journal des mesures plus bas.
-    try { renderBancPanel(); } catch(e) { console.log('banc error', e); }
-    // Les trois axes comme thèmes dérivés : observation, aucun effet sur le verdict.
-    try { renderAxesPanel(currentTheme); } catch(e) { console.log('axes panel error', e); }
+    // (renderElementaireR1R7 / renderMaisonInfluenceFigure / renderRolesExercesPanel /
+    // renderDeuxMarquentPanel / renderLieuxMarquagePanel / renderDuelBouclierPanel /
+    // renderF4P4Panel / renderMoteursPanel / renderBancPanel / renderAxesPanel :
+    // supprimés de l'UI, voir le commentaire plus haut.)
     const elR = document.getElementById('carte-verdict-r');
     if (elR) {
       elR.classList.remove('verdict-priority');
