@@ -13485,53 +13485,9 @@ function defenseTenueV7(theme) {
     ceQuiPorte: 'la fermeture et la passivité ; la fixité ne porte rien (p = 0,296)' };
 }
 
-// Rejoué sur TA base, pas sur les 48 du dépôt.
-function defenseTenueLiveV7() {
-  var CAS = [];
-  try { CAS = tousCasBancV7() || []; } catch (e) { return null; }
-  var pts = [];
-  CAS.forEach(function (c) {
-    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
-    if (!g || !c.meres) return;
-    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    var d = defenseTenueV7(t);
-    if (d) pts.push({ x: d.indice, y: +g[1] + +g[2] });
-  });
-  if (pts.length < 12) return null;
-  function rangs(v) {
-    var i2 = v.map(function (_, i) { return i; });
-    i2.sort(function (a, b) { return v[a] - v[b]; });
-    var r = new Array(v.length), i = 0;
-    while (i < i2.length) {
-      var j = i;
-      while (j + 1 < i2.length && v[i2[j + 1]] === v[i2[i]]) j++;
-      var m = (i + j) / 2 + 1;
-      for (var k = i; k <= j; k++) r[i2[k]] = m;
-      i = j + 1;
-    }
-    return r;
-  }
-  var xr = rangs(pts.map(function (p) { return p.x; }));
-  var yr = rangs(pts.map(function (p) { return p.y; }));
-  var n = pts.length, mx = 0, my = 0, i;
-  for (i = 0; i < n; i++) { mx += xr[i]; my += yr[i]; }
-  mx /= n; my /= n;
-  var num = 0, dx = 0, dy = 0;
-  for (i = 0; i < n; i++) {
-    var a = xr[i] - mx, b = yr[i] - my; num += a * b; dx += a * a; dy += b * b;
-  }
-  var rho = (dx > 0 && dy > 0) ? num / Math.sqrt(dx * dy) : 0;
-  var parNiveau = {};
-  pts.forEach(function (p) {
-    var o = parNiveau[p.x] || (parNiveau[p.x] = { n: 0, buts: 0 });
-    o.n++; o.buts += p.y;
-  });
-  Object.keys(parNiveau).forEach(function (k) {
-    parNiveau[k].moyenne = Math.round(100 * parNiveau[k].buts / parNiveau[k].n) / 100;
-  });
-  return { n: n, rho: Math.round(rho * 1000) / 1000, parNiveau: parNiveau,
-    gele: { n: 48, rho: -0.336, p: 0.0101 } };
-}
+// defenseTenueLiveV7 supprimée (11/09/26) — n'était appelée que par le
+// panneau "structure du thème" de la carte VERDICT FINAL, retiré.
+// defenseTenueV7 (juste au-dessus) reste utilisée ailleurs.
 
 // ═══════════════════════════════════════════════════════════════
 // L'AXE OFFENSIF 3-5-9-11 : CE QU'IL FAIT RÉELLEMENT (05/09/26)
@@ -21184,46 +21140,9 @@ function coherenceArchiveV7() {
   return { soucis: soucis, total: cas.length };
 }
 
-// ═══════════════════════════════════════════════════════════════
-// LE GEL DES PRÉDICTIONS (30/08/26) — le seul chantier qui reste
-//
-// Tout ce que ce fichier mesure est mesuré SUR L'ARCHIVE : on rejoue les
-// moteurs d'aujourd'hui sur des matchs dont les règles ont été taillées.
-// La porte du nul a été corrigée deux fois après des ratés de cette même
-// archive ; forcément qu'elle y fait 42/48. Ça décrit le passé sans se
-// contredire, ça ne prouve pas qu'on prédit.
-//
-// Le journal, lui, compare le verdict GELÉ avant le match au score saisi
-// après. Rien ne peut le flatter. Il est vide depuis le premier jour —
-// non pas parce que le mécanisme manque (saveManuel gèle déjà tout ce
-// qu'il faut) mais parce que RIEN NE LE RAPPELLE au moment où il
-// faudrait le faire, c'est-à-dire quand le thème vient de sortir.
-//
-// D'où ces deux fonctions et la bannière qu'elles alimentent : savoir si
-// le thème affiché est gelé, et savoir combien de prédictions gelées
-// attendent encore leur score. Aucune n'invente de mesure ; elles
-// rendent seulement visible le geste qui manque.
-function etatGelV7(theme, team1, team2) {
-  var out = { gelee: false, entry: null, enAttente: 0 };
-  if (!theme) return out;
-  var list = [];
-  try { list = getSavedList() || []; } catch (e) { return out; }
-  var fp = null;
-  try { fp = themeFingerprint(team1, team2, theme); } catch (e) { fp = null; }
-  list.forEach(function (e) {
-    if (!e) return;
-    if (e.verdict && !e.realScore) out.enAttente += 1;
-    if (!out.entry && fp) {
-      var f2 = null;
-      try { f2 = themeFingerprint(e.team1, e.team2, e.theme); } catch (x) { f2 = null; }
-      if (f2 && f2 === fp) { out.gelee = true; out.entry = e; }
-    }
-  });
-  return out;
-}
-
-// Les prédictions gelées qui n'ont pas encore de score : c'est là que le
-// journal se perd. Un thème enregistré et jamais complété ne compte pas.
+// etatGelV7 supprimée (11/09/26) — n'était appelée que par la bannière
+// "gel de prédiction" de la carte VERDICT FINAL, retirée. getSavedList/
+// themeFingerprint restent utilisées ailleurs (Thèmes sauvegardés).
 
 
 function journalPredictionsV7() {
@@ -23331,30 +23250,8 @@ function mesurePopulusLiveV7() {
   });
 }
 
-// Combien de cas le fichier a-t-il VRAIMENT sous la main, et combien
-// mes mesures gelées en ont vu. À afficher pour qu'on ne relise jamais
-// un chiffre en croyant qu'il porte sur tout.
-function porteeDesMesuresV7() {
-  var tous = 0, saisis = 0;
-  try { tous = tousCasBancV7().length; } catch (e) { }
-  try { saisis = casSauvegardesV7().length; } catch (e) { }
-  var avecScore = 0;
-  try {
-    tousCasBancV7().forEach(function (c) {
-      if (/^\d+-\d+$/.test(c.score || '')) avecScore++;
-    });
-  } catch (e) { }
-  return { casDisponibles: tous, dontSaisisParToi: saisis, avecScore: avecScore,
-    casVusParMesMesuresGelees: 56,
-    manque: Math.max(0, tous - 56),
-    seuilMaxT: 'à n = 56 le seuil du hasard vaut 0,498 ; à n = 100, 0,375 ; '
-      + 'à n = 150, 0,306. Le meilleur prédicteur observé vaut 0,390 — '
-      + 'donc au-delà de 100 cas il PASSE, et le balayage tranche seul.',
-    aFaire: tous >= 100
-      ? 'Tu as déjà de quoi trancher : refaire le balayage sur ces ' + tous
-        + ' cas, pas sur 56.'
-      : 'Il manque ' + (100 - tous) + ' cas pour que le balayage tranche seul.' };
-}
+// porteeDesMesuresV7 supprimée (11/09/26) — n'était appelée que par le
+// panneau "structure du thème" de la carte VERDICT FINAL, retiré.
 
 // ═══════════════════════════════════════════════════════════════
 // LE BALAYAGE MAX-T, PORTÉ DANS LE FICHIER (05/09/26)
@@ -24541,65 +24438,15 @@ function nulCarcerMiroirV7(theme) {
       : 'aucune paire miroir ne donne Carcer' };
 }
 
-// Les deux portes rejouées sur la base courante — mémoïsée, elle calcule
-// deux lectures par cas et le panneau l'appelle à chaque verdict.
-var _CACHE_PORTES_V7 = null;
-function comparerPortesNulV7() {
-  var CAS = [];
-  try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.camp && c.meres; }); }
-  catch (e) { return null; }
-  var _cle = CAS.length + '|';
-  try { _cle += (BRANCHES_V7.nul_seconde_porte && BRANCHES_V7.nul_seconde_porte.actif ? 1 : 0)
-    + (BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.actif ? 2 : 0); } catch (e) { }
-  if (_CACHE_PORTES_V7 && _CACHE_PORTES_V7.cle === _cle) return _CACHE_PORTES_V7.val;
-  if (typeof _MESURE_EN_COURS_V7 !== 'undefined' && _MESURE_EN_COURS_V7) return null;
-  var n = 0, nuls = 0;
-  var P = { j: 0, f: 0, r: 0 }, S = { j: 0, f: 0, r: 0 }, U = { j: 0, f: 0, r: 0 };
-  var CA = { j: 0, f: 0, r: 0 }, AC = { j: 0, f: 0, r: 0 };
-  CAS.forEach(function (c) {
-    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    var sp; try { sp = secondePorteNulV7(t); } catch (e) { return; }
-    if (!sp) return;
-    var vrai = c.camp === 'nul';
-    n++; if (vrai) nuls++;
-    var cm = null; try { cm = nulCarcerMiroirV7(t); } catch (e) { }
-    var p = sp.premierePorte, s = sp.secondePorte, ca = !!(cm && cm.oui);
-    var u = p || s;
-    // La chaîne RÉELLEMENT branchée, portes actives seulement.
-    var act = p;
-    try {
-      if (BRANCHES_V7.nul_seconde_porte && BRANCHES_V7.nul_seconde_porte.actif) act = act || s;
-      if (BRANCHES_V7.carcer_miroir && BRANCHES_V7.carcer_miroir.actif) act = act || ca;
-    } catch (e) { }
-    [[ca, CA], [act, AC]].forEach(function (x) {
-      if (x[0] && vrai) x[1].j++; else if (x[0] && !vrai) x[1].f++; else if (!x[0] && vrai) x[1].r++;
-    });
-    [[p, P], [s, S], [u, U]].forEach(function (x) {
-      if (x[0] && vrai) x[1].j++; else if (x[0] && !vrai) x[1].f++; else if (!x[0] && vrai) x[1].r++;
-    });
-  });
-  if (!n) { _CACHE_PORTES_V7 = { cle: _cle, val: null }; return null; }
-  var pct = function (o) { return Math.round(1000 * (n - o.f - o.r) / n) / 10; };
-  var val = { n: n, nuls: nuls, base: Math.round(1000 * nuls / n) / 10,
-    portes: { annonce: P.j + P.f, justes: P.j, faux: P.f, rates: P.r, justesse: pct(P) },
-    seconde: { annonce: S.j + S.f, justes: S.j, faux: S.f, rates: S.r, justesse: pct(S) },
-    union: { annonce: U.j + U.f, justes: U.j, faux: U.f, rates: U.r, justesse: pct(U) },
-    carcer: { annonce: CA.j + CA.f, justes: CA.j, faux: CA.f, rates: CA.r, justesse: pct(CA) },
-    branchee: { annonce: AC.j + AC.f, justes: AC.j, faux: AC.f, rates: AC.r, justesse: pct(AC) },
-    gainNuls: U.j - P.j, coutFaux: U.f - P.f, gainJustesse: pct(U) - pct(P),
-    gainBranche: AC.j - P.j, coutBranche: AC.f - P.f, justesseBranchee: pct(AC) - pct(P) };
-  _CACHE_PORTES_V7 = { cle: _cle, val: val };
-  return val;
-}
+// comparerPortesNulV7 supprimée (11/09/26) — n'était appelée que par le
+// panneau "seconde porte du nul" de la carte VERDICT FINAL, retiré.
+// secondePorteNulV7/nulCarcerMiroirV7 restent utilisées ailleurs ; la
+// logique décisive (nulActifV7/nulParPorteV7/nulDeuxPortesV7) est
+// inchangée.
 
-// L'alerte : la porte est ouverte mais R1 n'est pas en maison cadente.
-// Un nul sur deux dans cette situation (CarcAlbus 0-0 oui, PuerCaput
-// non). Le verdict n'est PAS suspendu — c'est un avertissement.
-function alerteNulV7(theme) {
-  var niv = null;
-  try { niv = niveauNulV7(theme); } catch (e) { return false; }
-  return !!(niv && niv.niveau === 'fort');
-}
+// alerteNulV7 supprimée (11/09/26) — n'était appelée que par la bannière
+// "ALERTE NUL" de la carte VERDICT FINAL, retirée. niveauNulV7 reste
+// utilisée ailleurs.
 
 // Taux de déclenchement exacts des sept signaux du faisceau, obtenus
 // par énumération des 65536 thèmes (05/09/26). Constantes du système.
@@ -29210,14 +29057,8 @@ function estimerCornersV7(theme, goalA, goalB, figR1, figR7, domA, domB) {
     baseDomination: { a: dA, b: dB } };
 }
 
-// Règle Ellemine (08/07/26) : chaque signal distinct de
-// detectIncidentChaotique = 1 carton jaune potentiel (même doctrine
-// que Rouge/Pénalty, comptée au lieu d'être aplatie en oui/non).
-function estimerCartonsJaunesV7(theme, campA, campB) {
-  var v2 = incidentV2Build(theme);
-  var inc = v2.hasSignal ? v2 : detectIncidentChaotique(theme, campA, campB);
-  return { count: inc.signals.length, signals: inc.signals };
-}
+// estimerCartonsJaunesV7 supprimée (11/09/26) — n'était appelée que par
+// verdictStandardV7 (le panneau "verdict en dix lignes", retiré aussi).
 
 // ─── RÈGLE ELLEMINE (20/08/26, corrigée) : BTTS 100% — configurations M4/M10 ───
 // Deux configurations doctrinales où "les deux équipes marquent" est
@@ -32441,129 +32282,9 @@ function moteurV8V7(theme) {
       + (mb === true ? ' (même boucle : le partage n\'y rapporte rien de plus que « toujours R1 »)' : '') };
 }
 
-// ═══════════════════════════════════════════════════════════════
-// ✦ LE VERDICT STANDARD — DIX LIGNES (31/08/26)
-//
-// Format demandé par Ellemine_D, mot pour mot : vainqueur · score exact ·
-// double chance · les deux marquent · mi-temps 1 buts · nombre de corners
-// · nombre de cartons jaunes · plus/moins de 2,5 buts · incidents ·
-// buts de la tête.
-//
-// CHAQUE LIGNE SORT AVEC SON DOSSIER. Une prédiction sans son taux est
-// une opinion déguisée en chiffre ; ici on ne peut plus lire l'une sans
-// l'autre. Mesuré sur l'archive au 31/08/26 :
-//     double chance ............ 42/51   82 %   ← la meilleure ligne
-//     incident ................. 6/8     75 %
-//     vainqueur ................ 35/51   69 %
-//     les deux marquent ........ 28/41   68 %
-//     plus de 2,5 buts ......... 23/43   53 %   ← à peine une pièce
-//     but en 1re mi-temps ...... 2/5     40 %
-//     score exact .............. 13/43   30 %
-//     corners (±3) ............. 0/1
-//     cartons jaunes ........... AUCUN CAS — le champ n'a jamais été saisi
-//     buts de la tête .......... 0 CAS — la ligne n'existait pas
-//
-// ⚠️ CE QUE CE TABLEAU DIT DE TRAVERS SI ON NE LE LIT PAS EN ENTIER : la
-// double chance n'est pas « meilleure » parce qu'elle voit mieux, elle
-// est meilleure parce qu'elle demande MOINS. Elle couvre deux issues sur
-// trois ; le hasard seul y ferait déjà 100 % − le taux de l'issue exclue,
-// soit environ 76 % avec la répartition de l'archive (23 R1, 16 R7,
-// 12 nuls). 82 % contre 76 % de base, ce n'est pas un exploit — c'est
-// un pari plus large, à cote plus basse.
-// Et « plus de 2,5 buts » à 53 % ne dit rien du tout.
-//
-// ☠️ BUTS DE LA TÊTE : cette ligne n'existait nulle part et l'archive
-// n'a AUCUN cas. La lecture proposée ci-dessous est de la doctrine pure,
-// jamais confrontée à un seul match — Caput Draconis, la TÊTE du dragon,
-// présente EN BASE (pas en résultante) dans une maison de but. C'est
-// cohérent avec le vocabulaire du système et ça ne vaut rien tant qu'un
-// résultat ne l'aura pas touchée. Elle est marquée « 0 cas » à l'écran
-// pour qu'on ne l'oublie pas.
-var DOSSIER_LIGNES_V7 = {
-  vainqueur:    { juste: 35, sur: 51 },
-  score:        { juste: 13, sur: 43 },
-  doubleChance: { juste: 42, sur: 51, note: 'pari plus large — le hasard y fait déjà ~76 %' },
-  btts:         { juste: 28, sur: 41 },
-  miTemps1:     { juste: 2,  sur: 5 },
-  corners:      { juste: 0,  sur: 1 },
-  cartons:      { juste: 0,  sur: 0 },
-  buts25:       { juste: 23, sur: 43, note: 'à peine une pièce' },
-  incident:     { juste: 6,  sur: 8 },
-  tete:         { juste: 0,  sur: 0, note: 'doctrine pure, jamais mesurée' }
-};
-
-function verdictStandardV7(theme, teamA, teamB) {
-  if (!theme || !theme[1]) return null;
-  var A = teamA || 'R1', B = teamB || 'R7';
-  var v = null;
-  try { v = getVerdictAfficheReel(theme); } catch (e) { return null; }
-  var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-  var p = String(v.scoreMain || '').match(/^(\d+)-(\d+)$/);
-  var g1 = p ? +p[1] : null, g7 = p ? +p[2] : null;
-  var r = null; try { r = getRotationCombat(theme); } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-
-  // 3 · double chance : on exclut l'issue que le verdict écarte le plus.
-  var dc = (dit === 'R7') ? 'X2' : '1X';
-  var dcTexte = (dc === '1X') ? ('1X — ' + A + ' ou nul') : ('X2 — nul ou ' + B);
-
-  // 5 · mi-temps 1 : y a-t-il but avant la pause ?
-  var mt1 = null, mt1Detail = '';
-  try {
-    var bm = butParMiTemps(theme);
-    var sp = bm && bm.premiereMiTemps ? String(bm.premiereMiTemps.score || '').match(/^(\d+)-(\d+)$/) : null;
-    if (sp) { mt1 = ((+sp[1]) + (+sp[2])) > 0; mt1Detail = bm.premiereMiTemps.score; }
-  } catch (e) { mt1 = null; }
-
-  // 6 · corners
-  var corners = null;
-  try {
-    if (r && g1 !== null) {
-      var ec = estimerCornersV7(theme, g1, g7, r.figR1, r.figR7, null, null);
-      if (ec && typeof ec.total === 'number') corners = ec.total;
-    }
-  } catch (e) { corners = null; }
-
-  // 7 · cartons jaunes
-  var cartons = null;
-  try {
-    if (r) {
-      var cj = estimerCartonsJaunesV7(theme, calculerButsCamp(r.figR1, theme), calculerButsCamp(r.figR7, theme));
-      if (cj && typeof cj.count === 'number') cartons = cj.count;
-    }
-  } catch (e) { cartons = null; }
-
-  // 9 · incidents — la somme d'axes (6/8) contre les dérivés, on dit les deux
-  var incS = null, incD = null, incRouge = 0;
-  try { var sa = sommesAxesIncidentV7(theme); if (sa) incS = sa.signal; } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  try { var dd = incidentDerivesV7(theme); if (dd) { incD = dd.moyenne >= 50; incRouge = dd.rouges; } } catch(e){ console.debug('[maintenance] erreur ignorée:', e); }
-  var incTexte;
-  if (incS === null && incD === null) incTexte = '—';
-  else if (incS && incD) incTexte = (incRouge > 0) ? 'penalty ET rouge' : 'penalty ou rouge';
-  else if (incS || incD) incTexte = 'possible — les deux lectures se contredisent';
-  else incTexte = 'aucun';
-
-  // 10 · buts de la tête — doctrine pure, 0 cas.
-  var tete = null, teteOu = [];
-  try {
-    for (var h = 1; h <= 12; h++) if (theme[h] === 'caput_draconis') teteOu.push(h);
-    tete = teteOu.length > 0;
-  } catch (e) { tete = null; }
-
-  return {
-    vainqueur:    { valeur: v.nulActif ? 'NUL' : (dit === 'R1' ? A : B), brut: dit },
-    score:        { valeur: v.scoreMain, alt: v.scoreAlt },
-    doubleChance: { valeur: dc, texte: dcTexte },
-    btts:         { valeur: v.btts === true ? 'OUI' : v.btts === false ? 'NON' : '—', brut: v.btts },
-    miTemps1:     { valeur: mt1 === null ? '—' : (mt1 ? 'OUI' : 'NON'), detail: mt1Detail },
-    corners:      { valeur: corners === null ? '—' : corners },
-    cartons:      { valeur: cartons === null ? '—' : cartons },
-    buts25:       { valeur: (g1 === null) ? '—' : ((g1 + g7) > 2.5 ? 'PLUS de 2,5' : 'MOINS de 2,5'),
-                    total: (g1 === null) ? null : (g1 + g7) },
-    incident:     { valeur: incTexte, sommes: incS, derives: incD, rouges: incRouge },
-    tete:         { valeur: tete === null ? '—' : (tete ? 'OUI' : 'non'),
-                    detail: teteOu.length ? ('Caput Draconis en base : M' + teteOu.join(', M')) : 'Caput Draconis absent des douze maisons' }
-  };
-}
+// verdictStandardV7 (+ sa table DOSSIER_LIGNES_V7) supprimée (11/09/26)
+// — n'était appelée que par le panneau "VERDICT — LES DIX LIGNES" de la
+// carte VERDICT FINAL, retiré.
 
 // ═══════════════════════════════════════════════════════════════
 // ✦ LE CAMP : UN SEUL DÉCIDEUR (01/09/26, rappel d'Ellemine_D)
