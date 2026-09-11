@@ -5021,81 +5021,14 @@ function signalRacineArriereGuerreCivile(theme) {
   };
 }
 
-// ═══════════════════════════════════════════════════════════════
-// RÉSEAU D'ANCRAGE R1/R7 (05/08/26, demande explicite Ellemine_D — moteur
-// bien plus riche que le Jugement des Deux Trônes, qui ne regardait
-// qu'une seule maison par camp). Principes intégrés :
-//   1. BOUCLE : R1/R7 dans la même boucle de binômes = GUERRE CIVILE
-//      (conflit interne à la même famille) ; boucles différentes =
-//      GUERRE INTER-BOUCLE (deux réseaux indépendants qui s'affrontent).
-//   2. TOUTES LES FIGURES COMPTENT : chaque figure de la chaîne (famille
-//      = 5 crans de binômes, ombre = leurs antagonistes correspondants)
-//      est cherchée dans TOUT le thème, en base ET en résultante.
-//   3. REPOS UNIFIÉ : une figure dans sa propre maison compte pareil que
-//      ce soit en base ou en résultante (doctrine confirmée 05/08/26).
-//   4. PROXIMITÉ : plus une position est proche (en distance circulaire
-//      sur les 16 maisons) du siège de R1/R7, plus elle pèse. Un
-//      antagoniste ou binôme lointain affecte beaucoup moins qu'un
-//      voisin immédiat.
-//   5. COHABITATION : les maisons où famille ET ombre se retrouvent
-//      ensemble sont relevées à part (zones de friction directe).
-// Statut : 📚 étude, prototype non encore validé sur l'archive. Barème
-// (100/20/proximité 1/0.7/0.4/0.15) choisi pour rester cohérent avec les
-// autres échelles du système, à ajuster si besoin. Aucun poids sur
-// verdictFinal pour l'instant.
-// ═══════════════════════════════════════════════════════════════
-function distanceMaisons(p, q) { const d = Math.abs(p - q); return Math.min(d, 16 - d); }
-function poidsProximiteMaison(d) { if (d === 0) return 1; if (d <= 2) return 0.7; if (d <= 5) return 0.4; return 0.15; }
-
-function reseauAncrageR1R7(chef, hSiege, theme, profondeur) {
-  profondeur = profondeur || 5;
-  const chaineChef = construireBoucleBinome(chef).slice(0, profondeur);
-  const chaineOmbre = chaineChef.map(function (f) { return ANTAGONISTES_V7[f]; });
-
-  function scorerChaine(chaine) {
-    let total = 0;
-    const detail = [];
-    chaine.forEach(function (fig) {
-      positionsBaseEtResultantes(fig, theme).forEach(function (posStr) {
-        const p = parseInt(posStr.replace('M', '').replace('r', ''));
-        const enRepos = (FIGS_V7[p - 1] === fig);
-        const concordance = enRepos ? 1 : concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[p]);
-        const dist = distanceMaisons(p, hSiege);
-        const proxi = poidsProximiteMaison(dist);
-        const base = enRepos ? 100 : 20 * concordance;
-        const score = base * proxi;
-        total += score;
-        detail.push({ fig: fig, position: p, enRepos: enRepos, concordance: concordance, distance: dist, proxi: proxi, score: Math.round(score * 100) / 100 });
-      });
-    });
-    return { total: Math.round(total * 100) / 100, detail: detail };
-  }
-
-  const famille = scorerChaine(chaineChef);
-  const ombre = scorerChaine(chaineOmbre);
-  const maisonsFamille = {}; famille.detail.forEach(function (d) { maisonsFamille[d.position] = true; });
-  const maisonsOmbre = {}; ombre.detail.forEach(function (d) { maisonsOmbre[d.position] = true; });
-  const cohabitations = Object.keys(maisonsFamille).filter(function (m) { return maisonsOmbre[m]; }).map(Number);
-
-  return { chaineChef: chaineChef, chaineOmbre: chaineOmbre, famille: famille, ombre: ombre, net: famille.total - ombre.total, cohabitations: cohabitations };
-}
-
-// ═══════════════════════════════════════════════════════════════
-// RÉSEAU D'ANCRAGE PAR AXE (04/09/26, demande Ellemine_D : « pour les
-// axes peux-tu en faire des ancrage ») — même moteur que
-// reseauAncrageR1R7 juste au-dessus (chaîne famille de binômes contre
-// chaîne ombre de leurs antagonistes, pondérée par proximité au siège),
-// mais appliqué à la figure de CHAQUE axe (Cardinal, Succédent, Cadent,
-// Partage — cf. AXES_VALIDITE_DEFS) plutôt qu'à un chef unique R1/R7.
-// ⚠️ DIFFÉRENCE OBLIGÉE : un axe n'a pas UNE maison de siège, il en a 4.
-// La distance à « la maison du chef » devient donc la distance à LA PLUS
-// PROCHE des 4 maisons de l'axe (distanceAxeMaisons) — tout le reste
-// (chaîne, score, proximité) est identique à reseauAncrageR1R7.
-// 📚 étude, prototype non encore testé sur l'archive. Aucun poids sur
-// le verdict.
-function distanceAxeMaisons(p, maisonsAxe) {
-  return Math.min.apply(null, maisonsAxe.map(function (h) { return distanceMaisons(p, h); }));
-}
+// ─── RÉSEAU D'ANCRAGE (05/08/26 → prototype v1) — SUPPRIMÉ (11/09/26) ───
+// distanceMaisons/poidsProximiteMaison/reseauAncrageR1R7/distanceAxeMaisons/
+// reseauAncrageAxeV7/reseauAncrageTousAxesV7 formaient un moteur "réseau
+// d'ancrage" jamais branché sur verdictFinal ("📚 étude, prototype non
+// encore validé" — commentaire d'origine) et affiché uniquement dans le
+// panneau "structure du thème" de la carte VERDICT FINAL, retiré sur
+// demande d'Ellemine_D. Le réseau d'ancrage V2 (analyserReseauAncrageV2)
+// est un moteur distinct et reste utilisé ailleurs (banc, comparateur).
 
 // ═══════════════════════════════════════════════════════════════
 // LES DEUX AXES QUI PORTENT UNE LOI (04/09/26) — Ellemine_D :
@@ -5393,44 +5326,8 @@ function gouverneursAxesV7(theme) {
   return g;
 }
 
-function reseauAncrageAxeV7(axeKey, theme, profondeur) {
-  profondeur = profondeur || 5;
-  var def = AXES_VALIDITE_DEFS.filter(function (a) { return a.key === axeKey; })[0];
-  if (!def) return null;
-  var maisonsAxe = def.houses;
-  var chef = combineMany(maisonsAxe.map(function (h) { return theme[h]; }));
-  var chaineChef = construireBoucleBinome(chef).slice(0, profondeur);
-  var chaineOmbre = chaineChef.map(function (f) { return ANTAGONISTES_V7[f]; });
-
-  function scorerChaine(chaine) {
-    var total = 0, detail = [];
-    chaine.forEach(function (fig) {
-      positionsBaseEtResultantes(fig, theme).forEach(function (posStr) {
-        var p = parseInt(posStr.replace('M', '').replace('r', ''), 10);
-        var enRepos = (FIGS_V7[p - 1] === fig);
-        var concordance = enRepos ? 1 : concordanceElement(ELEMENTS_V7[fig], MAISON_ELEM_V7[p]);
-        var dist = distanceAxeMaisons(p, maisonsAxe);
-        var proxi = poidsProximiteMaison(dist);
-        var base = enRepos ? 100 : 20 * concordance;
-        var score = base * proxi;
-        total += score;
-        detail.push({ fig: fig, position: p, enRepos: enRepos, concordance: concordance, distance: dist, proxi: proxi, score: Math.round(score * 100) / 100 });
-      });
-    });
-    return { total: Math.round(total * 100) / 100, detail: detail };
-  }
-
-  var famille = scorerChaine(chaineChef);
-  var ombre = scorerChaine(chaineOmbre);
-  return { axe: def.label, maisons: maisonsAxe, figure: chef,
-    chaineChef: chaineChef, chaineOmbre: chaineOmbre,
-    famille: famille, ombre: ombre, net: Math.round((famille.total - ombre.total) * 100) / 100 };
-}
-
-// Les 4 ancrages d'un coup, pour comparer les axes entre eux.
-function reseauAncrageTousAxesV7(theme, profondeur) {
-  return AXES_VALIDITE_DEFS.map(function (a) { return reseauAncrageAxeV7(a.key, theme, profondeur); });
-}
+// reseauAncrageAxeV7/reseauAncrageTousAxesV7 supprimées (11/09/26) — voir
+// la note "RÉSEAU D'ANCRAGE" plus haut dans ce fichier.
 
 // ═══════════════════════════════════════════════════════════════
 // PIÈGE CHEF+BINÔME (05/08/26, demande explicite Ellemine_D) — un camp
@@ -7222,19 +7119,8 @@ function pointContactV7(theme, i, j) {
     coherent: vMere === vFille };
 }
 
-// La soudure de l'axe des chefs. M1 et M7 partagent toujours un point ;
-// ce point est le seul endroit où les deux camps se touchent directement,
-// sans passer par une somme.
-function soudureChefsV7(theme) {
-  var a = pointContactV7(theme, 1, 3);   // M1 ligne 3 = M7 ligne 1
-  var b = pointContactV7(theme, 2, 4);   // M2 ligne 4 = M8 ligne 2
-  if (!a || !b) return null;
-  return { m1m7: a, m2m8: b,
-    lecture: 'la 3e ligne de M1 EST la 1re ligne de M7 : les deux chefs sont '
-      + 'soudés en un point. Ni M4/M10 ni M5/M11 n\'ont cette soudure — eux '
-      + 'portent une loi, ce qui est un lien d\'une autre nature.',
-    coherent: a.coherent && b.coherent };
-}
+// soudureChefsV7 supprimée (11/09/26) — n'était appelée que par le
+// panneau "structure du thème" de la carte VERDICT FINAL, retiré.
 
 autoTestV7('points de contact mère/fille', function () {
   if (typeof calcTheme !== 'function' || typeof FIGS_V7 === 'undefined') return;
@@ -9438,105 +9324,9 @@ function findFigureTargetByBinomeWitness(fig){return Object.keys(BINOMES).find(k
 // au contraire cette charge de renfort la rend-elle plus forte ? Pur
 // diagnostic pour l'instant — ne pèse sur AUCUN verdict, cf. renderStatsTab.
 
-// ═══════════════════════════════════════════════════════════════
-// LE CLASSEMENT DÉFENSIF DU MOTEUR (05/09/26) — table exacte
-// ═══════════════════════════════════════════════════════════════
-// Ellemine_D, de mémoire : « ce qui sont très bons pour la défense :
-// Albus, Carcer en M4 ». Et de fait, la maison de repos d'Albus EST M4,
-// celle de Carcer EST M10 — les deux maisons défensives. Restait à
-// savoir ce que le moteur, lui, en fait.
-//
-// Mesuré par ÉNUMÉRATION DES 65536 THÈMES : pour chaque figure et
-// chacune des deux maisons défensives, getVerdictAfficheReel a été
-// rejoué sur les 4096 thèmes concernés. Aucune incertitude
-// d'échantillonnage : ce sont les taux EXACTS du moteur, pas des
-// estimations, et aucun p n'aurait de sens ici.
-//
-// CE QUE ÇA MESURE, ET CE QUE ÇA NE MESURE PAS. C'est la croyance du
-// FICHIER, dérivée des tables de doctrine — pas une mesure sur des
-// matchs joués. Personne ne l'avait jamais calculée : le classement
-// défensif du moteur était invisible, y compris pour qui l'a écrit.
-//
-// Vérifié avant de publier : aucune règle n'écrit « Albus en M4 » ni
-// « Carcer en M10 » dans le chemin du verdict. La seule règle en dur,
-// carcer_m10, vit dans MOTEURS_CONDITIONNELS_V7, qui ne sert qu'au banc.
-// Les écarts ci-dessous sont donc ÉMERGENTS, pas programmés.
-//
-// Base sur les 65536 : buts 1,29 - BTTS 27,2 - incident 55,6 - nul 25,4
-//
-// CE QUE LA TABLE CONFIRME ET CE QU'ELLE CONTREDIT :
-//   . Albus — CONFIRMÉ, et au-delà. 1er en M4, 3e en M10, et c'est lui
-//     qui écrase le plus les incidents (40,0 en M10 contre 55,6 de
-//     base, le plus bas des deux tables). Albus défend partout, pas
-//     seulement dans sa maison de repos.
-//   . Carcer — CONTREDIT. 15e sur 16 en M4, 13e sur 16 en M10. Dans les
-//     deux maisons défensives il OUVRE le match, y compris chez lui.
-//     À trancher : soit la doctrine du fichier se trompe sur Carcer,
-//     soit le souvenir de terrain porte sur autre chose que ces deux
-//     maisons. Ne pas enterrer l'un pour sauver l'autre.
-//   . Populus en M10 — le vrai verrou, que personne n'avait nommé.
-//     BTTS 9,6 contre 27,2 : le plus gros écart des deux tables.
-var DEFENSE_M4_V7 = {
-  albus          : { buts: 1.15, btts: 20.4, incident: 52.3, nul: 26.0 },
-  cauda_draconis : { buts: 1.17, btts: 21.8, incident: 58.0, nul: 26.8 },
-  populus        : { buts: 1.20, btts: 22.0, incident: 58.3, nul: 24.0 },
-  puer           : { buts: 1.21, btts: 22.9, incident: 62.4, nul: 24.4 },
-  fortuna_major  : { buts: 1.24, btts: 26.0, incident: 51.5, nul: 27.9 },
-  tristitia      : { buts: 1.25, btts: 23.7, incident: 62.2, nul: 22.1 },
-  fortuna_minor  : { buts: 1.29, btts: 25.3, incident: 57.3, nul: 21.7 },
-  caput_draconis : { buts: 1.29, btts: 27.7, incident: 48.9, nul: 26.4 },
-  via            : { buts: 1.29, btts: 26.7, incident: 51.5, nul: 24.0 },
-  rubeus         : { buts: 1.30, btts: 27.6, incident: 62.9, nul: 25.6 },
-  acquisitio     : { buts: 1.31, btts: 29.5, incident: 56.0, nul: 28.3 },
-  puella         : { buts: 1.33, btts: 30.3, incident: 48.2, nul: 27.1 },
-  amissio        : { buts: 1.34, btts: 29.4, incident: 55.5, nul: 25.2 },
-  laetitia       : { buts: 1.38, btts: 31.2, incident: 54.3, nul: 24.8 },
-  carcer         : { buts: 1.41, btts: 31.8, incident: 59.3, nul: 22.9 },
-  conjunctio     : { buts: 1.49, btts: 39.1, incident: 51.4, nul: 29.1 },
-};
-var DEFENSE_M10_V7 = {
-  populus        : { buts: 0.90, btts: 9.6, incident: 56.7, nul: 28.7 },
-  fortuna_minor  : { buts: 1.11, btts: 20.5, incident: 68.2, nul: 29.7 },
-  albus          : { buts: 1.13, btts: 18.0, incident: 40.0, nul: 22.9 },
-  fortuna_major  : { buts: 1.14, btts: 18.6, incident: 52.5, nul: 23.2 },
-  tristitia      : { buts: 1.19, btts: 23.1, incident: 46.0, nul: 26.8 },
-  cauda_draconis : { buts: 1.26, btts: 26.2, incident: 61.6, nul: 27.0 },
-  rubeus         : { buts: 1.26, btts: 25.4, incident: 63.2, nul: 24.8 },
-  via            : { buts: 1.29, btts: 27.3, incident: 66.4, nul: 25.8 },
-  puer           : { buts: 1.29, btts: 30.7, incident: 65.5, nul: 32.4 },
-  laetitia       : { buts: 1.33, btts: 29.5, incident: 51.1, nul: 26.2 },
-  acquisitio     : { buts: 1.36, btts: 31.9, incident: 59.2, nul: 27.5 },
-  amissio        : { buts: 1.42, btts: 31.1, incident: 43.2, nul: 20.3 },
-  carcer         : { buts: 1.44, btts: 35.1, incident: 48.1, nul: 25.8 },
-  caput_draconis : { buts: 1.45, btts: 32.5, incident: 62.1, nul: 20.1 },
-  puella         : { buts: 1.52, btts: 36.9, incident: 51.8, nul: 22.3 },
-  conjunctio     : { buts: 1.55, btts: 39.1, incident: 54.3, nul: 22.9 },
-};
-
-// Lecture d'un thème contre la table : rang (1 = plus défensif) et
-// écart à la base, pour les deux maisons défensives.
-function lectureDefensiveV7(theme) {
-  if (!theme || !theme[4] || !theme[10]) return null;
-  var BASE = { buts: 1.29, btts: 27.2, incident: 55.6, nul: 25.4 };
-  function lire(table, fig) {
-    var rangs = Object.keys(table).sort(function (a, b) {
-      return table[a].buts - table[b].buts; });
-    var e = table[fig];
-    if (!e) return null;
-    return { figure: fig, rang: rangs.indexOf(fig) + 1, sur: rangs.length,
-      buts: e.buts, btts: e.btts, incident: e.incident, nul: e.nul,
-      ecartButs: Math.round((e.buts - BASE.buts) * 100) / 100,
-      ecartBtts: Math.round((e.btts - BASE.btts) * 10) / 10,
-      ecartIncident: Math.round((e.incident - BASE.incident) * 10) / 10 };
-  }
-  return { base: BASE, m4: lire(DEFENSE_M4_V7, theme[4]),
-    m10: lire(DEFENSE_M10_V7, theme[10]),
-    auRepos: { m4: theme[4] === 'albus', m10: theme[10] === 'carcer' },
-    // Contrainte exacte : les trois maisons de l'axe défensif ne
-    // peuvent JAMAIS être au repos ensemble. Si M4 et M10 le sont, la
-    // loi M4 + M10 = M3 force M3 à Puella, qui n'est pas chez elle.
-    m3Force: (theme[4] === 'albus' && theme[10] === 'carcer') ? 'puella' : null };
-}
+// lectureDefensiveV7 (et ses tables DEFENSE_M4_V7/DEFENSE_M10_V7)
+// supprimée (11/09/26) — n'était appelée que par le panneau "structure
+// du thème" de la carte VERDICT FINAL, retiré.
 
 // ── UNE SEULE LOI SUR 24 SURVIT AU REPOS SIMULTANÉ ──
 // Question posée le 05/09 : peut-on avoir les trois maisons d'une loi
@@ -9996,98 +9786,11 @@ var BRANCHES_V7 = {
       + 'Marquée active parce qu\'elle EST en vigueur — pas parce qu\'elle décide.' }
 };
 
-// Ce que le verdict annonce en plus depuis le branchement, en une ligne
-// lisible par le banc et par les annonces prospectives.
-function annonceVolumeV7(theme) {
-  var v = null;
-  try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(theme); }); }
-  catch (e) { return null; }
-  return v ? v.plus25 : null;
-}
+// annonceVolumeV7 supprimée (11/09/26) — jamais appelée nulle part.
 
-// ═══════════════════════════════════════════════════════════════
-// L'ÉLAGAGE DU PROTOCOLE R1/R7 (05/09/26) — question fermée avec
-// des chiffres, pas avec un avis
-// ═══════════════════════════════════════════════════════════════
-// Ellemine_D : « élagage plus protocole de comparaison R1 et R7 ».
-// Deux lectures, les deux faites.
-//
-// 1) LES DEUX BRANCHEMENTS ENSEMBLE — mesuré sur les 56 cas au camp
-//    connu, huit combinaisons :
-//      élagage aucun · protocole non ..... 38/56   <- l'état actuel
-//      élagage aucun · protocole OUI ..... 29/56   (−9)
-//      élagage >=2   · protocole non ..... 34/56   (−4)
-//      élagage >=2   · protocole OUI ..... 26/56   (−12)
-//      élagage >=3   · protocole OUI ..... 27/56   (−11)
-//      élagage >=4   · protocole OUI ..... 29/56   (−9)
-//    Ils ne se compensent pas, ils s'additionnent en mal.
-//
-// 2) L'ÉLAGAGE APPLIQUÉ AU PROTOCOLE LUI-MÊME. Sa formule somme six
-//    termes sur les huit figures de chaque boucle. Chaque terme testé
-//    seul, hors les 4 nuls réels (n = 25, choix binaire) :
-//      force     12/24   p = 1,0000        repos     9/17   p = 1,0000
-//      presence  10/23   p = 0,6776        binome    8/18   p = 0,8145
-//      propres    9/25   p = 0,2295        adverses 10/18   p = 0,8145
-//    AUCUN terme ne porte d'information sur le camp. Il n'y a rien à
-//    garder après élagage : la somme est vide parce que chaque part
-//    l'est.
-//
-// 3) LE DÉFAUT EXACT TROUVÉ EN CHEMIN. L'appareil des duels — seize
-//    paires, deux scores chacune, la moitié du code du protocole — est
-//    une MULTIPLICATION PAR TROIS de l'écart brut. Démontré : les 16
-//    duels couvrent les 16 figures une fois chacune, donc la somme des
-//    (scoreA − scoreB) vaut exactement (s1brut − s7brut), et l'écart
-//    final vaut 3 fois l'écart brut. Vérifié sur 4608 thèmes :
-//    4608/4608, sans une exception. Il n'ajoute aucune information,
-//    seulement une échelle.
-//
-// 4) L'ÉLAGAGE POUSSÉ AU BOUT — ne garder que les deux figures qui
-//    combattent, R1 contre R7, au lieu des huit de chaque boucle. Et
-//    là, un motif : ça marche exactement où le protocole actuel SE
-//    TAIT.
-//      boucles différentes (le protocole parle) ....... 10/23  (43 %)
-//      même boucle (le protocole est muet) ............ 14/19  (74 %)  p = 0,064
-//    Six tests menés ici, donc 0,064 ne démontre rien. Et surtout,
-//    branché comme override du verdict sur les thèmes à même boucle :
-//    38/56 -> 39/56, quatre gagnés (ConjCaput, RubCarcer, ConjCaput2,
-//    CaputCarcCaputPuer) contre trois perdus (Fiorentina, FortMajLaet,
-//    CarcCaput). +1 sur 56, c'est du bruit.
-//    Gardé en PISTE, pas branché : voir PISTES_V7.protocole_serre.
-//
-// CE QUE ÇA DIT DE LA DOCTRINE, et c'est le vrai résultat : le
-// protocole repose sur « la boucle la plus forte gagne ». Sur 56 cas,
-// cette idée ne tient pas — et pas parce qu'elle serait inversée
-// (12/25 tel quel, 13/25 inversé, p = 1,0000), parce qu'elle est
-// muette. Comparer deux AGRÉGATS de boucles conflue ce qui ne se
-// compare pas. Comparer deux FIGURES de la même boucle, en revanche,
-// donne le seul signe de vie de tout ce chantier.
-
-// Le protocole réduit aux deux figures qui combattent. Rendu disponible
-// pour que la piste reste testable, et parce qu'il parle sur les thèmes
-// où l'autre se tait — la moitié d'entre eux.
-function protocoleSerreV7(theme) {
-  if (!theme || !theme[1]) return null;
-  try {
-    var S = function (x) {
-      return x.forcePositions + (x.reposPresent ? 2 : 0)
-        + Math.min(x.tous.length, 3) * 0.5 + x.binPos.length * 0.5
-        + x.resultantesPropres * 0.75 - x.resultantesAdverses * 1.25; };
-    var rot = getRotationOrderFromRepos(theme[1]);
-    var r1 = theme[rot[0]], r7 = theme[rot[6]];
-    var s1 = S(analyseFigureBoucleR1R7(r1, theme));
-    var s7 = S(analyseFigureBoucleR1R7(r7, theme));
-    var meme = loopOf(r1) === loopOf(r7);
-    return { figR1: r1, figR7: r7, scoreR1: s1, scoreR7: s7, ecart: s1 - s7,
-      memeBoucle: meme,
-      dit: Math.abs(s1 - s7) < 1e-9 ? 'égalité' : (s1 > s7 ? 'R1' : 'R7'),
-      // Le domaine où il montre quelque chose est celui où le protocole
-      // large est muet. C'est l'inverse d'un hasard commode : c'est la
-      // seule chose de ce chantier qui ressemble à un signal.
-      domainePorteur: meme,
-      mesure: meme ? '14/19 (74 %) sur l\'archive, p = 0,064 sur six tests — non démontré'
-        : '10/23 (43 %) sur l\'archive — rien' };
-  } catch (e) { return null; }
-}
+// protocoleSerreV7 supprimée (11/09/26) — n'était appelée que par le
+// panneau "protocole de comparaison R1/R7" de la carte VERDICT FINAL,
+// retiré (elle n'a jamais été branchée sur le verdict : voir PISTES_V7).
 
 // ═══════════════════════════════════════════════════════════════
 // LE MIROIR M5 EST BRANCHÉ AU VERDICT (05/09/26)
@@ -10322,42 +10025,9 @@ function axeVolumeV7(theme) {
   } catch (e) { return null; }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// L'ACCORD DES DEUX LECTURES — CE QUI SORT VRAIMENT DE CES DEUX PISTES
-// ═══════════════════════════════════════════════════════════════
-//
-// L'axe et le miroir sont deux lectures INDÉPENDANTES du volume, et
-// elles se valent : dans la région où Populus se tait, 19/27 pour l'axe,
-// 18/27 pour le miroir, McNemar 5 contre 4 — un pile ou face entre les
-// deux. Aucune ne mérite de remplacer l'autre.
-//
-// MAIS LEUR ACCORD, LUI, DIT QUELQUE CHOSE. Sur ces 27 cas :
-//     ils s'accordent (18 cas) ................. 14/18 justes (78 %)
-//        et quand tous deux disent PLUS (5 cas) : 5/5 au-dessus de 2,5
-//        et quand tous deux disent MOINS (13)  : 9/13 justes
-//     ils se contredisent (9 cas) .............. 5 contre 4 — RIEN
-//
-// C'est ça, le résultat de ces deux pistes : pas une règle de plus, une
-// mesure de CONFIANCE. Quand les deux lectures se contredisent, le
-// système ne sait pas, et il vaut mieux qu'il le dise que qu'il devine.
-// Le verdict ne change pas — l'annonce reste celle de la chaîne — mais
-// le panneau prévient. Les 5/5 portent sur CINQ cas : c'est écrit gros
-// pour qu'on ne le lise pas comme une certitude.
-function accordVolumeV7(theme) {
-  if (!theme) return null;
-  var av = null, mv = null;
-  try { av = axeVolumeV7(theme); } catch (e) { }
-  try { mv = volumeMiroirV7(theme); } catch (e) { }
-  if (!av || !mv) return null;
-  var accord = av.valeur === mv.valeur;
-  return { axe: av.valeur, miroir: mv.valeur, accord: accord,
-    sens: accord ? (av.valeur ? 'plus' : 'moins') : null,
-    confiance: accord ? (av.valeur ? 'les deux lectures disent PLUS' : 'les deux disent MOINS')
-      : 'LES DEUX LECTURES SE CONTREDISENT',
-    mesure: accord ? '14/18 justes quand elles s\'accordent'
-      : '5 contre 4 quand elles se contredisent — pile ou face',
-    fiable: accord };
-}
+// accordVolumeV7 supprimée (11/09/26) — n'était appelée que par le
+// panneau "structure du thème" de la carte VERDICT FINAL, retiré.
+// axeVolumeV7/volumeMiroirV7 restent utilisées ailleurs.
 
 autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
   if (typeof calcTheme !== 'function') return;
@@ -10567,125 +10237,10 @@ autoTestV7('le contraste d\'ouverture des deux chefs', function () {
     throw new Error('le contraste doit parler quand les deux chefs diffèrent');
 });
 
-// ═══════════════════════════════════════════════════════════════
-// QUI PILOTE VRAIMENT LE VERDICT — audit du 05/09/26
-// ═══════════════════════════════════════════════════════════════
-//
-// Ellemine_D : « vérifie pour moi le verdict final, quel moteur le
-// pilote ». Chemin tracé dans le code PUIS recompté sur le banc, parce
-// que lire la cascade ne suffit pas : elle a déjà menti une fois.
-//
-// ─── LE CAMP — 57 cas au camp connu ───
-//   moteur                 décide      juste
-//   V8 ................... 25 (43,9 %)  20/25 = 80,0 %   ← le vrai pilote
-//   Porte du NUL ......... 22 (38,6 %)  11/22 = 50,0 %
-//   Signal M4/M10 ........ 10 (17,5 %)   7/10 = 70,0 %
-//   CARRÉ GÉOMANTIQUE .....  0 ( 0,0 %)      —
-//   total 38/57
-//
-// ⚠️ LE CARRÉ NE DÉCIDE JAMAIS. Pas « rarement » : JAMAIS. Vérifié sur
-// 4 096 thèmes variés, il n'a pas tranché une seule fois, parce que
-// M4/M10 ou V8 répondent toujours avant lui et qu'il est dernier de la
-// cascade ORDRE_VERDICT_V7 = ['m4m10','v8','carre']. C'est pourtant la
-// pièce la plus visible de l'écran — le carré, ses trajectoires, ses
-// trigones, son bandeau de sommes. Tout ça est de la LECTURE, pas de la
-// décision. Il faut le savoir avant de passer du temps à le régler.
-// Le troisième étage de la cascade est du code mort.
-//
-// ─── LE VOLUME — 49 cas au score connu ───
-//   règle                             décide      juste
-//   zéro Populus ................ 22 (44,9 %)  19/22 = 86,4 %
-//   axe offensif (2 sommes) ..... 14 (28,6 %)  10/14 = 71,4 %
-//   miroir M5 ................... 13 (26,5 %)   7/13 = 53,8 %
-//   LE MOTEUR LUI-MÊME ..........  0 ( 0,0 %)      —
-//   total 36/49
-// Le score du moteur ne sert plus JAMAIS à annoncer le volume : les
-// trois règles branchées couvrent 100 % des thèmes. Il ne sert plus qu'à
-// afficher le score et à nourrir la lecture directe du miroir.
-//
-// ─── LES TROIS PORTES DU NUL — sur les 22 nuls annoncés ───
-//   porte principale seule ..... 11
-//   porte CARCER seule .........  9   ← branchée le 05/09, déjà 41 %
-//   les deux ...................  2
-//
-// ⚠️ ET LE PRIX STRUCTUREL DE LA PORTE CARCER, qui ne se voyait pas sur
-// le banc : par énumération des 65 536 thèmes, le système annonçait le
-// nul sur 25,39 % des thèmes AVANT, il l'annonce sur 41,60 % APRÈS.
-// Il en annonce donc presque DEUX FOIS PLUS que le taux réel de nuls
-// dans l'archive (22,8 %). Sur les 57 cas le total ne bouge pas
-// (38/57), mais structurellement la porte a rendu le système beaucoup
-// plus bavard sur le nul. À savoir avant de miser dessus — et à
-// rappeler quand on relira le levier de 2,19x, qui a été mesuré sur ces
-// 22 annonces-là et pas sur un système qui en ferait moins.
-var PILOTAGE_V7 = {
-  cascadeCamp: ['m4m10', 'v8', 'carre'],
-  camp: { n: 57, total: '38/57',
-    v8: { decide: 25, pct: 43.9, juste: '20/25', taux: 80.0 },
-    nul: { decide: 22, pct: 38.6, juste: '11/22', taux: 50.0 },
-    m4m10: { decide: 10, pct: 17.5, juste: '7/10', taux: 70.0 },
-    carre: { decide: 0, pct: 0, note: 'JAMAIS — vérifié sur 4096 thèmes' } },
-  volume: { n: 49, total: '36/49',
-    populus: { decide: 22, pct: 44.9, juste: '19/22', taux: 86.4 },
-    axe: { decide: 14, pct: 28.6, juste: '10/14', taux: 71.4 },
-    miroir: { decide: 13, pct: 26.5, juste: '7/13', taux: 53.8 },
-    moteur: { decide: 0, pct: 0, note: 'le moteur n\'annonce plus jamais le volume' } },
-  portesDuNul: { principaleSeule: 11, carcerSeule: 9, lesDeux: 2, total: 22 },
-  tauxNulExhaustif: { sansCarcer: 25.39, avecCarcer: 41.60, reelArchive: 22.8,
-    note: 'la porte Carcer a fait passer le système de 25 % à 42 % de nuls annoncés sur '
-      + 'les 65 536 thèmes — presque le double du taux réel. Invisible sur le banc '
-      + '(38/57 avant comme après), bien visible en énumération.' },
-  leCarreEstMuet: 'le carré, ses trajectoires, ses trigones et son bandeau de sommes sont '
-    + 'de la LECTURE, pas de la décision. Le troisième étage de la cascade est du code mort.'
-};
-
-// Recompté sur la base courante — la cascade a déjà menti une fois,
-// elle ne doit plus pouvoir le refaire en silence.
-var _CACHE_PILOTE_V7 = null;
-function piloteVerdictLiveV7() {
-  var CAS = [];
-  try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.meres; }); }
-  catch (e) { return null; }
-  if (_CACHE_PILOTE_V7 && _CACHE_PILOTE_V7.cle === CAS.length) return _CACHE_PILOTE_V7.val;
-  if (_MESURE_EN_COURS_V7 || _GARDE_MIROIR_V7) return null;
-  return _sousMesureV7(function () {
-    var camp = {}, vol = {}, nC = 0, nV = 0;
-    var bump = function (o, k, ok) {
-      if (!o[k]) o[k] = { decide: 0, juste: 0 };
-      o[k].decide++; if (ok) o[k].juste++;
-    };
-    CAS.forEach(function (c) {
-      var t;
-      try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-      var v; try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); }); }
-      catch (e) { return; }
-      if (!v) return;
-      if (c.camp) {
-        nC++;
-        var na = v.nulActif;
-        var src = na ? 'porte du nul' : 'moteur inconnu';
-        if (!na) { try { var d = decideurVerdictV7(t, false); src = d && d.moteur ? d.moteur : 'carte seule'; }
-          catch (e) { } }
-        var dit = na ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-        bump(camp, src, dit === c.camp);
-      }
-      var g = /^(\d+)-(\d+)$/.exec(c.score || '');
-      if (g && v.plus25) {
-        nV++;
-        bump(vol, v.plus25.source, v.plus25.valeur === ((+g[1] + +g[2]) > 2.5));
-      }
-    });
-    var fin = function (o, n) {
-      Object.keys(o).forEach(function (k) {
-        o[k].pct = Math.round(1000 * o[k].decide / n) / 10;
-        o[k].taux = Math.round(1000 * o[k].juste / o[k].decide) / 10;
-      });
-      return o;
-    };
-    var val = { nCamp: nC, nVolume: nV, camp: fin(camp, nC), volume: fin(vol, nV) };
-    if (nC || nV) _CACHE_PILOTE_V7 = { cle: CAS.length, val: val };
-    return val;
-  });
-}
+// piloteVerdictLiveV7/PILOTAGE_V7 supprimées (11/09/26) — n'étaient
+// appelées que par le panneau "QUI PILOTE CE VERDICT" de la carte
+// VERDICT FINAL, retiré. decideurVerdictV7 reste la seule écriture de
+// la cascade et continue à alimenter card.sourceDecisive.
 
 // ═══════════════════════════════════════════════════════════════
 // CE QUE LE PANNEAU « SOMME DES 8 MAISONS » CACHAIT (05/09/26)
@@ -10953,129 +10508,9 @@ autoTestV7('les lois des deux témoins', function () {
   if (tm.distance % 2 !== 0) throw new Error('la distance entre témoins doit être paire');
 });
 
-// ═══════════════════════════════════════════════════════════════
-// LA FIABILITÉ DU VERDICT — testée le 05/09/26 sur l'hypothèse
-// d'Ellemine_D : « si un thème se contredit, la fiabilité est faible »
-// ═══════════════════════════════════════════════════════════════
-//
-// ─── L'HYPOTHÈSE EST FAUSSE SUR L'ARCHIVE, ET C'EST MESURÉ ───
-// Indice de contradiction construit en comptant, pour chaque thème, le
-// nombre de lectures indépendantes qui contredisent l'annonce :
-//   sur le VOLUME (5 voix : moteur, Populus, miroir, axe, défense)
-//     0 voix contre : 9/12  (75,0 %)     3 voix contre : 5/5 (100 %)
-//     1 voix contre : 13/19 (68,4 %)     4 voix contre : 1/1 (100 %)
-//     2 voix contre : 8/12  (66,7 %)
-//     rho = +0,080 · p = 0,594 — et le SIGNE est à l'envers
-//   sur le CAMP (4 voix : protocole, corners, boucles, protocole serré)
-//     rho = −0,142 · p = 0,297
-//   indice global (volume + camp) -> camp : rho −0,046 · p = 0,757
-//   indice global -> volume ............... rho +0,015 · p = 0,922
-// Un thème qui se contredit n'est PAS moins fiable. Compter les
-// désaccords ne mesure rien.
-//
-// ⚠️ ET LA MÊME MESURE DÉGONFLE MA PROPRE COUCHE DE LA VEILLE. L'accord
-// axe/miroir que j'avais branché comme « mesure de confiance » (14/18
-// quand elles s'accordent contre 5-4 sinon) donne Fisher p = 0,3748 sur
-// ses 27 cas. Ce n'est pas significatif non plus. Elle appartient à la
-// même classe que l'hypothèse d'Ellemine_D — direction plausible, preuve
-// mince — et elle ne mérite pas d'être traitée autrement parce que c'est
-// moi qui l'ai écrite. Elle reste affichée, avec ce p à côté.
-//
-// ─── CE QUI EST VRAI, ET QUI EST LE VRAI INDICATEUR ───
-// Ce n'est pas la contradiction, c'est CE QUE LE VERDICT ANNONCE. Et il
-// faut lire le LEVIER SUR LA BASE, pas le pourcentage brut : un taux de
-// 50 % sur un événement qui arrive 22,8 % du temps vaut mieux qu'un taux
-// de 78 % sur un événement qui arrive 42 % du temps.
-//
-//   CAMP (57 cas)        juste      base     levier
-//     dit R1 .......  14/18 77,8 %  42,1 %   1,85x   (+35,7 pts)
-//     dit R7 .......  13/17 76,5 %  35,1 %   2,18x   (+41,4 pts)
-//     dit NUL ......  11/22 50,0 %  22,8 %   2,19x   (+27,2 pts)
-//   VOLUME (49 cas)
-//     dit PLUS .....  22/25 88,0 %  65,3 %   1,35x   (+22,7 pts)
-//     dit MOINS ....  14/24 58,3 %  34,7 %   1,68x   (+23,6 pts)
-//
-// LE RENVERSEMENT : les deux annonces qui SEMBLENT les plus faibles —
-// le nul à 50 % et le « moins de 2,5 » à 58 % — sont en fait celles qui
-// apportent LE PLUS d'information. Le nul à 50 % est à 2,19x sa base,
-// autant que R7 et mieux que R1. Le « plus de 2,5 » à 88 % n'est qu'à
-// 1,35x, parce que 65 % des matchs de l'archive passent 2,5 buts de
-// toute façon. Juger une annonce à son pourcentage brut, c'est confondre
-// la fréquence de l'événement avec la valeur de l'annonce.
-// Fisher : camp nul contre camp gagnant p = 0,0460 ; volume plus contre
-// moins p = 0,0009 — les DEUX écarts bruts sont réels, et les DEUX
-// disparaissent une fois la base retirée. C'est le point.
-var FIABILITE_VERDICT_V7 = {
-  hypothese: 'Ellemine_D, 05/09 : « si un thème se contredit, la fiabilité du verdict est faible »',
-  verdict: 'FAUSSE sur l\'archive — compter les désaccords ne prédit rien',
-  mesures: { volume: { rho: 0.080, p: 0.594 }, camp: { rho: -0.142, p: 0.297 },
-    global: { versCamp: { rho: -0.046, p: 0.757 }, versVolume: { rho: 0.015, p: 0.922 } } },
-  maProprCouche: 'l\'accord axe/miroir branché la veille : Fisher p = 0,3748 sur 27 cas. '
-    + 'Pas plus démontré que l\'hypothèse ci-dessus. Écrit ici pour ne pas m\'accorder un '
-    + 'traitement de faveur.',
-  leVrai: 'ce n\'est pas la contradiction, c\'est CE QUE LE VERDICT ANNONCE, lu en LEVIER '
-    + 'SUR LA BASE et jamais en pourcentage brut',
-  table: {
-    R1:    { juste: '14/18', taux: 77.8, base: 42.1, levier: 1.85 },
-    R7:    { juste: '13/17', taux: 76.5, base: 35.1, levier: 2.18 },
-    nul:   { juste: '11/22', taux: 50.0, base: 22.8, levier: 2.19 },
-    plus:  { juste: '22/25', taux: 88.0, base: 65.3, levier: 1.35 },
-    moins: { juste: '14/24', taux: 58.3, base: 34.7, levier: 1.68 } },
-  renversement: 'le nul à 50 % et le « moins » à 58 % — les deux annonces qui semblent les '
-    + 'plus faibles — sont celles qui apportent le plus d\'information. Le « plus de 2,5 » '
-    + 'à 88 % n\'est qu\'à 1,35x sa base, parce que 65 % des matchs y passent de toute façon.'
-};
-
-// Le levier de l'annonce courante, rejoué sur la base d'Ellemine_D.
-var _CACHE_FIAB_V7 = null;
-function fiabiliteAnnonceV7() {
-  var CAS = [];
-  try { CAS = (tousCasBancV7() || []).filter(function (c) { return c.meres; }); }
-  catch (e) { return null; }
-  var cle = CAS.length;
-  if (_CACHE_FIAB_V7 && _CACHE_FIAB_V7.cle === cle) return _CACHE_FIAB_V7.val;
-  if (_MESURE_EN_COURS_V7 || _GARDE_MIROIR_V7) return null;
-  return _sousMesureV7(function () {
-    var camp = { R1: [0, 0, 0], R7: [0, 0, 0], nul: [0, 0, 0] }, nC = 0;
-    var vol = { plus: [0, 0, 0], moins: [0, 0, 0] }, nV = 0;
-    CAS.forEach(function (c) {
-      var t;
-      try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-      var v; try { v = avecFormatV7('reel', function () { return getVerdictAfficheReel(t); }); }
-      catch (e) { return; }
-      if (!v) return;
-      if (c.camp) {
-        nC++;
-        var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-        camp[dit][0]++; if (dit === c.camp) camp[dit][1]++;
-        if (camp[c.camp]) camp[c.camp][2]++;
-      }
-      var g = /^(\d+)-(\d+)$/.exec(c.score || '');
-      if (g && v.plus25) {
-        nV++;
-        var vrai = (+g[1] + +g[2]) > 2.5;
-        var k = v.plus25.valeur ? 'plus' : 'moins';
-        vol[k][0]++; if (v.plus25.valeur === vrai) vol[k][1]++;
-        vol[vrai ? 'plus' : 'moins'][2]++;
-      }
-    });
-    var fin = function (o, n) {
-      var r = {};
-      Object.keys(o).forEach(function (k) {
-        var a = o[k];
-        if (!a[0] || !n) { r[k] = null; return; }
-        var taux = 100 * a[1] / a[0], base = 100 * a[2] / n;
-        r[k] = { annonces: a[0], justes: a[1], taux: Math.round(taux * 10) / 10,
-          base: Math.round(base * 10) / 10,
-          levier: base ? Math.round(100 * taux / base) / 100 : null };
-      });
-      return r;
-    };
-    var val = { nCamp: nC, nVolume: nV, camp: fin(camp, nC), volume: fin(vol, nV) };
-    if (nC || nV) _CACHE_FIAB_V7 = { cle: cle, val: val };
-    return val;
-  });
-}
+// fiabiliteAnnonceV7/FIABILITE_VERDICT_V7 supprimées (11/09/26) —
+// n'étaient appelées que par le panneau "CE QUE VAUT CETTE ANNONCE-LÀ"
+// de la carte VERDICT FINAL, retiré.
 
 // ═══════════════════════════════════════════════════════════════
 // LE DRAPEAU DE MESURE — sans lui, le fichier ne se charge plus
@@ -11219,28 +10654,8 @@ function volumeMiroirChaineLiveV7() {
   });
 }
 
-function volumeMiroirLiveV7() {
-  var CAS = [];
-  try { CAS = tousCasBancV7() || []; } catch (e) { return null; }
-  var direct = 0, avec = 0, n = 0, plusN = 0, plusVrai = 0, moinsN = 0, moinsVrai = 0;
-  CAS.forEach(function (c) {
-    var g = /^(\d+)-(\d+)$/.exec(c.score || '');
-    if (!g || !c.meres) return;
-    var vrai = (+g[1] + +g[2]) > 2.5;
-    var t; try { t = calcTheme(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    var v = volumeMiroirV7(t);
-    if (!v) return;
-    n++;
-    if ((v.direct > 2.5) === vrai) direct++;
-    if (v.valeur === vrai) avec++;
-    if (v.valeur) { plusN++; if (vrai) plusVrai++; } else { moinsN++; if (vrai) moinsVrai++; }
-  });
-  if (!n) return null;
-  return { n: n, direct: direct, avecMiroir: avec, gain: avec - direct,
-    ditPlus: { n: plusN, taux: plusN ? Math.round(1000 * plusVrai / plusN) / 10 : null },
-    ditMoins: { n: moinsN, taux: moinsN ? Math.round(1000 * moinsVrai / moinsN) / 10 : null },
-    gele: { n: 48, direct: 26, avecMiroir: 31 } };
-}
+// volumeMiroirLiveV7 supprimée (11/09/26) — jamais appelée nulle part
+// (volumeMiroirChaineLiveV7, juste au-dessus, reste utilisée).
 
 // ═══════════════════════════════════════════════════════════════
 // L'AXE OFFENSIF REJOUÉ SUR LA BASE COURANTE — le garde-fou de sa branche
@@ -33833,18 +33248,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '<div style="font-size:11.5px; color:#fecaca; margin-top:4px;">' + esc(msgDetruit) + '</div></div>';
   }
   html+='<div class="tek-head">🏆 VERDICT DU MATCH <span>— '+esc(card && card.sourceDecisive ? card.sourceDecisive : 'Moteur V8')+'</span></div>';
-  var _alerteNul=false; try{ _alerteNul = !nulActif && alerteNulV7(theme); }catch(e){ _alerteNul=false; }
   var _rej = null;
   try { _rej = themeRejeteV7(theme); } catch (e) { _rej = null; }
   var _refuse = !!(_rej && _rej.rejete);
-  // LE NIVEAU INFORME MAINTENANT AU LIEU DE CENSURER (04/09/26). Le rejet
-  // levé, _refuse vaut false partout — mais le critère continue d'être
-  // calculé et de s'afficher, en bandeau, avec le chiffre qui a servi à
-  // lever la porte. Rien n'est caché : ni le niveau, ni ce qui manque, ni
-  // le fait que ce niveau n'a jamais prédit quoi que ce soit.
-  var _sousSeuil = null;
-  try { _sousSeuil = (!_refuse) ? sousSeuilValiditeV7(theme) : null; } catch (e) { _sousSeuil = null; }
-  if (_sousSeuil && !_sousSeuil.rejete) _sousSeuil = null;
   html+='<div class="tek-winner '+(_refuse?'warn':(nulActif?'warn':''))+'"><div class="tek-cap">'
     +(_refuse?'THÈME REJETÉ':(nulActif?'VERDICT SUSPENDU':'VAINQUEUR'))+'</div><div class="tek-name">'
     +(_refuse?'⛔ NON VALIDE':(nulActif?'⚖️ NUL À VÉRIFIER':esc(cardWinner)))+'</div>'
