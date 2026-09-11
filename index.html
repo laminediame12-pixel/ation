@@ -5156,23 +5156,7 @@ function signalRacineArriereGuerreCivile(theme) {
 // correction (0,21). M9 la passe, mais il lui manque les sept annonces
 // hors échantillon du seuil posé le 04/09 — il en a trois.
 // ═══════════════════════════════════════════════════════════════
-function tripletDefensifV7(theme, camp) {
-  if (!theme) return null;
-  var chef = (camp === 'M7' || camp === 'R7') ? theme[7] : theme[1];
-  var trip = null, court = null;
-  try { trip = combineMany([chef, theme[4], theme[10]]); court = combine(chef, theme[3]); }
-  catch (e) { return null; }
-  return { camp: (camp === 'M7' || camp === 'R7') ? 'M7' : 'M1',
-    chef: chef, m4: theme[4], m10: theme[10], m3: theme[3],
-    triplet: trip,
-    // Contrôle de la simplification à chaque appel : si elle tombe, la
-    // construction du thème a changé.
-    equivautChefM3: (trip === court),
-    lecture: 'M4 et M10 donnent le NIVEAU, le chef donne la MANIÈRE',
-    mesure: 'prédit les buts MARQUÉS par ce camp (p = 0,034), pas les encaissés (p = 0,495)',
-    statut: 'NON DÉMONTRÉ — ne survit pas à la correction pour tests multiples (0,21)',
-    branche: false };
-}
+// tripletDefensifV7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 // ═══════════════════════════════════════════════════════════════
 // L'AXE DU PARTAGE ET LES BUTS (04/09/26) — Ellemine_D : « c'est l'axe
@@ -5288,33 +5272,7 @@ function lectureButsM9V7(theme) {
   };
 }
 
-function gouverneursAxesV7(theme) {
-  if (!theme || !theme[3]) return null;
-  var NEG = (typeof FIGURES_NEGATIVES_V7 !== 'undefined') ? FIGURES_NEGATIVES_V7 : {};
-  var g = {
-    defense: { gouverneur: theme[3], maisons: [4, 10],
-      figures: [theme[4], theme[10]], negatif: !!NEG[theme[3]] },
-    attaque: { gouverneur: theme[6], maisons: [5, 11],
-      figures: [theme[5], theme[11]], negatif: !!NEG[theme[6]] }
-  };
-  // Contrôle des deux lois à chaque appel : si l'une tombe, c'est que la
-  // construction du thème a changé quelque part et il faut le savoir.
-  try {
-    if (combine(theme[4], theme[10]) !== theme[3]
-      || combine(theme[5], theme[11]) !== theme[6]) {
-      console.warn('\u26a0\ufe0f Loi des axes gouvernés violée — la construction du thème a changé');
-      g.loiRompue = true;
-    }
-  } catch (e) { g.loiRompue = null; }
-  // La piste « M3 négative → R7 exclu » a été RÉFUTÉE le 04/09 au soir
-  // (3 R7 sur 4 hors échantillon contre 1/14 dans l'archive). Le champ
-  // reste, à false, pour que personne ne la redécouvre en croyant qu'elle
-  // est neuve. Cf. le bloc au-dessus.
-  g.pisteR7Exclu = null;
-  g.pisteR7ExcluRefutee = { quand: '04/09/26', archive: '1/14', horsEchantillon: '3/4 R7',
-    verdict: 'RÉFUTÉE — ne pas rouvrir en modifiant la liste des figures négatives' };
-  return g;
-}
+// gouverneursAxesV7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 // reseauAncrageAxeV7/reseauAncrageTousAxesV7 supprimées (11/09/26) — voir
 // la note "RÉSEAU D'ANCRAGE" plus haut dans ce fichier.
@@ -6263,25 +6221,7 @@ function figureSolideV7(fig, theme, siegeImpose) {
 // On part des figures dont l'antagoniste ne peut rien (ancres), puis on
 // propage jusqu'au point fixe. Un cycle sans aucune ancre reste
 // « indéterminé » — signalé plutôt que tranché arbitrairement.
-function resoudreLiberationsV7(theme) {
-  const etat = {};
-  const solidite = {};
-  FIGS_V7.forEach(function (f) { solidite[f] = figureSolideV7(f, theme); etat[f] = null; });
-
-  let change = true, tours = 0;
-  while (change && tours < 40) {
-    change = false; tours++;
-    FIGS_V7.forEach(function (f) {
-      if (etat[f] !== null) return;
-      const a = ANTAGONISTES_V7[f];
-      if (!solidite[a].solide) { etat[f] = 'libre'; change = true; return; }
-      if (etat[a] === 'tenue') { etat[f] = 'libre'; change = true; return; }
-      if (etat[a] === 'libre') { etat[f] = 'tenue'; change = true; return; }
-    });
-  }
-  const indetermines = FIGS_V7.filter(function (f) { return etat[f] === null; });
-  return { etat: etat, solidite: solidite, indetermines: indetermines, tours: tours };
-}
+// resoudreLiberationsV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Rapport de cascade pour les deux chefs — DIAGNOSTIC UNIQUEMENT.
 // ⚠️ NON BRANCHÉ AU VERDICT, et c'est un choix mesuré : appliquer une
@@ -7787,154 +7727,7 @@ function figureDuJour(d){
   d = d || new Date();
   return FIGS[(d.getDate() + d.getMonth()*3) % 16];
 }
-function toggleValiditePanel() {
-  var panel = document.getElementById('validite-panel');
-  if (!panel) return;
-  if (panel.style.display === 'none' || !panel.style.display) {
-    if (!currentTheme) { panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>'; panel.style.display = 'block'; return; }
-    var theme = currentTheme;
-    // MAINTENANCE (03/09/26) : les 4 axes viennent désormais du même calcul
-    // partagé que les 4 autres chemins de validité (evaluerAxesValidite,
-    // cf. combineMany) au lieu d'une 5e copie locale.
-    var axesRes = evaluerAxesValidite(theme);
-    var axesByKey = {}; axesRes.forEach(function(r){ axesByKey[r.key] = r; });
-    var axeC = axesByKey.cardinal.fig, axeS = axesByKey.succedent.fig,
-      axeCad = axesByKey.cadent.fig, axePartage = axesByKey.partage.fig;
-    var binM1 = BINOMES[theme[1]];
-    var posAxeC = axesByKey.cardinal.positions;
-    var posAxeS = axesByKey.succedent.positions;
-    var posAxeCad = axesByKey.cadent.positions;
-    var posAxePartage = axesByKey.partage.positions;
-    var posBinM1 = positionsBaseEtResultantes(binM1, theme);
-    var invalide = themeInvalidite(theme);
-
-    var fdj = figureDuJour();
-    var posFdj = positionsBaseEtResultantes(fdj, theme);
-    var dateLabel = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
-
-    function condCard(titre, sousTitre, figure, positions){
-      var present = positions.length > 0;
-      var bg = present ? 'linear-gradient(135deg, rgba(74,222,128,.12), rgba(74,222,128,.03))' : 'linear-gradient(135deg, rgba(248,113,113,.12), rgba(248,113,113,.03))';
-      var border = present ? '#4ade80' : '#f87171';
-      var badge = present ? '<span style="background:#166534; color:#4ade80; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">✓ PRÉSENTE</span>' : '<span style="background:#7f1d1d; color:#f87171; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">✗ ABSENTE</span>';
-      return '<div style="background:'+bg+'; border:1px solid '+border+'; border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:6px;">'
-        + '<div style="display:flex; justify-content:space-between; align-items:center;"><b style="font-size:13px;">'+titre+'</b>'+badge+'</div>'
-        + '<div style="font-size:11px; color:#94a3b8;">'+sousTitre+'</div>'
-        + '<div style="font-size:16px; font-weight:600;">'+FL[figure]+'</div>'
-        + '<div style="font-size:11px; color:#cbd5e1;">'+(present ? 'en '+positions.join(', ') : 'absente du thème (base et résultante)')+'</div>'
-        + '</div>';
-    }
-
-    var html = '<h3 style="margin-bottom:2px;">🗓️ Validité du thème &amp; figure du jour</h3>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:12px;">Les TROIS axes du carré — Cardinal M1+M4+M7+M10 (angulaire), Succédent M2+M5+M8+M11, Cadent M3+M6+M9+M12 — plus l\'Axe du Partage M3+M5+M9+M11 ajouté le 31/08/26 — doivent tous exister dans le thème (base ou résultante) pour qu\'il soit valide, protocole appliqué en direct au verdict. Les trois premiers sont les seules classes de pas 3 : prolonger un axe y ramène (4-7-10-1 = 1-4-7-10). Le quatrième n\'est pas une classe de pas 3 et ne prétend pas l\'être : c\'est le rectangle de deux oppositions croisées (3-9 et 5-11), dont les diagonales coupent celles du carré cardinal aux quatre paires, et qui est la part PARTAGÉE par les deux trigones de M1 et M7 — trigone(M1) ⊕ trigone(M7) = ce rectangle ⊕ M1 ⊕ M7, vérifié 2000/2000 (loi N). Coût mesuré : le taux de thèmes valides passe de 72,3 % à 63,6 %. L\'ancien « Axe Temporel » M3+M5+M11+M15, lui, reste retiré : il empruntait M15, un témoin hors du carré des douze. La figure du jour et le binôme de M1 restent affichés à titre indicatif (non bloquants). Doctrine angulaire/succédente/cadente importée le 03/08/26, non encore validée empiriquement.</div>';
-
-    html += '<div style="border-radius:10px; padding:12px 16px; margin-bottom:14px; font-weight:600; text-align:center; '
-      + (invalide ? 'background:#7f1d1d; color:#fecaca;' : 'background:#166534; color:#bbf7d0;') + '">'
-      + (invalide ? '⛔ THÈME INVALIDE' : '✅ THÈME VALIDE') + '</div>';
-
-    // ─── VALIDITÉ — TROIS CRITÈRES SUR LE THÈME LUI-MÊME (04/09/26) ───
-    // Ellemine_D : « ne compte plus les dérivés ». Le panneau suit : les
-    // trois critères comptés d'abord, les dérivés en dessous, désignés
-    // pour ce qu'ils sont devenus — la matière de la porte de confiance,
-    // hors du compte. Cf. le bloc de niveauValiditeV7.
-    var nv = null;
-    try { nv = niveauValiditeV7(theme); } catch (e) { nv = null; }
-    if (nv && nv.applicable) {
-      var couleurNv = nv.complet ? '#4ade80' : nv.niveau >= 2 ? '#fbbf24' : '#94a3b8';
-      html += '<div style="border:1px solid ' + couleurNv + '; border-radius:10px; padding:10px 14px; margin-bottom:14px;">'
-        + '<div style="display:flex; justify-content:space-between; align-items:center;">'
-        + '<b style="font-size:13px;">🎯 Validité — les 3 axes · le binôme de M1 · la figure du jour</b>'
-        + '<span style="background:' + couleurNv + '33; color:' + couleurNv + '; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">'
-        + nv.niveau + '/3</span></div>'
-        + '<div style="font-size:11px; margin-top:6px; color:#cbd5e1;">'
-        + 'les 3 axes du thème ' + (nv.base.axes.ok ? '✓' : '✗')
-        + ' <span style="color:#94a3b8;">(Cardinal ' + (nv.base.axes.cardinal && nv.base.axes.cardinal.ok ? '✓' : '✗')
-        + ' · Succédent ' + (nv.base.axes.succedent && nv.base.axes.succedent.ok ? '✓' : '✗')
-        + ' · Cadent ' + (nv.base.axes.cadent && nv.base.axes.cadent.ok ? '✓' : '✗') + ')</span><br>'
-        + 'binôme de M1 ' + (nv.base.binome.ok ? '✓' : '✗')
-        + ' <span style="color:#94a3b8;">(' + (FL[nv.base.binome.fig] || '') + ')</span><br>'
-        + 'figure du jour ' + (nv.fdjOk ? '✓' : '✗')
-        + ' <span style="color:#94a3b8;">(' + (FL[nv.fdj] || nv.fdj) + ')</span>'
-        + '</div>'
-        + '<div style="font-size:10.5px; margin-top:8px; padding-top:7px; border-top:1px solid #33415555; color:#94a3b8;">'
-        + '<b>Hors du compte</b> — les trois thèmes dérivés, gardés pour la porte de confiance :<br>'
-        + nv.derives.map(function (d) {
-            return '&nbsp;&nbsp;' + d.nom + ' : axes ' + (d.axes.ok ? '✓' : '✗') + ' · binôme ' + (d.binome.ok ? '✓' : '✗');
-          }).join('<br>')
-        + '</div>'
-        + '<div class="muted" style="font-size:11px; margin-top:6px;">⚠️ <b>Ce niveau ne pèse rien sur le verdict, et il ne le peut pas.</b> '
-        + 'Mesuré au banc sur 58 cas, l\'ancien niveau ne gagnait aucune famille — quatre des cinq familles lisibles penchaient du côté des thèmes SOUS le seuil (camp 64 % / 69 %, p = 0,732). C\'est pourquoi le rejet a été levé le 04/09. '
-        + 'Et le critère « figure du jour » dépend de la DATE : le même thème peut valoir 3/3 aujourd\'hui et 2/3 demain, donc aucun taux « par niveau » n\'est une constante. '
-        + 'La validité continue de se jouer ailleurs : le départage de deux tirages du MÊME match (registre des paires).</div>'
-        + '</div>';
-    }
-    html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:14px;">';
-    html += condCard('Axe Cardinal (angulaire)', 'M1 + M4 + M7 + M10', axeC, posAxeC);
-    html += condCard('Axe Succédent', 'M2 + M5 + M8 + M11', axeS, posAxeS);
-    html += condCard('Axe Cadent', 'M3 + M6 + M9 + M12', axeCad, posAxeCad);
-    html += condCard('Axe du Partage', 'M3 + M5 + M9 + M11', axePartage, posAxePartage);
-    html += condCard('Binôme de M1 (indicatif)', 'BINOMES[' + FL[theme[1]] + ']', binM1, posBinM1);
-    html += '</div>';
-
-    // SIGNAL DÉDIÉ — TÉMOINS EN ÉQUILIBRE (03/08/26, 📚 étude, doctrine
-    // Ellemine_D). Affiché séparément et en évidence, avant le score
-    // composite à 6 étages, car désigné comme spécifiquement plus fiable.
-    var sigTem = signalTemoinsEnEquilibre(theme);
-    var temCol = sigTem.enEquilibre ? '#f87171' : '#4ade80';
-    html += '<div style="border:2px solid '+temCol+'; background:'+temCol+'18; border-radius:10px; padding:12px 16px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">';
-    html += '<div><b style="font-size:13px;">⚖️ Témoins en équilibre (M13/M14)</b><br><span style="font-size:12px; color:#cbd5e1;">'+FL[sigTem.td]+' (droit) / '+FL[sigTem.tg]+' (gauche)</span></div>';
-    html += '<span style="background:'+temCol+'33; color:'+temCol+'; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:700;">'+(sigTem.enEquilibre ? '⚠️ OPPOSÉS' : '✓ non opposés')+'</span>';
-    html += '</div>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:14px; margin-top:-8px;">📚 Étude (03/08/26) — doctrine : "au niveau des témoins, souvent nul quand les témoins sont opposés (en équilibre)". Signal isolé, taux réel encore à établir sur l\'archive, aucun poids sur verdictFinal.</div>';
-
-    // STRUCTURE DU NUL (04/08/26, 📚 étude, doctrine complète Ellemine_D) —
-    // Juge 1/Juge 2 (M13/M14) → Reconstruction (M15) → Sentence (M16).
-    var sdn = structureDuNul(theme);
-    var sdnCol = sdn.nulDetecte ? '#f87171' : '#4ade80';
-    html += '<div style="border:2px solid '+sdnCol+'; background:'+sdnCol+'12; border-radius:10px; padding:12px 16px; margin-bottom:14px;">';
-    html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><b style="font-size:13px;">⚖️ Structure du Nul</b><span style="background:'+sdnCol+'33; color:'+sdnCol+'; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:700;">'+(sdn.nulDetecte ? '⚠️ NUL DÉTECTÉ' : '✓ pas de nul structurel')+'</span></div>';
-    html += '<div style="font-size:12px; line-height:1.7;">';
-    html += 'Juge 1 (M13) : <b>'+FL[sdn.juge1]+'</b>'+(sdn.classement.juge1 ? ' <span style="color:#94a3b8;">('+sdn.classement.juge1+')</span>' : '')+'<br>';
-    html += 'Juge 2 (M14) : <b>'+FL[sdn.juge2]+'</b>'+(sdn.classement.juge2 ? ' <span style="color:#94a3b8;">('+sdn.classement.juge2+')</span>' : '')+'<br>';
-    html += 'Identité (M13=M14) : '+(sdn.nulParIdentite ? '<span style="color:#f87171;">OUI</span>' : 'non')+' — Opposition (paire) : '+(sdn.nulParOpposition ? '<span style="color:#f87171;">OUI</span>' : 'non')+'<br>';
-    html += 'Reconstruction (M15) : <b>'+FL[sdn.reconstruction]+'</b>'+(sdn.classement.reconstruction ? ' <span style="color:#94a3b8;">('+sdn.classement.reconstruction+')</span>' : '')+'<br>';
-    html += 'Sentence (M16) : <b>'+FL[sdn.sentence]+'</b>'+(sdn.classement.sentence ? ' <span style="color:#94a3b8;">('+sdn.classement.sentence+')</span>' : '')+' — manière dont le nul se manifeste';
-    html += '</div></div>';
-    html += '<div class="muted" style="font-size:11px; margin-bottom:14px; margin-top:-8px;">📚 Étude (04/08/26) — nul par identité (M13=M14) ou par opposition (paire de FIGURES_EQUILIBRE), figures fréquentes (Carcer/Conjonctio/Populus/Via) et conditionnelles (Acquisitio/Fortuna Minor/Fortuna Major) en italique. Aucun poids sur verdictFinal.</div>';
-
-    // AUTO-RÉFÉRENCE GÉNÉRATIVE (03/08/26, 📚 étude) — voir
-    // analyserAutoReferenceGenerative. Affichage informatif seul.
-    var autoRef = analyserAutoReferenceGenerative(theme);
-    var autoRefCol = autoRef.score >= 5 ? '#f87171' : (autoRef.score >= 3 ? '#facc15' : '#4ade80');
-    html += '<div style="border:1px solid '+autoRefCol+'; border-radius:10px; padding:12px 16px; margin-bottom:14px;">';
-    html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><b style="font-size:13px;">🔁 Auto-référence générative (Mères → Réconciliation)</b><span style="background:'+autoRefCol+'33; color:'+autoRefCol+'; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">'+autoRef.ratio+' étages</span></div>';
-    html += '<div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">📚 Étude (03/08/26) — hypothèse en cours de test : plus la chaîne Mères→Filles→Nièces→Témoins→Juge→Réconciliation manifeste de paires d\'équilibre ou de répétitions exactes, plus le thème serait structurellement enclin au nul. Non validé, aucun poids sur verdictFinal.</div>';
-    html += '<div style="display:flex; flex-direction:column; gap:4px; font-size:11px;">';
-    autoRef.niveaux.forEach(function(n) {
-      var marque = n.diag.positif ? '✅' : '➖';
-      var detail = n.diag.paires.concat(n.diag.repetitions.map(function(r){return r+' (répété)';})).join(', ');
-      html += '<div>'+marque+' <b>'+n.nom+'</b> (M'+n.maisons.join('/M')+')' + (detail ? ' — '+detail : '') + '</div>';
-    });
-    html += '</div></div>';
-
-    var fdjPresent = posFdj.length > 0;
-    var fdjBg = fdjPresent ? 'linear-gradient(135deg, rgba(96,165,250,.16), rgba(96,165,250,.03))' : 'linear-gradient(135deg, rgba(148,163,184,.12), rgba(148,163,184,.02))';
-    var fdjBorder = fdjPresent ? '#60a5fa' : '#475569';
-    html += '<div style="background:'+fdjBg+'; border:1px solid '+fdjBorder+'; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px;">';
-    html += '<div style="display:flex; justify-content:space-between; align-items:center;"><b style="font-size:13px;">🔮 Figure du jour — ' + dateLabel + '</b>'
-      + (fdjPresent ? '<span style="background:#1e3a8a; color:#93c5fd; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">DANS LE THÈME</span>' : '<span style="background:#334155; color:#94a3b8; border-radius:999px; padding:2px 10px; font-size:11px; font-weight:600;">ABSENTE</span>') + '</div>';
-    html += '<div style="font-size:18px; font-weight:600;">' + FL[fdj] + '</div>';
-    html += '<div style="font-size:12px; color:#cbd5e1;">' + (fdjPresent
-      ? 'Présente en ' + posFdj.join(', ') + ' — le climat du jour rejoint le thème, sa figure y résonne directement.'
-      : 'Absente du thème — le jour ne s\'imprime pas directement dans ce tirage.') + '</div>';
-    html += '</div>';
-
-    panel.innerHTML = html;
-    panel.style.display = 'block';
-  } else {
-    panel.style.display = 'none';
-  }
-}
+// toggleValiditePanel supprimee (11/09/26) - code mort, plus aucun appelant.
 function toggleGuerreCivileR1R7Panel() {
   var panel = document.getElementById('guerre-civile-r1r7-panel');
   if (!panel) return;
@@ -8918,91 +8711,7 @@ function signalRecouvrementCampsV7(theme){
 // commentaire, pour qu'elle soit vérifiable sur n'importe quel thème et
 // qu'elle porte ses propres pièges.
 // ═══════════════════════════════════════════════════════════════
-function analyseM4M10V7(theme) {
-  if (!theme || !theme[4] || !theme[10]) return null;
-  var E = [];
-  var f4 = theme[4], f10 = theme[10];
-  var nom = function (f) { return FL[f] || f; };
-
-  // ÉTAPE 1 — QUI EST DANS CHAQUE MAISON, ET DE QUI ELLE EST LA DÉFENSE.
-  // M4 est la 4e maison comptée depuis M1 : la défense du camp 1.
-  // M10 est la 4e comptée depuis M7 (7→8→9→10) : la défense du camp 2.
-  // C'est la lecture en maisons dérivées, pas une convention arbitraire.
-  E.push({ n: 1, titre: 'Qui garde quel but',
-    m4: nom(f4) + ' — 4e depuis M1, défense du camp 1',
-    m10: nom(f10) + ' — 4e depuis M7, défense du camp 2' });
-
-  // ÉTAPE 2 — LE PIÈGE DES CAMPS, dans lequel je suis tombé le 03/09.
-  // M4 ET M10 SONT TOUTES LES DEUX DANS CAMP1 (=[1,2,3,4,9,10,13,16]).
-  // Elles ne sont donc PAS « une maison par camp » au sens du tableau des
-  // camps, même si elles gardent chacune un but. Confondre les deux
-  // lectures fait écrire des faussetés — j'en ai écrit une ce jour-là.
-  E.push({ n: 2, titre: 'Le piège des camps',
-    fait: 'M4 et M10 appartiennent TOUTES DEUX à CAMP1',
-    consequence: 'lecture « maison dérivée » ≠ lecture « tableau des camps » — ne pas les mélanger' });
-
-  // ÉTAPE 3 — LA LOI. M4 ⊕ M10 = M3, vérifié sur 65 536 thèmes.
-  // Conséquence pratique : les deux maisons ne sont pas indépendantes.
-  // Tout énoncé sur le COUPLE (M4, M10) est un énoncé sur M3, déguisé.
-  var loi = null;
-  try { loi = (combine(f4, f10) === theme[3]); } catch (e) { loi = null; }
-  E.push({ n: 3, titre: 'La loi qui les lie',
-    formule: 'M4 ⊕ M10 = M3', verifie: loi, m3: nom(theme[3]),
-    consequence: 'un signal bâti sur le COUPLE parle en réalité de M3' });
-
-  // ÉTAPE 4 — LES PROPRIÉTÉS DOCTRINALES DE CHAQUE FIGURE, séparément.
-  // Mobilité, ouverture, force, planète, et le dénouement de JUGE_RECIT.
-  function props(f) {
-    var jr = (typeof JUGE_RECIT !== 'undefined') ? JUGE_RECIT[f] : null;
-    return { figure: nom(f),
-      mobilite: MOBILITE_FIGURE[f], ouverture: OUVERTURE_FIGURE[f],
-      force: (typeof FORCE_FIGURE !== 'undefined') ? FORCE_FIGURE[f] : null,
-      planete: (typeof PLANETES_V7 !== 'undefined') ? PLANETES_V7[f] : null,
-      denouement: jr ? jr.denouement : null,
-      vainqueur: jr ? jr.vainqueur : null,
-      // ⚠️ seuls 'favori', 'outsider', 'premier_marqueur' et
-      // 'dominant_structurel' NOMMENT quelqu'un et sont donc
-      // falsifiables. 'selon_chaos' et 'indetermine' ne peuvent pas
-      // échouer et ne doivent entrer dans aucun décompte (cf. 04/09).
-      falsifiable: jr ? ['favori', 'outsider', 'premier_marqueur', 'dominant_structurel']
-        .indexOf(jr.vainqueur) >= 0 : null };
-  }
-  E.push({ n: 4, titre: 'Ce que dit chaque figure, séparément',
-    m4: props(f4), m10: props(f10) });
-
-  // ÉTAPE 5 — LA FRAGILITÉ, ET SON PIÈGE DE LECTURE.
-  // « mobile ET ouverte » = la maison laisse passer. Le signal existant
-  // renvoie applicable = fragileM4 OU fragileM10, et n'a PAS de champ
-  // `fragile` — lire s.fragile renvoie undefined, donc false. J'ai fait
-  // l'erreur toute la journée du 04/09.
-  var sig = null;
-  try { sig = signalFragiliteM4M10V7(theme); } catch (e) { sig = null; }
-  E.push({ n: 5, titre: 'Fragilité',
-    m4Fragile: sig ? !!sig.fragileM4 : null,
-    m10Fragile: sig ? !!sig.fragileM10 : null,
-    piege: 'le champ `fragile` N\'EXISTE PAS — lire fragileM4 et fragileM10 séparément' });
-
-  // ÉTAPE 6 — LA LECTURE SÉPARÉE, qui est la seule que les mesures
-  // soutiennent. Trois protocoles différents disent que M4 porte et que
-  // M10 ne porte pas :
-  //   · balayage des 13 maisons sur les buts : M4 p=0,285 · M10 p=0,958 (dernière)
-  //   · doctrine du M4 : Albus/Carcer marchent en M4, rien en M10 (p=0,643)
-  //   · fragilité : M4 seule +24 pts de BTTS, M10 seule −17 pts
-  // Donc on lit M4, on note M10, et on ne les additionne pas.
-  E.push({ n: 6, titre: 'Le poids à leur donner',
-    m4: 'PORTE — c\'est elle qu\'on lit',
-    m10: 'NE PORTE PAS sur les mesures faites à ce jour — on la note, on ne s\'appuie pas dessus',
-    interdit: 'ne PAS additionner les deux : elles tirent en sens contraire et s\'annulent',
-    statut: 'aucune des trois mesures n\'atteint seule la significativité — c\'est leur convergence qui parle' });
-
-  // ÉTAPE 7 — CE QU'ON NE SAIT TOUJOURS PAS, dit explicitement.
-  E.push({ n: 7, titre: 'Ce qui reste ignoré',
-    points: ['M4 seule n\'a jamais été testée hors échantillon (n=19, un seul cas dans les 11 du 04/09)',
-             'pourquoi M10 est muette n\'est pas expliqué',
-             'M3, leur différence, ne dit rien sur six cibles testées le 05/09'] });
-
-  return { m4: nom(f4), m10: nom(f10), m3: nom(theme[3]), loiVerifiee: loi, etapes: E };
-}
+// analyseM4M10V7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 // ═══════════════════════════════════════════════════════════════
 // M4 PORTE, M10 NE PORTE PAS — ET LES APPARIER ANNULE LE SIGNAL
@@ -12361,44 +12070,7 @@ function getVilleCoords(nomVille) {
 // Version "vraie" de getPlaneteHeure, avec heures temporelles reelles si
 // la ville est connue. Repli automatique sur la methode calendaire
 // (getPlaneteHeure) si ville absente/inconnue ou nuit/jour polaire.
-function getPlaneteHeureVraie(dateStr, heureStr, nomVille) {
-  var coords = getVilleCoords(nomVille);
-  if (!coords || !dateStr || !heureStr || heureStr.indexOf(':')<0) {
-    return { planete: getPlaneteHeure(dateStr, heureStr), methode:'calendaire', villeUtilisee: null };
-  }
-  var soleil = calculerLeverCoucher(dateStr, coords.lat, coords.lng);
-  if (!soleil.lever || !soleil.coucher) {
-    return { planete: getPlaneteHeure(dateStr, heureStr), methode:'calendaire (jour/nuit polaire)', villeUtilisee: nomVille };
-  }
-  var hParts = heureStr.split(':');
-  var hLocal = parseFloat(hParts[0]) + (parseFloat(hParts[1])||0)/60;
-  var hUTC = hLocal - coords.utcOffset;
-  var matchMs = new Date(dateStr+'T00:00:00Z').getTime() + hUTC*3600000;
-  var dayIdx = CHALDEEN_ORDRE.indexOf(getPlaneteDuJour(dateStr));
-
-  if (matchMs >= soleil.lever.getTime() && matchMs < soleil.coucher.getTime()) {
-    var duree = soleil.coucher.getTime() - soleil.lever.getTime();
-    var idx = Math.min(11, Math.floor((matchMs - soleil.lever.getTime()) / duree * 12));
-    return { planete: CHALDEEN_ORDRE[(dayIdx+idx)%7], methode:'temporelle (jour, heure '+(idx+1)+'/12)', villeUtilisee: nomVille };
-  } else if (matchMs < soleil.lever.getTime()) {
-    var veilleDate = new Date(dateStr+'T00:00:00Z'); veilleDate.setUTCDate(veilleDate.getUTCDate()-1);
-    var veilleStr = veilleDate.toISOString().slice(0,10);
-    var soleilVeille = calculerLeverCoucher(veilleStr, coords.lat, coords.lng);
-    if (!soleilVeille.coucher) return { planete: getPlaneteHeure(dateStr, heureStr), methode:'calendaire (repli)', villeUtilisee: nomVille };
-    var dureeN = soleil.lever.getTime() - soleilVeille.coucher.getTime();
-    var idxN = Math.min(11, Math.floor((matchMs - soleilVeille.coucher.getTime()) / dureeN * 12));
-    var dayIdxV = CHALDEEN_ORDRE.indexOf(getPlaneteDuJour(veilleStr));
-    return { planete: CHALDEEN_ORDRE[(dayIdxV+12+idxN)%7], methode:'temporelle (nuit veille, heure '+(idxN+1)+'/12)', villeUtilisee: nomVille };
-  } else {
-    var demainDate = new Date(dateStr+'T00:00:00Z'); demainDate.setUTCDate(demainDate.getUTCDate()+1);
-    var demainStr = demainDate.toISOString().slice(0,10);
-    var soleilDemain = calculerLeverCoucher(demainStr, coords.lat, coords.lng);
-    if (!soleilDemain.lever) return { planete: getPlaneteHeure(dateStr, heureStr), methode:'calendaire (repli)', villeUtilisee: nomVille };
-    var dureeN2 = soleilDemain.lever.getTime() - soleil.coucher.getTime();
-    var idxN2 = Math.min(11, Math.floor((matchMs - soleil.coucher.getTime()) / dureeN2 * 12));
-    return { planete: CHALDEEN_ORDRE[(dayIdx+12+idxN2)%7], methode:'temporelle (nuit, heure '+(idxN2+1)+'/12)', villeUtilisee: nomVille };
-  }
-}
+// getPlaneteHeureVraie supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 
@@ -14470,22 +14142,8 @@ function piliersReposCount(theme){
 // capturé) mais précision parfaite — à recontre-tester à mesure que
 // l'archive grossit.
 // ═══════════════════════════════════════════════════════════════
-function figureAncree(fig, positions){
-  var piliers = [1,8,9,12,15];
-  var maisonsStrat = [2,4,6,8,10,12,14,16];
-  return positions.some(function(p){
-    var h = parseInt(p.replace('M','').replace('r',''));
-    return FIGS[h-1]===fig || piliers.indexOf(h)>=0 || maisonsStrat.indexOf(h)>=0;
-  });
-}
-function binomeNeutralise(chef, theme){
-  var binome = BINOMES[chef];
-  var attaquant = ANTAGONISTES[binome];
-  var posAttaquant = positionsBaseEtResultantes(attaquant, theme);
-  if (!posAttaquant.length) return false;
-  if (!figureAncree(attaquant, posAttaquant)) return false;
-  return positionsBaseEtResultantes(BINOMES[attaquant], theme).length > 0;
-}
+// figureAncree supprimee (11/09/26) - code mort, plus aucun appelant.
+// binomeNeutralise supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 
 function buildScoreFromCamps(campA, campB, winner, competitionOverride, theme) {
@@ -15038,12 +14696,7 @@ function verdictV7Rotation(theme) {
 }
 
 
-function figureExistsBaseOnly(fig,theme){
-  for(let p=1;p<=16;p++){
-    if(theme[p]===fig) return true;
-  }
-  return false;
-}
+// figureExistsBaseOnly supprimee (11/09/26) - code mort, plus aucun appelant.
 function analyzeValidation(theme){
   // Les 4 axes de validité (3 classes modulo 3 du carré + l'Axe du Partage,
   // ajouté le 31/08/26) sont désormais définis une seule fois dans
@@ -15410,10 +15063,7 @@ function themeInvalidite(theme){
 // Ferencvárosi-Qarabag ; casse Côte d'Ivoire-Norvège, seule régression
 // mesurée).
 var HARMONIE_SEUIL_CONFIRMATION = 60;
-function binomeEnHarmonie(binome, theme) {
-  var sieges = trouverFigV7(binome, theme);
-  return sieges.some(function(s) { return forceMaisonV7(binome, s.pos).force >= HARMONIE_SEUIL_CONFIRMATION; });
-}
+// binomeEnHarmonie supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 
 // CONVERGENCE FIXE/ROTATION (19/07/26, demande utilisateur "indique si les
@@ -15517,32 +15167,14 @@ function poidsAttaquantFFEngine(fig, theme){
   const soutien = poidsMembreFFEngine(monBinome, theme);
   return base + soutien/10;
 }
-function attaqueVsResistanceEngine(figCible, mSiege, theme){
-  const antagoniste = ANTAGONISTES_V7[figCible];
-  const binomeCible = BINOMES_V7[figCible];
-  const forceAttaque = poidsAttaquantFFEngine(antagoniste, theme);
-  const forceSiege = poidsSiegeFFEngine(figCible, mSiege, theme);
-  const soutienBinomeCible = poidsMembreFFEngine(binomeCible, theme);
-  const forceResistance = forceSiege + soutienBinomeCible/10;
-  const attaqueReussie = forceAttaque > forceResistance;
-  return { figCible, antagoniste, binomeCible, forceAttaque, forceSiege, soutienBinomeCible, forceResistance, attaqueReussie, ecart: forceAttaque - forceResistance };
-}
+// attaqueVsResistanceEngine supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 function familleTeamsEngine(fig, n){
   const teamA=[fig]; let cur=fig;
   for(let i=1;i<n;i++){ cur = BINOMES_V7[cur]; teamA.push(cur); }
   const teamB = teamA.map(f => ANTAGONISTES_V7[f]);
   return {teamA, teamB};
 }
-function familleScoreEngine(fig, theme, mSiege){
-  const d = familleTeamsEngine(fig, 2), t = familleTeamsEngine(fig, 3), q = familleTeamsEngine(fig, 4), c = familleTeamsEngine(fig, 5);
-  function scoreTeamA(arr){ return poidsSiegeFFEngine(arr[0], mSiege, theme) + arr.slice(1).reduce((s,f)=>s+poidsMembreFFEngine(f,theme),0); }
-  function scoreTeamB(arr){ return arr.reduce((s,f)=>s+poidsAttaquantFFEngine(f,theme),0); }
-  const dA=scoreTeamA(d.teamA), dB=scoreTeamB(d.teamB);
-  const tA=scoreTeamA(t.teamA), tB=scoreTeamB(t.teamB);
-  const qA=scoreTeamA(q.teamA), qB=scoreTeamB(q.teamB);
-  const cA=scoreTeamA(c.teamA), cB=scoreTeamB(c.teamB);
-  return { d,t,q,c, net: (dA-dB)+(tA-tB)+(qA-qB)+(cA-cB) };
-}
+// familleScoreEngine supprimee (11/09/26) - code mort, plus aucun appelant.
 // ═══════════════════════════════════════════════════════════════
 // DUALITÉ R1/R7 — FIGURE X + BINÔME/ANTAGONISTE + CHAÎNE D'ANCRAGE
 // Intégration au verdict final :
@@ -15554,82 +15186,7 @@ function familleScoreEngine(fig, theme, mSiege){
 // donc X peut devenir un ancrage défavorable à R7 et favoriser R1.
 // La règle est symétrique pour R7.
 // ═══════════════════════════════════════════════════════════════
-function dualiteXAncrageR1R7(theme, hR1, hR7, figR1, figR7){
-  const X = combine(figR1, figR7);
-  if(!X) return {decisive:false, X:X, reason:'Figure X inexistante.'};
-
-  const present = figureExistsBaseOnly(X, theme) || positionsBaseEtResultantes(X, theme).length > 0;
-  if(!present) return {decisive:false, X:X, reason:'Figure X absente du thème.'};
-
-  const b1 = BINOMES_V7[figR1];
-  const b7 = BINOMES_V7[figR7];
-  const a1 = ANTAGONISTES_V7[figR1];
-  const a7 = ANTAGONISTES_V7[figR7];
-  const ba1 = b1 ? BINOMES_V7[b1] : null;
-  const ba7 = b7 ? BINOMES_V7[b7] : null;
-  const aa1 = a1 ? ANTAGONISTES_V7[a1] : null;
-  const aa7 = a7 ? ANTAGONISTES_V7[a7] : null;
-
-  const relationsR1=[];
-  const relationsR7=[];
-  if(X===b1) relationsR1.push('binôme direct de R1');
-  if(X===a1) relationsR1.push('antagoniste de R1');
-  if(X===ba1) relationsR1.push('binôme de l\'antagoniste de R1');
-  if(X===aa1) relationsR1.push('antagoniste de l\'antagoniste de R1');
-  if(X===b7) relationsR7.push('binôme direct de R7');
-  if(X===a7) relationsR7.push('antagoniste de R7');
-  if(X===ba7) relationsR7.push('binôme de l\'antagoniste de R7');
-  if(X===aa7) relationsR7.push('antagoniste de l\'antagoniste de R7');
-
-  // Chaîne d'ancrage de X évaluée depuis chacun des deux sièges.
-  // net > 0 = chaîne favorable au camp du siège ; net < 0 = chaîne défavorable.
-  const ancrageR1 = reseauAncrageR1R7(X, hR1, theme, 5);
-  const ancrageR7 = reseauAncrageR1R7(X, hR7, theme, 5);
-  const netX1 = ancrageR1.net;
-  const netX7 = ancrageR7.net;
-
-  // Cas direct : X est rattachée au camp par sa relation et sa chaîne
-  // confirme ce camp. Cas adverse : X est liée à R1/R7 mais sa chaîne
-  // est défavorable au camp opposé.
-  const soutienR1 = relationsR1.length > 0;
-  const soutienR7 = relationsR7.length > 0;
-  const r1Fort = soutienR1 && netX1 > netX7;
-  const r7Fort = soutienR7 && netX7 > netX1;
-
-  if(r1Fort && !r7Fort){
-    return {
-      decisive:true, winner:'R1', X:X, hR1:hR1, hR7:hR7,
-      relationsR1:relationsR1, relationsR7:relationsR7,
-      ancrageR1:netX1, ancrageR7:netX7,
-      reason:'⚖️ DUALITÉ R1/R7 : R1='+FL[figR1]+' + R7='+FL[figR7]+' → X='+FL[X]+' présente dans le thème. '+FL[X]+' est '+relationsR1.join(' + ')+' ; sa chaîne d\'ancrage est favorable à R1 / défavorable à R7 ('+netX1.toFixed(1)+' vs '+netX7.toFixed(1)+').'
-    };
-  }
-  if(r7Fort && !r1Fort){
-    return {
-      decisive:true, winner:'R7', X:X, hR1:hR1, hR7:hR7,
-      relationsR1:relationsR1, relationsR7:relationsR7,
-      ancrageR1:netX1, ancrageR7:netX7,
-      reason:'⚖️ DUALITÉ R1/R7 : R1='+FL[figR1]+' + R7='+FL[figR7]+' → X='+FL[X]+' présente dans le thème. '+FL[X]+' est '+relationsR7.join(' + ')+' ; sa chaîne d\'ancrage est favorable à R7 / défavorable à R1 ('+netX7.toFixed(1)+' vs '+netX1.toFixed(1)+').'
-    };
-  }
-
-  // Règle forte explicitement demandée : X lié au camp et chaîne
-  // défavorable à l'autre camp. On exige un net négatif sur le siège adverse.
-  if(soutienR1 && netX7 < 0 && netX1 >= netX7){
-    return {decisive:true, winner:'R1', X:X, hR1:hR1, hR7:hR7,
-      relationsR1:relationsR1, relationsR7:relationsR7, ancrageR1:netX1, ancrageR7:netX7,
-      reason:'⚖️ DUALITÉ R1/R7 : X='+FL[X]+' est liée à R1 ('+relationsR1.join(' + ')+') et sa chaîne d\'ancrage est défavorable à R7 (net '+netX7.toFixed(1)+') → R1 gagne.'};
-  }
-  if(soutienR7 && netX1 < 0 && netX7 >= netX1){
-    return {decisive:true, winner:'R7', X:X, hR1:hR1, hR7:hR7,
-      relationsR1:relationsR1, relationsR7:relationsR7, ancrageR1:netX1, ancrageR7:netX7,
-      reason:'⚖️ DUALITÉ R1/R7 : X='+FL[X]+' est liée à R7 ('+relationsR7.join(' + ')+') et sa chaîne d\'ancrage est défavorable à R1 (net '+netX1.toFixed(1)+') → R7 gagne.'};
-  }
-
-  return {decisive:false, X:X, hR1:hR1, hR7:hR7, relationsR1:relationsR1, relationsR7:relationsR7,
-    ancrageR1:netX1, ancrageR7:netX7,
-    reason:'⚖️ DUALITÉ R1/R7 : X='+FL[X]+' présente, mais la relation/ancrage ne départage pas R1 et R7.'};
-}
+// dualiteXAncrageR1R7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 // ═══════════════════════════════════════════════════════════════
 // PUISSANCE ÉLÉMENTAIRE R1/R7 — BRANCHÉE AU MOTEUR PRINCIPAL
@@ -15766,65 +15323,7 @@ function puissanceElementaireR1R7(fig, house, theme){
 // Couche de confirmation traçable : elle n'entre PAS dans verdictFinal —
 // elle affiche seulement la lecture élémentaire déjà utilisée par le
 // moteur, à titre de diagnostic.
-function renderElementaireR1R7(theme){
-  const ancien = document.getElementById('sikidy-elementaire-panel');
-  if(ancien) ancien.remove();
-  if(!theme) return;
-
-  const hote = document.getElementById('carte-verdict-r');
-  if(!hote || !hote.parentNode) return;
-
-  const rot = getRotationCombat(theme);
-  const r1 = puissanceElementaireR1R7(rot.figR1, rot.hR1, theme);
-  const r7 = puissanceElementaireR1R7(rot.figR7, rot.hR7, theme);
-  const neutre = neutralisationElementaireR1R7(r1, r7);
-
-  const ELEM_COULEUR = {feu:'#ef4444', air:'#eab308', eau:'#3b82f6', terre:'#94a3b8'};
-  const teinte = e => ELEM_COULEUR[e] || '#94a3b8';
-  const puce = e => '<span style="color:' + teinte(e) + ';">' + (e || '—') + '</span>';
-
-  function colonne(x, titre, couleurTitre){
-    const accord = x.maisonAccordNature
-      ? '<span style="color:#4ade80;">accord figure/maison</span>'
-      : '<span class="muted">pas d\'accord figure/maison</span>';
-    const binome = x.binomePresent
-      ? '<span style="color:#4ade80;">binôme ' + (FL[x.binome] || x.binome) + ' présent</span>'
-      : '<span class="muted">binôme ' + (FL[x.binome] || x.binome || '—') + ' absent</span>';
-    const nature = x.natureActive
-      ? '<span style="color:#4ade80;">active</span>'
-      : (x.naturePassive ? '<span style="color:#fbbf24;">passive</span>' : '<span class="muted">indéterminée</span>');
-    return '<div>'
-      + '<b style="color:' + couleurTitre + ';">' + titre + ' = ' + (FL[x.fig] || x.fig) + ' en M' + x.house + '</b>'
-      + '<div style="margin-top:4px;">Élément figure : ' + puce(x.figureNature) + ' · maison : ' + puce(x.houseNature) + '</div>'
-      + '<div>Charge sur l\'élément de la maison : ' + nature + '</div>'
-      + '<div>' + accord + '</div>'
-      + '<div>' + binome + '</div>'
-      + '<div style="margin-top:4px;"><b>' + x.powerLabel + '</b> (+' + x.powerScore + ')</div>'
-      + '</div>';
-  }
-
-  const reliquat = (liste, camp) => liste.length
-    ? camp + ' conserve ' + liste.map(puce).join(', ')
-    : camp + ' entièrement neutralisé';
-
-  const panneau = document.createElement('div');
-  panneau.id = 'sikidy-elementaire-panel';
-  panneau.className = 'card';
-  panneau.style.cssText = 'margin-top:10px; border:1px solid #0e7490;';
-  panneau.innerHTML =
-    '<h3 style="margin-bottom:2px;">🜂 Couche élémentaire R1 / R7</h3>'
-    + '<div class="muted" style="font-size:11px; margin-bottom:10px;">Diagnostic de concordance uniquement — cette lecture ne modifie pas le verdict, elle expose la composante élémentaire que le moteur utilise déjà.</div>'
-    + '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px; line-height:1.6;">'
-    + colonne(r1, 'R1', '#60a5fa')
-    + colonne(r7, 'R7', '#fb923c')
-    + '</div>'
-    + '<div style="margin-top:10px; padding:8px; border-top:1px solid rgba(148,163,184,.25); font-size:12px;">'
-    + '<b>Neutralisation croisée</b> (opposition feu↔eau, air↔terre) : '
-    + reliquat(neutre.restA, 'R1') + ' · ' + reliquat(neutre.restB, 'R7')
-    + '</div>';
-
-  hote.parentNode.insertBefore(panneau, hote.nextSibling);
-}
+// renderElementaireR1R7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -15880,39 +15379,7 @@ function lectureMaisonInfluenceFigure(theme){
   };
 }
 
-function renderMaisonInfluenceFigure(theme){
-  const ancien=document.getElementById('sikidy-maison-influence-panel');
-  if(ancien) ancien.remove();
-  const lecture=lectureMaisonInfluenceFigure(theme);
-  if(!lecture.applicable) return;
-  const hote=document.getElementById('sikidy-elementaire-panel') || document.getElementById('carte-verdict-r');
-  if(!hote || !hote.parentNode) return;
-  function couleur(e){ return ({feu:'#ef4444',air:'#eab308',eau:'#3b82f6',terre:'#94a3b8'})[e] || '#94a3b8'; }
-  function col(x,titre){
-    const inst=x.installationLocale===null?'—':String(Math.round(x.installationLocale*100)/100);
-    return '<div style="font-size:12px;line-height:1.6;">'
-      +'<b style="color:'+(titre==='R1'?'#60a5fa':'#fb923c')+';">'+titre+' = '+(FL[x.figure]||x.figure)+' en M'+x.house+'</b>'
-      +'<div>Canal de la maison : <span style="color:'+couleur(x.houseChannel)+';">'+(x.houseChannel||'—')+'</span></div>'
-      +'<div>Élément de la figure : <span style="color:'+couleur(x.figureElement)+';">'+(x.figureElement||'—')+'</span></div>'
-      +'<div>Charge sur le canal : <b>'+x.chargeLabel+'</b> ('+(x.charge===1?'1 point':x.charge===2?'2 points':'—')+')</div>'
-      +'<div>Concordance figure/maison : <b>'+(x.concordance===null?'—':x.concordance)+'</b> — '+x.concordanceLabel+'</div>'
-      +'<div>Installation locale existante : <b>'+inst+'</b></div>'
-      +'</div>';
-  }
-  const p=document.createElement('div');
-  p.id='sikidy-maison-influence-panel';
-  p.className='card';
-  p.style.cssText='margin-top:10px;border:1px solid #7c3aed;';
-  p.innerHTML='<h3 style="margin-bottom:2px;">☉ Maison → canal → Figure</h3>'
-    +'<div class="muted" style="font-size:11px;margin-bottom:10px;">Couche d’étude : la maison influence l’expression de la figure. Elle alimente désormais le moteur prédictif du verdict ; le moteur Volume des buts reste indépendant.</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'+col(lecture.R1,'R1')+col(lecture.R7,'R7')+'</div>'
-    +'<div style="margin-top:10px;padding:8px;border-top:1px solid rgba(148,163,184,.25);font-size:12px;">'
-    +'<b>Lecture :</b> '+(lecture.memeFigure?'même figure dans les deux sièges. ':'figures différentes. ')
-    +(lecture.favorisee==='égalité'?'Installation locale égale ou non calculable.':'Installation locale actuellement plus favorable à <b>'+lecture.favorisee+'</b>.')
-    +'</div>';
-  p.dataset.maisonInfluence='diagnostic';
-  hote.parentNode.insertBefore(p,hote.nextSibling);
-}
+// renderMaisonInfluenceFigure supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ═══════════════════════════════════════════════════════════════
 // PANNEAU DES RÔLES EXERCÉS (25/08/26, demande Ellemine_D)
@@ -15995,41 +15462,7 @@ function rolesExercesFigureV7(fig, theme, siegeImpose) {
 }
 
 // Toutes les figures présentes dans le thème, R1 et R7 en tête.
-function rolesExercesTheme(theme) {
-  if (!theme || !theme[1]) return {applicable: false, lignes: []};
-  const rot = getRotationCombat(theme);
-  const figR1 = rot.figR1, figR7 = rot.figR7;
-  const presentes = FIGS_V7.filter(function (f) { return trouverFigV7(f, theme).length > 0; });
-  // R1 et R7 sont la même figure sur 5,4% des thèmes (mesuré sur 4000) :
-  // une seule ligne alors, portant les deux titres et les deux sièges.
-  const memeChef = figR1 === figR7;
-  const tetes = memeChef ? [figR1] : [figR1, figR7];
-  const ordre = tetes.concat(presentes.filter(function (f) {
-    return f !== figR1 && f !== figR7;
-  }));
-  const lignes = ordre.map(function (f, rang) {
-    const estTete = rang < tetes.length;
-    const siege = !estTete ? undefined
-      : (memeChef ? rot.hR1 : (f === figR1 ? rot.hR1 : rot.hR7));
-    const l = rolesExercesFigureV7(f, theme, siege);
-    if (!l) return null;
-    l.chef = !estTete ? null : (memeChef ? 'R1 · R7' : (f === figR1 ? 'R1' : 'R7'));
-    l.siege = siege || null;
-    l.siegeSecond = memeChef && estTete ? rot.hR7 : null;
-    // Ce qui intéresse le verdict : un rôle dont le destinataire est un chef,
-    // et — pour les deux chefs eux-mêmes — un rôle qui touche le camp d'en
-    // face, seul cas où scoreRolesExercesV7 le compte.
-    const campAdverse = !estTete ? []
-      : campDuChefV7(memeChef ? figR7 : (f === figR1 ? figR7 : figR1));
-    l.roles.forEach(function (ro) {
-      ro.surChef = ro.dest === figR1 ? 'R1' : (ro.dest === figR7 ? 'R7' : null);
-      ro.compte = campAdverse.indexOf(ro.dest) >= 0;
-    });
-    return l;
-  }).filter(Boolean);
-  return {applicable: true, figR1: figR1, figR7: figR7,
-    hR1: rot.hR1, hR7: rot.hR7, lignes: lignes};
-}
+// rolesExercesTheme supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -17714,58 +17147,7 @@ function lectureOuvertureButsV7(theme, cadre) {
 
 var LIEUX_MARQUAGE_V7 = [1, 4, 5, 7, 8, 9, 10];
 
-function lectureLieuxMarquageV7(theme) {
-  if (!theme || !theme[1]) return { applicable: false, raison: 'Thème non disponible.' };
-  const rot = getRotationCombat(theme);
-  let liberations = null;
-  try { liberations = resoudreLiberationsV7(theme); } catch (e) { liberations = null; }
-
-  // Les sièges R1/R7 s'ajoutent à la liste s'ils tombent hors des sept maisons.
-  const maisons = LIEUX_MARQUAGE_V7.slice();
-  [rot.hR1, rot.hR7].forEach(function (h) { if (maisons.indexOf(h) < 0) maisons.push(h); });
-
-  const lieux = maisons.map(function (h) {
-    const fig = theme[h];
-    const profil = profilFigureMaison(fig, h, theme);
-    function etatPole(x) {
-      if (!x) return { fig: null, libelle: '—', rang: 0 };
-      const occ = trouverFigV7(x, theme);
-      if (!occ.length) return { fig: x, libelle: 'absent', rang: 0 };
-      const base = occ.filter(function (o) { return !o.hidden; });
-      return { fig: x, rang: base.length ? 2 : 1,
-        libelle: base.length ? ('base ' + base.map(function (o) { return 'M' + o.pos; }).join(' '))
-                             : ('résultante ' + occ.length + '×') };
-    }
-    let active = false;
-    try { active = !!elementaireFigureMaison(fig, h).natureLevel.active; } catch (e) { active = false; }
-    return {
-      house: h, fig: fig,
-      estR1: h === rot.hR1, estR7: h === rot.hR7,
-      horsListe: LIEUX_MARQUAGE_V7.indexOf(h) < 0,
-      installation: Math.round(profil.total * 10) / 10,
-      ouverture: OUVERTURE_FIGURE[fig] || '?',
-      active: active,
-      figureDeButs: !!FIGURES_BUTS_V7[fig],
-      etat: liberations && liberations.etat ? (liberations.etat[fig] || '?') : '?',
-      antagoniste: etatPole(ANTAGONISTES_V7[fig]),
-      protecteur: etatPole(PROTECTEURS_V7[fig]),
-      front: etatPole(FRONT_V7[fig])
-    };
-  });
-
-  // Les deux totaux qui portent le renversement observé.
-  const surListe = lieux.filter(function (l) { return !l.horsListe; });
-  const somme = Math.round(surListe.reduce(function (s, l) { return s + l.installation; }, 0) * 10) / 10;
-  const positifs = surListe.filter(function (l) { return l.installation > 0; }).length;
-
-  return {
-    applicable: true, lieux: lieux,
-    sommeInstallation: somme, lieuxPositifs: positifs, nbLieux: surListe.length,
-    figuresDeButsPresentes: FIGS_V7.filter(function (f) {
-      return FIGURES_BUTS_V7[f] && trouverFigV7(f, theme).some(function (o) { return !o.hidden; });
-    })
-  };
-}
+// lectureLieuxMarquageV7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -19362,29 +18744,7 @@ function resultatMatchV7(ensemble, index, camp, score) {
   return m.resultat;
 }
 
-function bilanEnsembleV7(ensemble) {
-  if (!ensemble) return null;
-  var annonces = ensemble.matchs.filter(function (m) { return !!m.annonce; });
-  var joues = ensemble.matchs.filter(function (m) { return !!m.resultat; });
-  var c = { camp: [0, 0], score: [0, 0], btts: [0, 0], plus25: [0, 0], m9: [0, 0],
-    laetitia_m2: [0, 0], m4_jugerecit: [0, 0] };
-  joues.forEach(function (m) {
-    Object.keys(c).forEach(function (k) {
-      var v = m.resultat.bilan[k];
-      if (v === true) c[k][0]++; else if (v === false) c[k][1]++;
-    });
-  });
-  var out = { ensemble: ensemble.nom, date: ensemble.date,
-    matchs: ensemble.matchs.length, annonces: annonces.length, joues: joues.length,
-    // Un match sans annonce préalable est PERDU pour la base — il faut le
-    // savoir, pas le rattraper.
-    perdus: ensemble.matchs.length - annonces.length, familles: {} };
-  Object.keys(c).forEach(function (k) {
-    var n = c[k][0] + c[k][1];
-    out.familles[k] = n ? (c[k][0] + '/' + n) : '—';
-  });
-  return out;
-}
+// bilanEnsembleV7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 // ═══════════════════════════════════════════════════════════════
 // LA BASE PROSPECTIVE (05/09/26) — Ellemine_D : « il faut qu'on fasse une
@@ -19455,20 +18815,7 @@ var ANNONCES_V7 = [
     detail: [], note: '77 % contre 38 % (p = 0,025, n=52) en rétrospectif — le plus fort du fichier, jamais annoncé d\'avance' }
 ];
 
-function bilanProspectifV7() {
-  return {
-    matchs: LISTE_PROSPECTIVE_V7.length,
-    annonces: ANNONCES_V7.map(function (a) {
-      return { regle: a.regle, avancement: a.faites + '/' + a.seuil,
-        justes: a.faites ? (a.justes + '/' + a.faites) : '—',
-        pret: a.faites >= a.seuil };
-    }),
-    // Tant que la base prospective est vide, AUCUNE règle n'est prête.
-    // C'est la réponse à « on aura quoi en fin de compte » : on aura ce
-    // qu'on aura annoncé d'avance, et rien d'autre.
-    pretesABrancher: ANNONCES_V7.filter(function (a) { return a.faites >= a.seuil; }).length
-  };
-}
+// bilanProspectifV7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 // ═══════════════════════════════════════════════════════════════
 // LES 13 MATCHS DU 04/09/26 — TIRAGE PAR HACHAGE, RÉSULTATS EN ATTENTE
@@ -19596,51 +18943,14 @@ CAS_HACHAGE_V7.forEach(function (c) { c.tirage = 'hachage'; c.date = '2026-09-04
 // Le bilan de ces 13 cas. Il REFUSE de rendre un taux tant que des
 // résultats manquent — c'est le garde-fou de l'erreur du 04/09 : sans lui
 // on recompte des pronostics et on croit mesurer un système.
-function resultatsHachageV7() {
-  var connus = CAS_HACHAGE_V7.filter(function (c) { return !!c.camp; });
-  var attente = CAS_HACHAGE_V7.length - connus.length;
-  if (!connus.length) {
-    return { complet: false, connus: 0, attente: attente, taux: null,
-      note: 'aucun résultat réel saisi — les 13 lignes ne portent que des pronostics' };
-  }
-  var j = 0, erreurs = [];
-  connus.forEach(function (c) {
-    var t = null;
-    try { t = buildThemeFromMothers(c.meres[0], c.meres[1], c.meres[2], c.meres[3]); } catch (e) { return; }
-    var v = null;
-    try { v = avecFormatV7(c.format || 'reel', function () { return getVerdictAfficheReel(t); }); } catch (e) { return; }
-    var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-    if (dit === c.camp) j += 1; else erreurs.push({ nom: c.nom, dit: dit, reel: c.camp });
-  });
-  return { complet: attente === 0, connus: connus.length, attente: attente,
-    juste: j, sur: connus.length, taux: j / connus.length, erreurs: erreurs,
-    note: attente ? (attente + ' match(s) encore sans résultat — taux partiel') : null };
-}
+// resultatsHachageV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // Le bras de contrôle : ce que fait un TIRAGE MACHINE sur un jeu de cas
 // donné. C'est la mesure qui manquait au matin du 04/09 et sans laquelle
 // aucune comparaison de taux ne veut rien dire (cf. le bloc ci-dessus).
 // nParCas tirages aux dés par cas ; 200 donne déjà un taux stable au
 // point de pourcentage près.
-function baseMachineV7(cas, nParCas) {
-  nParCas = nParCas || 200;
-  var j = 0, n = 0;
-  (cas || []).forEach(function (c) {
-    if (!c.camp) return;
-    var fmt = c.format || (c.esport ? 'esport' : 'reel');
-    for (var i = 0; i < nParCas; i++) {
-      var meres = [rollOneMother(), rollOneMother(), rollOneMother(), rollOneMother()]
-        .map(function (x) { return x.figure; });
-      var t = null;
-      try { t = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]); } catch (e) { continue; }
-      var v = null;
-      try { v = avecFormatV7(fmt, function () { return getVerdictAfficheReel(t); }); } catch (e) { continue; }
-      var dit = v.nulActif ? 'nul' : (v.winner === 'M1' ? 'R1' : 'R7');
-      n += 1; if (dit === c.camp) j += 1;
-    }
-  });
-  return { juste: j, sur: n, taux: n ? j / n : null };
-}
+// baseMachineV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // ⚠️ comparaisonHachageMainV7() a été RETIRÉE le 04/09 au soir. Elle
 // comparait l'archive à la main aux 13 cas de hachage en lisant leur
