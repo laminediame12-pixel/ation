@@ -34649,7 +34649,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     // en tête du panneau, et en disant d'où il vient.
     (function(){
       var pv=null; try{ pv=(avecFormatV7('reel',function(){return getVerdictAfficheReel(theme);})||{}).plus25; }catch(e){ pv=null; }
-      if(!pv) return;
+      if(!pv || pv.annonce==null) return;
       var col = pv.autoRetrait ? '#f87171' : (pv.contreditLeMoteur ? '#fbbf24' : '#38bdf8');
       html+='<div style="padding:8px 10px; margin:2px 0 8px; border-left:4px solid '+col+'; background:rgba(56,189,248,.10);">'
         +'<b style="color:'+col+'; font-size:13px;">VOLUME DE BUTS : '+esc(pv.annonce.toUpperCase())+'</b>'
