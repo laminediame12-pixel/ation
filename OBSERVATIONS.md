@@ -141,3 +141,52 @@ carte M1/M7. Elle ne l'est plus depuis que le 1N2 pilote le verdict.
 
 Troisième occurrence de la même faute dans ce fichier : la bannière qui nommait
 un moteur et en appliquait un autre, la source du BTTS, et maintenant l'export.
+
+---
+
+## Correction de l'échelle de concordance — 11/09/2026
+
+Ellemine_D : « Le verdict doit forcément changer si tout est respecté. »
+
+Ce qui n'était pas respecté : l'échelle de concordance du 1N2 classait
+Feu↔Terre et Air↔Eau **sous** les contraires. Le fichier le démentait tout seul.
+
+| paire | qualité commune | `concordanceElement` (historique) | 1N2 (1ʳᵉ version) |
+|---|---|---|---|
+| feu × air | chaud | 0,5 | 0,5 |
+| eau × terre | froid | 0,5 | 0,5 |
+| feu × terre | **sec** | 0,25 | **0** ← inversé |
+| air × eau | **humide** | 0,25 | **0** ← inversé |
+| feu × eau | aucune | 0 | **0,25** ← inversé |
+| air × terre | aucune | 0 | **0,25** ← inversé |
+
+Les deux tables sont exactement retournées sur les quatre paires du bas. Feu et
+Terre partagent le sec ; Feu et Eau ne partagent rien. Aucune lecture
+élémentaire ne peut donner à feu×terre moins de relation qu'à feu×eau.
+
+La correction « Air × Terre = contraire = 0,25 » disait dans quel sens
+redresser : les vraies oppositions remontent de 0 à 0,25, donc tout ce qui
+était au-dessus remonte aussi d'un rang. Échelle corrigée :
+
+- **1** même élément
+- **0,5** alliés — partagent une qualité : feu-air, eau-terre, feu-terre, air-eau
+- **0,25** contraires — ne partagent rien : feu-eau, air-terre
+- **0** sans relation — aucun élément lisible (cas dégénéré)
+
+« Sans relation » ne décrit pas un couple d'éléments : entre deux éléments
+réels il y a toujours au moins un contraire.
+
+**Effet sur les 65 536 thèmes : 10 187 changent de camp (15,5 %)**, dont
+5 051 R7→R1 et 5 136 R1→R7. Le changement est symétrique : ce n'est pas un
+biais vers R1. Total R1 36 142 → 36 057, R7 29 394 → 29 479.
+
+Sur le thème du 7-0 (Tristitia / Via / Conjunctio / Rubeus) : R1 = Fortuna
+Minor (feu) en M8 (terre) passe de 0 à **0,5** ; R7 = Carcer (terre) en M14
+(air) reste à 0,25. **Le verdict passe de R7 à R1 — le camp qui a gagné 7-0.**
+
+⚠️ Ce n'est PAS une preuve. La faute a été trouvée sur un thème dont je
+connaissais déjà le résultat. Ce qui la rend défendable est que l'argument ne
+dépend pas de ce résultat : les deux tables du fichier sont inversées, et cela
+se constate sans regarder aucun match. Mais un système qu'on corrige après
+avoir vu tomber un score finit toujours par avoir raison sur le passé. Seul le
+test prospectif peut trancher.

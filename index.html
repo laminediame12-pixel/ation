@@ -24452,25 +24452,52 @@ var FILIATIONS_1N2_V7 = [
   [9, 10, 13], [11, 12, 14], [13, 14, 15], [15, 1, 16]
 ];
 
-// ─── L'ÉCHELLE DE CONCORDANCE DU 1N2 (11/09/26) ───
-// La doctrine pose quatre rangs : même élément 1, alliés 0,5, CONTRAIRES
-// 0,25, sans relation 0. Les contraires sont Feu<->Eau et Air<->Terre ;
-// les alliés Feu<->Air et Eau<->Terre ; restent sans relation Feu<->Terre
-// et Air<->Eau. Les six paires sont ainsi toutes couvertes, une fois.
+// ─── L'ÉCHELLE DE CONCORDANCE DU 1N2 ───
+// CORRIGÉE LE 11/09/26 (Ellemine_D : « le verdict doit forcément changer
+// si tout est respecté »). La première version classait Feu<->Terre et
+// Air<->Eau en « sans relation » (0), c'est-à-dire SOUS les contraires.
+// C'était faux, et le fichier le prouvait tout seul :
 //
-// ⚠️ La table partagée concordanceElement() range Air<->Terre à 0
-// (« opposition totale ») et met 0,25 sur Feu<->Terre / Air<->Eau : elle
-// confond « contraire » et « sans relation ». On ne la corrige PAS ici —
-// elle est appelée à une vingtaine d'endroits (BTTS, incident, volume) et
-// la changer déplacerait des moteurs qu'on n'a pas mandat de toucher.
-// Le moteur 1N2 utilise donc sa propre échelle, celle de la doctrine.
+//   paire        qualité commune   concordanceElement   1N2 (1re version)
+//   feu × air    chaud             0,5                  0,5
+//   eau × terre  froid             0,5                  0,5
+//   feu × terre  SEC               0,25                 0      ← inversé
+//   air × eau    HUMIDE            0,25                 0      ← inversé
+//   feu × eau    aucune            0                    0,25   ← inversé
+//   air × terre  aucune            0                    0,25   ← inversé
+//
+// Les deux tables sont exactement retournées sur les quatre paires du bas.
+// Feu et Terre partagent le SEC ; Feu et Eau ne partagent rien. Aucune
+// lecture élémentaire ne peut donner à Feu<->Terre MOINS de relation qu'à
+// Feu<->Eau — ni la table historique du fichier, ni la théorie des quatre
+// qualités dont elle vient.
+//
+// La correction d'Ellemine_D « Air × Terre = contraire = 0,25 » dit dans
+// quel sens redresser : les vraies oppositions (Feu<->Eau, Air<->Terre)
+// remontent de 0 à 0,25 et s'appellent CONTRAIRES. Tout ce qui était
+// au-dessus remonte donc aussi d'un rang : les quatre paires qui partagent
+// une qualité sont ALLIÉES, à 0,5. Les quatre rangs de la doctrine se
+// répartissent alors ainsi :
+//   1     même élément
+//   0,5   alliés      — partagent une qualité : feu-air (chaud),
+//                       eau-terre (froid), feu-terre (sec), air-eau (humide)
+//   0,25  contraires  — ne partagent rien : feu-eau, air-terre
+//   0     sans relation — aucun élément lisible (figure ou maison absente)
+//
+// « Sans relation » ne décrit donc pas un couple d'éléments : entre deux
+// éléments réels il y a toujours au moins un contraire. C'est le rang du
+// cas dégénéré, et c'est pour ça qu'il vaut zéro.
+//
+// ⚠️ La table partagée concordanceElement() n'est PAS touchée : elle est
+// appelée à une vingtaine d'endroits (BTTS, incident, volume) et la
+// changer déplacerait des moteurs qu'on n'a pas mandat de toucher. Elle
+// garde donc son échelle historique, d'un rang plus basse.
 function CONCORDANCE_1N2_V7(elemFig, elemCanal) {
-  if (!elemFig || !elemCanal) return 0;
-  if (elemFig === elemCanal) return 1;
+  if (!elemFig || !elemCanal) return 0;              // sans relation
+  if (elemFig === elemCanal) return 1;               // même élément
   var paire = [elemFig, elemCanal].sort().join('-');
-  if (paire === 'air-feu' || paire === 'eau-terre') return 0.5;   // alliés
   if (paire === 'eau-feu' || paire === 'air-terre') return 0.25;  // contraires
-  return 0;                                                       // sans relation
+  return 0.5;                                                      // alliés
 }
 
 // §1 : « 2 points = passif ; 1 point = actif », niveaux dans l'ordre
@@ -30029,7 +30056,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '<br>Ordre de décision (§11, liste fermée) : <b>1. Concordance → 2. Charge → '
       + '3. Filiation → 4. Boucle</b>, puis pôle NM rotatif si figures identiques. '
       + 'Le premier critère discriminant tranche ; aucune somme entre critères.'
-      + '<br>Concordance : même élément 1 · alliés 0,5 · contraires 0,25 · sans relation 0. '
+      + '<br>Concordance : même élément 1 · alliés 0,5 (partagent une qualité : '
+      + 'feu-air chaud, eau-terre froid, feu-terre sec, air-eau humide) · '
+      + 'contraires 0,25 (ne partagent rien : feu-eau, air-terre) · sans relation 0. '
       + 'Charge : 1 point = actif, 2 points = passif (niveaux Feu/Air/Eau/Terre). '
       + 'Le canal ne transforme pas la figure : il lui donne son milieu.</div>'
       + '</div>';
