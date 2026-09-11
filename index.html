@@ -24329,6 +24329,215 @@ function nmVolumeMatrix(theme, nmResult){
 // Règle prédictive : une figure est favorisée par la cohérence de son contexte
 // de maison : concordance figure/canal, charge du canal, position dans le canal
 // et cohérence de la filiation qui produit la position.
+// ═══════════════════════════════════════════════════════════════
+// MOTEUR 1N2 — VAINQUEUR PAR LES CANAUX DES MAISONS ET DES FIGURES
+// Doctrine d'Ellemine_D, 11/09/26. Lecture en huit niveaux :
+//   Maison -> Canal -> Position -> Figure -> Concordance -> Charge
+//   -> Filiation -> Installation
+// puis comparaison LEXICOGRAPHIQUE de R1 contre R7 : le premier critère
+// réellement discriminant tranche. Aucun total de points n'est calculé
+// entre critères — la doctrine l'interdit explicitement pour la boucle,
+// et le principe est étendu à tous les niveaux.
+//
+// ⚠️ UN SEUL POINT N'ÉTAIT PAS FIXÉ PAR LA DOCTRINE : la définition
+// structurelle de la charge. La doctrine dit « la charge active/passive
+// vient de la structure de la figure » sans dire laquelle. On applique la
+// règle DÉJÀ écrite dans ce fichier (cf. INDEX BINAIRE, ligne ~3150) :
+// « 1 point = OUVERT, 2 points = FERMÉ », lignes dans l'ordre feu/air/eau/terre.
+//   active  = ligne de FEU ouverte    (la figure initie)
+//   ouverte = ligne de TERRE ouverte  (la figure n'est pas scellée en bas)
+//   mobile  = feu et terre différents (la figure penche, donc elle bouge)
+//   charge  = nombre de lignes ouvertes (0 à 4) — c'est ce nombre qui départage
+// Si ce n'est pas la bonne lecture, c'est la SEULE table à corriger :
+// CHARGE_1N2_V7 ci-dessous. Rien d'autre n'en dépend.
+// ═══════════════════════════════════════════════════════════════
+
+// Les quatre canaux, dans l'ordre de leurs quatre positions.
+var CANAUX_1N2_V7 = {
+  feu:   [1, 5, 9, 13],
+  air:   [2, 6, 10, 14],
+  eau:   [3, 7, 11, 15],
+  terre: [4, 8, 12, 16]
+};
+var POSITIONS_1N2_V7 = ['Origine', 'Transmission', 'Résultante', 'Synthèse'];
+
+// Les huit filiations binaires : [parent, parent, enfant].
+// M5-M8 sont des générations verticales issues des niveaux des quatre
+// mères : elles ne reçoivent aucun parent binaire dans cette lecture.
+var FILIATIONS_1N2_V7 = [
+  [1, 2, 9], [3, 4, 10], [5, 6, 11], [7, 8, 12],
+  [9, 10, 13], [11, 12, 14], [13, 14, 15], [15, 1, 16]
+];
+
+function CHARGE_1N2_V7(fig) {
+  var g = (typeof MAP_GEO !== 'undefined' && MAP_GEO[fig]) ? MAP_GEO[fig] : [2, 2, 2, 2];
+  var ouvert = function (i) { return g[i] === 1; };   // 1 point = ouvert
+  var ouvertes = g.filter(function (v) { return v === 1; }).length;
+  return {
+    active: ouvert(0),                 // ligne de feu
+    ouverte: ouvert(3),                // ligne de terre
+    mobile: ouvert(0) !== ouvert(3),   // la figure penche
+    valeur: ouvertes                   // 0..4, c'est elle qui départage
+  };
+}
+
+// Lecture complète d'un camp : tout ce que la doctrine demande de lire,
+// sans encore rien comparer.
+function lireCamp1N2V7(theme, maison) {
+  var fig = theme[maison];
+  var elemFig = (typeof ELEMENTS !== 'undefined' && ELEMENTS[fig]) || null;
+  var canal = (typeof ELEMENT_OF_HOUSE !== 'undefined' && ELEMENT_OF_HOUSE[maison]) || null;
+  var suite = CANAUX_1N2_V7[canal] || [];
+  var idx = suite.indexOf(maison);
+
+  // ── niveau 4 : concordance figure x canal ──
+  var concordance = (typeof concordanceElement === 'function' && elemFig && canal)
+    ? concordanceElement(elemFig, canal) : 0;
+
+  // ── niveau 5 : charge ──
+  var charge = CHARGE_1N2_V7(fig);
+
+  // ── niveau 6 : filiation ──
+  // transmission = la figure du camp est parent d'une filiation dont
+  // l'enfant porte cette même figure ou son binôme (elle se prolonge).
+  // engendre = la maison du camp est elle-même l'enfant d'une filiation.
+  var bin = (typeof BINOMES !== 'undefined' && BINOMES[fig]) || null;
+  var transmission = 0, engendre = 0;
+  FILIATIONS_1N2_V7.forEach(function (l) {
+    if (l[2] === maison) engendre = 1;
+    if (l[0] === maison || l[1] === maison) {
+      var enfant = theme[l[2]];
+      if (enfant === fig || (bin && enfant === bin)) transmission++;
+    }
+  });
+
+  // ── niveau 7 : boucle structurelle ──
+  var occurrences = [], resultantes = 0, antagonistes = 0;
+  var ant = (typeof ANTAGONISTES !== 'undefined' && ANTAGONISTES[fig]) || null;
+  for (var p = 1; p <= 16; p++) {
+    if (theme[p] === fig) occurrences.push(p);
+    if (ant && theme[p] === ant) antagonistes++;
+    if (typeof combine === 'function' && typeof FIGS_V7 !== 'undefined') {
+      if (combine(theme[p], FIGS_V7[p - 1]) === fig) resultantes++;
+    }
+  }
+  var binomePresent = 0;
+  if (bin) for (var q = 1; q <= 16; q++) if (theme[q] === bin) { binomePresent = 1; break; }
+  var reposFig = (typeof MAISON_REPOS_NM !== 'undefined' && MAISON_REPOS_NM[fig]) || null;
+  var ancrageRepos = (reposFig && theme[reposFig] === fig) ? 1 : 0;
+  // matérialisation : combien des quatre maisons du canal portent la figure
+  // ou son binôme — c'est l'emprise du camp sur son propre canal.
+  var materialisation = suite.filter(function (h) {
+    return theme[h] === fig || (bin && theme[h] === bin);
+  }).length;
+
+  // ── niveau 8 : installation locale ──
+  var deplacement = reposFig ? Math.abs(maison - reposFig) : 16;
+  var voisins = [((maison + 14) % 16) + 1, (maison % 16) + 1];
+  var environnement = voisins.reduce(function (s, h) {
+    var e = (typeof ELEMENTS !== 'undefined' && ELEMENTS[theme[h]]) || null;
+    var c = (typeof ELEMENT_OF_HOUSE !== 'undefined' && ELEMENT_OF_HOUSE[h]) || null;
+    return s + ((typeof concordanceElement === 'function' && e && c)
+      ? concordanceElement(e, c) : 0);
+  }, 0) / voisins.length;
+  var cohabitation = suite.filter(function (h) {
+    return h !== maison && (theme[h] === fig || (bin && theme[h] === bin));
+  }).length ? 1 : 0;
+  var maisonNatale = (reposFig === maison) ? 1 : 0;
+
+  return {
+    maison: maison, figure: fig, element: elemFig,
+    canal: canal, position: idx >= 0 ? POSITIONS_1N2_V7[idx] : '—', rangCanal: idx + 1,
+    concordance: concordance,
+    charge: charge,
+    filiation: { transmission: transmission, engendre: engendre },
+    boucle: {
+      binomePresent: binomePresent, materialisation: materialisation,
+      repetitions: occurrences.length, ancrageRepos: ancrageRepos,
+      resultantesPropres: resultantes, expositionAntagonistes: antagonistes
+    },
+    installation: {
+      deplacement: deplacement, multiplicite: occurrences.length,
+      environnement: environnement, cohabitation: cohabitation,
+      activation: charge.active ? 1 : 0, maisonNatale: maisonNatale
+    }
+  };
+}
+
+// Comparaison lexicographique de deux listes de valeurs (plus grand gagne).
+// Renvoie {gagnant:'R1'|'R7'|null, rang:index du critere qui a tranche}.
+function _lex1N2V7(a, b) {
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] > b[i]) return { gagnant: 'R1', rang: i };
+    if (a[i] < b[i]) return { gagnant: 'R7', rang: i };
+  }
+  return { gagnant: null, rang: -1 };
+}
+
+function moteur1N2V7(theme) {
+  if (!theme || typeof getRotationCombat !== 'function') return null;
+  var rot;
+  try { rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!rot || !rot.hR1 || !rot.hR7) return null;
+
+  var r1 = lireCamp1N2V7(theme, rot.hR1);
+  var r7 = lireCamp1N2V7(theme, rot.hR7);
+
+  // ── niveau 9 : ordre de décision, strictement lexicographique ──
+  // Chaque critère est lui-même une liste, comparée dans l'ordre exact
+  // que la doctrine énonce — jamais une somme.
+  var criteres = [
+    { nom: 'Concordance',
+      a: [r1.concordance], b: [r7.concordance] },
+    { nom: 'Charge active',
+      a: [r1.charge.valeur], b: [r7.charge.valeur] },
+    { nom: 'Filiation',
+      a: [r1.filiation.transmission, r1.filiation.engendre],
+      b: [r7.filiation.transmission, r7.filiation.engendre] },
+    { nom: 'Stabilité de boucle',
+      a: [r1.boucle.binomePresent, r1.boucle.materialisation, r1.boucle.repetitions,
+          r1.boucle.ancrageRepos, r1.boucle.resultantesPropres, -r1.boucle.expositionAntagonistes],
+      b: [r7.boucle.binomePresent, r7.boucle.materialisation, r7.boucle.repetitions,
+          r7.boucle.ancrageRepos, r7.boucle.resultantesPropres, -r7.boucle.expositionAntagonistes] },
+    // La concordance ouvre aussi l'installation locale dans la doctrine,
+    // mais à ce stade elle a forcément déjà égalisé (critère 1) : la
+    // comparer une seconde fois ne peut rien trancher, on part donc du
+    // déplacement. Moins de déplacement = mieux ancré, d'où le signe.
+    { nom: 'Installation locale',
+      a: [-r1.installation.deplacement, r1.installation.multiplicite, r1.installation.environnement,
+          r1.installation.cohabitation, r1.installation.activation, r1.installation.maisonNatale],
+      b: [-r7.installation.deplacement, r7.installation.multiplicite, r7.installation.environnement,
+          r7.installation.cohabitation, r7.installation.activation, r7.installation.maisonNatale] }
+  ];
+
+  for (var i = 0; i < criteres.length; i++) {
+    var c = criteres[i];
+    var duel = _lex1N2V7(c.a, c.b);
+    if (duel.gagnant) {
+      return {
+        verdict: duel.gagnant,
+        camp: duel.gagnant,
+        critere: c.nom,
+        rangInterne: duel.rang,
+        detail: c.nom + ' — ' + duel.gagnant + ' l\'emporte : R1 '
+          + c.a[duel.rang] + ' contre R7 ' + c.b[duel.rang],
+        r1: r1, r7: r7, rotation: rot,
+        criteresMuets: criteres.slice(0, i).map(function (x) { return x.nom; })
+      };
+    }
+  }
+  // Aucun des cinq niveaux ne discrimine : les deux camps sont
+  // structurellement indiscernables. C'est le N du 1N2.
+  return {
+    verdict: 'N', camp: 'Nul', critere: 'aucun',
+    rangInterne: -1,
+    detail: 'Les cinq niveaux égalisent : R1 et R7 sont structurellement '
+      + 'indiscernables — match nul.',
+    r1: r1, r7: r7, rotation: rot,
+    criteresMuets: criteres.map(function (x) { return x.nom; })
+  };
+}
+
 function moteurVainqueurPredictif(theme){
   const M=theme||{};
   const FIG={
