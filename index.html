@@ -24369,6 +24369,27 @@ var FILIATIONS_1N2_V7 = [
   [9, 10, 13], [11, 12, 14], [13, 14, 15], [15, 1, 16]
 ];
 
+// ─── L'ÉCHELLE DE CONCORDANCE DU 1N2 (11/09/26) ───
+// La doctrine pose quatre rangs : même élément 1, alliés 0,5, CONTRAIRES
+// 0,25, sans relation 0. Les contraires sont Feu<->Eau et Air<->Terre ;
+// les alliés Feu<->Air et Eau<->Terre ; restent sans relation Feu<->Terre
+// et Air<->Eau. Les six paires sont ainsi toutes couvertes, une fois.
+//
+// ⚠️ La table partagée concordanceElement() range Air<->Terre à 0
+// (« opposition totale ») et met 0,25 sur Feu<->Terre / Air<->Eau : elle
+// confond « contraire » et « sans relation ». On ne la corrige PAS ici —
+// elle est appelée à une vingtaine d'endroits (BTTS, incident, volume) et
+// la changer déplacerait des moteurs qu'on n'a pas mandat de toucher.
+// Le moteur 1N2 utilise donc sa propre échelle, celle de la doctrine.
+function CONCORDANCE_1N2_V7(elemFig, elemCanal) {
+  if (!elemFig || !elemCanal) return 0;
+  if (elemFig === elemCanal) return 1;
+  var paire = [elemFig, elemCanal].sort().join('-');
+  if (paire === 'air-feu' || paire === 'eau-terre') return 0.5;   // alliés
+  if (paire === 'eau-feu' || paire === 'air-terre') return 0.25;  // contraires
+  return 0;                                                       // sans relation
+}
+
 function CHARGE_1N2_V7(fig) {
   var g = (typeof MAP_GEO !== 'undefined' && MAP_GEO[fig]) ? MAP_GEO[fig] : [2, 2, 2, 2];
   var ouvert = function (i) { return g[i] === 1; };   // 1 point = ouvert
@@ -24391,8 +24412,7 @@ function lireCamp1N2V7(theme, maison) {
   var idx = suite.indexOf(maison);
 
   // ── niveau 4 : concordance figure x canal ──
-  var concordance = (typeof concordanceElement === 'function' && elemFig && canal)
-    ? concordanceElement(elemFig, canal) : 0;
+  var concordance = CONCORDANCE_1N2_V7(elemFig, canal);
 
   // ── niveau 5 : charge ──
   var charge = CHARGE_1N2_V7(fig);
@@ -24482,6 +24502,58 @@ function moteur1N2V7(theme) {
 
   var r1 = lireCamp1N2V7(theme, rot.hR1);
   var r7 = lireCamp1N2V7(theme, rot.hR7);
+
+  // ─── RÈGLE DES FIGURES IDENTIQUES (11/09/26, Ellemine_D) ───
+  // « La concordance ne peut pas servir à départager deux occurrences de la
+  // MÊME figure. Il passe donc au pôle NM rotatif. »
+  // C'est cohérent de bout en bout : si R1 et R7 portent la même figure,
+  // la charge est identique elle aussi (elle ne dépend que de la structure
+  // de la figure), donc les deux premiers niveaux sont muets par
+  // construction. Le départage revient au pôle NM rotatif, qui ne lit pas
+  // les figures des camps mais le poids des maisons de chaque pôle :
+  //   pôle domicile  = M1 + M4 + M13      pôle extérieur = M7 + M10 + M14
+  // Seuil d'écart 1,5 — en dessous, aucun camp n'est établi : c'est le N.
+  // Poids, pôles et seuil viennent de verdictNMRatif, déjà dans le fichier
+  // (NM_FIGURE_POIDS) : rien n'est réinventé ici.
+  if (r1.figure === r7.figure) {
+    // Les pôles se lisent sur les MAISONS FIXES, avec le poids brut de leur
+    // figure (NM_FIGURE_POIDS). Attention : le sumNm de verdictNMRatif somme
+    // des POSITIONS DE ROTATION avec des scores déjà modifiés par le flux —
+    // sur ce thème il donne 12,0 / 8,4 là où la doctrine donne 12,5 / 6.
+    // Ce n'est pas la même lecture : on applique celle de la doctrine.
+    var poids = function (h) {
+      var f = theme[h];
+      return (typeof NM_FIGURE_POIDS !== 'undefined' && NM_FIGURE_POIDS[f] != null)
+        ? NM_FIGURE_POIDS[f] : 0;
+    };
+    var somme = function (hs) { return hs.reduce(function (s, h) { return s + poids(h); }, 0); };
+    var poleR1 = somme([1, 4, 13]);
+    var poleR7 = somme([7, 10, 14]);
+    {
+      var ecart = Math.abs(poleR1 - poleR7);
+      var chiffres = 'pôle R1 (M1+M4+M13) ' + poleR1.toFixed(1)
+        + ' contre pôle R7 (M7+M10+M14) ' + poleR7.toFixed(1)
+        + ' — écart ' + ecart.toFixed(1);
+      var poleInfo = { poleR1: poleR1, poleR7: poleR7, ecart: ecart, seuil: 1.5,
+        detailR1: [1, 4, 13].map(function (h) { return 'M' + h + ' ' + ((typeof FL !== 'undefined' && FL[theme[h]]) || theme[h]) + ' ' + poids(h); }),
+        detailR7: [7, 10, 14].map(function (h) { return 'M' + h + ' ' + ((typeof FL !== 'undefined' && FL[theme[h]]) || theme[h]) + ' ' + poids(h); }) };
+      if (ecart > 1.5) {
+        var gagnantPole = poleR1 > poleR7 ? 'R1' : 'R7';
+        return { verdict: gagnantPole, camp: gagnantPole, critere: 'Pôle NM rotatif',
+          figuresIdentiques: true, pole: poleInfo,
+          detail: 'R1 et R7 portent la même figure (' + ((typeof FL!=='undefined'&&FL[r1.figure])||r1.figure)
+            + ') : la concordance ne peut pas les départager. Pôle NM rotatif — '
+            + chiffres + ' (seuil 1,5) → ' + gagnantPole + ' l\'emporte.',
+          r1: r1, r7: r7, rotation: rot };
+      }
+      return { verdict: 'N', camp: 'Nul', critere: 'Pôle NM insuffisant',
+        figuresIdentiques: true, pole: poleInfo,
+        detail: 'R1 et R7 portent la même figure (' + ((typeof FL!=='undefined'&&FL[r1.figure])||r1.figure)
+          + ') : la concordance ne peut pas les départager. Pôle NM rotatif — '
+          + chiffres + ', sous le seuil de 1,5 → aucun camp n\'est établi, nul.',
+        r1: r1, r7: r7, rotation: rot };
+    }
+  }
 
   // ── niveau 9 : ordre de décision, strictement lexicographique ──
   // Chaque critère est lui-même une liste, comparée dans l'ordre exact
