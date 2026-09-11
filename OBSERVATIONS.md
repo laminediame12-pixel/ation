@@ -312,3 +312,51 @@ Les bascules sont quasi symétriques : le total bouge de 68 thèmes pour
 
 Le moteur 1N2 lui-même est inchangé (R1 36 057 / R7 29 479) : la correction est
 en aval, dans la carte, et elle est nommée là où elle s'applique.
+
+### Le camp muet lisait la mauvaise figure (11/09/2026)
+
+Ellemine_D : « on avait bien déterminé que le camp 2 ne marque pas, pourquoi les
+deux marquent ». Il avait raison, et la lecture que je venais de brancher ne
+pouvait pas le voir.
+
+`bttsAxesResidenceV7` **ne lit pas la figure du camp**. Il lit le *trigone
+offensif* — la somme de trois maisons du thème tourné. Sur Tristitia / Via /
+Conjunctio / Rubeus :
+
+| | figure lue | état |
+|---|---|---|
+| trigone offensif de R7 | **Rubeus** | présent M9, M13, M14 · portes **ouvertes** · charges **actives** · concordance **1** |
+| **camp R7 lui-même** | **Carcer en M14** | porte **fermée** · charge **passive** · mobilité **fixe** · concordance **0,25** |
+
+Les quatre marqueurs du camp disent qu'il ne marque pas. La lecture regardait
+une autre figure, grande ouverte, et concluait que les deux marquent.
+
+**Deuxième route ajoutée** : la résidence du camp lui-même est muette quand elle
+est *fermée + passive + fixe + mal logée* (concordance contraire).
+
+La paire « fermée + passive » n'est pas inventée : c'est exactement la signature
+que le fichier emploie déjà pour un verrou défensif. S'y ajoutent *fixe* (elle ne
+bouge pas) et *mal logée* — la même exigence que la règle d'incident M12/M6.
+
+Mesuré sur les 65 536 thèmes : parle sur **10,40 %** (R1 seul 5,32 %, R7 seul
+4,54 %, les deux 0,54 %). Elle apporte **6 409 thèmes** que la lecture des axes
+ne voyait pas — seuls 407 de ses 6 816 déclenchements étaient déjà couverts.
+
+**Effet :**
+
+| | avant | après |
+|---|---|---|
+| BTTS OUI | 62 076 | **58 257** |
+| camp corrigé | 1 063 | **1 527** |
+| vers nul (deux muets) | 81 | **617** (150 confirmés) |
+| score 1-0 | 1 464 | **3 589** |
+| score 0-1 | 1 180 | **3 624** |
+| score 0-0 | 816 | **2 602** |
+
+Sur le thème : **Équipe 1, 1-0, BTTS NON, camp muet R7 par résidence fermée.**
+Le match a fini 7-0 : camp juste, BTTS juste, volume faux.
+
+⚠️ **Règle neuve, aucune justesse mesurée.** Ses ingrédients viennent tous des
+tables du fichier, mais l'assemblage date d'aujourd'hui et a été trouvé sur un
+thème dont je connaissais le résultat. Elle part au test prospectif comme les
+autres. Elle n'est pas démontrée.

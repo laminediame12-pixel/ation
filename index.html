@@ -27360,11 +27360,69 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   //
   // Réservé à la carte de rotation : sur la carte M1/M7 les étiquettes ne
   // désignent pas les mêmes maisons, la lecture n'y serait pas valable.
-  var campMuetCode = null;
-  if (labelA === 'R1' && bttsAxes && bttsAxes.applicable) {
-    if (bttsAxes.bloqueR1 && bttsAxes.bloqueR7) campMuetCode = 'AB';
-    else if (bttsAxes.bloqueR1) campMuetCode = 'A';
-    else if (bttsAxes.bloqueR7) campMuetCode = 'B';
+  // ─── DEUXIÈME ROUTE : LA RÉSIDENCE DU CAMP EST FERMÉE (11/09/26) ───
+  // Ellemine_D, sur Tristitia/Via/Conjunctio/Rubeus : « on avait bien
+  // déterminé que le camp 2 ne marque pas, pourquoi les deux marquent ».
+  // Il avait raison, et la première route ne pouvait pas le voir.
+  //
+  // bttsAxesResidenceV7 ne lit pas la figure du camp : il lit le TRIGONE
+  // OFFENSIF, la somme de trois maisons du thème tourné. Sur ce thème le
+  // trigone de R7 donne RUBEUS — présent en M9, M13, M14, portes ouvertes,
+  // charges actives, concordance 1 : une attaque grande ouverte. Alors que
+  // le CAMP R7 lui-même est CARCER en M14 :
+  //     porte FERMÉE · charge PASSIVE · mobilité FIXE · concordance 0,25
+  // Les quatre marqueurs disent que ce camp ne marque pas, et la lecture
+  // regardait une autre figure. Deux lectures du même camp, sur deux
+  // figures différentes.
+  //
+  // La signature « fermée + passive » n'est pas inventée ici : c'est
+  // exactement celle que ce fichier emploie déjà pour un verrou défensif
+  // (cf. bloqueR1/bloqueR7 ci-dessus, « porte==='fermee' && charge==='passive' »).
+  // On l'applique à la résidence du camp lui-même, avec deux exigences de
+  // plus : FIXE (elle ne bouge pas) et MAL LOGÉE (concordance contraire) —
+  // la même condition « il faut être mal logé pour nuire » que la règle
+  // d'incident M12/M6.
+  //
+  // Mesuré sur les 65 536 thèmes : parle sur 10,40 % (R1 seul 5,32 %,
+  // R7 seul 4,54 %, les deux 0,54 %). Elle discrimine donc, et elle
+  // apporte 6 409 thèmes que la lecture des axes ne voyait pas — seuls
+  // 407 de ses 6 816 déclenchements étaient déjà couverts.
+  //
+  // ⚠️ RÈGLE NEUVE, SANS AUCUNE MESURE DE JUSTESSE. Ses ingrédients sont
+  // tous dans les tables du fichier, mais leur assemblage date d'aujourd'hui
+  // et a été trouvé sur un thème dont le résultat était connu. Elle part au
+  // test prospectif comme les autres — elle n'est pas démontrée.
+  var _residenceMuette = function (h) {
+    if (typeof OUVERTURE_FIGURE === 'undefined' || typeof ACTIVE_PASSIVE_FIGURE === 'undefined'
+      || typeof MOBILITE_FIGURE === 'undefined') return false;
+    var f = theme[h];
+    return OUVERTURE_FIGURE[f] === 'fermee'
+      && ACTIVE_PASSIVE_FIGURE[f] === 'passive'
+      && MOBILITE_FIGURE[f] === 'fixe'
+      && concordanceElement(ELEMENTS[f], ELEMENT_OF_HOUSE[h]) < 0.5;
+  };
+
+  var campMuetCode = null, campMuetSource = null;
+  if (labelA === 'R1') {
+    var _axA = !!(bttsAxes && bttsAxes.applicable && bttsAxes.bloqueR1);
+    var _axB = !!(bttsAxes && bttsAxes.applicable && bttsAxes.bloqueR7);
+    var _reA = _residenceMuette(posA);
+    var _reB = _residenceMuette(posB);
+    var _A = _axA || _reA, _B = _axB || _reB;
+    if (_A && _B) campMuetCode = 'AB';
+    else if (_A) campMuetCode = 'A';
+    else if (_B) campMuetCode = 'B';
+    if (campMuetCode) {
+      var _srcAx = (_axA && _A) || (_axB && _B);
+      var _srcRe = (_reA && _A) || (_reB && _B);
+      campMuetSource = (_srcAx && _srcRe) ? 'voie offensive bloquée + résidence fermée'
+        : _srcRe ? 'résidence fermée (porte fermée, charge passive, fixe, mal logée)'
+        : 'voie offensive sans résidence concordante, défense adverse fermée et passive';
+      // Un camp qui ne marque pas impose le BTTS à non : les deux ne peuvent
+      // pas marquer si l'un est muet. La cascade BTTS ignorait la route
+      // « résidence », il faut donc le lui dire ici.
+      if (btts !== false) { btts = false; bttsBranche = 'camp_muet'; }
+    }
   }
   var campMuetCorrige = null, campMuetNul = null;
   if (campMuetCode === 'AB') {
@@ -27649,15 +27707,16 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // seul 1 481 (2,26 %), les deux 81 (0,12 %), aucun 62 622 (95,55 %).
     // Réservé à la carte de rotation : sur la carte M1/M7 les étiquettes ne
     // désignent pas les mêmes maisons, la lecture n'y serait pas valable.
+    bttsCampMuetSource: campMuetSource,
     bttsCampMuetCorrige: campMuetCorrige,
     bttsCampMuetNul: campMuetNul,
-    bttsCampMuet: (labelA === 'R1' && bttsAxes && bttsAxes.applicable)
-      ? (bttsAxes.bloqueR1 && bttsAxes.bloqueR7 ? 'les deux'
-        : bttsAxes.bloqueR1 ? 'R1'
-        : bttsAxes.bloqueR7 ? 'R7' : null)
-      : null,
+    bttsCampMuet: campMuetCode === 'AB' ? 'les deux'
+      : campMuetCode === 'A' ? 'R1'
+      : campMuetCode === 'B' ? 'R7' : null,
     bttsBranche: bttsBranche,
-    bttsSource: (bttsBranche === 'axes')
+    bttsSource: (bttsBranche === 'camp_muet')
+      ? ('camp muet — ' + (campMuetSource || 'un camp ne marque pas'))
+      : (bttsBranche === 'axes')
       ? ('axes de résidence — ' + ((bttsAxes && bttsAxes.synthese) || 'voies offensives contre verrous défensifs'))
       : (bttsBranche === 'cadent') ? 'maison de R1 + Conjunctio + Puer (26/32)'
       : (bttsBranche === 'm4m10') ? 'doctrine M4/M10'
@@ -30208,7 +30267,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     };
     muetTxt = _mu === 'les deux'
       ? 'les DEUX camps sont lus muets'
-      : 'camp muet : <b>' + esc(_nom(_mu)) + '</b> (voie offensive sans résidence concordante, défense adverse fermée et passive)';
+      : 'camp muet : <b>' + esc(_nom(_mu)) + '</b> — ' + esc(card.bttsCampMuetSource || '');
     if (card.bttsCampMuetNul) {
       muetAlerte = 'Les DEUX voies offensives sont bloquées : le score est 0-0, donc un NUL. '
         + 'Le camp annoncé était ' + esc(card.bttsCampMuetNul.avant || '—') + '. '
