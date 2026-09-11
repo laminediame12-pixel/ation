@@ -24488,16 +24488,14 @@ var FILIATIONS_1N2_V7 = [
 // éléments réels il y a toujours au moins un contraire. C'est le rang du
 // cas dégénéré, et c'est pour ça qu'il vaut zéro.
 //
-// ⚠️ La table partagée concordanceElement() n'est PAS touchée : elle est
-// appelée à une vingtaine d'endroits (BTTS, incident, volume) et la
-// changer déplacerait des moteurs qu'on n'a pas mandat de toucher. Elle
-// garde donc son échelle historique, d'un rang plus basse.
+// ⚠️ PLUS DE TABLE PROPRE AU 1N2 (11/09/26, Ellemine_D : « corrige ça »).
+// Le 1N2 avait sa copie parce que la table partagée n'avait pas encore été
+// redressée ; les deux se contredisaient. La table partagée porte
+// désormais la même échelle, et c'est elle qui fait foi — une définition,
+// un endroit. Cette fonction reste comme point d'entrée nommé du moteur,
+// mais elle ne décide plus rien.
 function CONCORDANCE_1N2_V7(elemFig, elemCanal) {
-  if (!elemFig || !elemCanal) return 0;              // sans relation
-  if (elemFig === elemCanal) return 1;               // même élément
-  var paire = [elemFig, elemCanal].sort().join('-');
-  if (paire === 'eau-feu' || paire === 'air-terre') return 0.25;  // contraires
-  return 0.5;                                                      // alliés
+  return concordanceElement(elemFig, elemCanal);
 }
 
 // §1 : « 2 points = passif ; 1 point = actif », niveaux dans l'ordre
@@ -25182,11 +25180,40 @@ function positionsBaseEtResultantes(fig, theme){
 // et terre-eau avaient 0,5, tout le reste (y compris eau-air et terre-feu,
 // qui ont une vraie concordance partielle) tombait à 0 comme feu-eau et
 // air-terre — traitait à tort 6 paires différentes comme équivalentes.
+// ═══════════════════════════════════════════════════════════════
+// LA CONCORDANCE ÉLÉMENTAIRE — UNE SEULE TABLE POUR TOUT LE FICHIER
+// Redressée le 11/09/26 (Ellemine_D : « corrige ça »), après la même
+// correction sur le 1N2.
+//
+// L'échelle historique plaçait les vraies oppositions à 0 (« opposition
+// totale ») et les paires qui partagent une qualité à 0,25. Ellemine_D a
+// corrigé : « Air × Terre = concordance CONTRAIRE = 0,25 ». Les quatre
+// rangs de la doctrine — même 1, alliés 0,5, contraires 0,25, sans
+// relation 0 — se répartissent donc ainsi sur les six paires :
+//
+//   paire        qualité commune   rang
+//   feu × air    chaud             allié      0,5
+//   eau × terre  froid             allié      0,5
+//   feu × terre  sec               allié      0,5   (était 0,25)
+//   air × eau    humide            allié      0,5   (était 0,25)
+//   feu × eau    aucune            contraire  0,25  (était 0)
+//   air × terre  aucune            contraire  0,25  (était 0)
+//
+// Deux éléments qui partagent une qualité sont alliés ; deux qui n'en
+// partagent aucune sont contraires. « Sans relation » ne décrit aucun
+// couple d'éléments réels — c'est le rang du cas dégénéré, élément
+// illisible ou absent, et c'est pour ça qu'il vaut zéro.
+//
+// ⚠️ NE PAS RECRÉER UNE SECONDE TABLE. Le 1N2 avait la sienne, inversée
+// par rapport à celle-ci sur les quatre paires du bas ; les deux se sont
+// contredites jusqu'au 11/09/26. CONCORDANCE_1N2_V7 délègue maintenant
+// ici. Même leçon que MAISONS_CADENTES_V7 : une définition, un endroit.
 function concordanceElement(a,b){
-  if (a===b) return 1;
-  if ((a==='feu'&&b==='air')||(a==='air'&&b==='feu')||(a==='eau'&&b==='terre')||(a==='terre'&&b==='eau')) return 0.5;
-  if ((a==='eau'&&b==='air')||(a==='air'&&b==='eau')||(a==='feu'&&b==='terre')||(a==='terre'&&b==='feu')) return 0.25;
-  return 0; // feu-eau, air-terre : opposition totale
+  if (!a || !b) return 0;                    // sans relation : rien à lire
+  if (a===b) return 1;                       // même élément
+  var paire = [a,b].sort().join('-');
+  if (paire==='eau-feu' || paire==='air-terre') return 0.25;  // contraires
+  return 0.5;                                                  // alliés
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -26410,6 +26437,20 @@ function detectIncidentChaotique(theme, campA, campB, posA, posB){
   // Elle exige désormais la DISCORDANCE ÉLÉMENTAIRE avec la maison
   // (concordance < 0,5) — la figure doit être mal logée pour nuire.
   // Mesuré : 43 % → 25 %.
+  // ─── PUIS 25 % → 12,5 % LE 11/09/26, sans toucher à cette règle ───
+  // L'échelle de concordanceElement a été redressée ce jour-là. Le seuil
+  // « < 0,5 » n'a pas bougé, mais ce qu'il désigne a changé — et il
+  // désigne maintenant EXACTEMENT ce qu'Ellemine_D avait nommé :
+  //   avant : air×terre (8 192 thèmes) ET air×eau (8 192) = 25 %
+  //   après : air×terre (8 192) seulement .............. = 12,5 %
+  // Sa phrase ne cite que deux couples : « air et terre s'étouffent ; de
+  // même feu/eau crée le chaos ». Air×eau n'y figure pas, et la règle le
+  // retenait quand même. (Feu×eau n'apparaît dans aucune des deux mesures
+  // parce que les quatre figures de pénalité sont toutes eau ou terre,
+  // et M12/M6 terre ou air : le couple ne peut pas se produire ici.)
+  // Le redressement de l'échelle a donc aligné cette règle sur sa propre
+  // doctrine, sans qu'on y touche. Vérification indépendante de l'échelle :
+  // elle ne doit rien au résultat d'un match.
   // Mars (Rubeus, Puer) n'est PAS une condition — Ellemine_D, 27/08 :
   // « ce n'est pas parce qu'une figure n'est pas de Mars qu'elle ne peut
   // provoquer un incident » — mais une AGGRAVATION, comptée à part.
@@ -26861,7 +26902,19 @@ function bttsAxesResidenceV7(theme){
       actif:actif,
       resultante:resultante,
       synthese:synthese,
-      voie:(maxConc>0)
+      // ─── SEUIL REPORTÉ SUR LA NOUVELLE ÉCHELLE (11/09/26) ───
+      // C'était « maxConc > 0 ». Dans l'ancienne échelle, 0 désignait
+      // l'OPPOSITION TOTALE (feu-eau, air-terre) : une voie était dite
+      // exploitable dès qu'elle avait une résidence qui ne soit pas une
+      // opposition totale. Depuis que l'échelle est redressée, plus aucun
+      // couple de deux éléments réels ne vaut 0 — le plancher est 0,25,
+      // les contraires. « maxConc > 0 » devenait donc toujours vrai :
+      // bloqueR1 et bloqueR7 ne se déclenchaient plus jamais et le BTTS
+      // répondait OUI sur les 65 536 thèmes, mesuré. Un moteur qui ne dit
+      // qu'une seule chose ne prédit rien.
+      // Le seuil suit l'intention, pas le chiffre : strictement mieux
+      // qu'une opposition — donc au-dessus des contraires.
+      voie:(maxConc>0.25)
     };
   }
 

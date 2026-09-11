@@ -190,3 +190,37 @@ dépend pas de ce résultat : les deux tables du fichier sont inversées, et cel
 se constate sans regarder aucun match. Mais un système qu'on corrige après
 avoir vu tomber un score finit toujours par avoir raison sur le passé. Seul le
 test prospectif peut trancher.
+
+### La table partagée suit aussi (11/09/2026)
+
+« Corrige ça. » `concordanceElement()`, que j'avais refusé de toucher, portait
+encore l'ancienne échelle — deux tables dans le même fichier se contredisant sur
+la même question. Elle est redressée, et le 1N2 n'a plus de copie : il y délègue.
+Une définition, un endroit.
+
+**Un seuil a dû suivre.** `bttsAxesResidenceV7` testait `maxConc > 0`, calibré
+sur l'ancienne échelle où 0 voulait dire « opposition totale ». Dans la nouvelle,
+rien ne vaut 0 entre deux éléments réels : la condition devenait toujours vraie
+et **le BTTS répondait OUI sur les 65 536 thèmes**. Un moteur qui ne dit qu'une
+chose ne prédit rien. Le seuil suit l'intention et non le chiffre —
+`maxConc > 0,25`, strictement mieux qu'une opposition. BTTS intégralement
+restauré : **0 thème de différence**.
+
+**Une règle s'est alignée toute seule sur votre doctrine.** La règle d'incident
+M12/M6 exige « concordance < 0,5 ». Le seuil n'a pas bougé, mais ce qu'il
+désigne a changé :
+
+| | couples retenus | déclenchement |
+|---|---|---|
+| avant | air×terre **et air×eau** | 25,0 % |
+| après | air×terre seul | 12,5 % |
+
+Votre phrase du 27/08 ne cite que deux couples : « air et terre s'étouffent ; de
+même feu/eau crée le chaos ». **Air×eau n'y figure pas**, et la règle le retenait
+quand même. Le redressement l'a supprimé sans qu'on touche à la règle.
+
+C'est une vérification indépendante de l'échelle : elle ne doit rien au résultat
+d'un match, seulement à ce que vous aviez écrit trois semaines plus tôt.
+
+**Bilan sur les 65 536 thèmes** : BTTS 0 changement, Nul 0, Camp 0,
+Incidents 186 thèmes (64 413 → 64 227).
