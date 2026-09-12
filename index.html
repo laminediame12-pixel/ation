@@ -16891,6 +16891,49 @@ function lectureOuvertureButsV7(theme, cadre) {
 // M12, mais ce ne sont pas les classes modulo 3 : seul le Cardinal l'est.
 // Maisons corrigées le 11/09/26 (Ellemine_D) : Succédent 2-6-8-12,
 // Cadent 3-5-9-11.
+// ═══════════════════════════════════════════════════════════════
+// LA FORCE ACTIVE DES QUATRE ÉLÉMENTS DANS CHAQUE AXE
+// 12/09/26, demande d'Ellemine_D : « l'axe doit être examiné sur sa force
+// active des 4 éléments — un tableau qui calcule les niveaux d'activation
+// dans les axes, pour savoir dans chaque axe quel élément est le plus actif ».
+//
+// Pour un axe, on parcourt TOUTES ses maisons et on compte, élément par
+// élément, combien de fois le niveau est ACTIF (1 point) :
+//   Angulaire  6 maisons -> chaque élément de 0 à 6, total de 0 à 24
+//   Succédent  5 maisons -> chaque élément de 0 à 5, total de 0 à 20
+//   Cadent     5 maisons -> chaque élément de 0 à 5, total de 0 à 20
+//
+// ⚠️ LES AXES N'ONT PAS LA MÊME TAILLE. Comparer deux totaux bruts
+// favoriserait mécaniquement l'Angulaire (24 possibles contre 20, soit 12
+// contre 10 en moyenne). C'est pourquoi la comparaison entre camps se fait
+// sur le RATIO actif/possible, pas sur le total brut. Les deux sont
+// exposés : `total` pour la lecture, `ratio` pour la comparaison.
+//
+// À ne pas confondre avec la SOMME de l'axe (le XOR de ses maisons), qui
+// donne une figure et ses quatre niveaux. Ici on ne somme pas les figures :
+// on relève les activations, maison par maison.
+function forceElementsAxeV7(theme) {
+  if (!theme || !theme[1] || typeof AXES_V7 === 'undefined') return null;
+  var ORD = ['feu', 'air', 'eau', 'terre'];
+  return AXES_V7.map(function (a) {
+    var c = { feu: 0, air: 0, eau: 0, terre: 0 };
+    a.maisons.forEach(function (h) {
+      var g = (typeof MAP_GEO !== 'undefined' && MAP_GEO[theme[h]]) ? MAP_GEO[theme[h]] : null;
+      if (!g) return;
+      ORD.forEach(function (el, i) { if (g[i] === 1) c[el]++; });
+    });
+    var total = ORD.reduce(function (sm, el) { return sm + c[el]; }, 0);
+    var possible = a.maisons.length * 4;
+    var max = Math.max(c.feu, c.air, c.eau, c.terre);
+    return {
+      cle: a.cle, nom: a.nom, maisons: a.maisons.slice(), nbMaisons: a.maisons.length,
+      force: c, total: total, possible: possible,
+      ratio: possible ? total / possible : 0,
+      max: max, dominant: ORD.filter(function (el) { return c[el] === max; })
+    };
+  });
+}
+
 // `maisons` = l'axe complet (somme et appartenance).
 // `meres`   = les quatre du carré, pour les thèmes dérivés uniquement.
 var AXES_V7 = [
@@ -19205,6 +19248,43 @@ function toggleCarteThemePanel() {
     + bloc('Les 16 maisons', '<div style="overflow-x:auto;">' + lignes + '</div>')
     + bloc('Rotation', '<div style="font-size:12px;">' + rotTxt + '</div>')
     + bloc('Témoins et Juge', temoins)
+    + bloc('Force active des 4 éléments par axe', (function () {
+        var F = null;
+        try { F = forceElementsAxeV7(t); } catch (err) { F = null; }
+        if (!F) return '<div class="muted">indisponible</div>';
+        var O = ['feu', 'air', 'eau', 'terre'];
+        var h = '<table style="width:100%; border-collapse:collapse; font-size:12px;">'
+          + '<tr style="color:#94a3b8; font-size:10.5px;"><th align="left">axe</th>'
+          + O.map(function (el) { return '<th align="center">' + e(el) + '</th>'; }).join('')
+          + '<th align="center">total</th><th align="center">force</th>'
+          + '<th align="left">dominant</th><th align="left">camp</th></tr>';
+        F.forEach(function (a) {
+          var occupe = [];
+          if (rot && a.maisons.indexOf(rot.hR1) >= 0) occupe.push('R1');
+          if (rot && a.maisons.indexOf(rot.hR7) >= 0) occupe.push('R7');
+          h += '<tr' + (occupe.length ? ' style="background:rgba(74,222,128,.08);"' : '') + '>'
+            + '<td><b>' + e(a.nom.replace('Axe ', '')) + '</b> '
+            + '<span style="color:#94a3b8; font-size:10px;">(' + a.nbMaisons + ' maisons)</span></td>'
+            + O.map(function (el) {
+                var fort = a.dominant.indexOf(el) >= 0;
+                return '<td align="center"' + (fort ? ' style="background:rgba(251,191,36,.14);"' : '')
+                  + '><b style="color:' + (COUL[el] || '#94a3b8') + ';">' + a.force[el] + '</b>'
+                  + '<span style="color:#64748b; font-size:9.5px;">/' + a.nbMaisons + '</span></td>';
+              }).join('')
+            + '<td align="center">' + a.total + '<span style="color:#64748b; font-size:9.5px;">/'
+            + a.possible + '</span></td>'
+            + '<td align="center"><b>' + Math.round(a.ratio * 100) + '%</b></td>'
+            + '<td>' + a.dominant.map(function (el) { return pastille(el); }).join(' · ') + '</td>'
+            + '<td><b style="color:#4ade80;">' + occupe.join(' ') + '</b></td></tr>';
+        });
+        h += '</table><div style="font-size:9.5px; color:#94a3b8; margin-top:4px;">'
+          + 'Nombre de niveaux ACTIFS (1 point) relevés sur toutes les maisons de l\'axe, '
+          + 'élément par élément. La case surlignée est l\'élément dominant de l\'axe. '
+          + 'L\'Angulaire compte six maisons et les deux autres cinq : c\'est le pourcentage, '
+          + 'pas le total brut, qui se compare d\'un axe à l\'autre — c\'est lui le critère 3 '
+          + 'du moteur 1N2.</div>';
+        return h;
+      })())
     + bloc('Les 3 axes', axes
         + '<div style="font-size:10.5px; margin-top:4px; color:'
         + (valide === true ? '#4ade80' : valide === false ? '#f87171' : '#94a3b8') + ';">'
@@ -23460,12 +23540,25 @@ function lireCamp1N2V7(theme, maison) {
       var _figAxe = combineMany(_ax.maisons.map(function (h) { return theme[h]; }));
       var _niv = (typeof MAP_GEO !== 'undefined' && MAP_GEO[_figAxe]) ? MAP_GEO[_figAxe] : null;
       var _ORD = ['feu', 'air', 'eau', 'terre'];
+      // la force active des quatre éléments sur TOUTES les maisons de l'axe
+      var _f = { feu: 0, air: 0, eau: 0, terre: 0 };
+      _ax.maisons.forEach(function (hh) {
+        var gg = (typeof MAP_GEO !== 'undefined' && MAP_GEO[theme[hh]]) ? MAP_GEO[theme[hh]] : null;
+        if (!gg) return;
+        _ORD.forEach(function (el, k) { if (gg[k] === 1) _f[el]++; });
+      });
+      var _tot = _ORD.reduce(function (sm, el) { return sm + _f[el]; }, 0);
+      var _poss = _ax.maisons.length * 4;
+      var _mx = Math.max(_f.feu, _f.air, _f.eau, _f.terre);
       axeCamp = {
         cle: _ax.cle, nom: _ax.nom, maisons: _ax.maisons.slice(),
         figure: _figAxe, element: (typeof ELEMENTS !== 'undefined' ? ELEMENTS[_figAxe] : null),
         niveaux: _niv ? _niv.slice() : null,
         actifs: _niv ? _ORD.filter(function (e, k) { return _niv[k] === 1; }) : [],
-        nbActifs: _niv ? _niv.filter(function (v) { return v === 1; }).length : null
+        nbActifs: _niv ? _niv.filter(function (v) { return v === 1; }).length : null,
+        force: _f, total: _tot, possible: _poss,
+        ratio: _poss ? _tot / _poss : 0,
+        dominant: _ORD.filter(function (el) { return _f[el] === _mx; })
       };
       break;
     }
@@ -23538,8 +23631,13 @@ function criteres1N2(r1, r7) {
     // §11.6 — « Comparer la charge active/passive. »
     { nom: 'Charge active', a: [r1.charge.valeur], b: [r7.charge.valeur] },
     // ─── AXE (12/09/26, Ellemine_D : « ça doit compter ») ───
-    // Le nombre de NIVEAUX D'ÉLÉMENTS ACTIFS de l'axe où siège le camp —
-    // les niveaux à 1 point de la figure que l'axe produit, sur 4.
+    // LA FORCE ACTIVE DES QUATRE ÉLÉMENTS dans l'axe où siège le camp :
+    // le nombre de niveaux à 1 point relevés sur TOUTES les maisons de
+    // l'axe, rapporté au possible (cf. forceElementsAxeV7). On compare le
+    // RATIO et non le total brut, parce que l'Angulaire compte six maisons
+    // et les deux autres cinq — un total brut le favoriserait mécaniquement.
+    // Le critère lisait la somme XOR de l'axe jusqu'au 12/09/26 ; Ellemine_D
+    // a demandé la force active, c'est elle qui compte désormais.
     // Placé au rang 3, après les deux critères que le §11 met en tête.
     // Mesuré sur les 65 536 thèmes, selon la place qu'on lui donne :
     //   rang 1 (avant Concordance) : décide 11 352 thèmes, 5 768 changent de camp
@@ -23553,8 +23651,8 @@ function criteres1N2(r1, r7) {
     // ce qui arrive 70,7 % du temps — R7 est à six positions de R1, leurs
     // maisons sont donc corrélées.
     { nom: 'Axe',
-      a: [r1.axe ? r1.axe.nbActifs : -1],
-      b: [r7.axe ? r7.axe.nbActifs : -1] },
+      a: [r1.axe ? r1.axe.ratio : -1],
+      b: [r7.axe ? r7.axe.ratio : -1] },
     // §11.7 — « Comparer la force structurelle des générations. »
     { nom: 'Filiation',
       a: [r1.filiation.transmission, r1.filiation.engendre],
@@ -29135,11 +29233,14 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
               + c.axe.maisons.map(function (h) { return 'M' + h; }).join('+') + ') → '
               + '<b>' + esc((typeof FL !== 'undefined' && FL[c.axe.figure]) || c.axe.figure) + '</b> '
               + (c.axe.niveaux ? c.axe.niveaux.join('–') : '')
-              + '<br>&nbsp;&nbsp;<b>niveaux actifs de l\'axe</b> (critère 3) : '
-              + (c.axe.nbActifs
-                ? '<b>' + c.axe.actifs.map(function (e) { return pastille(e); }).join(' · ')
-                  + '</b> (' + c.axe.nbActifs + '/4)'
-                : '<b>aucun</b> (0/4)')
+              + '<br>&nbsp;&nbsp;<b>force active de l\'axe</b> (critère 3) : '
+              + ['feu', 'air', 'eau', 'terre'].map(function (el) {
+                  return pastille(el, el + ' ' + (c.axe.force ? c.axe.force[el] : 0));
+                }).join(' · ')
+              + ' — total <b>' + (c.axe.total || 0) + '/' + (c.axe.possible || 0) + '</b>'
+              + ' = <b>' + Math.round((c.axe.ratio || 0) * 100) + '%</b>'
+              + '<br>&nbsp;&nbsp;élément dominant de l\'axe : '
+              + (c.axe.dominant ? c.axe.dominant.map(function (e) { return pastille(e); }).join(' · ') : '—')
             : '<i style="color:#64748b;">axe indisponible</i>')
         + '<br>filiation : transmet <b>' + c.filiation.transmission + '</b>'
         + ' · engendrée <b>' + c.filiation.engendre + '</b>'
@@ -29182,7 +29283,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + ' — ' + pastille('terre', 'Terre M4·M8·M12·M16') + ' ' + esc(SENS.terre) + '.'
       + '<br>Ordre de décision : <b>1. Concordance → 2. Charge → 3. Axe → '
       + '4. Filiation → 5. Boucle</b>, puis pôle NM rotatif si figures identiques. '
-      + 'L\'axe compte le nombre de niveaux d\'éléments actifs de l\'axe où siège le camp. '
+      + 'L\'axe compare la FORCE ACTIVE de ses quatre éléments — les niveaux à 1 point '
+      + 'relevés sur toutes ses maisons, rapportés au possible (l\'Angulaire en compte six, '
+      + 'les deux autres cinq, d\'où le ratio et non le total brut). '
       + 'Le premier critère discriminant tranche ; aucune somme entre critères.'
       + '<br>Concordance : même élément 1 · alliés 0,5 (partagent une qualité : '
       + 'feu-air chaud, eau-terre froid, feu-terre sec, air-eau humide) · '

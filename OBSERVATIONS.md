@@ -598,3 +598,44 @@ contredit pas §6 ni §12 — la **position** (Origine / Transmission / Résulta
 Synthèse) reste lue et jamais comptée. L'axe n'est pas la position.
 
 ⚠️ Comme le reste, il n'a **aucune justesse mesurée**. Il part au test prospectif.
+
+### La force active des 4 éléments par axe — 12/09/2026
+
+Ellemine_D : « l'axe doit être examiné sur sa force active des 4 éléments — un
+tableau qui calcule les niveaux d'activation dans les axes, pour savoir dans
+chaque axe quel élément est le plus actif ».
+
+Ce n'était **pas** ce que le critère 3 lisait. Il lisait les quatre niveaux de la
+**somme XOR** de l'axe. Le relevé demandé est autre chose : parcourir **toutes**
+les maisons de l'axe et compter, élément par élément, les niveaux **actifs**
+(1 point).
+
+`forceElementsAxeV7(theme)` produit le tableau. Exemple, Tristitia / Via /
+Conjunctio / Rubeus :
+
+| axe | feu | air | eau | terre | total | force | dominant | camp |
+|---|---|---|---|---|---|---|---|---|
+| Angulaire (6) | 1 | **4** | 2 | 1 | 8/24 | 33 % | air | |
+| Succédent (5) | **4** | 3 | 3 | 3 | 13/20 | **65 %** | feu | R1 R7 |
+| Cadent (5) | 1 | **4** | 3 | 2 | 10/20 | 50 % | air | |
+
+**Le critère 3 lit désormais cette force**, pas la somme XOR.
+
+**Pourquoi le ratio et non le total brut.** L'Angulaire compte six maisons
+(24 niveaux possibles), les deux autres cinq (20). Un total brut le favoriserait
+mécaniquement — 12 contre 10 en moyenne. La comparaison entre camps se fait donc
+sur `actif / possible`. Les deux sont affichés : le total pour la lecture, le
+pourcentage pour la décision.
+
+**Effet du changement de base du critère :**
+
+| | somme XOR | force active |
+|---|---|---|
+| thèmes tranchés par « Axe » | 1 097 | **1 474** |
+| 1N2 : R1 / R7 | 35 637 / 29 899 | **35 396 / 30 140** |
+
+Affiché à deux endroits : sur la carte de verdict (force des quatre éléments,
+total, pourcentage, élément dominant) et dans la carte du thème, en tableau
+complet avec la case du dominant surlignée.
+
+⚠️ Aucune justesse mesurée. Comme le reste, ça part au test.
