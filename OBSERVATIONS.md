@@ -556,3 +556,45 @@ ne décide rien.
 Le bandeau « ⛔ THÈME INVALIDE — DÉTRUIT » ne vient pas de là : il vient de
 `themeDetruit()`, qui ne regarde que Rubeus ou Cauda Draconis en M1. Il n'est
 pas touché.
+
+### L'axe devient un critère — 12/09/2026
+
+Ellemine_D : « ça doit compter ». L'axe entre dans la cascade au **rang 3**.
+
+**Critère 3 — Axe** : nombre de niveaux d'éléments actifs de l'axe où siège le
+camp (les niveaux à 1 point de la figure que l'axe produit, sur 4).
+
+Nouvel ordre : **1. Concordance → 2. Charge → 3. Axe → 4. Filiation → 5. Boucle**
+
+**Pourquoi le rang 3.** Mesuré sur les 65 536 thèmes, selon la place donnée :
+
+| place | thèmes qu'il décide | changent de camp |
+|---|---|---|
+| 1 — avant Concordance | 11 352 (17,3 %) | 5 768 (8,8 %) |
+| 2 — après Concordance | 3 817 (5,8 %) | 2 050 (3,1 %) |
+| **3 — après Charge** | **1 097 (1,7 %)** | **588 (0,9 %)** |
+| 4 ou 5 | **0** | 0 |
+
+Aux rangs 4 et 5 il est lettre morte : Filiation et Boucle avaient déjà tout
+tranché — seuls 4 thèmes sur 65 536 atteignaient un cinquième critère. Le rang 3
+est le plus tardif où il compte encore, et il laisse devant lui les deux critères
+que le §11 met en tête.
+
+**Limite structurelle.** Les deux camps siègent dans le **même axe 70,7 %** du
+temps — R7 est à six positions de R1, leurs maisons sont corrélées. Le critère
+est alors muet par construction. Il ne peut départager que 17,3 % des thèmes au
+maximum, quelle que soit sa place.
+
+**Effet :**
+
+| | avant | après |
+|---|---|---|
+| 1N2 seul | R1 36 057 · R7 29 479 | R1 **35 637** · R7 **29 899** |
+| camp affiché | R1 27 647 · R7 23 086 · Nul 14 803 | R1 **27 369** · R7 **23 364** · Nul 14 803 |
+| critère « Axe » | — | tranche 1 097 thèmes (+14 en branche pôles égaux) |
+
+Ce n'est pas un critère du §11 : c'est un cinquième, assumé comme tel. Il ne
+contredit pas §6 ni §12 — la **position** (Origine / Transmission / Résultante /
+Synthèse) reste lue et jamais comptée. L'axe n'est pas la position.
+
+⚠️ Comme le reste, il n'a **aucune justesse mesurée**. Il part au test prospectif.

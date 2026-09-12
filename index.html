@@ -23537,6 +23537,24 @@ function criteres1N2(r1, r7) {
     { nom: 'Concordance', a: [r1.concordance], b: [r7.concordance] },
     // §11.6 — « Comparer la charge active/passive. »
     { nom: 'Charge active', a: [r1.charge.valeur], b: [r7.charge.valeur] },
+    // ─── AXE (12/09/26, Ellemine_D : « ça doit compter ») ───
+    // Le nombre de NIVEAUX D'ÉLÉMENTS ACTIFS de l'axe où siège le camp —
+    // les niveaux à 1 point de la figure que l'axe produit, sur 4.
+    // Placé au rang 3, après les deux critères que le §11 met en tête.
+    // Mesuré sur les 65 536 thèmes, selon la place qu'on lui donne :
+    //   rang 1 (avant Concordance) : décide 11 352 thèmes, 5 768 changent de camp
+    //   rang 2 (après Concordance) : décide  3 817 thèmes, 2 050 changent
+    //   rang 3 (après Charge)      : décide  1 097 thèmes,   588 changent  ← ici
+    //   rang 4 ou 5                : décide      0 thème
+    // Aux rangs 4 et 5 il est lettre morte : Filiation et Boucle ont déjà
+    // tout tranché. Le déplacer se fait en changeant cette entrée de place
+    // dans la liste, rien d'autre.
+    // Il ne peut rien dire quand les deux camps siègent dans le MÊME axe,
+    // ce qui arrive 70,7 % du temps — R7 est à six positions de R1, leurs
+    // maisons sont donc corrélées.
+    { nom: 'Axe',
+      a: [r1.axe ? r1.axe.nbActifs : -1],
+      b: [r7.axe ? r7.axe.nbActifs : -1] },
     // §11.7 — « Comparer la force structurelle des générations. »
     { nom: 'Filiation',
       a: [r1.filiation.transmission, r1.filiation.engendre],
@@ -23549,8 +23567,12 @@ function criteres1N2(r1, r7) {
           r1.boucle.ancrageRepos, r1.boucle.resultantesPropres, -r1.boucle.expositionAntagonistes],
       b: [r7.boucle.binomePresent, r7.boucle.materialisation, r7.boucle.repetitions,
           r7.boucle.ancrageRepos, r7.boucle.resultantesPropres, -r7.boucle.expositionAntagonistes] }
-    // Il n'y a pas de cinquième critère. §11 s'arrête ici et passe au
-    // verdict ; §6 et §12 interdisent d'en inventer un de position.
+    // §11 s'arrête à ces quatre-là. L'AXE a été ajouté au rang 3 le
+    // 12/09/26 sur décision d'Ellemine_D — c'est un cinquième critère, et
+    // il est assumé comme tel. Il ne contredit pas §6 ni §12 : ce n'est pas
+    // un coefficient de POSITION (Origine/Transmission/Résultante/Synthèse
+    // reste lue et jamais comptée), c'est le nombre de niveaux actifs de
+    // l'axe où siège le camp.
   ];
 }
 
@@ -29113,7 +29135,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
               + c.axe.maisons.map(function (h) { return 'M' + h; }).join('+') + ') → '
               + '<b>' + esc((typeof FL !== 'undefined' && FL[c.axe.figure]) || c.axe.figure) + '</b> '
               + (c.axe.niveaux ? c.axe.niveaux.join('–') : '')
-              + '<br>&nbsp;&nbsp;niveaux actifs de l\'axe : '
+              + '<br>&nbsp;&nbsp;<b>niveaux actifs de l\'axe</b> (critère 3) : '
               + (c.axe.nbActifs
                 ? '<b>' + c.axe.actifs.map(function (e) { return pastille(e); }).join(' · ')
                   + '</b> (' + c.axe.nbActifs + '/4)'
@@ -29158,8 +29180,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + ' — ' + pastille('air', 'Air M2·M6·M10·M14') + ' ' + esc(SENS.air)
       + ' — ' + pastille('eau', 'Eau M3·M7·M11·M15') + ' ' + esc(SENS.eau)
       + ' — ' + pastille('terre', 'Terre M4·M8·M12·M16') + ' ' + esc(SENS.terre) + '.'
-      + '<br>Ordre de décision (§11, liste fermée) : <b>1. Concordance → 2. Charge → '
-      + '3. Filiation → 4. Boucle</b>, puis pôle NM rotatif si figures identiques. '
+      + '<br>Ordre de décision : <b>1. Concordance → 2. Charge → 3. Axe → '
+      + '4. Filiation → 5. Boucle</b>, puis pôle NM rotatif si figures identiques. '
+      + 'L\'axe compte le nombre de niveaux d\'éléments actifs de l\'axe où siège le camp. '
       + 'Le premier critère discriminant tranche ; aucune somme entre critères.'
       + '<br>Concordance : même élément 1 · alliés 0,5 (partagent une qualité : '
       + 'feu-air chaud, eau-terre froid, feu-terre sec, air-eau humide) · '
