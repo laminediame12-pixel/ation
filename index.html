@@ -8945,13 +8945,10 @@ function densiteIncidentV7(theme){
     camps.push({nom: 'Analyse R1/R7', camp: air.campRisque === 'R1' ? 'M1' : 'M7'});
   }
   if (fil && fil.camp) camps.push({nom: 'Filiation', camp: fil.camp});
-  if (typeof MOTEURS_INCIDENT_CAMP_V7 !== 'undefined') {
-    moteursActifsV7(MOTEURS_INCIDENT_CAMP_V7).forEach(function(m){
-      if (m.cle === 'inc_camp_temoin') return; // témoin constant : exclu, n'apporte rien
-      var v = safe(function(){ return m.verdict(theme); });
-      if (v && v.camp) camps.push({nom: m.nom, camp: v.camp});
-    });
-  }
+  // Le catalogue MOTEURS_INCIDENT_CAMP_V7 était lu ici. Ses sept entrées
+  // étaient TOUTES dans MOTEURS_DESACTIVES_V7 : le filtre les écartait
+  // toutes, la boucle n'ajoutait jamais rien. Catalogue et filtre retirés
+  // le 12/09/26 — cette boucle ne produisait aucune valeur.
 
   var nbDeclenches = factuels.filter(function(f){ return f.declenche; }).length;
   var comptes = {};
@@ -9189,6 +9186,13 @@ autoTestV7('rang des mères et bornes de Populus', function () {
 // trois autres ont été MESURÉES et ne le méritent pas, ou ne peuvent
 // pas l'être. Chacune garde son booléen, pour qu'on puisse rouvrir le
 // débat avec un chiffre plutôt qu'un avis.
+// ⚠️ VÉRIFIÉ LE 12/09/26 : huit de ces branches portent « inerte: true ».
+// Elles sont déclarées, documentées, parfois marquées « actif: true » et
+// annoncent « mettre à false rend la cascade d'origine » — mais AUCUN code
+// ne les lit. Elles ne commandent rien. Elles sont conservées pour la trace
+// de ce qui a été essayé ; leur drapeau actif, lui, ne veut rien dire.
+// Les cinq branches réellement lues : populus_volume, axe_volume,
+// miroir_volume, carcer_miroir, nul_seconde_porte.
 var BRANCHES_V7 = {
 
   populus_volume: {
@@ -9206,6 +9210,7 @@ var BRANCHES_V7 = {
       + '30 rencontres annoncées avant coup d\'envoi restent le seul juge.' },
 
   faisceau_elague: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: false,
     nom: 'Faisceau du nul restreint aux signaux dont le taux n\'est pas 50 %',
     cible: 'le camp, via l\'imposition du nul',
@@ -9218,6 +9223,7 @@ var BRANCHES_V7 = {
       + 'au bon endroit renverseraient le compte.' },
 
   defense_m4_m10: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: false,
     nom: 'Table du rang défensif de M4 et M10',
     cible: 'buts, BTTS, incident',
@@ -9235,6 +9241,7 @@ var BRANCHES_V7 = {
       + 'verdicts du moteur. Il faudrait des centaines de matchs par figure.' },
 
   protocole_pilote: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: false,
     nom: 'Le protocole de comparaison R1/R7 pilote le verdict final',
     cible: 'le camp',
@@ -9269,6 +9276,7 @@ var BRANCHES_V7 = {
       + 'avant tout branchement.' },
 
   ouverture_camp: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: false,
     nom: 'Le contraste d\'ouverture entre les deux chefs décide le camp',
     cible: 'le camp',
@@ -9289,6 +9297,7 @@ var BRANCHES_V7 = {
     pourLActiver: 'BRANCHES_V7.ouverture_camp.actif = true — juste après la porte du nul.' },
 
   score_corrige: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: true,
     nom: 'Le score affiché vient de la cellule (camp × volume), plus des figures',
     cible: 'le score',
@@ -9310,6 +9319,7 @@ var BRANCHES_V7 = {
     pourRevenir: 'BRANCHES_V7.score_corrige.actif = false' },
 
   carre_pilote: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: true,
     ordre: ['carre', 'm4m10', 'v8'],
     nom: 'Le carré géomantique en tête de cascade — il décide le camp',
@@ -9476,6 +9486,7 @@ var BRANCHES_V7 = {
       + 'Le miroir sert aux BUTS et à rien d\'autre — mesuré, pas supposé.' },
 
   miroir_m5: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: false,
     nom: 'Le partage qui commence en M5 pilote ou contrôle le verdict',
     cible: 'le camp',
@@ -9507,6 +9518,7 @@ var BRANCHES_V7 = {
       + 'signaler 57 % des thèmes à tort.' },
 
   parite_m15: {
+    inerte: true,   // 12/09/26 : ce drapeau n'est lu nulle part — il ne commande rien
     actif: true,
     nom: 'M15 est toujours paire — huit valeurs possibles, pas seize',
     cible: 'les taux de base, pas le verdict',
@@ -21239,7 +21251,7 @@ var POIDS_SANS_CONC_ENV_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
 // Interrupteur du pilote (28/08/26). true : la lecture des critères, sans
 // concordance ni environnement dans la comparaison, décide du verdict
 // affiché. false : F4P4 reprend la tête, comme avant. Un caractère.
-var PILOTE_CRITERES_V7 = true;
+// PILOTE_CRITERES_V7 retiré le 12/09/26 : déclaré, jamais lu — il ne commandait rien.
 
 // Le panneau : les cinq rôles de chaque camp, avec leur valeur aux sept
 // critères, et l'antagoniste retranché. Rien d'autre n'entre dans le
@@ -21457,52 +21469,6 @@ function moteurDestructionV7(theme) {
     detail: 'aucune relation directe de destruction entre R1 et R7 — le moteur se tait' };
 }
 
-var MOTEURS_V7 = [
-  { cle: 'destruction_directe', nom: 'Destruction directe — R1 et R7 antagonistes', icone: '⚔', teinte: '#f87171',
-    note: 'issu de la récolte (loi J, 31/08) — 6/7 après Aston Villa-Arsenal, dont la PREMIÈRE sortie à l\'aveugle, juste (R7) · reste n = SEPT et six configurations distinctes, p brut 0,125 · muet sur 34 duels sur 41 · piste gelée, ne décide de rien',
-    juste: 0, total: 0, horsVote: true,
-    verdict: function (t) {
-      var d = moteurDestructionV7(t);
-      if (!d || !d.camp) return null;
-      return { camp: d.camp, detail: d.detail };
-    } },
-  { cle: 'partage_synthese', nom: 'Partage de la synthèse — M13, M14, M15 à l\'élément', icone: '✦', teinte: '#facc15',
-    note: 'doctrine Ellemine_D (31/08) — 31/41 · ses DEUX premières sorties à l\'aveugle sont justes : R7 sur les deux thèmes gelés d\'Aston Villa-Arsenal, là où l\'écran disait R1 puis nul · mais les deux portent le MÊME match, cela ne fait qu\'UNE observation · découverte sur l\'archive, notée, jamais décisive',
-    juste: 0, total: 0, horsVote: true,
-    verdict: function (t) {
-      var p = partageSyntheseV7(t);
-      if (!p) return null;
-      var n = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
-      return { camp: p.camp,
-        detail: 'M13 ' + n(p.fig13) + ' (' + p.e13 + ') · M14 ' + n(p.fig14) + ' (' + p.e14 + ') · M15 '
-          + n(p.fig15) + ' (' + p.e15 + ') → '
-          + (p.tousDifferents ? 'trois éléments différents' : 'au moins deux partagent') };
-    } },
-  { cle: 'partage_r1_ferme', nom: 'Partage · trois éléments différents ET porte du nul fermée → R1', icone: '✦', teinte: '#fb923c',
-    note: 'la forme renforcée (31/08) — 13/16 soit 81 % quand on COMPTE les nuls (c\'est le chiffre du pari : contre elle il reste 1 victoire de R7 et 2 nuls), 13/14 sur le banc qui les écarte · contre 43 % de taux de base, p = 0,0020 · parle sur un tiers des thèmes · découverte sur l\'archive : notée, jamais décisive',
-    juste: 0, total: 0, horsVote: true,
-    verdict: function (t) {
-      var p = partageSyntheseV7(t);
-      if (!p || !p.tousDifferents) return null;
-      var porte = false;
-      try { porte = !!nulParPorteV7(t); } catch (e) { porte = false; }
-      if (porte) return null;
-      return { camp: 'R1', detail: 'trois éléments différents (' + p.e13 + '/' + p.e14 + '/' + p.e15
-        + ') et porte du nul fermée' };
-    } },
-  // ─── LES DIX MOTEURS VOTANTS SONT RETIRÉS (01/09/26) ───
-  // Ellemine_D : « retire-les aussi. » Ils ne décidaient plus rien
-  // depuis que la cascade est partie — le camp vient du seul moteurV8V7.
-  // Retirés : sept_criteres · table_poles · ancrage · chaine · duel ·
-  // f4p4 · sieges · axes · boucles · hypo.
-  // ⚠️ Leurs FONCTIONS sous-jacentes restent (moteurF4P4V7,
-  // moteurCritereV7, lectureSiegesR1R7, analyseAncrageDeveloppe,
-  // analyserReseauAncrageV2, tablePolesV7…) : elles servent encore aux
-  // panneaux de lecture et au banc. C'est le VOTE qui disparaît, pas la
-  // doctrine.
-  // Ne restent ici que les trois moteurs horsVote, ceux dont le dossier
-  // est en cours de vérification à l'aveugle sur les matchs gelés.
-];
 
 // ═══════════════════════════════════════════════════════════════
 // « LES DEUX MARQUENT » — ÉTAT RÉEL APRÈS LE 0-0 DU 14/02/2026
@@ -21552,91 +21518,6 @@ var MOTEURS_V7 = [
 // CE QU'IL FAUDRAIT POUR AVANCER : des 0-0 et des 1-0, pas des 4-4.
 // L'archive n'a qu'UN seul 0-0. Une règle du « personne ne marque » ne
 // peut pas naître d'un cas unique, et il ne faut pas essayer.
-var MOTEURS_BTTS_V7 = [
-  // ─── LA MAISON DE R1, EN TÊTE DEPUIS LE 29/08 ───
-  // 20/25 contre 17/25 à la chaîne et 15/25 au témoin. p = 0,007, et le
-  // signal survit au contrôle par le nombre de buts (voir le bloc de
-  // mesure dans buildVerdictCard). Il n'attrape que 6 des 10 BTTS réels :
-  // quand il dit oui, crois-le ; quand il se tait, il ne dit rien.
-  // ─── LE CROISEMENT BRANCHÉ DEPUIS LE 30/08 ───
-  // ─── LA RÈGLE BRANCHÉE DEPUIS LE 30/08 : TROIS ÉTAGES ───
-  { cle: 'btts_trois_etages', nom: 'BTTS · Conjunctio, puis maison de R1, puis Puer', icone: '🪜', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'branché — 25/29 · Conjunctio absent 9/9 · cadent+Conjunctio 7/8 · zone faible départagée par Puer succédent 4/6 et 5/6',
-    verdict: function (t) {
-      var r = null;
-      try { r = getRotationCombat(t); } catch (e) { return null; }
-      if (!r || !r.hR1) return null;
-      var conj = false;
-      for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') { conj = true; break; } }
-      if (!conj) return { oui: false, detail: 'Conjunctio absent — pas d\'échange' };
-      var cad = MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0;
-      if (cad) return { oui: true, detail: 'R1 en M' + r.hR1 + ' cadente + Conjunctio' };
-      var suc = MAISONS_SUCCEDENTES_V7.some(function (h) { return t[h] === 'puer'; });
-      return { oui: suc, detail: 'zone faible · Puer succédent ' + (suc ? 'oui' : 'non') };
-    } },
-  { cle: 'btts_cadent_conj', nom: 'BTTS · R1 cadent ET Conjunctio présent (sans Puer)', icone: '🔗', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'l\'étage du milieu seul — 23/29 · premier raté le 30/08 (FortMajLaet)',
-    verdict: function (t) {
-      var r = null;
-      try { r = getRotationCombat(t); } catch (e) { return null; }
-      if (!r || !r.hR1) return null;
-      var conj = false;
-      for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') { conj = true; break; } }
-      var cad = MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0;
-      return { oui: cad && conj,
-        detail: 'R1 en M' + r.hR1 + (cad ? ' (cadente)' : '') + ' · Conjunctio ' + (conj ? 'présent' : 'ABSENT') };
-    } },
-  { cle: 'btts_puer_m8', nom: 'BTTS · Puer en M8 exactement', icone: '⑧', teinte: '#64748b',
-    juste: 0, total: 0, note: 'la forme resserrée proposée le 30/08 — 3/5 quand il parle : PLUS FAIBLE que la succédente entière (6/10), et M5 donne le même résultat',
-    verdict: function (t) {
-      return { oui: t[8] === 'puer', detail: 'M8 = ' + (FL[t[8]] || t[8]) };
-    } },
-  { cle: 'btts_conjunctio', nom: 'BTTS · Conjunctio présent dans le thème', icone: '🔀', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'méthode Ellemine_D par la nature des figures — 21/29 seul ; c\'est son ABSENCE qui vaut (0 BTTS sur 9)',
-    verdict: function (t) {
-      for (var h = 1; h <= 16; h++) { if (t[h] === 'conjunctio') return { oui: true, detail: 'Conjunctio en M' + h }; }
-      return { oui: false, detail: 'Conjunctio absent des 16 maisons' };
-    } },
-  { cle: 'btts_puer', nom: 'BTTS · Puer en maison succédente', icone: '⚔', teinte: '#94a3b8',
-    juste: 0, total: 0, note: 'théorie Ellemine_D (Puer marque et encaisse) — 6/10 quand il parle contre 6/18 sinon · BRANCHÉ comme départage de la zone faible, où il fait 4/6 contre 1/6 · battu par le verrou de Conjunctio sur leur premier désaccord',
-    verdict: function (t) {
-      var vu = [];
-      for (var h = 1; h <= 16; h++) { if (t[h] === 'puer') vu.push(h); }
-      if (!vu.length) return { oui: false, detail: 'Puer absent du thème' };
-      var suc = vu.filter(function (h) { return MAISONS_SUCCEDENTES_V7.indexOf(h) >= 0; });
-      return { oui: suc.length > 0,
-        detail: 'Puer en M' + vu.join(', M') + (suc.length ? ' — succédente' : ' — aucune succédente') };
-    } },
-  { cle: 'btts_cadent', nom: 'BTTS · R1 en maison cadente (seule)', icone: '🏠', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'la maison seule — 22/29',
-    verdict: function (t) {
-      var r = null;
-      try { r = getRotationCombat(t); } catch (e) { return null; }
-      if (!r || !r.hR1) return null;
-      var cad = MAISONS_CADENTES_V7.indexOf(r.hR1) >= 0;
-      return { oui: cad, detail: 'R1 en M' + r.hR1 + (cad ? ' — cadente' : '') };
-    } },
-  { cle: 'btts_chaine', nom: 'BTTS · chaîne du perdant', icone: '⛓', teinte: '#4ade80',
-    juste: 0, total: 0, note: 'ancienne source décisive — 17/25, gardée en contre-lecture',
-    verdict: function (t) {
-      var b = lectureDeuxMarquentV7(t);
-      if (!b.applicable) return null;
-      var a = analyseAncrageDeveloppe(t);
-      return { oui: b.lesDeuxMarquent,
-               detail: b.lesDeuxMarquent ? 'les deux marquent'
-                 : 'muet : ' + (b.perdant === a.figR1 ? 'R1 ' : 'R7 ') + (FL[b.perdant] || '') };
-    } },
-  { cle: 'btts_rotation', nom: 'BTTS · ouverture des sièges', icone: '🪑', teinte: '#94a3b8',
-    juste: 0, total: 0, note: 'calculé, plus décisif — 14/25, sous le témoin',
-    verdict: function (t) {
-      var o = lectureOuvertureButsV7(t);
-      if (!o.applicable) return null;
-      return { oui: o.lesDeuxMarquent, detail: o.lesDeuxMarquent ? 'les deux marquent' : 'un seul marque' };
-    } },
-  { cle: 'btts_score', nom: 'BTTS · « toujours oui »', icone: '➖', teinte: '#64748b',
-    juste: 4, total: 9, note: 'témoin — le hasard à battre',
-    verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
-];
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -21773,50 +21654,11 @@ function budgetPistesV7() {
 //
 // POUR RÉACTIVER : retirer la clé de MOTEURS_DESACTIVES_V7. Rien n'est
 // supprimé du code — un moteur écarté reste lisible et réexécutable.
-var MOTEURS_DESACTIVES_V7 = {
-  // ── B. prouvés PIRES que leur témoin, en apparié ──
-  nul_juge_fige: 'McNemar contre nul_temoin : juste 4 fois là où le témoin se '
-    + 'trompe, faux 23 fois là où il a raison. p = 0,0003, et survit à Bonferroni '
-    + 'sur les 15 tests de la famille (0,0045). 25/56 contre 44/56.',
-  nul_saturne_cadent: 'McNemar : b = 6, c = 27, p = 0,0003, survit à Bonferroni '
-    + '(0,0045). 23/56 contre 44/56 — le plus faible de tout le fichier.',
-
-  // ── A. strictement subsumés : ils ne disent jamais rien de neuf ──
-  partage_r1_ferme: 'strictement contenu dans partage_synthese sur 16384 thèmes : '
-    + 'partout où il parle (25,8 %), l\'autre parle et dit pareil. À NOTER quand même : '
-    + 'sur son sous-ensemble, partage_synthese fait 13/15 (87 %) contre 32/44 (73 %) '
-    + 'partout. Ce moteur n\'est donc pas un rival, c\'est un FILTRE DE CONFIANCE mal '
-    + 'rangé — à ressortir un jour comme tel, pas comme moteur.',
-  mt_ht_signal: 'strictement contenu dans mt_ht_signal_ferme (parle 57,2 % contre 100 %) '
-    + 'et de surcroît à réponse constante.',
-  pen_camp_m12: 'strictement contenu dans pen_camp_v7 (parle 12,5 % contre 47 %) '
-    + 'et à réponse constante.',
-  inc_camp_naissance: 'strictement contenu dans inc_camp_affiche (48 % contre 79,2 %).',
-  inc_camp_mars_hors: 'strictement contenu dans inc_camp_mars (8,2 % contre 20,9 %).'
-};
 
 // Les cas limites, gardés exprès, pour qu'on ne les recoupe pas plus tard
 // en croyant que personne n'avait regardé.
-var MOTEURS_SOUS_SURVEILLANCE_V7 = {
-  nul_saturne_siege: 'b = 6, c = 17, p = 0,0347 — pire que le témoin, mais NE SURVIT '
-    + 'PAS à Bonferroni sur 15 tests (0,52). Gardé. À recouper à 100 cas d\'archive.',
-  nul_meme_boucle: 'b = 8, c = 19, p = 0,0522 — au bord. Gardé.',
-  nul_r1_cadente: 'b = 5, c = 13, p = 0,0963. Gardé.',
-  nul_fusion_partage: 'b = 4, c = 12, p = 0,0768. Gardé.',
-  familleEntiere: 'MOTEURS_NUL_V7 est LA famille à surveiller : 16 moteurs, un témoin '
-    + 'à 79 % que seuls 3 dépassent en taux brut et AUCUN en apparié, et c\'est elle '
-    + 'qui pilote le verdict depuis le 29/08. C\'est là qu\'il faut concentrer l\'effort, '
-    + 'pas sur les corners ou les mi-temps.'
-};
 
-function moteurDesactiveV7(cle) {
-  return !!(MOTEURS_DESACTIVES_V7 && MOTEURS_DESACTIVES_V7[cle]);
-}
 // À appliquer à chaque endroit qui consomme une liste de moteurs.
-function moteursActifsV7(liste) {
-  if (!liste || !liste.filter) return liste;
-  return liste.filter(function (m) { return !moteurDesactiveV7(m.cle); });
-}
 
 // ── DEUXIÈME PASSE (05/09/26) : « je vois toujours les autres à l'écran » ──
 // Juste. La première passe n'écartait que 7 moteurs sur 70 ; 63 restaient
@@ -21849,67 +21691,8 @@ function moteursActifsV7(liste) {
 // conclusion. Il se défait en retirant une clé.
 //
 // Résultat : 10 moteurs à l'écran au lieu de 70.
-(function () {
-  var horsPortee = {
-    // famille -> raison commune
-    corners_dom: 4, corners_dom_vainqueur: 4, corners_dom_temoin: 4,
-    mt_deux_cartes: 8, mt_match_ouvert: 8, mt_ht_signal_ferme: 8, mt_temoin: 8,
-    mtd_signal: 8, mtd_temoin: 8,
-    corners_moteur: 8, corners_ouvert: 8, corners_temoin: 8,
-    pen_camp_v7: 7, pen_camp_temoin: 7, pen_camp_temoin_m1: 7,
-    inc_camp_naissance_rot: 14, inc_camp_mars: 14, inc_camp_affiche: 14,
-    inc_camp_detecteur: 14, inc_camp_temoin: 14,
-    incident_sommes_axes: 11, incident_derives: 11, incident_derives_rouge: 11,
-    incident_signaux: 11, incident_binome: 11, incident_filiation: 11
-  };
-  Object.keys(horsPortee).forEach(function (c) {
-    MOTEURS_DESACTIVES_V7[c] = 'famille non jugeable : seulement ' + horsPortee[c]
-      + ' résultats de ce type dans l\'archive (barre : 30). Ce n\'est pas un jugement '
-      + 'sur le moteur, c\'est l\'aveu qu\'on ne peut pas le juger. À rouvrir quand '
-      + 'l\'archive portera ces résultats.';
-  });
-  // Dans les familles jugeables : tout sauf le meilleur et son témoin.
-  var moinsBons = {
-    destruction_directe: 'MOTEURS_V7 — 6/9, et sa propre note dit « piste gelée, ne '
-      + 'décide de rien ». Gardé : partage_synthese (32/44).',
-    f4p4_moins_assaillant: 'conditionnels 24/44', majorite_purs: 'conditionnels 24/44',
-    crit_sans_concordance: 'conditionnels 23/44', crit_sans_conc_env: 'conditionnels 25/44',
-    f4p4_avec_adverse: 'conditionnels 26/44', decalage_oblique: 'conditionnels 14/25',
-    carcer_m10: 'conditionnels 3/4 — le taux est flatteur mais il ne parle que sur '
-      + '3,3 % des thèmes : quatre matchs ne décident de rien',
-    nul_fusion_partage: 'nul 19/34', nul_fusion_et_porte: 'nul 27/34',
-    nul_r1_cadente: 'nul 36/56', nul_structure: 'nul 40/56', nul_r7_binome: 'nul 43/56',
-    nul_meme_boucle: 'nul 33/56', nul_juge_partage: 'nul 44/56 — à égalité EXACTE avec '
-      + 'le témoin, donc il n\'apporte rien de plus que « jamais de nul »',
-    nul_faisceau4: 'nul 40/56', nul_faisceau5: 'nul 42/56',
-    nul_saturne_siege: 'nul 33/56 — p = 0,0347 contre le témoin, ne survit pas à '
-      + 'Bonferroni mais reste le plus faible des gardés',
-    btts_trois_etages: 'btts 31/48', btts_cadent_conj: 'btts 28/48',
-    btts_puer_m8: 'btts 23/48', btts_puer: 'btts 24/48', btts_cadent: 'btts 29/48',
-    btts_chaine: 'btts 29/48', btts_rotation: 'btts 25/48',
-    serre_m6m9: 'serré 23/48', serre_temoin_non: 'serré 21/48 — second témoin, '
-      + 'redondant avec serre_temoin'
-  };
-  Object.keys(moinsBons).forEach(function (c) {
-    MOTEURS_DESACTIVES_V7[c] = 'famille jugeable, mais pas le meilleur : ' + moinsBons[c]
-      + '. CHOIX DE LISIBILITÉ, pas une conclusion — McNemar donne ces écarts indécis '
-      + 'à n = 56. Retirer la clé le réaffiche.';
-  });
-})();
 
 // Ce qui reste à l'écran, et pourquoi. À relire avant d'en couper d'autres.
-var MOTEURS_GARDES_V7 = {
-  partage_synthese:      'camp — 32/44, le meilleur de sa famille',
-  crit_cohabitation:     'camp conditionnel — 21/32, le meilleur de sa famille',
-  nul_deux_portes_large: 'nul — 47/56, le meilleur du fichier',
-  nul_binome_et_juge:    'nul — 45/56',
-  nul_deux_portes:       'nul — 45/56, la version stricte, branchée au verdict le 29/08',
-  nul_temoin:            'nul — TÉMOIN 44/56, la barre à battre. Ne jamais le couper.',
-  btts_conjunctio:       'btts — 33/48, le meilleur de sa famille',
-  btts_score:            'btts — TÉMOIN 27/48. Ne jamais le couper.',
-  serre_r1_cadente:      'serré — 29/48, le meilleur de sa famille',
-  serre_temoin:          'serré — TÉMOIN 27/48. Ne jamais le couper.'
-};
 
 // ═══════════════════════════════════════════════════════════════
 // LES MESURES SE REJOUENT SUR TES CAS, PAS SUR 56 (05/09/26)
@@ -22132,133 +21915,6 @@ BALAYAGE_V7.surBaseComplete = {
 // qui n'est pas le cas. La règle est mise au banc pour être réfutée, pas
 // parce qu'elle est établie. Le motif ne se présente que sur 3 % des
 // thèmes : il faudra du temps.
-var MOTEURS_CONDITIONNELS_V7 = [
-  // L'ANCIENNE lecture de F4P4, gardée au banc depuis que la règle de la
-  // centrale adverse est branchée (28/08/26) : ici le rival compte encore
-  // parmi les pôles de son adversaire. Elle ne vote pas — elle sert à
-  // mesurer ce que la nouvelle règle coûte ou rapporte, cas par cas.
-  // Sur les dix cas réels : ancienne 6/10, nouvelle 5/10, un seul cas les
-  // sépare (Juventus). C'est trop peu pour trancher, d'où sa présence.
-  // ═══════════════════════════════════════════════════════════════
-  // AUTOPSIE DE ViaCaput (28/08/26) — POURQUOI LE SYSTÈME A DIT R7
-  //
-  // Via/Caput/Amissio/Carcer, réel 1-0 pour R1, verdict affiché R7 0-4.
-  // R1 = Puella en M5, R7 = Caput Draconis en M11, k=5, boucles
-  // différentes, aucun rôle partagé.
-  //
-  // 1. LE VERDICT SUIT F4P4, ET F4P4 A TRANCHÉ SUR « PÔLES SOLIDES :
-  //    0 CONTRE 2 ». C'est le premier critère de sa cascade en boucles
-  //    différentes.
-  // 2. OR LA FIGURE LA PLUS FORTE DU THÈME EST LE CHEF DE R1 : Puella
-  //    pèse 27,38 aux sept critères, contre 8,10 pour Caput Draconis, le
-  //    chef de R7. Le compte qui décide ne regarde QUE les quatre pôles :
-  //    le chef lui-même n'y entre pas. reseauF4P4V7 calcule pourtant
-  //    solidesAvecCentrale — un champ qui n'est utilisé NULLE PART.
-  //    (Et l'utiliser ne sauverait pas ce cas : Puella n'est pas « solide »
-  //    au sens de solidPoleV7, qui exige en plus que son propre réseau
-  //    tienne — 0 contre 2 dans les deux comptes. Mesuré : 14/23 au lieu
-  //    de 15/23 sur l'archive.)
-  // 3. L'AUTRE DIFFÉRENCE DÉCISIVE EST L'ASSAILLANT, ET F4P4 NE LE
-  //    REGARDE PAS ICI. L'assaillant de R7 est Populus (16,63), celui de
-  //    R1 est Conjonctio (11,25) : c'est R7 le plus attaqué. Mais la
-  //    cascade des boucles différentes est « solides → frappe → ancrage » ;
-  //    l'assaillant n'apparaît QUE dans la branche même boucle. Cette
-  //    asymétrie n'est justifiée nulle part dans le fichier.
-  // 4. TOUTES LES LECTURES QUI COMPTENT LE CHEF ET RETRANCHENT
-  //    L'ASSAILLANT ONT TROUVÉ R1 : sept critères (45,89 contre 43,42 —
-  //    l'écart est exactement la soustraction des assaillants), table des
-  //    pôles, sans concordance, cohabitation seule.
-  //
-  // ⚠️ ET LA CORRECTION NE FAIT PAS MIEUX EN TOTAL. La variante ci-dessous
-  // — départager par « ancrage total moins l'assaillant », avant tout le
-  // reste — fait 15/23, exactement comme F4P4 actuel. Elle redresse les
-  // trois échecs les plus récents (ViaCaput, City/Madrid, ConjCaput) et
-  // en casse trois anciens (Atalanta, LaetCarcer, PuerLaet). Elle entre
-  // donc au banc, sans voter, comme les autres candidates.
-  { cle: 'f4p4_moins_assaillant', nom: 'F4P4 · ancrage moins l\'assaillant', icone: '🧭', teinte: '#f0abfc',
-    juste: 0, total: 0, note: 'le chef compte, et l\'assaillant est retranché même en boucles différentes — 15/23',
-    verdict: function (t) {
-      var m = null;
-      try { m = moteurF4P4V7(t); } catch (e) { m = null; }
-      if (!m || !m.applicable) return { camp: null, detail: 'non applicable' };
-      var adv = function (r) { return (r.adverse && r.adverse.centrale) ? (r.adverse.centrale.ancrage || 0) : 0; };
-      var a = Math.round((m.R1.ancrageTotal - adv(m.R1)) * 100) / 100;
-      var b = Math.round((m.R7.ancrageTotal - adv(m.R7)) * 100) / 100;
-      return { camp: a > b ? 'R1' : b > a ? 'R7' : null,
-        detail: 'R1 ' + a + ' contre R7 ' + b + ' (assaillants retranchés : ' + adv(m.R1) + ' et ' + adv(m.R7) + ')' };
-    } },
-
-  // Les deux lectures issues de la fouille du 28/08 (voir moteurCritereV7).
-  // Elles ne votent pas : elles sont là pour être suivies, parce que les
-  // écarts qui les distinguent sont dans le bruit sur quatorze cas.
-  // ─── LA SÉLECTION, PAS LA LECTURE (28/08/26 au soir) ───
-  // Sur ConjCaput, SEPT moteurs sur neuf ont trouvé le bon camp (R7) et
-  // le verdict affiché a dit R1 : la cascade met F4P4 en tête, et F4P4
-  // s'est trompé. C'est la démonstration en un cas de ce que la fouille
-  // annonçait — l'information est là, c'est le choix du porte-parole qui
-  // rate.
-  // Cette lecture-ci ne garde que les trois moteurs qui pèsent vraiment
-  // les sept critères et prend leur majorité. Mesurée sur les dix-neuf
-  // cas : 13/19, contre 12/19 pour le verdict affiché, pour la majorité
-  // des neuf et pour F4P4 seul. UN point d'écart — c'est trop peu pour
-  // rebrancher la cascade, assez pour la suivre au banc.
-  { cle: 'majorite_purs', nom: 'Majorité des 3 moteurs qui appliquent les critères', icone: '🎯', teinte: '#5eead4',
-    juste: 0, total: 0, note: 'F4P4 + sept critères + ancrage, à la majorité — 13/19',
-    verdict: function (t) {
-      // ─── RECÂBLÉ LE 01/09/26 ───
-      // Cette lecture cherchait f4p4, sept_criteres et ancrage DANS
-      // MOTEURS_V7. Les trois en sont partis avec les dix votants : elle
-      // serait devenue muette en silence. Elle appelle maintenant les
-      // trois fonctions directement — sa doctrine ne change pas.
-      var r1 = 0, r7 = 0, det = [];
-      [['f4p4', function () { var x = moteurF4P4V7(t); return x && x.applicable ? x.avantage : null; }],
-       ['sept_criteres', function () { var x = moteurSeptCriteresV7(t); return x && x.applicable ? x.camp : null; }],
-       ['ancrage', function () { var x = analyseAncrageDeveloppe(t); return x && x.applicable ? x.avantage : null; }]
-      ].forEach(function (P) {
-        var c = null;
-        try { c = P[1](); } catch (e) { c = null; }
-        if (c === 'R1') r1++; else if (c === 'R7') r7++;
-        det.push(P[0] + ':' + (c || '—'));
-      });
-      return { camp: r1 > r7 ? 'R1' : r7 > r1 ? 'R7' : null, detail: det.join(' · ') };
-    } },
-  { cle: 'crit_sans_concordance', nom: 'Critères sans la concordance', icone: '🎯', teinte: '#67e8f9',
-    juste: 0, total: 0, note: 'la concordance pèse ×10 et se trompe 4 fois sur 12 — mais la retirer seule dégrade (6/14)',
-    verdict: function (t) { return moteurCritereV7(t, POIDS_SANS_CONCORDANCE_V7); } },
-  { cle: 'crit_sans_conc_env', nom: 'Critères sans concordance ni environnement', icone: '🎯', teinte: '#22d3ee',
-    juste: 0, total: 0, note: 'les deux critères les plus faibles retirés — meilleur score à couverture complète',
-    verdict: function (t) { return moteurCritereV7(t, POIDS_SANS_CONC_ENV_V7); } },
-  { cle: 'crit_cohabitation', nom: 'Cohabitation seule', icone: '🎯', teinte: '#a5f3fc',
-    juste: 0, total: 0, note: 'le meilleur critère pris isolément — 9/12 à la mesure du 28/08',
-    verdict: function (t) { return moteurCritereV7(t, POIDS_COHABITATION_SEULE_V7); } },
-  { cle: 'f4p4_avec_adverse', nom: 'F4P4 — ancienne lecture (le rival compte dans les pôles)', icone: '🧭', teinte: '#c084fc',
-    juste: 0, total: 0,
-    note: 'à comparer au F4P4 courant : leur écart isole exactement l\'effet de la règle',
-    verdict: function (t) { return moteurF4P4AvecAdverseV7(t); } },
-  { cle: 'decalage_oblique', nom: 'Décalage oblique → celui qui touche le plus', icone: '⚔', teinte: '#60a5fa',
-    juste: 0, total: 0,
-    note: 'muet quand les boucles sont identiques (k pair) : là, aucun camp ne touche l\'autre',
-    verdict: function (t) {
-      var rot = getRotationCombat(t);
-      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
-      var d = decalageCampsV7(rot.figR1, rot.figR7);
-      if (!d || d.memeBoucle) return { camp: null, detail: d ? d.resume : 'indisponible' };
-      return { camp: d.avantage, detail: d.resume };
-    } },
-  { cle: 'carcer_m10', nom: 'Carcer en M10 → la boucle de Carcer gagne', icone: '🔒', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'théorie Ellemine_D 28/08 — ne parle que si Carcer est en M10 et les boucles diffèrent',
-    verdict: function (t) {
-      if (!t || t[10] !== 'carcer') return { camp: null, detail: 'Carcer n\'est pas en M10' };
-      var rot = getRotationCombat(t);
-      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
-      var b1 = loopOf(rot.figR1), b7 = loopOf(rot.figR7);
-      if (b1 === b7) return { camp: null, detail: 'même boucle (' + b1 + ')' };
-      var bCarcer = loopOf('carcer');
-      var camp = b1 === bCarcer ? 'R1' : b7 === bCarcer ? 'R7' : null;
-      return { camp: camp,
-        detail: 'Carcer en M10 · R1 ' + b1 + ' / R7 ' + b7 + ' · boucle de Carcer ' + bCarcer };
-    } }
-];
 
 // ═══════════════════════════════════════════════════════════════
 // LES MOTEURS DE CORNERS — mis au banc le 28/08/26, demande d'Ellemine_D.
@@ -22288,26 +21944,6 @@ var BANC_TOLERANCE_CORNERS_V7 = 2;
 // domination du duel, qui est une lecture à part.
 // Le témoin ne lit pas le thème : il désigne toujours R1. Si les vraies
 // lectures ne le battent pas, elles ne lisent rien.
-var MOTEURS_CORNERS_DOM_V7 = [
-  { cle: 'corners_dom', nom: 'Corners · dominant (domination du duel)', icone: '🚩', teinte: '#4ade80',
-    juste: 0, total: 0, note: 'répartition sur domA/domB, bornée à 25/75',
-    verdict: function (t) {
-      var v = getVerdictAfficheReel(t);
-      if (!v || !v.cornersDominant) return { camp: null, detail: 'égalité' };
-      return { camp: v.cornersDominant === 'M1' ? 'R1' : 'R7',
-        detail: v.cornersM1 + ' / ' + v.cornersM7 + ' · part ' + (v.corners ? v.corners.partA + '%' : '—') };
-    } },
-  { cle: 'corners_dom_vainqueur', nom: 'Corners · le vainqueur domine', icone: '🏆', teinte: '#a78bfa',
-    juste: 0, total: 0, note: 'lecture naïve : celui qui gagne pousse le plus',
-    verdict: function (t) {
-      var v = getVerdictAfficheReel(t);
-      if (!v || !v.winner || v.winner === 'Nul') return { camp: null, detail: 'nul' };
-      return { camp: v.winner === 'M1' ? 'R1' : 'R7', detail: 'vainqueur ' + v.winner };
-    } },
-  { cle: 'corners_dom_temoin', nom: 'Corners · « toujours R1 »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
-    verdict: function () { return { camp: 'R1', detail: 'réponse constante' }; } }
-];
 
 // ═══════════════════════════════════════════════════════════════
 // BUT DANS LES DEUX MI-TEMPS (28/08/26, demande d'Ellemine_D)
@@ -22329,65 +21965,10 @@ var MOTEURS_CORNERS_DOM_V7 = [
 // score de mi-temps : la famille affichera 0/0 tant que tu n'en auras pas
 // saisi. C'est le but — rendre visible qu'on ne sait pas, au lieu de
 // laisser trois lectures non testées avoir l'air de fonctionner.
-var MOTEURS_MITEMPS_V7 = [
-  { cle: 'mt_deux_cartes', nom: 'Mi-temps · hypothèse M1/M7 puis R1/R7', icone: '🕐', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'le panneau « But par mi-temps » : un but dans chaque moitié si les deux cartes marquent',
-    verdict: function (t) {
-      var b = null;
-      try { b = butParMiTemps(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      var tot = function (sc) {
-        var m = String(sc || '').match(/(\d+)-(\d+)/);
-        return m ? (+m[1]) + (+m[2]) : 0;
-      };
-      var a = tot(b.premiereMiTemps.score), c = tot(b.secondeMiTemps.score);
-      return { oui: a > 0 && c > 0, detail: '1re ' + b.premiereMiTemps.score + ' · 2e ' + b.secondeMiTemps.score };
-    } },
-  { cle: 'mt_match_ouvert', nom: 'Mi-temps · match ouvert', icone: '🕐', teinte: '#a78bfa',
-    juste: 0, total: 0, note: 'un match ouvert (M5 et M11 non paralysées, ou récit ouvert) marque dans les deux moitiés',
-    verdict: function (t) {
-      var o = false;
-      try { o = determinerMatchOuvertV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      return { oui: !!o, detail: o ? 'match ouvert' : 'match fermé' };
-    } },
-  { cle: 'mt_ht_signal', nom: 'Mi-temps · signal de première période (htWinner)', icone: '🕐', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'quelqu\'un marque avant la pause, et le score prédit dépasse ce total',
-    verdict: function (t) {
-      var v = null;
-      try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      if (!v || !v.htBut) return { oui: null, detail: 'aucun signal de première période' };
-      return { oui: true, detail: 'but avant la pause'
-        + (v.htDeuxCamps ? ' (et le signal ajoute : des deux côtés)' : '') };
-    } },
-  { cle: 'mt_ht_signal_ferme', nom: 'Mi-temps · signal de première période, qui ose le non', icone: '🕐', teinte: '#fbbf24',
-    juste: 0, total: 0, note: 'même signal, mais l\'absence de signal vaut « non » au lieu d\'une abstention',
-    verdict: function (t) {
-      var v = null;
-      try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      if (!v) return { oui: null, detail: 'indisponible' };
-      return { oui: !!v.htBut, detail: v.htBut ? 'but attendu avant la pause' : 'aucun but attendu avant la pause' };
-    } },
-  { cle: 'mt_temoin', nom: 'Mi-temps · « toujours oui »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
-    verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
-];
 
 // La question FORTE, séparée le 28/08/26 : les DEUX camps marquent-ils
 // avant la pause ? C'est ce que htWinner='both' affirmait sans jamais
 // être noté là-dessus. Il l'est maintenant.
-var MOTEURS_MITEMPS_DEUX_V7 = [
-  { cle: 'mtd_signal', nom: '1re mi-temps · les deux marquent (signal htWinner)', icone: '🕐', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'l\'affirmation forte de htWinner, enfin confrontée au réel',
-    verdict: function (t) {
-      var v = null;
-      try { v = verdictV7(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      if (!v) return { oui: null, detail: 'indisponible' };
-      if (!v.htBut) return { oui: null, detail: 'aucun signal de première période' };
-      return { oui: !!v.htDeuxCamps, detail: v.htDeuxCamps ? 'les deux marquent' : 'un seul côté' };
-    } },
-  { cle: 'mtd_temoin', nom: '1re mi-temps · « toujours les deux »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
-    verdict: function () { return { oui: true, detail: 'réponse constante' }; } }
-];
 
 // ═══════════════════════════════════════════════════════════════
 // LE NUL (29/08/26) — « vérifie R1 et R7 dans les matchs nuls, ils
@@ -22869,7 +22450,7 @@ function nulParPorteV7(theme) {
 // sans la cadence) déclenche une ALERTE affichée à côté du vainqueur.
 // Le verdict reste tranché, l'avertissement est là.
 // Repasser à la porte seule : NUL_CROISEMENT_V7 = false.
-var NUL_CROISEMENT_V7 = true;
+// NUL_CROISEMENT_V7 retiré le 12/09/26 : déclaré, jamais lu — il ne commandait rien.
 
 // L'UNIQUE décision de nul du fichier. Tout ce qui affiche ou mesure un
 // verdict doit passer par elle — ne jamais réécrire ce test ailleurs.
@@ -23159,290 +22740,6 @@ function precisionFaisceauV7() {
   return _cacheFaisceauPrecV7;
 }
 
-var MOTEURS_NUL_V7 = [
-  // ─── LA FUSION DES ÉLÉMENTS COMME LECTURE DU NUL (31/08/26) ───
-  // Ellemine_D, après AmisPuer : « cette lecture est adéquate au résultat
-  // du nul, alors soit on en fait un moteur, soit tu le fusionnes au
-  // moteur similaire. » Les deux ont été mesurés avant d'être branchés,
-  // et c'est le premier qui entre — le second est refusé, mesure à
-  // l'appui.
-  //
-  // L'IDÉE. Sur les axes M2/M8 et M6/M12, le camp doublé est gouverné par
-  // l'élément qu'il PARTAGE avec l'adversaire, pas par son supplément :
-  // sa force est celle que l'autre a aussi. AmisPuer est de ce type
-  // (M6/M12, partagé Eau) et le match a fini 4-4. La lecture est belle.
-  //
-  // ☠️ ET ELLE EST MAUVAISE, SUR LES 29 CAS OÙ LE THÉORÈME S'APPLIQUE :
-  //     dominant = partagé → nul ......... 17/29   59 %
-  //     témoin « jamais nul » ............ 23/29   79 %
-  // Elle attrape 3 nuls, en rate 3, et lève 9 fausses alertes. Elle fait
-  // vingt points de MOINS que de ne jamais annoncer de nul. AmisPuer
-  // était un cas juste dans une lecture qui perd.
-  //
-  // ☠️ ET LA FUSION AVEC LA PORTE DU NUL ABÎME LA PORTE :
-  //     porte du nul SEULE ............... 25/29   86 %
-  //     porte ET dominant partagé ........ 24/29   83 %
-  // La conjonction ne retire qu'une fausse alerte et coûte un vrai nul.
-  // La meilleure lecture du nul de tout le fichier ressort dégradée. Je
-  // ne fusionne donc pas : ce serait payer un chiffre en baisse pour une
-  // idée qui, seule, est sous le témoin.
-  //
-  // Le moteur est ici parce que c'est sa place — le banc le note à côté
-  // des autres, sur chaque nouveau cas, et il remontera tout seul s'il
-  // avait raison. Il ne décide de rien.
-  { cle: 'nul_fusion_partage', nom: 'Nul · le camp doublé est gouverné par l\'élément PARTAGÉ', icone: '🜄', teinte: '#22d3ee',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D (31/08) — 17/29 contre 23/29 pour « jamais nul » : sous le témoin, affiché et noté, branché sur rien',
-    verdict: function (t) {
-      var f = null;
-      try { f = fusionElementV7(t); } catch (e) { return { oui: null, detail: 'théorème indisponible' }; }
-      if (!f || f.anomalie) return { oui: null, detail: 'théorème non applicable (une maison hors des douze)' };
-      return { oui: !f.domineParSonSupplement,
-        detail: 'axe ' + f.axe + ' · partagé ' + (NOM_ELEMENT_V7[f.commun] || f.commun)
-          + ' · dominant ' + (NOM_ELEMENT_V7[f.dominant] || f.dominant)
-          + ' → ' + (f.domineParSonSupplement ? 'son supplément' : 'le PARTAGÉ') };
-    } },
-  { cle: 'nul_fusion_et_porte', nom: 'Nul · porte ouverte ET gouverné par le partagé', icone: '🜄', teinte: '#0ea5e9',
-    juste: 0, total: 0, note: 'la fusion proposée le 31/08 : 24/29 contre 25/29 pour la porte SEULE — la conjonction dégrade, gardée pour que ça reste vérifiable',
-    verdict: function (t) {
-      var f = null;
-      try { f = fusionElementV7(t); } catch (e) { return { oui: null, detail: 'théorème indisponible' }; }
-      if (!f || f.anomalie) return { oui: null, detail: 'théorème non applicable' };
-      var porte = false;
-      try { porte = !!nulParPorteV7(t); } catch (e) { porte = false; }
-      return { oui: porte && !f.domineParSonSupplement,
-        detail: 'porte ' + (porte ? 'ouverte' : 'fermée') + ' · '
-          + (f.domineParSonSupplement ? 'gouverné par son supplément' : 'gouverné par le PARTAGÉ') };
-    } },
-  { cle: 'nul_r1_cadente', nom: 'Nul · R1 tombe en maison cadente', icone: '⚖', teinte: '#fbbf24',
-    juste: 0, total: 0, note: 'la maison seule : 4 nuls sur 7 attrapés, mais 5 faux positifs — 44 % de précision',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
-      var cadente = MAISONS_CADENTES_V7.indexOf(rot.hR1) >= 0;
-      return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
-    } },
-  { cle: 'nul_structure', nom: 'Nul · structure (M13=M14 ou paire d\'équilibre)', icone: '⚖', teinte: '#a78bfa',
-    juste: 0, total: 0, note: 'le détecteur historique, débranché du verdict',
-    verdict: function (t) {
-      var s2 = null;
-      try { s2 = structureDuNul(t); } catch (e) { return { oui: null, detail: 'indisponible' }; }
-      return { oui: !!(s2 && s2.nulDetecte), detail: s2 && s2.nulParIdentite ? 'M13 = M14'
-        : (s2 && s2.nulParOpposition ? 'M13/M14 en paire d\'équilibre' : 'aucun signal') };
-    } },
-  { cle: 'nul_juge_fige', nom: 'Nul · juge M15 figé (les 4 symétriques)', icone: '⚖', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'Populus, Carcer, Via, Conjonctio — parle sur la moitié des thèmes : 2 nuls sur 7 pour 15 faux positifs, 12 % de précision',
-    verdict: function (t) {
-      var FIGE = { populus: 1, carcer: 1, via: 1, conjunctio: 1 };
-      return { oui: !!FIGE[t[15]], detail: 'juge ' + (FL[t[15]] || t[15]) };
-    } },
-  // ── AJOUT DU 29/08/26, sur la théorie d'Ellemine_D ──────────────
-  // « si c'est les natures des figures qui déterminent si c'est nul ou
-  // pas, ou bien leur disposition d'équilibre […] R1 et R7 sont de
-  // relation binôme en maison cadente M6 et M12 ».
-  // Lu sur son thème AmisPuer (4-4) : R1 = Conjunctio en M6, R7 = Cauda
-  // Draconis en M12, décalage +2, binôme. Exact.
-  // ⚠️ MISE À JOUR DU 29/08/26 — PREMIER FAUX NÉGATIF. Le troisième nul,
-  // CaputPuella 2-2, a R7 à +11 de R1 : boucles opposées, aucun binôme,
-  // et les deux camps ne partagent AUCUN rôle (0/5) là où les deux
-  // premiers nuls en partageaient trois. La règle est restée muette.
-  // Elle ne crie donc pas à tort — elle se tait quand il faut parler :
-  // 2 nuls sur 3, 1 faux positif, 25/27. Elle reste devant le témoin
-  // (24/27) mais elle n'est plus « la » règle du nul : c'est LA MAISON
-  // qui a tenu ce soir-là, pas la nature des figures.
-  // Mesuré sur l'archive de l'époque (2 nuls) :
-  //   relation R1→R7      nuls / cas au résultat connu
-  //     +2  BINÔME ........ 2 / 3   ← les DEUX nuls y sont
-  //     +1  ............... 0 / 6
-  //     +10 bouclier ...... 0 / 4
-  //     +9  ............... 0 / 3
-  //     (huit autres relations) 0 nul
-  //   même boucle (décalage pair) 2/11 · boucles opposées (impair) 0/15
-  // Fréquence de base du binôme : 7,5 % des thèmes. Que les deux nuls
-  // tombent dans une case qui ne contient que 3 des 26 cas vaut
-  // C(3,2)/C(26,2) = 0,9 % au hasard.
-  // Le sens est net : le binôme est la relation d'ALLIANCE la plus
-  // proche. Deux centrales binômes ne sont pas des adversaires, et un
-  // match entre alliés ne désigne pas de vainqueur.
-  // Le seul faux positif est PuerCaput (e-sport, camp connu sans score).
-  { cle: 'nul_r7_binome', nom: 'Nul · R7 est le binôme de R1 (+2)', icone: '⚖', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'théorie Ellemine_D — la case la plus pure (2 nuls sur 3 déclenchements) mais elle en rate cinq',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
-      var b = BINOMES_V7[rot.figR1] === rot.figR7;
-      return { oui: b, detail: 'R7 = ' + (FL[rot.figR7] || rot.figR7)
-        + (b ? ' = binôme de ' + (FL[rot.figR1] || rot.figR1) : '') };
-    } },
-  { cle: 'nul_meme_boucle', nom: 'Nul · R1 et R7 dans la même boucle', icone: '⚖', teinte: '#22d3ee',
-    juste: 0, total: 0, note: 'décalage pair — 5 nuls sur 16 en même boucle, contre 2 sur 19 en boucles opposées',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
-      var i1 = FIGS_V7.indexOf(rot.figR1), i7 = FIGS_V7.indexOf(rot.figR7);
-      if (i1 < 0 || i7 < 0) return { oui: null, detail: 'figure inconnue' };
-      var k = (((i7 - i1) % 16) + 16) % 16;
-      return { oui: k % 2 === 0, detail: 'décalage +' + k + (k % 2 ? ' (boucles opposées)' : ' (même boucle)') };
-    } },
-  // ── LA PISTE DES MAISONS, REPRISE LE 29/08/26 ──────────────────
-  // « J'insiste sur la piste des maisons. Essaie de trouver des pôles
-  // identiques ou une corrélation dans le thème. Oriente ta recherche
-  // sur le résultat positif. » (Ellemine_D)
-  //
-  // Fait donc : balayage de 258 traits, tous formulés par ce que les
-  // nuls ONT (jamais par ce qui leur manque), en ne gardant que ceux qui
-  // attrapent LES DEUX nuls.
-  //
-  // 1. « PÔLES IDENTIQUES » AU SENS LITTÉRAL — deux maisons portant la
-  //    même figure : les 120 paires M(a)/M(b) ont été testées. AUCUNE
-  //    n'attrape les deux nuls. Réponse nette et négative.
-  //
-  // ⚠️ RÉSULTAT PÉRIMÉ PAR LE 3e NUL (29/08/26). CaputPuella 2-2 n'a
-  //    AUCUN rôle partagé entre les camps : le pôle du juge ne pouvait
-  //    donc pas s'allumer, et il ne s'est pas allumé. M15 tombe à 2 nuls
-  //    sur 3 (24/27), et « binôme ET juge partagé » à 2 sur 3 aussi —
-  //    toujours 0 faux positif, mais un raté. Le balayage ci-dessous a
-  //    été REFAIT sur les trois nuls : plus aucun trait de pôle partagé
-  //    ne les attrape tous les trois. Ce qui suit est le journal de la
-  //    mesure d'alors, gardé pour mémoire, pas une règle vivante.
-  // 2. CE QUI RESSORTAIT ALORS : le pôle partagé au siège du JUGE. Les
-  //    camps de R1 et de R7 peuvent avoir des rôles communs ; la
-  //    question est quelle maison porte l'un d'eux. Testé sur les seize :
-  //      M15 .... attrape 2/2 nuls, 2 faux positifs, 24/26  ← LE JUGE
-  //      M10 .... 1/2 nuls, 0 faux positif
-  //      M4, M12, M16 ... 1/2 nuls
-  //      les onze autres ... 0/2 nul
-  //    M15 est la SEULE des seize maisons à attraper les deux. Et elle
-  //    a une raison d'être celle-là : M15 est le juge, la maison qui
-  //    prononce le verdict. Un juge dont la figure appartient aux deux
-  //    camps ne peut favoriser personne — donc personne ne gagne.
-  //
-  // 3. COMBINÉE À LA RÈGLE DU BINÔME, elle ne laisse plus rien passer :
-  //      juge partagé seul ......... 24/26 · 2 faux positifs
-  //      binôme seul ............... 25/26 · 1 faux positif (PuerCaput)
-  //      binôme ET juge partagé .... 26/26 · 0 faux positif
-  //      témoin « jamais de nul » .. 24/26 · 0 nul attrapé
-  //    Fréquences de base : juge partagé 13,9 %, binôme 7,3 %, les deux
-  //    ensemble 1,4 % des thèmes.
-  //
-  // ⚠️ CE QU'IL NE FAUT PAS EN CONCLURE. 258 traits balayés, 26 en
-  // attrapent deux ; avec seulement DEUX nuls parmi 26 cas, un trait qui
-  // se déclenche sur 4 cas les attrape tous les deux par pure chance une
-  // fois sur 54. Sur 258 traits, le hasard seul en produit une poignée.
-  // « 26/26 » est donc DEUX conditions ajustées sur DEUX cas : non
-  // infirmé, pas confirmé. Ce qui distingue M15 du bruit n'est pas son
-  // score, c'est d'être la seule des seize maisons à tenir ET d'avoir un
-  // sens doctrinal. Et la règle ne se déclenche que sur 1,4 % des
-  // thèmes : au mieux elle attrapera un nul réel sur cinq. Précision
-  // haute, rappel très bas — à croire quand elle parle, jamais à lire
-  // comme « pas de signal donc pas de nul ».
-  { cle: 'nul_juge_partage', nom: 'Nul · le juge M15 porte un pôle des DEUX camps', icone: '⚖', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'le juge ne peut trancher — 4 nuls sur 6 déclenchements, 67 % de précision',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
-      var c1 = [rot.figR1, BOUCLIER_V7[rot.figR1], FRONT_V7[rot.figR1], BINOMES_V7[rot.figR1], frontDuFrontV7(rot.figR1)];
-      var c7 = [rot.figR7, BOUCLIER_V7[rot.figR7], FRONT_V7[rot.figR7], BINOMES_V7[rot.figR7], frontDuFrontV7(rot.figR7)];
-      var partage = c1.indexOf(t[15]) >= 0 && c7.indexOf(t[15]) >= 0;
-      return { oui: partage, detail: 'juge ' + (FL[t[15]] || t[15]) + (partage ? ' — des deux camps' : '') };
-    } },
-  { cle: 'nul_binome_et_juge', nom: 'Nul · binôme ET juge partagé', icone: '⚖', teinte: '#e879f9',
-    juste: 0, total: 0, note: '0 faux positif en 2 déclenchements, 2 nuls — non infirmé, jamais confirmé non plus',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.figR1 || !rot.figR7) return { oui: null, detail: 'rotation indisponible' };
-      if (BINOMES_V7[rot.figR1] !== rot.figR7) return { oui: false, detail: 'R7 n\'est pas le binôme de R1' };
-      var c1 = [rot.figR1, BOUCLIER_V7[rot.figR1], FRONT_V7[rot.figR1], BINOMES_V7[rot.figR1], frontDuFrontV7(rot.figR1)];
-      var c7 = [rot.figR7, BOUCLIER_V7[rot.figR7], FRONT_V7[rot.figR7], BINOMES_V7[rot.figR7], frontDuFrontV7(rot.figR7)];
-      var partage = c1.indexOf(t[15]) >= 0 && c7.indexOf(t[15]) >= 0;
-      return { oui: partage, detail: partage ? 'binôme + juge ' + (FL[t[15]] || t[15]) + ' partagé'
-        : 'binôme mais juge non partagé' };
-    } },
-  { cle: 'nul_deux_portes', nom: 'Nul · LES DEUX PORTES (+2 même boucle / +11 opposées)', icone: '🚪', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D, forme d\'origine {+2} — 4 nuls sur 7, un faux positif',
-    verdict: function (t) {
-      var d = nulDeuxPortesV7(t);
-      if (!d) return { oui: null, detail: 'rotation indisponible' };
-      var oui = d.memeBoucle ? (d.k === 2) : (d.k === 11);
-      return { oui: oui, detail: d.porte + ' · +' + d.k };
-    } },
-  { cle: 'nul_deux_portes_large', nom: 'Nul · LES DEUX PORTES élargies ({+2,+4} / +11)', icone: '🚪', teinte: '#84cc16',
-    juste: 0, total: 0, note: 'la forme branchée {+2,+4,+6} — les 7 nuls attrapés, 2 faux positifs, 78 % de précision',
-    verdict: function (t) {
-      var d = nulDeuxPortesV7(t);
-      if (!d) return { oui: null, detail: 'rotation indisponible' };
-      return { oui: d.oui, detail: d.porte + ' · +' + d.k + ' · ' + d.force };
-    } },
-  { cle: 'nul_faisceau4', nom: 'Nul · FAISCEAU — 4 signaux ou plus', icone: '🔆', teinte: '#f59e0b',
-    juste: 0, total: 0, note: 'parle 5 fois sur 35, 2 nuls dedans — 40 % contre 20 % au hasard',
-    verdict: function (t) {
-      var f = faisceauNulV7(t);
-      if (!f) return { oui: null, detail: 'rotation indisponible' };
-      return { oui: f.n >= 4, detail: f.n + '/7 signaux — ' + f.niveau };
-    } },
-  { cle: 'nul_faisceau5', nom: 'Nul · FAISCEAU — 5 signaux ou plus', icone: '🔆', teinte: '#ef4444',
-    juste: 0, total: 0, note: 'parle 3 fois sur 35, 2 nuls dedans — 67 % contre 20 % au hasard',
-    verdict: function (t) {
-      var f = faisceauNulV7(t);
-      if (!f) return { oui: null, detail: 'rotation indisponible' };
-      return { oui: f.n >= 5, detail: f.n + '/7 signaux — ' + f.niveau };
-    } },
-  // ─── LA DOCTRINE DE SATURNE (29/08/26, Ellemine_D) ───
-  // « Saturne symbolise blocage, défense, stabilité, rigueur. Il faut
-  // associer les figures liées à Saturne et opérer les maisons les plus
-  // susceptibles du nul. Ça, c'est l'ingrédient pour le nul. »
-  //
-  // Figures de Saturne dans la table du fichier : CARCER et TRISTITIA.
-  // Maisons de Saturne : M10 et M11.
-  //
-  // ⚠️ MESURÉ SUR LES 30 CAS, ET AUCUNE LECTURE NE BAT LE HASARD (17 %) :
-  //   R1 est de Saturne .............. 1 nul /  6 tirs · 17 %
-  //   R7 est de Saturne .............. 0 nul /  1
-  //   le juge M15 est de Saturne ..... 0 nul /  4
-  //   M13 ou M14 est de Saturne ...... 2 nuls /  8 · 25 %
-  //   R1 en maison de Saturne ........ 1 nul /  7 · 14 %
-  //   Saturne chez lui (M10/M11) ..... 0 nul /  4
-  //   Saturne dans une cadente ....... 2 nuls / 14 · 14 %
-  //   M1 ou M7 est de Saturne ........ 2 nuls /  9 · 22 %
-  //   au moins 2 Saturne dans le thème 3 nuls / 21 · 14 %
-  // Et le fait qui tranche : AmisPuer, le 4-4, le nul le plus net de
-  // l'archive — sept signaux sur sept au faisceau — ne contient AUCUNE
-  // figure de Saturne dans ses seize maisons.
-  //
-  // La doctrine n'est donc pas branchée au verdict. Les deux moteurs
-  // ci-dessous la mettent SOUS SURVEILLANCE : chaque nouveau nul les
-  // départagera tout seul, sans qu'on ait à y revenir à la main.
-  { cle: 'nul_saturne_siege', nom: 'Nul · Saturne sur un siège (R1, R7, M1 ou M7)', icone: '♄', teinte: '#a3a3a3',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D — sous surveillance : parle sur 14 thèmes sur 35 et n\'y trouve que 2 nuls (14 %, sous le hasard)',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.figR1) return { oui: null, detail: 'rotation indisponible' };
-      var SAT = { carcer: 1, tristitia: 1 };
-      var ou = [];
-      if (SAT[rot.figR1]) ou.push('R1');
-      if (SAT[rot.figR7]) ou.push('R7');
-      if (SAT[t[1]]) ou.push('M1');
-      if (SAT[t[7]]) ou.push('M7');
-      return { oui: ou.length > 0, detail: ou.length ? 'Saturne en ' + ou.join(', ') : 'aucun siège saturnien' };
-    } },
-  { cle: 'nul_saturne_cadent', nom: 'Nul · Saturne dans une maison cadente', icone: '♄', teinte: '#737373',
-    juste: 0, total: 0, note: 'Saturne croisé aux maisons susceptibles — parle sur 18 thèmes sur 35, 3 nuls (17 %, sous le hasard)',
-    verdict: function (t) {
-      var ou = [];
-      MAISONS_CADENTES_V7.forEach(function (h) {
-        if (t[h] === 'carcer' || t[h] === 'tristitia') ou.push('M' + h);
-      });
-      return { oui: ou.length > 0, detail: ou.length ? 'Saturne en ' + ou.join(', ') : 'aucune cadente saturnienne' };
-    } },
-  { cle: 'nul_temoin', nom: 'Nul · « jamais de nul »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — la barre à battre est très haute, les nuls sont rares',
-    verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
-];
 
 // ══════════════════════════════════════════════════════════════
 // MATCH SERRÉ (29/08/26) — « vérifie si les 4 cas cadents non-nuls ont un
@@ -23485,55 +22782,7 @@ var MOTEURS_NUL_V7 = [
 // réfuter, exactement comme il fallait s'y attendre d'un motif ajusté
 // après coup sur deux cas. Le moteur reste au banc comme témoin de ce
 // qu'une jolie coïncidence vaut : 2 nuls sur 3, et un raté.
-var MOTEURS_SERRE_V7 = [
-  { cle: 'serre_r1_cadente', nom: 'Serré · R1 en maison cadente', icone: '⚖', teinte: '#34d399',
-    juste: 0, total: 0, note: '7 cas sur 7 quand il ose le oui — écart moyen 0,57 contre 2,05 ailleurs',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
-      var cadente = MAISONS_CADENTES_V7.indexOf(rot.hR1) >= 0;
-      return { oui: cadente, detail: 'R1 en M' + rot.hR1 + (cadente ? ' (cadente)' : '') };
-    } },
-  { cle: 'serre_m6m9', nom: 'Serré · R1 en M6 ou M9 (le couple des nuls)', icone: '⚖', teinte: '#a78bfa',
-    juste: 0, total: 0, note: '3 cas sur 3, écart moyen 0,33 — trois cas seulement, motif à confirmer',
-    verdict: function (t) {
-      var rot = null;
-      try { rot = getRotationCombat(t); } catch (e) { return { oui: null, detail: 'rotation indisponible' }; }
-      if (!rot || !rot.hR1) return { oui: null, detail: 'rotation indisponible' };
-      var vise = (rot.hR1 === 6 || rot.hR1 === 9);
-      return { oui: vise, detail: 'R1 en M' + rot.hR1 };
-    } },
-  { cle: 'serre_temoin', nom: 'Serré · « toujours serré »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — 19 des 27 cas au score connu sont serrés',
-    verdict: function () { return { oui: true, detail: 'réponse constante' }; } },
-  { cle: 'serre_temoin_non', nom: 'Serré · « jamais serré »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin inverse',
-    verdict: function () { return { oui: false, detail: 'réponse constante' }; } }
-];
 
-var MOTEURS_CORNERS_V7 = [
-  { cle: 'corners_moteur', nom: 'Corners · moteur affiché', icone: '🚩', teinte: '#38bdf8',
-    juste: 0, total: 0, note: 'estimerCornersV7 — mi-temps + doctrine Feu/Terre',
-    verdict: function (t) {
-      var v = getVerdictAfficheReel(t);
-      if (!v || v.cornersTotal == null) return { n: null, detail: '—' };
-      var c = v.corners || {};
-      return { n: v.cornersTotal,
-        detail: (c.ht1 != null ? c.ht1 + '+' + c.ht2 + '=' : '') + v.cornersTotal
-          + (c.doctrine ? ' · ' + c.doctrine : '') };
-    } },
-  { cle: 'corners_ouvert', nom: 'Corners · match ouvert ou fermé', icone: '🚪', teinte: '#a78bfa',
-    juste: 0, total: 0, note: 'lecture seule de l\'ouverture : ouvert 10, fermé 4',
-    verdict: function (t) {
-      var ouvert = false;
-      try { ouvert = !!determinerMatchOuvertV7(t); } catch (e) { return { n: null, detail: '—' }; }
-      return { n: ouvert ? 10 : 4, detail: ouvert ? 'ouvert → 10' : 'fermé → 4' };
-    } },
-  { cle: 'corners_temoin', nom: 'Corners · « toujours 10 »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — ne lit pas le thème, c\'est la moyenne d\'un match',
-    verdict: function () { return { n: 10, detail: 'réponse constante' }; } }
-];
 
 // ═══════════════════════════════════════════════════════════════
 // QUI ENCAISSE L'INCIDENT — étude du 28/08/26, demandée par Ellemine_D
@@ -23709,117 +22958,7 @@ function campIncidentAfficheV7(theme, detect) {
 // Qui CONCÈDE le penalty. Famille distincte du carton rouge depuis le
 // 27/08 : un même match peut donner un rouge à un camp et un penalty à
 // l'autre, et une seule case « contre qui » ne pouvait pas le dire.
-var MOTEURS_PENALTY_CAMP_V7 = [
-  { cle: 'pen_camp_m12', nom: 'Penalty · Mars naît en M12 → le camp 2 concède', icone: '⚽', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'RÉFUTÉE sur son unique cas (27/08 : penalty côté R1) — gardée pour mémoire, accuse toujours M7',
-    verdict: function (t) {
-      var n = naissancesMarsV7(t).filter(function (x) { return x.penalty; });
-      if (!n.length) return { camp: null, detail: 'M12 n\'engendre pas Mars' };
-      return { camp: 'M7', detail: 'M12 ' + (FL[n[0].fig] || n[0].fig) + ' engendre '
-        + (FL[n[0].resultante] || n[0].resultante) };
-    } },
-  { cle: 'pen_camp_v7', nom: 'Penalty · moteur verdictV7 (encaisseur)', icone: '⚠', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'la lecture déjà en place',
-    verdict: function (t) {
-      var v = null;
-      try { v = verdictV7(t); } catch (e) { return { camp: null, detail: 'erreur' }; }
-      var e2 = v && v.penalty ? v.penalty.encaisseur : null;
-      return { camp: (e2 === 'M1' || e2 === 'M7') ? e2 : null,
-        detail: v && v.penalty && v.penalty.reasons ? String(v.penalty.reasons[0] || '') : '' };
-    } },
-  { cle: 'pen_camp_temoin', nom: 'Penalty · « toujours M7 »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — ne lit pas le thème, à comparer à la règle M12',
-    verdict: function () { return { camp: 'M7', detail: 'réponse constante' }; } },
-  // ☠️ 30/08/26 — TOUTE CETTE FAMILLE EST À ZÉRO. Les trois moteurs
-  // ci-dessus font 0/1, 0/2 et 0/3 : aucun n'a jamais désigné le bon
-  // camp. La raison est bête et il fallait la voir : les TROIS cas
-  // connus ont le penalty concédé par M1, et le seul témoin qu'on avait
-  // répond toujours M7. Un témoin qui ne peut pas gagner ne mesure rien.
-  // Celui-ci est son inverse. Il fait 3/3 — et ça ne vaut RIEN : trois
-  // cas, p = 0,125 contre une pièce. Il est là pour que le plancher de
-  // la famille soit visible, pas pour être joué. Le jour où un match
-  // donnera un penalty concédé par M7, il tombera à 3/4 et on saura
-  // enfin quelque chose.
-  { cle: 'pen_camp_temoin_m1', nom: 'Penalty · « toujours M1 » (témoin inverse)', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin inverse (30/08) — les 3 cas connus sont tous M1 ; 3/3 ne démontre rien, p = 0,125',
-    verdict: function () { return { camp: 'M1', detail: 'réponse constante — témoin, pas une règle' }; } }
-];
 
-var MOTEURS_INCIDENT_CAMP_V7 = [
-  { cle: 'inc_camp_naissance', nom: 'Camp · maison où Mars naît — repère FIXE', icone: '🩸', teinte: '#ef4444',
-    juste: 0, total: 0, note: 'CAMP1/CAMP2 tels quels ; muet si les naissances sont des deux côtés',
-    verdict: function (t) { return campNaissancesMarsV7(t, false); } },
-  { cle: 'inc_camp_naissance_rot', nom: 'Camp · maison où Mars naît — repère TOURNÉ', icone: '🩸', teinte: '#f97316',
-    juste: 0, total: 0, note: 'mêmes naissances, camps lus après la rotation de l\'anneau',
-    verdict: function (t) { return campNaissancesMarsV7(t, true); } },
-  { cle: 'inc_camp_mars', nom: 'Camp · le siège engendre Mars', icone: '⚔', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'loi de la résultante au siège — se tait sur 81 % des thèmes',
-    verdict: function (t) {
-      var rot = getRotationCombat(t);
-      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
-      var mars = function (f, h) {
-        var r = combine(f, FIGS_V7[h - 1]);
-        return FIGURES_MARS_V7[r] ? r : null;
-      };
-      var a = mars(rot.figR1, rot.hR1), b = mars(rot.figR7, rot.hR7);
-      if (a && !b) return { camp: 'M1', detail: 'R1 engendre ' + (FL[a] || a) + ' à son siège' };
-      if (b && !a) return { camp: 'M7', detail: 'R7 engendre ' + (FL[b] || b) + ' à son siège' };
-      if (a && b) return { camp: null, detail: 'les deux engendrent Mars — aucun coupable désigné' };
-      return { camp: null, detail: 'aucun siège n\'engendre Mars' };
-    } },
-  // Raffinement du 28/08/26, issu de la loi de la résultante au siège
-  // (cf. autoTestLoiMaisonV7) : en maison PAIRE la résultante reste dans
-  // le camp — le Mars engendré est un allié ; en maison IMPAIRE elle
-  // vient d'en face. Ne retenir que le second cas divise par deux la
-  // fréquence du critère sans casser son équilibre, et il désigne
-  // toujours R1 sur Bologna — le seul cas réel connu.
-  // Mesuré sur les 65 536 thèmes possibles (exhaustif, pas un échantillon) :
-  //   « le siège engendre Mars » ............ R1 6144 / R7 6144, tranche 18,8 %
-  //   « … depuis une maison impaire » ....... R1 2880 / R7 2880, tranche  8,8 %
-  //   « … depuis une maison paire » ......... R1 3264 / R7 3264, tranche 10,0 %
-  // ⚠️ NE PAS remplacer Mars par l'agression directe (±3) : « le siège
-  // engendre son agresseur » donne R1 2432 / R7 3456 et « son agresseur
-  // ou sa victime » R1 3072 / R7 7168 — ces deux-là sont structurellement
-  // biaisés vers R7, ils désigneraient un coupable par la forme du thème
-  // et non par ce qu'il contient. Vérifié exhaustivement le 28/08/26.
-  // Au banc uniquement, comme le précédent.
-  { cle: 'inc_camp_mars_hors', nom: 'Camp · le siège engendre Mars d\'en face', icone: '⚔', teinte: '#fb7185',
-    juste: 0, total: 0, note: 'idem, restreint aux maisons impaires — se tait sur ≈ 91 % des thèmes',
-    verdict: function (t) {
-      var rot = getRotationCombat(t);
-      if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
-      var mars = function (f, h) {
-        if (!f || !h || h % 2 === 0) return null;
-        var r = combine(f, FIGS_V7[h - 1]);
-        return FIGURES_MARS_V7[r] ? r : null;
-      };
-      var a = mars(rot.figR1, rot.hR1), b = mars(rot.figR7, rot.hR7);
-      if (a && !b) return { camp: 'M1', detail: 'R1 engendre ' + (FL[a] || a) + ' en M' + rot.hR1 + ' (impaire — hors camp)' };
-      if (b && !a) return { camp: 'M7', detail: 'R7 engendre ' + (FL[b] || b) + ' en M' + rot.hR7 + ' (impaire — hors camp)' };
-      if (a && b) return { camp: null, detail: 'les deux engendrent Mars hors camp' };
-      return { camp: null, detail: 'aucun siège n\'engendre Mars depuis une maison impaire' };
-    } },
-  { cle: 'inc_camp_affiche', nom: 'Camp · ce que l\'application AFFICHE', icone: '📺', teinte: '#a78bfa',
-    juste: 0, total: 0, note: 'cascade branchée le 28/08 : naissances de Mars, puis détecteur en repli',
-    verdict: function (t) {
-      var orderR = getRotationOrderFromRepos(t[1]);
-      var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
-        calculerButsCamp(t[orderR[6]], t), orderR[0], orderR[6]);
-      var c = campIncidentAfficheV7(t, d);
-      return { camp: c.camp || null, detail: c.source + ' — ' + c.resume };
-    } },
-  { cle: 'inc_camp_detecteur', nom: 'Camp · détecteur de signaux seul (ancien affichage)', icone: '⚠', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'ce que l\'application montrait avant le 28/08',
-    verdict: function (t) {
-      var orderR = getRotationOrderFromRepos(t[1]);
-      var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
-        calculerButsCamp(t[orderR[6]], t), orderR[0], orderR[6]);
-      return { camp: d.camp || null, detail: d.campResume || '' };
-    } },
-  { cle: 'inc_camp_temoin', nom: 'Camp · « toujours M1 »', icone: '➖', teinte: '#64748b',
-    juste: 0, total: 0, note: 'témoin — ne lit pas le thème',
-    verdict: function () { return { camp: 'M1', detail: 'réponse constante' }; } }
-];
 
 // ═══════════════════════════════════════════════════════════════
 // LES MOTEURS D'INCIDENT — mis au banc le 27/08/26.
@@ -23982,59 +23121,6 @@ function incidentDerivesV7(theme) {
   return { moyenne: moy, rouges: rouges, detail: det, nb: pcts.length };
 }
 
-var MOTEURS_INCIDENT_V7 = [
-  { cle: 'incident_sommes_axes', nom: 'Incident · une somme d\'axe est figure d\'incident', icone: '➕', teinte: '#22c55e',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D — 5/5, la meilleure lecture de la famille',
-    verdict: function (t) {
-      var s = null;
-      try { s = sommesAxesIncidentV7(t); } catch (e) { return { oui: null, detail: 'sommes indisponibles' }; }
-      if (!s) return { oui: null, detail: 'sommes indisponibles' };
-      var q = s.detail.filter(function (x) { return x.incident; }).map(function (x) { return x.axe; });
-      return { oui: s.signal, detail: s.nb + '/3 · ' + (q.length ? q.join(', ') : 'aucune somme d\'incident') };
-    } },
-  { cle: 'incident_derives', nom: 'Incident · moyenne des trois dérivés d\'axes ≥ 50 %', icone: '🧭', teinte: '#f472b6',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D — 3 justes sur 5 contre 1 sur 5 pour le thème principal',
-    verdict: function (t) {
-      var d = null;
-      try { d = incidentDerivesV7(t); } catch (e) { return { oui: null, detail: 'dérivés indisponibles' }; }
-      if (!d) return { oui: null, detail: 'dérivés indisponibles' };
-      return { oui: d.moyenne >= 50,
-        detail: 'moyenne ' + d.moyenne + ' % sur ' + d.nb + ' axes' + (d.rouges ? ' · ' + d.rouges + ' rouge(s)' : '') };
-    } },
-  { cle: 'incident_derives_rouge', nom: 'Incident · au moins un dérivé porte un rouge', icone: '🟥', teinte: '#ef4444',
-    juste: 0, total: 0, note: 'la lecture la plus stricte des dérivés',
-    verdict: function (t) {
-      var d = null;
-      try { d = incidentDerivesV7(t); } catch (e) { return { oui: null, detail: 'dérivés indisponibles' }; }
-      if (!d) return { oui: null, detail: 'dérivés indisponibles' };
-      return { oui: d.rouges > 0, detail: d.rouges + ' dérivé(s) sur ' + d.nb + ' portent un rouge' };
-    } },
-  { cle: 'incident_signaux', nom: 'Incident · signaux', icone: '⚠', teinte: '#f87171',
-    juste: 0, total: 0, note: 'affiché — chaos, filiation, M6/M12 discordantes',
-    verdict: function (t) {
-      var orderR = getRotationOrderFromRepos(t[1]);
-      var d = detectIncidentChaotique(t, calculerButsCamp(t[orderR[0]], t),
-        calculerButsCamp(t[orderR[6]], t), orderR[0], orderR[6]);
-      var niv = calculerNiveauIncidentV7(d.signals);
-      return { oui: niv.pct >= 50, camp: d.camp || null,
-        detail: niv.pct + '% ' + niv.niveau + (d.camp ? ' · contre ' + d.camp : '') };
-    } },
-  { cle: 'incident_binome', nom: 'Incident · binôme non protecteur', icone: '🛡', teinte: '#fb923c',
-    juste: 0, total: 0, note: 'non affiché — figure dangereuse en M6/M12 mal protégée',
-    verdict: function (t) {
-      var v = verdictV7(t, false, {});
-      return { oui: !!(v.penalty && (v.penalty.hasPen || v.penalty.hasRed)),
-        camp: (v.penalty && v.penalty.encaisseur) || null,
-        detail: (v.penalty && v.penalty.hasPen ? 'penalty' : 'aucun')
-          + (v.penalty && v.penalty.encaisseur ? ' · contre ' + v.penalty.encaisseur : '') };
-    } },
-  { cle: 'incident_filiation', nom: 'Incident · filiation double-négative', icone: '🧬', teinte: '#c084fc',
-    juste: 0, total: 0, note: 'doctrine Ellemine_D 27/08 — M5⊕M6→M11 et symétriques',
-    verdict: function (t) {
-      var f = filiationIncidentV7(t);
-      return { oui: f.nb > 0, camp: f.camp || null, detail: f.resume };
-    } }
-];
 
 // ═══════════════════════════════════════════════════════════════
 // LE VOTE DES MOTEURS — au volant depuis le 27/08/26, choix d'Ellemine_D.
@@ -28074,7 +27160,7 @@ var _CACHE_ACCORD_V7 = null;
 //
 // L'ancienne cascade reste entière derrière MOTEUR_V8_ACTIF = false :
 // rien n'est détruit, tout est réversible d'un booléen.
-var MOTEUR_V8_ACTIF = true;
+// MOTEUR_V8_ACTIF retiré le 12/09/26 : déclaré, jamais lu — il ne commandait rien.
 var ARCHI_V8 = 'simple';   // 'simple' (une règle partout) ou 'deux' (par boucle)
 
 // R1 et R7 sont-ils dans la même boucle ? C'est le seul aiguillage.
@@ -29760,7 +28846,7 @@ var PILOTE_VERDICT_V7 = 'carre';   // 'carre' (sa demande) | 'v8'
 //   c'est lui qui a demandé le branchement. Rien n'est changé ici sans
 //   sa décision — seul le chiffre est inscrit.
 // ═══════════════════════════════════════════════════════════════
-var M4M10_PILOTE_VERDICT_V7 = true;   // false = retour au comportement d'avant
+// M4M10_PILOTE_VERDICT_V7 retiré le 12/09/26 : déclaré, jamais lu — il ne commandait rien.
 
 // ═══════════════════════════════════════════════════════════════
 // L'ORDRE DE LA CASCADE, EN TOUTES LETTRES (04/09/26, sa décision :

@@ -360,3 +360,44 @@ Le match a fini 7-0 : camp juste, BTTS juste, volume faux.
 tables du fichier, mais l'assemblage date d'aujourd'hui et a été trouvé sur un
 thème dont je connaissais le résultat. Elle part au test prospectif comme les
 autres. Elle n'est pas démontrée.
+
+---
+
+## Nettoyage de l'encombrement — 12/09/2026
+
+`bancMoteursV7` avait été supprimé le 11/09 comme code mort. Avec lui a disparu
+le seul consommateur des catalogues de moteurs : **70 moteurs restaient déclarés
+et n'étaient plus jamais exécutés**.
+
+Supprimé — 937 lignes :
+
+| | entrées |
+|---|---|
+| 12 catalogues `MOTEURS_*` | 70 moteurs |
+| `MOTEURS_DESACTIVES_V7` / `SOUS_SURVEILLANCE` / `GARDES` | métadonnées |
+| l'IIFE qui désactivait 60 moteurs par famille | — |
+| `moteurDesactiveV7`, `moteursActifsV7` | le filtre |
+| 4 drapeaux déclarés jamais lus | `M4M10_PILOTE_VERDICT_V7`, `MOTEUR_V8_ACTIF`, `PILOTE_CRITERES_V7`, `NUL_CROISEMENT_V7` |
+
+Le dernier consommateur restant, dans `densiteIncidentV7`, lisait
+`MOTEURS_INCIDENT_CAMP_V7` — dont les sept entrées étaient toutes désactivées :
+la boucle n'ajoutait jamais rien.
+
+**Huit branches de `BRANCHES_V7` marquées `inerte: true`** au lieu d'être
+supprimées : elles sont déclarées, documentées, certaines marquées
+`actif: true` avec un « mettre à false rend la cascade d'origine » — et aucun
+code ne les lit. Elles ne commandent rien. Conservées pour la trace de ce qui a
+été essayé ; leur drapeau ne veut simplement rien dire. Les cinq réellement
+lues : `populus_volume`, `axe_volume`, `miroir_volume`, `carcer_miroir`,
+`nul_seconde_porte`.
+
+**Preuve que rien n'a bougé** : empreinte complète des sorties sur les 65 536
+thèmes — camp, score, BTTS, incidents, nul, volume, camp muet, source BTTS —
+prise avant et après. **Fichiers strictement identiques.**
+
+34 496 → 33 559 lignes. 2 141 540 → 2 081 835 octets.
+
+L'analyse de code mort propose 36 fonctions de plus (1 155 lignes). **Non
+touchées** : vérification faite, elle donne des faux positifs — les `toggle*Panel`
+qu'elle liste ont bien un `onclick` dans le HTML. À reprendre à la main, pas
+automatiquement.
