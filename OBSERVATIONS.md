@@ -531,3 +531,28 @@ sauté. Le commentaire de doctrine qui écrivait « impossible » est corrigé.
 La validité n'a **pas** été basculée sur les axes étendus : elle n'a pas été
 re-mesurée sur cette base et la déplacer changerait quels thèmes sont valides
 sans qu'on sache dans quel sens. Elle bougera sur décision, pas par effet de bord.
+
+### La validité bascule sur les axes étendus — 12/09/2026
+
+Sur décision d'Ellemine_D. Une seule définition des axes dans tout le fichier :
+`MAISONS_*_V7`, les seize maisons.
+
+La validité teste que la figure de chaque axe — somme XOR de ses maisons —
+existe dans le thème, en base ou en résultante.
+
+| | avant (carré M1–M12) | après (axes étendus) |
+|---|---|---|
+| thèmes valides | 46 483 — 70,9 % | **44 371 — 67,7 %** |
+
+Ce n'est pas un simple resserrement : **22 714 thèmes changent d'état (34,7 %)**
+— 10 301 deviennent valides, 12 413 deviennent invalides.
+
+**Aucune sortie ne bouge.** Empreinte complète sur les 65 536 thèmes — camp,
+score, BTTS, incidents, nul, volume, camp muet, source BTTS — identique à
+l'état d'avant la bascule. Raison : `REJET_THEME_INVALIDE_V7` est à `false`,
+un thème invalide n'est pas écarté du verdict. La validité est affichée, elle
+ne décide rien.
+
+Le bandeau « ⛔ THÈME INVALIDE — DÉTRUIT » ne vient pas de là : il vient de
+`themeDetruit()`, qui ne regarde que Rubeus ou Cauda Draconis en M1. Il n'est
+pas touché.

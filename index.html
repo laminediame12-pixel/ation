@@ -8525,16 +8525,16 @@ function combineMany(arr){return arr.slice(1).reduce((acc,f)=>combine(acc,f),arr
 // faisait tomber des thèmes que les trois autres laissaient passer : il
 // testait quelque chose de réel. Il fusionne donc dans le Cadent, et la
 // validité redevient un test à TROIS axes — les trois seuls qui existent.
-// ⚠️ LA VALIDITÉ RESTE SUR LE CARRÉ (M1 à M12), pas sur les axes étendus.
-// Elle teste que la figure de chaque axe existe dans le thème. Les axes ont
-// été étendus aux seize maisons le 12/09/26 ; la validité, elle, n'a pas été
-// re-mesurée sur cette base. La basculer changerait quels thèmes sont
-// déclarés valides sans qu'on sache dans quel sens. Elle bougera le jour où
-// ce sera décidé explicitement, pas comme effet de bord.
+// ─── BASCULÉE SUR LES AXES ÉTENDUS LE 12/09/26 (Ellemine_D) ───
+// La validité teste que la figure de chaque axe — la somme XOR de ses
+// maisons — existe dans le thème, en base ou en résultante. Elle portait
+// sur le carré seul (M1 à M12) ; elle porte désormais sur les axes complets
+// aux seize maisons, comme le reste du fichier. Une seule définition des
+// axes, un seul endroit : MAISONS_*_V7.
 const AXES_VALIDITE_DEFS = [
-  {key:'cardinal',  label:'Carré angulaire ('  + MERES_CARDINALES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')',  houses:MERES_CARDINALES_V7},
-  {key:'succedent', label:'Carré succédent (' + MERES_SUCCEDENTES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')', houses:MERES_SUCCEDENTES_V7},
-  {key:'cadent',    label:'Carré cadent ('    + MERES_CADENTES_V7.map(function(h){return 'M'+h;}).join(' + ')    + ')',    houses:MERES_CADENTES_V7}
+  {key:'cardinal',  label:'Axe Angulaire ('  + MAISONS_CARDINALES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')',  houses:MAISONS_CARDINALES_V7},
+  {key:'succedent', label:'Axe Succédent (' + MAISONS_SUCCEDENTES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')', houses:MAISONS_SUCCEDENTES_V7},
+  {key:'cadent',    label:'Axe Cadent ('    + MAISONS_CADENTES_V7.map(function(h){return 'M'+h;}).join(' + ')    + ')',    houses:MAISONS_CADENTES_V7}
 ];
 function evaluerAxesValidite(theme){
   return AXES_VALIDITE_DEFS.map(function(def){
