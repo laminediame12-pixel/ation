@@ -1380,9 +1380,26 @@ function jouerAutoTestsV7() {
 // étaient invisibles partout ailleurs, le moteur Nul tombait à zéro sur les
 // 65 536 thèmes et trente thèmes sur trente plantaient. Ne pas les déplacer
 // à l'intérieur d'une fonction ou d'un IIFE.
-var MAISONS_CARDINALES_V7  = [1, 4, 7, 10];
-var MAISONS_SUCCEDENTES_V7 = [2, 6, 8, 12];
-var MAISONS_CADENTES_V7    = [3, 5, 9, 11];
+// ─── ÉTENDU AUX SEIZE MAISONS LE 12/09/26 (Ellemine_D) ───
+// « Les axes dans l'ensemble des 16 figures :
+//     Angulaire   M1 · M4 · M7 · M10 · M13 · M16
+//     Succédente  M2 · M6 · M8 · M12 · M14
+//     Cadente     M3 · M5 · M9 · M11 · M15 »
+// 6 + 5 + 5 = 16 : partition exacte, aucun chevauchement. Aucune maison
+// n'est plus hors axe. Auparavant les trois axes s'arrêtaient à M12 et un
+// camp tombait hors axe 25 % du temps (mesuré) — ce trou est refermé.
+//
+// MAISONS_*_V7 est la classe COMPLÈTE : c'est elle qui dit à quel axe une
+// maison appartient, et c'est sur elle que se calcule la somme de l'axe.
+// MERES_*_V7 est le noyau du carré, les quatre maisons de M1 à M12. Il ne
+// sert qu'aux endroits qui construisent un THÈME DÉRIVÉ, lequel exige
+// exactement quatre mères — pas une de plus.
+var MAISONS_CARDINALES_V7  = [1, 4, 7, 10, 13, 16];
+var MAISONS_SUCCEDENTES_V7 = [2, 6, 8, 12, 14];
+var MAISONS_CADENTES_V7    = [3, 5, 9, 11, 15];
+var MERES_CARDINALES_V7    = [1, 4, 7, 10];
+var MERES_SUCCEDENTES_V7   = [2, 6, 8, 12];
+var MERES_CADENTES_V7      = [3, 5, 9, 11];
 </script>
 <script>
 // ═══════════════════════════════════════════════════════════════
@@ -8508,10 +8525,16 @@ function combineMany(arr){return arr.slice(1).reduce((acc,f)=>combine(acc,f),arr
 // faisait tomber des thèmes que les trois autres laissaient passer : il
 // testait quelque chose de réel. Il fusionne donc dans le Cadent, et la
 // validité redevient un test à TROIS axes — les trois seuls qui existent.
+// ⚠️ LA VALIDITÉ RESTE SUR LE CARRÉ (M1 à M12), pas sur les axes étendus.
+// Elle teste que la figure de chaque axe existe dans le thème. Les axes ont
+// été étendus aux seize maisons le 12/09/26 ; la validité, elle, n'a pas été
+// re-mesurée sur cette base. La basculer changerait quels thèmes sont
+// déclarés valides sans qu'on sache dans quel sens. Elle bougera le jour où
+// ce sera décidé explicitement, pas comme effet de bord.
 const AXES_VALIDITE_DEFS = [
-  {key:'cardinal',  label:'Axe Cardinal ('  + MAISONS_CARDINALES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')',  houses:MAISONS_CARDINALES_V7},
-  {key:'succedent', label:'Axe Succédent (' + MAISONS_SUCCEDENTES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')', houses:MAISONS_SUCCEDENTES_V7},
-  {key:'cadent',    label:'Axe Cadent ('    + MAISONS_CADENTES_V7.map(function(h){return 'M'+h;}).join(' + ')    + ')',    houses:MAISONS_CADENTES_V7}
+  {key:'cardinal',  label:'Carré angulaire ('  + MERES_CARDINALES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')',  houses:MERES_CARDINALES_V7},
+  {key:'succedent', label:'Carré succédent (' + MERES_SUCCEDENTES_V7.map(function(h){return 'M'+h;}).join(' + ') + ')', houses:MERES_SUCCEDENTES_V7},
+  {key:'cadent',    label:'Carré cadent ('    + MERES_CADENTES_V7.map(function(h){return 'M'+h;}).join(' + ')    + ')',    houses:MERES_CADENTES_V7}
 ];
 function evaluerAxesValidite(theme){
   return AXES_VALIDITE_DEFS.map(function(def){
@@ -16868,14 +16891,17 @@ function lectureOuvertureButsV7(theme, cadre) {
 // M12, mais ce ne sont pas les classes modulo 3 : seul le Cardinal l'est.
 // Maisons corrigées le 11/09/26 (Ellemine_D) : Succédent 2-6-8-12,
 // Cadent 3-5-9-11.
+// `maisons` = l'axe complet (somme et appartenance).
+// `meres`   = les quatre du carré, pour les thèmes dérivés uniquement.
 var AXES_V7 = [
-  { cle: 'cardinal',  nom: 'Axe Cardinal',  maisons: MAISONS_CARDINALES_V7,  note: 'angulaire' },
-  { cle: 'succedent', nom: 'Axe Succédent', maisons: MAISONS_SUCCEDENTES_V7, note: 'succédent — signal de nul validé' },
-  { cle: 'cadent',    nom: 'Axe Cadent',    maisons: MAISONS_CADENTES_V7,    note: 'cadent' }
+  { cle: 'cardinal',  nom: 'Axe Angulaire',  maisons: MAISONS_CARDINALES_V7,  meres: MERES_CARDINALES_V7,  note: 'angulaire' },
+  { cle: 'succedent', nom: 'Axe Succédent',  maisons: MAISONS_SUCCEDENTES_V7, meres: MERES_SUCCEDENTES_V7, note: 'succédent — signal de nul validé' },
+  { cle: 'cadent',    nom: 'Axe Cadent',     maisons: MAISONS_CADENTES_V7,    meres: MERES_CADENTES_V7,    note: 'cadent' }
 ];
 
 function lectureUnAxeV7(theme, axe) {
-  const meres = axe.maisons.map(function (h) { return theme[h]; });
+  // Thème dérivé : exactement quatre mères. On prend le noyau du carré.
+  const meres = (axe.meres || axe.maisons).map(function (h) { return theme[h]; });
   let derive = null;
   try { derive = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]); }
   catch (e) { return { cle: axe.cle, nom: axe.nom, applicable: false, raison: 'Thème dérivé impossible.' }; }
@@ -19157,15 +19183,9 @@ function toggleCarteThemePanel() {
             : '<span style="color:#94a3b8;">aucun (0/4)</span>') + '</td>'
         + '<td><b style="color:#4ade80;">' + occupe.join(' ') + '</b></td></tr>';
     });
-    var horsAxe = [];
-    if (rot && rot.hR1 >= 13) horsAxe.push('R1 (M' + rot.hR1 + ')');
-    if (rot && rot.hR7 >= 13) horsAxe.push('R7 (M' + rot.hR7 + ')');
-    if (horsAxe.length) {
-      axes += '<tr><td colspan="6" style="color:#fbbf24; font-size:10.5px; padding-top:4px;">'
-        + '⚠️ hors axe : ' + e(horsAxe.join(' et '))
-        + ' — les trois axes ne couvrent que M1 à M12 ; M13 à M16 sont les témoins, '
-        + 'le juge et le réconciliateur, hors du carré.</td></tr>';
-    }
+    axes += '<tr><td colspan="6" style="color:#94a3b8; font-size:10px; padding-top:4px;">'
+      + 'Les trois axes couvrent les seize maisons : 6 + 5 + 5, partition exacte. '
+      + 'Aucune maison n\'est hors axe.</td></tr>';
   } catch (err) { }
   axes += '</table>';
 
@@ -22854,6 +22874,16 @@ function campIncidentAfficheV7(theme, detect) {
 //   au moins une des trois ......................... 45,7 %
 //   au moins deux .................................. 10,5 %
 //   les trois ...................................... 0,0 % (impossible)
+//
+// ⚠️ REMESURÉ LE 12/09/26, APRÈS L'EXTENSION DES AXES AUX SEIZE MAISONS :
+//   au moins une des trois ......................... 46,4 %
+//   au moins deux ..................................  9,2 %
+//   les trois ......................................  0,7 %  (432 thèmes)
+// « Les trois » n'est PLUS impossible, et la raison est structurelle. Avec
+// les axes du carré (M1 à M12) les trois sommes se XORaient toujours en
+// Populus — trois groupes de quatre partitionnant M1-M12, dont M9 à M12
+// sont les XOR de M1 à M8. Avec les axes étendus, le XOR des trois vaut
+// M16 et non Populus : la contrainte qui interdisait le triplet a sauté.
 // En revanche, thème par thème, le découpage change tout : 44,7 % des
 // 65 536 thèmes n'ont plus le même nombre d'axes d'incident qu'avant.
 // Se déclencher sur 46 % des thèmes, c'est trancher : une règle qui
@@ -22885,7 +22915,8 @@ function incidentDerivesV7(theme) {
   if (!theme || !theme[1] || typeof AXES_V7 === 'undefined') return null;
   var pcts = [], rouges = 0, det = [];
   for (var i = 0; i < AXES_V7.length; i++) {
-    var meres = AXES_V7[i].maisons.map(function (h) { return theme[h]; });
+    // Thème dérivé : exactement quatre mères, donc le noyau du carré.
+    var meres = (AXES_V7[i].meres || AXES_V7[i].maisons).map(function (h) { return theme[h]; });
     var derive = null;
     try { derive = buildThemeFromMothers(meres[0], meres[1], meres[2], meres[3]); }
     catch (e) { continue; }
@@ -29087,7 +29118,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
                 ? '<b>' + c.axe.actifs.map(function (e) { return pastille(e); }).join(' · ')
                   + '</b> (' + c.axe.nbActifs + '/4)'
                 : '<b>aucun</b> (0/4)')
-            : '<i style="color:#64748b;">hors axe — M13 à M16 sont hors du carré</i>')
+            : '<i style="color:#64748b;">axe indisponible</i>')
         + '<br>filiation : transmet <b>' + c.filiation.transmission + '</b>'
         + ' · engendrée <b>' + c.filiation.engendre + '</b>'
         + '<br>environnement : ' + boucleTxt(c) + ' · cohab. ' + c.boucle.cohabitation
@@ -31775,8 +31806,9 @@ function zoomTheme(delta) {
 }
 
 function getAxisThemeFromBase(baseTheme, axisKey){
-  const axes={meres:[1,2,3,4],angulaire:MAISONS_CARDINALES_V7,
-    succedent:MAISONS_SUCCEDENTES_V7,cadent:MAISONS_CADENTES_V7};
+  // Thème dérivé : quatre mères exactement, donc le noyau du carré.
+  const axes={meres:[1,2,3,4],angulaire:MERES_CARDINALES_V7,
+    succedent:MERES_SUCCEDENTES_V7,cadent:MERES_CADENTES_V7};
   const h=axes[axisKey]||axes.meres;
   return buildThemeFromMothers(baseTheme[h[0]],baseTheme[h[1]],baseTheme[h[2]],baseTheme[h[3]]);
 }

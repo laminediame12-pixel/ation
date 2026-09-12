@@ -493,3 +493,41 @@ Sur le thème de référence : R1 = M8 → **Succédent**, somme **Cauda Draconi
 1-1-1-2, **3 niveaux actifs** (feu, air, eau). R7 = M14 → **hors axe**.
 
 Empreinte des sorties sur les 65 536 thèmes : identique.
+
+### Les axes étendus aux seize maisons — 12/09/2026
+
+Ellemine_D : « Les axes dans l'ensemble des 16 figures :
+**Angulaire** M1·M4·M7·M10·M13·M16 — **Succédente** M2·M6·M8·M12·M14 —
+**Cadente** M3·M5·M9·M11·M15. »
+
+6 + 5 + 5 = 16, partition exacte. **Le trou est refermé** : hier un camp tombait
+hors axe 25 % du temps, plus aucune maison n'est hors axe.
+
+Répartition des camps, mesurée : Angulaire 37,5 %, Succédent 31,3 %,
+Cadent 31,3 % — exactement 6/16, 5/16, 5/16.
+
+**Structure du code.** `MAISONS_*_V7` est la classe complète : elle dit à quel
+axe une maison appartient, et la somme de l'axe se calcule sur elle.
+`MERES_*_V7` est le noyau du carré (M1–M12) et ne sert qu'aux endroits qui
+construisent un **thème dérivé**, lequel exige exactement quatre mères.
+
+**Effet mesuré sur les 65 536 thèmes :**
+
+| | avant | après |
+|---|---|---|
+| camp affiché | R1 27 647 · R7 23 086 · Nul 14 803 | **identique** |
+| thèmes valides | 46 483 | **identique** (restée sur le carré) |
+| BTTS OUI | 58 257 | 58 276 |
+| incidents | 64 227 | 62 672 |
+| R1 en maison cadente | 25,0 % | 31,3 % (M15 entre) |
+| Puer en maison succédente | 21,8 % | 26,4 % (M14 entre) |
+
+**Un fait structurel nouveau.** « Les trois axes portent une figure d'incident »
+passe de **impossible** à **432 thèmes (0,7 %)**. Ce n'est pas un hasard : avec
+les axes du carré, les trois sommes se XORaient toujours en Populus. Avec les
+axes étendus, leur XOR vaut M16. La contrainte qui interdisait le triplet a
+sauté. Le commentaire de doctrine qui écrivait « impossible » est corrigé.
+
+La validité n'a **pas** été basculée sur les axes étendus : elle n'a pas été
+re-mesurée sur cette base et la déplacer changerait quels thèmes sont valides
+sans qu'on sache dans quel sens. Elle bougera sur décision, pas par effet de bord.
