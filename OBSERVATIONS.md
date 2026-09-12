@@ -461,3 +461,35 @@ Ce qu'il montre :
 **Panneau de lecture seule.** Il n'entre dans aucune décision, il montre le thème
 tel que le système le lit. Empreinte des sorties sur les 65 536 thèmes :
 identique.
+
+### L'axe du camp et ses niveaux d'éléments actifs — 12/09/2026
+
+Ajouté au procédé, en lecture : pour R1 et pour R7, **dans quel axe se trouve la
+maison du camp**, la figure que cet axe produit, et **ses niveaux d'éléments
+actifs** — les niveaux à 1 point, dans l'ordre Feu / Air / Eau / Terre.
+
+Affiché sur la carte de verdict (sous la position) et dans la carte du thème
+(deux colonnes de plus au tableau des axes, plus la colonne « camp »).
+
+**Fait structurel mesuré.** Les trois axes ne couvrent que M1 à M12. M13, M14,
+M15 et M16 — témoins, juge, réconciliateur — sont hors du carré. Sur les 65 536
+thèmes :
+
+| | R1 | R7 |
+|---|---|---|
+| Cardinal | 25,0 % | 25,0 % |
+| Succédent | 25,0 % | 25,0 % |
+| Cadent | 25,0 % | 25,0 % |
+| **hors axe** | **25,0 %** | **25,0 %** |
+
+Les deux camps sont dans un axe seulement **56 %** du temps.
+
+**Cette lecture n'entre PAS dans la cascade de décision.** Elle ne pourrait pas
+départager un thème sur quatre, et le §11 ferme sa liste à quatre critères. Elle
+est lue et affichée ; si elle doit peser, ce sera une décision explicite, prise
+avant le test et pas après.
+
+Sur le thème de référence : R1 = M8 → **Succédent**, somme **Cauda Draconis**
+1-1-1-2, **3 niveaux actifs** (feu, air, eau). R7 = M14 → **hors axe**.
+
+Empreinte des sorties sur les 65 536 thèmes : identique.

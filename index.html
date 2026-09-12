@@ -19135,16 +19135,37 @@ function toggleCarteThemePanel() {
     + '<tr><td>Réconciliateur M16</td><td align="right"><b>' + e(FL[t[16]]) + '</b></td></tr></table>';
 
   var INC = { rubeus: 1, carcer: 1, tristitia: 1 };
+  var ORD4 = ['feu', 'air', 'eau', 'terre'];
   var axes = '<table style="width:100%; border-collapse:collapse; font-size:12px;">'
     + '<tr style="color:#94a3b8; font-size:10.5px;"><th align="left">axe</th><th align="left">maisons</th>'
-    + '<th align="left">somme</th></tr>';
+    + '<th align="left">somme</th><th align="left">niveaux</th>'
+    + '<th align="left">éléments actifs</th><th align="left">camp</th></tr>';
   try {
     AXES_V7.forEach(function (a) {
       var fig = combineMany(a.maisons.map(function (x) { return t[x]; }));
+      var niv = MAP_GEO[fig] || [];
+      var actifs = ORD4.filter(function (el, k) { return niv[k] === 1; });
+      var occupe = [];
+      if (rot && a.maisons.indexOf(rot.hR1) >= 0) occupe.push('R1');
+      if (rot && a.maisons.indexOf(rot.hR7) >= 0) occupe.push('R7');
       axes += '<tr><td>' + e(a.nom.replace('Axe ', '')) + '</td>'
         + '<td style="color:#cbd5e1;">' + a.maisons.map(function (x) { return 'M' + x; }).join(' + ') + '</td>'
-        + '<td><b>' + e(FL[fig]) + '</b>' + (INC[fig] ? ' <span style="color:#fbbf24;">★</span>' : '') + '</td></tr>';
+        + '<td><b>' + e(FL[fig]) + '</b>' + (INC[fig] ? ' <span style="color:#fbbf24;">★</span>' : '') + '</td>'
+        + '<td style="font-family:monospace;">' + niv.join('–') + '</td>'
+        + '<td>' + (actifs.length ? actifs.map(function (el) { return pastille(el); }).join(' · ')
+            + ' <span style="color:#94a3b8;">(' + actifs.length + '/4)</span>'
+            : '<span style="color:#94a3b8;">aucun (0/4)</span>') + '</td>'
+        + '<td><b style="color:#4ade80;">' + occupe.join(' ') + '</b></td></tr>';
     });
+    var horsAxe = [];
+    if (rot && rot.hR1 >= 13) horsAxe.push('R1 (M' + rot.hR1 + ')');
+    if (rot && rot.hR7 >= 13) horsAxe.push('R7 (M' + rot.hR7 + ')');
+    if (horsAxe.length) {
+      axes += '<tr><td colspan="6" style="color:#fbbf24; font-size:10.5px; padding-top:4px;">'
+        + '⚠️ hors axe : ' + e(horsAxe.join(' et '))
+        + ' — les trois axes ne couvrent que M1 à M12 ; M13 à M16 sont les témoins, '
+        + 'le juge et le réconciliateur, hors du carré.</td></tr>';
+    }
   } catch (err) { }
   axes += '</table>';
 
@@ -23385,6 +23406,40 @@ function lireCamp1N2V7(theme, maison) {
     }
   });
 
+  // ── L'AXE OÙ SE TROUVE LE CAMP (12/09/26, demande d'Ellemine_D) ──
+  // Trois axes, chacun quatre maisons, somme = XOR des quatre :
+  //   Cardinal  M1+M4+M7+M10      Succédent M2+M6+M8+M12
+  //   Cadent    M3+M5+M9+M11
+  // On lit la figure que l'axe produit, puis SES NIVEAUX D'ÉLÉMENTS
+  // ACTIFS — les niveaux à 1 point, dans l'ordre Feu / Air / Eau / Terre.
+  //
+  // ⚠️ LES TROIS AXES NE COUVRENT QUE M1 À M12. M13, M14, M15 et M16 sont
+  // les témoins, le juge et le réconciliateur : ils sont hors du carré.
+  // Un camp qui tombe là n'a pas d'axe. Mesuré sur les 65 536 thèmes :
+  // R1 comme R7 tombent hors axe exactement 25 % du temps, et les deux
+  // sont dans un axe seulement 56 % du temps. C'est pourquoi cette lecture
+  // N'ENTRE PAS dans la cascade de décision — elle ne pourrait pas
+  // départager un thème sur quatre, et le §11 ferme sa liste à quatre
+  // critères. Elle est lue et affichée.
+  var axeCamp = null;
+  try {
+    for (var ai = 0; ai < AXES_V7.length; ai++) {
+      if (AXES_V7[ai].maisons.indexOf(maison) < 0) continue;
+      var _ax = AXES_V7[ai];
+      var _figAxe = combineMany(_ax.maisons.map(function (h) { return theme[h]; }));
+      var _niv = (typeof MAP_GEO !== 'undefined' && MAP_GEO[_figAxe]) ? MAP_GEO[_figAxe] : null;
+      var _ORD = ['feu', 'air', 'eau', 'terre'];
+      axeCamp = {
+        cle: _ax.cle, nom: _ax.nom, maisons: _ax.maisons.slice(),
+        figure: _figAxe, element: (typeof ELEMENTS !== 'undefined' ? ELEMENTS[_figAxe] : null),
+        niveaux: _niv ? _niv.slice() : null,
+        actifs: _niv ? _ORD.filter(function (e, k) { return _niv[k] === 1; }) : [],
+        nbActifs: _niv ? _niv.filter(function (v) { return v === 1; }).length : null
+      };
+      break;
+    }
+  } catch (e) { axeCamp = null; }
+
   // ── §10 — l'environnement : ce qui entoure la figure ──
   // binôme, antagoniste, cohabitation, résultante, répétition /
   // matérialisation, ancrage, stabilité de boucle. Rien d'autre.
@@ -23426,6 +23481,7 @@ function lireCamp1N2V7(theme, maison) {
       resultantesPropres: resultantes, expositionAntagonistes: antagonistes,
       cohabitation: cohabitation
     },
+    axe: axeCamp,
     maisonRepos: reposFig
   };
 }
@@ -29021,6 +29077,17 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         + '<br>figure ' + pastille(c.element) + (niv ? ' · niveaux ' + niv.join('–') : '')
         + '<br>position <b>' + esc(c.position) + '</b> (' + c.rangCanal + '/4) '
         + '<i style="color:#64748b;">descriptive, non comptée</i>'
+        + '<br>axe : ' + (c.axe
+            ? '<b>' + esc(c.axe.nom.replace('Axe ', '')) + '</b> ('
+              + c.axe.maisons.map(function (h) { return 'M' + h; }).join('+') + ') → '
+              + '<b>' + esc((typeof FL !== 'undefined' && FL[c.axe.figure]) || c.axe.figure) + '</b> '
+              + (c.axe.niveaux ? c.axe.niveaux.join('–') : '')
+              + '<br>&nbsp;&nbsp;niveaux actifs de l\'axe : '
+              + (c.axe.nbActifs
+                ? '<b>' + c.axe.actifs.map(function (e) { return pastille(e); }).join(' · ')
+                  + '</b> (' + c.axe.nbActifs + '/4)'
+                : '<b>aucun</b> (0/4)')
+            : '<i style="color:#64748b;">hors axe — M13 à M16 sont hors du carré</i>')
         + '<br>filiation : transmet <b>' + c.filiation.transmission + '</b>'
         + ' · engendrée <b>' + c.filiation.engendre + '</b>'
         + '<br>environnement : ' + boucleTxt(c) + ' · cohab. ' + c.boucle.cohabitation
