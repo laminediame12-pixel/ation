@@ -6904,8 +6904,6 @@ function analyserConfrontationDirecteV7(theme, figR1, figR7) {
 // La seconde se déclenche donc sur la moitié des thèmes : comme
 // critère, elle ne trie rien. Sur n'importe quelle autre maison, la
 // même condition ferait bien 25 %.
-var FIGURES_PAIRES_V7 = ['via', 'amissio', 'fortuna_minor', 'carcer',
-  'conjunctio', 'fortuna_major', 'acquisitio', 'populus'];
 
 function pariteFigureV7(fig) {
   if (!fig || typeof MAP_GEO === 'undefined' || !MAP_GEO[fig]) return null;
@@ -7037,25 +7035,6 @@ autoTestV7('lois de parité', function () {
 // contient les points de m1, et celui du trigone terre (M12 = M7 ⊕ M8)
 // ceux de la colonne 4 ; pour air et eau, le neveu vient de l'autre
 // moitié du carré et ne recoupe pas.
-var MOUVEMENT_V7 = {
-  rangApplication: 16,
-  contactMereFille: 'ligne j de Mi = ligne i de M(4+j) — un point, toujours',
-  axesSoudes: { 'M1-M7': 'm1 ligne 3', 'M2-M8': 'm2 ligne 4' },
-  axesAvecLoi: { 'M4-M10': 'M3', 'M5-M11': 'M6' },
-  diagonaleSilencieuse: ['m1l1', 'm2l2', 'm3l3', 'm4l4'],
-  maisonsDeplaceesParPoint: { 'm1l1': 7, 'm2l2': 6, 'm3l3': 6, 'm4l4': 6, 'autres': 8 },
-  rangDuJuge: 3,
-  etages: { 1: 'mères M1-M4', 2: 'filles M5-M8', 3: 'neveux M9-M12',
-            4: 'témoins M13-M14', 5: 'juge M15 et réconciliation M16' },
-  campParEtage: { camp1: { 1: [1, 2, 3, 4], 3: [9, 10], 4: [13], 5: [16] },
-                  camp2: { 2: [5, 6, 7, 8], 3: [11, 12], 4: [14], 5: [15] } },
-  couplageParPalier: { base: 16, neveux: 4, temoins: 1, sommets: 0 },
-  trigones: {
-    feu:   { maisons: [1, 5, 9],  rang: 10, pointsCommuns: 1, point: 'm1l1' },
-    air:   { maisons: [2, 6, 10], rang: 10, pointsCommuns: 0, point: null },
-    eau:   { maisons: [3, 7, 11], rang: 10, pointsCommuns: 0, point: null },
-    terre: { maisons: [4, 8, 12], rang: 10, pointsCommuns: 1, point: 'm4l4' } }
-};
 
 // Le point où la mère i et la fille j se touchent, avec sa VALEUR dans
 // un thème donné. C'est le seul point que les deux partagent.
@@ -7143,16 +7122,6 @@ autoTestV7('points de contact mère/fille', function () {
 // résultante ne prennent chacun que 8 valeurs sur 16. Conséquence à ne
 // pas rater en mesurant : « M15 au repos », c'est-à-dire R15 = Populus,
 // a pour taux de base 1/8 et non 1/16.
-var RESULTANTES_V7 = {
-  formule: 'R(h) = M(h) ⊕ figure au repos de h — application affine',
-  sens: 'la résultante est l\'ÉCART AU REPOS de la maison ; elle vaut Populus '
-    + 'exactement quand la maison porte sa propre figure de repos',
-  seuleAutoResultante: 16,
-  loisSurvivantes: [[13, 14, 15]],
-  loisTotales: { base: 24, resultantes: 3, mixtes: 3, somme: 30 },
-  pariteR15: 'toujours paire — 8 valeurs possibles, donc R15 = Populus vaut 1/8',
-  constantes: 'M(h) ⊕ R(h) = FIGS_V7[h-1], indépendant du thème'
-};
 
 // ═══════════════════════════════════════════════════════════════
 // LES LOIS DE CONSERVATION — la liste est close
@@ -9068,15 +9037,6 @@ function findFigureTargetByBinomeWitness(fig){return Object.keys(BINOMES).find(k
 //   Caput Draconis en M3 + Carcer en M10 -> M4  = Cauda Draconis
 // L'ordre de FIGS n'est d'ailleurs pas conventionnel : ses huit paires
 // consécutives donnent TOUTES Acquisitio par combinaison (8 sur 8).
-var LOIS_REPOS_V7 = {
-  seuleLoiSurvivante: { maisons: [13, 14, 15],
-    figures: ['cauda_draconis', 'puella', 'acquisitio'] },
-  axeDefensif: {
-    'albus@4+carcer@10': 'puella@3',
-    'caput_draconis@3+albus@4': 'acquisitio@10',
-    'caput_draconis@3+carcer@10': 'cauda_draconis@4' },
-  pairesDeFigs: 'combine(FIGS[2k], FIGS[2k+1]) = Acquisitio pour k = 0..7'
-};
 
 // ═══════════════════════════════════════════════════════════════
 // POPULUS, LE RANG DES MÈRES, ET UN EFFET QUE LE MOTEUR IGNORE
@@ -9648,9 +9608,6 @@ var LOI_MIROIR_JUGE_V7 = {
 };
 
 // Les huit paires de figures dont la somme vaut Carcer.
-var PAIRES_CARCER_V7 = [['puer', 'rubeus'], ['laetitia', 'tristitia'],
-  ['caput_draconis', 'cauda_draconis'], ['albus', 'puella'], ['via', 'conjunctio'],
-  ['amissio', 'fortuna_major'], ['fortuna_minor', 'acquisitio'], ['carcer', 'populus']];
 
 // Les quatre déplacements miroir, leur somme (= le Juge), et le compte
 // de Carcer parmi les sept paires.
@@ -9719,21 +9676,6 @@ function deplacementsMiroirV7(theme) {
 // Sur la chaîne entière : Populus > axe > miroir fait 38/49 contre 37/49
 // pour la chaîne actuelle. +1 après avoir essayé NEUF placements — je ne
 // prends pas ce +1 pour un gain, et je ne rebranche pas la chaîne dessus.
-var AXE_VOLUME_V7 = {
-  axes: { camp1: [1, 5, 9], camp7: [7, 11, 3] },
-  regleEllemine: 'l\'axe marque si et seulement si sa somme est présente',
-  mesure: 'RETOURNÉE : présente -> 70,3 % et 1,78 but · absente -> 85,3 % et 2,65 buts',
-  pasUnEffetDeCamp: 'test apparié sur 24 matchs : 7 contre 8, p = 1,0000. '
-    + 'C\'est le nombre de sommes présentes qui parle, et il parle du MATCH.',
-  parNombre: { 0: { n: 5, buts: 4.80, plus: '4/5' }, 1: { n: 24, buts: 5.08, plus: '19/24' },
-    2: { n: 20, buts: 2.90, plus: '9/20' } },
-  correlation: { rho: -0.319, p: 0.0234, methode: 'permutation, 20 000 tirages' },
-  ouPopulusSeTait: { deux: { n: 14, taux: 28.6, buts: 2.21 },
-    auPlusUne: { n: 13, taux: 69.2, buts: 3.85 } },
-  surLaChaine: 'Populus > axe > miroir : 38/49 contre 37/49 — +1 après neuf '
-    + 'placements essayés, ce n\'est pas un gain, c\'est du bruit de sélection.',
-  pourLActiver: 'BRANCHES_V7.axe_volume.actif = true'
-};
 
 function axeVolumeV7(theme) {
   if (!theme) return null;
@@ -9901,29 +9843,6 @@ autoTestV7('loi du Juge comme somme des déplacements miroir', function () {
 // environ 90 matchs à vainqueur connu. On est à moins de la moitié.
 // Autrement dit : la question précise se tranche bientôt, la question
 // générale demande de doubler l'archive.
-var FOND_INVERSION_V7 = {
-  question: 'l\'inversion figure/maison est-elle un principe du carré, ou un effet local ?',
-  parCamp: { force: { ecart: 0.034, p: 0.6005 }, ouverture: { ecart: 0.125, p: 0.2466 },
-    mobilite: { ecart: -0.113, p: 0.2063 }, active: { ecart: 0.059, p: 0.4770 },
-    verdict: 'NON — meilleur p 0,2063, Bonferroni 0,8252' },
-  maxT: { cellules: 64, plusFort: 'mobilité en M5, rho +0,402', p: 0.4405,
-    seuil5pct: 0.498, medianeDuMaxSousLeNul: 0.388, cellulesAuDessus: 0,
-    verdict: 'toute la table maison-par-maison est indiscernable du bruit à n = 44' },
-  ceQuiSurvit: { contraste: 'M1 − M7 sur l\'ouverture', rho: 0.382, p: 0.0129,
-    bonferroni4: 0.0516,
-    pourquoi: 'la doctrine DÉSIGNAIT le contraste d\'avance ; la seule liberté restante '
-      + 'était le choix de la propriété. Une prédiction n\'est pas une pêche. Mais c\'est '
-      + 'UN résultat au bord, pas une loi.' },
-  partitionMiroir: { correlations: { force: 0.818, ouverture: 0.270, mobilite: 0.669, active: 0.623 },
-    global: 0.412, opposees: '9/28', binomial: 0.0872,
-    sens: 'INVERSE de la doctrine — les maisons miroir traitent les figures de la MÊME façon',
-    controle: 'couplage structurel déjà présent sur les 65 536 thèmes : moyenne 0,076, '
-      + 'jusqu\'à +0,563 (active M2/M6). Une partie de l\'effet vient du bouclier. '
-      + 'NON REVENDIQUÉ.' },
-  ceQuilFaut: { pourLeContrasteM1M7: 52, pourLExploration64: 90, onEnA: 44,
-    lecture: 'la question précise se tranche dans huit matchs, la question générale '
-      + 'demande de doubler l\'archive' }
-};
 
 var DOCTRINE_MAISON_FIGURE_V7 = {
   enonce: 'la maison influence la figure — une même figure peut être bonne pour R1 et '
@@ -10015,16 +9934,6 @@ autoTestV7('le contraste d\'ouverture des deux chefs', function () {
 // Le Juge face aux sommes (identique, binôme, antagoniste, neutre, des
 // deux côtés) : 11 tests, meilleur p brut 0,1496, Bonferroni 1,0000.
 // La plus belle égalité du carré ne prédit pas l'égalité du match.
-var SOMMES_CAMPS_V7 = {
-  lois: { 'somme(CAMP2)': 'M13, toujours',
-    'somme(CAMP1)': 'M1 ⊕ M14, toujours',
-    'égalité des deux camps': 'M16 = Populus, autrement dit M1 = M15' },
-  verifie: '65536/65536',
-  rarete: { egalites: 4096, sur: 65536, pct: 6.25, lecture: 'un thème sur seize' },
-  mesureNul: { n: 57, base: 22.8, campsEgaux: '0/5', tests: 11,
-    meilleurP: 0.1496, bonferroni: 1.0 },
-  conclusion: 'la plus belle égalité du carré ne prédit pas l\'égalité du match'
-};
 
 // ═══════════════════════════════════════════════════════════════
 // LES QUATRE TRIGONES — la vraie forme de la règle d'axe (05/09/26)
@@ -10590,14 +10499,11 @@ function signalFamilleOpposition(theme){
   const carcerAtM1orM7 = fig1==='carcer' || fig7==='carcer';
   return {fig1, fig7, carcerActive, puellaActive, carcerAtM1orM7};
 }
-function wrapHouse(pos){return ((pos-1+16)%16)+1;}
 
 function findFigurePositions(fig,theme){return Object.keys(theme).filter(function(pos){return theme[pos]===fig;}).map(function(pos){return Number(pos);});}
-function getRestHouse(fig){return FIGS.indexOf(fig)+1;}
 
 function circularDistance(a,b){const diff=Math.abs(a-b); return Math.min(diff,16-diff);}
 
-function hasBinomeInTheme(fig,theme){const binome=BINOMES[fig]; return !!binome && figureExistsInTheme(binome,theme);}
 
 
 
@@ -10608,10 +10514,8 @@ function hasActiveBinome(fig,theme){const binome=BINOMES[fig]; return !!binome &
 function isActiveAntagonistStrong(fig,theme){const antagonist=ANTAGONISTES[fig]; if(!antagonist) return false; return hasActiveBinome(antagonist,theme);}
 function isActiveAntagonistVeryStrong(fig,theme){const antagonist=ANTAGONISTES[fig]; if(!antagonist) return false; const positions=findActiveFigurePositions(antagonist,theme); if(!positions.length || !hasActiveBinome(antagonist,theme)) return false; return positions.some(pos=>ELEMENTS[antagonist]==='terre' && ['terre','eau'].includes(MAISON_ELEM[pos]));}
 function hasActiveFirstHalfBinomeSignal(sourcePos,theme){const fig=theme[sourcePos]; const binome=BINOMES[fig]; if(!binome) return false; const positions=findActiveFigurePositions(binome,theme); if(!positions.length) return false; return positions.some(pos=>MAISON_ELEM[pos]==='feu' && ['feu','air'].includes(ELEMENTS[binome]));}
-function isFigureWellPositioned(fig,theme){return findFigurePositions(fig,theme).some(pos=>fig===FIGS[pos-1] || houseMatchesElement(pos,fig) || ELEMENTS[getResultant(fig,pos)]===MAISON_ELEM[pos]);}
 
 
-function getNegativeImpactDetails(viseurFig,targetFig,forcePct,theme){if(!targetFig) return {pct:0, text:`Aucune figure visée.`}; const positions=findFigurePositions(targetFig,theme); if(!positions.length) return {pct:0, text:`${FL[targetFig]} est absente du thème.`}; const basePct=forcePct; const targetWellPlaced=isFigureWellPositioned(targetFig,theme); const targetBinome=BINOMES[targetFig]; const binomeReady=figureExistsInTheme(targetBinome,theme) && isFigureWellPositioned(targetBinome,theme); if(targetWellPlaced && binomeReady) return {pct:0, text:`${FL[targetFig]} résiste totalement à ${FL[viseurFig]} avec ${FL[targetBinome]} bien positionnée : impact nul.`}; if(targetWellPlaced) return {pct:Math.round(basePct/2), text:`${FL[targetFig]} résiste à ${FL[viseurFig]} car elle est bien positionnée.`}; return {pct:basePct, text:`${FL[viseurFig]} impacte négativement ${FL[targetFig]} à ${basePct}%.`};}
 function renderHouseInsight(pos){const panel=document.getElementById('house-insight-content'); if(!panel || !currentTheme) return; panel.innerHTML='';}
 
 // ═══════════════════════════════════════════════════════════════
@@ -13072,24 +12976,6 @@ function duelCyclesV7(posA, posB, theme) {
 // de l'indice — ces trois propriétés-là, ces deux maisons-là — a été
 // choisie APRÈS avoir vu le tableau des 64 croisements. Seules des
 // rencontres annoncées à l'avance lèveront ça.
-var DEFENSE_PROPRIETES_V7 = {
-  indice: 'fermée + passive + fixe, sur M4 et M10, de 0 à 6',
-  contreLesButs: { rho: -0.336, p: 0.0101, n: 48, bonferroni4: 0.040 },
-  decomposition: {
-    fermeture: { rho: -0.280, p: 0.0267, porte: true },
-    passivite: { rho: -0.277, p: 0.0285, porte: true },
-    fixite:    { rho: -0.079, p: 0.2956, porte: false } },
-  parMaison: { M4: { rho: -0.184, p: 0.103 }, M10: { rho: -0.195, p: 0.091 } },
-  attaque: { indice: 'ouverte + active + mobile sur M5 et M11',
-    rho: 0.156, p: 0.143, porte: false },
-  reponse: 'ce ne sont PAS les fixes qui défendent, ce sont les FERMÉES et les '
-    + 'PASSIVES ; la mobilité seule ne dit rien, et il faut les DEUX maisons '
-    + 'de l\'axe, aucune ne suffit seule',
-  circularite: 'écarté — le moteur BTTS utilise mobilité et ouverture sur M4/M10, '
-    + 'donc tout est mesuré sur les VRAIS SCORES, pas sur ses verdicts',
-  faiblesse: 'la direction venait de la doctrine, mais la composition exacte a été '
-    + 'choisie après avoir vu les 64 croisements'
-};
 
 // L'indice sur un thème, plus son niveau et ce qu'on en sait.
 // ═══════════════════════════════════════════════════════════════
@@ -13260,30 +13146,6 @@ function defenseTenueV7(theme) {
 // 48 scores peuvent montrer. Mais c'est la deuxième fois que l'attaque
 // ne répond pas (la première : ouverte+active+mobile sur M5/M11, p =
 // 0,143), et deux échecs indépendants sur la même moitié, ça compte.
-var AXE_OFFENSIF_V7 = {
-  structure: { maisons: [3, 5, 9, 11], rang: 12, loiPropre: false,
-    seuleLoiInterne: 'M5 ⊕ M11 = M6',
-    lecturesIndiscernables: 'A {M1,M3,M5}/{M7,M9,M11} et B {M7,M5,M9}/{M1,M11,M3} : rang 10/12 partout' },
-  surLesVraisScores: {
-    axeEntier: { rho: 0.110, p: 0.229 },
-    lectureA: { camp1: { rho: 0.031, p: 0.417 }, camp7: { rho: 0.155, p: 0.144 } },
-    lectureB: { camp7: { rho: 0.063, p: 0.333 }, camp1: { rho: 0.115, p: 0.215 } },
-    parMaison: { M3: { rho: 0.049, p: 0.370 }, M5: { rho: -0.021, p: 0.556 },
-                 M9: { rho: 0.083, p: 0.286 }, M11: { rho: 0.123, p: 0.201 } } },
-  interaction: {
-    defenseSeule: { rho: -0.336, p: 0.0103 },
-    produit: { rho: 0.320, p: 0.0139 },
-    difference: { rho: 0.301, p: 0.0192 },
-    partielAttaque: { rho: 0.113, p: 0.223 },
-    partielDefense: { rho: -0.337, p: 0.0107 },
-    correlationEntreIndices: -0.010,
-    verdict: 'la moitié est vraie : 1-4-7-10 explique, 3-5-9-11 n\'ajoute rien, '
-      + 'et les mélanger DÉGRADE le signal (0,336 -> 0,320 -> 0,301)' },
-  neRefutePas: 'la règle M9 du fichier (M9_BUTS_HAUT/BAS, p = 0,0019) porte sur '
-    + 'l\'appartenance aux listes, pas sur les propriétés ouverte/active de la figure '
-    + 'en M9 — ce sont deux questions différentes',
-  lecture: 'le thème sait dire comment un match SE FERME, pas comment il S\'OUVRE'
-};
 
 autoTestV7('le score corrigé et ses six cellules', function () {
   if (typeof scoreCorrigeV7 !== 'function') return;
@@ -15082,7 +14944,6 @@ function rangParole(vf){
 // +3 net (répare Argentine-Egypte, Chelsea-Napoli, Man City-Dortmund,
 // Ferencvárosi-Qarabag ; casse Côte d'Ivoire-Norvège, seule régression
 // mesurée).
-var HARMONIE_SEUIL_CONFIRMATION = 60;
 // binomeEnHarmonie supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
 
@@ -15113,71 +14974,7 @@ var HARMONIE_SEUIL_CONFIRMATION = 60;
 // alliée=20, neutre=3, contradictoire=1) qu'on a patiemment calibrée. Le
 // vrai verdict affiché à l'utilisateur n'utilisait RIEN de tout ce travail
 // — contradiction majeure, corrigée ici.
-function tierWeightFFEngine(fig, m, theme){
-  if(!fig) return 1;
-  const resident = FIGS_V7[m-1];
-  if(fig===resident) return 1000; // REPOS — palier suprême
-
-  // EFFET DE LA RÉSULTANTE (05/08/26, demande explicite Ellemine_D :
-  // "Verdict Familial a ignoré les effets de Cauda sur Populus" — exemple
-  // concret : Populus en M13, dont la figure de repos est Cauda Draconis ;
-  // comme combine(X, Populus)=X toujours (Populus = élément neutre de la
-  // combinaison), la résultante en M13 = Cauda Draconis exactement, et ça
-  // n'entrait dans AUCUN calcul du moteur familial avant. Ajouté ici comme
-  // bonus/malus, via le même système d'interprétation (256 cases) déjà
-  // branché ailleurs — additif au tier de base, donc surtout déterminant
-  // quand le tier de base est faible (3/1/20/40), quasi négligeable face
-  // au palier REPOS (1000).
-  let bonusResultante = 0;
-  if (theme) {
-    const resultante = combine(fig, resident);
-    if (resultante !== fig && typeof getInterpretationFootball === 'function') {
-      const interp = getInterpretationFootball(resultante, m);
-      if (interp) bonusResultante = couleurToScore(interp.couleur);
-    }
-  }
-
-  const figElem = ELEMENTS_V7[fig], maisonElem = ELEMENT_OF_HOUSE[m];
-  const monBinome = BINOMES_V7[fig];
-  const binomeActif = figureExistsActive(monBinome, theme);
-  if(figElem===maisonElem){
-    return (binomeActif ? 100 : 40) + bonusResultante; // CONCORDANCE PARFAITE
-  }
-  const alliee = (figElem==='feu'&&maisonElem==='air')||(figElem==='air'&&maisonElem==='feu')||(figElem==='eau'&&maisonElem==='terre')||(figElem==='terre'&&maisonElem==='eau');
-  if(alliee){
-    return (binomeActif ? 60 : 20) + bonusResultante; // CONCORDANCE ALLIÉE
-  }
-  const contra = (figElem==='feu'&&maisonElem==='eau')||(figElem==='eau'&&maisonElem==='feu')||(figElem==='air'&&maisonElem==='terre')||(figElem==='terre'&&maisonElem==='air');
-  return (contra ? 1 : 3) + bonusResultante; // CONTRADICTOIRE : 1 — NEUTRE : 3
-}
 // poidsSiegeFFEngine supprimee (11/09/26) - code mort, plus aucun appelant.
-function poidsMembreFFEngine(fig, theme){
-  const basePos = []; for(let m=1;m<=16;m++){ if(theme[m]===fig) basePos.push(m); }
-
-  // CORRIGÉ DEUX FOIS (05/08/26) : la première correction ne vérifiait le
-  // repos par résultante QUE si la figure n'avait AUCUNE position de
-  // base nulle part dans le thème — donc si Carcer avait ne serait-ce
-  // qu'une position de base faible ailleurs, la vérification de
-  // résultante-repos (à M10, sa propre maison, révélée par Populus) ne
-  // se déclenchait jamais. Corrigé : le repos par résultante est
-  // maintenant TOUJOURS vérifié, en plus des positions de base, et le
-  // meilleur des deux est retenu. Doctrine confirmée par Ellemine_D :
-  // "toute figure a sa propre maison qu'elle soit fig de base ou
-  // résultante, c'est la même".
-  let bestReposResultante = 0;
-  for(let m=1;m<=16;m++){
-    if (FIGS_V7[m-1] === fig && combine(theme[m], FIGS_V7[m-1]) === fig) { bestReposResultante = 1000; break; }
-  }
-
-  if (basePos.length === 0) {
-    if (bestReposResultante) return bestReposResultante;
-    for(let m=1;m<=16;m++){ if(combine(theme[m], FIGS_V7[m-1])===fig) return 2; }
-    return 0;
-  }
-
-  const bestBase = Math.max(...basePos.map(m => tierWeightFFEngine(fig, m, theme)));
-  return Math.max(bestBase, bestReposResultante);
-}
 // poidsAttaquantFFEngine supprimee (11/09/26) - code mort, plus aucun appelant.
 // attaqueVsResistanceEngine supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 // familleTeamsEngine supprimee (11/09/26) - code mort, plus aucun appelant.
@@ -15987,7 +15784,6 @@ function victimeV7(fig) {
 var ROLES_CAMP_V7 = ['centrale', 'protecteur', 'front', 'binôme', 'front du front'];
 // Les décalages des cinq rôles à l'intérieur d'un camp : +0, +10, +4, +2, +8.
 // Tous PAIRS — c'est pourquoi un camp tient entièrement dans une boucle.
-var OFFSETS_CAMP_V7 = [0, 10, 4, 2, 8];
 
 // ═══════════════════════════════════════════════════════════════
 // LE DÉCALAGE OBLIQUE — vérifié sur l'archive le 28/08/26.
@@ -16043,41 +15839,6 @@ var OFFSETS_CAMP_V7 = [0, 10, 4, 2, 8];
 // Et pour mémoire un cas d'accord (k=13, le duel canonique inversé, où
 // R7 frappe R1 rôle pour rôle) :
 //     Laetitia · Rubeus · Puer · Albus             k=13  système M7
-function decalageCampsV7(figR1, figR7) {
-  if (!figR1 || !figR7) return null;
-  var i1 = FIGS_V7.indexOf(figR1), i7 = FIGS_V7.indexOf(figR7);
-  if (i1 < 0 || i7 < 0) return null;
-  var k = ((i7 - i1) % 16 + 16) % 16;
-  function liaisons(sens) {
-    var out = [];
-    OFFSETS_CAMP_V7.forEach(function (o, i) {
-      var rel = ((o + 3 - sens * k) % 16 + 16) % 16;
-      var j = OFFSETS_CAMP_V7.indexOf(rel);
-      if (j >= 0) out.push({ de: ROLES_CAMP_V7[i], vers: ROLES_CAMP_V7[j] });
-    });
-    return out;
-  }
-  var lR1 = liaisons(1), lR7 = liaisons(-1);
-  var memeBoucle = (k % 2 === 0);
-  return {
-    k: k, memeBoucle: memeBoucle,
-    canonique: k === 3 ? 'R1' : k === 13 ? 'R7' : null,
-    liaisonsR1: lR1, liaisonsR7: lR7,
-    toucheR1: lR1.length, toucheR7: lR7.length,
-    avantage: lR1.length > lR7.length ? 'R1' : lR7.length > lR1.length ? 'R7' : null,
-    resume: memeBoucle
-      ? (function () {
-          var c = contaminationCampsV7(figR1, figR7);
-          return 'décalage k=' + k + ' (pair) — même boucle : AUCUN des deux camps ne peut toucher l\'autre'
-            + (c && c.roleR7DansR1 ? ' · ⚠ R7 EST le ' + c.roleR7DansR1 + ' de R1' : '')
-            + (c && c.roleR1DansR7 ? ' · ⚠ R1 EST le ' + c.roleR1DansR7 + ' de R7' : '')
-            + (c ? ' · ' + c.partages.length + '/5 rôles partagés' : '');
-        })()
-      : 'décalage k=' + k + ' — R1 atteint ' + lR1.length + '/5 du camp adverse, R7 ' + lR7.length + '/5'
-        + (k === 3 ? ' · DUEL CANONIQUE, R1 frappe R7 rôle pour rôle'
-          : k === 13 ? ' · DUEL CANONIQUE, R7 frappe R1 rôle pour rôle' : '')
-  };
-}
 
 function campDeV7(fig) {
   if (!fig) return [];
@@ -16147,25 +15908,6 @@ function contaminationCampsV7(figR1, figR7) {
 
 // L'ANCIENNE lecture : la centrale adverse compte encore parmi les pôles.
 // Banc uniquement — elle mesure l'effet exact de la règle du 28/08.
-function moteurF4P4AvecAdverseV7(theme) {
-  var m = null;
-  try { m = moteurF4P4V7(theme); } catch (e) { m = null; }
-  if (!m || !m.applicable) return { camp: null, detail: 'non applicable' };
-  var s1 = m.R1.poles.filter(function (p) { return p.solide; }).length;
-  var s7 = m.R7.poles.filter(function (p) { return p.solide; }).length;
-  var a1 = m.R1.ancrageTotalAvecAdverse, a7 = m.R7.ancrageTotalAvecAdverse;
-  var dit = function (c, pourquoi) { return { camp: c, detail: pourquoi + ' · pôles solides, rival compris, ' + s1 + ' contre ' + s7 }; };
-  if (!m.memeBoucle) {
-    if (s1 !== s7) return dit(s1 > s7 ? 'R1' : 'R7', 'boucles opposées');
-    if (m.R1.frappeMoyenne !== m.R7.frappeMoyenne) return dit(m.R1.frappeMoyenne > m.R7.frappeMoyenne ? 'R1' : 'R7', 'boucles opposées, départage frappe');
-    if (a1 !== a7) return dit(a1 > a7 ? 'R1' : 'R7', 'boucles opposées, départage ancrage');
-    return dit(null, 'boucles opposées, égalité');
-  }
-  if (m.R1.solidesAdverse !== m.R7.solidesAdverse) return dit(m.R1.solidesAdverse < m.R7.solidesAdverse ? 'R1' : 'R7', 'même boucle, assaillants');
-  if (s1 !== s7) return dit(s1 > s7 ? 'R1' : 'R7', 'même boucle');
-  if (a1 !== a7) return dit(a1 > a7 ? 'R1' : 'R7', 'même boucle, départage ancrage');
-  return dit(null, 'même boucle, égalité');
-}
 
 // Le rôle qu'occupe `cible` dans le camp de `centraleAdverse`, ou null.
 function roleDansCampV7(cible, centraleAdverse) {
@@ -17089,7 +16831,6 @@ function lectureOuvertureButsV7(theme, cadre) {
 // que chaque nouveau résultat réel confirme ou casse ce renversement.
 // ═══════════════════════════════════════════════════════════════
 
-var LIEUX_MARQUAGE_V7 = [1, 4, 5, 7, 8, 9, 10];
 
 // lectureLieuxMarquageV7 supprimee (11/09/26) - code mort, aucune reference dans le fichier.
 
@@ -20663,8 +20404,6 @@ var ELEMENT_MAISON_V7 = { 1: 'FA', 2: 'ET', 3: 'A', 4: 'E', 5: 'FA', 6: 'ET',
 // une redéclaration fatale. Vérifié dans le navigateur : les blocs 1, 2,
 // 7 et 8 sont des IIFE, leurs déclarations sont locales. Aucun conflit,
 // aucun bloc mort.)
-var FUSION_ELEMENTS_V7 = { FA: ['F', 'A'], ET: ['E', 'T'], TE: ['T', 'E'], A: ['A'], E: ['E'] };
-var NOM_ELEMENT_V7 = { F: 'Feu', A: 'Air', E: 'Eau', T: 'Terre' };
 
 // ═══════════════════════════════════════════════════════════════
 // L'ORDRE DE LA TABLE = L'ÉLÉMENT DOMINANT (31/08/26)
@@ -20711,41 +20450,9 @@ var NOM_ELEMENT_V7 = { F: 'Feu', A: 'Air', E: 'Eau', T: 'Terre' };
 // un thème sortira avec R1 en M4, il ira dans « dominé par son
 // supplément » au lieu de « supplément Terre », et les deux lectures se
 // sépareront pour la première fois. C'est le seul thème à guetter.
-var DOMINANT_MAISON_V7 = (function () {
-  var d = {};
-  Object.keys(ELEMENT_MAISON_V7).forEach(function (h) {
-    var e = FUSION_ELEMENTS_V7[ELEMENT_MAISON_V7[h]];
-    d[h] = e ? e[0] : null;
-  });
-  return d;
-})();
 
 // Ce que les deux camps partagent, ce que le doublé a en plus, et lequel
 // des deux le gouverne. Descriptif : mesuré sans effet, branché sur rien.
-function fusionElementV7(theme) {
-  var cd = null;
-  try { cd = campDoubleV7(theme); } catch (e) { return null; }
-  if (!cd || !cd.applicable) return null;
-  var dbl = ELEMENT_MAISON_V7[cd.maisonDouble], smp = ELEMENT_MAISON_V7[cd.maisonSimple];
-  var setD = FUSION_ELEMENTS_V7[dbl], setS = FUSION_ELEMENTS_V7[smp];
-  if (!setD || !setS) return null;
-  var commun = setS[0];
-  var extra = setD.filter(function (x) { return x !== commun; })[0];
-  if (setD.indexOf(commun) < 0) {
-    // Ne doit jamais arriver : l'inclusion est vraie sur les six axes.
-    return { anomalie: true, double: dbl, simple: smp, camp: cd.camp };
-  }
-  // La table de dominance d'Ellemine_D est la source : on la LIT au lieu
-  // de recalculer le premier élément, pour qu'il n'y ait qu'un endroit à
-  // corriger si l'ordre de sa table change.
-  var dominant = DOMINANT_MAISON_V7[cd.maisonDouble] || setD[0];
-  return { camp: cd.camp, double: dbl, simple: smp, commun: commun, extra: extra,
-    dominant: dominant, domineParSonSupplement: dominant === extra,
-    axe: 'M' + Math.min(cd.maisonDouble, cd.maisonSimple) + '/M' + Math.max(cd.maisonDouble, cd.maisonSimple),
-    separateur: (cd.maisonDouble === 10 || cd.maisonSimple === 10) && (cd.maisonDouble === 4 || cd.maisonSimple === 4),
-    nomCommun: NOM_ELEMENT_V7[commun] || commun, nomExtra: NOM_ELEMENT_V7[extra] || extra,
-    nomDominant: NOM_ELEMENT_V7[dominant] || dominant };
-}
 
 function campDoubleV7(theme) {
   var r = null;
@@ -21209,44 +20916,6 @@ function moteurSeptCriteresV7(theme) {
 // La demande littérale coûte un point ; c'est en retirant AUSSI
 // l'environnement — les deux critères les plus faibles — qu'on obtient
 // le meilleur score jamais mesuré sur cette archive.
-function moteurCritereV7(theme, poids) {
-  var rot = null;
-  try { rot = getRotationCombat(theme); } catch (e) { rot = null; }
-  if (!rot || !rot.figR1 || !rot.figR7) return { camp: null, detail: 'rotation indisponible' };
-  function meilleur(f) {
-    if (!f) return 0;
-    var occ = trouverFigV7(f, theme) || [], best = null, val = 0;
-    occ.forEach(function (o) {
-      var pr = null;
-      try { pr = profilFigureMaison(f, o.pos, theme); } catch (e) { pr = null; }
-      if (!pr) return;
-      // La position est choisie par le TOTAL des sept critères…
-      if (best === null || pr.total > best.total) {
-        best = pr;
-        // …et seule la valeur comparée applique les poids demandés.
-        val = 0;
-        Object.keys(poids).forEach(function (c) { val += (pr.parts[c] || 0) * poids[c]; });
-      }
-    });
-    return best === null ? 0 : val;
-  }
-  function camp(X) {
-    return meilleur(X) + meilleur(FRONT_V7[X]) + meilleur(BOUCLIER_V7[X])
-         + meilleur(BINOMES_V7[X]) + meilleur(frontDuFrontV7(X)) - meilleur(ANTAGONISTES_V7[X]);
-  }
-  var a = Math.round(camp(rot.figR1) * 100) / 100, b = Math.round(camp(rot.figR7) * 100) / 100;
-  // Les deux totaux sont exposés : un consensus qui additionne des écarts
-  // vaut mieux qu'un consensus qui compte des vainqueurs — encore
-  // faut-il que l'écart veuille dire quelque chose. Voir margeCritereV7.
-  return { camp: a > b ? 'R1' : b > a ? 'R7' : null, scoreR1: a, scoreR7: b, marge: Math.round((a - b) * 100) / 100,
-    detail: 'R1 ' + a + ' contre R7 ' + b };
-}
-var POIDS_SANS_CONCORDANCE_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
-  environnement: 1, cohabitation: 1, activation: 1, maisonNatale: 1 };
-var POIDS_COHABITATION_SEULE_V7 = { concordance: 0, deplacement: 0, multiplicite: 0,
-  environnement: 0, cohabitation: 1, activation: 0, maisonNatale: 0 };
-var POIDS_SANS_CONC_ENV_V7 = { concordance: 0, deplacement: 1, multiplicite: 1,
-  environnement: 0, cohabitation: 1, activation: 1, maisonNatale: 1 };
 
 // Interrupteur du pilote (28/08/26). true : la lecture des critères, sans
 // concordance ni environnement dans la comparaison, décide du verdict
@@ -21392,16 +21061,6 @@ function toggleSeptCriteresPanel() {
 // CE QUI LA FERAIT BRANCHER : des cas gelés AVANT le match. Dix lignes
 // de journal où elle tient, et elle passe devant la chaîne. C'est le
 // seul chemin, et il ne dépend plus du code.
-function partageSyntheseV7(theme) {
-  if (!theme || !theme[13] || !theme[14] || !theme[15]) return null;
-  var e13 = ELEMENTS_V7[theme[13]], e14 = ELEMENTS_V7[theme[14]], e15 = ELEMENTS_V7[theme[15]];
-  if (!e13 || !e14 || !e15) return null;
-  var tousDifferents = (e13 !== e14 && e14 !== e15 && e13 !== e15);
-  return { camp: tousDifferents ? 'R1' : 'R7', tousDifferents: tousDifferents,
-    e13: e13, e14: e14, e15: e15,
-    fig13: theme[13], fig14: theme[14], fig15: theme[15],
-    partages: (e13 === e14 ? 1 : 0) + (e14 === e15 ? 1 : 0) + (e13 === e15 ? 1 : 0) };
-}
 
 // ═══════════════════════════════════════════════════════════════
 // ✦ LE MOTEUR DE LA DESTRUCTION (31/08/26) — issu de la récolte
@@ -21451,23 +21110,6 @@ function partageSyntheseV7(theme) {
 // rien, il ne vote pas, il ne touche pas l'écran du verdict. Il est là
 // pour être vérifié DEHORS, sur les prochains matchs, comme le partage
 // de la synthèse avant lui. Dix déclenchements gelés et on rediscute.
-function moteurDestructionV7(theme) {
-  var r = null;
-  try { r = getRotationCombat(theme); } catch (e) { return null; }
-  if (!r || !r.figR1 || !r.figR7) return null;
-  if (typeof detruitV7 !== 'function' || typeof ANTAGONISTES_V7 === 'undefined') return null;
-  var n = function (f) { return (typeof FL !== 'undefined' && FL[f]) ? FL[f] : f; };
-  if (detruitV7(r.figR1) === r.figR7) {
-    return { camp: 'R1', direct: true, figR1: r.figR1, figR7: r.figR7,
-      detail: n(r.figR1) + ' est l\'antagoniste de ' + n(r.figR7) + ' : R1 détruit R7 (+3 maisons)' };
-  }
-  if (detruitV7(r.figR7) === r.figR1) {
-    return { camp: 'R7', direct: true, figR1: r.figR1, figR7: r.figR7,
-      detail: n(r.figR7) + ' est l\'antagoniste de ' + n(r.figR1) + ' : R7 détruit R1 (+3 maisons)' };
-  }
-  return { camp: null, direct: false, figR1: r.figR1, figR7: r.figR7,
-    detail: 'aucune relation directe de destruction entre R1 et R7 — le moteur se tait' };
-}
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -21936,7 +21578,6 @@ BALAYAGE_V7.surBaseComplete = {
 // 11 dans 46 % des cas, 4 dans 25 % — deux valeurs couvrent 71 % des
 // thèmes. Le moteur de corners hérite du générateur de score, qui est
 // lui-même bloqué sur un écart de 2 dans 91 % des cas.
-var BANC_TOLERANCE_CORNERS_V7 = 2;
 
 // Le DOMINANT des corners — une égalité de camp, comme le vainqueur, et
 // non une distance. C'est la vraie question posée par Ellemine_D : le
@@ -23187,7 +22828,6 @@ function incidentDerivesV7(theme) {
 // arrive. Bloquer le rendu trois secondes pour ça serait absurde.
 var _profilScoreV7 = null;
 var _profilScoreEnCoursV7 = false;
-var PROFIL_SCORE_ECHANTILLON_V7 = 96;
 
 // profilScoreV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
@@ -24618,12 +24258,6 @@ function orientationForces(theme){
 // d'une tradition réelle. La conversion finale exacte reste à affiner ;
 // on affiche points bruts + réduction + signal d'égalité.
 // ═══════════════════════════════════════════════════════════════
-var POINTS_FIG = (function(){
-  var mg = (typeof MAP_GEO!=='undefined') ? MAP_GEO : null;
-  var v = {};
-  if(mg){ for(var k in mg){ v[k] = mg[k].reduce(function(s,x){return s+x;},0); } }
-  return v;
-})();
 // reductionTheo supprimee (11/09/26) - code mort, plus aucun appelant.
 // methodePoints supprimee (11/09/26) - code mort, plus aucun appelant.
 
@@ -28504,16 +28138,6 @@ function detruitV7(fig) {
 // Les trajectoires d'Ellemine_D (loi N) : la combinaison des maisons
 // qu'une trajectoire traverse. Elle ne sert qu'a la recolte et a
 // l'auto-test — aucun moteur ne l'appelle.
-var TRAJECTOIRES_V7 = [
-  { cle: 'cardinal', nom: 'carre cardinal 1-4-7-10', maisons: [1, 4, 7, 10], reduit: [1, 3, 7] },
-  { cle: 'rectangle', nom: 'rectangle 3-5-9-11', maisons: [3, 5, 9, 11], reduit: [1, 2, 3, 6] },
-  { cle: 'trigone1', nom: 'trigone de M1 1-5-9', maisons: [1, 5, 9], reduit: [2, 5] },
-  { cle: 'trigone7', nom: 'trigone de M7 3-7-11', maisons: [3, 7, 11], reduit: [3, 5, 6, 7] },
-  { cle: 'tri147', nom: 'triangle 1-4-7', maisons: [1, 4, 7], reduit: [1, 4, 7] },
-  { cle: 'tri1107', nom: 'triangle 1-10-7', maisons: [1, 10, 7], reduit: [1, 3, 4, 7] },
-  { cle: 'tri4710', nom: 'triangle 4-7-10', maisons: [4, 7, 10], reduit: [3, 7] },
-  { cle: 'tri4110', nom: 'triangle 4-1-10', maisons: [4, 1, 10], reduit: [1, 3] }
-];
 // trajectoireV7 supprimee (11/09/26) - code mort, plus aucun appelant.
 
 // autoTestAlternanceV7 supprimee (11/09/26) - code mort, plus aucun appelant.

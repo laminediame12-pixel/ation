@@ -401,3 +401,40 @@ L'analyse de code mort propose 36 fonctions de plus (1 155 lignes). **Non
 touchées** : vérification faite, elle donne des faux positifs — les `toggle*Panel`
 qu'elle liste ont bien un `onclick` dans le HTML. À reprendre à la main, pas
 automatiquement.
+
+### Suppression du code mort restant — 12/09/2026
+
+« Supprime toutes les choses inutiles. »
+
+**L'analyse automatique se trompait sur 32 des 36 candidats.** Vérification faite
+une par une sur le texte brut : les `toggle*Panel` qu'elle listait ont bien un
+`onclick` dans le HTML — l'analyseur cassait sur les lignes HTML géantes. Elles
+sont toutes restées.
+
+Réellement mortes et supprimées :
+
+| | |
+|---|---|
+| 11 fonctions sans aucun appel | dont 4 orphelines des catalogues retirés hier : `moteurDestructionV7`, `moteurCritereV7`, `partageSyntheseV7`, `moteurF4P4AvecAdverseV7` |
+| 2 fonctions devenues orphelines en cascade | `tierWeightFFEngine`, `isFigureWellPositioned` |
+| 23 constantes déclarées et jamais relues | dont les trois tables `POIDS_*` du moteur de critères supprimé |
+
+**375 lignes.**
+
+**Trois tables gardées volontairement** : `ANNONCES_V7` (règles annoncées
+d'avance avec leur compteur), `SIGNAUX_V7` (signaux mesurés avec leurs p),
+`LISTE_PROSPECTIVE_V7` (le réceptacle du test). Ce sont les seules traces de ce
+qui a été pré-enregistré et mesuré. Les supprimer effacerait la mémoire
+méthodologique du projet, pas du code mort.
+
+**Une erreur en route, corrigée.** Le premier script de suppression calculait mal
+les bornes des blocs multi-lignes : chevauchements, 1 259 lignes emportées, les
+5 moteurs à 0/30 et 30 crashes sur 30. Revenu en arrière par `git checkout`,
+refait avec un compteur de délimiteurs qui ignore chaînes et commentaires, plus
+un contrôle explicite de non-chevauchement avant toute suppression.
+
+**Preuve** : empreinte complète des sorties sur les 65 536 thèmes, prise avant le
+nettoyage d'hier et après celui-ci. **Strictement identique.**
+
+34 496 → 33 183 lignes (−1 313 au total sur les deux passes).
+2 141 540 → 2 059 927 octets.
