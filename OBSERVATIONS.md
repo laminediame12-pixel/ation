@@ -438,3 +438,26 @@ nettoyage d'hier et après celui-ci. **Strictement identique.**
 
 34 496 → 33 183 lignes (−1 313 au total sur les deux passes).
 2 141 540 → 2 059 927 octets.
+
+### Panneau « Carte du thème » — 12/09/2026
+
+Ajouté à la demande d'Ellemine_D : la représentation du thème qu'il voulait avoir
+sous les yeux à chaque tirage, branchée comme panneau dans la barre d'outils
+(bouton 🗺️ Carte du thème).
+
+Ce qu'il montre :
+
+- **les 4 Mères** — figure, élément, quatre niveaux
+- **les 16 maisons**, ligne à ligne, avec la chaîne du §12 déroulée : maison →
+  figure → élément de la figure → ses quatre niveaux → canal de la maison →
+  position dans ce canal, et le rôle **R1 / R7** surligné
+- **la rotation** : figure de M1 → maison de repos → R1 et R7
+- **les témoins et le juge** : M13, M14, M15, M16
+- **les 3 axes** avec leur somme, ★ sur les figures d'incident
+- **la validité** du thème
+
+Éléments en couleur — feu rouge, air jaune, eau bleu, terre vert.
+
+**Panneau de lecture seule.** Il n'entre dans aucune décision, il montre le thème
+tel que le système le lit. Empreinte des sorties sur les 65 536 thèmes :
+identique.

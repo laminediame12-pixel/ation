@@ -348,7 +348,7 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
 
 <div class="page-content"><section class="section"><h2>🎴 Verdicts</h2><div id="carte-verdict-r" class="card verdict-priority" data-priority-label="⭐ VERDICT FINAL" style="margin-bottom:14px;"><div class="muted">Lance un thème pour afficher le verdict.</div></div><div id="regression-reference-panel" class="card" style="margin-top:10px; border:1px solid #7c3aed; display:none;"></div></section><section class="section" style="display:none;"><h2>Validation du tirage</h2><div class="card" id="theme-validation"><div class="muted">Lancer un thème pour afficher la validation.</div></div></section><section class="section"><h2>Contexte du tirage</h2><div class="card" id="question-context"><div class="muted">Sélectionne le match et au moins une question avant de lancer le thème.</div></div></section><section style="background:#1e293b;margin-bottom:12px;padding:8px 0 0 0;"><h2 style="padding:0 8px 8px;">Grille du thème</h2><div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 8px 8px;"><span style="font-size:12px; color:#94a3b8;">Thème actif :</span>
 <div id="axis-theme-controls" class="axis-theme-controls"></div>
-<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="septCriteresBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleSeptCriteresPanel()">🎯 Sept critères</button><button id="doubleTirageBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleDoubleTiragePanel()">⚖️ Double tirage</button><button id="consensusBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleConsensusPanel()">🎲 Consensus de tirages</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="sept-criteres-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="double-tirage-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="consensus-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
+<button id="variant-btn-principal" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('principal')">🎴 Principal</button><button id="variant-btn-superposition" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('superposition')">🌗 Superposition</button><button id="variant-btn-phase" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="basculerThemeVariant('phase')">🌓 Phase</button></div><div class="theme-toolbar" style="padding:0 8px 8px;"><button id="verifThemeBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleThemeVerification()">🔎 Thème de vérification</button><button id="autotestXorBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleAutoTestXOR()">🧮 Auto-test XOR</button><button id="forceReposBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForceReposPanel()">📊 Force du repos</button><button id="pointsStrategiquesBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePointsStrategiquesPanel()">🎯 Points stratégiques</button><button id="guerreCivileR1R7Btn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleGuerreCivileR1R7Panel()">⚔️ Guerre civile R1/R7</button><button id="matchFermeOuvertBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleMatchFermeOuvertPanel()">🔒 Match fermé/ouvert</button><button id="voieOuverteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleVoieOuvertePanel()">🔑 Voie ouverte</button><button id="preuveStructurelleBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="togglePreuveStructurellePanel()">🧮 Preuve structurelle</button><button id="chaineDualiteBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleChaineDualitePanel()">⚖️ Chaîne de dualité</button><button id="butMiTempsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleButMiTempsPanel()">🕐 But par mi-temps</button><button id="forcePlanetaireBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleForcePlanetairePanel()">🪐 Force planétaire</button><button id="incidentR17Btn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleIncidentR17Panel()">🔴 Incident R1/R7</button><button id="tablePolesBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleTablePolesPanel()">🧮 Table des pôles</button><button id="septCriteresBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleSeptCriteresPanel()">🎯 Sept critères</button><button id="doubleTirageBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleDoubleTiragePanel()">⚖️ Double tirage</button><button id="consensusBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleConsensusPanel()">🎲 Consensus de tirages</button><button id="carteThemeBtn" class="btn-secondary" style="width:auto;padding:8px 14px;" onclick="toggleCarteThemePanel()">🗺️ Carte du thème</button><button id="saveBtn" class="btn-primary" style="width:auto; padding:8px 14px;" onclick="saveManuel()">💾 Enregistrer</button><button id="interpretBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleInterpretationPanel()">📝 Interprétation</button><button id="toggleHouseLabelsBtn" class="btn-secondary" style="width:auto; padding:8px 14px;" onclick="toggleHouseLabels()">Masquer numérotation M/R</button></div><div class="card" id="interpretation-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="verif-theme-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="autotest-xor-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-repos-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="points-strategiques-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="guerre-civile-r1r7-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="match-ferme-ouvert-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="voie-ouverte-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="preuve-structurelle-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="chaine-dualite-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="but-mi-temps-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="force-planetaire-panel" style="display:none; margin:0 8px 8px;"></div><div class="card" id="incident-r17-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="table-poles-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="sept-criteres-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="double-tirage-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="consensus-panel" style="display:none;margin:0 8px 8px;"></div><div class="card" id="carte-theme-panel" style="display:none;margin:0 8px 8px;"></div><div class="theme-stage"><div class="card insight-panel" id="house-insight" style="position:relative; overflow:hidden;"><canvas id="insight-matrix-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas><div style="position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; pointer-events:none; opacity:.42; text-align:center; padding:16px;"><div style="font-size:34px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">سلام قولا من رب رحيم</div><div style="font-size:30px; color:#4ade80; direction:rtl; font-weight:bold; text-shadow:0 0 10px #16a34a;">الحق من ربي</div></div><div id="house-insight-content" style="position:relative; z-index:2;"><div class="muted">Clique sur une maison pour afficher sa force et ses impacts.</div></div></div><div class="theme-layout-wrapper"><svg id="theme-lines" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;"></svg><div class="theme-layout" id="theme-grid"></div></div></div>
 <div style="display:flex; gap:14px; justify-content:center; margin-top:10px; font-size:12px; color:#cbd5e1;">
   <span><span style="display:inline-block; width:14px; height:4px; background:#ef4444; margin-right:4px; vertical-align:middle;"></span>Feu</span>
   <span><span style="display:inline-block; width:14px; height:4px; background:#eab308; margin-right:4px; vertical-align:middle;"></span>Air</span>
@@ -19060,6 +19060,124 @@ function toggleConsensusPanel() {
     panel.style.display = 'block';
   } else { panel.style.display = 'none'; }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// LA CARTE DU THÈME (12/09/26, demande d'Ellemine_D)
+// La lecture qu'il voulait avoir sous les yeux à chaque tirage : les
+// quatre Mères, puis les seize maisons ligne à ligne avec, pour chacune,
+// la chaîne du §12 déroulée — maison, figure, élément de la figure, ses
+// quatre niveaux, le canal de la maison, la position dans ce canal — et
+// le rôle R1/R7 marqué. Puis la rotation, les témoins et le juge, les
+// trois axes et la validité.
+// Panneau de LECTURE : il n'entre dans aucune décision, il montre le
+// thème tel que le système le lit.
+// ═══════════════════════════════════════════════════════════════
+function toggleCarteThemePanel() {
+  var panel = document.getElementById('carte-theme-panel');
+  if (!panel) return;
+  if (panel.style.display !== 'none' && panel.style.display) { panel.style.display = 'none'; return; }
+  if (typeof currentTheme === 'undefined' || !currentTheme || !currentTheme[1]) {
+    panel.innerHTML = '<div class="warn">Lance un thème d\'abord.</div>';
+    panel.style.display = 'block'; return;
+  }
+  var t = currentTheme;
+  var COUL = { feu: '#ef4444', air: '#eab308', eau: '#3b82f6', terre: '#22c55e' };
+  var e = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); };
+  var pastille = function (el, txt) {
+    return '<b style="color:' + (COUL[el] || '#94a3b8') + ';">' + e(txt || el || '—') + '</b>';
+  };
+  var rot = null;
+  try { rot = getRotationCombat(t); } catch (err) { rot = null; }
+  var POSITION = ['Origine', 'Transmission', 'Résultante', 'Synthèse'];
+
+  var meres = '<table style="width:100%; border-collapse:collapse; font-size:12px;">'
+    + '<tr style="color:#94a3b8; font-size:10.5px;"><th align="left">maison</th><th align="left">figure</th>'
+    + '<th align="left">élément</th><th align="left">niveaux</th></tr>';
+  for (var mm = 1; mm <= 4; mm++) {
+    var fm = t[mm];
+    meres += '<tr><td><b>M' + mm + '</b></td><td>' + e(FL[fm]) + '</td><td>'
+      + pastille(ELEMENTS[fm]) + '</td><td style="font-family:monospace;">'
+      + (MAP_GEO[fm] || []).join('–') + '</td></tr>';
+  }
+  meres += '</table>';
+
+  var lignes = '<table style="width:100%; border-collapse:collapse; font-size:12px;">'
+    + '<tr style="color:#94a3b8; font-size:10.5px;"><th align="left">maison</th><th align="left">figure</th>'
+    + '<th align="left">élém.</th><th align="left">niveaux</th><th align="left">canal</th>'
+    + '<th align="left">position</th><th align="left">rôle</th></tr>';
+  for (var h = 1; h <= 16; h++) {
+    var f = t[h];
+    var canal = ELEMENT_OF_HOUSE[h];
+    var role = (rot && h === rot.hR1) ? 'R1' : (rot && h === rot.hR7) ? 'R7' : '';
+    var fond = role ? 'background:rgba(74,222,128,.10);' : (h % 2 ? '' : 'background:rgba(148,163,184,.06);');
+    lignes += '<tr style="' + fond + '">'
+      + '<td style="padding:2px 0;"><b>M' + h + '</b></td>'
+      + '<td>' + (role ? '<b>' + e(FL[f]) + '</b>' : e(FL[f])) + '</td>'
+      + '<td>' + pastille(ELEMENTS[f]) + '</td>'
+      + '<td style="font-family:monospace;">' + (MAP_GEO[f] || []).join('–') + '</td>'
+      + '<td>' + pastille(canal) + '</td>'
+      + '<td style="color:#cbd5e1;">' + POSITION[Math.floor((h - 1) / 4)] + '</td>'
+      + '<td><b style="color:#4ade80;">' + role + '</b></td></tr>';
+  }
+  lignes += '</table>';
+
+  var rotTxt = rot
+    ? e(FL[t[1]]) + ' en M1 → maison de repos <b>M' + rot.hR1 + '</b> → '
+      + '<b style="color:#4ade80;">R1 = M' + rot.hR1 + '</b> · '
+      + '<b style="color:#4ade80;">R7 = M' + rot.hR7 + '</b>'
+    : 'rotation indisponible';
+
+  var temoins = '<table style="width:100%; border-collapse:collapse; font-size:12px;">'
+    + '<tr><td>Témoin droit M13</td><td align="right"><b>' + e(FL[t[13]]) + '</b></td></tr>'
+    + '<tr><td>Témoin gauche M14</td><td align="right"><b>' + e(FL[t[14]]) + '</b></td></tr>'
+    + '<tr><td><b>Juge M15</b></td><td align="right"><b style="color:#c4b5fd;">' + e(FL[t[15]]) + '</b></td></tr>'
+    + '<tr><td>Réconciliateur M16</td><td align="right"><b>' + e(FL[t[16]]) + '</b></td></tr></table>';
+
+  var INC = { rubeus: 1, carcer: 1, tristitia: 1 };
+  var axes = '<table style="width:100%; border-collapse:collapse; font-size:12px;">'
+    + '<tr style="color:#94a3b8; font-size:10.5px;"><th align="left">axe</th><th align="left">maisons</th>'
+    + '<th align="left">somme</th></tr>';
+  try {
+    AXES_V7.forEach(function (a) {
+      var fig = combineMany(a.maisons.map(function (x) { return t[x]; }));
+      axes += '<tr><td>' + e(a.nom.replace('Axe ', '')) + '</td>'
+        + '<td style="color:#cbd5e1;">' + a.maisons.map(function (x) { return 'M' + x; }).join(' + ') + '</td>'
+        + '<td><b>' + e(FL[fig]) + '</b>' + (INC[fig] ? ' <span style="color:#fbbf24;">★</span>' : '') + '</td></tr>';
+    });
+  } catch (err) { }
+  axes += '</table>';
+
+  var valide = null;
+  try { valide = analyzeValidation(t).valid; } catch (err) { valide = null; }
+
+  var bloc = function (titre, contenu) {
+    return '<div style="margin-top:12px;"><div style="font-size:11.5px; font-weight:900; color:#c4b5fd; '
+      + 'margin-bottom:4px;">' + titre + '</div>' + contenu + '</div>';
+  };
+
+  panel.innerHTML = '<h3>🗺️ Carte du thème</h3>'
+    + '<div class="muted" style="font-size:11px;">Chaque maison avec la chaîne du procédé : '
+    + 'figure et son élément, ses quatre niveaux, le canal de la maison, la position dans ce canal. '
+    + 'Lecture seule — ce panneau n\'entre dans aucune décision.</div>'
+    + bloc('Les 4 Mères', meres)
+    + bloc('Les 16 maisons', '<div style="overflow-x:auto;">' + lignes + '</div>')
+    + bloc('Rotation', '<div style="font-size:12px;">' + rotTxt + '</div>')
+    + bloc('Témoins et Juge', temoins)
+    + bloc('Les 3 axes', axes
+        + '<div style="font-size:10.5px; margin-top:4px; color:'
+        + (valide === true ? '#4ade80' : valide === false ? '#f87171' : '#94a3b8') + ';">'
+        + (valide === true ? 'Thème VALIDE — les trois axes existent dans le thème.'
+          : valide === false ? 'Thème INVALIDE — un axe au moins est absent.'
+          : 'validité indisponible') + '</div>')
+    + '<div style="font-size:9.5px; color:#94a3b8; margin-top:8px;">'
+    + 'Canaux : ' + pastille('feu', 'Feu M1·M5·M9·M13') + ' — ' + pastille('air', 'Air M2·M6·M10·M14')
+    + ' — ' + pastille('eau', 'Eau M3·M7·M11·M15') + ' — ' + pastille('terre', 'Terre M4·M8·M12·M16')
+    + '. Niveaux dans l\'ordre Feu / Air / Eau / Terre : 1 = actif, 2 = passif. '
+    + '★ = figure d\'incident (Rubeus, Carcer, Tristitia).</div>';
+  panel.style.display = 'block';
+}
+
 
 // Lit un nom de figure écrit à la main : accents, majuscules, « conjonctio »,
 // « Caput », « Aquisitio »… tout ce qu'Ellemine_D écrit réellement.
