@@ -2322,3 +2322,61 @@ indépendantes qui vont toutes dans le même sens : **dans ce système, ce qui e
 plein ne marque pas, et ce qui est vide marque.** Si les trois tiennent sur les
 prochaines lignes, ce n'est plus une coïncidence — c'est le sens de lecture qu'il
 faut retourner d'un bloc.
+
+---
+
+## Inventaire des pistes trouvées et jamais branchées
+
+Fouillé dans le fichier à la demande d'Ellemine_D. Chaque piste testée sur les
+5 lignes choisies.
+
+| piste | ce qu'elle visait | son passé | sur les 5 lignes | fréquence |
+|---|---|---|---|---|
+| **M9 = M1 ⊕ M2** | volume | p = 0,0019, **survit à Bonferroni** (0,011) ; **3/3 hors échantillon** annoncé d'avance ; doctrine venue APRÈS la mesure | **2/3 quand elle parle** | parle 56 % |
+| `matchFermeOuvert` | BTTS | 6/6 sur de vrais matchs | 3/5 | dit « fermé » **79,6 %** |
+| `signalM4M10BoucleV7` | camp | archive | 1/2 quand il parle | parle 25 % |
+| `signalM15M16BoucleV7` | camp | 9/11 = 82 % sur l'archive | **1/4** quand il parle | parle 25 % |
+
+### Ce que ça donne
+
+**`matchFermeOuvert` est mort.** Son seuil de 7 maisons fermées a été posé sur
+6 matchs, et il dit « au moins un camp bloqué » sur **79,6 %** des thèmes quand
+le BTTS non vaut ~49 %. Sur tes lignes il fait 3/5 contre 5/5 pour l'équilibre
+du marquage. Rien à en tirer.
+
+**`signalM15M16BoucleV7` est mort aussi** : 1/4 sur tes lignes, contre 82 %
+annoncés sur l'archive. Et sa fiche le disait déjà — le sens avait été retourné
+après coup.
+
+**`signalM4M10BoucleV7`** ne parle qu'une fois sur quatre et fait 1/2. Trop peu
+pour dire quoi que ce soit.
+
+### M9 est la seule qui tienne, et c'est la mieux documentée du fichier
+
+`M9 = M1 ⊕ M2` — le rythme du match, selon la doctrine d'Ellemine_D fournie
+**après** la mesure. Figures hautes → plus de 2,5 buts, figures basses → moins.
+
+| | |
+|---|---|
+| mesure interne | p = 0,0019 en permutation par match — **le seul du fichier à survivre à Bonferroni** (0,011) |
+| hors échantillon, ancien | **3/3**, annoncé d'avance |
+| hors échantillon, tes lignes | **2/3** quand elle parle |
+| **total prospectif** | **5/6** |
+
+Son seul défaut, et il est réel : les deux listes de figures ont été composées
+en regardant le tableau des buts. Le 26/28 en échantillon ne vaut rien. Mais les
+5/6 hors échantillon, eux, comptent.
+
+Sur ta ligne 5 elle se trompe exactement comme le volume : M9 = Populus →
+« moins de 2,5 » pour un 4-0. Et sur la ligne 3, M9 = Populus aussi →
+« moins de 2,5 » pour un 1-1, juste. Même figure, deux résultats opposés.
+
+### Ce que je propose de brancher
+
+**M9 en départage du volume**, et rien d'autre. Quand elle parle (56 % des
+thèmes) et qu'elle contredit `G_vol` sur l'over/under, c'est elle qui tranche.
+Motif : elle a un record prospectif de 5/6 et une survie à Bonferroni ; `G_vol`
+n'a aucune corrélation mesurée.
+
+Sur tes 5 lignes, ça ne change rien — les deux sont d'accord partout où M9
+parle. Le gain ne se verra que sur des lignes futures. Dis-moi si je le branche.
