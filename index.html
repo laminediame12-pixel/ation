@@ -23241,9 +23241,14 @@ function verdictNMRatif(theme){
     label:winner==='M1'?'🏆 VAINQUEUR : R1':winner==='M7'?'🏆 VAINQUEUR : R7':'⚖️ MATCH NUL probable',
     reason:'🔄 MOTEUR NM ROTATIF — '+reasons.join(' | '),
     anchorFigure, maisonRepos, order, nm, scores, volumeNM,
-    verrouTerre, under25: volumeNM.G_vol!==null ? volumeNM.G_vol<1.30 : under25,
-    over25: volumeNM.G_vol!==null ? volumeNM.G_vol>=1.30 : over25,
-    overUnder: volumeNM.G_vol===null ? 'INDÉTERMINÉ' : (volumeNM.G_vol>=1.30 ? 'OVER 2.5' : 'UNDER 2.5'),
+    // CORRIGÉ 13/09/26 : l'over/under se lit sur les buts attendus, pas sur
+    // l'indice G_vol. Le seuil 1,30 sur G_vol disait OVER 2.5 sur 97,5 pour
+    // cent des thèmes — il n'y avait plus de décision.
+    verrouTerre,
+    under25: volumeNM.calibrage ? !volumeNM.calibrage.over25 : under25,
+    over25:  volumeNM.calibrage ?  volumeNM.calibrage.over25 : over25,
+    overUnder: volumeNM.calibrage ? (volumeNM.calibrage.over25 ? 'OVER 2.5' : 'UNDER 2.5') : 'INDÉTERMINÉ',
+    butsAttendus: volumeNM.buts_attendus,
     poleDomicile, poleExterieur, delta,
     rupture, signal1N2:delta>1.5,
     hR1: maisonRepos, hR7: ((maisonRepos+5)%16)+1,
@@ -23275,6 +23280,129 @@ function nmFigureEnergy(fig){
 // Conjunctio = 2-1-1-2 ; Carcer = 1-2-2-1
 // Cauda Draconis = 1-1-1-2 ; Fortuna Minor = 1-1-2-2
 // 1 = conducteur/ouvert ; 2 = bloqué/fermé.
+// ═══════════════════════════════════════════════════════════════
+// CALIBRAGE DU VOLUME — V7 (13/09/26)
+// ───────────────────────────────────────────────────────────────
+// Ce bloc corrige trois défauts mesurés du volume :
+//
+// 1. G_vol n'est pas un nombre de buts. C'est un indice sans unité, de
+//    moyenne 2,15 sur les 65 536 thèmes. Il était affiché tel quel sous
+//    l'étiquette « Volume des buts », et comparé à 2,5 comme s'il
+//    s'agissait de buts. Il annonçait « 5+ buts » sur 48,6 pour cent des
+//    thèmes, là où le réel en compte environ 14 pour cent. Sur les 5
+//    matchs réels enregistrés il valait 1,84 · 2,49 · 2,58 · 2,93 · 3,05 :
+//    toujours au-dessus du seuil, y compris sur le 0-0 et le 1-1.
+//    Prédicteur constant, donc sans information.
+//
+// 2. Il lisait de mauvaises maisons : trigones 1-5-9 / 2-6-10 / 3-7-11 /
+//    4-8-12 au lieu des canaux élémentaires du système (Feu M1·M5·M9·M13,
+//    Air M2·M6·M10·M14, Eau M3·M7·M11·M15, Terre M4·M8·M12·M16), axe
+//    angulaire réduit à 1-4-7-10 au lieu de MAISONS_CARDINALES_V7, et
+//    R1/R7 codés en dur sur les maisons 9 et 3 au lieu de la rotation.
+//
+// 3. Il ignorait le seul signal mesuré sur les matchs réels : la force de
+//    marquage de l'axe cadent, INVERSÉE (marquage haut -> peu de buts).
+//    Hypothèse pré-enregistrée avant le 5e résultat, tenue sur les 5
+//    (rho = -0,58). Les deux indices sont indépendants : corrélation
+//    mesurée r = 0,044 sur les 65 536 thèmes. Le marquage apporte donc de
+//    l'information que G_vol n'a pas.
+//
+// MÉTHODE. On ne somme pas deux échelles incomparables. On convertit
+// chacune en son rang (quantile empirique sur les 65 536 thèmes, tables
+// ci-dessous), on moyenne les deux rangs, on ré-étale la moyenne — la
+// moyenne de deux uniformes est triangulaire, sa CDF exacte est 2q^2 puis
+// 1-2(1-q)^2 — et on projette sur une échelle de buts de moyenne 2,70,
+// la moyenne réelle du football. Aucun coefficient ajusté sur les
+// résultats : les poids sont 1/2 et 1/2 faute de données pour en
+// justifier d'autres. Décision prise sur n=5, notée comme telle dans
+// OBSERVATIONS.md.
+// ═══════════════════════════════════════════════════════════════
+
+// CDF empirique de G_vol corrigé, pas de 0,05, de 0,85 à 3,65.
+var CDF_GVOL_V7 = [
+  0,0,0,0.0003,0.0009,0.0023,0.0054,0.0112,0.0203,0.0363,0.056,0.0751,
+  0.0929,0.1072,0.1173,0.1261,0.1345,0.1457,0.1593,0.1797,0.1925,0.2073,0.22,0.231,
+  0.241,0.2496,0.2579,0.2726,0.2926,0.3196,0.3525,0.3876,0.4317,0.4822,0.5297,0.585,
+  0.639,0.6848,0.7304,0.7691,0.8146,0.8556,0.8869,0.9206,0.9438,0.9611,0.9764,0.9855,
+  0.9916,0.9958,0.9979,0.9992,0.9998,0.9999,1,1,1
+];
+// CDF empirique du marquage cadent total, pas de 0,5, de 0 à 35,5.
+var CDF_MARQUAGE_CADENT_V7 = [
+  0,0.0001,0.0003,0.0006,0.0012,0.0021,0.0034,0.0051,0.0078,0.0114,0.0163,0.0226,
+  0.0314,0.0415,0.055,0.0708,0.0884,0.1092,0.1335,0.1595,0.1888,0.2207,0.2549,0.2903,
+  0.3276,0.3664,0.4058,0.446,0.4867,0.5271,0.5657,0.6041,0.6409,0.6762,0.7097,0.7417,
+  0.7713,0.7986,0.8237,0.8466,0.867,0.8859,0.9028,0.9178,0.9305,0.9417,0.9513,0.9597,
+  0.967,0.9733,0.9783,0.9828,0.9866,0.9896,0.9921,0.9939,0.9954,0.9966,0.9974,0.9981,
+  0.9986,0.999,0.9993,0.9995,0.9997,0.9998,0.9998,0.9999,0.9999,0.9999,1,1
+];
+var BUTS_MOYENS_REELS_V7 = 2.70;   // buts moyens d'un match, toutes compétitions
+
+function cdfInterpV7(table, x, lo, pas) {
+  if (!isFinite(x)) return 0.5;
+  var i = (x - lo) / pas;
+  if (i <= 0) return table[0];
+  if (i >= table.length - 1) return table[table.length - 1];
+  var k = Math.floor(i), f = i - k;
+  return table[k] + (table[k + 1] - table[k]) * f;
+}
+
+function poissonV7(mu, k) {
+  var p = Math.exp(-mu), i;
+  for (i = 1; i <= k; i++) p *= mu / i;
+  return p;
+}
+
+// Volume calibré. Rend un nombre de buts attendus, pas un indice.
+function volumeCalibreV7(theme, gvol) {
+  if (!theme || !isFinite(gvol)) return null;
+  var M = (typeof forceMarquageCadentV7 === 'function') ? forceMarquageCadentV7(theme) : null;
+  var qG = cdfInterpV7(CDF_GVOL_V7, gvol, 0.85, 0.05);
+  var qM = M ? (1 - cdfInterpV7(CDF_MARQUAGE_CADENT_V7, M.total, 0, 0.5)) : 0.5;
+  var q  = (qG + qM) / 2;
+  var Q  = q <= 0.5 ? 2 * q * q : 1 - 2 * (1 - q) * (1 - q);   // ré-étalement exact
+  var mu = BUTS_MOYENS_REELS_V7 * (0.42 + 1.16 * Q);           // moyenne conservée à 2,70
+
+  var p0 = poissonV7(mu, 0), p1 = poissonV7(mu, 1), p2 = poissonV7(mu, 2), p3 = poissonV7(mu, 3);
+  var pOver15 = 1 - p0 - p1;
+  var pOver25 = 1 - p0 - p1 - p2;
+  var pOver35 = pOver25 - p3;
+
+  // Probabilités par tranche, sous Poisson(mu).
+  var tranches = [
+    { nom: '0-1 but',        p: p0 + p1 },
+    { nom: '2 buts',         p: p2 },
+    { nom: '3 buts',         p: p3 },
+    { nom: '4 buts ou plus', p: 1 - p0 - p1 - p2 - p3 }
+  ];
+  // La bande annoncée n'est PAS la tranche la plus probable : les tranches
+  // ouvertes (« 0-1 » et « 4 ou plus ») ramassent structurellement plus de
+  // masse et gagneraient toujours — mesuré, 46 pour cent et 54 pour cent,
+  // les tranches 2 et 3 jamais annoncées. La bande sort donc des quantiles
+  // de mu, calés sur les fréquences réelles du football :
+  // 0-1 but 25 pour cent, 2 buts 24, 3 buts 22, 4 buts 15, 5+ 14.
+  // Coupures mesurées sur les 65 536 thèmes.
+  var bande;
+  if (mu < 1.961)      bande = '0-1 but';
+  else if (mu < 2.697) bande = '2 buts';
+  else if (mu < 3.333) bande = '3 buts';
+  else if (mu < 3.792) bande = '4 buts';
+  else                 bande = '5 buts ou plus';
+  var over = pOver25 >= 0.50;
+  var marche = over ? (pOver35 >= 0.50 ? 'OVER 3.5' : 'OVER 2.5')
+                    : (pOver15 >= 0.50 ? 'UNDER 2.5' : 'UNDER 1.5');
+
+  return {
+    qG: qG, qM: qM, q: q, Q: Q,
+    marquageCadent: M ? M.total : null,
+    buts: mu,
+    butsArrondi: Math.round(mu * 10) / 10,
+    bande: bande, tranches: tranches, marche: marche,
+    pOver15: pOver15, pOver25: pOver25, pOver35: pOver35,
+    over25: over,
+    formule: 'q = (rang G_vol + rang inverse du marquage cadent) / 2 ; buts = 2,70 x (0,42 + 1,16 x Q)'
+  };
+}
+
 function nmVolumeMatrix(theme, nmResult){
   // ═══ ALGOTHME-5 — GEOMANTIC VOLUME ENGINE ═══
   // Intégration du moteur fourni : calcul sur le thème réel complet,
@@ -23313,13 +23441,17 @@ function nmVolumeMatrix(theme, nmResult){
   const mu=(m_circ<=5.0 && !has_explosive)?0.80:1.00;
 
   // 3. Fluidité des trigones
-  const trigones_indices={Feu:[1,5,9],Terre:[2,6,10],Eau:[3,7,11],Air:[4,8,12]};
+  // CORRIGÉ 13/09/26 : ce sont les canaux élémentaires du système, sur les
+  // 16 maisons — pas 1-5-9 / 2-6-10 / 3-7-11 / 4-8-12, qui n'existent
+  // nulle part ailleurs et attribuaient Terre à 2-6-10 et Air à 4-8-12,
+  // exactement l'inverse de ELEMENT_OF_HOUSE.
+  const trigones_indices={Feu:[1,5,9,13],Air:[2,6,10,14],Eau:[3,7,11,15],Terre:[4,8,12,16]};
   const elemIdx={Feu:0,Air:1,Eau:2,Terre:3};
   const T_status={};
   Object.keys(trigones_indices).forEach(elem=>{
     const idx=elemIdx[elem];
     const conducteurs=trigones_indices[elem].filter(h=>get(M[h]).s[idx]===1).length;
-    T_status[elem]=conducteurs>=2?1:0;
+    T_status[elem]=conducteurs>=2?1:0;   // au moins la moitié du canal
   });
   const t_sum=Object.values(T_status).reduce((a,b)=>a+b,0);
   const t_flu=1.0+(0.15*t_sum);
@@ -23327,11 +23459,14 @@ function nmVolumeMatrix(theme, nmResult){
   // 4. Saturation / volatilité
   const m16_name=norm(M[16]);
   const m16_explosive=['puer','rubeus','cauda_draconis'].includes(m16_name);
-  const cardinals_explosive=[1,4,7,10].some(k=>['puer','rubeus'].includes(norm(M[k])));
+  // CORRIGÉ 13/09/26 : l'axe angulaire du système fait 6 maisons
+  // (MAISONS_CARDINALES_V7 = 1-4-7-10-13-16), pas 4.
+  const ANGULAIRE=(typeof MAISONS_CARDINALES_V7!=='undefined')?MAISONS_CARDINALES_V7:[1,4,7,10,13,16];
+  const cardinals_explosive=ANGULAIRE.some(k=>['puer','rubeus'].includes(norm(M[k])));
   let v=1.00;
   if(m16_explosive || cardinals_explosive) v=2.00;
   else if(T_status.Feu===1 && T_status.Eau===1) v=1.65;
-  else if([1,4,7,10].some(k=>get(M[k]).x)) v=1.35;
+  else if(ANGULAIRE.some(k=>get(M[k]).x)) v=1.35;
 
   const G_vol=(p_circ*mu*t_flu)*v;
 
@@ -23347,21 +23482,39 @@ function nmVolumeMatrix(theme, nmResult){
     });
     return {active:channels.length>0,channels};
   };
-  const r1=getReposActivity(9);
-  const r7=getReposActivity(3);
+  // CORRIGÉ 13/09/26 : R1 et R7 viennent de la rotation (Maison de Repos
+  // de M1), jamais des maisons 9 et 3 codées en dur.
+  let _hR1=9,_hR7=3;
+  if(nmResult && nmResult.hR1 && nmResult.hR7){ _hR1=nmResult.hR1; _hR7=nmResult.hR7; }
+  else if(typeof getRotationCombat==='function'){
+    try{ const _rot=getRotationCombat(M); _hR1=_rot.hR1; _hR7=_rot.hR7; }catch(e){}
+  }
+  const r1=getReposActivity(_hR1);
+  const r7=getReposActivity(_hR7);
 
   // 6. Filtre asymétrie / BTTS
   const r1_active=r1.active;
   const r7_active=r7.active;
   const btts_trigger=(T_status.Eau===1 || T_status.Air===1) && G_vol>=1.30 && r1_active && r7_active;
 
-  // 7. Marché et projections
+  // 7. Marché et projections — CALIBRÉS (13/09/26)
+  // Les anciens seuils 1,10 / 1,35 / 1,80 / 2,30 étaient posés sur l'indice
+  // G_vol lui-même, dont la moyenne vaut 2,15 : ils envoyaient 48,6 pour
+  // cent des thèmes dans « 5+ buts ». Le marché sort maintenant du volume
+  // calibré en buts (voir volumeCalibreV7 juste au-dessus).
+  const CAL=volumeCalibreV7(M, G_vol);
+  const mu_buts=CAL?CAL.buts:null;
   let market,score_profile;
-  if(G_vol<1.10){market='UNDER 1.5';score_profile='1 - 0 / 0 - 0';}
-  else if(G_vol<1.35){market='UNDER 2.5';score_profile='2 - 0 / 1 - 1';}
-  else if(G_vol<1.80){market='OVER 1.5 (2-3 buts)';score_profile=btts_trigger?'2 - 1 / 3 - 1':'2 - 1 / 3 - 0';}
-  else if(G_vol<2.30){market='OVER 2.5 (3-4 buts)';score_profile=btts_trigger?'3 - 1 / 3 - 2':'3 - 0 / 4 - 0';}
-  else {market='OVER 3.5 / SCORE FLEUVE (5+ buts)';score_profile=btts_trigger?'5 - 1 / 6 - 1 (Score Fleuve avec Réplique)':'5 - 0 / 7 - 0 (Carnage Unilatéral)';}
+  if(!CAL){ market='INDÉTERMINÉ'; score_profile='—'; }
+  else {
+    market=CAL.marche+' — '+CAL.bande;
+    // Profil de score : le total attendu, réparti entre les deux camps.
+    // Sans BTTS le perdant reste à zéro ; avec BTTS il prend au moins 1.
+    const total=Math.max(0,Math.round(mu_buts));
+    let perdant=btts_trigger?Math.max(1,Math.round(total*0.35)):0;
+    if(perdant>=total) perdant=Math.max(0,total-1);
+    score_profile=(total-perdant)+' - '+perdant;
+  }
 
   const freq={};
   ['Feu','Air','Eau','Terre'].forEach(e=>{
@@ -23377,7 +23530,13 @@ function nmVolumeMatrix(theme, nmResult){
     freq,canauxActifs,energies,
     M_circ:m_circ,P_circ:p_circ,mu,V:v,
     T_status,T_flu:t_flu,G_vol,
-    volume:G_vol>=1.30?'ÉLEVÉ':'FAIBLE',
+    calibrage:CAL,
+    buts_attendus:mu_buts,
+    bande_buts:CAL?CAL.bande:null,
+    pOver25:CAL?CAL.pOver25:null,
+    pOver15:CAL?CAL.pOver15:null,
+    pOver35:CAL?CAL.pOver35:null,
+    volume:(mu_buts!==null && mu_buts>=2.50)?'ÉLEVÉ':'FAIBLE',
     btts:btts_trigger,BTTS:btts_trigger?'OUI':'NON',
     Marche:market,Marché:market,Profil_Score:score_profile,
     M16:M[16],m16Explosive:m16_explosive,
@@ -29364,10 +29523,18 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
                sc = vv3 ? vv3.scoreCorrige : null; }catch(e){ sc=null; }
           if(!sc) return '<div class="tek-score">Score prédit : '+esc(scoreMain)
             +'<br><span style="font-size:11px;color:#94a3b8">alternative : '+esc(scoreAlt)+'</span></div>';
+          // CORRIGÉ 13/09/26 : on affichait G_vol, un indice sans unité de
+          // moyenne 2,15, sous l'étiquette « Volume des buts ». On affiche
+          // maintenant les buts attendus, avec la probabilité d'over 2.5.
           var _volTxt='—';
           try {
             var _vmVol=verdictNMRatif(theme);
-            if(_vmVol && _vmVol.volumeNM && Number.isFinite(Number(_vmVol.volumeNM.G_vol))) _volTxt=Number(_vmVol.volumeNM.G_vol).toFixed(2);
+            var _cv=_vmVol && _vmVol.volumeNM ? _vmVol.volumeNM : null;
+            if(_cv && Number.isFinite(Number(_cv.buts_attendus))){
+              _volTxt=Number(_cv.buts_attendus).toFixed(1).replace('.',',')+' buts attendus'
+                +' · bande '+String(_cv.bande_buts||'')
+                +' · over 2.5 : '+Math.round(Number(_cv.pOver25)*100)+' %';
+            }
           } catch(e) {}
           return '<div class="tek-score">Buts attendus : '+esc(sc.score)
             +'<div style="font-size:11px;color:#7dd3fc;font-weight:800;line-height:1.4;margin-top:5px;text-align:left">Volume des buts : <b>'+esc(_volTxt)+'</b></div>'
@@ -29383,7 +29550,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         })())
     +'<div style=\"display:flex;justify-content:flex-start;align-items:center;margin:6px 8px 2px;\">'
     +'<div style=\"font-size:12px;font-weight:900;color:#7dd3fc;text-align:left;\">⚽ Volume des buts : <span style=\"color:#e0f2fe;font-size:14px;\">'
-    +(function(){var v='—';try{var vr=verdictNMRatif(theme);if(vr&&vr.volumeNM&&Number.isFinite(Number(vr.volumeNM.G_vol)))v=Number(vr.volumeNM.G_vol).toFixed(2);}catch(e){}return v;})()
+    +(function(){var v='—';try{var vr=verdictNMRatif(theme);var c=vr&&vr.volumeNM;if(c&&Number.isFinite(Number(c.buts_attendus)))v=Number(c.buts_attendus).toFixed(1).replace('.',',')+' buts attendus · bande '+String(c.bande_buts||'')+' · over 2.5 : '+Math.round(Number(c.pOver25)*100)+' %';}catch(e){}return v;})()
     +'</span></div></div>'
     +'</div>';
   var incColorTek = card && card.incidentInevitable ? '#f87171' : card && card.incidentPct >= 50 ? '#fb923c' : card && card.incidentPct > 0 ? '#facc15' : null;
@@ -30931,7 +31098,8 @@ function renderTheme(){
       } catch(se) {}
       try {
         var safeNm=verdictNMRatif(currentTheme);
-        if(safeNm && safeNm.volumeNM && Number.isFinite(Number(safeNm.volumeNM.G_vol))) safeVolume=Number(safeNm.volumeNM.G_vol).toFixed(2);
+        if(safeNm && safeNm.volumeNM && Number.isFinite(Number(safeNm.volumeNM.buts_attendus)))
+          safeVolume=Number(safeNm.volumeNM.buts_attendus).toFixed(1).replace('.',',')+' buts';
       } catch(se) {}
       var safeReasonText=String(safeReason||('Sous-couche en erreur : '+String(e&&e.message||e))).replace(/[<>]/g,'');
       elErr.innerHTML = '<div style="text-align:center;">'

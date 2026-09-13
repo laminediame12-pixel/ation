@@ -1049,3 +1049,110 @@ assez pour trancher**. Sur ces cinq thèmes il vaut 1,84 · 2,49 · 2,58 · 2,93
 3,05, tous au-dessus du seuil OVER 2.5, y compris sur le 0-0 et le 1-1. Une
 famille qui répond toujours la même chose ne peut pas être créditée de ses
 succès.
+
+---
+
+## Correction du volume (13/09/26)
+
+Le volume était cassé de trois façons, toutes mesurées avant correction.
+
+### 1. Le nombre affiché n'était pas des buts
+
+`G_vol` est un indice sans unité, de moyenne **2,15** sur les 65 536 thèmes.
+Il était affiché tel quel sous l'étiquette « Volume des buts », et comparé au
+seuil 2,5 comme s'il s'agissait d'un nombre de buts. D'où la lecture fausse
+« volume 2,49 → moins de 2,5 buts ».
+
+Conséquence sur le marché annoncé, sur les 65 536 thèmes :
+
+| annonce | part | réel |
+|---|---|---|
+| **OVER 3.5 / score fleuve (5+ buts)** | **48,6 %** | ~14 % |
+| OVER 2.5 (3-4 buts) | 21,1 % | |
+| OVER 1.5 (2-3 buts) | 15,7 % | |
+| UNDER 2.5 | 12,2 % | |
+| UNDER 1.5 | 2,5 % | |
+
+Et le drapeau `over25` sortait de `G_vol >= 1.30`, vrai sur **97,5 %** des
+thèmes. Il n'y avait plus de décision du tout.
+
+### 2. Il lisait de mauvaises maisons
+
+| lu | correct |
+|---|---|
+| trigones 1-5-9 / 2-6-10 / 3-7-11 / 4-8-12 | canaux Feu M1·M5·M9·M13, Air M2·M6·M10·M14, Eau M3·M7·M11·M15, Terre M4·M8·M12·M16 |
+| Terre sur 2-6-10, Air sur 4-8-12 | l'inverse de `ELEMENT_OF_HOUSE` |
+| axe angulaire 1-4-7-10 | `MAISONS_CARDINALES_V7` = 1-4-7-10-13-16 |
+| R1 = maison 9, R7 = maison 3, en dur | la rotation issue de la Maison de Repos de M1 |
+
+Septième occurrence du même défaut : le code nomme une chose et en applique
+une autre.
+
+### 3. Il ignorait le seul signal mesuré
+
+La force de marquage de l'axe cadent, **inversée** — hypothèse pré-enregistrée
+avant le 5e résultat, tenue sur les 5. Mesure décisive : la corrélation entre
+`G_vol` et le marquage cadent sur les 65 536 thèmes vaut **r = 0,044**. Les deux
+indices sont indépendants ; le marquage apporte donc de l'information que
+`G_vol` n'a pas.
+
+### Ce qui remplace
+
+On ne somme pas deux échelles incomparables. Chacune est convertie en son rang
+(CDF empirique sur les 65 536 thèmes, tables `CDF_GVOL_V7` et
+`CDF_MARQUAGE_CADENT_V7`), les deux rangs sont moyennés, la moyenne est
+ré-étalée par la CDF exacte de la moyenne de deux uniformes (`2q²`, puis
+`1-2(1-q)²`), et le résultat est projeté sur une échelle de buts de moyenne
+**2,70** — la moyenne réelle du football :
+
+```
+q  = (rang G_vol + rang inverse du marquage cadent) / 2
+Q  = q <= 0,5 ? 2q²  :  1 - 2(1-q)²
+mu = 2,70 x (0,42 + 1,16 Q)
+```
+
+Poids 1/2 et 1/2. **Aucun coefficient ajusté sur les résultats** : je n'ai pas
+de quoi en justifier d'autres. C'est une décision prise sur n=5 et elle est
+notée ici comme telle.
+
+Le marché over/under ne sort plus d'un seuil sur l'indice mais d'une
+probabilité : `over` quand `P(over 2.5 | Poisson(mu)) >= 0,50`.
+
+La bande n'est pas la tranche la plus probable — essayé, rejeté : les tranches
+ouvertes « 0-1 » et « 4 ou plus » ramassent structurellement plus de masse et
+gagnaient toujours (46 % et 54 %, les tranches 2 et 3 jamais annoncées). Elle
+sort des quantiles de `mu` calés sur les fréquences réelles.
+
+### Après correction, sur les 65 536 thèmes
+
+buts attendus : moyenne **2,706**, écart-type 0,884, de 1,13 à 4,27.
+
+| bande annoncée | part | réel |
+|---|---|---|
+| 0-1 but | 25,0 % | 25 % |
+| 2 buts | 24,0 % | 24 % |
+| 3 buts | 22,0 % | 22 % |
+| 4 buts | 15,0 % | 15 % |
+| 5 buts ou plus | 14,0 % | 14 % |
+
+over 2.5 annoncé sur **51,6 %** des thèmes, contre ~51 % réels.
+
+### Sur les 5 matchs réels
+
+| réel | buts | G_vol | marquage | rang G | rang M | buts attendus | bande | over 2.5 |
+|---|---|---|---|---|---|---|---|---|
+| 7-0 | 7 | 2,93 | 11,5 | 0,87 | 0,71 | **4,00** | 5+ | 76 % ✓ |
+| 0-0 | 0 | 2,47 | 17,5 | 0,46 | 0,26 | **1,94** | 0-1 | 31 % ✓ |
+| 1-1 | 2 | 2,42 | 19,5 | 0,41 | 0,15 | **1,62** | 0-1 | 22 % ✓ |
+| 5-2 | 7 | 2,10 | 12,5 | 0,25 | 0,63 | **2,36** | 2 | 42 % ✗ |
+| 5-0 | 5 | 2,49 | 11,5 | 0,47 | 0,71 | **3,22** | 3 | 62 % ✓ |
+
+over/under 2.5 : **4/5**, contre 3/5 avant — et les 3/5 d'avant ne valaient
+rien puisque le moteur disait OVER cinq fois sur cinq. Corrélation buts
+attendus / buts réels : **r = 0,715**.
+
+**Un seul de ces cinq points est hors échantillon** : le 5-0, arrivé après que
+la direction du marquage cadent ait été écrite. Les quatre autres ont servi à
+trouver cette direction. r = 0,715 sur n=5 dont 4 en échantillon ne prouve
+rien ; c'est la calibration marginale, elle, qui est acquise indépendamment de
+tout résultat.
