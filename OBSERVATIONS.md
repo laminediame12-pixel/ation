@@ -3201,3 +3201,64 @@ faire avant élargissement de l'échantillon.
 
     six lignes : camp 6/6 · BTTS 6/6 · marginale du camp inchangée
     (37 / 31 / 31,9) · aucune erreur de page
+
+### En creusant : la symétrie des témoins est une loi sur le JUGE
+
+Ellemine_D : « Creuse ». Ce qu'il décrit sur M13/M14 est en réalité une
+propriété de M15, et elle **se démontre**.
+
+**1. Le renversement est un automorphisme du groupe.** `renv()` inverse
+l'ordre des quatre lignes : une permutation de coordonnées, donc linéaire
+sur GF(2)⁴. Donc `renv(a ⊕ b) = renv(a) ⊕ renv(b)`. Vérifié
+exhaustivement : **256 paires sur 256**.
+
+**2. Donc la symétrie des témoins force un juge palindrome.**
+
+    M15 = M13 ⊕ M14
+    renv(M15) = renv(M13) ⊕ renv(M14) = M14 ⊕ M13 = M15
+
+Même calcul si les deux témoins sont chacun leur propre renversée.
+Mesuré : **14 336 paires symétriques, 14 336 juges palindromes, zéro
+violation** sur les 65 536 thèmes.
+
+**3. Et le juge n'a que huit valeurs possibles.** Loi classique
+revérifiée ici : M15 est toujours une figure **paire**. Les huit, chacune
+exactement 8 192 fois — parfaitement uniforme :
+
+    via · amissio · acquisitio · populus · fortuna_minor · carcer
+    · conjunctio · fortuna_major
+
+Et **exactement la moitié sont les palindromes** : via (4 pts),
+populus (8), carcer (6), conjunctio (6). « Juge palindrome » vaut donc
+exactement 50 % des thèmes.
+
+**4. La règle d'Ellemine_D est un raffinement strict** — 21,9 % à
+l'intérieur des 50 % — et le raffinement porte :
+
+| détecteur | fréquence | six lignes | rappel | faux + |
+|---|---|---|---|---|
+| juge palindrome | 50,0 % | 3/6 | 2/3 | 2/3 |
+| **paire symétrique** | **21,9 %** | **4/6** | 1/3 | **0/3** |
+
+La version large est au niveau du hasard. La sienne ne l'est pas.
+
+**5. Les deux moitiés ne font pas le même métier.**
+
+| moitié | fréquence | six lignes | rappel | faux + |
+|---|---|---|---|---|
+| symétrie | 21,9 % | 4/6 | 1/3 | **0/3** |
+| interaction binôme/antagoniste | 15,6 % | 4/6 | **2/3** | 1/3 |
+| les deux (règle livrée) | 32,8 % | 5/6 | **3/3** | 1/3 |
+
+La symétrie est **précise**, l'interaction porte le **rappel**. L'unique
+faux positif de la règle complète — le 2-3, fortuna_minor / amissio
+antagonistes — vient entièrement de la moitié interaction.
+
+Et l'interaction n'est **pas algébrique** : `a ⊕ antagoniste(a)` prend
+cinq valeurs distinctes, `a ⊕ binôme(a)` en prend trois. Elle ne dérive
+pas du groupe — c'est précisément pour ça qu'elle apporte une information
+que la structure XOR ne contient pas.
+
+Toutes ces lectures restent **indépendantes des étages de la chaîne**
+(rapports 0,90 à 1,14). Le juge est désormais exposé dans le signal ; rien
+ne décide.

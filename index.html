@@ -27492,6 +27492,51 @@ var ANNULATION_EXIGE_MENACE_EN_BASE_V7 = true;
 // construction. Une seule, le 0-0 (carcer / fortuna_major, binôme), est
 // une vraie confirmation hors exemple. Une.
 //
+// ── EN CREUSANT : LA SYMÉTRIE EST UNE LOI SUR LE JUGE ──
+// (13/09/26, « creuse »). Ce qu'Ellemine_D décrit sur les deux témoins
+// est en réalité une propriété de M15, et elle se DÉMONTRE.
+//
+// 1. LE RENVERSEMENT EST UN AUTOMORPHISME DU GROUPE.
+//    renv() inverse l'ordre des quatre lignes : c'est une permutation de
+//    coordonnées, donc linéaire sur GF(2)^4. Donc
+//        renv(a ⊕ b) = renv(a) ⊕ renv(b)
+//    Vérifié exhaustivement : 256 paires sur 256.
+//
+// 2. DONC LA SYMÉTRIE DES TÉMOINS FORCE UN JUGE PALINDROME.
+//    M15 = M13 ⊕ M14. Si renv échange les deux témoins :
+//        renv(M15) = renv(M13) ⊕ renv(M14) = M14 ⊕ M13 = M15
+//    Si les deux témoins sont chacun leur propre renversée, même calcul.
+//    Dans les deux cas M15 est son propre renversé.
+//    Mesuré sur les 65 536 : 14 336 paires symétriques, 14 336 juges
+//    palindromes. CENT POUR CENT, sans exception.
+//
+// 3. ET LE JUGE N'A QUE HUIT VALEURS POSSIBLES.
+//    Loi classique de la géomancie, revérifiée ici : M15 est toujours
+//    une figure PAIRE. Les huit possibles, chacune exactement 8 192 fois
+//    sur 65 536 — parfaitement uniforme :
+//        via · amissio · acquisitio · populus
+//        fortuna_minor · carcer · conjunctio · fortuna_major
+//    Et EXACTEMENT LA MOITIÉ d'entre elles sont les palindromes :
+//        via (4 pts) · populus (8) · carcer (6) · conjunctio (6)
+//    « Juge palindrome » vaut donc exactement 50 % des thèmes.
+//
+// 4. CE QUE ÇA DIT DE LA DOCTRINE. La règle d'Ellemine_D est un
+//    RAFFINEMENT STRICT de « juge palindrome » : 21,9 % à l'intérieur
+//    des 50 %. Et le raffinement porte — sur les six lignes :
+//        juge palindrome (50 %) ......... 3/6 · rappel 2/3 · 2 faux+
+//        paire symétrique (21,9 %) ...... 4/6 · rappel 1/3 · 0 faux+
+//    La version large est au niveau du hasard. La sienne ne l'est pas.
+//
+// 5. LES DEUX MOITIÉS NE FONT PAS LE MÊME MÉTIER.
+//        symétrie ..... 21,9 % · rappel 1/3 · ZÉRO faux positif
+//        interaction .. 15,6 % · rappel 2/3 · 1 faux positif
+//    La symétrie est PRÉCISE, l'interaction porte le RAPPEL. L'unique
+//    faux positif de la règle complète (le 2-3, fortuna_minor / amissio
+//    antagonistes) vient entièrement de la moitié interaction.
+//    Et l'interaction n'est PAS algébrique : a ⊕ antagoniste(a) prend
+//    cinq valeurs distinctes, a ⊕ binôme(a) en prend trois. Elle ne
+//    dérive pas du groupe — c'est pour ça qu'elle apporte autre chose.
+//
 // SIGNAL_TEMOINS_DECIDE_V7 = true le mettrait aux commandes. Ne pas le
 // faire avant que l'échantillon soit élargi.
 // ═══════════════════════════════════════════════════════════════
@@ -27527,10 +27572,15 @@ function signalTemoinsNulV7(theme) {
   if (palindromes) quoi.push('toutes deux leur propre renversée');
   if (binome) quoi.push('binômes');
   if (antagoniste) quoi.push('antagonistes');
+  // Le juge. La symétrie des témoins le force palindrome — voir le point 2
+  // du bloc au-dessus. On l'expose pour que la loi se lise sur la carte.
+  var juge = theme[15] || null;
+  var jugePalindrome = !!juge && figureRenverseeV7(juge) === juge;
   return {
     applicable: true, M13: a, M14: b, renverseeM13: ra, renverseeM14: rb,
     symetrique: symetrique, miroir: miroir, palindromes: palindromes,
     binome: binome, antagoniste: antagoniste, interaction: interaction,
+    juge: juge, jugePalindrome: jugePalindrome,
     signal: symetrique || interaction,
     decide: false,
     resume: 'synthèses M13 ' + a + ' / M14 ' + b + ' — '
@@ -27538,6 +27588,9 @@ function signalTemoinsNulV7(theme) {
           ? (quoi.join(', ') + ' : SIGNAL DE NUL (lecture indépendante, '
              + 'elle ne décide pas)')
           : 'ni symétriques ni en interaction — pas de signal de nul')
+      + ' · juge M15 ' + juge
+      + (jugePalindrome ? ' (palindrome' + (symetrique ? ', forcé par la symétrie' : '') + ')'
+                        : ' (non palindrome)')
   };
 }
 
