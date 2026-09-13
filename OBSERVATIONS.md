@@ -1225,100 +1225,111 @@ sera jamais ajustée après coup :
 
 ---
 
-## Les incidents se lisent dans l'axe succédent (13/09/26)
+## L'incident, doctrine d'Ellemine_D (13/09/26)
 
 > « Les incidents sont opérés dans l'axe succèdent. »
+>
+> « Feu-eau seul crée le chaos, non — air-terre aussi. Les lieux de problème
+> dans les 16 maisons sont M6 air et M12 terre. Avec feu en excès quelque part
+> du thème et M6, M12 en situation étouffante, il y a risque d'incident.
+> Pourquoi Rubeus en général en M12 implique incidents ? »
 
-Axe succédent = **M2 · M6 · M8 · M12 · M14**. Les anciens détecteurs n'y
-regardaient presque pas : ils lisaient M1, M7, M9, M13, M15 et des filiations.
+### 1. Sa correction est juste, et le fichier se contredisait déjà
 
-### Ce que la doctrine révèle, avant même de mesurer
-
-Cet axe est fait de maisons **air** (M2, M6, M14) et **terre** (M8, M12). Or
-« Chaotique » vaut feu-eau. **Le rôle Chaotique est structurellement
-impossible dans l'axe succédent** — vérifié, 0 fois sur 65 536 thèmes. Le
-détecteur historique y cherchait une chose qui ne peut pas s'y trouver.
-
-Les rôles qui mettent une figure en opposition avec sa maison dans un axe
-air/terre sont :
-
-| rôle | paire | ce que c'est |
+| | `concordanceElement` | `ELEMENT_ROLE_MATRIX_V7` |
 |---|---|---|
-| **Blocage** | air-terre | les *contraires* de l'échelle de concordance |
-| **Dissonant** | air-eau | |
+| feu-eau | **0,25 — contraires** | « Chaotique » |
+| air-terre | **0,25 — contraires** | « Blocage » |
+| air-eau | 0,5 — alliés | « Dissonant » |
 
-auxquels s'ajoutent les figures explosives déjà inscrites dans le fichier :
-**Puer, Rubeus, Cauda Draconis**.
+Deux noms pour une seule relation, et le détecteur d'incident ne comptait que
+« Chaotique ». **Dixième occurrence** dans ce fichier de deux tables du même
+objet qui ne disent pas la même chose.
 
-> charge d'une maison = (rôle Blocage ou Dissonant) + (figure explosive)
+Et j'avais ajouté l'erreur inverse le matin même en comptant « Dissonant »
+comme rôle d'incident : air-eau vaut 0,5, ce sont des **alliés**. Retiré. La
+contrariété se lit désormais sur `concordanceElement === 0,25`, l'unique
+table, et sur rien d'autre.
 
-### Le camp ne peut pas se lire sur la charge brute
+### 2. Pourquoi Rubeus en M12
 
-Charge moyenne par maison, sur les 65 536 thèmes :
+**Rubeus est AIR** — 2-1-2-2. Pas feu, contre ce que sa couleur suggère.
+**M12 est TERRE.** Rubeus en M12, c'est donc air-terre : la contrariété pure,
+dans le lieu de problème. Mesuré : sur les 4 096 thèmes où Rubeus loge en M12,
+il y est étouffé **4 096 fois — 100 %**, par construction.
 
-| maison | élément | charge moyenne |
-|---|---|---|
-| M2 · M6 · M14 | air | **0,6875** |
-| M8 · M12 | terre | **0,4375** |
+Quatre figures étouffent M12, les quatre figures air :
 
-Une maison air offre **deux** rôles d'incident (Blocage depuis une figure
-terre, Dissonant depuis une figure eau) ; une maison terre un **seul**
-(Blocage depuis une figure air). Le côté de l'équipe 1 (M2+M6, deux maisons
-air) porte donc **1,57 fois** la charge du côté de l'équipe 2 (M8+M12, deux
-maisons terre).
+| figure | élément | rôle en M12 | explosive |
+|---|---|---|---|
+| Caput Draconis | air | Blocage | non |
+| Conjunctio | air | Blocage | non |
+| Acquisitio | air | Blocage | non |
+| **Rubeus** | **air** | **Blocage** | **⚡ oui** |
 
-Lu brut, le moteur accusait l'équipe 1 **54,6 %** du temps contre **16,9 %**
-l'équipe 2. Le camp se lit donc sur l'**écart à la moyenne de son propre
-côté**. Après correction : M1 54,6 % / M7 45,4 %. M14 est le témoin : il
-compte dans l'intensité, il n'accuse personne.
+**Rubeus est la seule figure du jeu qui cumule contrariété et explosion dans un
+lieu de problème.** Ce n'est pas Rubeus qui est incidentogène — c'est Rubeus
+*en M12*.
 
-### Résultat sur la ligne 1
+### 3. Les deux lieux
+
+M6 (air) et M12 (terre) sont eux-mêmes contraires l'un de l'autre : l'axe
+M6-M12 est une opposition air-terre. Chacun est étouffé **25,0 %** du temps,
+l'un ou l'autre **43,8 %**, les deux **6,3 %**. M6 est du côté de l'équipe 1
+(maisons 2 à 6), M12 du côté de l'équipe 2 (maisons 8 à 12).
+
+### 4. L'excès de feu : le feu posé sur le feu
+
+Sept définitions testées. Celle qui correspond à ce qui est décrit — du feu
+**accumulé**, pas du feu actif — est le **Déclencheur** : une figure de feu
+logée dans une maison de feu (M1, M5, M9, M13), concordance 1.
+
+Sur la ligne 1, le canal feu est actif **0 fois sur 4** — aucune énergie — mais
+il y a **deux Déclencheurs**, M5 Populus et M9 Populus, deux figures de feu
+entièrement passives (2-2-2-2) posées sur des maisons de feu. Du feu entassé
+sans issue. C'est exactement « étouffante ».
+
+### 5. La règle, et ce qu'elle donne sans aucun réglage
+
+> **incident = (M6 étouffée OU M12 étouffée) ET (au moins un Déclencheur)**
+
+Sur les 65 536 thèmes, elle s'allume sur **30,1 %**.
+
+Le penalty est sifflé dans environ 25 % des matchs, le rouge sorti dans environ
+8 % : l'un ou l'autre, environ **30 %**.
+
+**Il n'y a aucun seuil dans cette règle.** Aucune constante n'a été ajustée —
+la fréquence tombe juste toute seule. C'est la première fois de la journée
+qu'une lecture de ce fichier se cale sans qu'on la cale. Pour mémoire, ce
+qu'elle remplace s'allumait sur **95,0 %** des thèmes.
+
+### 6. Le camp
+
+Poids d'un lieu : **0** s'il respire, **1** s'il est étouffé, **2** s'il est
+étouffé *et* porte une figure explosive. L'explosive aggrave un blocage, elle
+n'en crée pas — d'où le 0 quand la maison respire. Le camp est celui du lieu
+le plus chargé.
+
+Équilibre mesuré quand la règle s'allume : **M1 42,4 % · M7 46,3 % · non
+tranché 11,2 %**.
+
+### 7. Ligne 1
 
 Tristitia / Tristitia / Conjunctio / Rubeus — 1-1, **rouge côté M1**
 
-| maison | figure | rôle | charge | côté |
-|---|---|---|---|---|
-| M2 | Tristitia (terre) dans maison air | **Blocage** | 1 | équipe 1 |
-| M6 | Fortuna Major (terre) dans maison air | **Blocage** | 1 | équipe 1 |
-| M8 | Fortuna Minor (feu) dans maison terre | Absorbeur | 0 | équipe 2 |
-| M12 | Cauda Draconis (eau) dans maison terre | Stabilisateur ⚡ | 1 | équipe 2 |
-| M14 | Puer (feu) dans maison air | Amplificateur ⚡ | 1 | témoin |
-
-M2+M6 = **2** pour 1,375 attendus (écart +0,625) · M8+M12 = 1 pour 0,875
-(écart +0,125) · total **4**.
-
-| | avant | après | réel |
-|---|---|---|---|
-| incident | non (intensité 5 / seuil 9) ✗ | **oui** (charge 4 / seuil 4) ✔ | rouge |
-| camp | M1 ✔ | **M1** ✔ | M1 |
-
-### Ce que cette ligne confirme : très peu
-
-**La charge vaut 4 et le seuil vaut 4.** Un cran plus haut — charge 5, 13 %
-des thèmes — et la ligne était ratée. Elle est sur le fil. Le camp, lui, était
-déjà juste avant : sur cette ligne, l'axe succédent n'apporte rien de plus de
-ce côté-là.
-
-### Ce qui a été choisi après avoir vu la ligne 1, et ce qui ne l'a pas été
-
-| | d'où ça vient |
+| | |
 |---|---|
-| l'axe | **Ellemine_D**, avant toute mesure |
-| les rôles Blocage et Dissonant | forcés — le Chaotique ne peut pas exister là |
-| les figures explosives | déjà dans le fichier depuis longtemps |
-| la normalisation du camp | forcée par l'asymétrie mesurée sur les 65 536 |
-| le seuil de 4 | fréquence externe du penalty (~25 %) et du rouge (~8 %) — 35 % des thèmes |
+| M6 | Fortuna Major (terre) en maison air → **étouffée**, poids 1 |
+| M12 | Cauda Draconis (eau) en maison terre → respire, poids 0 |
+| Déclencheurs | M5 Populus · M9 Populus |
 
-Rien n'a été réglé pour faire tomber la ligne 1 juste. Le seuil ne bougera pas
-pour elle.
+**incident ✔ · camp M1 ✔**
 
-### Ce qui reste branché en lecture
+Une ligne ne démontre rien. Ce qui vaut ici, c'est que la règle vient
+entièrement de la doctrine et que sa fréquence tombe sur celle du réel sans
+qu'on ait touché à quoi que ce soit.
 
-Les deux anciens détecteurs — V2 et la lecture large — sont toujours calculés
-et exposés (`incidentIntensiteMixte`). Ils ne décident plus.
-`INCIDENT_AXE_SUCCEDENT_DECIDE_V7 = false` les remet aux commandes.
+La carte affiche :
 
-La carte affiche maintenant :
-
-> ⚠️ Incidents : **⚠️ SIGNAL INCIDENT · CONTRE M1** *(Présent · charge
-> succédente 4 · 87e centile)*
+> ⚠️ Incidents : **⚠️ SIGNAL INCIDENT · CONTRE M1** *(Marqué · M6/M12 étouffée
+> · 2 Déclencheurs de feu)*

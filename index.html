@@ -25649,98 +25649,140 @@ function incidentV2Build(theme){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// L'INCIDENT SE LIT DANS L'AXE SUCCÉDENT (13/09/26, Ellemine_D :
-// « les incidents sont opérés dans l'axe succèdent »)
+// L'INCIDENT — DOCTRINE D'ELLEMINE_D, 13/09/26
+// « Les incidents sont opérés dans l'axe succèdent. »
+// « Feu-eau seul crée le chaos, non — air-terre aussi. Les lieux de
+//   problème dans les 16 maisons sont M6 air et M12 terre. Avec feu en
+//   excès quelque part du thème et M6, M12 en situation étouffante, il y a
+//   risque d'incident. Pourquoi Rubeus en général en M12 implique
+//   incidents ? »
 // ───────────────────────────────────────────────────────────────
-// L'AXE EST DONNÉ PAR LA DOCTRINE, pas trouvé dans les données :
-// MAISONS_SUCCEDENTES_V7 = M2 · M6 · M8 · M12 · M14. Les anciens détecteurs
-// n'y regardaient presque pas — ils lisaient M1, M7, M9, M13, M15 et des
-// filiations. Ils restent en place comme lectures ; ils ne décident plus.
 //
-// PREMIÈRE CONSÉQUENCE, STRUCTURELLE. Cet axe est fait de maisons air
-// (M2, M6, M14) et terre (M8, M12). Or « Chaotique » vaut feu-eau : il est
-// IMPOSSIBLE dans l'axe succédent, mesuré 0 fois sur 65 536 thèmes. Le
-// détecteur historique cherchait donc dans cet axe une chose qui ne peut pas
-// s'y trouver. Les rôles d'incident propres à un axe air/terre sont ceux qui
-// mettent la figure en opposition avec sa maison :
-//   Blocage   = air-terre  (les contraires de l'échelle de concordance)
-//   Dissonant = air-eau
-// auxquels s'ajoutent les figures explosives de la doctrine du fichier :
-// Puer, Rubeus, Cauda Draconis.
+// 1. SA CORRECTION EST JUSTE, ET LE FICHIER SE CONTREDISAIT DÉJÀ.
+//    `concordanceElement` met feu-eau ET air-terre à 0,25 — la même valeur,
+//    la même relation : les CONTRAIRES.
+//    `ELEMENT_ROLE_MATRIX_V7` en fait deux choses différentes :
+//    feu-eau = « Chaotique », air-terre = « Blocage ».
+//    Deux noms pour une seule relation, et le détecteur d'incident ne
+//    comptait que « Chaotique ». Dixième occurrence dans ce fichier de deux
+//    tables du même objet qui ne disent pas la même chose.
+//    Et j'avais ajouté l'erreur inverse le matin même en comptant
+//    « Dissonant » (air-eau) comme rôle d'incident : air-eau vaut 0,5, ce
+//    sont des ALLIÉS. Retiré.
+//    La contrariété se lit donc désormais sur `concordanceElement === 0.25`,
+//    l'unique table, et sur rien d'autre.
 //
-//   charge d'une maison = (rôle Blocage ou Dissonant) + (figure explosive)
+// 2. POURQUOI RUBEUS EN M12. Rubeus est AIR (2-1-2-2) — pas feu, contre
+//    l'intuition que sa couleur donne. M12 est TERRE. Rubeus en M12, c'est
+//    donc air-terre : la contrariété pure, dans le lieu de problème.
+//    Mesuré : sur les 4 096 thèmes où Rubeus loge en M12, il y est étouffé
+//    4 096 fois — 100 %, par construction, puisque l'élément de la figure et
+//    celui de la maison sont fixes.
+//    Quatre figures étouffent M12, les quatre figures air : Caput Draconis,
+//    Conjunctio, Acquisitio et Rubeus. Rubeus est la SEULE des quatre qui
+//    soit aussi explosive dans la doctrine du fichier. C'est la seule figure
+//    du jeu qui cumule contrariété et explosion dans le lieu de problème.
+//    Voilà la réponse : ce n'est pas Rubeus qui est incidentogène, c'est
+//    Rubeus EN M12.
 //
-// SECONDE CONSÉQUENCE, MESURÉE. Le camp ne peut pas se lire sur la charge
-// brute. Charge moyenne par maison sur les 65 536 thèmes :
-//   M2 0,6875 · M6 0,6875 · M14 0,6875   (maisons air)
-//   M8 0,4375 · M12 0,4375               (maisons terre)
-// Une maison air offre DEUX rôles d'incident (Blocage depuis une figure
-// terre, Dissonant depuis une figure eau), une maison terre un seul
-// (Blocage depuis une figure air). Le côté de l'équipe 1 (M2+M6, deux
-// maisons air) porte donc 1,57 fois la charge du côté de l'équipe 2
-// (M8+M12, deux maisons terre) — et lu brut, le moteur accusait l'équipe 1
-// 54,6 % du temps contre 16,9 % l'équipe 2. Le camp se lit donc sur
-// l'ÉCART À LA MOYENNE DE SON PROPRE CÔTÉ, jamais sur le compte brut.
-// M14 est le témoin : il compte dans l'intensité, il n'accuse personne.
+// 3. LES DEUX LIEUX. M6 (air) et M12 (terre) sont eux-mêmes contraires l'un
+//    de l'autre : l'axe M6-M12 est une opposition air-terre. Chacun est
+//    étouffé 25,0 % du temps, l'un ou l'autre 43,8 %, les deux 6,3 %.
+//    M6 est du côté de l'équipe 1 (maisons 2 à 6), M12 du côté de
+//    l'équipe 2 (maisons 8 à 12).
 //
-// SEUIL. Charge totale >= 4, franchie par 35,0 % des thèmes — l'ordre de
-// grandeur externe du penalty ou du rouge (environ 25 % et 8 %). Le seuil
-// vient de cette fréquence-là, PAS de l'échantillon.
+// 4. L'EXCÈS DE FEU. Testé sept définitions. Celle qui correspond à ce qui
+//    est décrit — du feu accumulé, pas du feu actif — est le DÉCLENCHEUR :
+//    une figure de feu logée dans une maison de feu (M1, M5, M9, M13),
+//    concordance 1, le feu sur le feu.
+//    Sur la ligne 1 de l'échantillon, le canal feu est actif 0 fois sur 4 —
+//    aucune énergie — mais il y a DEUX Déclencheurs, M5 Populus et
+//    M9 Populus, deux figures de feu entièrement passives (2-2-2-2) posées
+//    sur des maisons de feu. Du feu entassé sans issue. C'est exactement
+//    « étouffante ».
 //
-// CE QUI A ÉTÉ CHOISI APRÈS AVOIR VU LA LIGNE 1, ET CE QUI NE L'A PAS ÉTÉ.
-// L'axe vient d'Ellemine_D, avant toute mesure. Les rôles sont forcés (le
-// Chaotique ne peut pas exister là). Les figures explosives étaient déjà
-// dans le fichier. La normalisation est forcée par l'asymétrie mesurée. Le
-// seuil vient d'une référence externe. Rien n'a été réglé pour faire tomber
-// la ligne 1 juste — elle tombe juste, charge 4 exactement au seuil et camp
-// M1, et c'est une vérification, pas un ajustement.
+// 5. LA RÈGLE, ET CE QU'ELLE DONNE SANS AUCUN RÉGLAGE.
+//       incident = (M6 étouffée OU M12 étouffée) ET (au moins un Déclencheur)
+//    Mesuré sur les 65 536 thèmes : elle s'allume sur 30,1 %.
+//    Le penalty est sifflé dans environ 25 % des matchs, le rouge sorti dans
+//    environ 8 % : l'un ou l'autre, environ 30 %.
+//    IL N'Y A PAS DE SEUIL DANS CETTE RÈGLE. Aucune constante n'a été
+//    ajustée : la fréquence tombe juste toute seule. C'est la première fois
+//    de la journée qu'une lecture de ce fichier se cale sans qu'on la cale.
+//
+// 6. LE CAMP. Poids d'un lieu = 0 s'il n'est pas étouffé, 1 s'il l'est,
+//    2 s'il est étouffé ET porte une figure explosive. L'explosive aggrave
+//    un blocage, elle n'en crée pas — d'où le 0 quand la maison respire.
+//    Le camp est celui du lieu le plus chargé. Équilibre mesuré quand la
+//    règle s'allume : M1 42,4 %, M7 46,3 %, non tranché 11,2 %.
+//
+// 7. CE QUE LA LIGNE 1 DIT, ET CE QU'ELLE NE DIT PAS.
+//    Tristitia/Tristitia/Conjunctio/Rubeus, rouge côté M1 :
+//      M6 = Fortuna Major (terre) en maison air -> étouffée, poids 1
+//      M12 = Cauda Draconis (eau) en maison terre -> respire, poids 0
+//      Déclencheurs : M5 Populus, M9 Populus
+//      -> incident OUI, camp M1. Les deux justes.
+//    Une ligne ne démontre rien. Ce qui vaut ici, c'est que la règle vient
+//    entièrement de la doctrine et que sa fréquence tombe sur celle du réel
+//    sans qu'on ait touché à quoi que ce soit.
 // ═══════════════════════════════════════════════════════════════
-var ROLES_INCIDENT_SUCCEDENT_V7 = ['Blocage', 'Dissonant'];
+var LIEUX_PROBLEME_V7 = [6, 12];                 // M6 air, M12 terre
+var MAISONS_FEU_V7 = [1, 5, 9, 13];              // le canal du feu
 var FIGURES_EXPLOSIVES_V7 = ['puer', 'rubeus', 'cauda_draconis'];
-var SEUIL_CHARGE_SUCCEDENTE_V7 = 4;      // 35,0 % des thèmes
-var COTE_MAISON_SUCCEDENTE_V7 = { 2: 'M1', 6: 'M1', 8: 'M7', 12: 'M7', 14: null };
-var CHARGE_MOYENNE_COTE_V7 = { M1: 1.375, M7: 0.875 };   // mesurées sur les 65 536
-// Part des thèmes atteignant chaque charge totale, mesurée sur les 65 536.
-var CDF_CHARGE_SUCCEDENTE_V7 = [0.026, 0.165, 0.392, 0.650, 0.868, 0.967, 0.995, 1.000, 1.000, 1.000];
+var COTE_LIEU_PROBLEME_V7 = { 6: 'M1', 12: 'M7' };
 
-function incidentAxeSuccedentV7(theme) {
-  if (!theme || !theme[1] || typeof MAISONS_SUCCEDENTES_V7 === 'undefined') return null;
+// Contrariété : l'unique table, concordanceElement à 0,25.
+// feu-eau et air-terre, rien d'autre.
+function estContraireV7(elemFigure, elemMaison) {
+  return concordanceElement(elemFigure, elemMaison) === 0.25;
+}
+
+function incidentDoctrineV7(theme) {
+  if (!theme || !theme[1]) return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
-  var detail = [], total = 0, parCote = { M1: 0, M7: 0, temoin: 0 };
-  MAISONS_SUCCEDENTES_V7.forEach(function (h) {
+
+  // Les deux lieux de problème, étouffés ou non.
+  var lieux = LIEUX_PROBLEME_V7.map(function (h) {
     var f = theme[h];
-    var el = els[f];
-    var role = ELEMENT_ROLE_MATRIX_V7[el + '-' + MAISON_ELEM_V7[h]];
-    var opposee = ROLES_INCIDENT_SUCCEDENT_V7.indexOf(role) >= 0;
+    var etouffee = estContraireV7(els[f], MAISON_ELEM_V7[h]);
     var explosive = FIGURES_EXPLOSIVES_V7.indexOf(f) >= 0;
-    var charge = (opposee ? 1 : 0) + (explosive ? 1 : 0);
-    var cote = COTE_MAISON_SUCCEDENTE_V7[h] || null;
-    total += charge;
-    parCote[cote || 'temoin'] += charge;
-    detail.push({ maison: h, figure: f, element: el, maisonElement: MAISON_ELEM_V7[h],
-      role: role, opposee: opposee, explosive: explosive, charge: charge, cote: cote });
+    return {
+      maison: h, figure: f, element: els[f], maisonElement: MAISON_ELEM_V7[h],
+      etouffee: etouffee, explosive: explosive,
+      poids: etouffee ? (1 + (explosive ? 1 : 0)) : 0,
+      cote: COTE_LIEU_PROBLEME_V7[h]
+    };
   });
-  // Le camp se lit sur l'écart à la moyenne de son propre côté.
-  var ecartM1 = parCote.M1 - CHARGE_MOYENNE_COTE_V7.M1;
-  var ecartM7 = parCote.M7 - CHARGE_MOYENNE_COTE_V7.M7;
-  var camp = null;
-  if (ecartM1 > ecartM7 + 1e-9) camp = 'M1';
-  else if (ecartM7 > ecartM1 + 1e-9) camp = 'M7';
-  var i = Math.min(CDF_CHARGE_SUCCEDENTE_V7.length - 1, Math.max(0, total));
+  var etouffement = lieux.some(function (l) { return l.etouffee; });
+
+  // L'excès de feu : le feu posé sur le feu.
+  var declencheurs = MAISONS_FEU_V7.filter(function (h) { return els[theme[h]] === 'feu'; })
+    .map(function (h) { return { maison: h, figure: theme[h] }; });
+  var exces = declencheurs.length >= 1;
+
+  var l6 = lieux[0], l12 = lieux[1];
+  var camp = l6.poids > l12.poids ? l6.cote
+           : l12.poids > l6.poids ? l12.cote : null;
+
+  var signal = etouffement && exces;
+  var charge = l6.poids + l12.poids + declencheurs.length;
   return {
-    detail: detail, total: total,
-    chargeM1: parCote.M1, chargeM7: parCote.M7, chargeTemoin: parCote.temoin,
-    ecartM1: ecartM1, ecartM7: ecartM7,
-    camp: camp,
-    signal: total >= SEUIL_CHARGE_SUCCEDENTE_V7,
-    pct: Math.round(CDF_CHARGE_SUCCEDENTE_V7[i] * 100),
-    niveau: total >= SEUIL_CHARGE_SUCCEDENTE_V7 + 2 ? 'Élevé'
-          : total >= SEUIL_CHARGE_SUCCEDENTE_V7 + 1 ? 'Marqué'
-          : total >= SEUIL_CHARGE_SUCCEDENTE_V7 ? 'Présent' : 'Aucun',
-    resume: 'axe succédent — charge ' + total + ' / seuil ' + SEUIL_CHARGE_SUCCEDENTE_V7
-      + ' (M2+M6 ' + parCote.M1 + ' pour ' + CHARGE_MOYENNE_COTE_V7.M1 + ' attendus, '
-      + 'M8+M12 ' + parCote.M7 + ' pour ' + CHARGE_MOYENNE_COTE_V7.M7 + ', témoin M14 '
-      + parCote.temoin + ')'
+    lieux: lieux, etouffement: etouffement,
+    declencheurs: declencheurs, exces: exces, nFeu: declencheurs.length,
+    signal: signal, camp: camp, total: charge,
+    pct: signal ? 70 : 30,
+    niveau: !signal ? 'Aucun'
+          : (l6.poids >= 2 || l12.poids >= 2) ? 'Élevé'
+          : declencheurs.length >= 2 ? 'Marqué' : 'Présent',
+    resume: 'doctrine — ' + (etouffement
+        ? (lieux.filter(function (l) { return l.etouffee; })
+            .map(function (l) { return 'M' + l.maison + ' étouffée par ' + l.figure
+              + ' (' + l.element + ' en maison ' + l.maisonElement + ')'
+              + (l.explosive ? ', explosive' : ''); }).join(' et '))
+        : 'M6 et M12 respirent')
+      + ' · ' + declencheurs.length + ' Déclencheur(s) de feu'
+      + (declencheurs.length ? ' (' + declencheurs.map(function (d) { return 'M' + d.maison; }).join(', ') + ')' : '')
+      + ' → ' + (signal ? 'risque d\'incident' : 'pas de risque')
   };
 }
 
@@ -25817,21 +25859,22 @@ var ECHANTILLON_ELLEMINE_V7 = [
     // Ce que le moteur en disait AVANT la doctrine de l'axe succédent :
     avantAxe: { incident: false, camp: 'M1', intensite: 5, rang: 43 },
     // Ce qu'il en dit APRÈS :
-    ditIncident: true,           // charge succédente 4, seuil 4          ✔
-    ditCamp: 'M1',               // M2+M6 = 2 pour 1,375 attendus          ✔
-    ditCharge: 4,
-    note: 'Les deux versions désignent le bon camp. Ce qui change, c\'est la '
-        + 'détection : l\'ancienne lecture mixte plafonnait à 5 sous un seuil '
-        + 'de 9 et ratait le rouge ; l\'axe succédent porte une charge de 4 '
-        + 'pour un seuil de 4. MAIS C\'EST EXACTEMENT LE SEUIL — un cran plus '
-        + 'haut (charge 5, 13 % des thèmes) et la ligne était ratée. Cette '
-        + 'ligne confirme donc très peu : elle est sur le fil. Le seuil vient '
-        + 'de la fréquence externe du penalty et du rouge, pas d\'elle, et il '
-        + 'ne bougera pas pour elle.'
+    ditIncident: true,           // M6 étouffée + 2 Déclencheurs          ✔
+    ditCamp: 'M1',               // M6 poids 1, M12 poids 0                ✔
+    note: 'M6 = Fortuna Major (terre) en maison air -> étouffée. '
+        + 'M12 = Cauda Draconis (eau) en maison terre -> respire. '
+        + 'Déclencheurs : M5 Populus et M9 Populus, deux figures de feu '
+        + 'entièrement passives (2-2-2-2) posées sur des maisons de feu — du '
+        + 'feu entassé sans issue, alors que le canal feu est actif 0 fois '
+        + 'sur 4. Incident ✔ et camp ✔. '
+        + 'Ce qui vaut ici n\'est pas la ligne, c\'est que la règle vient '
+        + 'entièrement de la doctrine et qu\'elle s\'allume sur 30,1 % des '
+        + '65 536 thèmes sans qu\'aucune constante ait été ajustée — le '
+        + 'penalty et le rouge réunis font environ 30 % des matchs.'
   }
 ];
 
-var INCIDENT_AXE_SUCCEDENT_DECIDE_V7 = true;   // doctrine d'Ellemine_D, 13/09/26
+var INCIDENT_DOCTRINE_DECIDE_V7 = true;   // doctrine d'Ellemine_D, 13/09/26
 var SEUIL_INCIDENT_V7        = 9;    // 29,6 % des thèmes
 var SEUIL_INCIDENT_MARQUE_V7 = 12;   // 12,0 %
 var SEUIL_INCIDENT_ELEVE_V7  = 15;   //  3,8 %
@@ -26791,13 +26834,13 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // succèdent ». L'intensité mixte ci-dessus (V2 + lecture large) reste
   // calculée et affichée comme contre-lecture ; c'est l'axe qui tranche.
   var incidentAxe = null;
-  try { incidentAxe = incidentAxeSuccedentV7(theme); } catch (e) { incidentAxe = null; }
-  var incidentDecide = (INCIDENT_AXE_SUCCEDENT_DECIDE_V7 && incidentAxe) ? incidentAxe : incidentIntensite;
+  try { incidentAxe = incidentDoctrineV7(theme); } catch (e) { incidentAxe = null; }
+  var incidentDecide = (INCIDENT_DOCTRINE_DECIDE_V7 && incidentAxe) ? incidentAxe : incidentIntensite;
   var niveauIncident = calculerNiveauIncidentV7(incidentDetect.signals);
   // V2 fournit désormais directement le camp structurel; l'ancien cascadeur
   // reste le repli uniquement quand V2 ne désigne aucun camp.
-  var campIncidentAffiche = (INCIDENT_AXE_SUCCEDENT_DECIDE_V7 && incidentAxe && incidentAxe.camp)
-    ? { camp: incidentAxe.camp, source: 'Axe succédent',
+  var campIncidentAffiche = (INCIDENT_DOCTRINE_DECIDE_V7 && incidentAxe && incidentAxe.camp)
+    ? { camp: incidentAxe.camp, source: 'Lieux de problème M6 / M12',
         resume: 'incident porté CONTRE ' + incidentAxe.camp + ' — ' + incidentAxe.resume }
     : incidentV2.hasSignal
     ? { camp: incidentV2.camp || null, source: 'Incident V2',
@@ -27541,7 +27584,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     scoreMain: scoreMain, scoreAlt: scoreAlt,
     penaltyRouge: incidentDecide.signal,
     incidentIntensite: incidentDecide,
-    incidentAxeSuccedent: incidentAxe,
+    incidentDoctrine: incidentAxe,
     incidentIntensiteMixte: incidentIntensite,
     incidentSource: incidentDecide.resume,
     // ─── LE CAMP QUI ENCAISSE, EN DONNÉE (27/08/26) ───
@@ -30207,10 +30250,13 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var incidentPrincipalDetail = '';
   if (card && card.incidentIntensite) {
     var _ii = card.incidentIntensite;
-    var _ich = (_ii.total !== undefined) ? ('charge succédente ' + _ii.total)
+    var _ich = (_ii.declencheurs !== undefined)
+             ? ((_ii.etouffement ? 'M6/M12 étouffée' : 'M6/M12 libres') + ' · '
+                + _ii.nFeu + ' Déclencheur' + (_ii.nFeu > 1 ? 's' : '') + ' de feu')
+             : (_ii.total !== undefined) ? ('charge ' + _ii.total)
              : ('intensité ' + _ii.indice);
     incidentPrincipalDetail = ' <span style="color:#94a3b8;">('
-      + esc(_ii.niveau) + ' · ' + _ich + ' · ' + _ii.pct + 'e centile'
+      + esc(_ii.niveau) + ' · ' + _ich
       + (!_ii.signal && card.incidentCamp
           ? ' · lecture sous le seuil : contre ' + esc(card.incidentCamp) : '')
       + ')</span>';
