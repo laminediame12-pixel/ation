@@ -25649,6 +25649,102 @@ function incidentV2Build(theme){
 }
 
 // ═══════════════════════════════════════════════════════════════
+// L'INCIDENT SE LIT DANS L'AXE SUCCÉDENT (13/09/26, Ellemine_D :
+// « les incidents sont opérés dans l'axe succèdent »)
+// ───────────────────────────────────────────────────────────────
+// L'AXE EST DONNÉ PAR LA DOCTRINE, pas trouvé dans les données :
+// MAISONS_SUCCEDENTES_V7 = M2 · M6 · M8 · M12 · M14. Les anciens détecteurs
+// n'y regardaient presque pas — ils lisaient M1, M7, M9, M13, M15 et des
+// filiations. Ils restent en place comme lectures ; ils ne décident plus.
+//
+// PREMIÈRE CONSÉQUENCE, STRUCTURELLE. Cet axe est fait de maisons air
+// (M2, M6, M14) et terre (M8, M12). Or « Chaotique » vaut feu-eau : il est
+// IMPOSSIBLE dans l'axe succédent, mesuré 0 fois sur 65 536 thèmes. Le
+// détecteur historique cherchait donc dans cet axe une chose qui ne peut pas
+// s'y trouver. Les rôles d'incident propres à un axe air/terre sont ceux qui
+// mettent la figure en opposition avec sa maison :
+//   Blocage   = air-terre  (les contraires de l'échelle de concordance)
+//   Dissonant = air-eau
+// auxquels s'ajoutent les figures explosives de la doctrine du fichier :
+// Puer, Rubeus, Cauda Draconis.
+//
+//   charge d'une maison = (rôle Blocage ou Dissonant) + (figure explosive)
+//
+// SECONDE CONSÉQUENCE, MESURÉE. Le camp ne peut pas se lire sur la charge
+// brute. Charge moyenne par maison sur les 65 536 thèmes :
+//   M2 0,6875 · M6 0,6875 · M14 0,6875   (maisons air)
+//   M8 0,4375 · M12 0,4375               (maisons terre)
+// Une maison air offre DEUX rôles d'incident (Blocage depuis une figure
+// terre, Dissonant depuis une figure eau), une maison terre un seul
+// (Blocage depuis une figure air). Le côté de l'équipe 1 (M2+M6, deux
+// maisons air) porte donc 1,57 fois la charge du côté de l'équipe 2
+// (M8+M12, deux maisons terre) — et lu brut, le moteur accusait l'équipe 1
+// 54,6 % du temps contre 16,9 % l'équipe 2. Le camp se lit donc sur
+// l'ÉCART À LA MOYENNE DE SON PROPRE CÔTÉ, jamais sur le compte brut.
+// M14 est le témoin : il compte dans l'intensité, il n'accuse personne.
+//
+// SEUIL. Charge totale >= 4, franchie par 35,0 % des thèmes — l'ordre de
+// grandeur externe du penalty ou du rouge (environ 25 % et 8 %). Le seuil
+// vient de cette fréquence-là, PAS de l'échantillon.
+//
+// CE QUI A ÉTÉ CHOISI APRÈS AVOIR VU LA LIGNE 1, ET CE QUI NE L'A PAS ÉTÉ.
+// L'axe vient d'Ellemine_D, avant toute mesure. Les rôles sont forcés (le
+// Chaotique ne peut pas exister là). Les figures explosives étaient déjà
+// dans le fichier. La normalisation est forcée par l'asymétrie mesurée. Le
+// seuil vient d'une référence externe. Rien n'a été réglé pour faire tomber
+// la ligne 1 juste — elle tombe juste, charge 4 exactement au seuil et camp
+// M1, et c'est une vérification, pas un ajustement.
+// ═══════════════════════════════════════════════════════════════
+var ROLES_INCIDENT_SUCCEDENT_V7 = ['Blocage', 'Dissonant'];
+var FIGURES_EXPLOSIVES_V7 = ['puer', 'rubeus', 'cauda_draconis'];
+var SEUIL_CHARGE_SUCCEDENTE_V7 = 4;      // 35,0 % des thèmes
+var COTE_MAISON_SUCCEDENTE_V7 = { 2: 'M1', 6: 'M1', 8: 'M7', 12: 'M7', 14: null };
+var CHARGE_MOYENNE_COTE_V7 = { M1: 1.375, M7: 0.875 };   // mesurées sur les 65 536
+// Part des thèmes atteignant chaque charge totale, mesurée sur les 65 536.
+var CDF_CHARGE_SUCCEDENTE_V7 = [0.026, 0.165, 0.392, 0.650, 0.868, 0.967, 0.995, 1.000, 1.000, 1.000];
+
+function incidentAxeSuccedentV7(theme) {
+  if (!theme || !theme[1] || typeof MAISONS_SUCCEDENTES_V7 === 'undefined') return null;
+  var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
+  var detail = [], total = 0, parCote = { M1: 0, M7: 0, temoin: 0 };
+  MAISONS_SUCCEDENTES_V7.forEach(function (h) {
+    var f = theme[h];
+    var el = els[f];
+    var role = ELEMENT_ROLE_MATRIX_V7[el + '-' + MAISON_ELEM_V7[h]];
+    var opposee = ROLES_INCIDENT_SUCCEDENT_V7.indexOf(role) >= 0;
+    var explosive = FIGURES_EXPLOSIVES_V7.indexOf(f) >= 0;
+    var charge = (opposee ? 1 : 0) + (explosive ? 1 : 0);
+    var cote = COTE_MAISON_SUCCEDENTE_V7[h] || null;
+    total += charge;
+    parCote[cote || 'temoin'] += charge;
+    detail.push({ maison: h, figure: f, element: el, maisonElement: MAISON_ELEM_V7[h],
+      role: role, opposee: opposee, explosive: explosive, charge: charge, cote: cote });
+  });
+  // Le camp se lit sur l'écart à la moyenne de son propre côté.
+  var ecartM1 = parCote.M1 - CHARGE_MOYENNE_COTE_V7.M1;
+  var ecartM7 = parCote.M7 - CHARGE_MOYENNE_COTE_V7.M7;
+  var camp = null;
+  if (ecartM1 > ecartM7 + 1e-9) camp = 'M1';
+  else if (ecartM7 > ecartM1 + 1e-9) camp = 'M7';
+  var i = Math.min(CDF_CHARGE_SUCCEDENTE_V7.length - 1, Math.max(0, total));
+  return {
+    detail: detail, total: total,
+    chargeM1: parCote.M1, chargeM7: parCote.M7, chargeTemoin: parCote.temoin,
+    ecartM1: ecartM1, ecartM7: ecartM7,
+    camp: camp,
+    signal: total >= SEUIL_CHARGE_SUCCEDENTE_V7,
+    pct: Math.round(CDF_CHARGE_SUCCEDENTE_V7[i] * 100),
+    niveau: total >= SEUIL_CHARGE_SUCCEDENTE_V7 + 2 ? 'Élevé'
+          : total >= SEUIL_CHARGE_SUCCEDENTE_V7 + 1 ? 'Marqué'
+          : total >= SEUIL_CHARGE_SUCCEDENTE_V7 ? 'Présent' : 'Aucun',
+    resume: 'axe succédent — charge ' + total + ' / seuil ' + SEUIL_CHARGE_SUCCEDENTE_V7
+      + ' (M2+M6 ' + parCote.M1 + ' pour ' + CHARGE_MOYENNE_COTE_V7.M1 + ' attendus, '
+      + 'M8+M12 ' + parCote.M7 + ' pour ' + CHARGE_MOYENNE_COTE_V7.M7 + ', témoin M14 '
+      + parCote.temoin + ')'
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
 // L'INCIDENT EST CALIBRÉ (13/09/26, Ellemine_D : « corrige les incidents »)
 // ───────────────────────────────────────────────────────────────
 // CE QUI N'ALLAIT PAS, et qui se démontre sans un seul match :
@@ -25718,23 +25814,24 @@ var ECHANTILLON_ELLEMINE_V7 = [
     incident: true,
     incidentCamp: 'M1',          // rouge côté M1 / R1
     nature: 'rouge',
-    // Ce que le moteur en dit au moment où la ligne est écrite, sans qu'on
-    // ait rien changé pour l'occasion :
-    ditIncident: false,          // intensité 5, seuil 9 -> AUCUN SIGNAL  ✘
-    ditCamp: 'M1',               // camp désigné                          ✔
-    ditIntensite: 5,
-    ditRang: 43,
-    note: 'Le camp est juste, le oui/non est faux. Les deux détecteurs ONT '
-        + 'vu quelque chose et ont nommé le bon camp — V2 lit la filiation '
-        + 'M1 Tristitia + M2 Tristitia -> M9 Populus, contre l\'équipe 1 — '
-        + 'mais l\'intensité 5 passe sous le seuil 9. Le seuil N\'A PAS été '
-        + 'bougé pour rattraper ce cas : un seuil déplacé sur une observation '
-        + 'ne mesure plus rien. Il est posé sur la fréquence externe du '
-        + 'penalty et du rouge (environ 30 % des matchs) et il y reste tant '
-        + 'que l\'échantillon n\'est pas assez fourni pour dire autre chose.'
+    // Ce que le moteur en disait AVANT la doctrine de l'axe succédent :
+    avantAxe: { incident: false, camp: 'M1', intensite: 5, rang: 43 },
+    // Ce qu'il en dit APRÈS :
+    ditIncident: true,           // charge succédente 4, seuil 4          ✔
+    ditCamp: 'M1',               // M2+M6 = 2 pour 1,375 attendus          ✔
+    ditCharge: 4,
+    note: 'Les deux versions désignent le bon camp. Ce qui change, c\'est la '
+        + 'détection : l\'ancienne lecture mixte plafonnait à 5 sous un seuil '
+        + 'de 9 et ratait le rouge ; l\'axe succédent porte une charge de 4 '
+        + 'pour un seuil de 4. MAIS C\'EST EXACTEMENT LE SEUIL — un cran plus '
+        + 'haut (charge 5, 13 % des thèmes) et la ligne était ratée. Cette '
+        + 'ligne confirme donc très peu : elle est sur le fil. Le seuil vient '
+        + 'de la fréquence externe du penalty et du rouge, pas d\'elle, et il '
+        + 'ne bougera pas pour elle.'
   }
 ];
 
+var INCIDENT_AXE_SUCCEDENT_DECIDE_V7 = true;   // doctrine d'Ellemine_D, 13/09/26
 var SEUIL_INCIDENT_V7        = 9;    // 29,6 % des thèmes
 var SEUIL_INCIDENT_MARQUE_V7 = 12;   // 12,0 %
 var SEUIL_INCIDENT_ELEVE_V7  = 15;   //  3,8 %
@@ -26689,10 +26786,20 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // le OU s'allumait sur 95 % des thèmes. Voir intensiteIncidentV7.
   if (!incidentLegacy) { try { incidentLegacy = detectIncidentChaotique(theme, campA, campB, posA, posB); } catch (e) { incidentLegacy = null; } }
   var incidentIntensite = intensiteIncidentV7(theme, incidentV2, incidentLegacy);
+  // ─── L'AXE SUCCÉDENT DÉCIDE (13/09/26) ───
+  // Doctrine d'Ellemine_D : « les incidents sont opérés dans l'axe
+  // succèdent ». L'intensité mixte ci-dessus (V2 + lecture large) reste
+  // calculée et affichée comme contre-lecture ; c'est l'axe qui tranche.
+  var incidentAxe = null;
+  try { incidentAxe = incidentAxeSuccedentV7(theme); } catch (e) { incidentAxe = null; }
+  var incidentDecide = (INCIDENT_AXE_SUCCEDENT_DECIDE_V7 && incidentAxe) ? incidentAxe : incidentIntensite;
   var niveauIncident = calculerNiveauIncidentV7(incidentDetect.signals);
   // V2 fournit désormais directement le camp structurel; l'ancien cascadeur
   // reste le repli uniquement quand V2 ne désigne aucun camp.
-  var campIncidentAffiche = incidentV2.hasSignal
+  var campIncidentAffiche = (INCIDENT_AXE_SUCCEDENT_DECIDE_V7 && incidentAxe && incidentAxe.camp)
+    ? { camp: incidentAxe.camp, source: 'Axe succédent',
+        resume: 'incident porté CONTRE ' + incidentAxe.camp + ' — ' + incidentAxe.resume }
+    : incidentV2.hasSignal
     ? { camp: incidentV2.camp || null, source: 'Incident V2',
         resume: incidentV2.camp
           ? 'incident porté CONTRE ' + incidentV2.camp + ' — Incident V2 (' + incidentV2.campM1 + ' signal(s) M1 / ' + incidentV2.campM7 + ' signal(s) M7)'
@@ -27432,9 +27539,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   return {
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
     scoreMain: scoreMain, scoreAlt: scoreAlt,
-    penaltyRouge: incidentIntensite.signal,
-    incidentIntensite: incidentIntensite,
-    incidentSource: incidentIntensite.resume,
+    penaltyRouge: incidentDecide.signal,
+    incidentIntensite: incidentDecide,
+    incidentAxeSuccedent: incidentAxe,
+    incidentIntensiteMixte: incidentIntensite,
+    incidentSource: incidentDecide.resume,
     // ─── LE CAMP QUI ENCAISSE, EN DONNÉE (27/08/26) ───
     // Avant, l'information n'existait que noyée dans le texte d'un
     // libellé. Elle remonte maintenant jusqu'à l'écran.
@@ -27443,7 +27552,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     incidentCampSource: campIncidentAffiche.source || null,
     incidentSignaux: incidentDetect.signals || [],
     cartonsJaunes: incidentDetect.signals.length,
-    incidentPct: incidentIntensite.pct,
+    incidentPct: incidentDecide.pct,
     incidentPctAncien: niveauIncident.pct,
     incidentNiveau: niveauIncident.niveau,
     incidentInevitable: niveauIncident.inevitable,
@@ -30098,8 +30207,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var incidentPrincipalDetail = '';
   if (card && card.incidentIntensite) {
     var _ii = card.incidentIntensite;
+    var _ich = (_ii.total !== undefined) ? ('charge succédente ' + _ii.total)
+             : ('intensité ' + _ii.indice);
     incidentPrincipalDetail = ' <span style="color:#94a3b8;">('
-      + esc(_ii.niveau) + ' · intensité ' + _ii.indice + ' · ' + _ii.pct + 'e centile'
+      + esc(_ii.niveau) + ' · ' + _ich + ' · ' + _ii.pct + 'e centile'
       + (!_ii.signal && card.incidentCamp
           ? ' · lecture sous le seuil : contre ' + esc(card.incidentCamp) : '')
       + ')</span>';

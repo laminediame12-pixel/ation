@@ -1222,3 +1222,103 @@ sera jamais ajustée après coup :
 > dire CONTRE QUI, sans savoir dire SI. Si cela tient sur les prochaines
 > lignes, c'est l'attribution qu'il faut exploiter, et le oui/non qu'il faut
 > abandonner — pas l'inverse.
+
+---
+
+## Les incidents se lisent dans l'axe succédent (13/09/26)
+
+> « Les incidents sont opérés dans l'axe succèdent. »
+
+Axe succédent = **M2 · M6 · M8 · M12 · M14**. Les anciens détecteurs n'y
+regardaient presque pas : ils lisaient M1, M7, M9, M13, M15 et des filiations.
+
+### Ce que la doctrine révèle, avant même de mesurer
+
+Cet axe est fait de maisons **air** (M2, M6, M14) et **terre** (M8, M12). Or
+« Chaotique » vaut feu-eau. **Le rôle Chaotique est structurellement
+impossible dans l'axe succédent** — vérifié, 0 fois sur 65 536 thèmes. Le
+détecteur historique y cherchait une chose qui ne peut pas s'y trouver.
+
+Les rôles qui mettent une figure en opposition avec sa maison dans un axe
+air/terre sont :
+
+| rôle | paire | ce que c'est |
+|---|---|---|
+| **Blocage** | air-terre | les *contraires* de l'échelle de concordance |
+| **Dissonant** | air-eau | |
+
+auxquels s'ajoutent les figures explosives déjà inscrites dans le fichier :
+**Puer, Rubeus, Cauda Draconis**.
+
+> charge d'une maison = (rôle Blocage ou Dissonant) + (figure explosive)
+
+### Le camp ne peut pas se lire sur la charge brute
+
+Charge moyenne par maison, sur les 65 536 thèmes :
+
+| maison | élément | charge moyenne |
+|---|---|---|
+| M2 · M6 · M14 | air | **0,6875** |
+| M8 · M12 | terre | **0,4375** |
+
+Une maison air offre **deux** rôles d'incident (Blocage depuis une figure
+terre, Dissonant depuis une figure eau) ; une maison terre un **seul**
+(Blocage depuis une figure air). Le côté de l'équipe 1 (M2+M6, deux maisons
+air) porte donc **1,57 fois** la charge du côté de l'équipe 2 (M8+M12, deux
+maisons terre).
+
+Lu brut, le moteur accusait l'équipe 1 **54,6 %** du temps contre **16,9 %**
+l'équipe 2. Le camp se lit donc sur l'**écart à la moyenne de son propre
+côté**. Après correction : M1 54,6 % / M7 45,4 %. M14 est le témoin : il
+compte dans l'intensité, il n'accuse personne.
+
+### Résultat sur la ligne 1
+
+Tristitia / Tristitia / Conjunctio / Rubeus — 1-1, **rouge côté M1**
+
+| maison | figure | rôle | charge | côté |
+|---|---|---|---|---|
+| M2 | Tristitia (terre) dans maison air | **Blocage** | 1 | équipe 1 |
+| M6 | Fortuna Major (terre) dans maison air | **Blocage** | 1 | équipe 1 |
+| M8 | Fortuna Minor (feu) dans maison terre | Absorbeur | 0 | équipe 2 |
+| M12 | Cauda Draconis (eau) dans maison terre | Stabilisateur ⚡ | 1 | équipe 2 |
+| M14 | Puer (feu) dans maison air | Amplificateur ⚡ | 1 | témoin |
+
+M2+M6 = **2** pour 1,375 attendus (écart +0,625) · M8+M12 = 1 pour 0,875
+(écart +0,125) · total **4**.
+
+| | avant | après | réel |
+|---|---|---|---|
+| incident | non (intensité 5 / seuil 9) ✗ | **oui** (charge 4 / seuil 4) ✔ | rouge |
+| camp | M1 ✔ | **M1** ✔ | M1 |
+
+### Ce que cette ligne confirme : très peu
+
+**La charge vaut 4 et le seuil vaut 4.** Un cran plus haut — charge 5, 13 %
+des thèmes — et la ligne était ratée. Elle est sur le fil. Le camp, lui, était
+déjà juste avant : sur cette ligne, l'axe succédent n'apporte rien de plus de
+ce côté-là.
+
+### Ce qui a été choisi après avoir vu la ligne 1, et ce qui ne l'a pas été
+
+| | d'où ça vient |
+|---|---|
+| l'axe | **Ellemine_D**, avant toute mesure |
+| les rôles Blocage et Dissonant | forcés — le Chaotique ne peut pas exister là |
+| les figures explosives | déjà dans le fichier depuis longtemps |
+| la normalisation du camp | forcée par l'asymétrie mesurée sur les 65 536 |
+| le seuil de 4 | fréquence externe du penalty (~25 %) et du rouge (~8 %) — 35 % des thèmes |
+
+Rien n'a été réglé pour faire tomber la ligne 1 juste. Le seuil ne bougera pas
+pour elle.
+
+### Ce qui reste branché en lecture
+
+Les deux anciens détecteurs — V2 et la lecture large — sont toujours calculés
+et exposés (`incidentIntensiteMixte`). Ils ne décident plus.
+`INCIDENT_AXE_SUCCEDENT_DECIDE_V7 = false` les remet aux commandes.
+
+La carte affiche maintenant :
+
+> ⚠️ Incidents : **⚠️ SIGNAL INCIDENT · CONTRE M1** *(Présent · charge
+> succédente 4 · 87e centile)*
