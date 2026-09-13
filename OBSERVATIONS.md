@@ -1551,3 +1551,105 @@ pas. `nulActifV7` ne s'allume sur aucun des deux.
 
 Le camp est la pièce la plus faible, et ce sont les nuls qui le tuent : deux
 des quatre matchs sont des nuls, le moteur n'en voit aucun.
+
+---
+
+## Axe cadent par activation, R1/R7, et le marquage dans l'activation
+
+Sur les quatre matchs choisis. **Activation** = nombre de niveaux à 1 point
+(sur 4) — c'est ce que compte déjà `forceCampV7`. **Marquage** = `BUTS_FIGURE`,
+moyenne du min et du max.
+
+### L'axe cadent, maison par maison
+
+**Tristitia / Via / Conjunctio / Rubeus — 7-0**
+
+| maison | figure | F A E T | actifs | marquage |
+|---|---|---|---|---|
+| M3 | Cauda Draconis | 1 1 1 0 | 3/4 | 1-2 |
+| M5 | Fortuna Major | 0 0 1 1 | 2/4 | **3-5** |
+| M9 | Amissio | 1 0 1 0 | 2/4 | 0-1 |
+| M11 | Albus | 0 0 1 0 | 1/4 | 2-4 |
+| M15 | Puella | 1 0 1 1 | 3/4 | 2 |
+
+activation **10/20** · marquage **10,5** · **46 %** du marquage du thème
+
+**Fortuna Major / Via / Puella / Cauda — 0-0** — activation 11/20 · marquage 7,5 ·
+par élément Feu 3/5 Air 2/5 **Eau 4/5** Terre 2/5
+
+**Tristitia / Tristitia / Conjunctio / Rubeus — 1-1** — activation **8/20** ·
+marquage 5,0 · deux Populus à **0/4** en M5 et M9, l'axe est mort en son milieu
+
+**Puella / Amissio / Rubeus / Carcer — 2-3** — activation 11/20 · marquage 5,0 ·
+par élément Feu 2/5 **Air 4/5** Eau 2/5 Terre 3/5
+
+### Les sièges
+
+| | R1 | activation | marquage propre | trigone offensif |
+|---|---|---|---|---|
+| 7-0 | M8 Fortuna Minor | 2/4 | 1-2 | 55 % · marquage 6,5 |
+| 0-0 | M12 Tristitia | **1/4** | 0-1 | 55 % · marquage 10,5 |
+| 1-1 | M8 Fortuna Minor | 2/4 | 1-2 | 50 % · marquage 10,5 |
+| 2-3 | M14 Amissio | 2/4 | 0-1 | 50 % · marquage 7,5 |
+
+| | R7 | activation | marquage propre | trigone offensif |
+|---|---|---|---|---|
+| 7-0 | M14 Carcer | 2/4 | **0** | 60 % · marquage 5,0 |
+| 0-0 | M2 Via | **4/4** | 0-1 | 50 % · marquage 7,0 |
+| 1-1 | M14 Puer | 3/4 | 1-2 | 55 % · marquage 9,0 |
+| 2-3 | M4 Carcer | 2/4 | **0** | 45 % · marquage 6,5 |
+
+### Le marquage pondéré par l'activation
+
+C'est l'objet de ta question : ce que chaque figure peut marquer **multiplié par
+ce qu'elle a d'actif**. Une figure qui marque beaucoup mais dort ne compte pas.
+
+> marquage pondéré = Σ ( marquage moyen × actifs / 4 )
+
+| indice | 7-0 | 0-0 | 1-1 | 2-3 | ρ |
+|---|---|---|---|---|---|
+| cadent, activation brute | 10 | 11 | 8 | 11 | −0,21 |
+| cadent, marquage brut | 10,5 | 7,5 | 5,0 | 5,0 | +0,32 |
+| cadent, marquage pondéré | 5,13 | 3,63 | 2,75 | 2,50 | +0,20 |
+| **les 16 maisons, marquage pondéré** | **9,88** | **13,50** | **11,88** | **10,25** | **−1,00** |
+| **R1, trigone offensif pondéré** | **2,38** | **5,63** | **5,13** | **3,38** | **−1,00** |
+
+**Deux indices ordonnent parfaitement les quatre matchs, à l'envers.** Plus le
+marquage activé est fort, moins il y a de buts.
+
+### Ce que ça vaut, et je te le dis avant que tu me le demandes
+
+**Presque rien.** Sur 4 points il y a 24 ordres possibles, dont 2 donnent
+|ρ| = 1 — soit **8,3 %** par pur hasard. J'ai testé **14 indices**. Le nombre
+attendu de |ρ| = 1 par hasard seul est de **1,17**. J'en trouve deux. C'est
+exactement ce que le hasard produit.
+
+### Ce qui, en revanche, compte pour de bon
+
+Le **sens** de l'inversion n'a pas été trouvé aujourd'hui : je l'ai
+**pré-enregistré ce matin**, avant d'avoir la ligne 2 :
+
+> « Le marquage cadent prédit le volume À L'ENVERS — marquage haut → peu de
+> buts. À vérifier sur les prochains, jamais à ajuster après coup. »
+
+La ligne 2 — Puella / Amissio / Rubeus / Carcer — est le premier match dont je
+ne connaissais pas le résultat quand cette phrase a été écrite. Marquage cadent
+**14,0**, deuxième plus bas des quatre ; **5 buts**, deuxième plus haut. **Dans
+le sens annoncé.**
+
+| marquage cadent | buts |
+|---|---|
+| 11,5 | 7 |
+| **14,0** | **5** ← hors échantillon |
+| 17,5 | 0 |
+| 19,5 | 2 |
+
+ρ = **−0,80**.
+
+**Une confirmation hors échantillon. Une seule.** Je ne rebranche rien : j'ai
+sorti le marquage cadent du volume il y a une heure parce qu'il reposait sur le
+lot non fiable, et une observation ne suffit pas à l'y remettre.
+
+Ce qu'il faut, c'est la ligne 5, la 6, la 7 — avec l'inversion écrite d'avance,
+comme elle l'est. Si elle tient encore, alors le marquage pondéré par
+l'activation rentre dans le volume, et pas avant.
