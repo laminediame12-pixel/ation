@@ -1807,3 +1807,95 @@ Deux pièces sur huit tombent juste partout, et ce sont les deux qui sortent
 d'une ligne de doctrine avec un seuil externe : **l'incident** et le **BTTS**.
 Les familles qui restent fausses — le camp, le nul, le score — sont celles qui
 reposent encore sur des cascades héritées.
+
+---
+
+## Attaque du camp (13/09/26)
+
+J'ai appliqué la méthode qui a marché deux fois aujourd'hui — une ligne de
+doctrine, un seuil externe. **Elle ne donne rien ici, et je ne change pas le
+moteur.** Voici pourquoi, puis ce que j'ai trouvé à la place.
+
+### Les lectures essayées
+
+Sept lectures de l'écart R1 − R7, seuil de nul posé au quantile 26 % (le taux
+réel de nuls) :
+
+| lecture | 7-0 (R1) | 0-0 (nul) | 1-1 (nul) | 2-3 (R7) | justes |
+|---|---|---|---|---|---|
+| marquage offensif | 1,50 | 3,50 | 1,50 | 1,00 | 1/4 |
+| marquage activé | 0,00 | 1,88 | 0,00 | 0,88 | 1/4 |
+| activation offensive | −1,00 | 1,00 | −1,00 | 1,00 | 0/4 |
+| offensive − défense adverse | 0,00 | 0,00 | 1,00 | 2,00 | 0/4 |
+| concordance du siège | 0,25 | 0,50 | 0,00 | −0,50 | 2/4 |
+| **marquage du siège** | 1,50 | 0,00 | 0,00 | 0,50 | **3/4** |
+| activation du siège | 0,00 | −3,00 | −1,00 | 0,00 | 1/4 |
+
+Puis quatre assemblages :
+
+| | annoncé | justes | marginale sur 65 536 |
+|---|---|---|---|
+| A — marquage du siège seul | R1 nul nul R1 | **3/4** | R1 42 % · R7 39 % · nul **19 %** |
+| B — marquage + `nulActifV7` | R1 nul nul R1 | 3/4 | 33 / 31 / **37 %** |
+| C — marquage, activation départage | R1 R7 R7 R1 | 1/4 | 48 / 44 / 8 % |
+| **D — moteur actuel** | R1 R1 R7 R1 | 1/4 | 39 / 37 / **24 %** |
+
+cible sans avantage du terrain : **37 / 37 / 26**
+
+### Pourquoi je ne bascule pas
+
+**3 sur 4 ne vaut rien ici.** Sur les 12 arrangements possibles des étiquettes
+réelles, 2 donnent ≥ 3 bonnes réponses à une prédiction fixée — **16,7 %**. J'ai
+essayé onze lectures : la probabilité qu'au moins une atteigne 3/4 par pur
+hasard est de **86 %**.
+
+Et surtout : **le moteur actuel a la meilleure marginale.** 39 / 37 / 24 contre
+42 / 39 / 19 pour la meilleure des nouvelles. Sur le nul, qui est le vrai point
+faible, il est plus juste. Basculer, ce serait échanger une calibration
+mesurée contre un score de 4 matchs indistinguable du hasard.
+
+Ce n'est pas ce qui s'est passé pour le BTTS : là, la nouvelle règle était
+**mieux calibrée** que la cascade (51,4 % contre 57,3 %), en plus d'être plus
+simple. Ici c'est l'inverse.
+
+### Ce que j'ai trouvé à la place : deux défauts, sans un seul match
+
+**1. Le critère « Axe » ne tranche que 2,25 % du temps.**
+
+Répartition du critère qui décide réellement, sur les 65 536 thèmes :
+
+| critère | part des thèmes | dit R1 |
+|---|---|---|
+| **Concordance** | **61,62 %** | 54,7 % |
+| **Charge active** | **24,07 %** | 57,3 % |
+| Filiation | 5,16 % | 47,1 % |
+| Pôle NM rotatif | 3,22 % | 43,2 % |
+| **Axe** | **2,25 %** | 41,7 % |
+| Pôle NM (écart faible) | 1,92 % | 49,4 % |
+| Stabilité de boucle | 1,42 % | 48,3 % |
+
+Le 12/09 tu as demandé que l'axe compte — « ça doit compter ». Il compte sur
+**un thème sur 44**. Ce n'est pas un bug de code : c'est une conséquence de la
+cascade lexicographique, où les deux premiers critères règlent 85,7 % des cas
+avant que l'axe soit consulté. Si l'axe doit peser davantage, il faut soit le
+remonter dans l'ordre, soit sortir de la cascade lexicographique — c'est une
+décision de doctrine, pas un réglage.
+
+**2. Le 1N2 est asymétrique : R1 54,0 % contre R7 46,0 %.**
+
+Or R1, c'est « l'équipe tapée en premier ». Sans avantage du terrain — et
+l'avantage du terrain a disparu de toutes les mesures — l'attendu est 50/50.
+Le biais vient des deux critères qui tranchent le plus : **Concordance dit R1
+54,7 %** et **Charge active 57,3 %**. Les critères du bas penchent dans l'autre
+sens (Axe 41,7 %, Pôle NM 43,2 %) mais ils ne pèsent presque rien.
+
+Huit points de biais systématique en faveur de celui qu'on tape en premier.
+
+### Ce qu'il faut décider, et ce n'est pas à moi
+
+- l'axe doit-il remonter dans la cascade, et devant quoi ?
+- le biais R1/R7 de la Concordance et de la Charge active est-il voulu — le
+  siège de R1 est-il réellement avantagé en géomancie — ou faut-il le
+  neutraliser ?
+
+Les deux se tranchent d'un mot. Aucune donnée ne peut le faire à ta place.
