@@ -25871,6 +25871,33 @@ var ECHANTILLON_ELLEMINE_V7 = [
         + 'entièrement de la doctrine et qu\'elle s\'allume sur 30,1 % des '
         + '65 536 thèmes sans qu\'aucune constante ait été ajustée — le '
         + 'penalty et le rouge réunis font environ 30 % des matchs.'
+  },
+  {
+    n: 2,
+    meres: ['puella', 'amissio', 'rubeus', 'carcer'],
+    score: '2-3',
+    incident: true,
+    incidentCamp: 'M7',          // penalty POUR M7 / R7
+    nature: 'penalty',
+    // Annoncé AVANT que le résultat soit donné.
+    ditIncident: true,           // M12 étouffée + 2 Déclencheurs          ✔
+    ditCamp: 'M7',               // M12 poids 1, M6 poids 0                ✔ côté
+    ditCampVerdict: 'R1',        // réel R7                                ✘
+    ditScore: '2-1',             // réel 2-3                               ✘
+    ditBtts: false,              // réel oui                               ✘
+    ditButs: 3.48,               // bande « 4 buts », réel 5               ✘
+    note: 'M12 étouffée par Acquisitio (air en maison terre), M6 respire '
+        + '(Albus, eau en maison air, alliés). Déclencheurs M5 Puer et '
+        + 'M13 Fortuna Minor. Rubeus est en M3, pas en M12 : la figure qui '
+        + 'étouffe M12 ici est Acquisitio, même contrariété mais sans '
+        + 'l\'aggravation explosive — poids 1 et non 2. '
+        + 'CE QUE CETTE LIGNE APPREND SUR LE MOT « CONTRE » : ligne 1, rouge '
+        + 'côté M1, le camp nommé était la victime ; ligne 2, penalty POUR '
+        + 'M7, le camp nommé est le bénéficiaire. Le moteur nomme donc le '
+        + 'CÔTÉ où l\'évènement tombe, pas qui le subit — et l\'étiquette '
+        + '« CONTRE » était fausse une fois sur deux. Corrigée en « CÔTÉ ». '
+        + 'Si la doctrine veut dire la victime dans les deux cas, alors '
+        + 'l\'attribution fait 1 sur 2 et il faut le dire ainsi.'
   }
 ];
 
@@ -26841,7 +26868,15 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // reste le repli uniquement quand V2 ne désigne aucun camp.
   var campIncidentAffiche = (INCIDENT_DOCTRINE_DECIDE_V7 && incidentAxe && incidentAxe.camp)
     ? { camp: incidentAxe.camp, source: 'Lieux de problème M6 / M12',
-        resume: 'incident porté CONTRE ' + incidentAxe.camp + ' — ' + incidentAxe.resume }
+        // ─── « CONTRE » N'EST PAS JUSTIFIÉ (13/09/26) ───
+        // Le moteur lit un LIEU de problème et en déduit un CÔTÉ. Il ne sait
+        // pas qui subit et qui profite. Ligne 1 : rouge côté M1, le camp
+        // nommé M1 est la victime. Ligne 2 : penalty POUR M7, le camp nommé
+        // M7 est le bénéficiaire. Le même mot « contre » était donc faux une
+        // fois sur deux. Onzième occurrence : l'étiquette affirmait plus que
+        // le code ne sait.
+        resume: 'incident CÔTÉ ' + incidentAxe.camp + ' — ' + incidentAxe.resume
+          + ' · le moteur nomme le côté où l\'évènement tombe, pas qui le subit' }
     : incidentV2.hasSignal
     ? { camp: incidentV2.camp || null, source: 'Incident V2',
         resume: incidentV2.camp
@@ -30246,7 +30281,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // il rate le oui/non — mais il désigne M1, et c'est le bon camp. Effacer
   // cette lecture, c'est jeter la seule partie qui a marché.
   var incidentPrincipalCamp = (card && card.penaltyRouge && card.incidentCamp)
-    ? ' · CONTRE ' + esc(card.incidentCamp) : '';
+    ? ' · CÔTÉ ' + esc(card.incidentCamp) : '';
   var incidentPrincipalDetail = '';
   if (card && card.incidentIntensite) {
     var _ii = card.incidentIntensite;

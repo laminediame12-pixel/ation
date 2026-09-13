@@ -1333,3 +1333,85 @@ La carte affiche :
 
 > ⚠️ Incidents : **⚠️ SIGNAL INCIDENT · CONTRE M1** *(Marqué · M6/M12 étouffée
 > · 2 Déclencheurs de feu)*
+
+---
+
+## Échantillon d'Ellemine_D — ligne 2
+
+**Puella / Amissio / Rubeus / Carcer** — réel **2-3**, **penalty pour M7 / R7**
+
+Annoncé avant que le résultat soit donné.
+
+### L'incident
+
+| lieu | figure | | poids |
+|---|---|---|---|
+| M6 | Albus — eau en maison air | *alliés*, respire | 0 |
+| **M12** | **Acquisitio — air en maison terre** | **ÉTOUFFÉE** | 1 |
+
+Déclencheurs de feu : **M5 Puer**, **M13 Fortuna Minor**.
+
+> M12 étouffée + excès de feu → **⚠️ incident, niveau Marqué, côté M7**
+
+**Incident trouvé ✔ · côté nommé M7 ✔**
+
+Note au passage : **Rubeus est en M3, pas en M12.** La règle Rubeus/M12 ne
+joue pas ici. C'est Acquisitio — une autre des quatre figures air — qui
+étouffe M12. Même contrariété, mais sans l'aggravation explosive : poids 1 et
+non 2. La règle a donc fonctionné sans sa figure emblématique.
+
+### Ce que cette ligne apprend sur le mot « contre »
+
+| | ce qu'a dit Ellemine_D | le camp nommé est |
+|---|---|---|
+| ligne 1 | « rouge **côté** M1 » | la **victime** |
+| ligne 2 | « penalty **pour** M7 » | le **bénéficiaire** |
+
+Le moteur a nommé M1 puis M7 — le bon côté les deux fois. Mais il l'affichait
+sous l'étiquette « **CONTRE** X », et cette étiquette était donc fausse une
+fois sur deux.
+
+**Le moteur lit un lieu de problème et en déduit un côté. Il ne sait pas qui
+subit et qui profite.** Étiquette corrigée en « **CÔTÉ** X ». Onzième
+occurrence du défaut récurrent : l'affichage affirmait plus que le code ne
+sait.
+
+⚠️ Si la doctrine veut dire *la victime* dans les deux cas, alors
+l'attribution fait **1 sur 2**, pas 2 sur 2. C'est à trancher, et je note les
+deux lectures plutôt que de choisir celle qui m'arrange.
+
+### Le reste de la carte, sans enjoliver
+
+| famille | annoncé | réel | |
+|---|---|---|---|
+| incident | **oui**, Marqué | oui, penalty | ✔ |
+| côté de l'incident | **M7** | M7 | ✔ |
+| nul | non | non | ✔ |
+| over 2.5 | oui | oui (5 buts) | ✔ |
+| **camp** | **R1** | **R7** | ✗ |
+| **BTTS** | **non** | **oui** (2-3) | ✗ |
+| bande de buts | 4 buts (3,48 attendus) | 5 buts | ✗ |
+| score exact | 2-1 | 2-3 | ✗ |
+
+**4 sur 8.** L'incident est la seule famille qui marche sur les deux lignes.
+
+Le BTTS est un vrai raté : la cascade a été rebranchée ce matin faute de
+données fiables pour la condamner, et elle annonce « un seul marque » sur un
+2-3.
+
+### Bilan de l'échantillon, 2 lignes
+
+| famille | juste |
+|---|---|
+| **incident présent** | **2/2** |
+| **côté de l'incident** | **2/2** (ou 1/2 si « camp » = victime) |
+| nul | 2/2 |
+| camp | 1/2 |
+| BTTS | 1/2 |
+| volume, bande | 0/2 |
+| score exact | 0/2 |
+
+Deux lignes ne démontrent rien. Mais la règle d'incident est la seule pièce du
+système qui, aujourd'hui, sort entièrement de la doctrine, se cale seule sur la
+bonne fréquence, et tombe juste deux fois de suite. Rien n'a été touché entre
+la ligne 1 et la ligne 2.
