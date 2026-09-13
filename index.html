@@ -25984,6 +25984,89 @@ function detecterBTTS100V7(theme) {
 // ═══════════════════════════════════════════════════════════════
 var BTTS_AXES_DECISIF_V7 = true;
 
+// ═══════════════════════════════════════════════════════════════
+// LA FORCE OFFENSIVE ET DÉFENSIVE DE CHAQUE CAMP (13/09/26, Ellemine_D :
+// « recâble le trigone offensif sur la force active de l'axe cadent »)
+//
+// CE QUI NE MARCHAIT PAS. bttsAxesResidenceV7 ne lisait pas la force du
+// trigone : il prenait la SOMME XOR de ses trois maisons et regardait où
+// cette figure se loge. Deux conséquences, mesurées :
+//   — la somme XOR est presque découplée de l'activité du trigone, et
+//     s'inverse dans la plage courante : trigone 4/12 -> somme 2,11/4 ;
+//     trigone 8/12 -> somme 1,89/4. Le XOR d'un niveau n'est actif que si
+//     un nombre IMPAIR des trois entrées l'est ; beaucoup d'activité tend
+//     vers deux sur trois, donc pair, donc éteint.
+//   — une voie offensive ABSENTE du thème n'était pas comptée bloquée
+//     (le test exigeait o.presente). Or elle est absente sur 54,4 % des
+//     thèmes, et dans 97,6 % de ces cas le moteur ne bloquait rien.
+//
+// CE QUI EST LU MAINTENANT : la FORCE ACTIVE, c'est-à-dire le nombre de
+// niveaux à 1 point, sur les maisons de l'axe — la même mesure que pour
+// les axes du 1N2.
+//   offensive = motif CADENT depuis le siège du camp  (5 maisons, 0-20)
+//   défense   = motif ANGULAIRE depuis le siège       (6 maisons, 0-24)
+// Le fichier assigne ces rôles depuis toujours : ses trigones offensifs
+// sont cadents, ses deux trigones défensifs entièrement angulaires.
+//
+// POURQUOI DEPUIS LE SIÈGE. L'axe Cadent est UN SEUL ensemble de maisons
+// pour tout le thème : il ne peut pas distinguer R1 de R7. Chaque camp lit
+// donc le motif cadent à partir de sa propre position dans la rotation —
+// R1 depuis la position 1, R7 depuis la 7. C'est la généralisation directe
+// des anciens trigones, et elle est symétrique, ce qu'ils n'étaient pas
+// ({3,5,9} pour R1 mais {7,3,11} pour R7, qui incluait le siège).
+//
+// LA RÈGLE : le camp muet est le plus faible attaquant des deux, ET
+// au-dessous de la défense adverse. Comparaison en RATIO, jamais en total
+// brut : 5 maisons contre 6, un total brut donnerait la défense gagnante
+// presque toujours.
+//
+// LES TROIS RÈGLES ESSAYÉES, MESURÉES SUR LES 65 536 THÈMES :
+//   brute (force < défense adverse) .. R1 5,5% R7 6,7% DEUX 65,0% BTTS 22,7%
+//   ratio ............................ R1 6,0% R7 7,2% DEUX 44,3% BTTS 42,5%
+//   relative (retenue) ............... R1 19,4% R7 15,8% DEUX 0% BTTS 64,9%
+// Les deux premières inondent le nul — 44 à 65 % des thèmes à 0-0, contre
+// un quart de nuls dans la réalité. La relative est la seule tenable.
+// ⚠️ Elle interdit par construction que les DEUX camps soient muets : le
+// 0-0 par double blocage disparaît de cette route. Le moteur Nul reste seul
+// à porter le nul.
+// ⚠️ Aucune justesse mesurée. Le BTTS passe de 88,9 % à 64,9 % de OUI ;
+// le taux réel est autour de 52 %. Se rapprocher d'un taux de base n'est
+// PAS une preuve, et le seuil n'a pas été réglé pour l'atteindre.
+var OFFSETS_OFFENSIVE_V7 = [2, 4, 8, 10, 14];      // motif cadent
+var OFFSETS_DEFENSE_V7   = [0, 3, 6, 9, 12, 15];   // motif angulaire
+
+function forceCampV7(themeTourne, siege, offsets) {
+  if (!themeTourne || typeof MAP_GEO === 'undefined') return null;
+  var total = 0, detail = [];
+  offsets.forEach(function (o) {
+    var pos = ((siege - 1 + o) % 16) + 1;
+    var g = MAP_GEO[themeTourne[pos]];
+    var a = g ? g.filter(function (v) { return v === 1; }).length : 0;
+    total += a;
+    detail.push({ position: pos, figure: themeTourne[pos], actifs: a });
+  });
+  var possible = offsets.length * 4;
+  return { total: total, possible: possible, ratio: possible ? total / possible : 0, detail: detail };
+}
+
+function forcesOffensiveDefensiveV7(theme) {
+  if (!theme || !theme[1] || typeof themeTourneR1V7 !== 'function') return null;
+  var rt = themeTourneR1V7(theme);
+  if (!rt) return null;
+  var o1 = forceCampV7(rt, 1, OFFSETS_OFFENSIVE_V7);
+  var o7 = forceCampV7(rt, 7, OFFSETS_OFFENSIVE_V7);
+  var d1 = forceCampV7(rt, 1, OFFSETS_DEFENSE_V7);
+  var d7 = forceCampV7(rt, 7, OFFSETS_DEFENSE_V7);
+  if (!o1 || !o7 || !d1 || !d7) return null;
+  var muetR1 = (o1.ratio < d7.ratio) && (o1.ratio < o7.ratio);
+  var muetR7 = (o7.ratio < d1.ratio) && (o7.ratio < o1.ratio);
+  return {
+    offR1: o1, offR7: o7, defR1: d1, defR7: d7,
+    muetR1: muetR1, muetR7: muetR7,
+    camp: muetR1 ? 'R1' : muetR7 ? 'R7' : null
+  };
+}
+
 function bttsAxesResidenceV7(theme){
   if (!theme || !theme[1] || typeof axesSommesRotationV7 !== 'function') {
     return { applicable:false, raison:'axes indisponibles' };
@@ -26037,25 +26120,46 @@ function bttsAxesResidenceV7(theme){
   // ne force NON que lorsqu'une des deux offensives est effectivement
   // présente mais sans aucune concordance, et que le verrou défensif
   // opposé est lui-même présent et fermé/passif.
-  var bloqueR1 = o1.presente && !o1.voie && d7.presente &&
-    d7.occurrences.some(function(o){ return o.porte==='fermee' && o.charge==='passive'; });
-  var bloqueR7 = o7.presente && !o7.voie && d1.presente &&
-    d1.occurrences.some(function(o){ return o.porte==='fermee' && o.charge==='passive'; });
+  // ─── LE BLOCAGE SE LIT EN FORCE ACTIVE (13/09/26, Ellemine_D) ───
+  // L'ancien test prenait la SOMME XOR du trigone et cherchait où elle se
+  // loge. Deux défauts mesurés (cf. forcesOffensiveDefensiveV7) : la somme
+  // XOR est découplée de la force du trigone et s'inverse dans la plage
+  // courante ; et une voie ABSENTE du thème n'était jamais comptée bloquée,
+  // alors qu'elle l'est sur 54,4 % des thèmes.
+  // Le blocage vient maintenant de la force active : motif cadent depuis le
+  // siège du camp contre motif angulaire depuis le siège adverse, en ratio.
+  // L'ancien calcul reste au-dessus (o1, o7, d1, d7) : il alimente encore
+  // l'affichage des résidences, il ne décide plus.
+  var _fod = null;
+  try { _fod = forcesOffensiveDefensiveV7(theme); } catch (e) { _fod = null; }
+  var bloqueR1 = !!(_fod && _fod.muetR1);
+  var bloqueR7 = !!(_fod && _fod.muetR7);
 
   var oui = !bloqueR1 && !bloqueR7 &&
     (o1.voie || o7.voie || !o1.presente || !o7.presente);
   var non = bloqueR1 || bloqueR7;
 
+  var _txt = function (c) {
+    if (!_fod) return '';
+    var o = c === 'R1' ? _fod.offR1 : _fod.offR7;
+    var d = c === 'R1' ? _fod.defR7 : _fod.defR1;
+    return c + ' offensive ' + o.total + '/' + o.possible + ' = ' + Math.round(o.ratio * 100)
+      + '% contre défense adverse ' + d.total + '/' + d.possible + ' = '
+      + Math.round(d.ratio * 100) + '%';
+  };
   return {
     applicable:true,
     verdict: non ? false : (oui ? true : null),
     r1Off:o1, r7Off:o7, r1Def:d1, r7Def:d7,
+    forces:_fod,
     bloqueR1:bloqueR1, bloqueR7:bloqueR7,
     synthese: non
-      ? 'une voie offensive est bloquée par une défense opposée fermée/passive'
+      ? ('force active — ' + _txt(bloqueR1 ? 'R1' : 'R7')
+         + ' : offensive la plus faible et sous la défense adverse, ce camp ne marque pas')
       : oui
-        ? 'les axes ne présentent pas de blocage croisé suffisant — BTTS YES'
-        : 'axes insuffisants pour trancher'
+        ? ('force active — les deux offensives passent leur défense adverse'
+           + (_fod ? ' (' + _txt('R1') + ' ; ' + _txt('R7') + ')' : ''))
+        : 'forces indisponibles'
   };
 }
 
@@ -26510,10 +26614,16 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       && concordanceElement(ELEMENTS[f], ELEMENT_OF_HOUSE[h]) < 0.5;
   };
 
+  // ─── LA VOIE OFFENSIVE SE LIT EN FORCE ACTIVE (13/09/26) ───
+  // Remplace bloqueR1/bloqueR7 de bttsAxesResidenceV7, qui lisaient la somme
+  // XOR du trigone et non sa force — voir forcesOffensiveDefensiveV7 pour la
+  // démonstration et les trois règles mesurées.
+  var _forces = null;
+  try { _forces = forcesOffensiveDefensiveV7(theme); } catch (e) { _forces = null; }
   var campMuetCode = null, campMuetSource = null;
   if (labelA === 'R1') {
-    var _axA = !!(bttsAxes && bttsAxes.applicable && bttsAxes.bloqueR1);
-    var _axB = !!(bttsAxes && bttsAxes.applicable && bttsAxes.bloqueR7);
+    var _axA = !!(_forces && _forces.muetR1);
+    var _axB = !!(_forces && _forces.muetR7);
     var _reA = _residenceMuette(posA);
     var _reB = _residenceMuette(posB);
     var _A = _axA || _reA, _B = _axB || _reB;
@@ -26523,9 +26633,17 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     if (campMuetCode) {
       var _srcAx = (_axA && _A) || (_axB && _B);
       var _srcRe = (_reA && _A) || (_reB && _B);
-      campMuetSource = (_srcAx && _srcRe) ? 'voie offensive bloquée + résidence fermée'
+      var _fo = _forces && (_axA ? _forces.offR1 : _axB ? _forces.offR7 : null);
+      var _fd = _forces && (_axA ? _forces.defR7 : _axB ? _forces.defR1 : null);
+      var _chiffres = (_fo && _fd)
+        ? (' — offensive ' + _fo.total + '/' + _fo.possible + ' = ' + Math.round(_fo.ratio * 100)
+           + '% contre défense adverse ' + _fd.total + '/' + _fd.possible + ' = '
+           + Math.round(_fd.ratio * 100) + '%')
+        : '';
+      campMuetSource = (_srcAx && _srcRe)
+        ? 'offensive la plus faible sous la défense adverse + résidence fermée' + _chiffres
         : _srcRe ? 'résidence fermée (porte fermée, charge passive, fixe, mal logée)'
-        : 'voie offensive sans résidence concordante, défense adverse fermée et passive';
+        : 'offensive la plus faible des deux, sous la défense adverse' + _chiffres;
       // Un camp qui ne marque pas impose le BTTS à non : les deux ne peuvent
       // pas marquer si l'un est muet. La cascade BTTS ignorait la route
       // « résidence », il faut donc le lui dire ici.
@@ -26815,6 +26933,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // seul 1 481 (2,26 %), les deux 81 (0,12 %), aucun 62 622 (95,55 %).
     // Réservé à la carte de rotation : sur la carte M1/M7 les étiquettes ne
     // désignent pas les mêmes maisons, la lecture n'y serait pas valable.
+    forcesOffDef: _forces,
     bttsCampMuetSource: campMuetSource,
     bttsCampMuetCorrige: campMuetCorrige,
     bttsCampMuetNul: campMuetNul,
@@ -26825,7 +26944,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsSource: (bttsBranche === 'camp_muet')
       ? ('camp muet — ' + (campMuetSource || 'un camp ne marque pas'))
       : (bttsBranche === 'axes')
-      ? ('axes de résidence — ' + ((bttsAxes && bttsAxes.synthese) || 'voies offensives contre verrous défensifs'))
+      ? ((bttsAxes && bttsAxes.synthese) || 'forces offensives contre défenses adverses')
       : (bttsBranche === 'cadent') ? 'maison de R1 + Conjunctio + Puer (26/32)'
       : (bttsBranche === 'm4m10') ? 'doctrine M4/M10'
       : (bttsBranche === 'chaine') ? 'chaîne du perdant'

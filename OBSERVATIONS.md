@@ -751,3 +751,72 @@ prédits, c'est un signal à examiner. Soit le trigone est mal orienté, soit le
 générateur de score l'utilise à l'envers.
 
 Sorties sur les 65 536 thèmes : identiques (le bouton n'entre dans aucune décision).
+
+### Le trigone offensif recâblé sur la force active — 13/09/2026
+
+Ellemine_D : « recâble le trigone offensif sur la force active de l'axe cadent ».
+
+**Les deux défauts trouvés en creusant** (thème Via / Tristitia / Cauda / Fortuna
+Minor) :
+
+**1. La somme XOR n'est pas la force.** Le moteur prenait la somme XOR des trois
+maisons du trigone et cherchait où cette figure se loge. Or la somme est
+découplée de la force du trigone, et s'inverse dans la plage courante :
+
+| trigone actif | activité de sa somme |
+|---|---|
+| 4/12 | 2,11 / 4 |
+| 6/12 | 2,00 |
+| 8/12 | **1,89** |
+
+Un niveau du XOR n'est actif que si un nombre **impair** des trois entrées l'est ;
+beaucoup d'activité tend vers deux sur trois — pair — donc éteint. Sur le thème :
+**trigone R1 à 7 niveaux actifs, sa somme Laetitia n'en a qu'1**. C'est
+l'explication de la corrélation négative trouvée hier.
+
+**2. Une voie absente comptait comme dégagée.** Le test exigeait `o.presente`.
+Laetitia, voie offensive de R1, n'existe nulle part dans le thème → pas bloquée.
+Populus, voie de R7, existe mais mal logée → bloquée. Inversé.
+Mesuré : une voie est absente sur **54,4 %** des thèmes, et dans **97,6 %** de ces
+cas le moteur ne bloquait rien.
+
+**Ce qui est lu maintenant** : la force active — niveaux à 1 point — sur les
+maisons de l'axe, la même mesure que pour les axes du 1N2.
+
+- **offensive** = motif **cadent** depuis le siège du camp (5 maisons, 0–20)
+- **défense** = motif **angulaire** depuis le siège (6 maisons, 0–24)
+
+*Depuis le siège* parce que l'axe Cadent est un seul ensemble pour tout le thème
+et ne peut pas distinguer R1 de R7. R1 lit depuis la position 1, R7 depuis la 7.
+C'est la généralisation directe des anciens trigones, et elle est **symétrique**,
+ce qu'ils n'étaient pas — `{3,5,9}` pour R1 mais `{7,3,11}` pour R7, qui incluait
+le siège.
+
+**Les trois règles essayées, mesurées avant de choisir :**
+
+| règle | R1 muet | R7 muet | les deux | BTTS OUI |
+|---|---|---|---|---|
+| brute (force < défense adverse) | 5,5 % | 6,7 % | **65,0 %** | 22,7 % |
+| ratio | 6,0 % | 7,2 % | **44,3 %** | 42,5 % |
+| **relative — retenue** | 19,4 % | 15,8 % | **0 %** | 64,9 % |
+
+Les deux premières inondent le nul — 44 à 65 % de thèmes à 0-0 contre un quart de
+nuls réels. La relative s'énonce d'une phrase : **le camp muet est le plus faible
+attaquant des deux, et sous la défense adverse.**
+
+⚠️ Elle interdit par construction que les deux camps soient muets : le 0-0 par
+double blocage disparaît de cette route. Le moteur Nul reste seul à porter le nul.
+
+**Effet sur les 65 536 thèmes :**
+
+| | avant | après |
+|---|---|---|
+| BTTS OUI | 58 276 — 88,9 % | **39 941 — 60,9 %** |
+| camp corrigé par le muet | 1 550 | **10 484** |
+| vers nul | 617 | 1 703 |
+| camp affiché R1 / R7 / Nul | 27 369 / 23 364 / 14 803 | **25 570 / 24 303 / 15 663** |
+| scores 1-0 et 0-1 | 3 589 / 3 624 | **9 056 / 11 302** |
+
+⚠️ **Le taux réel de BTTS est autour de 52 %.** Passer de 88,9 % à 60,9 % en
+approche — mais **se rapprocher d'un taux de base n'est pas une preuve**, et
+aucun seuil n'a été réglé pour l'atteindre. Aucune justesse mesurée.
