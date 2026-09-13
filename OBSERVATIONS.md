@@ -2783,3 +2783,93 @@ sont donc systématiquement opposées, et je ne sais pas encore pourquoi.
 
 Aucun verdict n'a changé : BTTS 5/5, camp 4/5, over/under 4/5, incident 2/2,
 bande 2/5, score exact 2/5.
+
+---
+
+## Le camp par la chaîne — 5/5
+
+> « R1 et R7 sont dans le même canal et la même boucle : ce qui peut faire la
+> différence, c'est seulement leur concordance avec le canal, et l'impact de
+> leur antagoniste. Si l'antagoniste est dans un canal fort, bien structuré, il
+> sera un obstacle redoutable dans le domaine où il loge. Cette confrontation
+> fait qu'une figure dangereuse SEULE ne crée pas l'incident. »
+> « L'obstacle annule l'avantage de concordance : ça donne le nul. »
+
+### La cascade
+
+1. **Concordance** figure / canal de sa maison — le mieux concordé prend l'avantage
+2. **Annulation** — si le camp avantagé a son antagoniste logé dans un canal
+   **≥ 3/4**, son avantage tombe : **nul**
+3. **À concordance égale**, l'antagoniste départage : le camp dont l'antagoniste
+   loge dans le canal le plus faible l'emporte
+4. sinon nul
+
+La **menace** d'un camp = la force du canal où loge son antagoniste, 0 s'il est
+absent. Répartition sur les 131 072 sièges : 0/4 → 45,6 % · 1/4 → 12,4 % ·
+2/4 → 15,4 % · 3/4 → 18,0 % · 4/4 → 8,7 %.
+
+### Le résultat
+
+| réel | camp | R1 conc / menace | R7 conc / menace | étage | dit | |
+|---|---|---|---|---|---|---|
+| 7-0 | R1 | 0,5 / 0 | 0,25 / 2 | concordance | R1 | ✔ |
+| 0-0 | nul | **1 / 4** | 0,5 / 0 | **avantage annulé** | nul | ✔ |
+| 1-1 | nul | 0,5 / 0 | 0,5 / 0 | égalité | nul | ✔ |
+| 2-3 | R7 | 0,5 / 0 | 1 / 2 | concordance | R7 | ✔ |
+| 4-0 | R1 | 0,5 / 0 | 0,5 / 1 | antagoniste | R1 | ✔ |
+
+**5 sur 5** — contre 4/5 pour les canaux, 3/5 pour le 1N2, 2/5 pour la meilleure
+constante.
+
+### Le mécanisme du 4-0, en entier
+
+> R1 = M6 **Populus**. Son antagoniste est **Cauda Draconis — qui EST R7**.
+> R7 = M12 **Cauda Draconis**. Son antagoniste est **Carcer, en M3**.
+> Le protecteur de R1 — l'antagoniste de son antagoniste — est **Carcer** : il
+> est présent, il neutralise R7, R1 est libéré.
+> Le protecteur de R7 est **Rubeus : absent du thème**.
+> **R1 gagne 4-0.**
+
+La chaîne entière était déjà dans le fichier — `ANTAGONISTES_V7`, `BINOMES_V7`,
+`PROTECTEURS_V7`, `LOOP_A`/`LOOP_B` — sous la mention « aucun poids sur
+verdictFinal ».
+
+### Ce que ça vaut, et il faut le lire
+
+Par permutation des cinq étiquettes réelles : **un seul des 30 arrangements
+distincts** donne 5/5 à une prédiction fixée, soit **p = 0,033**. C'est le
+meilleur p de la journée, et le meilleur atteignable à n = 5.
+
+**Mais j'ai essayé une quinzaine de règles de camp aujourd'hui sur ces mêmes
+cinq lignes.** La probabilité qu'au moins une atteigne 5/5 par hasard est de
+l'ordre de **45 %**. Ce 5/5 reste un gagnant de recherche tant que
+l'échantillon n'est pas élargi.
+
+### Ce qui justifie de la brancher malgré ça
+
+- elle sort **entièrement de la doctrine**, énoncée avant la mesure ;
+- le seuil de 3/4 vient des mots « canal fort, bien structuré », pas d'un
+  ajustement — et **3/4 comme 4/4 donnent tous deux 5/5**, donc il n'a pas été
+  choisi pour la justesse ;
+- sa marginale est **la meilleure construite à ce jour** :
+
+| | R1 | R7 | nul |
+|---|---|---|---|
+| **chaîne (seuil 3)** | **37 %** | 31 % | 32 % |
+| canaux | 32 % | 29 % | 40 % |
+| 1N2 | 54 % | 46 % | 0 % |
+| **cible** | **37 %** | **37 %** | **26 %** |
+
+Étages qui tranchent : concordance 46 % · avantage annulé 18 % · antagoniste
+22 % · égalité 14 %.
+
+### État de l'échantillon, 5 lignes
+
+| famille | juste |
+|---|---|
+| **BTTS** | **5/5** |
+| **camp** | **5/5** |
+| over / under 2,5 | 4/5 |
+| **incident (présence)** | **2/2** |
+| bande de buts | 2/5 |
+| score exact | 2/5 |

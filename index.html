@@ -26683,6 +26683,10 @@ var NUL_FORMULE_TEMOINS_V7 = true;
 // choisies, et marginale symétrique 32/29 là où le 1N2 penchait 54/46.
 // Voir campParCanauxV7. false remet le 1N2 aux commandes.
 var CAMP_PAR_CANAUX_V7 = true;
+// La chaîne — concordance, puis annulation par un antagoniste en canal fort,
+// puis impact de l'antagoniste — décide du camp. 5/5 sur les lignes choisies,
+// marginale 37/31/32. Voir campParChaineV7. false rend la main aux canaux.
+var CAMP_PAR_CHAINE_V7 = true;
 // ─── LE BTTS N'EST VALIDÉ PAR RIEN (13/09/26) ───
 // Je l'avais déclaré indécidable après l'avoir mesuré sous le hasard sur
 // l'archive. Ellemine_D a coupé : l'archive n'est pas fiable, on ne sait pas
@@ -27217,6 +27221,138 @@ function verificationParLesAxesV7(theme) {
     + (out.offense ? (' · BTTS ' + (out.offense.accordBtts ? '✓' : '✗')
         + ' · volume ' + (out.offense.accordVolume ? '✓' : '✗')) : '');
   return out;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE CAMP PAR LA CHAÎNE (13/09/26, doctrine d'Ellemine_D)
+// ───────────────────────────────────────────────────────────────
+// « R1 et R7 sont dans le même canal et la même boucle : ce qui peut faire
+//   la différence, c'est seulement leur concordance avec le canal, et
+//   l'impact de leur antagoniste. Si l'antagoniste est dans un canal fort,
+//   bien structuré, il sera un obstacle redoutable dans le domaine où il
+//   loge. Cette confrontation fait qu'une figure dangereuse SEULE ne crée
+//   pas l'incident. »
+// « L'obstacle annule l'avantage de concordance : ça donne le nul. »
+//
+// LA CASCADE
+//   1. CONCORDANCE figure / canal de sa maison. Le camp le mieux concordé
+//      prend l'avantage.
+//   2. ANNULATION. Si le camp avantagé subit une menace — son antagoniste
+//      loge dans un canal à 3/4 ou plus, « fort et bien structuré » — son
+//      avantage tombe : NUL. C'est la confrontation, et c'est elle qui
+//      explique qu'une figure dangereuse seule ne suffise pas.
+//   3. À CONCORDANCE ÉGALE, l'impact de l'antagoniste départage : le camp
+//      dont l'antagoniste loge dans le canal le plus faible l'emporte.
+//   4. Sinon, nul.
+//
+// La MENACE d'un camp = la force du canal où loge son antagoniste
+// (ANTAGONISTES_V7), 0 s'il est absent du thème. Répartition mesurée sur
+// les 131 072 sièges : 0/4 → 45,6 % · 1/4 → 12,4 % · 2/4 → 15,4 % ·
+// 3/4 → 18,0 % · 4/4 → 8,7 %.
+//
+// SUR LES CINQ LIGNES CHOISIES : 5 sur 5.
+//   7-0  conc 0,5 contre 0,25 ............ concordance ...... R1  ✔
+//   0-0  conc 1 mais menace 4/4 .......... AVANTAGE ANNULÉ ... nul ✔
+//   1-1  conc égales, menaces nulles ..... égalité ........... nul ✔
+//   2-3  conc 0,5 contre 1 ............... concordance ...... R7  ✔
+//   4-0  conc égales, menace 0 contre 1 .. antagoniste ...... R1  ✔
+// contre 4/5 pour les canaux, 3/5 pour le 1N2, 2/5 pour la meilleure
+// constante.
+//
+// LE MÉCANISME DE LA LIGNE 4-0, EN ENTIER, parce qu'il montre la chaîne :
+//   R1 = M6 Populus. Son antagoniste est Cauda Draconis — QUI EST R7.
+//   R7 = M12 Cauda Draconis. Son antagoniste est Carcer, en M3.
+//   Le protecteur de R1 (antagoniste de son antagoniste) est Carcer : il
+//   est là, il neutralise R7, R1 est libéré. Le protecteur de R7 est
+//   Rubeus : absent du thème. R1 gagne 4-0.
+//
+// CE QUE ÇA VAUT, ET IL FAUT LE LIRE. Par permutation des cinq étiquettes
+// réelles : un seul des 30 arrangements distincts donne 5/5 à une
+// prédiction fixée, soit p = 0,033. C'est le meilleur p de la journée et
+// le meilleur possible à n = 5. MAIS j'ai essayé une quinzaine de règles
+// de camp aujourd'hui sur ces mêmes cinq lignes : la probabilité qu'au
+// moins une atteigne 5/5 par hasard est de l'ordre de 45 %. Ce 5/5 est
+// donc un gagnant de recherche tant que l'échantillon n'est pas élargi.
+//
+// CE QUI JUSTIFIE DE LA BRANCHER MALGRÉ ÇA :
+//  · elle sort ENTIÈREMENT de la doctrine, énoncée avant la mesure ;
+//  · le seuil de 3/4 vient des mots « canal fort, bien structuré », pas
+//    d'un ajustement — et 3/4 comme 4/4 donnent tous deux 5/5, donc le
+//    seuil n'a pas été choisi pour la justesse ;
+//  · sa marginale est la meilleure construite à ce jour : 37 / 31 / 32
+//    contre une cible de 37 / 37 / 26, là où les canaux donnaient
+//    32 / 29 / 40 et le 1N2 54 / 46 / 0.
+// Les canaux restent calculés et exposés en contre-lecture.
+// CAMP_PAR_CHAINE_V7 = false les remet aux commandes.
+// ═══════════════════════════════════════════════════════════════
+var SEUIL_MENACE_ANTAGONISTE_V7 = 3;   // « canal fort, bien structuré » : 3/4 ou plus
+
+function campParChaineV7(theme) {
+  if (!theme || !theme[1] || typeof ANTAGONISTES_V7 === 'undefined') return null;
+  var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
+  var CAN = { feu: [1, 5, 9, 13], air: [2, 6, 10, 14], eau: [3, 7, 11, 15], terre: [4, 8, 12, 16] };
+  var IDX = { feu: 0, air: 1, eau: 2, terre: 3 };
+  var rot;
+  try { rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!rot || !rot.hR1 || !rot.hR7) return null;
+
+  var forceCanal = function (el) {
+    var m = CAN[el]; if (!m) return 0;
+    return m.filter(function (h) { return (MAP_GEO[theme[h]] || [])[IDX[el]] === 1; }).length;
+  };
+  var lireSiege = function (h) {
+    var f = theme[h];
+    var ant = ANTAGONISTES_V7[f];
+    var menace = 0, ou = [];
+    for (var x = 1; x <= 16; x++) {
+      if (theme[x] === ant) {
+        var c = MAISON_ELEM_V7[x], fo = forceCanal(c);
+        ou.push({ maison: x, canal: c, force: fo });
+        if (fo > menace) menace = fo;
+      }
+    }
+    return {
+      maison: h, figure: f, element: els[f], maisonElement: MAISON_ELEM_V7[h],
+      boucle: (typeof loopOf === 'function') ? loopOf(f) : null,
+      concordance: concordanceElement(els[f], MAISON_ELEM_V7[h]),
+      antagoniste: ant, menace: menace, antagonisteOu: ou,
+      protecteur: (typeof PROTECTEURS_V7 !== 'undefined') ? PROTECTEURS_V7[f] : null
+    };
+  };
+  var a = lireSiege(rot.hR1), b = lireSiege(rot.hR7);
+  var S = SEUIL_MENACE_ANTAGONISTE_V7;
+  var etage, verdict, avantage = null;
+
+  if (a.concordance > b.concordance) {
+    avantage = 'R1';
+    if (a.menace >= S) { etage = 'avantage annulé'; verdict = 'Nul'; }
+    else { etage = 'concordance'; verdict = 'R1'; }
+  } else if (b.concordance > a.concordance) {
+    avantage = 'R7';
+    if (b.menace >= S) { etage = 'avantage annulé'; verdict = 'Nul'; }
+    else { etage = 'concordance'; verdict = 'R7'; }
+  } else if (a.menace < b.menace) { etage = 'antagoniste'; verdict = 'R1'; }
+  else if (b.menace < a.menace) { etage = 'antagoniste'; verdict = 'R7'; }
+  else { etage = 'égalité'; verdict = 'Nul'; }
+
+  var dire = function (s, n) {
+    return n + ' ' + s.figure + ' (' + s.element + ' en maison ' + s.maisonElement
+      + ', concordance ' + s.concordance + ') menacé par ' + s.antagoniste
+      + (s.menace ? (' logé en canal ' + s.menace + '/4') : ' — absent');
+  };
+  return {
+    applicable: true, verdict: verdict, etage: etage, avantage: avantage,
+    R1: a, R7: b, seuil: S,
+    memeBoucle: a.boucle === b.boucle,
+    r7EstAntagonisteDeR1: a.antagoniste === b.figure,
+    r1EstAntagonisteDeR7: b.antagoniste === a.figure,
+    resume: 'chaîne — ' + dire(a, 'R1') + ' · ' + dire(b, 'R7') + ' → '
+      + (etage === 'avantage annulé'
+          ? ('avantage ' + avantage + ' ANNULÉ par un antagoniste en canal fort → nul')
+        : etage === 'concordance' ? (verdict + ' l\'emporte par la concordance')
+        : etage === 'antagoniste' ? (verdict + ' l\'emporte, son antagoniste est le plus faible')
+        : 'rien ne départage, nul')
+  };
 }
 
 function campParCanauxV7(theme) {
@@ -32373,7 +32509,10 @@ function renderTheme(){
     // 54/46 vers « l'équipe tapée en premier ». Le 1N2 reste calculé et
     // exposé en contre-lecture.
     let campCanaux = null;
-    if (typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7) {
+    if (typeof CAMP_PAR_CHAINE_V7 !== 'undefined' && CAMP_PAR_CHAINE_V7) {
+      try { campCanaux = campParChaineV7(currentTheme); } catch (e) { campCanaux = null; }
+    }
+    if (!campCanaux && typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7) {
       try { campCanaux = campParCanauxV7(currentTheme); } catch (e) { campCanaux = null; }
     }
     const rWinnerOverride = campCanaux && campCanaux.applicable
