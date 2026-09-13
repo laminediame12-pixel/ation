@@ -2237,3 +2237,88 @@ bon camp — pendant que le moteur de camp dit nul.
 Les deux plus petits écarts sont les deux matchs nuls ou serrés. Le plus grand
 est un 4-0. Le 0-0 à 10,0 % reste l'anomalie — un déséquilibre fort sur un match
 où personne ne marque.
+
+---
+
+## Corriger le volume avec la procédure : essayé, et ça ne marche pas
+
+### D'abord, une correction de ma part
+
+J'ai écrit « bande de buts 0/5 » dans le bilan précédent. **C'est faux, c'est
+2/5** — mon script de bilan avait un placeholder à la place du test. Le 7-0
+tombe dans « 5 buts ou plus » ✔ et le 1-1 dans « 2 buts » ✔.
+
+| | juste |
+|---|---|
+| over / under 2,5 | **4/5** |
+| **bande de buts** | **2/5** (et non 0/5) |
+
+### Les quantités de la procédure contre les buts réels
+
+| mesure | 7-0 | 0-0 | 1-1 | 2-3 | 4-0 | ρ |
+|---|---|---|---|---|---|---|
+| cadent, activation | 10 | 11 | 8 | 11 | 10 | −0,05 |
+| cadent, ratio | 50 % | 55 % | 40 % | 55 % | 50 % | −0,05 |
+| cadent, part de Feu | 1 | 3 | 1 | 2 | 3 | −0,47 |
+| angulaire, activation | 8 | 15 | 8 | 15 | 9 | −0,32 |
+| succédent, activation | 13 | 12 | 11 | 9 | 7 | +0,10 |
+| canaux actifs | 3 | 4 | 1 | 3 | 1 | −0,11 |
+| canal Feu | 2 | 2 | 0 | 3 | 2 | +0,45 |
+| **canal Eau** | 3 | 4 | 4 | 2 | 1 | **−0,56** |
+| Feu + Air (chauds) | 4 | 5 | 1 | 4 | 2 | −0,05 |
+| activation totale /64 | 31 | 38 | 27 | 35 | 26 | −0,20 |
+| **R1 + R7, activation** | 4 | 5 | 5 | 4 | 3 | **−0,63** |
+| les deux dans le même axe | oui | oui | oui | non | oui | −0,35 |
+
+**L'axe cadent, que la doctrine lie à l'offense, donne ρ = −0,05.** Rien.
+
+### Le volume procédural construit et testé
+
+> index = (activation totale / 64) × (1 + 0,15 × canaux actifs) × (0,5 + ratio cadent)
+
+calibré exactement comme l'actuel — rang sur les 65 536 thèmes, moyenne externe
+2,70, bandes aux fréquences du football :
+
+| | 7-0 | 0-0 | 1-1 | 2-3 | 4-0 | bande | over/under |
+|---|---|---|---|---|---|---|---|
+| **actuel** | 3,87 | 2,57 | 2,40 | 3,57 | 1,56 | **2/5** | **4/5** |
+| **procédural** | 2,71 | 4,02 | 1,43 | 3,43 | 1,53 | **0/5** | **3/5** |
+
+Sa marginale est bonne (26 / 23 / 20 / 15 / 15 %), sa prédiction est pire sur
+les deux familles. **Je ne le branche pas.**
+
+### Ce que ça vaut, les deux corrélations trouvées
+
+`canal Eau` à −0,56 et `R1+R7 activation` à −0,63. Dimensionnement sur 5 points,
+120 ordres possibles :
+
+| | par hasard, un candidat | avec 14 candidats |
+|---|---|---|
+| \|ρ\| ≥ 0,56 | **35,0 %** | attendu 4,9 · P(au moins un) 100 % |
+| \|ρ\| ≥ 0,63 | **23,3 %** | attendu 3,3 · P(au moins un) 98 % |
+| \|ρ\| = 1,00 | 1,7 % | attendu 0,23 · P(au moins un) 21 % |
+
+Sur 5 points, une corrélation de 0,63 arrive **une fois sur quatre** par pur
+hasard. Avec 14 candidats, en trouver trois est le rendement normal du hasard.
+**Rien n'est établi.**
+
+### Ce qui est fait
+
+Le volume reste sur `G_vol` — 4/5 en over/under, 2/5 en bande. La procédure
+reste affichée avant chaque verdict : elle sert à voir le terrain, pas encore à
+prédire le nombre de buts.
+
+### Pré-enregistré, avant les prochaines lignes
+
+Deux inversions, écrites d'avance et jamais à ajuster après coup :
+
+> **1. Moins le canal Eau est actif, plus il y a de buts.** L'eau éteint le feu.
+> **2. Moins les sièges R1 et R7 sont actifs, plus il y a de buts.** C'est la
+> même chose que la ligne 5 a montrée brutalement : R1 à 0/4 gagne 4-0.
+
+Elles rejoignent l'inversion du marquage cadent déjà pré-enregistrée ce matin,
+qui a tenu sur sa première ligne hors échantillon. Trois inversions
+indépendantes qui vont toutes dans le même sens : **dans ce système, ce qui est
+plein ne marque pas, et ce qui est vide marque.** Si les trois tiennent sur les
+prochaines lignes, ce n'est plus une coïncidence — c'est le sens de lecture qu'il
+faut retourner d'un bloc.
