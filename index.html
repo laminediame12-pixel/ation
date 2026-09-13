@@ -26828,67 +26828,64 @@ var SEUIL_EQUILIBRE_BTTS_V7 = 0.0417;   // médiane des 65 536 -> 51 % de BTTS o
 // NUL_FORMULE_TEMOINS_V7 = false le remet aux commandes.
 // ═══════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
-// B1 ET B2 — QUEL CAMP MARQUE (13/09/26, formule d'Ellemine_D)
+// B₁ ET B₂ — QUEL CAMP MARQUE (13/09/26, formule d'Ellemine_D, simplifiée
+// sur sa demande : « enlève les deux dernières clauses »)
 // ───────────────────────────────────────────────────────────────
-//   B₁ = ((M1 ∈ {F,A}) ∨ (M13 ∈ {F,A})) ∧ ¬Sym_E(M13,M14)
-//        ∧ ((M14 ∈ {T,E}) ∨ (M2 ∈ {Cauda, Amissio}))
-//   B₂ = ((M2 ∈ {F,A}) ∨ (M14 ∈ {F,A})) ∧ ¬Sym_E(M13,M14)
-//        ∧ ((M13 ∈ {T,E}) ∨ (M1 ∈ {Cauda, Amissio}))
+//   B₁ = (M1 ∈ {F,A}) ∨ (M13 ∈ {F,A})        « le camp 1 marque »
+//   B₂ = (M2 ∈ {F,A}) ∨ (M14 ∈ {F,A})        « le camp 2 marque »
 //
-// ELLES NE SONT PAS BRANCHÉES SUR LE BTTS, et voici pourquoi.
+// La mère du camp, ou son témoin, doit porter un élément chaud — feu ou
+// air. Deux clauses ont été retirées : ¬Sym_E(M13,M14) et la clause croisée
+// (M14 froid ∨ M2 Cauda/Amissio). Ce qu'elles coûtaient, mesuré :
 //
-// En ET, comme écrit : 2,6 % des thèmes, contre ~51 % de BTTS réels.
-// En OU, comme demandé : 62,3 % et 3/4 sur l'échantillon — mieux, mais
-// sur-annonce de 11 points, et surtout c'est logiquement faux : sur le 7-0,
-// B₁ dit vrai (le camp 1 marque) et le OU en conclut « les deux marquent »
-// alors que le camp 2 n'a rien marqué. Le ET était la bonne structure.
+//                              avant      après     cible
+//   B₁ s'allume ..............  34,4 %    75,0 %    ~72 % (un camp marque)
+//   B₂ s'allume ..............  34,4 %    75,0 %    ~72 %
+//   B₁ ∧ B₂ ..................   6,4 %    56,3 %    ~51 % (BTTS)
+//   « ce camp marque-t-il »...   6/8       6/8
 //
-// LE VRAI DÉFAUT EST AILLEURS : chacune s'allume DEUX FOIS TROP PEU.
-// Un camp marque dans environ 72 % des matchs de football. B₁ s'allume sur
-// 34,4 % des thèmes. Ses trois clauses, mesurées séparément :
-//   (M1 ou M13 chaud) ............... 75,0 %   <- seule, elle est juste
-//   ¬Sym(M13,M14) ................... 75,0 %
-//   (M14 froid ou M2 Cauda/Amissio) . 56,3 %
-//   les trois ensemble .............. 34,4 %
-// Réduites à leur première clause, B₁ et B₂ font 75 % chacune, et leur
-// conjonction 56,3 % — juste à côté des 51 % du BTTS réel. La structure
-// B₁ ∧ B₂ est donc la bonne ; ce sont les deux clauses ajoutées qui la
-// divisent par deux, et la clause croisée qui les rend incompatibles.
+// Les deux clauses retirées divisaient la fréquence par deux SANS RIEN
+// APPORTER : sur les quatre matchs de l'échantillon, la lecture par camp
+// est identique avant et après, 6 sur 8 dans les deux cas. Elles ne
+// faisaient que dérégler la calibration, et la clause croisée rendait en
+// plus B₁ et B₂ mutuellement incompatibles.
 //
-// CE QU'ELLES FONT BIEN, ET C'EST AUTRE CHOSE QUE LE BTTS.
-// Prises séparément, comme réponse à « ce camp-là marque-t-il ? », elles
-// font 6 sur 8 sur les quatre matchs choisis :
+// LECTURE PAR CAMP, sur les quatre matchs choisis :
 //   7-0  camp 1 oui/oui ✔   camp 2 non/non ✔
 //   0-0  camp 1 non/non ✔   camp 2 non/non ✔
 //   1-1  camp 1 non/OUI ✘   camp 2 oui/oui ✔
 //   2-3  camp 1 oui/oui ✔   camp 2 non/OUI ✘
-// « toujours oui » ferait 5/8, « toujours non » 3/8.
-// Les deux erreurs sont des faux négatifs, cohérents avec le fait que les
-// clauses s'allument deux fois trop peu.
+//   6 sur 8 — « toujours oui » ferait 5/8, « toujours non » 3/8.
 //
-// Elles sont donc exposées comme LECTURE — quel camp marque, donc la forme
-// du score — et ne décident de rien. Le BTTS reste à la règle d'équilibre
-// du marquage, qui fait 4/4 et s'annonce sur 51,4 % des thèmes.
+// POURQUOI CE N'EST PAS ENCORE LE MOTEUR DU BTTS. B₁ ∧ B₂ est maintenant
+// bien calibrée (56,3 % pour ~51 % réels) mais elle fait 2/4 sur
+// l'échantillon, contre 4/4 pour la règle d'équilibre du marquage.
+//
+// ET VOICI LE CHIFFRE QUI TRANCHERA. Les deux lectures ne disent la même
+// chose que sur 47,6 % des thèmes : elles sont presque indépendantes et se
+// contredisent plus d'une fois sur deux. Il suffira donc de quelques
+// lignes de l'échantillon tombant sur un désaccord pour départager.
+// PRÉ-ENREGISTRÉ ICI, avant tout nouveau résultat : sur les prochaines
+// lignes où B₁ ∧ B₂ et l'équilibre du marquage divergent, celle qui gagne
+// devient le moteur du BTTS. Aucun ajustement d'ici là.
 // ═══════════════════════════════════════════════════════════════
 function campsQuiMarquentV7(theme) {
   if (!theme || !theme[14]) return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
   var chaud = function (h) { return els[theme[h]] === 'feu' || els[theme[h]] === 'air'; };
-  var froid = function (h) { return !chaud(h); };
-  var cauAmi = function (h) { return theme[h] === 'cauda_draconis' || theme[h] === 'amissio'; };
-  var sym = (els[theme[13]] === els[theme[14]]);
 
-  var B1 = (chaud(1) || chaud(13)) && !sym && (froid(14) || cauAmi(2));
-  var B2 = (chaud(2) || chaud(14)) && !sym && (froid(13) || cauAmi(1));
+  var B1 = chaud(1) || chaud(13);
+  var B2 = chaud(2) || chaud(14);
 
   return {
-    B1: B1, B2: B2, sym: sym,
+    B1: B1, B2: B2,
     campR1Marque: B1, campR7Marque: B2,
+    bttsSelonB: B1 && B2,
     forme: B1 && B2 ? 'les deux marquent' : B1 ? 'R1 seul marque'
          : B2 ? 'R7 seul marque' : 'aucun des deux ne marque',
-    // Ne PAS lire comme un BTTS : voir le bloc au-dessus.
-    resume: 'B₁ ' + (B1 ? 'vrai' : 'faux') + ' · B₂ ' + (B2 ? 'vrai' : 'faux')
-      + (sym ? ' · témoins symétriques (' + els[theme[13]] + ')' : '')
+    detail: { M1: els[theme[1]], M13: els[theme[13]], M2: els[theme[2]], M14: els[theme[14]] },
+    resume: 'B₁ ' + (B1 ? 'vrai' : 'faux') + ' (M1 ' + els[theme[1]] + ', M13 ' + els[theme[13]] + ')'
+      + ' · B₂ ' + (B2 ? 'vrai' : 'faux') + ' (M2 ' + els[theme[2]] + ', M14 ' + els[theme[14]] + ')'
       + ' — lecture seule, 6 justes sur 8 camps de l\'échantillon'
   };
 }

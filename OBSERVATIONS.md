@@ -2081,3 +2081,63 @@ Retirer de B₁ et B₂ leurs deux dernières clauses — garder seulement
 56,3 %. Sur les quatre matchs choisis elle donne encore « non » quatre fois,
 parce qu'aucun de ces thèmes n'a les deux côtés chauds. Il faudrait d'autres
 lignes pour la départager de la règle d'équilibre.
+
+---
+
+## B₁ et B₂ simplifiées
+
+> B₁ = (M1 ∈ {F,A}) ∨ (M13 ∈ {F,A})  ·  B₂ = (M2 ∈ {F,A}) ∨ (M14 ∈ {F,A})
+
+La mère du camp, ou son témoin, porte un élément chaud. Les deux clauses
+retirées sont `¬Sym_E(M13,M14)` et la clause croisée.
+
+### Ce qu'elles coûtaient
+
+| | avant | après | cible |
+|---|---|---|---|
+| B₁ s'allume | 34,4 % | **75,0 %** | ~72 % (un camp marque) |
+| B₂ s'allume | 34,4 % | **75,0 %** | ~72 % |
+| B₁ ∧ B₂ | 6,4 % | **56,3 %** | ~51 % (BTTS) |
+| « ce camp marque-t-il » | 6/8 | **6/8** | |
+
+**Elles divisaient la fréquence par deux sans rien apporter.** La lecture par
+camp est identique avant et après — 6 sur 8 dans les deux cas. Elles ne
+faisaient que dérégler la calibration, et la clause croisée rendait en plus B₁
+et B₂ mutuellement incompatibles.
+
+### La lecture par camp, sur les quatre matchs
+
+| thème | camp 1 dit / réel | camp 2 dit / réel |
+|---|---|---|
+| 7-0 | oui / oui ✔ | non / non ✔ |
+| 0-0 | non / non ✔ | non / non ✔ |
+| 1-1 | non / **oui** ✗ | oui / oui ✔ |
+| 2-3 | oui / oui ✔ | non / **oui** ✗ |
+
+**6 sur 8.** Toujours-oui ferait 5/8, toujours-non 3/8.
+
+### Comme moteur du BTTS, pas encore
+
+| | 7-0 | 0-0 | 1-1 | 2-3 | justes | fréquence |
+|---|---|---|---|---|---|---|
+| **B₁ ∧ B₂** | non | non | non | non | **2/4** | **56,3 %** |
+| B₁ ∧ B₂ ∧ juge chaud | non | non | non | non | 2/4 | 28,5 % |
+| B₁ ∨ B₂ | oui | non | oui | oui | 3/4 | 93,8 % |
+| **équilibre du marquage** | non | non | oui | oui | **4/4** | **51,4 %** |
+
+B₁ ∧ B₂ est maintenant bien calibrée, mais elle fait 2/4 contre 4/4. Le BTTS
+reste à l'équilibre du marquage.
+
+### Le chiffre qui tranchera, et il est pré-enregistré
+
+**Les deux lectures ne disent la même chose que sur 47,6 % des thèmes.** Elles
+se contredisent plus d'une fois sur deux — elles mesurent des choses presque
+indépendantes.
+
+Il suffira donc de **quelques lignes tombant sur un désaccord** pour départager.
+
+> **Pré-enregistré, avant tout nouveau résultat** : sur les prochaines lignes
+> de l'échantillon où B₁ ∧ B₂ et l'équilibre du marquage divergent, celle qui
+> gagne devient le moteur du BTTS. Aucun ajustement d'ici là.
+
+C'est écrit dans le fichier, au-dessus de `campsQuiMarquentV7`.
