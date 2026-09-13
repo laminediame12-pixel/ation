@@ -1415,3 +1415,76 @@ Deux lignes ne démontrent rien. Mais la règle d'incident est la seule pièce d
 système qui, aujourd'hui, sort entièrement de la doctrine, se cale seule sur la
 bonne fréquence, et tombe juste deux fois de suite. Rien n'a été touché entre
 la ligne 1 et la ligne 2.
+
+---
+
+## Le camp de l'incident est le pénalisé — la ligne 2 est fausse
+
+Tranché par Ellemine_D. Le penalty est **pour** M7, donc c'est **M1 qui est
+pénalisé**. Le moteur a dit M7.
+
+| | pénalisé | moteur | |
+|---|---|---|---|
+| ligne 1 — rouge côté M1 | M1 | M1 | ✔ |
+| ligne 2 — penalty pour M7 | **M1** | **M7** | ✗ |
+
+**L'attribution fait 1 sur 2, pas 2 sur 2.**
+
+J'avais compté la ligne 2 juste en redéfinissant le camp comme « le côté où
+l'évènement tombe ». Ce n'était pas la doctrine, c'était la lecture qui
+m'arrangeait. Je l'avais signalée comme une des deux lectures possibles, mais
+j'avais retenu celle qui donnait 2/2 — c'est exactement ce qu'il ne faut pas
+faire.
+
+**Le mapping M6 → équipe 1 / M12 → équipe 2 n'est pas retourné pour autant.**
+On ne renverse pas une règle sur la ligne qui vient de la contredire ; c'est
+la règle de tenue inscrite dans le registre.
+
+Question ouverte, et c'est de la doctrine, pas de la mesure : un étouffement
+en **M12** marque-t-il l'affliction de l'équipe 2 (M12 = 6e maison comptée
+depuis la 7e) ou la défaite de l'équipe 1 (M12 = 12e maison du consultant, ses
+ennemis cachés) ? Cela se tranche d'un mot.
+
+Bilan des deux lignes, corrigé : **incident présent 2/2 · camp de l'incident
+1/2 · nul 2/2 · camp du match 1/2 · BTTS 1/2 · volume 0/2 · score exact 0/2.**
+
+---
+
+## Audit un par un de tout ce que j'ai touché aujourd'hui
+
+> « Tous les points que tu avais corrigés avec les 49 matchs sont tous faux,
+> sans exception. Il faut revoir ces points un par un. »
+
+Onze changements. Pour chacun : d'où vient la preuve, et ce qu'il en reste.
+
+| # | changement | preuve | verdict |
+|---|---|---|---|
+| 1 | canaux élémentaires 1-5-9 → **1-5-9-13** (et les trois autres) | `ELEMENT_OF_HOUSE`, dans le fichier | **gardé** — se lit sans un seul match |
+| 2 | axe angulaire 1-4-7-10 → **1-4-7-10-13-16** | `MAISONS_CARDINALES_V7` | **gardé** — idem |
+| 3 | R1/R7 codés en dur sur M9 et M3 → **la rotation** | la définition de R1/R7 | **gardé** — idem |
+| 4 | `G_vol` affiché comme des buts → **buts attendus** | 48,6 % des 65 536 thèmes annonçaient « 5+ buts », `over 2.5` sur 97,5 % | **gardé** — le défaut est dans la distribution des thèmes, pas dans des résultats |
+| 5 | **marquage cadent inversé mis dans le volume** | **cinq résultats du même lot que les 49** | **RETIRÉ** |
+| 6 | score sourcé sur le volume, marge d'un but | le défaut (score bloqué à 1-0/0-1/0-0 sans le BTTS) est structurel ; la marge, je la justifiais **par l'archive** | **gardé, re-sourcé** — la marge d'un but est la plus fréquente en football, fait général |
+| 7 | BTTS déclaré indécidable | 19/42 sur l'archive | **déjà retiré** cet après-midi, cascade rebranchée |
+| 8 | justesse du camp affichée sur la carte (19/42) | l'archive | **déjà retiré** |
+| 9 | `nulActifV7` branché sur le camp affiché | la carte ne produisait **jamais** « nul » sur les 65 536 thèmes | **gardé** — un moteur de verdict doit pouvoir sortir les trois issues |
+| 10 | le domicile tranche les égalités | `domicileCode` était écrasé par `winnerOverride` une ligne plus loin — lisible dans le code | **gardé** |
+| 11 | bannières qui nommaient autre chose que ce que le code applique | lecture du code | **gardé** |
+
+Et les incidents, ajoutés après : **entièrement issus de ta doctrine**, aucun
+chiffre de l'archive n'y entre. La fréquence de 30,1 % tombe seule.
+
+### Ce que le point 5 change au volume
+
+Le volume ne repose plus que sur `G_vol` — structurel — et sur la moyenne
+externe de 2,70 buts. Bandes annoncées après retrait : 26,3 % / 22,7 % /
+21,5 % / 14,1 % / 15,4 %, contre les 25 / 24 / 22 / 15 / 14 du football.
+`over 2.5` annoncé sur 51,5 % des thèmes.
+
+### Ce que cet audit ne couvre pas
+
+Le fichier contient **beaucoup** de raisonnements calés sur l'archive bien
+avant aujourd'hui — des dizaines de commentaires du type « mesuré sur les 49 »,
+« taux de base des nuls dans l'archive : 24 % », des seuils réglés sur elle.
+Ils sont hors du périmètre de cet audit, qui ne porte que sur ce que j'ai
+touché aujourd'hui. Si tu veux, je passe le fichier entier au même crible.

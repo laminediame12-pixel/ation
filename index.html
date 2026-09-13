@@ -23336,6 +23336,10 @@ var CDF_MARQUAGE_CADENT_V7 = [
   0.9986,0.999,0.9993,0.9995,0.9997,0.9998,0.9998,0.9999,0.9999,0.9999,1,1
 ];
 var BUTS_MOYENS_REELS_V7 = 2.70;   // buts moyens d'un match, référence externe
+// Le marquage cadent inversé était entré dans le volume sur la foi de cinq
+// résultats issus du même lot non fiable que les 49. Sorti le 13/09/26. Il
+// reste calculé et affiché comme lecture.
+var MARQUAGE_CADENT_DANS_LE_VOLUME_V7 = false;
 
 // ─── POURQUOI PAS L'ARCHIVE (13/09/26, Ellemine_D) ───
 // J'avais recalibré ce chiffre sur les 49 thèmes archivés (moyenne 4,16) et
@@ -23369,11 +23373,24 @@ function poissonV7(mu, k) {
 // Volume calibré. Rend un nombre de buts attendus, pas un indice.
 function volumeCalibreV7(theme, gvol) {
   if (!theme || !isFinite(gvol)) return null;
+  // ─── LE MARQUAGE CADENT EST SORTI DU CALCUL (13/09/26, Ellemine_D) ───
+  // Il y était entré ce matin, inversé, sur la foi de cinq résultats — et ces
+  // cinq-là sortent du même lot que les 49 : on ne sait pas lesquels sont des
+  // FIFA. « Tous les points corrigés avec les 49 matchs sont faux, sans
+  // exception. » Il a raison : la direction de l'inversion venait de quatre
+  // matchs de ce lot, et le cinquième qui la confirmait aussi.
+  // Le marquage reste CALCULÉ et affiché comme lecture (forceMarquageCadentV7),
+  // il n'entre plus dans les buts attendus. Le volume ne repose plus que sur
+  // G_vol, qui est structurel, et sur une calibration externe.
   var M = (typeof forceMarquageCadentV7 === 'function') ? forceMarquageCadentV7(theme) : null;
   var qG = cdfInterpV7(CDF_GVOL_V7, gvol, 0.85, 0.05);
   var qM = M ? (1 - cdfInterpV7(CDF_MARQUAGE_CADENT_V7, M.total, 0, 0.5)) : 0.5;
-  var q  = (qG + qM) / 2;
-  var Q  = q <= 0.5 ? 2 * q * q : 1 - 2 * (1 - q) * (1 - q);   // ré-étalement exact
+  var q  = MARQUAGE_CADENT_DANS_LE_VOLUME_V7 ? ((qG + qM) / 2) : qG;
+  // Le ré-étalement ne sert que si q est la moyenne de deux rangs (loi
+  // triangulaire). Avec le seul rang de G_vol, q est déjà uniforme.
+  var Q  = MARQUAGE_CADENT_DANS_LE_VOLUME_V7
+    ? (q <= 0.5 ? 2 * q * q : 1 - 2 * (1 - q) * (1 - q))
+    : q;
 
   var mu = BUTS_MOYENS_REELS_V7 * (0.42 + 1.16 * Q);           // moyenne conservée à 2,70
 
@@ -25881,7 +25898,7 @@ var ECHANTILLON_ELLEMINE_V7 = [
     nature: 'penalty',
     // Annoncé AVANT que le résultat soit donné.
     ditIncident: true,           // M12 étouffée + 2 Déclencheurs          ✔
-    ditCamp: 'M7',               // M12 poids 1, M6 poids 0                ✔ côté
+    ditCamp: 'M7',               // le pénalisé est M1                     ✘
     ditCampVerdict: 'R1',        // réel R7                                ✘
     ditScore: '2-1',             // réel 2-3                               ✘
     ditBtts: false,              // réel oui                               ✘
@@ -25891,13 +25908,15 @@ var ECHANTILLON_ELLEMINE_V7 = [
         + 'M13 Fortuna Minor. Rubeus est en M3, pas en M12 : la figure qui '
         + 'étouffe M12 ici est Acquisitio, même contrariété mais sans '
         + 'l\'aggravation explosive — poids 1 et non 2. '
-        + 'CE QUE CETTE LIGNE APPREND SUR LE MOT « CONTRE » : ligne 1, rouge '
-        + 'côté M1, le camp nommé était la victime ; ligne 2, penalty POUR '
-        + 'M7, le camp nommé est le bénéficiaire. Le moteur nomme donc le '
-        + 'CÔTÉ où l\'évènement tombe, pas qui le subit — et l\'étiquette '
-        + '« CONTRE » était fausse une fois sur deux. Corrigée en « CÔTÉ ». '
-        + 'Si la doctrine veut dire la victime dans les deux cas, alors '
-        + 'l\'attribution fait 1 sur 2 et il faut le dire ainsi.'
+        + 'LE CAMP DE L\'INCIDENT EST LE PÉNALISÉ — tranché par Ellemine_D. '
+        + 'Le penalty est POUR M7, donc c\'est M1 qui est pénalisé. Le '
+        + 'moteur a dit M7 : FAUX. L\'attribution fait 1 sur 2. '
+        + 'J\'avais d\'abord compté cette ligne juste en redéfinissant le '
+        + 'camp comme « le côté où l\'évènement tombe » — ce n\'était pas la '
+        + 'doctrine, c\'était la lecture qui m\'arrangeait. '
+        + 'Le mapping M6 -> équipe 1 / M12 -> équipe 2 n\'est pas retourné '
+        + 'pour autant : on ne renverse pas une règle sur la ligne qui vient '
+        + 'de la contredire.'
   }
 ];
 
@@ -26868,15 +26887,22 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // reste le repli uniquement quand V2 ne désigne aucun camp.
   var campIncidentAffiche = (INCIDENT_DOCTRINE_DECIDE_V7 && incidentAxe && incidentAxe.camp)
     ? { camp: incidentAxe.camp, source: 'Lieux de problème M6 / M12',
-        // ─── « CONTRE » N'EST PAS JUSTIFIÉ (13/09/26) ───
-        // Le moteur lit un LIEU de problème et en déduit un CÔTÉ. Il ne sait
-        // pas qui subit et qui profite. Ligne 1 : rouge côté M1, le camp
-        // nommé M1 est la victime. Ligne 2 : penalty POUR M7, le camp nommé
-        // M7 est le bénéficiaire. Le même mot « contre » était donc faux une
-        // fois sur deux. Onzième occurrence : l'étiquette affirmait plus que
-        // le code ne sait.
-        resume: 'incident CÔTÉ ' + incidentAxe.camp + ' — ' + incidentAxe.resume
-          + ' · le moteur nomme le côté où l\'évènement tombe, pas qui le subit' }
+        // ─── LE CAMP DE L'INCIDENT EST LE PÉNALISÉ (13/09/26, Ellemine_D) ───
+        // Tranché par la doctrine, pas par moi. « CONTRE » est donc le bon
+        // mot, et c'est le RÉSULTAT qui change :
+        //   ligne 1 — rouge côté M1, pénalisé M1, moteur M1 ...... juste
+        //   ligne 2 — penalty POUR M7, pénalisé M1, moteur M7 .... FAUX
+        // L'attribution fait 1 sur 2, pas 2 sur 2. Je m'étais donné la
+        // seconde en lisant « le côté où l'évènement tombe » : ce n'était pas
+        // la doctrine, c'était la lecture qui m'arrangeait.
+        // Le mapping M6 -> équipe 1 / M12 -> équipe 2 n'est PAS retourné pour
+        // autant : on ne renverse pas une règle sur la ligne qui vient de la
+        // contredire. Question ouverte, de doctrine : un étouffement en M12
+        // marque-t-il l'affliction de l'équipe 2 (M12 = 6e maison comptée
+        // depuis la 7e) ou la défaite de l'équipe 1 (M12 = 12e maison du
+        // consultant, ses ennemis cachés) ? Cela se tranche d'un mot.
+        resume: 'incident CONTRE ' + incidentAxe.camp + ' (le camp pénalisé) — '
+          + incidentAxe.resume }
     : incidentV2.hasSignal
     ? { camp: incidentV2.camp || null, source: 'Incident V2',
         resume: incidentV2.camp
@@ -27531,11 +27557,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // buts n'avait aucune source propre.
   // Il en a une maintenant : le volume calibré donne les buts attendus, le
   // moteur de camp donne le vainqueur, et l'écart annoncé est le plus petit
-  // écart gagnant — la marge de 1 but est la plus fréquente de l'archive
-  // (18 des 31 matchs décidés). Ce n'est pas une prédiction validée : le
-  // volume ne corrèle pas aux buts réels sur ces 42 matchs (r = -0,069).
-  // C'est le score le plus probable sous un modèle dont la seule propriété
-  // acquise est d'être calibré en marge.
+  // écart gagnant. RE-SOURCÉ le 13/09/26 : je justifiais la marge de 1 but par
+  // l'archive (18 des 31 matchs décidés) — donc par les 49. Elle tient sans
+  // eux : en football, la marge d'un but est la plus fréquente des marges
+  // gagnantes, c'est un fait général et pas une propriété de ce fichier.
+  // Ce n'est pas pour autant une prédiction validée.
   if (SCORE_DU_VOLUME_V7) {
     var _muS = null;
     try { var _vS = verdictNMRatif(theme); _muS = _vS && _vS.volumeNM ? _vS.volumeNM.buts_attendus : null; }
@@ -30281,7 +30307,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // il rate le oui/non — mais il désigne M1, et c'est le bon camp. Effacer
   // cette lecture, c'est jeter la seule partie qui a marché.
   var incidentPrincipalCamp = (card && card.penaltyRouge && card.incidentCamp)
-    ? ' · CÔTÉ ' + esc(card.incidentCamp) : '';
+    ? ' · CONTRE ' + esc(card.incidentCamp) : '';
   var incidentPrincipalDetail = '';
   if (card && card.incidentIntensite) {
     var _ii = card.incidentIntensite;
