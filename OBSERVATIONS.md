@@ -2873,3 +2873,70 @@ l'échantillon n'est pas élargi.
 | **incident (présence)** | **2/2** |
 | bande de buts | 2/5 |
 | score exact | 2/5 |
+
+## 13/09/26 — l'antagoniste caché dans la résultante de sa propre maison
+
+Ellemine_D : « c'est dans le dérivé angulaire en M10 / Rubeus y cache /
+Ennemi direct dans la maison de Carcer ».
+
+**Vérifié, exactement.** Ligne 4-0 (amissio / amissio / carcer / laetitia),
+thème dérivé angulaire (mères M1·M4·M7·M10 du principal = amissio /
+laetitia / fortuna_minor / tristitia) :
+
+    R7 = M12 Carcer.            antagoniste direct : Rubeus
+    maison de repos de Carcer : M10  ← « la maison de Carcer »
+    M10 y porte Puer.           Puer ⊕ Carcer = RUBEUS
+
+Je cherchais l'antagoniste uniquement en base (`theme[x] === ant`) et
+j'avais donc écrit **« rubeus : ABSENT du thème »**. C'était faux : il
+était en **résultante**, R(h) = M(h) ⊕ figure au repos de h — la couche
+que le fichier décrit déjà (« la résultante n'est pas une autre figure :
+c'est l'écart au repos de la maison ») et que `positionsBaseEtResultantes`
+lit depuis toujours. `campParChaineV7` ne la lisait pas.
+
+### Portée de la lecture — étroite, et pourquoi
+
+La résultante n'est lue que dans **une** maison par siège : la maison de
+repos de la figure du siège. C'est ce que dit la doctrine — l'ennemi dans
+*sa* maison — et rien de plus. Les quatre lectures, mesurées sur les cinq
+lignes et sur les 65 536 thèmes (cible marginale 37 / 37 / 26) :
+
+| lecture | 5 lignes | marginale | écart |
+|---|---|---|---|
+| base seule (état d'hier) | 5/5 | 37 / 31 / 32 | 12 |
+| **+ résultante de la maison de repos du siège** | **5/5** | **36 / 31 / 33** | **14** |
+| + résultante de la maison où loge le siège | 5/5 | 37 / 31 / 33 | 13 |
+| + les seize résultantes | **3/5** | 31 / 26 / 44 | 36 |
+
+Lire les seize noie le signal. La lecture étroite est branchée
+(`ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = true`).
+
+### Ce que ça change, honnêtement
+
+**Sur les cinq lignes : rien.** 5/5 avant, 5/5 après, aucun verdict ne
+bouge. Le canal air de M10 vaut 2/4, sous le seuil de 3/4 : l'avantage de
+Carcer n'est pas annulé. Ce qui est corrigé est la **lecture** — un
+antagoniste annoncé « absent » alors qu'il est chez lui était un
+affichage faux, le douzième de la série, et le seul type de défaut que ce
+fichier traque systématiquement.
+
+Deux autres occurrences remontent du coup à la surface, invisibles hier :
+
+- ligne 0-0, principal : R1 Tristitia menacé par Via, **caché en M8**
+  (Cauda Draconis ⊕ Tristitia = Via), canal eau 4/4 — c'est déjà l'annulation
+  qui donnait le nul, elle est maintenant nommée en entier ;
+- ligne 4-0, principal : Rubeus caché en M10 également, à côté du Carcer
+  en base de M3.
+
+### Le vrai problème que ça met à nu : le dérivé angulaire ne vérifie rien
+
+La doctrine veut que l'axe angulaire vérifie le camp. Mesuré, le camp
+lu sur le dérivé angulaire par la même règle de chaîne :
+
+    accord principal / dérivé angulaire   36,5 %   (36,6 % avec la résultante)
+
+Sur les cinq lignes il en contredit **trois** (lignes 2, 3 et 5 : il dit
+R7, R7, R7 pour nul, nul, R1). À 36 % d'accord et 2/5 de justesse propre,
+cet organe n'est pas un vérificateur — c'est du bruit. Il reste en
+lecture seule ; il ne touche pas le verdict, et il ne doit pas y toucher
+en l'état.

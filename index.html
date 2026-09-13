@@ -27287,6 +27287,46 @@ function verificationParLesAxesV7(theme) {
 // ═══════════════════════════════════════════════════════════════
 var SEUIL_MENACE_ANTAGONISTE_V7 = 3;   // « canal fort, bien structuré » : 3/4 ou plus
 
+// ── L'ANTAGONISTE CACHÉ DANS LA RÉSULTANTE DE SA PROPRE MAISON ──
+// AJOUTÉ (13/09/26, Ellemine_D : « tu as pris en compte les résultantes
+// dans les maisons […] c'est dans le dérivé angulaire en M10, Rubeus y
+// cache, ennemi direct dans la maison de Carcer »).
+//
+// Je cherchais l'antagoniste UNIQUEMENT en base — theme[x] === ant — et
+// j'ai donc écrit « rubeus : ABSENT du thème » là où il était présent.
+// Il ne l'était pas en base : il l'était en RÉSULTANTE, R(h) = M(h) ⊕
+// figure au repos de h, la couche que ce fichier décrit déjà plus haut
+// (« la résultante n'est pas une autre figure : c'est l'écart au repos
+// de la maison ») et que positionsBaseEtResultantes() lit depuis
+// toujours. Le cas exact, vérifié :
+//
+//   ligne 4-0, thème dérivé angulaire (mères M1·M4·M7·M10 du principal
+//   = amissio / laetitia / fortuna_minor / tristitia).
+//   R7 = M12 Carcer. Son antagoniste est Rubeus.
+//   La maison de repos de Carcer est M10 — « la maison de Carcer ».
+//   M10 y porte Puer. Or Puer ⊕ Carcer = RUBEUS.
+//   L'ennemi direct de Carcer loge donc dans la résultante de la propre
+//   maison de Carcer. Il n'était pas absent : il était chez lui.
+//
+// PORTÉE DE LA LECTURE, ET POURQUOI ELLE EST ÉTROITE. La résultante
+// n'est lue que dans UNE maison par siège : la maison de repos de la
+// figure du siège. C'est ce que la doctrine dit — l'ennemi dans SA
+// maison — et rien de plus. Lire les résultantes des seize maisons fait
+// tomber les cinq lignes de 5/5 à 3/5 et la marginale de 37/31/32 à
+// 31/26/44 : le signal se noie. Mesuré :
+//   base seule ................................. 5/5 · 37/31/32 · écart 12
+//   + résultante de la maison de repos du siège  5/5 · 36/31/33 · écart 14
+//   + résultante de la maison où loge le siège   5/5 · 37/31/33 · écart 13
+//   + les seize résultantes .................... 3/5 · 31/26/44 · écart 36
+//
+// CE QUE ÇA CHANGE, HONNÊTEMENT : sur les cinq lignes, RIEN — 5/5 avant,
+// 5/5 après, aucun verdict ne bouge. Ce que ça corrige est l'affichage
+// et la lecture : un antagoniste annoncé « absent » alors qu'il est chez
+// lui était faux, et c'est exactement le défaut que ce fichier traque.
+// La menace qu'il porte reste la force de son canal, comme les autres.
+// ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = false revient à la base seule.
+var ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = true;
+
 function campParChaineV7(theme) {
   if (!theme || !theme[1] || typeof ANTAGONISTES_V7 === 'undefined') return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -27303,16 +27343,23 @@ function campParChaineV7(theme) {
   var lireSiege = function (h) {
     var f = theme[h];
     var ant = ANTAGONISTES_V7[f];
-    var menace = 0, ou = [];
+    // La maison de repos de la figure du siège — « sa » maison. C'est la
+    // seule où la résultante est lue (voir le bloc au-dessus).
+    var chezLui = (typeof FIGS_V7 !== 'undefined') ? (FIGS_V7.indexOf(f) + 1) : 0;
+    var menace = 0, ou = [], cache = null;
     for (var x = 1; x <= 16; x++) {
-      if (theme[x] === ant) {
-        var c = MAISON_ELEM_V7[x], fo = forceCanal(c);
-        ou.push({ maison: x, canal: c, force: fo });
-        if (fo > menace) menace = fo;
-      }
+      var enBase = (theme[x] === ant);
+      var enResultante = ANTAGONISTE_CACHE_EN_RESULTANTE_V7 && x === chezLui
+        && typeof combine === 'function' && combine(theme[x], FIGS_V7[x - 1]) === ant;
+      if (!enBase && !enResultante) continue;
+      var c = MAISON_ELEM_V7[x], fo = forceCanal(c);
+      ou.push({ maison: x, canal: c, force: fo, resultante: !enBase });
+      if (!enBase) cache = { maison: x, porteuse: theme[x], repos: FIGS_V7[x - 1], canal: c, force: fo };
+      if (fo > menace) menace = fo;
     }
     return {
       maison: h, figure: f, element: els[f], maisonElement: MAISON_ELEM_V7[h],
+      maisonDeRepos: chezLui, antagonisteCache: cache,
       boucle: (typeof loopOf === 'function') ? loopOf(f) : null,
       concordance: concordanceElement(els[f], MAISON_ELEM_V7[h]),
       antagoniste: ant, menace: menace, antagonisteOu: ou,
@@ -27336,9 +27383,16 @@ function campParChaineV7(theme) {
   else { etage = 'égalité'; verdict = 'Nul'; }
 
   var dire = function (s, n) {
+    var ou = s.menace
+      ? (' logé en canal ' + s.menace + '/4'
+         + (s.antagonisteCache
+             ? (', caché en résultante de M' + s.antagonisteCache.maison
+                + ' — sa propre maison : ' + s.antagonisteCache.porteuse
+                + ' ⊕ ' + s.antagonisteCache.repos + ' = ' + s.antagoniste)
+             : ''))
+      : ' — absent (ni en base, ni dans la résultante de sa maison)';
     return n + ' ' + s.figure + ' (' + s.element + ' en maison ' + s.maisonElement
-      + ', concordance ' + s.concordance + ') menacé par ' + s.antagoniste
-      + (s.menace ? (' logé en canal ' + s.menace + '/4') : ' — absent');
+      + ', concordance ' + s.concordance + ') menacé par ' + s.antagoniste + ou;
   };
   return {
     applicable: true, verdict: verdict, etage: etage, avantage: avantage,
