@@ -989,3 +989,63 @@ peut rien établir.
 
 Les trois sont écrites ici **avant** d'avoir d'autres résultats. C'est la seule
 chose qui les distinguera d'une coïncidence.
+
+---
+
+## Observation #5 — Fortuna Major / Acquisitio / Rubeus / Puer, résultat **5-0**
+
+Thème rejoué sous le moteur **actuel** (le BTTS a été recâblé sur la force
+active de l'axe cadent depuis le dernier affichage de ce thème — la comparaison
+ci-dessous est faite sur le code d'aujourd'hui, pas sur un souvenir).
+
+R1 = M12 Acquisitio · R7 = M2 Acquisitio — même figure des deux côtés, départagée
+par le Pôle NM rotatif (12,5 contre 6,0) → **R1**.
+
+| famille | annoncé | réel | |
+|---|---|---|---|
+| camp | R1 (Équipe 1) | 5-0 pour l'équipe 1 | ✓ |
+| nul | non | non | ✓ |
+| volume `G_vol` | 2,49 → OVER 3.5 / score fleuve (5+) | 5 buts | ✓ |
+| BTTS | OUI | non, un seul camp a marqué | ✗ |
+| score exact | 5-1 / 6-1 | 5-0 | ✗ |
+
+Détail du thème : marquage cadent R1 6,5 · R7 5,0 · **total 11,5** · part R1 57 %.
+Force cadent 8/20 = 40 %. Off R1 70 % contre def R7 50 %, off R7 70 % contre
+def R1 50 % — aucun camp muet, alors que le réel est un blanchissage.
+
+### Les trois hypothèses pré-enregistrées
+
+**1. Marquage cadent inversé — tient.** Le cinquième point tombe du bon côté :
+
+| marquage cadent | buts réels |
+|---|---|
+| **11,5** | 7 |
+| **11,5** | **5** ← nouveau |
+| 12,5 | 7 |
+| 17,5 | 0 |
+| 19,5 | 2 |
+
+Spearman ρ = **−0,58** sur n = 5. Sur les 10 paires : 6 dans le sens inverse
+annoncé, 2 contre, 2 ex æquo. Direction confirmée, force encore indistinguable
+du hasard (p unilatéral ≈ 0,15).
+
+**2. Amissio → beaucoup de buts** et **3. Fortuna Major → peu de buts** :
+non testées. Le cadent de ce thème est Rubeus · Tristitia · Conjunctio ·
+Conjunctio · Fortuna Minor — ni Amissio ni Fortuna Major. Les deux hypothèses
+restent ouvertes, à zéro test réel.
+
+### Tableau de bord après 5 matchs réels
+
+| famille | juste | note |
+|---|---|---|
+| BTTS | **4/5** | seul raté : ce 5-0 |
+| camp | **3/5** | les 2 ratés sont les 2 nuls |
+| nul | **3/5** | le moteur n'a jamais dit « nul » ; il n'a donc rien détecté |
+| volume (`G_vol` over/under 2,5) | 3/5 | mais il annonce OVER **5 fois sur 5** — prédicteur constant, donc sans information |
+| score exact | **0/5** | — |
+
+Le point noir n'est ni le camp ni le BTTS : c'est que **`G_vol` ne varie pas
+assez pour trancher**. Sur ces cinq thèmes il vaut 1,84 · 2,49 · 2,58 · 2,93 ·
+3,05, tous au-dessus du seuil OVER 2.5, y compris sur le 0-0 et le 1-1. Une
+famille qui répond toujours la même chose ne peut pas être créditée de ses
+succès.
