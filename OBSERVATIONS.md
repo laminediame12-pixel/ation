@@ -2380,3 +2380,69 @@ n'a aucune corrélation mesurée.
 
 Sur tes 5 lignes, ça ne change rien — les deux sont d'accord partout où M9
 parle. Le gain ne se verra que sur des lignes futures. Dis-moi si je le branche.
+
+---
+
+## Ce qui marche, intégré. Point final sur cette passe.
+
+### Les trois pièces qui tiennent
+
+**1. BTTS — l'équilibre du marquage.** Branché.
+Les deux marquent quand les deux trigones offensifs portent un marquage
+équivalent : `|part R1 − 50 %| < 4,17 %`. Le seuil vient du taux réel de BTTS,
+pas des matchs. **5/5**, dont une ligne hors échantillon. Annonce oui sur
+51,4 % des thèmes contre ~51 % réels.
+
+**2. Incident — M6/M12 étouffée + Déclencheur de feu.** Branché.
+Entièrement issu de la doctrine, aucun chiffre de match n'y entre. **2/2.**
+S'allume sur 30,1 % des thèmes, l'ordre de grandeur réel du penalty et du
+rouge — *la fréquence tombe juste sans qu'aucune constante ait été réglée*.
+Réserve : deux lignes, toutes deux positives ; indiscernable de « toujours oui »
+tant qu'une ligne sans incident ne sera pas tombée. Le camp de l'incident, lui,
+ne marche pas et a été débranché.
+
+**3. M9 = M1 ⊕ M2 sur le volume.** Branché maintenant.
+M9 tranche le côté du seuil 2,5, `G_vol` place à l'intérieur du côté. Quand M9
+se tait (43,8 % des thèmes), `G_vol` décide seul.
+
+| | |
+|---|---|
+| p = 0,0019 en permutation par match | **seul signal du fichier à survivre à Bonferroni** (0,011) |
+| 3/3 hors échantillon, annoncés d'avance | |
+| 2/3 sur les lignes choisies | **total prospectif 5/6** |
+| doctrine fournie **après** la mesure | le seul ordre qui ne puisse pas l'avoir orientée |
+
+En face, `G_vol` n'a aucune corrélation mesurée (r = −0,069, p = 0,66). Quand
+les deux se contredisent, il n'y a pas de raison de préférer celui qui n'a rien
+démontré.
+
+Effet mesuré : moyenne 2,748 buts, over 2.5 annoncé sur **54,2 %** des thèmes
+(cible ~51 %), bandes 23,8 / 22,7 / 23,4 / 14,6 / 15,6 % contre
+25 / 24 / 22 / 15 / 14. Sur les 5 lignes, **rien ne change** — M9 est d'accord
+avec `G_vol` partout où elle parle. Le gain ne se verra que sur les suivantes.
+
+### Ce qui ne marche pas, et que j'arrête de remuer
+
+| famille | juste | meilleure constante |
+|---|---|---|
+| camp / 1N2 | 3/5 | 2/5 |
+| volume, bande | 2/5 | — |
+| score exact | **0/5** | — |
+
+Le 1N2 garde deux défauts structurels que je n'ai pas réparés parce qu'ils
+relèvent de la doctrine : l'axe ne tranche que **2,25 %** du temps, et le moteur
+penche **54/46 vers R1** alors que R1 n'est que « celui tapé en premier ».
+
+### État final de l'échantillon choisi, 5 lignes
+
+| famille | juste |
+|---|---|
+| **BTTS** | **5/5** |
+| over / under 2,5 | 4/5 |
+| B₂ « le camp 2 marque » | 4/5 |
+| camp | 3/5 |
+| nul | 3/5 |
+| B₁ « le camp 1 marque » | 3/5 |
+| bande de buts | 2/5 |
+| **incident (présence)** | **2/2** |
+| score exact | 0/5 |

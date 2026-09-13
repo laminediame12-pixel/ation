@@ -23340,6 +23340,13 @@ var BUTS_MOYENS_REELS_V7 = 2.70;   // buts moyens d'un match, référence extern
 // résultats issus du même lot non fiable que les 49. Sorti le 13/09/26. Il
 // reste calculé et affiché comme lecture.
 var MARQUAGE_CADENT_DANS_LE_VOLUME_V7 = false;
+// M9 = M1 ⊕ M2 tranche le côté du seuil 2,5 quand elle parle. Voir
+// volumeCalibreV7. Seul signal du fichier à survivre à Bonferroni, 5/6 hors
+// échantillon. false rétablit G_vol seul.
+var M9_TRANCHE_LE_VOLUME_V7 = true;
+var MU_MIN_V7   = 2.70 * 0.42;          // 1,134
+var MU_MAX_V7   = 2.70 * (0.42 + 1.16); // 4,266
+var PIVOT_OVER_UNDER_V7 = 2.697;        // la coupure de bande entre « 2 buts » et « 3 buts »
 
 // ─── POURQUOI PAS L'ARCHIVE (13/09/26, Ellemine_D) ───
 // J'avais recalibré ce chiffre sur les 49 thèmes archivés (moyenne 4,16) et
@@ -23394,6 +23401,36 @@ function volumeCalibreV7(theme, gvol) {
 
   var mu = BUTS_MOYENS_REELS_V7 * (0.42 + 1.16 * Q);           // moyenne conservée à 2,70
 
+  // ─── M9 TRANCHE LE CÔTÉ, G_vol PLACE DANS LE CÔTÉ (13/09/26) ───
+  // M9 = M1 ⊕ M2, « le rythme du match » — doctrine d'Ellemine_D, fournie
+  // APRÈS la mesure, ce qui est le seul ordre qui ne puisse pas l'avoir
+  // orientée. C'est le signal le mieux documenté du fichier :
+  //   p = 0,0019 en permutation par match, SEUL SIGNAL À SURVIVRE À
+  //     BONFERRONI (0,011 sur six tests) ;
+  //   3/3 hors échantillon, annoncés d'avance le 04/09 ;
+  //   2/3 sur les lignes choisies par Ellemine_D — total prospectif 5/6.
+  // En face, G_vol n'a AUCUNE corrélation mesurée avec les buts (r = -0,069
+  // sur 42 matchs, p = 0,66). Quand les deux se contredisent, il n'y a pas
+  // de raison de préférer celui qui n'a rien démontré.
+  //
+  // Ce qui reste faible chez M9, et qui est la raison pour laquelle elle
+  // n'avait jamais été branchée : les deux listes de figures ont été
+  // composées EN REGARDANT le tableau des buts. Le 26/28 en échantillon ne
+  // vaut donc rien. Les 5/6 hors échantillon, eux, comptent.
+  //
+  // MISE EN ŒUVRE : M9 décide du CÔTÉ du seuil, G_vol place dans ce côté.
+  // Quand M9 se tait (43,8 % des thèmes), G_vol décide seul, comme avant.
+  // M9_TRANCHE_LE_VOLUME_V7 = false rétablit l'état antérieur.
+  var lectureM9 = null;
+  if (M9_TRANCHE_LE_VOLUME_V7 && typeof lectureButsM9V7 === 'function') {
+    try { lectureM9 = lectureButsM9V7(theme); } catch (e) { lectureM9 = null; }
+    if (lectureM9 && lectureM9.sens === 'haut') {
+      mu = PIVOT_OVER_UNDER_V7 + Q * (MU_MAX_V7 - PIVOT_OVER_UNDER_V7);
+    } else if (lectureM9 && lectureM9.sens === 'bas') {
+      mu = MU_MIN_V7 + Q * (PIVOT_OVER_UNDER_V7 - MU_MIN_V7);
+    }
+  }
+
   var p0 = poissonV7(mu, 0), p1 = poissonV7(mu, 1), p2 = poissonV7(mu, 2), p3 = poissonV7(mu, 3);
   var pOver15 = 1 - p0 - p1;
   var pOver25 = 1 - p0 - p1 - p2;
@@ -23426,6 +23463,7 @@ function volumeCalibreV7(theme, gvol) {
   return {
     qG: qG, qM: qM, q: q, Q: Q,
     marquageCadent: M ? M.total : null,
+    m9: lectureM9 ? { figure: lectureM9.m9, sens: lectureM9.sens, annonce: lectureM9.annonce } : null,
     buts: mu,
     butsArrondi: Math.round(mu * 10) / 10,
     bande: bande, tranches: tranches, marche: marche,
