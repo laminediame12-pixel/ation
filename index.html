@@ -19248,7 +19248,39 @@ function toggleCarteThemePanel() {
     + bloc('Les 16 maisons', '<div style="overflow-x:auto;">' + lignes + '</div>')
     + bloc('Rotation', '<div style="font-size:12px;">' + rotTxt + '</div>')
     + bloc('Témoins et Juge', temoins)
-    + bloc('Force active des 4 éléments par axe', (function () {
+    + bloc('Force de marquage — axe cadent, par camp', (function () {
+      var M = null;
+      try { M = forceMarquageCadentV7(t); } catch (err) { M = null; }
+      if (!M) return '<div class="muted">indisponible</div>';
+      var ligne = function (nom, c, gagne) {
+        return '<div style="flex:1; min-width:190px; padding:7px 9px; border-radius:8px; border:1px solid '
+          + (gagne ? '#4ade80' : '#334155') + '; background:rgba(2,8,23,.55);">'
+          + '<div style="font-size:11px; font-weight:900; color:' + (gagne ? '#4ade80' : '#cbd5e1') + ';">'
+          + nom + ' — ' + c.min + ' à ' + c.max + ' buts (moy ' + c.moyenne.toFixed(1) + ')'
+          + (gagne ? ' ✔' : '') + '</div>'
+          + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:3px; line-height:1.5;">'
+          + c.detail.map(function (d) {
+              return 'pos' + d.position + ' ' + e(FL[d.figure]) + ' <b>' + e(d.label) + '</b>';
+            }).join('<br>')
+          + '</div></div>';
+      };
+      return '<div style="display:flex; gap:8px; flex-wrap:wrap;">'
+        + ligne('R1', M.R1, M.dominant === 'R1') + ligne('R7', M.R7, M.dominant === 'R7')
+        + '</div>'
+        + '<div style="font-size:10.5px; color:#cbd5e1; margin-top:6px;">'
+        + 'Part de R1 dans le total : <b>' + Math.round(M.partR1 * 100) + '%</b>'
+        + ' — c\'est la seule lecture sans échelle.</div>'
+        + '<div style="margin-top:6px; padding:6px 9px; border:1px solid #f59e0b; border-radius:7px; '
+        + 'background:rgba(245,158,11,.10); font-size:10px; color:#fcd34d;">'
+        + '⚠️ Le NIVEAU absolu est faux. Sur les 65 536 thèmes cette somme donne en moyenne '
+        + '14,4 buts par match, quand l\'archive réelle (n = 49) en donne 4,16 — <b>3,5 fois trop haut</b>. '
+        + 'Cinq maisons ne sont pas cinq buteurs. Aucun facteur d\'échelle n\'est appliqué : '
+        + 'le poser reviendrait à l\'ajuster sur la moyenne de l\'archive.<br>'
+        + '⚠️ Cette famille a déjà échoué : SCORE_MOTEUR_V7, n = 49, douze lectures, meilleur '
+        + 'p brut 0,0846 (le trigone offensif du camp 1) et 1,0000 après Bonferroni. '
+        + 'Score exact 6/49. Lecture seule — elle n\'alimente ni le volume ni le score.</div>';
+    })())
+  + bloc('Force active des 4 éléments par axe', (function () {
         var F = null;
         try { F = forceElementsAxeV7(t); } catch (err) { F = null; }
         if (!F) return '<div class="muted">indisponible</div>';
@@ -26047,6 +26079,66 @@ function forceCampV7(themeTourne, siege, offsets) {
   });
   var possible = offsets.length * 4;
   return { total: total, possible: possible, ratio: possible ? total / possible : 0, detail: detail };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LA FORCE DE MARQUAGE DE L'AXE CADENT, PAR CAMP
+// 13/09/26, Ellemine_D : « chaque figure possède une quantité de marquage,
+// c'est ça qu'on doit creuser pour le volume de buts et le score exact.
+// Opère dans l'axe cadent les figures qui y sont, leur force pour chaque
+// camp. »
+//
+// Chaque camp lit les cinq maisons du motif CADENT depuis son siège dans la
+// rotation (les mêmes que sa force offensive), et on relève la quantité de
+// marquage de chaque figure qui s'y trouve — la table BUTS_FIGURE, doctrine
+// du 12/07/26 : Fortuna Major 3-5, Albus 2-4, Laetitia et Acquisitio 2-3,
+// Puella 2, Rubeus 1-3, Puer / Fortuna Minor / Cauda 1-2, Caput / Tristitia
+// / Amissio / Conjunctio / Via 0-1, Carcer et Populus 0.
+//
+// ⚠️ CETTE FAMILLE A DÉJÀ ÉTÉ TESTÉE, ET ELLE A ÉCHOUÉ. Voir SCORE_MOTEUR_V7,
+// n = 49 matchs réels : douze lectures essayées, meilleur p brut 0,0846 — et
+// c'était justement le TRIGONE OFFENSIF DU CAMP 1 — mais 1,0000 après
+// Bonferroni. Corrélations du score produit : camp1 rho -0,089 (p 0,55),
+// camp2 rho 0,246 (p 0,089), total rho 0,136 (p 0,35), écart rho -0,132 avec
+// le signe INVERSE. Score exact 6/49. Conclusion écrite alors : « le SCORE
+// EXACT ne vaut rien — ni niveau, ni écart, ni corrélation ».
+//
+// ⚠️ ET L'ÉCHELLE EST FAUSSE, DANS L'AUTRE SENS QU'AVANT. Mesuré sur les
+// 65 536 thèmes, la somme brute des cinq maisons donne en moyenne
+//   R1 7,28  ·  R7 7,14  ·  TOTAL 14,42 buts
+// quand l'archive réelle (n = 49) donne 2,35 / 1,82 / 4,16. C'est 3,5 fois
+// TROP HAUT — l'ancien générateur était 2,5 fois trop bas. Cinq maisons ne
+// sont pas cinq buteurs indépendants.
+// Aucun facteur d'échelle n'est appliqué ici : le poser reviendrait à
+// l'ajuster sur la moyenne de l'archive, c'est-à-dire à fabriquer un
+// résultat. Seule la PART RELATIVE (part de R1 dans le total des deux) est
+// sans échelle, et c'est la seule chose lisible sans tricher.
+//
+// EN LECTURE SEULE : cette fonction n'alimente ni le volume ni le score.
+function forceMarquageCadentV7(theme) {
+  if (!theme || !theme[1] || typeof themeTourneR1V7 !== 'function'
+    || typeof BUTS_FIGURE === 'undefined') return null;
+  var rt = themeTourneR1V7(theme);
+  if (!rt) return null;
+  var lire = function (siege) {
+    var mn = 0, mx = 0, detail = [];
+    OFFSETS_OFFENSIVE_V7.forEach(function (o) {
+      var pos = ((siege - 1 + o) % 16) + 1;
+      var fig = rt[pos];
+      var B = BUTS_FIGURE[fig] || { min: 0, max: 0, label: '0' };
+      mn += B.min; mx += B.max;
+      detail.push({ position: pos, figure: fig, min: B.min, max: B.max, label: B.label });
+    });
+    return { min: mn, max: mx, moyenne: (mn + mx) / 2, detail: detail };
+  };
+  var a = lire(1), b = lire(7);
+  var tot = a.moyenne + b.moyenne;
+  return {
+    R1: a, R7: b,
+    total: tot,
+    partR1: tot ? a.moyenne / tot : 0.5,
+    dominant: a.moyenne > b.moyenne ? 'R1' : b.moyenne > a.moyenne ? 'R7' : null
+  };
 }
 
 function forcesOffensiveDefensiveV7(theme) {

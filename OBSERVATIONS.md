@@ -867,3 +867,52 @@ Le **score**. 1-0 puis 2-1 contre un 5-2 réel. Le générateur ne produit
 pratiquement jamais plus de 3 buts ; il ne peut structurellement pas atteindre
 un 5-2. Le volume dit « plus de 2,5 » et tombe juste, mais il annonce 2,58 quand
 il y en a eu 7 — juste sur le sens, muet sur l'ampleur.
+
+### Force de marquage de l'axe cadent — 13/09/2026
+
+Ellemine_D : « chaque figure possède une quantité de marquage, c'est ça qu'on doit
+creuser pour le volume et le score exact. Opère dans l'axe cadent les figures qui
+y sont, leur force pour chaque camp. »
+
+La table existe : `BUTS_FIGURE` (doctrine du 12/07/26). Fortuna Major 3-5,
+Albus 2-4, Laetitia et Acquisitio 2-3, Puella 2, Rubeus 1-3, Puer / Fortuna
+Minor / Cauda 1-2, Caput / Tristitia / Amissio / Conjunctio / Via 0-1, Carcer et
+Populus 0.
+
+Construit : chaque camp lit les cinq maisons du motif cadent depuis son siège, on
+relève la quantité de marquage de chaque figure. Affiché dans la carte du thème.
+
+**DEUX AVERTISSEMENTS, ET ILS SONT LOURDS.**
+
+**1. Cette famille a déjà été testée et a échoué.** `SCORE_MOTEUR_V7`, **n = 49
+matchs réels** : douze lectures essayées, meilleur p brut **0,0846** — et c'était
+justement *le trigone offensif du camp 1* — mais **1,0000 après Bonferroni**.
+Corrélations : camp1 rho −0,089 (p 0,55), camp2 rho 0,246 (p 0,089), total
+rho 0,136 (p 0,35), écart rho −0,132 **de signe inverse**. Score exact **6/49**.
+Conclusion écrite alors : « le SCORE EXACT ne vaut rien — ni niveau, ni écart, ni
+corrélation ».
+
+**2. L'échelle est fausse, dans l'autre sens qu'avant.** Sur les 65 536 thèmes la
+somme brute donne :
+
+| | prédit | réel (archive n=49) |
+|---|---|---|
+| R1 | 7,28 | 2,35 |
+| R7 | 7,14 | 1,82 |
+| **total** | **14,42** | **4,16** |
+
+**3,5 fois trop haut.** L'ancien générateur était 2,5 fois trop bas. Cinq maisons
+ne sont pas cinq buteurs indépendants.
+
+**Aucun facteur d'échelle n'est appliqué.** Le poser reviendrait à l'ajuster sur
+la moyenne de l'archive — fabriquer le résultat. Seule la **part relative** (part
+de R1 dans le total) est sans échelle.
+
+Sur les deux thèmes au résultat connu, la part relative donne 1 sur 2 :
+
+| thème | part R1 | réel | |
+|---|---|---|---|
+| Tristitia / Via / Conjunctio / Rubeus | 57 % | 7-0 | ✓ |
+| Via / Tristitia / Cauda / Fortuna Minor | 44 % | 5-2 | ✗ |
+
+**En lecture seule.** N'alimente ni le volume ni le score.
