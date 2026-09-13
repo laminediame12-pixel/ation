@@ -3131,3 +3131,73 @@ sur les matchs, ni que les lignes choisies soient un tirage
 représentatif. Tant que l'échantillon n'est pas élargi, **« 33 % c'est
 trop » est une hypothèse, pas un fait mesuré** — et c'est la raison
 principale pour laquelle je n'ai pas forcé la baisse.
+
+## 13/09/26 — les deux synthèses M13 / M14, signal sur le nul
+
+Ellemine_D : « Les deux synthèses M13 et M14 sont des signaux sur le nul.
+Quand ils sont symétriques — Albus-Rubeus, Tristitia-Laetitia,
+Cauda-Caput, Carcer-Conjonctio — ou quand ils interagissent comme
+binôme/antagoniste (Puer-Albus). »
+
+### Ce que « symétrique » veut dire — vérifié sur ses quatre paires
+
+Trois sont les figures **renversées** l'une de l'autre (les quatre lignes
+lues à l'envers). La quatrième **non** : Carcer et Conjunctio sont chacune
+leur *propre* renversée — avec Via et Populus, les quatre palindromes.
+
+Une seule formule couvre les quatre : **la paire est stable par
+renversement**, `{renv(M13), renv(M14)} = {M13, M14}`. Miroir l'une de
+l'autre, ou palindromes toutes les deux. Contrôlé sur les cinq paires
+citées : les cinq allument le signal.
+
+Ce n'est pas la symétrie que j'avais codée dans `nulFormuleTemoinsV7`,
+qui compare les ÉLÉMENTS. Celle-ci compare les figures.
+
+### Ce que ça vaut sur les six lignes
+
+| score | réel | M13 / M14 | relation | signal |
+|---|---|---|---|---|
+| 1-1 | Nul | albus / puer | antagonistes | Nul ✔ |
+| 2-3 | R7 | fortuna_minor / amissio | antagonistes | Nul ✘ |
+| 7-0 | R1 | fortuna_minor / carcer | — | — ✔ |
+| 0-0 | Nul | carcer / fortuna_major | binômes | Nul ✔ |
+| 4-0 | R1 | tristitia / tristitia | — | — ✔ |
+| 3-3 | Nul | tristitia / laetitia | renversées | Nul ✔ |
+
+**5/6 en détecteur autonome** : les trois nuls attrapés, un faux positif.
+
+### Pourquoi il est AFFICHÉ et ne DÉCIDE PAS
+
+En porte sur le nul de la chaîne il aurait fait très bonne figure : six
+lignes conservées 6/6 et **nul 31,9 % → 20,2 %**, exactement la baisse
+cherchée depuis hier. **C'est un leurre**, et la mesure le dit :
+
+    P(témoins allumés) sur les 65 536 thèmes ......... 32,8 %
+    P(témoins | étage concordance) ....... 32,4 %   ×0,99
+    P(témoins | étage avantage annulé) ... 34,1 %   ×1,04
+    P(témoins | étage antagoniste) ....... 33,2 %   ×1,01
+    P(témoins | étage égalité) ........... 32,0 %   ×0,98
+
+Le signal est **indépendant** des étages de la chaîne, et les deux
+moitiés séparément aussi (symétrie ×0,98 à ×1,03 ; binôme/antagoniste
+×0,96 à ×1,14). Le mettre en porte supprimerait les deux tiers des
+annulations **au hasard** : le nul tomberait à 20 % sans qu'aucun
+mécanisme n'ait choisi lesquels. De l'attrition déguisée en règle —
+exactement le défaut que ce fichier a déjà fabriqué douze fois.
+
+**Mais l'indépendance coupe dans les deux sens :** ce signal porte une
+information que la chaîne n'a pas. C'est un axe neuf, pas une redite.
+
+### ⚠️ Ce que les six lignes ne prouvent pas
+
+Trois nuls sur trois à un taux de base de 33 % donne p ≈ 3,7 %. Mais
+**deux des trois paires — albus/puer et tristitia/laetitia — sont
+littéralement les exemples cités** : elles sont dans l'échantillon par
+construction. Une seule confirmation hors exemple : le 0-0
+(carcer / fortuna_major, binôme). Une.
+
+`SIGNAL_TEMOINS_DECIDE_V7 = true` le mettrait aux commandes. À ne pas
+faire avant élargissement de l'échantillon.
+
+    six lignes : camp 6/6 · BTTS 6/6 · marginale du camp inchangée
+    (37 / 31 / 31,9) · aucune erreur de page

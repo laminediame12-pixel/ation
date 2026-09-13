@@ -27431,6 +27431,116 @@ var ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = true;
 // ANNULATION_EXIGE_MENACE_EN_BASE_V7 = false revient au comportement livré.
 var ANNULATION_EXIGE_MENACE_EN_BASE_V7 = true;
 
+// ═══════════════════════════════════════════════════════════════
+// LES DEUX SYNTHÈSES M13 / M14 — SIGNAL SUR LE NUL
+// Doctrine d'Ellemine_D, 13/09/26 : « Les deux synthèses M13 et M14 sont
+// des signaux sur le nul. Quand ils sont symétriques — Albus-Rubeus,
+// Tristitia-Laetitia, Cauda-Caput, Carcer-Conjonctio — ou quand ils
+// interagissent comme binôme/antagoniste (Puer-Albus). »
+//
+// ── CE QUE « SYMÉTRIQUE » VEUT DIRE, VÉRIFIÉ SUR SES QUATRE PAIRES ──
+// Trois d'entre elles sont les figures RENVERSÉES l'une de l'autre (les
+// quatre lignes lues à l'envers) :
+//     albus <-> rubeus · tristitia <-> laetitia · cauda <-> caput
+// La quatrième NON : Carcer et Conjunctio sont chacune leur PROPRE
+// renversée (avec Via et Populus, ce sont les quatre palindromes).
+// Une seule formule couvre les quatre — la PAIRE est stable par
+// renversement :   { renv(M13), renv(M14) } = { M13, M14 }
+// Miroir l'une de l'autre, ou palindromes toutes les deux.
+//
+// ── L'INTERACTION ──
+// Puer-Albus : ANTAGONISTES_V7[albus] = puer. La table n'est pas
+// symétrique (décalage de 3 dans FIGS_V7), donc on lit les deux sens,
+// pour le binôme comme pour l'antagoniste.
+//
+// ── CE QUE ÇA VAUT SUR LES SIX LIGNES ──
+//   1-1  Nul   albus / puer .............. antagoniste ....... Nul ✔
+//   2-3  R7    fortuna_minor / amissio ... antagoniste ....... Nul ✘
+//   7-0  R1    fortuna_minor / carcer .... rien .............. —   ✔
+//   0-0  Nul   carcer / fortuna_major .... binôme ............ Nul ✔
+//   4-0  R1    tristitia / tristitia ..... rien .............. —   ✔
+//   3-3  Nul   tristitia / laetitia ...... SYMÉTRIQUE ........ Nul ✔
+// 5/6 en détecteur autonome : les TROIS nuls attrapés, un faux positif.
+//
+// ── POURQUOI IL EST AFFICHÉ ET NE DÉCIDE PAS ──
+// En porte sur le nul de la chaîne, il aurait fait très bonne figure :
+// six lignes conservées 6/6 et nul 31,9 % -> 20,2 %, pile la baisse
+// cherchée depuis hier. C'EST UN LEURRE, et la mesure le dit :
+//
+//   P(témoins allumés) sur les 65 536 thèmes ......... 32,8 %
+//   P(témoins | étage concordance) ....... 32,4 %  ×0,99
+//   P(témoins | étage avantage annulé) ... 34,1 %  ×1,04
+//   P(témoins | étage antagoniste) ....... 33,2 %  ×1,01
+//   P(témoins | étage égalité) ........... 32,0 %  ×0,98
+//
+// Le signal est INDÉPENDANT des étages de la chaîne — et les deux
+// moitiés séparément aussi (symétrie ×0,98 à ×1,03 ; binôme/antagoniste
+// ×0,96 à ×1,14). Le mettre en porte reviendrait donc à supprimer les
+// deux tiers des annulations AU HASARD. Le nul tomberait à 20 % sans
+// qu'aucun mécanisme n'ait choisi lesquels : de l'attrition déguisée en
+// règle. C'est exactement le genre de « progrès » que ce fichier a déjà
+// fabriqué douze fois.
+//
+// MAIS L'INDÉPENDANCE COUPE DANS LES DEUX SENS : ce signal porte une
+// information que la chaîne n'a pas. C'est un AXE NEUF, pas une
+// redite — et c'est ce qui le rend intéressant plutôt que décoratif.
+//
+// ⚠️ CE QUE LES SIX LIGNES NE PROUVENT PAS. Trois nuls sur trois avec un
+// taux de base de 33 % donne p ≈ 3,7 % — mais DEUX des trois paires
+// (albus/puer et tristitia/laetitia) sont littéralement les exemples
+// qu'Ellemine_D a cités : elles sont dans l'échantillon par
+// construction. Une seule, le 0-0 (carcer / fortuna_major, binôme), est
+// une vraie confirmation hors exemple. Une.
+//
+// SIGNAL_TEMOINS_DECIDE_V7 = true le mettrait aux commandes. Ne pas le
+// faire avant que l'échantillon soit élargi.
+// ═══════════════════════════════════════════════════════════════
+var SIGNAL_TEMOINS_NUL_V7    = true;    // calculé et affiché
+var SIGNAL_TEMOINS_DECIDE_V7 = false;   // ne touche pas au verdict
+
+function figureRenverseeV7(fig) {
+  if (typeof MAP_GEO === 'undefined' || !MAP_GEO[fig]) return null;
+  var cible = MAP_GEO[fig].slice().reverse().join('');
+  var noms = Object.keys(MAP_GEO);
+  for (var i = 0; i < noms.length; i++) {
+    if (MAP_GEO[noms[i]].join('') === cible) return noms[i];
+  }
+  return null;
+}
+
+function signalTemoinsNulV7(theme) {
+  if (!theme || !theme[13] || !theme[14]) return null;
+  var a = theme[13], b = theme[14];
+  var ra = figureRenverseeV7(a), rb = figureRenverseeV7(b);
+  // la paire est-elle stable par renversement ?
+  var symetrique = !!(ra && rb) &&
+    [ra, rb].sort().join('|') === [a, b].sort().join('|');
+  var miroir  = symetrique && ra === b && a !== b;
+  var palindromes = symetrique && ra === a && rb === b;
+  var binome = (typeof BINOMES_V7 !== 'undefined')
+    && (BINOMES_V7[a] === b || BINOMES_V7[b] === a);
+  var antagoniste = (typeof ANTAGONISTES_V7 !== 'undefined')
+    && (ANTAGONISTES_V7[a] === b || ANTAGONISTES_V7[b] === a);
+  var interaction = binome || antagoniste;
+  var quoi = [];
+  if (miroir) quoi.push('renversées l\'une de l\'autre');
+  if (palindromes) quoi.push('toutes deux leur propre renversée');
+  if (binome) quoi.push('binômes');
+  if (antagoniste) quoi.push('antagonistes');
+  return {
+    applicable: true, M13: a, M14: b, renverseeM13: ra, renverseeM14: rb,
+    symetrique: symetrique, miroir: miroir, palindromes: palindromes,
+    binome: binome, antagoniste: antagoniste, interaction: interaction,
+    signal: symetrique || interaction,
+    decide: false,
+    resume: 'synthèses M13 ' + a + ' / M14 ' + b + ' — '
+      + (quoi.length
+          ? (quoi.join(', ') + ' : SIGNAL DE NUL (lecture indépendante, '
+             + 'elle ne décide pas)')
+          : 'ni symétriques ni en interaction — pas de signal de nul')
+  };
+}
+
 function campParChaineV7(theme) {
   if (!theme || !theme[1] || typeof ANTAGONISTES_V7 === 'undefined') return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -28713,6 +28823,12 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsIndecidable: !!BTTS_INDECIDABLE_V7,
     procedure: (function () { try { return procedureAnalyseV7(theme); } catch (e) { return null; } })(),
     verificationAxes: (function () { try { return verificationParLesAxesV7(theme); } catch (e) { return null; } })(),
+    // Signal indépendant sur le nul (M13/M14). Affiché, ne décide pas :
+    // voir le bloc SIGNAL_TEMOINS_NUL_V7.
+    signalTemoinsNul: (function () {
+      try { return SIGNAL_TEMOINS_NUL_V7 ? signalTemoinsNulV7(theme) : null; }
+      catch (e) { return null; }
+    })(),
     campsQuiMarquent: (function () {
       try { return campsQuiMarquentV7(theme); } catch (e) { return null; }
     })(),
