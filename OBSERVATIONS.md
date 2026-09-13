@@ -712,11 +712,42 @@ l'offense » — déjà écrite dans le code avant tout ce travail sur les axes.
 | Succédent | 2,41 | 2,55 | +0,14 |
 | **Angulaire** | 2,56 | 2,41 | **−0,15** |
 
-⚠️ **Cette corrélation ne prouve rien.** Elle est circulaire : le générateur de
-score utilise l'offensive `{3,5,9}`, des maisons cadentes, et la défense
-`{1,4,10}`, angulaires. Plus le Cadent est actif, plus il produit de buts — par
-construction. Ce n'est pas une loi découverte, c'est une hypothèse déjà encodée
-qui ressort par la sortie. Ce qu'elle établit : le fichier partage l'intuition.
-Ce qu'elle n'établit pas : qu'elle soit vraie.
+~~⚠️ Cette corrélation ne prouve rien. Elle est circulaire...~~
+
+**CORRIGÉ LE 13/09/2026 — MON OBJECTION ÉTAIT FAUSSE.** Ellemine_D a demandé
+qu'on la teste au lieu de l'affirmer. Trois mesures :
+
+**1. Ce n'est pas un effet d'activité globale.** L'activité totale du thème
+(0–64 niveaux actifs) → buts : de 20 à 41, les buts vont de 2,48 à 2,57.
+**Quasi plat**, +0,09 sur toute l'amplitude.
+
+**2. L'effet survit à activité totale constante.**
+
+| total fixé | Cadent faible | Cadent fort | écart |
+|---|---|---|---|
+| 30 | cad 7 → 2,328 | cad 13 → 2,660 | **+0,33** |
+| 32 | cad 7 → 2,260 | cad 13 → 2,533 | **+0,27** |
+| 34 | cad 8 → 2,356 | cad 14 → 2,664 | **+0,31** |
+
+Monotone, cohérent sur trois strates. Ce n'est pas *combien* le thème est actif
+qui compte, c'est **où** l'activité se loge.
+
+**3. Ce n'est pas le trigone du moteur qui fuit.** C'était mon argument : le
+générateur emploie l'offensive `{3,5,9}`, cadente. Mais ce trigone travaille sur
+le thème **tourné** — ce ne sont pas les maisons fixes de l'axe, sauf rotation
+triviale. Restreint aux **rotations non triviales**, là où les deux ensembles
+diffèrent, l'effet est **intact : +0,273**, identique au global.
+
+Et le contrôle est net : le trigone du moteur lui-même, à total constant, va dans
+le sens **inverse** — 2,531 → 2,313 quand il s'active. Les deux pointent en sens
+opposés. La corrélation du Cadent ne peut donc pas venir de lui.
+
+**Ce qui reste vrai** : ces 65 536 thèmes ne contiennent aucun résultat de match.
+L'effet est établi *dans le système*, pas dans le monde. Mais il est **spécifique
+à l'axe Cadent**, et ça, c'était à démontrer — je l'avais écarté à tort.
+
+**Note ouverte** : un trigone dit « offensif » dont l'activité *réduit* les buts
+prédits, c'est un signal à examiner. Soit le trigone est mal orienté, soit le
+générateur de score l'utilise à l'envers.
 
 Sorties sur les 65 536 thèmes : identiques (le bouton n'entre dans aucune décision).
