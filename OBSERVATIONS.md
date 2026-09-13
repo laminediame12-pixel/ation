@@ -3002,3 +3002,32 @@ Plus d'étiquette écrite à la main : le score réel est lu dans
 `ECHANTILLON_ELLEMINE_V7` et le BTTS/camp en est déduit.
 
     BTTS 5/5 · camp 5/5 · incident 2/2 · aucune erreur de page
+
+### Nettoyage des commentaires périmés sur la concordance (13/09/26)
+
+Le commentaire qui m'a fait recalculer un contrôle avec le mauvais barème
+n'était pas seul. Cinq endroits décrivaient encore l'échelle morte le
+11/09/26 (feu-terre et air-eau à 0,25 ; feu-eau et air-terre à 0) :
+
+| endroit | ce qu'il disait | traitement |
+|---|---|---|
+| bloc du 13/07/26, au-dessus de `concordanceElement` | tout l'ancien barème, en douze lignes | **supprimé**, remplacé par une note d'historique de six lignes |
+| en-tête de `chaineDeForce` | « identique=1, feu/air ou terre/eau=0.5, **sinon 0** » | corrigé — plus aucun couple réel ne vaut 0 |
+| santé des binômes | « identique=1, **nourricière=0.5** » | corrigé — l'échelle est nommée en entier |
+| lecture L, règle de l'informateur | « concordanceElement **donne 0** pour feu/eau et air/terre » | corrigé — 0,25, au plancher. Le constat survit : mêmes paires, toujours les plus basses |
+| trace de calcul du camp Puella | 0 pour terre-en-air et feu-en-eau | **gardée telle quelle** (elle date la lecture) et annotée du recalcul : 0,25 · 0,25. Le rapport de force ne s'inverse pas |
+
+Un seul barème est décrit dans le fichier désormais : **identique 1 ·
+alliés 0,5 · contraires feu-eau et air-terre 0,25 · sans relation 0** —
+ce dernier rang ne décrivant aucun couple d'éléments réels, seulement le
+cas dégénéré.
+
+**Preuve que rien n'a bougé au comportement.** Le diff ne touche que des
+lignes de commentaire (contrôlé : aucune ligne non-commentaire modifiée),
+et l'empreinte des moteurs sur les 65 536 thèmes est inchangée :
+
+    table de concordance     identique
+    camp   (65 536 verdicts) af0d715c -> af0d715c
+    BTTS   (65 536 verdicts) 48a50fa6 -> 48a50fa6
+    incident (65 536)        878bd7d4 -> 878bd7d4
+    cinq lignes : BTTS 5/5 · camp 5/5 · incident 2/2 · aucune erreur de page
