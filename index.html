@@ -26174,6 +26174,20 @@ function detecterBTTS100V7(theme) {
 // incidents, ni le moteur Volume.
 // ═══════════════════════════════════════════════════════════════
 var BTTS_AXES_DECISIF_V7 = true;
+// ─── LE BTTS EST DÉCLARÉ INDÉCIDABLE (13/09/26) ───
+// Voir la démonstration complète dans buildVerdictCard, au-dessus de la
+// cascade. Résumé : sur les 42 matchs de football réel de l'archive le BTTS
+// réel fait 21/42, la cascade en trouvait 19, et une recherche de 187
+// candidats a produit un meilleur (26/42) inférieur à ce que le hasard
+// produit (29/42) au même nombre de candidats.
+var BTTS_INDECIDABLE_V7 = true;
+// Le score prend sa source dans le volume calibré depuis que la cascade BTTS
+// est coupée : sans elle le générateur ne sortait plus que des 1-0 / 0-1 / 0-0.
+var SCORE_DU_VOLUME_V7 = true;
+var BTTS_BASE_REELLE_V7 = 21 / 42;    // base mesurée, football réel
+var BTTS_BASE_ESPORT_V7 = 7 / 7;      // base mesurée, e-sport / FIFA
+var BTTS_N_REEL_V7 = 42;
+var BTTS_N_ESPORT_V7 = 7;
 
 // ═══════════════════════════════════════════════════════════════
 // LA FORCE OFFENSIVE ET DÉFENSIVE DE CHAQUE CAMP (13/09/26, Ellemine_D :
@@ -26766,8 +26780,59 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // verdict, qui nommait un moteur et en appliquait un autre.
   // bttsBranche est desormais pose PAR la cascade, et c'est lui qui
   // nomme la source. Le BTTS lui-meme ne change pas d'un theme.
+  // ═══════════════════════════════════════════════════════════════
+  // LE BTTS NE DÉCIDE PLUS (13/09/26, Ellemine_D : « corrige le BTTS »)
+  // ───────────────────────────────────────────────────────────────
+  // Mesure sur les 49 matchs de CAS_REFERENCE_V7, dont 42 de football réel
+  // (7 sont e-sport / FIFA et sont comptés à part : ils font 7/7 BTTS oui).
+  //
+  // Sur les 42 réels, le BTTS réel vaut 21/42 — exactement pile ou face.
+  // Et la cascade y mesurait :
+  //
+  //   cascade complète (telle quelle) ....... 19/42 = 45 %   phi = -0,095
+  //   camp muet -> BTTS non ................. 17/42 = 40 %   phi = -0,196
+  //   toujours OUI .......................... 21/42 = 50 %
+  //   toujours NON .......................... 21/42 = 50 %
+  //
+  // Le moteur était donc SOUS le hasard, et son étage le plus récent — le
+  // camp muet — était le plus nuisible des deux. Le détecteur de camp muet
+  // pointe même à l'envers : il s'allume sur 16 matchs, dont 10 où les deux
+  // camps ont marqué (62 %), contre 11 sur 26 (42 %) quand il ne s'allume
+  // pas. La doctrine « un camp muet ne peut pas marquer » est juste ; c'est
+  // le DÉTECTEUR qui désigne les mauvais matchs.
+  //
+  // Recherche systématique ensuite : 187 candidats (seuils aux terciles de
+  // 20 variables continues, présence de chacune des 16 figures dans le
+  // thème / le cadent / l'angulaire / en R1-R7, camp muet, moteur actuel).
+  // Meilleur trouvé : 26/42 = 62 %. Distribution nulle du meilleur des 187
+  // sur étiquettes permutées, 20 000 tirages : moyenne 29/42.
+  // P(meilleur >= 26 par hasard) = 100 %.
+  // Autrement dit le meilleur candidat trouvé est MOINS BON que ce que le
+  // hasard produit à ce nombre de candidats. Rien dans ce système ne
+  // prédit le BTTS sur les matchs réels dont on dispose.
+  //
+  // La route par le volume ne sauve rien : P(les deux marquent) sous
+  // Poisson(mu) donne un score de Brier de 0,2902 quand « 50 % à chaque
+  // match » donne 0,2500, et le volume corrigé lui-même ne corrèle pas
+  // aux buts réels sur ces 42 matchs (r = -0,069, p = 0,66).
+  //
+  // CE QUI EST FAIT ICI. On cesse d'affirmer. Le BTTS n'est plus tranché
+  // par une lecture : il suit le score de la carte, pour que la carte ne
+  // se contredise jamais, et il est annoncé comme INDÉCIDABLE avec sa
+  // probabilité de base. Toutes les lectures (axes, cadent, chaîne,
+  // rotation, camp muet) restent CALCULÉES ET AFFICHÉES — elles ne
+  // décident plus. Remettre BTTS_INDECIDABLE_V7 à false rebranche la
+  // cascade telle qu'elle était, si de nouveaux résultats la justifient.
+  // ═══════════════════════════════════════════════════════════════
   var btts, bttsBranche;
-  if (BTTS_AXES_DECISIF_V7 && bttsAxes && bttsAxes.applicable && bttsAxes.verdict !== null) {
+  if (BTTS_INDECIDABLE_V7) {
+    // null, pas false : « on ne sait pas » n'est pas « non ». Les affichages
+    // rendent déjà INDÉTERMINÉ pour un btts non booléen, et le score reste
+    // celui du générateur calibré, sans être écrasé par une lecture nulle.
+    btts = null;
+    bttsBranche = 'indecidable';
+  }
+  else if (BTTS_AXES_DECISIF_V7 && bttsAxes && bttsAxes.applicable && bttsAxes.verdict !== null) {
     btts = bttsAxes.verdict; bttsBranche = 'axes';
   }
   else if (BTTS_CADENT_V7 && bttsCadent !== null) {
@@ -26898,7 +26963,12 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       // Un camp qui ne marque pas impose le BTTS à non : les deux ne peuvent
       // pas marquer si l'un est muet. La cascade BTTS ignorait la route
       // « résidence », il faut donc le lui dire ici.
-      if (btts !== false) { btts = false; bttsBranche = 'camp_muet'; }
+      // COUPÉ 13/09/26 : mesuré 17/42 = 40 %, phi = -0,196, la pire pièce
+      // du BTTS. Le raisonnement est juste, le détecteur est faux — il
+      // s'allume sur 10 matchs où les deux camps ont marqué sur 16. Il
+      // continue de corriger le CAMP (demande d'Ellemine_D du 11/09) et
+      // reste affiché, mais il ne touche plus au BTTS.
+      if (!BTTS_INDECIDABLE_V7 && btts !== false) { btts = false; bttsBranche = 'camp_muet'; }
     }
   }
   var campMuetCorrige = null, campMuetNul = null;
@@ -26917,7 +26987,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     campMuetCorrige.apres = winner;
   }
 
-  if (btts === false) {
+  if (BTTS_INDECIDABLE_V7) {
+    // Le BTTS ne pilote plus le score, et ne le lit pas non plus : lire le
+    // score donnerait « les deux marquent » sur 99,9 pour cent des thèmes,
+    // exactement le défaut qu'on vient d'enlever au volume. Il reste vide.
+  } else if (btts === false) {
     if (scWinnerCode === 'A' && goalB > 0) goalB = 0;
     else if (scWinnerCode === 'B' && goalA > 0) goalA = 0;
   } else if (btts === true) {
@@ -27076,6 +27150,34 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       }
     }
   }
+  // ─── LE SCORE PREND SA SOURCE DANS LE VOLUME CALIBRÉ (13/09/26) ───
+  // En coupant la cascade BTTS on a découvert que le générateur de score ne
+  // tenait que par elle : sans la contrainte « les deux marquent », il ne
+  // produisait plus que 1-0 (40 %), 0-1 (45 %) et 0-0 (15 %). Le total de
+  // buts n'avait aucune source propre.
+  // Il en a une maintenant : le volume calibré donne les buts attendus, le
+  // moteur de camp donne le vainqueur, et l'écart annoncé est le plus petit
+  // écart gagnant — la marge de 1 but est la plus fréquente de l'archive
+  // (18 des 31 matchs décidés). Ce n'est pas une prédiction validée : le
+  // volume ne corrèle pas aux buts réels sur ces 42 matchs (r = -0,069).
+  // C'est le score le plus probable sous un modèle dont la seule propriété
+  // acquise est d'être calibré en marge.
+  if (SCORE_DU_VOLUME_V7) {
+    var _muS = null;
+    try { var _vS = verdictNMRatif(theme); _muS = _vS && _vS.volumeNM ? _vS.volumeNM.buts_attendus : null; }
+    catch (e) { _muS = null; }
+    if (_muS !== null && isFinite(_muS)) {
+      if (scWinnerCode === 'Nul') {
+        var _tN = Math.round(_muS / 2);
+        goalA = _tN; goalB = _tN;
+      } else {
+        var _T = Math.max(1, Math.round(_muS));
+        var _g = Math.ceil((_T + 1) / 2);
+        if (scWinnerCode === 'A') { goalA = _g; goalB = _T - _g; }
+        else { goalA = _T - _g; goalB = _g; }
+      }
+    }
+  }
   scoreMain = goalA + '-' + goalB;
   scoreAlt = SCORE_CALIBRE_V7
     ? (scWinnerCode === 'A' ? (goalA + 1) + '-' + goalB
@@ -27192,7 +27294,25 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       : campMuetCode === 'A' ? 'R1'
       : campMuetCode === 'B' ? 'R7' : null,
     bttsBranche: bttsBranche,
-    bttsSource: (bttsBranche === 'camp_muet')
+    // Ce que valent les lectures, pour qu'aucune carte n'affirme plus ce
+    // qui a été mesuré au hasard.
+    bttsIndecidable: !!BTTS_INDECIDABLE_V7,
+    bttsProbabilite: BTTS_BASE_REELLE_V7,
+    bttsLectures: {
+      axes: (bttsAxes && bttsAxes.applicable) ? bttsAxes.verdict : null,
+      cadent: bttsCadent,
+      chaine: (bttsChaine && bttsChaine.applicable) ? bttsChaine.lesDeuxMarquent : null,
+      rotation: (bttsRotation && bttsRotation.applicable) ? bttsRotation.lesDeuxMarquent : null,
+      campMuet: campMuetCode
+    },
+    bttsSource: BTTS_INDECIDABLE_V7
+      ? ('indécidable — aucun signal trouvé : 187 candidats testés sur les '
+         + BTTS_N_REEL_V7 + ' matchs réels de l\'archive (BTTS réel 21/42), '
+         + 'meilleur 26/42 quand le hasard en produit 29/42 ; la cascade y '
+         + 'mesurait 19/42 (phi = -0,095) et le camp muet 17/42 (phi = -0,196), '
+         + 'tous deux SOUS le hasard. Aucune valeur n\'est annoncée : le score '
+         + 'de la carte en implique une, ce n\'en est pas une prédiction.')
+      : (bttsBranche === 'camp_muet')
       ? ('camp muet — ' + (campMuetSource || 'un camp ne marque pas'))
       : (bttsBranche === 'axes')
       ? ((bttsAxes && bttsAxes.synthese) || 'forces offensives contre défenses adverses')
@@ -29424,7 +29544,8 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // ou renvoyait une valeur indéfinie. Le verdict BTTS doit toujours être
   // matérialisé dans la carte, indépendamment du texte secondaire.
   var bttsValeur = (card && typeof card.btts === 'boolean') ? card.btts : null;
-  var bt = bttsValeur === true ? 'Oui' : bttsValeur === false ? 'Non' : 'Indéterminé';
+  var bt = bttsValeur === true ? 'Oui' : bttsValeur === false ? 'Non'
+    : (card && card.bttsIndecidable) ? 'Indécidable — 50 %' : 'Indéterminé';
   if (card && card.bttsSource) bt += ' — ' + card.bttsSource;
   if (card && card.bttsZone) bt += '<br><span style="font-size:10px; color:#94a3b8; font-weight:400;">'
     + card.bttsZone + '</span>';
@@ -29769,8 +29890,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // les statistiques, mais trop bas/dépendant de la mise en page pour être visible
   // dans la fenêtre principale du verdict. Il est maintenant affiché directement
   // dans le bloc VAINQUEUR, avec une valeur toujours matérialisée.
-  var bttsPrincipal = (card && typeof card.btts === 'boolean') ? (card.btts ? 'OUI' : 'NON') : 'INDÉTERMINÉ';
+  var bttsPrincipal = (card && typeof card.btts === 'boolean') ? (card.btts ? 'OUI' : 'NON')
+    : (card && card.bttsIndecidable) ? 'INDÉCIDABLE · 50 %' : 'INDÉTERMINÉ';
   var bttsPrincipalColor = bttsPrincipal === 'OUI' ? '#4ade80' : bttsPrincipal === 'NON' ? '#f87171' : '#fbbf24';
+  if (bttsPrincipal.indexOf('INDÉCIDABLE') === 0) bttsPrincipalColor = '#94a3b8';
   var incidentPrincipal = card && card.penaltyRouge ? '⚠️ SIGNAL INCIDENT' : 'AUCUN SIGNAL';
   var incidentPrincipalCamp = card && card.incidentCamp ? ' · CONTRE ' + esc(card.incidentCamp) : '';
   // ─── LE CAMP QUI NE MARQUE PAS (11/09/26, Ellemine_D) ───
@@ -31007,7 +31130,8 @@ function renderTheme(){
       var _finalCard = document.getElementById('carte-verdict-r');
       var _tekFinal = _finalCard && _finalCard.querySelector('[data-protocole-r1r7="1"]');
       if (_tekFinal && !_tekFinal.querySelector('[data-btts-final-visible="1"]')) {
-        var _bttsFinal = (carteR && typeof carteR.btts === 'boolean') ? (carteR.btts ? 'OUI' : 'NON') : 'INDÉTERMINÉ';
+        var _bttsFinal = (carteR && typeof carteR.btts === 'boolean') ? (carteR.btts ? 'OUI' : 'NON')
+          : (carteR && carteR.bttsIndecidable) ? 'INDÉCIDABLE · 50 %' : 'INDÉTERMINÉ';
         var _bttsCol = _bttsFinal === 'OUI' ? '#4ade80' : (_bttsFinal === 'NON' ? '#f87171' : '#fbbf24');
         var _bttsSrc = carteR && carteR.bttsSource ? ' · ' + esc(carteR.bttsSource) : '';
         var _bttsNode = document.createElement('div');

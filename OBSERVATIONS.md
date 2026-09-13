@@ -1156,3 +1156,143 @@ la direction du marquage cadent ait été écrite. Les quatre autres ont servi �
 trouver cette direction. r = 0,715 sur n=5 dont 4 en échantillon ne prouve
 rien ; c'est la calibration marginale, elle, qui est acquise indépendamment de
 tout résultat.
+
+---
+
+## Correction du BTTS (13/09/26)
+
+### D'abord, la mesure — sur l'archive, pas sur 5 matchs
+
+`CAS_REFERENCE_V7` contient **49 matchs avec un score réel**, dont **7 e-sport /
+FIFA** et **42 de football réel**. Les deux populations n'ont rien à voir : les
+7 e-sport font **7/7 BTTS oui**, les 42 réels font **21/42 — exactement pile ou
+face**. Toute mesure faite sur les 49 mélangés est trompeuse ; tout ce qui suit
+porte sur les 42.
+
+| prédicteur | justes | phi |
+|---|---|---|
+| **cascade actuelle** | **19/42 = 45 %** | **−0,095** |
+| **camp muet → BTTS non** | **17/42 = 40 %** | **−0,196** |
+| toujours OUI | 21/42 = 50 % | 0 |
+| toujours NON | 21/42 = 50 % | 0 |
+| P(les deux marquent) sous Poisson(mu), split moitié | 22/42 = 52 % | 0,052 |
+| mu >= 2,5 | 23/42 = 55 % | 0,101 |
+
+Le moteur était **sous le hasard**, et sa pièce la plus récente — le camp muet,
+ajoutée le 11/09 — était la plus nuisible.
+
+### Le détecteur de camp muet pointe à l'envers
+
+Il s'allume sur 16 des 42 matchs.
+
+| | BTTS réel OUI | non |
+|---|---|---|
+| camp muet détecté (16) | **10** | 6 |
+| pas de camp muet (26) | 11 | **15** |
+
+Quand il dit « un camp ne marquera pas », les deux marquent dans 62 % des cas ;
+quand il se tait, dans 42 %. La doctrine est juste — un camp muet ne peut pas
+marquer — mais le **détecteur désigne les mauvais matchs**.
+
+### Recherche systématique : rien ne sépare
+
+187 candidats testés sur les 42 : seuils aux terciles de 20 variables continues
+(buts attendus, rangs, marquage cadent total / par camp / part R1 / écart /
+plancher, ratios offensifs et défensifs et leurs min-max-écarts, force des trois
+axes), présence de chacune des 16 figures dans le thème, dans le cadent, dans
+l'angulaire, en R1 ou R7, plus le camp muet et le moteur actuel.
+
+**Meilleur trouvé : 26/42 = 62 %** (`Conjunctio dans le thème` — évidemment
+fortuit).
+
+Distribution nulle du meilleur des 187 sur étiquettes permutées, 20 000 tirages :
+
+| meilleur des 187 | probabilité |
+|---|---|
+| 26/42 | 0,6 % |
+| 27/42 | 9,0 % |
+| 28/42 | 27,8 % |
+| **29/42** | **30,4 %** ← le mode |
+| 30/42 | 19,4 % |
+| 31/42 et plus | 12,9 % |
+
+**P(meilleur ≥ 26 par hasard) = 100 %.** Le meilleur candidat trouvé est *moins
+bon* que ce que le hasard produit à ce nombre de candidats. Rien, dans ce
+système, ne prédit le BTTS.
+
+### La route par le volume ne sauve rien — et le volume non plus
+
+`P(les deux marquent)` sous Poisson(mu) : score de Brier **0,2902**, contre
+**0,2500** pour « 50 % à chaque match ». Et le classement est cassé : la tranche
+prédite à 73 % s'observe à 42 %.
+
+Et il faut le dire franchement, parce que ça corrige ce que j'ai écrit hier :
+**le volume corrigé ne prédit rien non plus sur ces 42 matchs.**
+
+| | n | r | rho | p | over/under 2,5 |
+|---|---|---|---|---|---|
+| 42 réels | 42 | **−0,069** | −0,018 | **0,66** | 21/42 = 50 % |
+| 7 e-sport | 7 | −0,100 | 0,126 | 0,83 | 4/7 |
+
+Le `r = 0,715` que j'ai annoncé hier portait sur 5 matchs dont 4 avaient servi à
+trouver la règle. L'archive de 42 est le bien meilleur test et elle dit zéro.
+**La calibration du volume reste acquise** — annoncer « 5+ buts » sur 48,6 % des
+thèmes était indéfendable quel que soit le pouvoir prédictif — mais la
+prédiction, elle, n'existe pas.
+
+### Ce qui est fait
+
+1. **La cascade ne décide plus.** `BTTS_INDECIDABLE_V7 = true`. Les cinq étages
+   (axes, cadent, doctrine M4/M10, chaîne du perdant, rotation) et le camp muet
+   restent **calculés et affichés** dans `bttsLectures` — ils ne tranchent plus.
+   Remettre le drapeau à `false` rebranche tout, si de nouveaux résultats le
+   justifient.
+2. **Le BTTS n'est plus un booléen.** Il vaut `null`, la carte affiche
+   **« INDÉCIDABLE · 50 % »** en gris, et la source donne la mesure complète.
+   « On ne sait pas » n'est pas « non » : mettre `false` aurait annoncé
+   « un seul marque » sur 100 % des thèmes, et lire le score l'aurait annoncé
+   « les deux marquent » sur 99,9 % — les deux sont le défaut qu'on venait
+   d'enlever au volume.
+3. **Le camp muet continue de corriger le CAMP** (demande d'Ellemine_D du
+   11/09) et reste affiché. Il ne touche plus au BTTS.
+
+### Effet de bord découvert en coupant : le score ne tenait que par le BTTS
+
+Sans la contrainte « les deux marquent », le générateur ne produisait plus que
+**1-0 (40 %), 0-1 (45 %), 0-0 (15 %)**. Le total de buts n'avait aucune source
+propre — il était produit par une lecture BTTS mesurée sous le hasard.
+
+Le score prend donc sa source dans le **volume calibré** : total = buts
+attendus arrondis, vainqueur donné par le moteur de camp, écart = le plus petit
+écart gagnant (la marge de 1 but est la plus fréquente de l'archive, 18 des 31
+matchs décidés). Distribution obtenue : 1-2 15 % · 0-2 14 % · 2-1 14 % ·
+2-0 14 % · 1-3 11 % · 3-1 10 % · 1-1 8 % · 2-2 5 %.
+
+Ce que ça donne sur les 42, sans enjoliver :
+
+| | buts d'erreur | erreur sur le total | score exact | over/under |
+|---|---|---|---|---|
+| avant (BTTS pilote) | 118 | 104 | 3/42 | 17/42 |
+| **après (volume calibré)** | 122 | **90** | 2/42 | **21/42** |
+| toujours 1-1 | 108 | — | 2/42 | 17/42 |
+| toujours 1-0 | 122 | — | 4/42 | 17/42 |
+| **toujours 2-1** | **104** | — | 0/42 | **25/42** |
+
+L'erreur sur le total baisse de 104 à 90 et l'over/under monte de 17 à 21, mais
+**« toujours 2-1 » fait mieux que le moteur** sur les deux. Le score n'est pas
+meilleur qu'une constante. Il est cohérent, calibré en forme, et sourcé — c'est
+tout ce qu'on peut en dire.
+
+### Le camp aussi, pendant qu'on y est
+
+Mesuré au passage sur les mêmes 42 : le camp annoncé est juste **16/42 = 38 %**,
+pour 11 nuls sur 42. Ce n'est pas dans le périmètre de cette correction, mais
+c'est mesuré et c'est écrit.
+
+### Ce qu'il faudrait pour faire mieux
+
+Pas un moteur de plus. Des résultats : 42 matchs à 50/50 ne peuvent pas
+distinguer un effet réel de 5 à 10 points d'un bruit. Toute règle trouvée
+là-dedans sera un gagnant de recherche. La seule chose qui compte désormais est
+de **pré-enregistrer** une règle avant les matchs, comme on l'a fait pour le
+marquage cadent, et de la juger sur des résultats qu'elle n'a jamais vus.
