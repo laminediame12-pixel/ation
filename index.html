@@ -26576,6 +26576,13 @@ var BTTS_EQUILIBRE_DECIDE_V7 = true;
 // Le camp muet corrige le CAMP, plus le BTTS : il frappe les thèmes
 // équilibrés et faisait tomber le taux de BTTS oui de 51 % à 30,7 %.
 var CAMP_MUET_DECIDE_BTTS_V7 = false;
+// Le camp muet ne corrige plus le camp non plus : son seul appui chiffré
+// venait des 42 matchs écartés, et sur l'échantillon choisi il retourne un
+// verdict juste en verdict faux. Voir buildVerdictCard.
+var CAMP_MUET_CORRIGE_LE_CAMP_V7 = false;
+// Le nul se lit par les témoins et le juge, formule d'Ellemine_D du 13/09.
+// false remet nulActifV7 aux commandes. Voir nulFormuleTemoinsV7.
+var NUL_FORMULE_TEMOINS_V7 = true;
 // ─── LE BTTS N'EST VALIDÉ PAR RIEN (13/09/26) ───
 // Je l'avais déclaré indécidable après l'avoir mesuré sous le hasard sur
 // l'archive. Ellemine_D a coupé : l'archive n'est pas fiable, on ne sait pas
@@ -26796,6 +26803,52 @@ function forcesOffensiveDefensiveV7(theme) {
 // BTTS_EQUILIBRE_DECIDE_V7 = false la remet aux commandes.
 // ═══════════════════════════════════════════════════════════════
 var SEUIL_EQUILIBRE_BTTS_V7 = 0.0417;   // médiane des 65 536 -> 51 % de BTTS oui
+
+// ═══════════════════════════════════════════════════════════════
+// LE NUL PAR LES TÉMOINS ET LE JUGE (13/09/26, formule d'Ellemine_D)
+// ───────────────────────────────────────────────────────────────
+//   Nul = Sym_E(M13, M14)  ∨  ( M13 ∈ {T,E} ∧ M14 ∈ {T,E} ∧ M15 ∈ {T,E} )
+//
+// M13 et M14 sont les deux témoins, M15 le juge. Sym_E est lu comme
+// « même élément » : les deux témoins parlent d'une seule voix, donc rien
+// ne départage. Le second terme dit l'autre façon de ne pas trancher :
+// témoins et juge tous les trois froids — terre ou eau — aucune énergie
+// pour faire pencher.
+//
+// MESURÉ, implémentée telle qu'écrite, sans rien ajuster :
+//   Sym_E(M13,M14) seul ......... 25,0 % des thèmes
+//   la formule entière .......... 32,8 %          (nuls réels ~26 %)
+//   nulActifV7, qu'elle remplace  22,0 %
+// Elle sur-annonce le nul de 7 points là où nulActifV7 le sous-annonce de
+// 4. C'est son défaut, et il est noté.
+//
+// SUR LES QUATRE MATCHS CHOISIS : elle attrape le 0-0 que nulActifV7 rate,
+// et rate le 1-1 comme lui. Le camp passe de 1/4 à 2/4 par elle seule.
+// nulActifV7 reste calculé et exposé en contre-lecture.
+// NUL_FORMULE_TEMOINS_V7 = false le remet aux commandes.
+// ═══════════════════════════════════════════════════════════════
+function nulFormuleTemoinsV7(theme) {
+  if (!theme || !theme[13]) return null;
+  var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
+  var froid = function (h) { return els[theme[h]] === 'terre' || els[theme[h]] === 'eau'; };
+  var e13 = els[theme[13]], e14 = els[theme[14]], e15 = els[theme[15]];
+  var sym = (e13 === e14);
+  var troisFroids = froid(13) && froid(14) && froid(15);
+  return {
+    sym: sym, troisFroids: troisFroids,
+    verdict: sym || troisFroids,
+    temoins: { M13: { figure: theme[13], element: e13 }, M14: { figure: theme[14], element: e14 } },
+    juge: { figure: theme[15], element: e15 },
+    resume: sym
+      ? ('les deux témoins parlent d\'une seule voix — M13 ' + theme[13] + ' et M14 '
+         + theme[14] + ', tous deux ' + e13 + ' : rien ne départage')
+      : troisFroids
+      ? ('témoins et juge tous froids — M13 ' + e13 + ', M14 ' + e14 + ', M15 ' + e15
+         + ' : aucune énergie pour faire pencher')
+      : ('témoins départagés (' + e13 + ' contre ' + e14 + ')'
+         + (froid(15) ? ', juge froid' : ', juge ' + e15) + ' — le match se décide')
+  };
+}
 
 function bttsEquilibreMarquageV7(theme) {
   if (!theme || !theme[1] || typeof themeTourneR1V7 !== 'function'
@@ -27489,7 +27542,17 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     }
   }
   var campMuetCorrige = null, campMuetNul = null, nulActifCorrige = null;
-  if (campMuetCode === 'AB') {
+  // ─── LE CAMP MUET NE CORRIGE PLUS LE CAMP (13/09/26) ───
+  // Ellemine_D l'avait demandé le 11/09 — « un camp qui ne marque pas ne peut
+  // pas gagner » — et la doctrine est juste. Ce qui tombe, c'est son SEUL
+  // appui chiffré : les +4 sur 42 matchs venaient du lot qu'il a lui-même
+  // écarté le 13/09. Sur les quatre matchs choisis, la seule ligne où le
+  // détecteur s'allume est le 2-3, et il y retourne un R7 juste en R1 faux.
+  // Détecteur en cause, pas doctrine. Il reste calculé et affiché ;
+  // CAMP_MUET_CORRIGE_LE_CAMP_V7 = true le rebranche.
+  var _muetActif = CAMP_MUET_CORRIGE_LE_CAMP_V7;
+  if (!_muetActif) { /* le camp muet ne touche plus au camp */ }
+  else if (campMuetCode === 'AB') {
     campMuetNul = { avant: winner };
     try {
       campMuetNul.confirme = (typeof nulActifV7 === 'function') ? !!nulActifV7(theme) : null;
@@ -27563,10 +27626,18 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
 
   if (NUL_ACTIF_DECIDE_CAMP_V7 && !campMuetNul) {
     var _nulA = false;
-    try { _nulA = (typeof nulActifV7 === 'function') ? !!nulActifV7(theme) : false; }
-    catch (e) { _nulA = false; }
+    if (NUL_FORMULE_TEMOINS_V7) {
+      try { var _nf = nulFormuleTemoinsV7(theme); _nulA = !!(_nf && _nf.verdict); }
+      catch (e) { _nulA = false; }
+    } else {
+      try { _nulA = (typeof nulActifV7 === 'function') ? !!nulActifV7(theme) : false; }
+      catch (e) { _nulA = false; }
+    }
     if (_nulA && winner !== 'Nul') {
-      nulActifCorrige = { avant: winner };
+      var _nfR = null;
+      if (NUL_FORMULE_TEMOINS_V7) { try { _nfR = nulFormuleTemoinsV7(theme); } catch (e) { _nfR = null; } }
+      nulActifCorrige = { avant: winner, source: _nfR ? _nfR.resume : 'nul actif',
+        parTemoins: !!NUL_FORMULE_TEMOINS_V7 };
       winner = 'Nul';
       scWinnerCode = 'Nul';
     }
@@ -31746,8 +31817,10 @@ function renderTheme(){
         ? ('Avantage du terrain — égalité géomantique, ' + carteR.domicileDecide.apres
            + ' reçoit')
       : carteR.nulActifCorrige
-        ? ('Nul actif — ' + carteR.nulActifCorrige.avant + ' annoncé, corrigé en nul'
-           + (duel1N2Top ? ' (le 1N2 disait ' + duel1N2Top.critere + ')' : ''))
+        ? ((carteR.nulActifCorrige.parTemoins ? 'Nul par les témoins — ' : 'Nul actif — ')
+           + (carteR.nulActifCorrige.source || '')
+           + (duel1N2Top ? ' (le 1N2 disait ' + duel1N2Top.critere + ' pour '
+              + carteR.nulActifCorrige.avant + ')' : ''))
         : carteR.bttsCampMuetCorrige
         ? ('Camp muet — ' + carteR.bttsCampMuetCorrige.avant + ' lu muet, corrigé en '
            + carteR.bttsCampMuetCorrige.apres

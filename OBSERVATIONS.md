@@ -1899,3 +1899,111 @@ Huit points de biais systématique en faveur de celui qu'on tape en premier.
   neutraliser ?
 
 Les deux se tranchent d'un mot. Aucune donnée ne peut le faire à ta place.
+
+---
+
+## La formule d'Ellemine_D — implémentée telle quelle, puis mesurée
+
+```
+B₁ = ((M1 ∈ {F,A}) ∨ (M13 ∈ {F,A})) ∧ ¬Sym_E(M13,M14) ∧ ((M14 ∈ {T,E}) ∨ (M2 ∈ {Cauda,Amissio}))
+B₂ = ((M2 ∈ {F,A}) ∨ (M14 ∈ {F,A})) ∧ ¬Sym_E(M13,M14) ∧ ((M13 ∈ {T,E}) ∨ (M1 ∈ {Cauda,Amissio}))
+BTTS_Oui = B₁ ∧ B₂ ∧ (M15 ∉ {T,E})
+Nul      = Sym_E(M13,M14) ∨ ((M13 ∈ {T,E}) ∧ (M14 ∈ {T,E}) ∧ (M15 ∈ {T,E}))
+```
+
+M13 et M14 = les deux témoins, M15 = le juge. `Sym_E` lu comme « même
+élément ». Rien n'a été ajusté.
+
+### Le Nul tient. Il est branché.
+
+| | annoncé | réel |
+|---|---|---|
+| `Sym_E(M13,M14)` seul | 25,0 % | |
+| **la formule entière** | **32,8 %** | ~26 % |
+| `nulActifV7`, qu'elle remplace | 22,0 % | |
+
+Elle sur-annonce le nul de 7 points là où `nulActifV7` le sous-annonce de 4.
+C'est son défaut, il est noté. Mais elle attrape le **0-0** que `nulActifV7`
+rate, et le camp passe de 1/4 à 2/4 par elle seule.
+
+### Le BTTS s'effondre à 2,6 %, et voici exactement où
+
+| étape | part des thèmes |
+|---|---|
+| B₁ sans la clause Sym | 42,2 % |
+| B₂ sans la clause Sym | 42,2 % |
+| **B₁ ET B₂, sans Sym** | **9,8 %** |
+| ∧ ¬Sym_E | 6,4 % |
+| ∧ M15 chaud = **BTTS Oui** | **2,6 %** |
+
+Si B₁ et B₂ étaient indépendantes, leur conjonction ferait 0,422² = **17,8 %**.
+Elle en fait **9,8 %** : elles sont fortement **anti-corrélées**, et par
+construction.
+
+**Pourquoi.** B₂ exige `M13 ∈ {T,E}` — témoin droit froid. Or B₁ a besoin de
+`(M1 ∨ M13) ∈ {F,A}` : privé de M13, il lui faut M1 chaud. Symétriquement B₁
+exige `M14 ∈ {T,E}`, ce qui oblige B₂ à trouver son chaud en M2. La conjonction
+revient donc en pratique à :
+
+> M1 chaud **et** M2 chaud **et** M13 froid **et** M14 froid **et** M15 chaud
+
+soit 0,5⁵ = 3,1 %, ramené à 2,6 % par la clause Sym et remonté un peu par les
+échappatoires Cauda/Amissio. Les deux témoins doivent être froids **et** les
+deux mères chaudes **et** le juge chaud : c'est une configuration rare.
+
+Sur les quatre matchs, la formule dit « non » quatre fois — donc **2/4**, les
+deux ratés étant les deux « oui ». Contre **4/4** pour la règle d'équilibre du
+marquage branchée il y a une heure.
+
+**Je ne la branche pas sur le BTTS.** Elle remplacerait une famille à 4/4 par
+une famille qui ne dit presque jamais oui.
+
+Si l'intention était que B₁ et B₂ décrivent chacune la capacité d'un camp à
+marquer, il faut soit relâcher les clauses croisées sur M13/M14, soit lire
+`BTTS = B₁ ∨ B₂` plutôt que `∧`. Cela se tranche d'un mot.
+
+*Testé aussi : `Sym_E` lu comme « contraires » au lieu de « même élément ».
+BTTS 4,3 %, Nul 35,9 %. Pas mieux.*
+
+### Le camp, après
+
+Décomposition sur les quatre matchs choisis :
+
+| configuration | annoncé | justes | marginale |
+|---|---|---|---|
+| 1N2 + `nulActif` + camp muet (avant) | R1 R1 R7 R1 | **1/4** | 40 / 38 / 22 |
+| sans le camp muet | R1 R1 R7 R7 | 2/4 | 42 / 36 / 22 |
+| nul FORMULE + camp muet | R1 nul R7 R1 | 2/4 | 35 / 32 / 33 |
+| **nul FORMULE, sans camp muet** | R1 nul R7 R7 | **3/4** | 37 / 31 / 33 |
+
+cible : 37 / 37 / 26
+
+Deux gains séparés, +1 chacun : la formule attrape le 0-0, et débrancher le
+camp muet rend le 2-3.
+
+### Le camp muet ne corrige plus le camp
+
+La doctrine du 11/09 est juste — un camp qui ne marque pas ne peut pas gagner.
+Ce qui tombe, c'est son **seul appui chiffré** : les +4 sur 42 matchs venaient
+du lot écarté. Sur l'échantillon choisi, la seule ligne où le détecteur
+s'allume est le 2-3, et il y retourne un R7 juste en R1 faux. C'est le
+détecteur qui est en cause, pas la doctrine. Il reste calculé et affiché ;
+`CAMP_MUET_CORRIGE_LE_CAMP_V7 = true` le rebranche.
+
+Il ne touchait déjà plus au BTTS depuis une heure, pour une raison
+indépendante : il frappe les thèmes équilibrés.
+
+### Bilan de l'échantillon choisi, 4 matchs
+
+| famille | avant aujourd'hui | maintenant |
+|---|---|---|
+| BTTS | 3/4 | **4/4** |
+| over / under 2,5 | 4/4 | **4/4** |
+| incident présent | 2/2 | **2/2** |
+| **camp du match** | **1/4** | **3/4** |
+| nul | 2/4 | **3/4** |
+| bande de buts | 1/4 | 1/4 |
+| score exact | 0/4 | 0/4 |
+
+Le coût, honnêtement : le nul est maintenant annoncé sur 33 % des thèmes pour
+26 % réels. C'est la pièce à surveiller.
