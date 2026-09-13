@@ -25695,6 +25695,46 @@ function incidentV2Build(theme){
 // appelés sur les maisons de la rotation, pas sur 1 et 7, et la distribution
 // de l'indice n'est pas la même. Première version calée sur le mauvais
 // chemin : elle annonçait 47 % au lieu de 33 %.
+// ═══════════════════════════════════════════════════════════════
+// ÉCHANTILLON CHOISI PAR ELLEMINE_D (13/09/26)
+// ───────────────────────────────────────────────────────────────
+// « C'est moi qui choisis les échantillons, c'est beaucoup plus fiable. »
+//
+// CAS_REFERENCE_V7, l'archive des 49, mêle des matchs FIFA et des matchs
+// réels sans qu'on sache lesquels : elle ne peut servir ni à valider ni à
+// condamner un moteur. Ce registre-ci est différent — chaque ligne est
+// choisie et vérifiée par Ellemine_D, et n'entre qu'avec ce qu'il en sait.
+// C'est le SEUL registre sur lequel un réglage pourra un jour s'appuyer.
+//
+// RÈGLE DE TENUE, à ne jamais contourner : une ligne s'écrit ici AVANT
+// qu'on touche à un seuil, jamais après. Un moteur ne se règle pas sur la
+// ligne qui vient de le contredire — sinon on ne mesure plus rien, on
+// recopie. Ce qui est mesuré ici sert à juger, pas à ajuster.
+var ECHANTILLON_ELLEMINE_V7 = [
+  {
+    n: 1,
+    meres: ['tristitia', 'tristitia', 'conjunctio', 'rubeus'],
+    score: '1-1',
+    incident: true,
+    incidentCamp: 'M1',          // rouge côté M1 / R1
+    nature: 'rouge',
+    // Ce que le moteur en dit au moment où la ligne est écrite, sans qu'on
+    // ait rien changé pour l'occasion :
+    ditIncident: false,          // intensité 5, seuil 9 -> AUCUN SIGNAL  ✘
+    ditCamp: 'M1',               // camp désigné                          ✔
+    ditIntensite: 5,
+    ditRang: 43,
+    note: 'Le camp est juste, le oui/non est faux. Les deux détecteurs ONT '
+        + 'vu quelque chose et ont nommé le bon camp — V2 lit la filiation '
+        + 'M1 Tristitia + M2 Tristitia -> M9 Populus, contre l\'équipe 1 — '
+        + 'mais l\'intensité 5 passe sous le seuil 9. Le seuil N\'A PAS été '
+        + 'bougé pour rattraper ce cas : un seuil déplacé sur une observation '
+        + 'ne mesure plus rien. Il est posé sur la fréquence externe du '
+        + 'penalty et du rouge (environ 30 % des matchs) et il y reste tant '
+        + 'que l\'échantillon n\'est pas assez fourni pour dire autre chose.'
+  }
+];
+
 var SEUIL_INCIDENT_V7        = 9;    // 29,6 % des thèmes
 var SEUIL_INCIDENT_MARQUE_V7 = 12;   // 12,0 %
 var SEUIL_INCIDENT_ELEVE_V7  = 15;   //  3,8 %
@@ -30043,14 +30083,27 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var bttsPrincipalColor = bttsPrincipal === 'OUI' ? '#4ade80' : bttsPrincipal === 'NON' ? '#f87171' : '#fbbf24';
   if (bttsPrincipal.indexOf('INDÉCIDABLE') === 0) bttsPrincipalColor = '#94a3b8';
   var incidentPrincipal = card && card.penaltyRouge ? '⚠️ SIGNAL INCIDENT' : 'AUCUN SIGNAL';
-  // Le camp ne s'affiche que s'il y a un signal (13/09/26). Avant, la carte
-  // pouvait écrire « AUCUN SIGNAL · CONTRE M1 » : neuvième occurrence du même
-  // défaut, un affichage qui contredit ce que le code vient de décider.
+  // ─── L'INCIDENT S'AFFICHE EN DEGRÉ, PAS EN OUI/NON (13/09/26) ───
+  // Deux corrections. La première : le camp ne s'affiche plus comme une
+  // affirmation quand le seuil n'est pas franchi — la carte écrivait
+  // « AUCUN SIGNAL · CONTRE M1 », neuvième occurrence du défaut où un
+  // affichage contredit ce que le code vient de décider.
+  // La seconde : le camp reste tout de même LU, en clair, sous le seuil.
+  // Premier cas de l'échantillon d'Ellemine_D (Tristitia/Tristitia/
+  // Conjunctio/Rubeus, rouge côté M1) : le moteur passe sous le seuil — donc
+  // il rate le oui/non — mais il désigne M1, et c'est le bon camp. Effacer
+  // cette lecture, c'est jeter la seule partie qui a marché.
   var incidentPrincipalCamp = (card && card.penaltyRouge && card.incidentCamp)
     ? ' · CONTRE ' + esc(card.incidentCamp) : '';
-  var incidentPrincipalDetail = (card && card.incidentIntensite)
-    ? ' (' + esc(card.incidentIntensite.niveau) + ', intensité ' + card.incidentIntensite.indice + ')'
-    : '';
+  var incidentPrincipalDetail = '';
+  if (card && card.incidentIntensite) {
+    var _ii = card.incidentIntensite;
+    incidentPrincipalDetail = ' <span style="color:#94a3b8;">('
+      + esc(_ii.niveau) + ' · intensité ' + _ii.indice + ' · ' + _ii.pct + 'e centile'
+      + (!_ii.signal && card.incidentCamp
+          ? ' · lecture sous le seuil : contre ' + esc(card.incidentCamp) : '')
+      + ')</span>';
+  }
   // ─── LE CAMP QUI NE MARQUE PAS (11/09/26, Ellemine_D) ───
   // Le BTTS dit SI un camp reste à zéro ; il ne disait jamais LEQUEL. La
   // lecture par axes le sait — elle calcule bloqueR1 et bloqueR7 séparément

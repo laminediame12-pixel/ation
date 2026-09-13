@@ -1156,3 +1156,69 @@ FIFA**, et **quelle équipe recevait**. Sans ces deux colonnes, aucune mesure de
 justesse n'est possible et aucun réglage n'est défendable. Tout ce que j'ai
 mesuré aujourd'hui — les 45 %, les 19/42, les corrélations nulles — est à jeter
 tant que ces deux colonnes n'existent pas.
+
+---
+
+## Échantillon choisi par Ellemine_D — ligne 1
+
+> « C'est moi qui choisis les échantillons, c'est beaucoup plus fiable. »
+
+L'archive des 49 ne peut rien mesurer. Ce registre-ci est différent : chaque
+ligne est choisie et vérifiée. Il vit dans le fichier sous
+`ECHANTILLON_ELLEMINE_V7`, à côté du moteur d'incident.
+
+**Règle de tenue, à ne jamais contourner** : une ligne s'écrit **avant** qu'on
+touche à un seuil, jamais après. Un moteur ne se règle pas sur la ligne qui
+vient de le contredire — sinon on ne mesure plus, on recopie.
+
+### Ligne 1 — Tristitia / Tristitia / Conjunctio / Rubeus
+
+R1 = M8 Fortuna Minor · R7 = M14 Puer · score 1-1 · **rouge côté M1 / R1**
+
+| | annoncé | réel | |
+|---|---|---|---|
+| incident | **non** — intensité 5, seuil 9 | rouge | ✗ |
+| camp de l'incident | **M1** | M1 | ✔ |
+
+**Le camp est juste, le oui/non est faux.** Et c'est instructif : les deux
+détecteurs ont bel et bien vu quelque chose, et ils ont nommé le bon camp.
+
+- V2 : `M9 — filiation incidentogène : M1 Tristitia + M2 Tristitia → M9
+  Populus, contre l'équipe 1`
+- lecture large : la même filiation, plus `M13 — incident dans la phase de
+  synthèse`
+
+Trois signaux, tous convergents, tous du bon côté. Ce qui a manqué, c'est
+l'intensité : 5 contre un seuil de 9. Le thème est au 43e centile.
+
+### Ce que je n'ai pas fait
+
+**Je n'ai pas bougé le seuil.** Un seuil déplacé sur l'observation qui vient
+de le contredire ne mesure plus rien. Il reste posé sur la fréquence externe
+du penalty et du rouge — environ 30 % des matchs — et il y restera tant que
+l'échantillon n'est pas assez fourni pour dire autre chose.
+
+Ce que ce cas aurait donné avant ce matin est d'ailleurs sans valeur : le
+détecteur s'allumait sur 95 % des thèmes, il aurait « trouvé » ce rouge comme
+il aurait trouvé n'importe quoi.
+
+### Ce que j'ai fait
+
+Le camp reste **lu et affiché même sous le seuil**. La carte écrit maintenant :
+
+> ⚠️ Incidents : AUCUN SIGNAL *(Aucun · intensité 5 · 43e centile · lecture
+> sous le seuil : contre M1)*
+
+Effacer cette lecture aurait jeté la seule partie du moteur qui a marché sur
+cette ligne. L'incident s'affiche désormais en degré — niveau, intensité,
+centile — et plus en oui/non sec.
+
+### À surveiller sur les prochaines lignes
+
+Une hypothèse est posée ici, **avant** d'avoir d'autres résultats, et elle ne
+sera jamais ajustée après coup :
+
+> **L'attribution du camp est meilleure que la détection.** Le moteur saurait
+> dire CONTRE QUI, sans savoir dire SI. Si cela tient sur les prochaines
+> lignes, c'est l'attribution qu'il faut exploiter, et le oui/non qu'il faut
+> abandonner — pas l'inverse.
