@@ -1296,3 +1296,91 @@ distinguer un effet réel de 5 à 10 points d'un bruit. Toute règle trouvée
 là-dedans sera un gagnant de recherche. La seule chose qui compte désormais est
 de **pré-enregistrer** une règle avant les matchs, comme on l'a fait pour le
 marquage cadent, et de la juger sur des résultats qu'elle n'a jamais vus.
+
+---
+
+## Correction du camp (13/09/26)
+
+### Ce que dit l'archive
+
+Sur les 42 matchs de football réel : **R1 gagne 16 fois, R7 15 fois, et il y a
+11 nuls** (26 %). Trois issues quasi équiprobables — « toujours R1 » vaut
+16/42 = 38 %.
+
+Et j'ai d'abord mesuré le mauvais chemin : `buildVerdictCard` appelé sans
+`winnerOverride` n'est pas ce que l'app affiche. Le camp affiché passe par le
+**1N2 en override**. Sur ce chemin-là :
+
+| étage | justes |
+|---|---|
+| **1N2 seul** | **14/42 = 33 %** |
+| + correction du camp muet | 18/42 = 43 % |
+| **+ nul actif branché** | **19/42 = 45 %** |
+| toujours R1 | 16/42 = 38 % |
+| toujours R7 | 15/42 = 36 % |
+
+**Le 1N2, que la bannière déclare décisif, mesure sous une constante.** Ce qui
+le remonte, c'est la correction du camp muet — 11 thèmes où elle s'écarte du
+1N2 : 6 réparent, 2 cassent, 3 neutres, net **+4**.
+
+Ce qui corrige ce que j'ai écrit ce matin sur le camp muet : il est nuisible
+pour le **BTTS** (φ = −0,196) et utile pour le **camp** (+4). Les deux mesures
+tiennent ensemble — c'est le même détecteur, jugé sur deux questions
+différentes. Il reste donc branché sur le camp, comme demandé le 11/09, et
+débranché du BTTS.
+
+### La carte ne pouvait jamais annoncer un nul
+
+22 R1, 20 R7, **0 nul**, contre 11 nuls réels sur 42. Un moteur de verdict
+incapable de produire une des trois issues plafonne à 31/42 et, surtout, ne
+répond pas à la question posée.
+
+`nulActifV7` — l'organe du nul de la doctrine — **existait et n'était pas
+branché sur le camp affiché**. Il s'allume sur 11 thèmes des 42, exactement le
+nombre de nuls réels, et en attrape 4. Branché : la carte annonce R1 14 /
+R7 17 / nul 11 et fait 19/42.
+
+Le +1 est du bruit et n'est pas revendiqué. Ce qui est réparé, c'est que le nul
+soit **annonçable, et à la bonne fréquence**. J'ai essayé mieux — « delta NM
+≤ 1,5 → nul » donne 20/42 — et je ne l'ai **pas** retenu : ce serait un gagnant
+de recherche, alors que `nulActifV7` est l'organe que le système désigne
+lui-même.
+
+### Rien ne prédit le camp non plus
+
+170 candidats testés sur les 31 matchs décidés (R1 16 / R7 15) : seuils aux
+terciles de 14 variables continues, chaque figure en R1, en R7, dans le cadent,
+dans l'angulaire, dans le thème, plus les six moteurs existants.
+
+**Meilleur : 21/31 = 68 %.** Distribution nulle du meilleur des 170, 20 000
+permutations : mode à **22/31**, moyenne 22,3. **P(meilleur ≥ 21 par hasard) =
+98,3 %.** Même conclusion que pour le BTTS.
+
+### Le défaut le plus lourd n'est pas géomantique
+
+L'avantage du terrain du football réel — environ **45 % de victoires à
+domicile contre 28 % à l'extérieur** — a complètement disparu de l'archive :
+R1 16, R7 15. La seule lecture possible est que **R1 n'est pas
+systématiquement l'équipe qui reçoit**. R1, c'est « celle tapée en premier ».
+
+Et le code faisait pire que l'ignorer : `domicileCode` arrivait bien jusqu'à
+`buildVerdictCard`, mais ne servait qu'à majorer de 15 % un total de capacité —
+lequel est écrasé une ligne plus loin par `winnerOverride`. Dès que le 1N2
+tranche, c'est-à-dire toujours dans l'app, **l'équipe à domicile n'avait aucun
+effet sur le camp**. Collectée, puis jetée.
+
+Branché prudemment : le domicile tranche quand la couche géomantique ne tranche
+pas (verdict `Nul` non confirmé par `nulActifV7`). Il ne renverse jamais un
+verdict positif — l'archive ne note pas qui recevait, je n'ai aucun moyen de le
+valider.
+
+**Ce qui vaut plus que n'importe quel réglage : noter l'équipe à domicile à
+chaque match, et la mettre toujours dans le même siège.** C'est le seul point
+de cette session où un gain de l'ordre de 7 points est disponible sans
+qu'aucune figure ait à prédire quoi que ce soit.
+
+### Huitième occurrence du même défaut
+
+La bannière « CAMP CORRIGÉ … le vainqueur devient R7 » restait affichée à côté
+d'un verdict final « nul », parce qu'elle décrivait l'état intermédiaire. Elle
+dit maintenant la suite de la chaîne jusqu'à l'état final.

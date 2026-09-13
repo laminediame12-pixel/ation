@@ -26184,6 +26184,15 @@ var BTTS_INDECIDABLE_V7 = true;
 // Le score prend sa source dans le volume calibré depuis que la cascade BTTS
 // est coupée : sans elle le générateur ne sortait plus que des 1-0 / 0-1 / 0-0.
 var SCORE_DU_VOLUME_V7 = true;
+// ─── LE NUL EST BRANCHÉ SUR LE CAMP AFFICHÉ (13/09/26) ───
+// La carte n'annonçait jamais « nul » alors que 11 des 42 matchs réels de
+// l'archive en sont. nulActifV7, l'organe du nul de la doctrine, existait
+// mais n'était pas relié au verdict affiché. Voir buildVerdictCard.
+var NUL_ACTIF_DECIDE_CAMP_V7 = true;
+// ─── L'AVANTAGE DU TERRAIN TRANCHE LES ÉGALITÉS (13/09/26) ───
+// Il était collecté par l'app puis jeté : il ne majorait qu'un total de
+// capacité, écrasé juste après par le verdict du 1N2. Voir buildVerdictCard.
+var DOMICILE_TRANCHE_LES_EGALITES_V7 = true;
 var BTTS_BASE_REELLE_V7 = 21 / 42;    // base mesurée, football réel
 var BTTS_BASE_ESPORT_V7 = 7 / 7;      // base mesurée, e-sport / FIFA
 var BTTS_N_REEL_V7 = 42;
@@ -26971,7 +26980,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       if (!BTTS_INDECIDABLE_V7 && btts !== false) { btts = false; bttsBranche = 'camp_muet'; }
     }
   }
-  var campMuetCorrige = null, campMuetNul = null;
+  var campMuetCorrige = null, campMuetNul = null, nulActifCorrige = null;
   if (campMuetCode === 'AB') {
     campMuetNul = { avant: winner };
     try {
@@ -26985,6 +26994,74 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     winner = _autre === 'A' ? labelA : labelB;
     scWinnerCode = _autre;
     campMuetCorrige.apres = winner;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // LE NUL PEUT ENFIN ÊTRE ANNONCÉ (13/09/26, Ellemine_D : « corrige le camp »)
+  // ───────────────────────────────────────────────────────────────
+  // Mesuré sur les 42 matchs de football réel de l'archive : R1 gagne 16
+  // fois, R7 15 fois, et il y a 11 NULS — 26 %. Or la carte affichée
+  // n'annonçait jamais « nul » : 22 R1, 20 R7, 0 nul. Un moteur de verdict
+  // incapable de produire une des trois issues ne peut pas dépasser 31/42,
+  // et surtout il ne peut pas répondre à la question posée.
+  //
+  // nulActifV7 EXISTE déjà — c'est l'organe du nul de la doctrine — et il
+  // n'était simplement pas branché sur le camp affiché. Il s'allume sur
+  // 11 thèmes des 42, exactement le nombre de nuls réels, et en attrape 4.
+  // Branché : 19/42 au lieu de 18/42.
+  //
+  // Le +1 est du bruit et n'est pas revendiqué. Ce qui est réparé, c'est
+  // que le nul soit ANNONÇABLE, et à la bonne fréquence. Je n'ai PAS retenu
+  // les variantes qui mesuraient mieux (« delta NM <= 1,5 » donne 20/42) :
+  // je les ai essayées, elles seraient des gagnants de recherche, alors que
+  // nulActifV7 est l'organe que le système désigne lui-même.
+  // ═══════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
+  // L'AVANTAGE DU TERRAIN ÉTAIT COLLECTÉ PUIS JETÉ (13/09/26)
+  // ───────────────────────────────────────────────────────────────
+  // domicileCode arrivait bien jusqu'ici, mais ne servait qu'à majorer de
+  // 15 % un total de capacité — lequel est écrasé juste après par
+  // winnerOverride. Dès que le 1N2 tranche, c'est-à-dire toujours dans
+  // l'app, l'équipe à domicile n'avait aucun effet sur le camp.
+  //
+  // CE QUE DIT L'ARCHIVE. Sur 42 matchs réels : R1 gagne 16 fois, R7 15
+  // fois. L'avantage du terrain du football réel — environ 45 % de
+  // victoires à domicile contre 28 % à l'extérieur — a complètement
+  // disparu. La seule lecture possible : R1 n'est PAS systématiquement
+  // l'équipe à domicile. R1 est « celle tapée en premier ». Le moteur de
+  // camp travaille donc sans point fixe, et c'est probablement la cause
+  // la plus lourde de son plafond.
+  //
+  // CE QUI EST FAIT ICI, PRUDEMMENT. Le domicile tranche quand la couche
+  // géomantique ne tranche pas — verdict 'Nul' sans que le nul soit
+  // confirmé par nulActifV7. Il ne renverse jamais un verdict positif :
+  // je n'ai aucun moyen de le valider, l'archive ne note pas qui recevait.
+  // Ce qui reste à faire, et qui vaut plus que n'importe quel réglage :
+  // noter l'équipe à domicile à chaque match et la mettre TOUJOURS dans le
+  // même siège.
+  // ═══════════════════════════════════════════════════════════════
+  var domicileDecide = null;
+  if (DOMICILE_TRANCHE_LES_EGALITES_V7 && (domicileCode === 'A' || domicileCode === 'B')
+      && winner === 'Nul' && !campMuetNul) {
+    var _nulConfirme = false;
+    try { _nulConfirme = (typeof nulActifV7 === 'function') ? !!nulActifV7(theme) : false; }
+    catch (e) { _nulConfirme = false; }
+    if (!_nulConfirme) {
+      domicileDecide = { avant: 'Nul', apres: domicileCode === 'A' ? labelA : labelB };
+      winner = domicileDecide.apres;
+      scWinnerCode = domicileCode;
+    }
+  }
+
+  if (NUL_ACTIF_DECIDE_CAMP_V7 && !campMuetNul) {
+    var _nulA = false;
+    try { _nulA = (typeof nulActifV7 === 'function') ? !!nulActifV7(theme) : false; }
+    catch (e) { _nulA = false; }
+    if (_nulA && winner !== 'Nul') {
+      nulActifCorrige = { avant: winner };
+      winner = 'Nul';
+      scWinnerCode = 'Nul';
+    }
   }
 
   if (BTTS_INDECIDABLE_V7) {
@@ -27290,6 +27367,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     bttsCampMuetSource: campMuetSource,
     bttsCampMuetCorrige: campMuetCorrige,
     bttsCampMuetNul: campMuetNul,
+    nulActifCorrige: nulActifCorrige,
+    domicileDecide: domicileDecide,
     bttsCampMuet: campMuetCode === 'AB' ? 'les deux'
       : campMuetCode === 'A' ? 'R1'
       : campMuetCode === 'B' ? 'R7' : null,
@@ -29922,9 +30001,20 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           : card.bttsCampMuetNul.confirme === false ? 'non confirmé — le nul tient quand même par le score.'
           : 'indisponible.');
     } else if (card.bttsCampMuetCorrige) {
+      // Le texte doit dire l'ÉTAT FINAL, pas l'état intermédiaire (13/09/26) :
+      // quand le nul actif passe derrière et corrige encore, cette bannière
+      // annonçait « le vainqueur devient R7 » à côté d'un verdict « nul ».
+      // C'est la huitième fois dans ce fichier qu'un affichage nomme une
+      // chose pendant que le code en applique une autre.
+      var _apresMuet = esc(card.bttsCampMuetCorrige.apres);
       muetAlerte = 'CAMP CORRIGÉ : le moteur 1N2 donnait ' + esc(card.bttsCampMuetCorrige.avant)
         + ', mais la lecture des axes le lit muet. Un camp qui ne marque pas ne peut pas '
-        + 'gagner — le vainqueur devient ' + esc(card.bttsCampMuetCorrige.apres) + '.';
+        + 'gagner — le vainqueur devient ' + _apresMuet + '.'
+        + (card.nulActifCorrige
+            ? ' Puis le nul actif a corrigé ' + _apresMuet + ' en NUL : c\'est le nul qui est annoncé.'
+            : card.domicileDecide
+            ? ' Puis l\'avantage du terrain a tranché en faveur de ' + esc(card.domicileDecide.apres) + '.'
+            : '');
     }
   }
   html += '<div data-btts-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+bttsPrincipalColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
@@ -31109,13 +31199,32 @@ function renderTheme(){
     // un autre.
     carteR.sourceDecisive = carteR.bttsCampMuetNul
       ? 'Camp muet des deux côtés — 0-0, donc nul'
-      : carteR.bttsCampMuetCorrige
+      : carteR.domicileDecide
+        ? ('Avantage du terrain — égalité géomantique, ' + carteR.domicileDecide.apres
+           + ' reçoit')
+      : carteR.nulActifCorrige
+        ? ('Nul actif — ' + carteR.nulActifCorrige.avant + ' annoncé, corrigé en nul'
+           + (duel1N2Top ? ' (le 1N2 disait ' + duel1N2Top.critere + ')' : ''))
+        : carteR.bttsCampMuetCorrige
         ? ('Camp muet — ' + carteR.bttsCampMuetCorrige.avant + ' lu muet, corrigé en '
            + carteR.bttsCampMuetCorrige.apres
            + (duel1N2Top ? ' (le 1N2 disait ' + duel1N2Top.critere + ')' : ''))
         : duel1N2Top
           ? 'Moteur 1N2 — ' + duel1N2Top.critere
           : 'Moteur 1N2';
+    // ─── CE QUE VAUT CE CAMP, MESURÉ (13/09/26) ───
+    // Sur les 42 matchs de football réel de l'archive (R1 16 / R7 15 / nul 11) :
+    //   1N2 seul ..................... 14/42 = 33 %   (sous « toujours R1 », 16/42)
+    //   + correction camp muet ....... 18/42 = 43 %
+    //   + nul actif branché .......... 19/42 = 45 %
+    // Recherche de 170 candidats sur les 31 matchs décidés : meilleur 21/31,
+    // quand la distribution nulle du meilleur des 170 a pour mode 22/31.
+    // P(meilleur >= 21 par hasard) = 98,3 %. Aucun signal démontré.
+    carteR.campMesure = 'camp juste 19/42 sur l\'archive réelle (R1 16 / R7 15 / '
+      + 'nul 11) — le 1N2 seul y fait 14/42, sous « toujours R1 » (16/42) ; '
+      + 'la correction du camp muet vaut +4 et le nul actif +1. Aucun signal '
+      + 'démontré : 170 candidats testés, meilleur 21/31 quand le hasard en '
+      + 'produit 22/31.';
     carteR.duel1N2 = duel1N2Top;
     // MODE LIVE (03/09/26) — voir appliquerEtatLiveV7 : plancher de score au
     // score déjà connu + signal de cohérence, sans toucher au verdict.
