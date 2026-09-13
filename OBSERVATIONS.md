@@ -2650,3 +2650,69 @@ diverger : elles lisent la même fonction.
 
 **Aucune ligne de la carte ne contredit plus une autre.** Ce qui décide est
 nommé, ce qui ne décide plus est marqué contre-lecture, et rien n'est effacé.
+
+---
+
+## Règle de mesure : les 5 lignes, et rien d'autre
+
+> « Pour le calcul, ne prends plus des matchs que je ne t'ai pas donnés. Prends
+> pour le moment les 5 matchs là ; après je vais élargir l'échantillon. »
+
+Écrite dans le fichier, au-dessus de `ECHANTILLON_ELLEMINE_V7`.
+
+`CAS_REFERENCE_V7` — les 49 thèmes archivés — n'est plus une source de mesure.
+Il reste dans le fichier comme archive, pas comme référence.
+
+**Ce qui reste admissible en dehors du registre :**
+
+- les faits **structurels** lisibles sur les 65 536 thèmes — fréquences,
+  distributions, contradictions entre deux tables du fichier ;
+- les fréquences **externes** du football — buts moyens 2,70 · BTTS ~51 % ·
+  penalty ~25 % · rouge ~8 % — qui ne dépendent d'aucune donnée d'ici.
+
+**Ce qui ne l'est plus :** tout chiffre de justesse tiré d'un match absent du
+registre.
+
+### Première victime de la règle : M9
+
+Toute la justification de M9 — p = 0,0019, survie à Bonferroni, 3/3 hors
+échantillon — venait de matchs hors du registre. Irrecevable.
+
+Ce qui reste de recevable, sur les 5 lignes seules :
+
+| ligne | réel | M9 | mu avec M9 | mu sans M9 |
+|---|---|---|---|---|
+| 1 | 7-0 | se tait | 3,87 | 3,87 |
+| 2 | 0-0 | se tait | 2,57 | 2,57 |
+| 3 | 1-1 | bas | 1,77 | 2,40 |
+| 4 | 2-3 | haut | 3,92 | 3,57 |
+| 5 | 4-0 | bas | 1,34 | 1,56 |
+
+| | avec M9 | sans M9 |
+|---|---|---|
+| over / under 2,5 | 4/5 | 4/5 |
+| bande de buts | 2/5 | 2/5 |
+| score exact | 2/5 | 2/5 |
+| buts d'erreur | 8 | 8 |
+
+**Identique sur toutes les familles.** M9 ne déplace `mu` qu'à l'intérieur du
+même côté du seuil : elle parle 3 fois, se trompe 1 fois, et ne change aucun
+verdict.
+
+Une pièce sans justification recevable **et** sans effet mesurable ne reste pas
+branchée. `M9_TRANCHE_LE_VOLUME_V7 = false`. Elle est conservée en lecture ;
+si l'échantillon élargi lui donne un effet, elle se rebranche en un mot.
+
+### Le système, mesuré uniquement sur les 5 lignes
+
+| famille | juste | qui décide |
+|---|---|---|
+| **BTTS** | **5/5** | équilibre du marquage |
+| **camp** | **4/5** | canaux des deux sièges |
+| over / under 2,5 | 4/5 | `G_vol` calibré |
+| **incident (présence)** | **2/2** | M6/M12 étouffée + Déclencheur |
+| bande de buts | 2/5 | `G_vol` calibré |
+| score exact | 2/5 | composé des quatre pièces |
+
+Tout ce qui est branché est maintenant justifié soit par ta doctrine, soit par
+une fréquence externe, soit par ces 5 lignes. Rien d'autre.

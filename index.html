@@ -23343,7 +23343,17 @@ var MARQUAGE_CADENT_DANS_LE_VOLUME_V7 = false;
 // M9 = M1 ⊕ M2 tranche le côté du seuil 2,5 quand elle parle. Voir
 // volumeCalibreV7. Seul signal du fichier à survivre à Bonferroni, 5/6 hors
 // échantillon. false rétablit G_vol seul.
-var M9_TRANCHE_LE_VOLUME_V7 = true;
+// DÉBRANCHÉE le 13/09/26. Règle d'Ellemine_D : « pour le calcul, ne prends
+// plus de matchs que je ne t'ai pas donnés ». Toute la justification de M9 —
+// p = 0,0019, survie à Bonferroni, 3/3 hors échantillon — vient de matchs
+// hors de l'échantillon choisi. Elle est donc irrecevable.
+// Ce qui reste admissible : sur les 5 lignes, M9 parle 3 fois et se trompe
+// 1 fois, et surtout elle NE CHANGE RIEN — over/under 4/5, bande 2/5, score
+// exact 2/5, 8 buts d'erreur, identiques avec et sans elle. Elle ne déplace
+// mu qu'à l'intérieur du même côté du seuil.
+// Une pièce sans justification recevable et sans effet mesurable ne reste pas
+// branchée. Elle est conservée en lecture ; true la rebranche.
+var M9_TRANCHE_LE_VOLUME_V7 = false;
 var MU_MIN_V7   = 2.70 * 0.42;          // 1,134
 var MU_MAX_V7   = 2.70 * (0.42 + 1.16); // 4,266
 var PIVOT_OVER_UNDER_V7 = 2.697;        // la coupure de bande entre « 2 buts » et « 3 buts »
@@ -25942,6 +25952,23 @@ function incidentDoctrineV7(theme) {
 // qu'on touche à un seuil, jamais après. Un moteur ne se règle pas sur la
 // ligne qui vient de le contredire — sinon on ne mesure plus rien, on
 // recopie. Ce qui est mesuré ici sert à juger, pas à ajuster.
+// ═══════════════════════════════════════════════════════════════
+// RÈGLE DE MESURE (13/09/26, Ellemine_D : « pour le calcul, ne prends plus
+// de matchs que je ne t'ai pas donnés »)
+// ───────────────────────────────────────────────────────────────
+// TOUTE mesure de justesse se fait sur ce registre et sur rien d'autre.
+// CAS_REFERENCE_V7 — les 49 thèmes archivés — n'est plus une source de
+// mesure : on ne sait pas lesquels sont des FIFA, et ils n'ont pas été
+// choisis. Il reste dans le fichier comme archive, pas comme référence.
+//
+// Ce qui reste admissible en dehors de ce registre :
+//   · les faits STRUCTURELS lisibles sur les 65 536 thèmes (fréquences,
+//     distributions, contradictions entre deux tables du fichier) ;
+//   · les fréquences EXTERNES du football (buts moyens 2,70 ; BTTS ~51 % ;
+//     penalty ~25 % et rouge ~8 %), qui ne dépendent d'aucune donnée d'ici.
+// Ce qui ne l'est plus : tout chiffre de justesse tiré d'un match absent de
+// ce registre. M9 a été débranchée le jour même pour cette raison.
+// ═══════════════════════════════════════════════════════════════
 var ECHANTILLON_ELLEMINE_V7 = [
   {
     n: 1,
