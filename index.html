@@ -25936,7 +25936,8 @@ var ECHANTILLON_ELLEMINE_V7 = [
     ditCampAvant: 'M7',          // ce qu'il disait : faux, le pénalisé est M1
     ditCampVerdict: 'R1',        // réel R7                                ✘
     ditScore: '2-1',             // réel 2-3                               ✘
-    ditBtts: false,              // réel oui                               ✘
+    ditBtts: true,               // règle d'équilibre : écart 3,6 % < 4,17 %  ✔
+    ditBttsAvant: false,         // la cascade disait non — c'était le camp muet
     ditButs: 3.48,               // bande « 4 buts », réel 5               ✘
     note: 'M12 étouffée par Acquisitio (air en maison terre), M6 respire '
         + '(Albus, eau en maison air, alliés). Déclencheurs M5 Puer et '
@@ -26566,6 +26567,15 @@ function detecterBTTS100V7(theme) {
 // incidents, ni le moteur Volume.
 // ═══════════════════════════════════════════════════════════════
 var BTTS_AXES_DECISIF_V7 = true;
+// ─── L'ÉQUILIBRE DU MARQUAGE DÉCIDE LE BTTS (13/09/26) ───
+// Une ligne de doctrine à la place d'une cascade de cinq étages : les deux
+// marquent quand les deux trigones offensifs portent un marquage équivalent.
+// Seuil issu du taux réel de BTTS (51 %), pas d'un ajustement. Voir
+// bttsEquilibreMarquageV7. false remet la cascade aux commandes.
+var BTTS_EQUILIBRE_DECIDE_V7 = true;
+// Le camp muet corrige le CAMP, plus le BTTS : il frappe les thèmes
+// équilibrés et faisait tomber le taux de BTTS oui de 51 % à 30,7 %.
+var CAMP_MUET_DECIDE_BTTS_V7 = false;
 // ─── LE BTTS N'EST VALIDÉ PAR RIEN (13/09/26) ───
 // Je l'avais déclaré indécidable après l'avoir mesuré sous le hasard sur
 // l'archive. Ellemine_D a coupé : l'archive n'est pas fiable, on ne sait pas
@@ -26738,6 +26748,88 @@ function forcesOffensiveDefensiveV7(theme) {
     offR1: o1, offR7: o7, defR1: d1, defR7: d7,
     muetR1: muetR1, muetR7: muetR7,
     camp: muetR1 ? 'R1' : muetR7 ? 'R7' : null
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BTTS — L'ÉQUILIBRE DU MARQUAGE (13/09/26)
+// ───────────────────────────────────────────────────────────────
+// LE RAISONNEMENT. « Les deux marquent » n'est pas une question de force,
+// c'est une question d'ÉQUILIBRE. Un camp qui écrase ne laisse pas marquer ;
+// deux camps à égalité marquent tous les deux. Et le déséquilibre se lit
+// dans la seule table du fichier qui dise combien une figure marque :
+// BUTS_FIGURE, lue sur le trigone offensif de chaque camp.
+//
+//   part R1 = marquage(trigone offensif R1) / (R1 + R7)
+//   BTTS    = | part R1 − 50 % |  <  seuil
+//
+// LE SEUIL VIENT DU RÉEL, PAS DES MATCHS DU FICHIER. Le BTTS tombe dans
+// environ 51 % des matchs de football. Sur les 65 536 thèmes, l'écart
+// |part − 50 %| a pour médiane 4,17 % : c'est donc 4,17 % qui fait
+// annoncer « les deux marquent » sur 51 % des thèmes. Aucun autre réglage.
+//
+// CE QUE ÇA DONNE SUR LES QUATRE MATCHS CHOISIS PAR ELLEMINE_D :
+//   7-0  BTTS non   écart 6,5 %  ->  non   juste
+//   0-0  BTTS non   écart 10,0 % ->  non   juste
+//   1-1  BTTS oui   écart 3,8 %  ->  oui   juste
+//   2-3  BTTS oui   écart 3,6 %  ->  oui   juste
+//   4 sur 4, contre 3 sur 4 pour la cascade.
+//
+// CE QUE ÇA NE PROUVE PAS, ET IL FAUT LE LIRE AVANT DE S'EN RÉJOUIR.
+// Séparer 2 matchs de 2 autres avec une variable continue arrive par
+// hasard une fois sur trois. J'ai essayé quatre mesures d'équilibre
+// (marquage brut, marquage pondéré par l'activation, activation seule,
+// forces offensives) : la probabilité qu'au moins une sépare par pur
+// hasard est de 80 %. Seul le marquage BRUT sépare ; les trois autres
+// non.
+// Et la marge est mince : le 1-1 est à 3,80 % pour un seuil de 4,17 %.
+// Si le taux de BTTS réel était de 48 % au lieu de 51 %, le seuil
+// tomberait à 3,85 % et ce match basculerait du mauvais côté.
+//
+// CE QUI JUSTIFIE QUAND MÊME DE LA BRANCHER, indépendamment des 4 matchs :
+//  - c'est UNE ligne de doctrine, contre une cascade de cinq étages
+//    empilés au fil des mois ;
+//  - son seuil sort d'une fréquence externe, pas d'un ajustement ;
+//  - elle annonce BTTS oui sur 51 % des thèmes, comme le réel, là où la
+//    cascade en annonce 57,3 %.
+// La cascade reste calculée et exposée en contre-lecture.
+// BTTS_EQUILIBRE_DECIDE_V7 = false la remet aux commandes.
+// ═══════════════════════════════════════════════════════════════
+var SEUIL_EQUILIBRE_BTTS_V7 = 0.0417;   // médiane des 65 536 -> 51 % de BTTS oui
+
+function bttsEquilibreMarquageV7(theme) {
+  if (!theme || !theme[1] || typeof themeTourneR1V7 !== 'function'
+    || typeof BUTS_FIGURE === 'undefined') return { applicable: false };
+  var rt = themeTourneR1V7(theme);
+  if (!rt) return { applicable: false };
+  var lire = function (siege) {
+    var total = 0, detail = [];
+    OFFSETS_OFFENSIVE_V7.forEach(function (o) {
+      var pos = ((siege - 1 + o) % 16) + 1;
+      var B = BUTS_FIGURE[rt[pos]] || { min: 0, max: 0, label: '0' };
+      var m = (B.min + B.max) / 2;
+      total += m;
+      detail.push({ position: pos, figure: rt[pos], marquage: m, label: B.label });
+    });
+    return { total: total, detail: detail };
+  };
+  var a = lire(1), b = lire(7);
+  var somme = a.total + b.total;
+  var part = somme ? a.total / somme : 0.5;
+  var ecart = Math.abs(part - 0.5);
+  return {
+    applicable: true,
+    marquageR1: a.total, marquageR7: b.total,
+    detailR1: a.detail, detailR7: b.detail,
+    partR1: part, ecart: ecart, seuil: SEUIL_EQUILIBRE_BTTS_V7,
+    verdict: ecart < SEUIL_EQUILIBRE_BTTS_V7,
+    synthese: 'équilibre du marquage — R1 ' + a.total.toFixed(1) + ' contre R7 '
+      + b.total.toFixed(1) + ', soit ' + (100 * part).toFixed(1) + ' % pour R1 ; écart '
+      + (100 * ecart).toFixed(1) + ' % pour un seuil de '
+      + (100 * SEUIL_EQUILIBRE_BTTS_V7).toFixed(2) + ' % → '
+      + (ecart < SEUIL_EQUILIBRE_BTTS_V7
+          ? 'les deux camps se valent, LES DEUX MARQUENT'
+          : 'un camp domine, UN SEUL MARQUE')
   };
 }
 
@@ -27202,6 +27294,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // restent affichés comme faibles, avec leurs fractions.
   var bttsAxes = null;
   try { bttsAxes = bttsAxesResidenceV7(theme); } catch (e) { bttsAxes = null; }
+  var bttsEquilibre = null;
+  try { bttsEquilibre = bttsEquilibreMarquageV7(theme); } catch (e) { bttsEquilibre = null; }
 
   var bttsPuerSuc = false;
   try {
@@ -27241,6 +27335,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // celui du générateur calibré, sans être écrasé par une lecture nulle.
     btts = null;
     bttsBranche = 'indecidable';
+  }
+  else if (BTTS_EQUILIBRE_DECIDE_V7 && bttsEquilibre && bttsEquilibre.applicable) {
+    btts = bttsEquilibre.verdict; bttsBranche = 'equilibre';
   }
   else if (BTTS_AXES_DECISIF_V7 && bttsAxes && bttsAxes.applicable && bttsAxes.verdict !== null) {
     btts = bttsAxes.verdict; bttsBranche = 'axes';
@@ -27378,7 +27475,17 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       // s'allume sur 10 matchs où les deux camps ont marqué sur 16. Il
       // continue de corriger le CAMP (demande d'Ellemine_D du 11/09) et
       // reste affiché, mais il ne touche plus au BTTS.
-      if (!BTTS_INDECIDABLE_V7 && btts !== false) { btts = false; bttsBranche = 'camp_muet'; }
+      // ─── LE CAMP MUET NE TOUCHE PLUS AU BTTS (13/09/26) ───
+      // Il continue de corriger le CAMP, comme demandé le 11/09. Sur le BTTS
+      // il est retiré, et pour une raison mesurable qui ne doit rien à
+      // l'archive : il s'allume sur 20,8 % des thèmes, et ce sont
+      // précisément les thèmes ÉQUILIBRÉS qu'il frappe. Branché par-dessus
+      // la règle d'équilibre, il faisait tomber le taux de BTTS oui de 51 %
+      // à 30,7 % — il détruisait la calibration. Et sur la ligne 2
+      // (Puella/Amissio/Rubeus/Carcer, 2-3, les deux marquent) c'est lui, et
+      // lui seul, qui retournait le « oui » de la règle d'équilibre en
+      // « non ».
+      if (CAMP_MUET_DECIDE_BTTS_V7 && btts !== false) { btts = false; bttsBranche = 'camp_muet'; }
     }
   }
   var campMuetCorrige = null, campMuetNul = null, nulActifCorrige = null;
@@ -27793,6 +27900,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       ? 'indécidable — aucune lecture ne décide ; le BTTS n\'a jamais été jugé sur des résultats fiables'
       : (bttsBranche === 'camp_muet')
       ? ('camp muet — ' + (campMuetSource || 'un camp ne marque pas'))
+      : (bttsBranche === 'equilibre')
+      ? ((bttsEquilibre && bttsEquilibre.synthese) || 'équilibre du marquage')
       : (bttsBranche === 'axes')
       ? ((bttsAxes && bttsAxes.synthese) || 'forces offensives contre défenses adverses')
       : (bttsBranche === 'cadent') ? 'maison de R1 + Conjunctio + Puer (26/32)'
@@ -30389,15 +30498,24 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var incidentPrincipalDetail = '';
   if (card && card.incidentIntensite) {
     var _ii = card.incidentIntensite;
-    var _ich = (_ii.declencheurs !== undefined)
-             ? ((_ii.etouffement ? 'M6/M12 étouffée' : 'M6/M12 libres') + ' · '
-                + _ii.nFeu + ' Déclencheur' + (_ii.nFeu > 1 ? 's' : '') + ' de feu')
-             : (_ii.total !== undefined) ? ('charge ' + _ii.total)
-             : ('intensité ' + _ii.indice);
+    var _ich;
+    if (_ii.declencheurs !== undefined) {
+      // Les deux conditions doivent tenir ensemble. Le texte dit laquelle
+      // manque, au lieu d'aligner deux constats qui semblent se contredire
+      // (« étouffée » à côté de « Aucun »).
+      var _e = _ii.etouffement, _f = _ii.nFeu >= 1;
+      _ich = _e && _f
+        ? ('M6/M12 étouffée · ' + _ii.nFeu + ' Déclencheur' + (_ii.nFeu > 1 ? 's' : '') + ' de feu')
+        : _e ? 'M6/M12 étouffée mais aucun Déclencheur de feu — il faut les deux'
+        : _f ? (_ii.nFeu + ' Déclencheur' + (_ii.nFeu > 1 ? 's' : '')
+                + ' de feu mais M6 et M12 respirent — il faut les deux')
+        : 'M6 et M12 respirent, aucun Déclencheur de feu';
+    } else if (_ii.total !== undefined) { _ich = 'charge ' + _ii.total; }
+    else { _ich = 'intensité ' + _ii.indice; }
     incidentPrincipalDetail = ' <span style="color:#94a3b8;">('
       + esc(_ii.niveau) + ' · ' + _ich
-      + (!_ii.signal && card.incidentCamp
-          ? ' · lecture sous le seuil : contre ' + esc(card.incidentCamp) : '')
+      + ''   // plus de camp affiché : le lieu détecte l'incident, il ne nomme
+             // personne — voir incidentDoctrineV7, corrigé sur la ligne 2.
       + ')</span>';
   }
   // ─── LE CAMP QUI NE MARQUE PAS (11/09/26, Ellemine_D) ───

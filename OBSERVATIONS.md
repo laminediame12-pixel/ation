@@ -1720,3 +1720,90 @@ test n'est possible là-dessus.
 |---|---|
 | **présence de l'incident** | **2/2** |
 | camp de l'incident | **non déterminé** (était 1/2) |
+
+---
+
+## BTTS — l'équilibre du marquage (13/09/26)
+
+### Le raisonnement
+
+« Les deux marquent » n'est pas une question de force, c'est une question
+d'**équilibre**. Un camp qui écrase ne laisse pas marquer ; deux camps à
+égalité marquent tous les deux. Et le déséquilibre se lit dans la seule table
+du fichier qui dise combien une figure marque — `BUTS_FIGURE` — sur le trigone
+offensif de chaque camp.
+
+> part R1 = marquage(trigone offensif R1) / (R1 + R7)
+> **BTTS = | part R1 − 50 % | < seuil**
+
+### Le seuil vient du réel, pas des matchs du fichier
+
+Le BTTS tombe dans environ **51 %** des matchs de football. Sur les 65 536
+thèmes, l'écart `|part − 50 %|` a pour médiane **4,17 %** : c'est donc 4,17 %
+qui fait annoncer « les deux marquent » sur 51 % des thèmes. Aucun autre
+réglage.
+
+### Sur les quatre matchs choisis
+
+| thème | réel | BTTS réel | écart | annoncé | |
+|---|---|---|---|---|---|
+| Tristitia / Via / Conjunctio / Rubeus | 7-0 | non | **6,5 %** | non | ✔ |
+| Fortuna Major / Via / Puella / Cauda | 0-0 | non | **10,0 %** | non | ✔ |
+| Tristitia / Tristitia / Conjunctio / Rubeus | 1-1 | oui | **3,8 %** | oui | ✔ |
+| Puella / Amissio / Rubeus / Carcer | 2-3 | oui | **3,6 %** | oui | ✔ |
+
+**4 sur 4**, contre 3 sur 4 pour la cascade. Et le seuil de 4,17 % tombe **dans**
+la fenêtre de séparation (3,8 % – 6,5 %) sans avoir été choisi pour ça.
+
+### Ce que ça ne prouve pas
+
+Séparer 2 matchs de 2 autres avec une variable continue arrive par hasard **une
+fois sur trois**. J'ai essayé quatre mesures d'équilibre — marquage brut,
+marquage pondéré par l'activation, activation seule, forces offensives : la
+probabilité qu'au moins une sépare par pur hasard est de **80 %**. Seul le
+marquage **brut** sépare ; les trois autres non.
+
+Et **la marge est mince** : le 1-1 est à 3,80 % pour un seuil de 4,17 %. Si le
+taux réel de BTTS était de 48 % au lieu de 51 %, le seuil tomberait à 3,85 % et
+ce match basculerait du mauvais côté.
+
+### Ce qui justifie quand même de la brancher
+
+Indépendamment des quatre matchs :
+
+- c'est **une ligne de doctrine**, à la place d'une cascade de cinq étages
+  empilés au fil des mois ;
+- son seuil sort d'une **fréquence externe**, pas d'un ajustement ;
+- elle annonce BTTS oui sur **51,4 %** des thèmes, comme le réel, là où la
+  cascade en annonçait **57,3 %**.
+
+La cascade reste calculée et exposée en contre-lecture.
+`BTTS_EQUILIBRE_DECIDE_V7 = false` la remet aux commandes.
+
+### Ce que j'ai dû retirer pour que ça marche
+
+**Le camp muet ne touche plus au BTTS.** Il continue de corriger le camp, comme
+demandé le 11/09. Sur le BTTS, la raison de le retirer ne doit rien à
+l'archive : il s'allume sur **20,8 %** des thèmes, et ce sont précisément les
+thèmes **équilibrés** qu'il frappe. Branché par-dessus la règle d'équilibre, il
+faisait tomber le taux de BTTS oui de 51 % à **30,7 %** — il détruisait la
+calibration. Et sur la ligne 2, c'est lui, et lui seul, qui retournait le
+« oui » de la règle d'équilibre en « non ».
+
+### Bilan de l'échantillon choisi, 4 matchs
+
+| famille | juste |
+|---|---|
+| **BTTS** | **4/4** |
+| over / under 2,5 | **4/4** |
+| **incident présent** | **2/2** |
+| camp de l'incident | non déterminé |
+| camp du match | 1/4 |
+| nul | 2/4 |
+| bande de buts | 1/4 |
+| score exact | 0/4 |
+
+Deux pièces sur huit tombent juste partout, et ce sont les deux qui sortent
+d'une ligne de doctrine avec un seuil externe : **l'incident** et le **BTTS**.
+Les familles qui restent fausses — le camp, le nul, le score — sont celles qui
+reposent encore sur des cascades héritées.
