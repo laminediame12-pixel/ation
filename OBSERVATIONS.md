@@ -2007,3 +2007,77 @@ indépendante : il frappe les thèmes équilibrés.
 
 Le coût, honnêtement : le nul est maintenant annoncé sur 33 % des thèmes pour
 26 % réels. C'est la pièce à surveiller.
+
+---
+
+## BTTS avec B₁ **ou** B₂ — ce que ça donne, et ce que ça révèle
+
+| variante | 7-0 | 0-0 | 1-1 | 2-3 | justes | fréquence |
+|---|---|---|---|---|---|---|
+| B₁ ∧ B₂ ∧ juge chaud (écrite) | non | non | non | non | 2/4 | **2,6 %** |
+| **B₁ ∨ B₂ ∧ juge chaud** | oui | non | non | oui | 2/4 | 26,5 % |
+| **B₁ ∨ B₂ seul** | oui | non | oui | oui | **3/4** | **62,3 %** |
+| équilibre du marquage | non | non | oui | oui | **4/4** | **51,4 %** |
+
+Le OU répare l'effondrement — 62,3 % au lieu de 2,6 % — et monte à 3/4.
+
+**Mais il est logiquement faux, et le 7-0 le montre.** Sur ce match, B₁ dit vrai :
+le camp 1 marque, et il a marqué sept fois. B₂ dit faux : le camp 2 ne marque
+pas, et il n'a rien marqué. **Les deux ont raison.** Le OU en conclut pourtant
+« les deux marquent ». C'est le ET qui était la bonne structure — B₁ et B₂
+décrivent chacune un camp, et « les deux marquent » est bien leur conjonction.
+
+### Le vrai défaut : chaque clause s'allume deux fois trop peu
+
+Un camp marque dans environ **72 %** des matchs de football. B₁ s'allume sur
+**34,4 %** des thèmes. Ses trois clauses, mesurées séparément :
+
+| clause | fréquence |
+|---|---|
+| **(M1 ou M13 chaud)** | **75,0 %** ← seule, elle est juste |
+| ¬Sym(M13, M14) | 75,0 % |
+| (M14 froid ou M2 Cauda/Amissio) | 56,3 % |
+| **les trois ensemble** | **34,4 %** |
+
+Réduites à leur **première clause seule**, B₁ et B₂ font 75 % chacune, et leur
+conjonction **56,3 %** — juste à côté des 51 % du BTTS réel.
+
+**La structure B₁ ∧ B₂ est donc la bonne.** Ce sont les deux clauses ajoutées
+qui la divisent par deux, et la clause croisée sur M13/M14 qui rend les deux
+incompatibles entre elles.
+
+### Ce que B₁ et B₂ font bien — et c'est autre chose que le BTTS
+
+Prises **séparément**, comme réponse à « ce camp-là marque-t-il ? » :
+
+| thème | camp 1 dit / réel | camp 2 dit / réel |
+|---|---|---|
+| 7-0 | oui / oui ✔ | non / non ✔ |
+| 0-0 | non / non ✔ | non / non ✔ |
+| 1-1 | non / **oui** ✗ | oui / oui ✔ |
+| 2-3 | oui / oui ✔ | non / **oui** ✗ |
+
+**6 sur 8.** « Toujours oui » ferait 5/8, « toujours non » 3/8. Et les deux
+erreurs sont des **faux négatifs**, exactement cohérents avec des clauses qui
+s'allument deux fois trop peu.
+
+### Ce que j'ai fait
+
+**Je n'ai pas branché le OU sur le BTTS.** Il ferait passer une famille de 4/4
+à 3/4 et sur-annoncerait de 11 points, pour une lecture qui contredit son
+propre cas le plus net. Le BTTS reste à la règle d'équilibre du marquage.
+
+**J'ai branché B₁ et B₂ pour ce qu'elles savent faire** : dire **quel camp
+marque** — donc la forme du score. C'est un affichage neuf, en lecture seule,
+sous le BTTS :
+
+> lecture B₁/B₂ : **R7 seul marque** — B₁ faux · B₂ vrai — lecture seule,
+> 6 justes sur 8 camps de l'échantillon
+
+### Ce qui se tranche d'un mot, si tu veux aller plus loin
+
+Retirer de B₁ et B₂ leurs deux dernières clauses — garder seulement
+`(M1 ∨ M13 chaud)` et `(M2 ∨ M14 chaud)` — rend la conjonction calibrée à
+56,3 %. Sur les quatre matchs choisis elle donne encore « non » quatre fois,
+parce qu'aucun de ces thèmes n'a les deux côtés chauds. Il faudrait d'autres
+lignes pour la départager de la règle d'équilibre.

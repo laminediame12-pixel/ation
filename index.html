@@ -26827,6 +26827,72 @@ var SEUIL_EQUILIBRE_BTTS_V7 = 0.0417;   // médiane des 65 536 -> 51 % de BTTS o
 // nulActifV7 reste calculé et exposé en contre-lecture.
 // NUL_FORMULE_TEMOINS_V7 = false le remet aux commandes.
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// B1 ET B2 — QUEL CAMP MARQUE (13/09/26, formule d'Ellemine_D)
+// ───────────────────────────────────────────────────────────────
+//   B₁ = ((M1 ∈ {F,A}) ∨ (M13 ∈ {F,A})) ∧ ¬Sym_E(M13,M14)
+//        ∧ ((M14 ∈ {T,E}) ∨ (M2 ∈ {Cauda, Amissio}))
+//   B₂ = ((M2 ∈ {F,A}) ∨ (M14 ∈ {F,A})) ∧ ¬Sym_E(M13,M14)
+//        ∧ ((M13 ∈ {T,E}) ∨ (M1 ∈ {Cauda, Amissio}))
+//
+// ELLES NE SONT PAS BRANCHÉES SUR LE BTTS, et voici pourquoi.
+//
+// En ET, comme écrit : 2,6 % des thèmes, contre ~51 % de BTTS réels.
+// En OU, comme demandé : 62,3 % et 3/4 sur l'échantillon — mieux, mais
+// sur-annonce de 11 points, et surtout c'est logiquement faux : sur le 7-0,
+// B₁ dit vrai (le camp 1 marque) et le OU en conclut « les deux marquent »
+// alors que le camp 2 n'a rien marqué. Le ET était la bonne structure.
+//
+// LE VRAI DÉFAUT EST AILLEURS : chacune s'allume DEUX FOIS TROP PEU.
+// Un camp marque dans environ 72 % des matchs de football. B₁ s'allume sur
+// 34,4 % des thèmes. Ses trois clauses, mesurées séparément :
+//   (M1 ou M13 chaud) ............... 75,0 %   <- seule, elle est juste
+//   ¬Sym(M13,M14) ................... 75,0 %
+//   (M14 froid ou M2 Cauda/Amissio) . 56,3 %
+//   les trois ensemble .............. 34,4 %
+// Réduites à leur première clause, B₁ et B₂ font 75 % chacune, et leur
+// conjonction 56,3 % — juste à côté des 51 % du BTTS réel. La structure
+// B₁ ∧ B₂ est donc la bonne ; ce sont les deux clauses ajoutées qui la
+// divisent par deux, et la clause croisée qui les rend incompatibles.
+//
+// CE QU'ELLES FONT BIEN, ET C'EST AUTRE CHOSE QUE LE BTTS.
+// Prises séparément, comme réponse à « ce camp-là marque-t-il ? », elles
+// font 6 sur 8 sur les quatre matchs choisis :
+//   7-0  camp 1 oui/oui ✔   camp 2 non/non ✔
+//   0-0  camp 1 non/non ✔   camp 2 non/non ✔
+//   1-1  camp 1 non/OUI ✘   camp 2 oui/oui ✔
+//   2-3  camp 1 oui/oui ✔   camp 2 non/OUI ✘
+// « toujours oui » ferait 5/8, « toujours non » 3/8.
+// Les deux erreurs sont des faux négatifs, cohérents avec le fait que les
+// clauses s'allument deux fois trop peu.
+//
+// Elles sont donc exposées comme LECTURE — quel camp marque, donc la forme
+// du score — et ne décident de rien. Le BTTS reste à la règle d'équilibre
+// du marquage, qui fait 4/4 et s'annonce sur 51,4 % des thèmes.
+// ═══════════════════════════════════════════════════════════════
+function campsQuiMarquentV7(theme) {
+  if (!theme || !theme[14]) return null;
+  var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
+  var chaud = function (h) { return els[theme[h]] === 'feu' || els[theme[h]] === 'air'; };
+  var froid = function (h) { return !chaud(h); };
+  var cauAmi = function (h) { return theme[h] === 'cauda_draconis' || theme[h] === 'amissio'; };
+  var sym = (els[theme[13]] === els[theme[14]]);
+
+  var B1 = (chaud(1) || chaud(13)) && !sym && (froid(14) || cauAmi(2));
+  var B2 = (chaud(2) || chaud(14)) && !sym && (froid(13) || cauAmi(1));
+
+  return {
+    B1: B1, B2: B2, sym: sym,
+    campR1Marque: B1, campR7Marque: B2,
+    forme: B1 && B2 ? 'les deux marquent' : B1 ? 'R1 seul marque'
+         : B2 ? 'R7 seul marque' : 'aucun des deux ne marque',
+    // Ne PAS lire comme un BTTS : voir le bloc au-dessus.
+    resume: 'B₁ ' + (B1 ? 'vrai' : 'faux') + ' · B₂ ' + (B2 ? 'vrai' : 'faux')
+      + (sym ? ' · témoins symétriques (' + els[theme[13]] + ')' : '')
+      + ' — lecture seule, 6 justes sur 8 camps de l\'échantillon'
+  };
+}
+
 function nulFormuleTemoinsV7(theme) {
   if (!theme || !theme[13]) return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -27960,6 +28026,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // Ce que valent les lectures, pour qu'aucune carte n'affirme plus ce
     // qui a été mesuré au hasard.
     bttsIndecidable: !!BTTS_INDECIDABLE_V7,
+    campsQuiMarquent: (function () {
+      try { return campsQuiMarquentV7(theme); } catch (e) { return null; }
+    })(),
     bttsLectures: {
       axes: (bttsAxes && bttsAxes.applicable) ? bttsAxes.verdict : null,
       cadent: bttsCadent,
@@ -30206,6 +30275,11 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var bt = bttsValeur === true ? 'Oui' : bttsValeur === false ? 'Non'
     : (card && card.bttsIndecidable) ? 'Indécidable — 50 %' : 'Indéterminé';
   if (card && card.bttsSource) bt += ' — ' + card.bttsSource;
+  if (card && card.campsQuiMarquent) {
+    var _cq = card.campsQuiMarquent;
+    bt += '<br><span style="font-size:10px; color:#94a3b8; font-weight:400;">'
+       + 'lecture B₁/B₂ : ' + esc(_cq.forme) + ' — ' + esc(_cq.resume) + '</span>';
+  }
   if (card && card.bttsZone) bt += '<br><span style="font-size:10px; color:#94a3b8; font-weight:400;">'
     + card.bttsZone + '</span>';
   if (card && card.bttsContreLecture) bt += ' · ' + card.bttsContreLecture;
