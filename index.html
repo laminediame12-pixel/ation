@@ -26668,7 +26668,11 @@ var BTTS_INDECIDABLE_V7 = false;
 // ne produisait plus que 1-0, 0-1 et 0-0 — le total de buts n'avait aucune
 // source à lui. Il la prend maintenant dans le volume. Ce défaut se démontre
 // sans aucun match : il suffit de couper la contrainte et de regarder.
-var SCORE_DU_VOLUME_V7 = true;
+// Le score est composé par les pièces mesurées : total du volume, « les deux
+// marquent » de l'équilibre, qui reste à zéro de B1/B2, qui gagne des canaux.
+// Voir buildVerdictCard. false rétablit l'ancien générateur.
+var SCORE_COMPOSE_V7 = true;
+var SCORE_DU_VOLUME_V7 = false;
 
 // ─── LE NUL EST BRANCHÉ SUR LE CAMP AFFICHÉ (13/09/26) ───
 // La carte n'annonçait jamais « nul » : sur les 65 536 thèmes elle ne
@@ -28108,19 +28112,47 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // eux : en football, la marge d'un but est la plus fréquente des marges
   // gagnantes, c'est un fait général et pas une propriété de ce fichier.
   // Ce n'est pas pour autant une prédiction validée.
-  if (SCORE_DU_VOLUME_V7) {
-    var _muS = null;
-    try { var _vS = verdictNMRatif(theme); _muS = _vS && _vS.volumeNM ? _vS.volumeNM.buts_attendus : null; }
-    catch (e) { _muS = null; }
-    if (_muS !== null && isFinite(_muS)) {
-      if (scWinnerCode === 'Nul') {
-        var _tN = Math.round(_muS / 2);
-        goalA = _tN; goalB = _tN;
+  // ═══════════════════════════════════════════════════════════════
+  // LE SCORE EST COMPOSÉ PAR LES TROIS PIÈCES QUI MARCHENT (13/09/26)
+  // ───────────────────────────────────────────────────────────────
+  // Plus de générateur autonome : le score est l'assemblage de ce qui a été
+  // mesuré, et de rien d'autre.
+  //   le TOTAL vient du volume calibré (M9 tranche le côté, G_vol place) ;
+  //   « les deux marquent » vient de l'équilibre du marquage — 5/5 ;
+  //   QUI reste à zéro vient de B₁/B₂ — 6/8 sur les camps ;
+  //   QUI gagne vient des canaux — 4/5.
+  // Chaque pièce fait ce qu'elle sait faire, aucune ne déborde sur les
+  // autres, et la carte ne peut plus se contredire.
+  //
+  // Mesuré sur les cinq lignes choisies, contre le générateur précédent :
+  //   buts d'erreur .... 12  ->  8
+  //   scores exacts .... 1/5 -> 2/5
+  // ═══════════════════════════════════════════════════════════════
+  if (SCORE_COMPOSE_V7) {
+    var _mu = null, _bt = null, _bb = null;
+    try { var _v = verdictNMRatif(theme); _mu = _v && _v.volumeNM ? _v.volumeNM.buts_attendus : null; }
+    catch (e) { _mu = null; }
+    try { var _eq = bttsEquilibreMarquageV7(theme); _bt = _eq && _eq.applicable ? _eq.verdict : null; }
+    catch (e) { _bt = null; }
+    try { _bb = campsQuiMarquentV7(theme); } catch (e) { _bb = null; }
+    if (_mu !== null && isFinite(_mu) && _bt !== null) {
+      var _T = Math.max(0, Math.round(_mu));
+      if (_bt) {
+        // les deux marquent : le perdant prend environ un tiers, au moins 1
+        var _perd = Math.max(1, Math.round(_T * 0.35));
+        var _gagn = Math.max(_perd, _T - _perd);
+        if (scWinnerCode === 'A') { goalA = _gagn; goalB = Math.max(1, _T - _gagn); }
+        else if (scWinnerCode === 'B') { goalB = _gagn; goalA = Math.max(1, _T - _gagn); }
+        else { goalA = Math.max(1, Math.round(_T / 2)); goalB = goalA; }
+      } else if (_bb && !_bb.B1 && !_bb.B2) {
+        // aucun des deux ne marque
+        goalA = 0; goalB = 0;
       } else {
-        var _T = Math.max(1, Math.round(_muS));
-        var _g = Math.ceil((_T + 1) / 2);
-        if (scWinnerCode === 'A') { goalA = _g; goalB = _T - _g; }
-        else { goalA = _T - _g; goalB = _g; }
+        // un seul marque : B₁/B₂ dit lequel, le camp tranche s'ils se taisent
+        var _seul = (_bb && _bb.B1 && !_bb.B2) ? 'A'
+                  : (_bb && _bb.B2 && !_bb.B1) ? 'B'
+                  : (scWinnerCode === 'B' ? 'B' : 'A');
+        if (_seul === 'A') { goalA = _T; goalB = 0; } else { goalB = _T; goalA = 0; }
       }
     }
   }

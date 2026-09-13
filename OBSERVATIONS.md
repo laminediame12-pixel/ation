@@ -2535,3 +2535,69 @@ elle reste affichée. `CAMP_PAR_CANAUX_V7 = false` remet le 1N2 aux commandes.
 | bande de buts | 2/5 |
 | **incident (présence)** | **2/2** |
 | score exact | 0/5 |
+
+---
+
+## Tout est branché — état au 13/09/26
+
+Le score n'a plus de générateur autonome. Il est **composé** par les pièces
+mesurées, chacune faisant ce qu'elle sait faire et rien d'autre :
+
+| ce qu'il faut savoir | qui le dit | son score |
+|---|---|---|
+| le **total** de buts | volume calibré — M9 tranche le côté, `G_vol` place | 4/5 en over/under |
+| **les deux marquent** ou non | équilibre du marquage | **5/5** |
+| **lequel** reste à zéro | B₁ / B₂ | 6/8 sur les camps |
+| **qui gagne** | canaux des deux sièges | **4/5** |
+| **l'incident** | M6/M12 étouffée + Déclencheur | **2/2** |
+
+Aucune pièce ne déborde sur une autre, et la carte ne peut plus se contredire.
+
+### Résultat sur les cinq lignes choisies
+
+| thème | réel | camp | BTTS | volume | score |
+|---|---|---|---|---|---|
+| Tristitia/Via/Conjunctio/Rubeus | 7-0 | R1 ✔ | non ✔ | 3,87 · 5+ ✔ | 4-0 |
+| Fortuna Major/Via/Puella/Cauda | 0-0 | R7 ✗ | non ✔ | 2,57 · 2 buts | **0-0 ✔** |
+| Tristitia/Tristitia/Conjunctio/Rubeus | 1-1 | nul ✔ | oui ✔ | 1,77 · 0-1 | **1-1 ✔** |
+| Puella/Amissio/Rubeus/Carcer | 2-3 | R7 ✔ | oui ✔ | 3,92 · 5+ ✔ | 1-3 |
+| Amissio/Amissio/Carcer/Laetitia | 4-0 | R1 ✔ | non ✔ | 1,34 · 0-1 ✗ | 0-0 |
+
+| famille | avant la journée | maintenant |
+|---|---|---|
+| **BTTS** | 3/4 | **5/5** |
+| **camp** | 1/4 | **4/5** |
+| over / under 2,5 | 4/5 | 4/5 |
+| bande de buts | 2/5 | 2/5 |
+| **score exact** | 0/5 | **2/5** |
+| buts d'erreur | 12 | **8** |
+| **incident** | 95 % de faux positifs | **2/2**, 30 % des thèmes |
+
+### Les drapeaux, pour tout défaire en un mot
+
+| drapeau | ce qu'il fait |
+|---|---|
+| `BTTS_EQUILIBRE_DECIDE_V7` | l'équilibre du marquage décide le BTTS |
+| `CAMP_PAR_CANAUX_V7` | les canaux décident le camp |
+| `M9_TRANCHE_LE_VOLUME_V7` | M9 tranche le côté du seuil 2,5 |
+| `SCORE_COMPOSE_V7` | le score est assemblé au lieu d'être généré |
+| `INCIDENT_DOCTRINE_DECIDE_V7` | M6/M12 + feu décide l'incident |
+| `NUL_FORMULE_TEMOINS_V7` | le nul par les témoins (inactif tant que les canaux décident) |
+| `CAMP_MUET_CORRIGE_LE_CAMP_V7` | le camp muet corrige le camp — **débranché** |
+| `CAMP_MUET_DECIDE_BTTS_V7` | le camp muet décide le BTTS — **débranché** |
+| `MARQUAGE_CADENT_DANS_LE_VOLUME_V7` | le marquage cadent dans le volume — **débranché** |
+| `CAMP_INCIDENT_DEPUIS_LE_LIEU_V7` | le lieu nomme le camp de l'incident — **débranché** |
+
+### Ce qui reste faux, et qui attend des lignes
+
+- **la bande de buts, 2/5** — le volume sait de quel côté du seuil, pas combien
+- **le nul sur-annoncé** — 40 % des thèmes pour ~26 % réels
+- **le 0-0** est le seul camp raté : les canaux y donnent R7 sur un match nul
+
+### Pré-enregistré, toujours en attente de vérification
+
+1. le marquage cadent prédit le volume **à l'envers** — 1 confirmation hors échantillon
+2. moins le canal **Eau** est actif, plus il y a de buts
+3. moins les **sièges R1 et R7** sont actifs, plus il y a de buts
+4. sur les lignes où **B₁ ∧ B₂** et **l'équilibre du marquage** divergent, celle
+   qui gagne devient le moteur du BTTS
