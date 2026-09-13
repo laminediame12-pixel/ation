@@ -3031,3 +3031,103 @@ et l'empreinte des moteurs sur les 65 536 thèmes est inchangée :
     BTTS   (65 536 verdicts) 48a50fa6 -> 48a50fa6
     incident (65 536)        878bd7d4 -> 878bd7d4
     cinq lignes : BTTS 5/5 · camp 5/5 · incident 2/2 · aucune erreur de page
+
+## 13/09/26 — la sixième ligne, et le retour sur le nul
+
+Ellemine_D : « Laetitia / Fortuna minor / Amissio / Via — 3-3 ».
+
+### La première ligne vraiment hors échantillon
+
+Elle arrive **après** que le camp par la chaîne, le BTTS par l'équilibre et
+le seuil de menace aient été fixés, mesurés et livrés. Rien n'a été ajusté
+pour elle.
+
+    CAMP ..... Nul, réel Nul ....... ✔
+    BTTS ..... oui, réel oui ....... ✔
+    score .... 2-2, réel 3-3 ....... ✘
+
+Et elle tombe **par l'étage d'annulation**, le mécanisme énoncé en mots
+avant toute mesure : R7 = M8 Tristitia, terre en maison terre,
+concordance 1 — la position la plus forte possible — mais son antagoniste
+Via loge en canal 3/4. L'avantage tombe. 3-3.
+
+Les deux contre-lectures se trompent : les canaux disent R7, le moteur 1N2
+dit R7. La chaîne est seule à voir le nul.
+
+**Six lignes : camp 6/6 · BTTS 6/6 · score exact 2/6.**
+
+### Ce que la sixième ligne tranche en plus : le seuil
+
+Hier le seuil de 3/4 n'était pas discriminé — 3/4 et 4/4 donnaient tous
+deux 5/5. La menace de cette ligne vaut exactement 3/4, ce qui les sépare :
+
+| seuil | six lignes | nul % | écart |
+|---|---|---|---|
+| 2/4 | 5/6 | 43,4 | 34 |
+| **3/4** | **6/6** | 33,0 | 14 |
+| 4/4 | 5/6 | 20,4 | 12 |
+
+Le 3/4 n'est plus seulement le mot « fort ». **Honnêteté : la marginale
+préfère 4/4** (écart 12 contre 14). Le réel l'emporte, mais la tension
+existe et pourra se retourner.
+
+### D'où vient le nul — la question posée
+
+Le nul ne sort que de deux étages, tous deux tout-ou-rien :
+
+| étage | part des thèmes | nul |
+|---|---|---|
+| concordance | 45,2 % | jamais |
+| **avantage annulé** | **18,9 %** | **toujours** |
+| antagoniste | 21,8 % | jamais |
+| **égalité** | **14,1 %** | **toujours** |
+
+33,0 % au total, pour ~26 % au football. Sept variantes essayées pour
+rogner l'excédent. **Six échouent, et la façon dont elles échouent
+enseigne plus que la survivante :**
+
+| variante | six lignes | nul % |
+|---|---|---|
+| référence | 6/6 | 33,0 |
+| égalité départagée par l'activation | **5/6** (casse le 1-1) | 24,8 |
+| égalité départagée par le protecteur | **5/6** (casse le 1-1) | 30,4 |
+| égalité départagée par le canal | **5/6** (casse le 1-1) | 22,4 |
+| annulation : l'autre prend sauf s'il est bloqué | **5/6** (casse le 0-0) | 21,2 |
+| annulation : l'antagoniste doit dominer le canal | **5/6** (casse le 3-3) | 22,8 |
+| **annulation : une menace seulement CACHÉE n'annule pas** | **6/6** | **31,9** |
+
+Les **trois** départages de l'étage d'égalité cassent la même ligne, et
+tous de la même façon — ils donnent R7 sur le 1-1. Trois critères
+indépendants qui se trompent identiquement : **l'égalité doit rester le
+nul.** Elle est doctrinale, pas paresseuse. Et les deux lignes
+d'annulation défendent chacune leur étage.
+
+### Ce qui est branché : `ANNULATION_EXIGE_MENACE_EN_BASE_V7`
+
+La survivante sort des mots d'Ellemine_D : « un canal fort bien structuré,
+**en placé** ». Un ennemi qui n'existe que dans une résultante est présent
+mais pas placé — latent. Il peut être **vu**, il peut **départager** deux
+camps à égalité, il ne peut pas **renverser** une concordance forte.
+
+    annulation -> menace EN BASE seulement
+    départage  -> menace base + caché, comme avant
+
+Ça règle du même coup la tension ouverte hier : le caché poussait vers le
+nul et abîmait la marginale. Il ne la pousse plus.
+
+    six lignes 6/6 conservées · nul 33,0 % -> 31,9 % · écart 14 -> 12
+    étage annulation 18,9 % -> 17,7 %
+
+**Un point et un dixième.** Le nul reste **six points au-dessus** du
+football et je n'ai pas trouvé où les prendre sans casser une ligne. C'est
+en outre une gagnante de recherche : sept variantes, une survit.
+
+### ⚠️ Et la comparaison elle-même est boiteuse
+
+Les six lignes comptent **trois nuls sur six**. La cible de 26 % vient du
+football réel ; la marginale est calculée sur les 65 536 thèmes
+équiprobables. Rien ne garantit que les thèmes se projettent uniformément
+sur les matchs, ni que les lignes choisies soient un tirage
+représentatif. Tant que l'échantillon n'est pas élargi, **« 33 % c'est
+trop » est une hypothèse, pas un fait mesuré** — et c'est la raison
+principale pour laquelle je n'ai pas forcé la baisse.

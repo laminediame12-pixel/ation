@@ -26091,6 +26091,52 @@ var ECHANTILLON_ELLEMINE_V7 = [
     ditButs: 2.57,               // bande « 2 buts », réel 0               ✔ under 2.5
     note: 'BTTS juste et volume du bon côté du seuil, mais le nul n\'est pas '
         + 'vu : nulActifV7 ne s\'allume pas sur ce thème.'
+  },
+  {
+    n: 6,
+    meres: ['laetitia', 'fortuna_minor', 'amissio', 'via'],
+    score: '3-3',
+    btts: true,
+    incident: null,
+    // ═══════════════════════════════════════════════════════════════
+    // LA PREMIÈRE LIGNE VRAIMENT HORS ÉCHANTILLON (13/09/26).
+    // Elle arrive APRÈS que le camp par la chaîne, le BTTS par
+    // l'équilibre et le seuil de menace aient été fixés et livrés. Rien
+    // n'a été ajusté pour elle. Ce qu'elle dit :
+    //
+    //   CAMP ...... Nul, réel Nul ......................... ✔
+    //   BTTS ...... oui, réel oui ......................... ✔
+    //   score ..... 2-2, réel 3-3 ......................... ✘
+    //
+    // ET ELLE TOMBE PAR L'ÉTAGE D'ANNULATION, c'est-à-dire par le
+    // mécanisme exact qu'Ellemine_D avait énoncé en mots :
+    //   R7 = M8 Tristitia, terre en maison terre, CONCORDANCE 1 — la
+    //   position la plus forte possible. Son antagoniste est Via, logé
+    //   en canal 3/4. « Un canal fort, bien structuré » : l'avantage
+    //   tombe, personne ne gagne. Réel 3-3.
+    // Les deux contre-lectures se trompent ici : les canaux disent R7,
+    // le moteur 1N2 dit R7. La chaîne est seule à voir le nul.
+    //
+    // ── CE QU'ELLE TRANCHE EN PLUS : LE SEUIL ──
+    // Hier j'écrivais que 3/4 et 4/4 donnaient tous deux 5/5, donc que
+    // le seuil n'avait pas été choisi pour la justesse. Cette ligne
+    // sépare enfin les deux, parce que sa menace vaut exactement 3/4 :
+    //     seuil 2/4 -> 5/6      seuil 3/4 -> 6/6      seuil 4/4 -> 5/6
+    // Le 3/4 n'est donc plus seulement le mot « fort » : il est le seul
+    // des trois que les lignes admettent.
+    // HONNÊTETÉ : la marginale, elle, préfère 4/4 (écart 12 contre 14).
+    // Le réel l'emporte sur la marginale, mais la tension est réelle et
+    // se retournera peut-être quand l'échantillon s'élargira.
+    // ═══════════════════════════════════════════════════════════════
+    ditCamp: 'Nul',              // réel nul                                ✔
+    ditBtts: true,               // réel oui                                ✔
+    ditScore: '2-2',             // réel 3-3                                ✘
+    ditIncident: false,
+    note: 'Hors échantillon, annoncée par un moteur figé et livré avant '
+        + 'de la connaître. Camp ✔ et BTTS ✔ ; le score dit la bonne '
+        + 'FORME (nul, les deux marquent) et la mauvaise QUANTITÉ — '
+        + '2-2 pour 3-3, deux buts manquants. C\'est exactement le défaut '
+        + 'connu du volume : la forme tient, la quantité non.'
   }
 ];
 
@@ -27331,6 +27377,60 @@ var SEUIL_MENACE_ANTAGONISTE_V7 = 3;   // « canal fort, bien structuré » : 3/
 // ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = false revient à la base seule.
 var ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = true;
 
+// ── UN ENNEMI CACHÉ NE PEUT PAS ANNULER UN AVANTAGE ──
+// AJOUTÉ (13/09/26), en revenant sur le nul avec la sixième ligne.
+//
+// Le nul était annoncé sur 33,0 % des thèmes pour ~26 % de nuls réels au
+// football. J'ai cherché d'où venaient les sept points de trop. Le nul ne
+// sort que de DEUX étages, tous deux tout-ou-rien :
+//
+//   concordance ....... 45,2 % des thèmes ....... jamais nul
+//   avantage annulé ... 18,9 % .................. TOUJOURS nul
+//   antagoniste ....... 21,8 % .................. jamais nul
+//   égalité ........... 14,1 % .................. TOUJOURS nul
+//
+// Sept variantes essayées pour en rogner un. SIX ÉCHOUENT, et la façon
+// dont elles échouent est instructive :
+//
+//   · les TROIS qui départagent l'étage d'égalité (par l'activation, par
+//     le protecteur, par le canal) cassent toutes la ligne 1-1, et
+//     toutes de la même façon : elles donnent R7. Trois départages
+//     indépendants qui se trompent identiquement, ce n'est pas un
+//     hasard — l'égalité DOIT rester le nul. Elle est doctrinale, pas
+//     paresseuse.
+//   · « l'autre camp prend, sauf s'il est bloqué aussi » casse le 0-0.
+//   · « l'antagoniste doit dominer le canal du siège » casse le 3-3.
+//     Les deux lignes d'annulation défendent donc leur étage chacune.
+//
+// LA SEPTIÈME TIENT, et elle sort des mots d'Ellemine_D : « si le canal
+// antagoniste est dans un canal fort bien structuré, EN PLACÉ,
+// l'antagoniste sera un obstacle redoutable ». En placé. Un ennemi qui
+// n'existe que dans une résultante est présent, mais il n'est pas placé :
+// il est latent. Il peut donc être VU, et il peut DÉPARTAGER deux camps
+// à égalité — mais il ne peut pas renverser une concordance forte.
+//
+//   annulation  -> lit la menace EN BASE seulement
+//   départage   -> lit la menace base + caché, comme avant
+//
+// Ça règle du même coup la tension laissée ouverte hier : le caché
+// poussait vers le nul et abîmait la marginale. Il ne la pousse plus.
+//
+// CE QUE ÇA VAUT, SANS MAQUILLAGE :
+//   six lignes 6/6 conservées · nul 33,0 % -> 31,9 % · écart 14 -> 12
+// Un point et un dixième. Le nul reste SIX POINTS au-dessus du football,
+// et je n'ai pas trouvé où les prendre sans casser une ligne. C'est aussi
+// une gagnante de recherche : sept variantes essayées, une survit.
+//
+// ⚠️ ET LA COMPARAISON ELLE-MÊME EST BOITEUSE. Les six lignes comptent
+// TROIS nuls sur six. La cible de 26 % vient du football réel ; la
+// marginale est calculée sur les 65 536 thèmes équiprobables. Rien ne
+// garantit que les thèmes se projettent uniformément sur les matchs, ni
+// que les lignes choisies soient un tirage représentatif. Tant que
+// l'échantillon n'est pas élargi, « 33 % c'est trop » est une hypothèse,
+// pas un fait mesuré.
+// ANNULATION_EXIGE_MENACE_EN_BASE_V7 = false revient au comportement livré.
+var ANNULATION_EXIGE_MENACE_EN_BASE_V7 = true;
+
 function campParChaineV7(theme) {
   if (!theme || !theme[1] || typeof ANTAGONISTES_V7 === 'undefined') return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -27350,7 +27450,9 @@ function campParChaineV7(theme) {
     // La maison de repos de la figure du siège — « sa » maison. C'est la
     // seule où la résultante est lue (voir le bloc au-dessus).
     var chezLui = (typeof FIGS_V7 !== 'undefined') ? (FIGS_V7.indexOf(f) + 1) : 0;
-    var menace = 0, ou = [], cache = null;
+    // menace = ce qui départage (base + caché) ; menaceEnBase = ce qui peut
+    // ANNULER un avantage (l'ennemi doit être placé, pas seulement latent).
+    var menace = 0, menaceEnBase = 0, ou = [], cache = null;
     for (var x = 1; x <= 16; x++) {
       var enBase = (theme[x] === ant);
       var enResultante = ANTAGONISTE_CACHE_EN_RESULTANTE_V7 && x === chezLui
@@ -27360,10 +27462,11 @@ function campParChaineV7(theme) {
       ou.push({ maison: x, canal: c, force: fo, resultante: !enBase });
       if (!enBase) cache = { maison: x, porteuse: theme[x], repos: FIGS_V7[x - 1], canal: c, force: fo };
       if (fo > menace) menace = fo;
+      if (enBase && fo > menaceEnBase) menaceEnBase = fo;
     }
     return {
       maison: h, figure: f, element: els[f], maisonElement: MAISON_ELEM_V7[h],
-      maisonDeRepos: chezLui, antagonisteCache: cache,
+      maisonDeRepos: chezLui, antagonisteCache: cache, menaceEnBase: menaceEnBase,
       boucle: (typeof loopOf === 'function') ? loopOf(f) : null,
       concordance: concordanceElement(els[f], MAISON_ELEM_V7[h]),
       antagoniste: ant, menace: menace, antagonisteOu: ou,
@@ -27373,14 +27476,19 @@ function campParChaineV7(theme) {
   var a = lireSiege(rot.hR1), b = lireSiege(rot.hR7);
   var S = SEUIL_MENACE_ANTAGONISTE_V7;
   var etage, verdict, avantage = null;
+  // Ce qui ANNULE : l'ennemi placé. Ce qui DÉPARTAGE : l'ennemi vu, caché
+  // compris. Voir le bloc ANNULATION_EXIGE_MENACE_EN_BASE_V7.
+  var coupe = function (s) {
+    return (ANNULATION_EXIGE_MENACE_EN_BASE_V7 ? s.menaceEnBase : s.menace) >= S;
+  };
 
   if (a.concordance > b.concordance) {
     avantage = 'R1';
-    if (a.menace >= S) { etage = 'avantage annulé'; verdict = 'Nul'; }
+    if (coupe(a)) { etage = 'avantage annulé'; verdict = 'Nul'; }
     else { etage = 'concordance'; verdict = 'R1'; }
   } else if (b.concordance > a.concordance) {
     avantage = 'R7';
-    if (b.menace >= S) { etage = 'avantage annulé'; verdict = 'Nul'; }
+    if (coupe(b)) { etage = 'avantage annulé'; verdict = 'Nul'; }
     else { etage = 'concordance'; verdict = 'R7'; }
   } else if (a.menace < b.menace) { etage = 'antagoniste'; verdict = 'R1'; }
   else if (b.menace < a.menace) { etage = 'antagoniste'; verdict = 'R7'; }
