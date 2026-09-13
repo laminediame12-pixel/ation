@@ -2446,3 +2446,92 @@ penche **54/46 vers R1** alors que R1 n'est que « celui tapé en premier ».
 | bande de buts | 2/5 |
 | **incident (présence)** | **2/2** |
 | score exact | 0/5 |
+
+---
+
+## Le camp par les canaux — le procédé remonté et mesuré
+
+> « On avait fixé ça par la domination d'éléments actifs de l'axe où se
+> trouvent R1 et R7, poussé avec le thème dérivé de l'axe angulaire, et les
+> canaux faisant preuve de confirmation sur le camp qui doit gagner. »
+
+Les trois étages ont été remontés et mesurés **séparément** sur les cinq lignes.
+
+| étage | juste |
+|---|---|
+| dominance de l'élément dans l'axe de R1/R7 | **1/4** quand elle départage |
+| thème dérivé de l'axe commun | **1/4** quand il s'applique |
+| **★ canal élémentaire de chaque siège** | **4/5** |
+
+Et toutes les cascades qui remettent les deux premiers devant ou derrière le
+canal **retombent à 3/5 ou 1/5**, en écrasant au passage le taux de nuls à 6 %.
+
+| cascade | annoncé | justes | marginale |
+|---|---|---|---|
+| axe → dérivé → canal | R1 R1 R1 R1 R7 | 1/5 | 50 / 44 / 6 |
+| canal → axe → dérivé | R1 R7 R1 R7 R1 | 3/5 | 49 / 45 / 6 |
+| canal → dérivé → axe | R1 R7 R1 R7 R1 | 3/5 | 49 / 45 / 6 |
+| **canal seul** | R1 R7 nul R7 R1 | **4/5** | **32 / 29 / 40** |
+
+**C'est le troisième étage seul qui portait le procédé.** Les deux autres ne
+confirment rien.
+
+### La règle
+
+Chaque siège porte un élément. Cet élément a son canal — Feu M1·M5·M9·M13,
+Air M2·M6·M10·M14, Eau M3·M7·M11·M15, Terre M4·M8·M12·M16. **Le camp dont le
+canal est le plus actif l'emporte ; à égalité, nul.**
+
+| réel | canal R1 | canal R7 | dit | |
+|---|---|---|---|---|
+| 7-0 R1 | feu 2/4 | terre 0/4 | R1 | ✔ |
+| 0-0 nul | terre 2/4 | eau 4/4 | R7 | ✗ |
+| 1-1 nul | feu 0/4 | feu 0/4 | nul | ✔ |
+| 2-3 R7 | eau 2/4 | terre 4/4 | R7 | ✔ |
+| 4-0 R1 | feu 2/4 | eau 1/4 | R1 | ✔ |
+
+**4/5** — contre 3/5 pour le 1N2 et 2/5 pour la meilleure constante.
+
+### Le biais R1/R7 est réparé
+
+| | R1 | R7 | nul |
+|---|---|---|---|
+| 1N2 | **54 %** | **46 %** | — |
+| **canaux** | **32 %** | **29 %** | 40 % |
+| cible | 37 % | 37 % | 26 % |
+
+Huit points de biais systématique en faveur de « l'équipe tapée en premier »,
+disparus. Il venait des deux critères qui tranchaient le plus dans le 1N2 —
+Concordance (54,7 % R1) et Charge active (57,3 %).
+
+### Le défaut, écrit ici
+
+**Le nul est annoncé sur 40 % des thèmes pour ~26 % réels.** L'égalité de deux
+canaux est fréquente. Tout ce que j'ai essayé pour la réduire casse autre chose :
+
+- la formule des témoins en surcouche : 4/5 aussi, mais **60 % de nuls**, et
+  elle retourne le 4-0 que les canaux donnaient juste
+- le nul réservé aux deux canaux morts : 4/5, mais la symétrie explose
+  (56 / 29 / 15)
+
+### Ce qui est branché
+
+`campParCanauxV7` décide du camp. Le 1N2 reste calculé et exposé en
+contre-lecture, et la bannière nomme les deux quand ils divergent :
+
+> 🏆 VERDICT — canaux — R1 porte feu (canal 2/4) contre R7 terre (canal 0/4)
+> → R1 l'emporte · *le 1N2 disait R7 (Charge active)*
+
+La formule des témoins ne corrige plus le camp tant que les canaux décident ;
+elle reste affichée. `CAMP_PAR_CANAUX_V7 = false` remet le 1N2 aux commandes.
+
+### État de l'échantillon, 5 lignes
+
+| famille | juste |
+|---|---|
+| **BTTS** | **5/5** |
+| **camp** | **4/5** (était 3/5) |
+| over / under 2,5 | 4/5 |
+| bande de buts | 2/5 |
+| **incident (présence)** | **2/2** |
+| score exact | 0/5 |

@@ -26647,6 +26647,10 @@ var CAMP_MUET_CORRIGE_LE_CAMP_V7 = false;
 // Le nul se lit par les témoins et le juge, formule d'Ellemine_D du 13/09.
 // false remet nulActifV7 aux commandes. Voir nulFormuleTemoinsV7.
 var NUL_FORMULE_TEMOINS_V7 = true;
+// Le camp est décidé par les canaux des deux sièges. 4/5 sur les lignes
+// choisies, et marginale symétrique 32/29 là où le 1N2 penchait 54/46.
+// Voir campParCanauxV7. false remet le 1N2 aux commandes.
+var CAMP_PAR_CANAUX_V7 = true;
 // ─── LE BTTS N'EST VALIDÉ PAR RIEN (13/09/26) ───
 // Je l'avais déclaré indécidable après l'avoir mesuré sous le hasard sur
 // l'archive. Ellemine_D a coupé : l'archive n'est pas fiable, on ne sait pas
@@ -27036,6 +27040,76 @@ function campsQuiMarquentV7(theme) {
     resume: 'B₁ ' + (B1 ? 'vrai' : 'faux') + ' (M1 ' + els[theme[1]] + ', M13 ' + els[theme[13]] + ')'
       + ' · B₂ ' + (B2 ? 'vrai' : 'faux') + ' (M2 ' + els[theme[2]] + ', M14 ' + els[theme[14]] + ')'
       + ' — lecture seule, 6 justes sur 8 camps de l\'échantillon'
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LE CAMP PAR LES CANAUX (13/09/26, procédé d'Ellemine_D)
+// ───────────────────────────────────────────────────────────────
+// « On avait fixé ça par la domination d'éléments actifs de l'axe où se
+//   trouvent R1 et R7, poussé avec le thème dérivé de l'axe angulaire, et
+//   les canaux faisant preuve de confirmation sur le camp qui doit gagner. »
+//
+// Les trois étages du procédé ont été remontés et mesurés séparément sur
+// les cinq lignes choisies. LE TROISIÈME EST LE SEUL QUI PARLE :
+//
+//   dominance de l'élément dans l'axe de R1/R7 ... 1/4 quand elle départage
+//   thème dérivé de l'axe commun ................. 1/4 quand il s'applique
+//   ★ canal élémentaire de chaque siège .......... 4/5
+//
+// Et toutes les cascades qui remettent les deux premiers devant ou derrière
+// le canal RETOMBENT à 3/5 ou 1/5, en écrasant au passage le taux de nuls à
+// 6 %. Le canal seul est ce qui reste.
+//
+// LA RÈGLE. Chaque siège porte un élément. Cet élément a son canal —
+// Feu M1·M5·M9·M13, Air M2·M6·M10·M14, Eau M3·M7·M11·M15,
+// Terre M4·M8·M12·M16. Le camp dont le canal est le plus actif l'emporte ;
+// à égalité, nul.
+//
+// CE QU'ELLE RÉPARE, ET C'ÉTAIT LA DEMANDE. Le 1N2 penchait 54 % / 46 %
+// vers R1, alors que R1 n'est que « l'équipe tapée en premier » : huit
+// points de biais systématique. Le canal donne 32 % / 29 % — symétrique.
+// Le biais venait des deux critères qui tranchaient le plus dans le 1N2,
+// Concordance (54,7 % R1) et Charge active (57,3 %).
+//
+// SUR LES CINQ LIGNES : 4/5, contre 3/5 pour le 1N2 et 2/5 pour la
+// meilleure constante.
+//   7-0  canal R1 feu 2/4 contre R7 terre 0/4 ....... R1  ✔
+//   0-0  canal R1 terre 2/4 contre R7 eau 4/4 ....... R7  ✘
+//   1-1  canal R1 feu 0/4 contre R7 feu 0/4 ......... nul ✔
+//   2-3  canal R1 eau 2/4 contre R7 terre 4/4 ....... R7  ✔
+//   4-0  canal R1 feu 2/4 contre R7 eau 1/4 ......... R1  ✔
+//
+// SON DÉFAUT, ÉCRIT ICI : le nul est annoncé sur 40 % des thèmes pour ~26 %
+// réels. L'égalité de deux canaux est fréquente. Tout ce que j'ai essayé
+// pour la réduire — la formule des témoins en départage, le nul réservé aux
+// deux canaux morts — casse soit la justesse soit la symétrie R1/R7.
+//
+// Le 1N2 reste calculé et exposé en contre-lecture.
+// CAMP_PAR_CANAUX_V7 = false le remet aux commandes.
+// ═══════════════════════════════════════════════════════════════
+function campParCanauxV7(theme) {
+  if (!theme || !theme[1] || typeof procedureAnalyseV7 !== 'function') return null;
+  var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
+  var P, rot;
+  try { P = procedureAnalyseV7(theme); rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!P || !rot) return null;
+  var canalDe = function (el) {
+    for (var i = 0; i < P.canaux.length; i++)
+      if (P.canaux[i].nom.toLowerCase() === el) return P.canaux[i];
+    return null;
+  };
+  var e1 = els[theme[rot.hR1]], e7 = els[theme[rot.hR7]];
+  var c1 = canalDe(e1), c7 = canalDe(e7);
+  if (!c1 || !c7) return null;
+  var verdict = c1.actifs > c7.actifs ? 'R1' : c7.actifs > c1.actifs ? 'R7' : 'Nul';
+  return {
+    applicable: true, verdict: verdict,
+    elementR1: e1, elementR7: e7,
+    canalR1: c1.actifs, canalR7: c7.actifs, sur: c1.sur,
+    resume: 'canaux — R1 porte ' + e1 + ' (canal ' + c1.actifs + '/' + c1.sur + ')'
+      + ' contre R7 ' + e7 + ' (canal ' + c7.actifs + '/' + c7.sur + ')'
+      + ' → ' + (verdict === 'Nul' ? 'égalité, nul' : verdict + ' l\'emporte')
   };
 }
 
@@ -27836,7 +27910,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     }
   }
 
-  if (NUL_ACTIF_DECIDE_CAMP_V7 && !campMuetNul) {
+  // Le nul est déjà produit par l'égalité des canaux quand ceux-ci décident.
+  // Superposer la formule des témoins par-dessus casse la ligne 5 : elle y
+  // annonce nul (M13 et M14 tous deux Tristitia terre) sur un 4-0 que les
+  // canaux donnaient juste. Elle reste calculée et exposée.
+  if (NUL_ACTIF_DECIDE_CAMP_V7 && !campMuetNul && !CAMP_PAR_CANAUX_V7) {
     var _nulA = false;
     if (NUL_FORMULE_TEMOINS_V7) {
       try { var _nf = nulFormuleTemoinsV7(theme); _nulA = !!(_nf && _nf.verdict); }
@@ -32042,9 +32120,20 @@ function renderTheme(){
     // Si le moteur 1N2 ne tranche pas (ses cinq niveaux égalisent), on force
     // 'Nul' plutôt que de laisser buildVerdictCard retomber sur son propre
     // duel brut — sinon un vainqueur que le moteur n'a pas voulu réapparaît.
-    const rWinnerOverride = !duel1N2Top ? null
-      : (duel1N2Top.verdict === 'R1' || duel1N2Top.verdict === 'R7') ? duel1N2Top.verdict
-      : 'Nul';
+    // ─── LE CAMP EST DÉCIDÉ PAR LES CANAUX (13/09/26) ───
+    // Voir campParCanauxV7 : 4/5 sur les lignes choisies contre 3/5 pour le
+    // 1N2, et surtout une marginale symétrique 32/29 là où le 1N2 penchait
+    // 54/46 vers « l'équipe tapée en premier ». Le 1N2 reste calculé et
+    // exposé en contre-lecture.
+    let campCanaux = null;
+    if (typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7) {
+      try { campCanaux = campParCanauxV7(currentTheme); } catch (e) { campCanaux = null; }
+    }
+    const rWinnerOverride = campCanaux && campCanaux.applicable
+      ? campCanaux.verdict
+      : (!duel1N2Top ? null
+        : (duel1N2Top.verdict === 'R1' || duel1N2Top.verdict === 'R7') ? duel1N2Top.verdict
+        : 'Nul');
     const carteR = buildVerdictCard(orderR[0], orderR[6], 'R1', 'R7', currentTheme, rWinnerOverride, _domicileCode, true);
     // L'en-tête nomme le critère qui a RÉELLEMENT tranché, pas seulement le
     // moteur : c'est la seule façon de relire un verdict après coup.
@@ -32067,6 +32156,10 @@ function renderTheme(){
         ? ('Camp muet — ' + carteR.bttsCampMuetCorrige.avant + ' lu muet, corrigé en '
            + carteR.bttsCampMuetCorrige.apres
            + (duel1N2Top ? ' (le 1N2 disait ' + duel1N2Top.critere + ')' : ''))
+        : campCanaux && campCanaux.applicable
+          ? (campCanaux.resume
+             + (duel1N2Top && duel1N2Top.verdict !== campCanaux.verdict
+                ? ' · le 1N2 disait ' + duel1N2Top.verdict + ' (' + duel1N2Top.critere + ')' : ''))
         : duel1N2Top
           ? 'Moteur 1N2 — ' + duel1N2Top.critere
           : 'Moteur 1N2';
