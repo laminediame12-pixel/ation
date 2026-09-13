@@ -679,3 +679,44 @@ mesurer qu'un accord interne. C'est une question pour le test prospectif.
 
 Affichée sur la carte, avec ses propres chiffres à côté, pour qu'on ne la croie
 pas plus qu'elle ne vaut.
+
+### Le trigone offensif de R1 — 13/09/2026
+
+Deux définitions coexistaient dans le fichier :
+
+| | maisons |
+|---|---|
+| bouton « 4D · offensive 1 » | M1 + M5 + M9 |
+| moteur BTTS (`axesSommesRotationV7`, `R1.off`) | **M3 + M5 + M9** |
+
+C'est le moteur qui décide ; le bouton n'était qu'un raccourci d'affichage, et il
+montrait un autre trigone que celui qui travaille. **Corrigé sur {3, 5, 9}** sur
+décision d'Ellemine_D.
+
+**Ce qui tranche, au-delà de l'ancienneté** : {3,5,9} est le seul des deux à être
+**entièrement Cadent**. Et les deux trigones **défensifs** du fichier —
+`[4,10,1]` et `[4,10,7]` — sont **entièrement Angulaires**. M1 est angulaire,
+M3 est cadent : le bouton mélangeait les deux rôles.
+
+Le trigone de R7, `{7,3,11}`, était déjà identique des deux côtés.
+
+**Le fichier encode donc, depuis longtemps : offensive = Cadent, défense =
+Angulaire.** C'est l'intuition d'Ellemine_D — « je crois que le Cadent est lié à
+l'offense » — déjà écrite dans le code avant tout ce travail sur les axes.
+
+**Corrélation mesurée** (force active de l'axe → buts prédits, 65 536 thèmes) :
+
+| axe | force faible | force forte | écart |
+|---|---|---|---|
+| **Cadent** | 2,36 buts | 2,70 | **+0,34** |
+| Succédent | 2,41 | 2,55 | +0,14 |
+| **Angulaire** | 2,56 | 2,41 | **−0,15** |
+
+⚠️ **Cette corrélation ne prouve rien.** Elle est circulaire : le générateur de
+score utilise l'offensive `{3,5,9}`, des maisons cadentes, et la défense
+`{1,4,10}`, angulaires. Plus le Cadent est actif, plus il produit de buts — par
+construction. Ce n'est pas une loi découverte, c'est une hypothèse déjà encodée
+qui ressort par la sortie. Ce qu'elle établit : le fichier partage l'intuition.
+Ce qu'elle n'établit pas : qu'elle soit vraie.
+
+Sorties sur les 65 536 thèmes : identiques (le bouton n'entre dans aucune décision).
