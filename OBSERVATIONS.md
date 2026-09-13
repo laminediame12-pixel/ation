@@ -1488,3 +1488,66 @@ avant aujourd'hui — des dizaines de commentaires du type « mesuré sur les 49
 « taux de base des nuls dans l'archive : 24 % », des seuils réglés sur elle.
 Ils sont hors du périmètre de cet audit, qui ne porte que sur ce que j'ai
 touché aujourd'hui. Si tu veux, je passe le fichier entier au même crible.
+
+---
+
+## BTTS sur les matchs que tu as choisis
+
+Les trois que tu avais mis à part (« parmi les 49 il y a des matchs FIFA, des
+matchs virtuels ; prends juste d'abord ceux-là ») plus la ligne 2. Cascade
+telle qu'elle est aujourd'hui, rebranchée cet après-midi.
+
+| thème | réel | BTTS réel | annoncé | branche | |
+|---|---|---|---|---|---|
+| Tristitia / Via / Conjunctio / Rubeus | 7-0 | non | non | **camp muet** | ✔ |
+| Fortuna Major / Via / Puella / Cauda | 0-0 | non | non | axes | ✔ |
+| Tristitia / Tristitia / Conjunctio / Rubeus | 1-1 | oui | oui | axes | ✔ |
+| Puella / Amissio / Rubeus / Carcer | 2-3 | oui | **non** | axes | ✗ |
+
+**BTTS : 3 sur 4.** « Toujours oui » et « toujours non » feraient 2/4 chacun.
+
+### Ce que ça corrige de ce matin
+
+J'ai déclaré ce matin que le BTTS mesurait **sous le hasard** — 19/42, φ = −0,095
+— et je l'ai débranché sur cette base. Tu as coupé : ces 42 sortent d'un lot
+dont on ne sait rien. J'ai rebranché la cascade cet après-midi en disant qu'elle
+restait **non validée**.
+
+Sur tes matchs à toi, elle fait **3/4**. Ce n'est pas une validation — quatre
+matchs ne valident rien, et « toujours oui » ferait 2/4 — mais c'est le premier
+signe favorable qu'elle ait jamais eu sur des données que tu tiens pour fiables.
+
+Et la branche qui tranche le 7-0 est le **camp muet** : celle-là même que
+j'avais mesurée à φ = −0,196 sur le lot non fiable et que j'avais débranchée du
+BTTS. Ici elle a raison.
+
+### Le reste, sur les quatre mêmes
+
+| thème | camp réel / dit | buts réel / attendu | over 2.5 |
+|---|---|---|---|
+| Tristitia/Via/Conjunctio/Rubeus | R1 / **R1** ✔ | 7 / 3,87 (5+) | ✔ |
+| Fortuna Major/Via/Puella/Cauda | nul / R1 ✗ | 0 / 2,57 (2 buts) | ✔ |
+| Tristitia/Tristitia/Conjunctio/Rubeus | nul / R7 ✗ | 2 / 2,40 (2 buts) | ✔ |
+| Puella/Amissio/Rubeus/Carcer | R7 / R1 ✗ | 5 / 3,57 (4 buts) | ✔ |
+
+**Over/under 2,5 : 4 sur 4** — et c'est mesuré APRÈS avoir sorti le marquage
+cadent du volume, donc sur `G_vol` seul plus la calibration externe.
+
+**Camp : 1 sur 4.** Les trois ratés comprennent deux nuls que le moteur ne voit
+pas. `nulActifV7` ne s'allume sur aucun des deux.
+
+### Bilan de l'échantillon choisi, 4 matchs
+
+| famille | juste |
+|---|---|
+| over / under 2,5 | **4/4** |
+| BTTS | **3/4** |
+| incident présent | 2/2 (deux renseignés) |
+| camp de l'incident | 1/2 |
+| **camp du match** | **1/4** |
+| nul | 2/4 |
+| bande de buts | 1/4 |
+| score exact | 0/4 |
+
+Le camp est la pièce la plus faible, et ce sont les nuls qui le tuent : deux
+des quatre matchs sont des nuls, le moteur n'en voit aucun.

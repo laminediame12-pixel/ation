@@ -25917,6 +25917,35 @@ var ECHANTILLON_ELLEMINE_V7 = [
         + 'Le mapping M6 -> équipe 1 / M12 -> équipe 2 n\'est pas retourné '
         + 'pour autant : on ne renverse pas une règle sur la ligne qui vient '
         + 'de la contredire.'
+  },
+  // ─── Les trois matchs mis à part par Ellemine_D avant les deux lignes
+  // ci-dessus (« parmi les 49 il y a des matchs FIFA, des matchs virtuels ;
+  // prends juste d'abord ceux-là »). Ils entrent ici parce qu'ils sont
+  // CHOISIS, pas parce qu'ils sont dans l'archive. Le n°3 est le même thème
+  // que la ligne 1 : le score y était connu avant que le rouge le soit.
+  {
+    n: 3,
+    meres: ['tristitia', 'via', 'conjunctio', 'rubeus'],
+    score: '7-0',
+    btts: false,
+    incident: null,              // non renseigné
+    ditBtts: false,              // branche camp_muet                      ✔
+    ditCamp: 'R1',               // réel R1                                ✔
+    ditButs: 3.87,               // bande « 5 buts ou plus », réel 7       ✔ over 2.5
+    note: 'Le camp muet est la branche qui tranche ici, et elle a raison : '
+        + '7-0, un seul camp marque.'
+  },
+  {
+    n: 4,
+    meres: ['fortuna_major', 'via', 'puella', 'cauda_draconis'],
+    score: '0-0',
+    btts: false,
+    incident: null,
+    ditBtts: false,              // branche axes                           ✔
+    ditCamp: 'R1',               // réel nul                               ✘
+    ditButs: 2.57,               // bande « 2 buts », réel 0               ✔ under 2.5
+    note: 'BTTS juste et volume du bon côté du seuil, mais le nul n\'est pas '
+        + 'vu : nulActifV7 ne s\'allume pas sur ce thème.'
   }
 ];
 
