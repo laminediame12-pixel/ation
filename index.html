@@ -23335,7 +23335,21 @@ var CDF_MARQUAGE_CADENT_V7 = [
   0.967,0.9733,0.9783,0.9828,0.9866,0.9896,0.9921,0.9939,0.9954,0.9966,0.9974,0.9981,
   0.9986,0.999,0.9993,0.9995,0.9997,0.9998,0.9998,0.9999,0.9999,0.9999,1,1
 ];
-var BUTS_MOYENS_REELS_V7 = 2.70;   // buts moyens d'un match, toutes compétitions
+var BUTS_MOYENS_REELS_V7 = 2.70;   // buts moyens d'un match, référence externe
+
+// ─── POURQUOI PAS L'ARCHIVE (13/09/26, Ellemine_D) ───
+// J'avais recalibré ce chiffre sur les 49 thèmes archivés (moyenne 4,16) et
+// figé le score sur leur meilleure constante. Ellemine_D a coupé : les 49 ne
+// sont pas fiables — on ne sait pas lesquels sont des FIFA et lesquels sont
+// des matchs réels, et les deux populations n'ont pas le même nombre de buts.
+// Calibrer là-dessus, c'était caler le système sur un mélange inconnu.
+// La référence redevient donc EXTERNE : 2,70 buts par match, la moyenne du
+// football, qui ne dépend d'aucune donnée de ce fichier.
+// Ce qui reste des corrections d'aujourd'hui, ce sont celles qui se
+// démontrent sans aucun match : les mauvaises maisons lues par le moteur, les
+// affichages qui nommaient autre chose que ce que le code appliquait, le
+// score qui n'avait aucune source, le nul qui ne pouvait pas être annoncé, et
+// l'avantage du terrain qui était collecté puis jeté.
 
 function cdfInterpV7(table, x, lo, pas) {
   if (!isFinite(x)) return 0.5;
@@ -23360,6 +23374,7 @@ function volumeCalibreV7(theme, gvol) {
   var qM = M ? (1 - cdfInterpV7(CDF_MARQUAGE_CADENT_V7, M.total, 0, 0.5)) : 0.5;
   var q  = (qG + qM) / 2;
   var Q  = q <= 0.5 ? 2 * q * q : 1 - 2 * (1 - q) * (1 - q);   // ré-étalement exact
+
   var mu = BUTS_MOYENS_REELS_V7 * (0.42 + 1.16 * Q);           // moyenne conservée à 2,70
 
   var p0 = poissonV7(mu, 0), p1 = poissonV7(mu, 1), p2 = poissonV7(mu, 2), p3 = poissonV7(mu, 3);
@@ -23377,10 +23392,10 @@ function volumeCalibreV7(theme, gvol) {
   // La bande annoncée n'est PAS la tranche la plus probable : les tranches
   // ouvertes (« 0-1 » et « 4 ou plus ») ramassent structurellement plus de
   // masse et gagneraient toujours — mesuré, 46 pour cent et 54 pour cent,
-  // les tranches 2 et 3 jamais annoncées. La bande sort donc des quantiles
-  // de mu, calés sur les fréquences réelles du football :
-  // 0-1 but 25 pour cent, 2 buts 24, 3 buts 22, 4 buts 15, 5+ 14.
-  // Coupures mesurées sur les 65 536 thèmes.
+  // les tranches 2 et 3 jamais annoncées.
+  // La bande sort des quantiles de mu, calés sur les fréquences du football :
+  // 0-1 but 25 %, 2 buts 24 %, 3 buts 22 %, 4 buts 15 %, 5+ 14 %. Coupures
+  // mesurées sur les 65 536 thèmes, aucune donnée de match n'y entre.
   var bande;
   if (mu < 1.961)      bande = '0-1 but';
   else if (mu < 2.697) bande = '2 buts';
@@ -25633,6 +25648,84 @@ function incidentV2Build(theme){
     resume:unique.length ? unique.map(x=>x.label).join(' | ') : 'Aucun signal structurel V2'};
 }
 
+// ═══════════════════════════════════════════════════════════════
+// L'INCIDENT EST CALIBRÉ (13/09/26, Ellemine_D : « corrige les incidents »)
+// ───────────────────────────────────────────────────────────────
+// CE QUI N'ALLAIT PAS, et qui se démontre sans un seul match :
+// `penaltyRouge` valait `incidentV2.hasSignal || legacy.hasSignal`. Mesuré
+// sur les 65 536 thèmes :
+//
+//   detectIncidentV2 s'allume ............ 63,9 %
+//   detectIncidentChaotique .............. 93,4 %
+//   l'un OU l'autre (= penaltyRouge) ..... 95,0 %
+//
+// La carte annonçait donc « ⚠️ SIGNAL INCIDENT » sur 95 thèmes sur 100 — et
+// sur 49 des 49 thèmes archivés. Un détecteur qui s'allume presque toujours
+// ne porte presque aucune information : ce n'est pas une opinion sur le
+// football, c'est une propriété du détecteur. Même défaut que le volume qui
+// annonçait « 5+ buts » sur 48,6 % des thèmes.
+//
+// CE QUI REMPLACE. Les deux détecteurs restent, entiers, comme lectures. Ce
+// qui change, c'est qu'on cesse de les lire en OU — un OU entre deux
+// détecteurs larges ne peut que s'allumer — pour les lire en INTENSITÉ :
+//
+//   indice = 2 x (signaux V2) + (signaux legacy)
+//
+// V2 compte double parce que c'est le détecteur spécifique ; le legacy est le
+// filet large. Distribution mesurée sur les 65 536 thèmes, et seuils posés
+// dessus :
+//
+//   indice >= 9  ....... 29,6 % des thèmes   -> incident annoncé
+//   indice >= 12 ....... 12,0 %              -> marqué
+//   indice >= 15 .......  3,8 %              -> élevé
+//
+// LE SEUIL VIENT D'UNE RÉFÉRENCE EXTERNE, PAS DE L'ARCHIVE. En football, un
+// penalty est sifflé dans environ 25 % des matchs et un rouge sorti dans
+// environ 8 % : l'un ou l'autre, environ 30 à 33 %. L'archive du fichier ne
+// pouvait pas servir ici de toute façon — elle n'étiquette l'incident que sur
+// 10 de ses 49 thèmes, dont 9 positifs, et Ellemine_D a tranché le 13/09
+// qu'elle mêle des FIFA et des matchs réels sans qu'on sache lesquels.
+// Rien de ce bloc n'en dépend.
+//
+// CE QUI N'EST PAS PRÉTENDU. Que le bon tiers soit désigné. Aucune donnée
+// fiable ne permet de le dire. Ce qui est acquis, c'est que l'annonce est
+// désormais RARE comme l'évènement est rare, au lieu d'être permanente.
+// ═══════════════════════════════════════════════════════════════
+// Seuils mesurés sur le chemin réel de la carte — les détecteurs y sont
+// appelés sur les maisons de la rotation, pas sur 1 et 7, et la distribution
+// de l'indice n'est pas la même. Première version calée sur le mauvais
+// chemin : elle annonçait 47 % au lieu de 33 %.
+var SEUIL_INCIDENT_V7        = 9;    // 29,6 % des thèmes
+var SEUIL_INCIDENT_MARQUE_V7 = 12;   // 12,0 %
+var SEUIL_INCIDENT_ELEVE_V7  = 15;   //  3,8 %
+// P(indice <= i) sur les 65 536 thèmes, i de 0 à 25.
+var CDF_INCIDENT_V7 = [
+  0.0083,0.0469,0.1278,0.2278,0.3283,0.4309,0.5291,0.6206,0.7044,0.7763,
+  0.8326,0.8796,0.9146,0.9427,0.9621,0.9747,0.9841,0.9902,0.9940,0.9965,
+  0.9980,0.9989,0.9995,0.9998,1.0000,1.0000
+];
+
+function intensiteIncidentV7(theme, v2, legacy) {
+  var nV2  = (v2 && v2.signals) ? v2.signals.length : 0;
+  var nLeg = (legacy && legacy.signals) ? legacy.signals.length : 0;
+  var indice = 2 * nV2 + nLeg;
+  var i = Math.min(CDF_INCIDENT_V7.length - 1, Math.max(0, indice));
+  var rang = CDF_INCIDENT_V7[i];
+  return {
+    indice: indice, nV2: nV2, nLegacy: nLeg,
+    rang: rang,
+    pct: Math.round(rang * 100),
+    signal: indice >= SEUIL_INCIDENT_V7,
+    niveau: indice >= SEUIL_INCIDENT_ELEVE_V7 ? 'Élevé'
+          : indice >= SEUIL_INCIDENT_MARQUE_V7 ? 'Marqué'
+          : indice >= SEUIL_INCIDENT_V7 ? 'Présent' : 'Aucun',
+    resume: 'intensité ' + indice + ' (' + nV2 + ' signal(aux) V2 comptés double, '
+      + nLeg + ' de la lecture large) — seuil ' + SEUIL_INCIDENT_V7
+      + ', franchi par 29,6 % des thèmes, comme le penalty ou le rouge le sont '
+      + 'dans environ un tiers des matchs'
+  };
+}
+
 function detectIncidentChaotique(theme, campA, campB, posA, posB){
   posA = posA || 1; posB = posB || 7;
   const els = (typeof ELEMENTS_V7!=='undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -26174,29 +26267,37 @@ function detecterBTTS100V7(theme) {
 // incidents, ni le moteur Volume.
 // ═══════════════════════════════════════════════════════════════
 var BTTS_AXES_DECISIF_V7 = true;
-// ─── LE BTTS EST DÉCLARÉ INDÉCIDABLE (13/09/26) ───
-// Voir la démonstration complète dans buildVerdictCard, au-dessus de la
-// cascade. Résumé : sur les 42 matchs de football réel de l'archive le BTTS
-// réel fait 21/42, la cascade en trouvait 19, et une recherche de 187
-// candidats a produit un meilleur (26/42) inférieur à ce que le hasard
-// produit (29/42) au même nombre de candidats.
-var BTTS_INDECIDABLE_V7 = true;
-// Le score prend sa source dans le volume calibré depuis que la cascade BTTS
-// est coupée : sans elle le générateur ne sortait plus que des 1-0 / 0-1 / 0-0.
+// ─── LE BTTS N'EST VALIDÉ PAR RIEN (13/09/26) ───
+// Je l'avais déclaré indécidable après l'avoir mesuré sous le hasard sur
+// l'archive. Ellemine_D a coupé : l'archive n'est pas fiable, on ne sait pas
+// lesquels de ses 49 thèmes sont des FIFA. Une mesure faite sur un mélange
+// inconnu ne peut ni condamner ni valider une lecture.
+// La cascade est donc REBRANCHÉE telle qu'elle était. Elle n'est pas
+// démontrée pour autant : elle n'a jamais été jugée sur des résultats
+// fiables. Passer BTTS_INDECIDABLE_V7 à true la débranche à nouveau et fait
+// afficher « indécidable » au lieu d'un oui/non.
+var BTTS_INDECIDABLE_V7 = false;
+
+// ─── LE SCORE A SA PROPRE SOURCE (13/09/26) ───
+// Découvert en débranchant un instant la cascade BTTS : le générateur de
+// score ne tenait que par elle. Sans la contrainte « les deux marquent », il
+// ne produisait plus que 1-0, 0-1 et 0-0 — le total de buts n'avait aucune
+// source à lui. Il la prend maintenant dans le volume. Ce défaut se démontre
+// sans aucun match : il suffit de couper la contrainte et de regarder.
 var SCORE_DU_VOLUME_V7 = true;
+
 // ─── LE NUL EST BRANCHÉ SUR LE CAMP AFFICHÉ (13/09/26) ───
-// La carte n'annonçait jamais « nul » alors que 11 des 42 matchs réels de
-// l'archive en sont. nulActifV7, l'organe du nul de la doctrine, existait
-// mais n'était pas relié au verdict affiché. Voir buildVerdictCard.
+// La carte n'annonçait jamais « nul » : sur les 65 536 thèmes elle ne
+// produisait que R1 ou R7. Un moteur de verdict incapable de sortir une des
+// trois issues ne peut pas répondre à la question posée. nulActifV7, l'organe
+// du nul de la doctrine, existait et n'était relié à rien. Il l'est.
 var NUL_ACTIF_DECIDE_CAMP_V7 = true;
+
 // ─── L'AVANTAGE DU TERRAIN TRANCHE LES ÉGALITÉS (13/09/26) ───
-// Il était collecté par l'app puis jeté : il ne majorait qu'un total de
-// capacité, écrasé juste après par le verdict du 1N2. Voir buildVerdictCard.
+// Il était collecté par l'app puis jeté : domicileCode ne majorait qu'un
+// total de capacité, écrasé une ligne plus loin par le verdict du 1N2.
+// Vérifiable en lisant le code, sans aucun match.
 var DOMICILE_TRANCHE_LES_EGALITES_V7 = true;
-var BTTS_BASE_REELLE_V7 = 21 / 42;    // base mesurée, football réel
-var BTTS_BASE_ESPORT_V7 = 7 / 7;      // base mesurée, e-sport / FIFA
-var BTTS_N_REEL_V7 = 42;
-var BTTS_N_ESPORT_V7 = 7;
 
 // ═══════════════════════════════════════════════════════════════
 // LA FORCE OFFENSIVE ET DÉFENSIVE DE CHAQUE CAMP (13/09/26, Ellemine_D :
@@ -26544,6 +26645,10 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   var incidentV2 = incidentV2Build(theme);
   var incidentLegacy = null;
   var incidentDetect = incidentV2.hasSignal ? incidentV2 : (incidentLegacy = detectIncidentChaotique(theme, campA, campB, posA, posB));
+  // Les deux détecteurs sont lus ENSEMBLE, en intensité, et non plus en OU :
+  // le OU s'allumait sur 95 % des thèmes. Voir intensiteIncidentV7.
+  if (!incidentLegacy) { try { incidentLegacy = detectIncidentChaotique(theme, campA, campB, posA, posB); } catch (e) { incidentLegacy = null; } }
+  var incidentIntensite = intensiteIncidentV7(theme, incidentV2, incidentLegacy);
   var niveauIncident = calculerNiveauIncidentV7(incidentDetect.signals);
   // V2 fournit désormais directement le camp structurel; l'ancien cascadeur
   // reste le repli uniquement quand V2 ne désigne aucun camp.
@@ -26790,48 +26895,15 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   // bttsBranche est desormais pose PAR la cascade, et c'est lui qui
   // nomme la source. Le BTTS lui-meme ne change pas d'un theme.
   // ═══════════════════════════════════════════════════════════════
-  // LE BTTS NE DÉCIDE PLUS (13/09/26, Ellemine_D : « corrige le BTTS »)
+  // CE QUE VAUT LE BTTS : RIEN DE DÉMONTRÉ (13/09/26)
   // ───────────────────────────────────────────────────────────────
-  // Mesure sur les 49 matchs de CAS_REFERENCE_V7, dont 42 de football réel
-  // (7 sont e-sport / FIFA et sont comptés à part : ils font 7/7 BTTS oui).
-  //
-  // Sur les 42 réels, le BTTS réel vaut 21/42 — exactement pile ou face.
-  // Et la cascade y mesurait :
-  //
-  //   cascade complète (telle quelle) ....... 19/42 = 45 %   phi = -0,095
-  //   camp muet -> BTTS non ................. 17/42 = 40 %   phi = -0,196
-  //   toujours OUI .......................... 21/42 = 50 %
-  //   toujours NON .......................... 21/42 = 50 %
-  //
-  // Le moteur était donc SOUS le hasard, et son étage le plus récent — le
-  // camp muet — était le plus nuisible des deux. Le détecteur de camp muet
-  // pointe même à l'envers : il s'allume sur 16 matchs, dont 10 où les deux
-  // camps ont marqué (62 %), contre 11 sur 26 (42 %) quand il ne s'allume
-  // pas. La doctrine « un camp muet ne peut pas marquer » est juste ; c'est
-  // le DÉTECTEUR qui désigne les mauvais matchs.
-  //
-  // Recherche systématique ensuite : 187 candidats (seuils aux terciles de
-  // 20 variables continues, présence de chacune des 16 figures dans le
-  // thème / le cadent / l'angulaire / en R1-R7, camp muet, moteur actuel).
-  // Meilleur trouvé : 26/42 = 62 %. Distribution nulle du meilleur des 187
-  // sur étiquettes permutées, 20 000 tirages : moyenne 29/42.
-  // P(meilleur >= 26 par hasard) = 100 %.
-  // Autrement dit le meilleur candidat trouvé est MOINS BON que ce que le
-  // hasard produit à ce nombre de candidats. Rien dans ce système ne
-  // prédit le BTTS sur les matchs réels dont on dispose.
-  //
-  // La route par le volume ne sauve rien : P(les deux marquent) sous
-  // Poisson(mu) donne un score de Brier de 0,2902 quand « 50 % à chaque
-  // match » donne 0,2500, et le volume corrigé lui-même ne corrèle pas
-  // aux buts réels sur ces 42 matchs (r = -0,069, p = 0,66).
-  //
-  // CE QUI EST FAIT ICI. On cesse d'affirmer. Le BTTS n'est plus tranché
-  // par une lecture : il suit le score de la carte, pour que la carte ne
-  // se contredise jamais, et il est annoncé comme INDÉCIDABLE avec sa
-  // probabilité de base. Toutes les lectures (axes, cadent, chaîne,
-  // rotation, camp muet) restent CALCULÉES ET AFFICHÉES — elles ne
-  // décident plus. Remettre BTTS_INDECIDABLE_V7 à false rebranche la
-  // cascade telle qu'elle était, si de nouveaux résultats la justifient.
+  // La cascade ci-dessous n'a jamais été jugée sur des résultats fiables.
+  // La seule base disponible est CAS_REFERENCE_V7, et elle mêle des matchs
+  // FIFA et des matchs réels sans qu'on sache lesquels — Ellemine_D l'a
+  // tranché le 13/09. Les deux populations n'ont pas le même BTTS : mesurer
+  // sur le mélange ne dit rien, ni pour, ni contre.
+  // Elle reste donc branchée telle qu'elle était, et elle reste NON VALIDÉE.
+  // BTTS_INDECIDABLE_V7 = true la débranche et fait afficher « indécidable ».
   // ═══════════════════════════════════════════════════════════════
   var btts, bttsBranche;
   if (BTTS_INDECIDABLE_V7) {
@@ -27320,7 +27392,9 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
   return {
     labelA: labelA, labelB: labelB, winner: winner, corrected: sc.corrected, source: source,
     scoreMain: scoreMain, scoreAlt: scoreAlt,
-    penaltyRouge: incidentDetect.hasSignal,
+    penaltyRouge: incidentIntensite.signal,
+    incidentIntensite: incidentIntensite,
+    incidentSource: incidentIntensite.resume,
     // ─── LE CAMP QUI ENCAISSE, EN DONNÉE (27/08/26) ───
     // Avant, l'information n'existait que noyée dans le texte d'un
     // libellé. Elle remonte maintenant jusqu'à l'écran.
@@ -27329,7 +27403,8 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     incidentCampSource: campIncidentAffiche.source || null,
     incidentSignaux: incidentDetect.signals || [],
     cartonsJaunes: incidentDetect.signals.length,
-    incidentPct: niveauIncident.pct,
+    incidentPct: incidentIntensite.pct,
+    incidentPctAncien: niveauIncident.pct,
     incidentNiveau: niveauIncident.niveau,
     incidentInevitable: niveauIncident.inevitable,
     incidentPctPenalty: niveauIncident.pctPenalty,
@@ -27376,7 +27451,6 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // Ce que valent les lectures, pour qu'aucune carte n'affirme plus ce
     // qui a été mesuré au hasard.
     bttsIndecidable: !!BTTS_INDECIDABLE_V7,
-    bttsProbabilite: BTTS_BASE_REELLE_V7,
     bttsLectures: {
       axes: (bttsAxes && bttsAxes.applicable) ? bttsAxes.verdict : null,
       cadent: bttsCadent,
@@ -27385,12 +27459,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
       campMuet: campMuetCode
     },
     bttsSource: BTTS_INDECIDABLE_V7
-      ? ('indécidable — aucun signal trouvé : 187 candidats testés sur les '
-         + BTTS_N_REEL_V7 + ' matchs réels de l\'archive (BTTS réel 21/42), '
-         + 'meilleur 26/42 quand le hasard en produit 29/42 ; la cascade y '
-         + 'mesurait 19/42 (phi = -0,095) et le camp muet 17/42 (phi = -0,196), '
-         + 'tous deux SOUS le hasard. Aucune valeur n\'est annoncée : le score '
-         + 'de la carte en implique une, ce n\'en est pas une prédiction.')
+      ? 'indécidable — aucune lecture ne décide ; le BTTS n\'a jamais été jugé sur des résultats fiables'
       : (bttsBranche === 'camp_muet')
       ? ('camp muet — ' + (campMuetSource || 'un camp ne marque pas'))
       : (bttsBranche === 'axes')
@@ -29974,7 +30043,14 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var bttsPrincipalColor = bttsPrincipal === 'OUI' ? '#4ade80' : bttsPrincipal === 'NON' ? '#f87171' : '#fbbf24';
   if (bttsPrincipal.indexOf('INDÉCIDABLE') === 0) bttsPrincipalColor = '#94a3b8';
   var incidentPrincipal = card && card.penaltyRouge ? '⚠️ SIGNAL INCIDENT' : 'AUCUN SIGNAL';
-  var incidentPrincipalCamp = card && card.incidentCamp ? ' · CONTRE ' + esc(card.incidentCamp) : '';
+  // Le camp ne s'affiche que s'il y a un signal (13/09/26). Avant, la carte
+  // pouvait écrire « AUCUN SIGNAL · CONTRE M1 » : neuvième occurrence du même
+  // défaut, un affichage qui contredit ce que le code vient de décider.
+  var incidentPrincipalCamp = (card && card.penaltyRouge && card.incidentCamp)
+    ? ' · CONTRE ' + esc(card.incidentCamp) : '';
+  var incidentPrincipalDetail = (card && card.incidentIntensite)
+    ? ' (' + esc(card.incidentIntensite.niveau) + ', intensité ' + card.incidentIntensite.indice + ')'
+    : '';
   // ─── LE CAMP QUI NE MARQUE PAS (11/09/26, Ellemine_D) ───
   // Le BTTS dit SI un camp reste à zéro ; il ne disait jamais LEQUEL. La
   // lecture par axes le sait — elle calcule bloqueR1 et bloqueR7 séparément
@@ -30019,7 +30095,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   }
   html += '<div data-btts-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+bttsPrincipalColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
     + '<div style="font-size:12px; font-weight:900;">⚽ BTTS <span style="color:'+bttsPrincipalColor+'; font-size:15px;">'+bttsPrincipal+'</span></div>'
-    + '<div style="font-size:11px; color:#cbd5e1;">⚠️ Incidents : <b>'+incidentPrincipal+incidentPrincipalCamp+'</b></div>'
+    + '<div style="font-size:11px; color:#cbd5e1;">⚠️ Incidents : <b>'+incidentPrincipal+incidentPrincipalCamp+'</b>'+incidentPrincipalDetail+'</div>'
     + (muetTxt ? '<div style="width:100%; text-align:center; font-size:11px; color:#fbbf24; margin-top:2px;">🚫 '+muetTxt+'</div>' : '')
     + (muetAlerte ? '<div style="width:100%; text-align:center; font-size:10px; color:#f87171; margin-top:2px;">⚠️ '+muetAlerte+'</div>' : '')
     + (card && card.bttsSource ? '<div style="width:100%; text-align:center; font-size:9.5px; color:#94a3b8;">Source BTTS : '+esc(card.bttsSource)+'</div>' : '')
@@ -31212,19 +31288,10 @@ function renderTheme(){
         : duel1N2Top
           ? 'Moteur 1N2 — ' + duel1N2Top.critere
           : 'Moteur 1N2';
-    // ─── CE QUE VAUT CE CAMP, MESURÉ (13/09/26) ───
-    // Sur les 42 matchs de football réel de l'archive (R1 16 / R7 15 / nul 11) :
-    //   1N2 seul ..................... 14/42 = 33 %   (sous « toujours R1 », 16/42)
-    //   + correction camp muet ....... 18/42 = 43 %
-    //   + nul actif branché .......... 19/42 = 45 %
-    // Recherche de 170 candidats sur les 31 matchs décidés : meilleur 21/31,
-    // quand la distribution nulle du meilleur des 170 a pour mode 22/31.
-    // P(meilleur >= 21 par hasard) = 98,3 %. Aucun signal démontré.
-    carteR.campMesure = 'camp juste 19/42 sur l\'archive réelle (R1 16 / R7 15 / '
-      + 'nul 11) — le 1N2 seul y fait 14/42, sous « toujours R1 » (16/42) ; '
-      + 'la correction du camp muet vaut +4 et le nul actif +1. Aucun signal '
-      + 'démontré : 170 candidats testés, meilleur 21/31 quand le hasard en '
-      + 'produit 22/31.';
+    // Aucune mesure de justesse n'est affichée ici : la seule base disponible
+    // est l'archive des 49, et Ellemine_D a tranché — elle mêle des FIFA et
+    // des matchs réels sans qu'on sache lesquels, donc elle ne peut servir ni
+    // à créditer ni à condamner un moteur.
     carteR.duel1N2 = duel1N2Top;
     // MODE LIVE (03/09/26) — voir appliquerEtatLiveV7 : plancher de score au
     // score déjà connu + signal de cohérence, sans toucher au verdict.

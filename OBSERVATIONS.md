@@ -1052,335 +1052,107 @@ succès.
 
 ---
 
-## Correction du volume (13/09/26)
+## Les corrections du 13/09/26, et ce qu'il en reste
 
-Le volume était cassé de trois façons, toutes mesurées avant correction.
+J'ai passé la journée à corriger le volume, le BTTS, le camp et les incidents
+en mesurant tout sur `CAS_REFERENCE_V7`, les 49 thèmes archivés avec un score.
+**Ellemine_D a coupé : ces 49 ne sont pas fiables.** On ne sait pas lesquels
+sont des matchs FIFA et lesquels sont des matchs réels, et les deux
+populations n'ont ni le même nombre de buts ni le même BTTS. Une mesure faite
+sur un mélange inconnu ne peut ni condamner ni valider quoi que ce soit.
 
-### 1. Le nombre affiché n'était pas des buts
+Il a raison, et tout ce qui reposait dessus est retiré. Ce qui suit sépare les
+deux.
 
-`G_vol` est un indice sans unité, de moyenne **2,15** sur les 65 536 thèmes.
-Il était affiché tel quel sous l'étiquette « Volume des buts », et comparé au
-seuil 2,5 comme s'il s'agissait d'un nombre de buts. D'où la lecture fausse
-« volume 2,49 → moins de 2,5 buts ».
+### Retiré — tout ce qui était calé sur les 49
 
-Conséquence sur le marché annoncé, sur les 65 536 thèmes :
+| ce que j'avais fait | pourquoi c'est parti |
+|---|---|
+| volume recalibré sur la moyenne de l'archive (4,16 buts) | moyenne d'un mélange inconnu |
+| bandes calées sur les fréquences de l'archive | idem |
+| score figé sur « la meilleure constante de l'archive » (3-1 / 2-2) | constante d'un mélange inconnu |
+| volume ramené à une constante « puisque r = −0,043 » | corrélation mesurée sur le mélange |
+| BTTS déclaré **indécidable** « puisque 19/42 » | 19/42 vient du mélange, découpé par un drapeau `esport` qui est une annotation, pas une donnée |
+| justesse du camp affichée sur la carte (19/42) | idem |
 
-| annonce | part | réel |
-|---|---|---|
-| **OVER 3.5 / score fleuve (5+ buts)** | **48,6 %** | ~14 % |
-| OVER 2.5 (3-4 buts) | 21,1 % | |
-| OVER 1.5 (2-3 buts) | 15,7 % | |
-| UNDER 2.5 | 12,2 % | |
-| UNDER 1.5 | 2,5 % | |
+La référence du volume redevient **externe** : 2,70 buts par match, la moyenne
+du football, qui ne dépend d'aucune donnée de ce fichier. Les bandes
+retrouvent les fréquences du football (25 / 24 / 22 / 15 / 14 %). La cascade
+BTTS est **rebranchée telle qu'elle était** — non pas parce qu'elle est
+démontrée, mais parce que ce qui la condamnait ne vaut rien. Elle reste
+étiquetée non validée.
 
-Et le drapeau `over25` sortait de `G_vol >= 1.30`, vrai sur **97,5 %** des
-thèmes. Il n'y avait plus de décision du tout.
+### Gardé — tout ce qui se démontre sans un seul match
 
-### 2. Il lisait de mauvaises maisons
+Ces défauts se lisent dans le code ou dans la distribution des 65 536 thèmes.
+Aucun ne dépend d'un résultat de match.
+
+**1. Le volume lisait de mauvaises maisons.**
 
 | lu | correct |
 |---|---|
 | trigones 1-5-9 / 2-6-10 / 3-7-11 / 4-8-12 | canaux Feu M1·M5·M9·M13, Air M2·M6·M10·M14, Eau M3·M7·M11·M15, Terre M4·M8·M12·M16 |
 | Terre sur 2-6-10, Air sur 4-8-12 | l'inverse de `ELEMENT_OF_HOUSE` |
 | axe angulaire 1-4-7-10 | `MAISONS_CARDINALES_V7` = 1-4-7-10-13-16 |
-| R1 = maison 9, R7 = maison 3, en dur | la rotation issue de la Maison de Repos de M1 |
+| R1 = maison 9, R7 = maison 3, **en dur** | la rotation issue de la Maison de Repos de M1 |
 
-Septième occurrence du même défaut : le code nomme une chose et en applique
-une autre.
+**2. Le nombre affiché n'était pas des buts.** `G_vol` est un indice sans
+unité, de moyenne 2,15, affiché sous l'étiquette « Volume des buts » et
+comparé au seuil 2,5. Il annonçait « 5+ buts » sur **48,6 %** des thèmes et
+`over 2.5` sur **97,5 %**. La carte affiche maintenant des buts attendus, une
+bande et une probabilité.
 
-### 3. Il ignorait le seul signal mesuré
+**3. Le score n'avait aucune source.** Découvert en débranchant un instant la
+contrainte BTTS : sans elle, le générateur ne produisait plus que 1-0 (40 %),
+0-1 (45 %) et 0-0 (15 %). Le total de buts était produit par une lecture BTTS,
+pas par un moteur de buts. Il vient maintenant du volume.
 
-La force de marquage de l'axe cadent, **inversée** — hypothèse pré-enregistrée
-avant le 5e résultat, tenue sur les 5. Mesure décisive : la corrélation entre
-`G_vol` et le marquage cadent sur les 65 536 thèmes vaut **r = 0,044**. Les deux
-indices sont indépendants ; le marquage apporte donc de l'information que
-`G_vol` n'a pas.
+**4. La carte ne pouvait jamais annoncer un nul.** Sur les 65 536 thèmes elle
+ne sortait que R1 ou R7. `nulActifV7`, l'organe du nul de la doctrine,
+existait et n'était relié à rien. Il l'est.
 
-### Ce qui remplace
+**5. L'avantage du terrain était collecté puis jeté.** `domicileCode` arrivait
+jusqu'à `buildVerdictCard` mais ne majorait qu'un total de capacité — écrasé
+une ligne plus loin par `winnerOverride`. Dès que le 1N2 tranchait, c'est-à-dire
+toujours, l'équipe à domicile n'avait **aucun** effet sur le camp. Elle tranche
+désormais les égalités.
 
-On ne somme pas deux échelles incomparables. Chacune est convertie en son rang
-(CDF empirique sur les 65 536 thèmes, tables `CDF_GVOL_V7` et
-`CDF_MARQUAGE_CADENT_V7`), les deux rangs sont moyennés, la moyenne est
-ré-étalée par la CDF exacte de la moyenne de deux uniformes (`2q²`, puis
-`1-2(1-q)²`), et le résultat est projeté sur une échelle de buts de moyenne
-**2,70** — la moyenne réelle du football :
+**6. Le détecteur d'incident s'allumait presque toujours.** Mesuré sur les
+65 536 thèmes :
 
-```
-q  = (rang G_vol + rang inverse du marquage cadent) / 2
-Q  = q <= 0,5 ? 2q²  :  1 - 2(1-q)²
-mu = 2,70 x (0,42 + 1,16 Q)
-```
-
-Poids 1/2 et 1/2. **Aucun coefficient ajusté sur les résultats** : je n'ai pas
-de quoi en justifier d'autres. C'est une décision prise sur n=5 et elle est
-notée ici comme telle.
-
-Le marché over/under ne sort plus d'un seuil sur l'indice mais d'une
-probabilité : `over` quand `P(over 2.5 | Poisson(mu)) >= 0,50`.
-
-La bande n'est pas la tranche la plus probable — essayé, rejeté : les tranches
-ouvertes « 0-1 » et « 4 ou plus » ramassent structurellement plus de masse et
-gagnaient toujours (46 % et 54 %, les tranches 2 et 3 jamais annoncées). Elle
-sort des quantiles de `mu` calés sur les fréquences réelles.
-
-### Après correction, sur les 65 536 thèmes
-
-buts attendus : moyenne **2,706**, écart-type 0,884, de 1,13 à 4,27.
-
-| bande annoncée | part | réel |
-|---|---|---|
-| 0-1 but | 25,0 % | 25 % |
-| 2 buts | 24,0 % | 24 % |
-| 3 buts | 22,0 % | 22 % |
-| 4 buts | 15,0 % | 15 % |
-| 5 buts ou plus | 14,0 % | 14 % |
-
-over 2.5 annoncé sur **51,6 %** des thèmes, contre ~51 % réels.
-
-### Sur les 5 matchs réels
-
-| réel | buts | G_vol | marquage | rang G | rang M | buts attendus | bande | over 2.5 |
-|---|---|---|---|---|---|---|---|---|
-| 7-0 | 7 | 2,93 | 11,5 | 0,87 | 0,71 | **4,00** | 5+ | 76 % ✓ |
-| 0-0 | 0 | 2,47 | 17,5 | 0,46 | 0,26 | **1,94** | 0-1 | 31 % ✓ |
-| 1-1 | 2 | 2,42 | 19,5 | 0,41 | 0,15 | **1,62** | 0-1 | 22 % ✓ |
-| 5-2 | 7 | 2,10 | 12,5 | 0,25 | 0,63 | **2,36** | 2 | 42 % ✗ |
-| 5-0 | 5 | 2,49 | 11,5 | 0,47 | 0,71 | **3,22** | 3 | 62 % ✓ |
-
-over/under 2.5 : **4/5**, contre 3/5 avant — et les 3/5 d'avant ne valaient
-rien puisque le moteur disait OVER cinq fois sur cinq. Corrélation buts
-attendus / buts réels : **r = 0,715**.
-
-**Un seul de ces cinq points est hors échantillon** : le 5-0, arrivé après que
-la direction du marquage cadent ait été écrite. Les quatre autres ont servi à
-trouver cette direction. r = 0,715 sur n=5 dont 4 en échantillon ne prouve
-rien ; c'est la calibration marginale, elle, qui est acquise indépendamment de
-tout résultat.
-
----
-
-## Correction du BTTS (13/09/26)
-
-### D'abord, la mesure — sur l'archive, pas sur 5 matchs
-
-`CAS_REFERENCE_V7` contient **49 matchs avec un score réel**, dont **7 e-sport /
-FIFA** et **42 de football réel**. Les deux populations n'ont rien à voir : les
-7 e-sport font **7/7 BTTS oui**, les 42 réels font **21/42 — exactement pile ou
-face**. Toute mesure faite sur les 49 mélangés est trompeuse ; tout ce qui suit
-porte sur les 42.
-
-| prédicteur | justes | phi |
-|---|---|---|
-| **cascade actuelle** | **19/42 = 45 %** | **−0,095** |
-| **camp muet → BTTS non** | **17/42 = 40 %** | **−0,196** |
-| toujours OUI | 21/42 = 50 % | 0 |
-| toujours NON | 21/42 = 50 % | 0 |
-| P(les deux marquent) sous Poisson(mu), split moitié | 22/42 = 52 % | 0,052 |
-| mu >= 2,5 | 23/42 = 55 % | 0,101 |
-
-Le moteur était **sous le hasard**, et sa pièce la plus récente — le camp muet,
-ajoutée le 11/09 — était la plus nuisible.
-
-### Le détecteur de camp muet pointe à l'envers
-
-Il s'allume sur 16 des 42 matchs.
-
-| | BTTS réel OUI | non |
-|---|---|---|
-| camp muet détecté (16) | **10** | 6 |
-| pas de camp muet (26) | 11 | **15** |
-
-Quand il dit « un camp ne marquera pas », les deux marquent dans 62 % des cas ;
-quand il se tait, dans 42 %. La doctrine est juste — un camp muet ne peut pas
-marquer — mais le **détecteur désigne les mauvais matchs**.
-
-### Recherche systématique : rien ne sépare
-
-187 candidats testés sur les 42 : seuils aux terciles de 20 variables continues
-(buts attendus, rangs, marquage cadent total / par camp / part R1 / écart /
-plancher, ratios offensifs et défensifs et leurs min-max-écarts, force des trois
-axes), présence de chacune des 16 figures dans le thème, dans le cadent, dans
-l'angulaire, en R1 ou R7, plus le camp muet et le moteur actuel.
-
-**Meilleur trouvé : 26/42 = 62 %** (`Conjunctio dans le thème` — évidemment
-fortuit).
-
-Distribution nulle du meilleur des 187 sur étiquettes permutées, 20 000 tirages :
-
-| meilleur des 187 | probabilité |
+| | part des thèmes |
 |---|---|
-| 26/42 | 0,6 % |
-| 27/42 | 9,0 % |
-| 28/42 | 27,8 % |
-| **29/42** | **30,4 %** ← le mode |
-| 30/42 | 19,4 % |
-| 31/42 et plus | 12,9 % |
+| `detectIncidentV2` | 63,9 % |
+| `detectIncidentChaotique` | 93,4 % |
+| **l'un OU l'autre (= `penaltyRouge`)** | **95,0 %** |
 
-**P(meilleur ≥ 26 par hasard) = 100 %.** Le meilleur candidat trouvé est *moins
-bon* que ce que le hasard produit à ce nombre de candidats. Rien, dans ce
-système, ne prédit le BTTS.
+Un OU entre deux détecteurs larges ne peut que s'allumer. Les deux restent,
+entiers, comme lectures ; ce qui change, c'est qu'ils sont lus en **intensité**
+— `indice = 2 × signaux V2 + signaux larges` — avec un seuil posé sur la
+distribution mesurée. `indice ≥ 9` est franchi par **29,6 %** des thèmes,
+l'ordre de grandeur externe du penalty ou du rouge (environ 25 % et 8 %). Le
+seuil ne vient pas de l'archive : elle n'étiquette l'incident que sur 10 de ses
+49 thèmes, dont 9 positifs.
 
-### La route par le volume ne sauve rien — et le volume non plus
+Ce qui est acquis : l'annonce est devenue **rare comme l'évènement est rare**,
+au lieu d'être permanente. Ce qui n'est pas prétendu : que le bon tiers soit
+désigné. Rien ne permet de le dire.
 
-`P(les deux marquent)` sous Poisson(mu) : score de Brier **0,2902**, contre
-**0,2500** pour « 50 % à chaque match ». Et le classement est cassé : la tranche
-prédite à 73 % s'observe à 42 %.
+**7. Neuvième occurrence du défaut récurrent.** Trois affichages nommaient une
+chose pendant que le code en appliquait une autre :
 
-Et il faut le dire franchement, parce que ça corrige ce que j'ai écrit hier :
-**le volume corrigé ne prédit rien non plus sur ces 42 matchs.**
+- « ⚠️ Incidents : AUCUN SIGNAL **· CONTRE M1** » — le camp s'affichait sans
+  signal ;
+- « CAMP CORRIGÉ … le vainqueur devient R7 » à côté d'un verdict « nul », parce
+  que le texte décrivait l'état intermédiaire ;
+- le premier calibrage d'incident, posé sur `detectIncidentChaotique(theme, 1, 7)`
+  alors que la carte appelle les détecteurs sur les maisons de la rotation —
+  il annonçait 47 % au lieu des 30 % visés. Recalé sur le chemin réel.
 
-| | n | r | rho | p | over/under 2,5 |
-|---|---|---|---|---|---|
-| 42 réels | 42 | **−0,069** | −0,018 | **0,66** | 21/42 = 50 % |
-| 7 e-sport | 7 | −0,100 | 0,126 | 0,83 | 4/7 |
+### Ce qu'il faut maintenant, et rien d'autre
 
-Le `r = 0,715` que j'ai annoncé hier portait sur 5 matchs dont 4 avaient servi à
-trouver la règle. L'archive de 42 est le bien meilleur test et elle dit zéro.
-**La calibration du volume reste acquise** — annoncer « 5+ buts » sur 48,6 % des
-thèmes était indéfendable quel que soit le pouvoir prédictif — mais la
-prédiction, elle, n'existe pas.
-
-### Ce qui est fait
-
-1. **La cascade ne décide plus.** `BTTS_INDECIDABLE_V7 = true`. Les cinq étages
-   (axes, cadent, doctrine M4/M10, chaîne du perdant, rotation) et le camp muet
-   restent **calculés et affichés** dans `bttsLectures` — ils ne tranchent plus.
-   Remettre le drapeau à `false` rebranche tout, si de nouveaux résultats le
-   justifient.
-2. **Le BTTS n'est plus un booléen.** Il vaut `null`, la carte affiche
-   **« INDÉCIDABLE · 50 % »** en gris, et la source donne la mesure complète.
-   « On ne sait pas » n'est pas « non » : mettre `false` aurait annoncé
-   « un seul marque » sur 100 % des thèmes, et lire le score l'aurait annoncé
-   « les deux marquent » sur 99,9 % — les deux sont le défaut qu'on venait
-   d'enlever au volume.
-3. **Le camp muet continue de corriger le CAMP** (demande d'Ellemine_D du
-   11/09) et reste affiché. Il ne touche plus au BTTS.
-
-### Effet de bord découvert en coupant : le score ne tenait que par le BTTS
-
-Sans la contrainte « les deux marquent », le générateur ne produisait plus que
-**1-0 (40 %), 0-1 (45 %), 0-0 (15 %)**. Le total de buts n'avait aucune source
-propre — il était produit par une lecture BTTS mesurée sous le hasard.
-
-Le score prend donc sa source dans le **volume calibré** : total = buts
-attendus arrondis, vainqueur donné par le moteur de camp, écart = le plus petit
-écart gagnant (la marge de 1 but est la plus fréquente de l'archive, 18 des 31
-matchs décidés). Distribution obtenue : 1-2 15 % · 0-2 14 % · 2-1 14 % ·
-2-0 14 % · 1-3 11 % · 3-1 10 % · 1-1 8 % · 2-2 5 %.
-
-Ce que ça donne sur les 42, sans enjoliver :
-
-| | buts d'erreur | erreur sur le total | score exact | over/under |
-|---|---|---|---|---|
-| avant (BTTS pilote) | 118 | 104 | 3/42 | 17/42 |
-| **après (volume calibré)** | 122 | **90** | 2/42 | **21/42** |
-| toujours 1-1 | 108 | — | 2/42 | 17/42 |
-| toujours 1-0 | 122 | — | 4/42 | 17/42 |
-| **toujours 2-1** | **104** | — | 0/42 | **25/42** |
-
-L'erreur sur le total baisse de 104 à 90 et l'over/under monte de 17 à 21, mais
-**« toujours 2-1 » fait mieux que le moteur** sur les deux. Le score n'est pas
-meilleur qu'une constante. Il est cohérent, calibré en forme, et sourcé — c'est
-tout ce qu'on peut en dire.
-
-### Le camp aussi, pendant qu'on y est
-
-Mesuré au passage sur les mêmes 42 : le camp annoncé est juste **16/42 = 38 %**,
-pour 11 nuls sur 42. Ce n'est pas dans le périmètre de cette correction, mais
-c'est mesuré et c'est écrit.
-
-### Ce qu'il faudrait pour faire mieux
-
-Pas un moteur de plus. Des résultats : 42 matchs à 50/50 ne peuvent pas
-distinguer un effet réel de 5 à 10 points d'un bruit. Toute règle trouvée
-là-dedans sera un gagnant de recherche. La seule chose qui compte désormais est
-de **pré-enregistrer** une règle avant les matchs, comme on l'a fait pour le
-marquage cadent, et de la juger sur des résultats qu'elle n'a jamais vus.
-
----
-
-## Correction du camp (13/09/26)
-
-### Ce que dit l'archive
-
-Sur les 42 matchs de football réel : **R1 gagne 16 fois, R7 15 fois, et il y a
-11 nuls** (26 %). Trois issues quasi équiprobables — « toujours R1 » vaut
-16/42 = 38 %.
-
-Et j'ai d'abord mesuré le mauvais chemin : `buildVerdictCard` appelé sans
-`winnerOverride` n'est pas ce que l'app affiche. Le camp affiché passe par le
-**1N2 en override**. Sur ce chemin-là :
-
-| étage | justes |
-|---|---|
-| **1N2 seul** | **14/42 = 33 %** |
-| + correction du camp muet | 18/42 = 43 % |
-| **+ nul actif branché** | **19/42 = 45 %** |
-| toujours R1 | 16/42 = 38 % |
-| toujours R7 | 15/42 = 36 % |
-
-**Le 1N2, que la bannière déclare décisif, mesure sous une constante.** Ce qui
-le remonte, c'est la correction du camp muet — 11 thèmes où elle s'écarte du
-1N2 : 6 réparent, 2 cassent, 3 neutres, net **+4**.
-
-Ce qui corrige ce que j'ai écrit ce matin sur le camp muet : il est nuisible
-pour le **BTTS** (φ = −0,196) et utile pour le **camp** (+4). Les deux mesures
-tiennent ensemble — c'est le même détecteur, jugé sur deux questions
-différentes. Il reste donc branché sur le camp, comme demandé le 11/09, et
-débranché du BTTS.
-
-### La carte ne pouvait jamais annoncer un nul
-
-22 R1, 20 R7, **0 nul**, contre 11 nuls réels sur 42. Un moteur de verdict
-incapable de produire une des trois issues plafonne à 31/42 et, surtout, ne
-répond pas à la question posée.
-
-`nulActifV7` — l'organe du nul de la doctrine — **existait et n'était pas
-branché sur le camp affiché**. Il s'allume sur 11 thèmes des 42, exactement le
-nombre de nuls réels, et en attrape 4. Branché : la carte annonce R1 14 /
-R7 17 / nul 11 et fait 19/42.
-
-Le +1 est du bruit et n'est pas revendiqué. Ce qui est réparé, c'est que le nul
-soit **annonçable, et à la bonne fréquence**. J'ai essayé mieux — « delta NM
-≤ 1,5 → nul » donne 20/42 — et je ne l'ai **pas** retenu : ce serait un gagnant
-de recherche, alors que `nulActifV7` est l'organe que le système désigne
-lui-même.
-
-### Rien ne prédit le camp non plus
-
-170 candidats testés sur les 31 matchs décidés (R1 16 / R7 15) : seuils aux
-terciles de 14 variables continues, chaque figure en R1, en R7, dans le cadent,
-dans l'angulaire, dans le thème, plus les six moteurs existants.
-
-**Meilleur : 21/31 = 68 %.** Distribution nulle du meilleur des 170, 20 000
-permutations : mode à **22/31**, moyenne 22,3. **P(meilleur ≥ 21 par hasard) =
-98,3 %.** Même conclusion que pour le BTTS.
-
-### Le défaut le plus lourd n'est pas géomantique
-
-L'avantage du terrain du football réel — environ **45 % de victoires à
-domicile contre 28 % à l'extérieur** — a complètement disparu de l'archive :
-R1 16, R7 15. La seule lecture possible est que **R1 n'est pas
-systématiquement l'équipe qui reçoit**. R1, c'est « celle tapée en premier ».
-
-Et le code faisait pire que l'ignorer : `domicileCode` arrivait bien jusqu'à
-`buildVerdictCard`, mais ne servait qu'à majorer de 15 % un total de capacité —
-lequel est écrasé une ligne plus loin par `winnerOverride`. Dès que le 1N2
-tranche, c'est-à-dire toujours dans l'app, **l'équipe à domicile n'avait aucun
-effet sur le camp**. Collectée, puis jetée.
-
-Branché prudemment : le domicile tranche quand la couche géomantique ne tranche
-pas (verdict `Nul` non confirmé par `nulActifV7`). Il ne renverse jamais un
-verdict positif — l'archive ne note pas qui recevait, je n'ai aucun moyen de le
-valider.
-
-**Ce qui vaut plus que n'importe quel réglage : noter l'équipe à domicile à
-chaque match, et la mettre toujours dans le même siège.** C'est le seul point
-de cette session où un gain de l'ordre de 7 points est disponible sans
-qu'aucune figure ait à prédire quoi que ce soit.
-
-### Huitième occurrence du même défaut
-
-La bannière « CAMP CORRIGÉ … le vainqueur devient R7 » restait affichée à côté
-d'un verdict final « nul », parce qu'elle décrivait l'état intermédiaire. Elle
-dit maintenant la suite de la chaîne jusqu'à l'état final.
+Une archive dont on sache, pour chaque ligne, **si c'est un match réel ou un
+FIFA**, et **quelle équipe recevait**. Sans ces deux colonnes, aucune mesure de
+justesse n'est possible et aucun réglage n'est défendable. Tout ce que j'ai
+mesuré aujourd'hui — les 45 %, les 19/42, les corrélations nulles — est à jeter
+tant que ces deux colonnes n'existent pas.
