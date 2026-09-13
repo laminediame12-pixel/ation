@@ -2716,3 +2716,70 @@ si l'échantillon élargi lui donne un effet, elle se rebranche en un mot.
 
 Tout ce qui est branché est maintenant justifié soit par ta doctrine, soit par
 une fréquence externe, soit par ces 5 lignes. Rien d'autre.
+
+---
+
+## La vérification par les axes
+
+> « Tous les résultats sont vérifiables et vérifiés par les axes.
+> Axe angulaire : la domination **défensive**.
+> Axe succédent : l'**incident**, les problèmes cachés dans le thème.
+> Axe cadent : la domination **offensive**.
+> Après analyse du thème principal, tous les résultats sont vérifiés par les
+> axes, les 4 premières figures comme mères. »
+
+Chaque axe a son domaine, et son thème dérivé vérifie **ce domaine-là** :
+
+| axe | mères | vérifie |
+|---|---|---|
+| **Angulaire** | M1 · M4 · M7 · M10 | le **camp** — domination défensive |
+| **Succédent** | M2 · M6 · M8 · M12 | l'**incident** — problèmes cachés |
+| **Cadent** | M3 · M5 · M9 · M11 | l'**offense** — BTTS et volume |
+
+Tout existait déjà dans le fichier — `AXES_V7` porte ses `meres`, et le
+constructeur de dérivés est là depuis le 25/08. Ce qui manquait, c'est que
+chaque dérivé lise **son** domaine au lieu d'être lu en vrac.
+
+### Elle ne décide rien, et c'est mesuré
+
+Pris comme prédicteurs, les dérivés sont **moins bons** que le thème principal :
+
+| | dérivé | principal |
+|---|---|---|
+| camp par l'angulaire | **1/5** | 4/5 |
+| BTTS par le cadent | **3/5** | 5/5 |
+| over/under par le cadent | **2/5** | 4/5 |
+
+Leur rôle est de **confirmer**, pas de prédire. Accord = verdict appuyé,
+désaccord = verdict douteux.
+
+### Ce que vaut un accord — sans ce chiffre, une confirmation ne dit rien
+
+| domaine | accord sur les 65 536 | sur les 5 lignes |
+|---|---|---|
+| **incident** (succédent) | **62,8 %** | **5/5** |
+| BTTS (cadent) | 50,4 % | 3/5 |
+| volume (cadent) | 48,6 % | 2/5 |
+| **camp** (angulaire) | **38,1 %** | **0/5** |
+
+**Un seul accord sort du bruit : l'incident.** 5 sur 5 quand le hasard en
+donnerait 9,8 %. C'est cohérent avec le reste de la journée — l'incident est la
+famille où ta doctrine tombe juste sans réglage.
+
+**Et le camp est remarquable dans l'autre sens** : le dérivé angulaire n'est
+**jamais** d'accord avec le principal sur les cinq lignes, alors que la base est
+de 38 %. 0/5 arrive dans 9,1 % des cas par hasard. Les deux lectures du camp
+sont donc systématiquement opposées, et je ne sais pas encore pourquoi.
+
+### Ce qui s'affiche
+
+> 🔎 **Vérification par les axes — 3/4**
+> ✗ **Domination défensive → le camp** — Axe Angulaire (M1·M4·M7·M10) :
+> **CONTREDIT** · principal R1, dérivé R7 · *un accord tombe déjà 38 % du temps*
+> ✓ **Problèmes cachés → l'incident** — Axe Succédent (M2·M6·M8·M12) :
+> **CONFIRME** · *63 %*
+> ✓ **Domination offensive → BTTS** — Axe Cadent (M3·M5·M9·M11) : **CONFIRME** · *50 %*
+> ✓ **Domination offensive → volume** — Axe Cadent : **CONFIRME** · 1,56 contre 1,42 · *49 %*
+
+Aucun verdict n'a changé : BTTS 5/5, camp 4/5, over/under 4/5, incident 2/2,
+bande 2/5, score exact 2/5.

@@ -27124,6 +27124,101 @@ function campsQuiMarquentV7(theme) {
 // Le 1N2 reste calculé et exposé en contre-lecture.
 // CAMP_PAR_CANAUX_V7 = false le remet aux commandes.
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// LA VÉRIFICATION PAR LES AXES (13/09/26, doctrine d'Ellemine_D)
+// ───────────────────────────────────────────────────────────────
+// « Tous les résultats sont vérifiables et vérifiés par les axes.
+//   Axe angulaire : la domination DÉFENSIVE.
+//   Axe succédent : l'INCIDENT, les problèmes cachés dans le thème.
+//   Axe cadent    : la domination OFFENSIVE.
+//   Après analyse du thème principal, tous les résultats sont vérifiés par
+//   les axes, les 4 premières figures comme mères. »
+//
+// Chaque axe a donc son domaine, et son thème dérivé — bâti sur ses quatre
+// premières maisons prises comme mères — vérifie CE domaine-là, pas les
+// autres :
+//   angulaire M1·M4·M7·M10  →  vérifie le CAMP (qui domine en défense)
+//   succédent M2·M6·M8·M12  →  vérifie l'INCIDENT
+//   cadent    M3·M5·M9·M11  →  vérifie l'OFFENSE (BTTS et volume)
+//
+// ELLE NE DÉCIDE RIEN, ET C'EST VOULU. Mesuré sur les cinq lignes choisies,
+// les dérivés sont MOINS bons que le thème principal quand on les prend
+// comme prédicteurs :
+//   camp par l'angulaire dérivé ...... 1/5   (principal 4/5)
+//   BTTS par le cadent dérivé ........ 3/5   (principal 5/5)
+//   over/under par le cadent dérivé .. 2/5   (principal 4/5)
+// Leur rôle n'est pas de prédire mais de CONFIRMER : quand le dérivé dit la
+// même chose que le principal, le verdict est appuyé ; quand il dit le
+// contraire, il est douteux.
+//
+// CE QUE VAUT UN ACCORD, mesuré sur les 65 536 thèmes — sans ce chiffre une
+// confirmation ne veut rien dire :
+//   incident, succédent .... accord 62,8 %   ·  5/5 sur les lignes choisies
+//   BTTS, cadent ........... accord 50,4 %   ·  3/5
+//   volume, cadent ......... accord 48,6 %   ·  2/5
+//   camp, angulaire ........ accord 38,1 %   ·  0/5
+//
+// Un seul de ces accords sort du bruit pour l'instant : l'INCIDENT, 5 fois
+// sur 5 quand le hasard en donnerait 9,8 %. Le camp est à l'opposé — le
+// dérivé angulaire n'est JAMAIS d'accord avec le principal sur les cinq
+// lignes, ce qui est aussi remarquable dans l'autre sens et reste à
+// comprendre.
+// ═══════════════════════════════════════════════════════════════
+var ACCORD_BASE_AXES_V7 = { camp: 0.381, incident: 0.628, btts: 0.504, volume: 0.486 };
+
+function verificationParLesAxesV7(theme) {
+  if (!theme || !theme[1] || typeof AXES_V7 === 'undefined') return null;
+  var derive = function (cle) {
+    var A = null;
+    for (var i = 0; i < AXES_V7.length; i++) if (AXES_V7[i].cle === cle) A = AXES_V7[i];
+    if (!A) return null;
+    var M = A.meres || A.maisons;
+    var m = M.map(function (h) { return theme[h]; });
+    try { return { theme: calcTheme(m[0], m[1], m[2], m[3]), maisons: M, figures: m, nom: A.nom }; }
+    catch (e) { return null; }
+  };
+  var ANG = derive('cardinal'), SUC = derive('succedent'), CAD = derive('cadent');
+  var out = { defense: null, incident: null, offense: null };
+
+  if (ANG) {
+    var pc = null, dc = null;
+    try { pc = campParCanauxV7(theme).verdict; dc = campParCanauxV7(ANG.theme).verdict; } catch (e) {}
+    out.defense = { domaine: 'domination défensive → le camp', axe: ANG.nom, maisons: ANG.maisons,
+      figures: ANG.figures, principal: pc, derive: dc, accord: pc === dc,
+      baseAccord: ACCORD_BASE_AXES_V7.camp };
+  }
+  if (SUC) {
+    var pi = null, di = null;
+    try { pi = incidentDoctrineV7(theme).signal; di = incidentDoctrineV7(SUC.theme).signal; } catch (e) {}
+    out.incident = { domaine: 'problèmes cachés → l\'incident', axe: SUC.nom, maisons: SUC.maisons,
+      figures: SUC.figures, principal: pi, derive: di, accord: pi === di,
+      baseAccord: ACCORD_BASE_AXES_V7.incident };
+  }
+  if (CAD) {
+    var pb = null, db = null, pv = null, dv = null;
+    try { pb = bttsEquilibreMarquageV7(theme).verdict; db = bttsEquilibreMarquageV7(CAD.theme).verdict; } catch (e) {}
+    try { pv = verdictNMRatif(theme).volumeNM.buts_attendus;
+          dv = verdictNMRatif(CAD.theme).volumeNM.buts_attendus; } catch (e) {}
+    out.offense = { domaine: 'domination offensive → BTTS et volume', axe: CAD.nom, maisons: CAD.maisons,
+      figures: CAD.figures,
+      bttsPrincipal: pb, bttsDerive: db, accordBtts: pb === db,
+      butsPrincipal: pv, butsDerive: dv,
+      accordVolume: (pv !== null && dv !== null) ? ((pv > 2.697) === (dv > 2.697)) : null,
+      baseAccordBtts: ACCORD_BASE_AXES_V7.btts, baseAccordVolume: ACCORD_BASE_AXES_V7.volume };
+  }
+  var n = 0, ok = 0;
+  if (out.defense) { n++; if (out.defense.accord) ok++; }
+  if (out.incident) { n++; if (out.incident.accord) ok++; }
+  if (out.offense) { n += 2; if (out.offense.accordBtts) ok++; if (out.offense.accordVolume) ok++; }
+  out.confirmes = ok; out.total = n;
+  out.resume = ok + ' vérification' + (ok > 1 ? 's' : '') + ' sur ' + n
+    + ' — ' + (out.defense ? ('camp ' + (out.defense.accord ? '✓' : '✗')) : '')
+    + (out.incident ? (' · incident ' + (out.incident.accord ? '✓' : '✗')) : '')
+    + (out.offense ? (' · BTTS ' + (out.offense.accordBtts ? '✓' : '✗')
+        + ' · volume ' + (out.offense.accordVolume ? '✓' : '✗')) : '');
+  return out;
+}
+
 function campParCanauxV7(theme) {
   if (!theme || !theme[1] || typeof procedureAnalyseV7 !== 'function') return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -28315,6 +28410,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // qui a été mesuré au hasard.
     bttsIndecidable: !!BTTS_INDECIDABLE_V7,
     procedure: (function () { try { return procedureAnalyseV7(theme); } catch (e) { return null; } })(),
+    verificationAxes: (function () { try { return verificationParLesAxesV7(theme); } catch (e) { return null; } })(),
     campsQuiMarquent: (function () {
       try { return campsQuiMarquentV7(theme); } catch (e) { return null; }
     })(),
@@ -31065,6 +31161,42 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           + '<div style="font-size:11px; color:#cbd5e1;">' + esc(_r) + '</div>';
       })()
     + '</div>';
+  // ─── LA VÉRIFICATION PAR LES AXES, SOUS LA PROCÉDURE (13/09/26) ───
+  // Chaque axe vérifie son domaine par son thème dérivé. Elle ne décide
+  // rien : elle dit si le verdict est appuyé ou douteux, et elle donne le
+  // taux d'accord de base pour qu'une confirmation ne soit pas sur-lue.
+  if (card && card.verificationAxes) {
+    var _va = card.verificationAxes;
+    var _mk = function (titre, axe, maisons, ok, base, det) {
+      return '<div style="margin-top:3px;">' + (ok ? '✓' : '✗') + ' <b>' + esc(titre) + '</b>'
+        + ' — ' + esc(axe) + ' (M' + maisons.join(' · M') + ') : '
+        + '<span style="color:' + (ok ? '#4ade80' : '#f87171') + ';font-weight:800;">'
+        + (ok ? 'CONFIRME' : 'CONTREDIT') + '</span>'
+        + ' <span style="color:#64748b;">' + esc(det)
+        + ' · un accord tombe déjà ' + Math.round(base * 100) + ' % du temps par construction</span></div>';
+    };
+    html += '<div style="margin:8px 0;padding:8px 10px;border-left:3px solid #a78bfa;'
+      + 'border-radius:6px;background:rgba(167,139,250,.07);font-size:10.5px;color:#cbd5e1;line-height:1.6;">'
+      + '<b style="color:#c4b5fd;">🔎 Vérification par les axes — ' + _va.confirmes + '/' + _va.total + '</b>'
+      + '<div style="color:#64748b;margin-bottom:2px;">chaque axe vérifie son domaine par son thème dérivé, '
+      + 'bâti sur ses quatre premières maisons prises comme mères. Lecture seule.</div>'
+      + (_va.defense ? _mk('Domination défensive → le camp', _va.defense.axe, _va.defense.maisons,
+          _va.defense.accord, _va.defense.baseAccord,
+          'principal ' + _va.defense.principal + ', dérivé ' + _va.defense.derive) : '')
+      + (_va.incident ? _mk('Problèmes cachés → l\'incident', _va.incident.axe, _va.incident.maisons,
+          _va.incident.accord, _va.incident.baseAccord,
+          'principal ' + (_va.incident.principal ? 'incident' : 'rien')
+          + ', dérivé ' + (_va.incident.derive ? 'incident' : 'rien')) : '')
+      + (_va.offense ? _mk('Domination offensive → BTTS', _va.offense.axe, _va.offense.maisons,
+          _va.offense.accordBtts, _va.offense.baseAccordBtts,
+          'principal ' + (_va.offense.bttsPrincipal ? 'oui' : 'non')
+          + ', dérivé ' + (_va.offense.bttsDerive ? 'oui' : 'non')) : '')
+      + (_va.offense ? _mk('Domination offensive → volume', _va.offense.axe, _va.offense.maisons,
+          _va.offense.accordVolume, _va.offense.baseAccordVolume,
+          'principal ' + Number(_va.offense.butsPrincipal).toFixed(2)
+          + ' buts, dérivé ' + Number(_va.offense.butsDerive).toFixed(2)) : '')
+      + '</div>';
+  }
   if (card && card.procedure) {
     var _pr = card.procedure;
     var _ax = _pr.axes.map(function (a) {
