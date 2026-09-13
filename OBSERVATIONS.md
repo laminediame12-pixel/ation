@@ -916,3 +916,76 @@ Sur les deux thèmes au résultat connu, la part relative donne 1 sur 2 :
 | Via / Tristitia / Cauda / Fortuna Minor | 44 % | 5-2 | ✗ |
 
 **En lecture seule.** N'alimente ni le volume ni le score.
+
+---
+
+## Quatre matchs réels — 13/09/2026
+
+Ellemine_D signale que les 49 cas d'archive contiennent des matchs FIFA, donc
+virtuels. On repart sur quatre matchs réels seulement.
+
+| thème | réel | buts | **marquage cadent** | camp prédit | BTTS prédit | BTTS réel |
+|---|---|---|---|---|---|---|
+| Tristitia / Via / Conjunctio / Rubeus | 7-0 | **7** | **11,5** | R1 ✓ | NON | non ✓ |
+| Via / Tristitia / Cauda / Fortuna Minor | 5-2 | **7** | **12,5** | R1 ✓ | OUI | oui ✓ |
+| Fortuna Major / Via / Puella / Cauda | 0-0 | **0** | **17,5** | R1 ✗ | NON | non ✓ |
+| Tristitia / Tristitia / Conjunctio / Rubeus | 1-1 | **2** | **19,5** | R7 ✗ | OUI | oui ✓ |
+
+### BTTS : 4 sur 4
+
+Avec le moteur recâblé sur la force active. Le 5-2 a été prédit à l'aveugle
+(recâblage poussé avant que le score soit donné) ; les trois autres sont des
+rejeux. **n = 4.**
+
+### Camp : 2 sur 4
+
+Les deux ratés sont les deux nuls. Ni `nulActifV7` ni le 1N2 ne les a vus —
+le 1N2 ne dit jamais N par construction, et la porte Carcer-miroir n'a pas parlé.
+
+### Le marquage cadent est INVERSÉ sur le volume
+
+Ordre parfait, et à l'envers : 11,5 → 7 buts · 12,5 → 7 buts · 17,5 → 0 but ·
+19,5 → 2 buts. Les figures en cause se lisent directement :
+
+| réel | figures du cadent |
+|---|---|
+| 7-0 | Albus, **Amissio**, Rubeus, Via, Caput, Fortuna Minor |
+| 5-2 | **Amissio** ×2, Cauda ×4, Fortuna Minor ×2, Puella |
+| 0-0 | **Fortuna Major**, **Acquisitio** ×4, Carcer ×2, Cauda, Tristitia |
+| 1-1 | **Fortuna Major** ×2, Albus, Cauda ×4, Tristitia, Fortuna Minor |
+
+Les deux plus forts marqueurs de la table — **Fortuna Major 3-5** et
+**Acquisitio 2-3** — siègent dans les deux matchs sans buts. Les plus faibles —
+Amissio 0-1, Via 0-1, Caput 0-1 — dans les deux matchs à 7 buts.
+
+### Mais il faut savoir ce que vaut ce genre de constat sur n = 4
+
+Trois figures séparent parfaitement les deux hauts des deux bas dans le cadent :
+**Amissio** (présente dans les hauts), **Tristitia** et **Fortuna Major**
+(présentes dans les bas).
+
+Distribution sous hypothèse nulle, calculée sur 20 000 tirages de quatre thèmes
+au hasard avec étiquettes arbitraires :
+
+| séparateurs | probabilité |
+|---|---|
+| 0 | 21,0 % |
+| 1 | 34,1 % |
+| 2 | 26,1 % |
+| **≥ 3** | **18,8 %** |
+
+Moyenne attendue par hasard : **1,50 sur 16**. On en a 3.
+**P(≥ 3 par hasard) = 18,8 %.** Ce n'est pas rare. Trouver des figures qui
+séparent 2 matchs de 2 autres est presque garanti — c'est pour ça que n = 4 ne
+peut rien établir.
+
+### Ce qui est pré-enregistrable, avant les prochains matchs
+
+1. **Le marquage cadent prédit le volume À L'ENVERS** — marquage haut → peu de
+   buts. À vérifier sur les prochains, jamais à ajuster après coup.
+2. **Amissio dans le cadent → beaucoup de buts** (figure marquée `concede` dans
+   la table).
+3. **Fortuna Major dans le cadent → peu de buts.**
+
+Les trois sont écrites ici **avant** d'avoir d'autres résultats. C'est la seule
+chose qui les distinguera d'une coïncidence.
