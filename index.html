@@ -25924,6 +25924,32 @@ var ECHANTILLON_ELLEMINE_V7 = [
         + 'penalty et le rouge réunis font environ 30 % des matchs.'
   },
   {
+    n: 5,
+    meres: ['amissio', 'amissio', 'carcer', 'laetitia'],
+    score: '4-0',
+    btts: false,
+    incident: null,
+    // Annoncé AVANT le résultat.
+    ditCamp: 'nul',              // réel R1                                ✘
+    ditBtts: false,              // réel non                               ✔
+    ditButs: 1.56,               // bande « 0-1 but », réel 4              ✘
+    ditIncident: false,
+    note: 'LA LIGNE QUI FAIT LE PLUS MAL, et c\'est la plus utile. '
+        + 'R1 = M6 Populus, activation 0/4 — le siège le plus INERTE possible '
+        + '— et il gagne 4-0. R7 = M12 Cauda Draconis, 3/4 actifs, et il perd '
+        + 'sur un blanchissage. L\'activation du siège ne mesure donc pas la '
+        + 'force du camp, en tout cas pas dans ce sens. '
+        + 'La formule du nul par les témoins s\'allume — M13 Tristitia et M14 '
+        + 'Tristitia tous deux terre, Sym_E vrai — sur le match le plus décidé '
+        + 'de l\'échantillon. Premier test hors échantillon de cette formule : '
+        + 'ÉCHEC. Elle n\'est pas retirée pour autant, une ligne ne renverse '
+        + 'pas une règle, mais elle est notée. '
+        + 'Seul l\'équilibre du marquage tient : écart 13,6 %, le plus élevé '
+        + 'des cinq lignes, sur le match au plus gros écart de buts après le '
+        + '7-0. Et il donne 63,6 % pour R1 — le bon camp — alors que le moteur '
+        + 'de camp dit nul.'
+  },
+  {
     n: 2,
     meres: ['puella', 'amissio', 'rubeus', 'carcer'],
     score: '2-3',
@@ -26869,6 +26895,91 @@ var SEUIL_EQUILIBRE_BTTS_V7 = 0.0417;   // médiane des 65 536 -> 51 % de BTTS o
 // lignes où B₁ ∧ B₂ et l'équilibre du marquage divergent, celle qui gagne
 // devient le moteur du BTTS. Aucun ajustement d'ici là.
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// LA PROCÉDURE D'ANALYSE (13/09/26, Ellemine_D : « le système doit suivre
+// une procédure, il ne doit pas aller en aveugle »)
+// ───────────────────────────────────────────────────────────────
+// Avant tout verdict, trois lectures sont établies, toujours dans cet
+// ordre, et elles sont exposées telles quelles :
+//
+//   1. LOGEMENT DE R1 ET R7 — dans quel axe chacun loge, avec quelle
+//      concordance figure/maison et quelle activation propre. Le cas où
+//      les deux logent dans le MÊME axe est nommé.
+//   2. ACTIVATION PAR AXE ET PAR ÉLÉMENT — pour chacun des trois axes, le
+//      compte de niveaux actifs par élément, et l'élément dominant.
+//   3. INTERACTION DES CANAUX — Feu M1·M5·M9·M13, Air M2·M6·M10·M14,
+//      Eau M3·M7·M11·M15, Terre M4·M8·M12·M16. Un canal est actif quand au
+//      moins la moitié de ses maisons porte son niveau à 1 point.
+//
+// Rien ici ne décide : c'est l'état du thème, établi avant lecture, pour
+// qu'aucun verdict ne soit rendu sans que le terrain ait été relevé.
+// ═══════════════════════════════════════════════════════════════
+function procedureAnalyseV7(theme) {
+  if (!theme || !theme[1]) return null;
+  var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
+  var ELEM = ['Feu', 'Air', 'Eau', 'Terre'];
+  var AXES = [
+    { cle: 'angulaire', maisons: MAISONS_CARDINALES_V7 },
+    { cle: 'succedent', maisons: MAISONS_SUCCEDENTES_V7 },
+    { cle: 'cadent',    maisons: MAISONS_CADENTES_V7 }
+  ];
+  var CANAUX = [
+    { nom: 'Feu',   idx: 0, maisons: [1, 5, 9, 13] },
+    { nom: 'Air',   idx: 1, maisons: [2, 6, 10, 14] },
+    { nom: 'Eau',   idx: 2, maisons: [3, 7, 11, 15] },
+    { nom: 'Terre', idx: 3, maisons: [4, 8, 12, 16] }
+  ];
+  var act = function (h) {
+    var g = MAP_GEO[theme[h]] || [2, 2, 2, 2];
+    return g.map(function (v) { return v === 1 ? 1 : 0; });
+  };
+  var axeDe = function (h) {
+    for (var i = 0; i < AXES.length; i++) if (AXES[i].maisons.indexOf(h) >= 0) return AXES[i].cle;
+    return null;
+  };
+  var rot = getRotationCombat(theme);
+  var siege = function (h) {
+    var a = act(h);
+    return { maison: h, figure: theme[h], axe: axeDe(h),
+      element: els[theme[h]], maisonElement: MAISON_ELEM_V7[h],
+      concordance: concordanceElement(els[theme[h]], MAISON_ELEM_V7[h]),
+      activation: a, nActifs: a[0] + a[1] + a[2] + a[3] };
+  };
+  var s1 = siege(rot.hR1), s7 = siege(rot.hR7);
+
+  var axes = AXES.map(function (A) {
+    var par = [0, 0, 0, 0];
+    A.maisons.forEach(function (h) { var a = act(h); for (var i = 0; i < 4; i++) par[i] += a[i]; });
+    var total = par[0] + par[1] + par[2] + par[3];
+    var mx = Math.max(par[0], par[1], par[2], par[3]);
+    return { cle: A.cle, maisons: A.maisons, parElement: par,
+      dominant: ELEM.filter(function (e, i) { return par[i] === mx; }),
+      total: total, possible: A.maisons.length * 4, ratio: total / (A.maisons.length * 4),
+      detail: A.maisons.map(function (h) { var a = act(h);
+        return { maison: h, figure: theme[h], activation: a, nActifs: a[0]+a[1]+a[2]+a[3] }; }) };
+  });
+
+  var canaux = CANAUX.map(function (C) {
+    var n = C.maisons.filter(function (h) { return (MAP_GEO[theme[h]] || [])[C.idx] === 1; }).length;
+    return { nom: C.nom, maisons: C.maisons, actifs: n, sur: C.maisons.length, actif: n >= 2,
+      figures: C.maisons.map(function (h) {
+        return { maison: h, figure: theme[h], porte: (MAP_GEO[theme[h]] || [])[C.idx] === 1 }; }) };
+  });
+  var actifs = canaux.filter(function (c) { return c.actif; }).map(function (c) { return c.nom; });
+
+  return {
+    R1: s1, R7: s7, memeAxe: s1.axe === s7.axe,
+    axes: axes, canaux: canaux, canauxActifs: actifs,
+    axeLePlusActif: axes.slice().sort(function (a, b) { return b.ratio - a.ratio; })[0].cle,
+    resume: 'R1 en M' + s1.maison + ' (axe ' + s1.axe + ', ' + s1.nActifs + '/4 actifs)'
+      + ' · R7 en M' + s7.maison + ' (axe ' + s7.axe + ', ' + s7.nActifs + '/4 actifs)'
+      + (s1.axe === s7.axe ? ' — MÊME AXE' : '')
+      + ' · axes ' + axes.map(function (a) {
+          return a.cle + ' ' + Math.round(100 * a.ratio) + '% (' + a.dominant.join('/') + ')'; }).join(', ')
+      + ' · canaux actifs : ' + (actifs.join(' + ') || 'aucun')
+  };
+}
+
 function campsQuiMarquentV7(theme) {
   if (!theme || !theme[14]) return null;
   var els = (typeof ELEMENTS_V7 !== 'undefined') ? ELEMENTS_V7 : ELEMENTS;
@@ -28023,6 +28134,7 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
     // Ce que valent les lectures, pour qu'aucune carte n'affirme plus ce
     // qui a été mesuré au hasard.
     bttsIndecidable: !!BTTS_INDECIDABLE_V7,
+    procedure: (function () { try { return procedureAnalyseV7(theme); } catch (e) { return null; } })(),
     campsQuiMarquent: (function () {
       try { return campsQuiMarquentV7(theme); } catch (e) { return null; }
     })(),
@@ -30722,6 +30834,27 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     + '<div style="font-size:12px; font-weight:900;">⚖️ NUL <span style="color:'+nullColor+'; font-size:15px;">'+(nulActif?'OUI':'NON')+'</span></div>'
     + '<div style="font-size:11px; color:#cbd5e1;">'+esc(nulRaisonTxt)+'</div>'
     + '</div>';
+  if (card && card.procedure) {
+    var _pr = card.procedure;
+    var _ax = _pr.axes.map(function (a) {
+      return a.cle + ' ' + Math.round(100 * a.ratio) + '% (' + a.dominant.join('/') + ')'; }).join(' · ');
+    html += '<div style="margin:8px 0;padding:8px 10px;border-left:3px solid #38bdf8;'
+      + 'border-radius:6px;background:rgba(56,189,248,.07);font-size:10.5px;color:#cbd5e1;line-height:1.6;">'
+      + '<b style="color:#7dd3fc;">📐 Procédure — état du thème</b><br>'
+      + '<b>1. Logement</b> — R1 en M' + _pr.R1.maison + ' ' + esc(FL[_pr.R1.figure] || _pr.R1.figure)
+      + ' (axe ' + esc(_pr.R1.axe) + ', ' + _pr.R1.element + ' en maison ' + _pr.R1.maisonElement
+      + ', concordance ' + _pr.R1.concordance + ', ' + _pr.R1.nActifs + '/4 actifs)'
+      + ' · R7 en M' + _pr.R7.maison + ' ' + esc(FL[_pr.R7.figure] || _pr.R7.figure)
+      + ' (axe ' + esc(_pr.R7.axe) + ', ' + _pr.R7.element + ' en maison ' + _pr.R7.maisonElement
+      + ', concordance ' + _pr.R7.concordance + ', ' + _pr.R7.nActifs + '/4 actifs)'
+      + (_pr.memeAxe ? ' — <b style="color:#fbbf24;">les deux dans le même axe</b>' : '')
+      + '<br><b>2. Activation par axe</b> — ' + esc(_ax)
+      + ' · le plus actif : <b>' + esc(_pr.axeLePlusActif) + '</b>'
+      + '<br><b>3. Canaux</b> — ' + _pr.canaux.map(function (c) {
+          return c.nom + ' ' + c.actifs + '/4' + (c.actif ? ' ●' : ' ○'); }).join(' · ')
+      + ' · actifs : <b>' + esc(_pr.canauxActifs.join(' + ') || 'aucun') + '</b>'
+      + '</div>';
+  }
   html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>⚠️ Résultat incidents</span><b>'+esc(incidentResultat)+esc(incidentCampTxt)+esc(incidentSourceTxt)+esc(incidentNbTxt)+'</b></div><div class="tek-stat" data-btts-display="1"><span>⚽ Les deux marquent (BTTS)</span><b style="font-size:13px;">'+bt+'</b></div></div>'+incHtml;
   html+='</div>';
   el.innerHTML=html;

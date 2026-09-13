@@ -2141,3 +2141,99 @@ Il suffira donc de **quelques lignes tombant sur un désaccord** pour départage
 > gagne devient le moteur du BTTS. Aucun ajustement d'ici là.
 
 C'est écrit dans le fichier, au-dessus de `campsQuiMarquentV7`.
+
+---
+
+## La procédure d'analyse, et la ligne 5
+
+> « Avant toute analyse, vérifie les axes, la validation, le logement de R1 et
+> R7. Les niveaux d'activation dans chaque axe, quel élément parmi les 4
+> domine. Interaction des canaux. Le système doit suivre une procédure, il ne
+> doit pas aller en aveugle. »
+
+Écrit dans le fichier — `procedureAnalyseV7` — et affiché sur la carte avant
+tout verdict. Trois relevés, toujours dans cet ordre, qui ne décident de rien :
+
+1. **Logement de R1 et R7** — axe, concordance figure/maison, activation propre,
+   et le cas « les deux dans le même axe » nommé
+2. **Activation par axe et par élément** — les 4 comptes, l'élément dominant
+3. **Interaction des canaux** — Feu M1·M5·M9·M13, Air M2·M6·M10·M14,
+   Eau M3·M7·M11·M15, Terre M4·M8·M12·M16 ; actif à partir de la moitié
+
+### Amissio / Amissio / Carcer / Laetitia — **4-0**
+
+**1. Logement**
+
+| | maison | figure | axe | concordance | activation |
+|---|---|---|---|---|---|
+| **R1** | M6 | Populus | **succédent** | feu en maison air → 0,5 | **0 0 0 0 = 0/4** |
+| **R7** | M12 | Cauda Draconis | **succédent** | eau en maison terre → 0,5 | 1 1 1 0 = **3/4** |
+
+**Les deux logent dans le même axe.**
+
+**2. Activation par axe**
+
+| axe | Feu | Air | Eau | Terre | dominant | total |
+|---|---|---|---|---|---|---|
+| angulaire | **4** | 1 | 2 | 2 | **Feu** | 9/24 = 38 % |
+| succédent | 2 | 1 | **3** | 1 | **Eau** | 7/20 = 35 % |
+| **cadent** | **3** | 2 | 2 | **3** | **Feu et Terre** | **10/20 = 50 %** |
+
+**3. Canaux** — Feu 2/4 ● · Air 0/4 ○ · Eau 1/4 ○ · Terre 0/4 ○ — **seul le Feu
+est actif**
+
+### Ce que le 4-0 apprend, et c'est dur
+
+| famille | annoncé | réel | |
+|---|---|---|---|
+| BTTS | non | non | ✔ |
+| **camp** | **nul** | **R1** | ✗ |
+| **volume** | 1,56 · bande 0-1 but | 4 buts | ✗ |
+| score | 1-1 | 4-0 | ✗ |
+| incident | aucun signal | — | — |
+
+**1. L'activation du siège ne mesure pas la force du camp.** R1 loge sur
+Populus, **0/4 actifs — le siège le plus inerte possible** — et il gagne 4-0.
+R7 loge sur Cauda Draconis à 3/4, et il est blanchi. C'est le contraire de ce
+que toute lecture par activation prédirait.
+
+**2. La formule du nul par les témoins échoue à son premier test hors
+échantillon.** M13 Tristitia et M14 Tristitia, tous deux terre → `Sym_E` vrai →
+nul annoncé. Le match est le plus décidé des cinq. Je ne la retire pas — une
+ligne ne renverse pas une règle, c'est la règle de tenue — mais c'est noté.
+
+**3. Le volume se trompe de beaucoup.** 1,56 buts attendus pour 4 marqués. La
+bande annoncée était « 0-1 but ».
+
+**4. Seul l'équilibre du marquage tient.** Écart **13,6 %**, le plus élevé des
+cinq lignes, sur un match à 4 buts d'écart. Et il donne **63,6 % pour R1** — le
+bon camp — pendant que le moteur de camp dit nul.
+
+### Bilan de l'échantillon choisi, 5 lignes
+
+| famille | juste |
+|---|---|
+| **BTTS (équilibre du marquage)** | **5/5** |
+| over / under 2,5 | 4/5 |
+| B₂ « le camp 2 marque-t-il » | 4/5 |
+| BTTS selon B₁ ∧ B₂ | 3/5 |
+| camp | 3/5 |
+| nul — formule des témoins | 3/5 |
+| nul — `nulActifV7` | 3/5 |
+| B₁ « le camp 1 marque-t-il » | 3/5 |
+| bande de buts | **0/5** |
+| score exact | **0/5** |
+
+### Écart d'équilibre contre marge réelle
+
+| écart | marge | match |
+|---|---|---|
+| 3,6 % | 1 | 2-3 |
+| 3,8 % | 0 | 1-1 |
+| 6,5 % | **7** | 7-0 |
+| 10,0 % | 0 | 0-0 |
+| **13,6 %** | **4** | **4-0** |
+
+Les deux plus petits écarts sont les deux matchs nuls ou serrés. Le plus grand
+est un 4-0. Le 0-0 à 10,0 % reste l'anomalie — un déséquilibre fort sur un match
+où personne ne marque.
