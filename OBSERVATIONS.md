@@ -2940,3 +2940,65 @@ R7, R7, R7 pour nul, nul, R1). À 36 % d'accord et 2/5 de justesse propre,
 cet organe n'est pas un vérificateur — c'est du bruit. Il reste en
 lecture seule ; il ne touche pas le verdict, et il ne doit pas y toucher
 en l'état.
+
+### Re-vérification à froid (13/09/26, « re-vérifie encore »)
+
+Contrôle refait **sans réutiliser le code de l'application** : moteur de
+géomancie réécrit de zéro en Python (combinaison ligne à ligne sur la
+parité des points, filiation, rotation R1 = maison de repos de M1 et
+R7 = R1+6, résultantes, chaîne complète). Seules les **données** ont été
+reprises du fichier : bits des seize figures, table des antagonistes,
+éléments des maisons, table de concordance.
+
+| contrôle | résultat |
+|---|---|
+| les 5 thèmes, 16 maisons chacun | identiques, 0 écart |
+| les 5 thèmes dérivés angulaires | identiques, 0 écart |
+| rotation R1/R7 des 10 thèmes | identique, 0 écart |
+| verdict de camp, 5 lignes | identique |
+| marginale sur 65 536 | identique au thème près (36,4 / 30,6 / 33,0) |
+| ma résultante vs `positionsBaseEtResultantes` | 6 400 comparaisons, 0 écart |
+| erreurs de page | aucune |
+
+**La claim, recalculée de zéro :** dérivé angulaire de la ligne 4-0,
+R7 = M12 Carcer, antagoniste Rubeus, maison de repos de Carcer = M10,
+M10 porte Puer, Puer ⊕ Carcer = Rubeus, résultante de M10 = **Rubeus**,
+et Rubeus est absent de la base du dérivé. **Confirmé.**
+
+Une erreur de ma part au passage, dans le script de contrôle et non dans
+l'application : j'avais reconstruit la table de concordance depuis un
+commentaire périmé du fichier (feu-terre à 0,25). La table vivante est
+identique 1 · voisin sur la roue 0,5 · contraire feu-eau et air-terre
+0,25 — celle de la doctrine. Avec la bonne table, tout concorde. Le
+commentaire périmé reste à nettoyer.
+
+### Ce que je n'avais PAS mesuré hier — la portée réelle
+
+Hier j'ai écrit « sur les cinq lignes, rien ne bouge », ce qui est vrai,
+et je me suis arrêté là. Sur les 65 536 thèmes, ce n'est pas rien :
+
+| | thèmes | part |
+|---|---|---|
+| un antagoniste est caché chez lui | 7 634 | **11,6 %** |
+| la menace en est modifiée | 4 316 | 6,6 % |
+| **le verdict en est modifié** | **1 720** | **2,6 %** |
+
+Le drapeau agit donc réellement (contrôlé en le basculant à chaud) :
+
+    ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = false   36,8 / 31,1 / 32,1   écart 12
+    ANTAGONISTE_CACHE_EN_RESULTANTE_V7 = true    36,4 / 30,6 / 33,0   écart 14
+
+**Et le sens du déplacement est défavorable :** trouver plus de menaces
+déclenche plus d'annulations, donc pousse vers le nul — +0,9 point de nul
+alors que la cible en veut *moins* (26 % contre 33 % annoncés). La
+doctrine dit de compter l'ennemi caché ; la marginale dit qu'il coûte un
+point de nul de trop. À n = 5, aucune des deux ne tranche. Le drapeau
+reste à `true` parce que la doctrine précède la mesure, mais c'est un
+arbitrage, pas un résultat, et il se défait en un mot.
+
+### Non-régression des autres organes, relue depuis l'échantillon du fichier
+
+Plus d'étiquette écrite à la main : le score réel est lu dans
+`ECHANTILLON_ELLEMINE_V7` et le BTTS/camp en est déduit.
+
+    BTTS 5/5 · camp 5/5 · incident 2/2 · aucune erreur de page
