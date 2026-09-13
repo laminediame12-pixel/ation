@@ -24135,7 +24135,12 @@ function moteur1N2V7(theme) {
       critere: gagne.critere,
       rangInterne: gagne.rang,
       indiceNul: false,
-      detail: gagne.critere + ' — ' + gagne.camp + ' l\'emporte : R1 '
+      // « l'emporterait » : depuis le 13/09 le camp est tranché par les canaux,
+      // ce bloc est une contre-lecture. Le conditionnel évite qu'il se lise
+      // comme un verdict à côté d'un verdict qui dit l'inverse.
+      detail: gagne.critere + ' — ' + gagne.camp
+        + ((typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7)
+            ? ' l\'emporterait : R1 ' : ' l\'emporte : R1 ')
         + gagne.valA + ' contre R7 ' + gagne.valB,
       r1: r1, r7: r7, rotation: rot,
       criteresMuets: gagne.muets
@@ -30550,11 +30555,21 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   // sont penaltyRouge / cartonsJaunes) — d'où le "—" affiché à l'écran
   // au lieu du signal réel.
   var penalty=card&&card.penaltyRouge!=null?(card.penaltyRouge?'Oui':'Non'):'—';
-  if (card && card.incidentPct > 0) {
-    penalty = (card.penaltyRouge?'Oui':'Non') + ' — ' + card.incidentNiveau + ' (' + card.incidentPct + '%)'
-      + (card.incidentCamp ? ' · CONTRE ' + card.incidentCamp
-          + (card.incidentCampSource ? ' [' + card.incidentCampSource + ']' : '') : ' · camp non désigné')
+  // ─── CETTE LIGNE SUIT LE MOTEUR QUI DÉCIDE (13/09/26) ───
+  // Elle affichait le niveau de l'ANCIEN calcul et nommait un camp, sous un
+  // « AUCUN SIGNAL » venu du moteur de doctrine. Douzième occurrence du
+  // défaut. Le camp n'est plus nommé du tout : le lieu de problème détecte
+  // l'incident, il ne dit pas qui est pénalisé.
+  if (card && card.incidentIntensite) {
+    var _ii2 = card.incidentIntensite;
+    penalty = (card.penaltyRouge ? 'Oui' : 'Non') + ' — ' + _ii2.niveau
+      + (_ii2.declencheurs !== undefined
+          ? ' · ' + (_ii2.etouffement ? 'M6/M12 étouffée' : 'M6/M12 respirent')
+            + ' · ' + _ii2.nFeu + ' Déclencheur' + (_ii2.nFeu > 1 ? 's' : '') + ' de feu'
+          : '')
       + (card.incidentInevitable ? ' ⚠️ quasi inévitable' : '');
+  } else if (card && card.incidentPct > 0) {
+    penalty = (card.penaltyRouge?'Oui':'Non') + ' — ' + card.incidentNiveau + ' (' + card.incidentPct + '%)';
   }
   var yellow=card&&card.cartonsJaunes!=null?card.cartonsJaunes:'—';
   // « Porte du nul » sortie du système (11/09/26) : ne pèse plus sur
@@ -30586,7 +30601,18 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       }
     }
   } catch (e) { nulSecondeTxt=''; }
+  // Le nul affiché est celui que le camp applique. Quand les canaux décident,
+  // c'est l'égalité des deux canaux qui fait le nul, pas nulActifV7 ni la
+  // formule des témoins — les deux restent en lecture.
   var nullStatus=nulActif?'NUL ACTIF':'NUL NON ACTIF';
+  if (typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7) {
+    var _cq2 = null;
+    try { _cq2 = campParCanauxV7(theme); } catch (e) { _cq2 = null; }
+    if (_cq2 && _cq2.applicable) {
+      nullStatus = (_cq2.verdict === 'Nul' ? 'NUL — égalité des canaux' : 'PAS DE NUL — les canaux départagent')
+        + ' (' + _cq2.elementR1 + ' ' + _cq2.canalR1 + '/4 contre ' + _cq2.elementR7 + ' ' + _cq2.canalR7 + '/4)';
+    }
+  }
   var nullColor=nulActif?'#fbbf24':'#22c55e';
   var nullReason=sdn.nulParIdentite?'Identité M13 = M14':sdn.nulParOpposition?'Opposition / paire d’équilibre M13 ↔ M14':'Aucune identité ni opposition directe entre les juges';
   var axeTxt=axeNul?(axeNul.confirmed?'✓ confirmation':'— non confirmé'):'—';
@@ -30644,7 +30670,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
             if(_cv && Number.isFinite(Number(_cv.buts_attendus))){
               _volTxt=Number(_cv.buts_attendus).toFixed(1).replace('.',',')+' buts attendus'
                 +' · bande '+String(_cv.bande_buts||'')
-                +' · over 2.5 : '+Math.round(Number(_cv.pOver25)*100)+' %';
+                +' · over 2.5 : '+Math.round(Number(_cv.pOver25)*100)+' %'
+                +(_cv.calibrage && _cv.calibrage.m9
+                   ? ' · M9 '+esc(_cv.calibrage.m9.figure)+' → '+esc(_cv.calibrage.m9.annonce)
+                   : ' · M9 se tait, G_vol seul');
             }
           } catch(e) {}
           return '<div class="tek-score">Buts attendus : '+esc(sc.score)
@@ -30661,7 +30690,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
         })())
     +'<div style=\"display:flex;justify-content:flex-start;align-items:center;margin:6px 8px 2px;\">'
     +'<div style=\"font-size:12px;font-weight:900;color:#7dd3fc;text-align:left;\">⚽ Volume des buts : <span style=\"color:#e0f2fe;font-size:14px;\">'
-    +(function(){var v='—';try{var vr=verdictNMRatif(theme);var c=vr&&vr.volumeNM;if(c&&Number.isFinite(Number(c.buts_attendus)))v=Number(c.buts_attendus).toFixed(1).replace('.',',')+' buts attendus · bande '+String(c.bande_buts||'')+' · over 2.5 : '+Math.round(Number(c.pOver25)*100)+' %';}catch(e){}return v;})()
+    +(function(){var v='—';try{var vr=verdictNMRatif(theme);var c=vr&&vr.volumeNM;if(c&&Number.isFinite(Number(c.buts_attendus)))v=Number(c.buts_attendus).toFixed(1).replace('.',',')+' buts attendus · bande '+String(c.bande_buts||'')+' · over 2.5 : '+Math.round(Number(c.pOver25)*100)+' %'+(c.calibrage&&c.calibrage.m9?' · M9 '+c.calibrage.m9.figure+' → '+c.calibrage.m9.annonce:' · M9 se tait, G_vol seul');}catch(e){}return v;})()
     +'</span></div></div>'
     +'</div>';
   var incColorTek = card && card.incidentInevitable ? '#f87171' : card && card.incidentPct >= 50 ? '#fb923c' : card && card.incidentPct > 0 ? '#facc15' : null;
@@ -30727,9 +30756,16 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + '</div>';
   }
   var incidentResultat = card && card.penaltyRouge ? 'SIGNAL INCIDENT' : 'AUCUN SIGNAL';
-  var incidentCampTxt = card && card.incidentCamp ? (' · CONTRE ' + card.incidentCamp) : '';
-  var incidentSourceTxt = card && card.incidentCampSource ? (' · ' + card.incidentCampSource) : '';
-  var incidentNbTxt = card && card.incidentSignaux ? (' · ' + card.incidentSignaux.length + ' signal' + (card.incidentSignaux.length > 1 ? 'x' : '')) : '';
+  // Plus de camp nommé ici non plus : le lieu de problème détecte l'incident,
+  // il ne dit pas qui est pénalisé (corrigé sur la ligne 2 de l'échantillon).
+  var incidentCampTxt = '';
+  var incidentSourceTxt = (card && card.incidentIntensite && card.incidentIntensite.declencheurs !== undefined)
+    ? ' · lieux M6/M12 + Déclencheurs de feu'
+    : (card && card.incidentCampSource ? (' · ' + card.incidentCampSource) : '');
+  var incidentNbTxt = (card && card.incidentIntensite && card.incidentIntensite.declencheurs !== undefined)
+    ? (' · ' + (card.incidentIntensite.etouffement ? 'étouffée' : 'libres')
+       + ' · ' + card.incidentIntensite.nFeu + ' feu')
+    : (card && card.incidentSignaux ? (' · ' + card.incidentSignaux.length + ' signal' + (card.incidentSignaux.length > 1 ? 'x' : '')) : '');
   // ─── LA LECTURE DES CANAUX, À L'ÉCRAN (11/09/26) ───
   // Le moteur 1N2 calculait bien le canal de chaque camp, sa position dans
   // ce canal et la concordance figure/canal — mais rien de tout ça n'était
@@ -30806,7 +30842,10 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     html += '<div style="margin-top:10px; padding:9px 12px; border:1px solid #7c3aed; '
       + 'border-radius:10px; background:rgba(124,58,237,.08);">'
       + '<div style="font-size:11.5px; font-weight:900; color:#c4b5fd; margin-bottom:2px;">'
-      + '🧭 PROCÉDÉ COMPLET 1N2 — ' + esc(d.critere) + ' tranche</div>'
+      + '🧭 PROCÉDÉ COMPLET 1N2 — ' + esc(d.critere)
+      + ((typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7)
+          ? ' <span style="color:#f59e0b;">— CONTRE-LECTURE, ne décide plus : le camp est tranché par les canaux</span>'
+          : ' tranche') + '</div>'
       + '<div style="font-size:9.5px; color:#a78bfa; margin-bottom:6px;">'
       + 'MAISON → MILIEU ÉLÉMENTAIRE → CANAL → FIGURE → POSITION → FILIATION → ENVIRONNEMENT → R1 vs R7 → VERDICT</div>'
       + '<div style="display:flex; gap:8px; flex-wrap:wrap;">'
@@ -30937,7 +30976,9 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
     };
     muetTxt = _mu === 'les deux'
       ? 'les DEUX camps sont lus muets'
-      : 'camp muet : <b>' + esc(_nom(_mu)) + '</b> — ' + esc(card.bttsCampMuetSource || '');
+      : 'camp muet : <b>' + esc(_nom(_mu)) + '</b> — ' + esc(card.bttsCampMuetSource || '')
+        + ((typeof CAMP_MUET_CORRIGE_LE_CAMP_V7 !== 'undefined' && !CAMP_MUET_CORRIGE_LE_CAMP_V7)
+            ? ' · LECTURE SEULE — débranché du camp et du BTTS' : '');
     if (card.bttsCampMuetNul) {
       muetAlerte = 'Les DEUX voies offensives sont bloquées : le score est 0-0, donc un NUL. '
         + 'Le camp annoncé était ' + esc(card.bttsCampMuetNul.avant || '—') + '. '
@@ -30979,8 +31020,23 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
   var nulRaisonTxt = nulPorteTxt || nulCarcerTxt || nulSecondeTxt
     || (nulActif ? 'Nul détecté (signal combiné)' : nullReason);
   html += '<div data-nul-final-visible="1" style="margin-top:10px; padding:9px 12px; border:2px solid '+nullColor+'; border-radius:10px; background:rgba(15,23,42,.72); display:flex; justify-content:center; gap:18px; flex-wrap:wrap; align-items:center;">'
-    + '<div style="font-size:12px; font-weight:900;">⚖️ NUL <span style="color:'+nullColor+'; font-size:15px;">'+(nulActif?'OUI':'NON')+'</span></div>'
-    + '<div style="font-size:11px; color:#cbd5e1;">'+esc(nulRaisonTxt)+'</div>'
+    // ─── LE NUL AFFICHÉ EST CELUI QUI EST APPLIQUÉ (13/09/26) ───
+    // Il montrait nulActifV7, qui ne décide plus rien depuis que les canaux
+    // tranchent le camp. La carte pouvait donc annoncer « NUL NON » à côté
+    // d'un verdict nul, ou l'inverse.
+    + (function () {
+        var _n = nulActif, _r = nulRaisonTxt;
+        if (typeof CAMP_PAR_CANAUX_V7 !== 'undefined' && CAMP_PAR_CANAUX_V7) {
+          var _c = null; try { _c = campParCanauxV7(theme); } catch (e) { _c = null; }
+          if (_c && _c.applicable) {
+            _n = (_c.verdict === 'Nul');
+            _r = _c.resume + (nulActif ? ' · nulActifV7 disait OUI (lecture seule)' : '');
+          }
+        }
+        return '<div style="font-size:12px; font-weight:900;">⚖️ NUL <span style="color:'
+          + (_n ? '#fbbf24' : nullColor) + '; font-size:15px;">' + (_n ? 'OUI' : 'NON') + '</span></div>'
+          + '<div style="font-size:11px; color:#cbd5e1;">' + esc(_r) + '</div>';
+      })()
     + '</div>';
   if (card && card.procedure) {
     var _pr = card.procedure;

@@ -2601,3 +2601,52 @@ Aucune pièce ne déborde sur une autre, et la carte ne peut plus se contredire.
 3. moins les **sièges R1 et R7** sont actifs, plus il y a de buts
 4. sur les lignes où **B₁ ∧ B₂** et **l'équilibre du marquage** divergent, celle
    qui gagne devient le moteur du BTTS
+
+---
+
+## Tout ce qui est branché se lit dans le verdict final
+
+Six contradictions restaient dans la carte affichée — le douzième au dix-septième
+cas du même défaut : un affichage qui nomme une chose pendant que le code en
+applique une autre.
+
+| ce qui s'affichait | ce que le code appliquait | corrigé en |
+|---|---|---|
+| « PROCÉDÉ COMPLET 1N2 — Charge active **tranche** » | les canaux tranchent | « **CONTRE-LECTURE, ne décide plus** » |
+| « Charge active — R7 **l'emporte** » | R1 l'emporte | « R7 **l'emporterait** » |
+| « 🚫 camp muet : R7 » comme s'il agissait | débranché du camp **et** du BTTS | « **LECTURE SEULE — débranché** » |
+| « Penalty / Rouge : Non — Faible (30 %) · **CONTRE M1** » | aucun signal, aucun camp | niveau du moteur de doctrine, **plus de camp** |
+| « Résultat incidents : AUCUN SIGNAL · **CONTRE M1** » | idem | « lieux M6/M12 + Déclencheurs · libres · 1 feu » |
+| « ⚖️ NUL NON » depuis `nulActifV7` | le nul vient de l'égalité des canaux | **le nul des canaux**, avec ses deux comptes |
+| volume sans mention de M9 | M9 tranche le côté du seuil | « **· M9 populus → moins de 2,5 buts** » |
+
+### La carte, maintenant
+
+> 🏆 **VERDICT** — canaux — R1 porte feu (canal 2/4) contre R7 eau (canal 1/4)
+> → R1 l'emporte · *le 1N2 disait R7 (Charge active)*
+>
+> **Score prédit : 0-0**
+>
+> ⚽ **Volume** : 1,3 buts attendus · bande 0-1 but · over 2.5 : 15 %
+> **· M9 populus → moins de 2,5 buts**
+>
+> 🧭 **PROCÉDÉ COMPLET 1N2** — Charge active — *CONTRE-LECTURE, ne décide plus :
+> le camp est tranché par les canaux* … Charge active — R7 **l'emporterait**
+>
+> ⚽ **BTTS NON** — équilibre du marquage : R1 7,0 contre R7 4,0, écart 13,6 %
+> pour un seuil de 4,17 % → un camp domine
+>
+> 🚫 camp muet : R7 … · **LECTURE SEULE — débranché du camp et du BTTS**
+>
+> ⚖️ **NUL NON** — canaux : R1 feu 2/4 contre R7 eau 1/4
+>
+> 📐 **Procédure** — logement, activation par axe, canaux
+>
+> 🟥 **Penalty / Rouge** — Non — Aucun · M6/M12 respirent · 1 Déclencheur de feu
+
+Sur un thème où les canaux sont à égalité, la même carte affiche
+« → égalité, nul » et « ⚖️ **NUL OUI** ». Les deux lignes ne peuvent plus
+diverger : elles lisent la même fonction.
+
+**Aucune ligne de la carte ne contredit plus une autre.** Ce qui décide est
+nommé, ce qui ne décide plus est marqué contre-lecture, et rien n'est effacé.
