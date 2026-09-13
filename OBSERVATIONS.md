@@ -820,3 +820,50 @@ double blocage disparaît de cette route. Le moteur Nul reste seul à porter le 
 ⚠️ **Le taux réel de BTTS est autour de 52 %.** Passer de 88,9 % à 60,9 % en
 approche — mais **se rapprocher d'un taux de base n'est pas une preuve**, et
 aucun seuil n'a été réglé pour l'atteindre. Aucune justesse mesurée.
+
+---
+
+## #2 — Via / Tristitia / Cauda Draconis / Fortuna Minor · résultat 5-2
+
+Prédit le 13/09/2026. **Deux versions du système, la seconde faite à l'aveugle.**
+
+### Ce qui a été annoncé AVANT (moteur d'alors, commit `a482528`)
+
+| famille | prédit | réel | |
+|---|---|---|---|
+| **Camp** | **R1 — Équipe 1** | Équipe 1 | ✓ |
+| Score | 1-0 | 5-2 | ✗ |
+| **Volume** | plus de 2,5 (2,58) | 7 buts | ✓ |
+| **BTTS** | **NON** | oui (5-2) | ✗ |
+| **Nul** | non | non | ✓ |
+| Camp muet | **R7** | R7 a marqué 2 buts | ✗ |
+| Incidents | oui contre M7, élevé 63 % | non renseigné | — |
+
+**3 justes sur 4** familles chiffrables.
+
+### Ce que dit le moteur APRÈS le recâblage — décidé sans connaître le score
+
+Le recâblage de l'offensive sur la force active de l'axe cadent a été demandé,
+mesuré et poussé **avant** que le 5-2 soit communiqué. Il change deux réponses :
+
+| | avant | après | réel |
+|---|---|---|---|
+| BTTS | NON ✗ | **OUI** ✓ | oui |
+| camp muet | R7 ✗ | **aucun** ✓ | aucun |
+| score | 1-0 | 2-1 | 5-2 |
+
+**Les deux corrections vont dans le bon sens, et elles ont été faites à
+l'aveugle.** C'est la première fois dans ce projet qu'un changement est décidé
+sans connaître le résultat et se trouve confirmé ensuite.
+
+⚠️ **n = 1.** Une pièce qui tombe du bon côté ne démontre rien. Ce qui distingue
+ce cas des précédents n'est pas le résultat, c'est l'ordre : la correction
+d'abord, le score ensuite. C'est la seule forme de confirmation qui vaille — et
+il en faut 150.
+
+### Ce qui reste faux dans les deux versions
+
+Le **score**. 1-0 puis 2-1 contre un 5-2 réel. Le générateur ne produit
+pratiquement jamais plus de 3 buts ; il ne peut structurellement pas atteindre
+un 5-2. Le volume dit « plus de 2,5 » et tombe juste, mais il annonce 2,58 quand
+il y en a eu 7 — juste sur le sens, muet sur l'ampleur.
