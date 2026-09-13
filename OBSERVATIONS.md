@@ -639,3 +639,43 @@ total, pourcentage, élément dominant) et dans la carte du thème, en tableau
 complet avec la case du dominant surlignée.
 
 ⚠️ Aucune justesse mesurée. Comme le reste, ça part au test.
+
+### Contre-lecture par l'axe commun — 12/09/2026
+
+Essai proposé par Ellemine_D : « R1 et R7 dans le même axe pour déterminer
+réellement le 1N2. Si c'est l'axe angulaire 1-4-7-10..., on prend les 4 premiers
+comme figures mères, on dresse le thème, et on voit le vainqueur : est-ce qu'il
+confirme le verdict premier ? »
+
+Implémenté : quand les deux camps siègent dans le même axe, ses quatre premières
+maisons deviennent quatre mères, on dresse le thème dérivé, on y relance le 1N2.
+
+**Mesuré sur les 65 536 thèmes — avant de le brancher :**
+
+| | |
+|---|---|
+| applicable (les deux camps même axe) | **49 152 — 75,0 %** |
+| le dérivé **confirme** | **55,6 %** |
+| il **contredit** | 44,4 % |
+
+**55,6 %, ce n'est presque rien.** Deux lectures indépendantes donnant R1 à 54 %
+s'accorderaient déjà à **50,3 %** par pur hasard. La contre-lecture n'est donc
+que cinq points au-dessus du bruit.
+
+Par axe, l'écart est net et je ne l'explique pas :
+
+| axe | accord |
+|---|---|
+| Angulaire | **66,4 %** |
+| Succédent | 52,5 % |
+| Cadent | **47,7 %** |
+
+Sur l'axe **Cadent, le dérivé contredit plus souvent qu'il ne confirme.**
+
+**Branchée en lecture seule.** Elle ne touche pas au verdict. Savoir si « les
+deux d'accord » vaut mieux que « le premier seul » demande des **résultats
+réels** — les 65 536 thèmes ne contiennent aucune vérité de match, ils ne peuvent
+mesurer qu'un accord interne. C'est une question pour le test prospectif.
+
+Affichée sur la carte, avec ses propres chiffres à côté, pour qu'on ne la croie
+pas plus qu'elle ne vaut.

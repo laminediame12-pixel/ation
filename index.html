@@ -23711,6 +23711,69 @@ function _migrationNul1N2V7(theme) {
   };
 }
 
+// ═══════════════════════════════════════════════════════════════
+// CONTRE-LECTURE PAR L'AXE COMMUN (12/09/26, essai proposé par Ellemine_D)
+// « R1 et R7 dans le même axe pour déterminer réellement le 1N2. Si c'est
+// l'axe angulaire 1-4-7-10..., on prend les 4 premiers comme figures mères,
+// on dresse le thème, et on voit le vainqueur : est-ce qu'il confirme le
+// verdict premier ? »
+//
+// Quand les deux camps siègent dans le même axe, les quatre premières
+// maisons de cet axe — le noyau du carré, MERES_*_V7 — deviennent quatre
+// mères. On construit ce thème dérivé et on y relance le moteur 1N2.
+//
+// ⚠️ CE QU'ELLE VAUT, MESURÉ SUR LES 65 536 THÈMES :
+//   applicable (les deux camps dans le même axe) ... 49 152, soit 75,0 %
+//   le dérivé CONFIRME le verdict premier .......... 55,6 %
+//   il le CONTREDIT ................................ 44,4 %
+// Deux lectures indépendantes donnant R1 à 54 % s'accorderaient déjà à
+// 50,3 % par pur hasard. Les 55,6 % ne sont donc que cinq points au-dessus
+// de rien. Par axe, l'écart est net et inexpliqué :
+//   Angulaire 66,4 %  ·  Succédent 52,5 %  ·  Cadent 47,7 %
+// Sur l'axe Cadent le dérivé contredit plus souvent qu'il ne confirme.
+//
+// EN LECTURE SEULE. Elle ne touche pas au verdict. Savoir si « les deux
+// d'accord » vaut mieux que « le premier seul » demande des résultats
+// réels — c'est une question pour le test prospectif, pas pour les 65 536
+// thèmes, qui ne contiennent aucune vérité de match.
+function confirmationAxeCommunV7(theme) {
+  if (!theme || !theme[1] || typeof AXES_V7 === 'undefined') return null;
+  var rot = null;
+  try { rot = getRotationCombat(theme); } catch (e) { return null; }
+  if (!rot || !rot.hR1 || !rot.hR7) return null;
+  var ax1 = null, ax7 = null;
+  AXES_V7.forEach(function (a) {
+    if (a.maisons.indexOf(rot.hR1) >= 0) ax1 = a;
+    if (a.maisons.indexOf(rot.hR7) >= 0) ax7 = a;
+  });
+  if (!ax1 || !ax7) return { applicable: false, raison: 'axe introuvable' };
+  if (ax1.cle !== ax7.cle) {
+    return { applicable: false, axeR1: ax1.nom, axeR7: ax7.nom,
+      raison: 'R1 et R7 ne sont pas dans le même axe' };
+  }
+  var M = ax1.meres || ax1.maisons.slice(0, 4);
+  var derive = null;
+  try { derive = calcTheme(theme[M[0]], theme[M[1]], theme[M[2]], theme[M[3]]); }
+  catch (e) { return { applicable: false, raison: 'thème dérivé impossible' }; }
+  var premier = null, second = null;
+  try { premier = moteur1N2V7(theme); } catch (e) { }
+  try { second = moteur1N2V7(derive); } catch (e) { }
+  if (!premier || !second) return { applicable: false, raison: 'moteur indisponible' };
+  var nulDerive = false;
+  try { nulDerive = !!nulActifV7(derive); } catch (e) { nulDerive = false; }
+  return {
+    applicable: true,
+    axe: ax1.nom, cle: ax1.cle,
+    meres: M.slice(),
+    meresFigures: M.map(function (h) { return theme[h]; }),
+    derive: derive,
+    verdictPremier: premier.verdict, criterePremier: premier.critere,
+    verdictDerive: second.verdict, critereDerive: second.critere,
+    nulDerive: nulDerive,
+    accord: premier.verdict === second.verdict
+  };
+}
+
 function moteur1N2V7(theme) {
   if (!theme || typeof getRotationCombat !== 'function') return null;
   var rot;
@@ -29270,6 +29333,36 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
           + 'critère discriminant — c\'est le pôle NM rotatif qui tranche.</div>'
         : '')
       + '<div style="font-size:10px; color:#cbd5e1; margin-top:6px;">' + esc(d.detail) + '</div>'
+      // ─── CONTRE-LECTURE PAR L'AXE COMMUN (12/09/26) ───
+      + (function () {
+          var cc = null;
+          try { cc = confirmationAxeCommunV7(currentTheme); } catch (e) { cc = null; }
+          if (!cc) return '';
+          if (!cc.applicable) {
+            return '<div style="margin-top:6px; font-size:9.5px; color:#64748b;">'
+              + '🔁 Contre-lecture par l\'axe commun : inapplicable — ' + esc(cc.raison || '')
+              + (cc.axeR1 ? ' (R1 ' + esc(cc.axeR1.replace('Axe ', '')) + ', R7 '
+                 + esc(cc.axeR7.replace('Axe ', '')) + ')' : '') + '.</div>';
+          }
+          var col = cc.accord ? '#4ade80' : '#fbbf24';
+          return '<div style="margin-top:6px; padding:6px 9px; border:1px solid ' + col + '; '
+            + 'border-radius:7px; background:rgba(2,8,23,.5); font-size:10px; color:#cbd5e1;">'
+            + '<b style="color:' + col + ';">🔁 Contre-lecture par l\'axe commun — '
+            + (cc.accord ? 'CONFIRME' : 'CONTREDIT') + '</b><br>'
+            + 'R1 et R7 siègent tous deux dans l\'' + esc(cc.axe.replace('Axe ', 'axe '))
+            + '. Ses quatre premières maisons deviennent les mères : '
+            + cc.meres.map(function (h, i) {
+                return 'M' + h + ' ' + ((typeof FL !== 'undefined' && FL[cc.meresFigures[i]]) || '');
+              }).join(' · ')
+            + '<br>Thème dérivé → <b style="color:' + col + ';">' + esc(cc.verdictDerive) + '</b>'
+            + ' (' + esc(cc.critereDerive) + ')'
+            + ' contre <b>' + esc(cc.verdictPremier) + '</b> au premier thème.'
+            + (cc.nulDerive ? ' Le moteur Nul s\'active sur le dérivé.' : '')
+            + '<br><i style="color:#94a3b8;">Lecture seule — elle ne touche pas au verdict. '
+            + 'Sur les 65 536 thèmes elle confirme 55,6 % du temps, quand deux lectures '
+            + 'indépendantes s\'accorderaient déjà à 50,3 % par hasard. Par axe : '
+            + 'Angulaire 66,4 %, Succédent 52,5 %, Cadent 47,7 %.</i></div>';
+        })()
       + (d.pole && d.pole.detailR1
         ? '<div style="font-size:9.5px; color:#cbd5e1; margin-top:4px;">'
           + 'Pôle R1 (M1+M4+M13) : ' + esc(d.pole.detailR1.join(' + ')) + ' = <b>' + d.pole.poleR1.toFixed(1) + '</b>'
