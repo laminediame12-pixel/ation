@@ -25747,6 +25747,10 @@ var LIEUX_PROBLEME_V7 = [6, 12];                 // M6 air, M12 terre
 var MAISONS_FEU_V7 = [1, 5, 9, 13];              // le canal du feu
 var FIGURES_EXPLOSIVES_V7 = ['puer', 'rubeus', 'cauda_draconis'];
 var COTE_LIEU_PROBLEME_V7 = { 6: 'M1', 12: 'M7' };
+// Le lieu détecte l'incident mais n'en nomme pas le camp : la ligne 2 a
+// contredit la correspondance par maison, et aucune des sept règles testées
+// ne colle aux deux lignes. Voir incidentDoctrineV7.
+var CAMP_INCIDENT_DEPUIS_LE_LIEU_V7 = false;
 
 // Contrariété : l'unique table, concordanceElement à 0,25.
 // feu-eau et air-terre, rien d'autre.
@@ -25778,8 +25782,38 @@ function incidentDoctrineV7(theme) {
   var exces = declencheurs.length >= 1;
 
   var l6 = lieux[0], l12 = lieux[1];
-  var camp = l6.poids > l12.poids ? l6.cote
-           : l12.poids > l6.poids ? l12.cote : null;
+  // ═══════════════════════════════════════════════════════════════
+  // LE LIEU NE NOMME PAS LE CAMP (13/09/26, corrigé sur le match 2-3)
+  // ───────────────────────────────────────────────────────────────
+  // J'attribuais le camp par la maison : M6 -> équipe 1, M12 -> équipe 2,
+  // en m'appuyant sur le découpage classique (maisons 2 à 6 au consultant,
+  // 8 à 12 à l'adversaire). La ligne 2 le contredit :
+  //   ligne 1 — M6 étouffée,  pénalisé RÉEL M1
+  //   ligne 2 — M12 étouffée, pénalisé RÉEL M1   (penalty POUR M7)
+  // Deux lieux différents, le MÊME camp pénalisé. Aucune correspondance
+  // lieu -> camp ne peut coller aux deux : c'est arithmétique.
+  //
+  // J'ai cherché ailleurs. Sept règles testées contre les deux lignes :
+  //   trigone offensif le plus faible ..... 1/2
+  //   défense la plus faible .............. 0/2
+  //   siège le moins actif ................ 1/2
+  //   siège le moins concordant ........... 1/2
+  //   siège au plus faible marquage ....... 0/2
+  //   le camp muet ........................ 0/2
+  //   « toujours R1 » ..................... 2/2
+  // La seule qui colle aux deux est « toujours R1 », et ce n'est pas une
+  // règle : c'est l'artefact de deux observations qui pénalisent toutes
+  // deux R1. Tant qu'aucune ligne n'aura R7 comme camp pénalisé, la
+  // question du camp est INDÉCIDABLE PAR CONSTRUCTION — n'importe quelle
+  // règle qui répond R1 deux fois passera le test.
+  //
+  // Le lieu détecte donc la PRÉSENCE de l'incident, 2 fois sur 2, et il
+  // n'en nomme pas le camp. Le lieu étouffé reste affiché tel quel : c'est
+  // un fait, pas une accusation.
+  // ═══════════════════════════════════════════════════════════════
+  var camp = CAMP_INCIDENT_DEPUIS_LE_LIEU_V7
+    ? (l6.poids > l12.poids ? l6.cote : l12.poids > l6.poids ? l12.cote : null)
+    : null;
 
   var signal = etouffement && exces;
   var charge = l6.poids + l12.poids + declencheurs.length;
@@ -25898,7 +25932,8 @@ var ECHANTILLON_ELLEMINE_V7 = [
     nature: 'penalty',
     // Annoncé AVANT que le résultat soit donné.
     ditIncident: true,           // M12 étouffée + 2 Déclencheurs          ✔
-    ditCamp: 'M7',               // le pénalisé est M1                     ✘
+    ditCamp: null,               // le lieu ne nomme plus le camp (corrigé sur cette ligne)
+    ditCampAvant: 'M7',          // ce qu'il disait : faux, le pénalisé est M1
     ditCampVerdict: 'R1',        // réel R7                                ✘
     ditScore: '2-1',             // réel 2-3                               ✘
     ditBtts: false,              // réel oui                               ✘
@@ -25914,9 +25949,18 @@ var ECHANTILLON_ELLEMINE_V7 = [
         + 'J\'avais d\'abord compté cette ligne juste en redéfinissant le '
         + 'camp comme « le côté où l\'évènement tombe » — ce n\'était pas la '
         + 'doctrine, c\'était la lecture qui m\'arrangeait. '
-        + 'Le mapping M6 -> équipe 1 / M12 -> équipe 2 n\'est pas retourné '
-        + 'pour autant : on ne renverse pas une règle sur la ligne qui vient '
-        + 'de la contredire.'
+        + 'CORRIGÉ SUR CETTE LIGNE, à la demande d\'Ellemine_D : la '
+        + 'correspondance lieu -> camp est retirée. Elle ne pouvait pas être '
+        + 'réparée — ligne 1, M6 étouffée, pénalisé M1 ; ligne 2, M12 '
+        + 'étouffée, pénalisé M1 aussi. Deux lieux différents, le même camp : '
+        + 'aucune correspondance par maison ne colle aux deux. Sept autres '
+        + 'règles essayées (trigone le plus faible, défense la plus faible, '
+        + 'siège le moins actif, le moins concordant, au plus faible '
+        + 'marquage, le camp muet) : 0 ou 1 sur 2. Seule « toujours R1 » '
+        + 'colle, et ce n\'est pas une règle. Le lieu détecte la PRÉSENCE de '
+        + 'l\'incident — 2 sur 2 — et ne nomme plus personne. Il faudra une '
+        + 'ligne où R7 est le camp pénalisé pour que la question redevienne '
+        + 'testable.'
   },
   // ─── Les trois matchs mis à part par Ellemine_D avant les deux lignes
   // ci-dessus (« parmi les 49 il y a des matchs FIFA, des matchs virtuels ;
@@ -26932,6 +26976,11 @@ function buildVerdictCard(posA, posB, labelA, labelB, theme, winnerOverride, dom
         // consultant, ses ennemis cachés) ? Cela se tranche d'un mot.
         resume: 'incident CONTRE ' + incidentAxe.camp + ' (le camp pénalisé) — '
           + incidentAxe.resume }
+    : (INCIDENT_DOCTRINE_DECIDE_V7 && incidentAxe && incidentAxe.signal)
+    ? { camp: null, source: 'Lieux de problème M6 / M12',
+        resume: incidentAxe.resume + ' · CAMP NON DÉTERMINÉ : le lieu dit '
+          + 'qu\'il y a incident, il ne dit pas qui est pénalisé — sept règles '
+          + 'essayées, aucune ne colle aux deux lignes connues' }
     : incidentV2.hasSignal
     ? { camp: incidentV2.camp || null, source: 'Incident V2',
         resume: incidentV2.camp

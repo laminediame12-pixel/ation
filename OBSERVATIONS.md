@@ -1653,3 +1653,70 @@ lot non fiable, et une observation ne suffit pas à l'y remettre.
 Ce qu'il faut, c'est la ligne 5, la 6, la 7 — avec l'inversion écrite d'avance,
 comme elle l'est. Si elle tient encore, alors le marquage pondéré par
 l'activation rentre dans le volume, et pas avant.
+
+---
+
+## Corrigé sur le match 2-3 : le lieu ne nomme pas le camp
+
+J'attribuais le camp par la maison — M6 → équipe 1, M12 → équipe 2 — d'après le
+découpage classique (maisons 2 à 6 au consultant, 8 à 12 à l'adversaire). Le
+2-3 le contredit.
+
+| | lieu étouffé | pénalisé réel | moteur |
+|---|---|---|---|
+| ligne 1 | **M6** | M1 | M1 ✔ |
+| ligne 2 | **M12** | M1 | M7 ✗ |
+
+**Deux lieux différents, le même camp pénalisé.** Aucune correspondance
+lieu → camp ne peut coller aux deux : c'est arithmétique, pas une question de
+réglage.
+
+### J'ai cherché ailleurs. Rien.
+
+Sept règles testées contre les deux lignes :
+
+| règle | ligne 1 | ligne 2 | justes | équilibre sur 65 536 |
+|---|---|---|---|---|
+| trigone offensif le plus faible | M1 | M7 | 1/2 | 39 / 29 / 32 |
+| défense la plus faible | M7 | M7 | 0/2 | 34 / 46 / 20 |
+| siège le moins actif | M1 | — | 1/2 | 30 / 42 / 28 |
+| siège le moins concordant | — | M1 | 1/2 | 29 / 35 / 36 |
+| siège au plus faible marquage | — | M7 | 0/2 | 39 / 42 / 19 |
+| le camp muet | — | M7 | 0/2 | 19 / 16 / 65 |
+| **« toujours R1 »** | M1 | M1 | **2/2** | 100 / 0 / 0 |
+
+La seule qui colle aux deux est « toujours R1 », et ce n'est pas une règle :
+c'est l'artefact de deux observations qui pénalisent toutes deux R1.
+
+**Tant qu'aucune ligne n'aura R7 comme camp pénalisé, la question du camp est
+indécidable par construction** — n'importe quelle règle qui répond R1 deux fois
+passera le test.
+
+### Ce qui est fait
+
+Le lieu détecte la **présence** de l'incident : **2 sur 2**. Il ne nomme plus
+personne. Le lieu étouffé reste affiché tel quel — c'est un fait, pas une
+accusation.
+
+La carte écrit maintenant :
+
+> ⚠️ Incidents : **⚠️ SIGNAL INCIDENT** *(Marqué · M6/M12 étouffée · 2
+> Déclencheurs de feu)*
+
+sans « CONTRE X ».
+
+`CAMP_INCIDENT_DEPUIS_LE_LIEU_V7 = false` remet la correspondance par maison si
+tu la veux.
+
+### Ce qu'il me faut
+
+**Une ligne où c'est R7 qui est pénalisé.** C'est la seule observation qui peut
+rouvrir la question. Aujourd'hui, deux lignes sur deux accusent R1, et aucun
+test n'est possible là-dessus.
+
+### Bilan de l'incident, corrigé
+
+| | juste |
+|---|---|
+| **présence de l'incident** | **2/2** |
+| camp de l'incident | **non déterminé** (était 1/2) |
