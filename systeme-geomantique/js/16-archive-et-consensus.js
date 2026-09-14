@@ -343,27 +343,25 @@ var CAS_REFERENCE_V7 = [
     incident: true, incidentCamp: 'M1', penaltyCamp: 'M1',
     date: '2026-09-14',
     note: 'penalty pour R7/M7 marqué (transformé), concédé par R1/M1 · score 1-1' },
-  // ─── GELÉ LE 14/09/26 — ANNONCÉ AVANT LE RÉSULTAT ───
-  // Laetitia · Via · Laetitia · Albus, fournies par Ellemine_D sans
-  // résultat : match pas encore joué (ou pas encore connu). Verdict du
-  // protocole FIGÉ ICI, avant tout résultat (getVerdictAfficheReel) :
-  // vainqueur M1, score principal 1-0 (alt 2-0), BTTS non, incident très
-  // élevé (80 %) avec penalty ET rouge attendus, corners dominant M7
-  // (11 au total, 5 contre 6).
-  // ⚠️ AUCUN CHAMP RÉEL (score, camp, btts, incident) N'EST RENSEIGNÉ :
-  // rien n'est connu du résultat. Cette ligne ne compte dans AUCUNE
-  // mesure du banc tant qu'Ellemine_D ne donne pas ce qui s'est
-  // vraiment passé — elle sert seulement à prouver que le pronostic a
-  // été écrit AVANT, pas après. À COMPLÉTER avec score/camp/btts/incident
-  // réels dès que le résultat sera connu.
+  // ─── GELÉ LE 14/09/26, RÉSULTAT CONFIRMÉ LE MÊME JOUR ───
+  // Laetitia · Via · Laetitia · Albus. Verdict du protocole FIGÉ AVANT
+  // tout résultat (getVerdictAfficheReel) : vainqueur M1, score principal
+  // 1-0 (alt 2-0), BTTS non, incident très élevé (80 %) avec penalty ET
+  // rouge attendus, corners dominant M7 (11 au total, 5 contre 6).
+  // RÉEL, confirmé par Ellemine_D : 0-0.
+  //   camp ✘ (annoncé M1, réel nul)      score ✘ (annoncé 1-0, réel 0-0)
+  //   BTTS ✔ (annoncé non, réel non — personne ne marque)
+  // Pas d'information réelle sur l'incident/penalty/rouge annoncés :
+  // champs laissés non renseignés plutôt que supposés confirmés ou
+  // infirmés.
   { nom: 'Match 14/09 (2)', meres: ['laetitia', 'via', 'laetitia', 'albus'],
-    date: '2026-09-14', gele: true,
+    score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
     pronosticGele: { camp: 'M1', scorePrincipal: '1-0', scoreAlt: '2-0', btts: false,
       incidentPct: 80, incidentNiveau: 'Très élevé', penaltyAttendu: true,
       rougeAttendu: true, corners: { total: 11, m1: 5, m7: 6, dominant: 'M7' } },
-    note: 'GELÉ AVANT RÉSULTAT · aucun champ réel renseigné · pronostic M1, 1-0 '
-      + '(alt 2-0), BTTS non, incident 80 % (penalty+rouge attendus), corners '
-      + 'dominant M7 (11) · en attente du résultat réel' },
+    note: 'pronostic figé AVANT résultat : M1, 1-0 (alt 2-0), BTTS non, incident '
+      + '80 % (penalty+rouge attendus), corners dominant M7 (11) · RÉEL confirmé '
+      + '0-0 · camp ✘, score ✘, BTTS ✔ · incident/penalty/rouge réels inconnus' },
   // ─── LOT « ARCHIVE POUR MATCH NUL » — 14/09/26, FOURNI PAR ELLEMINE_D ───
   // Onze thèmes envoyés d'un bloc, tous annoncés comme des nuls réels
   // (2-2, 1-1, 0-0), pour construire la famille NUL de la nouvelle
