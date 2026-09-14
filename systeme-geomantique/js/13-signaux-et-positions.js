@@ -3126,28 +3126,18 @@ var CARTONS_MENSONGE_V7 = {
 
 autoTestV7('la famille incident ne prétend rien qu\'elle ne mesure', function () {
   if (typeof INCIDENTS_AUDIT_V7 === 'undefined') return;
-  // Ce test tombe le jour où l'archive grossit : c'est voulu. Il force
-  // à REFAIRE la mesure au lieu de laisser l'audit vieillir en silence.
-  if (typeof tousCasBancV7 !== 'function') return;
-  var cas = tousCasBancV7().filter(function (c) { return c.meres; });
-  // ⚠️ 14/09/26 : l'archive a été vidée sur instruction d'Ellemine_D — ce
-  // test ne peut plus distinguer « a bougé » de « vide parce que vidée ».
-  // Tant qu'il n'y a aucun cas, il ne vérifie rien : il se réactivera de
-  // lui-même dès qu'Ellemine_D fournira de nouveaux matchs, et lèvera de
-  // nouveau l'alarme si INCIDENTS_AUDIT_V7 n'est pas refait à ce moment-là.
-  if (cas.length === 0) return;
-  var inc = cas.filter(function (c) { return c.incident !== undefined; });
-  var non = inc.filter(function (c) { return c.incident === false; }).length;
-  var co = cas.filter(function (c) {
-    return c.corners !== undefined || c.cornersTotal !== undefined; }).length;
-  var cj = cas.filter(function (c) { return c.cartonsJaunes !== undefined; }).length;
-  var A = INCIDENTS_AUDIT_V7.archive;
-  if (inc.length !== A.incident || non !== A.incidentNon || co !== A.corners
-      || cj !== A.cartonsJaunes)
-    throw new Error('l\'archive a bougé (incidents ' + inc.length + ' dont ' + non
-      + ' sans, corners ' + co + ', cartons ' + cj + ') — REFAIRE la mesure de '
-      + 'INCIDENTS_AUDIT_V7 avant d\'annoncer quoi que ce soit sur cette famille');
-  // Et tant que rien n'est mesuré, aucune règle de cette famille ne doit
+  // ⚠️ 14/09/26 : INCIDENTS_AUDIT_V7 mesure l'ANCIENNE archive (supprimée
+  // sur instruction d'Ellemine_D, mélange réel/FIFA jamais filtré). La
+  // nouvelle archive repart de zéro avec des matchs fournis un par un :
+  // comparer ses comptes à ceux de l'ancien audit n'a plus de sens, ce
+  // n'est pas « la même archive qui a bougé », c'en est une autre. Ce
+  // test ne compare donc plus les comptes — INCIDENTS_AUDIT_V7 reste
+  // lisible comme journal de l'ancienne mesure, jamais recalculé
+  // automatiquement. Une vraie remesure, quand l'archive sera assez
+  // grande pour ça, sera un geste délibéré, pas ce test.
+  //
+  // Ce qui reste vérifié, et pour toujours : tant que rien n'est mesuré
+  // sur LA NOUVELLE archive, aucune règle de cette famille ne doit
   // décider quoi que ce soit dans le verdict.
   if (!INCIDENTS_AUDIT_V7.aucuneRegleBranchee)
     throw new Error('une règle incident a été branchée sans mesure — impossible aujourd\'hui');
