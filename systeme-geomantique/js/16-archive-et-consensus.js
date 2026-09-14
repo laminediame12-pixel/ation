@@ -363,7 +363,46 @@ var CAS_REFERENCE_V7 = [
       rougeAttendu: true, corners: { total: 11, m1: 5, m7: 6, dominant: 'M7' } },
     note: 'GELÉ AVANT RÉSULTAT · aucun champ réel renseigné · pronostic M1, 1-0 '
       + '(alt 2-0), BTTS non, incident 80 % (penalty+rouge attendus), corners '
-      + 'dominant M7 (11) · en attente du résultat réel' }
+      + 'dominant M7 (11) · en attente du résultat réel' },
+  // ─── LOT « ARCHIVE POUR MATCH NUL » — 14/09/26, FOURNI PAR ELLEMINE_D ───
+  // Onze thèmes envoyés d'un bloc, tous des nuls réels (2-2, 1-1, 0-0),
+  // pour construire la famille NUL de la nouvelle archive. Aucun autre
+  // champ (BTTS, incident, cartons, corners) n'a été donné : seuls
+  // camp='nul' et le score sont renseignés, BTTS déduit du score
+  // (0-0 = non, sinon oui puisque les deux camps ont marqué).
+  { nom: 'Nul01', meres: ['fortuna_major', 'tristitia', 'albus', 'caput_draconis'],
+    score: '2-2', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul02', meres: ['caput_draconis', 'puella', 'puella', 'via'],
+    score: '2-2', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul03', meres: ['via', 'puella', 'albus', 'fortuna_major'],
+    score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul04', meres: ['laetitia', 'amissio', 'rubeus', 'fortuna_minor'],
+    score: '1-1', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul05', meres: ['carcer', 'tristitia', 'via', 'cauda_draconis'],
+    score: '1-1', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul06', meres: ['tristitia', 'fortuna_minor', 'puella', 'via'],
+    score: '2-2', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul07', meres: ['fortuna_major', 'puella', 'tristitia', 'carcer'],
+    score: '1-1', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul08', meres: ['amissio', 'fortuna_major', 'via', 'albus'],
+    score: '2-2', camp: 'nul', btts: true, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul09', meres: ['tristitia', 'tristitia', 'laetitia', 'laetitia'],
+    score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul10', meres: ['caput_draconis', 'rubeus', 'carcer', 'laetitia'],
+    score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' },
+  { nom: 'Nul11', meres: ['rubeus', 'fortuna_major', 'carcer', 'acquisitio'],
+    score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
+    note: 'lot « archive pour match nul »' }
 ];
 // ═══════════════════════════════════════════════════════════════
 // ARCHIVE SUPPRIMÉE — 14/09/26, SUR INSTRUCTION D'ELLEMINE_D
