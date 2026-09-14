@@ -69,7 +69,10 @@ font-size:12px;font-weight:900}
 </style></head><body>
 
 <h1>Socle — deux moteurs</h1>
-<div class="sub">Page neuve · seulement ce qui est mesuré, avec son effectif · archive 57 cas au camp connu, 13 nuls (base 22,8 %)</div>
+<div class="sub">Page neuve · seulement ce qui est mesuré, avec son effectif · les chiffres ci-dessous ont été
+calculés sur 57 cas (13 nuls, base 22,8 %) — <b style="color:var(--or)">l'archive en compte 63
+aujourd'hui (16 nuls, base 25,4 %)</b>, grossie par le lot du 05/09 ; un recalcul complet n'a pas
+encore été refait, seul le tirage en cours ci-dessous tourne sur le moteur réel et à jour.</div>
 
 <div class="card">
   <h2>Le tirage</h2>
@@ -257,7 +260,8 @@ const PLI={
     [[10,11],'M3⊕M4 × M5⊕M6',['7/13 · 54 %','11/22 · 50 %','6/9 · 67 %'],1.0,0],
     [[13,14],'les deux témoins — somme = le Juge',['jamais absente','12/22 · 55 %','12/22 · 55 %'],1.0,0],
     [[15,16],'le Juge × le réconciliateur — somme = M1',['jamais absente','10/16 · 62 %','14/28 · 50 %'],1.0,0]],
-  variantes:[['R1 seul (0 occurrence)','36/57'],['+ R7 dès 2 occurrences','37/57'],
+  variantes:[['R1 seul (0 occurrence) — état retenu depuis le 06/09','36/57'],
+             ['+ R7 dès 2 occurrences — testé puis retiré','37/57'],
              ['graduée pleine (0 → R1, sinon R7)','38/57']],
   ressources:{predicteurs:44,p:0.0040,survivants:2},
   m2m7:{absente:{r:'13/14',taux:92.9},presente:{r:'19/30',taux:63.3},base:54.5,
@@ -344,7 +348,10 @@ function go(){
   const ouPli=[]; for(let h=1;h<=16;h++) if(t[h]===sPli) ouPli.push(h);
   const nPli=ouPli.length;
   const pliParle = nPli===0;
-  const pliDit = nPli===0?'CAMP 1':(nPli>=2?'CAMP 2':null);
+  /* 06/09 au soir : le côté R7 (deuxCotes) a été retiré du moteur réel —
+     il valait +1 point avec le carré en tête, −1 sans lui. Cette page
+     l'affichait encore comme actif ; corrigé pour rester synchrone. */
+  const pliDit = nPli===0?'CAMP 1':null;
   const s18=comb(t[1],t[8]); const ou18=[]; for(let h=1;h<=16;h++) if(t[h]===s18) ou18.push(h);
   /* les quatre étages pliés — vérifiés en direct, ils doivent tous donner le Juge */
   const cmL=a=>a.reduce((x,y)=>comb(x,y));
@@ -698,13 +705,15 @@ function go(){
       <b>6 — CE QUI EST BRANCHÉ, ET CE QUI NE L'EST PAS.</b>
       La case du milieu — une seule occurrence, 45 % — reste <b>muette</b> : elle ne vaut rien.<br><br>
       <table><tr><th>variante</th><th class="n">camp affiché</th></tr>
-      ${PLI.variantes.map((v,i)=>`<tr class="${i===1?'on':''}"><td>${esc(v[0])}</td>`+
-        `<td class="n"><b${i===2?' class="v"':''}>${v[1]}</b>${i===1?' ← branché':''}</td></tr>`).join('')}
+      ${PLI.variantes.map((v,i)=>`<tr class="${i===0?'on':''}"><td>${esc(v[0])}</td>`+
+        `<td class="n"><b${i===2?' class="v"':''}>${v[1]}</b>${i===0?' ← branché':''}</td></tr>`).join('')}
       </table>
-      <b class="o">La graduée pleine fait mieux — 38/57, le meilleur état jamais mesuré — et je ne
-      la branche pas.</b> Elle décide de TOUS les cas hors nul, ce qui rend le carré, M4/M10, V8 et
-      l'ouverture définitivement muets. Tu as demandé le 05/09 que le carré pilote : le retirer
-      entièrement est ta décision, pas la mienne. Le chiffre est là, la manœuvre est d'un mot.
+      <b class="o">MISE À JOUR DU 06/09 AU SOIR.</b> Le côté « +R7 dès 2 occurrences » a été
+      débranché : il valait +1 point tant que le carré pilotait, et −1 une fois le carré retiré
+      de la tête (0629a0e). Le carré lui-même a été entièrement retiré ce soir-là — ce n'était
+      plus une décision en suspens, elle est prise (BRANCHES_V7.carre_pilote.actif = false).
+      La <b>graduée pleine reste non branchée</b> : elle rendrait M4/M10, V8 et l'ouverture
+      définitivement muets, ce qui est allé au-delà de ce qui a été demandé jusqu'ici.
     </div>
 
     <div class="pt" style="border-left:3px solid ${pliParle?'var(--vert)':'var(--mut)'};padding-left:10px">
@@ -723,17 +732,20 @@ function go(){
       Fisher exact <b class="v">p = 0,00077</b>. Comme règle seule : 32/44 = <b>72,7 %</b>, et
       <b>72,7 % aussi en leave-one-out</b>.<br><br>
       <b>Contre le moteur :</b> sur les 14 cas où elle parle, le moteur faisait <b>11/14</b>,
-      elle fait <b class="v">13/14</b>. Branchée après la porte du nul et avant le carré, le camp
-      affiché passe de <b>34/57</b> à <b class="v">36/57</b> — le meilleur état du camp depuis que
-      le carré pilote. <span style="color:var(--mut)">(Toujours sous les 38/57 d'avant le carré :
-      ses huit points ne sont pas rendus par celle-ci.)</span><br><br>
+      elle fait <b class="v">13/14</b>. Mesuré au moment où elle a été branchée, avant le retrait
+      du carré : camp <b>34/57 → 36/57</b>. <span style="color:var(--mut)">(C'était alors le
+      meilleur état SOUS le carré, encore en dessous des 38/57 d'avant lui.) Depuis, le carré a
+      été retiré de la tête et le camp est à <b class="v">48/63</b> — cette mesure-là est
+      dépassée, gardée ici pour l'historique, pas comme état courant.</span><br><br>
       <b class="o">Ce qu'il faut dire contre.</b> C'est le plus fort de 44 prédicteurs du pliage.
       Corrigé par max-T : <b>p = 0,0122</b>, un survivant sur 44 — <b class="v">il survit</b>.
       Multiplié par les quatre cibles du même balayage : 0,049, il passe encore de peu. Si on
       compte aussi les deux autres familles du 06/09, <b class="o">il ne passe plus</b>. Ce qui
       plaide pour lui : le pliage est une hypothèse posée <b>avant</b> la mesure, et la règle ne
-      parle que du côté à 92,9 %. <b class="r">Le point faible :</b> rien n'explique pourquoi
-      M2 ⊕ M7 et pas M1 ⊕ M8. Les sept autres paires font p entre 0,52 et 1,00.
+      parle que du côté à 92,9 %. <span style="color:var(--mut)">(Le « pourquoi M2⊕M7 et pas
+      M1⊕M8 » que je posais ici comme point faible est résolu au point 3 ci-dessus : ce sont les
+      deux ressources, et l'asymétrie se mesure.)</span> Les sept autres paires font p entre
+      0,52 et 1,00.
     </div>
   </details>
 
