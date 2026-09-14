@@ -2081,6 +2081,25 @@ autoTestV7('rang des mères et bornes de Populus', function () {
 // débat avec un chiffre plutôt qu'un avis.
 var BRANCHES_V7 = {
 
+  nm_rotatif_verdict: {
+    actif: false,
+    nom: 'Moteur NM Rotatif (remplacement proposé du moteur de verdict)',
+    cible: 'le camp, le marché Over/Under, le BTTS',
+    origine: 'porté depuis Algothme-161.html (fichier de travail parallèle '
+      + 'd\'Ellemine_D, dernière modif interne 10/09/26), le 14/09/26 — cf. '
+      + 'js/25-moteur-nm-rotatif.js pour la méthode et le bug de casse corrigé '
+      + 'en portant (verrouTerre/scores comparaient un élément en minuscules à '
+      + 'des littéraux en majuscules et ne s\'activaient jamais dans la source).',
+    refus: 'PAS ENCORE MESURÉ, DÉLIBÉRÉMENT. L\'archive ne compte que 20 cas '
+      + '(reconstruite le 14/09/26 après suppression de l\'ancienne, mélange '
+      + 'réel/FIFA jamais filtré) — bien en dessous du seuil de détection déjà '
+      + 'établi ailleurs dans ce fichier (~30-35 cas pour séparer un écart net '
+      + 'du bruit). Brancher un remplacement du moteur de verdict sur si peu de '
+      + 'cas reviendrait à choisir au hasard.',
+    rouvrir: 'mesurer verdictNMRatif(theme).winner contre camp réel sur '
+      + 'tousCasBancV7(), comme n\'importe quel autre moteur du banc, dès que '
+      + 'l\'archive dépasse ~30 cas — pas avant.' },
+
   populus_volume: {
     actif: true,
     nom: 'Zéro Populus dans le thème -> plus de 2,5 buts',
