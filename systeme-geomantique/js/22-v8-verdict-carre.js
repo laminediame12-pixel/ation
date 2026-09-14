@@ -1789,7 +1789,7 @@ function renderProtocoleVerdictPrincipal(containerId, card, teamA, teamB, theme,
       + 'maisons sont toutes deux du camp 2, elle ne pourrait accuser que lui.</div>'
       + '</div>';
   }
-  html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 Cartons jaunes (estimé)</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)
+  html+='<div class="tek-stats"><div class="tek-stat"><span>🟥 Penalty / Rouge</span><b'+(incColorTek?' style="color:'+incColorTek+'"':'')+'>'+esc(penalty)+'</b></div><div class="tek-stat"><span>🟨 '+esc(CARTONS_MENSONGE_V7.libelleCourt)+'</span><b>'+esc(yellow)+'</b></div><div class="tek-stat"><span>🎯 Puissance de marquage</span><b>'+esc(markLabel)+' ('+esc(markA)+' vs '+esc(markB)+')</b></div><div class="tek-stat"><span>⚽ Les deux marquent (BTTS)</span><b>'+bt+'</b></div><div class="tek-stat"><span>🚩 Corners</span><b>'+esc(corners.ht1)+' (1MT) + '+esc(corners.ht2)+' (2MT) = '+esc(corners.total)
     +(corners.campA!=null?' &nbsp;·&nbsp; <span style="color:#7dd3fc;">'+esc(teamA)+' '+esc(corners.campA)+'</span> / <span style="color:#fdba74;">'+esc(teamB)+' '+esc(corners.campB)+'</span>':'')
     +(card&&card.cornersDominant?' &nbsp;→&nbsp; <span style="color:#4ade80;">dominant '+esc(card.cornersDominant==='R1'?teamA:teamB)+'</span>':'')
     +'</b></div><div class="tek-note">'+(nulActif?'⚠️ '+(nulPorteTxt||'Le nul est imposé')+' — le protocole est suspendu.':'✓ Match sous lecture du protocole R1/R7 — aucune porte du nul n’est ouverte.')+'</div>'+incHtml+'</div></div>';
@@ -2634,7 +2634,12 @@ function renderCarteVerdict(containerId, card, teamA, teamB, titre, htInfo, isPr
     html += '<div class="kv muted" style="font-size:11px;">Type dominant : ' + card.incidentTypeDominant +
       ' (penalty ' + card.incidentPctPenalty + '% / rouge ' + card.incidentPctRouge + '%)</div>';
   }
-  html += '<div class="kv"><b>Cartons jaunes (estimé) :</b> ' + card.cartonsJaunes + '</div>';
+  // ☠️ CORRIGÉ (14/09/26) : CARTONS_MENSONGE_V7 avait été écrit le
+  // 06/09 pour documenter que ce nombre n'est pas un compte de
+  // cartons — c'est incidentDetect.signals.length, jamais vérifié
+  // contre un carton réel. Le libellé le disait, l'écran ne le
+  // disait pas. Il le dit maintenant.
+  html += '<div class="kv"><b>' + CARTONS_MENSONGE_V7.libelleCourt + ' :</b> ' + card.cartonsJaunes + '</div>';
   // CORRIGÉ (17/07/26) : quand capaciteFiable=false, la capacité de but
   // brute de CETTE paire (posA/posB, calculerButsCamp — calcul INDÉPENDANT
   // de domA/domB) pointe dans le sens opposé au vainqueur affiché. Montrer

@@ -3115,6 +3115,7 @@ var CARTONS_MENSONGE_V7 = {
   cequeCest: 'le nombre de signaux trouvés par le détecteur d\'incident',
   cequeCeNestPas: 'un nombre de cartons jaunes',
   libelleHonnete: 'signaux de tension (PAS un nombre de cartons — 0 vérification)',
+  libelleCourt: 'Signaux de tension (pas des cartons)',
   resultatsEnregistres: 0
 };
 
@@ -3139,4 +3140,29 @@ autoTestV7('la famille incident ne prétend rien qu\'elle ne mesure', function (
   // décider quoi que ce soit dans le verdict.
   if (!INCIDENTS_AUDIT_V7.aucuneRegleBranchee)
     throw new Error('une règle incident a été branchée sans mesure — impossible aujourd\'hui');
+});
+
+autoTestV7('le libellé honnête des cartons jaunes est bien affiché, pas juste documenté', function () {
+  // ☠️ Le 06/09 j'avais écrit CARTONS_MENSONGE_V7 pour documenter que le
+  // nombre affiché n'est pas un compte de cartons — et j'avais oublié de
+  // brancher le libellé à l'écran. Le code disait une chose, l'écran en
+  // affichait une autre, jusqu'au 14/09. Ce test rend le VRAI panneau et
+  // lit le VRAI HTML produit, pas une supposition sur le code source.
+  if (typeof CARTONS_MENSONGE_V7 === 'undefined') throw new Error('CARTONS_MENSONGE_V7 absente');
+  if (!CARTONS_MENSONGE_V7.libelleCourt || !CARTONS_MENSONGE_V7.libelleHonnete)
+    throw new Error('les deux libellés doivent exister');
+  if (typeof calcTheme !== 'function' || typeof buildVerdictCard !== 'function'
+    || typeof renderCarteVerdict !== 'function' || typeof document === 'undefined') return;
+  var t = calcTheme('laetitia', 'fortuna_minor', 'amissio', 'via');
+  var card = buildVerdictCard(1, 7, 'R1', 'R7', t);
+  var div = document.createElement('div'); div.id = '__test_cartons__';
+  document.body.appendChild(div);
+  try {
+    renderCarteVerdict('__test_cartons__', card, 'R1', 'R7', 'Test', null, false);
+    var html = div.innerHTML;
+    if (html.indexOf('Cartons jaunes (estim') >= 0)
+      throw new Error('le panneau rendu affiche encore l\'ancien libellé trompeur');
+    if (html.indexOf(CARTONS_MENSONGE_V7.libelleCourt) < 0)
+      throw new Error('le panneau rendu n\'affiche pas le libellé honnête');
+  } finally { document.body.removeChild(div); }
 });
