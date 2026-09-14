@@ -332,16 +332,17 @@ function renderAxesPanel(theme) {
 var CAS_REFERENCE_V7 = [
   // ─── 14/09/26 — PREMIER CAS DE LA NOUVELLE ARCHIVE ───
   // Fourni directement par Ellemine_D : Laetitia · Amissio · Fortuna
-  // Minor · Laetitia. Score 1-1, penalty pour R7/M7.
+  // Minor · Laetitia. Score 1-1, R7 marque son penalty, R1 l'encaisse.
   // ⚠️ CONVENTION DE L'ARCHIVE (cf. bloc PuerRubeus dans l'historique
   // git) : penaltyCamp enregistre le camp qui CONCÈDE le penalty, pas
   // celui qui le reçoit. « Penalty pour R7 » = R7 en bénéficie = R1/M1
   // l'a concédé → penaltyCamp: 'M1'. Même logique pour incidentCamp.
+  // Confirmé par Ellemine_D : le penalty a été TRANSFORMÉ (pas arrêté).
   { nom: 'Match 14/09', meres: ['laetitia', 'amissio', 'fortuna_minor', 'laetitia'],
     score: '1-1', camp: 'nul', btts: true,
     incident: true, incidentCamp: 'M1', penaltyCamp: 'M1',
     date: '2026-09-14',
-    note: 'penalty pour R7/M7, concédé par R1/M1 · score 1-1' }
+    note: 'penalty pour R7/M7 marqué (transformé), concédé par R1/M1 · score 1-1' }
 ];
 // ═══════════════════════════════════════════════════════════════
 // ARCHIVE SUPPRIMÉE — 14/09/26, SUR INSTRUCTION D'ELLEMINE_D
