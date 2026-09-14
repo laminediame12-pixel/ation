@@ -365,11 +365,14 @@ var CAS_REFERENCE_V7 = [
       + '(alt 2-0), BTTS non, incident 80 % (penalty+rouge attendus), corners '
       + 'dominant M7 (11) · en attente du résultat réel' },
   // ─── LOT « ARCHIVE POUR MATCH NUL » — 14/09/26, FOURNI PAR ELLEMINE_D ───
-  // Onze thèmes envoyés d'un bloc, tous des nuls réels (2-2, 1-1, 0-0),
-  // pour construire la famille NUL de la nouvelle archive. Aucun autre
-  // champ (BTTS, incident, cartons, corners) n'a été donné : seuls
-  // camp='nul' et le score sont renseignés, BTTS déduit du score
-  // (0-0 = non, sinon oui puisque les deux camps ont marqué).
+  // Onze thèmes envoyés d'un bloc, tous annoncés comme des nuls réels
+  // (2-2, 1-1, 0-0), pour construire la famille NUL de la nouvelle
+  // archive — dix retenus, le onzième retiré aussitôt après (cf. note
+  // sous Nul10 : ce match avait en fait un vainqueur). Aucun autre champ
+  // (BTTS, incident, cartons, corners) n'a été donné pour les dix
+  // restants : seuls camp='nul' et le score sont renseignés, BTTS
+  // déduit du score (0-0 = non, sinon oui puisque les deux camps ont
+  // marqué).
   { nom: 'Nul01', meres: ['fortuna_major', 'tristitia', 'albus', 'caput_draconis'],
     score: '2-2', camp: 'nul', btts: true, date: '2026-09-14',
     note: 'lot « archive pour match nul »' },
@@ -399,10 +402,13 @@ var CAS_REFERENCE_V7 = [
     note: 'lot « archive pour match nul »' },
   { nom: 'Nul10', meres: ['caput_draconis', 'rubeus', 'carcer', 'laetitia'],
     score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
-    note: 'lot « archive pour match nul »' },
-  { nom: 'Nul11', meres: ['rubeus', 'fortuna_major', 'carcer', 'acquisitio'],
-    score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
     note: 'lot « archive pour match nul »' }
+  // Rubeus·Fortuna Major·Carcer·Acquisitio RETIRÉ (14/09/26, demande
+  // d'Ellemine_D) : « le 12 ne fait pas partie, celui où l'un a gagné
+  // ne fait pas partie ». Malgré le 0-0 envoyé, ce match a eu un
+  // vainqueur — il n'appartient donc pas au lot « archive pour match
+  // nul ». Retiré plutôt que corrigé : aucun score/camp réel n'a été
+  // redonné pour ce thème.
 ];
 // ═══════════════════════════════════════════════════════════════
 // ARCHIVE SUPPRIMÉE — 14/09/26, SUR INSTRUCTION D'ELLEMINE_D
