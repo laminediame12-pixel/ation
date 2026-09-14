@@ -330,6 +330,11 @@ function renderAxesPanel(theme) {
 // (Le compte exact est calculé et affiché par renderBancPanel — ne pas
 // le réécrire ici, il vieillirait comme le « sept » qu'il remplace.)
 var CAS_REFERENCE_V7 = [
+  // ═══════════════════════════════════════════════════════════════
+  // BLOC NUL — tous les cas où camp = 'nul', regroupés (demande
+  // d'Ellemine_D du 14/09/26 : « tous les nuls d'un seul bloc, les
+  // victoires de l'autre »).
+  // ═══════════════════════════════════════════════════════════════
   // ─── 14/09/26 — PREMIER CAS DE LA NOUVELLE ARCHIVE ───
   // Fourni directement par Ellemine_D : Laetitia · Amissio · Fortuna
   // Minor · Laetitia. Score 1-1, R7 marque son penalty, R1 l'encaisse.
@@ -408,6 +413,9 @@ var CAS_REFERENCE_V7 = [
   // nul ». Retiré plutôt que corrigé : aucun score/camp réel n'a été
   // redonné pour ce thème.
 
+  // ═══════════════════════════════════════════════════════════════
+  // BLOC VICTOIRE — tous les cas avec un vainqueur (camp = 'R1' ou 'R7')
+  // ═══════════════════════════════════════════════════════════════
   // ─── LOT « ARCHIVE DE VICTOIRE » — 14/09/26, FOURNI PAR ELLEMINE_D ───
   // Huit thèmes envoyés d'un bloc, tous avec un vainqueur net. Camp
   // déduit du score (convention de l'archive : score écrit M1-M7).
