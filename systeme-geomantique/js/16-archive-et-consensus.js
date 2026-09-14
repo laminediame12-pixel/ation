@@ -342,7 +342,28 @@ var CAS_REFERENCE_V7 = [
     score: '1-1', camp: 'nul', btts: true,
     incident: true, incidentCamp: 'M1', penaltyCamp: 'M1',
     date: '2026-09-14',
-    note: 'penalty pour R7/M7 marqué (transformé), concédé par R1/M1 · score 1-1' }
+    note: 'penalty pour R7/M7 marqué (transformé), concédé par R1/M1 · score 1-1' },
+  // ─── GELÉ LE 14/09/26 — ANNONCÉ AVANT LE RÉSULTAT ───
+  // Laetitia · Via · Laetitia · Albus, fournies par Ellemine_D sans
+  // résultat : match pas encore joué (ou pas encore connu). Verdict du
+  // protocole FIGÉ ICI, avant tout résultat (getVerdictAfficheReel) :
+  // vainqueur M1, score principal 1-0 (alt 2-0), BTTS non, incident très
+  // élevé (80 %) avec penalty ET rouge attendus, corners dominant M7
+  // (11 au total, 5 contre 6).
+  // ⚠️ AUCUN CHAMP RÉEL (score, camp, btts, incident) N'EST RENSEIGNÉ :
+  // rien n'est connu du résultat. Cette ligne ne compte dans AUCUNE
+  // mesure du banc tant qu'Ellemine_D ne donne pas ce qui s'est
+  // vraiment passé — elle sert seulement à prouver que le pronostic a
+  // été écrit AVANT, pas après. À COMPLÉTER avec score/camp/btts/incident
+  // réels dès que le résultat sera connu.
+  { nom: 'Match 14/09 (2)', meres: ['laetitia', 'via', 'laetitia', 'albus'],
+    date: '2026-09-14', gele: true,
+    pronosticGele: { camp: 'M1', scorePrincipal: '1-0', scoreAlt: '2-0', btts: false,
+      incidentPct: 80, incidentNiveau: 'Très élevé', penaltyAttendu: true,
+      rougeAttendu: true, corners: { total: 11, m1: 5, m7: 6, dominant: 'M7' } },
+    note: 'GELÉ AVANT RÉSULTAT · aucun champ réel renseigné · pronostic M1, 1-0 '
+      + '(alt 2-0), BTTS non, incident 80 % (penalty+rouge attendus), corners '
+      + 'dominant M7 (11) · en attente du résultat réel' }
 ];
 // ═══════════════════════════════════════════════════════════════
 // ARCHIVE SUPPRIMÉE — 14/09/26, SUR INSTRUCTION D'ELLEMINE_D
