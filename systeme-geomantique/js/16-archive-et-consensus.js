@@ -402,13 +402,46 @@ var CAS_REFERENCE_V7 = [
     note: 'lot « archive pour match nul »' },
   { nom: 'Nul10', meres: ['caput_draconis', 'rubeus', 'carcer', 'laetitia'],
     score: '0-0', camp: 'nul', btts: false, date: '2026-09-14',
-    note: 'lot « archive pour match nul »' }
+    note: 'lot « archive pour match nul »' },
   // Rubeus·Fortuna Major·Carcer·Acquisitio RETIRÉ (14/09/26, demande
   // d'Ellemine_D) : « le 12 ne fait pas partie, celui où l'un a gagné
   // ne fait pas partie ». Malgré le 0-0 envoyé, ce match a eu un
   // vainqueur — il n'appartient donc pas au lot « archive pour match
   // nul ». Retiré plutôt que corrigé : aucun score/camp réel n'a été
   // redonné pour ce thème.
+
+  // ─── LOT « ARCHIVE DE VICTOIRE » — 14/09/26, FOURNI PAR ELLEMINE_D ───
+  // Huit thèmes envoyés d'un bloc, tous avec un vainqueur net. Camp
+  // déduit du score (convention de l'archive : score écrit M1-M7).
+  // BTTS déduit du score. Un seul incident donné (rouge, Victoire06) —
+  // pour le rouge, « rouge côté X » nomme DIRECTEMENT le camp qui
+  // concède (pas d'inversion, contrairement au penalty : cf. LotRoma
+  // dans l'historique git, « Rouge côté M7 » → rougeCamp: 'M7').
+  { nom: 'Victoire01', meres: ['tristitia', 'via', 'conjunctio', 'rubeus'],
+    score: '7-0', camp: 'R1', btts: false, date: '2026-09-14',
+    note: 'lot « archive de victoire »' },
+  { nom: 'Victoire02', meres: ['tristitia', 'amissio', 'laetitia', 'puer'],
+    score: '1-2', camp: 'R7', btts: true, date: '2026-09-14',
+    note: 'lot « archive de victoire »' },
+  { nom: 'Victoire03', meres: ['conjunctio', 'laetitia', 'tristitia', 'caput_draconis'],
+    score: '1-3', camp: 'R7', btts: true, date: '2026-09-14',
+    note: 'lot « archive de victoire »' },
+  { nom: 'Victoire04', meres: ['acquisitio', 'puer', 'tristitia', 'conjunctio'],
+    score: '3-1', camp: 'R1', btts: true, date: '2026-09-14',
+    note: 'lot « archive de victoire »' },
+  { nom: 'Victoire05', meres: ['caput_draconis', 'carcer', 'cauda_draconis', 'tristitia'],
+    score: '0-4', camp: 'R7', btts: false, date: '2026-09-14',
+    note: 'lot « archive de victoire »' },
+  { nom: 'Victoire06', meres: ['tristitia', 'cauda_draconis', 'albus', 'caput_draconis'],
+    score: '1-2', camp: 'R7', btts: true, incident: true, incidentCamp: 'M7',
+    rougeCamp: 'M7', date: '2026-09-14',
+    note: 'lot « archive de victoire » · rouge côté M7/R7' },
+  { nom: 'Victoire07', meres: ['fortuna_minor', 'caput_draconis', 'albus', 'fortuna_minor'],
+    score: '2-1', camp: 'R1', btts: true, date: '2026-09-14',
+    note: 'lot « archive de victoire »' },
+  { nom: 'Victoire08', meres: ['puella', 'fortuna_minor', 'fortuna_minor', 'fortuna_major'],
+    score: '3-1', camp: 'R1', btts: true, date: '2026-09-14',
+    note: 'lot « archive de victoire »' }
 ];
 // ═══════════════════════════════════════════════════════════════
 // ARCHIVE SUPPRIMÉE — 14/09/26, SUR INSTRUCTION D'ELLEMINE_D
