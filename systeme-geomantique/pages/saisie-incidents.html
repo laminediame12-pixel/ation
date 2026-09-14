@@ -1,0 +1,257 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Saisie — incidents, cartons, corners</title>
+<style>
+:root{--fond:#0b1220;--carte:#101a2d;--bord:rgba(143,163,191,.14);--txt:#e6edf7;
+ --mut:#8fa3bf;--vert:#4ade80;--rouge:#f87171;--or:#fbbf24;--bleu:#7dd3fc;--vio:#c4b5fd}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--txt);
+ font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:14px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:19px;margin:0 0 3px}
+.sub{color:var(--mut);font-size:12.5px;margin-bottom:16px}
+.card{background:var(--carte);border:1px solid var(--bord);border-radius:12px;padding:16px;margin-bottom:14px}
+h2{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin:0 0 12px}
+label{display:block;font-size:11px;color:var(--mut);margin-bottom:4px}
+select,input{width:100%;background:#0a1220;color:var(--txt);border:1px solid var(--bord);
+ border-radius:8px;padding:9px 10px;font-size:13.5px;font-family:inherit}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.row{margin-bottom:11px}
+button{width:100%;background:var(--vio);color:#1a1030;border:0;border-radius:9px;
+ padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
+button.sec{background:transparent;color:var(--mut);border:1px solid var(--bord);font-weight:600}
+.seg{display:flex;gap:6px}
+.seg input{position:absolute;opacity:0;width:0;height:0}
+.seg input:focus-visible+label{outline:2px solid var(--vio);outline-offset:2px}
+.seg label{flex:1;margin:0;text-align:center;padding:9px 4px;border:1px solid var(--bord);
+ border-radius:8px;cursor:pointer;font-size:12.5px;color:var(--mut);background:#0a1220}
+.seg input:checked+label{border-color:currentColor;font-weight:800}
+.seg input:checked+label.v{color:var(--vert);background:rgba(74,222,128,.12)}
+.seg input:checked+label.r{color:var(--rouge);background:rgba(248,113,113,.12)}
+.seg input:checked+label.b{color:var(--bleu);background:rgba(125,211,252,.12)}
+.seg input:checked+label.m{color:var(--txt);background:rgba(143,163,191,.14)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10px;letter-spacing:.07em;text-transform:uppercase;
+ color:var(--mut);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--bord)}
+td{padding:7px 8px;border-bottom:1px solid rgba(143,163,191,.07)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+pre{background:#0a1220;border:1px solid var(--bord);border-radius:8px;padding:12px;
+ font-size:11px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;color:var(--vert)}
+.jauge{height:6px;background:rgba(143,163,191,.13);border-radius:99px;overflow:hidden;margin:6px 0 2px}
+.jauge i{display:block;height:100%;border-radius:99px}
+.note{font-size:11.5px;color:var(--mut);line-height:1.6;margin-top:10px;
+ padding-top:10px;border-top:1px solid var(--bord)}
+b.v{color:var(--vert)}b.r{color:var(--rouge)}b.o{color:var(--or)}
+</style>
+
+<div class="wrap">
+<h1>Saisie — incidents, cartons, corners</h1>
+<div class="sub">Fiche <b>aveugle</b> : elle ne montre aucune prédiction, pour que ce que tu notes
+ne soit pas influencé par ce que le système annonçait.</div>
+
+<div class="card">
+  <h2>Où on en est</h2>
+  <div id="etat"></div>
+</div>
+
+<div class="card">
+  <h2>Le match</h2>
+  <div class="row"><label>Nom (équipes, date — ce que tu veux)</label>
+    <input id="nom" placeholder="ex. Roma – Atalanta 06/09"></div>
+  <div class="g4">
+    <div><label>Mère 1</label><select id="m1"></select></div>
+    <div><label>Mère 2</label><select id="m2"></select></div>
+    <div><label>Mère 3</label><select id="m3"></select></div>
+    <div><label>Mère 4</label><select id="m4"></select></div>
+  </div>
+  <div class="g2" style="margin-top:11px">
+    <div><label>Score final</label><input id="score" placeholder="2-1"></div>
+    <div><label>Score mi-temps</label><input id="ht" placeholder="1-0"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Incident — la question qui bloque tout</h2>
+  <div class="row"><label>Y a-t-il eu un incident (penalty, rouge, CSC) ?</label>
+    <div class="seg">
+      <input type="radio" name="inc" id="i0" value="non"><label for="i0" class="v">NON, aucun</label>
+      <input type="radio" name="inc" id="i1" value="oui"><label for="i1" class="r">OUI</label>
+    </div></div>
+  <div class="g3">
+    <div><label>Penalty</label><select id="pen">
+      <option value="">aucun</option><option value="M1">pour R1 / M1</option>
+      <option value="M7">pour R7 / M7</option><option value="deux">les deux camps</option></select></div>
+    <div><label>Carton rouge</label><select id="rouge">
+      <option value="">aucun</option><option value="M1">côté R1 / M1</option>
+      <option value="M7">côté R7 / M7</option><option value="deux">les deux camps</option></select></div>
+    <div><label>But contre son camp</label><select id="csc">
+      <option value="">aucun</option><option value="M1">R1 / M1 marque contre lui</option>
+      <option value="M7">R7 / M7 marque contre lui</option></select></div>
+  </div>
+  <div class="note"><b class="o">Le NON compte autant que le OUI.</b> L'archive a 10 matchs avec
+  incident et 2 sans : c'est pour ça que rien n'est mesurable. Chaque match <b>sans</b> incident que
+  tu notes vaut plus, en ce moment, qu'un match avec.</div>
+</div>
+
+<div class="card">
+  <h2>Cartons jaunes</h2>
+  <div class="g3">
+    <div><label>Côté R1 / M1</label><input id="cjM1" type="number" min="0" max="20" placeholder="0"></div>
+    <div><label>Côté R7 / M7</label><input id="cjM7" type="number" min="0" max="20" placeholder="0"></div>
+    <div><label>Total</label><input id="cjT" readonly style="color:var(--mut)"></div>
+  </div>
+  <div class="note">Zéro carton jaune enregistré dans toute l'archive à ce jour. Le moteur en affiche
+  un nombre — c'est en réalité <b>le nombre de signaux trouvés par le détecteur d'incident</b>, pas
+  un nombre de cartons. Rien ne l'a jamais vérifié.</div>
+</div>
+
+<div class="card">
+  <h2>Corners</h2>
+  <div class="g3">
+    <div><label>Côté R1 / M1</label><input id="coM1" type="number" min="0" max="30" placeholder="0"></div>
+    <div><label>Côté R7 / M7</label><input id="coM7" type="number" min="0" max="30" placeholder="0"></div>
+    <div><label>Total</label><input id="coT" readonly style="color:var(--mut)"></div>
+  </div>
+  <div class="note">Trois matchs renseignés dans toute l'archive. Le moteur a annoncé <b>11</b> aux
+  trois, réels 6, 6 et 4, et s'est trompé de camp dominant <b class="r">3 fois sur 3</b>.</div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:14px">
+  <button onclick="ajouter()">Enregistrer ce match</button>
+  <button class="sec" onclick="vider()">Tout effacer</button>
+</div>
+
+<div class="card">
+  <h2>Ce que tu as saisi <span id="cpt" style="color:var(--vio)"></span></h2>
+  <div id="liste"></div>
+</div>
+
+<div class="card">
+  <h2>À recopier dans l'archive</h2>
+  <div class="sub" style="margin-bottom:10px">Bloc prêt à coller dans
+  <code>js/16-archive-et-consensus.js</code>. Copie-le et donne-le-moi, je l'intègre.</div>
+  <pre id="sortie">— rien encore —</pre>
+  <button class="sec" onclick="copier()" style="margin-top:10px">Copier le bloc</button>
+</div>
+</div>
+
+<script>
+const FIGS=['puer','laetitia','caput_draconis','albus','via','amissio','rubeus','tristitia',
+'fortuna_minor','carcer','conjunctio','fortuna_major','cauda_draconis','puella','acquisitio','populus'];
+const FL={puer:'Puer',laetitia:'Laetitia',caput_draconis:'Caput Draconis',albus:'Albus',via:'Via',
+amissio:'Amissio',rubeus:'Rubeus',tristitia:'Tristitia',fortuna_minor:'Fortuna Minor',carcer:'Carcer',
+conjunctio:'Conjunctio',fortuna_major:'Fortuna Major',cauda_draconis:'Cauda Draconis',puella:'Puella',
+acquisitio:'Acquisitio',populus:'Populus'};
+const CLE='saisie_incidents_v1';
+/* l'état de l'archive au 06/09/26 — ce qui manque, et combien */
+const BASE={incidentOui:10,incidentNon:2,corners:3,cartons:0,penalty:5,
+  budget:{'30 %':35,'45 %':55,'60 %':125}};
+
+['m1','m2','m3','m4'].forEach(id=>{
+  const s=document.getElementById(id);
+  s.innerHTML=FIGS.map(f=>`<option value="${f}">${FL[f]}</option>`).join('');
+});
+['cjM1','cjM7'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+  document.getElementById('cjT').value=(+document.getElementById('cjM1').value||0)+(+document.getElementById('cjM7').value||0);}));
+['coM1','coM7'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+  document.getElementById('coT').value=(+document.getElementById('coM1').value||0)+(+document.getElementById('coM7').value||0);}));
+
+const lire=()=>{try{return JSON.parse(localStorage.getItem(CLE)||'[]');}catch(e){return[];}};
+const ecrire=d=>{try{localStorage.setItem(CLE,JSON.stringify(d));}catch(e){}};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function ajouter(){
+  const inc=document.querySelector('input[name=inc]:checked');
+  const nom=document.getElementById('nom').value.trim();
+  if(!nom){alert('Donne un nom au match.');return;}
+  if(!inc){alert('Réponds à la question de l\'incident — c\'est celle qui bloque tout.');return;}
+  const v=id=>document.getElementById(id).value.trim();
+  const n=id=>{const x=document.getElementById(id).value;return x===''?null:+x;};
+  const d=lire();
+  d.push({nom:nom,meres:[v('m1'),v('m2'),v('m3'),v('m4')],
+    score:v('score')||null, htScore:v('ht')||null,
+    incident:inc.value==='oui', penaltyCamp:v('pen')||null, rougeCamp:v('rouge')||null,
+    cscCamp:v('csc')||null,
+    cjM1:n('cjM1'), cjM7:n('cjM7'), coM1:n('coM1'), coM7:n('coM7'),
+    saisiLe:new Date().toISOString().slice(0,10)});
+  ecrire(d); document.getElementById('nom').value='';
+  ['score','ht','cjM1','cjM7','coM1','coM7','cjT','coT'].forEach(i=>document.getElementById(i).value='');
+  ['pen','rouge','csc'].forEach(i=>document.getElementById(i).value='');
+  if(inc) inc.checked=false;
+  rendre();
+}
+function supprimer(i){const d=lire();d.splice(i,1);ecrire(d);rendre();}
+function vider(){if(confirm('Effacer toutes les saisies ?')){ecrire([]);rendre();}}
+function copier(){
+  const t=document.getElementById('sortie').textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>alert('Copié.'),()=>{});
+  else alert('Sélectionne le bloc et copie-le à la main.');
+}
+
+function rendre(){
+  const d=lire();
+  const non=d.filter(x=>!x.incident).length, oui=d.filter(x=>x.incident).length;
+  const co=d.filter(x=>x.coM1!=null||x.coM7!=null).length;
+  const cj=d.filter(x=>x.cjM1!=null||x.cjM7!=null).length;
+
+  /* l'état : ce qui manque, avec la jauge sur le seuil le plus proche */
+  const tot=BASE.incidentOui+BASE.incidentNon+d.length;
+  const seuil=35;
+  const lignes=[
+    ['incidents renseignés', BASE.incidentOui+BASE.incidentNon+d.length, seuil, 'var(--vio)'],
+    ['dont SANS incident', BASE.incidentNon+non, 20, 'var(--vert)'],
+    ['corners renseignés', BASE.corners+co, 30, 'var(--bleu)'],
+    ['cartons jaunes renseignés', BASE.cartons+cj, 30, 'var(--or)']
+  ];
+  document.getElementById('etat').innerHTML=
+    '<table>'+lignes.map(L=>{
+      const pct=Math.min(100,100*L[1]/L[2]);
+      return `<tr><td>${L[0]}</td><td class="n"><b style="color:${L[3]}">${L[1]}</b>
+        <span style="color:var(--mut)"> / ${L[2]}</span></td></tr>
+        <tr><td colspan="2" style="padding:0 8px 8px"><div class="jauge">
+        <i style="width:${pct}%;background:${L[3]}"></i></div></td></tr>`;}).join('')+'</table>'+
+    `<div class="note">Le seuil de 35 vient d'une simulation : pour qu'une règle qui ferait passer
+     le taux d'incident de 83 % à 30 % soit détectable à 5 % avec 80 % de chances, il faut
+     <b>35 rencontres</b>. Pour un écart plus fin, 83 % contre 45 %, il en faut <b>55</b>. Contre
+     60 %, <b>125</b>. Aujourd'hui l'archive en a 12, dont <b class="r">2 seulement sans
+     incident</b> — et c'est ce chiffre-là qui bloque, pas l'autre.</div>`;
+
+  document.getElementById('cpt').textContent = d.length ? '· '+d.length+' match'+(d.length>1?'s':'')
+    +' ('+oui+' avec, '+non+' sans)' : '';
+  document.getElementById('liste').innerHTML = d.length
+    ? '<table><tr><th>match</th><th>mères</th><th class="n">inc.</th><th class="n">CJ</th>'
+      +'<th class="n">corners</th><th></th></tr>'
+      + d.map((x,i)=>`<tr><td><b>${esc(x.nom)}</b><br><span style="color:var(--mut);font-size:11px">${esc(x.score||'—')}</span></td>
+        <td style="font-size:11px;color:var(--mut)">${x.meres.map(f=>FL[f]).join(' · ')}</td>
+        <td class="n"><b style="color:${x.incident?'var(--rouge)':'var(--vert)'}">${x.incident?'OUI':'non'}</b></td>
+        <td class="n">${x.cjM1!=null||x.cjM7!=null?((x.cjM1||0)+(x.cjM7||0)):'—'}</td>
+        <td class="n">${x.coM1!=null||x.coM7!=null?((x.coM1||0)+(x.coM7||0)):'—'}</td>
+        <td class="n"><span onclick="supprimer(${i})" style="cursor:pointer;color:var(--mut)">✕</span></td></tr>`).join('')
+      + '</table>'
+    : '<div style="color:var(--mut);font-size:13px">Rien encore. Le premier match sans incident sera le plus utile.</div>';
+
+  document.getElementById('sortie').textContent = d.length ? d.map(x=>{
+    const p=[];
+    p.push("  { nom: '"+x.nom.replace(/'/g,"\\'")+"', meres: ['"+x.meres.join("','")+"'],");
+    const l2=[];
+    if(x.score) l2.push("score: '"+x.score+"'");
+    if(x.htScore) l2.push("htScore: '"+x.htScore+"'");
+    l2.push("incident: "+(x.incident?'true':'false'));
+    if(x.penaltyCamp) l2.push("penaltyCamp: '"+x.penaltyCamp+"'");
+    if(x.rougeCamp) l2.push("rougeCamp: '"+x.rougeCamp+"'");
+    if(x.cscCamp) l2.push("csc: true, cscCamp: '"+x.cscCamp+"'");
+    if(x.cjM1!=null||x.cjM7!=null) l2.push("cartonsJaunes: "+((x.cjM1||0)+(x.cjM7||0))
+      +", cjM1: "+(x.cjM1||0)+", cjM7: "+(x.cjM7||0));
+    if(x.coM1!=null||x.coM7!=null){
+      const t=(x.coM1||0)+(x.coM7||0);
+      l2.push("corners: "+t+", cornersM1: "+(x.coM1||0)+", cornersM7: "+(x.coM7||0)
+        +", cornersDominant: '"+((x.coM1||0)>(x.coM7||0)?'R1':((x.coM7||0)>(x.coM1||0)?'R7':'égal'))+"'");
+    }
+    p.push("    "+l2.join(', ')+",");
+    p.push("    note: 'saisi le "+x.saisiLe+" — fiche aveugle, résultat noté sans voir la prédiction' },");
+    return p.join('\n');
+  }).join('\n') : '— rien encore —';
+}
+rendre();
+</script>
