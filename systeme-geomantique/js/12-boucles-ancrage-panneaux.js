@@ -4020,6 +4020,14 @@ autoTestV7('les mesures vivantes ne se figent jamais à vide', function () {
   // levée compte zéro cas, et son résultat vide reste en cache pour la
   // session. Chaque mesure doit renvoyer un compte non nul quand on
   // l'appelle proprement — et ne rien mettre en cache sinon.
+  //
+  // ⚠️ 14/09/26 : l'archive a été vidée sur instruction d'Ellemine_D
+  // (mélange matchs réels/FIFA jamais filtré). n=0 est désormais l'état
+  // CORRECT tant qu'aucun match n'a été fourni — ce test ne peut plus
+  // distinguer « vide à tort » de « vide parce qu'il n'y a rien ». Il ne
+  // vérifie donc plus que l'absence de crash, et se réactivera de
+  // lui-même dès que l'archive contiendra à nouveau des cas.
+  if (tousCasBancV7().length === 0) return;
   [['axeChaineLiveV7', typeof axeChaineLiveV7 === 'function' ? axeChaineLiveV7 : null],
    ['volumeMiroirChaineLiveV7', typeof volumeMiroirChaineLiveV7 === 'function' ? volumeMiroirChaineLiveV7 : null],
    ['mesurePopulusLiveV7', typeof mesurePopulusLiveV7 === 'function' ? mesurePopulusLiveV7 : null]

@@ -3070,6 +3070,11 @@ autoTestV7('la cellule du score corrigé suit l\'annonce du volume', function ()
 // CE QU'IL RESTE À FAIRE : 16 rencontres. On est à 19 sur les 35 qu'il
 // faut pour qu'une règle séparant 83 % de 30 % soit détectable.
 // ═══════════════════════════════════════════════════════════════
+// ⚠️ 14/09/26 : l'archive qui a produit cet audit a été supprimée sur
+// instruction d'Ellemine_D (mélange matchs réels/FIFA jamais filtré, cf.
+// CAS_REFERENCE_V7 dans 16-archive-et-consensus.js). Ce qui suit décrit
+// une mesure faite AVANT la suppression, sur des données maintenant
+// parties — à lire comme un journal, jamais comme un état courant.
 var INCIDENTS_AUDIT_V7 = {
   date: '2026-09-06',
   archive: { cas: 66, incident: 19, incidentOui: 14, incidentNon: 5,
@@ -3125,6 +3130,12 @@ autoTestV7('la famille incident ne prétend rien qu\'elle ne mesure', function (
   // à REFAIRE la mesure au lieu de laisser l'audit vieillir en silence.
   if (typeof tousCasBancV7 !== 'function') return;
   var cas = tousCasBancV7().filter(function (c) { return c.meres; });
+  // ⚠️ 14/09/26 : l'archive a été vidée sur instruction d'Ellemine_D — ce
+  // test ne peut plus distinguer « a bougé » de « vide parce que vidée ».
+  // Tant qu'il n'y a aucun cas, il ne vérifie rien : il se réactivera de
+  // lui-même dès qu'Ellemine_D fournira de nouveaux matchs, et lèvera de
+  // nouveau l'alarme si INCIDENTS_AUDIT_V7 n'est pas refait à ce moment-là.
+  if (cas.length === 0) return;
   var inc = cas.filter(function (c) { return c.incident !== undefined; });
   var non = inc.filter(function (c) { return c.incident === false; }).length;
   var co = cas.filter(function (c) {
