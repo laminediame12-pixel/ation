@@ -36097,6 +36097,70 @@ function renderEpreuveDuHasard(list, titre){
   return h;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// 🧊 VERDICT GELÉ (25/09/26)
+// Tout le reste de cet onglet REJOUE les règles actuelles sur l'archive.
+// Or une bonne part de ces règles a été écrite ou retouchée APRÈS avoir
+// vu le résultat des matchs archivés (« suite au cas Suisse-Colombie »,
+// « cas Fiorentina »…). Rejouées sur ces mêmes matchs, elles se
+// retrouvent forcément à leur avantage : elles ont appris la réponse.
+// Le seul test qui ne triche pas est le verdict ANNONCÉ AVANT le match,
+// tel qu'addToHistory/saveManuel l'ont figé dans entry.verdict.winner.
+// Seules les entrées postérieures au correctif du 28/08/26 sont
+// retenues (reconnaissables à la clé winnerLegacyVf) : avant, le
+// vainqueur figé venait d'un moteur qui n'était pas celui affiché.
+// Pur diagnostic : ne pèse sur AUCUN verdict.
+// ═══════════════════════════════════════════════════════════════
+function epreuveVerdictGele(all){
+  var seen = {}, gele = [], anciens = 0;
+  all.forEach(function(e){
+    if(!e || !e.theme || !e.realScore || !e.verdict) return;
+    var m = String(e.realScore).match(/(\d+)\s*-\s*(\d+)/);
+    if(!m) return;
+    var fp = themeFingerprint(e.team1||'', e.team2||'', e.theme);
+    if(seen[fp]) return; seen[fp] = true;
+    if(!('winnerLegacyVf' in e.verdict)){ anciens++; return; }
+    var g1 = parseInt(m[1],10), g7 = parseInt(m[2],10);
+    var realWinner = g1>g7 ? 'M1' : g7>g1 ? 'M7' : 'Nul';
+    var w = e.verdict.winner;
+    var rejoue = null;
+    try { var r = replayEntry(e); rejoue = r ? r.affOk : null; } catch(err) { rejoue = null; }
+    gele.push({
+      realWinner: realWinner,
+      blindTest: !!e.blindTest,
+      affOk: (w==='M1' || w==='M7' || w==='Nul') ? w===realWinner : null,
+      rejoueOk: rejoue
+    });
+  });
+  return {gele: gele, anciens: anciens};
+}
+function renderVerdictGele(all){
+  var d = epreuveVerdictGele(all);
+  var h = '<div class="kv" style="margin-top:10px; border-top:1px solid rgba(148,163,184,.3); padding-top:6px;"><b>🧊 Verdict gelé — annoncé AVANT le match, jamais recalculé</b></div>';
+  h += '<div class="muted" style="font-size:11px;">Le seul taux que des retouches de règles ne peuvent pas embellir après coup. '
+    + d.gele.length + ' match(s) retenu(s)' + (d.anciens ? ', ' + d.anciens + ' ignoré(s) car archivé(s) avant le correctif du 28/08/26' : '') + '.</div>';
+  if(!d.gele.length) return h + '<div class="muted" style="font-size:11px;">Aucun match récent avec score réel pour l instant.</div>';
+  h += renderEpreuveDuHasard(d.gele, 'verdict gelé');
+  h += renderEpreuveDuHasard(d.gele.filter(function(r){ return r.blindTest; }), 'verdict gelé, tirages aveugles');
+  // Mêmes matchs, deux lectures : gelé (à l'époque) vs rejoué (règles d'aujourd'hui).
+  var comp = d.gele.filter(function(r){
+    return (r.affOk===true || r.affOk===false) && (r.rejoueOk===true || r.rejoueOk===false);
+  });
+  if(comp.length){
+    var kg = comp.filter(function(r){ return r.affOk; }).length;
+    var kr = comp.filter(function(r){ return r.rejoueOk; }).length;
+    var ecart = Math.round(100*(kr-kg)/comp.length);
+    var alerte = comp.length >= 20 && ecart >= 10;
+    h += '<div class="kv" style="font-size:12px; margin-top:6px; border:1px dashed ' + (alerte ? '#f87171' : '#64748b') + '; border-radius:8px; padding:6px;">'
+      + '<b>Sur les mêmes ' + comp.length + ' match(s) :</b> gelé ' + kg + ' juste(s) · rejoué avec les règles d aujourd hui ' + kr + ' juste(s) '
+      + '(écart ' + (ecart>0?'+':'') + ecart + ' pts)';
+    h += '<div style="font-size:11px; margin-top:4px; color:' + (alerte ? '#f87171' : '#94a3b8') + ';">' + (alerte
+      ? '⚠️ Les règles actuelles font nettement mieux sur le passé que ce qui avait été annoncé à l époque : elles ont en partie appris l archive par cœur. Pour juger le système, fie-toi au taux gelé, pas au rejoué.'
+      : 'Un rejoué nettement supérieur au gelé (≥10 pts sur 20+ matchs) signalerait des règles ajustées sur les résultats déjà connus.') + '</div></div>';
+  }
+  return h;
+}
+
 function renderStatsTab(){
   currentTab = 'stats';
   document.getElementById('tabHistBtn').style.background = '';
@@ -36129,6 +36193,8 @@ function renderStatsTab(){
     // conditionne la lecture de tous les autres taux.
     h += renderEpreuveDuHasard(valides, 'verdict affiché');
     h += renderEpreuveDuHasard(valides.filter(function(r){ return r.blindTest; }), 'tirages aveugles seuls');
+    // 🧊 Verdict gelé (25/09/26) — le verdict annoncé avant le match.
+    h += renderVerdictGele(all);
     h += '<div class="kv" style="margin-top:8px;"><b>🏆 Vainqueur combiné (dominant &gt; élémentaire, comparaison historique) :</b> '+rate(valides,'combinedOk')+'</div>';
     h += '<div class="kv"><b>👑 Camp dominant seul :</b> '+rate(valides,'cdOk')+'</div>';
     h += '<div class="kv"><b>🔥 Verdict élémentaire seul :</b> '+rate(valides,'veOk')+'</div>';
