@@ -343,6 +343,9 @@ pre { white-space:pre-wrap; font-size:12px; color:#cbd5e1; }
         <button id="tabRefBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="renderTableauReferenceBTTSTab()">📋 Référence BTTS</button>
         <button id="downloadStatsBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="exportStatsJSON()">⬇️ Télécharger les statistiques</button>
         <button id="downloadSavedBtn" class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="exportSavedThemesJSON()">⬇️ Télécharger les thèmes sauvegardés</button>
+        <!-- LA MÉMOIRE DU BANC (25/09/26) — les boutons sont en tête de l'onglet
+             Sauvegardés (barreMemoireBancV7) ; le champ fichier reste ici, fixe. -->
+        <input id="restoreFileInput" type="file" style="display:none;" onchange="restaurerDepuisFichierV7(this)">
       </div>
       <button class="btn-secondary" style="width:auto; padding:6px 12px;" onclick="closeHistoryPanel()">✕ Fermer</button>
     </div>
@@ -36628,7 +36631,10 @@ function saveManuel() {
       }
   };
   list.unshift(entry);
-  if (list.length > 100) list.length = 100;
+  // 25/09/26 : la limite retirait le plus ancien, résultat saisi ou non.
+  // Elle retire maintenant d'abord les thèmes sans résultat — cf.
+  // elaguerSauvegardesV7 (LA MÉMOIRE DU BANC).
+  list = elaguerSauvegardesV7(list, SAUVEGARDES_MAX_V7);
   setSavedList(list);
   if (btn) { btn.textContent='Sauvegarde OK'; setTimeout(function(){btn.textContent='Enregistrer';},2000); }
 }
@@ -36684,8 +36690,11 @@ function renderCurrentList() {
   var deleteFn = currentTab==='hist' ? 'deleteHistEntry' : 'deleteSaveEntry';
   var container = document.getElementById('historyList');
   if (!container) return;
+  // La barre de sauvegarde / restauration, en tête de l'onglet — y
+  // compris quand il est vide : c'est justement là qu'on veut restaurer.
+  var barreHtml = currentTab === 'save' ? barreMemoireBancV7(list) : '';
   if (!list.length) {
-    container.innerHTML = '<div class="history-empty">Aucune entree dans les ' + label + '.</div>';
+    container.innerHTML = barreHtml + '<div class="history-empty">Aucune entree dans les ' + label + '.</div>';
     return;
   }
 
@@ -36705,7 +36714,7 @@ function renderCurrentList() {
         + '</div>';
     }
   }
-  container.innerHTML = summaryHtml + list.map(function(entry) {
+  container.innerHTML = barreHtml + summaryHtml + list.map(function(entry) {
     var wl = entry.verdict.winner==='M1' ? entry.team1 : entry.verdict.winner==='M7' ? entry.team2 : entry.verdict.winner==='Nul' ? 'Match Nul' : 'Indéterminé';
     var dl = entry.matchDate ? (entry.matchDate + (entry.matchTime ? ' ' + entry.matchTime : '')) : '';
     var eid = entry.id, tab = currentTab;
@@ -36725,7 +36734,7 @@ function renderCurrentList() {
       h += '<div style="font-size:12px; font-style:italic; color:#94a3b8; margin-top:4px; white-space:pre-wrap;">📝 ' + escHtml(apercu) + '</div>';
     }
     h += '<div class="history-item-result">';
-    h += '<span class="history-item-score">' + entry.verdict.scoreMain + ' (predit)</span>';
+    h += '<span class="history-item-score">' + escHtml(entry.verdict.scoreMain) + ' (predit)</span>';
     h += '<span>' + escHtml(wl) + '</span>';
     h += '<button class="history-delete-btn" onclick="event.stopPropagation();' + deleteFn + '(\'' + eid + '\')">Supprimer</button>';
     h += '</div>';
@@ -38133,6 +38142,446 @@ function exportSavedThemesJSON() {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LA MÉMOIRE DU BANC — SAUVEGARDE COMPLÈTE ET RESTAURATION (25/09/26)
+// ───────────────────────────────────────────────────────────────
+// Depuis le 15/09 le banc ne tourne plus que sur les cas SAISIS
+// (tousCasBancV7 → casSauvegardesV7) : tout ce qu'il mesure vit dans le
+// localStorage du téléphone, et nulle part ailleurs. Trois trous dans
+// cette mémoire :
+//
+//   1. PAS DE CHEMIN RETOUR. « Télécharger les thèmes sauvegardés »
+//      écrit un fichier, mais aucun bouton ne sait le relire. Un
+//      navigateur nettoyé, un autre téléphone, une nouvelle version du
+//      fichier ouverte depuis un autre dossier — et le banc repart de
+//      zéro.
+//   2. LE FICHIER TÉLÉCHARGÉ N'EST PAS UNE SAUVEGARDE. Il garde le score,
+//      le premier but et le oui/non incident. Il perd tout ce qui a été
+//      ajouté depuis le 28/08 : mi-temps, corners des deux camps, camp
+//      de l'incident, camp du penalty, CSC, carton rouge — et le format
+//      du match et le favori, avec lesquels le banc rejoue chaque cas.
+//   3. LA LIMITE DE 100 MANGEAIT DES RÉSULTATS. saveManuel tronquait la
+//      liste par la fin : le 101e thème enregistré effaçait le plus
+//      ancien, score saisi ou non — donc, en silence, un cas du banc.
+//
+// D'où deux boutons en tête de l'onglet Sauvegardés (barreMemoireBancV7),
+// visibles même quand l'onglet est vide — c'est là qu'on en a besoin :
+//   · « Sauvegarde complète » écrit les deux listes (sauvegardés +
+//     historique) TELLES QU'ELLES SONT STOCKÉES, champ pour champ, et
+//     les logos épinglés ;
+//   · « Restaurer » relit ce fichier — et aussi les anciens
+//     « themes_sauvegardes_*.json » et les « tirage_*.json », pour que
+//     ce qui a déjà été téléchargé serve à quelque chose.
+// Et la limite de 100 retire désormais d'abord les thèmes SANS résultat.
+//
+// LA RESTAURATION FUSIONNE, ELLE N'ÉCRASE JAMAIS :
+//   · un thème absent est ajouté ;
+//   · un thème déjà là (mêmes équipes, mêmes 16 figures — le critère de
+//     saveManuel) n'est pas dupliqué ; ses champs de résultat VIDES sont
+//     complétés depuis le fichier ;
+//   · un champ rempli des deux côtés avec deux valeurs différentes garde
+//     la valeur du téléphone, et le compte rendu le signale. On ne
+//     devine pas un résultat.
+// Aucun moteur n'est touché. Le banc voit les cas restaurés dès
+// l'écriture : casSauvegardesV7 se mémoïse sur la chaîne brute du
+// stockage, et setSavedList vide le cache de cohérence.
+// ═══════════════════════════════════════════════════════════════
+var SAUVEGARDE_FORMAT_V7 = 'geomantique-sauvegarde-complete';
+var SAUVEGARDE_VERSION_V7 = 1;
+var SAUVEGARDES_MAX_V7 = 100;   // la limite de saveManuel
+var HISTORIQUE_MAX_V7 = 200;    // la limite de l'historique automatique
+
+// Les champs que l'onglet Sauvegardés fait saisir après le match (setReal*).
+var CHAMPS_RESULTAT_V7 = ['realScore', 'realHtScore', 'realFirstGoal',
+  'realPenalty', 'realPenaltyCamp', 'realIncidentCamp', 'realRouge',
+  'realCsc', 'realCorners', 'realCornersM1', 'realCornersM7'];
+
+function champVideV7(v) { return v === undefined || v === null || v === ''; }
+
+function porteUnResultatV7(e) {
+  return !!e && CHAMPS_RESULTAT_V7.some(function (k) { return !champVideV7(e[k]); });
+}
+
+// La liste est rangée du plus récent au plus ancien : on retire par la
+// fin, et seulement des thèmes sans résultat. Un thème qui porte un
+// résultat n'est jamais retiré par la limite — seul « Supprimer » le
+// retire. Si les 100 en portent tous un, la liste dépasse 100 : c'est
+// voulu, ce sont les cas du banc.
+function elaguerSauvegardesV7(list, max) {
+  var surplus = list.length - max;
+  if (surplus <= 0) return list;
+  var garde = list.slice();
+  for (var i = garde.length - 1; i >= 0 && surplus > 0; i--) {
+    if (!porteUnResultatV7(garde[i])) { garde.splice(i, 1); surplus--; }
+  }
+  return garde;
+}
+
+// Un thème, quelle que soit la forme du fichier : {1:'puer',…} (stockage),
+// {M1:{figure:'puer'},…} (exports), {M1:'puer',…}. Les 16 maisons doivent
+// porter une figure connue, sinon le thème est refusé.
+function normaliserThemeV7(t) {
+  if (!t || typeof t !== 'object') return null;
+  var out = {};
+  for (var p = 1; p <= 16; p++) {
+    var v = t[p] !== undefined ? t[p] : t['M' + p];
+    if (v && typeof v === 'object') v = v.figure;
+    if (typeof v !== 'string' || !MAP_GEO[v]) return null;
+    out[p] = v;
+  }
+  return out;
+}
+
+// Même critère de doublon que saveManuel : mêmes équipes, mêmes figures.
+function cleDoublonV7(e) {
+  var t = normaliserThemeV7(e && e.theme);
+  if (!t) return null;
+  var figs = [];
+  for (var p = 1; p <= 16; p++) figs.push(t[p]);
+  return String(e.team1 || '') + '|' + String(e.team2 || '') + '|' + figs.join(',');
+}
+
+function nouvelIdV7() { return Date.now() + '_' + Math.random().toString(36).slice(2, 6); }
+
+// Le verdict d'une entrée qui n'en a pas (un « tirage_*.json » n'en porte
+// pas sous ce nom). Calculé comme saveManuel le calcule — le verdict
+// AFFICHÉ, pas verdictFinal — mais avec le format et le favori gelés dans
+// l'entrée, comme le fait replayEntry. Sans lui, la liste des sauvegardés
+// ne s'affiche pas (elle lit entry.verdict.winner).
+function verdictPourEntreeV7(e) {
+  var fav = e.favorite || 'none';
+  var fmt = e.matchFormat === 'esport' ? 'esport' : 'reel';
+  try {
+    var reel = avecFormatV7(fmt, function () { return getVerdictAfficheReel(e.theme, fav); });
+    var vf = verdictFinal(e.theme, fav);
+    return { winner:reel.winner, winnerRaw:reel.winner,
+      goalM1:reel.goalM1, goalM7:reel.goalM7, scoreMain:reel.scoreMain,
+      htWinner:reel.htWinner, penalty:reel.penalty, corrected:reel.corrected,
+      cornersM1:reel.cornersM1, cornersM7:reel.cornersM7, cornersDominant:reel.cornersDominant,
+      incidentCamp:reel.incidentCamp,
+      winnerLegacyVf:vf.winner, vfType:vf.type, vfLabel:vf.label,
+      recalculeALaRestauration: true };
+  } catch (x) {
+    return { winner: null, scoreMain: '?', recalculeALaRestauration: true };
+  }
+}
+
+// Une entrée de l'un des deux exports « légers » : themes_sauvegardes_*.json
+// (exportSavedThemesJSON) ou tirage_*.json (exportThemeJSON).
+function entreeDepuisExportV7(x) {
+  if (!x || typeof x !== 'object') return null;
+  var theme = normaliserThemeV7(x.theme);
+  if (!theme) return null;
+  var e = {
+    savedAt: x.savedAt || x.castAt || x.exportedAt || '',
+    castAt: x.castAt || x.savedAt || '',
+    team1: x.team1 || '', team2: x.team2 || '',
+    matchDate: x.matchDate || x.date || '', matchTime: x.matchTime || x.time || '',
+    theme: theme,
+    blindTest: !!x.blindTest,
+    importeDe: 'export-leger'
+  };
+  if (x.competition) e.competition = x.competition;
+  // tirage_*.json écrit le fuseau « UTC+2 » ; le stockage garde « 2 ».
+  var tz = /^UTC([+-]?\d+(?:\.\d+)?)$/.exec(String(x.timezone || ''));
+  if (tz) e.matchTimezone = String(parseFloat(tz[1]));
+  if (typeof x.delaiTirageMin === 'number') e.delaiTirageMin = x.delaiTirageMin;
+  if (x.verdict && typeof x.verdict === 'object') e.verdict = x.verdict;
+  CHAMPS_RESULTAT_V7.forEach(function (k) { if (!champVideV7(x[k])) e[k] = String(x[k]); });
+  return e;
+}
+
+// Reconnaît les fichiers que l'application écrit, et rend
+// { source, saved, history }. Lève une erreur lisible sinon.
+function lireFichierSauvegardeV7(data) {
+  if (data && data.format === SAUVEGARDE_FORMAT_V7) {
+    if (!Array.isArray(data.saved)) throw new Error('sauvegarde incomplète : la liste des thèmes manque');
+    return { source: 'complete', saved: data.saved,
+             history: Array.isArray(data.history) ? data.history : [],
+             logos: data.logos && typeof data.logos === 'object' ? data.logos : null };
+  }
+  if (data && Array.isArray(data.themes)) {
+    return { source: 'leger', saved: data.themes.map(entreeDepuisExportV7), history: [] };
+  }
+  if (data && data.theme && typeof data.theme === 'object') {
+    return { source: 'tirage', saved: [entreeDepuisExportV7(data)], history: [] };
+  }
+  if (Array.isArray(data)) return { source: 'liste', saved: data, history: [] };
+  throw new Error('ce fichier n\'est pas une sauvegarde de l\'application');
+}
+
+function trierParDateV7(list) {
+  // Du plus récent au plus ancien, comme saveManuel les range (unshift).
+  // Le tri est stable : deux dates égales gardent leur ordre.
+  return list.sort(function (a, b) {
+    var A = String((a && a.savedAt) || ''), B = String((b && b.savedAt) || '');
+    return A < B ? 1 : A > B ? -1 : 0;
+  });
+}
+
+function fusionnerSauvegardesV7(locale, entrantes, rapport) {
+  var liste = locale.slice();
+  var parCle = {}, ids = {};
+  liste.forEach(function (e) {
+    if (!e) return;
+    if (e.id) ids[e.id] = true;
+    var c = cleDoublonV7(e);
+    if (c && !parCle[c]) parCle[c] = e;
+  });
+  entrantes.forEach(function (x) {
+    var cle = x && typeof x === 'object' ? cleDoublonV7(x) : null;
+    if (!cle) { rapport.ignores++; return; }
+    var ici = parCle[cle];
+    if (!ici) {
+      var neuf = Object.assign({}, x);
+      // L'id finit dans des onclick="loadEntry('…')" : on n'en garde un
+      // venu d'un fichier que s'il a la forme de ceux que l'appli fabrique.
+      if (!/^[\w.-]{1,64}$/.test(String(neuf.id || '')) || ids[neuf.id]) neuf.id = nouvelIdV7();
+      if (!neuf.savedAt) neuf.savedAt = new Date().toISOString();
+      if (!neuf.verdict || typeof neuf.verdict !== 'object') neuf.verdict = verdictPourEntreeV7(neuf);
+      liste.push(neuf);
+      ids[neuf.id] = true;
+      parCle[cle] = neuf;
+      rapport.ajoutes++;
+      if (porteUnResultatV7(neuf)) rapport.ajoutesAvecResultat++;
+      return;
+    }
+    var complete = false;
+    CHAMPS_RESULTAT_V7.forEach(function (k) {
+      if (champVideV7(x[k])) return;
+      if (champVideV7(ici[k])) { ici[k] = x[k]; complete = true; }
+      else if (String(ici[k]) !== String(x[k])) {
+        rapport.conflits.push({ equipes: (ici.team1 || '?') + ' – ' + (ici.team2 || '?'),
+                                champ: k, ici: ici[k], fichier: x[k] });
+      }
+    });
+    if (complete) rapport.completes++; else rapport.dejaLa++;
+  });
+  return liste;
+}
+
+// L'historique automatique : on ajoute ce qui manque (par id), sans
+// toucher à ce qui est là, et on garde la limite de 200.
+function fusionnerHistoriqueV7(locale, entrantes, rapport) {
+  var liste = locale.slice();
+  var ids = {};
+  liste.forEach(function (e) { if (e && e.id) ids[e.id] = true; });
+  entrantes.forEach(function (x) {
+    if (!x || typeof x !== 'object' || !/^[\w.-]{1,64}$/.test(String(x.id || ''))
+        || !normaliserThemeV7(x.theme)) return;
+    if (ids[x.id]) return;
+    liste.push(x);
+    ids[x.id] = true;
+    rapport.histAjoutes++;
+  });
+  trierParDateV7(liste);
+  if (liste.length > HISTORIQUE_MAX_V7) liste.length = HISTORIQUE_MAX_V7;
+  return liste;
+}
+
+// _setList avale les erreurs d'écriture (stockage plein) : on relit la
+// chaîne pour savoir si l'écriture a vraiment eu lieu.
+function ecritureConfirmeeV7(cle, list) {
+  try { return localStorage.getItem(cle) === JSON.stringify(list); } catch (e) { return false; }
+}
+
+function restaurerSauvegardeV7(data) {
+  var lu = lireFichierSauvegardeV7(data);
+  var rapport = { source: lu.source, lus: lu.saved.length, ajoutes: 0, ajoutesAvecResultat: 0,
+    completes: 0, dejaLa: 0, ignores: 0, conflits: [], retiresParLimite: 0,
+    histAjoutes: 0, logosAjoutes: 0, echecs: [], casAuBanc: null };
+
+  var saved = fusionnerSauvegardesV7(getSavedList(), lu.saved, rapport);
+  if (rapport.ajoutes || rapport.completes) {
+    trierParDateV7(saved);
+    var avant = saved.length;
+    saved = elaguerSauvegardesV7(saved, SAUVEGARDES_MAX_V7);
+    rapport.retiresParLimite = avant - saved.length;
+    setSavedList(saved);
+    if (!ecritureConfirmeeV7(SAVE_KEY, saved)) rapport.echecs.push('thèmes sauvegardés');
+  }
+  // Les logos épinglés (epinglerLogoV7) : on ajoute ceux qui manquent,
+  // on ne remplace jamais un logo déjà épinglé sur ce téléphone.
+  if (lu.logos) {
+    var logos = logosEpinglesV7(), neufs = 0;
+    Object.keys(lu.logos).forEach(function (k) {
+      var v = lu.logos[k];
+      if (!logos[k] && typeof v === 'string' && /^data:image\//.test(v)) { logos[k] = v; neufs++; }
+    });
+    if (neufs) {
+      try { localStorage.setItem(CLE_LOGOS_V7, JSON.stringify(logos)); rapport.logosAjoutes = neufs; }
+      catch (e) { rapport.echecs.push('logos épinglés'); }
+    }
+  }
+  if (lu.history.length) {
+    var hist = fusionnerHistoriqueV7(getHistoryList(), lu.history, rapport);
+    if (rapport.histAjoutes) {
+      setHistoryList(hist);
+      if (!ecritureConfirmeeV7(HISTORY_KEY, hist)) { rapport.echecs.push('historique'); rapport.histAjoutes = 0; }
+    }
+  }
+  try { rapport.casAuBanc = tousCasBancV7().length; } catch (e) { rapport.casAuBanc = null; }
+  return rapport;
+}
+
+autoTestV7('la mémoire du banc — fusion et limite', function () {
+  if (typeof buildThemeFromMothers !== 'function') return;
+  // Rien n'est écrit : on teste les fonctions pures sur des listes en mémoire.
+  var t = buildThemeFromMothers('puer', 'via', 'albus', 'carcer');
+  var exporte = {};
+  for (var p = 1; p <= 16; p++) exporte['M' + p] = { figure: t[p], label: FL[t[p]] };
+  if (JSON.stringify(normaliserThemeV7(exporte)) !== JSON.stringify(normaliserThemeV7(t)))
+    throw new Error('le thème exporté ne se relit pas comme le thème stocké');
+  if (normaliserThemeV7(Object.assign({}, t, { 7: 'inconnue' })) !== null)
+    throw new Error('une figure inconnue est acceptée');
+
+  var ici = { id: 'a', team1: 'X', team2: 'Y', theme: t, verdict: {}, realScore: '2-1', realHtScore: '' };
+  var fichier = { id: 'b', team1: 'X', team2: 'Y', theme: exporte, verdict: {}, realScore: '1-1', realHtScore: '1-0' };
+  var r = { ajoutes: 0, ajoutesAvecResultat: 0, completes: 0, dejaLa: 0, ignores: 0, conflits: [] };
+  var l = fusionnerSauvegardesV7([ici], [fichier, { theme: {} }], r);
+  if (l.length !== 1) throw new Error('un doublon a été ajouté');
+  if (l[0].realHtScore !== '1-0' || r.completes !== 1) throw new Error('le champ vide n\'a pas été complété');
+  if (l[0].realScore !== '2-1' || r.conflits.length !== 1) throw new Error('le conflit a écrasé la valeur locale');
+  if (r.ignores !== 1) throw new Error('une entrée illisible n\'a pas été ignorée');
+
+  var liste = [];
+  for (var i = 0; i < 103; i++) liste.push(i >= 100 ? { realScore: '0-0', n: i } : { n: i });
+  var e = elaguerSauvegardesV7(liste, 100);
+  if (e.length !== 100 || !e.some(function (x) { return x.n === 102; }) || e.some(function (x) { return x.n === 99; }))
+    throw new Error('la limite a retiré un thème qui portait un résultat');
+});
+
+function telechargerJsonV7(data, nom) {
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url;
+  link.download = nom;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// La date de la dernière sauvegarde complète, pour que la barre dise
+// depuis quand ce téléphone est la seule copie.
+var CLE_DERNIERE_SAUVEGARDE_V7 = 'geomantique_derniere_sauvegarde_v1';
+
+function barreMemoireBancV7(list) {
+  var avecRes = (list || []).filter(porteUnResultatV7).length;
+  var derniere = null;
+  try { derniere = localStorage.getItem(CLE_DERNIERE_SAUVEGARDE_V7); } catch (e) { derniere = null; }
+  var quand = derniere ? formatHistoryDate(derniere) : 'jamais';
+  var bouton = 'class="btn-secondary" style="width:auto; padding:6px 12px; background:#14532d;"';
+  return '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#0b1f14;'
+    + 'border:1px solid #14532d;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:12px;">'
+    + '<button id="backupFullBtn" ' + bouton + ' onclick="exportSauvegardeCompleteV7()">🗄️ Sauvegarde complète</button>'
+    + '<button id="restoreBtn" ' + bouton + ' onclick="ouvrirRestaurationV7()">📥 Restaurer</button>'
+    + '<span class="muted">' + avecRes + ' thème(s) avec résultat · dernière sauvegarde complète : '
+    + escHtml(quand) + '</span></div>';
+}
+
+function exportSauvegardeCompleteV7() {
+  var saved = getSavedList(), history = getHistoryList();
+  if (!saved.length && !history.length) { alert('Rien à sauvegarder pour le moment.'); return; }
+  try { localStorage.setItem(CLE_DERNIERE_SAUVEGARDE_V7, new Date().toISOString()); } catch (e) {}
+  if (currentTab === 'save') setTimeout(renderCurrentList, 0);
+  telechargerJsonV7({
+    format: SAUVEGARDE_FORMAT_V7,
+    version: SAUVEGARDE_VERSION_V7,
+    exportedAt: new Date().toISOString(),
+    fichier: document.title,
+    totalSauvegardes: saved.length,
+    avecResultat: saved.filter(porteUnResultatV7).length,
+    totalHistorique: history.length,
+    saved: saved,
+    history: history,
+    logos: logosEpinglesV7()
+  }, 'sauvegarde_complete_' + new Date().toISOString().slice(0, 10) + '.json');
+}
+
+// Le champ fichier n'a pas d'attribut accept : sur Android, accept=".json"
+// grise parfois les fichiers téléchargés (typés octet-stream). Le contenu
+// est vérifié à la lecture, c'est suffisant.
+function ouvrirRestaurationV7() {
+  var inp = document.getElementById('restoreFileInput');
+  if (!inp) return;
+  inp.value = '';   // pour pouvoir relire le même fichier deux fois
+  inp.click();
+}
+
+function restaurerDepuisFichierV7(input) {
+  var f = input && input.files && input.files[0];
+  if (!f) return;
+  input.value = '';   // le même fichier choisi deux fois doit relancer la lecture
+  var lecteur = new FileReader();
+  lecteur.onload = function () {
+    var data;
+    try { data = JSON.parse(String(lecteur.result || '')); }
+    catch (e) { afficherRapportRestaurationV7(null, f.name, 'ce fichier n\'est pas du JSON lisible'); return; }
+    var rapport;
+    try { rapport = restaurerSauvegardeV7(data); }
+    catch (e) { afficherRapportRestaurationV7(null, f.name, e && e.message ? e.message : String(e)); return; }
+    afficherRapportRestaurationV7(rapport, f.name);
+  };
+  lecteur.onerror = function () { afficherRapportRestaurationV7(null, f.name, 'lecture du fichier impossible'); };
+  lecteur.readAsText(f);
+}
+
+function afficherRapportRestaurationV7(r, nomFichier, erreur) {
+  var o = document.getElementById('historyOverlay');
+  if (o) o.classList.add('open');
+  switchTab('save');
+  var c = document.getElementById('historyList');
+  if (!c) return;
+  var h = '<div id="rapport-restauration" style="background:#052e16;border:1px solid #16a34a;border-radius:8px;'
+    + 'padding:10px 12px;margin-bottom:10px;font-size:12px;line-height:1.6;">'
+    + '<b>📥 Restauration</b> <span class="muted">— ' + escHtml(nomFichier || '') + '</span><br>';
+  if (!r) {
+    h = h.replace('#052e16', '#450a0a').replace('#16a34a', '#dc2626')
+      + '<span class="bad">✗ Rien n\'a été modifié : ' + escHtml(erreur || 'erreur inconnue') + '.</span></div>';
+    c.insertAdjacentHTML('afterbegin', h);
+    return;
+  }
+  var SOURCES = { complete: 'sauvegarde complète', leger: 'ancien export « thèmes sauvegardés »',
+                  tirage: 'export d\'un tirage', liste: 'liste brute' };
+  h += '<span class="muted">Fichier reconnu : ' + escHtml(SOURCES[r.source] || r.source) + ' · '
+    + r.lus + ' thème(s) lu(s)</span><br>';
+  var themesEchoues = r.echecs.indexOf('thèmes sauvegardés') >= 0;
+  if (r.echecs.length) {
+    h += '<span class="bad">✗ Le navigateur a refusé d\'écrire : ' + escHtml(r.echecs.join(', '))
+      + ' (stockage plein ?). Cette partie est restée telle qu\'elle était sur le téléphone.</span><br>';
+  }
+  if (themesEchoues) {
+    h += '<span class="muted">Thèmes : ' + r.ajoutes + ' auraient été ajoutés, ' + r.completes
+      + ' complétés — rien n\'a été écrit.</span><br>';
+  } else {
+    h += '<span class="good">✔ ' + r.ajoutes + ' thème(s) ajouté(s)'
+      + (r.ajoutes ? ', dont ' + r.ajoutesAvecResultat + ' avec un résultat saisi' : '') + '</span><br>';
+    if (r.completes) h += '<span class="good">✔ ' + r.completes + ' thème(s) déjà là, complété(s) (champs de résultat vides remplis)</span><br>';
+    if (r.dejaLa) h += '· ' + r.dejaLa + ' déjà là, rien à compléter<br>';
+    if (r.conflits.length) {
+      h += '<span class="warn">⚠ ' + r.conflits.length + ' valeur(s) différente(s) entre le fichier et le téléphone — '
+        + 'celle du téléphone est gardée :</span><br>'
+        + r.conflits.slice(0, 8).map(function (k) {
+            return '&nbsp;&nbsp;• ' + escHtml(k.equipes) + ' · ' + escHtml(k.champ) + ' : téléphone '
+              + escHtml(k.ici) + ', fichier ' + escHtml(k.fichier);
+          }).join('<br>') + (r.conflits.length > 8 ? '<br>&nbsp;&nbsp;…' : '') + '<br>';
+    }
+    if (r.ignores) h += '· ' + r.ignores + ' entrée(s) illisible(s) ignorée(s) (thème incomplet ou figure inconnue)<br>';
+    if (r.retiresParLimite) h += '· ' + r.retiresParLimite + ' thème(s) sans résultat retiré(s) par la limite de ' + SAUVEGARDES_MAX_V7 + '<br>';
+  }
+  if (r.histAjoutes) h += '· Historique : ' + r.histAjoutes + ' tirage(s) ajouté(s)<br>';
+  if (r.logosAjoutes) h += '· ' + r.logosAjoutes + ' logo(s) épinglé(s) ajouté(s)<br>';
+  if (r.source === 'leger' || r.source === 'tirage') {
+    h += '<span class="muted">Ce type de fichier ne contient ni la mi-temps, ni les corners, ni les camps '
+      + 'd\'incident, ni le CSC, ni le rouge : à ressaisir si besoin. La « Sauvegarde complète » les garde tous.</span><br>';
+  }
+  if (r.casAuBanc !== null) h += '<b>Le banc compte maintenant ' + r.casAuBanc + ' cas saisi(s).</b>';
+  h += '</div>';
+  c.insertAdjacentHTML('afterbegin', h);
 }
 
 function exportThemeJSON() {
