@@ -36016,6 +36016,87 @@ function replayEntry(entry){
 }
 
 
+// ═══════════════════════════════════════════════════════════════
+// 🎯 ÉPREUVE DU HASARD (25/09/26)
+// Les taux de l'onglet Statistiques disaient « combien de fois juste »,
+// jamais « est-ce mieux que sans le système ». Un 45 % peut être
+// excellent ou nul selon la référence. Ici, le verdict RÉELLEMENT
+// AFFICHÉ (affOk, cf. replayEntry) est confronté à deux références :
+//   1. le hasard pur à 3 issues (M1 / Nul / M7) → 1/3 ;
+//   2. la règle naïve « toujours annoncer l'issue la plus fréquente
+//      de l'archive » — sans thème, sans tirage.
+// Avec un intervalle de confiance à 95 % (Wilson) et la probabilité
+// d'obtenir au moins ce score par pure chance (binomiale exacte).
+// Pur diagnostic : ne pèse sur AUCUN verdict.
+// ═══════════════════════════════════════════════════════════════
+function _hasardBinomQueue(n, k, p){
+  // P(X >= k) pour X ~ Binomiale(n, p), calculée en log pour tenir sur de gros n.
+  if(k <= 0) return 1;
+  if(k > n) return 0;
+  var lf = [0];
+  for(var i = 1; i <= n; i++) lf[i] = lf[i-1] + Math.log(i);
+  var s = 0;
+  for(var j = k; j <= n; j++){
+    s += Math.exp(lf[n] - lf[j] - lf[n-j] + j*Math.log(p) + (n-j)*Math.log(1-p));
+  }
+  return Math.min(1, s);
+}
+function _hasardWilson(n, k){
+  var z = 1.96, p = k/n, d = 1 + z*z/n;
+  var c = (p + z*z/(2*n)) / d;
+  var m = z*Math.sqrt(p*(1-p)/n + z*z/(4*n*n)) / d;
+  return [Math.max(0, c-m), Math.min(1, c+m)];
+}
+function epreuveDuHasard(list){
+  var jug = list.filter(function(r){ return r.affOk === true || r.affOk === false; });
+  var n = jug.length;
+  if(!n) return null;
+  var k = jug.filter(function(r){ return r.affOk === true; }).length;
+  var freq = {M1:0, Nul:0, M7:0};
+  jug.forEach(function(r){ if(freq[r.realWinner] !== undefined) freq[r.realWinner]++; });
+  var naive = 'M1';
+  ['Nul','M7'].forEach(function(w){ if(freq[w] > freq[naive]) naive = w; });
+  var pNaive = freq[naive] / n;
+  var ic = _hasardWilson(n, k);
+  return {
+    n: n, k: k, taux: k/n, ic: ic,
+    freq: freq, naive: naive, pNaive: pNaive,
+    pValHasard: _hasardBinomQueue(n, k, 1/3),
+    pValNaive: (pNaive > 0 && pNaive < 1) ? _hasardBinomQueue(n, k, pNaive) : (k/n > pNaive ? 0 : 1)
+  };
+}
+function renderEpreuveDuHasard(list, titre){
+  var e = epreuveDuHasard(list);
+  if(!e) return '';
+  function pc(x){ return Math.round(100*x) + ' %'; }
+  function pv(x){ return x < 0.001 ? '< 0,1 %' : (Math.round(1000*x)/10).toString().replace('.', ',') + ' %'; }
+  var lib = {M1:'M1 (équipe 1)', Nul:'Nul', M7:'M7 (équipe 2)'};
+  var ref = Math.max(1/3, e.pNaive);
+  var verdict, couleur;
+  if(e.n < 30){
+    verdict = '⏳ Échantillon trop petit (' + e.n + '/30) : à ce stade, aucune conclusion possible, dans un sens comme dans l autre.';
+    couleur = '#fde68a';
+  } else if(e.pValHasard < 0.05 && e.pValNaive < 0.05){
+    verdict = '✅ Le verdict affiché bat à la fois le hasard et la règle naïve de façon significative (moins de 5 % de chance que ce soit un coup de chance).';
+    couleur = '#4ade80';
+  } else if(e.taux > ref){
+    verdict = '🟡 Au-dessus des références, mais pas assez pour exclure la chance. Continuer à archiver des scores réels.';
+    couleur = '#fde68a';
+  } else {
+    verdict = '🔴 Pas mieux que ' + (e.pNaive > 1/3 ? 'la règle naïve « toujours ' + lib[e.naive] + ' »' : 'le hasard') + ' sur cette archive.';
+    couleur = '#f87171';
+  }
+  var h = '<div class="kv" style="margin-top:8px; border:1px solid ' + couleur + '; border-radius:8px; padding:8px;">';
+  h += '<b>🎯 Épreuve du hasard — ' + titre + ' :</b> ' + e.k + '/' + e.n + ' (' + pc(e.taux) + ')';
+  h += '<div style="font-size:12px; margin-top:4px;">Intervalle de confiance à 95 % : <b>' + pc(e.ic[0]) + ' – ' + pc(e.ic[1]) + '</b></div>';
+  h += '<div style="font-size:12px;">🎲 Hasard pur (1 chance sur 3) : 33 % — probabilité de faire au moins aussi bien par chance : <b>' + pv(e.pValHasard) + '</b></div>';
+  h += '<div style="font-size:12px;">📌 Règle naïve « toujours ' + lib[e.naive] + ' » : ' + pc(e.pNaive) + ' — probabilité de faire au moins aussi bien par chance : <b>' + pv(e.pValNaive) + '</b></div>';
+  h += '<div style="font-size:11px; color:#94a3b8;">Issues réelles : M1 ' + e.freq.M1 + ' · Nul ' + e.freq.Nul + ' · M7 ' + e.freq.M7 + '</div>';
+  h += '<div style="font-size:12px; margin-top:4px; color:' + couleur + ';">' + verdict + '</div>';
+  h += '</div>';
+  return h;
+}
+
 function renderStatsTab(){
   currentTab = 'stats';
   document.getElementById('tabHistBtn').style.background = '';
@@ -36044,6 +36125,10 @@ function renderStatsTab(){
   if(!valides.length){
     h += '<div class="muted" style="margin-top:8px;">Aucun thème valide avec score réel. Saisis les scores réels dans l onglet Historique (champ "Score reel") pour alimenter les statistiques.</div>';
   } else {
+    // 🎯 Épreuve du hasard (25/09/26) — en tête : c'est la question qui
+    // conditionne la lecture de tous les autres taux.
+    h += renderEpreuveDuHasard(valides, 'verdict affiché');
+    h += renderEpreuveDuHasard(valides.filter(function(r){ return r.blindTest; }), 'tirages aveugles seuls');
     h += '<div class="kv" style="margin-top:8px;"><b>🏆 Vainqueur combiné (dominant &gt; élémentaire, comparaison historique) :</b> '+rate(valides,'combinedOk')+'</div>';
     h += '<div class="kv"><b>👑 Camp dominant seul :</b> '+rate(valides,'cdOk')+'</div>';
     h += '<div class="kv"><b>🔥 Verdict élémentaire seul :</b> '+rate(valides,'veOk')+'</div>';
