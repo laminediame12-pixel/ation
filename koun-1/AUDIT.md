@@ -61,7 +61,24 @@ Quand les deux pôles sont dans le même réseau, KREG-002 (même boucle, 6 656 
 Cette observation est ajoutée comme question ouverte **KAMB-003**. Aucune règle n'a été changée : la décision te revient.
 
 Autres points à examiner (non modifiés) :
-- **Asymétrie R1/R7** sur le banc exhaustif : 10 870 victoires R1 contre 9 945 R7. Pour la règle confirmée DUELS_FIGURES, c'est 152 contre 40, et pour les concordances élémentaires, 60 contre 11. Le test TST-003 (« Inversion des camps ») est le bon moyen de vérifier si c'est voulu.
+- **Asymétrie R1/R7** sur le banc exhaustif : 10 870 victoires R1 contre 9 945 R7. Pour la règle confirmée DUELS_FIGURES, c'est 152 contre 40, et pour les concordances élémentaires, 60 contre 11. Voir la section 3 bis.
+
+## 3 bis. Asymétrie R1/R7 : diagnostic
+
+**Test d'inversion (TST-003, désormais Conforme).** Les 65 536 thèmes ont été recalculés avec les pôles R1 et R7 échangés. Les **65 536 verdicts s'inversent exactement** : 1↔2, nul↔nul, blocage↔blocage. Le code de décision ne favorise donc aucun camp, et il n'y a aucun biais de programmation à corriger.
+
+**Origine de l'écart.** L'écart vient de la définition des pôles dans le moteur : R1 = maison de repos de la figure en M1, et R7 = R1 + 6. Les deux pôles ne sont pas construits de la même façon, donc leurs chances ne sont pas égales sur l'ensemble des thèmes.
+
+**Pourquoi ne pas « forcer » la symétrie.** J'ai essayé R7 = R1 + 8 (la maison opposée) :
+
+| Définition | Victoires R1 | Victoires R7 | Références conservées |
+|---|---|---|---|
+| R7 = R1 + 6 (actuelle) | 10 870 | 9 945 | 11/11 |
+| R7 = R1 + 8 (essai) | 10 550 | 10 037 | 5/11 |
+
+L'écart persiste et 6 références sont perdues. Changer la définition des pôles serait une nouvelle doctrine, pas une correction. La question est consignée en **KAMB-004**. L'écart (52 % des victoires pour R1) peut aussi refléter un avantage voulu, par exemple l'avantage du terrain si R1 est l'équipe qui reçoit : à vérifier sur de nouveaux matchs.
+
+Scripts : `outils/symetrie_r1_r7.js` (test d'inversion) et `outils/poles_decalage.js` (essai d'un autre décalage).
 - **Libellé du moteur** : « Victoire R7 — R7 — en essai ». Le nom d'équipe par défaut répète le camp. C'est un détail cosmétique, situé dans le moteur, donc non modifié.
 - **Titre interne du moteur** : « Système_teste-4 — UI de référence » ne correspond pas au nom koun-1. Non modifié, pour garder l'empreinte du cœur.
 
