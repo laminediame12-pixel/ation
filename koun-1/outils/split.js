@@ -1,0 +1,11 @@
+const fs=require('fs');const S=process.argv[2];
+const b=fs.readFileSync(S+'/src/bundle.js','utf8');
+const i=b.indexOf('var Bn={core:`');const j=b.indexOf('};var Ue=he(yt());',i);
+console.log(i,j,b.length);
+const lit=b.slice(i+7,j+1);
+const Bn=eval('('+lit+')');
+console.log(Object.keys(Bn), Bn.core.length, Bn.bridge&&Bn.bridge.length, Object.keys(Bn.images||{}));
+fs.writeFileSync(S+'/src/core.html',Bn.core);fs.writeFileSync(S+'/src/bridge.js',Bn.bridge);
+const crypto=require('crypto');for(const k of ['core','bridge'])console.log(k,crypto.createHash('sha256').update(Bn[k]).digest('hex'));
+fs.writeFileSync(S+'/src/app_pre.js',b.slice(b.indexOf('var J={engine:'),i));
+fs.writeFileSync(S+'/src/app_post.js',b.slice(j+2));
