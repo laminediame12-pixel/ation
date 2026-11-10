@@ -82,6 +82,34 @@ Scripts : `outils/symetrie_r1_r7.js` (test d'inversion) et `outils/poles_decalag
 - **Libellé du moteur** : « Victoire R7 — R7 — en essai ». Le nom d'équipe par défaut répète le camp. C'est un détail cosmétique, situé dans le moteur, donc non modifié.
 - **Titre interne du moteur** : « Système_teste-4 — UI de référence » ne correspond pas au nom koun-1. Non modifié, pour garder l'empreinte du cœur.
 
+## 3 ter. Camp des maisons : correction du moteur (version 1.12.1-essai)
+
+**Signalement du propriétaire** (thème Amissio · Amissio · Carcer · Laetitia) : « Les maisons M10, M6, M8, M16 sont pour R1 en base et en résultante. »
+
+**Constat.** Le moteur attribuait les maisons aux camps de deux façons contradictoires :
+- **Par les figures** (réseau front direct + binômes de chaque pôle) : c'est ce qu'utilisent le verdict, le BTTS et les incidents. C'était déjà conforme.
+- **Par la distance au pôle** (`maisonVersCamp`) : la maison va au pôle le plus proche sur le cercle. Avec R1 = M6 et R7 = M12, M10 et M16 étaient données à R7. Neuf couches d'analyse de l'onglet « Moteur intégré » utilisaient ce calcul.
+
+**Correction.** `maisonVersCamp` attribue maintenant la maison au camp des figures qu'elle porte, en base **et** en résultante. Si la base et la résultante appartiennent à des camps différents, la maison est « partagée ». M16, qui n'a pas de résultante, suit sa base.
+
+Résultat sur ce thème :
+
+| Camp | Maisons |
+|---|---|
+| R1 | M2, M4, M6, M8, M10, M14, M16 |
+| R7 | M12 |
+| Partagées | M1, M3, M5, M7, M9, M11, M13, M15 |
+
+**Vérifications :**
+- Les 11 références sont inchangées (11/11).
+- Le banc exhaustif de 65 536 thèmes est identique : aucun verdict ne change, puisque le verdict utilisait déjà les figures.
+- Les 9 couches d'analyse tournent sans erreur sur 400 thèmes au hasard.
+- L'empreinte du moteur est recalculée : `642bb266…beb7`.
+
+L'atelier affiche désormais le camp de chaque maison dans la colonne « Front · Camp » du calcul.
+
+**À noter.** Ce thème reste une **Victoire R7 en essai**. R1 tient 7 maisons et R7 une seule, mais le verdict est tranché par M15, qui est partagée : Populus (R1) y a 1 %, Aquisitio (R7) y a 100 % en repos propre. Compter les maisons tenues ne colle pas au corpus : VICTOIRE 1 est gagnée par R7 alors que R1 tient 5 maisons contre 3, et VICTOIRE 4 est gagnée par R1 alors qu'il en tient 3 contre 5. Aucune règle de décision n'a donc été ajoutée.
+
 ## 4. Prochaine étape recommandée
 Enregistrer les prédictions du moteur **avant** de nouveaux matchs (Essayer un thème → Enregistrer l'essai), puis comparer après coup. C'est la seule façon de mesurer la fiabilité réelle, et en particulier de trancher KAMB-001, KAMB-002 et KAMB-003.
 

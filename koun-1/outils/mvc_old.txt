@@ -1,0 +1,12 @@
+  window.maisonVersCamp = function(h, theme){
+    h = Number(h);
+    theme = theme || window.currentTheme;
+    var poles = getPolesR1R7(theme);
+    var r1 = poles.R1, r7 = poles.R7;
+    function circ(a,b){ return Math.min(Math.abs(a-b), 16-Math.abs(a-b)); }
+    var d1 = circ(h, r1);
+    var d7 = circ(h, r7);
+    if(d1 < d7) return 1;
+    if(d7 < d1) return 2;
+    return 0; // équidistant entre R1 et R7
+  };

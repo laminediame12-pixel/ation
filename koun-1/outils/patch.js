@@ -59,8 +59,45 @@ rep(`parent.postMessage({channel,...data},parentOrigin==='null'?'*':parentOrigin
 rep(`if(event.source!==parent||event.origin!==parentOrigin||`,`if(event.source!==parent||(event.origin!==parentOrigin&&!(localFile&&event.origin==='null'))||`,'bridge listen');
 rep(`A.origin!==location.origin||A.data?.channel`,`A.origin!==location.origin&&!(location.protocol==="file:"&&A.origin==="null")||A.data?.channel`,'app listen');
 rep(`location.origin==="null"?"*":location.origin)})}`,`location.origin==="null"||location.protocol==="file:"?"*":location.origin)})}`,'app post');
+
+// 11. Camps des maisons attribués par les figures (base + résultante), et non par la distance au pôle
+{const esc=t=>t.replace(/[^\x00-\x7f]/g,ch=>{const c=ch.charCodeAt(0);return c<256?'\\x'+c.toString(16).toUpperCase().padStart(2,'0'):'\\u'+c.toString(16).padStart(4,'0');});const old=esc(fs.readFileSync(S+'/mvc_old.txt','utf8').replace(/\n$/,''));
+ const neu=`  window.maisonVersCamp = function(h, theme){
+    // Camp d'une maison = camp des figures qu'elle porte, en base ET en résultante
+    // (réseau front direct + binômes de chaque pôle). Base et résultante de camps
+    // différents, ou figure commune aux deux réseaux : maison partagée (0).
+    h = Number(h);
+    theme = theme || window.currentTheme;
+    if(!theme || !theme[h]) return 0;
+    var poles = getPolesR1R7(theme), R = window.RELATIONS_4 || {};
+    function reseau(f){
+      var front = [], x = f;
+      for(var i=0; i<4 && x && front.indexOf(x)<0; i++){ front.push(x); x = R[x] && R[x].front; }
+      return front.concat(front.map(function(y){ return R[y] && R[y].binome; }).filter(Boolean));
+    }
+    var n1 = reseau(theme[poles.R1]), n7 = reseau(theme[poles.R7]);
+    function campFigure(f){
+      if(!f) return null;
+      var a = n1.indexOf(f) >= 0, b = n7.indexOf(f) >= 0;
+      return a && !b ? 1 : (b && !a ? 2 : 0);
+    }
+    var cb = campFigure(theme[h]);
+    var res = (h === 16 || typeof resultanteMaison !== 'function') ? null : resultanteMaison(h, theme);
+    var cr = campFigure(res);
+    if(cr === null) return cb || 0;
+    return cb === cr ? cb : 0;
+  };`;
+ rep(old,esc(neu),'maisonVersCamp par figures');}
+rep(`window.MOTEUR_UNIQUE.version = '1.12.0-essai';`,`window.MOTEUR_UNIQUE.version = '1.12.1-essai';`,'version moteur');
+rep(`version:"1.12.0-essai",sourceHash:`,`version:"1.12.1-essai",sourceHash:`,'version atelier');
+rep(`FICHIER SOURCE INT\\xC9GR\\xC9 SANS MODIFICATION`,`MOTEUR INT\\xC9GR\\xC9 \\xB7 CAMPS DES MAISONS PAR LES FIGURES`,'eyebrow moteur');
+rep(`int\\xE9gr\\xE9 sans changer ses calculs.`,`int\\xE9gr\\xE9. Version 1.12.1 : les maisons sont attribu\\xE9es \\xE0 R1 ou R7 par leurs figures en base et en r\\xE9sultante.`,'sous-titre moteur');
+rep(`(0,x.jsx)("th",{children:"FRONT"})`,`(0,x.jsx)("th",{children:"FRONT \\xB7 CAMP"})`,'th camp');
+rep(`(0,x.jsx)("td",{children:I.front})`,`(0,x.jsx)("td",{children:[(0,x.jsx)("strong",{children:I.front}),(0,x.jsx)("small",{children:campMaisonAtelier(g,I)})]})`,'td camp');
+rep(`function tA({`,`function campMaisonAtelier(g,I){let n=k=>new Set([...(g.fronts?.[k]?.front||[]),...(g.fronts?.[k]?.binomes||[])]),a=n("R1"),b=n("R7"),c=f=>f?a.has(f)&&!b.has(f)?"R1":b.has(f)&&!a.has(f)?"R7":"commun":null,x=c(I.base),y=I.house===16?null:c(I.result);return !y||x===y?"Camp "+x:"Partag\\xE9e ("+x+" / "+y+")"}function tA({`,'helper camp');
+
 {const i=b.indexOf('var Bn={core:`');const j=b.indexOf('};var Ue=he(yt());',i);const Bn=eval('('+b.slice(i+7,j+1)+')');const h=k=>require('crypto').createHash('sha256').update(Bn[k]).digest('hex');
- if(h('core')!=='81e86badd4b915e00f03cbc6dda749f9fe214d95e9c6aebe541edc74e5dd749d')throw Error('core modifié !');
+ rep('sourceHash:"81e86badd4b915e00f03cbc6dda749f9fe214d95e9c6aebe541edc74e5dd749d"','sourceHash:"'+h('core')+'"','core hash');console.log('nouvelle empreinte du moteur',h('core'));
  rep('bridgeHash:"d1590cd0c379a833aeeebac712d573988e03ea30ed24d340e90666beee65b914"','bridgeHash:"'+h('bridge')+'"','bridge hash');console.log('nouvelle empreinte du pont',h('bridge'));}
 fs.writeFileSync(S+'/src/bundle.fixed.js',b);
 const html=fs.readFileSync(process.argv[3],'utf8');const m=html.match(/base64,([A-Za-z0-9+\/=]+)"/);
