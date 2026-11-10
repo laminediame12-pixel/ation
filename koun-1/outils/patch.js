@@ -92,9 +92,29 @@ rep(`window.MOTEUR_UNIQUE.version = '1.12.0-essai';`,`window.MOTEUR_UNIQUE.versi
 rep(`version:"1.12.0-essai",sourceHash:`,`version:"1.12.1-essai",sourceHash:`,'version atelier');
 rep(`FICHIER SOURCE INT\\xC9GR\\xC9 SANS MODIFICATION`,`MOTEUR INT\\xC9GR\\xC9 \\xB7 CAMPS DES MAISONS PAR LES FIGURES`,'eyebrow moteur');
 rep(`int\\xE9gr\\xE9 sans changer ses calculs.`,`int\\xE9gr\\xE9. Version 1.12.1 : les maisons sont attribu\\xE9es \\xE0 R1 ou R7 par leurs figures en base et en r\\xE9sultante.`,'sous-titre moteur');
-rep(`(0,x.jsx)("th",{children:"FRONT"})`,`(0,x.jsx)("th",{children:"FRONT \\xB7 CAMP"})`,'th camp');
-rep(`(0,x.jsx)("td",{children:I.front})`,`(0,x.jsx)("td",{children:[(0,x.jsx)("strong",{children:I.front}),(0,x.jsx)("small",{children:campMaisonAtelier(g,I)})]})`,'td camp');
-rep(`function tA({`,`function campMaisonAtelier(g,I){let n=k=>new Set([...(g.fronts?.[k]?.front||[]),...(g.fronts?.[k]?.binomes||[])]),a=n("R1"),b=n("R7"),c=f=>f?a.has(f)&&!b.has(f)?"R1":b.has(f)&&!a.has(f)?"R7":"commun":null,x=c(I.base),y=I.house===16?null:c(I.result);return !y||x===y?"Camp "+x:"Partag\\xE9e ("+x+" / "+y+")"}function tA({`,'helper camp');
+rep(`(0,x.jsx)("th",{children:"FRONT"})`,`(0,x.jsx)("th",{children:"FRONT \\xB7 POINT \\xB7 CAMP"})`,'th camp');
+rep(`(0,x.jsx)("td",{children:I.front})`,`(0,x.jsx)("td",{children:[(0,x.jsx)("strong",{children:I.front+" \\xB7 "+pointCardinal(I.base)}),I.house!==16&&I.result&&(0,x.jsx)("small",{children:"R\\xE9sultante : "+frontLettre(I.result)+" \\xB7 "+pointCardinal(I.result)}),(0,x.jsx)("small",{children:campMaisonAtelier(g,I)})]})`,'td camp');
+rep(`function tA({`,`function pointCardinal(f){return {1:"Est",5:"Nord",9:"Ouest",13:"Sud",2:"Est",6:"Nord",10:"Ouest",14:"Sud",3:"Est",15:"Nord",11:"Ouest",7:"Sud",4:"Est",16:"Nord",12:"Ouest",8:"Sud"}[J.figures.indexOf(f)+1]||"\\u2014"}function frontLettre(f){let n=J.figures.indexOf(f);return n<0?"\\u2014":"ABCD"[n%4]}function campMaisonAtelier(g,I){let n=k=>new Set([...(g.fronts?.[k]?.front||[]),...(g.fronts?.[k]?.binomes||[])]),a=n("R1"),b=n("R7"),c=f=>f?a.has(f)&&!b.has(f)?"R1":b.has(f)&&!a.has(f)?"R7":"commun":null,x=c(I.base),y=I.house===16?null:c(I.result);return !y||x===y?"Camp "+x:"Partag\\xE9e ("+x+" / "+y+")"}function tA({`,'helper camp');
+
+// 12. Vocabulaire cardinal (fronts = Est, Nord, Ouest, Sud) : doctrine des maisons et registre des règles
+{const esc=t=>t.replace(/[^\x00-\x7f]/g,ch=>{const c=ch.charCodeAt(0);return c<256?'\\x'+c.toString(16).toUpperCase().padStart(2,'0'):'\\u'+c.toString(16).padStart(4,'0');});
+ const old=esc(fs.readFileSync(S+'/labels_old.txt','utf8').replace(/\n$/,''));
+ const neu=`  const annotations = Object.freeze({
+    M4: 'Même front, voisins : Est↔Nord, Ouest↔Sud, identique sur les quatre fronts.',
+    M14: 'Front binôme, point opposé : Est↔Ouest, Nord↔Sud. Cas particulier signalé : Puer (A · Est) en M14 produit Conjunctio (C · Ouest), mise en évidence d’un sauvetage face à Puella.'
+  });
+  const labels = Object.freeze({
+    M6: 'Front binôme, même point cardinal',
+    M8: 'Même front, vis-à-vis : Est↔Ouest, Nord↔Sud (figure miroir)',
+    M10:'Front binôme : Est↔Sud, Nord↔Ouest',
+    M12:'Même front, voisins : Est↔Sud, Nord↔Ouest',
+    M4:'Même front, voisins : Est↔Nord, Ouest↔Sud',
+    M14:'Front binôme, vis-à-vis : Est↔Ouest, Nord↔Sud'
+  });`;
+ rep(old,esc(neu),'doctrine cardinale des maisons');
+ rep(esc('      // M8 = accouchement Front 2 pour TOUTE figure (sans exception)'),esc('      // M8 = accouchement du vis-à-vis (miroir) pour TOUTE figure (sans exception)'),'commentaire M8');
+ const regles=`,{id:"KREG-012",title:"Orientation cardinale des fronts",text:"Chaque front compte quatre points cardinaux : Est face à Ouest, Nord face à Sud. A : Est Puer (1), Nord Via (5), Ouest Fortuna Minor (9), Sud Cauda Draconis (13). B : Est Laetitia (2), Nord Amissio (6), Ouest Carcer (10), Sud Puella (14). C : Est Caput (3), Nord Aquisitio (15), Ouest Conjunctio (11), Sud Rubeus (7). D : Est Albus (4), Nord Populus (16), Ouest Fortuna Major (12), Sud Tristitia (8). Les notions de front 1, 2 et 3 sont abandonnées.",status:"Confirmée",source:"Décision du propriétaire, 10 novembre 2026",locked:!0},{id:"KREG-013",title:"Mouvement cardinal des maisons",text:"Chaque maison déplace le point cardinal de la même façon sur les quatre fronts. Même point : M5, M6, M15. Est↔Nord et Ouest↔Sud : M1, M2, M3, M4. Vis-à-vis Est↔Ouest et Nord↔Sud : M7, M8, M13, M14. Est↔Sud et Nord↔Ouest : M9, M10, M11, M12. Les maisons Terre restent dans le même front, les maisons Air passent au front binôme, les maisons impaires passent dans l’autre boucle. M16 n’a pas de résultante.",status:"Confirmée",source:"Structure vérifiée sur les 16 figures et les 15 maisons de koun-1",locked:!0},{id:"KREG-014",title:"M8 renforce le pôle par son miroir",text:"Quand M8 porte le pôle et accouche son miroir (vis-à-vis), le pôle est renforcé : la paire miroir attaque la paire miroir de sa cible (exemple : Puer et Fortuna Minor attaquent Albus et Fortuna Major).",status:"En essai",source:"Principe énoncé par le propriétaire ; concorde avec VICTOIRE 2 et 3, question ouverte sur NUL 6",locked:!0}]`;
+ rep(`source:"Concordances propos\\xE9es puis int\\xE9gr\\xE9es pour essai",locked:!0}]`,`source:"Concordances propos\\xE9es puis int\\xE9gr\\xE9es pour essai",locked:!0}`+esc(regles),'règles cardinales');}
 
 {const i=b.indexOf('var Bn={core:`');const j=b.indexOf('};var Ue=he(yt());',i);const Bn=eval('('+b.slice(i+7,j+1)+')');const h=k=>require('crypto').createHash('sha256').update(Bn[k]).digest('hex');
  rep('sourceHash:"81e86badd4b915e00f03cbc6dda749f9fe214d95e9c6aebe541edc74e5dd749d"','sourceHash:"'+h('core')+'"','core hash');console.log('nouvelle empreinte du moteur',h('core'));
