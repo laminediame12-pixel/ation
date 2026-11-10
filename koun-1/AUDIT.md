@@ -133,6 +133,34 @@ Les notions de front 1, 2 et 3 sont retirées de l'atelier et de la doctrine des
 
 Le BTTS et les incidents sont inchangés. Avec les règles de décision actuelles, **9 références sur 11** sont concordantes : NUL 1 donne R1 et VICTOIRE 3 donne nul. Ces deux cas doivent être tranchés par les règles de renfort en cours d'élaboration (KREG-014 : M8 ; M12 ; concordance). Les instantanés des références ont été recalculés avec la version 1.13.0, et KAMB-001 (égalité M15) est résolue.
 
+## 3 quinquies. Lecture d'ensemble et victoire assurée (version 1.14.0-essai)
+
+Les principes ont été donnés par le propriétaire maison par maison, puis intégrés au moteur, **en essai** :
+
+- **KREG-016, lecture d'ensemble.** Pôles dans la même boucle : nul. Sinon, 1 point par signal :
+  - M8, M12 et M16 renforcent le pôle qu'elles portent (M8 et M16 aussi par son miroir) ;
+  - M4 affaiblit le pôle qu'elle porte ;
+  - en M15 et M7, le plus fort marque quand un pôle ou son miroir fait face à l'autre camp.
+
+  À égalité, le renfort Terre le plus concordant l'emporte. M16, sentence finale, confirme ou annule la victoire du camp en tête.
+- **KREG-017, victoire assurée.** Le gagnant a la victoire assurée si l'antagoniste de son pôle (k−3) est contrôlé par k−6 (plus fort) ou mal positionné (absent ou à 1 %). Cette définition a été trouvée par une recherche systématique de 79 définitions : aucune ne fait de cette condition, à elle seule, la règle qui désigne le gagnant.
+- Les anciens arbitrages en essai (KREG-007 à KREG-011 : double résistance, compensation, duel des pôles, juge M15, concordances) sont marqués **Remplacée**. Les règles confirmées (même boucle et miroir, duels de figures) gardent la priorité.
+
+| Contrôle | Résultat |
+|---|---|
+| Références | **11/11** (9/11 en 1.13.0) |
+| Victoires assurées dans le corpus | VICTOIRE 3, VICTOIRE 4, AZ–Villarreal |
+| Victoires non assurées | VICTOIRE 1, VICTOIRE 2 |
+| Symétrie R1/R7 | 65 536/65 536 |
+| Banc : nul / R1 / R7 / sans signal | 40 743 (62,2 %) / 13 673 (20,9 %) / 10 507 (16,0 %) / 613 (0,9 %) |
+| Victoires assurées sur le banc | R1 6 459, R7 4 617 |
+| BTTS et incidents | inchangés |
+
+**Limites :**
+- Le 11/11 est obtenu sur le corpus qui a servi à élaborer les règles : ce n'est pas une preuve de fiabilité.
+- Le taux de nul (62 %) reste bien au-dessus de celui du football.
+- Il faut maintenant enregistrer des prédictions **avant** de nouveaux matchs.
+
 ## 4. Prochaine étape recommandée
 Enregistrer les prédictions du moteur **avant** de nouveaux matchs (Essayer un thème → Enregistrer l'essai), puis comparer après coup. C'est la seule façon de mesurer la fiabilité réelle, et en particulier de trancher KAMB-001, KAMB-002 et KAMB-003.
 

@@ -1,0 +1,82 @@
+  // ═══════════════════════════════════════════════════════════════
+  // LECTURE D'ENSEMBLE DU DUEL R1/R7 — EN ESSAI (version 1.14.0)
+  // Principes du propriétaire : pôles dans la même boucle → nul. Sinon, 1 point par signal :
+  //  · M8, M12, M16 renforcent le pôle qu'elles portent (M8 et M16 aussi par son miroir) ;
+  //  · M4 affaiblit le pôle qu'elle porte (le point va à l'autre camp) ;
+  //  · M15 et son miroir M7 : quand un pôle ou son miroir y fait face à l'autre camp, le plus fort marque.
+  // Égalité de points : le renfort Terre le plus concordant (force base + résultante) l'emporte.
+  // M16, sentence finale : confirme le camp en tête, annule sa victoire si elle porte l'autre pôle,
+  // ne crée jamais une victoire seule.
+  // Victoire assurée : gagnant de la lecture ET antagoniste de son pôle (k−3) contrôlé par k−6
+  // (plus fort) ou mal positionné (absent ou à 1 % partout).
+  // ═══════════════════════════════════════════════════════════════
+  window.lectureEnsembleR1R7 = function(theme, poles, bareme){
+    if(!theme||!poles||!bareme||!bareme.maisons) return null;
+    var F=[]; for(var i=1;i<=16;i++) F.push(window.figureReposMaison(i));
+    function N(f){ return F.indexOf(f)+1; }
+    function fig(n){ return F[((n-1)%16+16)%16]; }
+    function mir(f){ return F[(N(f)+7)%16]; }
+    var p={R1:theme[poles.R1], R7:theme[poles.R7]};
+    var details=[], pts={R1:0,R7:0}, conc={R1:0,R7:0};
+    function autre(k){ return k==='R1'?'R7':'R1'; }
+    function camp(f){ return (N(f)%2)===(N(p.R1)%2)?'R1':'R7'; }
+    function maison(h){
+      var m=bareme.maisons[h-1], o={base:null,fb:null,res:null,fr:null};
+      if(!m) return o;
+      m.figures.forEach(function(x){
+        if(x.couches.indexOf('base')>=0){ o.base=x.figure; o.fb=x.forcePct; }
+        if(x.couches.indexOf('resultante')>=0){ o.res=x.figure; o.fr=x.forcePct; }
+      });
+      return o;
+    }
+    var resultat={version:'1.0.0',statut:'EN_ESSAI',poles:{R1:{maison:poles.R1,figure:p.R1},R7:{maison:poles.R7,figure:p.R7}},points:pts,concordance:conc,details:details,assuree:false,antagoniste:null};
+    if((N(p.R1)%2)===(N(p.R7)%2)){
+      resultat.verdict='N'; resultat.motif='MEME_BOUCLE';
+      resultat.raison='Nul en essai : R1 et R7 sont dans la même boucle.';
+      return resultat;
+    }
+    function porte(m,k,miroir){ return m.base===p[k]||m.res===p[k]||(miroir&&(m.base===mir(p[k])||m.res===mir(p[k]))); }
+    [4,8,12].forEach(function(h){
+      var m=maison(h);
+      ['R1','R7'].forEach(function(k){
+        if(!porte(m,k,h===8)) return;
+        if(h===4){ pts[autre(k)]++; details.push('M4 affaiblit '+k+' ('+m.base+' → '+m.res+')'); }
+        else { pts[k]++; conc[k]=Math.max(conc[k],(m.fb||0)+(m.fr||0)); details.push('M'+h+' renforce '+k+' ('+m.base+' → '+m.res+')'); }
+      });
+    });
+    [15,7].forEach(function(h){
+      var m=maison(h); if(!m.base||!m.res) return;
+      function tag(f){ return f===p.R1||f===mir(p.R1)||f===p.R7||f===mir(p.R7); }
+      var cb=camp(m.base), cr=camp(m.res);
+      if((tag(m.base)||tag(m.res))&&cb!==cr&&m.fb!==null&&m.fr!==null&&m.fb!==m.fr){
+        var w=m.fb>m.fr?cb:cr; pts[w]++;
+        details.push('M'+h+' : '+w+' domine ('+m.base+' '+m.fb+' % / '+m.res+' '+m.fr+' %)');
+      }
+    });
+    var tete=pts.R1>pts.R7?'R1':(pts.R7>pts.R1?'R7':null), motif='POINTS';
+    if(!tete&&pts.R1>0&&conc.R1!==conc.R7){ tete=conc.R1>conc.R7?'R1':'R7'; motif='CONCORDANCE'; }
+    var b16=theme[16], m16=['R1','R7'].filter(function(k){ return b16===p[k]||b16===mir(p[k]); });
+    if(m16.length) details.push('M16 porte '+m16.join(' et ')+' ('+b16+')');
+    if(!tete){
+      resultat.verdict=details.length?'N':null; resultat.motif=details.length?'EQUILIBRE':'AUCUN_SIGNAL';
+      resultat.raison=details.length?'Nul en essai : les signaux des maisons s’équilibrent. '+details.join(' ; ')+'.':'Aucun signal : ni M4, M8, M12, M16, ni M15/M7 ne concernent les pôles.';
+      return resultat;
+    }
+    if(m16.indexOf(autre(tete))>=0&&m16.indexOf(tete)<0){
+      resultat.verdict='N'; resultat.motif='SENTENCE_M16_ANNULE';
+      resultat.raison='Nul en essai : '+tete+' mène, mais M16 porte '+autre(tete)+' et annule la victoire. '+details.join(' ; ')+'.';
+      return resultat;
+    }
+    resultat.verdict=tete==='R1'?'1':'2'; resultat.motif=m16.indexOf(tete)>=0?motif+'_CONFIRME_M16':motif;
+    // Victoire assurée : antagoniste du pôle gagnant contrôlé ou mal positionné
+    var k=N(p[tete]), A=fig(k-3), K=fig(k-6);
+    function forces(f){ return (bareme.parFigure[f]||[]).filter(function(x){ return x.couches.indexOf('base')>=0||x.couches.indexOf('resultante')>=0; }).map(function(x){ return x.forcePct||0; }); }
+    var fa=forces(A), fk=forces(K), ma=fa.length?Math.max.apply(null,fa):-1, mk=fk.length?Math.max.apply(null,fk):-1;
+    var controle=fk.length>0&&mk>ma, malPositionne=ma<=1;
+    resultat.antagoniste={camp:tete,pole:p[tete],antagoniste:A,forceMaxAntagoniste:ma<0?null:ma,controleur:K,forceMaxControleur:mk<0?null:mk,controle:controle,malPositionne:malPositionne};
+    resultat.assuree=controle||malPositionne;
+    resultat.raison='Victoire '+tete+' en essai ('+(resultat.assuree?'victoire assurée':'victoire non assurée')+') : '+details.join(' ; ')+'. Antagoniste du pôle : '+A+(ma<0?' absent':' '+ma+' %')+', contrôleur '+K+(mk<0?' absent':' '+mk+' %')+'.';
+    return resultat;
+  };
+
+  window.MOTEUR_UNIQUE.analyser = function(theme){

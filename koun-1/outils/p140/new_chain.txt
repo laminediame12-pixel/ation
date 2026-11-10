@@ -1,0 +1,9 @@
+    if(!arbitrage.nulConfirme&&vainqueur===null){
+      if(reseauCommun&&reseauCommun.verifie)predictionEssai={verdict:'N',statut:'EN_ESSAI',motif:'RESSOURCES_PARTAGEES',preuves:reseauCommun};
+      else if(typeof window.lectureEnsembleR1R7==='function'){
+        // 1.14.0 : la lecture d'ensemble (M4, M8, M12, M15/M7, M16) remplace les arbitrages
+        // expérimentaux précédents (double résistance, compensation, duel des pôles, juge M15, concordances).
+        lectureEnsemble=window.lectureEnsembleR1R7(theme,poles,confrontation.baremeForces);
+        if(lectureEnsemble&&lectureEnsemble.verdict)predictionEssai={verdict:lectureEnsemble.verdict,statut:'EN_ESSAI',motif:'LECTURE_ENSEMBLE',raison:lectureEnsemble.raison,preuves:lectureEnsemble};
+      }
+    }

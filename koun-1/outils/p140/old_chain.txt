@@ -1,0 +1,6 @@
+    if(!arbitrage.nulConfirme&&vainqueur===null){
+      if(reseauCommun&&reseauCommun.verifie)predictionEssai={verdict:'N',statut:'EN_ESSAI',motif:'RESSOURCES_PARTAGEES',preuves:reseauCommun};
+      else if(doubleResistance&&doubleResistance.verifie)predictionEssai={verdict:'N',statut:'EN_ESSAI',motif:'DOUBLE_RESISTANCE_DIRECTE',preuves:doubleResistance};
+      else if(typeof window.evaluerArbitrageEssai==='function')predictionEssai=window.evaluerArbitrageEssai(confrontation);
+      if(!predictionEssai&&arbitrage.tendanceVictoire)predictionEssai={verdict:arbitrage.tendanceVictoire.camp==='R1'?'1':'2',statut:'EN_ESSAI',motif:'CONCORDANCES_ELEMENTAIRES',raison:'Victoire proposée par les concordances élémentaires en essai.',preuves:arbitrage.tendanceVictoire};
+    }
