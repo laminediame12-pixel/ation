@@ -1,0 +1,6 @@
+const FIGURE_ELEMENTS={
+'Puer':'Feu','Laetitia':'Feu','Fortuna Minor':'Feu','Populus':'Feu',
+'Caput':'Air','Rubeus':'Air','Conjunctio':'Air','Aquisitio':'Air',
+'Albus':'Eau','Via':'Eau','Amissio':'Eau','Cauda Draconis':'Eau',
+'Tristitia':'Terre','Carcer':'Terre','Fortuna Major':'Terre','Puella':'Terre'
+};

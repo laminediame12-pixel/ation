@@ -110,6 +110,29 @@ L'atelier affiche désormais le camp de chaque maison dans la colonne « Front �
 
 **À noter.** Ce thème reste une **Victoire R7 en essai**. R1 tient 7 maisons et R7 une seule, mais le verdict est tranché par M15, qui est partagée : Populus (R1) y a 1 %, Aquisitio (R7) y a 100 % en repos propre. Compter les maisons tenues ne colle pas au corpus : VICTOIRE 1 est gagnée par R7 alors que R1 tient 5 maisons contre 3, et VICTOIRE 4 est gagnée par R1 alors qu'il en tient 3 contre 5. Aucune règle de décision n'a donc été ajoutée.
 
+## 3 quater. Points cardinaux et éléments alignés sur les fronts (version 1.13.0-essai)
+
+**Vocabulaire cardinal (KREG-012, KREG-013).** Chaque front compte quatre points : Est face à Ouest, Nord face à Sud. Chaque maison déplace le point cardinal de la même façon sur les 4 fronts :
+- même point : M5, M6, M15 ;
+- Est↔Nord et Ouest↔Sud : M1 à M4 ;
+- vis-à-vis : M7, M8, M13, M14 ;
+- Est↔Sud et Nord↔Ouest : M9 à M12.
+
+Les notions de front 1, 2 et 3 sont retirées de l'atelier et de la doctrine des maisons du moteur. Les anciens panneaux du moteur complet utilisent encore des étiquettes F1/F2/F3 en interne.
+
+**Éléments des figures = élément du front (KREG-015).** A Feu, B Air, C Eau, D Terre. C'est la décision du propriétaire, et c'est la seule table qui donne raison à la règle « le renfort le plus concordant domine » sur VICTOIRE 3 (renfort M8 de R1 : 110 ; renfort M12 de R7 : 2).
+
+| Banc exhaustif (65 536) | 1.12 | 1.13.0 |
+|---|---|---|
+| Nul | 36 177 | 35 895 (54,8 %) |
+| Victoire R1 | 10 870 | 14 274 (21,8 %) |
+| Victoire R7 | 9 945 | 13 790 (21,0 %) |
+| Bloqué : égalité M15 | 6 986 | **0** |
+| Bloqué : double repos | 1 558 | 1 577 |
+| Symétrie R1/R7 | 65 536/65 536 | 65 536/65 536 |
+
+Le BTTS et les incidents sont inchangés. Avec les règles de décision actuelles, **9 références sur 11** sont concordantes : NUL 1 donne R1 et VICTOIRE 3 donne nul. Ces deux cas doivent être tranchés par les règles de renfort en cours d'élaboration (KREG-014 : M8 ; M12 ; concordance). Les instantanés des références ont été recalculés avec la version 1.13.0, et KAMB-001 (égalité M15) est résolue.
+
 ## 4. Prochaine étape recommandée
 Enregistrer les prédictions du moteur **avant** de nouveaux matchs (Essayer un thème → Enregistrer l'essai), puis comparer après coup. C'est la seule façon de mesurer la fiabilité réelle, et en particulier de trancher KAMB-001, KAMB-002 et KAMB-003.
 
