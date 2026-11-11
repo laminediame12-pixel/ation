@@ -49,6 +49,7 @@ const registre = [
   R('S-04', 'Éléments et forces', 'L’élément d’une figure est celui de son front. Force hors repos : même élément 85 % ; Eau/Terre et Feu/Air 70 % ; Feu/Terre et Air/Eau 55 % ; Feu/Eau et Air/Terre 1 %. Dans sa maison de repos : 100 %.', 'Confirmée', 'Propriétaire'),
   R('S-05', 'Attaque et double repos', 'Chaque figure k attaque k+3, pour protéger k+6. Deux figures liées par l’attaque, chacune dans sa maison de repos, s’annulent (double repos) : leur force n’est pas chiffrée.', 'Confirmée', 'Propriétaire'),
   R('S-06', 'Pôles', 'R1 est la maison de repos de la figure de M1. R7 est R1 + 6.', 'Confirmée', 'Moteur d’origine'),
+  R('S-07', 'Condition commune aux cas de victoire', K.CONDITION_VICTOIRE + ' Dans les 5 victoires réelles, le pôle gagnant est chaque fois présent en résultante.', 'En essai', 'Observation sur les matchs réels, retenue par le propriétaire'),
   ...K.CAS.map(c => R(c.id, c.titre, c.enonce, c.statut === 'REGLE_CONFIRMEE' ? 'Confirmée' : 'En essai', 'Cas du moteur ' + K.version)),
   R('P-01', 'Principes à traduire en cas', 'Énoncés par le propriétaire, pas encore écrits comme cas : M8 renforce le pôle quand il accouche son miroir ; M12 le renforce quand il accouche son voisin ; M4 a la fonction inverse de M12 ; M16 renforce le pôle qu’elle porte, miroir de M8, sentence finale ; l’antagoniste du pôle contrôlé ou mal positionné ; le front du pôle dans les maisons de repos de ses figures.', 'À traduire', 'Propriétaire')
 ];

@@ -30,6 +30,8 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | CAS-006 | Un pôle attaque directement l'autre, et le pôle attaqué n'a pas son front direct dans le thème | Le pôle sans front direct perd | En essai |
 | CAS-007 | Une figure Sud ou Nord du front du pôle (autre que le pôle) est dans sa propre maison de repos, en base ou en résultante, sans que son antagoniste soit dans la sienne | Victoire de ce pôle | En essai |
 
+**Condition commune à tous les cas de victoire** : le pôle gagnant doit apparaître au moins une fois en résultante dans le thème. Sinon, le cas ne s'applique pas.
+
 Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 
 ### Ajouter un cas

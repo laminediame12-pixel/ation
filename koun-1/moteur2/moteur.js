@@ -240,10 +240,15 @@
     return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + g.camp + ' assurée : ' + pourquoi(g, p) };
   }
 
+  var CONDITION_VICTOIRE = 'Condition commune à tous les cas de victoire : le pôle gagnant doit apparaître au moins une fois en résultante dans le thème.';
+  function enResultante(L, f) { return L.maisons.some(function (x) { return x.resultante === f; }); }
+
   function analyser(theme, polesForces) {
     var L = lire(theme, polesForces), decision = null;
     for (var i = 0; i < CAS.length && !decision; i++) {
       var r = CAS[i].condition(L);
+      // Condition commune à tous les cas de victoire : le pôle gagnant doit apparaître au moins une fois en résultante.
+      if (r && r.verdict !== 'N' && !enResultante(L, r.verdict === '1' ? L.R1.figure : L.R7.figure)) r = null;
       if (r) decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
     }
     if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
@@ -251,7 +256,7 @@
     return { lecture: L, decision: decision };
   }
 
-  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
+  var API = { version: VERSION, FIG: FIG, CAS: CAS, CONDITION_VICTOIRE: CONDITION_VICTOIRE, CARDINAL: CARDINAL, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
     elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
     temoin: temoin, figureDuJour: figureDuJour };
   root.KOUN = API;
