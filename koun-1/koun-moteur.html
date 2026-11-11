@@ -46,6 +46,16 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .cas{background:#0b1220;border:1px solid #24324d;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:13px}.cas b{display:block;color:#dbeafe}
 table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px solid #24324d;padding:6px 8px;text-align:left}th{color:#93c5fd}
 .defile{overflow-x:auto}
+/* tirage des 16 lignes */
+#sable{display:none;margin-top:10px}#sable.visible{display:block}
+#zone{border:2px dashed #475569;border-radius:12px;min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#cbd5e1;font-size:14px;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer;position:relative;overflow:hidden;background:#0b1220}
+#zone.actif{border-color:#f59e0b;background:#1c1917}#zone i{position:absolute;width:9px;height:9px;border-radius:50%;background:#fde68a;pointer-events:none}
+#lignes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}
+.mere{background:#0b1220;border:1px solid #24324d;border-radius:8px;padding:6px;font-size:11px;color:#94a3b8;min-width:0}
+.mere b{display:block;color:#bfdbfe;margin-bottom:3px;font-size:11px}
+.ligne{display:flex;align-items:center;gap:4px;min-height:14px;border-top:1px solid #1e293b;padding:2px 0}
+.ligne .traces{flex:1;display:flex;flex-wrap:wrap;gap:2px;min-width:0}.ligne .traces u{width:3px;height:3px;border-radius:50%;background:#64748b;display:block}
+.ligne .par{color:#fde68a;letter-spacing:2px;font-size:11px;white-space:nowrap}.ligne.encours{background:#1e293b}
 /* menu des matchs sauvegardés */
 .entete{display:flex;align-items:center;gap:10px}
 #ouvrirMenu{width:44px;height:44px;margin:0;padding:0;font-size:20px;flex:none;background:#1e293b}
@@ -90,7 +100,9 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     <div id="info" role="status"></div>
   </div>
   <div class="bloc"><h2>Tirage des mères</h2>
-    <label>Entrée rapide par numéros<input id="rapide" placeholder="ex : 8-5-11-7" inputmode="numeric" autocomplete="off"/></label>
+    <label>Mode de tirage<select id="modeTirage"><option value="manuel">Manuel — choisir les mères</option><option value="main">À la main — tracer les 16 lignes au doigt</option><option value="auto">Automatique — l'appareil trace les 16 lignes</option></select></label>
+    <div id="sable"><div id="zone" role="button" tabindex="0" aria-label="Zone de tracé des points"></div><div id="lignes"></div></div>
+    <label style="margin-top:8px">Entrée rapide par numéros<input id="rapide" placeholder="ex : 8-5-11-7" inputmode="numeric" autocomplete="off"/></label>
     <div class="champs" style="margin-top:8px">
       <label>Mère 1<select id="m1"></select></label><label>Mère 2<select id="m2"></select></label>
       <label>Mère 3<select id="m3"></select></label><label>Mère 4<select id="m4"></select></label>
@@ -417,10 +429,39 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
-$('lancer').onclick=function(){var r=$('rapide').value.trim();
+$('lancer').onclick=function(){var r=$('rapide').value.trim(),mt=$('modeTirage').value;
+ if(!r&&mt==='auto'){tirageAuto();return;}
+ if(!r&&mt==='main'){if(tirage.lignes.length===16&&!tirage.enCours){finTirage();}else{$('erreur').textContent='Trace d’abord les 16 lignes dans la zone ci-dessus ('+tirage.lignes.length+' sur 16).';}return;}
  if(r){var n=r.split(/[^0-9]+/).filter(Boolean).map(Number);if(n.length!==4||n.some(function(x){return x<1||x>16;})){$('erreur').textContent='Saisis quatre numéros entre 1 et 16.';return;}lancer(n.map(function(x){return K.FIG[x-1];}));$('rapide').value='';return;}
  lancer(meres());};
-$('hasard').onclick=function(){lancer([0,0,0,0].map(function(){return K.FIG[Math.floor(Math.random()*16)];}));};
+// ── Tirage traditionnel : 16 lignes de points tracées sans compter ; impair = 1 point, pair = 2 points ──
+// Hasard de l'appareil : crypto.getRandomValues (imprévisible), sans biais grâce au tirage avec rejet.
+function alea(min,max){var n=max-min+1;if(window.crypto&&crypto.getRandomValues){var lim=Math.floor(4294967296/n)*n,b=new Uint32Array(1);do{crypto.getRandomValues(b);}while(b[0]>=lim);return min+(b[0]%n);}return min+Math.floor(Math.random()*n);}
+var tirage={lignes:[],enCours:false,minuterie:null};
+function figureDesLignes(q){var t=q.map(function(c){return c%2===0?2:1;}).join();for(var k=0;k<16;k++)if(PTS[K.FIG[k]].join()===t)return K.FIG[k];return null;}
+function afficherLignes(){var Z=$('lignes');Z.textContent='';for(var m=0;m<4;m++){var d=el('div','mere');d.appendChild(el('b','','Mère '+(m+1)));
+  for(var l=0;l<4;l++){var i=m*4+l,c=tirage.lignes[i],r=el('div','ligne'+(i===tirage.lignes.length-1&&tirage.enCours?' encours':'')),t=el('span','traces');
+   if(c!==undefined){for(var k=0;k<Math.min(c,60);k++)t.appendChild(el('u'));}r.appendChild(t);
+   if(c!==undefined&&!(tirage.enCours&&i===tirage.lignes.length-1))r.appendChild(el('span','par',c%2===0?'●●':'●'));d.appendChild(r);}
+  Z.appendChild(d);}}
+function finTirage(){tirage.enCours=false;afficherLignes();var m=[0,1,2,3].map(function(i){return figureDesLignes(tirage.lignes.slice(i*4,i*4+4));});
+ $('zone').classList.remove('actif');$('zone').textContent='Tirage terminé : '+m.map(function(f){return K.num(f)+' '+f;}).join(' · ')+'. Touche pour recommencer.';lancer(m);courant.tirage={mode:$('modeTirage').value,lignes:tirage.lignes.slice()};}
+function debutMain(){clearTimeout(tirage.minuterie);tirage.lignes=[];tirage.enCours=false;$('zone').classList.add('actif');$('zone').textContent='Touche ici, vite et sans compter, pour tracer la ligne 1 sur 16. Arrête-toi un instant pour passer à la ligne suivante.';afficherLignes();}
+function toucher(ev){if($('modeTirage').value!=='main')return;if(tirage.lignes.length===16&&!tirage.enCours){debutMain();return;}
+ if(!tirage.enCours){tirage.lignes.push(0);tirage.enCours=true;}tirage.lignes[tirage.lignes.length-1]++;
+ var z=$('zone'),r=z.getBoundingClientRect(),pt=ev&&ev.clientX!==undefined?{x:ev.clientX-r.left,y:ev.clientY-r.top}:{x:alea(10,Math.max(11,r.width-10)),y:alea(10,Math.max(11,r.height-10))};
+ if(tirage.lignes[tirage.lignes.length-1]===1)z.textContent='';var p=document.createElement('i');p.style.left=(pt.x-4)+'px';p.style.top=(pt.y-4)+'px';z.appendChild(p);
+ afficherLignes();clearTimeout(tirage.minuterie);tirage.minuterie=setTimeout(function(){tirage.enCours=false;
+  if(tirage.lignes.length===16){finTirage();return;}afficherLignes();$('zone').textContent='Ligne '+tirage.lignes.length+' tracée. Touche pour tracer la ligne '+(tirage.lignes.length+1)+' sur 16.';},900);}
+$('zone').addEventListener('pointerdown',function(ev){ev.preventDefault();toucher(ev);});
+$('zone').addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();toucher(null);}});
+function tirageAuto(){clearTimeout(tirage.minuterie);tirage.lignes=[];tirage.enCours=false;$('sable').classList.add('visible');$('zone').classList.add('actif');$('zone').textContent='L’appareil trace les 16 lignes…';
+ var reduit=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ (function suite(){tirage.lignes.push(alea(7,22));afficherLignes();if(tirage.lignes.length<16){if(reduit)suite();else tirage.minuterie=setTimeout(suite,70);}else finTirage();})();}
+function majMode(){var m=$('modeTirage').value;clearTimeout(tirage.minuterie);$('sable').classList.toggle('visible',m!=='manuel');$('zone').classList.remove('actif');
+ if(m==='main')debutMain();else if(m==='auto'){tirage.lignes=[];afficherLignes();$('zone').textContent='Appuie sur « Lancer le thème » : l’appareil tracera les 16 lignes.';}}
+$('modeTirage').onchange=majMode;
+$('hasard').onclick=function(){$('modeTirage').value='auto';majMode();tirageAuto();};
 $('voirRes').onchange=function(){if(courant)bouclier(courant.L);};
 function majQuestions(){var a=$('team1').value||'Équipe 1',b=$('team2').value||'Équipe 2';$('tqVN').textContent='Question : '+a+' et '+b+', victoire ou nul ?';$('tqPen').textContent='Question : '+a+' et '+b+', tir de penalty qui gagne ?';}
 majQuestions();$('team1').oninput=$('team2').oninput=majQuestions;
