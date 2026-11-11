@@ -83,7 +83,9 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       <label>Penalty<select id="penalty"><option value="">—</option><option>Oui</option><option>Non</option></select></label>
       <label>Carton rouge<select id="rouge"><option value="">—</option><option>Oui</option><option>Non</option></select></label>
     </div>
-    <label class="question"><input type="checkbox" id="qVictoireNul" checked/> Question : victoire ou nul ?</label>
+    <label style="margin-top:10px">Mode de jeu<select id="mode"><option>Match réel</option><option>Match FIFA</option><option>Tirs au but</option></select></label>
+    <label class="question"><input type="checkbox" id="qVictoireNul" checked/> <span id="tqVN"></span></label>
+    <label class="question"><input type="checkbox" id="qPenalty"/> <span id="tqPen"></span></label>
     <button class="vert" id="sauver">Sauvegarder ce match</button>
     <div id="info" role="status"></div>
   </div>
@@ -101,7 +103,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 <div class="bloc"><h2>Verdict</h2>
   <div class="verdict">
     <div><small>Mères</small><div id="vMeres" class="muted">Lance un thème.</div></div>
-    <div class="centre"><small id="vQuestion">Victoire ou nul ?</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div><div id="vPoles" class="muted" style="margin-top:6px"></div></div>
+    <div class="centre"><small id="vQuestion">Victoire ou nul ?</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div><div id="vPenalty" class="muted" style="margin-top:6px"></div><div id="vPoles" class="muted" style="margin-top:6px"></div></div>
     <div><small>Témoin de validation</small><div id="vTemoin" class="muted">Lance un thème.</div></div>
   </div>
 </div>
@@ -405,7 +407,8 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
- $('vQuestion').textContent=$('qVictoireNul').checked?'Victoire ou nul ?':'Verdict du moteur';
+ majQuestions();$('vQuestion').textContent=($('qVictoireNul').checked?e1+' ou '+e2+' : victoire ou nul ?':'Verdict du moteur')+' · '+$('mode').value;
+ $('vPenalty').textContent=$('qPenalty').checked?'Tir de penalty pour '+e1+' ou '+e2+' ? Aucun cas défini pour cette question.':'';
  var dd=$('matchDate').value,hh=$('matchTime').value,date=new Date();if(dd){var a2=dd.split('-');date=new Date(+a2[0],a2[1]-1,+a2[2],date.getHours(),date.getMinutes());}if(hh){var b2=hh.split(':');date.setHours(+b2[0],+b2[1]);}
  var W=K.temoin(th,date),T=$('vTemoin');T.textContent='';T.className='';
  W.lignes.forEach(function(l){var r=el('div','tem'),g=el('div');g.appendChild(document.createTextNode(l.titre+' : '));g.appendChild(el('b','',l.figure));
@@ -419,26 +422,28 @@ $('lancer').onclick=function(){var r=$('rapide').value.trim();
  lancer(meres());};
 $('hasard').onclick=function(){lancer([0,0,0,0].map(function(){return K.FIG[Math.floor(Math.random()*16)];}));};
 $('voirRes').onchange=function(){if(courant)bouclier(courant.L);};
-$('team1').onchange=$('team2').onchange=$('matchDate').onchange=$('matchTime').onchange=$('qVictoireNul').onchange=function(){if(courant)lancer(meres());};
+function majQuestions(){var a=$('team1').value||'Équipe 1',b=$('team2').value||'Équipe 2';$('tqVN').textContent='Question : '+a+' ou '+b+', victoire ou nul ?';$('tqPen').textContent='Question : tir de penalty pour '+a+' ou '+b+' ?';}
+majQuestions();$('team1').oninput=$('team2').oninput=majQuestions;
+$('team1').onchange=$('team2').onchange=$('matchDate').onchange=$('matchTime').onchange=$('qVictoireNul').onchange=$('qPenalty').onchange=$('mode').onchange=function(){majQuestions();if(courant)lancer(meres());};
 // ── Matchs sauvegardés (dans ce navigateur) ─────────────────────────────
 var CLE='koun-moteur-matchs-v1';
 function lireMatchs(){try{var x=JSON.parse(localStorage.getItem(CLE)||'[]');return Array.isArray(x)?x:[];}catch(e){return [];}}
 function ecrireMatchs(l){try{localStorage.setItem(CLE,JSON.stringify(l));return true;}catch(e){return false;}}
 function verdictTexte(d){return d.verdict==='1'?'Victoire R1':d.verdict==='2'?'Victoire R7':d.verdict==='N'?'Nul':'Aucun cas applicable';}
 function resultatSaisi(x){var t=[];if(x.score)t.push('Score '+x.score);if(x.penalty)t.push('Penalty : '+x.penalty);if(x.rouge)t.push('Rouge : '+x.rouge);return t.join(' · ');}
-function saisie(){return {team1:$('team1').value,team2:$('team2').value,date:$('matchDate').value,heure:$('matchTime').value,score:$('score').value.trim(),penalty:$('penalty').value,rouge:$('rouge').value};}
+function saisie(){return {team1:$('team1').value,team2:$('team2').value,date:$('matchDate').value,heure:$('matchTime').value,score:$('score').value.trim(),penalty:$('penalty').value,rouge:$('rouge').value,mode:$('mode').value,qVictoireNul:$('qVictoireNul').checked,qPenalty:$('qPenalty').checked};}
 function ouvrirMenu(o){$('menu').classList.toggle('ouvert',o);$('voile').classList.toggle('ouvert',o);$('menu').setAttribute('aria-hidden',o?'false':'true');$('ouvrirMenu').setAttribute('aria-expanded',o?'true':'false');if(o){afficherMatchs();$('fermerMenu').focus();}else $('ouvrirMenu').focus();}
 function afficherMatchs(){var Z=$('liste'),l=lireMatchs();Z.textContent='';
  if(!l.length){Z.appendChild(el('p','muted','Aucun match sauvegardé. Lance un thème puis utilise « Sauvegarder ce match ».'));return;}
  l.forEach(function(x){var d=el('div','match');d.appendChild(el('b','',(x.team1||'Équipe 1')+' – '+(x.team2||'Équipe 2')));
-  d.appendChild(el('div','muted',(x.date||'sans date')+(x.heure?' · '+x.heure:'')+' · mères '+x.meres.map(function(f){return K.num(f);}).join('-')));
+  d.appendChild(el('div','muted',(x.mode?x.mode+' · ':'')+(x.date||'sans date')+(x.heure?' · '+x.heure:'')+' · mères '+x.meres.map(function(f){return K.num(f);}).join('-')));
   var rs=resultatSaisi(x);if(rs)d.appendChild(el('div','',rs));d.appendChild(el('div','muted','Moteur : '+x.verdict));
   var c=el('button','charger','Charger ce match');c.onclick=function(){charger(x);ouvrirMenu(false);};d.appendChild(c);
   var z=el('div','zoneSuppr'),s=el('button','suppr','Supprimer');
   s.onclick=function(){if(!s.classList.contains('confirme')){s.classList.add('confirme');s.textContent='Confirmer la suppression';setTimeout(function(){s.classList.remove('confirme');s.textContent='Supprimer';},4000);return;}
    ecrireMatchs(lireMatchs().filter(function(y){return y.id!==x.id;}));afficherMatchs();};
   z.appendChild(s);d.appendChild(z);Z.appendChild(d);});}
-function charger(x){$('team1').value=x.team1||'';$('team2').value=x.team2||'';$('matchDate').value=x.date||'';$('matchTime').value=x.heure||'';$('score').value=x.score||'';$('penalty').value=x.penalty||'';$('rouge').value=x.rouge||'';lancer(x.meres);$('info').textContent='Match chargé.';}
+function charger(x){if(x.mode)$('mode').value=x.mode;$('qVictoireNul').checked=x.qVictoireNul!==false;$('qPenalty').checked=!!x.qPenalty;$('team1').value=x.team1||'';$('team2').value=x.team2||'';$('matchDate').value=x.date||'';$('matchTime').value=x.heure||'';$('score').value=x.score||'';$('penalty').value=x.penalty||'';$('rouge').value=x.rouge||'';lancer(x.meres);$('info').textContent='Match chargé.';}
 $('ouvrirMenu').onclick=function(){ouvrirMenu(true);};$('fermerMenu').onclick=$('voile').onclick=function(){ouvrirMenu(false);};
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('menu').classList.contains('ouvert'))ouvrirMenu(false);});
 $('sauver').onclick=function(){if(!courant){$('info').textContent='Lance d’abord un thème.';return;}
@@ -449,7 +454,7 @@ $('sauver').onclick=function(){if(!courant){$('info').textContent='Lance d’abo
 function dessiner(){var L=courant.L,x=saisie(),voir=$('voirRes').checked,W=1000,H=voir?980:900,cv=document.createElement('canvas');cv.width=W;cv.height=H;var g=cv.getContext('2d');
  g.fillStyle='#0b1220';g.fillRect(0,0,W,H);g.textAlign='center';
  g.fillStyle='#dbeafe';g.font='bold 30px Arial';g.fillText((x.team1||'Équipe 1')+'  –  '+(x.team2||'Équipe 2'),W/2,48);
- g.fillStyle='#94a3b8';g.font='16px Arial';g.fillText([x.date,x.heure,'Mères '+courant.meres.map(function(f){return K.num(f)+' '+f;}).join(' · ')].filter(Boolean).join('   ·   '),W/2,78);
+ g.fillStyle='#94a3b8';g.font='16px Arial';g.fillText([x.mode,x.date,x.heure,'Mères '+courant.meres.map(function(f){return K.num(f)+' '+f;}).join(' · ')].filter(Boolean).join('   ·   '),W/2,78);
  var rs=resultatSaisi(x);g.fillStyle='#fde68a';g.font='bold 22px Arial';g.fillText(rs||'Score non saisi',W/2,112);
  g.fillStyle=courant.decision.verdict===null?'#94a3b8':'#60a5fa';g.font='bold 20px Arial';g.fillText('Moteur : '+verdictTexte(courant.decision)+(courant.decision.victoireAssuree?' (assurée)':''),W/2,144);
  var col=(W-80)/8,cw=96,ch=voir?150:112,COULM={Feu:'#ef4444',Air:'#eab308',Eau:'#3b82f6',Terre:'#9ca3af'};
