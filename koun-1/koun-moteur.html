@@ -120,7 +120,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   <div class="verdict">
     <div><small>Mères</small><div id="vMeres" class="muted">Lance un thème.</div></div>
     <div class="centre"><small id="vQuestion">Victoire ou nul ?</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div><div id="vPenalty" class="muted" style="margin-top:6px"></div><div id="vPoles" class="muted" style="margin-top:6px"></div></div>
-    <div><small>Témoin de validation</small><div id="vTemoin" class="muted">Lance un thème.</div></div>
+    <div><small>Témoin de validation (en base)</small><div id="vTemoin" class="muted">Lance un thème.</div></div>
   </div>
 </div>
 
@@ -307,7 +307,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     function presence(f) {
       var base = [], res = [];
       for (var h = 1; h <= 16; h++) { if (theme[h] === f) base.push(h); if (h < 16 && additionner(theme[h], fig(h)) === f) res.push(h); }
-      return { base: base, resultante: res, present: base.length + res.length > 0 };
+      return { base: base, resultante: res, present: base.length > 0 };
     }
     var fdj = figureDuJour(date);
     var lignes = [
@@ -521,7 +521,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  var dd=$('matchDate').value,hh=$('matchTime').value,date=new Date();if(dd){var a2=dd.split('-');date=new Date(+a2[0],a2[1]-1,+a2[2],date.getHours(),date.getMinutes());}if(hh){var b2=hh.split(':');date.setHours(+b2[0],+b2[1]);}
  var W=K.temoin(th,date),T=$('vTemoin');T.textContent='';T.className='';
  W.lignes.forEach(function(l){var r=el('div','tem'),g=el('div');g.appendChild(document.createTextNode(l.titre+' : '));g.appendChild(el('b','',l.figure));
-  g.appendChild(el('em','',l.detail+(l.present?' · '+[l.base.length?'base M'+l.base.join(', M'):'',l.resultante.length?'rés. M'+l.resultante.join(', M'):''].filter(Boolean).join(' · '):' · absente')));
+  g.appendChild(el('em','',l.detail+(l.present?' · '+[l.base.length?'base M'+l.base.join(', M'):'',l.resultante.length?'rés. M'+l.resultante.join(', M'):''].filter(Boolean).join(' · '):l.resultante.length?' · pas en base (résultante seulement : M'+l.resultante.join(', M')+')':' · absente')));
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
  afficherChemin(L);

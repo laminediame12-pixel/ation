@@ -166,7 +166,7 @@
     function presence(f) {
       var base = [], res = [];
       for (var h = 1; h <= 16; h++) { if (theme[h] === f) base.push(h); if (h < 16 && additionner(theme[h], fig(h)) === f) res.push(h); }
-      return { base: base, resultante: res, present: base.length + res.length > 0 };
+      return { base: base, resultante: res, present: base.length > 0 };
     }
     var fdj = figureDuJour(date);
     var lignes = [
