@@ -165,8 +165,8 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
- majQuestions();$('vQuestion').textContent=($('qVictoireNul').checked?e1+' ou '+e2+' : victoire ou nul ?':'Verdict du moteur')+' · '+$('mode').value;
- $('vPenalty').textContent=$('qPenalty').checked?'Tir de penalty pour '+e1+' ou '+e2+' ? Aucun cas défini pour cette question.':'';
+ majQuestions();$('vQuestion').textContent=($('qVictoireNul').checked?e1+' et '+e2+', victoire ou nul ?':'Verdict du moteur')+' · '+$('mode').value;
+ $('vPenalty').textContent=$('qPenalty').checked?e1+' et '+e2+', tir de penalty qui gagne ? Aucun cas défini pour cette question.':'';
  var dd=$('matchDate').value,hh=$('matchTime').value,date=new Date();if(dd){var a2=dd.split('-');date=new Date(+a2[0],a2[1]-1,+a2[2],date.getHours(),date.getMinutes());}if(hh){var b2=hh.split(':');date.setHours(+b2[0],+b2[1]);}
  var W=K.temoin(th,date),T=$('vTemoin');T.textContent='';T.className='';
  W.lignes.forEach(function(l){var r=el('div','tem'),g=el('div');g.appendChild(document.createTextNode(l.titre+' : '));g.appendChild(el('b','',l.figure));
@@ -180,7 +180,7 @@ $('lancer').onclick=function(){var r=$('rapide').value.trim();
  lancer(meres());};
 $('hasard').onclick=function(){lancer([0,0,0,0].map(function(){return K.FIG[Math.floor(Math.random()*16)];}));};
 $('voirRes').onchange=function(){if(courant)bouclier(courant.L);};
-function majQuestions(){var a=$('team1').value||'Équipe 1',b=$('team2').value||'Équipe 2';$('tqVN').textContent='Question : '+a+' ou '+b+', victoire ou nul ?';$('tqPen').textContent='Question : tir de penalty pour '+a+' ou '+b+' ?';}
+function majQuestions(){var a=$('team1').value||'Équipe 1',b=$('team2').value||'Équipe 2';$('tqVN').textContent='Question : '+a+' et '+b+', victoire ou nul ?';$('tqPen').textContent='Question : '+a+' et '+b+', tir de penalty qui gagne ?';}
 majQuestions();$('team1').oninput=$('team2').oninput=majQuestions;
 $('team1').onchange=$('team2').onchange=$('matchDate').onchange=$('matchTime').onchange=$('qVictoireNul').onchange=$('qPenalty').onchange=$('mode').onchange=function(){majQuestions();if(courant)lancer(meres());};
 // ── Matchs sauvegardés (dans ce navigateur) ─────────────────────────────
