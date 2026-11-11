@@ -9,7 +9,10 @@ let regles = charger() || [
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const texteCond = c => `${c.champ} ${c.op} ${c.valeur}`;
-const texteSi = si => si.map((c, i) => (i ? ` ${c.lien || "ET"} ` : "") + texteCond(c)).join("");
+const texteSi = si => si.map((c, i) => (i ? ` ${c.lien || "ET"} ` : "")
+  + "(".repeat(c.ouvre || 0) + texteCond(c) + ")".repeat(c.ferme || 0)).join("");
+const choixParen = (cls, p) => `<select class="${cls}" title="Parenthèses">${
+  ["", p, p + p, p + p + p].map(v => `<option value="${v.length}">${v || "\u00a0"}</option>`).join("")}</select>`;
 
 function charger() { try { return JSON.parse(localStorage.getItem("regles")); } catch { return null; } }
 function sauver()  { try { localStorage.setItem("regles", JSON.stringify(regles)); } catch {} }
@@ -35,9 +38,11 @@ function ajouterLigneCondition() {
   div.className = "ligne cond";
   div.innerHTML = `${$("conditions").children.length
       ? '<select class="c-lien"><option>ET</option><option>OU</option></select>' : "<span>SI</span>"}
+    ${choixParen("c-ouvre", "(")}
     <input class="c-champ" placeholder="champ (ex. age)" required>
     <select class="c-op">${options}</select>
-    <input class="c-valeur" placeholder="valeur" required>`;
+    <input class="c-valeur" placeholder="valeur" required>
+    ${choixParen("c-ferme", ")")}`;
   $("conditions").appendChild(div);
 }
 $("btn-ajout-cond").onclick = ajouterLigneCondition;
@@ -49,7 +54,12 @@ $("form-regle").addEventListener("submit", e => {
     champ: d.querySelector(".c-champ").value.trim(),
     op: d.querySelector(".c-op").value,
     valeur: d.querySelector(".c-valeur").value.trim(),
+    ouvre: Number(d.querySelector(".c-ouvre").value),
+    ferme: Number(d.querySelector(".c-ferme").value),
   }));
+  const erreur = verifierParentheses(si);
+  $("erreur-regle").textContent = erreur || "";
+  if (erreur) return;
   regles.push({ nom: $("r-nom").value.trim(), si, alors: $("r-alors").value.trim() });
   sauver(); afficherRegles();
   e.target.reset(); $("conditions").innerHTML = ""; ajouterLigneCondition();

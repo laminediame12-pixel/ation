@@ -27,3 +27,6 @@ li:first-child { border-top: none; }
 .doux { color: var(--doux); }
 code { font-size: 13px; }
 .declenchee { background: var(--ok-bg); color: var(--ok); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; border: none; }
+.erreur { color: #dc2626; margin: 0; }
+.erreur:empty { display: none; }
+select.c-ouvre, select.c-ferme { flex: 0 0 auto; width: 3.6em; padding: 6px 4px; }

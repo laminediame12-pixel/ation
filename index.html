@@ -19,7 +19,9 @@
       <form id="form-regle">
         <div class="ligne"><input id="r-nom" placeholder="Nom de la règle" required></div>
         <div id="conditions"></div>
-        <p class="doux">ET est prioritaire sur OU : <code>A ET B OU C</code> = <code>(A ET B) OU C</code>.</p>
+        <p class="doux">ET est prioritaire sur OU : <code>A ET B OU C</code> = <code>(A ET B) OU C</code>.
+          Utilisez les listes <code>(</code> et <code>)</code> autour des conditions pour changer l'ordre, ex. <code>A ET (B OU C)</code>.</p>
+        <p id="erreur-regle" class="erreur"></p>
         <div class="ligne"><button type="button" id="btn-ajout-cond">+ condition</button></div>
         <div class="ligne">
           <span>ALORS</span>
