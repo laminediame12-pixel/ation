@@ -163,6 +163,14 @@ rep(`function tA({`,`function pointCardinal(f){return {1:"Est",5:"Nord",9:"Ouest
  rep(`e.decision&&(0,x.jsx)(ss,{decision:e.decision})`,`e.decision&&(0,x.jsx)(ss,{decision:e.decision}),e.decision?.victoireAssuree&&(0,x.jsx)("span",{className:"badge green",children:"Victoire assur\\xE9e"})`,'badge assurée');
 }
 
+// 17. Fiche du duel calculée (pôle, maison de repos, antagoniste, contrôleur, maison attaquante)
+{const esc=t=>t.replace(/[^\x00-\x7f]/g,ch=>{const c=ch.charCodeAt(0);return c<256?'\\x'+c.toString(16).toUpperCase().padStart(2,'0'):'\\u'+c.toString(16).padStart(4,'0');});
+ const fiche=fs.readFileSync(S+'/p140/fiche.js','utf8').trim();
+ rep(`function tA({`,esc(fiche)+`function tA({`,'fonction fiche du duel');
+ const anchor=`(0,x.jsxs)("section",{className:"panel runform",children:[(0,x.jsx)("h2",{children:"Attendu, observ\\xE9, prochaine \\xE9tape"})`;
+ const section=`(0,x.jsxs)("section",{className:"panel runform",children:[(0,x.jsx)("h2",{children:"Fiche du duel"}),(0,x.jsx)("p",{className:"muted",children:"Calcul\\xE9e par le moteur \\xE0 partir des 16 maisons : aucune valeur saisie \\xE0 la main."}),(0,x.jsx)("div",{className:"tablewrap",children:(0,x.jsxs)("table",{className:"comparison",children:[(0,x.jsx)("thead",{children:(0,x.jsxs)("tr",{children:[(0,x.jsx)("th",{children:"\\xC9L\\xC9MENT"}),(0,x.jsx)("th",{children:"R1"}),(0,x.jsx)("th",{children:"R7"})]})}),(0,x.jsx)("tbody",{children:(()=>{let fd=ficheDuel(g);return fd[0].lignes.map((l,i)=>(0,x.jsxs)("tr",{children:[(0,x.jsx)("td",{children:(0,x.jsx)("strong",{children:l[0]})}),(0,x.jsx)("td",{children:l[1]}),(0,x.jsx)("td",{children:fd[1].lignes[i][1]})]},i))})()})]})})]}),`;
+ rep(anchor,section+anchor,'section fiche du duel');}
+
 {const i=b.indexOf('var Bn={core:`');const j=b.indexOf('};var Ue=he(yt());',i);const Bn=eval('('+b.slice(i+7,j+1)+')');const h=k=>require('crypto').createHash('sha256').update(Bn[k]).digest('hex');
  rep('sourceHash:"81e86badd4b915e00f03cbc6dda749f9fe214d95e9c6aebe541edc74e5dd749d"','sourceHash:"'+h('core')+'"','core hash');console.log('nouvelle empreinte du moteur',h('core'));
  rep('bridgeHash:"d1590cd0c379a833aeeebac712d573988e03ea30ed24d340e90666beee65b914"','bridgeHash:"'+h('bridge')+'"','bridge hash');console.log('nouvelle empreinte du pont',h('bridge'));}
