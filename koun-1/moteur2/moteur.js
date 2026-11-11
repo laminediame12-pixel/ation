@@ -149,12 +149,20 @@
   // { verdict: '1' | '2' | 'N', assuree: bool, raison: texte }. Le premier cas qui s'applique tranche.
   var CAS = [
     {
-      id: 'CAS-001', titre: 'Même front : nul', statut: 'REGLE_CONFIRMEE',
-      enonce: 'R1 et R7 dans le même front (figure identique, miroir ou voisine) : nul.',
+      id: 'CAS-001', titre: 'Même front : départage par les moitiés', statut: 'REGLE_CONFIRMEE',
+      enonce: 'R1 et R7 dans le même front. Chaque front se partage en deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Si un seul des deux pôles a son partenaire de moitié dans sa propre maison de repos (base ou résultante), ce pôle gagne. Sinon — les deux, aucun, ou pôles de la même moitié — : nul.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
-        var lien = L.R1.figure === L.R7.figure ? 'identiques' : (L.R1.miroir === L.R7.figure ? 'miroirs' : 'voisines');
-        return { verdict: 'N', assuree: false, raison: 'Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans le même front ' + L.R1.front + ' (figures ' + lien + ').' };
+        function partenaire(f) { var n = num(f); return n <= 8 ? fig(n <= 4 ? n + 4 : n - 4) : fig(n <= 12 ? n + 4 : n - 4); }
+        var p1 = partenaire(L.R1.figure), p7 = partenaire(L.R7.figure);
+        if (L.R1.figure === L.R7.figure || p1 === L.R7.figure)
+          return { verdict: 'N', assuree: false, raison: 'Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans la même moitié du front ' + L.R1.front + '.' };
+        var a = L.chezElle(p1), b = L.chezElle(p7);
+        if (a !== b) {
+          var g = a ? L.R1 : L.R7, pg = a ? p1 : p7;
+          return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : même front ' + g.front + ', et seul le partenaire de ' + g.figure + ', ' + pg + ', est dans sa maison de repos (M' + num(pg) + ').' };
+        }
+        return { verdict: 'N', assuree: false, raison: 'Nul : même front ' + L.R1.front + ', ' + (a ? 'les deux partenaires (' + p1 + ' et ' + p7 + ') sont dans leur maison de repos.' : 'aucun des deux partenaires (' + p1 + ', ' + p7 + ') n’est dans sa maison de repos.') };
       }
     },
     {
@@ -217,12 +225,12 @@
     ,
     {
       id: 'CAS-007', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
-      enonce: 'Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante, sans que son antagoniste soit dans la sienne : ce pôle gagne.',
+      enonce: 'Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante : ce pôle gagne.',
       condition: function (L) {
         function auRepos(c) {
           return c.frontDirect.filter(function (f) {
             var pt = CARDINAL[num(f)];
-            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !L.chezElle(fig(num(f) - 3));
+            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f);
           });
         }
         return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) {
@@ -240,15 +248,10 @@
     return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + g.camp + ' assurée : ' + pourquoi(g, p) };
   }
 
-  var CONDITION_VICTOIRE = 'Condition commune à tous les cas de victoire : le pôle gagnant doit apparaître au moins une fois en résultante dans le thème.';
-  function enResultante(L, f) { return L.maisons.some(function (x) { return x.resultante === f; }); }
-
   function analyser(theme, polesForces) {
     var L = lire(theme, polesForces), decision = null;
     for (var i = 0; i < CAS.length && !decision; i++) {
       var r = CAS[i].condition(L);
-      // Condition commune à tous les cas de victoire : le pôle gagnant doit apparaître au moins une fois en résultante.
-      if (r && r.verdict !== 'N' && !enResultante(L, r.verdict === '1' ? L.R1.figure : L.R7.figure)) r = null;
       if (r) decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
     }
     if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
@@ -256,7 +259,7 @@
     return { lecture: L, decision: decision };
   }
 
-  var API = { version: VERSION, FIG: FIG, CAS: CAS, CONDITION_VICTOIRE: CONDITION_VICTOIRE, CARDINAL: CARDINAL, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
+  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
     elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
     temoin: temoin, figureDuJour: figureDuJour };
   root.KOUN = API;
