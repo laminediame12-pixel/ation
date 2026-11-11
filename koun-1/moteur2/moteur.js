@@ -107,7 +107,19 @@
     function chezElleEnBase(f) { return maisons[num(f) - 1].base === f; }
     function absente(f) { return positions(f).length === 0; }
     function enMaisonPaire(f) { return positions(f).some(function (x) { return x.maison % 2 === 0; }); }
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire,
+    // Mode de confrontation, selon la position des deux pôles :
+    //  MEME_FRONT            : départage par les moitiés du front ;
+    //  MEME_BOUCLE           : front du pôle contre le front antagoniste ;
+    //  BOUCLES_DIFFERENTES   : par paires, figure et son binôme (k et k+2) contre figure et son binôme.
+    var n1 = num(R1.figure), n7 = num(R7.figure);
+    var mode = R1.front === R7.front ? 'MEME_FRONT' : (n1 % 2 === n7 % 2 ? 'MEME_BOUCLE' : 'BOUCLES_DIFFERENTES');
+    function paires(c) {
+      var l = [], n = num(c.figure);
+      for (var i = 0; i < 8; i++) { var f = fig(n + 2 * i); l.push({ figure: f, numero: num(f), front: frontDe(f), positions: positions(f), chezElle: chezElle(f), absente: positions(f).length === 0 }); }
+      return l;
+    }
+    var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, mode: mode, confrontation: confrontation,
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -225,8 +237,9 @@
     ,
     {
       id: 'CAS-007', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
-      enonce: 'Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante : ce pôle gagne.',
+      enonce: 'Pôles dans la même boucle. Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante : ce pôle gagne.',
       condition: function (L) {
+        if (L.mode === 'BOUCLES_DIFFERENTES') return null;   // boucles différentes : la confrontation se lit par paires, pas par le seul front (match réel 2·12·4·4)
         function auRepos(c) {
           return c.frontDirect.filter(function (f) {
             var pt = CARDINAL[num(f)];

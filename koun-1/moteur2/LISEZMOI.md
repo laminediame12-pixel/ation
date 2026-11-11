@@ -16,6 +16,15 @@ Elle ne décide rien. Elle décrit le thème :
 
 Sur les 11 thèmes réels, cette structure donne exactement les mêmes maisons, résultantes, forces et pôles que l'ancien moteur.
 
+### Les trois modes de confrontation
+
+La façon de lire R1 contre R7 dépend de leur position :
+- **même front** : départage par les moitiés du front (CAS-001) ;
+- **même boucle, fronts différents** : le front du pôle contre son front antagoniste ;
+- **boucles différentes** (pair contre impair) : par paires, figure et son binôme contre figure et son binôme. Le camp d'un pôle est alors toute sa boucle (son front et le front binôme).
+
+Le moteur donne le mode dans `L.mode` et, en boucles différentes, les huit figures de chaque camp dans `L.confrontation`.
+
 ## Étage 2 : les cas
 
 Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas dans l'ordre ; le premier qui s'applique tranche. Si aucun ne s'applique, le moteur répond « aucun cas applicable » et ne donne pas de verdict.
@@ -28,7 +37,7 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | CAS-004 | Le pôle attaque directement l'autre pôle ; il est en M8 et une autre figure de son front est en M4 ou M12 | Victoire assurée de ce pôle | En essai |
 | CAS-005 | Le pôle est dans la maison de son antagoniste direct, et son front direct ou le front de son miroir est absent ; l'adversaire a une figure de son front en maison paire (en M4 ou M12 si son front est Terre ou Eau) | Victoire assurée de l'adversaire | En essai |
 | CAS-006 | Un pôle attaque directement l'autre, et le pôle attaqué n'a pas son front direct dans le thème | Le pôle sans front direct perd | En essai |
-| CAS-007 | Une figure Sud ou Nord du front du pôle (autre que le pôle) est dans sa propre maison de repos, en base ou en résultante | Victoire de ce pôle | En essai |
+| CAS-007 | Pôles dans la même boucle. Une figure Sud ou Nord du front du pôle (autre que le pôle) est dans sa propre maison de repos, en base ou en résultante | Victoire de ce pôle | En essai |
 
 Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 

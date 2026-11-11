@@ -25,7 +25,8 @@ rep('version:"1.15.4-essai",sourceHash:', 'version:"' + K.version + '",sourceHas
   const refs = eval('[' + b.slice(a + 'references:['.length, z) + ']');
   // Matchs réels ajoutés après la reconstruction du moteur.
   const figs = c => c.map(n => K.FIG[n - 1]);
-  for (const x of [{ id: 'VICTOIRE_REFERENCE_5', codes: [9, 13, 2, 13], expected: '1', source: 'Score 2-0 indiqué par le propriétaire (11 novembre 2026)' }])
+  for (const x of [{ id: 'VICTOIRE_REFERENCE_5', codes: [9, 13, 2, 13], expected: '1', source: 'Score 2-0 indiqué par le propriétaire (11 novembre 2026)' },
+    { id: 'VICTOIRE_REFERENCE_6', codes: [2, 12, 4, 4], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (11 novembre 2026)' }])
     if (!refs.some(r => r.id === x.id)) refs.push({ id: x.id, title: figs(x.codes).join(' \u00B7 '), mothers: figs(x.codes), codes: x.codes, expected: x.expected, source: x.source, teams: ['R1', 'R7'] });
   const v3 = refs.find(r => r.id === 'VICTOIRE_REFERENCE_3'); if (v3 && !/7-0/.test(v3.source)) v3.source += ' \u00B7 score 7-0';
   const nNuls = refs.filter(r => r.expected === 'N').length;

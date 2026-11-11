@@ -12,3 +12,5 @@ for (const k of ['R1', 'R7']) { const c = L[k]; console.log(k, 'front:', c.front
 console.log('R1 attaque R7:', K.num(L.R7.figure) === K.num(K.fig(K.num(L.R1.figure) + 3)), '| R7 attaque R1:', K.num(L.R1.figure) === K.num(K.fig(K.num(L.R7.figure) + 3)));
 console.log('au repos:', K.FIG.filter(f => L.chezElle(f)).map(f => f + ' M' + K.num(f) + (L.chezElleEnBase(f) ? ' base' : ' rés')).join(', ') || 'aucune', '| annulations', L.annulations.map(x => x.attaquant + '↔' + x.cible).join(', ') || 'aucune');
 console.log('témoin', K.temoin(th, new Date()).lignes.map(l => l.titre + ': ' + l.figure + (l.present ? ' ✓' : ' ✗')).join(' | '));
+console.log('mode', L.mode);
+if (L.confrontation.R1) for (const k of ['R1', 'R7']) console.log(k, 'camp:', L.confrontation[k].map(x => x.numero + (x.absente ? ' absent' : ' (' + x.positions.map(p => 'm' + p.maison).join(',') + ')' + (x.chezElle ? '*' : ''))).join(' - '));
