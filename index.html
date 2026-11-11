@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moteur de règles</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>Moteur de règles</h1></header>
+  <main>
+    <section>
+      <h2>Règles</h2>
+      <ul id="liste-regles"></ul>
+    </section>
+
+    <section>
+      <h2>Ajouter une règle</h2>
+      <form id="form-regle">
+        <div class="ligne"><input id="r-nom" placeholder="Nom de la règle" required></div>
+        <div id="conditions"></div>
+        <div class="ligne"><button type="button" id="btn-ajout-cond">+ condition (ET)</button></div>
+        <div class="ligne">
+          <span>ALORS</span>
+          <input id="r-alors" placeholder="action / message" required>
+          <button class="primaire">Ajouter</button>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Tester avec des données</h2>
+      <div id="donnees"></div>
+      <div class="ligne">
+        <button type="button" id="btn-ajout-donnee">+ champ</button>
+        <button type="button" class="primaire" id="btn-evaluer">Évaluer</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Résultat</h2>
+      <div id="resultat" class="doux">Cliquez sur « Évaluer ».</div>
+    </section>
+  </main>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
