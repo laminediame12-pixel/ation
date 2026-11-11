@@ -20,6 +20,14 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .etiq{display:inline-block;font-size:11px;padding:2px 9px;border-radius:10px;background:#1e293b;color:#cbd5e1;margin:2px}
 .etiq.ok{background:#14532d;color:#bbf7d0}.etiq.essai{background:#713f12;color:#fde68a}
 .r1{color:#60a5fa;font-weight:700}.r7{color:#fb923c;font-weight:700}
+.tem{display:flex;justify-content:space-between;gap:6px;align-items:baseline;padding:3px 0;border-bottom:1px solid #1e293b;font-size:12.5px}.tem:last-of-type{border-bottom:0}
+.tem .oui{color:#4ade80;font-weight:800}.tem .non{color:#f87171;font-weight:800}.tem em{font-style:normal;color:#94a3b8;font-size:11px;display:block}
+.question{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:#e2e8f0}.question input{width:auto;margin:0}
+@keyframes pouls{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+.carte.front{animation:pouls 1.1s ease-in-out infinite;border-color:#e2e8f0;z-index:2}
+.carte.or{animation:pouls 1.1s ease-in-out infinite;border-color:#fbbf24;box-shadow:0 0 10px #fbbf24aa;z-index:2}
+.carte.or .points.petite b{background:#fbbf24;width:5px;height:5px}.carte.or .points.petite{border-top-color:#fbbf24}
+@media(prefers-reduced-motion:reduce){.carte.front,.carte.or{animation:none}}
 /* bouclier pyramidal */
 .bouclier{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px 5px;max-width:760px;margin:0 auto}
 .carte{background:#0b1220;border:2px solid #24324d;border-radius:9px;padding:4px 2px 5px;text-align:center;cursor:pointer;min-width:0;position:relative}
@@ -48,8 +56,10 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       <label>Équipe 1 (R1)<input id="team1" value="Équipe 1" autocomplete="off"/></label>
       <label>Équipe 2 (R7)<input id="team2" value="Équipe 2" autocomplete="off"/></label>
       <label>Date<input id="matchDate" type="date"/></label>
+      <label>Heure<input id="matchTime" type="time"/></label>
       <label>Score réel (facultatif)<input id="score" placeholder="ex : 2-1" autocomplete="off"/></label>
     </div>
+    <label class="question"><input type="checkbox" id="qVictoireNul" checked/> Question : victoire ou nul ?</label>
   </div>
   <div class="bloc"><h2>Tirage des mères</h2>
     <label>Entrée rapide par numéros<input id="rapide" placeholder="ex : 8-5-11-7" inputmode="numeric" autocomplete="off"/></label>
@@ -65,8 +75,8 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 <div class="bloc"><h2>Verdict</h2>
   <div class="verdict">
     <div><small>Mères</small><div id="vMeres" class="muted">Lance un thème.</div></div>
-    <div class="centre"><small>Verdict du moteur</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div></div>
-    <div><small>Pôles</small><div id="vPoles" class="muted">R1 — · R7 —</div></div>
+    <div class="centre"><small id="vQuestion">Victoire ou nul ?</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div><div id="vPoles" class="muted" style="margin-top:6px"></div></div>
+    <div><small>Témoin de validation</small><div id="vTemoin" class="muted">Lance un thème.</div></div>
   </div>
 </div>
 
@@ -98,15 +108,20 @@ var courant=null;
 function carte(h,L){var m=L.maisons[h-1],c=el('div','carte'+(h===L.R1.maison?' pR1':'')+(h===L.R7.maison?' pR7':'')+(h===15?' juge':''));
  c.setAttribute('role','button');c.tabIndex=0;c.setAttribute('aria-label','Maison '+h+' : '+m.base);
  var e=el('div','el');e.style.background=COUL[K.elementMaison(h)];c.appendChild(e);
- c.appendChild(el('div','n','M'+h+(h===L.R1.maison?' · R1':'')+(h===L.R7.maison?' · R7':'')));c.appendChild(points(m.base));
+ c.appendChild(el('div','n','M'+h));c.dataset.maison=h;c.appendChild(points(m.base));
  if($('voirRes').checked&&m.resultante){var r=points(m.resultante);r.className='points petite';r.setAttribute('aria-label','Résultante : '+m.resultante);c.appendChild(r);}
- function ouvrir(){detail(h,L);Array.prototype.forEach.call(document.querySelectorAll('.carte'),function(x){x.classList.remove('choisie');});c.classList.add('choisie');}
+ function ouvrir(){detail(h,L);var front=K.FIG.filter(function(f){return K.frontDe(f)===K.frontDe(m.base);});
+  Array.prototype.forEach.call(document.querySelectorAll('.carte'),function(x){x.classList.remove('choisie','front','or');var mm=L.maisons[x.dataset.maison-1];
+   if(front.indexOf(mm.base)>=0)x.classList.add('front');else if(mm.resultante&&front.indexOf(mm.resultante)>=0)x.classList.add('or');});
+  c.classList.add('choisie');}
  c.onclick=ouvrir;c.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();ouvrir();}};return c;}
 function role(f,L){var t=[];[['R1',L.R1],['R7',L.R7]].forEach(function(p){var k=p[0],c=p[1];if(f===c.figure)t.push('pôle '+k);else if(f===c.miroir)t.push('miroir de '+k);else if(f===c.antagoniste)t.push('antagoniste de '+k);else if(f===c.controleur)t.push('contrôleur de '+k);else if(c.frontDirect.indexOf(f)>=0)t.push('front de '+k);});return t.length?' ('+t.join(', ')+')':'';}
 function ligne(f,h,L){var fo=L.force(f,h);return f+' · '+K.frontDe(f)+' '+K.CARDINAL[K.num(f)]+' · '+K.elementDe(f)+' · '+(fo===null?'force non chiffrée (double repos)':fo+' %')+(K.num(f)===h?' · dans sa maison de repos':'')+role(f,L);}
 function detail(h,L){var m=L.maisons[h-1],d=$('detail');d.textContent='';d.className='';
  d.appendChild(el('div','', 'M'+h+' · maison '+K.elementMaison(h)+' · repos de '+K.fig(h))).style.fontWeight='700';
- d.appendChild(el('div','','Base : '+ligne(m.base,h,L)));d.appendChild(el('div','',m.resultante?'Résultante : '+ligne(m.resultante,h,L):'Résultante : aucune (M16)'));}
+ d.appendChild(el('div','','Base : '+ligne(m.base,h,L)));d.appendChild(el('div','',m.resultante?'Résultante : '+ligne(m.resultante,h,L):'Résultante : aucune (M16)'));
+ var fr=K.frontDe(m.base),pres=K.FIG.filter(function(f){return K.frontDe(f)===fr;}).map(function(f){var p=L.positions(f);return f+' : '+(p.length?p.map(function(x){return 'M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(', '):'absente');});
+ d.appendChild(el('div','muted','Front '+fr+' dans le thème — '+pres.join(' · ')));}
 function bouclier(L){var B=$('bouclier');B.textContent='';
  function pose(h,cl){var w=el('div',cl||'');w.appendChild(carte(h,L));B.appendChild(w);}
  [8,7,6,5,4,3,2,1].forEach(function(h){pose(h);});[12,11,10,9].forEach(function(h){pose(h,'s2');});[14,13].forEach(function(h){pose(h,'s4');});pose(15,'c15');pose(16,'c16');
@@ -120,7 +135,14 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  t.textContent=d.verdict==='1'?'Victoire R1 — '+e1:d.verdict==='2'?'Victoire R7 — '+e2:d.verdict==='N'?'Nul':'Aucun cas applicable';
  var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
  $('vRaison').textContent=d.raison;
- var P=$('vPoles');P.textContent='';P.className='';P.appendChild(el('div','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(el('div','muted','front '+L.R1.front+' · '+L.R1.pointCardinal));P.appendChild(el('div','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));P.appendChild(el('div','muted','front '+L.R7.front+' · '+L.R7.pointCardinal));
+ var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
+ $('vQuestion').textContent=$('qVictoireNul').checked?'Victoire ou nul ?':'Verdict du moteur';
+ var dd=$('matchDate').value,hh=$('matchTime').value,date=new Date();if(dd){var a2=dd.split('-');date=new Date(+a2[0],a2[1]-1,+a2[2],date.getHours(),date.getMinutes());}if(hh){var b2=hh.split(':');date.setHours(+b2[0],+b2[1]);}
+ var W=K.temoin(th,date),T=$('vTemoin');T.textContent='';T.className='';
+ W.lignes.forEach(function(l){var r=el('div','tem'),g=el('div');g.appendChild(document.createTextNode(l.titre+' : '));g.appendChild(el('b','',l.figure));
+  g.appendChild(el('em','',l.detail+(l.present?' · '+[l.base.length?'base M'+l.base.join(', M'):'',l.resultante.length?'rés. M'+l.resultante.join(', M'):''].filter(Boolean).join(' · '):' · absente')));
+  r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
+ T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
 $('lancer').onclick=function(){var r=$('rapide').value.trim();
@@ -128,7 +150,7 @@ $('lancer').onclick=function(){var r=$('rapide').value.trim();
  lancer(meres());};
 $('hasard').onclick=function(){lancer([0,0,0,0].map(function(){return K.FIG[Math.floor(Math.random()*16)];}));};
 $('voirRes').onchange=function(){if(courant)bouclier(courant.L);};
-$('team1').onchange=$('team2').onchange=function(){if(courant)lancer(meres());};
+$('team1').onchange=$('team2').onchange=$('matchDate').onchange=$('matchTime').onchange=$('qVictoireNul').onchange=function(){if(courant)lancer(meres());};
 })();
 </script>
 </body></html>

@@ -109,6 +109,37 @@
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
   }
 
+  // Témoin de validation du thème : quatre figures témoins qui doivent être présentes dans le thème
+  // (en base ou en résultante) : somme de l'axe angulaire (M1, M4, M7, M10), binôme de M1,
+  // figure du jour (jour de la semaine, de jour 6 h–18 h ou de nuit), somme des maisons 3, 5, 11, 15.
+  var FIGURE_DU_JOUR = [
+    { jour: 'Dimanche', diurne: 'Fortuna Major', nocturne: 'Fortuna Minor' }, { jour: 'Lundi', diurne: 'Populus', nocturne: 'Via' },
+    { jour: 'Mardi', diurne: 'Puer', nocturne: 'Rubeus' }, { jour: 'Mercredi', diurne: 'Albus', nocturne: 'Conjunctio' },
+    { jour: 'Jeudi', diurne: 'Aquisitio', nocturne: 'Laetitia' }, { jour: 'Vendredi', diurne: 'Puella', nocturne: 'Amissio' },
+    { jour: 'Samedi', diurne: 'Tristitia', nocturne: 'Carcer' }];
+  function figureDuJour(date) {
+    var d = (date instanceof Date && !isNaN(date.getTime())) ? date : new Date();
+    var j = FIGURE_DU_JOUR[d.getDay()], deJour = d.getHours() >= 6 && d.getHours() < 18;
+    return { figure: deJour ? j.diurne : j.nocturne, jour: j.jour, moment: deJour ? 'jour' : 'nuit' };
+  }
+  function temoin(theme, date) {
+    function somme(maisons) { return maisons.map(function (h) { return theme[h]; }).reduce(function (a, b) { return additionner(a, b); }); }
+    function presence(f) {
+      var base = [], res = [];
+      for (var h = 1; h <= 16; h++) { if (theme[h] === f) base.push(h); if (h < 16 && additionner(theme[h], fig(h)) === f) res.push(h); }
+      return { base: base, resultante: res, present: base.length + res.length > 0 };
+    }
+    var fdj = figureDuJour(date);
+    var lignes = [
+      { id: 'axeAngulaire', titre: 'Axe angulaire', detail: 'M1 + M4 + M7 + M10', figure: somme([1, 4, 7, 10]) },
+      { id: 'binome', titre: 'Binôme de M1', detail: 'binôme de ' + theme[1], figure: fig(num(theme[1]) + 2) },
+      { id: 'figureDuJour', titre: 'Figure du jour', detail: fdj.jour + ', de ' + fdj.moment, figure: fdj.figure },
+      { id: 'somme35115', titre: 'Somme 3-5-11-15', detail: 'M3 + M5 + M11 + M15', figure: somme([3, 5, 11, 15]) }
+    ];
+    lignes.forEach(function (l) { var p = presence(l.figure); l.base = p.base; l.resultante = p.resultante; l.present = p.present; });
+    return { lignes: lignes, presents: lignes.filter(function (l) { return l.present; }).length, valide: lignes.every(function (l) { return l.present; }) };
+  }
+
   // ── Étage 2 : les cas ──────────────────────────────────────────────────
   // Un cas = { id, titre, statut, condition(lecture) }. La condition rend null, ou
   // { verdict: '1' | '2' | 'N', assuree: bool, raison: texte }. Le premier cas qui s'applique tranche.
@@ -146,7 +177,8 @@
   }
 
   var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
-    elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser };
+    elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
+    temoin: temoin, figureDuJour: figureDuJour };
   root.KOUN = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
