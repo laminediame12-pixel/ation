@@ -429,6 +429,18 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         return { verdict: g === L.R1 ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
           cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' };
       }
+    },
+    {
+      id: 'CAS-009', titre: 'Lecture du chemin (quand aucun autre cas ne tranche)', statut: 'EN_ESSAI',
+      enonce: 'Aucun autre cas ne tranche : le moteur lit le chemin des deux pôles et compte, pour chacun, les maisons de repos de ses figures tenues par l’adversaire. Le pôle qui en a au moins trois de moins gagne ; sinon nul.',
+      condition: function (L) {
+        function perdues(k) { return L.chemin[k].slice(1).filter(function (e) { return e.coteOccupant === 'ADVERSAIRE'; }); }
+        var a = perdues('R1'), b = perdues('R7'), d = b.length - a.length;
+        var detail = 'maisons tenues par l’adversaire : R1 ' + a.length + (a.length ? ' (M' + a.map(function (e) { return e.maison; }).join(', M') + ')' : '') + ', R7 ' + b.length + (b.length ? ' (M' + b.map(function (e) { return e.maison; }).join(', M') + ')' : '') + '.';
+        if (d >= 3) return { verdict: '1', assuree: false, raison: 'Victoire R1 par lecture du chemin : ' + detail };
+        if (d <= -3) return { verdict: '2', assuree: false, raison: 'Victoire R7 par lecture du chemin : ' + detail };
+        return { verdict: 'N', assuree: false, raison: 'Nul par lecture du chemin : ' + detail };
+      }
     }
   ];
   // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.

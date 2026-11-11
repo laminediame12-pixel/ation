@@ -29,7 +29,7 @@ Le moteur donne le mode dans `L.mode` et, en boucles différentes, les huit figu
 
 ## Étage 2 : les cas
 
-Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas dans l'ordre ; le premier qui s'applique tranche. Si aucun ne s'applique, le moteur répond « aucun cas applicable » et ne donne pas de verdict.
+Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas dans l'ordre ; le premier qui s'applique tranche. Le dernier cas (CAS-009, lecture du chemin) tranche toujours : le moteur donne donc un verdict pour chaque thème.
 
 | Cas | Condition | Résultat | Statut |
 |---|---|---|---|
@@ -41,6 +41,7 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | CAS-006 | Un pôle attaque directement l'autre, et le pôle attaqué n'a pas son front direct dans le thème | Le pôle sans front direct perd | En essai |
 | CAS-007 | Pôles dans la même boucle. Une figure Sud ou Nord du front du pôle (autre que le pôle) est dans sa propre maison de repos, en base ou en résultante | Victoire de ce pôle | En essai |
 | CAS-008 | Pôles dans des boucles différentes. R1 et son binôme contre R7 et son binôme : la paire qui a le plus de figures dans leur maison de repos (base ou résultante) | Cette paire gagne ; à égalité, pas de verdict | En essai |
+| CAS-009 | Aucun autre cas ne tranche. Le moteur compte, sur le chemin de chaque pôle, les maisons de repos de ses figures tenues par l'adversaire | Le pôle qui en a au moins trois de moins gagne ; sinon nul | En essai (ajusté sur 5 matchs réels seulement) |
 
 Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 
