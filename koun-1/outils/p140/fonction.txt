@@ -18,8 +18,9 @@
     var F=[]; for(var i=1;i<=16;i++) F.push(window.figureReposMaison(i));
     function N(f){ return F.indexOf(f)+1; }
     function fig(n){ return F[((n-1)%16+16)%16]; }
-    var p1=N(theme[poles.R1]);
-    function camp(f){ return (N(f)%2)===(p1%2)?'R1':'R7'; }
+    var p1=N(theme[poles.R1]), p7=N(theme[poles.R7]), mb=(p1%2)===(p7%2);
+    // Pôles dans des boucles différentes : camp = boucle. Même boucle (fronts binômes) : camp = front du pôle.
+    function camp(f){ var n=N(f); if(!mb) return (n%2)===(p1%2)?'R1':'R7'; return (n-1)%4===(p1-1)%4?'R1':((n-1)%4===(p7-1)%4?'R7':null); }
     function auRepos(f){ return (bareme.parFigure[f]||[]).filter(function(x){ return x.reposPropreIci; }); }
     function verrouBase(f){ return (bareme.parFigure[f]||[]).some(function(x){ return x.reposPropreIci&&x.couches.indexOf('base')>=0&&x.forcePct===100; }); }
     var ann=[], ver=[];
@@ -43,7 +44,8 @@
     var p={R1:theme[poles.R1], R7:theme[poles.R7]};
     var details=[], pts={R1:0,R7:0}, conc={R1:0,R7:0};
     function autre(k){ return k==='R1'?'R7':'R1'; }
-    function camp(f){ return (N(f)%2)===(N(p.R1)%2)?'R1':'R7'; }
+    var memeBoucle=(N(p.R1)%2)===(N(p.R7)%2);
+    function camp(f){ var n=N(f); if(!memeBoucle) return (n%2)===(N(p.R1)%2)?'R1':'R7'; return (n-1)%4===(N(p.R1)-1)%4?'R1':((n-1)%4===(N(p.R7)-1)%4?'R7':null); }
     function maison(h){
       var m=bareme.maisons[h-1], o={base:null,fb:null,res:null,fr:null};
       if(!m) return o;
@@ -56,9 +58,9 @@
     var resultat={version:'1.0.0',statut:'EN_ESSAI',poles:{R1:{maison:poles.R1,figure:p.R1},R7:{maison:poles.R7,figure:p.R7}},points:pts,concordance:conc,details:details,assuree:false,antagoniste:null};
     var av=window.annulationsEtVerrous(theme,poles,bareme);
     resultat.annulations=av.annulations; resultat.verrous=av.verrous;
-    if((N(p.R1)%2)===(N(p.R7)%2)){
-      resultat.verdict='N'; resultat.motif='MEME_BOUCLE';
-      resultat.raison='Nul en essai : R1 et R7 sont dans la même boucle.';
+    if((N(p.R1)-1)%4===(N(p.R7)-1)%4){
+      resultat.verdict='N'; resultat.motif='MEME_FRONT';
+      resultat.raison='Nul : R1 et R7 sont dans le même front.';
       return resultat;
     }
     // Verrou de front : victoire assurée du camp qui tient seul un verrou (deux figures du même front en base, à leur repos).
@@ -82,7 +84,7 @@
       var m=maison(h); if(!m.base||!m.res) return;
       function tag(f){ return f===p.R1||f===mir(p.R1)||f===p.R7||f===mir(p.R7); }
       var cb=camp(m.base), cr=camp(m.res);
-      if((tag(m.base)||tag(m.res))&&cb!==cr&&m.fb!==null&&m.fr!==null&&m.fb!==m.fr){
+      if((tag(m.base)||tag(m.res))&&cb&&cr&&cb!==cr&&m.fb!==null&&m.fr!==null&&m.fb!==m.fr){
         var w=m.fb>m.fr?cb:cr; pts[w]++;
         details.push('M'+h+' : '+w+' domine ('+m.base+' '+m.fb+' % / '+m.res+' '+m.fr+' %)');
       }

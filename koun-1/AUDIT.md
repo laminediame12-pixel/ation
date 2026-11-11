@@ -161,6 +161,17 @@ Les principes ont été donnés par le propriétaire maison par maison, puis int
 - Le taux de nul (62 %) reste bien au-dessus de celui du football.
 - Il faut maintenant enregistrer des prédictions **avant** de nouveaux matchs.
 
+## 3 sexies. Nul seulement si même front (version 1.15.0-essai)
+
+Décision du propriétaire : la même boucle ne donne plus un nul automatique. Seul **le même front** (figure identique, miroir ou voisine) est un nul (KREG-002, confirmée). L'ancienne règle des « ressources partagées » (KREG-006) est remplacée. Quand les pôles sont dans des fronts binômes, la lecture d'ensemble tranche, et chaque camp est défini par le front de son pôle.
+
+| Contrôle | Résultat |
+|---|---|
+| Références | **10/11** : NUL 2 (Cauda contre Conjunctio, fronts binômes) devient « victoire R7 assurée », par le seul signal M4. Question ouverte KAMB-005 |
+| Thème 15 · 16 · 10 · 11 | Victoire R1 assurée (M8 : Amissio accouche son miroir Puella ; antagoniste Caput absent) |
+| Symétrie R1/R7 | 65 536/65 536 |
+| Banc technique | nul 37,9 %, R1 30,6 %, R7 25,2 %, sans signal 6,3 % (contrôle de fonctionnement, pas une preuve) |
+
 ## 4. Prochaine étape recommandée
 Enregistrer les prédictions du moteur **avant** de nouveaux matchs (Essayer un thème → Enregistrer l'essai), puis comparer après coup. C'est la seule façon de mesurer la fiabilité réelle, et en particulier de trancher KAMB-001, KAMB-002 et KAMB-003.
 
