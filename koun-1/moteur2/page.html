@@ -34,7 +34,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .carte .n{font-size:10px;color:#94a3b8}.carte .nom{font-size:9px;color:#bfdbfe;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
 .carte .res{font-size:8.5px;color:#a7b5c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .carte.pR1{border-color:#3b82f6;background:#0c1c3d;box-shadow:0 0 8px #3b82f680}.carte.pR7{border-color:#ef4444;background:#2a0f12;box-shadow:0 0 8px #ef444480}
-.carte.juge{border-color:#a855f7;background:#1e1033}.carte.choisie{outline:2px solid #f59e0b;outline-offset:1px}
+.carte.choisie{outline:2px solid #f59e0b;outline-offset:1px}
 .carte .el{position:absolute;left:0;right:0;top:0;height:3px;border-radius:7px 7px 0 0}
 .points{display:grid;gap:3px;justify-content:center;margin:3px 0}.points i{display:flex;gap:3px;justify-content:center}
 .points b{width:7px;height:7px;border-radius:50%;background:#e2e8f0;display:block}
@@ -77,6 +77,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 .chemins h3{margin:0 0 8px;font-size:15px}.etape{border-top:1px solid rgba(148,163,184,.25);padding:7px 0}.etape small{display:block;opacity:.75}
 .pas{display:inline-block;margin:3px 5px 0 0;padding:2px 8px;border-radius:999px;font-size:12.5px;border:1px solid rgba(148,163,184,.5);color:#cbd5e1}
 .pas.bon{background:rgba(34,197,94,.18);border-color:#22c55e;color:#86efac}.pas.mauvais{background:rgba(239,68,68,.18);border-color:#ef4444;color:#fca5a5}
+.points{position:relative}.points.chez b{background:#22c55e}.points.petite.chez b{background:#22c55e}.points .brise{position:absolute;right:-1px;bottom:-5px;font-size:11px;line-height:1}.points.petite .brise{font-size:9px;bottom:-4px}.legende .sanspoint::before,.legende .pas::before{display:none}
 </style></head><body>
 <div id="voile"></div>
 <aside id="menu" aria-label="Matchs sauvegardés" aria-hidden="true">
@@ -127,7 +128,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 <div class="bloc"><h2>Bouclier géomantique · pyramide</h2>
   <label style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="voirRes" style="width:auto;margin:0" checked/> Afficher les résultantes</label>
   <div class="bouclier" id="bouclier"></div>
-  <div class="legende"><span style="--c:#ef4444">Feu</span><span style="--c:#eab308">Air</span><span style="--c:#3b82f6">Eau</span><span style="--c:#9ca3af">Terre</span><span class="r1">■ pôle R1</span><span class="r7">■ pôle R7</span><span style="color:#c084fc">■ M15</span></div>
+  <div class="legende"><span style="--c:#ef4444">Feu</span><span style="--c:#eab308">Air</span><span style="--c:#3b82f6">Eau</span><span style="--c:#9ca3af">Terre</span><span style="--c:#22c55e">figure chez elle</span><span class="sanspoint">💔 figure dans la maison de son antagoniste</span></div>
   <p id="absentes" class="muted" style="text-align:center"></p>
   <button class="primaire" id="telecharger" style="max-width:420px;display:block;margin:10px auto 0">Télécharger le thème (image)</button>
   <div class="bloc" style="margin-bottom:0"><div id="detail" class="muted">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
@@ -153,11 +154,14 @@ K.CAS.forEach(function(x){var d=el('div','cas'),b=el('b','',x.id+' · '+x.titre+
 ['A','B','C','D'].forEach(function(l,i){var r=el('tr'),par={};K.FIG.forEach(function(f,k){if(k%4===i)par[K.CARDINAL[k+1]]=(k+1)+' '+f;});r.appendChild(el('td','',l+' · '+E[i]));['Est','Nord','Ouest','Sud'].forEach(function(c){r.appendChild(el('td','',par[c]));});T.appendChild(r);});})();
 function points(f){var d=el('div','points');PTS[f].forEach(function(n){var l=el('i');l.appendChild(el('b'));if(n===2)l.appendChild(el('b'));d.appendChild(l);});return d;}
 var courant=null;
-function carte(h,L){var m=L.maisons[h-1],c=el('div','carte'+(h===L.R1.maison?' pR1':'')+(h===L.R7.maison?' pR7':'')+(h===15?' juge':''));
+// figure chez elle : verte ; figure dans la maison de son antagoniste (k-3) : cœur brisé en bas à droite
+function chezAntagoniste(f,h){return K.num(K.fig(K.num(f)-3+16))===h;}
+function marquer(d,f,h){if(K.num(f)===h)d.classList.add('chez');if(chezAntagoniste(f,h)){var c=el('span','brise','💔');c.setAttribute('aria-label','dans la maison de son antagoniste');d.appendChild(c);}return d;}
+function carte(h,L){var m=L.maisons[h-1],c=el('div','carte'+(h===L.R1.maison?' pR1':'')+(h===L.R7.maison?' pR7':''));
  c.setAttribute('role','button');c.tabIndex=0;c.setAttribute('aria-label','Maison '+h+' : '+m.base);
  var e=el('div','el');e.style.background=COUL[K.elementMaison(h)];c.appendChild(e);
- c.appendChild(el('div','n','M'+h));c.dataset.maison=h;c.appendChild(points(m.base));
- if($('voirRes').checked&&m.resultante){var r=points(m.resultante);r.className='points petite';r.setAttribute('aria-label','Résultante : '+m.resultante);c.appendChild(r);}
+ c.appendChild(el('div','n','M'+h));c.dataset.maison=h;c.appendChild(marquer(points(m.base),m.base,h));
+ if($('voirRes').checked&&m.resultante){var r=points(m.resultante);r.className='points petite';marquer(r,m.resultante,h);r.setAttribute('aria-label','Résultante : '+m.resultante);c.appendChild(r);}
  function ouvrir(){detail(h,L);var front=K.FIG.filter(function(f){return K.frontDe(f)===K.frontDe(m.base);});
   Array.prototype.forEach.call(document.querySelectorAll('.carte'),function(x){x.classList.remove('choisie','front','or');var mm=L.maisons[x.dataset.maison-1];
    if(front.indexOf(mm.base)>=0)x.classList.add('front');else if(mm.resultante&&front.indexOf(mm.resultante)>=0)x.classList.add('or');});
@@ -282,14 +286,14 @@ function dessiner(){var L=courant.L,x=saisie(),voir=$('voirRes').checked,W=1000,
  var col=(W-80)/8,cw=96,ch=voir?150:112,COULM={Feu:'#ef4444',Air:'#eab308',Eau:'#3b82f6',Terre:'#9ca3af'};
  function pts(f,cx,y,r,pas,coul){g.fillStyle=coul;PTS[f].forEach(function(n,i){var yy=y+i*pas;if(n===1){g.beginPath();g.arc(cx,yy,r,0,6.3);g.fill();}else{g.beginPath();g.arc(cx-pas/2,yy,r,0,6.3);g.fill();g.beginPath();g.arc(cx+pas/2,yy,r,0,6.3);g.fill();}});}
  function carteImg(h,cx,y){var m=L.maisons[h-1],x0=cx-cw/2,p1=h===L.R1.maison,p7=h===L.R7.maison;
-  g.fillStyle=p1?'#0c1c3d':p7?'#2a0f12':h===15?'#1e1033':'#0f172a';g.strokeStyle=p1?'#3b82f6':p7?'#ef4444':h===15?'#a855f7':'#334155';g.lineWidth=p1||p7||h===15?4:2;
+  g.fillStyle=p1?'#0c1c3d':p7?'#2a0f12':'#0f172a';g.strokeStyle=p1?'#3b82f6':p7?'#ef4444':'#334155';g.lineWidth=p1||p7?4:2;
   g.beginPath();if(g.roundRect)g.roundRect(x0,y,cw,ch,10);else g.rect(x0,y,cw,ch);g.fill();g.stroke();
   g.fillStyle=COULM[K.elementMaison(h)];g.fillRect(x0+8,y+3,cw-16,4);
-  g.fillStyle='#94a3b8';g.font='14px Arial';g.fillText('M'+h,cx,y+24);pts(m.base,cx,y+42,6,17,'#e2e8f0');
-  if(voir&&m.resultante){g.strokeStyle='#334155';g.lineWidth=1;g.setLineDash([4,4]);g.beginPath();g.moveTo(x0+8,y+104);g.lineTo(x0+cw-8,y+104);g.stroke();g.setLineDash([]);pts(m.resultante,cx,y+116,3,9,'#94a3b8');}}
+  g.fillStyle='#94a3b8';g.font='14px Arial';g.fillText('M'+h,cx,y+24);pts(m.base,cx,y+42,6,17,K.num(m.base)===h?'#22c55e':'#e2e8f0');if(chezAntagoniste(m.base,h)){g.font='15px Arial';g.fillText('💔',x0+cw-16,y+98);}
+  if(voir&&m.resultante){g.strokeStyle='#334155';g.lineWidth=1;g.setLineDash([4,4]);g.beginPath();g.moveTo(x0+8,y+104);g.lineTo(x0+cw-8,y+104);g.stroke();g.setLineDash([]);pts(m.resultante,cx,y+116,3,9,K.num(m.resultante)===h?'#22c55e':'#94a3b8');if(chezAntagoniste(m.resultante,h)){g.font='11px Arial';g.fillText('💔',x0+cw-14,y+146);}}}
  var y0=175,pas=ch+22;[8,7,6,5,4,3,2,1].forEach(function(h,i){carteImg(h,40+col*(i+.5),y0);});[12,11,10,9].forEach(function(h,i){carteImg(h,40+col*(i*2+1),y0+pas);});
  [14,13].forEach(function(h,i){carteImg(h,40+col*(i*4+2),y0+pas*2);});carteImg(15,40+col*4,y0+pas*3);carteImg(16,40+col*6,y0+pas*3);
- g.textAlign='left';g.font='14px Arial';var lx=40,ly=H-22;[['#3b82f6','pôle R1 : M'+L.R1.maison+' '+L.R1.figure],['#ef4444','pôle R7 : M'+L.R7.maison+' '+L.R7.figure],['#a855f7','M15']].forEach(function(t){g.fillStyle=t[0];g.fillRect(lx,ly-11,14,14);g.fillStyle='#cbd5e1';g.fillText(t[1],lx+20,ly+1);lx+=g.measureText(t[1]).width+50;});
+ g.textAlign='left';g.font='14px Arial';var lx=40,ly=H-22;[['#3b82f6','pôle R1 : M'+L.R1.maison+' '+L.R1.figure],['#ef4444','pôle R7 : M'+L.R7.maison+' '+L.R7.figure],['#22c55e','figure chez elle']].forEach(function(t){g.fillStyle=t[0];g.fillRect(lx,ly-11,14,14);g.fillStyle='#cbd5e1';g.fillText(t[1],lx+20,ly+1);lx+=g.measureText(t[1]).width+50;});
  g.textAlign='right';g.fillStyle='#64748b';g.fillText('koun · moteur '+K.version,W-40,ly+1);return cv;}
 $('telecharger').onclick=function(){if(!courant){$('erreur').textContent='Lance d’abord un thème.';return;}
  var x=saisie(),nom='koun_'+((x.team1||'equipe1')+'_'+(x.team2||'equipe2')).replace(/[^A-Za-z0-9]+/g,'-')+(x.score?'_'+x.score.replace(/[^0-9]+/g,'-'):'')+'.png';
