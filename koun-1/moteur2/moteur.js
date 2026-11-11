@@ -118,8 +118,31 @@
       for (var i = 0; i < 8; i++) { var f = fig(n + 2 * i); l.push({ figure: f, numero: num(f), front: frontDe(f), positions: positions(f), chezElle: chezElle(f), absente: positions(f).length === 0 }); }
       return l;
     }
+    // Chemin d'un pôle : ses figures, étape par étape, et qui tient leur maison de repos.
+    function chemin(c, autre) {
+      var n = num(c.figure), etapes;
+      if (mode === 'BOUCLES_DIFFERENTES') etapes = [[0, 'Pôle'], [2, 'Binôme du pôle'], [4, 'Front direct'], [6, 'Binôme du front direct'], [8, 'Miroir'], [10, 'Binôme du miroir'], [12, 'Front du miroir'], [14, 'Binôme du front du miroir']];
+      else if (mode === 'MEME_BOUCLE') etapes = [[0, 'Pôle'], [4, 'Front direct'], [8, 'Miroir'], [12, 'Front du miroir']];
+      else etapes = [[0, 'Pôle'], [(n <= 8 ? (n <= 4 ? 4 : -4) : (n <= 12 ? 4 : -4)), 'Partenaire de moitié']];
+      var miens = etapes.map(function (e) { return fig(n + e[0] + 16); });
+      var na = num(autre.figure), siens;
+      if (mode === 'BOUCLES_DIFFERENTES') siens = FIG.filter(function (f) { return num(f) % 2 === na % 2; });
+      else if (mode === 'MEME_BOUCLE') siens = autre.frontDirect;
+      else siens = [autre.figure, fig(na + (na <= 8 ? (na <= 4 ? 4 : -4) : (na <= 12 ? 4 : -4)))].filter(function (f) { return miens.indexOf(f) < 0; });
+      function cote(f) { return !f ? null : miens.indexOf(f) >= 0 ? 'ALLIE' : siens.indexOf(f) >= 0 ? 'ADVERSAIRE' : 'NEUTRE'; }
+      function annulee(f) { return annulations.some(function (x) { return x.attaquant === f || x.cible === f; }); }
+      var l = [{ titre: 'Maison du pôle', figure: c.figure, maison: c.maison, etat: 'POLE', occupant: c.figure, coteOccupant: 'ALLIE',
+        resultante: maisons[c.maison - 1].resultante, coteResultante: cote(maisons[c.maison - 1].resultante), positions: [] }];
+      etapes.forEach(function (e) {
+        var f = fig(n + e[0] + 16), h = num(f), m = maisons[h - 1], pos = positions(f), chez = chezElle(f);
+        l.push({ titre: e[1], figure: f, maison: h, etat: chez ? 'CHEZ_ELLE' : pos.length ? 'AILLEURS' : 'ABSENTE',
+          couche: chez ? (m.base === f ? 'base' : 'résultante') : null, annulee: chez && annulee(f), positions: pos,
+          occupant: m.base, coteOccupant: m.base === f ? 'ELLE' : cote(m.base), resultante: m.resultante, coteResultante: m.resultante === f ? 'ELLE' : cote(m.resultante) });
+      });
+      return l;
+    }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, mode: mode, confrontation: confrontation,
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };

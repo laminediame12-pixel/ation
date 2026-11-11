@@ -73,6 +73,10 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 .match .suppr.confirme{background:#7f1d1d;color:#fff;font-weight:700}
 .vert{background:#15803d;border-color:#15803d}
 #info{font-size:12.5px;color:#86efac;min-height:17px;margin-top:6px}
+.chemins{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.chemins{grid-template-columns:1fr}}
+.chemins h3{margin:0 0 8px;font-size:15px}.etape{border-top:1px solid rgba(148,163,184,.25);padding:7px 0}.etape small{display:block;opacity:.75}
+.pas{display:inline-block;margin:3px 5px 0 0;padding:2px 8px;border-radius:999px;font-size:12.5px;border:1px solid rgba(148,163,184,.5);color:#cbd5e1}
+.pas.bon{background:rgba(34,197,94,.18);border-color:#22c55e;color:#86efac}.pas.mauvais{background:rgba(239,68,68,.18);border-color:#ef4444;color:#fca5a5}
 </style></head><body>
 <div id="voile"></div>
 <aside id="menu" aria-label="Matchs sauvegardés" aria-hidden="true">
@@ -129,6 +133,9 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   <div class="bloc" style="margin-bottom:0"><div id="detail" class="muted">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
 </div>
 
+<div class="bloc"><h2>Le chemin des pôles</h2><p class="muted" id="cheminMode">Lance un thème.</p><div class="chemins"><div id="cheminR1"></div><div id="cheminR7"></div></div>
+ <div class="legende"><span class="pas bon">bon emplacement</span><span class="pas mauvais">mauvais emplacement</span><span class="pas">ni l’un ni l’autre</span></div></div>
+
 <div class="bloc"><h2>Les cas du moteur</h2><div id="cas"></div></div>
 <div class="bloc"><h2>Les fronts et leurs points cardinaux</h2><div class="defile"><table id="fronts"></table></div></div>
 
@@ -167,6 +174,21 @@ function bouclier(L){var B=$('bouclier');B.textContent='';
  function pose(h,cl){var w=el('div',cl||'');w.appendChild(carte(h,L));B.appendChild(w);}
  [8,7,6,5,4,3,2,1].forEach(function(h){pose(h);});[12,11,10,9].forEach(function(h){pose(h,'s2');});[14,13].forEach(function(h){pose(h,'s4');});pose(15,'c15');pose(16,'c16');
  var abs=K.FIG.filter(function(f){return !L.positions(f).length;});$('absentes').textContent=abs.length?'Absentes (ni base ni résultante) : '+abs.join(', '):'Les 16 figures sont présentes.';}
+function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : départage par les moitiés.',MEME_BOUCLE:'Pôles dans la même boucle : front contre front.',BOUCLES_DIFFERENTES:'Pôles dans des boucles différentes : figure et son binôme contre figure et son binôme.'};
+ $('cheminMode').textContent=noms[L.mode];
+ function cl(c){return c==='ELLE'||c==='ALLIE'?'pas bon':c==='ADVERSAIRE'?'pas mauvais':'pas';}
+ function qui(c){return c==='ELLE'?'elle-même':c==='ALLIE'?'allié':c==='ADVERSAIRE'?'adversaire':'neutre';}
+ ['R1','R7'].forEach(function(k){var Z=$('chemin'+k);Z.textContent='';var h=el('h3',k==='R1'?'r1':'r7',k+' · '+L[k].figure+' ('+K.num(L[k].figure)+')');Z.appendChild(h);
+  L.chemin[k].forEach(function(e){var d=el('div','etape');d.appendChild(el('small','',e.titre));
+   if(e.etat==='POLE'){d.appendChild(el('b','',e.figure+' en M'+e.maison));d.appendChild(document.createElement('br'));
+    if(e.resultante)d.appendChild(el('span',cl(e.coteResultante),'résultante : '+e.resultante+' ('+qui(e.coteResultante)+')'));}
+   else{d.appendChild(el('b','',K.num(e.figure)+' · '+e.figure));d.appendChild(document.createElement('br'));
+    if(e.etat==='CHEZ_ELLE')d.appendChild(el('span','pas bon','chez elle en M'+e.maison+' ('+e.couche+')'+(e.annulee?' · double repos':'')));
+    else if(e.etat==='ABSENTE')d.appendChild(el('span','pas mauvais','absente du thème'));
+    else d.appendChild(el('span','pas','ailleurs : '+e.positions.map(function(p){return 'M'+p.maison;}).join(', ')));
+    if(e.etat!=='CHEZ_ELLE'||e.couche==='résultante')d.appendChild(el('span',cl(e.coteOccupant),'M'+e.maison+' tenue par '+e.occupant+' ('+qui(e.coteOccupant)+')'));
+    if(e.resultante&&e.coteResultante!=='ELLE')d.appendChild(el('span',cl(e.coteResultante),'résultante de M'+e.maison+' : '+e.resultante+' ('+qui(e.coteResultante)+')'));}
+   Z.appendChild(d);});});}
 function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[0],m[1],m[2],m[3]);}catch(e){$('erreur').textContent=e.message;return;}
  var a=K.analyser(th),L=a.lecture,d=a.decision;courant={L:L,meres:m.slice(),decision:d};
  ['m1','m2','m3','m4'].forEach(function(id,i){$(id).value=m[i];});
@@ -185,6 +207,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
   g.appendChild(el('em','',l.detail+(l.present?' · '+[l.base.length?'base M'+l.base.join(', M'):'',l.resultante.length?'rés. M'+l.resultante.join(', M'):''].filter(Boolean).join(' · '):' · absente')));
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
+ afficherChemin(L);
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
 $('lancer').onclick=function(){var r=$('rapide').value.trim(),mt=$('modeTirage').value;
