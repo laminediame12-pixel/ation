@@ -197,7 +197,11 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       for (var i = 0; i < chez.length; i++) for (var j = i + 1; j < chez.length; j++) l.push({ figures: [chez[i], chez[j]], maisons: [num(chez[i]), num(chez[j])], front: lettre });
       return l;
     }
-    return { theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
+    function chezElleEnBase(f) { return maisons[num(f) - 1].base === f; }
+    function absente(f) { return positions(f).length === 0; }
+    function enMaisonPaire(f) { return positions(f).some(function (x) { return x.maison % 2 === 0; }); }
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire,
+      theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
   }
@@ -256,7 +260,61 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + k + ' assurée : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
       }
     }
+    ,
+    // Les cas suivants valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
+    {
+      id: 'CAS-003', titre: 'Pôle et son front au repos, autres en maisons paires', statut: 'EN_ESSAI',
+      enonce: 'Le pôle est dans sa maison de repos (en base) et son antagoniste n’est pas dans la sienne ; son front (la figure suivante de son front) est dans sa propre maison (base ou résultante) et l’antagoniste de ce front n’est pas dans la sienne ; les deux autres figures du front occupent des maisons paires : ce pôle gagne, victoire assurée.',
+      condition: function (L) {
+        function ok(c) {
+          var n = num(c.figure), front = fig(n + 4);
+          return L.chezElleEnBase(c.figure) && !L.chezElle(fig(n - 3)) && L.chezElle(front) && !L.chezElle(fig(n + 1)) &&
+            L.enMaisonPaire(fig(n + 8)) && L.enMaisonPaire(fig(n + 12));
+        }
+        return unSeul(L, ok, function (c) { return c.figure + ' est dans sa maison de repos, son front ' + fig(num(c.figure) + 4) + ' aussi, sans antagoniste au repos ; ' + fig(num(c.figure) + 8) + ' et ' + fig(num(c.figure) + 12) + ' occupent des maisons paires.'; });
+      }
+    },
+    {
+      id: 'CAS-004', titre: 'Pôle antagoniste direct, en M8 avec un front en M4 ou M12', statut: 'EN_ESSAI',
+      enonce: 'Le pôle est l’antagoniste direct de l’autre pôle (il l’attaque) ; il est en M8, la maison miroir, et une autre figure de son front est en M4 ou en M12 : ce pôle gagne, victoire assurée.',
+      condition: function (L) {
+        function ok(c, autre) {
+          var n = num(c.figure);
+          return num(autre.figure) === num(fig(n + 3)) && L.maisons[7].base === c.figure &&
+            [fig(n + 4), fig(n + 8), fig(n + 12)].some(function (f) { return L.presentEn(f, 4) || L.presentEn(f, 12); });
+        }
+        return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', il est en M8 et une figure de son front est en M4 ou M12.'; });
+      }
+    },
+    {
+      id: 'CAS-005', titre: 'Pôle chez son antagoniste, front absent', statut: 'EN_ESSAI',
+      enonce: 'Le pôle est dans la maison de son antagoniste direct, et son front direct ou le front de son miroir est absent du thème ; l’adversaire a une figure de son front en maison paire (en M4 ou M12 si son front est Terre ou Eau) : l’adversaire gagne, victoire assurée.',
+      condition: function (L) {
+        function ok(c, autre) {        // c = le camp qui gagne, autre = le pôle mal placé
+          var n = num(autre.figure), chezAntagoniste = L.maisons[num(fig(n - 3)) - 1].base === autre.figure;
+          if (!chezAntagoniste || !(L.absente(fig(n + 4)) || L.absente(fig(n + 12)))) return false;
+          var exigeM4M12 = c.element === 'Terre' || c.element === 'Eau';
+          return c.frontDirect.some(function (f) { return exigeM4M12 ? (L.presentEn(f, 4) || L.presentEn(f, 12)) : L.enMaisonPaire(f); });
+        }
+        return unSeul(L, ok, function (c, autre) { return autre.figure + ' est dans la maison de son antagoniste ' + fig(num(autre.figure) - 3) + ' et son front est incomplet ; le front de ' + c.figure + ' tient ' + (c.element === 'Terre' || c.element === 'Eau' ? 'M4 ou M12' : 'une maison paire') + '.'; });
+      }
+    },
+    {
+      id: 'CAS-006', titre: 'Pôle attaqué sans front direct', statut: 'EN_ESSAI',
+      enonce: 'Un pôle est l’antagoniste direct de l’autre, et le pôle attaqué n’a pas son front direct dans le thème : celui qui n’a pas de front direct perd.',
+      condition: function (L) {
+        function ok(c, autre) { return num(autre.figure) === num(fig(num(c.figure) + 3)) && L.absente(fig(num(autre.figure) + 4)); }
+        return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', dont le front direct ' + fig(num(autre.figure) + 4) + ' est absent du thème.'; });
+      }
+    }
   ];
+  // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.
+  function unSeul(L, ok, pourquoi) {
+    var a = ok(L.R1, L.R7), b = ok(L.R7, L.R1);
+    if (a === b) return null;
+    var g = a ? L.R1 : L.R7, p = a ? L.R7 : L.R1;
+    return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + g.camp + ' assurée : ' + pourquoi(g, p) };
+  }
 
   function analyser(theme, polesForces) {
     var L = lire(theme, polesForces), decision = null;

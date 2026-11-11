@@ -24,6 +24,12 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 |---|---|---|---|
 | CAS-001 | R1 et R7 dans le même front (identique, miroir ou voisin) | Nul | Confirmé |
 | CAS-002 | Deux figures du front d'un pôle, en base, chacune dans sa maison de repos à 100 %, et pas de verrou en face | Victoire assurée de ce pôle | En essai |
+| CAS-003 | Le pôle est dans sa maison de repos (en base), son antagoniste non ; son front est dans sa propre maison (base ou résultante), l'antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires | Victoire assurée de ce pôle | En essai |
+| CAS-004 | Le pôle attaque directement l'autre pôle ; il est en M8 et une autre figure de son front est en M4 ou M12 | Victoire assurée de ce pôle | En essai |
+| CAS-005 | Le pôle est dans la maison de son antagoniste direct, et son front direct ou le front de son miroir est absent ; l'adversaire a une figure de son front en maison paire (en M4 ou M12 si son front est Terre ou Eau) | Victoire assurée de l'adversaire | En essai |
+| CAS-006 | Un pôle attaque directement l'autre, et le pôle attaqué n'a pas son front direct dans le thème | Le pôle sans front direct perd | En essai |
+
+Les cas 003 à 006 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 
 ### Ajouter un cas
 
