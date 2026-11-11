@@ -1,0 +1,3044 @@
+[
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.repos",
+  "ok": 5,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 3,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": -12,
+   "NUL_REFERENCE_4": 8,
+   "NUL_REFERENCE_5": 4,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 3,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -3,
+   "AZ_VILLARREAL": -3
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.diagnostic[1].dangereuseBase",
+  "ok": 5,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.diagnostic[1].coïncidencesFront.length",
+  "ok": 5,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.ancrage.places.n",
+  "ok": 5,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -2
+  }
+ },
+ {
+  "k": "evaluerBaremeForces.maisons[1].figures[0].forcePct",
+  "ok": 5,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -45,
+   "NUL_REFERENCE_3": -69,
+   "NUL_REFERENCE_4": 30,
+   "NUL_REFERENCE_5": 84,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -54,
+   "VICTOIRE_REFERENCE_2": 30,
+   "VICTOIRE_REFERENCE_3": -15,
+   "VICTOIRE_REFERENCE_4": 45,
+   "AZ_VILLARREAL": -69
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].a",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -3,
+   "NUL_REFERENCE_4": 6,
+   "NUL_REFERENCE_5": 3,
+   "NUL_REFERENCE_6": -4,
+   "VICTOIRE_REFERENCE_1": -3,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -3,
+   "AZ_VILLARREAL": 7
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].ecart",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 85,
+   "NUL_REFERENCE_2": 31,
+   "NUL_REFERENCE_3": -210,
+   "NUL_REFERENCE_4": 53,
+   "NUL_REFERENCE_5": 186,
+   "NUL_REFERENCE_6": 45,
+   "VICTOIRE_REFERENCE_1": -157,
+   "VICTOIRE_REFERENCE_2": 245,
+   "VICTOIRE_REFERENCE_3": -138,
+   "VICTOIRE_REFERENCE_4": -128,
+   "AZ_VILLARREAL": -12
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].dominantVal",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 226,
+   "NUL_REFERENCE_2": 53,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 53,
+   "NUL_REFERENCE_5": 53,
+   "NUL_REFERENCE_6": 128,
+   "VICTOIRE_REFERENCE_1": 68,
+   "VICTOIRE_REFERENCE_2": 128,
+   "VICTOIRE_REFERENCE_3": -113,
+   "VICTOIRE_REFERENCE_4": -60,
+   "AZ_VILLARREAL": 60
+  }
+ },
+ {
+  "k": "evaluerAxesValidite[1].presence.length",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analysePhasesAspects.aspectsLune[0].vsR1.angle",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -90,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -90,
+   "NUL_REFERENCE_4": -90,
+   "NUL_REFERENCE_5": -90,
+   "NUL_REFERENCE_6": 45,
+   "VICTOIRE_REFERENCE_1": -135,
+   "VICTOIRE_REFERENCE_2": -90,
+   "VICTOIRE_REFERENCE_3": 45,
+   "VICTOIRE_REFERENCE_4": 90,
+   "AZ_VILLARREAL": -45
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.front.presence.force",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -0.5,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 2.5,
+   "NUL_REFERENCE_4": 2.5,
+   "NUL_REFERENCE_5": 2.5,
+   "NUL_REFERENCE_6": -5.5,
+   "VICTOIRE_REFERENCE_1": 6,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -2,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": -5.5
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.antagoniste.presence.occ.length",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": -2,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.antagoniste.presence.res.length",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 3,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.antagoniste.presence.force",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 10.5,
+   "NUL_REFERENCE_2": 5.5,
+   "NUL_REFERENCE_3": -2.5,
+   "NUL_REFERENCE_4": -0.5,
+   "NUL_REFERENCE_5": -2.5,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -0.5,
+   "VICTOIRE_REFERENCE_2": -6,
+   "VICTOIRE_REFERENCE_3": -8.5,
+   "VICTOIRE_REFERENCE_4": 3,
+   "AZ_VILLARREAL": -2.5
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.binome.presence.res.length",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -3,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.binome.force",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -3.5,
+   "NUL_REFERENCE_2": -10.5,
+   "NUL_REFERENCE_3": -2.5,
+   "NUL_REFERENCE_4": -7.5,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 4.5,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": 0.5,
+   "VICTOIRE_REFERENCE_3": 5.5,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 5.5
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.bouclier.presence.occ.length",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.bouclier.presence.res.length",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -3,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.bouclier.presence.force",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -3,
+   "NUL_REFERENCE_3": 2.5,
+   "NUL_REFERENCE_4": 5.5,
+   "NUL_REFERENCE_5": -0.5,
+   "NUL_REFERENCE_6": -8.5,
+   "VICTOIRE_REFERENCE_1": 0.5,
+   "VICTOIRE_REFERENCE_2": -3.5,
+   "VICTOIRE_REFERENCE_3": -7.5,
+   "VICTOIRE_REFERENCE_4": -0.5,
+   "AZ_VILLARREAL": 4.5
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.scoreRel",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -19.099999999999998,
+   "NUL_REFERENCE_2": -9.5,
+   "NUL_REFERENCE_3": -2.5,
+   "NUL_REFERENCE_4": -3.400000000000002,
+   "NUL_REFERENCE_5": -1.6999999999999993,
+   "NUL_REFERENCE_6": -22.7,
+   "VICTOIRE_REFERENCE_1": 17.1,
+   "VICTOIRE_REFERENCE_2": -1.1999999999999993,
+   "VICTOIRE_REFERENCE_3": 6.200000000000003,
+   "VICTOIRE_REFERENCE_4": 5.900000000000002,
+   "AZ_VILLARREAL": 5.899999999999999
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.favorables.length",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 3,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 5,
+   "VICTOIRE_REFERENCE_1": -5,
+   "VICTOIRE_REFERENCE_2": -3,
+   "VICTOIRE_REFERENCE_3": 4,
+   "VICTOIRE_REFERENCE_4": 3,
+   "AZ_VILLARREAL": -3
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.favorables[2]",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -4,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -7,
+   "VICTOIRE_REFERENCE_1": 3,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -2,
+   "VICTOIRE_REFERENCE_4": -3,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.favorables[4]",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -6,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -8,
+   "VICTOIRE_REFERENCE_1": 5,
+   "VICTOIRE_REFERENCE_2": 3,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": -4,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[0].h",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[1].w",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailDef[1].h",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 3,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 4,
+   "NUL_REFERENCE_4": 8,
+   "NUL_REFERENCE_5": 4,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 3,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 13,
+   "AZ_VILLARREAL": -3
+  }
+ },
+ {
+  "k": "analyseCroisementBoucles.boucleR1.canal[0]",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": -2,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 3,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -3,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.diagnostic[1].dangereuseResultante",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[1].R1.resultante",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[3].R1.base",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[4].R1.base",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[6].R1.base",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseForceReposFront.antagBoucle.R1.pression",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -4,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -2
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.etapes[1].reposFront",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 7,
+   "NUL_REFERENCE_2": 4,
+   "NUL_REFERENCE_3": 4,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 5,
+   "VICTOIRE_REFERENCE_1": -6,
+   "VICTOIRE_REFERENCE_2": 12,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": -4,
+   "AZ_VILLARREAL": -8
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.etapes[1].ruptureCanal",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Feu[1].maisonsFront[0]",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -4,
+   "NUL_REFERENCE_2": 3,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 6,
+   "NUL_REFERENCE_5": 13,
+   "NUL_REFERENCE_6": 4,
+   "VICTOIRE_REFERENCE_1": 2,
+   "VICTOIRE_REFERENCE_2": 6,
+   "VICTOIRE_REFERENCE_3": -3,
+   "VICTOIRE_REFERENCE_4": -10,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Air[1].maisonsFront.length",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 2,
+   "VICTOIRE_REFERENCE_2": 2,
+   "VICTOIRE_REFERENCE_3": 2,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Air[1].ruptureCanal",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Eau[1].reposFront",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 9,
+   "NUL_REFERENCE_3": 12,
+   "NUL_REFERENCE_4": -6,
+   "NUL_REFERENCE_5": -4,
+   "NUL_REFERENCE_6": 11,
+   "VICTOIRE_REFERENCE_1": 3,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -5
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Eau[1].frontPlus",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Terre[1].reposFront",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 4,
+   "NUL_REFERENCE_4": 3,
+   "NUL_REFERENCE_5": -3,
+   "NUL_REFERENCE_6": 8,
+   "VICTOIRE_REFERENCE_1": 7,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 3,
+   "VICTOIRE_REFERENCE_4": 12,
+   "AZ_VILLARREAL": -9
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Terre[1].maisonsFront.length",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Terre[1].ablation",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Terre[1].camp",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].campTo",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 2
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.detail[1].to",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 7,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -3,
+   "NUL_REFERENCE_4": -10,
+   "NUL_REFERENCE_5": -9,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 10,
+   "VICTOIRE_REFERENCE_2": -7,
+   "VICTOIRE_REFERENCE_3": -9,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -5
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.detail[1].poids",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0.2999999999999998,
+   "NUL_REFERENCE_2": 0.5,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0.7999999999999998,
+   "NUL_REFERENCE_5": 0.7000000000000002,
+   "NUL_REFERENCE_6": 0.5999999999999996,
+   "VICTOIRE_REFERENCE_1": 0.2999999999999998,
+   "VICTOIRE_REFERENCE_2": -0.20000000000000018,
+   "VICTOIRE_REFERENCE_3": -0.20000000000000018,
+   "VICTOIRE_REFERENCE_4": -0.5,
+   "AZ_VILLARREAL": -0.20000000000000018
+  }
+ },
+ {
+  "k": "analyserAccouchementsElementaires.air[1].distincteDeXOR",
+  "ok": 4,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a1.places.any",
+  "ok": 4,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseValidationTirage.angulaire.maisons[1]",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -3,
+   "NUL_REFERENCE_2": -3,
+   "NUL_REFERENCE_3": -3,
+   "NUL_REFERENCE_4": -3,
+   "NUL_REFERENCE_5": -3,
+   "NUL_REFERENCE_6": -3,
+   "VICTOIRE_REFERENCE_1": -3,
+   "VICTOIRE_REFERENCE_2": -3,
+   "VICTOIRE_REFERENCE_3": -3,
+   "VICTOIRE_REFERENCE_4": -3,
+   "AZ_VILLARREAL": -3
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].b",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -3,
+   "NUL_REFERENCE_4": 6,
+   "NUL_REFERENCE_5": -4,
+   "NUL_REFERENCE_6": -4,
+   "VICTOIRE_REFERENCE_1": -3,
+   "VICTOIRE_REFERENCE_2": 6,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": -3,
+   "AZ_VILLARREAL": 7
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].valA",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 406,
+   "NUL_REFERENCE_2": 22,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 53,
+   "NUL_REFERENCE_6": -137,
+   "VICTOIRE_REFERENCE_1": 406,
+   "VICTOIRE_REFERENCE_2": -170,
+   "VICTOIRE_REFERENCE_3": 25,
+   "VICTOIRE_REFERENCE_4": -230,
+   "AZ_VILLARREAL": 330
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].valB",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -39,
+   "NUL_REFERENCE_2": 53,
+   "NUL_REFERENCE_3": 210,
+   "NUL_REFERENCE_4": 53,
+   "NUL_REFERENCE_5": -133,
+   "NUL_REFERENCE_6": 348,
+   "VICTOIRE_REFERENCE_1": -113,
+   "VICTOIRE_REFERENCE_2": 181,
+   "VICTOIRE_REFERENCE_3": -113,
+   "VICTOIRE_REFERENCE_4": 238,
+   "AZ_VILLARREAL": -198
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].somme",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 367,
+   "NUL_REFERENCE_2": 75,
+   "NUL_REFERENCE_3": 210,
+   "NUL_REFERENCE_4": 53,
+   "NUL_REFERENCE_5": -80,
+   "NUL_REFERENCE_6": 211,
+   "VICTOIRE_REFERENCE_1": 293,
+   "VICTOIRE_REFERENCE_2": 11,
+   "VICTOIRE_REFERENCE_3": -88,
+   "VICTOIRE_REFERENCE_4": 8,
+   "AZ_VILLARREAL": 132
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].poids",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 334,
+   "NUL_REFERENCE_2": 150,
+   "NUL_REFERENCE_3": 420,
+   "NUL_REFERENCE_4": 106,
+   "NUL_REFERENCE_5": 146,
+   "NUL_REFERENCE_6": 66,
+   "VICTOIRE_REFERENCE_1": 586,
+   "VICTOIRE_REFERENCE_2": 22,
+   "VICTOIRE_REFERENCE_3": 109,
+   "VICTOIRE_REFERENCE_4": 16,
+   "AZ_VILLARREAL": 528
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].dominant",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -8,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -3,
+   "NUL_REFERENCE_4": 12,
+   "NUL_REFERENCE_5": 3,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": -9,
+   "VICTOIRE_REFERENCE_2": 12,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": 3,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "evaluerAxesValidite[1].occ.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 2,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 2,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "evaluerAxesValidite[1].res.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -2
+  }
+ },
+ {
+  "k": "duelElementairePoles.R1",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -6,
+   "NUL_REFERENCE_2": 10,
+   "NUL_REFERENCE_3": -6,
+   "NUL_REFERENCE_4": 10,
+   "NUL_REFERENCE_5": -6,
+   "NUL_REFERENCE_6": -6,
+   "VICTOIRE_REFERENCE_1": -6,
+   "VICTOIRE_REFERENCE_2": -6,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": -6,
+   "AZ_VILLARREAL": -6
+  }
+ },
+ {
+  "k": "analyseAnneauProtecteur.R1.score",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -4.700000000000003,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -3.5,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": -1.2000000000000028,
+   "NUL_REFERENCE_6": -20.299999999999997,
+   "VICTOIRE_REFERENCE_1": 14.799999999999997,
+   "VICTOIRE_REFERENCE_2": -5.200000000000003,
+   "VICTOIRE_REFERENCE_3": 14.799999999999997,
+   "VICTOIRE_REFERENCE_4": -3.5,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analysePhasesAspects.aspectsLune[0].vsR1.score",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 2,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 2,
+   "NUL_REFERENCE_4": 2,
+   "NUL_REFERENCE_5": -1.5,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 2.5,
+   "VICTOIRE_REFERENCE_2": -1.5,
+   "VICTOIRE_REFERENCE_3": 2,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": 2
+  }
+ },
+ {
+  "k": "analysePhasesAspects.aspectsLune[0].vsR1.pos2.degSigne",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -15,
+   "NUL_REFERENCE_2": 15,
+   "NUL_REFERENCE_3": 15,
+   "NUL_REFERENCE_4": -15,
+   "NUL_REFERENCE_5": 15,
+   "NUL_REFERENCE_6": -15,
+   "VICTOIRE_REFERENCE_1": -15,
+   "VICTOIRE_REFERENCE_2": 15,
+   "VICTOIRE_REFERENCE_3": 15,
+   "VICTOIRE_REFERENCE_4": -15,
+   "AZ_VILLARREAL": 15
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.self.presence.occ[0]",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 5,
+   "NUL_REFERENCE_2": 10,
+   "NUL_REFERENCE_3": -4,
+   "NUL_REFERENCE_4": 11,
+   "NUL_REFERENCE_5": -6,
+   "NUL_REFERENCE_6": -5,
+   "VICTOIRE_REFERENCE_1": -8,
+   "VICTOIRE_REFERENCE_2": -6,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": -6,
+   "AZ_VILLARREAL": -6
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.self.presence.force",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -5.5,
+   "NUL_REFERENCE_2": 7,
+   "NUL_REFERENCE_3": -6,
+   "NUL_REFERENCE_4": -5.5,
+   "NUL_REFERENCE_5": -2.5,
+   "NUL_REFERENCE_6": -8,
+   "VICTOIRE_REFERENCE_1": 5.5,
+   "VICTOIRE_REFERENCE_2": -2.5,
+   "VICTOIRE_REFERENCE_3": 3,
+   "VICTOIRE_REFERENCE_4": 2.5,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.front.presence.res.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -2,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.antagoniste.presence.any",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.antagoniste.atRepos",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.binome.presence.occ.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.binome.presence.force",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -3.5,
+   "NUL_REFERENCE_2": -10.5,
+   "NUL_REFERENCE_3": -2.5,
+   "NUL_REFERENCE_4": -5.5,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 2.5,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0.5,
+   "VICTOIRE_REFERENCE_3": 5.5,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 5.5
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.bouclier.atRepos",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.scoreMais",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -3,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -4,
+   "NUL_REFERENCE_4": 2,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -7,
+   "VICTOIRE_REFERENCE_1": 3,
+   "VICTOIRE_REFERENCE_2": -3,
+   "VICTOIRE_REFERENCE_3": 5,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.chainForce",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0.40000000000000036,
+   "NUL_REFERENCE_2": 0.5,
+   "NUL_REFERENCE_3": 5.699999999999999,
+   "NUL_REFERENCE_4": 6.5,
+   "NUL_REFERENCE_5": 4.100000000000001,
+   "NUL_REFERENCE_6": -4.200000000000001,
+   "VICTOIRE_REFERENCE_1": -2.6999999999999993,
+   "VICTOIRE_REFERENCE_2": 2.8000000000000007,
+   "VICTOIRE_REFERENCE_3": 2.5999999999999996,
+   "VICTOIRE_REFERENCE_4": -6,
+   "AZ_VILLARREAL": -11.7
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.total",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -21.900000000000002,
+   "NUL_REFERENCE_2": -9.2,
+   "NUL_REFERENCE_3": 1.3999999999999986,
+   "NUL_REFERENCE_4": 1.7999999999999972,
+   "NUL_REFERENCE_5": 4.299999999999997,
+   "NUL_REFERENCE_6": -31.800000000000004,
+   "VICTOIRE_REFERENCE_1": 18.799999999999997,
+   "VICTOIRE_REFERENCE_2": -2.8000000000000043,
+   "VICTOIRE_REFERENCE_3": 12.5,
+   "VICTOIRE_REFERENCE_4": 4.900000000000002,
+   "AZ_VILLARREAL": -0.8999999999999986
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.hitsFav.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -2,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": -2,
+   "NUL_REFERENCE_6": -4,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 2,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.score",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -3,
+   "NUL_REFERENCE_2": -2,
+   "NUL_REFERENCE_3": -4,
+   "NUL_REFERENCE_4": 2,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -5,
+   "VICTOIRE_REFERENCE_1": 7,
+   "VICTOIRE_REFERENCE_2": -3,
+   "VICTOIRE_REFERENCE_3": 5,
+   "VICTOIRE_REFERENCE_4": 6,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.hitsFav.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -2,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": -2,
+   "NUL_REFERENCE_6": -3,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 2,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.hitsDef.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.favorables[0]",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 2,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.defavorables.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.defavorables[0]",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 5,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 8,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": -3,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 10,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 5,
+   "VICTOIRE_REFERENCE_4": 10,
+   "AZ_VILLARREAL": -6
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[4].h",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 4,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -8,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -4,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": -12,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": 4
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[4].w",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR7.profil.detailFav[1].w",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -2,
+   "NUL_REFERENCE_3": -2,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.diagnostic[1].chuteBase",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.diagnostic[1].chuteResultante",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.diagnostic[1].signal",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[0].R1.base",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[0].R1.resultante",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[1].R7.resultante",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[2].R1.base",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[2].R1.resultante",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[5].R1.base",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[5].R1.resultante",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.etapes[1].frontPlus",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.etapes[1].camp",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 2,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Feu[1].reposFront",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 4,
+   "NUL_REFERENCE_2": 4,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -10,
+   "NUL_REFERENCE_5": -6,
+   "NUL_REFERENCE_6": -3,
+   "VICTOIRE_REFERENCE_1": 4,
+   "VICTOIRE_REFERENCE_2": 6,
+   "VICTOIRE_REFERENCE_3": 10,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Feu[1].frontPlus",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Feu[1].ruptureCanal",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Air[1].reposFront",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -5,
+   "NUL_REFERENCE_2": 7,
+   "NUL_REFERENCE_3": -8,
+   "NUL_REFERENCE_4": 5,
+   "NUL_REFERENCE_5": -10,
+   "NUL_REFERENCE_6": 9,
+   "VICTOIRE_REFERENCE_1": -10,
+   "VICTOIRE_REFERENCE_2": 3,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 5,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Air[1].frontPlus",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Air[1].ablation",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Eau[1].ruptureCanal",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Terre[1].ruptureCanal",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.force.camp1",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -30.9,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -84.4,
+   "VICTOIRE_REFERENCE_1": 51.300000000000004,
+   "VICTOIRE_REFERENCE_2": 2.900000000000002,
+   "VICTOIRE_REFERENCE_3": 50.1,
+   "VICTOIRE_REFERENCE_4": 7.899999999999999,
+   "AZ_VILLARREAL": -7.100000000000001
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].from",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -6,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 11,
+   "NUL_REFERENCE_5": 2,
+   "NUL_REFERENCE_6": 6,
+   "VICTOIRE_REFERENCE_1": 6,
+   "VICTOIRE_REFERENCE_2": 6,
+   "VICTOIRE_REFERENCE_3": -6,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].to",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 14,
+   "NUL_REFERENCE_2": -12,
+   "NUL_REFERENCE_3": -4,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 5,
+   "NUL_REFERENCE_6": -5,
+   "VICTOIRE_REFERENCE_1": 5,
+   "VICTOIRE_REFERENCE_2": -13,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].poids",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 2.3000000000000007,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1.5,
+   "NUL_REFERENCE_5": 1.9000000000000004,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0.3000000000000007,
+   "VICTOIRE_REFERENCE_2": 0.09999999999999964,
+   "VICTOIRE_REFERENCE_3": 0.3000000000000007,
+   "VICTOIRE_REFERENCE_4": 0.5,
+   "AZ_VILLARREAL": 0.5
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.detail[1].campTo",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 2,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": -2
+  }
+ },
+ {
+  "k": "analyserAccouchementsElementaires.terre[1].distincteDeXOR",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseAncrageFrontsABCD.R1.ancragesAir.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 3,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 3,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseAncrageFrontsABCD.R1.ancrageComplet",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.pctR1",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -58,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 25,
+   "NUL_REFERENCE_4": 34,
+   "NUL_REFERENCE_5": 50,
+   "NUL_REFERENCE_6": -83,
+   "VICTOIRE_REFERENCE_1": 75,
+   "VICTOIRE_REFERENCE_2": -17,
+   "VICTOIRE_REFERENCE_3": -9,
+   "VICTOIRE_REFERENCE_4": 25,
+   "AZ_VILLARREAL": -50
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a1.score",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1.5,
+   "NUL_REFERENCE_2": 3.5,
+   "NUL_REFERENCE_3": 2.5,
+   "NUL_REFERENCE_4": 3,
+   "NUL_REFERENCE_5": 3.5,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 1.5,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 2.5,
+   "AZ_VILLARREAL": -2
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a1.places.b.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 2,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a1.places.r.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a1.places.n",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 2,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a1.ancre",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a2.places.b.length",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": -2,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 3,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a2.places.r.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a2.ancre",
+  "ok": 3,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a3.score",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1.5,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1.5,
+   "NUL_REFERENCE_4": -3,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 4,
+   "VICTOIRE_REFERENCE_1": -1.5,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -4,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 4.5
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a3.places.r.length",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a3.places.n",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 3,
+   "VICTOIRE_REFERENCE_1": -3,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -2,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "evaluerBaremeForces.maisons[1].figures[0].reposPropreIci",
+  "ok": 3,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "evaluerAxesValidite[1].maisons.length",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "evaluerAxesValidite[1].presence[0].pos",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -10,
+   "NUL_REFERENCE_2": -2,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -4,
+   "VICTOIRE_REFERENCE_1": -10,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 7,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": -2
+  }
+ },
+ {
+  "k": "duelElementairePoles.figR1EnRepos",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.self.presence.res.length",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 4,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.front.presence.occ.length",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.binome.atRepos",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.hitsDef.length",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.favorables[1]",
+  "ok": 2,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": 2
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[0].w",
+  "ok": 2,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[1].h",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[3].w",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[1].R1.base",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[1].R7.base",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[3].R1.resultante",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[6].R1.resultante",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseForceReposFront.forceR1.score",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1.4500000000000002,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -3.4499999999999993,
+   "VICTOIRE_REFERENCE_1": -1.6000000000000005,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1.4500000000000002,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.etapes[1].ablation",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Air[1].camp",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Eau[1].maisonsFront.length",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 3,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyserAccouchementsElementaires.maisons[1].distincteDeXOR",
+  "ok": 2,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": -1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseAncrageFrontsABCD.R1.controleM10FrontBinome[0].occupantDansFrontDuPole",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.pctAntR1",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -14,
+   "NUL_REFERENCE_2": 40,
+   "NUL_REFERENCE_3": 16,
+   "NUL_REFERENCE_4": 25,
+   "NUL_REFERENCE_5": 12,
+   "NUL_REFERENCE_6": 28,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 20,
+   "VICTOIRE_REFERENCE_3": -38,
+   "VICTOIRE_REFERENCE_4": 26,
+   "AZ_VILLARREAL": 19
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.ancrage.ancre",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": -1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a2.score",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1.5,
+   "NUL_REFERENCE_2": 2.5,
+   "NUL_REFERENCE_3": 0.5,
+   "NUL_REFERENCE_4": 2.5,
+   "NUL_REFERENCE_5": -2.5,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 3.5,
+   "VICTOIRE_REFERENCE_3": -3,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 3
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a2.places.n",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 2,
+   "VICTOIRE_REFERENCE_2": 3,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 1
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a3.places.b.length",
+  "ok": 2,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 2,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 1,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a3.places.any",
+  "ok": 2,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseBTTS_F1.R1.antFronts.a3.ancre",
+  "ok": 2,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].details.length",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 0,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyserConflitsMajeurs.tous[1].intensite",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseAnneauProtecteur.R1.aretesVives",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 2,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -3,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 2,
+   "VICTOIRE_REFERENCE_3": 2,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.camp",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": -1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.self.presence.occ.length",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -2,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.front.presence.any",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseReseauPolesComplet.reseauR1.detail.bouclier.presence.any",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[2].h",
+  "ok": 1,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -4,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -4,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": -2,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[2].w",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 1,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 2,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 2,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMaisonsFavorables.scoreR1.profil.detailFav[3].h",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -2,
+   "NUL_REFERENCE_2": 2,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -2,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -2,
+   "VICTOIRE_REFERENCE_1": -2,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseMatriceIncidents.presenceFronts[4].R1.resultante",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": -1,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 1,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.etapes[1].maisonsFront.length",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": -2,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 1,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseDeplacementFront.parCanal.Feu[1].maisonsFront.length",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": -1,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": -1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -1
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].campFrom",
+  "ok": 1,
+  "sens": "−",
+  "d": {
+   "NUL_REFERENCE_1": -1,
+   "NUL_REFERENCE_2": 0,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 1,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].sourceRepos",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": -1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 1,
+   "NUL_REFERENCE_6": 1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseRelationsConcordance.top[1].cibleRepos",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 0,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": -1,
+   "NUL_REFERENCE_6": -1,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": 0,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": 0
+  }
+ },
+ {
+  "k": "analyseAncrageFrontsABCD.R1.ancragesTerre.length",
+  "ok": 1,
+  "sens": "+",
+  "d": {
+   "NUL_REFERENCE_1": 1,
+   "NUL_REFERENCE_2": 1,
+   "NUL_REFERENCE_3": 0,
+   "NUL_REFERENCE_4": 0,
+   "NUL_REFERENCE_5": 0,
+   "NUL_REFERENCE_6": -4,
+   "VICTOIRE_REFERENCE_1": 0,
+   "VICTOIRE_REFERENCE_2": -2,
+   "VICTOIRE_REFERENCE_3": 0,
+   "VICTOIRE_REFERENCE_4": 0,
+   "AZ_VILLARREAL": -2
+  }
+ }
+]
