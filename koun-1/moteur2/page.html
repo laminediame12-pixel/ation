@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>koun · moteur 2</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;padding:20px 16px;background:#f7f8f5;color:#25352e;line-height:1.5}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:15px;margin:24px 0 8px}p{margin:6px 0}.muted{color:#6b756d;font-size:13px}
+.cas{background:#fff;border:1px solid #e0e5dc;border-radius:8px;padding:12px 14px;margin:8px 0}
+.cas b{display:block}.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#e7efe0;color:#35553a;margin-left:6px}
+.tag.essai{background:#f7ecd9;color:#8a5a1c}
+table{border-collapse:collapse;width:100%;max-width:560px;background:#fff}td,th{border:1px solid #e0e5dc;padding:6px 8px;font-size:13px;text-align:left}
+</style></head><body>
+<h1>koun · moteur <span id="v"></span></h1>
+<p class="muted">Structure + cas explicites. Le moteur lit les cas dans l'ordre ; si aucun ne s'applique, il ne donne pas de verdict.</p>
+<h2>Les cas</h2><div id="cas"></div>
+<h2>Les fronts et leurs points cardinaux</h2><table id="fronts"></table>
+<script>/*__MOTEUR__*/</script>
+<script>
+(function(){var K=window.KOUN;document.getElementById('v').textContent=K.version;
+var c=document.getElementById('cas');K.CAS.forEach(function(x){var d=document.createElement('div');d.className='cas';
+var b=document.createElement('b');b.textContent=x.id+' · '+x.titre;var t=document.createElement('span');t.className='tag'+(x.statut==='EN_ESSAI'?' essai':'');t.textContent=x.statut==='REGLE_CONFIRMEE'?'Confirmé':'En essai';b.appendChild(t);
+var p=document.createElement('p');p.textContent=x.enonce;d.appendChild(b);d.appendChild(p);c.appendChild(d);});
+var T=document.getElementById('fronts'),el=['Feu','Air','Eau','Terre'];var h='<tr><th>Front</th><th>Est</th><th>Nord</th><th>Ouest</th><th>Sud</th></tr>';
+['A','B','C','D'].forEach(function(l,i){var fs=K.FIG.filter(function(f,k){return k%4===i;});var par={};fs.forEach(function(f){par[K.CARDINAL[K.num(f)]]=K.num(f)+' '+f;});
+h+='<tr><td>'+l+' · '+el[i]+'</td><td>'+par.Est+'</td><td>'+par.Nord+'</td><td>'+par.Ouest+'</td><td>'+par.Sud+'</td></tr>';});T.innerHTML=h;})();
+</script>
+</body></html>

@@ -172,6 +172,16 @@ Décision du propriétaire : la même boucle ne donne plus un nul automatique. S
 | Symétrie R1/R7 | 65 536/65 536 |
 | Banc technique | nul 37,9 %, R1 30,6 %, R7 25,2 %, sans signal 6,3 % (contrôle de fonctionnement, pas une preuve) |
 
+## 3 septies. Moteur 2 : reconstruction (version 2.0.0)
+
+À la demande du propriétaire, l'interface est conservée et le moteur est reconstruit : une **structure** (figures, thème, résultantes, fronts, forces, pôles, attaques) et une liste de **cas** explicites, chacun étant une condition qui donne un résultat. Voir [`moteur2/LISEZMOI.md`](moteur2/LISEZMOI.md).
+
+- Le fichier passe de 2,9 Mo à 595 Ko. L'ancien moteur et ses schémas sont archivés dans `archives/koun-1-v1.15.4.html`.
+- La structure est identique à l'ancienne sur les 11 thèmes réels : aucun écart sur les maisons, les résultantes, les forces et les pôles.
+- Deux cas au départ : CAS-001 (même front : nul, confirmé) et CAS-002 (verrou de front : victoire assurée, en essai).
+- Références : 3 concordantes (NUL 3, 4, 5), 8 « aucun cas » et aucune fausse. Le moteur ne donne un verdict que lorsqu'un cas écrit s'applique.
+- Le BTTS et les incidents de l'ancien moteur ne sont pas repris : le BTTS s'était trompé sur le seul score connu (7-0).
+
 ## 4. Prochaine étape recommandée
 Enregistrer les prédictions du moteur **avant** de nouveaux matchs (Essayer un thème → Enregistrer l'essai), puis comparer après coup. C'est la seule façon de mesurer la fiabilité réelle, et en particulier de trancher KAMB-001, KAMB-002 et KAMB-003.
 
