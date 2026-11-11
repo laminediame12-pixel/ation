@@ -214,6 +214,23 @@
         return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', dont le front direct ' + fig(num(autre.figure) + 4) + ' est absent du thème.'; });
       }
     }
+    ,
+    {
+      id: 'CAS-007', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
+      enonce: 'Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante, sans que son antagoniste soit dans la sienne : ce pôle gagne.',
+      condition: function (L) {
+        function auRepos(c) {
+          return c.frontDirect.filter(function (f) {
+            var pt = CARDINAL[num(f)];
+            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !L.chezElle(fig(num(f) - 3));
+          });
+        }
+        return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) {
+          var f = auRepos(c)[0];
+          return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.';
+        });
+      }
+    }
   ];
   // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.
   function unSeul(L, ok, pourquoi) {
