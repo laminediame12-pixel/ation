@@ -385,6 +385,20 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
           return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.';
         });
       }
+    },
+    {
+      id: 'CAS-008', titre: 'Boucles différentes : le pôle et son binôme', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans des boucles différentes. La confrontation se lit par paires : R1 et son binôme contre R7 et son binôme. La paire qui a le plus de figures dans leur maison de repos (base ou résultante) gagne ; à égalité, le cas ne tranche pas.',
+      condition: function (L) {
+        if (L.mode !== 'BOUCLES_DIFFERENTES') return null;
+        function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
+        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f); }); }
+        var a = chez(L.R1), b = chez(L.R7);
+        if (a.length === b.length) return null;
+        var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
+        return { verdict: g === L.R1 ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
+          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' };
+      }
     }
   ];
   // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.
