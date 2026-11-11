@@ -71,6 +71,9 @@ rep('Les onze th\\xE8mes, les six sch\\xE9mas, le moteur complet et le registre 
 rep('children:"Aucun signal des maisons sur les p\\xF4les"', 'children:"Th\\xE8mes o\\xF9 aucun cas d\\xE9fini ne s\\u2019applique"', 'texte sans cas');
 rep('Nul, compensation des fronts, duel des p\\xF4les et r\\xF4le de M15 : chaque sortie expose son motif.', 'Chaque verdict vient d\\u2019un cas \\xE9crit : sa condition et son r\\xE9sultat sont affich\\xE9s.', 'texte arbitrage');
 
+// Page du moteur seule (saisie, verdict, pyramide), utilisable sans l'atelier.
+fs.writeFileSync(path.join(ici, '..', 'koun-moteur.html'), page);
+
 // 6. Écriture.
 fs.writeFileSync(sortie, html.replace(m[1], Buffer.from(b, 'utf8').toString('base64')));
 console.log(faits.length + ' étapes ; moteur ' + K.version + ' ; ' + (fs.statSync(sortie).size / 1024).toFixed(0) + ' Ko');

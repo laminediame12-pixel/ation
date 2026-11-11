@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>koun · moteur 2</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;padding:14px 12px 40px;background:#0b1220;color:#e2e8f0;line-height:1.45}
+h1{font-size:19px;margin:0 0 2px;color:#dbeafe}h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin:0 0 10px}
+p{margin:6px 0}.muted{color:#94a3b8;font-size:12px}
+.bloc{background:#111a2e;border:1px solid #24324d;border-radius:12px;padding:14px;margin:12px 0}
+.deux{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:720px){.deux{grid-template-columns:1fr}}
+.champs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:12px;color:#94a3b8}
+input,select,button{width:100%;margin-top:4px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:#e2e8f0;padding:10px;font:inherit;font-size:14px}
+button{cursor:pointer;font-weight:700;margin-top:10px}.primaire{background:#2563eb;border-color:#2563eb}.second{background:#334155}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #f59e0b;outline-offset:2px}
+.erreur{color:#fca5a5;font-size:13px;min-height:18px}
+/* fenêtre des verdicts */
+.verdict{display:grid;grid-template-columns:150px 1fr 170px;gap:10px}@media(max-width:720px){.verdict{grid-template-columns:1fr}}
+.verdict>div{background:#0b1220;border:1px solid #24324d;border-radius:10px;padding:10px 12px;font-size:13px}
+.verdict .centre{text-align:center;border-color:#3b82f6}.verdict small{display:block;font-size:10px;letter-spacing:.08em;color:#94a3b8;text-transform:uppercase;margin-bottom:4px}
+#vTitre{font-size:21px;font-weight:800;color:#60a5fa;margin:2px 0}#vTitre.nul{color:#fde68a}#vTitre.aucun{color:#94a3b8}#vTitre.r7{color:#fb923c}
+.etiq{display:inline-block;font-size:11px;padding:2px 9px;border-radius:10px;background:#1e293b;color:#cbd5e1;margin:2px}
+.etiq.ok{background:#14532d;color:#bbf7d0}.etiq.essai{background:#713f12;color:#fde68a}
+.r1{color:#60a5fa;font-weight:700}.r7{color:#fb923c;font-weight:700}
+/* bouclier pyramidal */
+.bouclier{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px 5px;max-width:760px;margin:0 auto}
+.carte{background:#0b1220;border:2px solid #24324d;border-radius:9px;padding:4px 2px 5px;text-align:center;cursor:pointer;min-width:0;position:relative}
+.carte .n{font-size:10px;color:#94a3b8}.carte .nom{font-size:9px;color:#bfdbfe;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.carte .res{font-size:8.5px;color:#a7b5c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.carte.pR1{border-color:#3b82f6;background:#0c1c3d;box-shadow:0 0 8px #3b82f680}.carte.pR7{border-color:#ef4444;background:#2a0f12;box-shadow:0 0 8px #ef444480}
+.carte.juge{border-color:#a855f7;background:#1e1033}.carte.choisie{outline:2px solid #f59e0b;outline-offset:1px}
+.carte .el{position:absolute;left:0;right:0;top:0;height:3px;border-radius:7px 7px 0 0}
+.points{display:grid;gap:3px;justify-content:center;margin:3px 0}.points i{display:flex;gap:3px;justify-content:center}
+.points b{width:7px;height:7px;border-radius:50%;background:#e2e8f0;display:block}
+.s2{grid-column:span 2}.s4{grid-column:span 4}.c15{grid-column:4/span 2}.c16{grid-column:6/span 2}
+.s2 .carte,.s4 .carte,.c15 .carte,.c16 .carte{max-width:92px;margin:0 auto}
+.legende{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:12px;color:#cbd5e1;margin-top:10px}.legende span::before{content:"";display:inline-block;width:14px;height:4px;margin-right:5px;vertical-align:middle;background:var(--c)}
+#detail{font-size:13px;min-height:40px}
+.cas{background:#0b1220;border:1px solid #24324d;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:13px}.cas b{display:block;color:#dbeafe}
+table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px solid #24324d;padding:6px 8px;text-align:left}th{color:#93c5fd}
+.defile{overflow-x:auto}
+</style></head><body>
+<h1>koun · moteur <span id="v"></span></h1>
+<p class="muted">Structure + cas explicites. Si aucun cas ne s'applique, le moteur ne donne pas de verdict.</p>
+
+<div class="deux">
+  <div class="bloc"><h2>Match</h2>
+    <div class="champs">
+      <label>Équipe 1 (R1)<input id="team1" value="Équipe 1" autocomplete="off"/></label>
+      <label>Équipe 2 (R7)<input id="team2" value="Équipe 2" autocomplete="off"/></label>
+      <label>Date<input id="matchDate" type="date"/></label>
+      <label>Score réel (facultatif)<input id="score" placeholder="ex : 2-1" autocomplete="off"/></label>
+    </div>
+  </div>
+  <div class="bloc"><h2>Tirage des mères</h2>
+    <label>Entrée rapide par numéros<input id="rapide" placeholder="ex : 8-5-11-7" inputmode="numeric" autocomplete="off"/></label>
+    <div class="champs" style="margin-top:8px">
+      <label>Mère 1<select id="m1"></select></label><label>Mère 2<select id="m2"></select></label>
+      <label>Mère 3<select id="m3"></select></label><label>Mère 4<select id="m4"></select></label>
+    </div>
+    <div class="champs"><button class="primaire" id="lancer">Lancer le thème</button><button class="second" id="hasard">Lancer aléatoire</button></div>
+    <div class="erreur" id="erreur" role="alert"></div>
+  </div>
+</div>
+
+<div class="bloc"><h2>Verdict</h2>
+  <div class="verdict">
+    <div><small>Mères</small><div id="vMeres" class="muted">Lance un thème.</div></div>
+    <div class="centre"><small>Verdict du moteur</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div></div>
+    <div><small>Pôles</small><div id="vPoles" class="muted">R1 — · R7 —</div></div>
+  </div>
+</div>
+
+<div class="bloc"><h2>Bouclier géomantique · pyramide</h2>
+  <label style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="voirRes" style="width:auto;margin:0" checked/> Afficher les résultantes</label>
+  <div class="bouclier" id="bouclier"></div>
+  <div class="legende"><span style="--c:#ef4444">Feu</span><span style="--c:#eab308">Air</span><span style="--c:#3b82f6">Eau</span><span style="--c:#9ca3af">Terre</span><span class="r1">■ pôle R1</span><span class="r7">■ pôle R7</span><span style="color:#c084fc">■ M15</span></div>
+  <p id="absentes" class="muted" style="text-align:center"></p>
+  <div class="bloc" style="margin-bottom:0"><div id="detail" class="muted">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
+</div>
+
+<div class="bloc"><h2>Les cas du moteur</h2><div id="cas"></div></div>
+<div class="bloc"><h2>Les fronts et leurs points cardinaux</h2><div class="defile"><table id="fronts"></table></div></div>
+
+<script>/* koun — moteur 2 : structure + cas explicites.
+   Étage 1 : la structure (figures, thème, résultantes, fronts, forces, pôles, attaques).
+   Étage 2 : les cas. Chaque cas est une condition écrite qui donne un résultat.
+   Le moteur lit les cas dans l'ordre ; si aucun ne s'applique, il le dit. */
+(function (root) {
+  'use strict';
+  var VERSION = '2.0.0';
+
+  // ── Étage 1 : structure ────────────────────────────────────────────────
+  // Les figures sont numérotées par leur maison de repos (1 Puer … 16 Populus).
+  var FIG = ['Puer', 'Laetitia', 'Caput', 'Albus', 'Via', 'Amissio', 'Rubeus', 'Tristitia',
+    'Fortuna Minor', 'Carcer', 'Conjunctio', 'Fortuna Major', 'Cauda Draconis', 'Puella', 'Aquisitio', 'Populus'];
+  // Points de chaque figure, de la tête aux pieds (1 = impair, 2 = pair).
+  var POINTS = {
+    'Puer': [1, 1, 2, 1], 'Laetitia': [1, 2, 2, 2], 'Caput': [2, 1, 1, 1], 'Albus': [2, 2, 1, 2],
+    'Via': [1, 1, 1, 1], 'Amissio': [1, 2, 1, 2], 'Rubeus': [2, 1, 2, 2], 'Tristitia': [2, 2, 2, 1],
+    'Fortuna Minor': [1, 1, 2, 2], 'Carcer': [1, 2, 2, 1], 'Conjunctio': [2, 1, 1, 2], 'Fortuna Major': [2, 2, 1, 1],
+    'Cauda Draconis': [1, 1, 1, 2], 'Puella': [1, 2, 1, 1], 'Aquisitio': [2, 1, 2, 1], 'Populus': [2, 2, 2, 2]
+  };
+  var FRONTS = ['A', 'B', 'C', 'D'];                       // A 1-5-9-13, B 2-6-10-14, C 3-7-11-15, D 4-8-12-16
+  var ELEMENTS = ['Feu', 'Air', 'Eau', 'Terre'];           // élément du front = élément de ses maisons
+  var CARDINAL = { 1: 'Est', 5: 'Nord', 9: 'Ouest', 13: 'Sud', 2: 'Est', 6: 'Nord', 10: 'Ouest', 14: 'Sud',
+    3: 'Est', 15: 'Nord', 11: 'Ouest', 7: 'Sud', 4: 'Est', 16: 'Nord', 12: 'Ouest', 8: 'Sud' };
+  // Barème des forces hors maison de repos : élément de la figure face à l'élément de la maison.
+  var BAREME = { 'Feu|Feu': 85, 'Air|Air': 85, 'Eau|Eau': 85, 'Terre|Terre': 85, 'Eau|Terre': 70, 'Air|Feu': 70,
+    'Feu|Terre': 55, 'Air|Eau': 55, 'Eau|Feu': 1, 'Air|Terre': 1 };
+
+  function num(f) { return FIG.indexOf(f) + 1; }
+  function fig(n) { return FIG[((n - 1) % 16 + 16) % 16]; }
+  function frontDe(f) { return FRONTS[(num(f) - 1) % 4]; }
+  function elementDe(f) { return ELEMENTS[(num(f) - 1) % 4]; }
+  function elementMaison(h) { return ELEMENTS[(h - 1) % 4]; }
+  function figuresDuFront(lettre) { var i = FRONTS.indexOf(lettre); return FIG.filter(function (f, k) { return k % 4 === i; }); }
+  function additionner(a, b) {
+    var s = POINTS[a].map(function (x, i) { return (x + POINTS[b][i]) % 2 === 0 ? 2 : 1; }).join();
+    for (var k = 0; k < 16; k++) if (POINTS[FIG[k]].join() === s) return FIG[k];
+    return null;
+  }
+  function construireTheme(m1, m2, m3, m4) {
+    var m = [m1, m2, m3, m4], t = {};
+    for (var i = 0; i < 4; i++) { if (!POINTS[m[i]]) throw new Error('Figure inconnue : ' + m[i]); t[i + 1] = m[i]; }
+    for (var l = 0; l < 4; l++) {                          // filles : la ligne l des quatre mères
+      var lignes = m.map(function (f) { return POINTS[f][l]; }).join();
+      for (var k = 0; k < 16; k++) if (POINTS[FIG[k]].join() === lignes) t[5 + l] = FIG[k];
+    }
+    t[9] = additionner(t[1], t[2]); t[10] = additionner(t[3], t[4]);
+    t[11] = additionner(t[5], t[6]); t[12] = additionner(t[7], t[8]);
+    t[13] = additionner(t[9], t[10]); t[14] = additionner(t[11], t[12]);
+    t[15] = additionner(t[13], t[14]); t[16] = additionner(t[15], t[1]);
+    return t;
+  }
+
+  function lire(theme, polesForces) {
+    // Maisons : base, résultante (base + figure de repos de la maison ; aucune en M16).
+    var maisons = [];
+    for (var h = 1; h <= 16; h++) maisons.push({ maison: h, base: theme[h], resultante: h === 16 ? null : additionner(theme[h], fig(h)) });
+    function presentEn(f, h) { var m = maisons[h - 1]; return m.base === f || m.resultante === f; }
+    function chezElle(f) { return presentEn(f, num(f)); }
+    // Double repos : deux figures liées par l'attaque (k et k±3), chacune dans sa maison de repos, s'annulent.
+    function doubleRepos(f) { return chezElle(f) && (chezElle(fig(num(f) + 3)) || chezElle(fig(num(f) - 3))); }
+    function force(f, h) {
+      if (num(f) === h) return doubleRepos(f) ? null : 100;
+      return BAREME[[elementDe(f), elementMaison(h)].sort().join('|')];
+    }
+    function motif(f, h) {
+      if (num(f) === h) return doubleRepos(f) ? 'DOUBLE_REPOS_NON_CHIFFRE' : 'REPOS_PROPRE_MAXIMAL';
+      return elementDe(f) === elementMaison(h) ? 'MEME_ELEMENT' : 'ELEMENTS_' + [elementDe(f), elementMaison(h)].sort().join('_').toUpperCase();
+    }
+    function positions(f) {
+      var l = [];
+      maisons.forEach(function (m) {
+        if (m.base === f) l.push({ maison: m.maison, couche: 'base', force: force(f, m.maison) });
+        if (m.resultante === f && m.resultante !== m.base) l.push({ maison: m.maison, couche: 'resultante', force: force(f, m.maison) });
+      });
+      return l;
+    }
+    // Pôles : R1 = maison de repos de la figure de M1 ; R7 = R1 + 6.
+    var r1 = num(theme[1]), r7 = ((r1 - 1 + 6) % 16) + 1;
+    if (polesForces) { r1 = polesForces.R1; r7 = polesForces.R7; }
+    function camp(k, h) {
+      var p = theme[h], lettre = frontDe(p), binome = FRONTS[(FRONTS.indexOf(lettre) + 2) % 4];
+      return { camp: k, maison: h, figure: p, front: lettre, pointCardinal: CARDINAL[num(p)], element: elementDe(p),
+        frontDirect: figuresDuFront(lettre), frontBinome: figuresDuFront(binome),
+        antagoniste: fig(num(p) - 3), controleur: fig(num(p) - 6), miroir: fig(num(p) + 8) };
+    }
+    var R1 = camp('R1', r1), R7 = camp('R7', r7);
+    // Attaques : chaque figure k attaque k+3.
+    var duels = FIG.map(function (a) {
+      var c = fig(num(a) + 3), pa = positions(a), pc = positions(c), etat;
+      if (!pa.length) etat = 'ATTAQUANT_ABSENT';
+      else if (!pc.length) etat = 'CIBLE_ABSENTE';
+      else if (chezElle(a) && chezElle(c)) etat = 'DOUBLE_REPOS_ANNULATION';
+      else if (chezElle(a)) etat = 'CIBLE_MAITRISEE_PAR_REPOS_MAXIMAL';
+      else if (chezElle(c)) etat = 'RESISTANCE_CIBLE_AU_REPOS_MAXIMAL';
+      else etat = 'FORCES_A_COMPARER';
+      return { attaquant: a, cible: c, present: pa.length > 0, ciblePresente: pc.length > 0, etat: etat };
+    });
+    // Annulations (double repos) et verrous de front (deux figures d'un même front, en base, chez elles à 100 %).
+    var annulations = duels.filter(function (d) { return d.etat === 'DOUBLE_REPOS_ANNULATION'; })
+      .map(function (d) { return { attaquant: d.attaquant, cible: d.cible, maisonAttaquant: num(d.attaquant), maisonCible: num(d.cible) }; });
+    function verrousDuFront(lettre) {
+      var chez = figuresDuFront(lettre).filter(function (f) { return maisons[num(f) - 1].base === f && force(f, num(f)) === 100; });
+      var l = [];
+      for (var i = 0; i < chez.length; i++) for (var j = i + 1; j < chez.length; j++) l.push({ figures: [chez[i], chez[j]], maisons: [num(chez[i]), num(chez[j])], front: lettre });
+      return l;
+    }
+    return { theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
+      verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
+      presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
+  }
+
+  // ── Étage 2 : les cas ──────────────────────────────────────────────────
+  // Un cas = { id, titre, statut, condition(lecture) }. La condition rend null, ou
+  // { verdict: '1' | '2' | 'N', assuree: bool, raison: texte }. Le premier cas qui s'applique tranche.
+  var CAS = [
+    {
+      id: 'CAS-001', titre: 'Même front : nul', statut: 'REGLE_CONFIRMEE',
+      enonce: 'R1 et R7 dans le même front (figure identique, miroir ou voisine) : nul.',
+      condition: function (L) {
+        if (L.R1.front !== L.R7.front) return null;
+        var lien = L.R1.figure === L.R7.figure ? 'identiques' : (L.R1.miroir === L.R7.figure ? 'miroirs' : 'voisines');
+        return { verdict: 'N', assuree: false, raison: 'Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans le même front ' + L.R1.front + ' (figures ' + lien + ').' };
+      }
+    },
+    {
+      id: 'CAS-002', titre: 'Verrou de front : victoire assurée', statut: 'EN_ESSAI',
+      enonce: 'Deux figures du front d’un pôle, en base, chacune dans sa propre maison de repos à 100 % : victoire assurée de ce pôle, si l’autre pôle n’a pas de verrou.',
+      condition: function (L) {
+        var a = L.verrous.R1.length > 0, b = L.verrous.R7.length > 0;
+        if (a === b) return null;
+        var k = a ? 'R1' : 'R7', v = L.verrous[k][0];
+        return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + k + ' assurée : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
+      }
+    }
+  ];
+
+  function analyser(theme, polesForces) {
+    var L = lire(theme, polesForces), decision = null;
+    for (var i = 0; i < CAS.length && !decision; i++) {
+      var r = CAS[i].condition(L);
+      if (r) decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
+    }
+    if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
+      raison: 'Aucun cas défini ne s’applique à ce thème. Le moteur ne donne pas de verdict.' };
+    return { lecture: L, decision: decision };
+  }
+
+  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
+    elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser };
+  root.KOUN = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+(function(){
+var K=window.KOUN,$=function(i){return document.getElementById(i);},COUL={Feu:'#ef4444',Air:'#eab308',Eau:'#3b82f6',Terre:'#9ca3af'};
+var PTS={'Puer':[1,1,2,1],'Laetitia':[1,2,2,2],'Caput':[2,1,1,1],'Albus':[2,2,1,2],'Via':[1,1,1,1],'Amissio':[1,2,1,2],'Rubeus':[2,1,2,2],'Tristitia':[2,2,2,1],'Fortuna Minor':[1,1,2,2],'Carcer':[1,2,2,1],'Conjunctio':[2,1,1,2],'Fortuna Major':[2,2,1,1],'Cauda Draconis':[1,1,1,2],'Puella':[1,2,1,1],'Aquisitio':[2,1,2,1],'Populus':[2,2,2,2]};
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e;}
+$('v').textContent=K.version;
+['m1','m2','m3','m4'].forEach(function(id){var s=$(id);K.FIG.forEach(function(f,i){var o=el('option','',(i+1)+' — '+f);o.value=f;s.appendChild(o);});});
+// liste des cas et table des fronts
+K.CAS.forEach(function(x){var d=el('div','cas'),b=el('b','',x.id+' · '+x.titre+' ');b.appendChild(el('span','etiq '+(x.statut==='REGLE_CONFIRMEE'?'ok':'essai'),x.statut==='REGLE_CONFIRMEE'?'Confirmé':'En essai'));d.appendChild(b);d.appendChild(el('div','',x.enonce));$('cas').appendChild(d);});
+(function(){var T=$('fronts'),E=['Feu','Air','Eau','Terre'],tr=el('tr');['Front','Est','Nord','Ouest','Sud'].forEach(function(h){tr.appendChild(el('th','',h));});T.appendChild(tr);
+['A','B','C','D'].forEach(function(l,i){var r=el('tr'),par={};K.FIG.forEach(function(f,k){if(k%4===i)par[K.CARDINAL[k+1]]=(k+1)+' '+f;});r.appendChild(el('td','',l+' · '+E[i]));['Est','Nord','Ouest','Sud'].forEach(function(c){r.appendChild(el('td','',par[c]));});T.appendChild(r);});})();
+function points(f){var d=el('div','points');PTS[f].forEach(function(n){var l=el('i');l.appendChild(el('b'));if(n===2)l.appendChild(el('b'));d.appendChild(l);});return d;}
+var courant=null;
+function carte(h,L){var m=L.maisons[h-1],c=el('div','carte'+(h===L.R1.maison?' pR1':'')+(h===L.R7.maison?' pR7':'')+(h===15?' juge':''));
+ c.setAttribute('role','button');c.tabIndex=0;c.setAttribute('aria-label','Maison '+h+' : '+m.base);
+ var e=el('div','el');e.style.background=COUL[K.elementMaison(h)];c.appendChild(e);
+ c.appendChild(el('div','n','M'+h+(h===L.R1.maison?' · R1':'')+(h===L.R7.maison?' · R7':'')));c.appendChild(points(m.base));c.appendChild(el('div','nom',m.base));
+ if($('voirRes').checked)c.appendChild(el('div','res',m.resultante?'→ '+m.resultante:'—'));
+ function ouvrir(){detail(h,L);Array.prototype.forEach.call(document.querySelectorAll('.carte'),function(x){x.classList.remove('choisie');});c.classList.add('choisie');}
+ c.onclick=ouvrir;c.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();ouvrir();}};return c;}
+function role(f,L){var t=[];[['R1',L.R1],['R7',L.R7]].forEach(function(p){var k=p[0],c=p[1];if(f===c.figure)t.push('pôle '+k);else if(f===c.miroir)t.push('miroir de '+k);else if(f===c.antagoniste)t.push('antagoniste de '+k);else if(f===c.controleur)t.push('contrôleur de '+k);else if(c.frontDirect.indexOf(f)>=0)t.push('front de '+k);});return t.length?' ('+t.join(', ')+')':'';}
+function ligne(f,h,L){var fo=L.force(f,h);return f+' · '+K.frontDe(f)+' '+K.CARDINAL[K.num(f)]+' · '+K.elementDe(f)+' · '+(fo===null?'force non chiffrée (double repos)':fo+' %')+(K.num(f)===h?' · dans sa maison de repos':'')+role(f,L);}
+function detail(h,L){var m=L.maisons[h-1],d=$('detail');d.textContent='';d.className='';
+ d.appendChild(el('div','', 'M'+h+' · maison '+K.elementMaison(h)+' · repos de '+K.fig(h))).style.fontWeight='700';
+ d.appendChild(el('div','','Base : '+ligne(m.base,h,L)));d.appendChild(el('div','',m.resultante?'Résultante : '+ligne(m.resultante,h,L):'Résultante : aucune (M16)'));}
+function bouclier(L){var B=$('bouclier');B.textContent='';
+ function pose(h,cl){var w=el('div',cl||'');w.appendChild(carte(h,L));B.appendChild(w);}
+ [8,7,6,5,4,3,2,1].forEach(function(h){pose(h);});[12,11,10,9].forEach(function(h){pose(h,'s2');});[14,13].forEach(function(h){pose(h,'s4');});pose(15,'c15');pose(16,'c16');
+ var abs=K.FIG.filter(function(f){return !L.positions(f).length;});$('absentes').textContent=abs.length?'Absentes (ni base ni résultante) : '+abs.join(', '):'Les 16 figures sont présentes.';}
+function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[0],m[1],m[2],m[3]);}catch(e){$('erreur').textContent=e.message;return;}
+ var a=K.analyser(th),L=a.lecture,d=a.decision;courant={L:L};
+ ['m1','m2','m3','m4'].forEach(function(id,i){$(id).value=m[i];});
+ var M=$('vMeres');M.textContent='';M.className='';m.forEach(function(f,i){var l=el('div','','M'+(i+1)+' ');l.appendChild(el('b','',f));M.appendChild(l);});
+ var t=$('vTitre'),e1=$('team1').value||'Équipe 1',e2=$('team2').value||'Équipe 2';
+ t.className=d.verdict==='N'?'nul':d.verdict==='2'?'r7':d.verdict===null?'aucun':'';
+ t.textContent=d.verdict==='1'?'Victoire R1 — '+e1:d.verdict==='2'?'Victoire R7 — '+e2:d.verdict==='N'?'Nul':'Aucun cas applicable';
+ var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
+ $('vRaison').textContent=d.raison;
+ var P=$('vPoles');P.textContent='';P.className='';P.appendChild(el('div','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(el('div','muted','front '+L.R1.front+' · '+L.R1.pointCardinal));P.appendChild(el('div','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));P.appendChild(el('div','muted','front '+L.R7.front+' · '+L.R7.pointCardinal));
+ bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
+function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
+$('lancer').onclick=function(){var r=$('rapide').value.trim();
+ if(r){var n=r.split(/[^0-9]+/).filter(Boolean).map(Number);if(n.length!==4||n.some(function(x){return x<1||x>16;})){$('erreur').textContent='Saisis quatre numéros entre 1 et 16.';return;}lancer(n.map(function(x){return K.FIG[x-1];}));$('rapide').value='';return;}
+ lancer(meres());};
+$('hasard').onclick=function(){lancer([0,0,0,0].map(function(){return K.FIG[Math.floor(Math.random()*16)];}));};
+$('voirRes').onchange=function(){if(courant)bouclier(courant.L);};
+$('team1').onchange=$('team2').onchange=function(){if(courant)lancer(meres());};
+})();
+</script>
+</body></html>
