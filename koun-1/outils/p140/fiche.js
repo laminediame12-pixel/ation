@@ -18,6 +18,8 @@ function ficheDuel(g){
       ["Antagoniste (figure qui l’attaque)",nom(A)+" : "+txt(pa)],
       ["Contrôleur (attaque l’antagoniste)",nom(K)+" : "+txt(pk)],
       ["État de l’antagoniste",etat],
-      ["Maison qui attaque la maison du pôle",maison(hp)]]};
+      ["Maison qui attaque la maison du pôle",maison(hp)],
+      ["Annulations (deux puissances maximales liées par l’attaque)",(()=>{const av=g.decision&&g.decision.annulationsEtVerrous;if(!av)return "non calculé";const l=av.annulations.filter(a=>a.campAttaquant===k||a.campCible===k);return l.length?l.map(a=>a.attaquant+" (M"+a.maisonAttaquant+") → "+a.cible+" (M"+a.maisonCible+")").join(" · "):"aucune";})()],
+      ["Verrou de front (deux figures du même front en base, à leur repos)",(()=>{const av=g.decision&&g.decision.annulationsEtVerrous;if(!av)return "non calculé";const l=av.verrous.filter(v=>v.camp===k);return l.length?l.map(v=>v.figures[0]+" (M"+v.maisons[0]+") + "+v.figures[1]+" (M"+v.maisons[1]+"), front "+v.front+" : victoire assurée").join(" · "):"aucun";})()]]};
   });
 }

@@ -10,6 +10,30 @@
   // Victoire assurée : gagnant de la lecture ET antagoniste de son pôle (k−3) contrôlé par k−6
   // (plus fort) ou mal positionné (absent ou à 1 % partout).
   // ═══════════════════════════════════════════════════════════════
+  // Annulations (double repos de deux figures liées par l'attaque k → k+3) et verrous de front
+  // (deux figures du même front, en base, chacune dans sa maison de repos à 100 %).
+  window.annulationsEtVerrous = function(theme, poles, bareme){
+    var vide={annulations:[],verrous:[]};
+    if(!theme||!poles||!bareme||!bareme.parFigure) return vide;
+    var F=[]; for(var i=1;i<=16;i++) F.push(window.figureReposMaison(i));
+    function N(f){ return F.indexOf(f)+1; }
+    function fig(n){ return F[((n-1)%16+16)%16]; }
+    var p1=N(theme[poles.R1]);
+    function camp(f){ return (N(f)%2)===(p1%2)?'R1':'R7'; }
+    function auRepos(f){ return (bareme.parFigure[f]||[]).filter(function(x){ return x.reposPropreIci; }); }
+    function verrouBase(f){ return (bareme.parFigure[f]||[]).some(function(x){ return x.reposPropreIci&&x.couches.indexOf('base')>=0&&x.forcePct===100; }); }
+    var ann=[], ver=[];
+    for(var n=1;n<=16;n++){
+      var a=fig(n), c=fig(n+3), ra=auRepos(a), rc=auRepos(c);
+      if(ra.length&&rc.length) ann.push({attaquant:a,cible:c,campAttaquant:camp(a),campCible:camp(c),maisonAttaquant:N(a),maisonCible:N(c),couchesAttaquant:ra[0].couches.join('+'),couchesCible:rc[0].couches.join('+')});
+    }
+    for(var m=1;m<=16;m++){
+      var f1=fig(m); if(!verrouBase(f1)) continue;
+      [4,8,12].forEach(function(d){ var n2=((m-1+d)%16)+1; if(n2<=m) return; var f2=fig(n2); if(verrouBase(f2)) ver.push({figures:[f1,f2],maisons:[m,n2],front:'ABCD'[(m-1)%4],camp:camp(f1)}); });
+    }
+    return {annulations:ann, verrous:ver};
+  };
+
   window.lectureEnsembleR1R7 = function(theme, poles, bareme){
     if(!theme||!poles||!bareme||!bareme.maisons) return null;
     var F=[]; for(var i=1;i<=16;i++) F.push(window.figureReposMaison(i));
@@ -30,9 +54,19 @@
       return o;
     }
     var resultat={version:'1.0.0',statut:'EN_ESSAI',poles:{R1:{maison:poles.R1,figure:p.R1},R7:{maison:poles.R7,figure:p.R7}},points:pts,concordance:conc,details:details,assuree:false,antagoniste:null};
+    var av=window.annulationsEtVerrous(theme,poles,bareme);
+    resultat.annulations=av.annulations; resultat.verrous=av.verrous;
     if((N(p.R1)%2)===(N(p.R7)%2)){
       resultat.verdict='N'; resultat.motif='MEME_BOUCLE';
       resultat.raison='Nul en essai : R1 et R7 sont dans la même boucle.';
+      return resultat;
+    }
+    // Verrou de front : victoire assurée du camp qui tient seul un verrou (deux figures du même front en base, à leur repos).
+    var vR1=av.verrous.filter(function(v){ return v.camp==='R1'; }), vR7=av.verrous.filter(function(v){ return v.camp==='R7'; });
+    if((vR1.length>0)!==(vR7.length>0)){
+      var kv=vR1.length?'R1':'R7', lv=vR1.length?vR1:vR7;
+      resultat.verdict=kv==='R1'?'1':'2'; resultat.motif='VERROU_FRONT'; resultat.assuree=true;
+      resultat.raison='Victoire '+kv+' en essai (victoire assurée) : verrou de front, '+lv.map(function(v){ return v.figures[0]+' en M'+v.maisons[0]+' et '+v.figures[1]+' en M'+v.maisons[1]+' (front '+v.front+')'; }).join(' ; ')+', chacune à sa puissance maximale.';
       return resultat;
     }
     function porte(m,k,miroir){ return m.base===p[k]||m.res===p[k]||(miroir&&(m.base===mir(p[k])||m.res===mir(p[k]))); }
