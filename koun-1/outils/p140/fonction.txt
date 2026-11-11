@@ -95,11 +95,12 @@
     var b16=theme[16], m16=['R1','R7'].filter(function(k){ return b16===p[k]||b16===mir(p[k]); });
     if(m16.length) details.push('M16 porte '+m16.join(' et ')+' ('+b16+')');
     if(!tete&&!details.length){
-      // Dernier recours (1.15.2) : occupation des maisons de repos du front de chaque pôle, en base.
-      function occupation(k){ var fr=(N(p[k])-1)%4, l=[]; for(var h=1;h<=16;h++){ if((h-1)%4!==fr) continue; var m=maison(h); if(m.base&&(N(m.base)-1)%4===fr) l.push('M'+h+' '+m.base); } return l; }
+      // Dernier recours (1.15.3) : figures du front du pôle présentes dans LEUR PROPRE maison de repos
+      // (la maison de repos de la figure, pas les maisons du canal du front), en base ou en résultante.
+      function occupation(k){ var fr=(N(p[k])-1)%4, l=[]; for(var n=1;n<=16;n++){ if((n-1)%4!==fr) continue; var m=maison(n), g=fig(n); if(m.base===g||m.res===g) l.push(g+' en M'+n); } return l; }
       var o1=occupation('R1'), o7=occupation('R7');
       resultat.occupationFront={R1:o1,R7:o7};
-      details.push('Maisons de repos du front tenues en base : R1 '+o1.length+'/4'+(o1.length?' ('+o1.join(', ')+')':'')+', R7 '+o7.length+'/4'+(o7.length?' ('+o7.join(', ')+')':''));
+      details.push('Figures du front dans leur propre maison de repos : R1 '+o1.length+'/4'+(o1.length?' ('+o1.join(', ')+')':'')+', R7 '+o7.length+'/4'+(o7.length?' ('+o7.join(', ')+')':''));
       if(o1.length!==o7.length){
         var ko=o1.length>o7.length?'R1':'R7';
         resultat.verdict=ko==='R1'?'1':'2'; resultat.motif='OCCUPATION_FRONT';
