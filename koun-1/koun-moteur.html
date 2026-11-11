@@ -46,8 +46,30 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .cas{background:#0b1220;border:1px solid #24324d;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:13px}.cas b{display:block;color:#dbeafe}
 table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px solid #24324d;padding:6px 8px;text-align:left}th{color:#93c5fd}
 .defile{overflow-x:auto}
+/* menu des matchs sauvegardés */
+.entete{display:flex;align-items:center;gap:10px}
+#ouvrirMenu{width:44px;height:44px;margin:0;padding:0;font-size:20px;flex:none;background:#1e293b}
+#voile{position:fixed;inset:0;background:#000a;z-index:40;display:none}#voile.ouvert{display:block}
+#menu{position:fixed;top:0;bottom:0;left:0;width:min(340px,88vw);background:#0f172a;border-right:1px solid #24324d;z-index:50;transform:translateX(-100%);transition:transform .22s ease;display:flex;flex-direction:column;visibility:hidden}
+#menu.ouvert{transform:translateX(0);visibility:visible}
+@media(prefers-reduced-motion:reduce){#menu{transition:none}}
+#menu header{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid #24324d}#menu header b{color:#dbeafe}
+#fermerMenu{width:40px;height:40px;margin:0;padding:0;background:#1e293b}
+#liste{overflow-y:auto;padding:10px;flex:1}
+.match{background:#0b1220;border:1px solid #24324d;border-radius:10px;padding:10px;margin-bottom:10px;font-size:13px}
+.match b{color:#e2e8f0;display:block}.match .charger{background:#2563eb;border-color:#2563eb;margin-top:8px}
+.match .zoneSuppr{margin-top:14px;padding-top:8px;border-top:1px dashed #334155;text-align:right}
+.match .suppr{width:auto;margin:0;padding:6px 10px;font-size:12px;font-weight:400;background:transparent;border-color:#7f1d1d;color:#fca5a5}
+.match .suppr.confirme{background:#7f1d1d;color:#fff;font-weight:700}
+.vert{background:#15803d;border-color:#15803d}
+#info{font-size:12.5px;color:#86efac;min-height:17px;margin-top:6px}
 </style></head><body>
-<h1>koun · moteur <span id="v"></span></h1>
+<div id="voile"></div>
+<aside id="menu" aria-label="Matchs sauvegardés" aria-hidden="true">
+  <header><b>Matchs sauvegardés</b><button id="fermerMenu" aria-label="Fermer le menu">✕</button></header>
+  <div id="liste"></div>
+</aside>
+<div class="entete"><button id="ouvrirMenu" aria-label="Ouvrir les matchs sauvegardés" aria-expanded="false">☰</button><h1>koun · moteur <span id="v"></span></h1></div>
 <p class="muted">Structure + cas explicites. Si aucun cas ne s'applique, le moteur ne donne pas de verdict.</p>
 
 <div class="deux">
@@ -57,9 +79,13 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       <label>Équipe 2 (R7)<input id="team2" value="Équipe 2" autocomplete="off"/></label>
       <label>Date<input id="matchDate" type="date"/></label>
       <label>Heure<input id="matchTime" type="time"/></label>
-      <label>Score réel (facultatif)<input id="score" placeholder="ex : 2-1" autocomplete="off"/></label>
+      <label>Score<input id="score" placeholder="ex : 2-1" autocomplete="off"/></label>
+      <label>Penalty<select id="penalty"><option value="">—</option><option>Oui</option><option>Non</option></select></label>
+      <label>Carton rouge<select id="rouge"><option value="">—</option><option>Oui</option><option>Non</option></select></label>
     </div>
     <label class="question"><input type="checkbox" id="qVictoireNul" checked/> Question : victoire ou nul ?</label>
+    <button class="vert" id="sauver">Sauvegarder ce match</button>
+    <div id="info" role="status"></div>
   </div>
   <div class="bloc"><h2>Tirage des mères</h2>
     <label>Entrée rapide par numéros<input id="rapide" placeholder="ex : 8-5-11-7" inputmode="numeric" autocomplete="off"/></label>
@@ -85,6 +111,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   <div class="bouclier" id="bouclier"></div>
   <div class="legende"><span style="--c:#ef4444">Feu</span><span style="--c:#eab308">Air</span><span style="--c:#3b82f6">Eau</span><span style="--c:#9ca3af">Terre</span><span class="r1">■ pôle R1</span><span class="r7">■ pôle R7</span><span style="color:#c084fc">■ M15</span></div>
   <p id="absentes" class="muted" style="text-align:center"></p>
+  <button class="primaire" id="telecharger" style="max-width:420px;display:block;margin:10px auto 0">Télécharger le thème (image)</button>
   <div class="bloc" style="margin-bottom:0"><div id="detail" class="muted">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
 </div>
 
@@ -369,7 +396,7 @@ function bouclier(L){var B=$('bouclier');B.textContent='';
  [8,7,6,5,4,3,2,1].forEach(function(h){pose(h);});[12,11,10,9].forEach(function(h){pose(h,'s2');});[14,13].forEach(function(h){pose(h,'s4');});pose(15,'c15');pose(16,'c16');
  var abs=K.FIG.filter(function(f){return !L.positions(f).length;});$('absentes').textContent=abs.length?'Absentes (ni base ni résultante) : '+abs.join(', '):'Les 16 figures sont présentes.';}
 function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[0],m[1],m[2],m[3]);}catch(e){$('erreur').textContent=e.message;return;}
- var a=K.analyser(th),L=a.lecture,d=a.decision;courant={L:L};
+ var a=K.analyser(th),L=a.lecture,d=a.decision;courant={L:L,meres:m.slice(),decision:d};
  ['m1','m2','m3','m4'].forEach(function(id,i){$(id).value=m[i];});
  var M=$('vMeres');M.textContent='';M.className='';m.forEach(function(f,i){var l=el('div','','M'+(i+1)+' ');l.appendChild(el('b','',f));M.appendChild(l);});
  var t=$('vTitre'),e1=$('team1').value||'Équipe 1',e2=$('team2').value||'Équipe 2';
@@ -393,6 +420,54 @@ $('lancer').onclick=function(){var r=$('rapide').value.trim();
 $('hasard').onclick=function(){lancer([0,0,0,0].map(function(){return K.FIG[Math.floor(Math.random()*16)];}));};
 $('voirRes').onchange=function(){if(courant)bouclier(courant.L);};
 $('team1').onchange=$('team2').onchange=$('matchDate').onchange=$('matchTime').onchange=$('qVictoireNul').onchange=function(){if(courant)lancer(meres());};
+// ── Matchs sauvegardés (dans ce navigateur) ─────────────────────────────
+var CLE='koun-moteur-matchs-v1';
+function lireMatchs(){try{var x=JSON.parse(localStorage.getItem(CLE)||'[]');return Array.isArray(x)?x:[];}catch(e){return [];}}
+function ecrireMatchs(l){try{localStorage.setItem(CLE,JSON.stringify(l));return true;}catch(e){return false;}}
+function verdictTexte(d){return d.verdict==='1'?'Victoire R1':d.verdict==='2'?'Victoire R7':d.verdict==='N'?'Nul':'Aucun cas applicable';}
+function resultatSaisi(x){var t=[];if(x.score)t.push('Score '+x.score);if(x.penalty)t.push('Penalty : '+x.penalty);if(x.rouge)t.push('Rouge : '+x.rouge);return t.join(' · ');}
+function saisie(){return {team1:$('team1').value,team2:$('team2').value,date:$('matchDate').value,heure:$('matchTime').value,score:$('score').value.trim(),penalty:$('penalty').value,rouge:$('rouge').value};}
+function ouvrirMenu(o){$('menu').classList.toggle('ouvert',o);$('voile').classList.toggle('ouvert',o);$('menu').setAttribute('aria-hidden',o?'false':'true');$('ouvrirMenu').setAttribute('aria-expanded',o?'true':'false');if(o){afficherMatchs();$('fermerMenu').focus();}else $('ouvrirMenu').focus();}
+function afficherMatchs(){var Z=$('liste'),l=lireMatchs();Z.textContent='';
+ if(!l.length){Z.appendChild(el('p','muted','Aucun match sauvegardé. Lance un thème puis utilise « Sauvegarder ce match ».'));return;}
+ l.forEach(function(x){var d=el('div','match');d.appendChild(el('b','',(x.team1||'Équipe 1')+' – '+(x.team2||'Équipe 2')));
+  d.appendChild(el('div','muted',(x.date||'sans date')+(x.heure?' · '+x.heure:'')+' · mères '+x.meres.map(function(f){return K.num(f);}).join('-')));
+  var rs=resultatSaisi(x);if(rs)d.appendChild(el('div','',rs));d.appendChild(el('div','muted','Moteur : '+x.verdict));
+  var c=el('button','charger','Charger ce match');c.onclick=function(){charger(x);ouvrirMenu(false);};d.appendChild(c);
+  var z=el('div','zoneSuppr'),s=el('button','suppr','Supprimer');
+  s.onclick=function(){if(!s.classList.contains('confirme')){s.classList.add('confirme');s.textContent='Confirmer la suppression';setTimeout(function(){s.classList.remove('confirme');s.textContent='Supprimer';},4000);return;}
+   ecrireMatchs(lireMatchs().filter(function(y){return y.id!==x.id;}));afficherMatchs();};
+  z.appendChild(s);d.appendChild(z);Z.appendChild(d);});}
+function charger(x){$('team1').value=x.team1||'';$('team2').value=x.team2||'';$('matchDate').value=x.date||'';$('matchTime').value=x.heure||'';$('score').value=x.score||'';$('penalty').value=x.penalty||'';$('rouge').value=x.rouge||'';lancer(x.meres);$('info').textContent='Match chargé.';}
+$('ouvrirMenu').onclick=function(){ouvrirMenu(true);};$('fermerMenu').onclick=$('voile').onclick=function(){ouvrirMenu(false);};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('menu').classList.contains('ouvert'))ouvrirMenu(false);});
+$('sauver').onclick=function(){if(!courant){$('info').textContent='Lance d’abord un thème.';return;}
+ var x=saisie();x.id='m'+Date.now();x.meres=courant.meres;x.verdict=verdictTexte(courant.decision);x.enregistreLe=new Date().toISOString();
+ var l=lireMatchs();l.unshift(x);$('info').textContent=ecrireMatchs(l)?'Match sauvegardé ('+l.length+' au total).':'Sauvegarde impossible dans ce navigateur.';};
+
+// ── Image du thème pyramidal, avec le score saisi ───────────────────────
+function dessiner(){var L=courant.L,x=saisie(),voir=$('voirRes').checked,W=1000,H=voir?980:900,cv=document.createElement('canvas');cv.width=W;cv.height=H;var g=cv.getContext('2d');
+ g.fillStyle='#0b1220';g.fillRect(0,0,W,H);g.textAlign='center';
+ g.fillStyle='#dbeafe';g.font='bold 30px Arial';g.fillText((x.team1||'Équipe 1')+'  –  '+(x.team2||'Équipe 2'),W/2,48);
+ g.fillStyle='#94a3b8';g.font='16px Arial';g.fillText([x.date,x.heure,'Mères '+courant.meres.map(function(f){return K.num(f)+' '+f;}).join(' · ')].filter(Boolean).join('   ·   '),W/2,78);
+ var rs=resultatSaisi(x);g.fillStyle='#fde68a';g.font='bold 22px Arial';g.fillText(rs||'Score non saisi',W/2,112);
+ g.fillStyle=courant.decision.verdict===null?'#94a3b8':'#60a5fa';g.font='bold 20px Arial';g.fillText('Moteur : '+verdictTexte(courant.decision)+(courant.decision.victoireAssuree?' (assurée)':''),W/2,144);
+ var col=(W-80)/8,cw=96,ch=voir?150:112,COULM={Feu:'#ef4444',Air:'#eab308',Eau:'#3b82f6',Terre:'#9ca3af'};
+ function pts(f,cx,y,r,pas,coul){g.fillStyle=coul;PTS[f].forEach(function(n,i){var yy=y+i*pas;if(n===1){g.beginPath();g.arc(cx,yy,r,0,6.3);g.fill();}else{g.beginPath();g.arc(cx-pas/2,yy,r,0,6.3);g.fill();g.beginPath();g.arc(cx+pas/2,yy,r,0,6.3);g.fill();}});}
+ function carteImg(h,cx,y){var m=L.maisons[h-1],x0=cx-cw/2,p1=h===L.R1.maison,p7=h===L.R7.maison;
+  g.fillStyle=p1?'#0c1c3d':p7?'#2a0f12':h===15?'#1e1033':'#0f172a';g.strokeStyle=p1?'#3b82f6':p7?'#ef4444':h===15?'#a855f7':'#334155';g.lineWidth=p1||p7||h===15?4:2;
+  g.beginPath();if(g.roundRect)g.roundRect(x0,y,cw,ch,10);else g.rect(x0,y,cw,ch);g.fill();g.stroke();
+  g.fillStyle=COULM[K.elementMaison(h)];g.fillRect(x0+8,y+3,cw-16,4);
+  g.fillStyle='#94a3b8';g.font='14px Arial';g.fillText('M'+h,cx,y+24);pts(m.base,cx,y+42,6,17,'#e2e8f0');
+  if(voir&&m.resultante){g.strokeStyle='#334155';g.lineWidth=1;g.setLineDash([4,4]);g.beginPath();g.moveTo(x0+8,y+104);g.lineTo(x0+cw-8,y+104);g.stroke();g.setLineDash([]);pts(m.resultante,cx,y+116,3,9,'#94a3b8');}}
+ var y0=175,pas=ch+22;[8,7,6,5,4,3,2,1].forEach(function(h,i){carteImg(h,40+col*(i+.5),y0);});[12,11,10,9].forEach(function(h,i){carteImg(h,40+col*(i*2+1),y0+pas);});
+ [14,13].forEach(function(h,i){carteImg(h,40+col*(i*4+2),y0+pas*2);});carteImg(15,40+col*4,y0+pas*3);carteImg(16,40+col*6,y0+pas*3);
+ g.textAlign='left';g.font='14px Arial';var lx=40,ly=H-22;[['#3b82f6','pôle R1 : M'+L.R1.maison+' '+L.R1.figure],['#ef4444','pôle R7 : M'+L.R7.maison+' '+L.R7.figure],['#a855f7','M15']].forEach(function(t){g.fillStyle=t[0];g.fillRect(lx,ly-11,14,14);g.fillStyle='#cbd5e1';g.fillText(t[1],lx+20,ly+1);lx+=g.measureText(t[1]).width+50;});
+ g.textAlign='right';g.fillStyle='#64748b';g.fillText('koun · moteur '+K.version,W-40,ly+1);return cv;}
+$('telecharger').onclick=function(){if(!courant){$('erreur').textContent='Lance d’abord un thème.';return;}
+ var x=saisie(),nom='koun_'+((x.team1||'equipe1')+'_'+(x.team2||'equipe2')).replace(/[^A-Za-z0-9]+/g,'-')+(x.score?'_'+x.score.replace(/[^0-9]+/g,'-'):'')+'.png';
+ dessiner().toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=nom;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);},'image/png');};
+window.__dessinerTheme=dessiner;
 })();
 </script>
 </body></html>
