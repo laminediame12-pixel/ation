@@ -345,6 +345,18 @@
       }
     },
     {
+      id: 'CAS-012', titre: 'Pôles liés par un antagoniste commun', statut: 'EN_ESSAI',
+      enonce: 'Les deux pôles sont dans la même boucle, à six figures d’écart : l’un attaque une figure qui attaque l’autre (k, k+3, k+6). Chacun est l’antagoniste de l’antagoniste de l’autre : la chaîne les tient en équilibre, nul.',
+      condition: function (L) {
+        var a = num(L.R1.figure), b = num(L.R7.figure), d = ((b - a) % 16 + 16) % 16;
+        if (d !== 6 && d !== 10) return null;
+        var haut = d === 6 ? L.R1 : L.R7, bas = d === 6 ? L.R7 : L.R1, med = fig(num(haut.figure) + 3), pm = L.positions(med);
+        var repos = [L.R1, L.R7].filter(function (c) { return L.chezElle(c.figure); }).map(function (c) { return c.camp; });
+        return { verdict: 'N', assuree: false, raison: 'Nul : ' + haut.camp + ' ' + haut.figure + ' attaque ' + med + ', qui attaque ' + bas.camp + ' ' + bas.figure + '. Les deux pôles sont liés par cet antagoniste commun (' + med + (pm.length ? ' en M' + pm.map(function (x) { return x.maison; }).join(', M') : ' absent du thème') + ').' +
+          (repos.length === 2 ? ' Les deux pôles sont chacun dans leur maison de repos.' : repos.length === 1 ? ' Seul ' + repos[0] + ' est dans sa maison de repos.' : '') };
+      }
+    },
+    {
       id: 'CAS-009', titre: 'Équilibre des ancrages : motif commun des nuls', statut: 'EN_ESSAI',
       enonce: 'Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul.',
       condition: function (L) {
