@@ -27,6 +27,8 @@ Les 16 figures sont placées sur un cercle, dans l'ordre de leur maison de repos
 
 Les figures 1 à 4 sont donc entre l'Est et le Nord, 5 à 8 entre le Nord et l'Ouest, 9 à 12 entre l'Ouest et le Sud, 13 à 16 entre le Sud et l'Est (`K.ROSE`). La page dessine ce cercle sous le thème pyramidal, avec les quatre points reliés ; chaque front y forme un carré.
 
+Les quatre quarts du cercle sont les quatre générations du thème pyramidal : mères (M1 à M4), filles (M5 à M8), nièces (M9 à M12), témoins, juge et sentence (M13 à M16). Les points D, B et C sont donc les passages d'une génération à la suivante, et le point A la fermeture (M16 + M1 = M15). Le cercle affiche la somme des deux maisons qui encadrent chaque point, les résultantes, et, pour la maison touchée, les traits de génération (d'où elle vient, ce qu'elle donne).
+
 ### Les trois modes de confrontation
 
 La façon de lire R1 contre R7 dépend de leur position :
