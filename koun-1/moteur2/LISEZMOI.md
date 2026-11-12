@@ -35,6 +35,7 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | Cas | Condition | Résultat | Statut |
 |---|---|---|---|
 | CAS-001 | R1 et R7 dans le même front. Chaque front a deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) | Ce pôle gagne ; sinon nul | Confirmé |
+| CAS-010 | Un seul des deux pôles est dans la maison de son antagoniste (pénalisé, 0 %). Lu juste après CAS-001 | L'autre pôle gagne | En essai |
 | CAS-002 | Deux figures du front d'un pôle, en base, chacune dans sa maison de repos à 100 %, et pas de verrou en face | Victoire assurée de ce pôle | En essai |
 | CAS-003 | Le pôle est dans sa maison de repos (en base), son antagoniste non ; son front est dans sa propre maison (base ou résultante), l'antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires | Victoire assurée de ce pôle | En essai |
 | CAS-004 | Le pôle attaque directement l'autre pôle ; il est en M8 et une autre figure de son front est en M4 ou M12 | Victoire assurée de ce pôle | En essai |

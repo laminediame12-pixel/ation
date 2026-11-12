@@ -355,6 +355,17 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       }
     },
     {
+      id: 'CAS-010', titre: 'Pôle dans la maison de son antagoniste', statut: 'EN_ESSAI',
+      enonce: 'Un pôle se trouve dans la maison de son antagoniste : il est pénalisé, à 0 %, faible et fragile aux attaques. Si un seul des deux pôles est dans ce cas, l’autre gagne.',
+      condition: function (L) {
+        function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison); }
+        var a = pen(L.R1), b = pen(L.R7);
+        if (a === b) return null;
+        var p = a ? L.R1 : L.R7, g = a ? L.R7 : L.R1;
+        return { verdict: a ? '2' : '1', assuree: false, raison: 'Victoire ' + g.camp + ' : le pôle ' + p.camp + ', ' + p.figure + ', est en M' + p.maison + ', la maison de son antagoniste ' + fig(p.maison) + ' (0 %, pénalisé). ' + g.figure + ' n’est pas pénalisé.' };
+      }
+    },
+    {
       id: 'CAS-002', titre: 'Verrou de front : victoire assurée', statut: 'EN_ESSAI',
       enonce: 'Deux figures du front d’un pôle, en base, chacune dans sa propre maison de repos à 100 % : victoire assurée de ce pôle, si l’autre pôle n’a pas de verrou.',
       condition: function (L) {
