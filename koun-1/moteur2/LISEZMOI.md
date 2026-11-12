@@ -71,6 +71,10 @@ Sous le verdict, la page affiche `decision.marches` :
 - S'ajoutent aux signaux de nul : un point du cercle « au repos » (la somme des deux maisons du thème qui l'encadrent redonne la valeur propre du point), et M16 portant la figure d'un pôle (M16 est toujours la somme des huit points du cercle).
 - « Signaux contraires » quand le « 12 » s'oppose à un verdict nul ou à un signal de nul.
 
+### Figure du lien
+
+La somme des deux pôles (`L.lien`). Elle dit quel lien les unit : Tristitia pour des miroirs, Albus ou Fortuna Major pour un même front, une figure paire dans la même boucle, impaire en boucles différentes. La page l'affiche sous le verdict, avec ses maisons en base et en résultante. Elle ne change pas le verdict.
+
 ### Thème parlant
 
 Quand le binôme de M1 se trouve en M4 ou en M10 (base ou résultante), le thème est beaucoup plus parlant. Le moteur le signale (`L.binomeM1`, `decision.parlant`) et la page l'affiche sous le témoin de validation. Cela ne change pas le verdict.

@@ -269,6 +269,8 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(mq.conflit)ZS.appendChild(el('span','etiq essai','Signaux contraires'));
  if(mq.signaux12.length)ZS.appendChild(el('div','muted','Pas de nul : '+mq.signaux12.join(' ; ')+'.'));
  if(mq.signauxNul.length)ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
+ var lq=mq.lien,lt='Figure du lien : '+L.R1.figure+' + '+L.R7.figure+' = '+lq.numero+' '+lq.figure+' · '+(lq.base.length?'en base M'+lq.base.join(', M'):'')+(lq.base.length&&lq.resultante.length?' · ':'')+(lq.resultante.length?'en résultante M'+lq.resultante.join(', M'):'')+(lq.etat==='ABSENTE'?'absente du thème':'')+(lq.chezElle?' · chez elle':'');
+ ZS.appendChild(el('span','etiq '+(lq.etat==='EN_BASE'||lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'ok':lq.etat==='ABSENTE'?'':'essai'),lq.etat==='EN_BASE'?'Lien en base':lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'Lien chez lui':lq.etat==='ABSENTE'?'Lien absent':'Lien en résultante seulement'));ZS.appendChild(el('div','muted',lt+'.'));
  if(mq.miroirPoints.texte)ZS.appendChild(el('div','muted','Points du cercle : '+mq.miroirPoints.texte+(mq.miroirPoints.nul?' (vers le nul).':' (favori '+mq.miroirPoints.favori+').')));
  if(mq.cercle.signaux.length)ZS.appendChild(el('div','muted','Cercle : '+mq.cercle.signaux.join(' ; ')+'. '+(mq.cercle.conflit?'Les deux signaux se contredisent.':'Favori du cercle : '+mq.cercle.favori+'.')));
  C.appendChild(ZS);

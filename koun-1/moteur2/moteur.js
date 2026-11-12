@@ -194,6 +194,12 @@
     });
     var pointsAuRepos = huitPoints.filter(function (x) { return x.auRepos; });
     var sentencePole = theme[16] === R1.figure ? 'R1' : theme[16] === R7.figure ? 'R7' : null;
+    // Figure du lien : la somme des deux pôles. Elle dit quel lien les unit (miroir : Tristitia ; même front : Albus ou Fortuna Major ; etc.).
+    var lien = (function () {
+      var f = additionner(R1.figure, R7.figure), pos = positions(f);
+      var b = pos.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), r = pos.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; });
+      return { figure: f, numero: num(f), base: b, resultante: r, chezElle: chezElle(f), etat: b.length ? 'EN_BASE' : chezElle(f) ? 'CHEZ_ELLE_EN_RESULTANTE' : r.length ? 'RESULTANTE_SEULEMENT' : 'ABSENTE' };
+    })();
     var miroirPoints = (function () {
       function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }
       var D = de('D'), o = { nul: null, favori: null, texte: null };
@@ -235,7 +241,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -503,7 +509,7 @@
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
     var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
