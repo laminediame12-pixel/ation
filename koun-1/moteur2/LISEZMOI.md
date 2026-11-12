@@ -71,6 +71,10 @@ Sous le verdict, la page affiche `decision.marches` :
 - S'ajoutent aux signaux de nul : un point du cercle « au repos » (la somme des deux maisons du thème qui l'encadrent redonne la valeur propre du point), et M16 portant la figure d'un pôle (M16 est toujours la somme des huit points du cercle).
 - « Signaux contraires » quand le « 12 » s'oppose à un verdict nul ou à un signal de nul.
 
+### Précision du verdict
+
+`decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre (signaux « 12 », signaux de nul, ancrages, cercle, miroir aux points, figure du lien). Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
+
 ### Figure du lien
 
 La somme des deux pôles (`L.lien`). Elle dit quel lien les unit : Tristitia pour des miroirs, Albus ou Fortuna Major pour un même front, une figure paire dans la même boucle, impaire en boucles différentes. La page l'affiche sous le verdict, avec ses maisons en base et en résultante. Elle ne change pas le verdict.

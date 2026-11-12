@@ -513,6 +513,26 @@
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
+    // Précision du verdict : on compte les signaux qui vont dans son sens et ceux qui vont contre.
+    (function () {
+      var m = decision.marches, pour = [], contre = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
+      function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
+      if (g) {
+        m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
+        m.signauxNul.forEach(function (x) { contre.push('vers le nul : ' + x); });
+        camp('ancrages', st.plusStable); camp('cercle', L.cercle.favori); camp('miroir aux points', L.miroirPoints.favori);
+        if (L.cercle.conflit) contre.push('le cercle se contredit');
+        if (L.lien.etat === 'EN_BASE' || L.lien.etat === 'CHEZ_ELLE_EN_RESULTANTE') pour.push('figure du lien ' + (L.lien.etat === 'EN_BASE' ? 'en base' : 'chez elle'));
+        else if (L.lien.etat === 'RESULTANTE_SEULEMENT') contre.push('figure du lien en résultante seulement');
+      } else if (v === 'N') {
+        m.signauxNul.forEach(function (x) { pour.push(x); });
+        m.signaux12.forEach(function (x) { contre.push('pas de nul : ' + x); });
+        if (L.cercle.conflit) pour.push('le cercle se contredit');
+        if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') pour.push('figure du lien en résultante seulement');
+      }
+      var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
+      decision.precision = { niveau: niveau, pour: pour, contre: contre };
+    })();
     decision.parlant = L.binomeM1.parlant;
     return { lecture: L, decision: decision };
   }
