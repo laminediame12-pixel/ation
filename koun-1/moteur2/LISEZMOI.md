@@ -49,7 +49,7 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | Cas | Condition | Résultat | Statut |
 |---|---|---|---|
 | CAS-001 | R1 et R7 dans le même front. D'abord : si l'antagoniste d'un seul pôle est dans sa propre maison de repos, l'autre pôle gagne (même entre miroirs) ; si les deux le sont, nul. Ensuite : Chaque front a deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) | Ce pôle gagne ; sinon nul | Confirmé |
-| CAS-010 | Un seul des deux pôles est dans la maison de son antagoniste (pénalisé, 0 %). Lu juste après CAS-001 | L'autre pôle gagne | En essai |
+| CAS-010 | Lu juste après CAS-001. 1) Un pôle est éteint (sa figure ne dépasse 1 % dans aucune position) et l'autre non (match réel 8·7·10·8). 2) Sinon, un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) | L'autre pôle gagne | En essai |
 | CAS-011 | Le thème a des figures au repos, mais chacune est annulée : son attaquant (k−3) est aussi au repos, ou il est deux fois en base (hors positions à 1 % ou 0 %). Tiré du match réel 2·9·6·5. Lu après CAS-010 | Nul | En essai |
 | CAS-002 | Deux figures du front d'un pôle, en base, chacune dans sa maison de repos à 100 %, et pas de verrou en face | Victoire assurée de ce pôle | En essai |
 | CAS-003 | Le pôle est dans sa maison de repos (en base), son antagoniste non ; son front est dans sa propre maison (base ou résultante), l'antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires | Victoire assurée de ce pôle | En essai |

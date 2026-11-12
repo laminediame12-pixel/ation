@@ -351,10 +351,20 @@
       }
     },
     {
-      id: 'CAS-010', titre: 'Pôle dans la maison de son antagoniste', statut: 'EN_ESSAI',
-      enonce: 'Un pôle se trouve dans la maison de son antagoniste : il est pénalisé, à 0 %, faible et fragile aux attaques. Si un seul des deux pôles est dans ce cas, l’autre gagne.',
+      id: 'CAS-010', titre: 'Pôle sans force : éteint, ou dans la maison de son antagoniste', statut: 'EN_ESSAI',
+      enonce: 'D’abord : un pôle dont la figure ne dépasse 1 % dans aucune position est éteint ; si un seul l’est, l’autre gagne. Ensuite : un pôle dans la maison de son antagoniste est pénalisé (0 %), sauf s’il est fort ailleurs en base (au moins 70 %) ; si un seul est pénalisé, l’autre gagne.',
       condition: function (L) {
-        function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison); }
+        // Force utile d'un pôle : la meilleure force de sa figure dans tout le thème (base et résultante).
+        function meilleure(c) { var m = 0; L.positions(c.figure).forEach(function (x) { var f = x.force === null ? 100 : x.force; if (f > m) m = f; }); return m; }
+        function fortEnBase(c) { return L.positions(c.figure).some(function (x) { return x.couche === 'base' && x.maison !== c.maison && (x.force === null || x.force >= 70); }); }
+        var m1 = meilleure(L.R1), m7 = meilleure(L.R7);
+        // Pôle éteint (match réel 8·7·10·8) : sa figure ne dépasse 1 % nulle part ; il ne peut rien porter, l'autre gagne.
+        if ((m1 <= 1) !== (m7 <= 1)) {
+          var e = m1 <= 1 ? L.R1 : L.R7, v = m1 <= 1 ? L.R7 : L.R1;
+          return { verdict: m1 <= 1 ? '2' : '1', assuree: false, raison: 'Victoire ' + v.camp + ' : le pôle ' + e.camp + ', ' + e.figure + ', est éteint (au plus 1 % dans toutes ses positions : ' + L.positions(e.figure).map(function (x) { return 'M' + x.maison; }).join(', ') + '). ' + v.figure + ' atteint ' + (v === L.R1 ? m1 : m7) + ' %.' };
+        }
+        // La pénalité ne compte pas si le pôle pénalisé est fort ailleurs en base (au moins 70 %).
+        function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison) && !fortEnBase(c); }
         var a = pen(L.R1), b = pen(L.R7);
         if (a === b) return null;
         var p = a ? L.R1 : L.R7, g = a ? L.R7 : L.R1;
