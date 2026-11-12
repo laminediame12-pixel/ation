@@ -123,6 +123,15 @@
       for (var i = 0; i < 8; i++) { var f = fig(n + 2 * i); l.push({ figure: f, numero: num(f), front: frontDe(f), positions: positions(f), chezElle: chezElle(f), absente: positions(f).length === 0 }); }
       return l;
     }
+    // Annulation d'une figure au repos : par son attaquant (k-3) s'il est lui aussi au repos, ou s'il est deux fois en base (positions à 1 % ou 0 % non comptées).
+    function annuleePar(f) {
+      if (!chezElle(f)) return null;
+      var at = fig(num(f) - 3 + 16);
+      if (chezElle(at)) return { attaquant: at, motif: 'ATTAQUANT_AU_REPOS', maisons: [num(at)] };
+      var b = positions(at).filter(function (x) { return x.couche === 'base' && x.force !== null && x.force > 1; });
+      if (b.length >= 2) return { attaquant: at, motif: 'ATTAQUANT_DEUX_FOIS_EN_BASE', maisons: b.map(function (x) { return x.maison; }) };
+      return null;
+    }
     // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
     var penalisees = [];
     maisons.forEach(function (m) {
@@ -153,7 +162,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, annuleePar: annuleePar, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -223,11 +232,14 @@
       }
     },
     {
-      id: 'CAS-011', titre: 'Thème sans ancrage', statut: 'EN_ESSAI',
-      enonce: 'Aucune figure du thème n’est dans sa propre maison de repos, ni en base ni en résultante : aucun camp n’a d’ancrage, le match est nul.',
+      id: 'CAS-011', titre: 'Toutes les figures au repos sont annulées', statut: 'EN_ESSAI',
+      enonce: 'Le thème a des figures dans leur maison de repos, mais chacune est annulée : soit son attaquant (k−3) est lui aussi dans sa maison de repos, soit son attaquant est présent deux fois en base (sans compter une position à 1 % ou 0 %). Il ne reste aucun ancrage : nul.',
       condition: function (L) {
-        if (FIG.some(function (f) { return L.chezElle(f); })) return null;
-        return { verdict: 'N', assuree: false, raison: 'Nul : aucune figure du thème n’est dans sa maison de repos, ni en base ni en résultante. Aucun des deux camps n’a d’ancrage.' };
+        var repos = FIG.filter(function (f) { return L.chezElle(f); });
+        if (!repos.length) return null;
+        var motifs = [];
+        for (var i = 0; i < repos.length; i++) { var a = L.annuleePar(repos[i]); if (!a) return null; motifs.push(repos[i] + ' (M' + num(repos[i]) + ') est annulée par ' + a.attaquant + (a.motif === 'ATTAQUANT_AU_REPOS' ? ', elle aussi au repos' : ', ' + a.maisons.length + ' fois en base (M' + a.maisons.join(', M') + ')')); }
+        return { verdict: 'N', assuree: false, raison: 'Nul : toutes les figures au repos sont annulées. ' + motifs.join(' ; ') + '.' };
       }
     },
     {
@@ -307,11 +319,11 @@
     },
     {
       id: 'CAS-008', titre: 'Boucles différentes : le pôle et son binôme', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans des boucles différentes. La confrontation se lit par paires : R1 et son binôme contre R7 et son binôme. La paire qui a le plus de figures dans leur maison de repos (base ou résultante) gagne ; à égalité, le cas ne tranche pas.',
+      enonce: 'Pôles dans des boucles différentes. La confrontation se lit par paires : R1 et son binôme contre R7 et son binôme. La paire qui a le plus de figures dans leur maison de repos (base ou résultante), sans compter une figure annulée par son attaquant lui aussi au repos, gagne ; à égalité, le cas ne tranche pas.',
       condition: function (L) {
         if (L.mode !== 'BOUCLES_DIFFERENTES') return null;
         function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
-        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f); }); }
+        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)); }); }   // une figure dont l'attaquant est aussi au repos est annulée
         var a = chez(L.R1), b = chez(L.R7);
         if (a.length === b.length) return null;
         var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
