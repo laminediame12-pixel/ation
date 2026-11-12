@@ -501,7 +501,9 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       condition: function (L) {
         if (L.mode !== 'BOUCLES_DIFFERENTES') return null;
         function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
-        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)); }); }   // une figure dont l'attaquant est aussi au repos est annulée
+        // Reflet : une figure qui n'est chez elle qu'en résultante, sur une base Populus qui est le pôle adverse, n'est que le reflet de ce pôle ; elle ne compte pas.
+        function reflet(f, c) { var adv = c === L.R1 ? L.R7 : L.R1; return !L.chezElleEnBase(f) && adv.figure === 'Populus' && L.maisons[num(f) - 1].base === 'Populus' && adv.maison === num(f); }
+        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !reflet(f, c); }); }   // une figure dont l'attaquant est aussi au repos est annulée
         var a = chez(L.R1), b = chez(L.R7);
         if (a.length === b.length) return null;
         var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
