@@ -368,10 +368,16 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en M4 ou M10, en base ou en résultante.
     function butSur(c, fortes, nomAxe) {
       function enF(l) { return l.filter(function (h) { return fortes.indexOf(h) >= 0; }); }
-      var sb = enF(c.enBase), sr = enF(c.enResultante), sur = sb.length + sr.length > 0;
+      var sb = enF(c.enBase), sr = enF(c.enResultante);
       var ou = sb.map(function (h) { return 'M' + h + ' (base)'; }).concat(sr.map(function (h) { return 'M' + h + ' (résultante)'; }));
-      return { maisons: c.maisons, fortes: fortes, somme: c.somme, enBase: c.enBase, enResultante: c.enResultante, niveau: sur ? 'SUR' : c.enBase.length ? 'OUI' : c.enResultante.length ? 'RESULTANTE' : 'AUCUN',
-        texte: 'la somme de ' + nomAxe + ' donne ' + c.somme + (sur ? ', présente en ' + ou.join(' et ') : c.enBase.length ? ', en base en M' + c.enBase.join(', M') : c.enResultante.length ? ', dans ses maisons en résultante seulement (M' + c.enResultante.join(', M') + ')' : ', absente de ses maisons') };
+      // Un pôle présent dans une maison forte, en base ou en résultante, est aussi un signal (match réel 2·9·6·5, 3-3 : Fortuna Minor en M10 en résultante).
+      var poles = [];
+      [R1, R7].forEach(function (p) { positions(p.figure).forEach(function (x) { if (fortes.indexOf(x.maison) >= 0) poles.push(p.camp + ' ' + p.figure + ' en M' + x.maison + (x.couche === 'base' ? ' (base)' : ' (résultante)')); }); });
+      var sur = ou.length + poles.length > 0, t = [];
+      if (ou.length) t.push('la somme de ' + nomAxe + ' donne ' + c.somme + ', présente en ' + ou.join(' et '));
+      if (poles.length) t.push('pôle dans une maison forte : ' + poles.join(', '));
+      return { maisons: c.maisons, fortes: fortes, somme: c.somme, enBase: c.enBase, enResultante: c.enResultante, poles: poles, niveau: sur ? 'SUR' : c.enBase.length ? 'OUI' : c.enResultante.length ? 'RESULTANTE' : 'AUCUN',
+        texte: sur ? t.join(' ; ') : 'la somme de ' + nomAxe + ' donne ' + c.somme + (c.enBase.length ? ', en base en M' + c.enBase.join(', M') : c.enResultante.length ? ', dans ses maisons en résultante seulement (M' + c.enResultante.join(', M') + ')' : ', absente de ses maisons') + ' ; aucun pôle en M' + fortes.join(' ni M') };
     }
     // Première mi-temps : l'axe angulaire 1-4-7-10, maisons fortes M4 et M10 (règle du propriétaire).
     var butMiTemps = butSur(combinaisons[0], [4, 10], 'l’axe angulaire');

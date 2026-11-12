@@ -28,7 +28,7 @@ rep('version:"1.15.4-essai",sourceHash:', 'version:"' + K.version + '",sourceHas
   for (const x of [{ id: 'VICTOIRE_REFERENCE_5', codes: [9, 13, 2, 13], expected: '1', source: 'Score 2-0 indiqué par le propriétaire (11 novembre 2026)' },
     { id: 'VICTOIRE_REFERENCE_6', codes: [2, 12, 4, 4], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (11 novembre 2026)' },
     { id: 'NUL_REFERENCE_7', codes: [5, 9, 7, 13], expected: 'N', source: 'Nul indiqué par le propriétaire (12 novembre 2026)' },
-    { id: 'NUL_REFERENCE_8', codes: [2, 9, 6, 5], expected: 'N', source: 'Nul indiqué par le propriétaire (12 novembre 2026)' },
+    { id: 'NUL_REFERENCE_8', codes: [2, 9, 6, 5], expected: 'N', source: 'Nul 3-3 indiqué par le propriétaire (12 novembre 2026)' },
     { id: 'VICTOIRE_REFERENCE_7', codes: [4, 3, 13, 12], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (12 novembre 2026)' }])
     if (!refs.some(r => r.id === x.id)) refs.push({ id: x.id, title: figs(x.codes).join(' \u00B7 '), mothers: figs(x.codes), codes: x.codes, expected: x.expected, source: x.source, teams: ['R1', 'R7'] });
   const v3 = refs.find(r => r.id === 'VICTOIRE_REFERENCE_3'); if (v3 && !/7-0/.test(v3.source)) v3.source += ' \u00B7 score 7-0';
