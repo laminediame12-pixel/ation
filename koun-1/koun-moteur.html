@@ -374,11 +374,20 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   var CAS = [
     {
       id: 'CAS-001', titre: 'Même front : départage par les moitiés', statut: 'REGLE_CONFIRMEE',
-      enonce: 'R1 et R7 dans le même front. Chaque front se partage en deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Si un seul des deux pôles a son partenaire de moitié dans sa propre maison de repos (base ou résultante), ce pôle gagne. Sinon — les deux, aucun, ou pôles de la même moitié — : nul.',
+      enonce: 'R1 et R7 dans le même front. D’abord les antagonistes : si l’antagoniste d’un seul pôle est dans sa propre maison de repos, ce pôle est dominé et l’autre gagne, même si les pôles sont miroirs ; si les deux antagonistes sont chez eux, nul. Ensuite les moitiés. Chaque front se partage en deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Si un seul des deux pôles a son partenaire de moitié dans sa propre maison de repos (base ou résultante), ce pôle gagne. Sinon — les deux, aucun, ou pôles de la même moitié — : nul.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
         function partenaire(f) { var n = num(f); return n <= 8 ? fig(n <= 4 ? n + 4 : n - 4) : fig(n <= 12 ? n + 4 : n - 4); }
         var p1 = partenaire(L.R1.figure), p7 = partenaire(L.R7.figure);
+        // D'abord les antagonistes : si l'antagoniste d'un seul pôle est chez lui (dans sa propre maison de repos), ce pôle est dominé
+        // et le verdict est déséquilibré, même si les pôles sont miroirs ou de la même moitié. Si les deux le sont, chacun est sous contrôle : nul.
+        var a1 = L.chezElle(L.R1.antagoniste), a7 = L.chezElle(L.R7.antagoniste);
+        function res(c) { var r = L.maisons[c.maison - 1].resultante; return r ? ' (résultante de M' + c.maison + ' : ' + r + ')' : ''; }
+        if (a1 && a7) return { verdict: 'N', assuree: false, raison: 'Nul : même front ' + L.R1.front + ', les deux pôles sont sous le contrôle de leur antagoniste, chacun dans sa maison de repos (' + L.R1.antagoniste + ' en M' + num(L.R1.antagoniste) + ', ' + L.R7.antagoniste + ' en M' + num(L.R7.antagoniste) + ').' };
+        if (a1 !== a7) {
+          var perd = a1 ? L.R1 : L.R7, gagne = a1 ? L.R7 : L.R1;
+          return { verdict: a1 ? '2' : '1', assuree: false, raison: 'Victoire ' + gagne.camp + ' : même front ' + gagne.front + ', mais l’antagoniste de ' + perd.camp + ' ' + perd.figure + ', ' + perd.antagoniste + ', est chez lui en M' + num(perd.antagoniste) + ' ; celui de ' + gagne.figure + ' ne l’est pas. ' + gagne.camp + ' ' + gagne.figure + res(gagne) + ' ; ' + perd.camp + ' ' + perd.figure + res(perd) + '.' };
+        }
         if (L.R1.figure === L.R7.figure || p1 === L.R7.figure)
           return { verdict: 'N', assuree: false, raison: 'Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans la même moitié du front ' + L.R1.front + '.' };
         var a = L.chezElle(p1), b = L.chezElle(p7);
