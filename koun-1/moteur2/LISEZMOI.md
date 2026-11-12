@@ -48,9 +48,13 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 
 Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 
-### Déséquilibre fort : « 12 » et double chance
+### « 12 » et double chance
 
-Le moteur compte les ancrages de chaque camp : ses figures dans leur maison de repos, en base, non annulées (`L.stabilite`). La fenêtre du verdict affiche toujours ce compte. Écart nul : équilibre. Écart de un : double chance du camp le plus stable (`1X` pour R1, `X2` pour R7). Écart de deux ou plus : « 12 » (pas de nul) en plus. Le tout est dans `decision.marches`.
+Sous le verdict, la page affiche `decision.marches` :
+- **« 12 » (pas de nul)** dès qu'un de ces signaux est présent : écart d'au moins deux ancrages ; en boucles différentes, majorité des 15 résultantes dans la boucle de R7 ; somme de l'axe angulaire égale à un pôle qui siège sur l'axe. Avec deux signaux ou plus, il est « renforcé ».
+- **Double chance** : le camp que le verdict désigne ; à défaut, le pôle désigné par l'axe, ou le camp le mieux ancré (`1X` pour R1, `X2` pour R7).
+- **Vers le nul** : majorité des résultantes dans la boucle de R1, ou figure somme égale à un pôle hors de l'axe.
+- « Signaux contraires » quand le « 12 » s'oppose à un verdict nul ou à un signal de nul.
 
 ### Thème parlant
 

@@ -429,9 +429,26 @@
     // Déséquilibre fort (au moins deux ancrages d'écart) : « 12 » (pas de nul) et double chance pour le camp le plus stable.
     var st = L.stabilite;
     // Toujours renseigné : écart nul = équilibre ; écart de 1 = double chance du camp le plus stable ; écart de 2 ou plus = « 12 » en plus.
-    decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, camp: st.plusStable, douze: st.fort,
-      doubleChance: st.plusStable === 'R1' ? '1X' : st.plusStable === 'R7' ? 'X2' : null,
-      niveau: st.fort ? 'FORT' : st.ecart === 1 ? 'LEGER' : 'EQUILIBRE' };
+    // « 12 » (pas de nul) : on réunit les signaux tirés des matchs réels. Double chance : le camp que le verdict ou la stabilité désigne.
+    var sig = [];
+    if (st.fort) sig.push('écart d’ancrages de ' + st.ecart + ' (' + st.R1.length + ' pour R1, ' + st.R7.length + ' pour R7)');
+    var resR1 = null, resR7 = null;
+    if (L.mode === 'BOUCLES_DIFFERENTES') {
+      var par = num(L.R1.figure) % 2;
+      resR1 = L.maisons.filter(function (m) { return m.resultante && num(m.resultante) % 2 === par; }).length; resR7 = 15 - resR1;
+      if (resR7 > resR1) sig.push('majorité des résultantes dans la boucle de R7 (' + resR7 + ' contre ' + resR1 + ')');
+    }
+    var ax = L.sommes[0], axePole = ax.pole && [1, 4, 7, 10].indexOf(L[ax.pole].maison) >= 0 ? ax.pole : null;
+    if (axePole) sig.push('la somme de l’axe angulaire est le pôle ' + axePole + ', qui siège sur l’axe');
+    var nulProbable = [];
+    if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
+    if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
+    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable);
+    decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
+      douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
+      conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
+      niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
     decision.parlant = L.binomeM1.parlant;
     return { lecture: L, decision: decision };
   }
