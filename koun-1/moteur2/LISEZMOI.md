@@ -10,6 +10,7 @@ Elle ne décide rien. Elle décrit le thème :
 - la résultante de chaque maison (base + figure de repos de la maison) ;
 - les fronts A, B, C, D, leurs points cardinaux et leurs éléments ;
 - les forces (100 % dans sa maison de repos, sinon le barème des éléments) ;
+- la maison antagoniste : une figure dans la maison de repos de celle qui l'attaque (k−3) est pénalisée, faible et fragile aux attaques ; c'est le contraire de sa propre maison, sa force s'inverse (0 %) ;
 - le double repos (deux figures liées par l'attaque, chacune chez elle, s'annulent) ;
 - les pôles (R1 = maison de repos de la figure de M1, R7 = R1 + 6) ;
 - les attaques (k attaque k+3).

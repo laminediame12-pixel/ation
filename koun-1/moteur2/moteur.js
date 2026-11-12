@@ -58,12 +58,17 @@
     function chezElle(f) { return presentEn(f, num(f)); }
     // Double repos : deux figures liées par l'attaque (k et k±3), chacune dans sa maison de repos, s'annulent.
     function doubleRepos(f) { return chezElle(f) && (chezElle(fig(num(f) + 3)) || chezElle(fig(num(f) - 3))); }
+    // Maison antagoniste : la maison de repos de la figure qui l'attaque (k-3). C'est le contraire de sa propre maison :
+    // la figure y est pénalisée, faible et fragile aux attaques ; sa force s'inverse (100 % chez elle, 0 % chez son antagoniste).
+    function enMaisonAntagoniste(f, h) { return num(fig(num(f) - 3 + 16)) === h; }
     function force(f, h) {
       if (num(f) === h) return doubleRepos(f) ? null : 100;
+      if (enMaisonAntagoniste(f, h)) return 0;
       return BAREME[[elementDe(f), elementMaison(h)].sort().join('|')];
     }
     function motif(f, h) {
       if (num(f) === h) return doubleRepos(f) ? 'DOUBLE_REPOS_NON_CHIFFRE' : 'REPOS_PROPRE_MAXIMAL';
+      if (enMaisonAntagoniste(f, h)) return 'MAISON_ANTAGONISTE_FORCE_INVERSEE';
       return elementDe(f) === elementMaison(h) ? 'MEME_ELEMENT' : 'ELEMENTS_' + [elementDe(f), elementMaison(h)].sort().join('_').toUpperCase();
     }
     function positions(f) {
@@ -118,6 +123,12 @@
       for (var i = 0; i < 8; i++) { var f = fig(n + 2 * i); l.push({ figure: f, numero: num(f), front: frontDe(f), positions: positions(f), chezElle: chezElle(f), absente: positions(f).length === 0 }); }
       return l;
     }
+    // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
+    var penalisees = [];
+    maisons.forEach(function (m) {
+      if (enMaisonAntagoniste(m.base, m.maison)) penalisees.push({ figure: m.base, maison: m.maison, couche: 'base', antagoniste: fig(m.maison) });
+      if (m.resultante && m.resultante !== m.base && enMaisonAntagoniste(m.resultante, m.maison)) penalisees.push({ figure: m.resultante, maison: m.maison, couche: 'résultante', antagoniste: fig(m.maison) });
+    });
     // Chemin d'un pôle : ses figures, étape par étape, et qui tient leur maison de repos.
     function chemin(c, autre) {
       var n = num(c.figure), etapes;
@@ -136,13 +147,13 @@
       etapes.forEach(function (e) {
         var f = fig(n + e[0] + 16), h = num(f), m = maisons[h - 1], pos = positions(f), chez = chezElle(f);
         l.push({ titre: e[1], figure: f, maison: h, etat: chez ? 'CHEZ_ELLE' : pos.length ? 'AILLEURS' : 'ABSENTE',
-          couche: chez ? (m.base === f ? 'base' : 'résultante') : null, annulee: chez && annulee(f), positions: pos,
+          couche: chez ? (m.base === f ? 'base' : 'résultante') : null, penalisee: pos.filter(function (x) { return enMaisonAntagoniste(f, x.maison); }).map(function (x) { return x.maison; }), annulee: chez && annulee(f), positions: pos,
           occupant: m.base, coteOccupant: m.base === f ? 'ELLE' : cote(m.base), resultante: m.resultante, coteResultante: m.resultante === f ? 'ELLE' : cote(m.resultante) });
       });
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };

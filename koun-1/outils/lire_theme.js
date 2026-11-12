@@ -14,3 +14,4 @@ console.log('au repos:', K.FIG.filter(f => L.chezElle(f)).map(f => f + ' M' + K.
 console.log('témoin', K.temoin(th, new Date()).lignes.map(l => l.titre + ': ' + l.figure + (l.present ? ' ✓' : ' ✗')).join(' | '));
 console.log('mode', L.mode);
 if (L.confrontation.R1) for (const k of ['R1', 'R7']) console.log(k, 'camp:', L.confrontation[k].map(x => x.numero + (x.absente ? ' absent' : ' (' + x.positions.map(p => 'm' + p.maison).join(',') + ')' + (x.chezElle ? '*' : ''))).join(' - '));
+console.log('pénalisées (maison antagoniste):', L.penalisees.map(x => x.figure + ' M' + x.maison + ' ' + x.couche).join(', ') || 'aucune');

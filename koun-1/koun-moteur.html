@@ -130,6 +130,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   <div class="bouclier" id="bouclier"></div>
   <div class="legende"><span style="--c:#ef4444">Feu</span><span style="--c:#eab308">Air</span><span style="--c:#3b82f6">Eau</span><span style="--c:#9ca3af">Terre</span><span style="--c:#22c55e">figure chez elle</span><span class="sanspoint">💔 figure dans la maison de son antagoniste</span></div>
   <p id="absentes" class="muted" style="text-align:center"></p>
+  <p id="penalisees" class="muted" style="text-align:center"></p>
   <button class="primaire" id="telecharger" style="max-width:420px;display:block;margin:10px auto 0">Télécharger le thème (image)</button>
   <div class="bloc" style="margin-bottom:0"><div id="detail" class="muted">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
 </div>
@@ -200,12 +201,17 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     function chezElle(f) { return presentEn(f, num(f)); }
     // Double repos : deux figures liées par l'attaque (k et k±3), chacune dans sa maison de repos, s'annulent.
     function doubleRepos(f) { return chezElle(f) && (chezElle(fig(num(f) + 3)) || chezElle(fig(num(f) - 3))); }
+    // Maison antagoniste : la maison de repos de la figure qui l'attaque (k-3). C'est le contraire de sa propre maison :
+    // la figure y est pénalisée, faible et fragile aux attaques ; sa force s'inverse (100 % chez elle, 0 % chez son antagoniste).
+    function enMaisonAntagoniste(f, h) { return num(fig(num(f) - 3 + 16)) === h; }
     function force(f, h) {
       if (num(f) === h) return doubleRepos(f) ? null : 100;
+      if (enMaisonAntagoniste(f, h)) return 0;
       return BAREME[[elementDe(f), elementMaison(h)].sort().join('|')];
     }
     function motif(f, h) {
       if (num(f) === h) return doubleRepos(f) ? 'DOUBLE_REPOS_NON_CHIFFRE' : 'REPOS_PROPRE_MAXIMAL';
+      if (enMaisonAntagoniste(f, h)) return 'MAISON_ANTAGONISTE_FORCE_INVERSEE';
       return elementDe(f) === elementMaison(h) ? 'MEME_ELEMENT' : 'ELEMENTS_' + [elementDe(f), elementMaison(h)].sort().join('_').toUpperCase();
     }
     function positions(f) {
@@ -260,6 +266,12 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       for (var i = 0; i < 8; i++) { var f = fig(n + 2 * i); l.push({ figure: f, numero: num(f), front: frontDe(f), positions: positions(f), chezElle: chezElle(f), absente: positions(f).length === 0 }); }
       return l;
     }
+    // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
+    var penalisees = [];
+    maisons.forEach(function (m) {
+      if (enMaisonAntagoniste(m.base, m.maison)) penalisees.push({ figure: m.base, maison: m.maison, couche: 'base', antagoniste: fig(m.maison) });
+      if (m.resultante && m.resultante !== m.base && enMaisonAntagoniste(m.resultante, m.maison)) penalisees.push({ figure: m.resultante, maison: m.maison, couche: 'résultante', antagoniste: fig(m.maison) });
+    });
     // Chemin d'un pôle : ses figures, étape par étape, et qui tient leur maison de repos.
     function chemin(c, autre) {
       var n = num(c.figure), etapes;
@@ -278,13 +290,13 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       etapes.forEach(function (e) {
         var f = fig(n + e[0] + 16), h = num(f), m = maisons[h - 1], pos = positions(f), chez = chezElle(f);
         l.push({ titre: e[1], figure: f, maison: h, etat: chez ? 'CHEZ_ELLE' : pos.length ? 'AILLEURS' : 'ABSENTE',
-          couche: chez ? (m.base === f ? 'base' : 'résultante') : null, annulee: chez && annulee(f), positions: pos,
+          couche: chez ? (m.base === f ? 'base' : 'résultante') : null, penalisee: pos.filter(function (x) { return enMaisonAntagoniste(f, x.maison); }).map(function (x) { return x.maison; }), annulee: chez && annulee(f), positions: pos,
           occupant: m.base, coteOccupant: m.base === f ? 'ELLE' : cote(m.base), resultante: m.resultante, coteResultante: m.resultante === f ? 'ELLE' : cote(m.resultante) });
       });
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -497,7 +509,7 @@ function carte(h,L){var m=L.maisons[h-1],c=el('div','carte'+(h===L.R1.maison?' p
   c.classList.add('choisie');}
  c.onclick=ouvrir;c.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();ouvrir();}};return c;}
 function role(f,L){var t=[];[['R1',L.R1],['R7',L.R7]].forEach(function(p){var k=p[0],c=p[1];if(f===c.figure)t.push('pôle '+k);else if(f===c.miroir)t.push('miroir de '+k);else if(f===c.antagoniste)t.push('antagoniste de '+k);else if(f===c.controleur)t.push('contrôleur de '+k);else if(c.frontDirect.indexOf(f)>=0)t.push('front de '+k);});return t.length?' ('+t.join(', ')+')':'';}
-function ligne(f,h,L){var fo=L.force(f,h);return f+' · '+K.frontDe(f)+' '+K.CARDINAL[K.num(f)]+' · '+K.elementDe(f)+' · '+(fo===null?'force non chiffrée (double repos)':fo+' %')+(K.num(f)===h?' · dans sa maison de repos':'')+role(f,L);}
+function ligne(f,h,L){var fo=L.force(f,h);return f+' · '+K.frontDe(f)+' '+K.CARDINAL[K.num(f)]+' · '+K.elementDe(f)+' · '+(fo===null?'force non chiffrée (double repos)':fo+' %')+(K.num(f)===h?' · dans sa maison de repos':'')+(L.enMaisonAntagoniste(f,h)?' · 💔 dans la maison de son antagoniste '+K.fig(h)+' : pénalisée, faible et fragile aux attaques (force inversée)':'')+role(f,L);}
 function detail(h,L){var m=L.maisons[h-1],d=$('detail');d.textContent='';d.className='';
  d.appendChild(el('div','', 'M'+h+' · maison '+K.elementMaison(h)+' · repos de '+K.fig(h))).style.fontWeight='700';
  d.appendChild(el('div','','Base : '+ligne(m.base,h,L)));d.appendChild(el('div','',m.resultante?'Résultante : '+ligne(m.resultante,h,L):'Résultante : aucune (M16)'));
@@ -519,6 +531,7 @@ function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : d�
     if(e.etat==='CHEZ_ELLE')d.appendChild(el('span','pas bon','chez elle en M'+e.maison+' ('+e.couche+')'+(e.annulee?' · double repos':'')));
     else if(e.etat==='ABSENTE')d.appendChild(el('span','pas mauvais','absente du thème'));
     else d.appendChild(el('span','pas','ailleurs : '+e.positions.map(function(p){return 'M'+p.maison;}).join(', ')));
+    if(e.penalisee&&e.penalisee.length)d.appendChild(el('span','pas mauvais','💔 pénalisée en M'+e.penalisee.join(', M')+' (maison de son antagoniste)'));
     if(e.etat!=='CHEZ_ELLE'||e.couche==='résultante')d.appendChild(el('span',cl(e.coteOccupant),'M'+e.maison+' tenue par '+e.occupant+' ('+qui(e.coteOccupant)+')'));
     if(e.resultante&&e.coteResultante!=='ELLE')d.appendChild(el('span',cl(e.coteResultante),'résultante de M'+e.maison+' : '+e.resultante+' ('+qui(e.coteResultante)+')'));}
    Z.appendChild(d);});});}
@@ -540,7 +553,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
   g.appendChild(el('em','',l.detail+(l.present?' · '+[l.base.length?'base M'+l.base.join(', M'):'',l.resultante.length?'rés. M'+l.resultante.join(', M'):''].filter(Boolean).join(' · '):l.resultante.length?' · pas en base (résultante seulement : M'+l.resultante.join(', M')+')':' · absente')));
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
- afficherChemin(L);
+ afficherChemin(L);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
 $('lancer').onclick=function(){var r=$('rapide').value.trim(),mt=$('modeTirage').value;
