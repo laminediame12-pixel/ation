@@ -332,15 +332,17 @@
       }
     },
     {
-      id: 'CAS-009', titre: 'Lecture du chemin (quand aucun autre cas ne tranche)', statut: 'EN_ESSAI',
-      enonce: 'Aucun autre cas ne tranche : le moteur lit le chemin des deux pôles et compte, pour chacun, les maisons de repos de ses figures tenues par l’adversaire. Le pôle qui en a au moins trois de moins gagne ; sinon nul.',
+      id: 'CAS-009', titre: 'Équilibre des ancrages (quand aucun autre cas ne tranche)', statut: 'EN_ESSAI',
+      enonce: 'Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul.',
       condition: function (L) {
-        function perdues(k) { return L.chemin[k].slice(1).filter(function (e) { return e.coteOccupant === 'ADVERSAIRE'; }); }
-        var a = perdues('R1'), b = perdues('R7'), d = b.length - a.length;
-        var detail = 'maisons tenues par l’adversaire : R1 ' + a.length + (a.length ? ' (M' + a.map(function (e) { return e.maison; }).join(', M') + ')' : '') + ', R7 ' + b.length + (b.length ? ' (M' + b.map(function (e) { return e.maison; }).join(', M') + ')' : '') + '.';
-        if (d >= 3) return { verdict: '1', assuree: false, raison: 'Victoire R1 par lecture du chemin : ' + detail };
-        if (d <= -3) return { verdict: '2', assuree: false, raison: 'Victoire R7 par lecture du chemin : ' + detail };
-        return { verdict: 'N', assuree: false, raison: 'Nul par lecture du chemin : ' + detail };
+        function ancres(c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
+        var a = ancres(L.R1), b = ancres(L.R7);
+        function dit(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
+        var detail = 'ancrages en base, non annulés : boucle de R1 ' + dit(a) + ' ; boucle de R7 ' + dit(b) + '.';
+        if (L.mode !== 'BOUCLES_DIFFERENTES') return { verdict: 'N', assuree: false, raison: 'Nul : les deux pôles sont dans la même boucle et aucun cas ne les départage.' };
+        if (a.length > b.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ' + detail };
+        if (b.length > a.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ' + detail };
+        return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + detail };
       }
     }
   ];
