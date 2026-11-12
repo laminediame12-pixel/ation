@@ -223,6 +223,14 @@
       }
     },
     {
+      id: 'CAS-011', titre: 'Thème sans ancrage', statut: 'EN_ESSAI',
+      enonce: 'Aucune figure du thème n’est dans sa propre maison de repos, ni en base ni en résultante : aucun camp n’a d’ancrage, le match est nul.',
+      condition: function (L) {
+        if (FIG.some(function (f) { return L.chezElle(f); })) return null;
+        return { verdict: 'N', assuree: false, raison: 'Nul : aucune figure du thème n’est dans sa maison de repos, ni en base ni en résultante. Aucun des deux camps n’a d’ancrage.' };
+      }
+    },
+    {
       id: 'CAS-002', titre: 'Verrou de front : victoire assurée', statut: 'EN_ESSAI',
       enonce: 'Deux figures du front d’un pôle, en base, chacune dans sa propre maison de repos à 100 % : victoire assurée de ce pôle, si l’autre pôle n’a pas de verrou.',
       condition: function (L) {
