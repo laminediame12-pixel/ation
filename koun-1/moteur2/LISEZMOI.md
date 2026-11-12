@@ -89,6 +89,10 @@ La somme des deux pôles (`L.lien`). Elle dit quel lien les unit : Tristitia pou
 
 Quand le binôme de M1 se trouve en M4 ou en M10 (base ou résultante), le thème est beaucoup plus parlant. Le moteur le signale (`L.binomeM1`, `decision.parlant`) et la page l'affiche sous le témoin de validation. Cela ne change pas le verdict.
 
+### Contrôle de cohérence
+
+Un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de camp (ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle) désignent l'autre pôle et qu'aucun ne le désigne lui. Le cas est alors écarté et le moteur passe au suivant ; la page le signale (« Cas écartés pour incohérence »).
+
 ### Ajouter un cas
 
 Dans `moteur.js`, ajouter un bloc à la liste `CAS` :

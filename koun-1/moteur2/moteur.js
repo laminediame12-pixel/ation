@@ -523,10 +523,21 @@
   function theme16(L) { return L.maisons[15].base; }
   function analyser(theme, polesForces) {
     var L = lire(theme, polesForces), decision = null;
+    // Signaux de camp : ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle.
+    var axP = L.sommes[0].pole && [1, 4, 7, 10].indexOf(L[L.sommes[0].pole].maison) >= 0 ? L.sommes[0].pole : null;
+    var campSig = [['ancrages', L.stabilite.plusStable], ['axe angulaire', axP], ['miroir aux points', L.miroirPoints.favori], ['cercle', L.cercle.favori]].filter(function (x) { return x[1]; });
+    var ecartes = [];
     for (var i = 0; i < CAS.length && !decision; i++) {
       var r = CAS[i].condition(L);
-      if (r) decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
+      if (!r) continue;
+      // Cohérence : un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de camp désignent l'autre et qu'aucun ne le désigne.
+      if (r.verdict === '1' || r.verdict === '2') {
+        var g = r.verdict === '1' ? 'R1' : 'R7', pour = campSig.filter(function (x) { return x[1] === g; }), contre = campSig.filter(function (x) { return x[1] !== g; });
+        if (contre.length >= 2 && !pour.length) { ecartes.push({ cas: CAS[i].id, verdict: r.verdict, contre: contre.map(function (x) { return x[0]; }) }); continue; }
+      }
+      decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
     }
+    if (decision) decision.casEcartes = ecartes;
     if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
       raison: 'Aucun cas défini ne s’applique à ce thème. Le moteur ne donne pas de verdict.' };
     // Déséquilibre fort (au moins deux ancrages d'écart) : « 12 » (pas de nul) et double chance pour le camp le plus stable.

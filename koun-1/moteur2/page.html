@@ -285,6 +285,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(mq.miroirPoints.texte)ZS.appendChild(el('div','muted','Points du cercle : '+mq.miroirPoints.texte+(mq.miroirPoints.nul?' (vers le nul).':' (favori '+mq.miroirPoints.favori+').')));
  if(mq.cercle.signaux.length)ZS.appendChild(el('div','muted','Cercle : '+mq.cercle.signaux.join(' ; ')+'. '+(mq.cercle.conflit?'Les deux signaux se contredisent.':'Favori du cercle : '+mq.cercle.favori+'.')));
  if(pq.contre.length)ZS.appendChild(el('div','muted','Contre le verdict : '+pq.contre.join(' ; ')+'.'));
+ if(d.casEcartes&&d.casEcartes.length)ZS.appendChild(el('div','muted','Cas écartés pour incohérence : '+d.casEcartes.map(function(x){return x.cas+' (donnait '+(x.verdict==='1'?'R1':'R7')+', contredit par '+x.contre.join(' et ')+')';}).join(' ; ')+'.'));
  var bq=d.butMiTemps;ZS.appendChild(el('span','etiq '+(bq.niveau==='SUR'||bq.niveau==='OUI'?'ok':bq.niveau==='RESULTANTE'?'essai':''),bq.niveau==='SUR'?'But 1re mi-temps : sûr':bq.niveau==='OUI'?'But 1re mi-temps : oui':bq.niveau==='RESULTANTE'?'But 1re mi-temps : faible':'But 1re mi-temps : pas de signal'));
  var b2=d.butMiTemps2;ZS.appendChild(el('span','etiq '+(b2.niveau==='SUR'||b2.niveau==='OUI'?'ok':b2.niveau==='RESULTANTE'?'essai':''),'But 2e mi-temps (hypothèse) : '+(b2.niveau==='SUR'?'sûr':b2.niveau==='OUI'?'oui':b2.niveau==='RESULTANTE'?'faible':'pas de signal')));
  C.appendChild(ZS);

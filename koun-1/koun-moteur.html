@@ -672,10 +672,21 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   function theme16(L) { return L.maisons[15].base; }
   function analyser(theme, polesForces) {
     var L = lire(theme, polesForces), decision = null;
+    // Signaux de camp : ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle.
+    var axP = L.sommes[0].pole && [1, 4, 7, 10].indexOf(L[L.sommes[0].pole].maison) >= 0 ? L.sommes[0].pole : null;
+    var campSig = [['ancrages', L.stabilite.plusStable], ['axe angulaire', axP], ['miroir aux points', L.miroirPoints.favori], ['cercle', L.cercle.favori]].filter(function (x) { return x[1]; });
+    var ecartes = [];
     for (var i = 0; i < CAS.length && !decision; i++) {
       var r = CAS[i].condition(L);
-      if (r) decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
+      if (!r) continue;
+      // Cohérence : un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de camp désignent l'autre et qu'aucun ne le désigne.
+      if (r.verdict === '1' || r.verdict === '2') {
+        var g = r.verdict === '1' ? 'R1' : 'R7', pour = campSig.filter(function (x) { return x[1] === g; }), contre = campSig.filter(function (x) { return x[1] !== g; });
+        if (contre.length >= 2 && !pour.length) { ecartes.push({ cas: CAS[i].id, verdict: r.verdict, contre: contre.map(function (x) { return x[0]; }) }); continue; }
+      }
+      decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
     }
+    if (decision) decision.casEcartes = ecartes;
     if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
       raison: 'Aucun cas défini ne s’applique à ce thème. Le moteur ne donne pas de verdict.' };
     // Déséquilibre fort (au moins deux ancrages d'écart) : « 12 » (pas de nul) et double chance pour le camp le plus stable.
@@ -876,6 +887,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(mq.miroirPoints.texte)ZS.appendChild(el('div','muted','Points du cercle : '+mq.miroirPoints.texte+(mq.miroirPoints.nul?' (vers le nul).':' (favori '+mq.miroirPoints.favori+').')));
  if(mq.cercle.signaux.length)ZS.appendChild(el('div','muted','Cercle : '+mq.cercle.signaux.join(' ; ')+'. '+(mq.cercle.conflit?'Les deux signaux se contredisent.':'Favori du cercle : '+mq.cercle.favori+'.')));
  if(pq.contre.length)ZS.appendChild(el('div','muted','Contre le verdict : '+pq.contre.join(' ; ')+'.'));
+ if(d.casEcartes&&d.casEcartes.length)ZS.appendChild(el('div','muted','Cas écartés pour incohérence : '+d.casEcartes.map(function(x){return x.cas+' (donnait '+(x.verdict==='1'?'R1':'R7')+', contredit par '+x.contre.join(' et ')+')';}).join(' ; ')+'.'));
  var bq=d.butMiTemps;ZS.appendChild(el('span','etiq '+(bq.niveau==='SUR'||bq.niveau==='OUI'?'ok':bq.niveau==='RESULTANTE'?'essai':''),bq.niveau==='SUR'?'But 1re mi-temps : sûr':bq.niveau==='OUI'?'But 1re mi-temps : oui':bq.niveau==='RESULTANTE'?'But 1re mi-temps : faible':'But 1re mi-temps : pas de signal'));
  var b2=d.butMiTemps2;ZS.appendChild(el('span','etiq '+(b2.niveau==='SUR'||b2.niveau==='OUI'?'ok':b2.niveau==='RESULTANTE'?'essai':''),'But 2e mi-temps (hypothèse) : '+(b2.niveau==='SUR'?'sûr':b2.niveau==='OUI'?'oui':b2.niveau==='RESULTANTE'?'faible':'pas de signal')));
  C.appendChild(ZS);
