@@ -29,7 +29,10 @@ rep('version:"1.15.4-essai",sourceHash:', 'version:"' + K.version + '",sourceHas
     { id: 'VICTOIRE_REFERENCE_6', codes: [2, 12, 4, 4], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (11 novembre 2026)' },
     { id: 'NUL_REFERENCE_7', codes: [5, 9, 7, 13], expected: 'N', source: 'Nul indiqué par le propriétaire (12 novembre 2026)' },
     { id: 'NUL_REFERENCE_8', codes: [2, 9, 6, 5], expected: 'N', source: 'Nul 3-3 indiqué par le propriétaire (12 novembre 2026)' },
-    { id: 'VICTOIRE_REFERENCE_7', codes: [4, 3, 13, 12], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (12 novembre 2026)' }])
+    { id: 'VICTOIRE_REFERENCE_7', codes: [4, 3, 13, 12], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (12 novembre 2026)' },
+    { id: 'VICTOIRE_REFERENCE_8', codes: [5, 14, 6, 14], expected: '1', source: 'Latium 3-1 Bologna 1909 (mi-temps 1-0), match FIFA du 12 novembre 2026, tirage de la machine' },
+    { id: 'VICTOIRE_REFERENCE_9', codes: [7, 5, 9, 6], expected: '1', source: 'Milano 4-0 Genoa (mi-temps 3-0), match FIFA du 12 novembre 2026, tirage de la machine' },
+    { id: 'VICTOIRE_REFERENCE_10', codes: [13, 12, 8, 15], expected: '2', source: 'Cremonese 0-3 Torino (mi-temps 0-0), match FIFA du 12 novembre 2026, tirage de la machine' }])
     if (!refs.some(r => r.id === x.id)) refs.push({ id: x.id, title: figs(x.codes).join(' \u00B7 '), mothers: figs(x.codes), codes: x.codes, expected: x.expected, source: x.source, teams: ['R1', 'R7'] });
   const v3 = refs.find(r => r.id === 'VICTOIRE_REFERENCE_3'); if (v3 && !/7-0/.test(v3.source)) v3.source += ' \u00B7 score 7-0';
   const nNuls = refs.filter(r => r.expected === 'N').length;

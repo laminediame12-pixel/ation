@@ -431,6 +431,31 @@
     }
     ,
     {
+      id: 'CAS-008', titre: 'Le pôle chez lui : pôle et binôme (boucles différentes), pôle seul (même boucle)', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans des boucles différentes. La confrontation se lit par paires : R1 et son binôme contre R7 et son binôme. La paire qui a le plus de figures dans leur maison de repos (base ou résultante), sans compter une figure annulée par son attaquant lui aussi au repos, gagne ; à égalité, le cas ne tranche pas.',
+      condition: function (L) {
+        if (L.mode === 'MEME_FRONT') return null;
+        // Même boucle (matchs 5·14·6·14 et 7·5·9·6) : on compare les deux pôles eux-mêmes. Celui qui est chez lui, non annulé, gagne si l'autre ne l'est pas.
+        if (L.mode === 'MEME_BOUCLE') {
+          var h1 = L.chezElle(L.R1.figure) && !L.annuleePar(L.R1.figure), h7 = L.chezElle(L.R7.figure) && !L.annuleePar(L.R7.figure);
+          if (h1 === h7) return null;
+          var gg = h1 ? L.R1 : L.R7, pp = h1 ? L.R7 : L.R1;
+          return { verdict: h1 ? '1' : '2', assuree: false, raison: 'Victoire ' + gg.camp + ' : même boucle, ' + gg.figure + ' est dans sa maison de repos M' + num(gg.figure) + (L.chezElleEnBase(gg.figure) ? ' en base' : ' en résultante') + ' ; ' + pp.figure + ' (' + pp.camp + ') n’est pas chez lui.' };
+        }
+        function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
+        // Reflet : une figure qui n'est chez elle qu'en résultante, sur une base Populus qui est le pôle adverse, n'est que le reflet de ce pôle ; elle ne compte pas.
+        function reflet(f, c) { var adv = c === L.R1 ? L.R7 : L.R1; return !L.chezElleEnBase(f) && adv.figure === 'Populus' && L.maisons[num(f) - 1].base === 'Populus' && adv.maison === num(f); }
+        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !reflet(f, c); }); }   // une figure dont l'attaquant est aussi au repos est annulée
+        var a = chez(L.R1), b = chez(L.R7);
+        if (a.length === b.length) return null;
+        var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
+        var sa = L.sommes.filter(function (x) { return x.camp === g.camp && x.surAxe.length; })[0], sp = L.sommes.some(function (x) { return x.camp === p.camp && x.surAxe.length; }) || L.sommes.some(function (x) { return x.pole; });
+        var sure = !!sa && !sp;
+        return { verdict: g === L.R1 ? '1' : '2', assuree: sure, raison: 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
+          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.'  + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : '') };
+      }
+    },
+    {
       id: 'CAS-007', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
       enonce: 'Pôles dans la même boucle. Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante : ce pôle gagne.',
       condition: function (L) {
@@ -445,24 +470,6 @@
           var f = auRepos(c)[0];
           return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.';
         });
-      }
-    },
-    {
-      id: 'CAS-008', titre: 'Boucles différentes : le pôle et son binôme', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans des boucles différentes. La confrontation se lit par paires : R1 et son binôme contre R7 et son binôme. La paire qui a le plus de figures dans leur maison de repos (base ou résultante), sans compter une figure annulée par son attaquant lui aussi au repos, gagne ; à égalité, le cas ne tranche pas.',
-      condition: function (L) {
-        if (L.mode !== 'BOUCLES_DIFFERENTES') return null;
-        function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
-        // Reflet : une figure qui n'est chez elle qu'en résultante, sur une base Populus qui est le pôle adverse, n'est que le reflet de ce pôle ; elle ne compte pas.
-        function reflet(f, c) { var adv = c === L.R1 ? L.R7 : L.R1; return !L.chezElleEnBase(f) && adv.figure === 'Populus' && L.maisons[num(f) - 1].base === 'Populus' && adv.maison === num(f); }
-        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !reflet(f, c); }); }   // une figure dont l'attaquant est aussi au repos est annulée
-        var a = chez(L.R1), b = chez(L.R7);
-        if (a.length === b.length) return null;
-        var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
-        var sa = L.sommes.filter(function (x) { return x.camp === g.camp && x.surAxe.length; })[0], sp = L.sommes.some(function (x) { return x.camp === p.camp && x.surAxe.length; }) || L.sommes.some(function (x) { return x.pole; });
-        var sure = !!sa && !sp;
-        return { verdict: g === L.R1 ? '1' : '2', assuree: sure, raison: 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
-          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.'  + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : '') };
       }
     },
     {
