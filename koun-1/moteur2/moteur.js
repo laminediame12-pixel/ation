@@ -19,9 +19,12 @@
   };
   var FRONTS = ['A', 'B', 'C', 'D'];                       // A 1-5-9-13, B 2-6-10-14, C 3-7-11-15, D 4-8-12-16
   var ELEMENTS = ['Feu', 'Air', 'Eau', 'Terre'];           // élément du front = élément de ses maisons
-  // Cercle des fronts : les 16 figures sur une rose de 16 points, dans l'ordre de leur maison de repos (1 à l'Est, on tourne vers le Nord).
-  // Le front A donne les quatre points cardinaux, le front C les quatre points intermédiaires (3 au Nord-Est, entre 1 et 4).
-  var ROSE = ['E', 'ENE', 'NE', 'NNE', 'N', 'NNO', 'NO', 'ONO', 'O', 'OSO', 'SO', 'SSO', 'S', 'SSE', 'SE', 'ESE'];
+  // Cercle des fronts : les 16 figures dans l'ordre de leur maison de repos. Quatre points partagent le cercle :
+  // A = Est, entre 16 et 1 ; D = Nord, entre 4 et 5 ; B = Ouest, entre 8 et 9 ; C = Sud, entre 12 et 13.
+  var AXES = [{ point: 'A', nom: 'Est', entre: [16, 1] }, { point: 'D', nom: 'Nord', entre: [4, 5] }, { point: 'B', nom: 'Ouest', entre: [8, 9] }, { point: 'C', nom: 'Sud', entre: [12, 13] }];
+  var ROSE = [];
+  (function () { var q = ['entre A (Est) et D (Nord)', 'entre D (Nord) et B (Ouest)', 'entre B (Ouest) et C (Sud)', 'entre C (Sud) et A (Est)'], bord = { 16: 'A', 1: 'A', 4: 'D', 5: 'D', 8: 'B', 9: 'B', 12: 'C', 13: 'C' };
+    for (var k = 1; k <= 16; k++) ROSE.push(q[Math.floor((k - 1) / 4)] + (bord[k] ? ', au bord du point ' + bord[k] : '')); })();
   var CARDINAL = { 1: 'Est', 5: 'Nord', 9: 'Ouest', 13: 'Sud', 2: 'Est', 6: 'Nord', 10: 'Ouest', 14: 'Sud',
     3: 'Est', 15: 'Nord', 11: 'Ouest', 7: 'Sud', 4: 'Est', 16: 'Nord', 12: 'Ouest', 8: 'Sud' };
   // Barème des forces hors maison de repos : élément de la figure face à l'élément de la maison.
@@ -458,7 +461,7 @@
     return { lecture: L, decision: decision };
   }
 
-  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
+  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, AXES: AXES, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
     elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
     temoin: temoin, figureDuJour: figureDuJour };
   root.KOUN = API;

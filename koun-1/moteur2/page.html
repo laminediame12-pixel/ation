@@ -179,13 +179,19 @@ function detail(h,L){var m=L.maisons[h-1],d=$('detail');d.textContent='';d.class
  d.appendChild(el('div','','Base : '+ligne(m.base,h,L)));d.appendChild(el('div','',m.resultante?'Résultante : '+ligne(m.resultante,h,L):'Résultante : aucune (M16)'));
  var fr=K.frontDe(m.base),pres=K.FIG.filter(function(f){return K.frontDe(f)===fr;}).map(function(f){var p=L.positions(f);return K.num(f)+' '+f+' ('+K.CARDINAL[K.num(f)].charAt(0)+') : '+(p.length?p.map(function(x){return 'M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(', '):'absente');});
  d.appendChild(el('div','muted','Front '+fr+' dans le thème — '+pres.join(' · ')));
- d.appendChild(el('div','muted','Sur le cercle : '+m.base+' est au '+K.rose(m.base)+(m.resultante?' ; '+m.resultante+' est au '+K.rose(m.resultante):'')+'.'));cercle(L,fr);}
-// Cercle des fronts : 16 figures sur la rose, 1 à l'Est, 5 au Nord, 9 à l'Ouest, 13 au Sud ; 3 au Nord-Est, etc.
-function cercle(L,frontChoisi){var Z=$('cercle'),NS='http://www.w3.org/2000/svg',W=440,c=W/2,R=150,RL=196;Z.textContent='';
+ d.appendChild(el('div','muted','Sur le cercle : '+m.base+' est '+K.rose(m.base)+(m.resultante?' ; '+m.resultante+' est '+K.rose(m.resultante):'')+'.'));cercle(L,fr);}
+// Cercle des fronts : 16 figures dans l'ordre ; point A (Est) entre 16 et 1, D (Nord) entre 4 et 5, B (Ouest) entre 8 et 9, C (Sud) entre 12 et 13.
+function cercle(L,frontChoisi){var Z=$('cercle'),NS='http://www.w3.org/2000/svg',W=440,c=W/2,R=150,RL=192;Z.textContent='';
  function sv(t,a,x){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(x!==undefined)e.textContent=x;return e;}
- function pt(k,r){var a=(k-1)*Math.PI/8;return [c+r*Math.cos(a),c-r*Math.sin(a)];}
+ function pt(k,r){var a=(k-0.5)*Math.PI/8;return [c+r*Math.cos(a),c-r*Math.sin(a)];}
+ function ax(i,r){var a=i*Math.PI/2;return [c+r*Math.cos(a),c-r*Math.sin(a)];}
  var S=sv('svg',{viewBox:'0 0 '+W+' '+W,role:'img','aria-label':'Cercle des fronts'});
  S.appendChild(sv('circle',{cx:c,cy:c,r:R,fill:'none',stroke:'#24324d','stroke-width':1.5}));
+ // les quatre points A (Est), D (Nord), B (Ouest), C (Sud), reliés entre eux
+ S.appendChild(sv('polygon',{points:[0,1,2,3].map(function(i){return ax(i,R).join(',');}).join(' '),fill:'none',stroke:'#fde68a','stroke-width':1.2,'stroke-opacity':.55}));
+ [[0,2],[1,3]].forEach(function(l){var a=ax(l[0],R),b=ax(l[1],R);S.appendChild(sv('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#fde68a','stroke-width':1.2,'stroke-opacity':.55,'stroke-dasharray':'2 5'}));});
+ K.AXES.forEach(function(x,i){var p=ax(i,R),l=ax(i,RL);S.appendChild(sv('circle',{cx:p[0],cy:p[1],r:5,fill:'#fde68a'}));
+  S.appendChild(sv('text',{x:l[0],y:l[1]-2,'text-anchor':'middle','font-size':15,'font-weight':700,fill:'#fde68a'},x.point));S.appendChild(sv('text',{x:l[0],y:l[1]+13,'text-anchor':'middle','font-size':10,fill:'#fde68a'},x.nom));});
  [['A','#ef4444'],['B','#eab308'],['C','#3b82f6'],['D','#9ca3af']].forEach(function(fc,i){var ks=[1,5,9,13].map(function(k){return k+i;}),on=frontChoisi===fc[0];
   S.appendChild(sv('polygon',{points:ks.map(function(k){return pt(k,R).join(',');}).join(' '),fill:on?fc[1]+'22':'none',stroke:fc[1],'stroke-width':on?2.5:1,'stroke-opacity':on?1:(frontChoisi?0.18:0.45)}));});
  if(L){[['R1',L.R1,'#3b82f6'],['R7',L.R7,'#ef4444']].forEach(function(p){var k=K.num(p[1].figure),a=pt(k,R),b=pt(K.num(K.fig(k+3)),R);
@@ -197,7 +203,6 @@ function cercle(L,frontChoisi){var Z=$('cercle'),NS='http://www.w3.org/2000/svg'
   g.appendChild(sv('text',{x:p[0],y:p[1]+5,'text-anchor':'middle','font-size':14,'font-weight':700,fill:chez?'#86efac':'#e2e8f0',opacity:!L||pos.length?1:.4},String(k)));
   if(L&&L.penalisees.some(function(x){return x.figure===f;}))g.appendChild(sv('text',{x:p[0]+13,y:p[1]+19,'font-size':11},'💔'));
   S.appendChild(g);
-  S.appendChild(sv('text',{x:l[0],y:l[1]+4,'text-anchor':'middle','font-size':k%4===1?15:k%2===1?12:10,'font-weight':k%4===1?700:400,fill:k%4===1?'#fde68a':k%2===1?'#93c5fd':'#64748b'},K.ROSE[k-1]));
   function voir(){if(!L)return;var d=$('detail');d.textContent='';d.className='';d.appendChild(el('div','',k+' · '+f+' · front '+fr+' ('+K.CARDINAL[k]+' du front) · sur le cercle : '+K.ROSE[k-1])).style.fontWeight='700';
    d.appendChild(el('div','',pos.length?'Dans le thème : '+pos.map(function(x){return 'M'+x.maison+(x.couche==='base'?'':' (résultante)')+' '+(x.force===null?'nc':x.force+' %');}).join(', '):'Absente du thème.'));
    d.appendChild(el('div','muted','Attaque '+K.num(K.fig(k+3))+' '+K.fig(k+3)+' ; est attaquée par '+K.num(K.fig(k+13))+' '+K.fig(k+13)+' ; miroir '+K.num(K.fig(k+8))+' '+K.fig(k+8)+' ; binôme '+K.num(K.fig(k+2))+' '+K.fig(k+2)+'.'));cercle(L,fr);}
