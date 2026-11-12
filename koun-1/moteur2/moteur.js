@@ -145,6 +145,15 @@
       var a = ancres(R1), b = ancres(R7), e = Math.abs(a.length - b.length);
       return { R1: a, R7: b, ecart: e, fort: e >= 2, plusStable: a.length > b.length ? 'R1' : b.length > a.length ? 'R7' : null };
     }
+    // Les deux figures somme du thème : l'axe angulaire (M1+M4+M7+M10) et la somme M3+M5+M11+M15.
+    function sommeDe(l) { return l.map(function (h) { return theme[h]; }).reduce(function (x, y) { return additionner(x, y); }); }
+    var sommes = [{ nom: 'somme de l’axe angulaire', figure: sommeDe([1, 4, 7, 10]) }, { nom: 'somme 3-5-11-15', figure: sommeDe([3, 5, 11, 15]) }];
+    sommes.forEach(function (x) {
+      x.pole = x.figure === R1.figure ? 'R1' : x.figure === R7.figure ? 'R7' : null;
+      x.enBase = maisons.filter(function (m) { return m.base === x.figure; }).map(function (m) { return m.maison; });
+      x.surAxe = x.enBase.filter(function (h) { return h === 1 || h === 4 || h === 7 || h === 10; });
+      x.camp = mode !== 'BOUCLES_DIFFERENTES' ? null : (num(x.figure) % 2 === num(R1.figure) % 2 ? 'R1' : 'R7');
+    });
     // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
     var penalisees = [];
     maisons.forEach(function (m) {
@@ -175,7 +184,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -340,15 +349,20 @@
         var a = chez(L.R1), b = chez(L.R7);
         if (a.length === b.length) return null;
         var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
-        return { verdict: g === L.R1 ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
-          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' };
+        var sa = L.sommes.filter(function (x) { return x.camp === g.camp && x.surAxe.length; })[0], sp = L.sommes.some(function (x) { return x.camp === p.camp && x.surAxe.length; }) || L.sommes.some(function (x) { return x.pole; });
+        var sure = !!sa && !sp;
+        return { verdict: g === L.R1 ? '1' : '2', assuree: sure, raison: 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
+          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.'  + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : '') };
       }
     },
     {
       id: 'CAS-009', titre: 'Équilibre des ancrages : motif commun des nuls', statut: 'EN_ESSAI',
-      enonce: 'Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul. Dans la même boucle, les pôles sont liés par la chaîne des attaques (chacun est l’antagoniste de l’antagoniste de l’autre, ou son binôme) : nul.',
+      enonce: 'Aucun autre cas ne tranche. D’abord : si la somme de l’axe angulaire (M1+M4+M7+M10) ou la somme 3-5-11-15 est elle-même un pôle, le thème se referme sur ce pôle : nul. Sinon le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul. Dans la même boucle, les pôles sont liés par la chaîne des attaques (chacun est l’antagoniste de l’antagoniste de l’autre, ou son binôme) : nul.',
       condition: function (L) {
         function ancres(c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
+        // Premier critère du nul : une figure somme est elle-même un pôle, le thème se referme sur ce pôle.
+        var sp = L.sommes.filter(function (x) { return x.pole; });
+        if (sp.length) return { verdict: 'N', assuree: false, raison: 'Nul : ' + sp.map(function (x) { return 'la ' + x.nom + ' donne ' + x.figure + ', qui est le pôle ' + x.pole; }).join(' ; ') + '. Le thème se referme sur ce pôle.' };
         var a = ancres(L.R1), b = ancres(L.R7);
         function dit(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
         var detail = 'ancrages en base, non annulés : boucle de R1 ' + dit(a) + ' ; boucle de R7 ' + dit(b) + '.';
@@ -365,6 +379,10 @@
         }
         if (a.length > b.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ' + detail };
         if (b.length > a.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ' + detail };
+        // Ancrages égaux : on regarde les figures somme présentes en base ; si un seul camp en a, il gagne.
+        var s1 = L.sommes.filter(function (x) { return x.camp === 'R1' && x.enBase.length; }), s7 = L.sommes.filter(function (x) { return x.camp === 'R7' && x.enBase.length; });
+        if (s1.length && !s7.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ancrages égaux, mais seule une figure somme du camp de R1 est en base (' + s1[0].figure + ', ' + s1[0].nom + ', en M' + s1[0].enBase.join(', M') + ').' };
+        if (s7.length && !s1.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ancrages égaux, mais seule une figure somme du camp de R7 est en base (' + s7[0].figure + ', ' + s7[0].nom + ', en M' + s7[0].enBase.join(', M') + ').' };
         return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + detail };
       }
     }
