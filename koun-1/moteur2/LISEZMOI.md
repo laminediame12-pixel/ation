@@ -48,6 +48,10 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 
 Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 
+### Déséquilibre fort : « 12 » et double chance
+
+Le moteur compte les ancrages de chaque camp : ses figures dans leur maison de repos, en base, non annulées (`L.stabilite`). Quand l'écart est d'au moins deux, le verdict ajoute « 12 » (pas de nul) et la double chance du camp le plus stable (`1X` pour R1, `X2` pour R7), dans `decision.marches`.
+
 ### Ajouter un cas
 
 Dans `moteur.js`, ajouter un bloc à la liste `CAS` :

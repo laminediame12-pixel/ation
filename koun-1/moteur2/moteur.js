@@ -132,6 +132,19 @@
       if (b.length >= 2) return { attaquant: at, motif: 'ATTAQUANT_DEUX_FOIS_EN_BASE', maisons: b.map(function (x) { return x.maison; }) };
       return null;
     }
+    // Stabilité : les ancrages de chaque camp = ses figures dans leur maison de repos, en base, non annulées.
+    // Camp : la boucle du pôle (boucles différentes), son front (même boucle) ou sa moitié de front (même front).
+    function stabilite() {
+      function campDe(c) {
+        var n = num(c.figure);
+        if (mode === 'BOUCLES_DIFFERENTES') return FIG.filter(function (f) { return num(f) % 2 === n % 2; });
+        if (mode === 'MEME_BOUCLE') return c.frontDirect;
+        return [c.figure, fig(n + (n <= 8 ? (n <= 4 ? 4 : -4) : (n <= 12 ? 4 : -4)))];
+      }
+      function ancres(c) { return campDe(c).filter(function (f) { return chezElleEnBase(f) && !annuleePar(f); }); }
+      var a = ancres(R1), b = ancres(R7), e = Math.abs(a.length - b.length);
+      return { R1: a, R7: b, ecart: e, fort: e >= 2, plusStable: a.length > b.length ? 'R1' : b.length > a.length ? 'R7' : null };
+    }
     // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
     var penalisees = [];
     maisons.forEach(function (m) {
@@ -162,7 +175,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, annuleePar: annuleePar, mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -332,7 +345,7 @@
       }
     },
     {
-      id: 'CAS-009', titre: 'Équilibre des ancrages (quand aucun autre cas ne tranche)', statut: 'EN_ESSAI',
+      id: 'CAS-009', titre: 'Équilibre des ancrages : motif commun des nuls', statut: 'EN_ESSAI',
       enonce: 'Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul.',
       condition: function (L) {
         function ancres(c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
@@ -362,6 +375,10 @@
     }
     if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
       raison: 'Aucun cas défini ne s’applique à ce thème. Le moteur ne donne pas de verdict.' };
+    // Déséquilibre fort (au moins deux ancrages d'écart) : « 12 » (pas de nul) et double chance pour le camp le plus stable.
+    var st = L.stabilite;
+    decision.marches = st.fort ? { douze: true, doubleChance: st.plusStable === 'R1' ? '1X' : 'X2', camp: st.plusStable, ecart: st.ecart,
+      raison: 'Déséquilibre fort : ' + st.R1.length + ' ancrage(s) pour R1, ' + st.R7.length + ' pour R7.' } : null;
     return { lecture: L, decision: decision };
   }
 
