@@ -216,11 +216,14 @@
         enBase: c.maisons.filter(function (h) { return maisons[h - 1].base === f; }), enResultante: c.maisons.filter(function (h) { return maisons[h - 1].resultante === f && maisons[h - 1].base !== f; }),
         ailleurs: positions(f).filter(function (x) { return c.maisons.indexOf(x.maison) < 0; }).map(function (x) { return x.maison; }) };
     });
-    // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en base en M4 ou M10.
+    // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en M4 ou M10, en base ou en résultante.
     var butMiTemps = (function () {
-      var a = combinaisons[0], sur = a.enBase.filter(function (h) { return h === 4 || h === 10; });
-      return { somme: a.somme, enBase: a.enBase, enResultante: a.enResultante, niveau: sur.length ? 'SUR' : a.enBase.length ? 'OUI' : a.enResultante.length ? 'RESULTANTE' : 'AUCUN',
-        texte: 'la somme de l’axe angulaire donne ' + a.somme + (sur.length ? ', en base en M' + sur.join(' et M') : a.enBase.length ? ', en base en M' + a.enBase.join(', M') + ' sur l’axe' : a.enResultante.length ? ', sur l’axe en résultante seulement (M' + a.enResultante.join(', M') + ')' : ', absente des maisons de l’axe') };
+      var a = combinaisons[0];
+      function en410(l) { return l.filter(function (h) { return h === 4 || h === 10; }); }
+      var sb = en410(a.enBase), sr = en410(a.enResultante), sur = sb.length + sr.length > 0;
+      var ou = sb.map(function (h) { return 'M' + h + ' (base)'; }).concat(sr.map(function (h) { return 'M' + h + ' (résultante)'; }));
+      return { somme: a.somme, enBase: a.enBase, enResultante: a.enResultante, niveau: sur ? 'SUR' : a.enBase.length ? 'OUI' : a.enResultante.length ? 'RESULTANTE' : 'AUCUN',
+        texte: 'la somme de l’axe angulaire donne ' + a.somme + (sur ? ', présente en ' + ou.join(' et ') : a.enBase.length ? ', en base en M' + a.enBase.join(', M') + ' sur l’axe' : a.enResultante.length ? ', sur l’axe en résultante seulement (M' + a.enResultante.join(', M') + ')' : ', absente des maisons de l’axe') };
     })();
     var miroirPoints = (function () {
       function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }

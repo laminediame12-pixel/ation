@@ -73,7 +73,7 @@ Sous le verdict, la page affiche `decision.marches` :
 
 ### Combinaisons du cercle et but en première mi-temps
 
-`K.COMBIS` liste des combinaisons de quatre maisons : l'axe angulaire 1-4-7-10, la combinaison 1-5-12-15, le témoin 3-5-11-15, chacune avec ses trois sœurs (un quart de tour, +4 maisons), et les quatre fronts. Pour chaque thème, `L.combinaisons` donne la somme des quatre maisons et dit si cette somme se trouve dans ces mêmes maisons, en base ou en résultante. `L.butMiTemps` applique la règle du propriétaire : la somme de l'axe angulaire présente dans une maison de l'axe annonce un but en première mi-temps, sûr si elle est en base en M4 ou M10.
+`K.COMBIS` liste des combinaisons de quatre maisons : l'axe angulaire 1-4-7-10, la combinaison 1-5-12-15, le témoin 3-5-11-15, chacune avec ses trois sœurs (un quart de tour, +4 maisons), et les quatre fronts. Pour chaque thème, `L.combinaisons` donne la somme des quatre maisons et dit si cette somme se trouve dans ces mêmes maisons, en base ou en résultante. `L.butMiTemps` applique la règle du propriétaire : la somme de l'axe angulaire présente dans une maison de l'axe annonce un but en première mi-temps, sûr si elle est en M4 ou M10, en base ou en résultante (vérifié par le propriétaire).
 
 ### Précision du verdict
 
