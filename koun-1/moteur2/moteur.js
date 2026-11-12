@@ -163,6 +163,21 @@
     // Binôme de M1 en M4 ou M10 (base ou résultante) : le thème est beaucoup plus parlant.
     var bm1 = fig(num(theme[1]) + 2), ou = positions(bm1).filter(function (x) { return x.maison === 4 || x.maison === 10; });
     var binomeM1 = { figure: bm1, positions: ou.map(function (x) { return { maison: x.maison, couche: x.couche === 'base' ? 'base' : 'résultante' }; }), parlant: ou.length > 0 };
+    // Lecture du cercle (boucles différentes). Deux signaux désignent un favori :
+    //  - le bord : un pôle dont la figure est au bord d'un point A, B, C, D (fronts A et D) face à un pôle de l'intérieur (fronts B et C) ;
+    //  - l'amont : le pôle d'où l'on rejoint l'autre en avançant de 1, 3 ou 5 figures dans le sens de l'attaque.
+    var cercle = (function () {
+      var a = num(R1.figure), b = num(R7.figure), d = ((b - a) % 16 + 16) % 16;
+      function auBord(k) { return k % 4 === 1 || k % 4 === 0; }
+      var o = { ecart: d, bordR1: auBord(a), bordR7: auBord(b), favoriBord: null, amont: null, favori: null, conflit: false, signaux: [] };
+      if (mode !== 'BOUCLES_DIFFERENTES') return o;
+      if (o.bordR1 !== o.bordR7) { o.favoriBord = o.bordR1 ? 'R1' : 'R7'; o.signaux.push((o.bordR1 ? R1 : R7).figure + ' (' + o.favoriBord + ') est au bord d’un point, ' + (o.bordR1 ? R7 : R1).figure + ' à l’intérieur'); }
+      if (d === 1 || d === 3 || d === 5) o.amont = 'R1'; else if (d === 15 || d === 13 || d === 11) o.amont = 'R7';
+      if (o.amont) o.signaux.push((o.amont === 'R1' ? R1 : R7).figure + ' (' + o.amont + ') est en amont, à ' + (o.amont === 'R1' ? d : 16 - d) + ' figure(s) de l’autre pôle dans le sens de l’attaque');
+      if (o.favoriBord && o.amont && o.favoriBord !== o.amont) o.conflit = true;
+      else o.favori = o.favoriBord || o.amont;
+      return o;
+    })();
     // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
     var penalisees = [];
     maisons.forEach(function (m) {
@@ -193,7 +208,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -410,10 +425,10 @@
         }
         if (a.length > b.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ' + detail };
         if (b.length > a.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ' + detail };
-        // Ancrages égaux : on regarde les figures somme présentes en base ; si un seul camp en a, il gagne.
-        var s1 = L.sommes.filter(function (x) { return x.camp === 'R1' && x.enBase.length; }), s7 = L.sommes.filter(function (x) { return x.camp === 'R7' && x.enBase.length; });
-        if (s1.length && !s7.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ancrages égaux, mais seule une figure somme du camp de R1 est en base (' + s1[0].figure + ', ' + s1[0].nom + ', en M' + s1[0].enBase.join(', M') + ').' };
-        if (s7.length && !s1.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ancrages égaux, mais seule une figure somme du camp de R7 est en base (' + s7[0].figure + ', ' + s7[0].nom + ', en M' + s7[0].enBase.join(', M') + ').' };
+        // Ancrages égaux : on lit le cercle. Si ses signaux désignent un seul pôle, il gagne ; s'ils se contredisent, nul.
+        var ce = L.cercle;
+        if (ce.favori) return { verdict: ce.favori === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + ce.favori + ' par le cercle : ancrages égaux, et ' + ce.signaux.join(' ; ') + '.' };
+        if (ce.conflit) return { verdict: 'N', assuree: false, raison: 'Nul : ancrages égaux, et le cercle se contredit (' + ce.signaux.join(' ; ') + ').' };
         return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + detail };
       }
     }
@@ -451,9 +466,9 @@
     var nulProbable = [];
     if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
     if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
-    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable);
+    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.cercle.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      cercle: L.cercle, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
