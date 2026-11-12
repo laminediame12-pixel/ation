@@ -68,6 +68,7 @@ Sous le verdict, la page affiche `decision.marches` :
 - **« 12 » (pas de nul)** dès qu'un de ces signaux est présent : écart d'au moins deux ancrages ; en boucles différentes, majorité des 15 résultantes dans la boucle de R7 ; somme de l'axe angulaire égale à un pôle qui siège sur l'axe. Avec deux signaux ou plus, il est « renforcé ».
 - **Double chance** : le camp que le verdict désigne ; à défaut, le pôle désigné par l'axe, ou le camp le mieux ancré (`1X` pour R1, `X2` pour R7).
 - **Vers le nul** : majorité des résultantes dans la boucle de R1, ou figure somme égale à un pôle hors de l'axe.
+- S'ajoutent aux signaux de nul : un point du cercle « au repos » (la somme des deux maisons du thème qui l'encadrent redonne la valeur propre du point), et M16 portant la figure d'un pôle (M16 est toujours la somme des huit points du cercle).
 - « Signaux contraires » quand le « 12 » s'oppose à un verdict nul ou à un signal de nul.
 
 ### Thème parlant

@@ -333,6 +333,14 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       var f = additionner(theme[x.entre[0]], theme[x.entre[1]]);
       return { point: x.point, nom: x.nom, maisons: x.entre, figure: f, miroirDe: f === R1.miroir ? 'R1' : f === R7.miroir ? 'R7' : null, pole: f === R1.figure ? 'R1' : f === R7.figure ? 'R7' : null };
     });
+    // Les huit points (A, D, B, C et les quatre points du milieu des quarts) : somme du thème à chaque point, comparée à la valeur propre du point.
+    // Un point « au repos » est un point où le thème redonne la valeur propre du point. La somme des huit points est toujours M16.
+    var huitPoints = AXES.concat(AXES2).map(function (x) {
+      var f = additionner(theme[x.entre[0]], theme[x.entre[1]]);
+      return { point: x.point, maisons: x.entre, valeur: x.valeur, figure: f, auRepos: f === x.valeur };
+    });
+    var pointsAuRepos = huitPoints.filter(function (x) { return x.auRepos; });
+    var sentencePole = theme[16] === R1.figure ? 'R1' : theme[16] === R7.figure ? 'R7' : null;
     var miroirPoints = (function () {
       function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }
       var D = de('D'), o = { nul: null, favori: null, texte: null };
@@ -374,7 +382,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -611,6 +619,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + g.camp + ' assurée : ' + pourquoi(g, p) };
   }
 
+  function theme16(L) { return L.maisons[15].base; }
   function analyser(theme, polesForces) {
     var L = lire(theme, polesForces), decision = null;
     for (var i = 0; i < CAS.length && !decision; i++) {
@@ -637,6 +646,8 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
     if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
     if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
+    if (L.pointsAuRepos.length) nulProbable.push(L.pointsAuRepos.map(function (x) { return 'le point ' + (x.point.length === 1 ? x.point : 'entre ' + x.maisons[0] + ' et ' + x.maisons[1]) + ' est au repos (M' + x.maisons[0] + ' + M' + x.maisons[1] + ' redonne ' + x.valeur + ')'; }).join(' ; '));
+    if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
     var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
       cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
