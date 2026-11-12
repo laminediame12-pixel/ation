@@ -345,26 +345,24 @@
       }
     },
     {
-      id: 'CAS-012', titre: 'Pôles liés par un antagoniste commun', statut: 'EN_ESSAI',
-      enonce: 'Les deux pôles sont dans la même boucle, à six figures d’écart : l’un attaque une figure qui attaque l’autre (k, k+3, k+6). Chacun est l’antagoniste de l’antagoniste de l’autre : la chaîne les tient en équilibre, nul.',
-      condition: function (L) {
-        var a = num(L.R1.figure), b = num(L.R7.figure), d = ((b - a) % 16 + 16) % 16;
-        if (d !== 6 && d !== 10) return null;
-        var haut = d === 6 ? L.R1 : L.R7, bas = d === 6 ? L.R7 : L.R1, med = fig(num(haut.figure) + 3), pm = L.positions(med);
-        var repos = [L.R1, L.R7].filter(function (c) { return L.chezElle(c.figure); }).map(function (c) { return c.camp; });
-        return { verdict: 'N', assuree: false, raison: 'Nul : ' + haut.camp + ' ' + haut.figure + ' attaque ' + med + ', qui attaque ' + bas.camp + ' ' + bas.figure + '. Les deux pôles sont liés par cet antagoniste commun (' + med + (pm.length ? ' en M' + pm.map(function (x) { return x.maison; }).join(', M') : ' absent du thème') + ').' +
-          (repos.length === 2 ? ' Les deux pôles sont chacun dans leur maison de repos.' : repos.length === 1 ? ' Seul ' + repos[0] + ' est dans sa maison de repos.' : '') };
-      }
-    },
-    {
       id: 'CAS-009', titre: 'Équilibre des ancrages : motif commun des nuls', statut: 'EN_ESSAI',
-      enonce: 'Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul.',
+      enonce: 'Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul. Dans la même boucle, les pôles sont liés par la chaîne des attaques (chacun est l’antagoniste de l’antagoniste de l’autre, ou son binôme) : nul.',
       condition: function (L) {
         function ancres(c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
         var a = ancres(L.R1), b = ancres(L.R7);
         function dit(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
         var detail = 'ancrages en base, non annulés : boucle de R1 ' + dit(a) + ' ; boucle de R7 ' + dit(b) + '.';
-        if (L.mode !== 'BOUCLES_DIFFERENTES') return { verdict: 'N', assuree: false, raison: 'Nul : les deux pôles sont dans la même boucle et aucun cas ne les départage.' };
+        if (L.mode !== 'BOUCLES_DIFFERENTES') {
+          // Même boucle : les pôles sont liés par la chaîne des attaques, ce qui les tient en équilibre.
+          var n1 = num(L.R1.figure), n7 = num(L.R7.figure), d = ((n7 - n1) % 16 + 16) % 16;
+          if (d === 6 || d === 10) {
+            var haut = d === 6 ? L.R1 : L.R7, bas = d === 6 ? L.R7 : L.R1, med = fig(num(haut.figure) + 3), pm = L.positions(med);
+            var repos = [L.R1, L.R7].filter(function (c) { return L.chezElle(c.figure); }).map(function (c) { return c.camp; });
+            return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + haut.camp + ' ' + haut.figure + ' attaque ' + med + ', qui attaque ' + bas.camp + ' ' + bas.figure + '. Chaque pôle est l’antagoniste de l’antagoniste de l’autre (' + med + (pm.length ? ' en M' + pm.map(function (x) { return x.maison; }).join(', M') : ' absent du thème') + ').' +
+              (repos.length === 2 ? ' Les deux pôles sont chacun dans leur maison de repos.' : repos.length === 1 ? ' Seul ' + repos[0] + ' est dans sa maison de repos.' : '') };
+          }
+          return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : les deux pôles sont dans la même boucle, ' + L.R1.figure + ' et ' + L.R7.figure + ' sont binômes, et aucun cas ne les départage.' };
+        }
         if (a.length > b.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ' + detail };
         if (b.length > a.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ' + detail };
         return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + detail };

@@ -44,8 +44,7 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | CAS-006 | Un pôle attaque directement l'autre, et le pôle attaqué n'a pas son front direct dans le thème | Le pôle sans front direct perd | En essai |
 | CAS-007 | Pôles dans la même boucle. Une figure Sud ou Nord du front du pôle (autre que le pôle) est dans sa propre maison de repos, en base ou en résultante | Victoire de ce pôle | En essai |
 | CAS-008 | Pôles dans des boucles différentes. R1 et son binôme contre R7 et son binôme : la paire qui a le plus de figures dans leur maison de repos (base ou résultante) | Cette paire gagne ; à égalité, pas de verdict | En essai |
-| CAS-012 | Pôles dans la même boucle à six figures d'écart : l'un attaque une figure qui attaque l'autre (antagoniste de l'antagoniste). Tiré du thème 1·5·16·15. Lu juste avant CAS-009 | Nul | En essai (aucun match réel) |
-| CAS-009 | Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle, les figures chez elles en base et non annulées | La boucle qui en a le plus gagne ; à égalité, nul (équilibre des ancrages) | En essai |
+| CAS-009 | Aucun autre cas ne tranche. Le moteur compte, dans la boucle de chaque pôle, les figures chez elles en base et non annulées | La boucle qui en a le plus gagne ; à égalité, nul (équilibre des ancrages). Dans la même boucle : nul, la raison nomme la chaîne des attaques qui lie les pôles (antagoniste de l'antagoniste) | En essai |
 
 Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
 
