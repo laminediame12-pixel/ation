@@ -25,7 +25,7 @@ rep('version:"1.15.4-essai",sourceHash:', 'version:"' + K.version + '",sourceHas
   const refs = eval('[' + b.slice(a + 'references:['.length, z) + ']');
   // Matchs réels ajoutés après la reconstruction du moteur.
   const figs = c => c.map(n => K.FIG[n - 1]);
-  for (const x of [{ id: 'VICTOIRE_REFERENCE_5', codes: [9, 13, 2, 13], expected: '1', source: 'Score 2-0 indiqué par le propriétaire (11 novembre 2026)' },
+  for (const x of [{ id: 'VICTOIRE_REFERENCE_5', codes: [9, 13, 2, 13], expected: '1', source: 'Score 2-0, buts aux 4e et 44e minutes, indiqué par le propriétaire' },
     { id: 'VICTOIRE_REFERENCE_6', codes: [2, 12, 4, 4], expected: '1', source: 'Victoire de R1 indiquée par le propriétaire (11 novembre 2026)' },
     { id: 'NUL_REFERENCE_7', codes: [5, 9, 7, 13], expected: 'N', source: 'Nul indiqué par le propriétaire (12 novembre 2026)' },
     { id: 'NUL_REFERENCE_8', codes: [2, 9, 6, 5], expected: 'N', source: 'Nul 3-3 indiqué par le propriétaire (12 novembre 2026)' },

@@ -217,18 +217,26 @@
         ailleurs: positions(f).filter(function (x) { return c.maisons.indexOf(x.maison) < 0; }).map(function (x) { return x.maison; }) };
     });
     // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en M4 ou M10, en base ou en résultante.
+    // Signal de but sur un axe de quatre maisons. Règle du propriétaire : dans toute maison de l'axe, la base compte ;
+    // dans les deux maisons fortes (M4 et M10 pour l'axe angulaire), la résultante compte aussi. On regarde la somme de l'axe et les deux pôles.
     function butSur(c, fortes, nomAxe) {
-      function enF(l) { return l.filter(function (h) { return fortes.indexOf(h) >= 0; }); }
-      var sb = enF(c.enBase), sr = enF(c.enResultante);
-      var ou = sb.map(function (h) { return 'M' + h + ' (base)'; }).concat(sr.map(function (h) { return 'M' + h + ' (résultante)'; }));
-      // Un pôle présent dans une maison forte, en base ou en résultante, est aussi un signal (match réel 2·9·6·5, 3-3 : Fortuna Minor en M10 en résultante).
-      var poles = [];
-      [R1, R7].forEach(function (p) { positions(p.figure).forEach(function (x) { if (fortes.indexOf(x.maison) >= 0) poles.push(p.camp + ' ' + p.figure + ' en M' + x.maison + (x.couche === 'base' ? ' (base)' : ' (résultante)')); }); });
-      var sur = ou.length + poles.length > 0, t = [];
+      function compte(h, couche) { return couche === 'base' || fortes.indexOf(h) >= 0; }
+      var ou = c.enBase.map(function (h) { return 'M' + h + ' (base)'; }).concat(c.enResultante.filter(function (h) { return compte(h, 'res'); }).map(function (h) { return 'M' + h + ' (résultante)'; }));
+      var faibleSomme = c.enResultante.filter(function (h) { return !compte(h, 'res'); });
+      var poles = [], faiblePoles = [];
+      [R1, R7].forEach(function (p) { positions(p.figure).forEach(function (x) {
+        if (c.maisons.indexOf(x.maison) < 0) return;
+        var t = p.camp + ' ' + p.figure + ' en M' + x.maison + (x.couche === 'base' ? ' (base)' : ' (résultante)');
+        (compte(x.maison, x.couche === 'base' ? 'base' : 'res') ? poles : faiblePoles).push(t);
+      }); });
+      var sur = ou.length + poles.length > 0, faible = faibleSomme.length + faiblePoles.length > 0, t = [];
       if (ou.length) t.push('la somme de ' + nomAxe + ' donne ' + c.somme + ', présente en ' + ou.join(' et '));
-      if (poles.length) t.push('pôle dans une maison forte : ' + poles.join(', '));
-      return { maisons: c.maisons, fortes: fortes, somme: c.somme, enBase: c.enBase, enResultante: c.enResultante, poles: poles, niveau: sur ? 'SUR' : c.enBase.length ? 'OUI' : c.enResultante.length ? 'RESULTANTE' : 'AUCUN',
-        texte: sur ? t.join(' ; ') : 'la somme de ' + nomAxe + ' donne ' + c.somme + (c.enBase.length ? ', en base en M' + c.enBase.join(', M') : c.enResultante.length ? ', dans ses maisons en résultante seulement (M' + c.enResultante.join(', M') + ')' : ', absente de ses maisons') + ' ; aucun pôle en M' + fortes.join(' ni M') };
+      if (poles.length) t.push('pôle sur l’axe : ' + poles.join(', '));
+      var tf = [];
+      if (faibleSomme.length) tf.push('la somme ' + c.somme + ' n’est qu’en résultante en M' + faibleSomme.join(', M'));
+      if (faiblePoles.length) tf.push(faiblePoles.join(', '));
+      return { maisons: c.maisons, fortes: fortes, somme: c.somme, enBase: c.enBase, enResultante: c.enResultante, poles: poles, niveau: sur ? 'SUR' : faible ? 'RESULTANTE' : 'AUCUN',
+        texte: sur ? t.join(' ; ') : faible ? 'signal en résultante hors de M' + fortes.join(' et M') + ' : ' + tf.join(' ; ') : 'la somme de ' + nomAxe + ' donne ' + c.somme + ', absente de ses maisons ; aucun pôle sur l’axe' };
     }
     // Première mi-temps : l'axe angulaire 1-4-7-10, maisons fortes M4 et M10 (règle du propriétaire).
     var butMiTemps = butSur(combinaisons[0], [4, 10], 'l’axe angulaire');
