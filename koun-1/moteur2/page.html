@@ -78,6 +78,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 .pas{display:inline-block;margin:3px 5px 0 0;padding:2px 8px;border-radius:999px;font-size:12.5px;border:1px solid rgba(148,163,184,.5);color:#cbd5e1}
 .pas.bon{background:rgba(34,197,94,.18);border-color:#22c55e;color:#86efac}.pas.mauvais{background:rgba(239,68,68,.18);border-color:#ef4444;color:#fca5a5}
 .points{position:relative}.points.chez b{background:#22c55e}.points.petite.chez b{background:#22c55e}.points .brise{position:absolute;right:-1px;bottom:-5px;font-size:11px;line-height:1}.points.petite .brise{font-size:9px;bottom:-4px}.legende .sanspoint::before,.legende .pas::before{display:none}
+.stab{margin-top:10px;padding-top:8px;border-top:1px dashed #334155}.stab small{display:block;margin-bottom:4px}
 </style></head><body>
 <div id="voile"></div>
 <aside id="menu" aria-label="Matchs sauvegardés" aria-hidden="true">
@@ -203,7 +204,10 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  t.className=d.verdict==='N'?'nul':d.verdict==='2'?'r7':d.verdict===null?'aucun':'';
  t.textContent=d.verdict==='1'?'Victoire R1 — '+e1:d.verdict==='2'?'Victoire R7 — '+e2:d.verdict==='N'?'Nul':'Aucun cas applicable';
  var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
- if(d.marches){C.appendChild(el('span','etiq ok','12 · pas de nul'));C.appendChild(el('span','etiq ok','Double chance '+d.marches.doubleChance+' · '+(d.marches.camp==='R1'?e1:e2)+' ou nul'));C.appendChild(el('div','muted',d.marches.raison+' Camp le plus stable : '+d.marches.camp+'.'));}
+ var mq=d.marches,ZS=el('div','stab');ZS.appendChild(el('small','','Stabilité · ancrages R1 '+mq.ancragesR1+' / R7 '+mq.ancragesR7));
+ if(mq.niveau==='EQUILIBRE')ZS.appendChild(el('span','etiq','Équilibre : ni 12 ni double chance'));
+ else{if(mq.douze)ZS.appendChild(el('span','etiq ok','12 · pas de nul'));ZS.appendChild(el('span','etiq ok','Double chance '+mq.doubleChance+' · '+(mq.camp==='R1'?e1:e2)+' ou nul'));ZS.appendChild(el('span','etiq',mq.douze?'Déséquilibre fort':'Déséquilibre léger'));}
+ C.appendChild(ZS);
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
  majQuestions();$('vQuestion').textContent=($('qVictoireNul').checked?e1+' et '+e2+', victoire ou nul ?':'Verdict du moteur')+' · '+$('mode').value;
@@ -285,7 +289,7 @@ function dessiner(){var L=courant.L,x=saisie(),voir=$('voirRes').checked,W=1000,
  g.fillStyle='#dbeafe';g.font='bold 30px Arial';g.fillText((x.team1||'Équipe 1')+'  –  '+(x.team2||'Équipe 2'),W/2,48);
  g.fillStyle='#94a3b8';g.font='16px Arial';g.fillText([x.mode,x.date,x.heure,'Mères '+courant.meres.map(function(f){return K.num(f)+' '+f;}).join(' · ')].filter(Boolean).join('   ·   '),W/2,78);
  var rs=resultatSaisi(x);g.fillStyle='#fde68a';g.font='bold 22px Arial';g.fillText(rs||'Score non saisi',W/2,112);
- g.fillStyle=courant.decision.verdict===null?'#94a3b8':'#60a5fa';g.font='bold 20px Arial';g.fillText('Moteur : '+verdictTexte(courant.decision)+(courant.decision.victoireAssuree?' (assurée)':'')+(courant.decision.marches?'  ·  12  ·  double chance '+courant.decision.marches.doubleChance:''),W/2,144);
+ g.fillStyle=courant.decision.verdict===null?'#94a3b8':'#60a5fa';g.font='bold 20px Arial';g.fillText('Moteur : '+verdictTexte(courant.decision)+(courant.decision.victoireAssuree?' (assurée)':'')+(courant.decision.marches.douze?'  ·  12':'')+(courant.decision.marches.doubleChance?'  ·  double chance '+courant.decision.marches.doubleChance:''),W/2,144);
  var col=(W-80)/8,cw=96,ch=voir?150:112,COULM={Feu:'#ef4444',Air:'#eab308',Eau:'#3b82f6',Terre:'#9ca3af'};
  function pts(f,cx,y,r,pas,coul){g.fillStyle=coul;PTS[f].forEach(function(n,i){var yy=y+i*pas;if(n===1){g.beginPath();g.arc(cx,yy,r,0,6.3);g.fill();}else{g.beginPath();g.arc(cx-pas/2,yy,r,0,6.3);g.fill();g.beginPath();g.arc(cx+pas/2,yy,r,0,6.3);g.fill();}});}
  function carteImg(h,cx,y){var m=L.maisons[h-1],x0=cx-cw/2,p1=h===L.R1.maison,p7=h===L.R7.maison;

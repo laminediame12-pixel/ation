@@ -377,8 +377,10 @@
       raison: 'Aucun cas défini ne s’applique à ce thème. Le moteur ne donne pas de verdict.' };
     // Déséquilibre fort (au moins deux ancrages d'écart) : « 12 » (pas de nul) et double chance pour le camp le plus stable.
     var st = L.stabilite;
-    decision.marches = st.fort ? { douze: true, doubleChance: st.plusStable === 'R1' ? '1X' : 'X2', camp: st.plusStable, ecart: st.ecart,
-      raison: 'Déséquilibre fort : ' + st.R1.length + ' ancrage(s) pour R1, ' + st.R7.length + ' pour R7.' } : null;
+    // Toujours renseigné : écart nul = équilibre ; écart de 1 = double chance du camp le plus stable ; écart de 2 ou plus = « 12 » en plus.
+    decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, camp: st.plusStable, douze: st.fort,
+      doubleChance: st.plusStable === 'R1' ? '1X' : st.plusStable === 'R7' ? 'X2' : null,
+      niveau: st.fort ? 'FORT' : st.ecart === 1 ? 'LEGER' : 'EQUILIBRE' };
     return { lecture: L, decision: decision };
   }
 

@@ -50,7 +50,7 @@ Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent 
 
 ### Déséquilibre fort : « 12 » et double chance
 
-Le moteur compte les ancrages de chaque camp : ses figures dans leur maison de repos, en base, non annulées (`L.stabilite`). Quand l'écart est d'au moins deux, le verdict ajoute « 12 » (pas de nul) et la double chance du camp le plus stable (`1X` pour R1, `X2` pour R7), dans `decision.marches`.
+Le moteur compte les ancrages de chaque camp : ses figures dans leur maison de repos, en base, non annulées (`L.stabilite`). La fenêtre du verdict affiche toujours ce compte. Écart nul : équilibre. Écart de un : double chance du camp le plus stable (`1X` pour R1, `X2` pour R7). Écart de deux ou plus : « 12 » (pas de nul) en plus. Le tout est dans `decision.marches`.
 
 ### Ajouter un cas
 
