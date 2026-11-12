@@ -17,6 +17,10 @@ Elle ne décide rien. Elle décrit le thème :
 
 Sur les 11 thèmes réels, cette structure donne exactement les mêmes maisons, résultantes, forces et pôles que l'ancien moteur.
 
+### Le cercle des fronts
+
+Les 16 figures sont placées sur une rose de 16 points, dans l'ordre de leur maison de repos : 1 à l'Est, 5 au Nord, 9 à l'Ouest, 13 au Sud (front A, les quatre points cardinaux) ; 3 au Nord-Est, 7 au Nord-Ouest, 11 au Sud-Ouest, 15 au Sud-Est (front C, les points intermédiaires) ; les fronts B et D occupent les points entre deux (2 à l'Est-Nord-Est, 4 au Nord-Nord-Est…). La table est `K.ROSE`. La page dessine ce cercle sous le thème pyramidal ; chaque front y forme un carré. Dans chaque front, les lettres E, N, O, S restent celles de la table des points cardinaux du front.
+
 ### Les trois modes de confrontation
 
 La façon de lire R1 contre R7 dépend de leur position :
