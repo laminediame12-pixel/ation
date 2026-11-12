@@ -369,11 +369,22 @@
     },
     {
       id: 'CAS-009', titre: 'Équilibre des ancrages : motif commun des nuls', statut: 'EN_ESSAI',
-      enonce: 'Aucun autre cas ne tranche. D’abord : si la somme de l’axe angulaire (M1+M4+M7+M10) ou la somme 3-5-11-15 est elle-même un pôle, le thème se referme sur ce pôle : nul. Sinon le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul. Dans la même boucle, les pôles sont liés par la chaîne des attaques (chacun est l’antagoniste de l’antagoniste de l’autre, ou son binôme) : nul.',
+      enonce: 'Aucun autre cas ne tranche. D’abord : si la somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même dans une maison angulaire, l’axe désigne ce pôle : il gagne. Sinon, si la somme de l’axe ou la somme 3-5-11-15 est un pôle, le thème se referme sur ce pôle : nul. Sinon le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul. Dans la même boucle, les pôles sont liés par la chaîne des attaques (chacun est l’antagoniste de l’antagoniste de l’autre, ou son binôme) : nul.',
       condition: function (L) {
         function ancres(c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
         // Premier critère du nul : une figure somme est elle-même un pôle, le thème se referme sur ce pôle.
         var sp = L.sommes.filter(function (x) { return x.pole; });
+        // Exception (match réel 4·3·13·12) : la somme de l'axe angulaire est un pôle qui siège lui-même dans une maison angulaire
+        // (M1, M4, M7, M10). L'axe désigne alors ce pôle : il gagne.
+        var ax = L.sommes[0];
+        if (ax.pole) {
+          var cp = L[ax.pole], autre = ax.pole === 'R1' ? L.R7 : L.R1;
+          if ((cp.maison === 1 || cp.maison === 4 || cp.maison === 7 || cp.maison === 10) && autre.figure !== L.sommes[1].figure) {
+            var rr = L.maisons[cp.maison - 1].resultante, fr = cp.frontDirect.filter(function (f) { return f !== cp.figure && !L.absente(f); });
+            return { verdict: ax.pole === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + ax.pole + ' : la somme de l’axe angulaire donne ' + ax.figure + ', le pôle ' + ax.pole + ', qui siège lui-même sur l’axe en M' + cp.maison + '. L’axe désigne ce pôle.' +
+              (rr ? ' En M' + cp.maison + ' il donne ' + rr + ' en résultante.' : '') + (fr.length ? ' Son front est présent : ' + fr.join(', ') + '.' : '') };
+          }
+        }
         if (sp.length) return { verdict: 'N', assuree: false, raison: 'Nul : ' + sp.map(function (x) { return 'la ' + x.nom + ' donne ' + x.figure + ', qui est le pôle ' + x.pole; }).join(' ; ') + '. Le thème se referme sur ce pôle.' };
         var a = ancres(L.R1), b = ancres(L.R7);
         function dit(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
