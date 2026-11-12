@@ -218,6 +218,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
   g.appendChild(el('em','',l.detail+(l.present?' · '+[l.base.length?'base M'+l.base.join(', M'):'',l.resultante.length?'rés. M'+l.resultante.join(', M'):''].filter(Boolean).join(' · '):l.resultante.length?' · pas en base (résultante seulement : M'+l.resultante.join(', M')+')':' · absente')));
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
+ var bq=L.binomeM1;T.appendChild(el('div','etiq '+(bq.parlant?'ok':''),bq.parlant?'Thème parlant : '+bq.figure+', binôme de M1, en '+bq.positions.map(function(x){return 'M'+x.maison+' ('+x.couche+')';}).join(', '):'Binôme de M1 ('+bq.figure+') ni en M4 ni en M10 : thème moins parlant'));
  afficherChemin(L);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
@@ -289,7 +290,7 @@ function dessiner(){var L=courant.L,x=saisie(),voir=$('voirRes').checked,W=1000,
  g.fillStyle='#dbeafe';g.font='bold 30px Arial';g.fillText((x.team1||'Équipe 1')+'  –  '+(x.team2||'Équipe 2'),W/2,48);
  g.fillStyle='#94a3b8';g.font='16px Arial';g.fillText([x.mode,x.date,x.heure,'Mères '+courant.meres.map(function(f){return K.num(f)+' '+f;}).join(' · ')].filter(Boolean).join('   ·   '),W/2,78);
  var rs=resultatSaisi(x);g.fillStyle='#fde68a';g.font='bold 22px Arial';g.fillText(rs||'Score non saisi',W/2,112);
- g.fillStyle=courant.decision.verdict===null?'#94a3b8':'#60a5fa';g.font='bold 20px Arial';g.fillText('Moteur : '+verdictTexte(courant.decision)+(courant.decision.victoireAssuree?' (assurée)':'')+(courant.decision.marches.douze?'  ·  12':'')+(courant.decision.marches.doubleChance?'  ·  double chance '+courant.decision.marches.doubleChance:''),W/2,144);
+ g.fillStyle=courant.decision.verdict===null?'#94a3b8':'#60a5fa';g.font='bold 20px Arial';g.fillText('Moteur : '+verdictTexte(courant.decision)+(courant.decision.victoireAssuree?' (assurée)':'')+(courant.decision.parlant?'  ·  thème parlant':'')+(courant.decision.marches.douze?'  ·  12':'')+(courant.decision.marches.doubleChance?'  ·  double chance '+courant.decision.marches.doubleChance:''),W/2,144);
  var col=(W-80)/8,cw=96,ch=voir?150:112,COULM={Feu:'#ef4444',Air:'#eab308',Eau:'#3b82f6',Terre:'#9ca3af'};
  function pts(f,cx,y,r,pas,coul){g.fillStyle=coul;PTS[f].forEach(function(n,i){var yy=y+i*pas;if(n===1){g.beginPath();g.arc(cx,yy,r,0,6.3);g.fill();}else{g.beginPath();g.arc(cx-pas/2,yy,r,0,6.3);g.fill();g.beginPath();g.arc(cx+pas/2,yy,r,0,6.3);g.fill();}});}
  function carteImg(h,cx,y){var m=L.maisons[h-1],x0=cx-cw/2,p1=h===L.R1.maison,p7=h===L.R7.maison;

@@ -52,6 +52,10 @@ Les cas 003 à 007 valent pour R1 comme pour R7. Si les deux pôles remplissent 
 
 Le moteur compte les ancrages de chaque camp : ses figures dans leur maison de repos, en base, non annulées (`L.stabilite`). La fenêtre du verdict affiche toujours ce compte. Écart nul : équilibre. Écart de un : double chance du camp le plus stable (`1X` pour R1, `X2` pour R7). Écart de deux ou plus : « 12 » (pas de nul) en plus. Le tout est dans `decision.marches`.
 
+### Thème parlant
+
+Quand le binôme de M1 se trouve en M4 ou en M10 (base ou résultante), le thème est beaucoup plus parlant. Le moteur le signale (`L.binomeM1`, `decision.parlant`) et la page l'affiche sous le témoin de validation. Cela ne change pas le verdict.
+
 ### Ajouter un cas
 
 Dans `moteur.js`, ajouter un bloc à la liste `CAS` :

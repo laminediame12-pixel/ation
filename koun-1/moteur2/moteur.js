@@ -154,6 +154,9 @@
       x.surAxe = x.enBase.filter(function (h) { return h === 1 || h === 4 || h === 7 || h === 10; });
       x.camp = mode !== 'BOUCLES_DIFFERENTES' ? null : (num(x.figure) % 2 === num(R1.figure) % 2 ? 'R1' : 'R7');
     });
+    // Binôme de M1 en M4 ou M10 (base ou résultante) : le thème est beaucoup plus parlant.
+    var bm1 = fig(num(theme[1]) + 2), ou = positions(bm1).filter(function (x) { return x.maison === 4 || x.maison === 10; });
+    var binomeM1 = { figure: bm1, positions: ou.map(function (x) { return { maison: x.maison, couche: x.couche === 'base' ? 'base' : 'résultante' }; }), parlant: ou.length > 0 };
     // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
     var penalisees = [];
     maisons.forEach(function (m) {
@@ -184,7 +187,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -409,6 +412,7 @@
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, camp: st.plusStable, douze: st.fort,
       doubleChance: st.plusStable === 'R1' ? '1X' : st.plusStable === 'R7' ? 'X2' : null,
       niveau: st.fort ? 'FORT' : st.ecart === 1 ? 'LEGER' : 'EQUILIBRE' };
+    decision.parlant = L.binomeM1.parlant;
     return { lecture: L, decision: decision };
   }
 
