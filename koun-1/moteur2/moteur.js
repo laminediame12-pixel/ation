@@ -30,7 +30,7 @@
   [['Axe angulaire', [1, 4, 7, 10]], ['Combinaison 1-5-12-15', [1, 5, 12, 15]], ['Témoin 3-5-11-15', [3, 5, 11, 15]], ['Front A', [1, 5, 9, 13]]].forEach(function (c, g) {
     for (var t = 0; t < (g === 3 ? 4 : 4); t++) {
       var l = c[1].map(function (h) { return ((h - 1 + (g === 3 ? t : 4 * t)) % 16) + 1; });
-      COMBIS.push({ famille: c[0], nom: g === 3 ? 'Front ' + 'ABCD'.charAt(t) : t === 0 ? c[0] : 'sœur ' + l.join('-'), maisons: l, origine: t === 0 });
+      COMBIS.push({ famille: c[0], nom: g === 3 ? 'Front ' + 'ABCD'.charAt(t) : t === 0 ? c[0] : g === 0 && t === 2 ? 'Axe miroir 9-12-15-2' : 'sœur ' + l.join('-'), maisons: l, origine: t === 0 });
     }
   });
   var ROSE = [];
@@ -217,14 +217,17 @@
         ailleurs: positions(f).filter(function (x) { return c.maisons.indexOf(x.maison) < 0; }).map(function (x) { return x.maison; }) };
     });
     // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en M4 ou M10, en base ou en résultante.
-    var butMiTemps = (function () {
-      var a = combinaisons[0];
-      function en410(l) { return l.filter(function (h) { return h === 4 || h === 10; }); }
-      var sb = en410(a.enBase), sr = en410(a.enResultante), sur = sb.length + sr.length > 0;
+    function butSur(c, fortes, nomAxe) {
+      function enF(l) { return l.filter(function (h) { return fortes.indexOf(h) >= 0; }); }
+      var sb = enF(c.enBase), sr = enF(c.enResultante), sur = sb.length + sr.length > 0;
       var ou = sb.map(function (h) { return 'M' + h + ' (base)'; }).concat(sr.map(function (h) { return 'M' + h + ' (résultante)'; }));
-      return { somme: a.somme, enBase: a.enBase, enResultante: a.enResultante, niveau: sur ? 'SUR' : a.enBase.length ? 'OUI' : a.enResultante.length ? 'RESULTANTE' : 'AUCUN',
-        texte: 'la somme de l’axe angulaire donne ' + a.somme + (sur ? ', présente en ' + ou.join(' et ') : a.enBase.length ? ', en base en M' + a.enBase.join(', M') + ' sur l’axe' : a.enResultante.length ? ', sur l’axe en résultante seulement (M' + a.enResultante.join(', M') + ')' : ', absente des maisons de l’axe') };
-    })();
+      return { maisons: c.maisons, fortes: fortes, somme: c.somme, enBase: c.enBase, enResultante: c.enResultante, niveau: sur ? 'SUR' : c.enBase.length ? 'OUI' : c.enResultante.length ? 'RESULTANTE' : 'AUCUN',
+        texte: 'la somme de ' + nomAxe + ' donne ' + c.somme + (sur ? ', présente en ' + ou.join(' et ') : c.enBase.length ? ', en base en M' + c.enBase.join(', M') : c.enResultante.length ? ', dans ses maisons en résultante seulement (M' + c.enResultante.join(', M') + ')' : ', absente de ses maisons') };
+    }
+    // Première mi-temps : l'axe angulaire 1-4-7-10, maisons fortes M4 et M10 (règle du propriétaire).
+    var butMiTemps = butSur(combinaisons[0], [4, 10], 'l’axe angulaire');
+    // Deuxième mi-temps (hypothèse à vérifier) : l'axe miroir 9-12-15-2, en face sur le cercle ; maisons fortes M12 et M2, miroirs de M4 et M10.
+    var butMiTemps2 = butSur(combinaisons[2], [12, 2], 'l’axe miroir 9-12-15-2');
     var miroirPoints = (function () {
       function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }
       var D = de('D'), o = { nul: null, favori: null, texte: null };
@@ -266,7 +269,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -558,7 +561,7 @@
       var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
       decision.precision = { niveau: niveau, pour: pour, contre: contre };
     })();
-    decision.butMiTemps = L.butMiTemps;
+    decision.butMiTemps = L.butMiTemps; decision.butMiTemps2 = L.butMiTemps2;
     decision.parlant = L.binomeM1.parlant;
     return { lecture: L, decision: decision };
   }
