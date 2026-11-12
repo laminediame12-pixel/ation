@@ -178,6 +178,23 @@
       else o.favori = o.favoriBord || o.amont;
       return o;
     })();
+    // Sommes aux quatre points du cercle : A = M16+M1 (toujours M15), D = M4+M5, B = M8+M9, C = M12+M13.
+    // Quand une somme est le miroir d'un pôle, le point où elle tombe compte : au point D, nul ; au point B ou C, ce pôle est favori.
+    var pointsCercle = AXES.map(function (x) {
+      var f = additionner(theme[x.entre[0]], theme[x.entre[1]]);
+      return { point: x.point, nom: x.nom, maisons: x.entre, figure: f, miroirDe: f === R1.miroir ? 'R1' : f === R7.miroir ? 'R7' : null, pole: f === R1.figure ? 'R1' : f === R7.figure ? 'R7' : null };
+    });
+    var miroirPoints = (function () {
+      function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }
+      var D = de('D'), o = { nul: null, favori: null, texte: null };
+      if (R1.miroir === R7.figure) return o;                         // pôles miroirs l'un de l'autre : le signal ne s'applique pas
+      if (D.miroirDe) { o.nul = D; o.texte = 'la somme au point D (M4 + M5) donne ' + D.figure + ', le miroir de ' + D.miroirDe; return o; }
+      if (mode !== 'BOUCLES_DIFFERENTES') return o;
+      var bc = [de('B'), de('C')].filter(function (x) { return x.miroirDe; }), camps = {};
+      bc.forEach(function (x) { camps[x.miroirDe] = true; });
+      if (bc.length && Object.keys(camps).length === 1) { o.favori = bc[0].miroirDe; o.texte = 'la somme au point ' + bc[0].point + ' (M' + bc[0].maisons[0] + ' + M' + bc[0].maisons[1] + ') donne ' + bc[0].figure + ', le miroir de ' + o.favori; }
+      return o;
+    })();
     // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
     var penalisees = [];
     maisons.forEach(function (m) {
@@ -208,7 +225,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -409,6 +426,8 @@
           }
         }
         if (sp.length) return { verdict: 'N', assuree: false, raison: 'Nul : ' + sp.map(function (x) { return 'la ' + x.nom + ' donne ' + x.figure + ', qui est le pôle ' + x.pole; }).join(' ; ') + '. Le thème se referme sur ce pôle.' };
+        // Le miroir d'un pôle au point D (passage des mères aux filles) : nul.
+        if (L.miroirPoints.nul) return { verdict: 'N', assuree: false, raison: 'Nul : ' + L.miroirPoints.texte + '. Au point D, le miroir tient le thème en équilibre.' };
         var a = ancres(L.R1), b = ancres(L.R7);
         function dit(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
         var detail = 'ancrages en base, non annulés : boucle de R1 ' + dit(a) + ' ; boucle de R7 ' + dit(b) + '.';
@@ -425,6 +444,8 @@
         }
         if (a.length > b.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ' + detail };
         if (b.length > a.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ' + detail };
+        // Ancrages égaux : le miroir d'un seul pôle au point B ou C désigne ce pôle.
+        if (L.miroirPoints.favori) return { verdict: L.miroirPoints.favori === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + L.miroirPoints.favori + ' : ancrages égaux, et ' + L.miroirPoints.texte + '.' };
         // Ancrages égaux : on lit le cercle. Si ses signaux désignent un seul pôle, il gagne ; s'ils se contredisent, nul.
         var ce = L.cercle;
         if (ce.favori) return { verdict: ce.favori === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + ce.favori + ' par le cercle : ancrages égaux, et ' + ce.signaux.join(' ; ') + '.' };
@@ -466,9 +487,10 @@
     var nulProbable = [];
     if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
     if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
-    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.cercle.favori);
+    if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
+    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      cercle: L.cercle, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
