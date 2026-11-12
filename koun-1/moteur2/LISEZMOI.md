@@ -29,6 +29,8 @@ Les figures 1 à 4 sont donc entre l'Est et le Nord, 5 à 8 entre le Nord et l'O
 
 Les quatre quarts du cercle sont les quatre générations du thème pyramidal : mères (M1 à M4), filles (M5 à M8), nièces (M9 à M12), témoins, juge et sentence (M13 à M16). Les points D, B et C sont donc les passages d'une génération à la suivante, et le point A la fermeture (M16 + M1 = M15). Le cercle affiche la somme des deux maisons qui encadrent chaque point, les résultantes, et, pour la maison touchée, les traits de génération (d'où elle vient, ce qu'elle donne).
 
+Chaque point du cercle a une valeur propre : la somme des deux figures de repos qui l'encadrent. Les points A, D, B, C valent tous Puer (1). Quatre points seconds, au milieu des quarts (`K.AXES2`), se font face deux à deux avec la même valeur : entre 2 et 3 et entre 10 et 11 valent Via (5) ; entre 6 et 7 et entre 14 et 15 valent Cauda Draconis (13). Tous les autres intervalles valent Aquisitio (15). Le cercle dessine les deux carrés et les lignes qui relient les points face à face.
+
 ### Les trois modes de confrontation
 
 La façon de lire R1 contre R7 dépend de leur position :

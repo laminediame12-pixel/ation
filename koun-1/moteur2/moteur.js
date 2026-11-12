@@ -22,6 +22,8 @@
   // Cercle des fronts : les 16 figures dans l'ordre de leur maison de repos. Quatre points partagent le cercle :
   // A = Est, entre 16 et 1 ; D = Nord, entre 4 et 5 ; B = Ouest, entre 8 et 9 ; C = Sud, entre 12 et 13.
   var AXES = [{ point: 'A', nom: 'Est', entre: [16, 1] }, { point: 'D', nom: 'Nord', entre: [4, 5] }, { point: 'B', nom: 'Ouest', entre: [8, 9] }, { point: 'C', nom: 'Sud', entre: [12, 13] }];
+  // Quatre points seconds, au milieu de chaque quart, face à face deux à deux : entre 2 et 3 face à entre 10 et 11 ; entre 6 et 7 face à entre 14 et 15.
+  var AXES2 = [{ point: 'NE', entre: [2, 3] }, { point: 'NO', entre: [6, 7] }, { point: 'SO', entre: [10, 11] }, { point: 'SE', entre: [14, 15] }];
   var ROSE = [];
   (function () { var q = ['entre A (Est) et D (Nord)', 'entre D (Nord) et B (Ouest)', 'entre B (Ouest) et C (Sud)', 'entre C (Sud) et A (Est)'], bord = { 16: 'A', 1: 'A', 4: 'D', 5: 'D', 8: 'B', 9: 'B', 12: 'C', 13: 'C' };
     for (var k = 1; k <= 16; k++) ROSE.push(q[Math.floor((k - 1) / 4)] + (bord[k] ? ', au bord du point ' + bord[k] : '')); })();
@@ -498,7 +500,10 @@
     return { lecture: L, decision: decision };
   }
 
-  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, AXES: AXES, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
+  // Valeur propre d'un point : la somme des deux figures de repos qui l'encadrent. A, B, C, D valent Puer (1) ;
+  // entre 2 et 3 et entre 10 et 11 : Via (5) ; entre 6 et 7 et entre 14 et 15 : Cauda Draconis (13).
+  AXES.concat(AXES2).forEach(function (x) { x.valeur = additionner(fig(x.entre[0]), fig(x.entre[1])); });
+  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, AXES: AXES, AXES2: AXES2, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
     elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
     temoin: temoin, figureDuJour: figureDuJour };
   root.KOUN = API;

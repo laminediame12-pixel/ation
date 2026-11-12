@@ -183,7 +183,7 @@ function detail(h,L){var m=L.maisons[h-1],d=$('detail');d.textContent='';d.class
  d.appendChild(el('div','muted','Génération : '+(h<=4?'mère':h<=8?'fille, tirée des quatre mères':'M'+h+' = '+PAR2[h])+(ENF[h]?' ; elle donne '+ENF[h]:' ; elle ferme le thème')+'.'));cercle(L,fr,h);}
 // Cercle des fronts : les 16 maisons dans l'ordre ; point A (Est) entre 16 et 1, D (Nord) entre 4 et 5, B (Ouest) entre 8 et 9, C (Sud) entre 12 et 13.
 // Devant chaque maison : la figure que le thème y place. Le point A porte M15 (M16 + M1 = M15).
-function cercle(L,frontChoisi,maisonChoisie){var Z=$('cercle'),NS='http://www.w3.org/2000/svg',W=620,c=W/2,R=158,RF=204,RL=250;Z.textContent='';
+function cercle(L,frontChoisi,maisonChoisie){var Z=$('cercle'),NS='http://www.w3.org/2000/svg',W=660,c=W/2,R=158,RF=204,RL=252;Z.textContent='';
  function sv(t,a,x){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(x!==undefined)e.textContent=x;return e;}
  function pt(k,r){var a=(k-0.5)*Math.PI/8;return [c+r*Math.cos(a),c-r*Math.sin(a)];}
  function ax(i,r){var a=i*Math.PI/2;return [c+r*Math.cos(a),c-r*Math.sin(a)];}
@@ -198,9 +198,17 @@ function cercle(L,frontChoisi,maisonChoisie){var Z=$('cercle'),NS='http://www.w3
   S.appendChild(sv('circle',{cx:p[0],cy:p[1],r:5,fill:'#fde68a'}));
   S.appendChild(sv('text',{x:l[0],y:l[1]-4,'text-anchor':'middle','font-size':16,'font-weight':700,fill:'#fde68a'},x.point));
   var som=L?K.additionner(L.maisons[x.entre[0]-1].base,L.maisons[x.entre[1]-1].base):null;
-  S.appendChild(sv('text',{x:l[0],y:l[1]+10,'text-anchor':'middle','font-size':10,fill:'#fde68a'},x.nom+(i===0?' · M15':'')));
+  S.appendChild(sv('text',{x:l[0],y:l[1]+10,'text-anchor':'middle','font-size':10,fill:'#fde68a'},x.nom+' = '+K.num(x.valeur)+(i===0?' · M15':'')));
   if(som)S.appendChild(sv('text',{x:l[0],y:l[1]+(ici?36:23),'text-anchor':'middle','font-size':10,fill:'#fde68a'},'M'+x.entre[0]+'+M'+x.entre[1]+' = '+K.num(som)));
   if(ici)S.appendChild(sv('text',{x:l[0],y:l[1]+23,'text-anchor':'middle','font-size':10,'font-weight':700,fill:assis.coul},assis.camp+' ici'));});
+ // second carré : les quatre points au milieu des quarts (entre 2 et 3, 6 et 7, 10 et 11, 14 et 15), reliés entre eux et face à face
+ function ax2(i,r){var a=(i*2+1)*Math.PI/4;return [c+r*Math.cos(a),c-r*Math.sin(a)];}
+ S.appendChild(sv('polygon',{points:[0,1,2,3].map(function(i){return ax2(i,R).join(',');}).join(' '),fill:'none',stroke:'#5eead4','stroke-width':1.2,'stroke-opacity':.6}));
+ [[0,2],[1,3]].forEach(function(l){var a=ax2(l[0],R),b=ax2(l[1],R);S.appendChild(sv('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#5eead4','stroke-width':1.2,'stroke-opacity':.6,'stroke-dasharray':'2 5'}));});
+ K.AXES2.forEach(function(x,i){var p=ax2(i,R),l=ax2(i,RL+44),som=L?K.additionner(L.maisons[x.entre[0]-1].base,L.maisons[x.entre[1]-1].base):null;
+  S.appendChild(sv('circle',{cx:p[0],cy:p[1],r:4.5,fill:'#5eead4'}));
+  S.appendChild(sv('text',{x:l[0],y:l[1]-2,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'#5eead4'},x.entre[0]+' | '+x.entre[1]+' = '+K.num(x.valeur)));
+  if(som)S.appendChild(sv('text',{x:l[0],y:l[1]+11,'text-anchor':'middle','font-size':10,fill:'#5eead4'},'M'+x.entre[0]+'+M'+x.entre[1]+' = '+K.num(som)));});
  [['A','#ef4444'],['B','#eab308'],['C','#3b82f6'],['D','#9ca3af']].forEach(function(fc,i){var ks=[1,5,9,13].map(function(k){return k+i;}),on=frontChoisi===fc[0];
   S.appendChild(sv('polygon',{points:ks.map(function(k){return pt(k,R).join(',');}).join(' '),fill:on?fc[1]+'22':'none',stroke:fc[1],'stroke-width':on?2.5:1,'stroke-opacity':on?1:(frontChoisi?0.18:0.45)}));});
  ['Mères','Filles','Nièces','Témoins'].forEach(function(t,i){var a=(i*2+1)*Math.PI/4,r=R-52;S.appendChild(sv('text',{'class':'centre',x:c+r*Math.cos(a),y:c-r*Math.sin(a)+4,'text-anchor':'middle','font-size':10,fill:'#a5b4fc'},t));});
@@ -224,7 +232,7 @@ function cercle(L,frontChoisi,maisonChoisie){var Z=$('cercle'),NS='http://www.w3
  if(assis)S.appendChild(sv('text',{'class':'centre',x:c,y:c+22,'text-anchor':'middle','font-size':11,'font-weight':700,fill:assis.coul},assis.camp+' ('+assis.figure+', M'+assis.maison+') est au bord du point '+K.AXES[assis.axe].point));
  Z.appendChild(S);
  var G=$('cercleLegende');G.textContent='';[['Front A · Feu','#ef4444'],['Front B · Air','#eab308'],['Front C · Eau','#3b82f6'],['Front D · Terre','#9ca3af'],['chez elle','#22c55e']].forEach(function(t){var sp=el('span','',t[0]);sp.style.setProperty('--c',t[1]);G.appendChild(sp);});
- G.appendChild(el('span','sanspoint','Rond : la maison · devant : la figure du thème et « base→résultante » · anneau bleu : maison de R1 · anneau rouge : maison de R7 · trait orange plein : d’où vient la maison touchée · trait orange pointillé : ce qu’elle donne'));}
+ G.appendChild(el('span','sanspoint','Rond : la maison · devant : la figure du thème et « base→résultante » · anneau bleu : maison de R1 · anneau rouge : maison de R7 · trait orange plein : d’où vient la maison touchée · trait orange pointillé : ce qu’elle donne · carré jaune : points A, D, B, C · carré vert d’eau : points du milieu des quarts · « = n » : valeur du point (somme des deux figures voisines)'));}
 function bouclier(L){var B=$('bouclier');B.textContent='';
  function pose(h,cl){var w=el('div',cl||'');w.appendChild(carte(h,L));B.appendChild(w);}
  [8,7,6,5,4,3,2,1].forEach(function(h){pose(h);});[12,11,10,9].forEach(function(h){pose(h,'s2');});[14,13].forEach(function(h){pose(h,'s4');});pose(15,'c15');pose(16,'c16');
