@@ -24,6 +24,15 @@
   var AXES = [{ point: 'A', nom: 'Est', entre: [16, 1] }, { point: 'D', nom: 'Nord', entre: [4, 5] }, { point: 'B', nom: 'Ouest', entre: [8, 9] }, { point: 'C', nom: 'Sud', entre: [12, 13] }];
   // Quatre points seconds, au milieu de chaque quart, face à face deux à deux : entre 2 et 3 face à entre 10 et 11 ; entre 6 et 7 face à entre 14 et 15.
   var AXES2 = [{ point: 'NE', entre: [2, 3] }, { point: 'NO', entre: [6, 7] }, { point: 'SO', entre: [10, 11] }, { point: 'SE', entre: [14, 15] }];
+  // Combinaisons de quatre maisons sur le cercle. Chaque combinaison a trois sœurs, obtenues en tournant d'un quart de cercle (+4 maisons).
+  // L'axe angulaire 1-4-7-10 et ses sœurs sont les quatre chaînes d'attaque qui se partagent le cercle.
+  var COMBIS = [];
+  [['Axe angulaire', [1, 4, 7, 10]], ['Combinaison 1-5-12-15', [1, 5, 12, 15]], ['Témoin 3-5-11-15', [3, 5, 11, 15]], ['Front A', [1, 5, 9, 13]]].forEach(function (c, g) {
+    for (var t = 0; t < (g === 3 ? 4 : 4); t++) {
+      var l = c[1].map(function (h) { return ((h - 1 + (g === 3 ? t : 4 * t)) % 16) + 1; });
+      COMBIS.push({ famille: c[0], nom: g === 3 ? 'Front ' + 'ABCD'.charAt(t) : t === 0 ? c[0] : 'sœur ' + l.join('-'), maisons: l, origine: t === 0 });
+    }
+  });
   var ROSE = [];
   (function () { var q = ['entre A (Est) et D (Nord)', 'entre D (Nord) et B (Ouest)', 'entre B (Ouest) et C (Sud)', 'entre C (Sud) et A (Est)'], bord = { 16: 'A', 1: 'A', 4: 'D', 5: 'D', 8: 'B', 9: 'B', 12: 'C', 13: 'C' };
     for (var k = 1; k <= 16; k++) ROSE.push(q[Math.floor((k - 1) / 4)] + (bord[k] ? ', au bord du point ' + bord[k] : '')); })();
@@ -200,6 +209,19 @@
       var b = pos.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), r = pos.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; });
       return { figure: f, numero: num(f), base: b, resultante: r, chezElle: chezElle(f), etat: b.length ? 'EN_BASE' : chezElle(f) ? 'CHEZ_ELLE_EN_RESULTANTE' : r.length ? 'RESULTANTE_SEULEMENT' : 'ABSENTE' };
     })();
+    // Pour chaque combinaison : la somme des quatre maisons du thème, et où cette somme se trouve parmi ces mêmes maisons.
+    var combinaisons = COMBIS.map(function (c) {
+      var f = c.maisons.map(function (h) { return theme[h]; }).reduce(function (x, y) { return additionner(x, y); });
+      return { famille: c.famille, nom: c.nom, maisons: c.maisons, origine: c.origine, somme: f,
+        enBase: c.maisons.filter(function (h) { return maisons[h - 1].base === f; }), enResultante: c.maisons.filter(function (h) { return maisons[h - 1].resultante === f && maisons[h - 1].base !== f; }),
+        ailleurs: positions(f).filter(function (x) { return c.maisons.indexOf(x.maison) < 0; }).map(function (x) { return x.maison; }) };
+    });
+    // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en base en M4 ou M10.
+    var butMiTemps = (function () {
+      var a = combinaisons[0], sur = a.enBase.filter(function (h) { return h === 4 || h === 10; });
+      return { somme: a.somme, enBase: a.enBase, enResultante: a.enResultante, niveau: sur.length ? 'SUR' : a.enBase.length ? 'OUI' : a.enResultante.length ? 'RESULTANTE' : 'AUCUN',
+        texte: 'la somme de l’axe angulaire donne ' + a.somme + (sur.length ? ', en base en M' + sur.join(' et M') : a.enBase.length ? ', en base en M' + a.enBase.join(', M') + ' sur l’axe' : a.enResultante.length ? ', sur l’axe en résultante seulement (M' + a.enResultante.join(', M') + ')' : ', absente des maisons de l’axe') };
+    })();
     var miroirPoints = (function () {
       function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }
       var D = de('D'), o = { nul: null, favori: null, texte: null };
@@ -241,7 +263,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -533,6 +555,7 @@
       var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
       decision.precision = { niveau: niveau, pour: pour, contre: contre };
     })();
+    decision.butMiTemps = L.butMiTemps;
     decision.parlant = L.binomeM1.parlant;
     return { lecture: L, decision: decision };
   }
@@ -540,7 +563,7 @@
   // Valeur propre d'un point : la somme des deux figures de repos qui l'encadrent. A, B, C, D valent Puer (1) ;
   // entre 2 et 3 et entre 10 et 11 : Via (5) ; entre 6 et 7 et entre 14 et 15 : Cauda Draconis (13).
   AXES.concat(AXES2).forEach(function (x) { x.valeur = additionner(fig(x.entre[0]), fig(x.entre[1])); });
-  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, AXES: AXES, AXES2: AXES2, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
+  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, AXES: AXES, AXES2: AXES2, COMBIS: COMBIS, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
     elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
     temoin: temoin, figureDuJour: figureDuJour };
   root.KOUN = API;

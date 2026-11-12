@@ -71,6 +71,10 @@ Sous le verdict, la page affiche `decision.marches` :
 - S'ajoutent aux signaux de nul : un point du cercle « au repos » (la somme des deux maisons du thème qui l'encadrent redonne la valeur propre du point), et M16 portant la figure d'un pôle (M16 est toujours la somme des huit points du cercle).
 - « Signaux contraires » quand le « 12 » s'oppose à un verdict nul ou à un signal de nul.
 
+### Combinaisons du cercle et but en première mi-temps
+
+`K.COMBIS` liste des combinaisons de quatre maisons : l'axe angulaire 1-4-7-10, la combinaison 1-5-12-15, le témoin 3-5-11-15, chacune avec ses trois sœurs (un quart de tour, +4 maisons), et les quatre fronts. Pour chaque thème, `L.combinaisons` donne la somme des quatre maisons et dit si cette somme se trouve dans ces mêmes maisons, en base ou en résultante. `L.butMiTemps` applique la règle du propriétaire : la somme de l'axe angulaire présente dans une maison de l'axe annonce un but en première mi-temps, sûr si elle est en base en M4 ou M10.
+
 ### Précision du verdict
 
 `decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre (signaux « 12 », signaux de nul, ancrages, cercle, miroir aux points, figure du lien). Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.

@@ -139,6 +139,8 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   <div class="bloc" style="margin-bottom:0"><h2 style="margin-top:0">Cercle des fronts</h2><div id="cercle"></div><div class="legende" id="cercleLegende"></div><div id="detail" class="muted" style="margin-top:10px">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
 </div>
 
+<div class="bloc"><h2>Combinaisons du cercle</h2><p class="muted" id="combiNote">Lance un thème.</p><div class="defile"><table id="combis"></table></div></div>
+
 <div class="bloc"><h2>Le chemin des pôles</h2><p class="muted" id="cheminMode">Lance un thème.</p><div class="chemins"><div id="cheminR1"></div><div id="cheminR7"></div></div>
  <div class="legende"><span class="pas bon">bon emplacement</span><span class="pas mauvais">mauvais emplacement</span><span class="pas">ni l’un ni l’autre</span></div></div>
 
@@ -238,6 +240,12 @@ function bouclier(L){var B=$('bouclier');B.textContent='';
  function pose(h,cl){var w=el('div',cl||'');w.appendChild(carte(h,L));B.appendChild(w);}
  [8,7,6,5,4,3,2,1].forEach(function(h){pose(h);});[12,11,10,9].forEach(function(h){pose(h,'s2');});[14,13].forEach(function(h){pose(h,'s4');});pose(15,'c15');pose(16,'c16');
  var abs=K.FIG.filter(function(f){return !L.positions(f).length;});$('absentes').textContent=abs.length?'Absentes (ni base ni résultante) : '+abs.join(', '):'Les 16 figures sont présentes.';}
+function afficherCombis(L,d){var T=$('combis');T.textContent='';var tr=el('tr');['Combinaison','Maisons','Somme','Dans ses maisons, en base','en résultante','Ailleurs'].forEach(function(h){tr.appendChild(el('th','',h));});T.appendChild(tr);
+ L.combinaisons.forEach(function(c){var r=el('tr');r.appendChild(el('td','',c.nom)).style.fontWeight=c.origine?'700':'400';r.appendChild(el('td','',c.maisons.join(' · ')));r.appendChild(el('td','',K.num(c.somme)+' '+c.somme));
+  var b=el('td','',c.enBase.length?'M'+c.enBase.join(', M'):'—');if(c.enBase.length)b.style.color='#86efac';r.appendChild(b);
+  r.appendChild(el('td','',c.enResultante.length?'M'+c.enResultante.join(', M'):'—'));r.appendChild(el('td','',c.ailleurs.length?'M'+c.ailleurs.join(', M'):'absente'));T.appendChild(r);});
+ var q=d.butMiTemps,N={SUR:'But en première mi-temps : oui, sûr',OUI:'But en première mi-temps : oui',RESULTANTE:'But en première mi-temps : signal faible (résultante seulement)',AUCUN:'But en première mi-temps : pas de signal'}[q.niveau];
+ $('combiNote').textContent=N+' — '+q.texte+'.';}
 function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : départage par les moitiés.',MEME_BOUCLE:'Pôles dans la même boucle : front contre front.',BOUCLES_DIFFERENTES:'Pôles dans des boucles différentes : figure et son binôme contre figure et son binôme.'};
  $('cheminMode').textContent=noms[L.mode];
  function cl(c){return c==='ELLE'||c==='ALLIE'?'pas bon':c==='ADVERSAIRE'?'pas mauvais':'pas';}
@@ -276,6 +284,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(mq.miroirPoints.texte)ZS.appendChild(el('div','muted','Points du cercle : '+mq.miroirPoints.texte+(mq.miroirPoints.nul?' (vers le nul).':' (favori '+mq.miroirPoints.favori+').')));
  if(mq.cercle.signaux.length)ZS.appendChild(el('div','muted','Cercle : '+mq.cercle.signaux.join(' ; ')+'. '+(mq.cercle.conflit?'Les deux signaux se contredisent.':'Favori du cercle : '+mq.cercle.favori+'.')));
  if(pq.contre.length)ZS.appendChild(el('div','muted','Contre le verdict : '+pq.contre.join(' ; ')+'.'));
+ var bq=d.butMiTemps;ZS.appendChild(el('span','etiq '+(bq.niveau==='SUR'||bq.niveau==='OUI'?'ok':bq.niveau==='RESULTANTE'?'essai':''),bq.niveau==='SUR'?'But 1re mi-temps : sûr':bq.niveau==='OUI'?'But 1re mi-temps : oui':bq.niveau==='RESULTANTE'?'But 1re mi-temps : faible':'But 1re mi-temps : pas de signal'));
  C.appendChild(ZS);
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
@@ -288,7 +297,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
  var bq=L.binomeM1;T.appendChild(el('div','etiq '+(bq.parlant?'ok':''),bq.parlant?'Thème parlant : '+bq.figure+', binôme de M1, en '+bq.positions.map(function(x){return 'M'+x.maison+' ('+x.couche+')';}).join(', '):'Binôme de M1 ('+bq.figure+') ni en M4 ni en M10 : thème moins parlant'));
- afficherChemin(L);cercle(L,null);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
+ afficherChemin(L);cercle(L,null);afficherCombis(L,d);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
 $('lancer').onclick=function(){var r=$('rapide').value.trim(),mt=$('modeTirage').value;
