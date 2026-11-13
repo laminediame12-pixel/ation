@@ -362,22 +362,9 @@
 
   var CAS = [
     // ───────── Famille « Même front » ─────────
-    { id: 'MF-1', famille: 'Même front', titre: 'La figure d’équilibre est posée en terre', statut: 'REGLE_CONFIRMEE',
-      enonce: 'Pôles dans le même front. Leur somme est la figure d’équilibre : Albus (4), Tristitia (8) ou Fortuna Major (12), et Populus (16) quand les deux pôles sont la même figure. Si elle est en base dans une maison d’équilibre (M4, M8, M12 ou M16) : nul.',
-      condition: function (L) {
-        if (L.R1.front !== L.R7.front) return null;
-        var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h % 4 === 0; });
-        if (!he.length) return null;
-        return N('Nul : même front ' + L.R1.front + '. ' + L.R1.figure + ' + ' + L.R7.figure + ' donne ' + fe + ', la figure d’équilibre, posée en base en M' + he.join(', M') + ', maison d’équilibre.');
-      } },
-    { id: 'MF-2', famille: 'Même front', titre: 'Les deux antagonistes chez eux', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans le même front, et l’antagoniste de chaque pôle est dans sa propre maison de repos : nul.',
-      condition: function (L) {
-        if (L.R1.front !== L.R7.front || !(L.chezElle(L.R1.antagoniste) && L.chezElle(L.R7.antagoniste))) return null;
-        return N('Nul : même front ' + L.R1.front + ', les deux pôles sont sous le contrôle de leur antagoniste, chacun dans sa maison de repos (' + L.R1.antagoniste + ' en M' + num(L.R1.antagoniste) + ', ' + L.R7.antagoniste + ' en M' + num(L.R7.antagoniste) + ').');
-      } },
-    { id: 'MF-3', famille: 'Même front', titre: 'Un seul antagoniste chez lui', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : ce pôle est dominé, l’autre gagne, même entre miroirs.',
+    // Deux cas de victoire (une figure au repos décisive pour un pôle), puis LE cas du nul, puis l'équilibre rompu.
+    { id: 'MF-1', famille: 'Même front', titre: 'Un seul antagoniste chez lui', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : cette figure au repos est décisive, ce pôle est dominé et l’autre gagne, même entre miroirs.',
       condition: function (L) {
         var a1 = L.chezElle(L.R1.antagoniste), a7 = L.chezElle(L.R7.antagoniste);
         if (L.R1.front !== L.R7.front || a1 === a7) return null;
@@ -385,27 +372,38 @@
         function res(c) { var r = L.maisons[c.maison - 1].resultante; return r ? ' (résultante de M' + c.maison + ' : ' + r + ')' : ''; }
         return V(gagne, L, 'Victoire ' + gagne.camp + ' : même front ' + gagne.front + ', mais l’antagoniste de ' + perd.camp + ' ' + perd.figure + ', ' + perd.antagoniste + ', est chez lui en M' + num(perd.antagoniste) + ' ; celui de ' + gagne.figure + ' ne l’est pas. ' + gagne.camp + ' ' + gagne.figure + res(gagne) + ' ; ' + perd.camp + ' ' + perd.figure + res(perd) + '.');
       } },
-    { id: 'MF-4', famille: 'Même front', titre: 'Même moitié du front', statut: 'REGLE_CONFIRMEE',
-      enonce: 'Pôles dans le même front et dans la même moitié (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16) : nul.',
-      condition: function (L) {
-        if (L.R1.front !== L.R7.front || !(L.R1.figure === L.R7.figure || partenaireMoitie(L.R1.figure) === L.R7.figure)) return null;
-        return N('Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans la même moitié du front ' + L.R1.front + '.');
-      } },
-    { id: 'MF-5', famille: 'Même front', titre: 'Un seul partenaire de moitié chez lui', statut: 'REGLE_CONFIRMEE',
-      enonce: 'Pôles dans le même front, moitiés différentes, et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : ce pôle gagne.',
+    { id: 'MF-2', famille: 'Même front', titre: 'Un seul partenaire de moitié chez lui', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans le même front, moitiés différentes (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16), et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : cette figure au repos est décisive, ce pôle gagne.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
-        var p1 = partenaireMoitie(L.R1.figure), p7 = partenaireMoitie(L.R7.figure), a = L.chezElle(p1), b = L.chezElle(p7);
+        var p1 = partenaireMoitie(L.R1.figure), p7 = partenaireMoitie(L.R7.figure);
+        if (L.R1.figure === L.R7.figure || p1 === L.R7.figure) return null;      // même figure ou même moitié : pas de partenaire décisif
+        var a = L.chezElle(p1), b = L.chezElle(p7);
         if (a === b) return null;
         var g = a ? L.R1 : L.R7, pg = a ? p1 : p7;
         return V(g, L, 'Victoire ' + g.camp + ' : même front ' + g.front + ', et seul le partenaire de ' + g.figure + ', ' + pg + ', est dans sa maison de repos (M' + num(pg) + ').');
       } },
-    { id: 'MF-6', famille: 'Même front', titre: 'Même front, partenaires à égalité', statut: 'REGLE_CONFIRMEE',
-      enonce: 'Pôles dans le même front, et les deux partenaires de moitié sont chez eux, ou aucun : nul.',
+    { id: 'MF-3', famille: 'Même front', titre: 'Le nul : la figure d’équilibre est posée', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans le même front (miroirs compris), sans figure au repos décisive pour l’un des deux. Leur somme, la figure d’équilibre (4, 8 ou 12 ; 16 si les deux pôles sont la même figure), est en base dans une maison d’équilibre (M4, M8, M12, M16) ou sur l’axe angulaire (M1, M4, M7, M10) : nul. Nul aussi quand les deux pôles sont à égalité parfaite (même figure, même poids, même présence).',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
-        var p1 = partenaireMoitie(L.R1.figure), p7 = partenaireMoitie(L.R7.figure);
-        return N('Nul : même front ' + L.R1.front + ', ' + (L.chezElle(p1) ? 'les deux partenaires (' + p1 + ' et ' + p7 + ') sont dans leur maison de repos.' : 'aucun des deux partenaires (' + p1 + ', ' + p7 + ') n’est dans sa maison de repos.'));
+        var fe = L.lien.figure, eq = L.lien.base.filter(function (h) { return h % 4 === 0; }), ax = L.lien.base.filter(function (h) { return h === 1 || h === 7 || h === 10; });
+        if (!eq.length && !ax.length) {
+          // Égalité parfaite des deux pôles (même poids en base, même présence) : rien ne peut les départager, c'est aussi le nul.
+          var pp = L.poidsPoles, mm = L.multiplicite;
+          if (pp.R1 === pp.R7 && mm.R1.total === mm.R7.total) return N('Nul : même front ' + L.R1.front + ', les deux pôles sont à égalité parfaite (même poids en base, même présence dans le thème).');
+          return null;
+        }
+        return N('Nul : même front ' + L.R1.front + ', aucune figure au repos n’est décisive. ' + L.R1.figure + ' + ' + L.R7.figure + ' donne ' + fe + ', la figure d’équilibre, posée en base ' +
+          [eq.length ? 'en M' + eq.join(', M') + ' (maison d’équilibre)' : '', ax.length ? 'en M' + ax.join(', M') + ' (axe angulaire)' : ''].filter(Boolean).join(' et ') + '.');
+      } },
+    { id: 'MF-4', famille: 'Même front', titre: 'Équilibre rompu : le pôle le plus lourd', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans le même front, sans figure au repos décisive, et la figure d’équilibre n’est posée ni dans une maison d’équilibre ni sur l’axe : le match se décide. Le pôle qui pèse le plus en base gagne ; à poids égal, le pôle le plus présent dans le thème.',
+      condition: function (L) {
+        if (L.R1.front !== L.R7.front) return null;
+        var p = L.poidsPoles, m = L.multiplicite, g = p.R1 > p.R7 ? L.R1 : p.R7 > p.R1 ? L.R7 : m.R1.total > m.R7.total ? L.R1 : m.R7.total > m.R1.total ? L.R7 : null;
+        if (!g) return null;
+        return V(g, L, 'Victoire ' + g.camp + ' : même front ' + g.front + ', la figure d’équilibre ' + L.lien.figure + ' n’est posée ni en M4, M8, M12, M16 ni sur l’axe. ' + (p.R1 !== p.R7 ? 'Poids en base : R1 ' + p.R1 + ', R7 ' + p.R7 + '.' : 'Poids égaux ; présence dans le thème : R1 ' + m.R1.total + ', R7 ' + m.R7.total + '.'));
       } },
     // ───────── Famille « Pôle sans force » ─────────
     { id: 'PF-1', famille: 'Pôle sans force', titre: 'Pôle éteint', statut: 'EN_ESSAI',
@@ -624,10 +622,10 @@
     // Posée en base dans une maison de Terre (M4, M8, M12), elle tient le nul (3 nuls réels sur 3) ; sinon le match se décide (1 sur 1).
     var equilibre = null;
     if (L.mode === 'MEME_FRONT') {
-      var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h % 4 === 0; });
+      var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h % 4 === 0 || h === 1 || h === 7 || h === 10; });
       equilibre = { figure: fe, maisons: he, posee: he.length > 0 };
-      if (equilibre.posee) nulProbableAvant.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) est en base en M' + he.join(', M') + ', maison d’équilibre');
-      else sig.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) n’est en base dans aucune maison d’équilibre (M4, M8, M12, M16)');
+      if (equilibre.posee) nulProbableAvant.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) est en base en M' + he.join(', M') + ' (maison d’équilibre ou axe angulaire)');
+      else sig.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) n’est en base ni dans une maison d’équilibre (M4, M8, M12, M16) ni sur l’axe angulaire');
     }
     // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
     var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
