@@ -66,6 +66,7 @@ Quand une famille dit « un seul pôle remplit ceci », le cas ne tranche pas si
 | PF-1 | Pôle sans force | Un seul des deux pôles est éteint (sa figure ne dépasse 1 % dans aucune position) : l’autre gagne. | 1 juste |
 | PF-2 | Pôle sans force | Un pôle attaque l’autre directement ; l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne à plus de 1 % : l’attaquant gagne. | 3 justes |
 | PF-3 | Pôle sans force | Un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) : l’autre gagne. | aucun |
+| AX-1 | Pôles sur l'axe | Les pôles sont en M4 et M10 (Albus en M1). M10 est la somme de M3 et M4 : le pôle de M4 engendre celui de M10. Le pôle de M4 gagne, sauf si le pôle de M10 l'attaque directement. | 2 justes (il est juste sur les 6 matchs réels avec Albus en M1 ; 4 sont tranchés avant lui par la famille « Pôle sans force ») |
 | RA-1 | Repos annulés | Le thème a des figures dans leur maison de repos, mais chacune est annulée (son attaquant est aussi au repos, ou il est deux fois en base hors positions à 1 % ou 0 %) : nul. | 1 juste |
 | PR-1 | Verrou de front | Deux figures du front d’un pôle sont en base, chacune dans sa maison de repos à 100 %, et l’autre pôle n’a pas de verrou : ce pôle gagne. | aucun |
 | PR-2 | Pôle et front au repos | Un seul pôle remplit ceci : il est chez lui en base, son antagoniste non ; son front direct est chez lui, l’antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires. Ce pôle gagne. | aucun |
@@ -172,7 +173,7 @@ node tester.js /chemin/absolu/vers/koun-1-complet.html
 
 ## État des cas (audit du 13 novembre 2026)
 
-Vingt-cinq matchs réels servent de référence. Le moteur en explique vingt-trois ; les deux écarts sont 13·12·8·15 (pôles dans la même boucle, aucun chez lui) et 4·6·7·16 (pôles en M4 et M10, donné nul, score réel 5-0).
+Vingt-cinq matchs réels servent de référence. Le moteur en explique vingt-quatre ; le seul écart est 13·12·8·15 (pôles dans la même boucle, aucun chez lui).
 
 La dernière colonne du tableau des cas ci-dessus donne, pour chaque cas, le nombre de matchs réels qu'il tranche.
 

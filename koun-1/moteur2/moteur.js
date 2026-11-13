@@ -425,6 +425,16 @@
         var p = a ? L.R1 : L.R7, g = a ? L.R7 : L.R1;
         return V(g, L, 'Victoire ' + g.camp + ' : le pôle ' + p.camp + ', ' + p.figure + ', est en M' + p.maison + ', la maison de son antagoniste ' + fig(p.maison) + ' (0 %, pénalisé). ' + g.figure + ' n’est pas pénalisé.');
       } },
+    // ───────── Famille « Pôles sur l'axe » ─────────
+    { id: 'AX-1', famille: 'Pôles sur l’axe', titre: 'Pôles en M4 et M10 : le pôle de M4 engendre l’autre', statut: 'EN_ESSAI',
+      enonce: 'Les pôles sont en M4 et M10 (Albus en M1). M10 est la somme de M3 et M4 : le pôle de M4 engendre celui de M10. Le pôle de M4 gagne, sauf si le pôle de M10 l’attaque directement.',
+      condition: function (L) {
+        var m4 = L.R1.maison === 4 && L.R7.maison === 10 ? L.R1 : L.R7.maison === 4 && L.R1.maison === 10 ? L.R7 : null;
+        if (!m4) return null;
+        var m10 = autrePole(L, m4);
+        if (attaquantDirect(L) === m10) return null;
+        return V(m4, L, 'Victoire ' + m4.camp + ' : les pôles sont en M4 et M10. ' + m4.figure + ', en M4, engendre ' + m10.figure + ' en M10 (M10 = M3 + M4, avec ' + L.maisons[2].base + ' en M3), et ' + m10.figure + ' ne l’attaque pas directement.');
+      } },
     // ───────── Famille « Repos annulés » ─────────
     { id: 'RA-1', famille: 'Repos annulés', titre: 'Toutes les figures au repos sont annulées', statut: 'EN_ESSAI',
       enonce: 'Le thème a des figures dans leur maison de repos, mais chacune est annulée (son attaquant est aussi au repos, ou il est deux fois en base hors positions à 1 % ou 0 %) : nul.',
