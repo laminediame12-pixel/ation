@@ -203,6 +203,13 @@
     });
     var pointsAuRepos = huitPoints.filter(function (x) { return x.auRepos; });
     var sentencePole = theme[16] === R1.figure ? 'R1' : theme[16] === R7.figure ? 'R7' : null;
+    // Poids des pôles en base : somme des forces de la figure du pôle dans toutes ses positions en base.
+    // Sur les matchs réels où les pôles sont dans le même front ou la même boucle (8 matchs) : R1 plus lourd que R7, le match se décide ; sinon, nul.
+    var poidsPoles = (function () {
+      function poids(c) { return positions(c.figure).filter(function (x) { return x.couche === 'base'; }).reduce(function (t, x) { return t + (x.force === null ? 100 : x.force); }, 0); }
+      var a = poids(R1), b = poids(R7);
+      return { R1: a, R7: b, ecart: a - b, applicable: mode !== 'BOUCLES_DIFFERENTES', decide: a > b };
+    })();
     // Figure du lien : la somme des deux pôles. Elle dit quel lien les unit (miroir : Tristitia ; même front : Albus ou Fortuna Major ; etc.).
     var lien = (function () {
       var f = additionner(R1.figure, R7.figure), pos = positions(f);
@@ -283,7 +290,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, poidsPoles: poidsPoles, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -572,6 +579,10 @@
     var ax = L.sommes[0], axePole = ax.pole && [1, 4, 7, 10].indexOf(L[ax.pole].maison) >= 0 ? ax.pole : null;
     if (axePole) sig.push('la somme de l’axe angulaire est le pôle ' + axePole + ', qui siège sur l’axe');
     var nulProbable = [];
+    if (L.poidsPoles.applicable) {
+      if (L.poidsPoles.decide) sig.push('le pôle R1 pèse plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
+      else nulProbable.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
+    }
     if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
     if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
     if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
@@ -579,7 +590,7 @@
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
     var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      poidsPoles: L.poidsPoles, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
@@ -591,6 +602,7 @@
       var nulFiables = [], nulFaibles = [];
       if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFiables.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
       if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
+      if (L.poidsPoles.applicable && !L.poidsPoles.decide) nulFiables.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
       if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
       if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
       if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
