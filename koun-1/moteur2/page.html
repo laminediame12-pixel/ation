@@ -246,7 +246,7 @@ function afficherCombis(L,d){var T=$('combis');T.textContent='';var tr=el('tr');
   var b=el('td','',c.enBase.length?'M'+c.enBase.join(', M'):'—');if(c.enBase.length)b.style.color='#86efac';r.appendChild(b);
   r.appendChild(el('td','',c.enResultante.length?'M'+c.enResultante.join(', M'):'—'));r.appendChild(el('td','',c.ailleurs.length?'M'+c.ailleurs.join(', M'):'absente'));T.appendChild(r);});
  var q=d.butMiTemps,N={SUR:'But en première mi-temps : oui, sûr',OUI:'But en première mi-temps : oui',RESULTANTE:'But en première mi-temps : signal faible (résultante en M1 ou M7)',AUCUN:'But en première mi-temps : pas de signal'}[q.niveau];
- var q2=d.butMiTemps2,N2={SUR:'But en deuxième mi-temps (hypothèse) : oui, sûr',OUI:'But en deuxième mi-temps (hypothèse) : oui',RESULTANTE:'But en deuxième mi-temps (hypothèse) : signal faible',AUCUN:'But en deuxième mi-temps (hypothèse) : pas de signal'}[q2.niveau];
+ var q2=d.butMiTemps2,N2={SUR:'Axe miroir 9-12-15-2 (hypothèse de deuxième mi-temps, non confirmée : 1 juste sur 3) : signal',OUI:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal',RESULTANTE:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal faible',AUCUN:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : pas de signal'}[q2.niveau];
  $('combiNote').textContent=N+' — '+q.texte+'. '+N2+' — '+q2.texte+'.';}
 function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : départage par les moitiés.',MEME_BOUCLE:'Pôles dans la même boucle : front contre front.',BOUCLES_DIFFERENTES:'Pôles dans des boucles différentes : figure et son binôme contre figure et son binôme.'};
  $('cheminMode').textContent=noms[L.mode];
@@ -280,15 +280,15 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(!mq.douze&&!mq.doubleChance)ZS.appendChild(el('span','etiq','Équilibre : ni 12 ni double chance'));
  if(mq.conflit)ZS.appendChild(el('span','etiq essai','Signaux contraires'));
  if(mq.signaux12.length)ZS.appendChild(el('div','muted','Pas de nul : '+mq.signaux12.join(' ; ')+'.'));
- if(mq.signauxNul.length)ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
+ if(mq.signauxNul.length&&d.verdict==='N')ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
  var lq=mq.lien,lt='Figure du lien : '+L.R1.figure+' + '+L.R7.figure+' = '+lq.numero+' '+lq.figure+' · '+(lq.base.length?'en base M'+lq.base.join(', M'):'')+(lq.base.length&&lq.resultante.length?' · ':'')+(lq.resultante.length?'en résultante M'+lq.resultante.join(', M'):'')+(lq.etat==='ABSENTE'?'absente du thème':'')+(lq.chezElle?' · chez elle':'');
  ZS.appendChild(el('span','etiq '+(lq.etat==='EN_BASE'||lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'ok':lq.etat==='ABSENTE'?'':'essai'),lq.etat==='EN_BASE'?'Lien en base':lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'Lien chez lui':lq.etat==='ABSENTE'?'Lien absent':'Lien en résultante seulement'));ZS.appendChild(el('div','muted',lt+'.'));
  if(mq.miroirPoints.texte)ZS.appendChild(el('div','muted','Points du cercle : '+mq.miroirPoints.texte+(mq.miroirPoints.nul?' (vers le nul).':' (favori '+mq.miroirPoints.favori+').')));
  if(mq.cercle.signaux.length)ZS.appendChild(el('div','muted','Cercle : '+mq.cercle.signaux.join(' ; ')+'. '+(mq.cercle.conflit?'Les deux signaux se contredisent.':'Favori du cercle : '+mq.cercle.favori+'.')));
  if(pq.contre.length)ZS.appendChild(el('div','muted','Contre le verdict : '+pq.contre.join(' ; ')+'.'));
+ if(pq.indices&&pq.indices.length)ZS.appendChild(el('div','muted','Indices faibles, non comptés : '+pq.indices.join(' ; ')+'.'));
  if(d.casEcartes&&d.casEcartes.length)ZS.appendChild(el('div','muted','Cas écartés pour incohérence : '+d.casEcartes.map(function(x){return x.cas+' (donnait '+(x.verdict==='1'?'R1':'R7')+', contredit par '+x.contre.join(' et ')+')';}).join(' ; ')+'.'));
  var bq=d.butMiTemps;ZS.appendChild(el('span','etiq '+(bq.niveau==='SUR'||bq.niveau==='OUI'?'ok':bq.niveau==='RESULTANTE'?'essai':''),bq.niveau==='SUR'?'But 1re mi-temps : sûr':bq.niveau==='OUI'?'But 1re mi-temps : oui':bq.niveau==='RESULTANTE'?'But 1re mi-temps : faible':'But 1re mi-temps : pas de signal'));
- var b2=d.butMiTemps2;ZS.appendChild(el('span','etiq '+(b2.niveau==='SUR'||b2.niveau==='OUI'?'ok':b2.niveau==='RESULTANTE'?'essai':''),'But 2e mi-temps (hypothèse) : '+(b2.niveau==='SUR'?'sûr':b2.niveau==='OUI'?'oui':b2.niveau==='RESULTANTE'?'faible':'pas de signal')));
  C.appendChild(ZS);
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));

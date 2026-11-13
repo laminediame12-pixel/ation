@@ -389,7 +389,7 @@
         var a = L.verrous.R1.length > 0, b = L.verrous.R7.length > 0;
         if (a === b) return null;
         var k = a ? 'R1' : 'R7', v = L.verrous[k][0];
-        return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + k + ' assurée : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
+        return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + k + ' : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
       }
     }
     ,
@@ -473,7 +473,7 @@
         function auRepos(c) {
           return c.frontDirect.filter(function (f) {
             var pt = CARDINAL[num(f)];
-            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f);
+            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !(!L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus' && c.front !== 'D');   // chez elle seulement sur une base Populus : simple reflet (match réel 5·14·6·14)
           });
         }
         return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) {
@@ -534,7 +534,7 @@
     var a = ok(L.R1, L.R7), b = ok(L.R7, L.R1);
     if (a === b) return null;
     var g = a ? L.R1 : L.R7, p = a ? L.R7 : L.R1;
-    return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + g.camp + ' assurée : ' + pourquoi(g, p) };
+    return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : ' + pourquoi(g, p) };
   }
 
   function theme16(L) { return L.maisons[15].base; }
@@ -583,25 +583,33 @@
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
-    // Précision du verdict : on compte les signaux qui vont dans son sens et ceux qui vont contre.
+    // Précision du verdict. Les signaux sont classés d'après les 20 matchs réels :
+    //  fiables (jamais pris en défaut) : résultantes, miroir au point D, ancrages, bord du cercle, miroir aux points B et C ;
+    //  faibles (déjà vus du mauvais côté) : somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien.
     (function () {
-      var m = decision.marches, pour = [], contre = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
+      var m = decision.marches, pour = [], contre = [], indices = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
+      var nulFiables = [], nulFaibles = [];
+      if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFiables.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
+      if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
+      if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
+      if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
+      if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
       function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
       if (g) {
         m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
-        m.signauxNul.forEach(function (x) { contre.push('vers le nul : ' + x); });
-        camp('ancrages', st.plusStable); camp('cercle', L.cercle.favori); camp('miroir aux points', L.miroirPoints.favori);
-        if (L.cercle.conflit) contre.push('le cercle se contredit');
-        if (L.lien.etat === 'EN_BASE' || L.lien.etat === 'CHEZ_ELLE_EN_RESULTANTE') pour.push('figure du lien ' + (L.lien.etat === 'EN_BASE' ? 'en base' : 'chez elle'));
-        else if (L.lien.etat === 'RESULTANTE_SEULEMENT') contre.push('figure du lien en résultante seulement');
+        nulFiables.forEach(function (x) { contre.push('vers le nul : ' + x); });
+        nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
+        camp('ancrages', st.plusStable); camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
+        if (L.cercle.amont) (L.cercle.amont === g ? pour : indices).push('amont pour ' + L.cercle.amont);
+        if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') indices.push('figure du lien en résultante seulement');
       } else if (v === 'N') {
-        m.signauxNul.forEach(function (x) { pour.push(x); });
+        nulFiables.concat(nulFaibles).forEach(function (x) { pour.push(x); });
         m.signaux12.forEach(function (x) { contre.push('pas de nul : ' + x); });
-        if (L.cercle.conflit) pour.push('le cercle se contredit');
-        if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') pour.push('figure du lien en résultante seulement');
+        if (st.plusStable) indices.push('ancrages pour ' + st.plusStable);
+        if (L.cercle.favoriBord) indices.push('bord du cercle pour ' + L.cercle.favoriBord);
       }
       var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
-      decision.precision = { niveau: niveau, pour: pour, contre: contre };
+      decision.precision = { niveau: niveau, pour: pour, contre: contre, indices: indices };
     })();
     decision.butMiTemps = L.butMiTemps; decision.butMiTemps2 = L.butMiTemps2;
     decision.parlant = L.binomeM1.parlant;

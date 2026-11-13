@@ -75,11 +75,11 @@ Sous le verdict, la page affiche `decision.marches` :
 
 `K.COMBIS` liste des combinaisons de quatre maisons : l'axe angulaire 1-4-7-10, la combinaison 1-5-12-15, le témoin 3-5-11-15, chacune avec ses trois sœurs (un quart de tour, +4 maisons), et les quatre fronts. Pour chaque thème, `L.combinaisons` donne la somme des quatre maisons et dit si cette somme se trouve dans ces mêmes maisons, en base ou en résultante. `L.butMiTemps` applique la règle du propriétaire : un but en première mi-temps est annoncé quand la somme de l'axe angulaire, ou un des deux pôles, se trouve dans une maison de l'axe. La base compte dans les quatre maisons (M1, M4, M7, M10) ; la résultante ne compte qu'en M4 et M10. Une résultante en M1 ou M7 donne seulement un signal faible.
 
-Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe miroir 9-12-15-2 (l'axe angulaire tourné d'un demi-cercle), avec M12 et M2 comme maisons fortes. C'est une hypothèse tirée de la symétrie du cercle, pas encore vérifiée sur des matchs.
+Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe miroir 9-12-15-2 (l'axe angulaire tourné d'un demi-cercle), avec M12 et M2 comme maisons fortes. C'est une hypothèse tirée de la symétrie du cercle. Sur les trois matchs où la mi-temps est connue, elle n'est juste qu'une fois : elle n'est plus affichée dans le verdict, seulement dans le bloc des combinaisons.
 
 ### Précision du verdict
 
-`decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre (signaux « 12 », signaux de nul, ancrages, cercle, miroir aux points, figure du lien). Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
+`decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre. Seuls les signaux jamais pris en défaut sur les matchs réels sont comptés : résultantes par boucle, miroir au point D, ancrages, bord du cercle, miroir aux points B et C, signaux « 12 ». Les signaux déjà vus du mauvais côté (somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien) sont listés comme indices faibles et ne comptent pas contre une victoire. Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
 
 ### Figure du lien
 
@@ -118,6 +118,21 @@ node tester.js /chemin/absolu/vers/koun-1-complet.html
 ```
 
 `construire.js` recalcule les instantanés des références, vérifie qu'aucune des 65 536 combinaisons de mères ne fait planter le moteur et que R1 et R7 sont traités de la même façon (symétrie). Ce contrôle ne prouve aucune règle : seuls les matchs réels le peuvent.
+
+## État des cas (audit du 13 novembre 2026)
+
+Vingt matchs réels servent de référence. Le moteur en explique dix-neuf ; le seul écart est 13·12·8·15 (pôles dans la même boucle, aucun chez lui).
+
+| Cas | Vérifié sur des matchs réels ? |
+|---|---|
+| CAS-001 (même front) | oui, 4 matchs |
+| CAS-008 (pôle chez lui) | oui, 6 matchs |
+| CAS-009 (équilibre des ancrages) | oui, 8 matchs ; 1 écart |
+| CAS-010 (pôle sans force) | 1 match |
+| CAS-011 (figures au repos annulées) | 1 match |
+| CAS-002 à CAS-007 | aucun match ; ils n'annoncent plus de victoire « assurée » |
+
+Quatre verdicts ont été donnés avant de connaître le résultat (trois matchs FIFA du 12 novembre et 8·7·10·8) : les quatre étaient faux. Les règles ont été corrigées après coup. Tant qu'une série de verdicts donnés d'avance n'a pas été vérifiée, le moteur explique le passé mais ne prédit pas.
 
 ## Fichiers
 

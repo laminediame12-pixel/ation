@@ -539,7 +539,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         var a = L.verrous.R1.length > 0, b = L.verrous.R7.length > 0;
         if (a === b) return null;
         var k = a ? 'R1' : 'R7', v = L.verrous[k][0];
-        return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + k + ' assurée : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
+        return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + k + ' : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
       }
     }
     ,
@@ -623,7 +623,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         function auRepos(c) {
           return c.frontDirect.filter(function (f) {
             var pt = CARDINAL[num(f)];
-            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f);
+            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !(!L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus' && c.front !== 'D');   // chez elle seulement sur une base Populus : simple reflet (match réel 5·14·6·14)
           });
         }
         return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) {
@@ -684,7 +684,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     var a = ok(L.R1, L.R7), b = ok(L.R7, L.R1);
     if (a === b) return null;
     var g = a ? L.R1 : L.R7, p = a ? L.R7 : L.R1;
-    return { verdict: a ? '1' : '2', assuree: true, raison: 'Victoire ' + g.camp + ' assurée : ' + pourquoi(g, p) };
+    return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : ' + pourquoi(g, p) };
   }
 
   function theme16(L) { return L.maisons[15].base; }
@@ -733,25 +733,33 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
-    // Précision du verdict : on compte les signaux qui vont dans son sens et ceux qui vont contre.
+    // Précision du verdict. Les signaux sont classés d'après les 20 matchs réels :
+    //  fiables (jamais pris en défaut) : résultantes, miroir au point D, ancrages, bord du cercle, miroir aux points B et C ;
+    //  faibles (déjà vus du mauvais côté) : somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien.
     (function () {
-      var m = decision.marches, pour = [], contre = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
+      var m = decision.marches, pour = [], contre = [], indices = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
+      var nulFiables = [], nulFaibles = [];
+      if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFiables.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
+      if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
+      if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
+      if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
+      if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
       function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
       if (g) {
         m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
-        m.signauxNul.forEach(function (x) { contre.push('vers le nul : ' + x); });
-        camp('ancrages', st.plusStable); camp('cercle', L.cercle.favori); camp('miroir aux points', L.miroirPoints.favori);
-        if (L.cercle.conflit) contre.push('le cercle se contredit');
-        if (L.lien.etat === 'EN_BASE' || L.lien.etat === 'CHEZ_ELLE_EN_RESULTANTE') pour.push('figure du lien ' + (L.lien.etat === 'EN_BASE' ? 'en base' : 'chez elle'));
-        else if (L.lien.etat === 'RESULTANTE_SEULEMENT') contre.push('figure du lien en résultante seulement');
+        nulFiables.forEach(function (x) { contre.push('vers le nul : ' + x); });
+        nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
+        camp('ancrages', st.plusStable); camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
+        if (L.cercle.amont) (L.cercle.amont === g ? pour : indices).push('amont pour ' + L.cercle.amont);
+        if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') indices.push('figure du lien en résultante seulement');
       } else if (v === 'N') {
-        m.signauxNul.forEach(function (x) { pour.push(x); });
+        nulFiables.concat(nulFaibles).forEach(function (x) { pour.push(x); });
         m.signaux12.forEach(function (x) { contre.push('pas de nul : ' + x); });
-        if (L.cercle.conflit) pour.push('le cercle se contredit');
-        if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') pour.push('figure du lien en résultante seulement');
+        if (st.plusStable) indices.push('ancrages pour ' + st.plusStable);
+        if (L.cercle.favoriBord) indices.push('bord du cercle pour ' + L.cercle.favoriBord);
       }
       var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
-      decision.precision = { niveau: niveau, pour: pour, contre: contre };
+      decision.precision = { niveau: niveau, pour: pour, contre: contre, indices: indices };
     })();
     decision.butMiTemps = L.butMiTemps; decision.butMiTemps2 = L.butMiTemps2;
     decision.parlant = L.binomeM1.parlant;
@@ -865,7 +873,7 @@ function afficherCombis(L,d){var T=$('combis');T.textContent='';var tr=el('tr');
   var b=el('td','',c.enBase.length?'M'+c.enBase.join(', M'):'—');if(c.enBase.length)b.style.color='#86efac';r.appendChild(b);
   r.appendChild(el('td','',c.enResultante.length?'M'+c.enResultante.join(', M'):'—'));r.appendChild(el('td','',c.ailleurs.length?'M'+c.ailleurs.join(', M'):'absente'));T.appendChild(r);});
  var q=d.butMiTemps,N={SUR:'But en première mi-temps : oui, sûr',OUI:'But en première mi-temps : oui',RESULTANTE:'But en première mi-temps : signal faible (résultante en M1 ou M7)',AUCUN:'But en première mi-temps : pas de signal'}[q.niveau];
- var q2=d.butMiTemps2,N2={SUR:'But en deuxième mi-temps (hypothèse) : oui, sûr',OUI:'But en deuxième mi-temps (hypothèse) : oui',RESULTANTE:'But en deuxième mi-temps (hypothèse) : signal faible',AUCUN:'But en deuxième mi-temps (hypothèse) : pas de signal'}[q2.niveau];
+ var q2=d.butMiTemps2,N2={SUR:'Axe miroir 9-12-15-2 (hypothèse de deuxième mi-temps, non confirmée : 1 juste sur 3) : signal',OUI:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal',RESULTANTE:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal faible',AUCUN:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : pas de signal'}[q2.niveau];
  $('combiNote').textContent=N+' — '+q.texte+'. '+N2+' — '+q2.texte+'.';}
 function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : départage par les moitiés.',MEME_BOUCLE:'Pôles dans la même boucle : front contre front.',BOUCLES_DIFFERENTES:'Pôles dans des boucles différentes : figure et son binôme contre figure et son binôme.'};
  $('cheminMode').textContent=noms[L.mode];
@@ -899,15 +907,15 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(!mq.douze&&!mq.doubleChance)ZS.appendChild(el('span','etiq','Équilibre : ni 12 ni double chance'));
  if(mq.conflit)ZS.appendChild(el('span','etiq essai','Signaux contraires'));
  if(mq.signaux12.length)ZS.appendChild(el('div','muted','Pas de nul : '+mq.signaux12.join(' ; ')+'.'));
- if(mq.signauxNul.length)ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
+ if(mq.signauxNul.length&&d.verdict==='N')ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
  var lq=mq.lien,lt='Figure du lien : '+L.R1.figure+' + '+L.R7.figure+' = '+lq.numero+' '+lq.figure+' · '+(lq.base.length?'en base M'+lq.base.join(', M'):'')+(lq.base.length&&lq.resultante.length?' · ':'')+(lq.resultante.length?'en résultante M'+lq.resultante.join(', M'):'')+(lq.etat==='ABSENTE'?'absente du thème':'')+(lq.chezElle?' · chez elle':'');
  ZS.appendChild(el('span','etiq '+(lq.etat==='EN_BASE'||lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'ok':lq.etat==='ABSENTE'?'':'essai'),lq.etat==='EN_BASE'?'Lien en base':lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'Lien chez lui':lq.etat==='ABSENTE'?'Lien absent':'Lien en résultante seulement'));ZS.appendChild(el('div','muted',lt+'.'));
  if(mq.miroirPoints.texte)ZS.appendChild(el('div','muted','Points du cercle : '+mq.miroirPoints.texte+(mq.miroirPoints.nul?' (vers le nul).':' (favori '+mq.miroirPoints.favori+').')));
  if(mq.cercle.signaux.length)ZS.appendChild(el('div','muted','Cercle : '+mq.cercle.signaux.join(' ; ')+'. '+(mq.cercle.conflit?'Les deux signaux se contredisent.':'Favori du cercle : '+mq.cercle.favori+'.')));
  if(pq.contre.length)ZS.appendChild(el('div','muted','Contre le verdict : '+pq.contre.join(' ; ')+'.'));
+ if(pq.indices&&pq.indices.length)ZS.appendChild(el('div','muted','Indices faibles, non comptés : '+pq.indices.join(' ; ')+'.'));
  if(d.casEcartes&&d.casEcartes.length)ZS.appendChild(el('div','muted','Cas écartés pour incohérence : '+d.casEcartes.map(function(x){return x.cas+' (donnait '+(x.verdict==='1'?'R1':'R7')+', contredit par '+x.contre.join(' et ')+')';}).join(' ; ')+'.'));
  var bq=d.butMiTemps;ZS.appendChild(el('span','etiq '+(bq.niveau==='SUR'||bq.niveau==='OUI'?'ok':bq.niveau==='RESULTANTE'?'essai':''),bq.niveau==='SUR'?'But 1re mi-temps : sûr':bq.niveau==='OUI'?'But 1re mi-temps : oui':bq.niveau==='RESULTANTE'?'But 1re mi-temps : faible':'But 1re mi-temps : pas de signal'));
- var b2=d.butMiTemps2;ZS.appendChild(el('span','etiq '+(b2.niveau==='SUR'||b2.niveau==='OUI'?'ok':b2.niveau==='RESULTANTE'?'essai':''),'But 2e mi-temps (hypothèse) : '+(b2.niveau==='SUR'?'sûr':b2.niveau==='OUI'?'oui':b2.niveau==='RESULTANTE'?'faible':'pas de signal')));
  C.appendChild(ZS);
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
