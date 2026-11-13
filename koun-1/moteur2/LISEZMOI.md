@@ -58,11 +58,12 @@ Quand une famille dit « un seul pôle remplit ceci », le cas ne tranche pas si
 
 | Cas | Famille | Condition et résultat | Matchs réels tranchés |
 |---|---|---|---|
-| MF-1 | Même front | Pôles dans le même front, et l’antagoniste de chaque pôle est dans sa propre maison de repos : nul. | aucun |
-| MF-2 | Même front | Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : ce pôle est dominé, l’autre gagne, même entre miroirs. | aucun |
-| MF-3 | Même front | Pôles dans le même front et dans la même moitié (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16) : nul. | 1 juste |
-| MF-4 | Même front | Pôles dans le même front, moitiés différentes, et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : ce pôle gagne. | 1 juste |
-| MF-5 | Même front | Pôles dans le même front, et les deux partenaires de moitié sont chez eux, ou aucun : nul. | 2 justes |
+| MF-1 | Même front | Pôles dans le même front. Leur somme est la figure d'équilibre (4, 8 ou 12 ; 16 quand les deux pôles sont la même figure). Si elle est en base dans une maison d'équilibre (M4, M8, M12 ou M16) : nul. | 3 justes |
+| MF-2 | Même front | Pôles dans le même front, et l’antagoniste de chaque pôle est dans sa propre maison de repos : nul. | aucun |
+| MF-3 | Même front | Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : ce pôle est dominé, l’autre gagne, même entre miroirs. | aucun |
+| MF-4 | Même front | Pôles dans le même front et dans la même moitié (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16) : nul. | 1 juste |
+| MF-5 | Même front | Pôles dans le même front, moitiés différentes, et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : ce pôle gagne. | 1 juste |
+| MF-6 | Même front | Pôles dans le même front, et les deux partenaires de moitié sont chez eux, ou aucun : nul. | 2 justes |
 | PF-1 | Pôle sans force | Un seul des deux pôles est éteint (sa figure ne dépasse 1 % dans aucune position) : l’autre gagne. | 1 juste |
 | PF-2 | Pôle sans force | Un pôle attaque l’autre directement ; l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne à plus de 1 % : l’attaquant gagne. | 3 justes |
 | PF-3 | Pôle sans force | Un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) : l’autre gagne. | aucun |
@@ -112,7 +113,7 @@ Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe m
 
 ### Figure d'équilibre (même front)
 
-Quand les deux pôles sont dans le même front, leur somme est toujours une figure de Terre : Albus (4), Tristitia (8) ou Fortuna Major (12). C'est la figure d'équilibre (`decision.marches.equilibre`). Posée en base dans une maison de Terre (M4, M8 ou M12), elle va avec le nul (3 nuls réels sur 3) ; sinon le match se décide (1 match réel). Signal seulement. Voir aussi `FRONTS.md`.
+Quand les deux pôles sont dans le même front, leur somme est toujours une figure de Terre : Albus (4), Tristitia (8) ou Fortuna Major (12) ; et 4 + 8 + 12 donne Populus (16). Les maisons d'équilibre sont M4, M8, M12 et M16. La figure d'équilibre posée en base dans l'une d'elles donne le nul : c'est le cas MF-1, premier de la famille « Même front ». Quand elle n'y est pas, le signal `decision.marches.equilibre` le dit et les autres cas de la famille départagent. Voir aussi `FRONTS.md`.
 
 ### Poids des pôles en base
 

@@ -515,13 +515,21 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 
   var CAS = [
     // ───────── Famille « Même front » ─────────
-    { id: 'MF-1', famille: 'Même front', titre: 'Les deux antagonistes chez eux', statut: 'EN_ESSAI',
+    { id: 'MF-1', famille: 'Même front', titre: 'La figure d’équilibre est posée en terre', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans le même front. Leur somme est la figure d’équilibre : Albus (4), Tristitia (8) ou Fortuna Major (12), et Populus (16) quand les deux pôles sont la même figure. Si elle est en base dans une maison d’équilibre (M4, M8, M12 ou M16) : nul.',
+      condition: function (L) {
+        if (L.R1.front !== L.R7.front) return null;
+        var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h % 4 === 0; });
+        if (!he.length) return null;
+        return N('Nul : même front ' + L.R1.front + '. ' + L.R1.figure + ' + ' + L.R7.figure + ' donne ' + fe + ', la figure d’équilibre, posée en base en M' + he.join(', M') + ', maison d’équilibre.');
+      } },
+    { id: 'MF-2', famille: 'Même front', titre: 'Les deux antagonistes chez eux', statut: 'EN_ESSAI',
       enonce: 'Pôles dans le même front, et l’antagoniste de chaque pôle est dans sa propre maison de repos : nul.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front || !(L.chezElle(L.R1.antagoniste) && L.chezElle(L.R7.antagoniste))) return null;
         return N('Nul : même front ' + L.R1.front + ', les deux pôles sont sous le contrôle de leur antagoniste, chacun dans sa maison de repos (' + L.R1.antagoniste + ' en M' + num(L.R1.antagoniste) + ', ' + L.R7.antagoniste + ' en M' + num(L.R7.antagoniste) + ').');
       } },
-    { id: 'MF-2', famille: 'Même front', titre: 'Un seul antagoniste chez lui', statut: 'EN_ESSAI',
+    { id: 'MF-3', famille: 'Même front', titre: 'Un seul antagoniste chez lui', statut: 'EN_ESSAI',
       enonce: 'Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : ce pôle est dominé, l’autre gagne, même entre miroirs.',
       condition: function (L) {
         var a1 = L.chezElle(L.R1.antagoniste), a7 = L.chezElle(L.R7.antagoniste);
@@ -530,13 +538,13 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         function res(c) { var r = L.maisons[c.maison - 1].resultante; return r ? ' (résultante de M' + c.maison + ' : ' + r + ')' : ''; }
         return V(gagne, L, 'Victoire ' + gagne.camp + ' : même front ' + gagne.front + ', mais l’antagoniste de ' + perd.camp + ' ' + perd.figure + ', ' + perd.antagoniste + ', est chez lui en M' + num(perd.antagoniste) + ' ; celui de ' + gagne.figure + ' ne l’est pas. ' + gagne.camp + ' ' + gagne.figure + res(gagne) + ' ; ' + perd.camp + ' ' + perd.figure + res(perd) + '.');
       } },
-    { id: 'MF-3', famille: 'Même front', titre: 'Même moitié du front', statut: 'REGLE_CONFIRMEE',
+    { id: 'MF-4', famille: 'Même front', titre: 'Même moitié du front', statut: 'REGLE_CONFIRMEE',
       enonce: 'Pôles dans le même front et dans la même moitié (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16) : nul.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front || !(L.R1.figure === L.R7.figure || partenaireMoitie(L.R1.figure) === L.R7.figure)) return null;
         return N('Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans la même moitié du front ' + L.R1.front + '.');
       } },
-    { id: 'MF-4', famille: 'Même front', titre: 'Un seul partenaire de moitié chez lui', statut: 'REGLE_CONFIRMEE',
+    { id: 'MF-5', famille: 'Même front', titre: 'Un seul partenaire de moitié chez lui', statut: 'REGLE_CONFIRMEE',
       enonce: 'Pôles dans le même front, moitiés différentes, et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : ce pôle gagne.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
@@ -545,7 +553,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         var g = a ? L.R1 : L.R7, pg = a ? p1 : p7;
         return V(g, L, 'Victoire ' + g.camp + ' : même front ' + g.front + ', et seul le partenaire de ' + g.figure + ', ' + pg + ', est dans sa maison de repos (M' + num(pg) + ').');
       } },
-    { id: 'MF-5', famille: 'Même front', titre: 'Même front, partenaires à égalité', statut: 'REGLE_CONFIRMEE',
+    { id: 'MF-6', famille: 'Même front', titre: 'Même front, partenaires à égalité', statut: 'REGLE_CONFIRMEE',
       enonce: 'Pôles dans le même front, et les deux partenaires de moitié sont chez eux, ou aucun : nul.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
@@ -768,11 +776,11 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     // Même front : la somme des deux pôles est une figure de Terre (4, 8 ou 12), la figure d'équilibre.
     // Posée en base dans une maison de Terre (M4, M8, M12), elle tient le nul (3 nuls réels sur 3) ; sinon le match se décide (1 sur 1).
     var equilibre = null;
-    if (L.mode === 'MEME_FRONT' && L.R1.figure !== L.R7.figure) {
-      var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h === 4 || h === 8 || h === 12; });
+    if (L.mode === 'MEME_FRONT') {
+      var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h % 4 === 0; });
       equilibre = { figure: fe, maisons: he, posee: he.length > 0 };
-      if (equilibre.posee) nulProbableAvant.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) est en base en M' + he.join(', M') + ', maison de Terre');
-      else sig.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) n’est en base dans aucune maison de Terre (M4, M8, M12)');
+      if (equilibre.posee) nulProbableAvant.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) est en base en M' + he.join(', M') + ', maison d’équilibre');
+      else sig.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) n’est en base dans aucune maison d’équilibre (M4, M8, M12, M16)');
     }
     // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
     var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
@@ -1015,7 +1023,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(mq.signaux12.length)ZS.appendChild(el('div','muted','Pas de nul : '+mq.signaux12.join(' ; ')+'.'));
  if(mq.signauxNul.length&&d.verdict==='N')ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
  ZS.appendChild(el('div','muted','Poids des pôles en base : R1 '+mq.poidsPoles.R1+' / R7 '+mq.poidsPoles.R7+(mq.poidsPoles.applicable?(mq.poidsPoles.decide?' — R1 plus lourd : le match se décide.':' — R1 pas plus lourd : vers le nul.'):' (indicatif en boucles différentes).')));
- if(mq.equilibre)ZS.appendChild(el('div','muted','Figure d’équilibre (même front) : '+K.num(mq.equilibre.figure)+' '+mq.equilibre.figure+(mq.equilibre.posee?' — en base en M'+mq.equilibre.maisons.join(', M')+' : vers le nul.':' — dans aucune maison de Terre en base : le match se décide.')));
+ if(mq.equilibre)ZS.appendChild(el('div','muted','Figure d’équilibre (même front) : '+K.num(mq.equilibre.figure)+' '+mq.equilibre.figure+(mq.equilibre.posee?' — en base en M'+mq.equilibre.maisons.join(', M')+' : vers le nul.':' — dans aucune maison d’équilibre en base : le match se décide.')));
  var mu=mq.multiplicite;ZS.appendChild(el('div','muted','Multiplicité des pôles : R1 '+mu.R1.total+' position(s) dont '+mu.R1.base+' en base / R7 '+mu.R7.total+' dont '+mu.R7.base+' en base'+(mu.favori?' — pôle le plus présent : '+mu.favori+'.':' — égalité.')));
  var lq=mq.lien,lt='Figure du lien : '+L.R1.figure+' + '+L.R7.figure+' = '+lq.numero+' '+lq.figure+' · '+(lq.base.length?'en base M'+lq.base.join(', M'):'')+(lq.base.length&&lq.resultante.length?' · ':'')+(lq.resultante.length?'en résultante M'+lq.resultante.join(', M'):'')+(lq.etat==='ABSENTE'?'absente du thème':'')+(lq.chezElle?' · chez elle':'');
  ZS.appendChild(el('span','etiq '+(lq.etat==='EN_BASE'||lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'ok':lq.etat==='ABSENTE'?'':'essai'),lq.etat==='EN_BASE'?'Lien en base':lq.etat==='CHEZ_ELLE_EN_RESULTANTE'?'Lien chez lui':lq.etat==='ABSENTE'?'Lien absent':'Lien en résultante seulement'));ZS.appendChild(el('div','muted',lt+'.'));
