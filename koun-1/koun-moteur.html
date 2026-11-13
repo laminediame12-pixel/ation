@@ -1081,7 +1081,10 @@ function afficherMatchs(){var Z=$('liste'),l=lireMatchs();Z.textContent='';
  if(!l.length){Z.appendChild(el('p','muted','Aucun match sauvegardé. Lance un thème puis utilise « Sauvegarder ce match ».'));return;}
  l.forEach(function(x){var d=el('div','match');d.appendChild(el('b','',(x.team1||'Équipe 1')+' – '+(x.team2||'Équipe 2')));
   d.appendChild(el('div','muted',(x.mode?x.mode+' · ':'')+(x.date||'sans date')+(x.heure?' · '+x.heure:'')+' · mères '+x.meres.map(function(f){return K.num(f);}).join('-')));
-  var rs=resultatSaisi(x);if(rs)d.appendChild(el('div','',rs));d.appendChild(el('div','muted','Moteur : '+x.verdict));
+  var rs=resultatSaisi(x);if(rs)d.appendChild(el('div','',rs));
+  // Le verdict n'est pas une donnée du match : il est recalculé avec le moteur actuel à chaque affichage.
+  var va=null;try{va=verdictTexte(K.analyser(K.construireTheme(x.meres[0],x.meres[1],x.meres[2],x.meres[3])).decision);}catch(e){}
+  if(va)d.appendChild(el('div','muted','Moteur actuel : '+va+(x.verdict&&x.verdict!==va?' (à la sauvegarde : '+x.verdict+')':'')));
   var c=el('button','charger','Charger ce match');c.onclick=function(){charger(x);ouvrirMenu(false);};d.appendChild(c);
   var z=el('div','zoneSuppr'),s=el('button','suppr','Supprimer');
   s.onclick=function(){if(!s.classList.contains('confirme')){s.classList.add('confirme');s.textContent='Confirmer la suppression';setTimeout(function(){s.classList.remove('confirme');s.textContent='Supprimer';},4000);return;}
