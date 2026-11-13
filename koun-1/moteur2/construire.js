@@ -34,7 +34,11 @@ rep('version:"1.15.4-essai",sourceHash:', 'version:"' + K.version + '",sourceHas
     { id: 'VICTOIRE_REFERENCE_9', codes: [7, 5, 9, 6], expected: '1', source: 'Milano 4-0 Genoa (mi-temps 3-0), match FIFA du 12 novembre 2026, tirage de la machine' },
     { id: 'VICTOIRE_REFERENCE_10', codes: [13, 12, 8, 15], expected: '2', source: 'Cremonese 0-3 Torino (mi-temps 0-0), match FIFA du 12 novembre 2026, tirage de la machine' },
     { id: 'VICTOIRE_REFERENCE_11', codes: [8, 7, 10, 8], expected: '2', source: 'Victoire de R7 indiquée par le propriétaire (12 novembre 2026)' },
-    { id: 'VICTOIRE_REFERENCE_12', codes: [4, 16, 1, 2], expected: '2', source: 'Victoire de R7 indiquée par le propriétaire (13 novembre 2026)' }])
+    { id: 'VICTOIRE_REFERENCE_12', codes: [4, 16, 1, 2], expected: '2', source: 'Victoire de R7 indiquée par le propriétaire (13 novembre 2026)' },
+    { id: 'VICTOIRE_REFERENCE_13', codes: [4, 7, 5, 8], expected: '1', source: 'Score 1-0 indiqué par le propriétaire (13 novembre 2026)' },
+    { id: 'VICTOIRE_REFERENCE_14', codes: [4, 7, 10, 10], expected: '1', source: 'Score 2-1 indiqué par le propriétaire (13 novembre 2026)' },
+    { id: 'VICTOIRE_REFERENCE_15', codes: [4, 1, 6, 7], expected: '1', source: 'Score 3-0 indiqué par le propriétaire (13 novembre 2026)' },
+    { id: 'VICTOIRE_REFERENCE_16', codes: [4, 6, 7, 16], expected: '1', source: 'Score 5-0 indiqué par le propriétaire (13 novembre 2026)' }])
     if (!refs.some(r => r.id === x.id)) refs.push({ id: x.id, title: figs(x.codes).join(' \u00B7 '), mothers: figs(x.codes), codes: x.codes, expected: x.expected, source: x.source, teams: ['R1', 'R7'] });
   const v3 = refs.find(r => r.id === 'VICTOIRE_REFERENCE_3'); if (v3 && !/7-0/.test(v3.source)) v3.source += ' \u00B7 score 7-0';
   const nNuls = refs.filter(r => r.expected === 'N').length;

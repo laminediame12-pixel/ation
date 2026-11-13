@@ -172,7 +172,7 @@ node tester.js /chemin/absolu/vers/koun-1-complet.html
 
 ## État des cas (audit du 13 novembre 2026)
 
-Vingt et un matchs réels servent de référence. Le moteur en explique vingt ; le seul écart est 13·12·8·15 (pôles dans la même boucle, aucun chez lui).
+Vingt-cinq matchs réels servent de référence. Le moteur en explique vingt-trois ; les deux écarts sont 13·12·8·15 (pôles dans la même boucle, aucun chez lui) et 4·6·7·16 (pôles en M4 et M10, donné nul, score réel 5-0).
 
 La dernière colonne du tableau des cas ci-dessus donne, pour chaque cas, le nombre de matchs réels qu'il tranche.
 

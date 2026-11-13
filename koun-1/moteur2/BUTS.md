@@ -1,6 +1,6 @@
 # Les buts : première mi-temps et « les deux marquent »
 
-Document produit par `outils/buts_doc.js` à partir des matchs réels dont le score est connu (6 matchs, dont 4 avec la mi-temps). Pour les autres matchs réels, seul le vainqueur ou le nul est connu : ils ne peuvent pas servir ici.
+Document produit par `outils/buts_doc.js` à partir des matchs réels dont le score est connu (10 matchs, dont 4 avec la mi-temps). Pour les autres matchs réels, seul le vainqueur ou le nul est connu : ils ne peuvent pas servir ici.
 
 ## 1. But en première mi-temps
 
@@ -17,6 +17,10 @@ Document produit par `outils/buts_doc.js` à partir des matchs réels dont le sc
 | Latium – Bologna (5·14·6·14) | 3-1 | 1-0 | sûr | pôle sur l’axe : R1 Via en M1 (base), R1 Via en M7 (base) | oui |
 | Milano – Genoa (7·5·9·6) | 4-0 | 3-0 | sûr | pôle sur l’axe : R1 Aquisitio en M7 (base) | oui |
 | Cremonese – Torino (13·12·8·15) | 0-3 | 0-0 | faible | signal en résultante hors de M4 et M10 : la somme Fortuna Major n’est qu’en résultante en M1 | oui |
+| 4·7·5·8 | 1-0 | inconnue | sûr | la somme de l’axe angulaire donne Caput, présente en M10 (résultante) ; pôle sur l’axe : R1 Tristitia en M4 (base), R7 Cauda Draconis en M10 (base) | non vérifiable |
+| 4·7·10·10 | 2-1 | inconnue | sûr | pôle sur l’axe : R1 Carcer en M4 (base), R1 Carcer en M10 (résultante), R7 Populus en M10 (base) | non vérifiable |
+| 4·1·6·7 | 3-0 | inconnue | sûr | la somme de l’axe angulaire donne Albus, présente en M1 (base) ; pôle sur l’axe : R1 Rubeus en M4 (base), R7 Cauda Draconis en M10 (base) | non vérifiable |
+| 4·6·7·16 | 5-0 | inconnue | sûr | pôle sur l’axe : R1 Populus en M4 (base), R7 Rubeus en M10 (base) | non vérifiable |
 
 Sur les 4 matchs où la mi-temps est connue, le signal est juste 3 fois.
 
@@ -26,7 +30,7 @@ Sur les 4 matchs où la mi-temps est connue, le signal est juste 3 fois.
 
 ## 2. Les deux équipes marquent
 
-Aucune règle n'est encore dans le moteur. Voici ce que montrent les 6 matchs dont le score est connu, pôle par pôle.
+Aucune règle n'est encore dans le moteur. Voici ce que montrent les 10 matchs dont le score est connu, pôle par pôle.
 
 | Match | Score | Pôle | A marqué ? | Positions (dont base) | Force dans sa maison | Meilleure force | Sur l'axe | Chez lui |
 |---|---|---|---|---|---|---|---|---|
@@ -42,21 +46,29 @@ Aucune règle n'est encore dans le moteur. Voici ce que montrent les 6 matchs do
 | Milano – Genoa (7·5·9·6) | 4-0 | R7 Puer | **non** | 1 (1) | 85 % | 85 % | non | non |
 | Cremonese – Torino (13·12·8·15) | 0-3 | R1 Carcer | **non** | 2 (2) | 70 % | 85 % | non | non |
 | Cremonese – Torino (13·12·8·15) | 0-3 | R7 Tristitia | oui (3) | 4 (2) | 70 % | 70 % | non | non |
+| 4·7·5·8 | 1-0 | R1 Tristitia | oui (1) | 1 (1) | 85 % | 85 % | oui | non |
+| 4·7·5·8 | 1-0 | R7 Cauda Draconis | **non** | 2 (1) | 0 % | 1 % | oui | non |
+| 4·7·10·10 | 2-1 | R1 Carcer | oui (2) | 3 (2) | 1 % | 100 % | oui | oui |
+| 4·7·10·10 | 2-1 | R7 Populus | oui (1) | 1 (1) | 1 % | 1 % | oui | non |
+| 4·1·6·7 | 3-0 | R1 Rubeus | oui (3) | 2 (2) | 0 % | 70 % | oui | non |
+| 4·1·6·7 | 3-0 | R7 Cauda Draconis | **non** | 4 (3) | 0 % | 55 % | oui | non |
+| 4·6·7·16 | 5-0 | R1 Populus | oui (5) | 3 (2) | 85 % | 85 % | oui | non |
+| 4·6·7·16 | 5-0 | R7 Rubeus | **non** | 5 (4) | 55 % | 85 % | oui | non |
 
-**Ce qui ressort, sur 8 pôles qui ont marqué et 4 qui n'ont pas marqué :**
+**Ce qui ressort, sur 13 pôles qui ont marqué et 7 qui n'ont pas marqué :**
 
 | Lecture | Pôles qui ont marqué | Pôles qui n'ont pas marqué |
 |---|---|---|
-| présent au moins 3 fois dans le thème | 6 sur 8 | 0 sur 4 |
-| présent sur l'axe angulaire | 4 sur 8 | 0 sur 4 |
-| dans sa maison de repos | 3 sur 8 | 0 sur 4 |
+| présent au moins 3 fois dans le thème | 8 sur 13 | 2 sur 7 |
+| présent sur l'axe angulaire | 9 sur 13 | 3 sur 7 |
+| dans sa maison de repos | 4 sur 13 | 0 sur 7 |
 
-- Un pôle présent **au moins trois fois** dans le thème a toujours marqué ; aucun des pôles restés muets n'atteint trois positions.
-- Un pôle présent **sur l'axe angulaire** ou **dans sa maison de repos** a toujours marqué.
-- L'inverse n'est pas vrai : deux pôles peu présents ont quand même marqué (Caput, une seule position, dans le 3-1 ; Albus, deux positions, dans le 2-0).
+- Pôle présent au moins trois fois : 8 des 13 pôles qui ont marqué, 2 des 7 pôles restés muets. Ce n'est donc pas un signe sûr.
+- Pôle présent sur l'axe angulaire : 9 des 13 pôles qui ont marqué, 3 des 7 pôles restés muets. Ce n'est donc pas un signe sûr.
+- Pôle dans sa maison de repos : 4 des 13 pôles qui ont marqué, 0 des 7 pôles restés muets. Aucun pôle muet n'est dans ce cas.
 
-**Lecture provisoire pour « les deux marquent » :** oui quand les deux pôles sont chacun présents au moins trois fois ; cela donne le bon résultat pour 5 des 6 matchs (le 3-1 est manqué). C'est une observation sur très peu de matchs, pas une règle : elle n'est pas dans le moteur.
+**Essai de lecture pour « les deux marquent »** : oui quand les deux pôles sont chacun présents au moins trois fois. Résultat : juste pour 7 des 10 matchs. C'est une observation sur peu de matchs, pas une règle : elle n'est pas dans le moteur.
 
 ## Ce qu'il faut pour aller plus loin
 
-Le score exact, avec la mi-temps, des matchs réels déjà enregistrés. Quinze matchs sur vingt et un n'ont que le vainqueur ou le nul.
+Le score exact, avec la mi-temps, des matchs réels déjà enregistrés. La plupart n'ont que le vainqueur ou le nul.

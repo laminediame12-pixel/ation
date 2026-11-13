@@ -9,7 +9,11 @@ const SCORES = [
   ['2·9·6·5', [2, 9, 6, 5], 3, 3, null, null],
   ['Latium – Bologna (5·14·6·14)', [5, 14, 6, 14], 3, 1, 1, 0],
   ['Milano – Genoa (7·5·9·6)', [7, 5, 9, 6], 4, 0, 3, 0],
-  ['Cremonese – Torino (13·12·8·15)', [13, 12, 8, 15], 0, 3, 0, 0]
+  ['Cremonese – Torino (13·12·8·15)', [13, 12, 8, 15], 0, 3, 0, 0],
+  ['4·7·5·8', [4, 7, 5, 8], 1, 0, null, null],
+  ['4·7·10·10', [4, 7, 10, 10], 2, 1, null, null],
+  ['4·1·6·7', [4, 1, 6, 7], 3, 0, null, null],
+  ['4·6·7·16', [4, 6, 7, 16], 5, 0, null, null]
 ];
 const NIV = { SUR: 'sûr', OUI: 'oui', RESULTANTE: 'faible', AUCUN: 'pas de signal' };
 let md = '# Les buts : première mi-temps et « les deux marquent »\n\nDocument produit par `outils/buts_doc.js` à partir des matchs réels dont le score est connu (' + SCORES.length + ' matchs, dont ' + SCORES.filter(x => x[4] !== null).length + ' avec la mi-temps). Pour les autres matchs réels, seul le vainqueur ou le nul est connu : ils ne peuvent pas servir ici.\n\n';
@@ -32,6 +36,9 @@ for (const x of lignesB) for (const [k, p, b] of [['R1', x.r1, x.b1], ['R7', x.r
 }
 const c3 = marque.filter(p => p.total >= 3).length, m3 = muet.filter(p => p.total >= 3).length, ca = marque.filter(p => p.axe).length, ma = muet.filter(p => p.axe).length, cc = marque.filter(p => p.chez).length, mc = muet.filter(p => p.chez).length;
 md += '\n**Ce qui ressort, sur ' + marque.length + ' pôles qui ont marqué et ' + muet.length + ' qui n\'ont pas marqué :**\n\n| Lecture | Pôles qui ont marqué | Pôles qui n\'ont pas marqué |\n|---|---|---|\n| présent au moins 3 fois dans le thème | ' + c3 + ' sur ' + marque.length + ' | ' + m3 + ' sur ' + muet.length + ' |\n| présent sur l\'axe angulaire | ' + ca + ' sur ' + marque.length + ' | ' + ma + ' sur ' + muet.length + ' |\n| dans sa maison de repos | ' + cc + ' sur ' + marque.length + ' | ' + mc + ' sur ' + muet.length + ' |\n\n';
-md += '- Un pôle présent **au moins trois fois** dans le thème a toujours marqué ; aucun des pôles restés muets n\'atteint trois positions.\n- Un pôle présent **sur l\'axe angulaire** ou **dans sa maison de repos** a toujours marqué.\n- L\'inverse n\'est pas vrai : deux pôles peu présents ont quand même marqué (Caput, une seule position, dans le 3-1 ; Albus, deux positions, dans le 2-0).\n\n**Lecture provisoire pour « les deux marquent » :** oui quand les deux pôles sont chacun présents au moins trois fois ; cela donne le bon résultat pour 5 des ' + SCORES.length + ' matchs (le 3-1 est manqué). C\'est une observation sur très peu de matchs, pas une règle : elle n\'est pas dans le moteur.\n\n## Ce qu\'il faut pour aller plus loin\n\nLe score exact, avec la mi-temps, des matchs réels déjà enregistrés. Quinze matchs sur vingt et un n\'ont que le vainqueur ou le nul.\n';
+const dire = (nom, a, b) => '- ' + nom + ' : ' + a + ' des ' + marque.length + ' pôles qui ont marqué, ' + b + ' des ' + muet.length + ' pôles restés muets.' + (b === 0 && a > 0 ? ' Aucun pôle muet n\'est dans ce cas.' : ' Ce n\'est donc pas un signe sûr.') + '\n';
+md += dire('Pôle présent au moins trois fois', c3, m3) + dire('Pôle présent sur l\'axe angulaire', ca, ma) + dire('Pôle dans sa maison de repos', cc, mc);
+let bon = 0; for (const x of lignesB) { const prevu = x.r1.total >= 3 && x.r7.total >= 3, reel = x.b1 > 0 && x.b7 > 0; if (prevu === reel) bon++; }
+md += '\n**Essai de lecture pour « les deux marquent »** : oui quand les deux pôles sont chacun présents au moins trois fois. Résultat : juste pour ' + bon + ' des ' + SCORES.length + ' matchs. C\'est une observation sur peu de matchs, pas une règle : elle n\'est pas dans le moteur.\n\n## Ce qu\'il faut pour aller plus loin\n\nLe score exact, avec la mi-temps, des matchs réels déjà enregistrés. La plupart n\'ont que le vainqueur ou le nul.\n';
 fs.writeFileSync(path.join(__dirname, '../moteur2/BUTS.md'), md);
 console.log('mi-temps :', ok + '/' + tot, '| pôles ≥3 positions : marqué', c3 + '/' + marque.length, 'muets', m3 + '/' + muet.length, '| sur axe', ca + '/' + marque.length, ma + '/' + muet.length, '| chez lui', cc + '/' + marque.length, mc + '/' + muet.length);
