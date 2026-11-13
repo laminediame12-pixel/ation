@@ -2,6 +2,14 @@
 
 L'atelier (l'interface) est conservé. Le moteur est reconstruit en deux étages, dans un seul fichier court : [`moteur.js`](moteur.js).
 
+## Trois couches, à ne pas mélanger
+
+1. **La structure** décrit le thème (maisons, résultantes, forces, pôles, cercle). Elle ne juge rien.
+2. **Les cas** décident le verdict. Un cas est une condition écrite ; le premier qui s'applique tranche.
+3. **Les signaux** (12, double chance, poids des pôles, multiplicité, figure du lien, points du cercle, précision) accompagnent le verdict. Ils ne décident pas. La page les range dans un bloc replié, « Signaux et détails ».
+
+Une observation nouvelle entre d'abord comme signal. Elle ne devient un cas que sur décision du propriétaire, après vérification sur des matchs réels.
+
 ## Étage 1 : la structure
 
 Elle ne décide rien. Elle décrit le thème :

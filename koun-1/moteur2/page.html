@@ -82,6 +82,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 #cercle{max-width:560px;margin:0 auto}#cercle svg{width:100%;height:auto;display:block}
 #cercle text{font-family:inherit}#cercle .centre{paint-order:stroke;stroke:#121a2e;stroke-width:5px;stroke-linejoin:round}#cercle .nd{cursor:pointer}#cercle .pulse{animation:pouls 1.1s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @media(prefers-reduced-motion:reduce){#cercle .pulse{animation:none}}
+#vDetails summary{cursor:pointer;color:#93c5fd;font-size:13px;padding:6px 0}#vDetails .stab{border-top:none;margin-top:0;padding-top:0;text-align:left}#vDetails .stab .muted{margin-top:5px}
 </style></head><body>
 <div id="voile"></div>
 <aside id="menu" aria-label="Matchs sauvegardés" aria-hidden="true">
@@ -125,7 +126,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
 <div class="bloc"><h2>Verdict</h2>
   <div class="verdict">
     <div><small>Mères</small><div id="vMeres" class="muted">Lance un thème.</div></div>
-    <div class="centre"><small id="vQuestion">Victoire ou nul ?</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div><div id="vPenalty" class="muted" style="margin-top:6px"></div><div id="vMiTemps" style="margin-top:6px"></div><div id="vPoles" class="muted" style="margin-top:6px"></div></div>
+    <div class="centre"><small id="vQuestion">Victoire ou nul ?</small><div id="vTitre" class="aucun">—</div><div id="vCas"></div><div id="vRaison" class="muted"></div><div id="vPenalty" class="muted" style="margin-top:6px"></div><div id="vMiTemps" style="margin-top:6px"></div><div id="vDetails" style="margin-top:8px"></div><div id="vPoles" class="muted" style="margin-top:6px"></div></div>
     <div><small>Témoin de validation (en base)</small><div id="vTemoin" class="muted">Lance un thème.</div></div>
   </div>
 </div>
@@ -275,10 +276,10 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  var pq=d.precision,NP={FORTE:['Précision forte','ok'],MOYENNE:['Précision moyenne','ok'],SANS_SIGNAL:['Aucun signal pour ou contre',''],DISCUTEE:['Verdict discuté','essai'],CONTREDITE:['Verdict contredit par les signaux','essai']}[pq.niveau];
  C.appendChild(el('span','etiq '+NP[1],NP[0]+' · '+pq.pour.length+' pour, '+pq.contre.length+' contre'));
  var mq=d.marches,ZS=el('div','stab');ZS.appendChild(el('small','','Stabilité · ancrages R1 '+mq.ancragesR1+' / R7 '+mq.ancragesR7+(mq.resultantesR1!==null?' · résultantes R1 '+mq.resultantesR1+' / R7 '+mq.resultantesR7:'')));
- if(mq.douze)ZS.appendChild(el('span','etiq ok','12 · pas de nul'+(mq.renforce?' (renforcé)':'')));
- if(mq.doubleChance)ZS.appendChild(el('span','etiq ok','Double chance '+mq.doubleChance+' · '+(mq.camp==='R1'?e1:e2)+' ou nul'));
- if(!mq.douze&&!mq.doubleChance)ZS.appendChild(el('span','etiq','Équilibre : ni 12 ni double chance'));
- if(mq.conflit)ZS.appendChild(el('span','etiq essai','Signaux contraires'));
+ if(mq.douze)C.appendChild(el('span','etiq ok','12 · pas de nul'+(mq.renforce?' (renforcé)':'')));
+ if(mq.doubleChance)C.appendChild(el('span','etiq ok','Double chance '+mq.doubleChance+' · '+(mq.camp==='R1'?e1:e2)+' ou nul'));
+
+ if(mq.conflit)C.appendChild(el('span','etiq essai','Signaux contraires'));
  if(mq.signaux12.length)ZS.appendChild(el('div','muted','Pas de nul : '+mq.signaux12.join(' ; ')+'.'));
  if(mq.signauxNul.length&&d.verdict==='N')ZS.appendChild(el('div','muted','Vers le nul : '+mq.signauxNul.join(' ; ')+'.'));
  ZS.appendChild(el('div','muted','Poids des pôles en base : R1 '+mq.poidsPoles.R1+' / R7 '+mq.poidsPoles.R7+(mq.poidsPoles.applicable?(mq.poidsPoles.decide?' — R1 plus lourd : le match se décide.':' — R1 pas plus lourd : vers le nul.'):' (indicatif en boucles différentes).')));
@@ -290,8 +291,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  if(pq.contre.length)ZS.appendChild(el('div','muted','Contre le verdict : '+pq.contre.join(' ; ')+'.'));
  if(pq.indices&&pq.indices.length)ZS.appendChild(el('div','muted','Indices faibles, non comptés : '+pq.indices.join(' ; ')+'.'));
  if(d.casEcartes&&d.casEcartes.length)ZS.appendChild(el('div','muted','Cas écartés pour incohérence : '+d.casEcartes.map(function(x){return x.cas+' (donnait '+(x.verdict==='1'?'R1':'R7')+', contredit par '+x.contre.join(' et ')+')';}).join(' ; ')+'.'));
- var bq=d.butMiTemps;ZS.appendChild(el('span','etiq '+(bq.niveau==='SUR'||bq.niveau==='OUI'?'ok':bq.niveau==='RESULTANTE'?'essai':''),bq.niveau==='SUR'?'But 1re mi-temps : sûr':bq.niveau==='OUI'?'But 1re mi-temps : oui':bq.niveau==='RESULTANTE'?'But 1re mi-temps : faible':'But 1re mi-temps : pas de signal'));
- C.appendChild(ZS);
+ var DT=$('vDetails');DT.textContent='';var det=document.createElement('details'),sm=document.createElement('summary');sm.textContent='Signaux et détails (ils ne décident pas)';det.appendChild(sm);det.appendChild(ZS);DT.appendChild(det);
  $('vRaison').textContent=d.raison;
  var P=$('vPoles');P.textContent='';P.appendChild(el('span','r1','R1 M'+L.R1.maison+' · '+L.R1.figure));P.appendChild(document.createTextNode('   '));P.appendChild(el('span','r7','R7 M'+L.R7.maison+' · '+L.R7.figure));
  majQuestions();$('vQuestion').textContent=($('qVictoireNul').checked?e1+' et '+e2+', victoire ou nul ?':'Verdict du moteur')+' · '+$('mode').value;
