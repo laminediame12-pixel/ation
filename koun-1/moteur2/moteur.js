@@ -365,8 +365,8 @@
       }
     },
     {
-      id: 'CAS-010', titre: 'Pôle sans force : éteint, ou dans la maison de son antagoniste', statut: 'EN_ESSAI',
-      enonce: 'D’abord : un pôle dont la figure ne dépasse 1 % dans aucune position est éteint ; si un seul l’est, l’autre gagne. Ensuite : un pôle dans la maison de son antagoniste est pénalisé (0 %), sauf s’il est fort ailleurs en base (au moins 70 %) ; si un seul est pénalisé, l’autre gagne.',
+      id: 'CAS-010', titre: 'Pôle sans force : éteint, attaqué sans défense, ou dans la maison de son antagoniste', statut: 'EN_ESSAI',
+      enonce: 'D’abord : un pôle dont la figure ne dépasse 1 % dans aucune position est éteint ; si un seul l’est, l’autre gagne. Puis : un pôle attaque l’autre directement, l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne : l’attaquant gagne. Ensuite : un pôle dans la maison de son antagoniste est pénalisé (0 %), sauf s’il est fort ailleurs en base (au moins 70 %) ; si un seul est pénalisé, l’autre gagne.',
       condition: function (L) {
         // Force utile d'un pôle : la meilleure force de sa figure dans tout le thème (base et résultante).
         function meilleure(c) { var m = 0; L.positions(c.figure).forEach(function (x) { var f = x.force === null ? 100 : x.force; if (f > m) m = f; }); return m; }
@@ -376,6 +376,14 @@
         if ((m1 <= 1) !== (m7 <= 1)) {
           var e = m1 <= 1 ? L.R1 : L.R7, v = m1 <= 1 ? L.R7 : L.R1;
           return { verdict: m1 <= 1 ? '2' : '1', assuree: false, raison: 'Victoire ' + v.camp + ' : le pôle ' + e.camp + ', ' + e.figure + ', est éteint (au plus 1 % dans toutes ses positions : ' + L.positions(e.figure).map(function (x) { return 'M' + x.maison; }).join(', ') + '). ' + v.figure + ' atteint ' + (v === L.R1 ? m1 : m7) + ' %.' };
+        }
+        // Attaque directe (matchs réels 4·16·1·2, 6·4·10·16, AZ – Villarreal) : un pôle attaque l'autre, l'attaqué est à 1 % ou moins
+        // dans sa maison de pôle, l'attaquant tient la sienne à plus de 1 % : l'attaquant gagne.
+        function chezSoi(c) { var f = L.force(c.figure, c.maison); return f === null ? 100 : f; }
+        var d17 = ((num(L.R7.figure) - num(L.R1.figure)) % 16 + 16) % 16, att = d17 === 3 ? L.R1 : d17 === 13 ? L.R7 : null;
+        if (att) {
+          var cible = att === L.R1 ? L.R7 : L.R1;
+          if (chezSoi(cible) <= 1 && chezSoi(att) > 1) return { verdict: att === L.R1 ? '1' : '2', assuree: false, raison: 'Victoire ' + att.camp + ' : ' + att.figure + ' attaque directement ' + cible.figure + ', qui n’a que ' + chezSoi(cible) + ' % dans sa maison M' + cible.maison + ' ; ' + att.figure + ' tient la sienne (M' + att.maison + ') à ' + chezSoi(att) + ' %.' };
         }
         // La pénalité ne compte pas si le pôle pénalisé est fort ailleurs en base (au moins 70 %).
         function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison) && !fortEnBase(c); }
@@ -461,7 +469,8 @@
         if (L.mode === 'MEME_FRONT') return null;
         // Même boucle (matchs 5·14·6·14 et 7·5·9·6) : on compare les deux pôles eux-mêmes. Celui qui est chez lui, non annulé, gagne si l'autre ne l'est pas.
         if (L.mode === 'MEME_BOUCLE') {
-          var h1 = L.chezElle(L.R1.figure) && !L.annuleePar(L.R1.figure), h7 = L.chezElle(L.R7.figure) && !L.annuleePar(L.R7.figure);
+          function vraiChez(c) { var f = c.figure; return L.chezElle(f) && !L.annuleePar(f) && !(f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus'); }
+          var h1 = vraiChez(L.R1), h7 = vraiChez(L.R7);
           if (h1 === h7) return null;
           var gg = h1 ? L.R1 : L.R7, pp = h1 ? L.R7 : L.R1;
           return { verdict: h1 ? '1' : '2', assuree: false, raison: 'Victoire ' + gg.camp + ' : même boucle, ' + gg.figure + ' est dans sa maison de repos M' + num(gg.figure) + (L.chezElleEnBase(gg.figure) ? ' en base' : ' en résultante') + ' ; ' + pp.figure + ' (' + pp.camp + ') n’est pas chez lui.' };
@@ -469,7 +478,9 @@
         function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
         // Reflet : une figure qui n'est chez elle qu'en résultante, sur une base Populus qui est le pôle adverse, n'est que le reflet de ce pôle ; elle ne compte pas.
         function reflet(f, c) { var adv = c === L.R1 ? L.R7 : L.R1; return !L.chezElleEnBase(f) && adv.figure === 'Populus' && L.maisons[num(f) - 1].base === 'Populus' && adv.maison === num(f); }
-        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !reflet(f, c); }); }   // une figure dont l'attaquant est aussi au repos est annulée
+        // Le pôle lui-même ne compte pas s'il n'est chez lui qu'en résultante sur une base Populus : c'est un reflet (match réel 4·16·1·2).
+        function refletPole(f, c) { return f === c.figure && f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus'; }
+        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !reflet(f, c) && !refletPole(f, c); }); }   // une figure dont l'attaquant est aussi au repos est annulée
         var a = chez(L.R1), b = chez(L.R7);
         if (a.length === b.length) return null;
         var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
@@ -607,7 +618,7 @@
     (function () {
       var m = decision.marches, pour = [], contre = [], indices = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
       var nulFiables = [], nulFaibles = [];
-      if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFiables.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
+      if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFaibles.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
       if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
       if (L.poidsPoles.applicable && !L.poidsPoles.decide) nulFiables.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
       if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
@@ -618,7 +629,8 @@
         m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
         nulFiables.forEach(function (x) { contre.push('vers le nul : ' + x); });
         nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
-        camp('ancrages', st.plusStable); camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
+        if (st.plusStable) (st.plusStable === g ? pour : indices).push('ancrages pour ' + st.plusStable);   // pris en défaut une fois (4·16·1·2) : ne compte plus contre
+        camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
         if (L.cercle.amont) (L.cercle.amont === g ? pour : indices).push('amont pour ' + L.cercle.amont);
         if (L.multiplicite.favori) (L.multiplicite.favori === g ? pour : indices).push('multiplicité du pôle pour ' + L.multiplicite.favori);
         if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') indices.push('figure du lien en résultante seulement');

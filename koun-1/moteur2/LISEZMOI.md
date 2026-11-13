@@ -49,7 +49,7 @@ Un cas est une condition écrite qui donne un résultat. Le moteur lit les cas d
 | Cas | Condition | Résultat | Statut |
 |---|---|---|---|
 | CAS-001 | R1 et R7 dans le même front. D'abord : si l'antagoniste d'un seul pôle est dans sa propre maison de repos, l'autre pôle gagne (même entre miroirs) ; si les deux le sont, nul. Ensuite : Chaque front a deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) | Ce pôle gagne ; sinon nul | Confirmé |
-| CAS-010 | Lu juste après CAS-001. 1) Un pôle est éteint (sa figure ne dépasse 1 % dans aucune position) et l'autre non (match réel 8·7·10·8). 2) Sinon, un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) | L'autre pôle gagne | En essai |
+| CAS-010 | Lu juste après CAS-001. 1) Un pôle est éteint (sa figure ne dépasse 1 % dans aucune position) et l'autre non. 2) Un pôle attaque l'autre directement, l'attaqué n'a que 1 % ou moins dans sa maison de pôle et l'attaquant tient la sienne à plus de 1 % (matchs réels 4·16·1·2, 6·4·10·16, AZ – Villarreal). 3) Un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base | Dans 1) et 3) l'autre pôle gagne ; dans 2) l'attaquant gagne | En essai |
 | CAS-011 | Le thème a des figures au repos, mais chacune est annulée : son attaquant (k−3) est aussi au repos, ou il est deux fois en base (hors positions à 1 % ou 0 %). Tiré du match réel 2·9·6·5. Lu après CAS-010 | Nul | En essai |
 | CAS-002 | Deux figures du front d'un pôle, en base, chacune dans sa maison de repos à 100 %, et pas de verrou en face | Victoire assurée de ce pôle | En essai |
 | CAS-003 | Le pôle est dans sa maison de repos (en base), son antagoniste non ; son front est dans sa propre maison (base ou résultante), l'antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires | Victoire assurée de ce pôle | En essai |
@@ -79,7 +79,7 @@ Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe m
 
 ### Précision du verdict
 
-`decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre. Seuls les signaux jamais pris en défaut sur les matchs réels sont comptés : résultantes par boucle, miroir au point D, ancrages, bord du cercle, miroir aux points B et C, signaux « 12 ». Les signaux déjà vus du mauvais côté (somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien) sont listés comme indices faibles et ne comptent pas contre une victoire. Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
+`decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre. Seuls les signaux jamais pris en défaut sur les matchs réels sont comptés : miroir au point D, poids des pôles (même front, même boucle), ancrages, bord du cercle, miroir aux points B et C, signaux « 12 ». Les signaux déjà vus du mauvais côté (somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien) sont listés comme indices faibles et ne comptent pas contre une victoire. Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
 
 ### Poids des pôles en base
 
@@ -129,14 +129,14 @@ node tester.js /chemin/absolu/vers/koun-1-complet.html
 
 ## État des cas (audit du 13 novembre 2026)
 
-Vingt matchs réels servent de référence. Le moteur en explique dix-neuf ; le seul écart est 13·12·8·15 (pôles dans la même boucle, aucun chez lui).
+Vingt et un matchs réels servent de référence. Le moteur en explique vingt ; le seul écart est 13·12·8·15 (pôles dans la même boucle, aucun chez lui).
 
 | Cas | Vérifié sur des matchs réels ? |
 |---|---|
 | CAS-001 (même front) | oui, 4 matchs |
 | CAS-008 (pôle chez lui) | oui, 6 matchs |
 | CAS-009 (équilibre des ancrages) | oui, 8 matchs ; 1 écart |
-| CAS-010 (pôle sans force) | 1 match |
+| CAS-010 (pôle sans force, attaque directe) | 4 matchs |
 | CAS-011 (figures au repos annulées) | 1 match |
 | CAS-002 à CAS-007 | aucun match ; ils n'annoncent plus de victoire « assurée » |
 
