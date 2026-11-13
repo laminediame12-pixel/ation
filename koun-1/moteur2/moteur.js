@@ -210,6 +210,13 @@
       var a = poids(R1), b = poids(R7);
       return { R1: a, R7: b, ecart: a - b, applicable: mode !== 'BOUCLES_DIFFERENTES', decide: a > b };
     })();
+    // Multiplicité des pôles : nombre de positions de la figure du pôle dans le thème, base et résultante.
+    // Sur les matchs réels décidés, le pôle le plus présent est le vainqueur 9 fois sur 10 quand les deux nombres diffèrent.
+    var multiplicite = (function () {
+      function compte(c) { var p = positions(c.figure); return { base: p.filter(function (x) { return x.couche === 'base'; }).length, total: p.length }; }
+      var a = compte(R1), b = compte(R7);
+      return { R1: a, R7: b, favori: a.total > b.total ? 'R1' : b.total > a.total ? 'R7' : null };
+    })();
     // Figure du lien : la somme des deux pôles. Elle dit quel lien les unit (miroir : Tristitia ; même front : Albus ou Fortuna Major ; etc.).
     var lien = (function () {
       var f = additionner(R1.figure, R7.figure), pos = positions(f);
@@ -290,7 +297,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, poidsPoles: poidsPoles, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, poidsPoles: poidsPoles, multiplicite: multiplicite, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -588,9 +595,9 @@
     if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
     if (L.pointsAuRepos.length) nulProbable.push(L.pointsAuRepos.map(function (x) { return 'le point ' + (x.point.length === 1 ? x.point : 'entre ' + x.maisons[0] + ' et ' + x.maisons[1]) + ' est au repos (M' + x.maisons[0] + ' + M' + x.maisons[1] + ' redonne ' + x.valeur + ')'; }).join(' ; '));
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
-    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori);
+    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori || L.multiplicite.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      poidsPoles: L.poidsPoles, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      poidsPoles: L.poidsPoles, multiplicite: L.multiplicite, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
@@ -613,12 +620,14 @@
         nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
         camp('ancrages', st.plusStable); camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
         if (L.cercle.amont) (L.cercle.amont === g ? pour : indices).push('amont pour ' + L.cercle.amont);
+        if (L.multiplicite.favori) (L.multiplicite.favori === g ? pour : indices).push('multiplicité du pôle pour ' + L.multiplicite.favori);
         if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') indices.push('figure du lien en résultante seulement');
       } else if (v === 'N') {
         nulFiables.concat(nulFaibles).forEach(function (x) { pour.push(x); });
         m.signaux12.forEach(function (x) { contre.push('pas de nul : ' + x); });
         if (st.plusStable) indices.push('ancrages pour ' + st.plusStable);
         if (L.cercle.favoriBord) indices.push('bord du cercle pour ' + L.cercle.favoriBord);
+        if (L.multiplicite.favori) indices.push('multiplicité du pôle pour ' + L.multiplicite.favori);
       }
       var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
       decision.precision = { niveau: niveau, pour: pour, contre: contre, indices: indices };

@@ -85,6 +85,10 @@ Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe m
 
 `L.poidsPoles` additionne les forces de la figure de chaque pôle dans toutes ses positions en base. Sur les huit matchs réels où les pôles sont dans le même front ou la même boucle, R1 plus lourd que R7 annonce un match qui se décide, et R1 pas plus lourd un nul (8 sur 8). C'est un signal : il entre dans le « 12 », le « vers le nul » et la précision, pas dans les cas, parce qu'il ne traite pas R1 et R7 de la même façon.
 
+### Multiplicité des pôles
+
+`L.multiplicite` compte les positions de la figure de chaque pôle, en base et en résultante. Sur les matchs réels décidés, le pôle le plus présent est le vainqueur 9 fois sur 10 quand les deux nombres diffèrent. Elle sert de signal de camp (double chance, précision) ; elle ne dit pas si le match est nul.
+
 ### Figure du lien
 
 La somme des deux pôles (`L.lien`). Elle dit quel lien les unit : Tristitia pour des miroirs, Albus ou Fortuna Major pour un même front, une figure paire dans la même boucle, impaire en boucles différentes. La page l'affiche sous le verdict, avec ses maisons en base et en résultante. Elle ne change pas le verdict.
