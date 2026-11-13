@@ -86,6 +86,57 @@ Quand une famille dit « un seul pôle remplit ceci », le cas ne tranche pas si
 | DR-9 | Dernier recours | Boucles différentes, ancrages égaux, et les deux signaux du cercle désignent des pôles différents : nul. | aucun |
 | DR-10 | Dernier recours | Rien ne départage les deux pôles : les ancrages s’équilibrent, nul. | aucun |
 
+## Les signaux
+
+Ils accompagnent le verdict et ne décident pas.
+
+### « 12 » et double chance
+
+Sous le verdict, la page affiche `decision.marches` :
+- **« 12 » (pas de nul)** dès qu'un de ces signaux est présent : écart d'au moins deux ancrages ; en boucles différentes, majorité des 15 résultantes dans la boucle de R7 ; somme de l'axe angulaire égale à un pôle qui siège sur l'axe. Avec deux signaux ou plus, il est « renforcé ».
+- **Double chance** : le camp que le verdict désigne ; à défaut, le pôle désigné par l'axe, ou le camp le mieux ancré (`1X` pour R1, `X2` pour R7).
+- **Vers le nul** : majorité des résultantes dans la boucle de R1, ou figure somme égale à un pôle hors de l'axe.
+- S'ajoutent aux signaux de nul : un point du cercle « au repos » (la somme des deux maisons du thème qui l'encadrent redonne la valeur propre du point), et M16 portant la figure d'un pôle (M16 est toujours la somme des huit points du cercle).
+- « Signaux contraires » quand le « 12 » s'oppose à un verdict nul ou à un signal de nul.
+
+### Combinaisons du cercle et but en première mi-temps
+
+`K.COMBIS` liste des combinaisons de quatre maisons : l'axe angulaire 1-4-7-10, la combinaison 1-5-12-15, le témoin 3-5-11-15, chacune avec ses trois sœurs (un quart de tour, +4 maisons), et les quatre fronts. Pour chaque thème, `L.combinaisons` donne la somme des quatre maisons et dit si cette somme se trouve dans ces mêmes maisons, en base ou en résultante. `L.butMiTemps` applique la règle du propriétaire : un but en première mi-temps est annoncé quand la somme de l'axe angulaire, ou un des deux pôles, se trouve dans une maison de l'axe. La base compte dans les quatre maisons (M1, M4, M7, M10) ; la résultante ne compte qu'en M4 et M10. Une résultante en M1 ou M7 donne seulement un signal faible.
+
+Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe miroir 9-12-15-2 (l'axe angulaire tourné d'un demi-cercle), avec M12 et M2 comme maisons fortes. C'est une hypothèse tirée de la symétrie du cercle. Sur les trois matchs où la mi-temps est connue, elle n'est juste qu'une fois : elle n'est plus affichée dans le verdict, seulement dans le bloc des combinaisons.
+
+### Précision du verdict
+
+`decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre. Seuls les signaux jamais pris en défaut sur les matchs réels sont comptés : miroir au point D, poids des pôles (même front, même boucle), ancrages, bord du cercle, miroir aux points B et C, signaux « 12 ». Les signaux déjà vus du mauvais côté (somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien) sont listés comme indices faibles et ne comptent pas contre une victoire. Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
+
+### Poids des pôles en base
+
+`L.poidsPoles` additionne les forces de la figure de chaque pôle dans toutes ses positions en base. Sur les huit matchs réels où les pôles sont dans le même front ou la même boucle, R1 plus lourd que R7 annonce un match qui se décide, et R1 pas plus lourd un nul (8 sur 8). C'est un signal : il entre dans le « 12 », le « vers le nul » et la précision, pas dans les cas, parce qu'il ne traite pas R1 et R7 de la même façon.
+
+### Multiplicité des pôles
+
+`L.multiplicite` compte les positions de la figure de chaque pôle, en base et en résultante. Sur les matchs réels décidés, le pôle le plus présent est le vainqueur 9 fois sur 10 quand les deux nombres diffèrent. Elle sert de signal de camp (double chance, précision) ; elle ne dit pas si le match est nul.
+
+### Figure du lien
+
+La somme des deux pôles (`L.lien`). Elle dit quel lien les unit : Tristitia pour des miroirs, Albus ou Fortuna Major pour un même front, une figure paire dans la même boucle, impaire en boucles différentes. La page l'affiche sous le verdict, avec ses maisons en base et en résultante. Elle ne change pas le verdict.
+
+### Thème parlant
+
+Quand le binôme de M1 se trouve en M4 ou en M10 (base ou résultante), le thème est beaucoup plus parlant. Le moteur le signale (`L.binomeM1`, `decision.parlant`) et la page l'affiche sous le témoin de validation. Cela ne change pas le verdict.
+
+### Contrôle de cohérence
+
+Un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de camp (ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle) désignent l'autre pôle et qu'aucun ne le désigne lui. Le cas est alors écarté et le moteur passe au suivant ; la page le signale (« Cas écartés pour incohérence »).
+
+### Thème de vérification
+
+Les quatre maisons de l'axe angulaire (M1, M4, M7, M10) sont prises comme quatre mères d'un second thème, le thème de vérification (`decision.verification`). Il garde la même figure en M1, donc les mêmes maisons de pôles. Le moteur le construit et le lit, la page l'affiche avec un bouton pour l'ouvrir ; il ne décide rien dans le thème principal. Lu tel quel par les cas actuels, il ne retrouve le résultat réel que 8 fois sur 21 : la façon de le lire reste à définir par le propriétaire.
+
+Deux signaux viennent aussi de l'axe : les deux pôles sur l'axe (M1 et M7, ou M4 et M10) annoncent un match décidé ; la somme de l'axe égale au pôle R7 penche vers le nul.
+
+## Écrire un cas
+
 ### Ajouter un cas
 
 Dans `moteur.js`, ajouter un bloc à la liste `CAS` :

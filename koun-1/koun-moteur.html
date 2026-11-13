@@ -141,6 +141,8 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   <div class="bloc" style="margin-bottom:0"><h2 style="margin-top:0">Cercle des fronts</h2><div id="cercle"></div><div class="legende" id="cercleLegende"></div><div id="detail" class="muted" style="margin-top:10px">Touche une maison pour voir sa base, sa résultante et leurs forces.</div></div>
 </div>
 
+<div class="bloc"><h2>Thème de vérification</h2><p class="muted">Les quatre maisons de l’axe angulaire (M1, M4, M7, M10) prises comme quatre mères d’un second thème. Il est seulement lu : il ne change pas le verdict.</p><div id="verif" class="muted">Lance un thème.</div><button class="second" id="ouvrirVerif" style="max-width:340px;margin-top:10px;display:none">Ouvrir ce thème de vérification</button></div>
+
 <div class="bloc"><h2>Combinaisons du cercle</h2><p class="muted" id="combiNote">Lance un thème.</p><div class="defile"><table id="combis"></table></div></div>
 
 <div class="bloc"><h2>Le chemin des pôles</h2><p class="muted" id="cheminMode">Lance un thème.</p><div class="chemins"><div id="cheminR1"></div><div id="cheminR7"></div></div>
@@ -718,8 +720,8 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   }
 
   function theme16(L) { return L.maisons[15].base; }
-  function analyser(theme, polesForces) {
-    var L = lire(theme, polesForces), decision = null;
+  function analyser(theme, polesForces, sansVerification) {
+    var L = lire(theme, polesForces || undefined), decision = null;
     // Signaux de camp : ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle.
     var axP = L.sommes[0].pole && [1, 4, 7, 10].indexOf(L[L.sommes[0].pole].maison) >= 0 ? L.sommes[0].pole : null;
     var campSig = [['ancrages', L.stabilite.plusStable], ['axe angulaire', axP], ['miroir aux points', L.miroirPoints.favori], ['cercle', L.cercle.favori]].filter(function (x) { return x[1]; });
@@ -753,6 +755,9 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     }
     var ax = L.sommes[0], axePole = ax.pole && [1, 4, 7, 10].indexOf(L[ax.pole].maison) >= 0 ? ax.pole : null;
     if (axePole) sig.push('la somme de l’axe angulaire est le pôle ' + axePole + ', qui siège sur l’axe');
+    // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
+    var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
+    if (polesSurAxe) sig.push('les deux pôles sont sur l’axe angulaire (M' + L.R1.maison + ' et M' + L.R7.maison + ')');
     var nulProbable = [];
     if (L.poidsPoles.applicable) {
       if (L.poidsPoles.decide) sig.push('le pôle R1 pèse plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
@@ -760,6 +765,8 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     }
     if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
     if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
+    // La somme de l'axe angulaire est le pôle R7 : vers le nul (4 matchs réels sur 5).
+    if (!axePole && L.sommes[0].pole === 'R7') nulProbable.push('la somme de l’axe angulaire donne ' + L.sommes[0].figure + ', le pôle R7');
     if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
     if (L.pointsAuRepos.length) nulProbable.push(L.pointsAuRepos.map(function (x) { return 'le point ' + (x.point.length === 1 ? x.point : 'entre ' + x.maisons[0] + ' et ' + x.maisons[1]) + ' est au repos (M' + x.maisons[0] + ' + M' + x.maisons[1] + ' redonne ' + x.valeur + ')'; }).join(' ; '));
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
@@ -781,6 +788,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
       if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
       if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
+      if (!axePole && L.sommes[0].pole === 'R7') nulFaibles.push('la somme de l’axe angulaire est le pôle R7');
       function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
       if (g) {
         m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
@@ -803,6 +811,13 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     })();
     decision.butMiTemps = L.butMiTemps; decision.butMiTemps2 = L.butMiTemps2;
     decision.parlant = L.binomeM1.parlant;
+    // Thème de vérification : les quatre maisons de l'axe angulaire (M1, M4, M7, M10) prises comme quatre mères d'un second thème.
+    // Il est seulement construit et lu ; il ne décide rien dans le thème principal.
+    if (!sansVerification) {
+      var mv = [theme[1], theme[4], theme[7], theme[10]], tv = construireTheme(mv[0], mv[1], mv[2], mv[3]), av = analyser(tv, null, true);
+      decision.verification = { meres: mv, codes: mv.map(num), R1: { maison: av.lecture.R1.maison, figure: av.lecture.R1.figure }, R7: { maison: av.lecture.R7.maison, figure: av.lecture.R7.figure },
+        verdict: av.decision.verdict, cas: av.decision.phase, regle: av.decision.regle, raison: av.decision.raison, juge: tv[15], sentence: tv[16] };
+    }
     return { lecture: L, decision: decision };
   }
 
@@ -915,6 +930,13 @@ function afficherCombis(L,d){var T=$('combis');T.textContent='';var tr=el('tr');
  var q=d.butMiTemps,N={SUR:'But en première mi-temps : oui, sûr',OUI:'But en première mi-temps : oui',RESULTANTE:'But en première mi-temps : signal faible (résultante en M1 ou M7)',AUCUN:'But en première mi-temps : pas de signal'}[q.niveau];
  var q2=d.butMiTemps2,N2={SUR:'Axe miroir 9-12-15-2 (hypothèse de deuxième mi-temps, non confirmée : 1 juste sur 3) : signal',OUI:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal',RESULTANTE:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal faible',AUCUN:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : pas de signal'}[q2.niveau];
  $('combiNote').textContent=N+' — '+q.texte+'. '+N2+' — '+q2.texte+'.';}
+function afficherVerif(d){var Z=$('verif'),v=d.verification,B=$('ouvrirVerif');Z.textContent='';if(!v){B.style.display='none';return;}Z.className='';
+ var l=el('div','','Mères : ');v.meres.forEach(function(f,i){l.appendChild(el('b','',['M1','M4','M7','M10'][i]+' '+K.num(f)+' '+f));if(i<3)l.appendChild(document.createTextNode(' · '));});Z.appendChild(l);
+ Z.appendChild(el('div','','Pôles : R1 M'+v.R1.maison+' '+v.R1.figure+' · R7 M'+v.R7.maison+' '+v.R7.figure+' · juge M15 '+v.juge+' · sentence M16 '+v.sentence));
+ var vt=v.verdict==='1'?'Victoire R1':v.verdict==='2'?'Victoire R7':v.verdict==='N'?'Nul':'Aucun verdict',acc=v.verdict===d.verdict;
+ var r=el('div','',vt+' ('+v.cas+')');r.style.cssText='font-weight:700;margin-top:6px;color:'+(acc?'#86efac':'#fbbf24');Z.appendChild(r);
+ Z.appendChild(el('div','muted',v.raison));Z.appendChild(el('div','muted',acc?'Même verdict que le thème principal.':'Verdict différent du thème principal.'));
+ B.style.display='block';B.onclick=function(){$('rapide').value=v.codes.join('-');lancer(v.meres);window.scrollTo(0,0);};}
 function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : départage par les moitiés.',MEME_BOUCLE:'Pôles dans la même boucle : front contre front.',BOUCLES_DIFFERENTES:'Pôles dans des boucles différentes : figure et son binôme contre figure et son binôme.'};
  $('cheminMode').textContent=noms[L.mode];
  function cl(c){return c==='ELLE'||c==='ALLIE'?'pas bon':c==='ADVERSAIRE'?'pas mauvais':'pas';}
@@ -971,7 +993,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
  var bq=L.binomeM1;T.appendChild(el('div','etiq '+(bq.parlant?'ok':''),bq.parlant?'Thème parlant : '+bq.figure+', binôme de M1, en '+bq.positions.map(function(x){return 'M'+x.maison+' ('+x.couche+')';}).join(', '):'Binôme de M1 ('+bq.figure+') ni en M4 ni en M10 : thème moins parlant'));
- afficherChemin(L);cercle(L,null);afficherCombis(L,d);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
+ afficherChemin(L);cercle(L,null);afficherCombis(L,d);afficherVerif(d);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
 $('lancer').onclick=function(){var r=$('rapide').value.trim(),mt=$('modeTirage').value;

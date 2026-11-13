@@ -567,8 +567,8 @@
   }
 
   function theme16(L) { return L.maisons[15].base; }
-  function analyser(theme, polesForces) {
-    var L = lire(theme, polesForces), decision = null;
+  function analyser(theme, polesForces, sansVerification) {
+    var L = lire(theme, polesForces || undefined), decision = null;
     // Signaux de camp : ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle.
     var axP = L.sommes[0].pole && [1, 4, 7, 10].indexOf(L[L.sommes[0].pole].maison) >= 0 ? L.sommes[0].pole : null;
     var campSig = [['ancrages', L.stabilite.plusStable], ['axe angulaire', axP], ['miroir aux points', L.miroirPoints.favori], ['cercle', L.cercle.favori]].filter(function (x) { return x[1]; });
@@ -602,6 +602,9 @@
     }
     var ax = L.sommes[0], axePole = ax.pole && [1, 4, 7, 10].indexOf(L[ax.pole].maison) >= 0 ? ax.pole : null;
     if (axePole) sig.push('la somme de l’axe angulaire est le pôle ' + axePole + ', qui siège sur l’axe');
+    // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
+    var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
+    if (polesSurAxe) sig.push('les deux pôles sont sur l’axe angulaire (M' + L.R1.maison + ' et M' + L.R7.maison + ')');
     var nulProbable = [];
     if (L.poidsPoles.applicable) {
       if (L.poidsPoles.decide) sig.push('le pôle R1 pèse plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
@@ -609,6 +612,8 @@
     }
     if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
     if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
+    // La somme de l'axe angulaire est le pôle R7 : vers le nul (4 matchs réels sur 5).
+    if (!axePole && L.sommes[0].pole === 'R7') nulProbable.push('la somme de l’axe angulaire donne ' + L.sommes[0].figure + ', le pôle R7');
     if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
     if (L.pointsAuRepos.length) nulProbable.push(L.pointsAuRepos.map(function (x) { return 'le point ' + (x.point.length === 1 ? x.point : 'entre ' + x.maisons[0] + ' et ' + x.maisons[1]) + ' est au repos (M' + x.maisons[0] + ' + M' + x.maisons[1] + ' redonne ' + x.valeur + ')'; }).join(' ; '));
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
@@ -630,6 +635,7 @@
       if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
       if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
       if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
+      if (!axePole && L.sommes[0].pole === 'R7') nulFaibles.push('la somme de l’axe angulaire est le pôle R7');
       function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
       if (g) {
         m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
@@ -652,6 +658,13 @@
     })();
     decision.butMiTemps = L.butMiTemps; decision.butMiTemps2 = L.butMiTemps2;
     decision.parlant = L.binomeM1.parlant;
+    // Thème de vérification : les quatre maisons de l'axe angulaire (M1, M4, M7, M10) prises comme quatre mères d'un second thème.
+    // Il est seulement construit et lu ; il ne décide rien dans le thème principal.
+    if (!sansVerification) {
+      var mv = [theme[1], theme[4], theme[7], theme[10]], tv = construireTheme(mv[0], mv[1], mv[2], mv[3]), av = analyser(tv, null, true);
+      decision.verification = { meres: mv, codes: mv.map(num), R1: { maison: av.lecture.R1.maison, figure: av.lecture.R1.figure }, R7: { maison: av.lecture.R7.maison, figure: av.lecture.R7.figure },
+        verdict: av.decision.verdict, cas: av.decision.phase, regle: av.decision.regle, raison: av.decision.raison, juge: tv[15], sentence: tv[16] };
+    }
     return { lecture: L, decision: decision };
   }
 
