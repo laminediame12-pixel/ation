@@ -110,6 +110,10 @@ Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe m
 
 `decision.precision` compte les signaux qui vont dans le sens du verdict et ceux qui vont contre. Seuls les signaux jamais pris en défaut sur les matchs réels sont comptés : miroir au point D, poids des pôles (même front, même boucle), ancrages, bord du cercle, miroir aux points B et C, signaux « 12 ». Les signaux déjà vus du mauvais côté (somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien) sont listés comme indices faibles et ne comptent pas contre une victoire. Niveaux : forte (au moins deux pour, aucun contre), moyenne (un pour), sans signal, discutée (plus de pour que de contre), contredite. La page l'affiche à côté du cas.
 
+### Figure d'équilibre (même front)
+
+Quand les deux pôles sont dans le même front, leur somme est toujours une figure de Terre : Albus (4), Tristitia (8) ou Fortuna Major (12). C'est la figure d'équilibre (`decision.marches.equilibre`). Posée en base dans une maison de Terre (M4, M8 ou M12), elle va avec le nul (3 nuls réels sur 3) ; sinon le match se décide (1 match réel). Signal seulement. Voir aussi `FRONTS.md`.
+
 ### Poids des pôles en base
 
 `L.poidsPoles` additionne les forces de la figure de chaque pôle dans toutes ses positions en base. Sur les huit matchs réels où les pôles sont dans le même front ou la même boucle, R1 plus lourd que R7 annonce un match qui se décide, et R1 pas plus lourd un nul (8 sur 8). C'est un signal : il entre dans le « 12 », le « vers le nul » et la précision, pas dans les cas, parce qu'il ne traite pas R1 et R7 de la même façon.

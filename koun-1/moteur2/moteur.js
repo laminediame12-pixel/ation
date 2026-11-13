@@ -602,7 +602,7 @@
     var st = L.stabilite;
     // Toujours renseigné : écart nul = équilibre ; écart de 1 = double chance du camp le plus stable ; écart de 2 ou plus = « 12 » en plus.
     // « 12 » (pas de nul) : on réunit les signaux tirés des matchs réels. Double chance : le camp que le verdict ou la stabilité désigne.
-    var sig = [];
+    var sig = [], nulProbableAvant = [];
     if (st.fort) sig.push('écart d’ancrages de ' + st.ecart + ' (' + st.R1.length + ' pour R1, ' + st.R7.length + ' pour R7)');
     var resR1 = null, resR7 = null;
     if (L.mode === 'BOUCLES_DIFFERENTES') {
@@ -612,10 +612,19 @@
     }
     var ax = L.sommes[0], axePole = ax.pole && [1, 4, 7, 10].indexOf(L[ax.pole].maison) >= 0 ? ax.pole : null;
     if (axePole) sig.push('la somme de l’axe angulaire est le pôle ' + axePole + ', qui siège sur l’axe');
+    // Même front : la somme des deux pôles est une figure de Terre (4, 8 ou 12), la figure d'équilibre.
+    // Posée en base dans une maison de Terre (M4, M8, M12), elle tient le nul (3 nuls réels sur 3) ; sinon le match se décide (1 sur 1).
+    var equilibre = null;
+    if (L.mode === 'MEME_FRONT' && L.R1.figure !== L.R7.figure) {
+      var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h === 4 || h === 8 || h === 12; });
+      equilibre = { figure: fe, maisons: he, posee: he.length > 0 };
+      if (equilibre.posee) nulProbableAvant.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) est en base en M' + he.join(', M') + ', maison de Terre');
+      else sig.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) n’est en base dans aucune maison de Terre (M4, M8, M12)');
+    }
     // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
     var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
     if (polesSurAxe) sig.push('les deux pôles sont sur l’axe angulaire (M' + L.R1.maison + ' et M' + L.R7.maison + ')');
-    var nulProbable = [];
+    var nulProbable = nulProbableAvant;
     if (L.poidsPoles.applicable) {
       if (L.poidsPoles.decide) sig.push('le pôle R1 pèse plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
       else nulProbable.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
@@ -629,7 +638,7 @@
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
     var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori || L.multiplicite.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      poidsPoles: L.poidsPoles, multiplicite: L.multiplicite, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      equilibre: equilibre, poidsPoles: L.poidsPoles, multiplicite: L.multiplicite, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
@@ -641,6 +650,7 @@
       var nulFiables = [], nulFaibles = [];
       if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFaibles.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
       if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
+      if (equilibre && equilibre.posee) nulFiables.push('la figure d’équilibre ' + equilibre.figure + ' est en base en M' + equilibre.maisons.join(', M'));
       if (L.poidsPoles.applicable && !L.poidsPoles.decide) nulFiables.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
       if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
       if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
