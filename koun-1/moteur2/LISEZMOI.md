@@ -75,16 +75,17 @@ Quand une famille dit « un seul pôle remplit ceci », le cas ne tranche pas si
 | CL-1 | Pôle chez lui | Pôles dans la même boucle, fronts différents. Un seul pôle est dans sa maison de repos (non annulé, pas un simple reflet de Populus) : il gagne. | 2 justes |
 | CL-2 | Pôle chez lui | Pôles dans des boucles différentes. On compare R1 et son binôme à R7 et son binôme : la paire qui a le plus de figures chez elles (sans les figures annulées ni les reflets) gagne. La victoire est « assurée » si une figure somme du vainqueur est sur l’axe angulaire en base, sans somme adverse sur l’axe ni somme égale à un pôle. | 3 justes |
 | PR-6 | Front Sud ou Nord au repos | Pôles dans la même boucle ou le même front. Un seul pôle a une figure Sud ou Nord de son front (autre que lui) dans sa maison de repos, reflets de Populus exclus : ce pôle gagne. | aucun |
+| TM-1 | Témoins | **Le cas du nul en boucles différentes.** Sans figure au repos décisive, les deux témoins (M13 et M14) sont deux figures différentes de la même boucle, donc du même camp : nul. Témoins partagés entre les deux camps, ou identiques : le match se décide. | 3 justes (le signal est juste sur les 15 matchs réels en boucles différentes) |
 | DR-1 | Dernier recours | La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne. | 1 juste |
-| DR-2 | Dernier recours | La somme de l’axe angulaire ou la somme 3-5-11-15 est elle-même un pôle : le thème se referme sur ce pôle, nul. | 3 justes |
-| DR-3 | Dernier recours | La somme au point D du cercle (M4 + M5) est le miroir d’un pôle : nul. | aucun |
+| DR-2 | Dernier recours | (Même boucle seulement.) La somme de l’axe angulaire ou la somme 3-5-11-15 est elle-même un pôle : le thème se referme sur ce pôle, nul. | 3 justes |
+| DR-3 | Dernier recours | (Même boucle seulement.) La somme au point D du cercle (M4 + M5) est le miroir d’un pôle : nul. | aucun |
 | DR-4 | Dernier recours | Pôles dans la même boucle, à six figures d’écart (l’un attaque une figure qui attaque l’autre) : nul. | aucun |
 | DR-5 | Dernier recours | Pôles dans la même boucle, et rien ne les a départagés : nul. | 1 juste, 1 faux (13·12·8·15) |
 | DR-6 | Dernier recours | Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne. | 1 juste |
 | DR-7 | Dernier recours | Boucles différentes, ancrages égaux. La somme au point B (M8 + M9) ou C (M12 + M13) est le miroir d’un seul pôle : ce pôle gagne. | aucun |
 | DR-8 | Dernier recours | Boucles différentes, ancrages égaux. Les signaux du cercle (pôle au bord d’un point, pôle en amont) désignent un seul pôle : il gagne. | aucun |
-| DR-9 | Dernier recours | Boucles différentes, ancrages égaux, et les deux signaux du cercle désignent des pôles différents : nul. | aucun |
-| DR-10 | Dernier recours | Rien ne départage les deux pôles : les ancrages s’équilibrent, nul. | aucun |
+| DR-9 | Dernier recours | Boucles différentes, témoins partagés ou identiques, et rien d'autre n'a désigné un pôle : celui qui pèse le plus en base gagne ; à poids égal, le plus présent. | aucun |
+| DR-10 | Dernier recours | Égalité parfaite des deux pôles et rien ne les départage : nul. | aucun |
 
 ## Les signaux
 
@@ -112,6 +113,10 @@ Pour la deuxième mi-temps, `L.butMiTemps2` applique la même lecture à l'axe m
 ### Figure d'équilibre (même front)
 
 Quand les deux pôles sont dans le même front, leur somme est toujours une figure de Terre : Albus (4), Tristitia (8) ou Fortuna Major (12) ; et 4 + 8 + 12 donne Populus (16). Le même front n'a qu'un seul cas de nul, MF-3 : aucune figure au repos décisive pour un pôle, et la figure d'équilibre posée en base dans une maison d'équilibre (M4, M8, M12, M16) ou sur l'axe angulaire (M1, M4, M7, M10). Sinon le match se décide (MF-1, MF-2, MF-4). Voir aussi `FRONTS.md`.
+
+### Les témoins (boucles différentes)
+
+M13 est la somme des mères, M14 la somme des filles. En boucles différentes, chaque témoin appartient à un camp, celui de sa boucle (`L.temoins`). Sur les 15 matchs réels de ce mode : les 4 nuls ont deux témoins différents dans le même camp ; les 11 victoires ont les témoins partagés entre les deux camps (8) ou identiques (3). Cela revient à lire le juge : M15 est une figure paire autre que Populus dans les nuls, impaire ou Populus dans les victoires. C'est le cas TM-1.
 
 ### Poids des pôles en base
 

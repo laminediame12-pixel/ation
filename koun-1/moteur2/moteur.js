@@ -217,6 +217,15 @@
       var a = compte(R1), b = compte(R7);
       return { R1: a, R7: b, favori: a.total > b.total ? 'R1' : b.total > a.total ? 'R7' : null };
     })();
+    // Les deux témoins : M13 (somme des mères) et M14 (somme des filles). En boucles différentes, chaque témoin appartient à un camp (sa boucle).
+    var temoins = (function () {
+      var a = theme[13], b = theme[14], o = { m13: a, m14: b, campM13: null, campM14: null, etat: null };
+      if (mode !== 'BOUCLES_DIFFERENTES') return o;
+      function c(f) { return num(f) % 2 === num(R1.figure) % 2 ? 'R1' : 'R7'; }
+      o.campM13 = c(a); o.campM14 = c(b);
+      o.etat = a === b ? 'IDENTIQUES' : o.campM13 === o.campM14 ? 'MEME_CAMP' : 'PARTAGES';
+      return o;
+    })();
     // Figure du lien : la somme des deux pôles. Elle dit quel lien les unit (miroir : Tristitia ; même front : Albus ou Fortuna Major ; etc.).
     var lien = (function () {
       var f = additionner(R1.figure, R7.figure), pos = positions(f);
@@ -297,7 +306,7 @@
       return l;
     }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, poidsPoles: poidsPoles, multiplicite: multiplicite, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
+    return { chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, poidsPoles: poidsPoles, multiplicite: multiplicite, temoins: temoins, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
       theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
       verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
       presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
@@ -518,6 +527,13 @@
         function auRepos(c) { return c.frontDirect.filter(function (f) { var pt = CARDINAL[num(f)]; return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !(!L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus' && c.front !== 'D'); }); }
         return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) { var f = auRepos(c)[0]; return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.'; });
       } },
+    // ───────── Famille « Témoins » : le cas du nul en boucles différentes ─────────
+    { id: 'TM-1', famille: 'Témoins', titre: 'Le nul : les deux témoins dans le même camp', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans des boucles différentes, sans figure au repos décisive pour l’un des deux. Les deux témoins (M13 et M14) sont deux figures différentes de la même boucle, donc du même camp : nul. Si les témoins sont partagés entre les deux camps, ou s’ils sont la même figure, le match se décide.',
+      condition: function (L) {
+        var t = L.temoins; if (t.etat !== 'MEME_CAMP') return null;
+        return N('Nul : boucles différentes, aucune figure au repos n’est décisive. Les deux témoins, ' + t.m13 + ' en M13 et ' + t.m14 + ' en M14, sont dans le même camp (' + t.campM13 + ').');
+      } },
     // ───────── Famille « Dernier recours » : lue quand rien d'autre n'a tranché ─────────
     { id: 'DR-1', famille: 'Dernier recours', titre: 'L’axe angulaire désigne un pôle', statut: 'EN_ESSAI',
       enonce: 'La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne.',
@@ -532,12 +548,13 @@
     { id: 'DR-2', famille: 'Dernier recours', titre: 'Une figure somme est un pôle', statut: 'EN_ESSAI',
       enonce: 'La somme de l’axe angulaire ou la somme 3-5-11-15 est elle-même un pôle : le thème se referme sur ce pôle, nul.',
       condition: function (L) {
+        if (L.mode === 'BOUCLES_DIFFERENTES') return null;     // en boucles différentes, le nul est le cas TM-1
         var sp = L.sommes.filter(function (x) { return x.pole; }); if (!sp.length) return null;
         return N('Nul : ' + sp.map(function (x) { return 'la ' + x.nom + ' donne ' + x.figure + ', qui est le pôle ' + x.pole; }).join(' ; ') + '. Le thème se referme sur ce pôle.');
       } },
     { id: 'DR-3', famille: 'Dernier recours', titre: 'Le miroir d’un pôle au point D', statut: 'EN_ESSAI',
       enonce: 'La somme au point D du cercle (M4 + M5) est le miroir d’un pôle : nul.',
-      condition: function (L) { return L.miroirPoints.nul ? N('Nul : ' + L.miroirPoints.texte + '. Au point D, le miroir tient le thème en équilibre.') : null; } },
+      condition: function (L) { return L.mode !== 'BOUCLES_DIFFERENTES' && L.miroirPoints.nul ? N('Nul : ' + L.miroirPoints.texte + '. Au point D, le miroir tient le thème en équilibre.') : null; } },
     { id: 'DR-4', famille: 'Dernier recours', titre: 'Même boucle : antagoniste de l’antagoniste', statut: 'EN_ESSAI',
       enonce: 'Pôles dans la même boucle, à six figures d’écart (l’un attaque une figure qui attaque l’autre) : nul.',
       condition: function (L) {
@@ -567,12 +584,16 @@
     { id: 'DR-8', famille: 'Dernier recours', titre: 'Le favori du cercle', statut: 'EN_ESSAI',
       enonce: 'Boucles différentes, ancrages égaux. Les signaux du cercle (pôle au bord d’un point, pôle en amont) désignent un seul pôle : il gagne.',
       condition: function (L) { var ce = L.cercle; return ce.favori ? V(L[ce.favori], L, 'Victoire ' + ce.favori + ' par le cercle : ancrages égaux, et ' + ce.signaux.join(' ; ') + '.') : null; } },
-    { id: 'DR-9', famille: 'Dernier recours', titre: 'Le cercle se contredit', statut: 'EN_ESSAI',
-      enonce: 'Boucles différentes, ancrages égaux, et les deux signaux du cercle désignent des pôles différents : nul.',
-      condition: function (L) { var ce = L.cercle; return ce.conflit ? N('Nul : ancrages égaux, et le cercle se contredit (' + ce.signaux.join(' ; ') + ').') : null; } },
-    { id: 'DR-10', famille: 'Dernier recours', titre: 'Équilibre des ancrages', statut: 'EN_ESSAI',
-      enonce: 'Rien ne départage les deux pôles : les ancrages s’équilibrent, nul.',
-      condition: function (L) { return N('Nul, les ancrages s’équilibrent : ' + detailAncres(L)); } }
+    { id: 'DR-9', famille: 'Dernier recours', titre: 'Le pôle le plus lourd', statut: 'EN_ESSAI',
+      enonce: 'Boucles différentes, témoins partagés ou identiques : le match se décide. Si rien d’autre n’a désigné un pôle, celui qui pèse le plus en base gagne ; à poids égal, le plus présent dans le thème.',
+      condition: function (L) {
+        var p = L.poidsPoles, m = L.multiplicite, g = p.R1 > p.R7 ? L.R1 : p.R7 > p.R1 ? L.R7 : m.R1.total > m.R7.total ? L.R1 : m.R7.total > m.R1.total ? L.R7 : null;
+        if (!g) return null;
+        return V(g, L, 'Victoire ' + g.camp + ' : le match se décide (témoins ' + (L.temoins.etat === 'IDENTIQUES' ? 'identiques' : 'partagés entre les deux camps') + ') et rien d’autre ne désigne un pôle. ' + (p.R1 !== p.R7 ? 'Poids en base : R1 ' + p.R1 + ', R7 ' + p.R7 + '.' : 'Poids égaux ; présence dans le thème : R1 ' + m.R1.total + ', R7 ' + m.R7.total + '.'));
+      } },
+    { id: 'DR-10', famille: 'Dernier recours', titre: 'Égalité parfaite', statut: 'EN_ESSAI',
+      enonce: 'Les deux pôles sont à égalité parfaite (même poids en base, même présence) et rien ne les départage : nul.',
+      condition: function (L) { return N('Nul : les deux pôles sont à égalité parfaite et rien ne les départage. ' + detailAncres(L)); } }
   ];
   // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.
   function unSeul(L, ok, pourquoi) {
@@ -631,6 +652,9 @@
     var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
     if (polesSurAxe) sig.push('les deux pôles sont sur l’axe angulaire (M' + L.R1.maison + ' et M' + L.R7.maison + ')');
     var nulProbable = nulProbableAvant;
+    if (L.temoins.etat === 'MEME_CAMP') nulProbable.push('les deux témoins (' + L.temoins.m13 + ', ' + L.temoins.m14 + ') sont dans le même camp');
+    else if (L.temoins.etat === 'PARTAGES') sig.push('les deux témoins sont partagés entre les deux camps (' + L.temoins.m13 + ' pour ' + L.temoins.campM13 + ', ' + L.temoins.m14 + ' pour ' + L.temoins.campM14 + ')');
+    else if (L.temoins.etat === 'IDENTIQUES') sig.push('les deux témoins sont la même figure (' + L.temoins.m13 + ')');
     if (L.poidsPoles.applicable) {
       if (L.poidsPoles.decide) sig.push('le pôle R1 pèse plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
       else nulProbable.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
@@ -644,7 +668,7 @@
     if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
     var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori || L.multiplicite.favori);
     decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      equilibre: equilibre, poidsPoles: L.poidsPoles, multiplicite: L.multiplicite, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
+      temoins: L.temoins, equilibre: equilibre, poidsPoles: L.poidsPoles, multiplicite: L.multiplicite, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
       camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
       conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
       niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
@@ -656,6 +680,7 @@
       var nulFiables = [], nulFaibles = [];
       if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFaibles.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
       if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
+      if (L.temoins.etat === 'MEME_CAMP') nulFiables.push('les deux témoins sont dans le même camp');
       if (equilibre && equilibre.posee) nulFiables.push('la figure d’équilibre ' + equilibre.figure + ' est en base en M' + equilibre.maisons.join(', M'));
       if (L.poidsPoles.applicable && !L.poidsPoles.decide) nulFiables.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
       if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
