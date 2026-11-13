@@ -133,6 +133,13 @@ Un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de
 
 Les quatre maisons de l'axe angulaire (M1, M4, M7, M10) sont prises comme quatre mères d'un second thème, le thème de vérification (`decision.verification`). Il garde la même figure en M1, donc les mêmes maisons de pôles. Le moteur le construit et le lit, la page l'affiche avec un bouton pour l'ouvrir ; il ne décide rien dans le thème principal. Lu tel quel par les cas actuels, il ne retrouve le résultat réel que 8 fois sur 21 : la façon de le lire reste à définir par le propriétaire.
 
+**Son rapport avec le cercle et le thème principal.**
+- Ses quatre mères sont les maisons M1, M4, M7, M10 du thème principal : sur le cercle, on les obtient en avançant de trois maisons, c'est la chaîne d'attaque qui part de M1. Elles bordent quatre points différents du cercle (A, D, le milieu des filles, le milieu des nièces).
+- Son premier témoin (M13) est toujours la somme de l'axe angulaire du thème principal.
+- Il garde la figure de M1, donc les mêmes maisons de pôles ; les figures qui occupent ces maisons peuvent changer.
+
+**La validation des figures au repos.** Une figure dans sa maison de repos dans le thème principal est regardée dans le thème de vérification (`decision.verification.validations`) : validée si elle y est aussi au repos, confirmée si elle y est en base, faible si elle n'y est qu'en résultante, non validée si elle en est absente. Les deux pôles sont regardés de la même façon. Sur les matchs réels, une figure au repos dans les deux thèmes appartient au camp du vainqueur 4 fois sur 5 quand le match se décide.
+
 Deux signaux viennent aussi de l'axe : les deux pôles sur l'axe (M1 et M7, ou M4 et M10) annoncent un match décidé ; la somme de l'axe égale au pôle R7 penche vers le nul.
 
 ## Écrire un cas

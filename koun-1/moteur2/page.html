@@ -251,12 +251,20 @@ function afficherCombis(L,d){var T=$('combis');T.textContent='';var tr=el('tr');
  var q=d.butMiTemps,N={SUR:'But en première mi-temps : oui, sûr',OUI:'But en première mi-temps : oui',RESULTANTE:'But en première mi-temps : signal faible (résultante en M1 ou M7)',AUCUN:'But en première mi-temps : pas de signal'}[q.niveau];
  var q2=d.butMiTemps2,N2={SUR:'Axe miroir 9-12-15-2 (hypothèse de deuxième mi-temps, non confirmée : 1 juste sur 3) : signal',OUI:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal',RESULTANTE:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : signal faible',AUCUN:'Axe miroir 9-12-15-2 (hypothèse non confirmée) : pas de signal'}[q2.niveau];
  $('combiNote').textContent=N+' — '+q.texte+'. '+N2+' — '+q2.texte+'.';}
-function afficherVerif(d){var Z=$('verif'),v=d.verification,B=$('ouvrirVerif');Z.textContent='';if(!v){B.style.display='none';return;}Z.className='';
+function afficherVerif(d,L0){var Z=$('verif'),v=d.verification,B=$('ouvrirVerif');Z.textContent='';if(!v){B.style.display='none';return;}Z.className='';
  var l=el('div','','Mères : ');v.meres.forEach(function(f,i){l.appendChild(el('b','',['M1','M4','M7','M10'][i]+' '+K.num(f)+' '+f));if(i<3)l.appendChild(document.createTextNode(' · '));});Z.appendChild(l);
  Z.appendChild(el('div','','Pôles : R1 M'+v.R1.maison+' '+v.R1.figure+' · R7 M'+v.R7.maison+' '+v.R7.figure+' · juge M15 '+v.juge+' · sentence M16 '+v.sentence));
  var vt=v.verdict==='1'?'Victoire R1':v.verdict==='2'?'Victoire R7':v.verdict==='N'?'Nul':'Aucun verdict',acc=v.verdict===d.verdict;
  var r=el('div','',vt+' ('+v.cas+')');r.style.cssText='font-weight:700;margin-top:6px;color:'+(acc?'#86efac':'#fbbf24');Z.appendChild(r);
  Z.appendChild(el('div','muted',v.raison));Z.appendChild(el('div','muted',acc?'Même verdict que le thème principal.':'Verdict différent du thème principal.'));
+ var NE={AU_REPOS:['validée : au repos aussi','#86efac'],EN_BASE:['confirmée : présente en base','#bfdbfe'],RESULTANTE:['faible : en résultante seulement','#fbbf24'],ABSENTE:['non validée : absente','#fca5a5']};
+ function ou(e){return e.positions.length?' ('+e.positions.map(function(x){return 'M'+x.maison+(x.couche==='base'?'':' rés.');}).join(', ')+')':'';}
+ Z.appendChild(el('div','','Figures au repos du thème principal, vues dans la vérification :')).style.cssText='margin-top:10px;font-weight:700';
+ if(!v.validations.length)Z.appendChild(el('div','muted','Aucune figure n’est au repos dans le thème principal.'));
+ v.validations.forEach(function(x){var r=el('div','',K.num(x.figure)+' '+x.figure+' ('+x.camp+', au repos en '+x.principal+') → ');var t=el('span','',NE[x.etat][0]+ou(x));t.style.color=NE[x.etat][1];r.appendChild(t);Z.appendChild(r);});
+ Z.appendChild(el('div','','Les pôles du thème principal, vus dans la vérification :')).style.cssText='margin-top:8px;font-weight:700';
+ [['R1',L0.R1.figure,v.poles.R1,v.poles.memeR1],['R7',L0.R7.figure,v.poles.R7,v.poles.memeR7]].forEach(function(q){var r=el('div','',q[0]+' '+q[1]+' → ');var t=el('span','',NE[q[2].etat][0].replace('validée','validé').replace('confirmée','confirmé').replace('présente','présent').replace('absente','absent')+ou(q[2])+(q[3]?' · reste le pôle '+q[0]:''));t.style.color=NE[q[2].etat][1];r.appendChild(t);Z.appendChild(r);});
+ Z.appendChild(el('div','muted','Le premier témoin (M13) du thème de vérification est '+v.temoinDroit+' : c’est toujours la somme de l’axe angulaire du thème principal.'));
  B.style.display='block';B.onclick=function(){$('rapide').value=v.codes.join('-');lancer(v.meres);window.scrollTo(0,0);};}
 function afficherChemin(L){var noms={MEME_FRONT:'Pôles dans le même front : départage par les moitiés.',MEME_BOUCLE:'Pôles dans la même boucle : front contre front.',BOUCLES_DIFFERENTES:'Pôles dans des boucles différentes : figure et son binôme contre figure et son binôme.'};
  $('cheminMode').textContent=noms[L.mode];
@@ -314,7 +322,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
   r.appendChild(g);r.appendChild(el('span',l.present?'oui':'non',l.present?'✓':'✗'));T.appendChild(r);});
  T.appendChild(el('div','etiq '+(W.valide?'ok':'essai'),W.valide?'Thème validé : 4/4':'Témoin : '+W.presents+'/4'));
  var bq=L.binomeM1;T.appendChild(el('div','etiq '+(bq.parlant?'ok':''),bq.parlant?'Thème parlant : '+bq.figure+', binôme de M1, en '+bq.positions.map(function(x){return 'M'+x.maison+' ('+x.couche+')';}).join(', '):'Binôme de M1 ('+bq.figure+') ni en M4 ni en M10 : thème moins parlant'));
- afficherChemin(L);cercle(L,null);afficherCombis(L,d);afficherVerif(d);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
+ afficherChemin(L);cercle(L,null);afficherCombis(L,d);afficherVerif(d,L);$('penalisees').textContent=L.penalisees.length?'💔 Pénalisées (maison de leur antagoniste, force 0 %) : '+L.penalisees.map(function(x){return x.figure+' en M'+x.maison+(x.couche==='base'?'':' (résultante)');}).join(' · '):'Aucune figure dans la maison de son antagoniste.';
  bouclier(L);$('detail').className='muted';$('detail').textContent='Touche une maison pour voir sa base, sa résultante et leurs forces.';}
 function meres(){return ['m1','m2','m3','m4'].map(function(id){return $(id).value;});}
 $('lancer').onclick=function(){var r=$('rapide').value.trim(),mt=$('modeTirage').value;

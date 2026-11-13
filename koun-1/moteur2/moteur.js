@@ -662,8 +662,24 @@
     // Il est seulement construit et lu ; il ne décide rien dans le thème principal.
     if (!sansVerification) {
       var mv = [theme[1], theme[4], theme[7], theme[10]], tv = construireTheme(mv[0], mv[1], mv[2], mv[3]), av = analyser(tv, null, true);
-      decision.verification = { meres: mv, codes: mv.map(num), R1: { maison: av.lecture.R1.maison, figure: av.lecture.R1.figure }, R7: { maison: av.lecture.R7.maison, figure: av.lecture.R7.figure },
-        verdict: av.decision.verdict, cas: av.decision.phase, regle: av.decision.regle, raison: av.decision.raison, juge: tv[15], sentence: tv[16] };
+      var Lv = av.lecture;
+      // Validation : ce que devient, dans le thème de vérification, chaque figure qui est dans sa maison de repos dans le thème principal, et chaque pôle.
+      function etatVerif(f) {
+        var p = Lv.positions(f), b = p.filter(function (x) { return x.couche === 'base'; });
+        return { positions: p.map(function (x) { return { maison: x.maison, couche: x.couche === 'base' ? 'base' : 'résultante' }; }),
+          etat: Lv.chezElle(f) ? 'AU_REPOS' : b.length ? 'EN_BASE' : p.length ? 'RESULTANTE' : 'ABSENTE' };
+      }
+      function campDe(f) {
+        if (f === L.R1.figure) return 'pôle R1'; if (f === L.R7.figure) return 'pôle R7';
+        if (L.mode === 'BOUCLES_DIFFERENTES') return num(f) % 2 === num(L.R1.figure) % 2 ? 'camp R1' : 'camp R7';
+        return frontDe(f) === L.R1.front && frontDe(f) === L.R7.front ? 'front commun' : frontDe(f) === L.R1.front ? 'front R1' : frontDe(f) === L.R7.front ? 'front R7' : 'autre front';
+      }
+      var validations = FIG.filter(function (f) { return L.chezElle(f); }).map(function (f) { var e = etatVerif(f); return { figure: f, camp: campDe(f), principal: L.chezElleEnBase(f) ? 'base' : 'résultante', etat: e.etat, positions: e.positions }; });
+      decision.verification = { meres: mv, codes: mv.map(num), R1: { maison: Lv.R1.maison, figure: Lv.R1.figure }, R7: { maison: Lv.R7.maison, figure: Lv.R7.figure },
+        verdict: av.decision.verdict, cas: av.decision.phase, regle: av.decision.regle, raison: av.decision.raison, juge: tv[15], sentence: tv[16],
+        temoinDroit: tv[13], sommeAxe: L.sommes[0].figure,       // M13 du thème de vérification = somme de l'axe du thème principal, toujours
+        validations: validations, valideesAuRepos: validations.filter(function (x) { return x.etat === 'AU_REPOS'; }),
+        poles: { R1: etatVerif(L.R1.figure), R7: etatVerif(L.R7.figure), memeR1: Lv.R1.figure === L.R1.figure, memeR7: Lv.R7.figure === L.R7.figure } };
     }
     return { lecture: L, decision: decision };
   }
