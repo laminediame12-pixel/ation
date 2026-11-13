@@ -335,224 +335,228 @@
   }
 
   // ── Étage 2 : les cas ──────────────────────────────────────────────────
-  // Un cas = { id, titre, statut, condition(lecture) }. La condition rend null, ou
-  // { verdict: '1' | '2' | 'N', assuree: bool, raison: texte }. Le premier cas qui s'applique tranche.
+  // Un cas simple = { id, famille, titre, statut, enonce, condition(lecture) } : UNE condition, UN résultat.
+  // La condition rend null, ou { verdict: '1' | '2' | 'N', assuree: bool, raison: texte }. Les cas sont lus dans l'ordre ; le premier qui s'applique tranche.
+  // Les cas d'une même famille se suivent : chacun suppose que les précédents de sa famille ne se sont pas appliqués.
+  function partenaireMoitie(f) { var n = num(f); return n <= 8 ? fig(n <= 4 ? n + 4 : n - 4) : fig(n <= 12 ? n + 4 : n - 4); }
+  function N(raison) { return { verdict: 'N', assuree: false, raison: raison }; }
+  function V(c, L, raison, assuree) { return { verdict: c === L.R1 ? '1' : '2', assuree: !!assuree, raison: raison }; }
+  function meilleureForce(L, c) { var m = 0; L.positions(c.figure).forEach(function (x) { var f = x.force === null ? 100 : x.force; if (f > m) m = f; }); return m; }
+  function forceChezSoi(L, c) { var f = L.force(c.figure, c.maison); return f === null ? 100 : f; }
+  function attaquantDirect(L) { var d = ((num(L.R7.figure) - num(L.R1.figure)) % 16 + 16) % 16; return d === 3 ? L.R1 : d === 13 ? L.R7 : null; }
+  function autrePole(L, c) { return c === L.R1 ? L.R7 : L.R1; }
+  function ancresBoucle(L, c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
+  function ditAncres(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
+  function detailAncres(L) { return 'ancrages en base, non annulés : boucle de R1 ' + ditAncres(ancresBoucle(L, L.R1)) + ' ; boucle de R7 ' + ditAncres(ancresBoucle(L, L.R7)) + '.'; }
+  // Paire du pôle (lui et son binôme) : figures chez elles, sans celles annulées par leur attaquant au repos ni les reflets.
+  function paireDe(c) { return [c.figure, fig(num(c.figure) + 2)]; }
+  function paireChezElle(L, c) {
+    var adv = autrePole(L, c);
+    return paireDe(c).filter(function (f) {
+      var refletAdverse = !L.chezElleEnBase(f) && adv.figure === 'Populus' && L.maisons[num(f) - 1].base === 'Populus' && adv.maison === num(f);
+      var refletPole = f === c.figure && f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus';
+      return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !refletAdverse && !refletPole;
+    });
+  }
+  function poleVraimentChezLui(L, c) { var f = c.figure; return L.chezElle(f) && !L.annuleePar(f) && !(f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus'); }
+
   var CAS = [
-    {
-      id: 'CAS-001', titre: 'Même front : départage par les moitiés', statut: 'REGLE_CONFIRMEE',
-      enonce: 'R1 et R7 dans le même front. D’abord les antagonistes : si l’antagoniste d’un seul pôle est dans sa propre maison de repos, ce pôle est dominé et l’autre gagne, même si les pôles sont miroirs ; si les deux antagonistes sont chez eux, nul. Ensuite les moitiés. Chaque front se partage en deux moitiés (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16). Si un seul des deux pôles a son partenaire de moitié dans sa propre maison de repos (base ou résultante), ce pôle gagne. Sinon — les deux, aucun, ou pôles de la même moitié — : nul.',
+    // ───────── Famille « Même front » ─────────
+    { id: 'MF-1', famille: 'Même front', titre: 'Les deux antagonistes chez eux', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans le même front, et l’antagoniste de chaque pôle est dans sa propre maison de repos : nul.',
+      condition: function (L) {
+        if (L.R1.front !== L.R7.front || !(L.chezElle(L.R1.antagoniste) && L.chezElle(L.R7.antagoniste))) return null;
+        return N('Nul : même front ' + L.R1.front + ', les deux pôles sont sous le contrôle de leur antagoniste, chacun dans sa maison de repos (' + L.R1.antagoniste + ' en M' + num(L.R1.antagoniste) + ', ' + L.R7.antagoniste + ' en M' + num(L.R7.antagoniste) + ').');
+      } },
+    { id: 'MF-2', famille: 'Même front', titre: 'Un seul antagoniste chez lui', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : ce pôle est dominé, l’autre gagne, même entre miroirs.',
+      condition: function (L) {
+        var a1 = L.chezElle(L.R1.antagoniste), a7 = L.chezElle(L.R7.antagoniste);
+        if (L.R1.front !== L.R7.front || a1 === a7) return null;
+        var perd = a1 ? L.R1 : L.R7, gagne = a1 ? L.R7 : L.R1;
+        function res(c) { var r = L.maisons[c.maison - 1].resultante; return r ? ' (résultante de M' + c.maison + ' : ' + r + ')' : ''; }
+        return V(gagne, L, 'Victoire ' + gagne.camp + ' : même front ' + gagne.front + ', mais l’antagoniste de ' + perd.camp + ' ' + perd.figure + ', ' + perd.antagoniste + ', est chez lui en M' + num(perd.antagoniste) + ' ; celui de ' + gagne.figure + ' ne l’est pas. ' + gagne.camp + ' ' + gagne.figure + res(gagne) + ' ; ' + perd.camp + ' ' + perd.figure + res(perd) + '.');
+      } },
+    { id: 'MF-3', famille: 'Même front', titre: 'Même moitié du front', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans le même front et dans la même moitié (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16) : nul.',
+      condition: function (L) {
+        if (L.R1.front !== L.R7.front || !(L.R1.figure === L.R7.figure || partenaireMoitie(L.R1.figure) === L.R7.figure)) return null;
+        return N('Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans la même moitié du front ' + L.R1.front + '.');
+      } },
+    { id: 'MF-4', famille: 'Même front', titre: 'Un seul partenaire de moitié chez lui', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans le même front, moitiés différentes, et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : ce pôle gagne.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
-        function partenaire(f) { var n = num(f); return n <= 8 ? fig(n <= 4 ? n + 4 : n - 4) : fig(n <= 12 ? n + 4 : n - 4); }
-        var p1 = partenaire(L.R1.figure), p7 = partenaire(L.R7.figure);
-        // D'abord les antagonistes : si l'antagoniste d'un seul pôle est chez lui (dans sa propre maison de repos), ce pôle est dominé
-        // et le verdict est déséquilibré, même si les pôles sont miroirs ou de la même moitié. Si les deux le sont, chacun est sous contrôle : nul.
-        var a1 = L.chezElle(L.R1.antagoniste), a7 = L.chezElle(L.R7.antagoniste);
-        function res(c) { var r = L.maisons[c.maison - 1].resultante; return r ? ' (résultante de M' + c.maison + ' : ' + r + ')' : ''; }
-        if (a1 && a7) return { verdict: 'N', assuree: false, raison: 'Nul : même front ' + L.R1.front + ', les deux pôles sont sous le contrôle de leur antagoniste, chacun dans sa maison de repos (' + L.R1.antagoniste + ' en M' + num(L.R1.antagoniste) + ', ' + L.R7.antagoniste + ' en M' + num(L.R7.antagoniste) + ').' };
-        if (a1 !== a7) {
-          var perd = a1 ? L.R1 : L.R7, gagne = a1 ? L.R7 : L.R1;
-          return { verdict: a1 ? '2' : '1', assuree: false, raison: 'Victoire ' + gagne.camp + ' : même front ' + gagne.front + ', mais l’antagoniste de ' + perd.camp + ' ' + perd.figure + ', ' + perd.antagoniste + ', est chez lui en M' + num(perd.antagoniste) + ' ; celui de ' + gagne.figure + ' ne l’est pas. ' + gagne.camp + ' ' + gagne.figure + res(gagne) + ' ; ' + perd.camp + ' ' + perd.figure + res(perd) + '.' };
-        }
-        if (L.R1.figure === L.R7.figure || p1 === L.R7.figure)
-          return { verdict: 'N', assuree: false, raison: 'Nul : R1 ' + L.R1.figure + ' et R7 ' + L.R7.figure + ' sont dans la même moitié du front ' + L.R1.front + '.' };
-        var a = L.chezElle(p1), b = L.chezElle(p7);
-        if (a !== b) {
-          var g = a ? L.R1 : L.R7, pg = a ? p1 : p7;
-          return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + g.camp + ' : même front ' + g.front + ', et seul le partenaire de ' + g.figure + ', ' + pg + ', est dans sa maison de repos (M' + num(pg) + ').' };
-        }
-        return { verdict: 'N', assuree: false, raison: 'Nul : même front ' + L.R1.front + ', ' + (a ? 'les deux partenaires (' + p1 + ' et ' + p7 + ') sont dans leur maison de repos.' : 'aucun des deux partenaires (' + p1 + ', ' + p7 + ') n’est dans sa maison de repos.') };
-      }
-    },
-    {
-      id: 'CAS-010', titre: 'Pôle sans force : éteint, attaqué sans défense, ou dans la maison de son antagoniste', statut: 'EN_ESSAI',
-      enonce: 'D’abord : un pôle dont la figure ne dépasse 1 % dans aucune position est éteint ; si un seul l’est, l’autre gagne. Puis : un pôle attaque l’autre directement, l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne : l’attaquant gagne. Ensuite : un pôle dans la maison de son antagoniste est pénalisé (0 %), sauf s’il est fort ailleurs en base (au moins 70 %) ; si un seul est pénalisé, l’autre gagne.',
+        var p1 = partenaireMoitie(L.R1.figure), p7 = partenaireMoitie(L.R7.figure), a = L.chezElle(p1), b = L.chezElle(p7);
+        if (a === b) return null;
+        var g = a ? L.R1 : L.R7, pg = a ? p1 : p7;
+        return V(g, L, 'Victoire ' + g.camp + ' : même front ' + g.front + ', et seul le partenaire de ' + g.figure + ', ' + pg + ', est dans sa maison de repos (M' + num(pg) + ').');
+      } },
+    { id: 'MF-5', famille: 'Même front', titre: 'Même front, partenaires à égalité', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans le même front, et les deux partenaires de moitié sont chez eux, ou aucun : nul.',
       condition: function (L) {
-        // Force utile d'un pôle : la meilleure force de sa figure dans tout le thème (base et résultante).
-        function meilleure(c) { var m = 0; L.positions(c.figure).forEach(function (x) { var f = x.force === null ? 100 : x.force; if (f > m) m = f; }); return m; }
-        function fortEnBase(c) { return L.positions(c.figure).some(function (x) { return x.couche === 'base' && x.maison !== c.maison && (x.force === null || x.force >= 70); }); }
-        var m1 = meilleure(L.R1), m7 = meilleure(L.R7);
-        // Pôle éteint (match réel 8·7·10·8) : sa figure ne dépasse 1 % nulle part ; il ne peut rien porter, l'autre gagne.
-        if ((m1 <= 1) !== (m7 <= 1)) {
-          var e = m1 <= 1 ? L.R1 : L.R7, v = m1 <= 1 ? L.R7 : L.R1;
-          return { verdict: m1 <= 1 ? '2' : '1', assuree: false, raison: 'Victoire ' + v.camp + ' : le pôle ' + e.camp + ', ' + e.figure + ', est éteint (au plus 1 % dans toutes ses positions : ' + L.positions(e.figure).map(function (x) { return 'M' + x.maison; }).join(', ') + '). ' + v.figure + ' atteint ' + (v === L.R1 ? m1 : m7) + ' %.' };
-        }
-        // Attaque directe (matchs réels 4·16·1·2, 6·4·10·16, AZ – Villarreal) : un pôle attaque l'autre, l'attaqué est à 1 % ou moins
-        // dans sa maison de pôle, l'attaquant tient la sienne à plus de 1 % : l'attaquant gagne.
-        function chezSoi(c) { var f = L.force(c.figure, c.maison); return f === null ? 100 : f; }
-        var d17 = ((num(L.R7.figure) - num(L.R1.figure)) % 16 + 16) % 16, att = d17 === 3 ? L.R1 : d17 === 13 ? L.R7 : null;
-        if (att) {
-          var cible = att === L.R1 ? L.R7 : L.R1;
-          if (chezSoi(cible) <= 1 && chezSoi(att) > 1) return { verdict: att === L.R1 ? '1' : '2', assuree: false, raison: 'Victoire ' + att.camp + ' : ' + att.figure + ' attaque directement ' + cible.figure + ', qui n’a que ' + chezSoi(cible) + ' % dans sa maison M' + cible.maison + ' ; ' + att.figure + ' tient la sienne (M' + att.maison + ') à ' + chezSoi(att) + ' %.' };
-        }
-        // La pénalité ne compte pas si le pôle pénalisé est fort ailleurs en base (au moins 70 %).
-        function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison) && !fortEnBase(c); }
+        if (L.R1.front !== L.R7.front) return null;
+        var p1 = partenaireMoitie(L.R1.figure), p7 = partenaireMoitie(L.R7.figure);
+        return N('Nul : même front ' + L.R1.front + ', ' + (L.chezElle(p1) ? 'les deux partenaires (' + p1 + ' et ' + p7 + ') sont dans leur maison de repos.' : 'aucun des deux partenaires (' + p1 + ', ' + p7 + ') n’est dans sa maison de repos.'));
+      } },
+    // ───────── Famille « Pôle sans force » ─────────
+    { id: 'PF-1', famille: 'Pôle sans force', titre: 'Pôle éteint', statut: 'EN_ESSAI',
+      enonce: 'Un seul des deux pôles est éteint (sa figure ne dépasse 1 % dans aucune position) : l’autre gagne.',
+      condition: function (L) {
+        var m1 = meilleureForce(L, L.R1), m7 = meilleureForce(L, L.R7);
+        if ((m1 <= 1) === (m7 <= 1)) return null;
+        var e = m1 <= 1 ? L.R1 : L.R7, v = m1 <= 1 ? L.R7 : L.R1;
+        return V(v, L, 'Victoire ' + v.camp + ' : le pôle ' + e.camp + ', ' + e.figure + ', est éteint (au plus 1 % dans toutes ses positions : ' + L.positions(e.figure).map(function (x) { return 'M' + x.maison; }).join(', ') + '). ' + v.figure + ' atteint ' + (v === L.R1 ? m1 : m7) + ' %.');
+      } },
+    { id: 'PF-2', famille: 'Pôle sans force', titre: 'Attaque directe sur un pôle sans défense', statut: 'EN_ESSAI',
+      enonce: 'Un pôle attaque l’autre directement ; l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne à plus de 1 % : l’attaquant gagne.',
+      condition: function (L) {
+        var att = attaquantDirect(L); if (!att) return null;
+        var cible = autrePole(L, att);
+        if (!(forceChezSoi(L, cible) <= 1 && forceChezSoi(L, att) > 1)) return null;
+        return V(att, L, 'Victoire ' + att.camp + ' : ' + att.figure + ' attaque directement ' + cible.figure + ', qui n’a que ' + forceChezSoi(L, cible) + ' % dans sa maison M' + cible.maison + ' ; ' + att.figure + ' tient la sienne (M' + att.maison + ') à ' + forceChezSoi(L, att) + ' %.');
+      } },
+    { id: 'PF-3', famille: 'Pôle sans force', titre: 'Pôle dans la maison de son antagoniste', statut: 'EN_ESSAI',
+      enonce: 'Un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) : l’autre gagne.',
+      condition: function (L) {
+        function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison) && !L.positions(c.figure).some(function (x) { return x.couche === 'base' && x.maison !== c.maison && (x.force === null || x.force >= 70); }); }
         var a = pen(L.R1), b = pen(L.R7);
         if (a === b) return null;
         var p = a ? L.R1 : L.R7, g = a ? L.R7 : L.R1;
-        return { verdict: a ? '2' : '1', assuree: false, raison: 'Victoire ' + g.camp + ' : le pôle ' + p.camp + ', ' + p.figure + ', est en M' + p.maison + ', la maison de son antagoniste ' + fig(p.maison) + ' (0 %, pénalisé). ' + g.figure + ' n’est pas pénalisé.' };
-      }
-    },
-    {
-      id: 'CAS-011', titre: 'Toutes les figures au repos sont annulées', statut: 'EN_ESSAI',
-      enonce: 'Le thème a des figures dans leur maison de repos, mais chacune est annulée : soit son attaquant (k−3) est lui aussi dans sa maison de repos, soit son attaquant est présent deux fois en base (sans compter une position à 1 % ou 0 %). Il ne reste aucun ancrage : nul.',
+        return V(g, L, 'Victoire ' + g.camp + ' : le pôle ' + p.camp + ', ' + p.figure + ', est en M' + p.maison + ', la maison de son antagoniste ' + fig(p.maison) + ' (0 %, pénalisé). ' + g.figure + ' n’est pas pénalisé.');
+      } },
+    // ───────── Famille « Repos annulés » ─────────
+    { id: 'RA-1', famille: 'Repos annulés', titre: 'Toutes les figures au repos sont annulées', statut: 'EN_ESSAI',
+      enonce: 'Le thème a des figures dans leur maison de repos, mais chacune est annulée (son attaquant est aussi au repos, ou il est deux fois en base hors positions à 1 % ou 0 %) : nul.',
       condition: function (L) {
         var repos = FIG.filter(function (f) { return L.chezElle(f); });
         if (!repos.length) return null;
         var motifs = [];
         for (var i = 0; i < repos.length; i++) { var a = L.annuleePar(repos[i]); if (!a) return null; motifs.push(repos[i] + ' (M' + num(repos[i]) + ') est annulée par ' + a.attaquant + (a.motif === 'ATTAQUANT_AU_REPOS' ? ', elle aussi au repos' : ', ' + a.maisons.length + ' fois en base (M' + a.maisons.join(', M') + ')')); }
-        return { verdict: 'N', assuree: false, raison: 'Nul : toutes les figures au repos sont annulées. ' + motifs.join(' ; ') + '.' };
-      }
-    },
-    {
-      id: 'CAS-002', titre: 'Verrou de front : victoire assurée', statut: 'EN_ESSAI',
-      enonce: 'Deux figures du front d’un pôle, en base, chacune dans sa propre maison de repos à 100 % : victoire assurée de ce pôle, si l’autre pôle n’a pas de verrou.',
+        return N('Nul : toutes les figures au repos sont annulées. ' + motifs.join(' ; ') + '.');
+      } },
+    // ───────── Conditions du propriétaire, pas encore vérifiées sur un match réel (une famille chacune) ─────────
+    { id: 'PR-1', famille: 'Verrou de front', titre: 'Verrou de front', statut: 'EN_ESSAI',
+      enonce: 'Deux figures du front d’un pôle sont en base, chacune dans sa maison de repos à 100 %, et l’autre pôle n’a pas de verrou : ce pôle gagne.',
       condition: function (L) {
         var a = L.verrous.R1.length > 0, b = L.verrous.R7.length > 0;
         if (a === b) return null;
         var k = a ? 'R1' : 'R7', v = L.verrous[k][0];
-        return { verdict: a ? '1' : '2', assuree: false, raison: 'Victoire ' + k + ' : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.' };
-      }
-    }
-    ,
-    // Les cas suivants valent pour R1 comme pour R7. Si les deux pôles remplissent la même condition, le cas ne tranche pas.
-    {
-      id: 'CAS-003', titre: 'Pôle et son front au repos, autres en maisons paires', statut: 'EN_ESSAI',
-      enonce: 'Le pôle est dans sa maison de repos (en base) et son antagoniste n’est pas dans la sienne ; son front (la figure suivante de son front) est dans sa propre maison (base ou résultante) et l’antagoniste de ce front n’est pas dans la sienne ; les deux autres figures du front occupent des maisons paires : ce pôle gagne, victoire assurée.',
+        return V(L[k], L, 'Victoire ' + k + ' : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.');
+      } },
+    { id: 'PR-2', famille: 'Pôle et front au repos', titre: 'Pôle et son front au repos, autres en maisons paires', statut: 'EN_ESSAI',
+      enonce: 'Un seul pôle remplit ceci : il est chez lui en base, son antagoniste non ; son front direct est chez lui, l’antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires. Ce pôle gagne.',
       condition: function (L) {
-        function ok(c) {
-          var n = num(c.figure), front = fig(n + 4);
-          return L.chezElleEnBase(c.figure) && !L.chezElle(fig(n - 3)) && L.chezElle(front) && !L.chezElle(fig(n + 1)) &&
-            L.enMaisonPaire(fig(n + 8)) && L.enMaisonPaire(fig(n + 12));
-        }
+        function ok(c) { var n = num(c.figure); return L.chezElleEnBase(c.figure) && !L.chezElle(fig(n - 3)) && L.chezElle(fig(n + 4)) && !L.chezElle(fig(n + 1)) && L.enMaisonPaire(fig(n + 8)) && L.enMaisonPaire(fig(n + 12)); }
         return unSeul(L, ok, function (c) { return c.figure + ' est dans sa maison de repos, son front ' + fig(num(c.figure) + 4) + ' aussi, sans antagoniste au repos ; ' + fig(num(c.figure) + 8) + ' et ' + fig(num(c.figure) + 12) + ' occupent des maisons paires.'; });
-      }
-    },
-    {
-      id: 'CAS-004', titre: 'Pôle antagoniste direct, en M8 avec un front en M4 ou M12', statut: 'EN_ESSAI',
-      enonce: 'Le pôle est l’antagoniste direct de l’autre pôle (il l’attaque) ; il est en M8, la maison miroir, et une autre figure de son front est en M4 ou en M12 : ce pôle gagne, victoire assurée.',
+      } },
+    { id: 'PR-3', famille: 'Attaquant en M8', titre: 'Pôle attaquant en M8 avec un front en M4 ou M12', statut: 'EN_ESSAI',
+      enonce: 'Un seul pôle remplit ceci : il attaque l’autre directement, il est en M8, et une autre figure de son front est en M4 ou M12. Ce pôle gagne.',
+      condition: function (L) {
+        function ok(c, autre) { var n = num(c.figure); return num(autre.figure) === num(fig(n + 3)) && L.maisons[7].base === c.figure && [fig(n + 4), fig(n + 8), fig(n + 12)].some(function (f) { return L.presentEn(f, 4) || L.presentEn(f, 12); }); }
+        return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', il est en M8 et une figure de son front est en M4 ou M12.'; });
+      } },
+    { id: 'PR-4', famille: 'Pôle chez son antagoniste', titre: 'Pôle chez son antagoniste, front incomplet', statut: 'EN_ESSAI',
+      enonce: 'Un pôle est dans la maison de son antagoniste direct, son front direct ou le front de son miroir est absent, et l’adversaire a une figure de son front en maison paire (M4 ou M12 si son front est Terre ou Eau) : l’adversaire gagne.',
       condition: function (L) {
         function ok(c, autre) {
-          var n = num(c.figure);
-          return num(autre.figure) === num(fig(n + 3)) && L.maisons[7].base === c.figure &&
-            [fig(n + 4), fig(n + 8), fig(n + 12)].some(function (f) { return L.presentEn(f, 4) || L.presentEn(f, 12); });
-        }
-        return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', il est en M8 et une figure de son front est en M4 ou M12.'; });
-      }
-    },
-    {
-      id: 'CAS-005', titre: 'Pôle chez son antagoniste, front absent', statut: 'EN_ESSAI',
-      enonce: 'Le pôle est dans la maison de son antagoniste direct, et son front direct ou le front de son miroir est absent du thème ; l’adversaire a une figure de son front en maison paire (en M4 ou M12 si son front est Terre ou Eau) : l’adversaire gagne, victoire assurée.',
-      condition: function (L) {
-        function ok(c, autre) {        // c = le camp qui gagne, autre = le pôle mal placé
           var n = num(autre.figure), chezAntagoniste = L.maisons[num(fig(n - 3)) - 1].base === autre.figure;
           if (!chezAntagoniste || !(L.absente(fig(n + 4)) || L.absente(fig(n + 12)))) return false;
           var exigeM4M12 = c.element === 'Terre' || c.element === 'Eau';
           return c.frontDirect.some(function (f) { return exigeM4M12 ? (L.presentEn(f, 4) || L.presentEn(f, 12)) : L.enMaisonPaire(f); });
         }
         return unSeul(L, ok, function (c, autre) { return autre.figure + ' est dans la maison de son antagoniste ' + fig(num(autre.figure) - 3) + ' et son front est incomplet ; le front de ' + c.figure + ' tient ' + (c.element === 'Terre' || c.element === 'Eau' ? 'M4 ou M12' : 'une maison paire') + '.'; });
-      }
-    },
-    {
-      id: 'CAS-006', titre: 'Pôle attaqué sans front direct', statut: 'EN_ESSAI',
-      enonce: 'Un pôle est l’antagoniste direct de l’autre, et le pôle attaqué n’a pas son front direct dans le thème : celui qui n’a pas de front direct perd.',
+      } },
+    { id: 'PR-5', famille: 'Attaqué sans front direct', titre: 'Pôle attaqué sans front direct', statut: 'EN_ESSAI',
+      enonce: 'Un pôle attaque l’autre directement, et le pôle attaqué n’a pas son front direct dans le thème : le pôle attaqué perd.',
       condition: function (L) {
         function ok(c, autre) { return num(autre.figure) === num(fig(num(c.figure) + 3)) && L.absente(fig(num(autre.figure) + 4)); }
         return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', dont le front direct ' + fig(num(autre.figure) + 4) + ' est absent du thème.'; });
-      }
-    }
-    ,
-    {
-      id: 'CAS-008', titre: 'Le pôle chez lui : pôle et binôme (boucles différentes), pôle seul (même boucle)', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans des boucles différentes. La confrontation se lit par paires : R1 et son binôme contre R7 et son binôme. La paire qui a le plus de figures dans leur maison de repos (base ou résultante), sans compter une figure annulée par son attaquant lui aussi au repos, gagne ; à égalité, le cas ne tranche pas.',
+      } },
+    // ───────── Famille « Pôle chez lui » ─────────
+    { id: 'CL-1', famille: 'Pôle chez lui', titre: 'Même boucle : un seul pôle chez lui', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans la même boucle, fronts différents. Un seul pôle est dans sa maison de repos (non annulé, pas un simple reflet de Populus) : il gagne.',
       condition: function (L) {
-        if (L.mode === 'MEME_FRONT') return null;
-        // Même boucle (matchs 5·14·6·14 et 7·5·9·6) : on compare les deux pôles eux-mêmes. Celui qui est chez lui, non annulé, gagne si l'autre ne l'est pas.
-        if (L.mode === 'MEME_BOUCLE') {
-          function vraiChez(c) { var f = c.figure; return L.chezElle(f) && !L.annuleePar(f) && !(f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus'); }
-          var h1 = vraiChez(L.R1), h7 = vraiChez(L.R7);
-          if (h1 === h7) return null;
-          var gg = h1 ? L.R1 : L.R7, pp = h1 ? L.R7 : L.R1;
-          return { verdict: h1 ? '1' : '2', assuree: false, raison: 'Victoire ' + gg.camp + ' : même boucle, ' + gg.figure + ' est dans sa maison de repos M' + num(gg.figure) + (L.chezElleEnBase(gg.figure) ? ' en base' : ' en résultante') + ' ; ' + pp.figure + ' (' + pp.camp + ') n’est pas chez lui.' };
-        }
-        function paire(c) { return [c.figure, fig(num(c.figure) + 2)]; }
-        // Reflet : une figure qui n'est chez elle qu'en résultante, sur une base Populus qui est le pôle adverse, n'est que le reflet de ce pôle ; elle ne compte pas.
-        function reflet(f, c) { var adv = c === L.R1 ? L.R7 : L.R1; return !L.chezElleEnBase(f) && adv.figure === 'Populus' && L.maisons[num(f) - 1].base === 'Populus' && adv.maison === num(f); }
-        // Le pôle lui-même ne compte pas s'il n'est chez lui qu'en résultante sur une base Populus : c'est un reflet (match réel 4·16·1·2).
-        function refletPole(f, c) { return f === c.figure && f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus'; }
-        function chez(c) { return paire(c).filter(function (f) { return L.chezElle(f) && !L.chezElle(fig(num(f) - 3 + 16)) && !reflet(f, c) && !refletPole(f, c); }); }   // une figure dont l'attaquant est aussi au repos est annulée
-        var a = chez(L.R1), b = chez(L.R7);
+        if (L.mode !== 'MEME_BOUCLE') return null;
+        var h1 = poleVraimentChezLui(L, L.R1), h7 = poleVraimentChezLui(L, L.R7);
+        if (h1 === h7) return null;
+        var gg = h1 ? L.R1 : L.R7, pp = h1 ? L.R7 : L.R1;
+        return V(gg, L, 'Victoire ' + gg.camp + ' : même boucle, ' + gg.figure + ' est dans sa maison de repos M' + num(gg.figure) + (L.chezElleEnBase(gg.figure) ? ' en base' : ' en résultante') + ' ; ' + pp.figure + ' (' + pp.camp + ') n’est pas chez lui.');
+      } },
+    { id: 'CL-2', famille: 'Pôle chez lui', titre: 'Boucles différentes : le pôle et son binôme', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans des boucles différentes. On compare R1 et son binôme à R7 et son binôme : la paire qui a le plus de figures chez elles (sans les figures annulées ni les reflets) gagne. La victoire est « assurée » si une figure somme du vainqueur est sur l’axe angulaire en base, sans somme adverse sur l’axe ni somme égale à un pôle.',
+      condition: function (L) {
+        if (L.mode !== 'BOUCLES_DIFFERENTES') return null;
+        var a = paireChezElle(L, L.R1), b = paireChezElle(L, L.R7);
         if (a.length === b.length) return null;
-        var g = a.length > b.length ? L.R1 : L.R7, p = g === L.R1 ? L.R7 : L.R1, cg = chez(g), cp = chez(p);
+        var g = a.length > b.length ? L.R1 : L.R7, p = autrePole(L, g), cg = g === L.R1 ? a : b, cp = g === L.R1 ? b : a;
         var sa = L.sommes.filter(function (x) { return x.camp === g.camp && x.surAxe.length; })[0], sp = L.sommes.some(function (x) { return x.camp === p.camp && x.surAxe.length; }) || L.sommes.some(function (x) { return x.pole; });
         var sure = !!sa && !sp;
-        return { verdict: g === L.R1 ? '1' : '2', assuree: sure, raison: 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paire(g).join(' + ') + ' contre ' + paire(p).join(' + ') + '. ' +
-          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.'  + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : '') };
-      }
-    },
-    {
-      id: 'CAS-007', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans la même boucle. Une figure Sud ou Nord du front du pôle (autre que le pôle lui-même) est dans sa propre maison de repos, en base ou en résultante : ce pôle gagne.',
+        return V(g, L, 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paireDe(g).join(' + ') + ' contre ' + paireDe(p).join(' + ') + '. ' +
+          cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : ''), sure);
+      } },
+    { id: 'PR-6', famille: 'Front Sud ou Nord au repos', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans la même boucle ou le même front. Un seul pôle a une figure Sud ou Nord de son front (autre que lui) dans sa maison de repos, reflets de Populus exclus : ce pôle gagne.',
       condition: function (L) {
-        if (L.mode === 'BOUCLES_DIFFERENTES') return null;   // boucles différentes : la confrontation se lit par paires, pas par le seul front (match réel 2·12·4·4)
-        function auRepos(c) {
-          return c.frontDirect.filter(function (f) {
-            var pt = CARDINAL[num(f)];
-            return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !(!L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus' && c.front !== 'D');   // chez elle seulement sur une base Populus : simple reflet (match réel 5·14·6·14)
-          });
-        }
-        return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) {
-          var f = auRepos(c)[0];
-          return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.';
-        });
-      }
-    },
-    {
-      id: 'CAS-009', titre: 'Équilibre des ancrages : motif commun des nuls', statut: 'EN_ESSAI',
-      enonce: 'Aucun autre cas ne tranche. D’abord : si la somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même dans une maison angulaire, l’axe désigne ce pôle : il gagne. Sinon, si la somme de l’axe ou la somme 3-5-11-15 est un pôle, le thème se referme sur ce pôle : nul. Sinon le moteur compte, dans la boucle de chaque pôle (pair ou impair), les figures dans leur maison de repos en base et non annulées. Si une boucle en a plus que l’autre, son pôle gagne ; à égalité, les ancrages s’équilibrent : nul. Dans la même boucle, les pôles sont liés par la chaîne des attaques (chacun est l’antagoniste de l’antagoniste de l’autre, ou son binôme) : nul.',
+        if (L.mode === 'BOUCLES_DIFFERENTES') return null;
+        function auRepos(c) { return c.frontDirect.filter(function (f) { var pt = CARDINAL[num(f)]; return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !(!L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus' && c.front !== 'D'); }); }
+        return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) { var f = auRepos(c)[0]; return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.'; });
+      } },
+    // ───────── Famille « Dernier recours » : lue quand rien d'autre n'a tranché ─────────
+    { id: 'DR-1', famille: 'Dernier recours', titre: 'L’axe angulaire désigne un pôle', statut: 'EN_ESSAI',
+      enonce: 'La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne.',
       condition: function (L) {
-        function ancres(c) { var n = num(c.figure); return FIG.filter(function (f) { return num(f) % 2 === n % 2 && L.chezElleEnBase(f) && !L.annuleePar(f); }); }
-        // Premier critère du nul : une figure somme est elle-même un pôle, le thème se referme sur ce pôle.
-        var sp = L.sommes.filter(function (x) { return x.pole; });
-        // Exception (match réel 4·3·13·12) : la somme de l'axe angulaire est un pôle qui siège lui-même dans une maison angulaire
-        // (M1, M4, M7, M10). L'axe désigne alors ce pôle : il gagne.
-        var ax = L.sommes[0];
-        if (ax.pole) {
-          var cp = L[ax.pole], autre = ax.pole === 'R1' ? L.R7 : L.R1;
-          if ((cp.maison === 1 || cp.maison === 4 || cp.maison === 7 || cp.maison === 10) && autre.figure !== L.sommes[1].figure) {
-            var rr = L.maisons[cp.maison - 1].resultante, fr = cp.frontDirect.filter(function (f) { return f !== cp.figure && !L.absente(f); });
-            return { verdict: ax.pole === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + ax.pole + ' : la somme de l’axe angulaire donne ' + ax.figure + ', le pôle ' + ax.pole + ', qui siège lui-même sur l’axe en M' + cp.maison + '. L’axe désigne ce pôle.' +
-              (rr ? ' En M' + cp.maison + ' il donne ' + rr + ' en résultante.' : '') + (fr.length ? ' Son front est présent : ' + fr.join(', ') + '.' : '') };
-          }
-        }
-        if (sp.length) return { verdict: 'N', assuree: false, raison: 'Nul : ' + sp.map(function (x) { return 'la ' + x.nom + ' donne ' + x.figure + ', qui est le pôle ' + x.pole; }).join(' ; ') + '. Le thème se referme sur ce pôle.' };
-        // Le miroir d'un pôle au point D (passage des mères aux filles) : nul.
-        if (L.miroirPoints.nul) return { verdict: 'N', assuree: false, raison: 'Nul : ' + L.miroirPoints.texte + '. Au point D, le miroir tient le thème en équilibre.' };
-        var a = ancres(L.R1), b = ancres(L.R7);
-        function dit(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
-        var detail = 'ancrages en base, non annulés : boucle de R1 ' + dit(a) + ' ; boucle de R7 ' + dit(b) + '.';
-        if (L.mode !== 'BOUCLES_DIFFERENTES') {
-          // Même boucle : les pôles sont liés par la chaîne des attaques, ce qui les tient en équilibre.
-          var n1 = num(L.R1.figure), n7 = num(L.R7.figure), d = ((n7 - n1) % 16 + 16) % 16;
-          if (d === 6 || d === 10) {
-            var haut = d === 6 ? L.R1 : L.R7, bas = d === 6 ? L.R7 : L.R1, med = fig(num(haut.figure) + 3), pm = L.positions(med);
-            var repos = [L.R1, L.R7].filter(function (c) { return L.chezElle(c.figure); }).map(function (c) { return c.camp; });
-            return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + haut.camp + ' ' + haut.figure + ' attaque ' + med + ', qui attaque ' + bas.camp + ' ' + bas.figure + '. Chaque pôle est l’antagoniste de l’antagoniste de l’autre (' + med + (pm.length ? ' en M' + pm.map(function (x) { return x.maison; }).join(', M') : ' absent du thème') + ').' +
-              (repos.length === 2 ? ' Les deux pôles sont chacun dans leur maison de repos.' : repos.length === 1 ? ' Seul ' + repos[0] + ' est dans sa maison de repos.' : '') };
-          }
-          return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : les deux pôles sont dans la même boucle, ' + L.R1.figure + ' et ' + L.R7.figure + ' sont binômes, et aucun cas ne les départage.' };
-        }
-        if (a.length > b.length) return { verdict: '1', assuree: false, raison: 'Victoire R1 : ' + detail };
-        if (b.length > a.length) return { verdict: '2', assuree: false, raison: 'Victoire R7 : ' + detail };
-        // Ancrages égaux : le miroir d'un seul pôle au point B ou C désigne ce pôle.
-        if (L.miroirPoints.favori) return { verdict: L.miroirPoints.favori === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + L.miroirPoints.favori + ' : ancrages égaux, et ' + L.miroirPoints.texte + '.' };
-        // Ancrages égaux : on lit le cercle. Si ses signaux désignent un seul pôle, il gagne ; s'ils se contredisent, nul.
-        var ce = L.cercle;
-        if (ce.favori) return { verdict: ce.favori === 'R1' ? '1' : '2', assuree: false, raison: 'Victoire ' + ce.favori + ' par le cercle : ancrages égaux, et ' + ce.signaux.join(' ; ') + '.' };
-        if (ce.conflit) return { verdict: 'N', assuree: false, raison: 'Nul : ancrages égaux, et le cercle se contredit (' + ce.signaux.join(' ; ') + ').' };
-        return { verdict: 'N', assuree: false, raison: 'Nul, les ancrages s’équilibrent : ' + detail };
-      }
-    }
+        var ax = L.sommes[0]; if (!ax.pole) return null;
+        var cp = L[ax.pole], autre = autrePole(L, cp);
+        if (!((cp.maison === 1 || cp.maison === 4 || cp.maison === 7 || cp.maison === 10) && autre.figure !== L.sommes[1].figure)) return null;
+        var rr = L.maisons[cp.maison - 1].resultante, fr = cp.frontDirect.filter(function (f) { return f !== cp.figure && !L.absente(f); });
+        return V(cp, L, 'Victoire ' + ax.pole + ' : la somme de l’axe angulaire donne ' + ax.figure + ', le pôle ' + ax.pole + ', qui siège lui-même sur l’axe en M' + cp.maison + '. L’axe désigne ce pôle.' +
+          (rr ? ' En M' + cp.maison + ' il donne ' + rr + ' en résultante.' : '') + (fr.length ? ' Son front est présent : ' + fr.join(', ') + '.' : ''));
+      } },
+    { id: 'DR-2', famille: 'Dernier recours', titre: 'Une figure somme est un pôle', statut: 'EN_ESSAI',
+      enonce: 'La somme de l’axe angulaire ou la somme 3-5-11-15 est elle-même un pôle : le thème se referme sur ce pôle, nul.',
+      condition: function (L) {
+        var sp = L.sommes.filter(function (x) { return x.pole; }); if (!sp.length) return null;
+        return N('Nul : ' + sp.map(function (x) { return 'la ' + x.nom + ' donne ' + x.figure + ', qui est le pôle ' + x.pole; }).join(' ; ') + '. Le thème se referme sur ce pôle.');
+      } },
+    { id: 'DR-3', famille: 'Dernier recours', titre: 'Le miroir d’un pôle au point D', statut: 'EN_ESSAI',
+      enonce: 'La somme au point D du cercle (M4 + M5) est le miroir d’un pôle : nul.',
+      condition: function (L) { return L.miroirPoints.nul ? N('Nul : ' + L.miroirPoints.texte + '. Au point D, le miroir tient le thème en équilibre.') : null; } },
+    { id: 'DR-4', famille: 'Dernier recours', titre: 'Même boucle : antagoniste de l’antagoniste', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans la même boucle, à six figures d’écart (l’un attaque une figure qui attaque l’autre) : nul.',
+      condition: function (L) {
+        if (L.mode === 'BOUCLES_DIFFERENTES') return null;
+        var d = ((num(L.R7.figure) - num(L.R1.figure)) % 16 + 16) % 16; if (d !== 6 && d !== 10) return null;
+        var haut = d === 6 ? L.R1 : L.R7, bas = d === 6 ? L.R7 : L.R1, med = fig(num(haut.figure) + 3), pm = L.positions(med);
+        var repos = [L.R1, L.R7].filter(function (c) { return L.chezElle(c.figure); }).map(function (c) { return c.camp; });
+        return N('Nul, les ancrages s’équilibrent : ' + haut.camp + ' ' + haut.figure + ' attaque ' + med + ', qui attaque ' + bas.camp + ' ' + bas.figure + '. Chaque pôle est l’antagoniste de l’antagoniste de l’autre (' + med + (pm.length ? ' en M' + pm.map(function (x) { return x.maison; }).join(', M') : ' absent du thème') + ').' +
+          (repos.length === 2 ? ' Les deux pôles sont chacun dans leur maison de repos.' : repos.length === 1 ? ' Seul ' + repos[0] + ' est dans sa maison de repos.' : ''));
+      } },
+    { id: 'DR-5', famille: 'Dernier recours', titre: 'Même boucle : pôles binômes', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans la même boucle, et rien ne les a départagés : nul.',
+      condition: function (L) {
+        if (L.mode === 'BOUCLES_DIFFERENTES') return null;
+        return N('Nul, les ancrages s’équilibrent : les deux pôles sont dans la même boucle, ' + L.R1.figure + ' et ' + L.R7.figure + ' sont binômes, et aucun cas ne les départage.');
+      } },
+    { id: 'DR-6', famille: 'Dernier recours', titre: 'La boucle la mieux ancrée', statut: 'EN_ESSAI',
+      enonce: 'Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne.',
+      condition: function (L) {
+        var a = ancresBoucle(L, L.R1), b = ancresBoucle(L, L.R7);
+        if (a.length === b.length) return null;
+        return V(a.length > b.length ? L.R1 : L.R7, L, 'Victoire ' + (a.length > b.length ? 'R1' : 'R7') + ' : ' + detailAncres(L));
+      } },
+    { id: 'DR-7', famille: 'Dernier recours', titre: 'Le miroir d’un pôle au point B ou C', statut: 'EN_ESSAI',
+      enonce: 'Boucles différentes, ancrages égaux. La somme au point B (M8 + M9) ou C (M12 + M13) est le miroir d’un seul pôle : ce pôle gagne.',
+      condition: function (L) { return L.miroirPoints.favori ? V(L[L.miroirPoints.favori], L, 'Victoire ' + L.miroirPoints.favori + ' : ancrages égaux, et ' + L.miroirPoints.texte + '.') : null; } },
+    { id: 'DR-8', famille: 'Dernier recours', titre: 'Le favori du cercle', statut: 'EN_ESSAI',
+      enonce: 'Boucles différentes, ancrages égaux. Les signaux du cercle (pôle au bord d’un point, pôle en amont) désignent un seul pôle : il gagne.',
+      condition: function (L) { var ce = L.cercle; return ce.favori ? V(L[ce.favori], L, 'Victoire ' + ce.favori + ' par le cercle : ancrages égaux, et ' + ce.signaux.join(' ; ') + '.') : null; } },
+    { id: 'DR-9', famille: 'Dernier recours', titre: 'Le cercle se contredit', statut: 'EN_ESSAI',
+      enonce: 'Boucles différentes, ancrages égaux, et les deux signaux du cercle désignent des pôles différents : nul.',
+      condition: function (L) { var ce = L.cercle; return ce.conflit ? N('Nul : ancrages égaux, et le cercle se contredit (' + ce.signaux.join(' ; ') + ').') : null; } },
+    { id: 'DR-10', famille: 'Dernier recours', titre: 'Équilibre des ancrages', statut: 'EN_ESSAI',
+      enonce: 'Rien ne départage les deux pôles : les ancrages s’équilibrent, nul.',
+      condition: function (L) { return N('Nul, les ancrages s’équilibrent : ' + detailAncres(L)); } }
   ];
   // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.
   function unSeul(L, ok, pourquoi) {
@@ -569,15 +573,17 @@
     var axP = L.sommes[0].pole && [1, 4, 7, 10].indexOf(L[L.sommes[0].pole].maison) >= 0 ? L.sommes[0].pole : null;
     var campSig = [['ancrages', L.stabilite.plusStable], ['axe angulaire', axP], ['miroir aux points', L.miroirPoints.favori], ['cercle', L.cercle.favori]].filter(function (x) { return x[1]; });
     var ecartes = [];
+    var famillesEcartees = {};
     for (var i = 0; i < CAS.length && !decision; i++) {
+      if (famillesEcartees[CAS[i].famille]) continue;      // un cas écarté pour incohérence écarte le reste de sa famille
       var r = CAS[i].condition(L);
       if (!r) continue;
       // Cohérence : un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de camp désignent l'autre et qu'aucun ne le désigne.
       if (r.verdict === '1' || r.verdict === '2') {
         var g = r.verdict === '1' ? 'R1' : 'R7', pour = campSig.filter(function (x) { return x[1] === g; }), contre = campSig.filter(function (x) { return x[1] !== g; });
-        if (contre.length >= 2 && !pour.length) { ecartes.push({ cas: CAS[i].id, verdict: r.verdict, contre: contre.map(function (x) { return x[0]; }) }); continue; }
+        if (contre.length >= 2 && !pour.length) { ecartes.push({ cas: CAS[i].id, verdict: r.verdict, contre: contre.map(function (x) { return x[0]; }) }); famillesEcartees[CAS[i].famille] = true; continue; }
       }
-      decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
+      decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, famille: CAS[i].famille, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
     }
     if (decision) decision.casEcartes = ecartes;
     if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,

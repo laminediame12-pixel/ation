@@ -158,7 +158,7 @@ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==und
 $('v').textContent=K.version;
 ['m1','m2','m3','m4'].forEach(function(id){var s=$(id);K.FIG.forEach(function(f,i){var o=el('option','',(i+1)+' — '+f);o.value=f;s.appendChild(o);});});
 // liste des cas et table des fronts
-K.CAS.forEach(function(x){var d=el('div','cas'),b=el('b','',x.id+' · '+x.titre+' ');b.appendChild(el('span','etiq '+(x.statut==='REGLE_CONFIRMEE'?'ok':'essai'),x.statut==='REGLE_CONFIRMEE'?'Confirmé':'En essai'));d.appendChild(b);d.appendChild(el('div','',x.enonce));$('cas').appendChild(d);});
+var famPrec=null;K.CAS.forEach(function(x){if(x.famille!==famPrec){famPrec=x.famille;var h=el('h3','',x.famille);h.style.cssText='margin:14px 0 4px;font-size:14px;color:#93c5fd';$('cas').appendChild(h);}var d=el('div','cas'),b=el('b','',x.id+' · '+x.titre+' ');b.appendChild(el('span','etiq '+(x.statut==='REGLE_CONFIRMEE'?'ok':'essai'),x.statut==='REGLE_CONFIRMEE'?'Confirmé':'En essai'));d.appendChild(b);d.appendChild(el('div','',x.enonce));$('cas').appendChild(d);});
 (function(){var T=$('fronts'),E=['Feu','Air','Eau','Terre'],tr=el('tr');['Front','Est','Nord','Ouest','Sud'].forEach(function(h){tr.appendChild(el('th','',h));});T.appendChild(tr);
 ['A','B','C','D'].forEach(function(l,i){var r=el('tr'),par={};K.FIG.forEach(function(f,k){if(k%4===i)par[K.CARDINAL[k+1]]=(k+1)+' '+f;});r.appendChild(el('td','',l+' · '+E[i]));['Est','Nord','Ouest','Sud'].forEach(function(c){r.appendChild(el('td','',par[c]));});T.appendChild(r);});})();
 function points(f){var d=el('div','points');PTS[f].forEach(function(n){var l=el('i');l.appendChild(el('b'));if(n===2)l.appendChild(el('b'));d.appendChild(l);});return d;}
@@ -272,7 +272,7 @@ function lancer(m){$('erreur').textContent='';var th;try{th=K.construireTheme(m[
  var t=$('vTitre'),e1=$('team1').value||'Équipe 1',e2=$('team2').value||'Équipe 2';
  t.className=d.verdict==='N'?'nul':d.verdict==='2'?'r7':d.verdict===null?'aucun':'';
  t.textContent=d.verdict==='1'?'Victoire R1 — '+e1:d.verdict==='2'?'Victoire R7 — '+e2:d.verdict==='N'?'Nul':'Aucun cas applicable';
- var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
+ var C=$('vCas');C.textContent='';if(d.verdict!==null){C.appendChild(el('span','etiq',d.phase+' · '+d.regle));C.appendChild(el('span','etiq','Famille : '+d.famille));C.appendChild(el('span','etiq '+(d.statut==='REGLE_CONFIRMEE'?'ok':'essai'),d.statut==='REGLE_CONFIRMEE'?'Règle confirmée':'En essai'));if(d.verdict!=='N')C.appendChild(el('span','etiq '+(d.victoireAssuree?'ok':''),d.victoireAssuree?'Victoire assurée':'Victoire non assurée'));}
  var pq=d.precision,NP={FORTE:['Précision forte','ok'],MOYENNE:['Précision moyenne','ok'],SANS_SIGNAL:['Aucun signal pour ou contre',''],DISCUTEE:['Verdict discuté','essai'],CONTREDITE:['Verdict contredit par les signaux','essai']}[pq.niveau];
  C.appendChild(el('span','etiq '+NP[1],NP[0]+' · '+pq.pour.length+' pour, '+pq.contre.length+' contre'));
  var mq=d.marches,ZS=el('div','stab');ZS.appendChild(el('small','','Stabilité · ancrages R1 '+mq.ancragesR1+' / R7 '+mq.ancragesR7+(mq.resultantesR1!==null?' · résultantes R1 '+mq.resultantesR1+' / R7 '+mq.resultantesR7:'')));
