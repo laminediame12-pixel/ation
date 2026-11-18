@@ -49,7 +49,7 @@ Indice net = flux (circuit 1-3-5-11-13 (M1 ajoutée par le propriétaire) et M10
 Les 26 scores sont élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
 
 ## Ce que cette reconstruction n'est pas
-- Les principes de victoire reconstruits ne sont pas prouvés : ils sont réunis et classés par provenance et par résultats réels. Le dernier principe (FC-1) est le plus faible et décide encore 9 des 14 thèmes du lot 1.
+- Les principes de victoire reconstruits ne sont pas prouvés : ils sont réunis et classés par provenance et par résultats réels. Le dernier principe (FC-2) a été retenu après plusieurs variantes essayées sur les mêmes thèmes : il décide 7 des 14 thèmes du lot 1 et attend un lot neuf.
 - Les sorties de buts, de corners et de pénalité reprennent vos règles du 3.0.0 : elles ne sont pas validées, sauf là où les mesures sont données ci-dessus.
 
 ## Dans la page koun-moteur-3.0.0.html
