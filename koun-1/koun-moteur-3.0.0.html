@@ -2451,7 +2451,7 @@
     // flux offensif
     var flux = ouverts(sov) * 2 + ouverts(conv) * 2 + ouverts(juge) * 1.5;
     if (impair(sov)) flux += 2.5;
-    if (!impair(conv)) flux += 2.5;   // S+M10 : +2,5 si la figure est paire (correction du propriétaire)
+    if (impair(conv)) flux += 2.5;
     if (fr1.indexOf('A') >= 0) flux += 2;
     if (fr7.indexOf('A') >= 0) flux += 2;
     if (btts) flux += 3;
