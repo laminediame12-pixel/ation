@@ -941,7 +941,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
         // Maintien du canal : une figure chez elle donne Populus en résultante (quatre lignes à deux points), et Populus en base redonne la figure de repos.
         // Les deux points disent la concordance entre la figure et la figure de repos de la maison. Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu
-        // que les résultantes de ses quatre maisons ont de lignes à deux points. 13 victoires réelles sur 18 ; 55 % d'accord avec le moteur sur tous les thèmes : pour, sans contredire (indice).
+        // que les résultantes de ses quatre maisons ont de lignes à deux points. 13 victoires réelles sur 18 en développement, mais 4 sur 13 sur le lot 1 de validation : ne tient pas hors développement, signal à retirer ou à confirmer sur un nouveau lot.
         (function () {
           var a1 = concordanceCanal(L, canalDuPole(L.R1)), a7 = concordanceCanal(L, canalDuPole(L.R7));
           if (a1 === a7) return;
@@ -949,7 +949,7 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
           (cm === g ? pour : indices).push('canal maintenu : le canal ' + canalDuPole(L[cm]) + ' de ' + cm + ' a plus de lignes à deux points dans ses résultantes (' + Math.max(a1, a7) + ' contre ' + Math.min(a1, a7) + ')');
         })();
         // Comptage : en boucles différentes, le camp dont la boucle compte le plus de lignes à deux points (4 niveaux, base et résultante).
-        // 10 victoires réelles sur 12 ; seulement 63 % d'accord avec le moteur sur tous les thèmes : il appuie le verdict (pour) mais ne le contredit pas (indice).
+        // 10 victoires réelles sur 12 en développement, 4 sur 5 sur le lot 1 de validation (peu de cas) : il appuie le verdict (pour) mais ne le contredit pas (indice).
         if (L.mode === 'BOUCLES_DIFFERENTES') {
           var lg = lignesDeuxPoints(L), cl = lg.R1 > lg.R7 ? 'R1' : lg.R7 > lg.R1 ? 'R7' : null;
           if (cl) (cl === g ? pour : indices).push('lignes à deux points : la boucle de ' + cl + ' en compte ' + lg[cl] + ' contre ' + lg[cl === 'R1' ? 'R7' : 'R1']);

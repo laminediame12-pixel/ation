@@ -205,7 +205,7 @@ Une figure k posée en base dans la maison de la figure qu'elle attaque (k en M 
 
 ## Comptage des lignes à deux points
 
-En boucles différentes, on compte les lignes à deux points (4 niveaux, base et résultante) dans les maisons de la boucle de chaque pôle. Le camp qui en compte le plus a gagné 10 des 12 victoires réelles en boucles différentes (1 égalité), mais l'accord avec le moteur sur tous les thèmes n'est que de 63 %. Le moteur en fait un signal : « pour » quand il va dans le sens du verdict, simple indice sinon. Il ne décide jamais.
+En boucles différentes, on compte les lignes à deux points (4 niveaux, base et résultante) dans les maisons de la boucle de chaque pôle. Le camp qui en compte le plus a gagné 10 des 12 victoires réelles en boucles différentes (1 égalité), mais sur les matchs réels du lot 1 de validation il ne tient pas (voir `../validation/VALIDATION.md`). Le moteur en fait un signal : « pour » quand il va dans le sens du verdict, simple indice sinon. Il ne décide jamais.
 
 
 ## Les canaux : le duel R1 / R7
@@ -217,4 +217,4 @@ En boucles différentes, on compte les lignes à deux points (4 niveaux, base et
 
 ### Le maintien du canal
 
-Une figure dans sa maison de repos donne Populus en résultante (activation 0), et Populus en base hors de chez lui redonne la figure de repos de la maison : chaque figure est la fréquence du canal de sa maison de repos, quel que soit son élément naturel (Via en M5 est de fréquence Feu). Ce qui module le flux, c'est le niveau d'activation des figures. Les deux points d'une résultante disent la concordance entre la figure et la figure de repos de la maison, niveau par niveau. Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu que les résultantes de ses quatre maisons ont de lignes à deux points : le canal le plus maintenu a gagné 13 des 18 victoires réelles (4 sur 4 en même boucle), mais l'accord avec le moteur sur tous les thèmes n'est que de 55 %. C'est un signal (pour ou indice), il ne décide pas.
+Une figure dans sa maison de repos donne Populus en résultante (activation 0), et Populus en base hors de chez lui redonne la figure de repos de la maison : chaque figure est la fréquence du canal de sa maison de repos, quel que soit son élément naturel (Via en M5 est de fréquence Feu). Ce qui module le flux, c'est le niveau d'activation des figures. Les deux points d'une résultante disent la concordance entre la figure et la figure de repos de la maison, niveau par niveau. Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu que les résultantes de ses quatre maisons ont de lignes à deux points : le canal le plus maintenu a gagné 13 des 18 victoires réelles (4 sur 4 en même boucle), mais sur les matchs réels du lot 1 de validation il ne tient pas (voir `../validation/VALIDATION.md`). C'est un signal (pour ou indice), il ne décide pas.
