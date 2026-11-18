@@ -3873,6 +3873,18 @@
  </div>
  `;
 
+ // Saturation d'un canal dans le thème : les 4 maisons du canal (rang dans le bloc : Feu M1 M5 M9 M13, Air M2 M6 M10 M14, Eau M3 M7 M11 M15, Terre M4 M8 M12 M16) ont chacune 4 niveaux, soit 16 niveaux ; un niveau saturé est une ligne à deux points.
+ const REPOS_SAT = [4, 8, 8, 12];
+ perCanal.forEach(c => {
+ const hs = [c.idx + 1, c.idx + 5, c.idx + 9, c.idx + 13];
+ const satDe = (V, h) => (V[h] || M[h]).filter(v => v === 0).length;
+ const sb = hs.reduce((t, h) => t + satDe(M, h), 0), sr = hs.reduce((t, h) => t + satDe(R, h), 0);
+ const detail = hs.map(h => "M" + h + " " + satDe(M, h) + "/4").join(" · ");
+ const ec = sb - REPOS_SAT[c.idx];
+ c.sat = { base: sb, res: sr, repos: REPOS_SAT[c.idx] };
+ c.satTxt = `Saturation du canal : <b>${sb}</b> saturés · <b>${16 - sb}</b> non saturés sur 16 (base) · repos ${REPOS_SAT[c.idx]} (${ec >= 0 ? "+" : ""}${ec}) · résultante ${sr}/16<br><span style="color:#94a3b8;">${detail}</span>`;
+ });
+
  cards.innerHTML = perCanal.map(c => {
  const ratio = Math.round(((c.openB + c.openR) / 32) * 100);
  const chips = c.acts.length
@@ -3882,6 +3894,7 @@
  <div class="canal-card" style="border-top-color:${c.color};">
  <div class="canal-card-name" style="color:${c.color};">${c.name} <span>Front ${c.front}</span></div>
  <div class="canal-card-meta">Deux points ${ratio}% · Base ${c.openB}/16 · Rés ${c.openR}/16 · <span style="color:${c.lockCol};">${c.lockState}</span></div>
+ <div class="canal-card-meta" style="color:#e2e8f0;">${c.satTxt}</div>
  <div class="canal-acts">${chips}</div>
  </div>`;
  }).join("");
