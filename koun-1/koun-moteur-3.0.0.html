@@ -1814,7 +1814,7 @@
  <!-- BLOC PLIABLE 1 : PRINCIPES UNIQUES (WIN / NUL / PÉNALITÉ / DUALITÉ / RÉSONANCE) -->
  <div class="collapsible-panel" id="panelPrincipesUniques">
  <button type="button" class="collapsible-toggle-bar" onclick="toggleCollapseSection('panelPrincipesUniques', 'labelPrincipesToggle')">
- <span style="color:#fde047;">&#9989; Détails : PrincipeUniqueDuWin, Nul, Pénalité, Dualité &amp; Résonance Terre</span>
+ <span style="color:#fde047;">&#9989; Détails : les principes du Moteur 3 (victoire, nul, pénalité, buts, corners)</span>
  <span class="collapsible-chevron"><span id="labelPrincipesToggle">Déplier</span> <span class="chev-arrow">&#9662;</span></span>
  </button>
  <div class="collapsible-body">
@@ -1829,7 +1829,7 @@
  <!-- BLOC PLIABLE 2 : ANALYSE DES PÔLES (R1 <-> R7) -->
  <div class="collapsible-panel pole-theme" id="panelAnalysePoles">
  <button type="button" class="collapsible-toggle-bar" onclick="toggleCollapseSection('panelAnalysePoles', 'labelPolesToggle')">
- <span style="color:#38bdf8;">&#9881; ANALYSE DES PÔLES (R1 &harr; R7) &bull; <small style="color:#93c5fd; font-weight:600;">Couche décisionnaire unique</small></span>
+ <span style="color:#38bdf8;">&#9881; ANALYSE DES PÔLES (R1 &harr; R7) &bull; <small style="color:#93c5fd; font-weight:600;">Forces, positions et paralysies</small></span>
  <span class="collapsible-chevron"><span id="labelPolesToggle">Déplier</span> <span class="chev-arrow">&#9662;</span></span>
  </button>
  <div class="collapsible-body">
@@ -1931,7 +1931,7 @@
  <button type="button" class="btn-slate" style="padding:0.25rem 0.6rem; font-size:0.7rem;" onclick="syncR1R7FromTheme()">Synchroniser avec le thème actuel</button>
  </div>
  <div style="font-size:0.72rem; color:var(--text-muted);">
- Synchronisé avec le Moteur 3 (verdict par principes) : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le score de croisement (lecture 3.0.0, ne décide plus).
+ Synchronisé avec le Moteur 3 : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le verdict du Moteur 3 sur le thème simulé.
  </div>
 
  <div class="r1r7-grid">
@@ -2047,11 +2047,13 @@
 })();
 </script>
 <script>
-/* ═══ Moteur 2 : cas explicites (verdict) ═══ */
-/* koun — moteur 2 : structure + cas explicites.
-   Étage 1 : la structure (figures, thème, résultantes, fronts, forces, pôles, attaques).
-   Étage 2 : les cas. Chaque cas est une condition écrite qui donne un résultat.
-   Le moteur lit les cas dans l'ordre ; si aucun ne s'applique, il le dit. */
+/* ═══ Moteur 3 : table rase des principes ═══ */
+/* koun — moteur 3 : table rase des principes (fichier autonome).
+   Structure exacte (thème, résultantes, forces, pôles, paralysies) puis, principe par principe, victoire, nul, pénalité, deux marquent,
+   buts MT-1, corners, Over/Under 1,5 · 2,5 · 3,5. Chaque principe porte sa provenance :
+     PROPRIETAIRE : posé par le propriétaire ; PORTE_3.0.0 : règle du 3.0.0 reprise ; DEVELOPPEMENT : issu des matchs de développement,
+     tient sur le lot 1 ; DEV_SEUL : développement seul, jamais confirmé ; NON_TESTE : aucune donnée réelle.
+   Aucun principe n'est ajusté sur un lot de validation. */
 (function (root) {
   'use strict';
   var VERSION = '2.0.0';
@@ -2069,23 +2071,6 @@
   };
   var FRONTS = ['A', 'B', 'C', 'D'];                       // A 1-5-9-13, B 2-6-10-14, C 3-7-11-15, D 4-8-12-16
   var ELEMENTS = ['Feu', 'Air', 'Eau', 'Terre'];           // élément du front = élément de ses maisons
-  // Cercle des fronts : les 16 figures dans l'ordre de leur maison de repos. Quatre points partagent le cercle :
-  // A = Est, entre 16 et 1 ; D = Nord, entre 4 et 5 ; B = Ouest, entre 8 et 9 ; C = Sud, entre 12 et 13.
-  var AXES = [{ point: 'A', nom: 'Est', entre: [16, 1] }, { point: 'D', nom: 'Nord', entre: [4, 5] }, { point: 'B', nom: 'Ouest', entre: [8, 9] }, { point: 'C', nom: 'Sud', entre: [12, 13] }];
-  // Quatre points seconds, au milieu de chaque quart, face à face deux à deux : entre 2 et 3 face à entre 10 et 11 ; entre 6 et 7 face à entre 14 et 15.
-  var AXES2 = [{ point: 'NE', entre: [2, 3] }, { point: 'NO', entre: [6, 7] }, { point: 'SO', entre: [10, 11] }, { point: 'SE', entre: [14, 15] }];
-  // Combinaisons de quatre maisons sur le cercle. Chaque combinaison a trois sœurs, obtenues en tournant d'un quart de cercle (+4 maisons).
-  // L'axe angulaire 1-4-7-10 et ses sœurs sont les quatre chaînes d'attaque qui se partagent le cercle.
-  var COMBIS = [];
-  [['Axe angulaire', [1, 4, 7, 10]], ['Combinaison 1-5-12-15', [1, 5, 12, 15]], ['Témoin 3-5-11-15', [3, 5, 11, 15]], ['Front A', [1, 5, 9, 13]]].forEach(function (c, g) {
-    for (var t = 0; t < (g === 3 ? 4 : 4); t++) {
-      var l = c[1].map(function (h) { return ((h - 1 + (g === 3 ? t : 4 * t)) % 16) + 1; });
-      COMBIS.push({ famille: c[0], nom: g === 3 ? 'Front ' + 'ABCD'.charAt(t) : t === 0 ? c[0] : g === 0 && t === 2 ? 'Axe miroir 9-12-15-2' : 'sœur ' + l.join('-'), maisons: l, origine: t === 0 });
-    }
-  });
-  var ROSE = [];
-  (function () { var q = ['entre A (Est) et D (Nord)', 'entre D (Nord) et B (Ouest)', 'entre B (Ouest) et C (Sud)', 'entre C (Sud) et A (Est)'], bord = { 16: 'A', 1: 'A', 4: 'D', 5: 'D', 8: 'B', 9: 'B', 12: 'C', 13: 'C' };
-    for (var k = 1; k <= 16; k++) ROSE.push(q[Math.floor((k - 1) / 4)] + (bord[k] ? ', au bord du point ' + bord[k] : '')); })();
   var CARDINAL = { 1: 'Est', 5: 'Nord', 9: 'Ouest', 13: 'Sud', 2: 'Est', 6: 'Nord', 10: 'Ouest', 14: 'Sud',
     3: 'Est', 15: 'Nord', 11: 'Ouest', 7: 'Sud', 4: 'Est', 16: 'Nord', 12: 'Ouest', 8: 'Sud' };
   // Barème des forces hors maison de repos : élément de la figure face à l'élément de la maison.
@@ -2190,17 +2175,8 @@
     // Annulations (double repos) et verrous de front (deux figures d'un même front, en base, chez elles à 100 %).
     var annulations = duels.filter(function (d) { return d.etat === 'DOUBLE_REPOS_ANNULATION'; })
       .map(function (d) { return { attaquant: d.attaquant, cible: d.cible, maisonAttaquant: num(d.attaquant), maisonCible: num(d.cible) }; });
-    function verrousDuFront(lettre) {
-      var chez = figuresDuFront(lettre).filter(function (f) { return maisons[num(f) - 1].base === f && force(f, num(f)) === 100; });
-      var l = [];
-      for (var i = 0; i < chez.length; i++) for (var j = i + 1; j < chez.length; j++) l.push({ figures: [chez[i], chez[j]], maisons: [num(chez[i]), num(chez[j])], front: lettre });
-      return l;
-    }
     function chezElleEnBase(f) { return maisons[num(f) - 1].base === f; }
     function absente(f) { return positions(f).length === 0; }
-    function enMaisonPaire(f) { return positions(f).some(function (x) { return x.maison % 2 === 0; }); }
-    // Intrusions : la figure k posée en base dans la maison de k+3 paralyse k+3, où qu'elle soit. Grave si la cible est dans une maison d'élément destructeur, sinon elle est soutenue.
-    // La résultante de l'intrus est toujours de front A ou C.
     var paralysies = [];
     FIG.forEach(function (t) {
       var k = fig(num(t) - 3 + 16);
@@ -2228,20 +2204,6 @@
       if (b.length >= 2) return { attaquant: at, motif: 'ATTAQUANT_DEUX_FOIS_EN_BASE', maisons: b.map(function (x) { return x.maison; }) };
       return null;
     }
-    // Stabilité : les ancrages de chaque camp = ses figures dans leur maison de repos, en base, non annulées.
-    // Camp : la boucle du pôle (boucles différentes), son front (même boucle) ou sa moitié de front (même front).
-    function stabilite() {
-      function campDe(c) {
-        var n = num(c.figure);
-        if (mode === 'BOUCLES_DIFFERENTES') return FIG.filter(function (f) { return num(f) % 2 === n % 2; });
-        if (mode === 'MEME_BOUCLE') return c.frontDirect;
-        return [c.figure, fig(n + (n <= 8 ? (n <= 4 ? 4 : -4) : (n <= 12 ? 4 : -4)))];
-      }
-      function ancres(c) { return campDe(c).filter(function (f) { return chezElleEnBase(f) && !annuleePar(f); }); }
-      var a = ancres(R1), b = ancres(R7), e = Math.abs(a.length - b.length);
-      return { R1: a, R7: b, ecart: e, fort: e >= 2, plusStable: a.length > b.length ? 'R1' : b.length > a.length ? 'R7' : null };
-    }
-    // Les deux figures somme du thème : l'axe angulaire (M1+M4+M7+M10) et la somme M3+M5+M11+M15.
     function sommeDe(l) { return l.map(function (h) { return theme[h]; }).reduce(function (x, y) { return additionner(x, y); }); }
     var sommes = [{ nom: 'somme de l’axe angulaire', figure: sommeDe([1, 4, 7, 10]) }, { nom: 'somme 3-5-11-15', figure: sommeDe([3, 5, 11, 15]) }];
     sommes.forEach(function (x) {
@@ -2250,182 +2212,27 @@
       x.surAxe = x.enBase.filter(function (h) { return h === 1 || h === 4 || h === 7 || h === 10; });
       x.camp = mode !== 'BOUCLES_DIFFERENTES' ? null : (num(x.figure) % 2 === num(R1.figure) % 2 ? 'R1' : 'R7');
     });
-    // Binôme de M1 en M4 ou M10 (base ou résultante) : le thème est beaucoup plus parlant.
-    var bm1 = fig(num(theme[1]) + 2), ou = positions(bm1).filter(function (x) { return x.maison === 4 || x.maison === 10; });
-    var binomeM1 = { figure: bm1, positions: ou.map(function (x) { return { maison: x.maison, couche: x.couche === 'base' ? 'base' : 'résultante' }; }), parlant: ou.length > 0 };
-    // Lecture du cercle (boucles différentes). Deux signaux désignent un favori :
-    //  - le bord : un pôle dont la figure est au bord d'un point A, B, C, D (fronts A et D) face à un pôle de l'intérieur (fronts B et C) ;
-    //  - l'amont : le pôle d'où l'on rejoint l'autre en avançant de 1, 3 ou 5 figures dans le sens de l'attaque.
-    var cercle = (function () {
-      var a = num(R1.figure), b = num(R7.figure), d = ((b - a) % 16 + 16) % 16;
-      function auBord(k) { return k % 4 === 1 || k % 4 === 0; }
-      var o = { ecart: d, bordR1: auBord(a), bordR7: auBord(b), favoriBord: null, amont: null, favori: null, conflit: false, signaux: [] };
-      if (mode !== 'BOUCLES_DIFFERENTES') return o;
-      if (o.bordR1 !== o.bordR7) { o.favoriBord = o.bordR1 ? 'R1' : 'R7'; o.signaux.push((o.bordR1 ? R1 : R7).figure + ' (' + o.favoriBord + ') est au bord d’un point, ' + (o.bordR1 ? R7 : R1).figure + ' à l’intérieur'); }
-      if (d === 1 || d === 3 || d === 5) o.amont = 'R1'; else if (d === 15 || d === 13 || d === 11) o.amont = 'R7';
-      if (o.amont) o.signaux.push((o.amont === 'R1' ? R1 : R7).figure + ' (' + o.amont + ') est en amont, à ' + (o.amont === 'R1' ? d : 16 - d) + ' figure(s) de l’autre pôle dans le sens de l’attaque');
-      if (o.favoriBord && o.amont && o.favoriBord !== o.amont) o.conflit = true;
-      else o.favori = o.favoriBord || o.amont;
-      return o;
-    })();
-    // Sommes aux quatre points du cercle : A = M16+M1 (toujours M15), D = M4+M5, B = M8+M9, C = M12+M13.
-    // Quand une somme est le miroir d'un pôle, le point où elle tombe compte : au point D, nul ; au point B ou C, ce pôle est favori.
-    var pointsCercle = AXES.map(function (x) {
-      var f = additionner(theme[x.entre[0]], theme[x.entre[1]]);
-      return { point: x.point, nom: x.nom, maisons: x.entre, figure: f, miroirDe: f === R1.miroir ? 'R1' : f === R7.miroir ? 'R7' : null, pole: f === R1.figure ? 'R1' : f === R7.figure ? 'R7' : null };
-    });
-    // Les huit points (A, D, B, C et les quatre points du milieu des quarts) : somme du thème à chaque point, comparée à la valeur propre du point.
-    // Un point « au repos » est un point où le thème redonne la valeur propre du point. La somme des huit points est toujours M16.
-    var huitPoints = AXES.concat(AXES2).map(function (x) {
-      var f = additionner(theme[x.entre[0]], theme[x.entre[1]]);
-      return { point: x.point, maisons: x.entre, valeur: x.valeur, figure: f, auRepos: f === x.valeur };
-    });
-    var pointsAuRepos = huitPoints.filter(function (x) { return x.auRepos; });
-    var sentencePole = theme[16] === R1.figure ? 'R1' : theme[16] === R7.figure ? 'R7' : null;
-    // Poids des pôles en base : somme des forces de la figure du pôle dans toutes ses positions en base.
-    // Sur les matchs réels où les pôles sont dans le même front ou la même boucle (8 matchs) : R1 plus lourd que R7, le match se décide ; sinon, nul.
-    var poidsPoles = (function () {
-      function poids(c) { return positions(c.figure).filter(function (x) { return x.couche === 'base'; }).reduce(function (t, x) { return t + (x.force === null ? 100 : x.force); }, 0); }
-      var a = poids(R1), b = poids(R7);
-      return { R1: a, R7: b, ecart: a - b, applicable: mode !== 'BOUCLES_DIFFERENTES', decide: a > b };
-    })();
-    // Multiplicité des pôles : nombre de positions de la figure du pôle dans le thème, base et résultante.
-    // Sur les matchs réels décidés, le pôle le plus présent est le vainqueur 9 fois sur 10 quand les deux nombres diffèrent.
-    var multiplicite = (function () {
-      function compte(c) { var p = positions(c.figure); return { base: p.filter(function (x) { return x.couche === 'base'; }).length, total: p.length }; }
-      var a = compte(R1), b = compte(R7);
-      return { R1: a, R7: b, favori: a.total > b.total ? 'R1' : b.total > a.total ? 'R7' : null };
-    })();
-    // Les deux témoins : M13 (somme des mères) et M14 (somme des filles). En boucles différentes, chaque témoin appartient à un camp (sa boucle).
-    var temoins = (function () {
-      var a = theme[13], b = theme[14], o = { m13: a, m14: b, campM13: null, campM14: null, etat: null };
-      if (mode !== 'BOUCLES_DIFFERENTES') return o;
-      function c(f) { return num(f) % 2 === num(R1.figure) % 2 ? 'R1' : 'R7'; }
-      o.campM13 = c(a); o.campM14 = c(b);
-      o.etat = a === b ? 'IDENTIQUES' : o.campM13 === o.campM14 ? 'MEME_CAMP' : 'PARTAGES';
-      return o;
-    })();
-    // Figure du lien : la somme des deux pôles. Elle dit quel lien les unit (miroir : Tristitia ; même front : Albus ou Fortuna Major ; etc.).
     var lien = (function () {
       var f = additionner(R1.figure, R7.figure), pos = positions(f);
       var b = pos.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), r = pos.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; });
       return { figure: f, numero: num(f), base: b, resultante: r, chezElle: chezElle(f), etat: b.length ? 'EN_BASE' : chezElle(f) ? 'CHEZ_ELLE_EN_RESULTANTE' : r.length ? 'RESULTANTE_SEULEMENT' : 'ABSENTE' };
     })();
-    // Pour chaque combinaison : la somme des quatre maisons du thème, et où cette somme se trouve parmi ces mêmes maisons.
-    var combinaisons = COMBIS.map(function (c) {
-      var f = c.maisons.map(function (h) { return theme[h]; }).reduce(function (x, y) { return additionner(x, y); });
-      return { famille: c.famille, nom: c.nom, maisons: c.maisons, origine: c.origine, somme: f,
-        enBase: c.maisons.filter(function (h) { return maisons[h - 1].base === f; }), enResultante: c.maisons.filter(function (h) { return maisons[h - 1].resultante === f && maisons[h - 1].base !== f; }),
-        ailleurs: positions(f).filter(function (x) { return c.maisons.indexOf(x.maison) < 0; }).map(function (x) { return x.maison; }) };
-    });
-    // But en première mi-temps : la somme de l'axe angulaire se retrouve dans une maison de l'axe ; sûr si elle est en M4 ou M10, en base ou en résultante.
-    // Signal de but sur un axe de quatre maisons. Règle du propriétaire : dans toute maison de l'axe, la base compte ;
-    // dans les deux maisons fortes (M4 et M10 pour l'axe angulaire), la résultante compte aussi. On regarde la somme de l'axe et les deux pôles.
-    function butSur(c, fortes, nomAxe) {
-      function compte(h, couche) { return couche === 'base' || fortes.indexOf(h) >= 0; }
-      var ou = c.enBase.map(function (h) { return 'M' + h + ' (base)'; }).concat(c.enResultante.filter(function (h) { return compte(h, 'res'); }).map(function (h) { return 'M' + h + ' (résultante)'; }));
-      var faibleSomme = c.enResultante.filter(function (h) { return !compte(h, 'res'); });
-      var poles = [], faiblePoles = [];
-      [R1, R7].forEach(function (p) { positions(p.figure).forEach(function (x) {
-        if (c.maisons.indexOf(x.maison) < 0) return;
-        var t = p.camp + ' ' + p.figure + ' en M' + x.maison + (x.couche === 'base' ? ' (base)' : ' (résultante)');
-        (compte(x.maison, x.couche === 'base' ? 'base' : 'res') ? poles : faiblePoles).push(t);
-      }); });
-      var sur = ou.length + poles.length > 0, faible = faibleSomme.length + faiblePoles.length > 0, t = [];
-      if (ou.length) t.push('la somme de ' + nomAxe + ' donne ' + c.somme + ', présente en ' + ou.join(' et '));
-      if (poles.length) t.push('pôle sur l’axe : ' + poles.join(', '));
-      var tf = [];
-      if (faibleSomme.length) tf.push('la somme ' + c.somme + ' n’est qu’en résultante en M' + faibleSomme.join(', M'));
-      if (faiblePoles.length) tf.push(faiblePoles.join(', '));
-      return { maisons: c.maisons, fortes: fortes, somme: c.somme, enBase: c.enBase, enResultante: c.enResultante, poles: poles, niveau: sur ? 'SUR' : faible ? 'RESULTANTE' : 'AUCUN',
-        texte: sur ? t.join(' ; ') : faible ? 'signal en résultante hors de M' + fortes.join(' et M') + ' : ' + tf.join(' ; ') : 'la somme de ' + nomAxe + ' donne ' + c.somme + ', absente de ses maisons ; aucun pôle sur l’axe' };
-    }
-    // Première mi-temps : l'axe angulaire 1-4-7-10, maisons fortes M4 et M10 (règle du propriétaire).
-    var butMiTemps = butSur(combinaisons[0], [4, 10], 'l’axe angulaire');
-    // Deuxième mi-temps (hypothèse à vérifier) : l'axe miroir 9-12-15-2, en face sur le cercle ; maisons fortes M12 et M2, miroirs de M4 et M10.
-    var butMiTemps2 = butSur(combinaisons[2], [12, 2], 'l’axe miroir 9-12-15-2');
-    var miroirPoints = (function () {
-      function de(p) { return pointsCercle.filter(function (x) { return x.point === p; })[0]; }
-      var D = de('D'), o = { nul: null, favori: null, texte: null };
-      if (R1.miroir === R7.figure) return o;                         // pôles miroirs l'un de l'autre : le signal ne s'applique pas
-      if (D.miroirDe) { o.nul = D; o.texte = 'la somme au point D (M4 + M5) donne ' + D.figure + ', le miroir de ' + D.miroirDe; return o; }
-      if (mode !== 'BOUCLES_DIFFERENTES') return o;
-      var bc = [de('B'), de('C')].filter(function (x) { return x.miroirDe; }), camps = {};
-      bc.forEach(function (x) { camps[x.miroirDe] = true; });
-      if (bc.length && Object.keys(camps).length === 1) { o.favori = bc[0].miroirDe; o.texte = 'la somme au point ' + bc[0].point + ' (M' + bc[0].maisons[0] + ' + M' + bc[0].maisons[1] + ') donne ' + bc[0].figure + ', le miroir de ' + o.favori; }
-      return o;
-    })();
-    // Figures pénalisées : celles qui se trouvent dans la maison de leur antagoniste (base ou résultante).
-    var penalisees = [];
-    maisons.forEach(function (m) {
-      if (enMaisonAntagoniste(m.base, m.maison)) penalisees.push({ figure: m.base, maison: m.maison, couche: 'base', antagoniste: fig(m.maison) });
-      if (m.resultante && m.resultante !== m.base && enMaisonAntagoniste(m.resultante, m.maison)) penalisees.push({ figure: m.resultante, maison: m.maison, couche: 'résultante', antagoniste: fig(m.maison) });
-    });
-    // Chemin d'un pôle : ses figures, étape par étape, et qui tient leur maison de repos.
-    function chemin(c, autre) {
-      var n = num(c.figure), etapes;
-      if (mode === 'BOUCLES_DIFFERENTES') etapes = [[0, 'Pôle'], [2, 'Binôme du pôle'], [4, 'Front direct'], [6, 'Binôme du front direct'], [8, 'Miroir'], [10, 'Binôme du miroir'], [12, 'Front du miroir'], [14, 'Binôme du front du miroir']];
-      else if (mode === 'MEME_BOUCLE') etapes = [[0, 'Pôle'], [4, 'Front direct'], [8, 'Miroir'], [12, 'Front du miroir']];
-      else etapes = [[0, 'Pôle'], [(n <= 8 ? (n <= 4 ? 4 : -4) : (n <= 12 ? 4 : -4)), 'Partenaire de moitié']];
-      var miens = etapes.map(function (e) { return fig(n + e[0] + 16); });
-      var na = num(autre.figure), siens;
-      if (mode === 'BOUCLES_DIFFERENTES') siens = FIG.filter(function (f) { return num(f) % 2 === na % 2; });
-      else if (mode === 'MEME_BOUCLE') siens = autre.frontDirect;
-      else siens = [autre.figure, fig(na + (na <= 8 ? (na <= 4 ? 4 : -4) : (na <= 12 ? 4 : -4)))].filter(function (f) { return miens.indexOf(f) < 0; });
-      function cote(f) { return !f ? null : miens.indexOf(f) >= 0 ? 'ALLIE' : siens.indexOf(f) >= 0 ? 'ADVERSAIRE' : 'NEUTRE'; }
-      function annulee(f) { return annulations.some(function (x) { return x.attaquant === f || x.cible === f; }); }
-      var l = [{ titre: 'Maison du pôle', figure: c.figure, maison: c.maison, etat: 'POLE', occupant: c.figure, coteOccupant: 'ALLIE',
-        resultante: maisons[c.maison - 1].resultante, coteResultante: cote(maisons[c.maison - 1].resultante), positions: [] }];
-      etapes.forEach(function (e) {
-        var f = fig(n + e[0] + 16), h = num(f), m = maisons[h - 1], pos = positions(f), chez = chezElle(f);
-        l.push({ titre: e[1], figure: f, maison: h, etat: chez ? 'CHEZ_ELLE' : pos.length ? 'AILLEURS' : 'ABSENTE',
-          couche: chez ? (m.base === f ? 'base' : 'résultante') : null, penalisee: pos.filter(function (x) { return enMaisonAntagoniste(f, x.maison); }).map(function (x) { return x.maison; }), annulee: chez && annulee(f), positions: pos,
-          occupant: m.base, coteOccupant: m.base === f ? 'ELLE' : cote(m.base), resultante: m.resultante, coteResultante: m.resultante === f ? 'ELLE' : cote(m.resultante) });
-      });
-      return l;
-    }
     var confrontation = { mode: mode, R1: mode === 'BOUCLES_DIFFERENTES' ? paires(R1) : null, R7: mode === 'BOUCLES_DIFFERENTES' ? paires(R7) : null };
-    return { paralysies: paralysies, chezElleEnBase: chezElleEnBase, absente: absente, enMaisonPaire: enMaisonPaire, enMaisonAntagoniste: enMaisonAntagoniste, penalisees: penalisees, combinaisons: combinaisons, butMiTemps: butMiTemps, butMiTemps2: butMiTemps2, poidsPoles: poidsPoles, multiplicite: multiplicite, temoins: temoins, lien: lien, huitPoints: huitPoints, pointsAuRepos: pointsAuRepos, sentencePole: sentencePole, pointsCercle: pointsCercle, miroirPoints: miroirPoints, cercle: cercle, binomeM1: binomeM1, sommes: sommes, annuleePar: annuleePar, stabilite: stabilite(), mode: mode, confrontation: confrontation, chemin: { R1: chemin(R1, R7), R7: chemin(R7, R1) },
-      theme: theme, maisons: maisons, R1: R1, R7: R7, duels: duels, annulations: annulations,
-      verrous: { R1: verrousDuFront(R1.front), R7: verrousDuFront(R7.front) },
-      presentEn: presentEn, chezElle: chezElle, force: force, motif: motif, positions: positions };
+    return { paralysies: paralysies,
+      chezElleEnBase: chezElleEnBase,
+      enMaisonAntagoniste: enMaisonAntagoniste,
+      lien: lien,
+      sommes: sommes,
+      annuleePar: annuleePar,
+      mode: mode,
+      maisons: maisons,
+      R1: R1,
+      R7: R7,
+      chezElle: chezElle,
+      force: force,
+      positions: positions };
   }
 
-  // Témoin de validation du thème : quatre figures témoins qui doivent être présentes dans le thème
-  // (en base ou en résultante) : somme de l'axe angulaire (M1, M4, M7, M10), binôme de M1,
-  // figure du jour (jour de la semaine, de jour 6 h–18 h ou de nuit), somme des maisons 3, 5, 11, 15.
-  var FIGURE_DU_JOUR = [
-    { jour: 'Dimanche', diurne: 'Fortuna Major', nocturne: 'Fortuna Minor' }, { jour: 'Lundi', diurne: 'Populus', nocturne: 'Via' },
-    { jour: 'Mardi', diurne: 'Puer', nocturne: 'Rubeus' }, { jour: 'Mercredi', diurne: 'Albus', nocturne: 'Conjunctio' },
-    { jour: 'Jeudi', diurne: 'Aquisitio', nocturne: 'Laetitia' }, { jour: 'Vendredi', diurne: 'Puella', nocturne: 'Amissio' },
-    { jour: 'Samedi', diurne: 'Tristitia', nocturne: 'Carcer' }];
-  function figureDuJour(date) {
-    var d = (date instanceof Date && !isNaN(date.getTime())) ? date : new Date();
-    var j = FIGURE_DU_JOUR[d.getDay()], deJour = d.getHours() >= 6 && d.getHours() < 18;
-    return { figure: deJour ? j.diurne : j.nocturne, jour: j.jour, moment: deJour ? 'jour' : 'nuit' };
-  }
-  function temoin(theme, date) {
-    function somme(maisons) { return maisons.map(function (h) { return theme[h]; }).reduce(function (a, b) { return additionner(a, b); }); }
-    function presence(f) {
-      var base = [], res = [];
-      for (var h = 1; h <= 16; h++) { if (theme[h] === f) base.push(h); if (h < 16 && additionner(theme[h], fig(h)) === f) res.push(h); }
-      return { base: base, resultante: res, present: base.length > 0 };
-    }
-    var fdj = figureDuJour(date);
-    var lignes = [
-      { id: 'axeAngulaire', titre: 'Axe angulaire', detail: 'M1 + M4 + M7 + M10', figure: somme([1, 4, 7, 10]) },
-      { id: 'binome', titre: 'Binôme de M1', detail: 'binôme de ' + theme[1], figure: fig(num(theme[1]) + 2) },
-      { id: 'figureDuJour', titre: 'Figure du jour', detail: fdj.jour + ', de ' + fdj.moment, figure: fdj.figure },
-      { id: 'somme35115', titre: 'Somme 3-5-11-15', detail: 'M3 + M5 + M11 + M15', figure: somme([3, 5, 11, 15]) }
-    ];
-    lignes.forEach(function (l) { var p = presence(l.figure); l.base = p.base; l.resultante = p.resultante; l.present = p.present; });
-    return { lignes: lignes, presents: lignes.filter(function (l) { return l.present; }).length, valide: lignes.every(function (l) { return l.present; }) };
-  }
-
-  // ── Étage 2 : les cas ──────────────────────────────────────────────────
-  // Un cas simple = { id, famille, titre, statut, enonce, condition(lecture) } : UNE condition, UN résultat.
-  // La condition rend null, ou { verdict: '1' | '2' | 'N', assuree: bool, raison: texte }. Les cas sont lus dans l'ordre ; le premier qui s'applique tranche.
-  // Les cas d'une même famille se suivent : chacun suppose que les précédents de sa famille ne se sont pas appliqués.
   function partenaireMoitie(f) { var n = num(f); return n <= 8 ? fig(n <= 4 ? n + 4 : n - 4) : fig(n <= 12 ? n + 4 : n - 4); }
   function N(raison) { return { verdict: 'N', assuree: false, raison: raison }; }
   function V(c, L, raison, assuree) { return { verdict: c === L.R1 ? '1' : '2', assuree: !!assuree, raison: raison }; }
@@ -2466,34 +2273,7 @@
   // Le juge (M15) tranche : s'il est dans sa maison de repos (Aquisitio en base ou en résultante, c'est-à-dire Aquisitio ou Populus en base), il est décisif et l'équilibre ne donne pas le nul.
   // Les 8 nuls réels ont un juge hors de son repos ; 8 matchs décidés sur 19 ont le juge chez lui.
   function jugeChezLui(L) { var m = L.maisons[14]; return m.base === 'Aquisitio' || m.resultante === 'Aquisitio'; }
-  // Comptage des lignes à deux points : maisons de la boucle du pôle (même parité que sa figure), 4 niveaux, base et résultante.
-  function lignesDeuxPoints(L) {
-    function compte(c) {
-      var par = num(c.figure) % 2, t = 0;
-      for (var h = 1; h <= 16; h++) {
-        if (h % 2 !== par) continue;
-        var m = L.maisons[h - 1];
-        [m.base, m.resultante || m.base].forEach(function (f) { POINTS[f].forEach(function (v) { if (v === 2) t++; }); });
-      }
-      return t;
-    }
-    return { R1: compte(L.R1), R7: compte(L.R7) };
-  }
-  // Duel par les canaux : R7 = R1 + 6, donc la maison de R7 est toujours dans le canal binôme de celle de R1 (Feu-Eau ou Air-Terre).
-  // Le canal d'un pôle est celui de sa maison.
   function canalDuPole(c) { return FRONTS[(c.maison - 1) % 4]; }
-  // Concordance des résultantes des quatre maisons d'un canal : nombre de lignes à deux points (en M16, sans résultante, la base).
-  function concordanceCanal(L, lettre) {
-    var t = 0;
-    for (var h = 1; h <= 16; h++) {
-      if (FRONTS[(h - 1) % 4] !== lettre) continue;
-      var m = L.maisons[h - 1];
-      POINTS[m.resultante || m.base].forEach(function (v) { if (v === 2) t++; });
-    }
-    return t;
-  }
-  // Équilibre des affinités : Feu va avec Air, Eau avec Terre. On compte, sur les 16 maisons, les lignes à deux points de chaque niveau.
-  // Base : Feu + Air = Eau + Terre. La résultante ne montre pas cet équilibre (0 sur 8 nuls).
   function niveauxAffinites(L) {
     var lv = [0, 0, 0, 0];
     L.maisons.forEach(function (m) { for (var i = 0; i < 4; i++) if (POINTS[m.base][i] === 2) lv[i]++; });
@@ -2515,17 +2295,6 @@
         if (a.length === b.length) return null;
         var g = a.length > b.length ? L.R1 : L.R7, l = a.length > b.length ? a : b, o = a.length > b.length ? b : a;
         return V(g, L, 'Victoire ' + g.camp + ' assurée : boucles différentes, ' + l.length + ' figures du front ' + g.front + ' ou du front binôme sont chez elles (' + l.join(', ') + ') contre ' + o.length + ' pour l’autre.', true);
-      } },
-    // ───────── Famille « Même front » ─────────
-    // Deux cas de victoire (une figure au repos décisive pour un pôle), puis LE cas du nul, puis l'équilibre rompu.
-    { id: 'MF-1', famille: 'Même front', titre: 'Un seul antagoniste chez lui', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans le même front, et l’antagoniste d’un seul pôle est dans sa propre maison de repos : cette figure au repos est décisive, ce pôle est dominé et l’autre gagne, même entre miroirs.',
-      condition: function (L) {
-        var a1 = L.chezElle(L.R1.antagoniste), a7 = L.chezElle(L.R7.antagoniste);
-        if (L.R1.front !== L.R7.front || a1 === a7) return null;
-        var perd = a1 ? L.R1 : L.R7, gagne = a1 ? L.R7 : L.R1;
-        function res(c) { var r = L.maisons[c.maison - 1].resultante; return r ? ' (résultante de M' + c.maison + ' : ' + r + ')' : ''; }
-        return V(gagne, L, 'Victoire ' + gagne.camp + ' : même front ' + gagne.front + ', mais l’antagoniste de ' + perd.camp + ' ' + perd.figure + ', ' + perd.antagoniste + ', est chez lui en M' + num(perd.antagoniste) + ' ; celui de ' + gagne.figure + ' ne l’est pas. ' + gagne.camp + ' ' + gagne.figure + res(gagne) + ' ; ' + perd.camp + ' ' + perd.figure + res(perd) + '.');
       } },
     { id: 'MF-2', famille: 'Même front', titre: 'Un seul partenaire de moitié chez lui', statut: 'REGLE_CONFIRMEE',
       enonce: 'Pôles dans le même front, moitiés différentes (A : 1-5 et 9-13 ; B : 2-6 et 10-14 ; C : 3-7 et 11-15 ; D : 4-8 et 12-16), et un seul pôle a son partenaire de moitié dans sa maison de repos (base ou résultante) : cette figure au repos est décisive, ce pôle gagne.',
@@ -2553,23 +2322,6 @@
         var n = equilibreCompense(L); if (!n) return null;
         return N('Nul : même front ' + L.R1.front + ', sans figure au repos décisive. ' + texteEquilibre(n));
       } },
-    { id: 'MF-4', famille: 'Même front', titre: 'Équilibre rompu : le pôle le plus lourd', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans le même front, sans figure au repos décisive, et la figure d’équilibre n’est posée ni dans une maison d’équilibre ni sur l’axe : le match se décide. Le pôle qui pèse le plus en base gagne ; à poids égal, le pôle le plus présent dans le thème.',
-      condition: function (L) {
-        if (L.R1.front !== L.R7.front) return null;
-        var p = L.poidsPoles, m = L.multiplicite, g = p.R1 > p.R7 ? L.R1 : p.R7 > p.R1 ? L.R7 : m.R1.total > m.R7.total ? L.R1 : m.R7.total > m.R1.total ? L.R7 : null;
-        if (!g) return null;
-        return V(g, L, 'Victoire ' + g.camp + ' : même front ' + g.front + ', la figure d’équilibre ' + L.lien.figure + ' n’est posée ni en M4, M8, M12, M16 ni sur l’axe. ' + (p.R1 !== p.R7 ? 'Poids en base : R1 ' + p.R1 + ', R7 ' + p.R7 + '.' : 'Poids égaux ; présence dans le thème : R1 ' + m.R1.total + ', R7 ' + m.R7.total + '.'));
-      } },
-    // ───────── Famille « Pôle sans force » ─────────
-    { id: 'PF-1', famille: 'Pôle sans force', titre: 'Pôle éteint', statut: 'EN_ESSAI',
-      enonce: 'Un seul des deux pôles est éteint (sa figure ne dépasse 1 % dans aucune position) : l’autre gagne.',
-      condition: function (L) {
-        var m1 = meilleureForce(L, L.R1), m7 = meilleureForce(L, L.R7);
-        if ((m1 <= 1) === (m7 <= 1)) return null;
-        var e = m1 <= 1 ? L.R1 : L.R7, v = m1 <= 1 ? L.R7 : L.R1;
-        return V(v, L, 'Victoire ' + v.camp + ' : le pôle ' + e.camp + ', ' + e.figure + ', est éteint (au plus 1 % dans toutes ses positions : ' + L.positions(e.figure).map(function (x) { return 'M' + x.maison; }).join(', ') + '). ' + v.figure + ' atteint ' + (v === L.R1 ? m1 : m7) + ' %.');
-      } },
     { id: 'PF-2', famille: 'Pôle sans force', titre: 'Attaque directe sur un pôle sans défense', statut: 'EN_ESSAI',
       enonce: 'Un pôle attaque l’autre directement ; l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne à plus de 1 % : l’attaquant gagne.',
       condition: function (L) {
@@ -2578,16 +2330,6 @@
         if (!(forceChezSoi(L, cible) <= 1 && forceChezSoi(L, att) > 1)) return null;
         return V(att, L, 'Victoire ' + att.camp + ' : ' + att.figure + ' attaque directement ' + cible.figure + ', qui n’a que ' + forceChezSoi(L, cible) + ' % dans sa maison M' + cible.maison + ' ; ' + att.figure + ' tient la sienne (M' + att.maison + ') à ' + forceChezSoi(L, att) + ' %.');
       } },
-    { id: 'PF-3', famille: 'Pôle sans force', titre: 'Pôle dans la maison de son antagoniste', statut: 'EN_ESSAI',
-      enonce: 'Un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) : l’autre gagne.',
-      condition: function (L) {
-        function pen(c) { return L.enMaisonAntagoniste(c.figure, c.maison) && !L.positions(c.figure).some(function (x) { return x.couche === 'base' && x.maison !== c.maison && (x.force === null || x.force >= 70); }); }
-        var a = pen(L.R1), b = pen(L.R7);
-        if (a === b) return null;
-        var p = a ? L.R1 : L.R7, g = a ? L.R7 : L.R1;
-        return V(g, L, 'Victoire ' + g.camp + ' : le pôle ' + p.camp + ', ' + p.figure + ', est en M' + p.maison + ', la maison de son antagoniste ' + fig(p.maison) + ' (0 %, pénalisé). ' + g.figure + ' n’est pas pénalisé.');
-      } },
-    // ───────── Famille « Pôles sur l'axe » ─────────
     { id: 'AX-1', famille: 'Pôles sur l’axe', titre: 'Pôles en M4 et M10 : le pôle de M4 engendre l’autre', statut: 'EN_ESSAI',
       enonce: 'Les pôles sont en M4 et M10 (Albus en M1). M10 est la somme de M3 et M4 : le pôle de M4 engendre celui de M10. Le pôle de M4 gagne, sauf si le pôle de M10 l’attaque directement.',
       condition: function (L) {
@@ -2597,47 +2339,6 @@
         if (attaquantDirect(L) === m10) return null;
         return V(m4, L, 'Victoire ' + m4.camp + ' : les pôles sont en M4 et M10. ' + m4.figure + ', en M4, engendre ' + m10.figure + ' en M10 (M10 = M3 + M4, avec ' + L.maisons[2].base + ' en M3), et ' + m10.figure + ' ne l’attaque pas directement.');
       } },
-    // ───────── Famille « Repos annulés » ─────────
-    // ───────── Famille « Somme de l'axe » ─────────
-    // ───────── Conditions du propriétaire, pas encore vérifiées sur un match réel (une famille chacune) ─────────
-    { id: 'PR-1', famille: 'Verrou de front', titre: 'Verrou de front', statut: 'EN_ESSAI',
-      enonce: 'Deux figures du front d’un pôle sont en base, chacune dans sa maison de repos à 100 %, et l’autre pôle n’a pas de verrou : ce pôle gagne.',
-      condition: function (L) {
-        var a = L.verrous.R1.length > 0, b = L.verrous.R7.length > 0;
-        if (a === b) return null;
-        var k = a ? 'R1' : 'R7', v = L.verrous[k][0];
-        return V(L[k], L, 'Victoire ' + k + ' : verrou du front ' + v.front + ', ' + v.figures[0] + ' en M' + v.maisons[0] + ' et ' + v.figures[1] + ' en M' + v.maisons[1] + ', chacune dans sa maison de repos.');
-      } },
-    { id: 'PR-2', famille: 'Pôle et front au repos', titre: 'Pôle et son front au repos, autres en maisons paires', statut: 'EN_ESSAI',
-      enonce: 'Un seul pôle remplit ceci : il est chez lui en base, son antagoniste non ; son front direct est chez lui, l’antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires. Ce pôle gagne.',
-      condition: function (L) {
-        function ok(c) { var n = num(c.figure); return L.chezElleEnBase(c.figure) && !L.chezElle(fig(n - 3)) && L.chezElle(fig(n + 4)) && !L.chezElle(fig(n + 1)) && L.enMaisonPaire(fig(n + 8)) && L.enMaisonPaire(fig(n + 12)); }
-        return unSeul(L, ok, function (c) { return c.figure + ' est dans sa maison de repos, son front ' + fig(num(c.figure) + 4) + ' aussi, sans antagoniste au repos ; ' + fig(num(c.figure) + 8) + ' et ' + fig(num(c.figure) + 12) + ' occupent des maisons paires.'; });
-      } },
-    { id: 'PR-3', famille: 'Attaquant en M8', titre: 'Pôle attaquant en M8 avec un front en M4 ou M12', statut: 'EN_ESSAI',
-      enonce: 'Un seul pôle remplit ceci : il attaque l’autre directement, il est en M8, et une autre figure de son front est en M4 ou M12. Ce pôle gagne.',
-      condition: function (L) {
-        function ok(c, autre) { var n = num(c.figure); return num(autre.figure) === num(fig(n + 3)) && L.maisons[7].base === c.figure && [fig(n + 4), fig(n + 8), fig(n + 12)].some(function (f) { return L.presentEn(f, 4) || L.presentEn(f, 12); }); }
-        return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', il est en M8 et une figure de son front est en M4 ou M12.'; });
-      } },
-    { id: 'PR-4', famille: 'Pôle chez son antagoniste', titre: 'Pôle chez son antagoniste, front incomplet', statut: 'EN_ESSAI',
-      enonce: 'Un pôle est dans la maison de son antagoniste direct, son front direct ou le front de son miroir est absent, et l’adversaire a une figure de son front en maison paire (M4 ou M12 si son front est Terre ou Eau) : l’adversaire gagne.',
-      condition: function (L) {
-        function ok(c, autre) {
-          var n = num(autre.figure), chezAntagoniste = L.maisons[num(fig(n - 3)) - 1].base === autre.figure;
-          if (!chezAntagoniste || !(L.absente(fig(n + 4)) || L.absente(fig(n + 12)))) return false;
-          var exigeM4M12 = c.element === 'Terre' || c.element === 'Eau';
-          return c.frontDirect.some(function (f) { return exigeM4M12 ? (L.presentEn(f, 4) || L.presentEn(f, 12)) : L.enMaisonPaire(f); });
-        }
-        return unSeul(L, ok, function (c, autre) { return autre.figure + ' est dans la maison de son antagoniste ' + fig(num(autre.figure) - 3) + ' et son front est incomplet ; le front de ' + c.figure + ' tient ' + (c.element === 'Terre' || c.element === 'Eau' ? 'M4 ou M12' : 'une maison paire') + '.'; });
-      } },
-    { id: 'PR-5', famille: 'Attaqué sans front direct', titre: 'Pôle attaqué sans front direct', statut: 'EN_ESSAI',
-      enonce: 'Un pôle attaque l’autre directement, et le pôle attaqué n’a pas son front direct dans le thème : le pôle attaqué perd.',
-      condition: function (L) {
-        function ok(c, autre) { return num(autre.figure) === num(fig(num(c.figure) + 3)) && L.absente(fig(num(autre.figure) + 4)); }
-        return unSeul(L, ok, function (c, autre) { return c.figure + ' attaque directement ' + autre.figure + ', dont le front direct ' + fig(num(autre.figure) + 4) + ' est absent du thème.'; });
-      } },
-    // ───────── Famille « Pôle chez lui » ─────────
     { id: 'CL-1', famille: 'Pôle chez lui', titre: 'Même boucle : un seul pôle chez lui', statut: 'EN_ESSAI',
       enonce: 'Pôles dans la même boucle, fronts différents. Un seul pôle est dans sa maison de repos (non annulé, pas un simple reflet de Populus) : il gagne.',
       condition: function (L) {
@@ -2659,15 +2360,6 @@
         return V(g, L, 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paireDe(g).join(' + ') + ' contre ' + paireDe(p).join(' + ') + '. ' +
           cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : ''), sure);
       } },
-    { id: 'PR-6', famille: 'Front Sud ou Nord au repos', titre: 'Front Sud ou Nord du pôle dans sa maison de repos', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans la même boucle ou le même front. Un seul pôle a une figure Sud ou Nord de son front (autre que lui) dans sa maison de repos, reflets de Populus exclus : ce pôle gagne.',
-      condition: function (L) {
-        if (L.mode === 'BOUCLES_DIFFERENTES') return null;
-        function auRepos(c) { return c.frontDirect.filter(function (f) { var pt = CARDINAL[num(f)]; return f !== c.figure && (pt === 'Sud' || pt === 'Nord') && L.chezElle(f) && !(!L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus' && c.front !== 'D'); }); }
-        return unSeul(L, function (c) { return auRepos(c).length > 0; }, function (c) { var f = auRepos(c)[0]; return f + ' (front ' + c.front + ' · ' + CARDINAL[num(f)] + ' de ' + c.figure + ') est dans sa maison de repos M' + num(f) + '.'; });
-      } },
-    // ───────── Famille « Témoins » : le cas du nul en boucles différentes ─────────
-    // ───────── Famille « Dernier recours » : lue quand rien d'autre n'a tranché ─────────
     { id: 'NU-2', famille: 'Équilibre d’activation', titre: 'Le nul : les deux parties du thème sont en équilibre d’activation', statut: 'EN_ESSAI',
       enonce: 'Même boucle ou boucles différentes, aucun cas de victoire ne s’est appliqué. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul.',
       condition: function (L) {
@@ -2682,44 +2374,6 @@
         var n = niveauxAffinites(L); if (n.feuAir !== n.eauTerre) return null;
         return N('Nul : aucun cas de victoire ne s’applique. En base, Feu + Air compte ' + n.feuAir + ' lignes à deux points (Feu ' + n.niveaux[0] + ', Air ' + n.niveaux[1] + ') et Eau + Terre en compte autant (Eau ' + n.niveaux[2] + ', Terre ' + n.niveaux[3] + ') : les affinités s’équilibrent, et le juge (M15) n’est pas dans sa maison de repos.');
       } },
-    { id: 'DR-1', famille: 'Dernier recours', titre: 'L’axe angulaire désigne un pôle', statut: 'EN_ESSAI',
-      enonce: 'La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne.',
-      condition: function (L) {
-        var ax = L.sommes[0]; if (!ax.pole || L.R1.figure === L.R7.figure) return null;      // deux pôles identiques : l’axe ne peut en désigner qu’un
-        var cp = L[ax.pole], autre = autrePole(L, cp);
-        if (!((cp.maison === 1 || cp.maison === 4 || cp.maison === 7 || cp.maison === 10) && autre.figure !== L.sommes[1].figure)) return null;
-        var rr = L.maisons[cp.maison - 1].resultante, fr = cp.frontDirect.filter(function (f) { return f !== cp.figure && !L.absente(f); });
-        return V(cp, L, 'Victoire ' + ax.pole + ' : la somme de l’axe angulaire donne ' + ax.figure + ', le pôle ' + ax.pole + ', qui siège lui-même sur l’axe en M' + cp.maison + '. L’axe désigne ce pôle.' +
-          (rr ? ' En M' + cp.maison + ' il donne ' + rr + ' en résultante.' : '') + (fr.length ? ' Son front est présent : ' + fr.join(', ') + '.' : ''));
-      } },
-    { id: 'DR-C', famille: 'Dernier recours', titre: 'Le canal le plus concordant', statut: 'EN_ESSAI',
-      enonce: 'Le duel se joue entre le canal de la maison de R1 et celui de la maison de R7 (toujours Feu-Eau ou Air-Terre). Les deux points d’une résultante disent la concordance entre la figure et la figure de repos de la maison. Le canal dont les quatre résultantes ont le plus de lignes à deux points est le mieux maintenu : son pôle gagne.',
-      condition: function (L) {
-        var c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7), p1 = concordanceCanal(L, c1), p7 = concordanceCanal(L, c7);
-        if (p1 === p7) return null;
-        var g = p1 > p7 ? L.R1 : L.R7, cg = p1 > p7 ? c1 : c7;
-        return V(g, L, 'Victoire ' + g.camp + ' : le duel se joue entre le canal ' + c1 + ' (maison de R1, M' + L.R1.maison + ') et le canal ' + c7 + ' (maison de R7, M' + L.R7.maison + '). Le canal ' + cg + ' est le mieux maintenu : ses quatre résultantes comptent ' + Math.max(p1, p7) + ' lignes à deux points contre ' + Math.min(p1, p7) + '.');
-      } },
-    { id: 'DR-6', famille: 'Dernier recours', titre: 'La boucle la mieux ancrée', statut: 'EN_ESSAI',
-      enonce: 'Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne.',
-      condition: function (L) {
-        var a = ancresBoucle(L, L.R1), b = ancresBoucle(L, L.R7);
-        if (a.length === b.length) return null;
-        return V(a.length > b.length ? L.R1 : L.R7, L, 'Victoire ' + (a.length > b.length ? 'R1' : 'R7') + ' : ' + detailAncres(L));
-      } },
-    { id: 'DR-7', famille: 'Dernier recours', titre: 'Le miroir d’un pôle au point B ou C', statut: 'EN_ESSAI',
-      enonce: 'Boucles différentes, ancrages égaux. La somme au point B (M8 + M9) ou C (M12 + M13) est le miroir d’un seul pôle : ce pôle gagne.',
-      condition: function (L) { return L.miroirPoints.favori ? V(L[L.miroirPoints.favori], L, 'Victoire ' + L.miroirPoints.favori + ' : ancrages égaux, et ' + L.miroirPoints.texte + '.') : null; } },
-    { id: 'DR-8', famille: 'Dernier recours', titre: 'Le favori du cercle', statut: 'EN_ESSAI',
-      enonce: 'Boucles différentes, ancrages égaux. Les signaux du cercle (pôle au bord d’un point, pôle en amont) désignent un seul pôle : il gagne.',
-      condition: function (L) { var ce = L.cercle; return ce.favori ? V(L[ce.favori], L, 'Victoire ' + ce.favori + ' par le cercle : ancrages égaux, et ' + ce.signaux.join(' ; ') + '.') : null; } },
-    { id: 'DR-9', famille: 'Dernier recours', titre: 'Le pôle le plus lourd', statut: 'EN_ESSAI',
-      enonce: 'Boucles différentes, témoins partagés ou identiques : le match se décide. Si rien d’autre n’a désigné un pôle, celui qui pèse le plus en base gagne ; à poids égal, le plus présent dans le thème.',
-      condition: function (L) {
-        var p = L.poidsPoles, m = L.multiplicite, g = p.R1 > p.R7 ? L.R1 : p.R7 > p.R1 ? L.R7 : m.R1.total > m.R7.total ? L.R1 : m.R7.total > m.R1.total ? L.R7 : null;
-        if (!g) return null;
-        return V(g, L, 'Victoire ' + g.camp + ' : le match se décide (témoins ' + (L.temoins.etat === 'IDENTIQUES' ? 'identiques' : 'partagés entre les deux camps') + ') et rien d’autre ne désigne un pôle. ' + (p.R1 !== p.R7 ? 'Poids en base : R1 ' + p.R1 + ', R7 ' + p.R7 + '.' : 'Poids égaux ; présence dans le thème : R1 ' + m.R1.total + ', R7 ' + m.R7.total + '.'));
-      } },
   ];
   // Applique une condition aux deux pôles ; tranche seulement si un seul des deux la remplit.
   function unSeul(L, ok, pourquoi) {
@@ -2730,199 +2384,12 @@
   }
 
   function theme16(L) { return L.maisons[15].base; }
-  function analyser(theme, polesForces, sansVerification) {
-    var L = lire(theme, polesForces || undefined), decision = null;
-    // Signaux de camp : ancrages, pôle désigné par l'axe angulaire, miroir aux points du cercle, favori du cercle.
-    var axP = L.sommes[0].pole && [1, 4, 7, 10].indexOf(L[L.sommes[0].pole].maison) >= 0 ? L.sommes[0].pole : null;
-    var campSig = [['ancrages', L.stabilite.plusStable], ['axe angulaire', axP], ['miroir aux points', L.miroirPoints.favori], ['cercle', L.cercle.favori]].filter(function (x) { return x[1]; });
-    var ecartes = [];
-    var famillesEcartees = {};
-    for (var i = 0; i < CAS.length && !decision; i++) {
-      if (famillesEcartees[CAS[i].famille]) continue;      // un cas écarté pour incohérence écarte le reste de sa famille
-      var r = CAS[i].condition(L);
-      if (!r) continue;
-      // Cohérence : un cas ne peut pas donner la victoire à un pôle quand au moins deux signaux de camp désignent l'autre et qu'aucun ne le désigne.
-      if (r.verdict === '1' || r.verdict === '2') {
-        var g = r.verdict === '1' ? 'R1' : 'R7', pour = campSig.filter(function (x) { return x[1] === g; }), contre = campSig.filter(function (x) { return x[1] !== g; });
-        if (contre.length >= 2 && !pour.length) { ecartes.push({ cas: CAS[i].id, verdict: r.verdict, contre: contre.map(function (x) { return x[0]; }) }); famillesEcartees[CAS[i].famille] = true; continue; }
-      }
-      decision = { verdict: r.verdict, statut: CAS[i].statut, phase: CAS[i].id, famille: CAS[i].famille, regle: CAS[i].titre, raison: r.raison, victoireAssuree: !!r.assuree };
-    }
-    if (decision) decision.casEcartes = ecartes;
-    if (!decision) decision = { verdict: null, statut: 'AUCUN_CAS', phase: 'AUCUN_CAS', regle: null, victoireAssuree: false,
-      raison: 'Aucun cas défini ne s’applique à ce thème. Le moteur ne donne pas de verdict.' };
-    // Déséquilibre fort (au moins deux ancrages d'écart) : « 12 » (pas de nul) et double chance pour le camp le plus stable.
-    var st = L.stabilite;
-    // Toujours renseigné : écart nul = équilibre ; écart de 1 = double chance du camp le plus stable ; écart de 2 ou plus = « 12 » en plus.
-    // « 12 » (pas de nul) : on réunit les signaux tirés des matchs réels. Double chance : le camp que le verdict ou la stabilité désigne.
-    var sig = [], nulProbableAvant = [];
-    if (st.fort) sig.push('écart d’ancrages de ' + st.ecart + ' (' + st.R1.length + ' pour R1, ' + st.R7.length + ' pour R7)');
-    var resR1 = null, resR7 = null;
-    if (L.mode === 'BOUCLES_DIFFERENTES') {
-      var par = num(L.R1.figure) % 2;
-      resR1 = L.maisons.filter(function (m) { return m.resultante && num(m.resultante) % 2 === par; }).length; resR7 = 15 - resR1;
-      if (resR7 > resR1) sig.push('majorité des résultantes dans la boucle de R7 (' + resR7 + ' contre ' + resR1 + ')');
-    }
-    var ax = L.sommes[0], axePole = ax.pole && [1, 4, 7, 10].indexOf(L[ax.pole].maison) >= 0 ? ax.pole : null;
-    if (axePole) sig.push('la somme de l’axe angulaire est le pôle ' + axePole + ', qui siège sur l’axe');
-    // Même front : la somme des deux pôles est une figure de Terre (4, 8 ou 12), la figure d'équilibre.
-    // Posée en base dans une maison de Terre (M4, M8, M12), elle tient le nul (3 nuls réels sur 3) ; sinon le match se décide (1 sur 1).
-    var equilibre = null;
-    if (L.mode === 'MEME_FRONT') {
-      var fe = L.lien.figure, he = L.lien.base.filter(function (h) { return h % 4 === 0 || h === 1 || h === 7 || h === 10; });
-      equilibre = { figure: fe, maisons: he, posee: he.length > 0 };
-      if (equilibre.posee) nulProbableAvant.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) est en base en M' + he.join(', M') + ' (maison d’équilibre ou axe angulaire)');
-      else sig.push('la figure d’équilibre ' + fe + ' (somme des deux pôles) n’est en base ni dans une maison d’équilibre (M4, M8, M12, M16) ni sur l’axe angulaire');
-    }
-    // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
-    var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
-    if (polesSurAxe) sig.push('les deux pôles sont sur l’axe angulaire (M' + L.R1.maison + ' et M' + L.R7.maison + ')');
-    // Niveau d'activation : une résultante a autant ou plus d'impairs que la figure de repos de sa maison quand la base y a changé peu de lignes.
-    // Les deux pôles dans ce cas (aucune résultante de pôle moins activée que son repos) : le match se décide, 9 matchs réels sur 10 ; avec un pôle en dessous, 7 nuls sur 17.
-    (function () {
-      function imp(f) { return POINTS[f].filter(function (v) { return v === 1; }).length; }
-      var ok = ['R1', 'R7'].every(function (c) {
-        var h = L[c].maison, M = L.maisons[h - 1], rf = FIG[h - 1], r = M.resultante || FIG[(num(M.base) - 1 + 0) % 16];
-        if (!M.resultante) return true;
-        return imp(M.resultante) - imp(rf) >= 0;
-      });
-      if (ok) sig.push('la résultante de chaque pôle est au moins aussi activée que la figure de repos de sa maison');
-    })();
-    var nulProbable = nulProbableAvant;
-    if (L.temoins.etat === 'MEME_CAMP') nulProbable.push('les deux témoins (' + L.temoins.m13 + ', ' + L.temoins.m14 + ') sont dans le même camp');
-    else if (L.temoins.etat === 'PARTAGES') sig.push('les deux témoins sont partagés entre les deux camps (' + L.temoins.m13 + ' pour ' + L.temoins.campM13 + ', ' + L.temoins.m14 + ' pour ' + L.temoins.campM14 + ')');
-    else if (L.temoins.etat === 'IDENTIQUES') sig.push('les deux témoins sont la même figure (' + L.temoins.m13 + ')');
-    if (L.poidsPoles.applicable) {
-      if (L.poidsPoles.decide) sig.push('le pôle R1 pèse plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
-      else nulProbable.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
-    }
-    if (resR1 !== null && resR1 > resR7) nulProbable.push('majorité des résultantes dans la boucle de R1 (' + resR1 + ' contre ' + resR7 + ')');
-    if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulProbable.push('une figure somme est un pôle');
-    // La somme de l'axe angulaire est le pôle R7 : vers le nul (4 matchs réels sur 5).
-    if (!axePole && L.sommes[0].pole === 'R7') nulProbable.push('la somme de l’axe angulaire donne ' + L.sommes[0].figure + ', le pôle R7');
-    if (L.miroirPoints.nul) nulProbable.push(L.miroirPoints.texte);
-    if (L.pointsAuRepos.length) nulProbable.push(L.pointsAuRepos.map(function (x) { return 'le point ' + (x.point.length === 1 ? x.point : 'entre ' + x.maisons[0] + ' et ' + x.maisons[1]) + ' est au repos (M' + x.maisons[0] + ' + M' + x.maisons[1] + ' redonne ' + x.valeur + ')'; }).join(' ; '));
-    if (L.sentencePole) nulProbable.push('M16, somme des huit points, porte ' + theme16(L) + ', le pôle ' + L.sentencePole);
-    var campDC = decision.verdict === '1' ? 'R1' : decision.verdict === '2' ? 'R7' : (axePole || st.plusStable || L.miroirPoints.favori || L.cercle.favori || L.multiplicite.favori);
-    decision.marches = { ancragesR1: st.R1.length, ancragesR7: st.R7.length, ecart: st.ecart, resultantesR1: resR1, resultantesR7: resR7,
-      temoins: L.temoins, equilibre: equilibre, poidsPoles: L.poidsPoles, multiplicite: L.multiplicite, lien: L.lien, cercle: L.cercle, miroirPoints: L.miroirPoints, douze: sig.length > 0, signaux12: sig, signauxNul: nulProbable, renforce: sig.length >= 2,
-      camp: campDC, doubleChance: campDC === 'R1' ? '1X' : campDC === 'R7' ? 'X2' : null,
-      conflit: (sig.length > 0 && decision.verdict === 'N') || (sig.length > 0 && nulProbable.length > 0),
-      niveau: sig.length >= 2 ? 'FORT' : sig.length === 1 ? 'SIMPLE' : campDC ? 'LEGER' : 'EQUILIBRE' };
-    // Précision du verdict. Les signaux sont classés d'après les 20 matchs réels :
-    //  fiables (jamais pris en défaut) : résultantes, miroir au point D, ancrages, bord du cercle, miroir aux points B et C ;
-    //  faibles (déjà vus du mauvais côté) : somme égale à un pôle, point au repos, M16 porteur d'un pôle, amont, figure du lien.
-    (function () {
-      var m = decision.marches, pour = [], contre = [], indices = [], v = decision.verdict, g = v === '1' ? 'R1' : v === '2' ? 'R7' : null;
-      var nulFiables = [], nulFaibles = [];
-      if (m.resultantesR1 !== null && m.resultantesR1 > m.resultantesR7) nulFaibles.push('majorité des résultantes dans la boucle de R1 (' + m.resultantesR1 + ' contre ' + m.resultantesR7 + ')');
-      if (L.miroirPoints.nul) nulFiables.push(L.miroirPoints.texte);
-      if (L.temoins.etat === 'MEME_CAMP') nulFiables.push('les deux témoins sont dans le même camp');
-      if (equilibre && equilibre.posee) nulFiables.push('la figure d’équilibre ' + equilibre.figure + ' est en base en M' + equilibre.maisons.join(', M'));
-      if (L.poidsPoles.applicable && !L.poidsPoles.decide) nulFiables.push('le pôle R1 ne pèse pas plus en base que le pôle R7 (' + L.poidsPoles.R1 + ' contre ' + L.poidsPoles.R7 + ')');
-      if (!axePole && L.sommes.some(function (x) { return x.pole; })) nulFaibles.push('une figure somme est un pôle');
-      if (L.pointsAuRepos.length) nulFaibles.push('un point du cercle est au repos');
-      if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
-      if (!axePole && L.sommes[0].pole === 'R7') nulFaibles.push('la somme de l’axe angulaire est le pôle R7');
-      function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
-      // Un pôle posé en base dans la maison de la figure qu'il attaque (k en M k+3) donne une résultante A ou C : 6 matchs réels sur 6 (tous côté R7), il ne gagne pas (4 défaites, 2 nuls).
-      ['R1', 'R7'].forEach(function (c) {
-        var p = num(L[c].figure), h = ((p + 2) % 16) + 1;
-        if (num(L.maisons[h - 1].base) === p && c === g) contre.push('le pôle ' + c + ' est posé en M' + h + ', la maison de la figure qu’il attaque (résultante ' + L.maisons[h - 1].resultante + ' ; ce pôle n’a gagné aucun des 6 matchs réels où cela s’est vu)');
-      });
-      if (g) {
-        m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
-        nulFiables.forEach(function (x) { contre.push('vers le nul : ' + x); });
-        nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
-        if (st.plusStable) (st.plusStable === g ? pour : indices).push('ancrages pour ' + st.plusStable);   // pris en défaut une fois (4·16·1·2) : ne compte plus contre
-        camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
-        // Maintien du canal : une figure chez elle donne Populus en résultante (quatre lignes à deux points), et Populus en base redonne la figure de repos.
-        // Les deux points disent la concordance entre la figure et la figure de repos de la maison. Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu
-        // que les résultantes de ses quatre maisons ont de lignes à deux points. 13 victoires réelles sur 18 en développement, mais 4 sur 13 sur le lot 1 de validation : ne tient pas hors développement, signal à retirer ou à confirmer sur un nouveau lot.
-        (function () {
-          var a1 = concordanceCanal(L, canalDuPole(L.R1)), a7 = concordanceCanal(L, canalDuPole(L.R7));
-          if (a1 === a7) return;
-          var cm = a1 > a7 ? 'R1' : 'R7';
-          (cm === g ? pour : indices).push('canal maintenu : le canal ' + canalDuPole(L[cm]) + ' de ' + cm + ' a plus de lignes à deux points dans ses résultantes (' + Math.max(a1, a7) + ' contre ' + Math.min(a1, a7) + ')');
-        })();
-        // Comptage : en boucles différentes, le camp dont la boucle compte le plus de lignes à deux points (4 niveaux, base et résultante).
-        // 10 victoires réelles sur 12 en développement, 4 sur 5 sur le lot 1 de validation (peu de cas) : il appuie le verdict (pour) mais ne le contredit pas (indice).
-        if (L.mode === 'BOUCLES_DIFFERENTES') {
-          var lg = lignesDeuxPoints(L), cl = lg.R1 > lg.R7 ? 'R1' : lg.R7 > lg.R1 ? 'R7' : null;
-          if (cl) (cl === g ? pour : indices).push('lignes à deux points : la boucle de ' + cl + ' en compte ' + lg[cl] + ' contre ' + lg[cl === 'R1' ? 'R7' : 'R1']);
-        }
-        if (L.cercle.amont) (L.cercle.amont === g ? pour : indices).push('amont pour ' + L.cercle.amont);
-        if (L.multiplicite.favori) (L.multiplicite.favori === g ? pour : indices).push('multiplicité du pôle pour ' + L.multiplicite.favori);
-        if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') indices.push('figure du lien en résultante seulement');
-      } else if (v === 'N') {
-        nulFiables.concat(nulFaibles).forEach(function (x) { pour.push(x); });
-        m.signaux12.forEach(function (x) { contre.push('pas de nul : ' + x); });
-        if (st.plusStable) indices.push('ancrages pour ' + st.plusStable);
-        if (L.cercle.favoriBord) indices.push('bord du cercle pour ' + L.cercle.favoriBord);
-        if (L.multiplicite.favori) indices.push('multiplicité du pôle pour ' + L.multiplicite.favori);
-      }
-      var niveau = !pour.length && !contre.length ? 'SANS_SIGNAL' : !contre.length ? (pour.length >= 2 ? 'FORTE' : 'MOYENNE') : pour.length > contre.length ? 'DISCUTEE' : 'CONTREDITE';
-      decision.precision = { niveau: niveau, pour: pour, contre: contre, indices: indices };
-    })();
-    decision.butMiTemps = L.butMiTemps; decision.butMiTemps2 = L.butMiTemps2;
-    decision.parlant = L.binomeM1.parlant;
-    // Thème de vérification : les quatre maisons de l'axe angulaire (M1, M4, M7, M10) prises comme quatre mères d'un second thème.
-    // Il est seulement construit et lu ; il ne décide rien dans le thème principal.
-    if (!sansVerification) {
-      var mv = [theme[1], theme[4], theme[7], theme[10]], tv = construireTheme(mv[0], mv[1], mv[2], mv[3]), av = analyser(tv, null, true);
-      var Lv = av.lecture;
-      // Validation : ce que devient, dans le thème de vérification, chaque figure qui est dans sa maison de repos dans le thème principal, et chaque pôle.
-      function etatVerif(f) {
-        var p = Lv.positions(f), b = p.filter(function (x) { return x.couche === 'base'; });
-        return { positions: p.map(function (x) { return { maison: x.maison, couche: x.couche === 'base' ? 'base' : 'résultante' }; }),
-          etat: Lv.chezElle(f) ? 'AU_REPOS' : b.length ? 'EN_BASE' : p.length ? 'RESULTANTE' : 'ABSENTE' };
-      }
-      function campDe(f) {
-        if (f === L.R1.figure) return 'pôle R1'; if (f === L.R7.figure) return 'pôle R7';
-        if (L.mode === 'BOUCLES_DIFFERENTES') return num(f) % 2 === num(L.R1.figure) % 2 ? 'camp R1' : 'camp R7';
-        return frontDe(f) === L.R1.front && frontDe(f) === L.R7.front ? 'front commun' : frontDe(f) === L.R1.front ? 'front R1' : frontDe(f) === L.R7.front ? 'front R7' : 'autre front';
-      }
-      var validations = FIG.filter(function (f) { return L.chezElle(f); }).map(function (f) { var e = etatVerif(f); return { figure: f, camp: campDe(f), principal: L.chezElleEnBase(f) ? 'base' : 'résultante', etat: e.etat, positions: e.positions }; });
-      decision.verification = { meres: mv, codes: mv.map(num), R1: { maison: Lv.R1.maison, figure: Lv.R1.figure }, R7: { maison: Lv.R7.maison, figure: Lv.R7.figure },
-        verdict: av.decision.verdict, cas: av.decision.phase, regle: av.decision.regle, raison: av.decision.raison, juge: tv[15], sentence: tv[16],
-        temoinDroit: tv[13], sommeAxe: L.sommes[0].figure,       // M13 du thème de vérification = somme de l'axe du thème principal, toujours
-        validations: validations, valideesAuRepos: validations.filter(function (x) { return x.etat === 'AU_REPOS'; }),
-        poles: { R1: etatVerif(L.R1.figure), R7: etatVerif(L.R7.figure), memeR1: Lv.R1.figure === L.R1.figure, memeR7: Lv.R7.figure === L.R7.figure } };
-    }
-    return { lecture: L, decision: decision };
-  }
-
   // Valeur propre d'un point : la somme des deux figures de repos qui l'encadrent. A, B, C, D valent Puer (1) ;
   // entre 2 et 3 et entre 10 et 11 : Via (5) ; entre 6 et 7 et entre 14 et 15 : Cauda Draconis (13).
-  AXES.concat(AXES2).forEach(function (x) { x.valeur = additionner(fig(x.entre[0]), fig(x.entre[1])); });
-  var API = { version: VERSION, FIG: FIG, CAS: CAS, CARDINAL: CARDINAL, ROSE: ROSE, AXES: AXES, AXES2: AXES2, COMBIS: COMBIS, rose: function (f) { return ROSE[num(f) - 1]; }, num: num, fig: fig, frontDe: frontDe, elementDe: elementDe,
-    elementMaison: elementMaison, additionner: additionner, construireTheme: construireTheme, lire: lire, analyser: analyser,
-    temoin: temoin, figureDuJour: figureDuJour };
-  root.KOUN2 = API;
-  if (typeof module !== 'undefined' && module.exports) module.exports = API;
-})(typeof window !== 'undefined' ? window : globalThis);
 
-/* ═══ fin Moteur 2 ═══ */
-/* ═══ Moteur 3 : table rase des principes ═══ */
-/* koun — moteur 3 : table rase des principes.
-   La structure (thème, résultantes, forces, pôles) vient du moteur 2 : ce sont des calculs exacts, pas des principes de verdict.
-   Tout ce qui décide (victoire, nul, pénalité, deux marquent, buts MT-1, corners, Over/Under) est reconstruit ici, principe par principe.
-   Chaque principe porte sa provenance :
-     PROPRIETAIRE : posé par le propriétaire.
-     PORTE_3.0.0  : règle du 3.0.0 du propriétaire, reprise telle quelle.
-     DEVELOPPEMENT: issu des matchs de développement, tient sur le lot 1 de validation.
-     DEV_SEUL     : issu des matchs de développement seulement, jamais confirmé hors développement.
-   Aucun principe ajusté sur un lot de validation. Un principe sans donnée réelle est marqué NON_TESTE. */
-(function (root) {
-  'use strict';
-  var K = (typeof require !== 'undefined' && typeof module !== 'undefined') ? require('../moteur2/moteur.js') : root.KOUN2;
-  var FIG = K.FIG, num = K.num, fig = K.fig, FRONTS = ['A', 'B', 'C', 'D'];
-  var POINTS = {
-    'Puer': [1, 1, 2, 1], 'Laetitia': [1, 2, 2, 2], 'Caput': [2, 1, 1, 1], 'Albus': [2, 2, 1, 2],
-    'Via': [1, 1, 1, 1], 'Amissio': [1, 2, 1, 2], 'Rubeus': [2, 1, 2, 2], 'Tristitia': [2, 2, 2, 1],
-    'Fortuna Minor': [1, 1, 2, 2], 'Carcer': [1, 2, 2, 1], 'Conjunctio': [2, 1, 1, 2], 'Fortuna Major': [2, 2, 1, 1],
-    'Cauda Draconis': [1, 1, 1, 2], 'Puella': [1, 2, 1, 1], 'Aquisitio': [2, 1, 2, 1], 'Populus': [2, 2, 2, 2]
-  };
+  // ───────── Moteur 3 : les principes ─────────
+  var K = { FIG: FIG, num: num, fig: fig, additionner: additionner, construireTheme: construireTheme, lire: lire, CAS: CAS };
+
   var MIROIR = { 'Puer': 'Puella', 'Puella': 'Puer', 'Albus': 'Rubeus', 'Rubeus': 'Albus', 'Caput': 'Cauda Draconis', 'Cauda Draconis': 'Caput',
     'Tristitia': 'Laetitia', 'Laetitia': 'Tristitia', 'Aquisitio': 'Amissio', 'Amissio': 'Aquisitio', 'Via': 'Populus', 'Populus': 'Via',
     'Carcer': 'Conjunctio', 'Conjunctio': 'Carcer', 'Fortuna Major': 'Fortuna Minor', 'Fortuna Minor': 'Fortuna Major' };
@@ -3006,6 +2473,8 @@
     return forte && !paralysee && !L.annuleePar(f);
   }
   function buts(L, v) {
+    var sansVerdict = v === null || v === undefined;
+    if (sansVerdict) v = '1';
     var sov = somme(L, [3, 5, 11, 13]), conv = K.additionner(sov, L.maisons[9].base), juge = L.maisons[14].base;
     var fr1 = [L.maisons[L.R1.maison - 1].base, res(L, L.R1.maison)].map(front), fr7 = [L.maisons[L.R7.maison - 1].base, res(L, L.R7.maison)].map(front);
     // deux marquent : les deux camps peuvent marquer et au moins une figure de boucle impaire donne l'élan
@@ -3059,20 +2528,22 @@
     if (ANTAGONISTE_FRONT[a] === b || ANTAGONISTE_FRONT[b] === a) fric += 2.5;
     if (verrous >= 4.5 && flux >= 9) fric += 3;
     var corners = fric >= 13.5 ? 'Over 4.5' : fric >= 10.5 ? 'Over 3.5' : 'Under 4.5';
-    return {
-      deuxMarquent: { oui: bttsFinal, brut: btts, pole1PeutMarquer: p1, pole7PeutMarquer: p7, elan: elan, provenance: 'PORTE_3.0.0 (seuil de 50 %), reconstruit sur les forces du moteur 2', teste: 'testé sur 26 scores réels' },
+    var sortie = {
+      deuxMarquent: { oui: bttsFinal, brut: btts, pole1PeutMarquer: p1, pole7PeutMarquer: p7, elan: elan, provenance: 'PORTE_3.0.0 (seuil de 50 %), reconstruit sur les forces de la structure', teste: 'testé sur 26 scores réels' },
       score: g1 + ' - ' + g2, g1: g1, g2: g2, total: T,
       overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
       butsMT1: { oui: T > 0 && htBut, libelle: mt, somme: bm, provenance: 'PORTE_3.0.0 (ButMT M1+M5+M12+M15)', teste: 'testé sur 6 matchs avec mi-temps connue' },
       corners: { libelle: corners, friction: fric, provenance: 'PORTE_3.0.0 (indice de friction)', teste: 'NON_TESTE (aucun résultat de corners dans les données)' }
     };
+    if (sansVerdict) { sortie.score = '—'; sortie.g1 = null; sortie.g2 = null; sortie.deuxMarquent.oui = btts; }
+    return sortie;
   }
 
   function analyser(theme) {
     var L = K.lire(theme), v = verdict(L);
-    return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict || '1') };
+    return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict) };
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, construireTheme: K.construireTheme, fig: fig, num: num, FIG: FIG, lire: K.lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -3681,13 +3152,6 @@
  return paralyzedFigures;
  }
 
- function evalHouseStrength(fig, h) {
- if (fig.dom.includes(h)) return 100;
- if (fig.binHouse === h) return 75;
- if (fig.antDom.includes(h)) return 0;
- return 50;
- }
-
  const FRONT_ANTAGONISM = { A: "D", D: "C", C: "B", B: "A" };
  const FRONT_BINOME = { A: "C", C: "A", B: "D", D: "B" };
 
@@ -3697,64 +3161,6 @@
  C: [3, 7, 11, 15],
  D: [4, 8, 12, 16]
  };
-
- function evalFrontCircle(frontId, M, R) {
- const houses = FRONT_CIRCLE_HOUSES[frontId];
- let sumBaseVec = [0, 0, 0, 0];
- let sumResVec = [0, 0, 0, 0];
- let activePoints = 0;
-
- houses.forEach(h => {
- sumBaseVec = xorV(sumBaseVec, M[h]);
- sumResVec = xorV(sumResVec, R[h]);
- const bFig = getFigByVec(M[h]);
- const rFig = getFigByVec(R[h]);
- if (bFig.front === frontId) activePoints += 18;
- if (rFig.front === frontId) activePoints += 12;
- if (bFig.dom.includes(h)) activePoints += 22;
- if (rFig.dom.includes(h)) activePoints += 16;
- if (bFig.antDom.includes(h)) activePoints -= 20;
- });
-
- const sumBaseFig = getFigByVec(sumBaseVec);
- const sumResFig = getFigByVec(sumResVec);
- if (sumBaseFig.front === frontId) activePoints += 20;
- if (sumResFig.front === frontId) activePoints += 14;
-
- return {
- frontId,
- houses,
- sumBaseFig,
- sumResFig,
- power: activePoints
- };
- }
-
- function evalFrontDualityCircles(baseR1Front, resR1Front, baseR7Front, resR7Front, M, R) {
- const evalPair = (fId) => {
- const antId = FRONT_ANTAGONISM[fId];
- const ownC = evalFrontCircle(fId, M, R);
- const antC = evalFrontCircle(antId, M, R);
- return { front: fId, antFront: antId, ownC, antC, delta: ownC.power - antC.power };
- };
-
- const r1BaseDual = evalPair(baseR1Front);
- const r1ResDual = evalPair(resR1Front);
- const r7BaseDual = evalPair(baseR7Front);
- const r7ResDual = evalPair(resR7Front);
-
- const dualityDeltaR1 = (r1BaseDual.delta * 0.60 + r1ResDual.delta * 0.40) * 0.45;
- const dualityDeltaR7 = (r7BaseDual.delta * 0.60 + r7ResDual.delta * 0.40) * 0.45;
-
- return {
- r1BaseDual,
- r1ResDual,
- r7BaseDual,
- r7ResDual,
- dualityDeltaR1,
- dualityDeltaR7
- };
- }
 
  function getFrontDuelDelta(frontAtt, frontDef) {
  if (FRONT_ANTAGONISM[frontAtt] === frontDef) return 1;
@@ -3792,193 +3198,6 @@
  };
  }
 
- function evalStrategicPoleImpact(ownHouse, oppHouse, baseFig, resFig, strBase, strRes) {
- const ownRest = HOUSE_REST_FIG[ownHouse];
- const oppRest = HOUSE_REST_FIG[oppHouse];
- const opInfo = getHouseElementOperator(ownHouse);
- let delta = 0;
- let tag = "";
-
- if (ownRest.front === "D") {
- if (strBase >= 75) {
- delta += 24;
- tag = `Ancrage Miroir · ${opInfo.short} (+24)`;
- } else if (strBase === 0) {
- delta -= 16;
- tag = `Miroir Bloqué · ${opInfo.short} (-16)`;
- } else {
- delta += 12;
- tag = `Cohésion Miroir · ${opInfo.short} (+12)`;
- }
- if (baseFig.loopType === "Pair") {
- delta += 10;
- tag += " · Fig. Paire (+10)";
- } else {
- delta -= 6;
- tag += " · Friction Impaire (-6)";
- }
- if (resFig.dom.includes(ownHouse)) {
- delta += 14;
- tag += " · Res Repos (+14)";
- }
- } else if (ownRest.front === "B") {
- const attacksOppHouse = (FRONT_ANTAGONISM[resFig.front] === oppRest.front) || (resFig.front === oppRest.front);
- if (attacksOppHouse && strRes >= 50) {
- delta += 20;
- tag = "Projection Binôme (+20)";
- } else if (strRes === 0) {
- delta -= 18;
- tag = "Dispersion Binôme (-18)";
- } else {
- delta += 6;
- tag = "Relais Binôme (+6)";
- }
- } else {
- const duelVsOppHouse = getFrontDuelDelta(resFig.front, oppRest.front);
- if (duelVsOppHouse === 1) {
- delta += 22;
- tag = "Percée Impulsive (+22)";
- } else if (duelVsOppHouse === -1) {
- delta -= 14;
- tag = "Contre-pied Impulsif (-14)";
- } else {
- delta += 4;
- tag = "Transition Impulsive (+4)";
- }
- }
-
- return { delta, tag };
- }
-
- function evalEarthHousesResonance(M, R, r1House, r7House, baseR1, resR1, baseR7, resR7) {
- const terreHouses = [4, 8, 12, 16];
- const r1Fronts = new Set([baseR1.front, resR1.front]);
- const r7Fronts = new Set([baseR7.front, resR7.front]);
- const r1Loops = new Set([baseR1.loopType, resR1.loopType]);
- const r7Loops = new Set([baseR7.loopType, resR7.loopType]);
- const r1Names = new Set([baseR1.name, resR1.name, HOUSE_REST_FIG[r1House].name]);
- const r7Names = new Set([baseR7.name, resR7.name, HOUSE_REST_FIG[r7House].name]);
-
- const getProtectorFront = (f) => Object.keys(FRONT_ANTAGONISM).find(k => FRONT_ANTAGONISM[k] === f);
- const r1Protectors = new Set([...r1Fronts].map(getProtectorFront));
- const r7Protectors = new Set([...r7Fronts].map(getProtectorFront));
-
- const r1Mirrors = new Set([MIRROR_FIGURES_MAP[baseR1.name], MIRROR_FIGURES_MAP[resR1.name]].filter(Boolean));
- const r7Mirrors = new Set([MIRROR_FIGURES_MAP[baseR7.name], MIRROR_FIGURES_MAP[resR7.name]].filter(Boolean));
- const getBinomeFigName = (figName) => {
- const fObj = ALL_16_VECS.find(x => x.name === figName);
- return fObj ? HOUSE_REST_FIG[fObj.binHouse].name : null;
- };
- const r1MirrorBinomes = new Set([...r1Mirrors].map(getBinomeFigName).filter(Boolean));
- const r7MirrorBinomes = new Set([...r7Mirrors].map(getBinomeFigName).filter(Boolean));
-
- const evalLayerInEarth = (fig, h) => {
- let ptsR1 = 0, ptsR7 = 0;
- const notes = [];
-
- if (r1Names.has(fig.name)) { ptsR1 += 14; notes.push(`${fig.name} = identité R1`); }
- if (r7Names.has(fig.name)) { ptsR7 += 14; notes.push(`${fig.name} = identité R7`); }
-
- if (r1Fronts.has(fig.front)) {
- ptsR1 += 8;
- } else if (r1Protectors.has(fig.front)) {
- const sameLoop = r1Loops.has(fig.loopType);
- ptsR1 += sameLoop ? 11 : 6;
- notes.push(`Front ${fig.front} protège R1${sameLoop ? " (même boucle)" : ""}`);
- }
-
- if (r7Fronts.has(fig.front)) {
- ptsR7 += 8;
- } else if (r7Protectors.has(fig.front)) {
- const sameLoop = r7Loops.has(fig.loopType);
- ptsR7 += sameLoop ? 11 : 6;
- notes.push(`Front ${fig.front} protège R7${sameLoop ? " (même boucle)" : ""}`);
- }
-
- const attackedRestFig = HOUSE_REST_FIG[fig.attacks];
- if (attackedRestFig) {
- if (r1Names.has(attackedRestFig.name)) {
- ptsR7 += 12;
- notes.push(`attaque ${attackedRestFig.name} (R1)`);
- }
- if (r7Names.has(attackedRestFig.name)) {
- ptsR1 += 12;
- notes.push(`attaque ${attackedRestFig.name} (R7)`);
- }
- }
-
- if (r1MirrorBinomes.has(fig.name)) {
- ptsR1 += 7;
- notes.push(`binôme du miroir R1`);
- }
- if (r7MirrorBinomes.has(fig.name)) {
- ptsR7 += 7;
- notes.push(`binôme du miroir R7`);
- }
-
- const isTerreElem = (fig.elem === "Terre");
- const isEauElem = (fig.elem === "Eau");
- const opActivates = (h === 4 && isEauElem) || (h === 8 && isTerreElem) || (h === 12 && (isTerreElem || isEauElem));
-
- if (isTerreElem) {
- if (ptsR1 > ptsR7) ptsR1 += 6;
- else if (ptsR7 > ptsR1) ptsR7 += 6;
- notes.push(`ancrage Terre fort`);
- }
- if (opActivates) {
- if (ptsR1 > ptsR7) ptsR1 += 5;
- else if (ptsR7 > ptsR1) ptsR7 += 5;
- notes.push(`activée par ${getHouseElementOperator(h).short}`);
- }
-
- if (fig.front === "A") {
- notes.push(`Feu (A) perce Terre (D)`);
- } else if (fig.front === "C") {
- if (ptsR1 > ptsR7) ptsR1 -= 4;
- if (ptsR7 > ptsR1) ptsR7 -= 4;
- notes.push(`Eau (C) contenue par Terre (D)`);
- }
-
- return { ptsR1, ptsR7, notes };
- };
-
- let totalR1 = 0, totalR7 = 0;
- const details = terreHouses.map(h => {
- const rest = HOUSE_REST_FIG[h];
- const bf = getFigByVec(M[h]);
- const rf = getFigByVec(R[h]);
- const op = getHouseElementOperator(h);
- const evB = evalLayerInEarth(bf, h);
- const evR = evalLayerInEarth(rf, h);
- const houseR1 = evB.ptsR1 * 1.15 + evR.ptsR1;
- const houseR7 = evB.ptsR7 * 1.15 + evR.ptsR7;
- totalR1 += houseR1;
- totalR7 += houseR7;
-
- let owner = "Équilibrée";
- if (houseR1 - houseR7 >= 5) owner = "R1";
- else if (houseR7 - houseR1 >= 5) owner = "R7";
-
- return {
- h,
- restName: rest.name,
- opShort: op.short,
- opDetail: op.detail,
- baseFig: bf,
- resFig: rf,
- houseR1: Math.round(houseR1),
- houseR7: Math.round(houseR7),
- owner,
- baseNotes: evB.notes,
- resNotes: evR.notes
- };
- });
-
- const diff = totalR1 - totalR7;
- const dominantCamp = Math.abs(diff) < 6 ? "Équilibre Terre" : (diff > 0 ? "R1" : "R7");
- return { details, totalR1: Math.round(totalR1), totalR7: Math.round(totalR7), diff, dominantCamp };
- }
-
  const MIRROR_FIGURES_MAP = {
  "Puer": "Puella",
  "Puella": "Puer",
@@ -3997,10 +3216,6 @@
  "Fortuna Major": "Fortuna Minor",
  "Fortuna Minor": "Fortuna Major"
  };
-
- function areMirrorFigures(figA, figB) {
- return MIRROR_FIGURES_MAP[figA.name] === figB.name;
- }
 
  const ELEMENT_ACTIVATION_ROLES = {
  1: { role: "Fermante", targetElem: "Eau", lineIdx: 2, desc: "Ferme Eau" },
@@ -4057,1041 +3272,119 @@
  const PARTIE1_HOUSES = [1, 2, 3, 4, 9, 10, 13, 15];
  const PARTIE2_HOUSES = [5, 6, 7, 8, 11, 12, 14, 16];
 
- function evalPartieActivation(M, R, houses) {
- const presentGlobal = new Set();
- for (let h = 1; h <= 16; h++) {
- presentGlobal.add(getFigByVec(M[h]).name);
- presentGlobal.add(getFigByVec(R[h]).name);
- }
- let openBits = 0, closedBits = 0;
- let ouvrantes = 0, fermantes = 0;
- let ouvrantesLibres = 0, fermantesIntactes = 0;
- let freeEnergy = 0;
- let intactPaths = 0, invertedPaths = 0;
- const actHits = [];
- const freeHits = [];
-
- houses.forEach(h => {
- const path = analyzeHouseFluxPath(h, M, R);
- if (path.transmissionIntact) intactPaths++;
- if (path.pathInverted) invertedPaths++;
- [["B", M[h]], ["R", R[h]]].forEach(([layer, vec]) => {
- const f = getFigByVec(vec);
- openBits += f.vec.reduce((a, b) => a + b, 0);
- closedBits += 4 - f.vec.reduce((a, b) => a + b, 0);
- const act = ELEMENT_ACTIVATION_ROLES[f.num];
- if (act) {
- const ev = evaluateActivationRole(f, h);
- if (act.role === "Ouvrante") {
- ouvrantes++;
- if (ev.label.indexOf("Canal libre") >= 0) ouvrantesLibres++;
- } else {
- fermantes++;
- if (ev.label.indexOf("Verrou intact") >= 0) fermantesIntactes++;
- }
- actHits.push({ h, layer, name: f.name, role: act.role, label: ev.label });
- }
- const mir = MIRROR_FIGURES_MAP[f.name];
- if (mir && !presentGlobal.has(mir)) {
- freeEnergy++;
- freeHits.push({ h, layer, name: f.name, absent: mir });
- }
- });
- });
- const totalBits = openBits + closedBits || 1;
- const openPct = Math.round((openBits / totalBits) * 100);
- // Score d'activation net : ouverture + ouvrantes - fermantes intacts - poids structure
- const activationScore = openPct * 0.35 + ouvrantes * 8 + ouvrantesLibres * 4 + freeEnergy * 6
- - fermantesIntactes * 7 - intactPaths * 2 + invertedPaths * 3;
- return {
- houses,
- openBits,
- closedBits,
- openPct,
- ouvrantes,
- fermantes,
- ouvrantesLibres,
- fermantesIntactes,
- freeEnergy,
- intactPaths,
- invertedPaths,
- activationScore: Math.round(activationScore * 10) / 10,
- actHits,
- freeHits
+ // ═════════════ VERDICT : le Moteur 3 décide, principe par principe ═════════════
+ const PROVENANCES_M3 = {
+ PROPRIETAIRE: "posé par le propriétaire",
+ DEVELOPPEMENT: "issu du développement",
+ DEV_SEUL: "développement seul, non confirmé",
+ "PORTE_3.0.0": "règle du 3.0.0"
  };
- }
-
- /**
- * Structure du nul par les deux parties du thème.
- * P1 = mères → juge (1,2,3,4,9,10,13,15)
- * P2 = nièces → réconciliateur (5,6,7,8,11,12,14,16)
- * Nul structurel si les niveaux d'activation s'équilibrent ou se compensent.
- */
- function evalNulParParties(M, R) {
- const p1 = evalPartieActivation(M, R, PARTIE1_HOUSES);
- const p2 = evalPartieActivation(M, R, PARTIE2_HOUSES);
- const dOpen = p1.openPct - p2.openPct;
- const dAct = p1.activationScore - p2.activationScore;
- const dFerm = p1.fermantesIntactes - p2.fermantesIntactes;
- const dOuv = p1.ouvrantes - p2.ouvrantes;
- const dFree = p1.freeEnergy - p2.freeEnergy;
-
- const balancedOpen = Math.abs(dOpen) <= 12;
- const balancedAct = Math.abs(dAct) <= 14;
- const compensating = (dOuv * dFerm < 0) && Math.abs(dAct) <= 18;
- // un côté très libre casse le nul structurel
- const freeThreat = Math.abs(dFree) >= 3;
-
- let structure = "Déséquilibré";
- let isStructuralDraw = false;
- if (balancedAct && balancedOpen && !freeThreat) {
- structure = "Nul de miroir (P1 ≈ P2)";
- isStructuralDraw = true;
- } else if (compensating && !freeThreat) {
- structure = "Nul de compensation (un côté pousse, l'autre freine)";
- isStructuralDraw = true;
- } else if (balancedAct && freeThreat) {
- structure = "Nul fragile (énergie libre asymétrique)";
- isStructuralDraw = false;
- } else {
- structure = "Pas de nul structurel (une partie domine l'activation)";
- isStructuralDraw = false;
- }
-
- return {
- p1,
- p2,
- dOpen,
- dAct,
- dFerm,
- dOuv,
- dFree,
- structure,
- isStructuralDraw,
- summary: `P1 act ${p1.activationScore} (ouv ${p1.openPct}%) · P2 act ${p2.activationScore} (ouv ${p2.openPct}%) · Δact ${dAct > 0 ? "+" : ""}${Math.round(dAct * 10) / 10} · ${structure}`
- };
- }
-
- function evalPrincipeUniqueDuNul(ctx) {
- const { M, R, r1House, r7House, baseR1, resR1, baseR7, resR7, baseM13, baseM14, baseM15 } = ctx;
-
- const r1Fronts = new Set([baseR1.front, resR1.front]);
- const r7Fronts = new Set([baseR7.front, resR7.front]);
-
- const terreHouses = [4, 8, 12, 16];
- const rubeusTerreHits = [];
- terreHouses.forEach(th => {
- if (getFigByVec(M[th]).name === "Rubeus") rubeusTerreHits.push(`M${th} (Base)`);
- if (getFigByVec(R[th]).name === "Rubeus") rubeusTerreHits.push(`M${th} (Res)`);
- });
-
- const rubeusImpairHits = [];
- for (let h = 1; h <= 15; h += 2) {
- if (h === 7) continue;
- const bF = getFigByVec(M[h]);
- if (bF.name !== "Rubeus") continue;
- const hostFront = HOUSE_REST_FIG[h].front;
- if (r1Fronts.has(bF.front) || r7Fronts.has(bF.front) || r1Fronts.has(hostFront) || r7Fronts.has(hostFront)) {
- rubeusImpairHits.push(`M${h}`);
- }
- }
- const rubeusBreak = (rubeusTerreHits.length > 0) || (rubeusImpairHits.length > 0);
-
- const countRest = (frontsSet) => {
- let c = 0;
- for (let h = 1; h <= 16; h++) {
- const rf = HOUSE_REST_FIG[h];
- const bf = getFigByVec(M[h]), rfg = getFigByVec(R[h]);
- if ((bf.name === rf.name || rfg.name === rf.name) && frontsSet.has(rf.front)) {
- const pred = Object.keys(FRONT_ANTAGONISM).find(k => FRONT_ANTAGONISM[k] === rf.front);
- const antIn = bf.antDom.includes(h) || rfg.antDom.includes(h) || bf.front === pred || rfg.front === pred;
- const antP = findPresenceInTheme(rf.antFig, M, R).found;
- if (!antIn && !antP) c++;
- }
- }
- return c;
- };
- const noMajorRestGap = Math.abs(countRest(r1Fronts) - countRest(r7Fronts)) <= 1;
-
- const cond1_R1R7Mirror = (baseR1.name === baseR7.name) || areMirrorFigures(baseR1, baseR7);
- const sumR1R7 = getFigByVec(xorV(baseR1.vec, baseR7.vec));
- const cond2_SumTerre = ["Populus", "Carcer", "Conjunctio"].includes(sumR1R7.name) || (sumR1R7.front === "D");
- const cond3_Witnesses = (baseM13.name === baseM14.name) || areMirrorFigures(baseM13, baseM14);
- const cond4_Judge = ["Populus", "Carcer", "Conjunctio"].includes(baseM15.name);
-
- const voie1Mirror = cond1_R1R7Mirror && cond2_SumTerre && cond3_Witnesses && cond4_Judge && noMajorRestGap;
-
- const act1 = ELEMENT_ACTIVATION_ROLES[baseR1.num];
- const act7 = ELEMENT_ACTIVATION_ROLES[baseR7.num];
- const voie2Complement = Boolean(
- act1 && act7 &&
- (act1.targetElem === act7.targetElem) &&
- (act1.role !== act7.role) &&
- (sumR1R7.name === "Via") &&
- cond4_Judge && noMajorRestGap
- );
-
- const ar1B = evaluateActivationRole(baseR1, r1House);
- const ar1R = evaluateActivationRole(resR1, r1House);
- const ar7B = evaluateActivationRole(baseR7, r7House);
- const ar7R = evaluateActivationRole(resR7, r7House);
- const totalOpen1 = ar1B.openCount + ar1R.openCount;
- const totalOpen7 = ar7B.openCount + ar7R.openCount;
- const attComb1 = (ar1B.att + ar1R.att) / 2;
- const attComb7 = (ar7B.att + ar7R.att) / 2;
- const resComb1 = (ar1B.res + ar1R.res) / 2;
- const resComb7 = (ar7B.res + ar7R.res) / 2;
- const bothLocked = ar1B.locked && ar7B.locked;
- const voie3Balance = (
- bothLocked ||
- (totalOpen1 === totalOpen7 && Math.abs(attComb1 - attComb7) <= 10 && Math.abs(resComb1 - resComb7) <= 10)
- ) && cond4_Judge && noMajorRestGap;
-
- const duelBase = getFrontDuelDelta(baseR1.front, baseR7.front);
- const duelRes = getFrontDuelDelta(resR1.front, resR7.front);
- const crossInversion = (duelBase !== 0 && duelRes !== 0 && (duelBase + duelRes === 0));
- const voie4Inversion = crossInversion && cond4_Judge && noMajorRestGap && (totalOpen1 === totalOpen7);
-
- const partieNul = evalNulParParties(M, R);
- const voie5Parties = partieNul.isStructuralDraw && cond4_Judge && noMajorRestGap;
-
- let isDraw = false;
- let activeWayLabel = "Inactif";
- if (!rubeusBreak) {
- if (voie1Mirror) {
- isDraw = true;
- activeWayLabel = `Voie 1 (Miroir & Blocage Terre · Juge ${baseM15.name})`;
- } else if (voie2Complement) {
- isDraw = true;
- activeWayLabel = `Voie 2 (Complémentarité ${act1.targetElem} : ${baseR1.name} ↔ ${baseR7.name} = Via)`;
- } else if (voie4Inversion) {
- isDraw = true;
- activeWayLabel = `Voie 4 (Inversion Croisée Base ${baseR1.front}↔${baseR7.front} / Rés ${resR1.front}↔${resR7.front} · Juge ${baseM15.name})`;
- } else if (voie3Balance) {
- isDraw = true;
- activeWayLabel = `Voie 3 (Neutralisation Base+Rés ${totalOpen1}=${totalOpen7} · Juge ${baseM15.name})`;
- } else if (voie5Parties) {
- isDraw = true;
- activeWayLabel = `Voie 5 (Structure P1/P2 · ${partieNul.structure} · Juge ${baseM15.name})`;
- }
- } else {
- activeWayLabel = rubeusTerreHits.length
- ? `Bloqué (Rubeus Terre : ${rubeusTerreHits.join(", ")})`
- : `Bloqué (Rubeus Impaire active : ${rubeusImpairHits.join(", ")})`;
- }
-
- const witnessType = (baseM13.name === baseM14.name)
- ? `Identiques (${baseM13.name})`
- : (areMirrorFigures(baseM13, baseM14) ? `Symétriques (${baseM13.name} ↔ ${baseM14.name})` : `${baseM13.name} / ${baseM14.name}`);
-
- return {
- isDraw,
- rubeusBreak,
- rubeusTerreHits,
- rubeusImpairHits,
- activeWayLabel,
- partieNul,
- voie5Parties,
- cond1_R1R7Mirror,
- sumR1R7,
- cond2_SumTerre,
- cond3_Witnesses,
- witnessType,
- cond4_Judge,
- totalOpen1,
- totalOpen7
- };
- }
-
- function evalPrincipeUniqueDuPenalite(ctx) {
- const { M, t1, t2, r1House, r7House, baseR1, resR1, baseR7, resR7, baseM12 } = ctx;
-
- const r1Fronts = new Set([baseR1.front, resR1.front]);
- const r7Fronts = new Set([baseR7.front, resR7.front]);
-
- const r1Triggers = [];
- const r7Triggers = [];
- let hasRedCardSignal = false;
- let hasPenaltySignal = false;
-
- for (let h = 1; h <= 16; h += 2) {
- const bFig = getFigByVec(M[h]);
- if (bFig.name === "Rubeus") {
- const linkedR1 = r1Fronts.has(bFig.front);
- const linkedR7 = r7Fronts.has(bFig.front);
- if (linkedR1) {
- r1Triggers.push(`Rubeus (Front ${bFig.front}) en base M${h} (impaire) dans la boucle R1 → Carton Rouge`);
- hasRedCardSignal = true;
- }
- if (linkedR7) {
- r7Triggers.push(`Rubeus (Front ${bFig.front}) en base M${h} (impaire) dans la boucle R7 → Carton Rouge`);
- hasRedCardSignal = true;
- }
- }
- }
-
- if (baseM12.name === "Cauda Draconis") {
- const linkedR1 = r1Fronts.has(baseM12.front);
- const linkedR7 = r7Fronts.has(baseM12.front);
- if (linkedR1) {
- r1Triggers.push(`Cauda Draconis (Front ${baseM12.front}) en M12 dans la boucle R1 → Carton Rouge`);
- hasRedCardSignal = true;
- }
- if (linkedR7) {
- r7Triggers.push(`Cauda Draconis (Front ${baseM12.front}) en M12 dans la boucle R7 → Carton Rouge`);
- hasRedCardSignal = true;
- }
- }
-
- const maleficDuo = new Set(["Cauda Draconis", "Rubeus"]);
- if (maleficDuo.has(baseR1.name) || maleficDuo.has(resR1.name)) {
- const foundNames = [baseR1, resR1].filter(f => maleficDuo.has(f.name)).map(f => f.name).join(" / ");
- r1Triggers.push(`${foundNames} en maison de repos R1 (M${r1House}) → Pénalité contre ${t1}`);
- hasPenaltySignal = true;
- }
- if (maleficDuo.has(baseR7.name) || maleficDuo.has(resR7.name)) {
- const foundNames = [baseR7, resR7].filter(f => maleficDuo.has(f.name)).map(f => f.name).join(" / ");
- r7Triggers.push(`${foundNames} en maison de repos R7 (M${r7House}) → Pénalité contre ${t2}`);
- hasPenaltySignal = true;
- }
-
- const hasIncident = r1Triggers.length > 0 || r7Triggers.length > 0;
- let penalizedCamp = "—";
- if (r1Triggers.length > 0 && r7Triggers.length === 0) {
- penalizedCamp = `${t1} (R1)`;
- } else if (r7Triggers.length > 0 && r1Triggers.length === 0) {
- penalizedCamp = `${t2} (R7)`;
- } else if (r1Triggers.length > 0 && r7Triggers.length > 0) {
- penalizedCamp = `${t1} (R1) & ${t2} (R7)`;
- }
-
- let severityLabel = "Aucune";
- if (hasRedCardSignal && hasPenaltySignal) severityLabel = "Carton Rouge + Pénalité";
- else if (hasRedCardSignal) severityLabel = "Carton Rouge";
- else if (hasPenaltySignal) severityLabel = "Pénalité";
-
- const allReasons = [...r1Triggers, ...r7Triggers];
-
- return {
- hasIncident,
- hasRedCardSignal,
- hasPenaltySignal,
- penalizedCamp,
- severityLabel,
- r1Triggers,
- r7Triggers,
- allReasons
- };
- }
-
- function evalPrincipeUniqueDuWin(ctx) {
- const {
- M, R, t1, t2, r1House, r7House, figM1,
- baseR1, resR1, baseR7, resR7,
- baseM13, resM13, baseM14, resM14,
- baseM15, resM15, baseM16, resM16
- } = ctx;
-
- const r1Fronts = new Set([baseR1.front, resR1.front]);
- const r7Fronts = new Set([baseR7.front, resR7.front]);
-
- const countLinkedRestFigures = (campFronts) => {
- const validRestHouses = [];
- let antagonizedRestCount = 0;
- for (let h = 1; h <= 16; h++) {
- const restFig = HOUSE_REST_FIG[h];
- const bFig = getFigByVec(M[h]);
- const rFig = getFigByVec(R[h]);
- const isRestPresent = (bFig.name === restFig.name) || (rFig.name === restFig.name);
- if (!isRestPresent) continue;
-
- if (campFronts.has(restFig.front)) {
- const predFront = Object.keys(FRONT_ANTAGONISM).find(k => FRONT_ANTAGONISM[k] === restFig.front);
- const isAntagonizedInHouse = bFig.antDom.includes(h) || rFig.antDom.includes(h)
- || (bFig.front === predFront) || (rFig.front === predFront);
- const antPres = findPresenceInTheme(restFig.antFig, M, R);
- if (isAntagonizedInHouse || antPres.found) {
- antagonizedRestCount++;
- } else {
- validRestHouses.push(`M${h} (${restFig.name}·${restFig.front})`);
- }
- }
- }
- return { count: validRestHouses.length, validRestHouses, antagonizedRestCount };
- };
-
- const r1RestLink = countLinkedRestFigures(r1Fronts);
- const r7RestLink = countLinkedRestFigures(r7Fronts);
-
- const r1RestDominance = (r1RestLink.count >= 2) && (r1RestLink.count > r7RestLink.count);
- const r7RestDominance = (r7RestLink.count >= 2) && (r7RestLink.count > r1RestLink.count);
-
- const paralyzedMap = detectReciprocalParalyses(M, R);
- const r1BaseParalyzed = paralyzedMap.has(baseR1.name);
- const r1ResParalyzed = paralyzedMap.has(resR1.name);
- const r7BaseParalyzed = paralyzedMap.has(baseR7.name);
- const r7ResParalyzed = paralyzedMap.has(resR7.name);
-
- let strR1Base = r1BaseParalyzed ? 0 : evalHouseStrength(baseR1, r1House);
- let strR1Res = r1ResParalyzed ? 0 : evalHouseStrength(resR1, r1House);
- let strR7Base = r7BaseParalyzed ? 0 : evalHouseStrength(baseR7, r7House);
- let strR7Res = r7ResParalyzed ? 0 : evalHouseStrength(resR7, r7House);
-
- const rubeusInR1 = (baseR1.name === "Rubeus" || resR1.name === "Rubeus");
- const rubeusInR7 = (baseR7.name === "Rubeus" || resR7.name === "Rubeus");
- if (rubeusInR1 && !r1BaseParalyzed && !r1ResParalyzed) {
- strR1Base = 100 - strR1Base;
- strR1Res = 100 - strR1Res;
- }
- if (rubeusInR7 && !r7BaseParalyzed && !r7ResParalyzed) {
- strR7Base = 100 - strR7Base;
- strR7Res = 100 - strR7Res;
- }
-
- const mutR1 = evalHouseMutation(r1House, baseR1, resR1);
- const mutR7 = evalHouseMutation(r7House, baseR7, resR7);
-
- const poleR1 = evalStrategicPoleImpact(r1House, r7House, baseR1, resR1, strR1Base, strR1Res);
- const poleR7 = evalStrategicPoleImpact(r7House, r1House, baseR7, resR7, strR7Base, strR7Res);
-
- const chefRestBonus = (campFronts) => {
- let b = 0;
- for (let ch = 13; ch <= 16; ch++) {
- const rf = HOUSE_REST_FIG[ch];
- if (campFronts.has(rf.front) && (getFigByVec(M[ch]).name === rf.name || getFigByVec(R[ch]).name === rf.name)) {
- b += 32;
- }
- }
- return b;
- };
-
- let scoreR1 = strR1Base * 1.35 + strR1Res * 1.15 + mutR1.bonus + poleR1.delta + r1RestLink.count * 26 + chefRestBonus(r1Fronts);
- let scoreR7 = strR7Base * 1.35 + strR7Res * 1.15 + mutR7.bonus + poleR7.delta + r7RestLink.count * 26 + chefRestBonus(r7Fronts);
-
- const baseDuel = getFrontDuelDelta(baseR1.front, baseR7.front);
- const resDuel = getFrontDuelDelta(resR1.front, resR7.front);
- const b1r7Duel = getFrontDuelDelta(baseR1.front, resR7.front);
- const r1b7Duel = getFrontDuelDelta(resR1.front, baseR7.front);
- const crossMatrixDelta = baseDuel * 22 + resDuel * 28 + b1r7Duel * 14 + r1b7Duel * 14;
-
- const r1RestFront = HOUSE_REST_FIG[r1House].front;
- const r7RestFront = HOUSE_REST_FIG[r7House].front;
- const duality = evalFrontDualityCircles(baseR1.front, resR1.front, baseR7.front, resR7.front, M, R);
-
- const r1ParalysisPenalty = (r1BaseParalyzed ? 35 : 0) + (r1ResParalyzed ? 25 : 0);
- const r7ParalysisPenalty = (r7BaseParalyzed ? 35 : 0) + (r7ResParalyzed ? 25 : 0);
-
- scoreR1 += crossMatrixDelta + duality.dualityDeltaR1 - r1ParalysisPenalty;
- scoreR7 += -crossMatrixDelta + duality.dualityDeltaR7 - r7ParalysisPenalty;
-
- const r1Antagonized = r1BaseParalyzed || r1ResParalyzed;
- const r7Antagonized = r7BaseParalyzed || r7ResParalyzed;
-
- const r1Signatures = new Set([baseR1.name, resR1.name, figM1.name]);
- const r7Signatures = new Set([baseR7.name, resR7.name]);
-
- const chefSlots = [
- { h: 13, base: baseM13, res: resM13, weight: 28 },
- { h: 14, base: baseM14, res: resM14, weight: 30 },
- { h: 15, base: baseM15, res: resM15, weight: 42 },
- { h: 16, base: baseM16, res: resM16, weight: 34 }
- ];
-
- let r1PassCount = 0;
- let r7PassCount = 0;
-
- chefSlots.forEach(slot => {
- const r1Hit = r1Signatures.has(slot.base.name) || r1Signatures.has(slot.res.name);
- const r7Hit = r7Signatures.has(slot.base.name) || r7Signatures.has(slot.res.name);
-
- if (r1Hit && !r7Hit) {
- scoreR1 += slot.weight;
- r1PassCount++;
- } else if (r7Hit && !r1Hit) {
- scoreR7 += slot.weight;
- r7PassCount++;
- } else if (r1Hit && r7Hit) {
- const d = getFrontDuelDelta(resR1.front, resR7.front) || getFrontDuelDelta(baseR1.front, baseR7.front);
- scoreR1 += d * 15;
- scoreR7 -= d * 15;
- }
- });
-
- if (baseM16.front === r1RestFront || resM16.front === r1RestFront) scoreR1 += 18;
- if (baseM16.front === r7RestFront || resM16.front === r7RestFront) scoreR7 += 18;
-
- const earthResonance = evalEarthHousesResonance(M, R, r1House, r7House, baseR1, resR1, baseR7, resR7);
- scoreR1 += earthResonance.totalR1 * 0.45;
- scoreR7 += earthResonance.totalR7 * 0.45;
-
- const r1Passed = r1PassCount > 0;
- const r7Passed = r7PassCount > 0;
- const poleDiff = Math.abs(scoreR1 - scoreR7);
-
- let winningSide = "R1";
- let tieBreakerReason = "Score Pôles & Croisement";
- if (r1RestDominance && !r7RestDominance) {
- winningSide = "R1";
- tieBreakerReason = `≥2 Figures de Repos liées (${r1RestLink.count} vs ${r7RestLink.count})`;
- } else if (r7RestDominance && !r1RestDominance) {
- winningSide = "R7";
- tieBreakerReason = `≥2 Figures de Repos liées (${r7RestLink.count} vs ${r1RestLink.count})`;
- } else if (scoreR1 > scoreR7) {
- winningSide = "R1";
- } else if (scoreR7 > scoreR1) {
- winningSide = "R7";
- } else if (r1PassCount !== r7PassCount) {
- winningSide = r1PassCount > r7PassCount ? "R1" : "R7";
- tieBreakerReason = "Passation Chef (M13-M16)";
- } else if (crossMatrixDelta !== 0) {
- winningSide = crossMatrixDelta > 0 ? "R1" : "R7";
- tieBreakerReason = "Croisement Direct R1 × R7";
- } else {
- tieBreakerReason = "Avantage Domicile R1";
- }
-
- const winnerTeam = (winningSide === "R1") ? t1 : t2;
- const isTension = (winningSide === "R1") ? (r1Antagonized || rubeusInR1) : (r7Antagonized || rubeusInR7);
- const isHighConf = (winningSide === "R1") ? (r1RestDominance || (poleDiff >= 45 && r1Passed)) : (r7RestDominance || (poleDiff >= 45 && r7Passed));
- const confidenceLabel = isTension
- ? "Sous Tension"
- : (isHighConf ? "Très Élevée" : `Avantage ${winningSide}`);
-
- return {
- winningSide,
- winnerTeam,
- confidenceLabel,
- tieBreakerReason,
- r1RestLink,
- r7RestLink,
- r1RestDominance,
- r7RestDominance,
- scoreR1,
- scoreR7,
- poleDiff,
- strR1Base,
- strR1Res,
- strR7Base,
- strR7Res,
- rubeusInR1,
- rubeusInR7,
- paralyzedMap,
- r1Antagonized,
- r7Antagonized,
- mutR1,
- mutR7,
- poleR1,
- poleR7,
- resDuel,
- crossMatrixDelta,
- duality,
- r1PassCount,
- r7PassCount,
- r1Passed,
- r7Passed,
- earthResonance
- };
- }
-
- // =========================================================================
- // CALCUL DU RÉGIME DE BUTS, SCORE EXACT, BUTS MT-1 & CORNERS MT-1 (KOUN 3.0.0)
- // =========================================================================
- function evalKounGoalsAndCorners(ctx, isDrawEffective, winState, htGoal) {
- const { M, R, r1House, r7House, baseR1, resR1, baseR7, resR7, baseM8, baseM10, baseM12, baseM15, r1CanScore, r7CanScore, btts } = ctx;
-
- // Circuit souverain 3-5-11-13 + convertisseur M10
- const sumSovVec = xorV(xorV(M[3], M[5]), xorV(M[11], M[13]));
- const figSov = getFigByVec(sumSovVec);
- const figConvM10 = getFigByVec(xorV(sumSovVec, M[10]));
-
- // Indice de flux offensif (bits ouverts = 1 dans Z_2^4 sur Circuit Souverain, M10, Juge M15 et R1/R7)
- const openBits = (f) => f.vec.reduce((a, b) => a + b, 0);
- let fluxPoints = openBits(figSov) * 2 + openBits(figConvM10) * 2 + openBits(baseM15) * 1.5;
- if (figSov.loopType === "Impair") fluxPoints += 2.5;
- if (figConvM10.loopType === "Impair") fluxPoints += 2.5;
- if (baseR1.front === "A" || resR1.front === "A") fluxPoints += 2;
- if (baseR7.front === "A" || resR7.front === "A") fluxPoints += 2;
- if (btts) fluxPoints += 3;
-
- // Freins et verrous de Terre en M8 et M12
- let earthLocks = 0;
- [M[8], R[8], M[12], R[12]].forEach(v => {
- const f = getFigByVec(v);
- if (f.front === "D") earthLocks += 1.5;
- if (["Carcer", "Tristitia", "Populus"].includes(f.name)) earthLocks += 1.5;
- });
- if (["Populus", "Carcer", "Tristitia"].includes(baseM15.name)) earthLocks += 2.5;
-
- // Trajet de flux : transmission intacte (Populus / Res=Repos) renforce la structure ;
- // inversion en maison ennemie libère un peu le flux.
- const fluxTraj = evalFluxTrajectory(M, R);
- earthLocks += fluxTraj.structureBonus;
- fluxPoints += fluxTraj.disruptionBonus;
- // Maisons Terre M8/M12 : Populus en base = trajet de verrou transmis intact
- ;[8, 12].forEach(h => {
- const p = fluxTraj.houses[h - 1];
- if (p && p.baseIsPopulus) earthLocks += 1.0;
- if (p && p.pathInverted) fluxPoints += 1.2;
- });
-
- const netGoalIndex = Math.max(0, fluxPoints - earthLocks * 0.65);
-
- // Régime Over / Under global
- let ouLabel = "Under 2.5";
- let ouRegime = "Équilibre maîtrisé";
- let totalGoalsTarget = 2;
-
- if (isDrawEffective && earthLocks >= 6 && netGoalIndex < 7) {
- ouLabel = "Under 1.5";
- ouRegime = "Fermeté absolue (0-0)";
- totalGoalsTarget = 0;
- } else if (netGoalIndex < 9.5) {
- ouLabel = "Under 2.5";
- ouRegime = "Flux contenu";
- totalGoalsTarget = isDrawEffective ? 0 : (btts ? 2 : 1);
- } else if (netGoalIndex < 14.5) {
- ouLabel = "Over 2.5";
- ouRegime = "Ouverture offensive";
- totalGoalsTarget = isDrawEffective ? 2 : 3;
- } else if (netGoalIndex < 18.5) {
- ouLabel = "Over 3.5";
- ouRegime = "Haute intensité";
- totalGoalsTarget = isDrawEffective ? 4 : 4;
- } else {
- ouLabel = "Over 4.5";
- ouRegime = "Explosion offensive";
- totalGoalsTarget = isDrawEffective ? 4 : 5;
- }
-
- // Calcul du score exact cohérent avec Victoire, Nul, BTTS et Régime
- let g1 = 0, g2 = 0;
- const diff = winState.poleDiff;
- const margin = diff >= 85 ? 3 : (diff >= 42 ? 2 : 1);
-
- if (isDrawEffective) {
- if (ouRegime.startsWith("Fermeté absolue") || (!btts && netGoalIndex < 9.5)) {
- g1 = 0; g2 = 0;
- } else if (netGoalIndex >= 14.5) {
- g1 = 2; g2 = 2;
- } else {
- g1 = 1; g2 = 1;
- }
- } else if (winState.winningSide === "R1") {
- if (btts) {
- g2 = netGoalIndex >= 16 ? 2 : 1;
- g1 = g2 + (margin >= 3 && netGoalIndex >= 14 ? 2 : 1);
- } else {
- g2 = 0;
- g1 = Math.max(1, Math.min(4, margin));
- if (netGoalIndex < 9.5 && g1 > 2) g1 = 2;
- if (netGoalIndex >= 15 && g1 < 3) g1 = 3;
- }
- } else {
- if (btts) {
- g1 = netGoalIndex >= 16 ? 2 : 1;
- g2 = g1 + (margin >= 3 && netGoalIndex >= 14 ? 2 : 1);
- } else {
- g1 = 0;
- g2 = Math.max(1, Math.min(4, margin));
- if (netGoalIndex < 9.5 && g2 > 2) g2 = 2;
- if (netGoalIndex >= 15 && g2 < 3) g2 = 3;
- }
- }
-
- // Cohérence finale Over/Under avec le score exact projeté
- const projectedTotal = g1 + g2;
- if (projectedTotal === 0) {
- ouLabel = "Under 1.5";
- ouRegime = "Fermeté absolue";
- } else if (projectedTotal <= 2) {
- ouLabel = "Under 2.5";
- } else if (projectedTotal === 3) {
- ouLabel = "Over 2.5";
- } else if (projectedTotal === 4) {
- ouLabel = "Over 3.5";
- } else {
- ouLabel = "Over 4.5";
- }
-
- // Buts MT-1 (recalibrage front initial + ButMT M1+M5+M12+M15 vs verrous M8/M12)
- let htGoalsLabel = "Under 1.5 (Non)";
- let htGoalsSub = "Verrous initiaux dominants";
- if (projectedTotal === 0) {
- htGoalsLabel = "Under 0.5 (0-0 MT)";
- htGoalsSub = "Fermeté absolue en 1ère période";
- } else if (htGoal && projectedTotal >= 3 && netGoalIndex >= 14.5) {
- htGoalsLabel = "Over 1.5";
- htGoalsSub = "Ouverture rapide & double impulsion MT-1";
- } else if (htGoal) {
- htGoalsLabel = "Over 0.5 (Oui)";
- htGoalsSub = "ButMT actif sur les 45 premières min.";
- } else {
- htGoalsLabel = "Under 1.5 (Non)";
- htGoalsSub = "Blocage initial · Déblocage tardif";
- }
-
- // Corners MT-1 : friction entre fronts offensifs (A/B) et verrous de Terre en M8 et M12
- let frictionIndex = 0;
- [M[1], M[5], M[7], M[8], M[12]].forEach(v => {
- const f = getFigByVec(v);
- if (f.front === "A" || f.front === "B") frictionIndex += 2;
- if (f.front === "D") frictionIndex += 1.5;
- });
- if (getFrontDuelDelta(baseR1.front, baseR7.front) !== 0) frictionIndex += 2.5;
- if (earthLocks >= 4.5 && fluxPoints >= 9) frictionIndex += 3; // Forte attaque butant sur verrou Terre = corners
-
- let htCornersLabel = "Under 4.5";
- let htCornersSub = `Indice de friction MT-1 : ${frictionIndex.toFixed(1)}`;
- if (frictionIndex >= 13.5) {
- htCornersLabel = "Over 4.5";
- htCornersSub = `Forte friction Fronts / Verrous M8-M12 (${frictionIndex.toFixed(1)})`;
- } else if (frictionIndex >= 10.5) {
- htCornersLabel = "Over 3.5";
- htCornersSub = `Pression soutenue sur les ailes (${frictionIndex.toFixed(1)})`;
- } else {
- htCornersLabel = "Under 4.5";
- htCornersSub = `Faible résistance de surface (${frictionIndex.toFixed(1)})`;
- }
-
- return {
- scoreStr: `${g1} - ${g2}`,
- g1,
- g2,
- ouLabel,
- ouRegime,
- figSov,
- figConvM10,
- htGoalsLabel,
- htGoalsSub,
- htCornersLabel,
- htCornersSub,
- fluxTraj
- };
- }
 
  function computeVerdict() {
  const M = currentHouses;
- const R = currentResultantes;
- if (!M || M.length < 17 || !R || R.length < 17) return;
-
- const t1 = document.getElementById("team1Input").value || "Pays Bas";
- const t2 = document.getElementById("team2Input").value || "Grèce";
+ if (!M || M.length < 17) return;
+ const t1 = document.getElementById("team1Input").value || "Équipe 1";
+ const t2 = document.getElementById("team2Input").value || "Équipe 2";
  const safeT1 = escapeHTML(t1);
  const safeT2 = escapeHTML(t2);
 
- const { r1House, r7House, figM1 } = getR1R7Houses(M);
-
- const baseR1 = getFigByVec(M[r1House]);
- const resR1 = getFigByVec(R[r1House]);
- const baseR7 = getFigByVec(M[r7House]);
- const resR7 = getFigByVec(R[r7House]);
-
- const baseM8 = getFigByVec(M[8]);
- const baseM10 = getFigByVec(M[10]);
- const baseM12 = getFigByVec(M[12]);
- const baseM13 = getFigByVec(M[13]);
- const resM13 = getFigByVec(R[13]);
- const baseM14 = getFigByVec(M[14]);
- const resM14 = getFigByVec(R[14]);
- const baseM15 = getFigByVec(M[15]);
- const resM15 = getFigByVec(R[15]);
- const baseM16 = getFigByVec(M[16]);
- const resM16 = getFigByVec(R[16]);
-
- const ctx = {
- M, R, t1, t2, r1House, r7House, figM1,
- baseR1, resR1, baseR7, resR7,
- baseM8, baseM10, baseM12, baseM13, resM13, baseM14, resM14,
- baseM15, resM15, baseM16, resM16
- };
-
- const rawNulState = evalPrincipeUniqueDuNul(ctx);
- const rubeusTerreHits = rawNulState.rubeusTerreHits;
- const rubeusInTerre = rubeusTerreHits.length > 0;
-
- const winState = evalPrincipeUniqueDuWin(ctx);
-
- // Moteur 2 : le premier cas qui s'applique décide (nul, R1 ou R7). Sans cas, les principes 3.0.0 décident.
- let m2 = null, m3 = null;
+ let m3;
  try {
  m3 = KOUN3.analyser(KOUN3.construireTheme(...[1, 2, 3, 4].map(i => KOUN3.fig(getFigByVec(M[i]).num))));
- const v3 = m3.verdict;
- m2 = { verdict: v3.verdict, phase: v3.principe, regle: v3.titre || v3.enonce, raison: v3.raison, famille: v3.provenance, statut: v3.provenance, victoireAssuree: v3.assuree };
- } catch (e) { m2 = null; }
- const m2Decide = !!(m2 && m2.verdict);
- // Le nul ne vient plus que du Moteur 2 (front miroir : R1 + R7 = Tristitia en maison de Terre). Les voies de nul 3.0.0 ne décident plus.
- let isDrawEffective = false;
- if (m2Decide) {
- isDrawEffective = (m2.verdict === "N");
- if (!isDrawEffective) {
- winState.winningSide = (m2.verdict === "1") ? "R1" : "R7";
- winState.winnerTeam = (winState.winningSide === "R1") ? t1 : t2;
- winState.tieBreakerReason = "Moteur 3 · " + m2.phase;
- winState.confidenceLabel = m2.victoireAssuree ? "Victoire assurée" : (m2.precision && m2.precision.niveau ? m2.precision.niveau : "Cas " + m2.phase);
- }
- }
- const penState = evalPrincipeUniqueDuPenalite(ctx);
+ } catch (e) { return; }
+ const v = m3.verdict, L = m3.lecture, b = m3.buts, p = m3.penalite;
+ const prov = PROVENANCES_M3[v.provenance] || v.provenance || "";
 
- // Calcul ButMT (Buts MT-1)
- const sumButMT = getFigByVec(xorV(xorV(M[1], M[5]), xorV(M[12], M[15])));
- const presButMT = findPresenceInTheme(sumButMT.name, M, R);
- const mirrorButMTName = MIRROR_FIGURES_MAP[sumButMT.name];
- const presMirrorButMT = mirrorButMTName ? findPresenceInTheme(mirrorButMTName, M, R) : { found: false };
- const poleHasRestInButMTFront = (resR1.front === sumButMT.front && resR1.dom.includes(r1House))
- || (baseR1.front === sumButMT.front && baseR1.dom.includes(r1House))
- || (resR7.front === sumButMT.front && resR7.dom.includes(r7House))
- || (baseR7.front === sumButMT.front && baseR7.dom.includes(r7House));
- const pivotsImpairCount = [getFigByVec(M[1]), getFigByVec(M[5]), getFigByVec(M[12]), getFigByVec(R[15])]
- .filter(f => f.loopType === "Impair").length;
-
- const htGoal = (sumButMT.loopType === "Impair" && presButMT.found)
- || (presButMT.baseHouses.some(h => ["M1", "M5", "M12", "M15"].includes(h)))
- || (presMirrorButMT.found && poleHasRestInButMTFront && pivotsImpairCount >= 2);
-
- // Calcul Deux marquent (BTTS)
- const hasDominantPredatorAtRest = (frontId) => {
- const predFront = Object.keys(FRONT_ANTAGONISM).find(k => FRONT_ANTAGONISM[k] === frontId);
- for (let h = 1; h <= 16; h++) {
- const bF = getFigByVec(M[h]);
- const rF = getFigByVec(R[h]);
- if ((bF.front === predFront && bF.dom.includes(h)) || (rF.front === predFront && rF.dom.includes(h))) {
- return true;
- }
- }
- return false;
- };
-
- const isCampLockedFromScoring = (baseFig, resFig, isParalyzed, strBase, strRes) => {
- if (isParalyzed) return true;
- if (strBase === 0 && strRes === 0) return true;
- if (hasDominantPredatorAtRest(baseFig.front) && hasDominantPredatorAtRest(resFig.front)) return true;
-
- const checkFrontControlled = (fig) => {
- const antHolder = ALL_16_VECS.find(x => x.antFig === fig.name);
- const antPres = antHolder ? findPresenceInTheme(antHolder.name, M, R) : { found: false };
- if (!antPres.found) return false;
- const sameFrontFigs = ALL_16_VECS.filter(x => x.front === fig.front && x.name !== fig.name);
- const freeAllies = sameFrontFigs.filter(ally => {
- const p = findPresenceInTheme(ally.name, M, R);
- return p.found && !winState.paralyzedMap.has(ally.name);
- });
- return freeAllies.length === 0;
- };
- return checkFrontControlled(baseFig) && checkFrontControlled(resFig);
- };
-
- const r1ScoringLocked = isCampLockedFromScoring(baseR1, resR1, winState.r1Antagonized, winState.strR1Base, winState.strR1Res);
- const r7ScoringLocked = isCampLockedFromScoring(baseR7, resR7, winState.r7Antagonized, winState.strR7Base, winState.strR7Res);
- const r1CanScore = !r1ScoringLocked && (winState.strR1Base >= 50 || winState.strR1Res >= 50);
- const r7CanScore = !r7ScoringLocked && (winState.strR7Base >= 50 || winState.strR7Res >= 50);
- const hasMobileImpulse = [baseR1, resR1, baseR7, resR7, baseM15].some(f => f.loopType === "Impair");
- const btts = r1CanScore && r7CanScore && hasMobileImpulse && (winState.scoreR1 >= 120 && winState.scoreR7 >= 120);
-
- // Synthèse Koun v3.0.0 (Score exact, Régime Over/Under, Buts MT-1, Corners MT-1)
- const kounMetrics = evalKounGoalsAndCorners({
- ...ctx,
- r1CanScore,
- r7CanScore,
- btts
- }, isDrawEffective, winState, htGoal);
-
- // 1. Mise à jour Ligne 1 : Victoire : score
+ // Ligne 1 : verdict et score
  const banner = document.getElementById("winnerBanner");
  const winTxt = document.getElementById("winnerText");
- const scoreBadge = document.getElementById("predictedScoreBadge");
- const confTxt = document.getElementById("confidenceText");
  banner.classList.remove("is-blue", "is-draw");
-
- scoreBadge.textContent = kounMetrics.scoreStr;
-
- if (isDrawEffective) {
- banner.classList.add("is-draw");
- winTxt.textContent = `Match nul`;
- confTxt.textContent = m2Decide ? `${m2.phase} · ${m2.regle}` : `${rawNulState.activeWayLabel}`;
- } else if (winState.winningSide === "R1") {
- banner.classList.add("is-blue");
- winTxt.textContent = `Victoire : ${winState.winnerTeam}`;
- confTxt.textContent = rubeusInTerre ? `Rubeus Terre (${rubeusTerreHits.join(", ")}) · R1` : winState.confidenceLabel;
- } else {
- winTxt.textContent = `Victoire : ${winState.winnerTeam}`;
- confTxt.textContent = rubeusInTerre ? `Rubeus Terre (${rubeusTerreHits.join(", ")}) · R7` : winState.confidenceLabel;
- }
-
- // 2. Mise à jour Ligne 2 : Deux marquent
- const bttsTag = document.getElementById("bttsTag");
- // Deux marquent : cohérent avec le score prévu (les deux camps marquent si les deux ont au moins un but).
- const scoreMatch = String(kounMetrics.scoreStr).match(/(\d+)\s*-\s*(\d+)/);
- const bttsFinal = scoreMatch ? (+scoreMatch[1] > 0 && +scoreMatch[2] > 0) : btts;
- bttsTag.textContent = bttsFinal ? "Oui" : "Non";
- bttsTag.className = bttsFinal ? "tag-yes" : "tag-no";
- document.getElementById("bttsDetailSub").textContent = bttsFinal
- ? (btts ? `Flux bilatéral actif (R1: ${Math.round(winState.scoreR1)} · R7: ${Math.round(winState.scoreR7)})` : `Score prévu ${kounMetrics.scoreStr} : les deux camps marquent`)
- : (!r1CanScore && !r7CanScore ? "Double verrouillage offensif" : (!r1CanScore ? `${t1} verrouillé` : (!r7CanScore ? `${t2} verrouillé` : "Impulsion unilatérale")));
-
- // 3. Mise à jour Ligne 3 : Incident
- const incidentTag = document.getElementById("incidentTag");
- if (penState.hasIncident) {
- incidentTag.textContent = `${penState.severityLabel} (${penState.penalizedCamp})`;
- incidentTag.className = "tag-red-pill";
- document.getElementById("incidentDetailSub").textContent = penState.allReasons[0] || "Signal actif";
- } else {
- incidentTag.textContent = "Aucun";
- incidentTag.className = "tag-neutral-pill";
- document.getElementById("incidentDetailSub").textContent = "R1/R7 & M12 sans rupture";
- }
-
- // 4. Mise à jour Ligne 4 : Buts MT-1
- const htGoalTag = document.getElementById("htGoalTag");
- htGoalTag.textContent = kounMetrics.htGoalsLabel;
- htGoalTag.className = htGoal ? "tag-yes" : "tag-no";
- document.getElementById("htGoalsDetailSub").textContent = kounMetrics.htGoalsSub;
-
- // 5. Mise à jour Ligne 5 : Corners MT-1
- document.getElementById("htCornersTag").textContent = kounMetrics.htCornersLabel;
- document.getElementById("htCornersDetailSub").textContent = kounMetrics.htCornersSub;
-
- // 6. Mise à jour Ligne 6 : Over / Under
- document.getElementById("overUnderTag").textContent = kounMetrics.ouLabel;
- document.getElementById("overUnderDetailSub").textContent = `Circuit 3-5-11-13 (${kounMetrics.figSov.name}) → M10 (${kounMetrics.figConvM10.name}) · ${kounMetrics.ouRegime}`;
- // Moteur 3 : les sorties (score, deux marquent, incident, buts MT-1, corners, Over/Under) viennent de ses principes.
- if (m3) {
- const issueFinale = isDrawEffective ? "N" : (winState.winningSide === "R1" ? "1" : "2");
- const b3 = KOUN3.buts(m3.lecture, issueFinale), p3 = m3.penalite;
- document.getElementById("predictedScoreBadge").textContent = b3.score;
- document.getElementById("confidenceText").textContent = m2Decide
- ? `${m2.phase} · ${({ PROPRIETAIRE: "principe du propriétaire", DEVELOPPEMENT: "issu du développement", DEV_SEUL: "développement seul", "PORTE_3.0.0": "règle du 3.0.0" })[m2.statut] || m2.statut}${m2.victoireAssuree ? " · assurée" : ""}`
+ if (v.verdict === "N") { banner.classList.add("is-draw"); winTxt.textContent = "Match nul"; }
+ else if (v.verdict === "1") { banner.classList.add("is-blue"); winTxt.textContent = `Victoire : ${t1}`; }
+ else if (v.verdict === "2") { winTxt.textContent = `Victoire : ${t2}`; }
+ else { winTxt.textContent = "Aucun verdict"; }
+ document.getElementById("predictedScoreBadge").textContent = b.score;
+ document.getElementById("confidenceText").textContent = v.principe
+ ? `${v.principe} · ${prov}${v.assuree ? " · assurée" : ""}`
  : "Aucun principe ne tranche";
+
+ // Ligne Moteur 3 : principe décisif
+ document.getElementById("m2Case").textContent = v.principe ? `${v.principe} · ${v.titre} (${prov}${v.assuree ? ", victoire assurée" : ""})` : "Aucun principe ne tranche : les forces des deux pôles sont égales";
+ document.getElementById("m2Reason").textContent = v.raison;
+
+ // Ligne 2 : deux marquent
  const bt = document.getElementById("bttsTag");
- bt.textContent = b3.deuxMarquent.oui ? "Oui" : "Non";
- bt.className = b3.deuxMarquent.oui ? "tag-yes" : "tag-no";
- document.getElementById("bttsDetailSub").textContent = b3.deuxMarquent.oui
- ? `Score prévu ${b3.score} : les deux camps marquent (R1 ${b3.deuxMarquent.pole1PeutMarquer ? "peut marquer" : "verrouillé"}, R7 ${b3.deuxMarquent.pole7PeutMarquer ? "peut marquer" : "verrouillé"})`
- : `${!b3.deuxMarquent.pole1PeutMarquer ? t1 + " verrouillé" : ""}${!b3.deuxMarquent.pole1PeutMarquer && !b3.deuxMarquent.pole7PeutMarquer ? " · " : ""}${!b3.deuxMarquent.pole7PeutMarquer ? t2 + " verrouillé" : ""}${b3.deuxMarquent.pole1PeutMarquer && b3.deuxMarquent.pole7PeutMarquer ? "Un seul camp marque dans le score prévu" : ""}`;
+ bt.textContent = b.deuxMarquent.oui ? "Oui" : "Non";
+ bt.className = b.deuxMarquent.oui ? "tag-yes" : "tag-no";
+ const verrou = [];
+ if (!b.deuxMarquent.pole1PeutMarquer) verrou.push(`${t1} verrouillé`);
+ if (!b.deuxMarquent.pole7PeutMarquer) verrou.push(`${t2} verrouillé`);
+ document.getElementById("bttsDetailSub").textContent = b.deuxMarquent.oui
+ ? `Les deux camps peuvent marquer${b.score !== "—" ? " (score prévu " + b.score + ")" : ""}`
+ : (verrou.length ? verrou.join(" · ") : "Un seul camp marque dans le score prévu");
+
+ // Ligne 3 : incident
  const inc = document.getElementById("incidentTag");
- if (p3.actif) {
- const camp = p3.camp === "R1" ? `${t1} (R1)` : p3.camp === "R7" ? `${t2} (R7)` : `${t1} et ${t2}`;
- inc.textContent = `${p3.libelle} (${camp})`;
+ if (p.actif) {
+ const camp = p.camp === "R1" ? `${t1} (R1)` : p.camp === "R7" ? `${t2} (R7)` : `${t1} et ${t2}`;
+ inc.textContent = `${p.libelle} (${camp})`;
  inc.className = "tag-red-pill";
- document.getElementById("incidentDetailSub").textContent = p3.raisons[0] || "";
+ document.getElementById("incidentDetailSub").textContent = p.raisons[0] || "";
  } else {
  inc.textContent = "Aucun";
  inc.className = "tag-neutral-pill";
  document.getElementById("incidentDetailSub").textContent = "Aucun signal de carton ni de pénalité";
  }
+
+ // Ligne 4 : buts en première mi-temps
  const hg = document.getElementById("htGoalTag");
- hg.textContent = b3.butsMT1.oui ? "Oui" : "Non";
- hg.className = b3.butsMT1.oui ? "tag-yes" : "tag-no";
- document.getElementById("htGoalsDetailSub").textContent = b3.butsMT1.libelle + " (somme M1+M5+M12+M15 : " + b3.butsMT1.somme + ")";
- document.getElementById("htCornersTag").textContent = b3.corners.libelle;
- document.getElementById("htCornersDetailSub").textContent = `Indice de friction ${b3.corners.friction}`;
- const ou = b3.overUnder;
+ hg.textContent = b.butsMT1.oui ? "Oui" : "Non";
+ hg.className = b.butsMT1.oui ? "tag-yes" : "tag-no";
+ document.getElementById("htGoalsDetailSub").textContent = `${b.butsMT1.libelle} (somme M1+M5+M12+M15 : ${b.butsMT1.somme})`;
+
+ // Ligne 5 : corners
+ document.getElementById("htCornersTag").textContent = b.corners.libelle;
+ document.getElementById("htCornersDetailSub").textContent = `Indice de friction ${b.corners.friction}`;
+
+ // Ligne 6 : Over / Under 1,5 · 2,5 · 3,5
+ const ou = b.overUnder;
  document.getElementById("overUnderTag").textContent = ou.over35 ? "Over 3.5" : ou.over25 ? "Over 2.5" : ou.over15 ? "Over 1.5" : "Under 1.5";
  document.getElementById("overUnderDetailSub").textContent = `1,5 : ${ou.over15 ? "Over" : "Under"} · 2,5 : ${ou.over25 ? "Over" : "Under"} · 3,5 : ${ou.over35 ? "Over" : "Under"} · indice net ${ou.indiceNet}`;
- }
 
- const parityTag = (r1House % 2 === 0) ? "Maison Paire · Res Alliée" : "Maison Impaire · Res Rupture";
- const duelNote = winState.resDuel === 1 ? " [Res Domine R7]" : (winState.resDuel === -1 ? " [Res Subit R7]" : "");
- const rubR1Note = winState.rubeusInR1 ? " [Inversion Rubeus]" : "";
- const rubR7Note = winState.rubeusInR7 ? " [Inversion Rubeus]" : "";
- const r1ReposTxt = winState.r1RestLink.count ? winState.r1RestLink.validRestHouses.join(", ") : "Aucune";
- const r7ReposTxt = winState.r7RestLink.count ? winState.r7RestLink.validRestHouses.join(", ") : "Aucune";
-
- document.getElementById("m2Case").textContent = m2Decide ? `${m2.phase} · ${m2.regle} (${({ PROPRIETAIRE: "posé par le propriétaire", DEVELOPPEMENT: "issu du développement", DEV_SEUL: "développement seul, non confirmé", "PORTE_3.0.0": "règle du 3.0.0" })[m2.statut] || m2.statut}${m2.victoireAssuree ? ", victoire assurée" : ""})` : "Aucun principe ne tranche : la lecture 3.0.0 (score) départage, sans nul";
- document.getElementById("m2Reason").textContent = m2Decide ? m2.raison : "";
+ // Détails : les principes, dans l'ordre, avec ce qu'ils disent sur ce thème
+ const lignesPrincipes = KOUN3.PRINCIPES_VERDICT.map(pr => {
+ let r = null;
+ try { r = pr.cas.condition(L); } catch (e) { r = null; }
+ const dit = r ? (r.verdict === "N" ? "nul" : r.verdict === "1" ? "victoire " + safeT1 : "victoire " + safeT2) : "ne s'applique pas";
+ const actif = v.principe === pr.id;
+ return `<span style="width:100%; color:${actif ? "#4ade80" : (r ? "#fde047" : "#64748b")};">${actif ? "&#9654; " : "&nbsp;&nbsp;"}<strong>${pr.id}</strong> <em>(${PROVENANCES_M3[pr.provenance] || pr.provenance})</em> : ${escapeHTML(pr.enonce)} &rarr; <strong>${dit}</strong></span>`;
+ }).join("");
  document.getElementById("verdictBreakdown").innerHTML = `
- <span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#fde047;">
- <strong>&#9989; PrincipeUniqueDuWin (${isDrawEffective ? 'Suspendu : le Moteur 3 donne le nul' : 'Actif'})</strong> :
- <strong>${safeT1} (R1=M${r1House})</strong> = <strong>${Math.round(winState.scoreR1)} pts</strong> [Base ${winState.strR1Base}% · Res ${winState.strR1Res}%]
- &nbsp;vs&nbsp;
- <strong>${safeT2} (R7=M${r7House})</strong> = <strong>${Math.round(winState.scoreR7)} pts</strong> [Base ${winState.strR7Base}% · Res ${winState.strR7Res}%]
- &nbsp;(Écart : ${Math.round(winState.poleDiff)} pts &bull; ${escapeHTML(winState.tieBreakerReason)})
- </span>
- <span style="width:100%; color:#86efac; font-size:0.73rem;">
- <strong>&#127968; Figures de repos liées aux Fronts (&ge;2 sans antagoniste)</strong> :
- <strong>R1 (${safeT1})</strong> = <strong>${winState.r1RestLink.count}</strong> [${escapeHTML(r1ReposTxt)}] &nbsp;|&nbsp;
- <strong>R7 (${safeT2})</strong> = <strong>${winState.r7RestLink.count}</strong> [${escapeHTML(r7ReposTxt)}]
- ${rubeusInTerre ? ` &nbsp;&bull;&nbsp; <strong style="color:#f87171;">Rubeus en Terre (${rubeusTerreHits.join(", ")}) : ${isDrawEffective ? "lecture 3.0.0 « jamais nul », écartée par le Moteur 3 (nul)" : "Jamais Nul"}</strong>` : ''}
- </span>
- <span><strong>${safeT1} (Pôle &amp; Croisement)</strong> : [${baseR1.name} (${baseR1.front}) &rarr; Res: ${resR1.name} (${resR1.front}) | ${parityTag} &bull; ${winState.poleR1.tag}${winState.r1Passed ? ` &bull; Chef (${winState.r1PassCount})` : ""}${duelNote}${rubR1Note}]</span>
- <span><strong>${safeT2} (Pôle &amp; Croisement)</strong> : [${baseR7.name} (${baseR7.front}) &rarr; Res: ${resR7.name} (${resR7.front}) | ${winState.poleR7.tag}${winState.r7Passed ? ` &bull; Chef (${winState.r7PassCount})` : ""}${rubR7Note}]</span>
- <span><strong>Juge M15</strong> : ${baseM15.name} (Res: ${resM15.name}) &bull; <strong>Sentence M16</strong> : ${baseM16.name} (Res alliée: ${resM16.name})</span>
- <span style="width:100%; border-top:1px dashed #334155; padding-top:4px; margin-top:2px; color:${isDrawEffective ? '#facc15' : '#94a3b8'};">
- <strong>&#9878; PrincipeUniqueDuNul</strong> <em>(lecture 3.0.0, ne décide plus ; le nul vient du Moteur 3)</em> :
- ${isDrawEffective ? `<strong style="color:#4ade80;">ACTIF (NUL — Moteur 3 ${escapeHTML(m2 ? m2.phase : "")})</strong>` : `<strong>${rawNulState.isDraw ? "Lecture 3.0.0, ne décide plus : " : ""}${escapeHTML(rawNulState.activeWayLabel)}</strong>`} &mdash;
- [1] R1/R7 Miroirs (${baseR1.name} / ${baseR7.name}) : <strong>${rawNulState.cond1_R1R7Mirror ? 'Oui' : 'Non'}</strong> &bull;
- [2] Somme R1+R7 = ${rawNulState.sumR1R7.name} (M${rawNulState.sumR1R7.dom[0]}) : <strong>${rawNulState.cond2_SumTerre ? 'Oui' : 'Non'}</strong> &bull;
- [3] Témoins M13/M14 (${escapeHTML(rawNulState.witnessType)}) : <strong>${rawNulState.cond3_Witnesses ? 'Oui' : 'Non'}</strong> &bull;
- [4] Juge M15 (${baseM15.name}) &amp; Canaux Base+Rés (${rawNulState.totalOpen1} vs ${rawNulState.totalOpen7}) : <strong>${rawNulState.cond4_Judge ? 'Oui' : 'Non'}</strong>
- </span>
- <span style="width:100%; border-top:1px dashed #7f1d1d; padding-top:4px; margin-top:2px; color:${penState.hasIncident ? '#fca5a5' : '#94a3b8'};">
- <strong>&#9888; PrincipeUniqueDuPenalite</strong> :
- ${penState.hasIncident ? `<strong style="color:#f87171;">ACTIF (${escapeHTML(penState.severityLabel)} &rarr; ${escapeHTML(penState.penalizedCamp)})</strong> : ${escapeHTML(penState.allReasons.join(" ; "))}` : "Aucune condition déclenchée (Rubeus base impair / Cauda M12 / Repos R1-R7)"}
- </span>
- <span style="width:100%; border-top:1px solid #1e293b; padding-top:4px; margin-top:2px; color:#38bdf8; line-height:1.5;">
- <strong>&#9876; Dualité des Cercles de Front (A-D · D-C · C-B · B-A) — Base &amp; Résultante</strong> :<br>
- &bull; <strong>R1 (${safeT1})</strong> : Base <strong>Front ${winState.duality.r1BaseDual.front}</strong> (${winState.duality.r1BaseDual.ownC.power} pts) vs Ant. <strong>Front ${winState.duality.r1BaseDual.antFront}</strong> (${winState.duality.r1BaseDual.antC.power} pts)
- &nbsp;|&nbsp; Res <strong>Front ${winState.duality.r1ResDual.front}</strong> (${winState.duality.r1ResDual.ownC.power} pts) vs Ant. <strong>Front ${winState.duality.r1ResDual.antFront}</strong> (${winState.duality.r1ResDual.antC.power} pts)
- &rarr; <strong>Bilan R1 : ${winState.duality.dualityDeltaR1 >= 0 ? '+' : ''}${Math.round(winState.duality.dualityDeltaR1)} pts</strong><br>
- &bull; <strong>R7 (${safeT2})</strong> : Base <strong>Front ${winState.duality.r7BaseDual.front}</strong> (${winState.duality.r7BaseDual.ownC.power} pts) vs Ant. <strong>Front ${winState.duality.r7BaseDual.antFront}</strong> (${winState.duality.r7BaseDual.antC.power} pts)
- &nbsp;|&nbsp; Res <strong>Front ${winState.duality.r7ResDual.front}</strong> (${winState.duality.r7ResDual.ownC.power} pts) vs Ant. <strong>Front ${winState.duality.r7ResDual.antFront}</strong> (${winState.duality.r7ResDual.antC.power} pts)
- &rarr; <strong>Bilan R7 : ${winState.duality.dualityDeltaR7 >= 0 ? '+' : ''}${Math.round(winState.duality.dualityDeltaR7)} pts</strong><br>
- &bull; <strong style="color:#a3e635;">&#127757; Résonance des Maisons Terre (M4 · M8 · M12 · M16)</strong> :
- <strong>R1 (${safeT1}) = ${winState.earthResonance.totalR1} pts</strong> vs <strong>R7 (${safeT2}) = ${winState.earthResonance.totalR7} pts</strong>
- &rarr; <strong>Socle Terre : ${winState.earthResonance.dominantCamp === "R1" ? safeT1 + " (R1)" : (winState.earthResonance.dominantCamp === "R7" ? safeT2 + " (R7)" : "Équilibré")}</strong><br>
- <span style="display:inline-block; padding-left:10px; color:#cbd5e1; font-size:0.71rem;">
- ${winState.earthResonance.details.map(d => {
- const tagCol = d.owner === "R1" ? "#60a5fa" : (d.owner === "R7" ? "#f87171" : "#94a3b8");
- const ownerLbl = d.owner === "R1" ? safeT1 : (d.owner === "R7" ? safeT2 : "Partagée");
- const bN = d.baseNotes.length ? ` (${d.baseNotes.join(", ")})` : "";
- const rN = d.resNotes.length ? ` (${d.resNotes.join(", ")})` : "";
- return `&#9656; <strong>M${d.h} (${d.restName} · ${d.opShort})</strong> [<span style="color:${tagCol}; font-weight:700;">${ownerLbl}</span>] : Base <em>${d.baseFig.name}</em> [${d.baseFig.front}/${d.baseFig.elem}]${escapeHTML(bN)} &rarr; Res <em>${d.resFig.name}</em> [${d.resFig.front}/${d.resFig.elem}]${escapeHTML(rN)}`;
- }).join("<br>")}
- </span><br>
- &bull; <strong style="color:#f472b6;">&#128148; Paralysies Réciproques (Intrusion &amp; Capture)</strong> : ${
- winState.paralyzedMap.size > 0
- ? Array.from(winState.paralyzedMap.entries()).map(([fn, rs]) => `<strong>${escapeHTML(fn)}</strong> (${escapeHTML(rs.join(" ; "))})`).join(" &bull; ")
- : "Aucune figure paralysée dans ce thème"
- }
- </span>
- `;
+ <span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#4ade80;"><strong>&#129504; Verdict</strong> : ${escapeHTML(v.raison)}</span>
+ ${lignesPrincipes}
+ <span style="width:100%; color:${v.principe === "FP-1" ? "#4ade80" : "#64748b"};">${v.principe === "FP-1" ? "&#9654; " : "&nbsp;&nbsp;"}<strong>FP-1</strong> <em>(issu du développement)</em> : ${escapeHTML(KOUN3.FORCE_POLES.enonce)}</span>
+ <span style="width:100%; border-top:1px dashed #334155; padding-top:4px; margin-top:2px; color:#fca5a5;"><strong>&#9888; Pénalité et carton</strong> <em>(règle du 3.0.0, non testée)</em> : ${p.actif ? escapeHTML(p.libelle + " : " + p.raisons.join(" ; ")) : "aucun signal"}</span>
+ <span style="width:100%; color:#cbd5e1;"><strong>&#9917; Deux marquent</strong> <em>(testé sur 26 scores réels)</em> : ${t1} ${b.deuxMarquent.pole1PeutMarquer ? "peut marquer" : "verrouillé"}, ${t2} ${b.deuxMarquent.pole7PeutMarquer ? "peut marquer" : "verrouillé"}, élan ${b.deuxMarquent.elan ? "présent" : "absent"}.</span>
+ <span style="width:100%; color:#cbd5e1;"><strong>&#128200; Over/Under</strong> <em>(seuils du propriétaire 7 · 9,5 · 14,5, testé sur 26 scores réels)</em> : flux ${ou.flux}, verrous de Terre ${ou.verrous}, indice net ${ou.indiceNet}.</span>
+ <span style="width:100%; color:#cbd5e1;"><strong>&#9201; Buts MT-1</strong> <em>(règle du 3.0.0, testée sur 6 matchs)</em> : ${escapeHTML(b.butsMT1.libelle)}.</span>
+ <span style="width:100%; color:#cbd5e1;"><strong>&#128681; Corners MT-1</strong> <em>(règle du 3.0.0, non testée)</em> : indice de friction ${b.corners.friction}, ${b.corners.libelle}.</span>`;
 
- const fR1 = HOUSE_REST_FIG[r1House].front;
- const fR7 = HOUSE_REST_FIG[r7House].front;
- let poleTitle = "";
- if (fR1 === "A" && fR7 === "C") poleTitle = "Pôle Impulsif (Boucle Impaire : Feu A ↔ Eau C)";
- else if (fR1 === "C" && fR7 === "A") poleTitle = "Pôle Impulsif Inversé (Boucle Impaire : Eau C ↔ Feu A)";
- else if (fR1 === "B" && fR7 === "D") poleTitle = "Pôle Binôme / Miroir (Boucle Paire : Air B ↔ Terre D)";
- else poleTitle = "Pôle Ancré / Binôme (Boucle Paire : Terre D ↔ Air B)";
-
- const describeCampPole = (houseNum, baseF, resF, poleInfo, campLabel, safeTeamName, colHex) => {
- const restF = HOUSE_REST_FIG[houseNum];
- const opInfo = getHouseElementOperator(houseNum);
- let mechDesc = "";
- if (restF.front === "D") {
- const pairFit = baseF.loopType === "Pair"
- ? `compatibilité Paire optimale (Front ${baseF.front})`
- : `figure Impaire (Front ${baseF.front}) sur socle Terre`;
- mechDesc = `Maison Terre Paire — ${opInfo.detail} (${pairFit}) : ${baseF.name} (${baseF.num}) accouche de ${resF.name} (${resF.num}) dans le même Front (${resF.front}).`;
- } else if (restF.front === "B") {
- mechDesc = `Maison Air Paire (Commutation binôme) : ${baseF.name} (${baseF.num}, Front ${baseF.front}) bascule vers son Front binôme ${resF.front} (${resF.name} ${resF.num}) dans la même boucle.`;
- } else {
- mechDesc = `Maison ${restF.elem} Impaire (Rupture de boucle) : ${baseF.name} (${baseF.num}, Front ${baseF.front}) bascule vers l'autre boucle en Front ${resF.front} (${resF.name} ${resF.num}).`;
- }
- return `
- <div class="pole-camp-card" style="border-left: 3px solid ${colHex};">
- <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; color:${colHex}; margin-bottom:2px;">
- <span>${campLabel} — ${safeTeamName} (M${houseNum} · Front ${restF.front})</span>
- <span style="font-size:0.68rem; background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px; color:#fde047;">${escapeHTML(poleInfo.tag)}</span>
+ // Analyse des pôles : positions, forces, paralysies
+ const CANAL = ["Feu", "Air", "Eau", "Terre"];
+ const carte = (camp, nom, col) => {
+ const c = L[camp], pos = L.positions(c.figure);
+ const lignes = pos.map(x => `M${x.maison} ${x.couche === "base" ? "base" : "résultante"} : ${x.force === null ? "double repos" : x.force + " %"}`).join(" · ");
+ const paral = L.paralysies.filter(q => q.cible === c.figure).map(q => `${q.intrus} en M${q.maison} la paralyse (${q.degre === "GRAVE" ? "grave" : q.degre === "SOUTIEN" ? "soutenue" : "absente"})`).join(" ; ");
+ return `<div class="pole-camp-card" style="border-left: 3px solid ${col};">
+ <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; color:${col}; margin-bottom:2px;">
+ <span>${camp} — ${nom} (M${c.maison} · canal ${CANAL[(c.maison - 1) % 4]})</span>
+ <span style="font-size:0.68rem; background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px; color:#fde047;">${escapeHTML(c.figure)} · front ${c.front}</span>
  </div>
- <div style="color:#cbd5e1; font-size:0.72rem;">${escapeHTML(mechDesc)}</div>
- </div>
- `;
+ <div style="color:#cbd5e1; font-size:0.72rem;">${L.chezElle(c.figure) ? "Chez lui. " : ""}${L.annuleePar(c.figure) ? "Annulé par " + escapeHTML(L.annuleePar(c.figure).attaquant) + ". " : ""}Positions : ${escapeHTML(lignes || "aucune")}.${paral ? " " + escapeHTML(paral) + "." : ""} Antagoniste : ${escapeHTML(c.antagoniste)}.</div>
+ </div>`;
  };
-
- document.getElementById("strategicPoleType").textContent = poleTitle;
- document.getElementById("strategicPoleGrid").innerHTML =
- describeCampPole(r1House, baseR1, resR1, winState.poleR1, "Camp R1", safeT1, "#60a5fa") +
- describeCampPole(r7House, baseR7, resR7, winState.poleR7, "Camp R7", safeT2, "#f87171");
+ document.getElementById("strategicPoleType").textContent = L.mode === "MEME_FRONT" ? "Même front" : L.mode === "MEME_BOUCLE" ? "Même boucle, fronts différents" : "Boucles différentes";
+ document.getElementById("strategicPoleGrid").innerHTML = carte("R1", safeT1, "#60a5fa") + carte("R7", safeT2, "#f87171");
  }
 
  function renderPyramid() {
@@ -5253,20 +3546,6 @@
  M_sim[h7] = [...baseR7.vec];
  R_sim[h7] = [...resR7.vec];
 
- const simCtx = {
- M: M_sim, R: R_sim, t1, t2, r1House: h1, r7House: h7,
- figM1: getFigByVec(M_sim[1]),
- baseR1, resR1, baseR7, resR7,
- baseM8: getFigByVec(M_sim[8]),
- baseM10: getFigByVec(M_sim[10]),
- baseM12: getFigByVec(M_sim[12]),
- baseM13: getFigByVec(M_sim[13]), resM13: getFigByVec(R_sim[13]),
- baseM14: getFigByVec(M_sim[14]), resM14: getFigByVec(R_sim[14]),
- baseM15: getFigByVec(M_sim[15]), resM15: getFigByVec(R_sim[15]),
- baseM16: getFigByVec(M_sim[16]), resM16: getFigByVec(R_sim[16])
- };
- const unifiedWin = evalPrincipeUniqueDuWin(simCtx);
- const unifiedNul = evalPrincipeUniqueDuNul(simCtx);
 
  const byFront = { A: { base: [], res: [] }, B: { base: [], res: [] }, C: { base: [], res: [] }, D: { base: [], res: [] } };
  for (let i = 1; i <= 16; i++) {
@@ -5321,43 +3600,22 @@
  const r1Pressure = totalFrontCount(r1BasePred) + totalFrontCount(r1ResPred);
  const r7Pressure = totalFrontCount(r7BasePred) + totalFrontCount(r7ResPred);
 
- const score1Rounded = Math.round(unifiedWin.scoreR1);
- const score7Rounded = Math.round(unifiedWin.scoreR7);
-
+ // Moteur 3 : même lecture que la fenêtre du verdict, appliquée au thème simulé (maisons et figures du calculateur, pôles choisis).
  let crossConclusion = "";
- if (false) { // le nul ne vient plus que du Moteur 2
- crossConclusion = `<span style="color:#facc15; font-weight:800;">Match Nul (PrincipeUniqueDuNul actif)</span> — ${escapeHTML(unifiedNul.activeWayLabel)} (Scores : R1 = ${score1Rounded} pts vs R7 = ${score7Rounded} pts).`;
- } else if (unifiedWin.winningSide === "R1") {
- crossConclusion = `<span style="color:#60a5fa; font-weight:800;">Avantage unifié : R1 (${safeT1})</span> — Score Moteur : R1 = <strong>${score1Rounded} pts</strong> vs R7 = <strong>${score7Rounded} pts</strong> (${escapeHTML(unifiedWin.tieBreakerReason)}).`;
- } else {
- crossConclusion = `<span style="color:#f87171; font-weight:800;">Avantage unifié : R7 (${safeT2})</span> — Score Moteur : R7 = <strong>${score7Rounded} pts</strong> vs R1 = <strong>${score1Rounded} pts</strong> (${escapeHTML(unifiedWin.tieBreakerReason)}).`;
- }
-
- // Moteur 2 : même lecture que la fenêtre du verdict, appliquée au thème simulé (maisons et figures du calculateur, pôles choisis).
- let m2c = null;
  try {
  const thSim = {};
  for (let k = 1; k <= 16; k++) thSim[k] = KOUN3.FIG[getFigByVec(M_sim[k]).num - 1];
  const vv = KOUN3.verdict(KOUN3.lire(thSim, { R1: h1, R7: h7 }));
- m2c = { verdict: vv.verdict, phase: vv.principe, regle: vv.titre || vv.enonce, raison: vv.raison, victoireAssuree: vv.assuree };
- } catch (e) { m2c = null; }
- if (m2c && m2c.verdict) {
- const lecture30 = crossConclusion
- .replace("Avantage unifié", "Lecture 3.0.0 (score)")
- .replace("Match Nul (PrincipeUniqueDuNul actif)", "Lecture 3.0.0 : nul");
  const polesStandard = (((h7 - h1) % 16) + 16) % 16 === 6;
- const modif = isSynced ? "" : " <em>(thème simulé : maisons ou figures modifiées" + (polesStandard ? "" : " ; pôles hors R7 = R1 + 6, les cas n'ont été vérifiés que sur ce schéma") + ")</em>";
- const tete = m2c.verdict === "N"
- ? `<span style="color:#facc15; font-weight:800;">Match Nul</span>`
- : (m2c.verdict === "1"
+ const modif = isSynced ? "" : " <em>(thème simulé : maisons ou figures modifiées" + (polesStandard ? "" : " ; pôles hors R7 = R1 + 6, les principes n'ont été vérifiés que sur ce schéma") + ")</em>";
+ const tete = vv.verdict === "N"
+ ? `<span style="color:#facc15; font-weight:800;">Match nul</span>`
+ : (vv.verdict === "1"
  ? `<span style="color:#60a5fa; font-weight:800;">Victoire R1 (${safeT1})</span>`
- : `<span style="color:#f87171; font-weight:800;">Victoire R7 (${safeT2})</span>`);
- crossConclusion = `${tete} — Moteur 3 · <strong>${escapeHTML(m2c.phase)}</strong> ${escapeHTML(m2c.regle)}${m2c.victoireAssuree ? " (assurée)" : ""}${modif}<br>`
- + `<span style="color:#cbd5e1; font-size:0.72rem;">${escapeHTML(m2c.raison)}</span><br>`
- + `<span style="color:#94a3b8; font-size:0.72rem;">${lecture30}</span>`;
- } else {
- crossConclusion = `<span style="color:#facc15;">Moteur 3 : aucun principe ne tranche, la lecture 3.0.0 (score) départage, sans nul.</span><br>` + crossConclusion;
- }
+ : (vv.verdict === "2" ? `<span style="color:#f87171; font-weight:800;">Victoire R7 (${safeT2})</span>` : `<span style="color:#facc15; font-weight:800;">Aucun verdict</span>`));
+ crossConclusion = `${tete} — Moteur 3 · <strong>${escapeHTML(vv.principe || "aucun principe")}</strong> ${escapeHTML(vv.titre || vv.enonce)}${vv.assuree ? " (assurée)" : ""}${modif}<br>`
+ + `<span style="color:#cbd5e1; font-size:0.72rem;">${escapeHTML(vv.raison)}</span>`;
+ } catch (e) { crossConclusion = "Moteur 3 : lecture impossible pour ce thème simulé."; }
 
  document.getElementById("r1r7CalcOutput").innerHTML = `
  <div style="font-size:0.76rem; font-weight:800; color:#e2e8f0; margin-top:0.5rem;">1. Fronts existants dans le thème (Base &amp; Résultante) — R1, R7 et leurs Antagonistes</div>
@@ -5428,7 +3686,7 @@
  </table>
 
  <div class="r1r7-cross-summary">
- <strong>Synthèse unifiée :</strong> ${crossConclusion}<br>
+ <strong>Verdict :</strong> ${crossConclusion}<br>
  &bull; <strong>Soutien brut dans le thème :</strong> R1 = <strong>${r1Support}</strong> présences (Base Front ${baseR1.front} + Res Front ${resR1.front}) vs R7 = <strong>${r7Support}</strong> présences (Base Front ${baseR7.front} + Res Front ${resR7.front}).<br>
  &bull; <strong>Pression subie par les antagonistes :</strong> R1 subit <strong>${r1Pressure}</strong> présences (Fronts ${r1BasePred}/${r1ResPred}) vs R7 subit <strong>${r7Pressure}</strong> présences (Fronts ${r7BasePred}/${r7ResPred}).
  </div>
@@ -5615,19 +3873,7 @@
  const toTxt = deriv.to.length ? deriv.to.map(x => `M${x}`).join(", ") : "Clôture du thème (Sentence)";
  const mutBadgeCol = mutInfo.isEvenHouse ? "#38bdf8" : "#f59e0b";
  const opInfo = getHouseElementOperator(h);
- let terreCompatTxt = "";
- if (restFig.front === "D" && currentHouses && currentHouses.length >= 17) {
- const { r1House, r7House } = getR1R7Houses(currentHouses);
- const eRes = evalEarthHousesResonance(
- currentHouses, currentResultantes, r1House, r7House,
- getFigByVec(currentHouses[r1House]), getFigByVec(currentResultantes[r1House]),
- getFigByVec(currentHouses[r7House]), getFigByVec(currentResultantes[r7House])
- );
- const dInfo = eRes.details.find(x => x.h === h);
- const pairLbl = baseFig.loopType === "Pair" ? "Boucle Paire optimale" : "Boucle Impaire";
- const roleTxt = dInfo ? ` | Résonance : ${dInfo.owner} (R1:${dInfo.houseR1} vs R7:${dInfo.houseR7}) — Base: ${dInfo.baseNotes.join(", ") || "neutre"} ; Res: ${dInfo.resNotes.join(", ") || "neutre"}` : "";
- terreCompatTxt = ` &bull; <span style="color:#4ade80; font-weight:700;">Socle Terre (${escapeHTML(pairLbl + roleTxt)})</span>`;
- }
+ const terreCompatTxt = "";
 
  document.getElementById("houseInspector").innerHTML = `
  <div>
@@ -5732,124 +3978,7 @@
  }
  }
 
- // ---- CIRCUIT DES CANAUX VIA FRONTS R1 / R7 ----
- // Les fronts des camps sont les véhicules du flux. Sans figure sur un front,
- // le canal n'a pas de porteur. Sans miroir, la figure présente passe libre.
- const { r1House, r7House } = getR1R7Houses(M);
- const baseR1 = getFigByVec(M[r1House]);
- const resR1 = getFigByVec(R[r1House]);
- const baseR7 = getFigByVec(M[r7House]);
- const resR7 = getFigByVec(R[r7House]);
- const r1Fronts = [...new Set([baseR1.front, resR1.front])];
- const r7Fronts = [...new Set([baseR7.front, resR7.front])];
-
- const presentNames = new Set();
- for (let h = 1; h <= 16; h++) {
- presentNames.add(getFigByVec(M[h]).name);
- presentNames.add(getFigByVec(R[h]).name);
- }
-
- const FRONT_ELEM = { A: "Feu", B: "Air", C: "Eau", D: "Terre" };
- const FRONT_LINE = { A: 0, B: 1, C: 2, D: 3 };
-
- function figuresOnFront(frontId) {
- const list = [];
- for (let h = 1; h <= 16; h++) {
- [["B", M[h]], ["R", R[h]]].forEach(([layer, vec]) => {
- const f = getFigByVec(vec);
- if (f.front === frontId) list.push({ h, layer, fig: f });
- });
- }
- return list;
- }
-
- function analyzeCampCircuit(camp, fronts, baseFig, resFig, houseNum) {
- const frontDetails = fronts.map(fid => {
- const carriers = figuresOnFront(fid);
- const campCarriers = carriers.filter(c => c.h === houseNum || c.fig.name === baseFig.name || c.fig.name === resFig.name);
- // miroirs absents parmi les porteurs du front
- const freePassers = [];
- const constrained = [];
- carriers.forEach(c => {
- const mirror = MIRROR_FIGURES_MAP[c.fig.name];
- if (mirror && !presentNames.has(mirror)) {
- freePassers.push({ ...c, freeBecause: `${mirror} absente` });
- } else if (mirror && presentNames.has(mirror)) {
- constrained.push({ ...c, constrainedBy: mirror });
- }
- });
- // activation on this front's line among carriers
- const lineIdx = FRONT_LINE[fid];
- let openBase = 0, openRes = 0;
- carriers.forEach(c => {
- if (c.layer === "B" && M[c.h][lineIdx] === 1) openBase++;
- if (c.layer === "R" && R[c.h][lineIdx] === 1) openRes++;
- });
- return {
- front: fid,
- elem: FRONT_ELEM[fid],
- carrierCount: carriers.length,
- carriers: carriers.slice(0, 8),
- freePassers,
- constrained,
- openOnLineB: openBase,
- openOnLineR: openRes,
- hasVehicle: carriers.length > 0
- };
- });
-
- const missingMirrors = [];
- ALL_16_VECS.forEach(f => {
- if (!fronts.includes(f.front)) return;
- if (!presentNames.has(f.name)) return;
- const mir = MIRROR_FIGURES_MAP[f.name];
- if (mir && !presentNames.has(mir)) {
- missingMirrors.push({ present: f.name, absent: mir, front: f.front });
- }
- });
-
- const completeFronts = frontDetails.filter(d => d.hasVehicle).length;
- const freeEnergy = frontDetails.reduce((n, d) => n + d.freePassers.length, 0);
- // Trou de miroir = faille du circuit du camp (énergie non contrainte sur SES fronts)
- const circuitScore = completeFronts * 12 - freeEnergy * 7 - missingMirrors.length * 5 - (fronts.length - completeFronts) * 8;
-
- return {
- camp,
- houseNum,
- baseFig,
- resFig,
- fronts,
- frontDetails,
- missingMirrors,
- completeFronts,
- freeEnergy,
- circuitScore,
- label: completeFronts >= fronts.length && freeEnergy === 0
- ? "Circuit fermé (contraint)"
- : (freeEnergy > 0 ? "Circuit troué (énergie libre)" : "Circuit partiel")
- };
- }
-
- const circuitR1 = analyzeCampCircuit("R1", r1Fronts, baseR1, resR1, r1House);
- const circuitR7 = analyzeCampCircuit("R7", r7Fronts, baseR7, resR7, r7House);
-
- // Circuit le plus sain / contraint porte mieux le frein ; le camp troué laisse passer le flux adverse
- let fluxAdvantage = "Équilibre";
- if (circuitR1.circuitScore - circuitR7.circuitScore >= 5) fluxAdvantage = "R1";
- else if (circuitR7.circuitScore - circuitR1.circuitScore >= 5) fluxAdvantage = "R7";
-
- const structureBonus = terreIntact * 1.2 + Math.max(0, intact - 8) * 0.25;
- let disruptionBonus = terreInverted * 1.1 + Math.max(0, inverted - 2) * 0.35;
- // Énergie libre sur les fronts d'un camp = faille → le flux offensif global monte
- disruptionBonus += (circuitR1.freeEnergy + circuitR7.freeEnergy) * 0.55;
- if (fluxAdvantage === "R1") disruptionBonus += circuitR7.missingMirrors.length * 0.9;
- if (fluxAdvantage === "R7") disruptionBonus += circuitR1.missingMirrors.length * 0.9;
-
- const mirTxt = (c) => c.missingMirrors.length
- ? c.missingMirrors.map(m => `${m.present} libre (${m.absent} absente)`).join(", ")
- : "miroirs présents";
-
- const summary = `Intactes ${intact}/16 · Inversées ${inverted}/16 · Terre ${terreIntact}/4 int. ${terreInverted}/4 inv. · Circuit R1 [${r1Fronts.join("+")}] ${circuitR1.label} · Circuit R7 [${r7Fronts.join("+")}] ${circuitR7.label} · Flux → ${fluxAdvantage}`;
+ const summary = `Intactes ${intact}/16 · Inversées ${inverted}/16 · Terre ${terreIntact}/4 intactes, ${terreInverted}/4 inversées`;
 
  return {
  houses,
@@ -5858,13 +3987,6 @@
  populusMirrors,
  terreIntact,
  terreInverted,
- structureBonus,
- disruptionBonus,
- circuitR1,
- circuitR7,
- fluxAdvantage,
- r1Fronts,
- r7Fronts,
  summary
  };
  }
@@ -5942,7 +4064,6 @@
  else if (sat >= 3 && openPct >= 50) { regime = "Saturé"; regimeCol = "#f97316"; }
 
  const fluxTraj = evalFluxTrajectory(M, R);
- const partieNul = evalNulParParties(M, R);
  if (fluxTraj.terreIntact >= 3 && fluxTraj.terreInverted === 0 && (regime === "Contenu" || regime === "Fermé")) {
  regime = "Structuré (trajets intacts)";
  regimeCol = "#94a3b8";
@@ -5955,7 +4076,7 @@
  rhythm.innerHTML = `
  <div>
  <div class="canal-rhythm-title" style="color:${regimeCol};">Rythme du thème : ${regime}</div>
- <div class="canal-rhythm-sub">Ouverture ${openPct}% · Fermeture ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span><br><span style="color:#fbbf24;">Lecture 3.0.0 · structure nul P1/P2 : ${escapeHTML(partieNul.summary)}</span></div>
+ <div class="canal-rhythm-sub">Ouverture ${openPct}% · Fermeture ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span></div>
  </div>
  <div class="canal-bar" title="Part des canaux ouverts (couleur) contre fermés">
  <span style="width:${openPct}%; background:linear-gradient(90deg,#ef4444,#eab308,#3b82f6,#22c55e);"></span>
@@ -6002,31 +4123,7 @@
  <div class="canal-lock-head"><span style="color:#38bdf8;">Trajets maisons Terre (notation 1=ouvert 2=fermé)</span></div>
  <div style="font-size:0.68rem;line-height:1.55;color:#cbd5e1;">${terrePaths}</div>
  </div>
- <div class="canal-lock" style="grid-column:1/-1;border-left:3px solid #a78bfa;">
- <div class="canal-lock-head"><span style="color:#a78bfa;">Circuit des canaux via fronts R1 / R7</span>
- <span class="canal-lock-state" style="color:#e2e8f0;">Flux → ${escapeHTML(fluxTraj.fluxAdvantage)}</span></div>
- <div style="font-size:0.68rem;line-height:1.55;color:#cbd5e1;margin-top:0.3rem;">
- <b style="color:#60a5fa;">R1</b> fronts [${(fluxTraj.r1Fronts||[]).join("+")}] · ${escapeHTML(fluxTraj.circuitR1.label)}
- · ${fluxTraj.circuitR1.missingMirrors.length ? fluxTraj.circuitR1.missingMirrors.map(m => escapeHTML(m.present) + " libre (" + escapeHTML(m.absent) + " absente)").join(", ") : "miroirs présents"}
- <br>
- <b style="color:#f87171;">R7</b> fronts [${(fluxTraj.r7Fronts||[]).join("+")}] · ${escapeHTML(fluxTraj.circuitR7.label)}
- · ${fluxTraj.circuitR7.missingMirrors.length ? fluxTraj.circuitR7.missingMirrors.map(m => escapeHTML(m.present) + " libre (" + escapeHTML(m.absent) + " absente)").join(", ") : "miroirs présents"}
- <br>
- <span style="color:#94a3b8;">Les fronts des camps véhiculent le flux ; un miroir absent laisse passer l'énergie sans frein.</span>
- </div>
- </div>
- <div class="canal-lock" style="grid-column:1/-1;border-left:3px solid #fbbf24;">
- <div class="canal-lock-head"><span style="color:#fbbf24;">Structure du nul — Parties du thème (lecture 3.0.0, ne décide plus)</span>
- <span class="canal-lock-state" style="color:${partieNul.isStructuralDraw ? "#4ade80" : "#f87171"};">${partieNul.isStructuralDraw ? "Nul structurel possible" : "Pas de nul structurel"}</span></div>
- <div style="font-size:0.68rem;line-height:1.55;color:#cbd5e1;margin-top:0.3rem;">
- <b>P1</b> (M1-4,9,10,13,15) · act ${partieNul.p1.activationScore} · ouv ${partieNul.p1.openPct}% · ouvrantes ${partieNul.p1.ouvrantes} · ferm. int. ${partieNul.p1.fermantesIntactes} · libre ${partieNul.p1.freeEnergy} · intacts ${partieNul.p1.intactPaths} · inversés ${partieNul.p1.invertedPaths}
- <br>
- <b>P2</b> (M5-8,11,12,14,16) · act ${partieNul.p2.activationScore} · ouv ${partieNul.p2.openPct}% · ouvrantes ${partieNul.p2.ouvrantes} · ferm. int. ${partieNul.p2.fermantesIntactes} · libre ${partieNul.p2.freeEnergy} · intacts ${partieNul.p2.intactPaths} · inversés ${partieNul.p2.invertedPaths}
- <br>
- Δouv ${partieNul.dOpen > 0 ? "+" : ""}${partieNul.dOpen}% · Δact ${partieNul.dAct > 0 ? "+" : ""}${Math.round(partieNul.dAct * 10) / 10} · Δlibre ${partieNul.dFree > 0 ? "+" : ""}${partieNul.dFree}
- · <span style="color:#fde68a;">${escapeHTML(partieNul.structure)}</span>
- </div>
- </div>`;
+`;
  }
 
  let grid = `<div></div>`;
@@ -6385,7 +4482,7 @@
  const cartes = list.map(item => {
  const d = lireMoteur(item), reel = issueReelle(item);
  const v = d ? d.verdict : null;
- const txt = v === "N" ? "Match nul" : v === "1" ? "Victoire " + escapeHTML(item.t1) : v === "2" ? "Victoire " + escapeHTML(item.t2) : "aucun cas (lecture 3.0.0)";
+ const txt = v === "N" ? "Match nul" : v === "1" ? "Victoire " + escapeHTML(item.t1) : v === "2" ? "Victoire " + escapeHTML(item.t2) : "aucun principe ne tranche";
  let badge = "";
  if (reel) {
  juges++;

@@ -1,6 +1,6 @@
 # Moteur 3 : table rase des principes
 
-Le moteur 2 a été vidé de ses cas de décision. La **structure** (thème, résultantes, forces, pôles, paralysies) reste : ce sont des calculs exacts. Tout ce qui décide est reconstruit dans `moteur3/moteur.js`, avec la provenance de chaque principe.
+`moteur3/moteur.js` est un fichier autonome de 38 Ko (le moteur 2 et le moteur 3 pesaient 87 Ko ensemble dans la page). Il contient la **structure** exacte (thème, résultantes, forces, pôles, paralysies) et, principe par principe, tout ce qui décide. Les cas du moteur 2 abandonnés, sa fonction de décision, ses signaux et ses constantes inutilisées ont été supprimés ; une vérification sur les 65 536 thèmes confirme que les sorties n'ont pas changé.
 
 Provenances : **PROPRIETAIRE** (posé par vous) · **PORTE_3.0.0** (règle de votre 3.0.0, reprise) · **DEVELOPPEMENT** (issu des matchs de développement, tient sur le lot 1) · **DEV_SEUL** (développement seulement, jamais confirmé) · **NON_TESTE** (aucune donnée réelle).
 
@@ -49,3 +49,8 @@ Les 26 scores sont très élevés (18 matchs sur 26 au-dessus de 3,5) : les seui
 ## Ce que cette reconstruction n'est pas
 - Les principes de victoire reconstruits ne sont pas prouvés : ils sont réunis et classés par provenance et par résultats réels. Le dernier principe (FP-1) est le plus faible et décide encore 9 des 14 thèmes du lot 1.
 - Les sorties de buts, de corners et de pénalité reprennent vos règles du 3.0.0 : elles ne sont pas validées, sauf là où les mesures sont données ci-dessus.
+
+## Dans la page koun-moteur-3.0.0.html
+- Une seule couche de moteur : le Moteur 3. Le moteur 2 n'y est plus embarqué.
+- Supprimés de la page : les fonctions de décision du 3.0.0 (PrincipeUniqueDuWin, Nul, Pénalité, calcul des buts et corners, impact stratégique des pôles, dualité des cercles, résonance des maisons Terre, structure du nul par parties) et l'ancienne `computeVerdict` (1 370 lignes environ).
+- Restent, en lecture seule et sans rôle dans le verdict : la pyramide (paralysies réciproques, mutation des maisons), l'inspecteur de maison, la cartographie des canaux (rôles d'activation, trajets de flux), le cercle des fronts et les calculateurs de somme.
