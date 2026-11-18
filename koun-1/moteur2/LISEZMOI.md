@@ -200,3 +200,7 @@ Quatre verdicts ont été donnés avant de connaître le résultat (trois matchs
 ## Intrusions et paralysies
 
 Une figure k posée en base dans la maison de la figure qu'elle attaque (k en M k+3) paralyse cette figure, où qu'elle soit dans le thème (`L.paralysies`). Exemple : Amissio en M9 paralyse Fortuna Minor. Le degré dépend de la position de la cible : **grave** si elle est dans une maison d'élément destructeur (sa force tombe à 0 %), sinon elle est **soutenue**. La résultante de l'intrus est toujours de front A ou C (voir `ANTAGONISE.md`). En M8 (Tristitia), la résultante d'une figure est son miroir.
+
+## Comptage des lignes à deux points
+
+En boucles différentes, on compte les lignes à deux points (4 niveaux, base et résultante) dans les maisons de la boucle de chaque pôle. Le camp qui en compte le plus a gagné 10 des 12 victoires réelles en boucles différentes (1 égalité), mais l'accord avec le moteur sur tous les thèmes n'est que de 63 %. Le moteur en fait un signal : « pour » quand il va dans le sens du verdict, simple indice sinon. Il ne décide jamais.

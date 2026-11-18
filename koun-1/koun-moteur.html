@@ -564,6 +564,19 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   // Le juge (M15) tranche : s'il est dans sa maison de repos (Aquisitio en base ou en résultante, c'est-à-dire Aquisitio ou Populus en base), il est décisif et l'équilibre ne donne pas le nul.
   // Les 8 nuls réels ont un juge hors de son repos ; 8 matchs décidés sur 19 ont le juge chez lui.
   function jugeChezLui(L) { var m = L.maisons[14]; return m.base === 'Aquisitio' || m.resultante === 'Aquisitio'; }
+  // Comptage des lignes à deux points : maisons de la boucle du pôle (même parité que sa figure), 4 niveaux, base et résultante.
+  function lignesDeuxPoints(L) {
+    function compte(c) {
+      var par = num(c.figure) % 2, t = 0;
+      for (var h = 1; h <= 16; h++) {
+        if (h % 2 !== par) continue;
+        var m = L.maisons[h - 1];
+        [m.base, m.resultante || m.base].forEach(function (f) { POINTS[f].forEach(function (v) { if (v === 2) t++; }); });
+      }
+      return t;
+    }
+    return { R1: compte(L.R1), R7: compte(L.R7) };
+  }
   function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
     return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos.';
@@ -886,6 +899,12 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
         if (st.plusStable) (st.plusStable === g ? pour : indices).push('ancrages pour ' + st.plusStable);   // pris en défaut une fois (4·16·1·2) : ne compte plus contre
         camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
+        // Comptage : en boucles différentes, le camp dont la boucle compte le plus de lignes à deux points (4 niveaux, base et résultante).
+        // 10 victoires réelles sur 12 ; seulement 63 % d'accord avec le moteur sur tous les thèmes : il appuie le verdict (pour) mais ne le contredit pas (indice).
+        if (L.mode === 'BOUCLES_DIFFERENTES') {
+          var lg = lignesDeuxPoints(L), cl = lg.R1 > lg.R7 ? 'R1' : lg.R7 > lg.R1 ? 'R7' : null;
+          if (cl) (cl === g ? pour : indices).push('lignes à deux points : la boucle de ' + cl + ' en compte ' + lg[cl] + ' contre ' + lg[cl === 'R1' ? 'R7' : 'R1']);
+        }
         if (L.cercle.amont) (L.cercle.amont === g ? pour : indices).push('amont pour ' + L.cercle.amont);
         if (L.multiplicite.favori) (L.multiplicite.favori === g ? pour : indices).push('multiplicité du pôle pour ' + L.multiplicite.favori);
         if (L.lien.etat === 'RESULTANTE_SEULEMENT' && L.mode === 'BOUCLES_DIFFERENTES') indices.push('figure du lien en résultante seulement');
