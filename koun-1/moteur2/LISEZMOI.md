@@ -191,6 +191,7 @@ Quatre verdicts ont été donnés avant de connaître le résultat (trois matchs
 
 - `moteur.js` : le moteur (structure + cas).
 - `FRONTS.md` : les sommes à l'intérieur de chaque front (toujours 4, 8 ou 12) et ce qu'elles disent du départage en moitiés. Produit par `../outils/fronts_doc.js`.
+- `ANTAGONISE.md` : une figure posée dans la maison de repos de son antagonisé (k en M k+3) accouche toujours d’une figure A ou C (A+D→5 ou 13, B+A→3 ou 11, C+B→1, D+C→3 ou 11), et la somme de deux fronts en général. Produit par `../outils/antagonise_doc.js`.
 - `BUTS.md` : le but en première mi-temps et « les deux équipes marquent », d'après les matchs dont le score est connu. Produit par `../outils/buts_doc.js`.
 - `FIGURES.md` : ce que chaque figure a dit dans les matchs réels (victoire, défaite, nul), rôle par rôle. Produit par `../outils/figures_doc.js` ; à relancer après chaque nouveau match réel.
 - `pont.js` : met la lecture du moteur au format de l'atelier.
