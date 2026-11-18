@@ -4291,8 +4291,9 @@
  const lireMoteur = (item) => {
  try {
  const figs = item.mVecs.map(v => KOUN3.fig(getFigByVec(v.split(",").map(Number)).num));
- const vv = KOUN3.verdict(KOUN3.lire(KOUN3.construireTheme(...figs)));
- return { verdict: vv.verdict, phase: vv.principe };
+ const LL = KOUN3.lire(KOUN3.construireTheme(...figs));
+ const vv = KOUN3.verdict(LL);
+ return { verdict: vv.verdict, phase: vv.principe, fiab: KOUN3.fiabilite(LL) };
  } catch (e) { return null; }
  };
  const issueReelle = (item) => {
@@ -4301,13 +4302,15 @@
  return +m[1] > +m[2] ? "1" : +m[1] < +m[2] ? "2" : "N";
  };
  let juges = 0, justes = 0, manquesNul = 0, manquesVic = 0, sansCas = 0;
+ const grp = { ret: { j: 0, ok: 0 }, cote: { j: 0, ok: 0 } };
  const cartes = list.map(item => {
  const d = lireMoteur(item), reel = issueReelle(item);
  const v = d ? d.verdict : null;
  const txt = v === "N" ? "Match nul" : v === "1" ? "Victoire " + escapeHTML(item.t1) : v === "2" ? "Victoire " + escapeHTML(item.t2) : "aucun principe ne tranche";
  let badge = "";
+ const aCote = !!(d && d.fiab && d.fiab.niveau === 0);
  if (reel) {
- juges++;
+ juges++; (aCote ? grp.cote : grp.ret).j++; if (v === reel) (aCote ? grp.cote : grp.ret).ok++;
  if (v === reel) { justes++; badge = `<span style="color:#4ade80; font-weight:800;">&#10003; concordant</span>`; }
  else {
  if (v === null) sansCas++; else if (reel === "N") manquesNul++; else manquesVic++;
@@ -4316,14 +4319,16 @@
  }
  }
  const cas = d && d.phase ? ` &bull; <strong>${escapeHTML(d.phase)}</strong>` : "";
- return `
- <div class="saved-theme-card">
+ const fb = d && d.fiab ? `<span style="color:${d.fiab.niveau === 2 ? "#4ade80" : d.fiab.niveau === 1 ? "#eab308" : "#94a3b8"}; font-weight:700;">thème ${d.fiab.libelle}</span>` : "";
+ const html = `
+ <div class="saved-theme-card"${aCote ? ' style="opacity:0.7;"' : ""}>
  <div class="saved-theme-top">
  <div class="saved-theme-match">${escapeHTML(item.t1)} vs ${escapeHTML(item.t2)} ${item.score ? `(${escapeHTML(item.score)})` : ""}</div>
  <span style="font-size:0.65rem; color:#eab308; font-weight:700;">${escapeHTML(item.date)} ${escapeHTML(item.time)}</span>
  </div>
  <div class="saved-theme-meta">${escapeHTML(item.verdictTxt)} &bull; Sauv. ${escapeHTML(item.savedAt)}</div>
  <div class="saved-theme-meta" style="color:#cbd5e1;">&#129504; Moteur actuel : ${txt}${cas} ${badge}</div>
+ <div class="saved-theme-meta">${fb}</div>
  <div class="saved-theme-mothers">M1–M4 : ${escapeHTML(item.mNames.join(" | "))}</div>
  <div class="saved-theme-actions">
  <button type="button" class="btn-blue" onclick="loadSavedTheme(${Number(item.id)})">Charger le thème</button>
@@ -4331,15 +4336,18 @@
  </div>
  </div>
  `;
+ return { html, aCote };
  });
  const bilan = juges
  ? `<div style="background:#0c1220; border:1px solid #23304a; border-radius:8px; padding:8px 10px; margin-bottom:8px; font-size:0.74rem; color:#e2e8f0; line-height:1.5;">
  <strong>&#129504; Moteur 3 sur vos thèmes sauvegardés avec un score :</strong> ${justes} concordants sur ${juges}.
+ <br>Thèmes fiables ou moyens (étudiés) : ${grp.ret.ok} concordants sur ${grp.ret.j}. Thèmes peu fiables (mis de côté) : ${grp.cote.ok} sur ${grp.cote.j}.
  ${juges - justes ? `<br>À côté : ${manquesNul} nul(s) manqué(s), ${manquesVic} victoire(s) mal donnée(s)${sansCas ? `, ${sansCas} sans cas` : ""}.` : ""}
  <br><button type="button" class="btn-slate" style="margin-top:4px; font-size:0.7rem;" onclick="exportSavedThemes()">&#11015; Exporter les thèmes (JSON)</button>
  </div>`
  : `<div style="margin-bottom:8px;"><button type="button" class="btn-slate" style="font-size:0.7rem;" onclick="exportSavedThemes()">&#11015; Exporter les thèmes (JSON)</button></div>`;
- container.innerHTML = bilan + cartes.join("");
+ const retenus = cartes.filter(c => !c.aCote).map(c => c.html), cote = cartes.filter(c => c.aCote).map(c => c.html);
+ container.innerHTML = bilan + retenus.join("") + (cote.length ? `<div style="margin:10px 0 6px; color:#94a3b8; font-size:0.74rem; font-weight:700;">Mis de côté : thèmes peu fiables (${cote.length})</div>` + cote.join("") : "");
  }
 
  function downloadCirclePNG() {

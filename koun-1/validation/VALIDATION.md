@@ -35,3 +35,8 @@ Fichier `lot-2.json`. Réel : victoire équipe 2, les deux équipes marquent, 5 
 - CO-1, tel qu'il était (principe le plus fort), retenait le thème 1-15-3-9 (VA-1 assuré) : verdict final faux, 0/1.
 - Ensuite, le propriétaire a posé un critère d'axe angulaire (somme M1+M4+M7+M10 en maison angulaire) à partir de ce match : CO-1 donne maintenant le bon verdict (victoire équipe 2, 0-4), mais ce match est devenu du développement. Il n'est plus une validation.
 - Au passage : VA-1 (assuré) n'a plus que 2 matchs justes sur 4 (dév. 1/2, lot 1 1/1, lot 2 0/1).
+
+## Tri par fiabilité du thème (règle du propriétaire)
+Les thèmes fiables (deux validations) et moyens (une) sont étudiés ; les thèmes peu fiables (aucune validation : binôme de M1 hors de son canal et somme de l'axe angulaire hors maison angulaire) sont classés de côté et ne servent pas à poser un principe. Ils restent comptés à part dans les mesures (`node outils/evaluer3.js`, bloc « par fiabilité »).
+Classement actuel (41 thèmes) : fiables 8 (moteur 7/8), moyens 22 (20/22), peu fiables 11 (7/11), mis de côté : 3-14-13-5, 6-4-10-16, 5-14-6-14, 7-5-9-6, 4-16-1-2, 4-7-10-10, 12-6-1-9, 13-7-3-13 (développement), 11-13-9-13, 7-16-3-12, 6-11-14-11 (lot 1). La page affiche la même séparation dans la liste des thèmes sauvegardés (thèmes peu fiables en fin de liste, bilan séparé).
+Étude du canal opposé refaite sur les thèmes étudiés (30) : concordance 1 : 3 gagnent, 0 perd ; concordance 2 : 0 gagne, 3 perdent ; concordance 3 : 1 gagne, 0 perd. L'inversion de polarité se retrouve aussi chez les thèmes mis de côté (2 gagnent à la concordance 1, 3 perdent à la concordance 2) : le tri ne la change pas. Toujours à valider sur un lot neuf.
