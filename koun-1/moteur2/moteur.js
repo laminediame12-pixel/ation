@@ -76,8 +76,13 @@
     // Maison antagoniste : la maison de repos de la figure qui l'attaque (k-3). C'est le contraire de sa propre maison :
     // la figure y est pénalisée, faible et fragile aux attaques ; sa force s'inverse (100 % chez elle, 0 % chez son antagoniste).
     function enMaisonAntagoniste(f, h) { return num(fig(num(f) - 3 + 16)) === h; }
-    // Niveau d'activation d'une figure : nombre de ses points impairs (Populus 0 … Via 4).
-    function activation(f) { return POINTS[f].filter(function (v) { return v === 1; }).length; }
+    // Concordance de niveaux : une ligne à deux points dans la résultante (base + figure de repos) est une ligne où la figure et la figure de repos
+    // de la maison s'accordent. Chez elle, une figure s'accorde sur les 4 niveaux (résultante Populus) ; Populus en base redonne la figure de repos.
+    function concordance(f, h) {
+      var r = FIG[h - 1], t = 0;
+      for (var i = 0; i < 4; i++) if (POINTS[f][i] === POINTS[r][i]) t++;
+      return t;
+    }
     // Élément destructeur : Eau contre Feu, Air contre Terre.
     function destructeur(f, h) {
       var e = elementDe(f), m = elementMaison(h);
@@ -87,21 +92,21 @@
     function intrus(f) { return maisons[num(f) - 1].base === fig(num(f) - 3); }
     function paralyseeGrave(f, h) { return intrus(f) && destructeur(f, h); }
     // Force : seule la maison de repos (100 %) est incontestable ; la maison de l'antagoniste vaut 0 %.
-    // Ailleurs : l'écart d'activation entre la figure et la figure de repos de la maison (100 % à écart nul, 25 points par niveau),
+    // Ailleurs : 25 points par niveau de concordance avec la figure de repos de la maison (4 niveaux = 100 %, 0 niveau = 0 %),
     // 1 % en élément destructeur, 0 % si la figure est paralysée gravement par une intrusion.
     function force(f, h) {
       if (num(f) === h) return doubleRepos(f) ? null : 100;
       if (enMaisonAntagoniste(f, h)) return 0;
       if (paralyseeGrave(f, h)) return 0;
       if (destructeur(f, h)) return 1;
-      return 100 - 25 * Math.abs(activation(f) - activation(fig(h)));
+      return 25 * concordance(f, h);
     }
     function motif(f, h) {
       if (num(f) === h) return doubleRepos(f) ? 'DOUBLE_REPOS_NON_CHIFFRE' : 'REPOS_PROPRE_MAXIMAL';
       if (enMaisonAntagoniste(f, h)) return 'MAISON_ANTAGONISTE_FORCE_INVERSEE';
       if (paralyseeGrave(f, h)) return 'PARALYSIE_GRAVE_PAR_INTRUSION';
       if (destructeur(f, h)) return 'ELEMENT_DESTRUCTEUR';
-      return 'ACTIVATION_ECART_' + Math.abs(activation(f) - activation(fig(h)));
+      return 'CONCORDANCE_' + concordance(f, h) + '_NIVEAUX';
     }
     function positions(f) {
       var l = [];
@@ -396,13 +401,13 @@
   // Équilibre d'activation entre les deux parties du thème.
   // Partie 1 : M1, M2, M3, M4, M9, M10, M13, M15 ; partie 2 : M5, M6, M7, M8, M11, M12, M14, M16.
   // Dans chaque partie, les maisons prennent tour à tour une ligne : Feu, Air, Eau, Terre, puis de nouveau Feu, Air, Eau, Terre.
-  // Une ligne impaire compte 1. On lit la base et la résultante (en M16, sans résultante, la base).
+  // Une ligne à deux points compte 1 (niveau concordant). On lit la base et la résultante (en M16, sans résultante, la base).
   var PARTIE1 = [1, 2, 3, 4, 9, 10, 13, 15], PARTIE2 = [5, 6, 7, 8, 11, 12, 14, 16];
   function niveauxParties(L) {
     function somme(part, couche) {
       return part.reduce(function (t, h, i) {
         var m = L.maisons[h - 1], f = couche === 'base' ? m.base : (m.resultante || m.base);
-        return t + (POINTS[f][i % 4] === 1 ? 1 : 0);
+        return t + (POINTS[f][i % 4] === 2 ? 1 : 0);
       }, 0);
     }
     var b1 = somme(PARTIE1, 'base'), b2 = somme(PARTIE2, 'base'), r1 = somme(PARTIE1, 'res'), r2 = somme(PARTIE2, 'res');
@@ -425,19 +430,18 @@
     return { R1: compte(L.R1), R7: compte(L.R7) };
   }
   // Duel par les canaux : R7 = R1 + 6, donc la maison de R7 est toujours dans le canal binôme de celle de R1 (Feu-Eau ou Air-Terre).
-  // Le canal d'un pôle est celui de sa maison. Sa présence = les positions (base et résultante) des figures de ce canal dans le thème.
+  // Le canal d'un pôle est celui de sa maison.
   function canalDuPole(c) { return FRONTS[(c.maison - 1) % 4]; }
-  // Activation (points impairs) des résultantes des quatre maisons d'un canal (en M16, sans résultante, la base).
-  function activationCanal(L, lettre) {
+  // Concordance des résultantes des quatre maisons d'un canal : nombre de lignes à deux points (en M16, sans résultante, la base).
+  function concordanceCanal(L, lettre) {
     var t = 0;
     for (var h = 1; h <= 16; h++) {
       if (FRONTS[(h - 1) % 4] !== lettre) continue;
       var m = L.maisons[h - 1];
-      POINTS[m.resultante || m.base].forEach(function (v) { if (v === 1) t++; });
+      POINTS[m.resultante || m.base].forEach(function (v) { if (v === 2) t++; });
     }
     return t;
   }
-  function presenceCanal(L, lettre) { return figuresDuFront(lettre).reduce(function (t, g) { return t + L.positions(g).length; }, 0); }
   function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
     return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos.';
@@ -624,13 +628,13 @@
         return V(cp, L, 'Victoire ' + ax.pole + ' : la somme de l’axe angulaire donne ' + ax.figure + ', le pôle ' + ax.pole + ', qui siège lui-même sur l’axe en M' + cp.maison + '. L’axe désigne ce pôle.' +
           (rr ? ' En M' + cp.maison + ' il donne ' + rr + ' en résultante.' : '') + (fr.length ? ' Son front est présent : ' + fr.join(', ') + '.' : ''));
       } },
-    { id: 'DR-C', famille: 'Dernier recours', titre: 'Le canal le mieux présent', statut: 'EN_ESSAI',
-      enonce: 'Le duel se joue entre le canal de la maison de R1 et celui de la maison de R7 (toujours Feu-Eau ou Air-Terre). Le canal dont les figures ont le plus de positions dans le thème (base et résultante) donne la victoire à son pôle.',
+    { id: 'DR-C', famille: 'Dernier recours', titre: 'Le canal le plus concordant', statut: 'EN_ESSAI',
+      enonce: 'Le duel se joue entre le canal de la maison de R1 et celui de la maison de R7 (toujours Feu-Eau ou Air-Terre). Les deux points d’une résultante disent la concordance entre la figure et la figure de repos de la maison. Le canal dont les quatre résultantes ont le plus de lignes à deux points est le mieux maintenu : son pôle gagne.',
       condition: function (L) {
-        var c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7), p1 = presenceCanal(L, c1), p7 = presenceCanal(L, c7);
+        var c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7), p1 = concordanceCanal(L, c1), p7 = concordanceCanal(L, c7);
         if (p1 === p7) return null;
         var g = p1 > p7 ? L.R1 : L.R7, cg = p1 > p7 ? c1 : c7;
-        return V(g, L, 'Victoire ' + g.camp + ' : le duel se joue entre le canal ' + c1 + ' (maison de R1, M' + L.R1.maison + ') et le canal ' + c7 + ' (maison de R7, M' + L.R7.maison + '). Le canal ' + cg + ' compte ' + Math.max(p1, p7) + ' positions dans le thème contre ' + Math.min(p1, p7) + '.');
+        return V(g, L, 'Victoire ' + g.camp + ' : le duel se joue entre le canal ' + c1 + ' (maison de R1, M' + L.R1.maison + ') et le canal ' + c7 + ' (maison de R7, M' + L.R7.maison + '). Le canal ' + cg + ' est le mieux maintenu : ses quatre résultantes comptent ' + Math.max(p1, p7) + ' lignes à deux points contre ' + Math.min(p1, p7) + '.');
       } },
     { id: 'DR-6', famille: 'Dernier recours', titre: 'La boucle la mieux ancrée', statut: 'EN_ESSAI',
       enonce: 'Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne.',
@@ -768,14 +772,14 @@
         nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
         if (st.plusStable) (st.plusStable === g ? pour : indices).push('ancrages pour ' + st.plusStable);   // pris en défaut une fois (4·16·1·2) : ne compte plus contre
         camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
-        // Maintien du canal : une figure chez elle donne Populus en résultante (activation 0), et Populus en base redonne la figure de repos de la maison.
-        // Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu que les résultantes de ses quatre maisons sont peu activées.
-        // 13 victoires réelles sur 18 (4 sur 4 en même boucle) ; 55 % d'accord avec le moteur sur tous les thèmes : il appuie le verdict (pour), sans le contredire (indice).
+        // Maintien du canal : une figure chez elle donne Populus en résultante (quatre lignes à deux points), et Populus en base redonne la figure de repos.
+        // Les deux points disent la concordance entre la figure et la figure de repos de la maison. Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu
+        // que les résultantes de ses quatre maisons ont de lignes à deux points. 13 victoires réelles sur 18 ; 55 % d'accord avec le moteur sur tous les thèmes : pour, sans contredire (indice).
         (function () {
-          var a1 = activationCanal(L, canalDuPole(L.R1)), a7 = activationCanal(L, canalDuPole(L.R7));
+          var a1 = concordanceCanal(L, canalDuPole(L.R1)), a7 = concordanceCanal(L, canalDuPole(L.R7));
           if (a1 === a7) return;
-          var cm = a1 < a7 ? 'R1' : 'R7';
-          (cm === g ? pour : indices).push('canal maintenu : le canal ' + canalDuPole(L[cm]) + ' de ' + cm + ' a des résultantes moins activées (' + Math.min(a1, a7) + ' contre ' + Math.max(a1, a7) + ')');
+          var cm = a1 > a7 ? 'R1' : 'R7';
+          (cm === g ? pour : indices).push('canal maintenu : le canal ' + canalDuPole(L[cm]) + ' de ' + cm + ' a plus de lignes à deux points dans ses résultantes (' + Math.max(a1, a7) + ' contre ' + Math.min(a1, a7) + ')');
         })();
         // Comptage : en boucles différentes, le camp dont la boucle compte le plus de lignes à deux points (4 niveaux, base et résultante).
         // 10 victoires réelles sur 12 ; seulement 63 % d'accord avec le moteur sur tous les thèmes : il appuie le verdict (pour) mais ne le contredit pas (indice).
