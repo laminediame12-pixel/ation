@@ -5015,6 +5015,31 @@
  crossConclusion = `<span style="color:#f87171; font-weight:800;">Avantage unifié : R7 (${safeT2})</span> — Score Moteur : R7 = <strong>${score7Rounded} pts</strong> vs R1 = <strong>${score1Rounded} pts</strong> (${escapeHTML(unifiedWin.tieBreakerReason)}).`;
  }
 
+ // Moteur 2 : même lecture que la fenêtre du verdict, appliquée au thème simulé (maisons et figures du calculateur, pôles choisis).
+ let m2c = null;
+ try {
+ const thSim = {};
+ for (let k = 1; k <= 16; k++) thSim[k] = KOUN2.FIG[getFigByVec(M_sim[k]).num - 1];
+ m2c = KOUN2.analyser(thSim, { R1: h1, R7: h7 }, true).decision;
+ } catch (e) { m2c = null; }
+ if (m2c && m2c.verdict) {
+ const lecture30 = crossConclusion
+ .replace("Avantage unifié", "Lecture 3.0.0 (score)")
+ .replace("Match Nul (PrincipeUniqueDuNul actif)", "Lecture 3.0.0 : nul");
+ const polesStandard = (((h7 - h1) % 16) + 16) % 16 === 6;
+ const modif = isSynced ? "" : " <em>(thème simulé : maisons ou figures modifiées" + (polesStandard ? "" : " ; pôles hors R7 = R1 + 6, les cas n'ont été vérifiés que sur ce schéma") + ")</em>";
+ const tete = m2c.verdict === "N"
+ ? `<span style="color:#facc15; font-weight:800;">Match Nul</span>`
+ : (m2c.verdict === "1"
+ ? `<span style="color:#60a5fa; font-weight:800;">Victoire R1 (${safeT1})</span>`
+ : `<span style="color:#f87171; font-weight:800;">Victoire R7 (${safeT2})</span>`);
+ crossConclusion = `${tete} — Moteur 2 · <strong>${escapeHTML(m2c.phase)}</strong> ${escapeHTML(m2c.regle)}${m2c.victoireAssuree ? " (assurée)" : ""}${modif}<br>`
+ + `<span style="color:#cbd5e1; font-size:0.72rem;">${escapeHTML(m2c.raison)}</span><br>`
+ + `<span style="color:#94a3b8; font-size:0.72rem;">${lecture30}</span>`;
+ } else {
+ crossConclusion = `<span style="color:#facc15;">Moteur 2 : aucun cas ne s'applique, lecture 3.0.0.</span><br>` + crossConclusion;
+ }
+
  document.getElementById("r1r7CalcOutput").innerHTML = `
  <div style="font-size:0.76rem; font-weight:800; color:#e2e8f0; margin-top:0.5rem;">1. Fronts existants dans le thème (Base &amp; Résultante) — R1, R7 et leurs Antagonistes</div>
  <table class="r1r7-table">
