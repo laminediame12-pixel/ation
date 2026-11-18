@@ -1752,6 +1752,13 @@
  </div>
  </div>
 
+ <!-- Ligne Moteur 2 : cas décisif et raison -->
+ <div class="verdict-line-item" id="m2Row" style="display:block;">
+ <div class="verdict-line-label" style="margin-bottom:3px;">&#129504; Moteur 2 · cas décisif :</div>
+ <div id="m2Case" style="font-weight:700; color:#4ade80; font-size:0.78rem;">—</div>
+ <div id="m2Reason" style="color:#cbd5e1; font-size:0.72rem; line-height:1.4; margin-top:2px;"></div>
+ </div>
+
  <!-- Ligne 2 : Deux marquent -->
  <div class="verdict-line-item">
  <div class="verdict-line-label">&#9917; Deux marquent :</div>
@@ -4671,10 +4678,9 @@
  const r1ReposTxt = winState.r1RestLink.count ? winState.r1RestLink.validRestHouses.join(", ") : "Aucune";
  const r7ReposTxt = winState.r7RestLink.count ? winState.r7RestLink.validRestHouses.join(", ") : "Aucune";
 
- const m2Html = m2Decide
- ? `<span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#4ade80;"><strong>&#129504; Moteur 2 &middot; cas décisif ${escapeHTML(m2.phase)}</strong> (${escapeHTML(m2.famille || "")} &middot; ${escapeHTML(m2.statut || "")}) : ${escapeHTML(m2.regle)}<br><span style="color:#cbd5e1;">${escapeHTML(m2.raison)}</span></span>`
- : `<span style="width:100%; color:#facc15;"><strong>&#129504; Moteur 2</strong> : aucun cas ne s'applique, les principes 3.0.0 décident.</span>`;
- document.getElementById("verdictBreakdown").innerHTML = m2Html + `
+ document.getElementById("m2Case").textContent = m2Decide ? `${m2.phase} · ${m2.regle} (${m2.statut === "REGLE_CONFIRMEE" ? "règle confirmée" : "en essai"}${m2.victoireAssuree ? ", victoire assurée" : ""})` : "Aucun cas ne s'applique : les principes 3.0.0 décident";
+ document.getElementById("m2Reason").textContent = m2Decide ? m2.raison : "";
+ document.getElementById("verdictBreakdown").innerHTML = `
  <span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#fde047;">
  <strong>&#9989; PrincipeUniqueDuWin (${isDrawEffective ? 'Suspendu par PrincipeUniqueDuNul' : 'Actif'})</strong> :
  <strong>${safeT1} (R1=M${r1House})</strong> = <strong>${Math.round(winState.scoreR1)} pts</strong> [Base ${winState.strR1Base}% · Res ${winState.strR1Res}%]
