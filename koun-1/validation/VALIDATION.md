@@ -27,3 +27,10 @@ Le comptage des deux points par canal ne tient pas hors développement quand il 
 
 ## Correction de données (18 novembre 2026)
 Niger–Maroc : le score enregistré dans l'export était 5-0 ; le propriétaire indique 0-1. `lot-1.json` et `scores-reels.json` sont corrigés. Conséquence : le moteur donne Niger (R1) pour ce thème, ce qui est faux avec le score correct ; le lot 1 passe à 8/14 (« toujours R1 » : 8/14).
+
+## Lot 2 : un match à deux thèmes (1-15-3-9 et 1-9-8-1), score réel 1-4
+Fichier `lot-2.json`. Réel : victoire équipe 2, les deux équipes marquent, 5 buts (Over 3,5).
+- Thème 1-15-3-9 : R1 gagne par VA-1 (assuré), 3-1 : verdict faux.
+- Thème 1-9-8-1 : R7 gagne par FC-2, 0-4 : verdict juste, total de buts juste en Over 3,5, Deux marquent faux.
+- CO-1 retient le thème 1-15-3-9 (VA-1 assuré, rang 4) : verdict final faux. Premier test de CO-1 : 0/1. Aucun ajustement fait sur ce cas, qui reste en validation.
+- Au passage : VA-1 (assuré) n'a plus que 2 matchs justes sur 4 (dév. 1/2, lot 1 1/1, lot 2 0/1).
