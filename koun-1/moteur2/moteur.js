@@ -460,6 +460,14 @@
         for (var i = 0; i < repos.length; i++) { var a = L.annuleePar(repos[i]); if (!a) return null; motifs.push(repos[i] + ' (M' + num(repos[i]) + ') est annulée par ' + a.attaquant + (a.motif === 'ATTAQUANT_AU_REPOS' ? ', elle aussi au repos' : ', ' + a.maisons.length + ' fois en base (M' + a.maisons.join(', M') + ')')); }
         return N('Nul : toutes les figures au repos sont annulées. ' + motifs.join(' ; ') + '.');
       } },
+    // ───────── Famille « Somme de l'axe » ─────────
+    { id: 'SA-1', famille: 'Somme de l’axe', titre: 'Le nul : la somme de l’axe est chez elle', statut: 'REGLE_CONFIRMEE',
+      enonce: 'Pôles dans des boucles différentes. La somme de l’axe angulaire (M1+M4+M7+M10) appartient à la boucle d’un camp et siège dans sa propre maison de repos : l’axe se referme sur lui-même, nul.',
+      condition: function (L) {
+        if (L.mode !== 'BOUCLES_DIFFERENTES') return null;
+        var ax = L.sommes[0]; if (!ax.camp || !L.chezElle(ax.figure)) return null;
+        return N('Nul : la somme de l’axe angulaire (M1+M4+M7+M10) donne ' + ax.figure + ', figure du camp ' + ax.camp + (ax.pole ? ' et pôle ' + ax.pole : '') + ', qui siège dans sa maison de repos (M' + num(ax.figure) + '). L’axe se referme sur lui-même.');
+      } },
     // ───────── Conditions du propriétaire, pas encore vérifiées sur un match réel (une famille chacune) ─────────
     { id: 'PR-1', famille: 'Verrou de front', titre: 'Verrou de front', statut: 'EN_ESSAI',
       enonce: 'Deux figures du front d’un pôle sont en base, chacune dans sa maison de repos à 100 %, et l’autre pôle n’a pas de verrou : ce pôle gagne.',
