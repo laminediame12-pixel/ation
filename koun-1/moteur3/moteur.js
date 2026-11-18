@@ -587,23 +587,33 @@
 
   function analyser(theme) {
     var L = K.lire(theme), v = verdict(L);
-    return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict) };
+    return { lecture: L, verdict: v, axe: axeValide(L), penalite: penalite(L), buts: buts(L, v.verdict) };
   }
 
   // ───────── DEUX THÈMES D'UN MÊME MATCH : CONCILIATION (CO-1) ─────────
-  // Deux thèmes lus avec le même repère (R1 = équipe 1, R7 = équipe 2) peuvent donner deux verdicts différents. Règle : on compare la force du principe qui a décidé chaque thème.
+  // Deux thèmes lus avec le même repère (R1 = équipe 1, R7 = équipe 2) peuvent donner deux verdicts différents. Règle : le thème dont la somme de l'axe angulaire (M1+M4+M7+M10) est en maison angulaire (1, 4, 7, 10) l'emporte ; sinon on compare la force du principe qui a décidé chaque thème.
   // Rang : victoire assurée = 4 ; principe de structure (VA-1, MF-2, MF-3, NU-1, AX-1, CL-1, CL-2, PF-2, NU-2, NU-3) = 3 ; FC-2 = 2 ; FP-1 = 1 ; CC-1 = 0. À rang égal, on compare la marge (écart du principe). Égalité complète : nul.
+
+  // Validité par la somme de l'axe angulaire (CO-1) : la somme M1+M4+M7+M10 est elle-même en maison angulaire (1, 4, 7 ou 10), en base ou en résultante.
+  function axeValide(L) {
+    var f = L.sommes[0].figure, pos = L.positions(f), ANG = [1, 4, 7, 10];
+    var base = pos.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), resu = pos.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; });
+    var sur = base.concat(resu).filter(function (h) { return ANG.indexOf(h) >= 0; });
+    return { valide: sur.length > 0, figure: f, base: base, resultante: resu, surAxe: sur };
+  }
   var RANG_FORCE = { 'FC-2': 2, 'FP-1': 1, 'CC-1': 0 };
   function rangVerdict(v) { return v.assuree ? 4 : (RANG_FORCE[v.principe] !== undefined ? RANG_FORCE[v.principe] : 3); }
-  var CONCILIATION = { id: 'CO-1', provenance: 'DEVELOPPEMENT', enonce: 'Deux thèmes du même match, même repère (R1 = équipe 1) : accord = verdict commun ; désaccord = le thème dont le principe est le plus fort l\u2019emporte (assuré, structure, FC-2, FP-1, CC-1), puis la marge ; égalité complète = nul.' };
+  var CONCILIATION = { id: 'CO-1', provenance: 'DEVELOPPEMENT', enonce: 'Deux thèmes du même match, même repère (R1 = équipe 1) : accord = verdict commun ; désaccord = le thème dont la somme de l\u2019axe angulaire (M1+M4+M7+M10) est en maison angulaire (1, 4, 7 ou 10) l\u2019emporte ; sinon le thème dont le principe est le plus fort (assuré, structure, FC-2, FP-1, CC-1), puis la marge ; égalité complète = nul.' };
   function concilier(ra, rb) {
     var va = ra.verdict, vb = rb.verdict, A = { verdict: va.verdict, principe: va.principe, rang: rangVerdict(va), marge: va.marge || 0 }, B = { verdict: vb.verdict, principe: vb.principe, rang: rangVerdict(vb), marge: vb.marge || 0 };
     var out = { id: CONCILIATION.id, provenance: CONCILIATION.provenance, enonce: CONCILIATION.enonce, a: A, b: B, accord: va.verdict === vb.verdict }, retenu, raison;
     if (out.accord) { retenu = rangVerdict(va) >= rangVerdict(vb) ? 'A' : 'B'; raison = 'Les deux thèmes donnent le même verdict (' + va.principe + ' et ' + vb.principe + ').'; out.verdict = va.verdict; }
     else {
-      var cmp = A.rang !== B.rang ? (A.rang > B.rang ? 1 : -1) : (va.verdict !== 'N' && vb.verdict !== 'N' && A.marge !== B.marge ? (A.marge > B.marge ? 1 : -1) : 0);
+      var axA = axeValide(ra.lecture), axB = axeValide(rb.lecture);
+      out.axe = { a: axA, b: axB };
+      var cmp = axA.valide !== axB.valide ? (axA.valide ? 1 : -1) : A.rang !== B.rang ? (A.rang > B.rang ? 1 : -1) : (va.verdict !== 'N' && vb.verdict !== 'N' && A.marge !== B.marge ? (A.marge > B.marge ? 1 : -1) : 0), parAxe = axA.valide !== axB.valide;
       if (cmp === 0) { out.verdict = 'N'; retenu = va.verdict === 'N' ? 'A' : vb.verdict === 'N' ? 'B' : 'A'; raison = 'Les deux thèmes se contredisent avec la même force (rang ' + A.rang + ', marge ' + A.marge + ' et ' + B.marge + ') : nul.'; }
-      else { out.verdict = cmp > 0 ? va.verdict : vb.verdict; retenu = cmp > 0 ? 'A' : 'B'; raison = 'Les deux thèmes se contredisent : le thème ' + retenu + ' l\u2019emporte, ' + (A.rang !== B.rang ? 'son principe (' + (cmp > 0 ? A.principe : B.principe) + ', rang ' + Math.max(A.rang, B.rang) + ') est plus fort que celui de l\u2019autre (rang ' + Math.min(A.rang, B.rang) + ')' : 'à rang égal sa marge est plus grande (' + Math.max(A.marge, B.marge) + ' contre ' + Math.min(A.marge, B.marge) + ')') + '.'; }
+      else { out.verdict = cmp > 0 ? va.verdict : vb.verdict; retenu = cmp > 0 ? 'A' : 'B'; raison = 'Les deux thèmes se contredisent : le thème ' + retenu + ' l\u2019emporte, ' + (parAxe ? 'la somme de son axe angulaire (' + (cmp > 0 ? axA : axB).figure + ') est en maison angulaire M' + (cmp > 0 ? axA : axB).surAxe[0] + ', celle de l\u2019autre thème ne l\u2019est pas' : A.rang !== B.rang ? 'son principe (' + (cmp > 0 ? A.principe : B.principe) + ', rang ' + Math.max(A.rang, B.rang) + ') est plus fort que celui de l\u2019autre (rang ' + Math.min(A.rang, B.rang) + ')' : 'à rang égal sa marge est plus grande (' + Math.max(A.marge, B.marge) + ' contre ' + Math.min(A.marge, B.marge) + ')') + '.'; }
     }
     out.retenu = retenu; out.raison = raison;
     var rb2 = retenu === 'A' ? ra : rb, bA = ra.buts, bB = rb.buts, bR = rb2.buts;
@@ -611,7 +621,7 @@
     out.lignes = { deuxMarquent: { a: bA.deuxMarquent.oui, b: bB.deuxMarquent.oui, accord: bA.deuxMarquent.oui === bB.deuxMarquent.oui }, over15: { accord: bA.overUnder.over15 === bB.overUnder.over15 }, over25: { accord: bA.overUnder.over25 === bB.overUnder.over25 }, over35: { accord: bA.overUnder.over35 === bB.overUnder.over35 } };
     return out;
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

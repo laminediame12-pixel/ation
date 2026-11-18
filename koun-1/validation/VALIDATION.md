@@ -32,5 +32,6 @@ Niger–Maroc : le score enregistré dans l'export était 5-0 ; le propriétaire
 Fichier `lot-2.json`. Réel : victoire équipe 2, les deux équipes marquent, 5 buts (Over 3,5).
 - Thème 1-15-3-9 : R1 gagne par VA-1 (assuré), 3-1 : verdict faux.
 - Thème 1-9-8-1 : R7 gagne par FC-2, 0-4 : verdict juste, total de buts juste en Over 3,5, Deux marquent faux.
-- CO-1 retient le thème 1-15-3-9 (VA-1 assuré, rang 4) : verdict final faux. Premier test de CO-1 : 0/1. Aucun ajustement fait sur ce cas, qui reste en validation.
+- CO-1, tel qu'il était (principe le plus fort), retenait le thème 1-15-3-9 (VA-1 assuré) : verdict final faux, 0/1.
+- Ensuite, le propriétaire a posé un critère d'axe angulaire (somme M1+M4+M7+M10 en maison angulaire) à partir de ce match : CO-1 donne maintenant le bon verdict (victoire équipe 2, 0-4), mais ce match est devenu du développement. Il n'est plus une validation.
 - Au passage : VA-1 (assuré) n'a plus que 2 matchs justes sur 4 (dév. 1/2, lot 1 1/1, lot 2 0/1).
