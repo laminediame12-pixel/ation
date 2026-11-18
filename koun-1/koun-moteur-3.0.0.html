@@ -1925,7 +1925,7 @@
  <button type="button" class="btn-slate" style="padding:0.25rem 0.6rem; font-size:0.7rem;" onclick="syncR1R7FromTheme()">Synchroniser avec le thème actuel</button>
  </div>
  <div style="font-size:0.72rem; color:var(--text-muted);">
- Synchronisé avec le moteur décisionnel unifié (PrincipeUniqueDuWin) : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le score complet de croisement.
+ Synchronisé avec le Moteur 2 (verdict par cas) : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le score de croisement (lecture 3.0.0, ne décide plus).
  </div>
 
  <div class="r1r7-grid">
@@ -4710,7 +4710,7 @@
 
  if (isDrawEffective) {
  banner.classList.add("is-draw");
- winTxt.textContent = `Victoire : Match Nul`;
+ winTxt.textContent = `Match nul`;
  confTxt.textContent = m2Decide ? `${m2.phase} · ${m2.regle}` : `${rawNulState.activeWayLabel}`;
  } else if (winState.winningSide === "R1") {
  banner.classList.add("is-blue");
@@ -4769,7 +4769,7 @@
  document.getElementById("m2Reason").textContent = m2Decide ? m2.raison : "";
  document.getElementById("verdictBreakdown").innerHTML = `
  <span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#fde047;">
- <strong>&#9989; PrincipeUniqueDuWin (${isDrawEffective ? 'Suspendu par PrincipeUniqueDuNul' : 'Actif'})</strong> :
+ <strong>&#9989; PrincipeUniqueDuWin (${isDrawEffective ? 'Suspendu : le Moteur 2 donne le nul' : 'Actif'})</strong> :
  <strong>${safeT1} (R1=M${r1House})</strong> = <strong>${Math.round(winState.scoreR1)} pts</strong> [Base ${winState.strR1Base}% · Res ${winState.strR1Res}%]
  &nbsp;vs&nbsp;
  <strong>${safeT2} (R7=M${r7House})</strong> = <strong>${Math.round(winState.scoreR7)} pts</strong> [Base ${winState.strR7Base}% · Res ${winState.strR7Res}%]
@@ -4785,7 +4785,7 @@
  <span><strong>${safeT2} (Pôle &amp; Croisement)</strong> : [${baseR7.name} (${baseR7.front}) &rarr; Res: ${resR7.name} (${resR7.front}) | ${winState.poleR7.tag}${winState.r7Passed ? ` &bull; Chef (${winState.r7PassCount})` : ""}${rubR7Note}]</span>
  <span><strong>Juge M15</strong> : ${baseM15.name} (Res: ${resM15.name}) &bull; <strong>Sentence M16</strong> : ${baseM16.name} (Res alliée: ${resM16.name})</span>
  <span style="width:100%; border-top:1px dashed #334155; padding-top:4px; margin-top:2px; color:${isDrawEffective ? '#facc15' : '#94a3b8'};">
- <strong>&#9878; PrincipeUniqueDuNul</strong> :
+ <strong>&#9878; PrincipeUniqueDuNul</strong> <em>(lecture 3.0.0, ne décide plus ; le nul vient du Moteur 2)</em> :
  ${isDrawEffective ? `<strong style="color:#4ade80;">ACTIF (NUL — Moteur 2 ${escapeHTML(m2 ? m2.phase : "")})</strong>` : `<strong>${rawNulState.isDraw ? "Lecture 3.0.0, ne décide plus : " : ""}${escapeHTML(rawNulState.activeWayLabel)}</strong>`} &mdash;
  [1] R1/R7 Miroirs (${baseR1.name} / ${baseR7.name}) : <strong>${rawNulState.cond1_R1R7Mirror ? 'Oui' : 'Non'}</strong> &bull;
  [2] Somme R1+R7 = ${rawNulState.sumR1R7.name} (M${rawNulState.sumR1R7.dom[0]}) : <strong>${rawNulState.cond2_SumTerre ? 'Oui' : 'Non'}</strong> &bull;
@@ -5723,7 +5723,7 @@
  rhythm.innerHTML = `
  <div>
  <div class="canal-rhythm-title" style="color:${regimeCol};">Rythme du thème : ${regime}</div>
- <div class="canal-rhythm-sub">Ouverture ${openPct}% · Fermeture ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span><br><span style="color:#fbbf24;">Structure nul P1/P2 : ${escapeHTML(partieNul.summary)}</span></div>
+ <div class="canal-rhythm-sub">Ouverture ${openPct}% · Fermeture ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span><br><span style="color:#fbbf24;">Lecture 3.0.0 · structure nul P1/P2 : ${escapeHTML(partieNul.summary)}</span></div>
  </div>
  <div class="canal-bar" title="Part des canaux ouverts (couleur) contre fermés">
  <span style="width:${openPct}%; background:linear-gradient(90deg,#ef4444,#eab308,#3b82f6,#22c55e);"></span>
@@ -5784,7 +5784,7 @@
  </div>
  </div>
  <div class="canal-lock" style="grid-column:1/-1;border-left:3px solid #fbbf24;">
- <div class="canal-lock-head"><span style="color:#fbbf24;">Structure du nul — Parties du thème</span>
+ <div class="canal-lock-head"><span style="color:#fbbf24;">Structure du nul — Parties du thème (lecture 3.0.0, ne décide plus)</span>
  <span class="canal-lock-state" style="color:${partieNul.isStructuralDraw ? "#4ade80" : "#f87171"};">${partieNul.isStructuralDraw ? "Nul structurel possible" : "Pas de nul structurel"}</span></div>
  <div style="font-size:0.68rem;line-height:1.55;color:#cbd5e1;margin-top:0.3rem;">
  <b>P1</b> (M1-4,9,10,13,15) · act ${partieNul.p1.activationScore} · ouv ${partieNul.p1.openPct}% · ouvrantes ${partieNul.p1.ouvrantes} · ferm. int. ${partieNul.p1.fermantesIntactes} · libre ${partieNul.p1.freeEnergy} · intacts ${partieNul.p1.intactPaths} · inversés ${partieNul.p1.invertedPaths}
