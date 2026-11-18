@@ -46,8 +46,8 @@ Indice de friction (fronts Feu/Air en M1, M5, M7, M8, M12 ; Terre ; duel d'antag
 
 ## Over/Under 1,5 · 2,5 · 3,5 — PORTE_3.0.0
 Indice net = flux (circuit 3-5-11-13 et M10, juge, front A des pôles, deux marquent) moins 0,65 fois les verrous de Terre (M8, M12, juge). Seuils du propriétaire : 7 → Over 1,5 ; 9,5 → Over 2,5 ; 14,5 → Over 3,5.
-**Mesures : 1,5 : 24/26 (repère 25/26) · 2,5 : 20/26 (repère 24/26) · 3,5 : 9/26 (repère 18/26).**
-Les 26 scores sont très élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
+**Mesures avec le principe RY-1 (ci-dessous) : 1,5 : 24/26 (repère 24/26) · 2,5 : 23/26 (repère 23/26) · 3,5 : 18/26 (repère 17/26) ; sans lui : 23/26, 19/26, 10/26.**
+Les 26 scores sont élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
 
 ## Ce que cette reconstruction n'est pas
 - Les principes de victoire reconstruits ne sont pas prouvés : ils sont réunis et classés par provenance et par résultats réels. Le dernier principe (FC-1) est le plus faible et décide encore 9 des 14 thèmes du lot 1.
@@ -65,3 +65,8 @@ Quand les forces des deux pôles sont égales, plus aucun thème n'est sans verd
 Les fronts circulent B → A → D → C → B : chaque front attaque le suivant, et le front binôme (A↔C, B↔D) protège le front, car le prédateur d'un front est le binôme de celui qu'il attaque. La force du camp d'un pôle = force de son front + force de son front binôme − force du front prédateur − force de la figure antagoniste du pôle ; la force d'un front est la somme des forces de toutes les positions de ses figures.
 Quand les deux pôles ont le même front, les camps sont identiques : le moteur compare alors la force des deux pôles (FP-1), puis le comptage des deux points par canal (CC-1).
 Mesures : développement 24/27, lot 1 9/14 (8/14 sans l'antagoniste du pôle). Les écarts entre variantes tiennent à un match.
+
+## RY-1 : le rythme du thème Saturé donne l'Over (posé par le propriétaire)
+Le rythme du thème est celui de la cartographie des 4 canaux, avec le niveau d'activation en lignes à deux points : Ouvert, Fermé, Saturé, Contenu, Structuré, Percé (le moteur le calcule comme la page ; vérifié identique sur 676 thèmes). Quand le rythme est Saturé, le moteur annonce Over 1,5, Over 2,5 et Over 3,5 (au moins quatre buts dans le score prévu).
+Mesures sur les 26 scores réels : 12 matchs au rythme Saturé, avec plus de 1,5 buts 11 fois, plus de 2,5 buts 11 fois, plus de 3,5 buts 10 fois. Le principe fait passer les Over/Under de 23/19/10 à 24/23/18 sur 26. Observation du propriétaire avant mesure : les mesures la confirment, mais sur les mêmes matchs, sans lot de validation.
+Rythme Fermé : 7 matchs, dont un seul à 1 but (Niger–Maroc, 0-1) ; les six autres ont 3 buts ou plus. Aucun principe « Fermé donne peu de buts » n'est retenu : les données ne le montrent pas.

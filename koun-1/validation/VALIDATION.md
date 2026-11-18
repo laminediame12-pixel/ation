@@ -24,3 +24,6 @@ Moteur 3 (table rase) : développement 24/27, lot 1 8/14 (« toujours R1 » : 13
 | Toujours R1 | 13/19 | 9/13 |
 
 Le comptage des deux points par canal ne tient pas hors développement quand il décide une victoire. CC-1 ne l'utilise que pour départager l'égalité des forces, où aucun match réel n'existe.
+
+## Correction de données (18 novembre 2026)
+Niger–Maroc : le score enregistré dans l'export était 5-0 ; le propriétaire indique 0-1. `lot-1.json` et `scores-reels.json` sont corrigés. Conséquence : le moteur donne Niger (R1) pour ce thème, ce qui est faux avec le score correct ; le lot 1 passe à 8/14 (« toujours R1 » : 8/14).

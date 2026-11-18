@@ -463,6 +463,39 @@
     var paralysee = L.paralysies.some(function (p) { return p.cible === f && p.degre === 'GRAVE'; });
     return forte && !paralysee && !L.annuleePar(f);
   }
+  // Rythme du thème (cartographie des 4 canaux). Niveau d'activation = ligne à deux points. Les rôles des figures d'activation (Fermante / Ouvrante) viennent du 3.0.0.
+  // Un canal = une ligne (Feu, Air, Eau, Terre) ; on la lit dans la base et la résultante des 16 maisons.
+  var ROLES_ACTIVATION = { 1: ['F', 2], 3: ['F', 0], 13: ['F', 3], 14: ['F', 1], 2: ['O', 0], 4: ['O', 2], 7: ['O', 1], 8: ['O', 3] };
+  function rythme(L) {
+    var libre = 0, sat = 0, verrou = 0, brise = 0, deux = 0, total = 0, terreIntact = 0, terreInverse = 0;
+    for (var c = 0; c < 4; c++) {
+      for (var h = 1; h <= 16; h++) {
+        var b = L.maisons[h - 1].base, r = res(L, h);
+        if (POINTS[b][c] === 2) deux++;
+        if (POINTS[r][c] === 2) deux++;
+        total += 2;
+        [b, r].forEach(function (fg) {
+          var ro = ROLES_ACTIVATION[num(fg)];
+          if (!ro || ro[1] !== c) return;
+          var reposActive = POINTS[FIG[h - 1]][c] === 1;       // convention du 3.0.0 pour les rôles : un point = ouvert
+          if (ro[0] === 'F') { if (!reposActive) verrou++; else brise++; } else { if (!reposActive) libre++; else sat++; }
+        });
+      }
+    }
+    for (var t = 4; t <= 16; t += 4) {
+      var bt = L.maisons[t - 1].base, rt = res(L, t);
+      if (bt === 'Populus' || rt === FIG[t - 1]) terreIntact++;
+      if (((num(bt) + 2) % 16) + 1 === t) terreInverse++;
+    }
+    var pct = Math.round(deux / total * 100), regime = 'Contenu';
+    if (pct >= 62 && libre >= verrou) regime = 'Ouvert';
+    else if (pct <= 42 || verrou > libre + 1) regime = 'Fermé';
+    else if (sat >= 3 && pct >= 50) regime = 'Saturé';
+    if (terreIntact >= 3 && terreInverse === 0 && (regime === 'Contenu' || regime === 'Fermé')) regime = 'Structuré (trajets intacts)';
+    if (terreInverse >= 2 && pct >= 50) regime = 'Percé (trajets inversés)';
+    return { regime: regime, pourcentDeuxPoints: pct, libres: libre, saturations: sat, verrousIntacts: verrou, verrousBrises: brise };
+  }
+
   function buts(L, v) {
     var sansVerdict = v === null || v === undefined;
     if (sansVerdict) v = '1';
@@ -494,6 +527,9 @@
     var nul = v === 'N', total;
     if (nul) { total = net < 7 ? 0 : net < 14.5 ? 2 : 4; if (btts && total < 2) total = 2; }
     else { total = net < 7 ? 1 : net < 9.5 ? 2 : net < 14.5 ? 3 : 4; if (btts && total < 3) total = 3; }
+    // Rythme du thème Saturé : au-dessus de 1,5, de 2,5 et de 3,5 buts (principe du propriétaire RY-1), donc au moins quatre buts
+    var ry = rythme(L), saturé = ry.regime === 'Saturé';
+    if (saturé && total < 4) total = 4;
     var g1, g2;
     if (nul) { g1 = g2 = total / 2; }
     else {
@@ -522,7 +558,7 @@
     var sortie = {
       deuxMarquent: { oui: bttsFinal, brut: btts, pole1PeutMarquer: p1, pole7PeutMarquer: p7, elan: elan, provenance: 'PORTE_3.0.0 (seuil de 50 %), reconstruit sur les forces de la structure', teste: 'testé sur 26 scores réels' },
       score: g1 + ' - ' + g2, g1: g1, g2: g2, total: T,
-      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
+      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, rythme: ry.regime, rythmeSature: saturé, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
       butsMT1: { oui: T > 0 && htBut, libelle: mt, somme: bm, provenance: 'PORTE_3.0.0 (ButMT M1+M5+M12+M15)', teste: 'testé sur 6 matchs avec mi-temps connue' },
       corners: { libelle: corners, friction: fric, provenance: 'PORTE_3.0.0 (indice de friction)', teste: 'NON_TESTE (aucun résultat de corners dans les données)' }
     };
@@ -534,7 +570,7 @@
     var L = K.lire(theme), v = verdict(L);
     return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict) };
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
