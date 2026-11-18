@@ -561,9 +561,12 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     var b1 = somme(PARTIE1, 'base'), b2 = somme(PARTIE2, 'base'), r1 = somme(PARTIE1, 'res'), r2 = somme(PARTIE2, 'res');
     return { base1: b1, base2: b2, res1: r1, res2: r2, ecartBase: b1 - b2, ecartRes: r1 - r2 };
   }
-  function equilibreCompense(L) { var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
+  // Le juge (M15) tranche : s'il est dans sa maison de repos (Aquisitio en base ou en résultante, c'est-à-dire Aquisitio ou Populus en base), il est décisif et l'équilibre ne donne pas le nul.
+  // Les 8 nuls réels ont un juge hors de son repos ; 8 matchs décidés sur 19 ont le juge chez lui.
+  function jugeChezLui(L) { var m = L.maisons[14]; return m.base === 'Aquisitio' || m.resultante === 'Aquisitio'; }
+  function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
-    return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait.' : 'équilibre compensé.');
+    return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos.';
   }
   var CAS = [
     // ───────── Victoire assurée : boucles différentes ─────────
