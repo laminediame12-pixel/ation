@@ -213,3 +213,7 @@ En boucles différentes, on compte les lignes à deux points (4 niveaux, base et
 - Les canaux forment un groupe où Terre est le neutre. La relation entre une figure et le canal d'une maison fixe le canal de la résultante : même canal → Terre, affinité → Eau, binôme (même boucle) → Air, antagonistes (Feu-Terre, Air-Eau) → Feu.
 - R7 = R1 + 6, donc la maison de R7 est toujours dans le canal binôme de celle de R1 : si R1 est en maison Eau, R7 est en maison Feu ; Terre contre Air de même. Le duel R1 / R7 est un duel de canaux, et une figure dans sa maison de repos maintient la force de son canal.
 - Le cas DR-C applique ce principe : il compare la présence des deux canaux dans le thème.
+
+### Le maintien du canal
+
+Une figure dans sa maison de repos donne Populus en résultante (activation 0), et Populus en base hors de chez lui redonne la figure de repos de la maison : chaque figure est la fréquence du canal de sa maison de repos, quel que soit son élément naturel (Via en M5 est de fréquence Feu). Ce qui module le flux, c'est le niveau d'activation des figures. Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu que les résultantes de ses quatre maisons sont peu activées : le canal le plus maintenu a gagné 13 des 18 victoires réelles (4 sur 4 en même boucle), mais l'accord avec le moteur sur tous les thèmes n'est que de 55 %. C'est un signal (pour ou indice), il ne décide pas.

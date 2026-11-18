@@ -580,6 +580,16 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
   // Duel par les canaux : R7 = R1 + 6, donc la maison de R7 est toujours dans le canal binôme de celle de R1 (Feu-Eau ou Air-Terre).
   // Le canal d'un pôle est celui de sa maison. Sa présence = les positions (base et résultante) des figures de ce canal dans le thème.
   function canalDuPole(c) { return FRONTS[(c.maison - 1) % 4]; }
+  // Activation (points impairs) des résultantes des quatre maisons d'un canal (en M16, sans résultante, la base).
+  function activationCanal(L, lettre) {
+    var t = 0;
+    for (var h = 1; h <= 16; h++) {
+      if (FRONTS[(h - 1) % 4] !== lettre) continue;
+      var m = L.maisons[h - 1];
+      POINTS[m.resultante || m.base].forEach(function (v) { if (v === 1) t++; });
+    }
+    return t;
+  }
   function presenceCanal(L, lettre) { return figuresDuFront(lettre).reduce(function (t, g) { return t + L.positions(g).length; }, 0); }
   function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
@@ -911,6 +921,15 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
         nulFaibles.forEach(function (x) { indices.push('vers le nul : ' + x); });
         if (st.plusStable) (st.plusStable === g ? pour : indices).push('ancrages pour ' + st.plusStable);   // pris en défaut une fois (4·16·1·2) : ne compte plus contre
         camp('bord du cercle', L.cercle.favoriBord); camp('miroir aux points', L.miroirPoints.favori);
+        // Maintien du canal : une figure chez elle donne Populus en résultante (activation 0), et Populus en base redonne la figure de repos de la maison.
+        // Le canal d'un pôle (celui de sa maison) est d'autant plus maintenu que les résultantes de ses quatre maisons sont peu activées.
+        // 13 victoires réelles sur 18 (4 sur 4 en même boucle) ; 55 % d'accord avec le moteur sur tous les thèmes : il appuie le verdict (pour), sans le contredire (indice).
+        (function () {
+          var a1 = activationCanal(L, canalDuPole(L.R1)), a7 = activationCanal(L, canalDuPole(L.R7));
+          if (a1 === a7) return;
+          var cm = a1 < a7 ? 'R1' : 'R7';
+          (cm === g ? pour : indices).push('canal maintenu : le canal ' + canalDuPole(L[cm]) + ' de ' + cm + ' a des résultantes moins activées (' + Math.min(a1, a7) + ' contre ' + Math.max(a1, a7) + ')');
+        })();
         // Comptage : en boucles différentes, le camp dont la boucle compte le plus de lignes à deux points (4 niveaux, base et résultante).
         // 10 victoires réelles sur 12 ; seulement 63 % d'accord avec le moteur sur tous les thèmes : il appuie le verdict (pour) mais ne le contredit pas (indice).
         if (L.mode === 'BOUCLES_DIFFERENTES') {
