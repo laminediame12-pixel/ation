@@ -812,6 +812,17 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
     // Les deux pôles sur l'axe angulaire (M1 et M7, ou M4 et M10) : le match se décide (3 matchs réels sur 3).
     var polesSurAxe = [1, 4, 7, 10].indexOf(L.R1.maison) >= 0 && [1, 4, 7, 10].indexOf(L.R7.maison) >= 0;
     if (polesSurAxe) sig.push('les deux pôles sont sur l’axe angulaire (M' + L.R1.maison + ' et M' + L.R7.maison + ')');
+    // Niveau d'activation : une résultante a autant ou plus d'impairs que la figure de repos de sa maison quand la base y a changé peu de lignes.
+    // Les deux pôles dans ce cas (aucune résultante de pôle moins activée que son repos) : le match se décide, 9 matchs réels sur 10 ; avec un pôle en dessous, 7 nuls sur 17.
+    (function () {
+      function imp(f) { return POINTS[f].filter(function (v) { return v === 1; }).length; }
+      var ok = ['R1', 'R7'].every(function (c) {
+        var h = L[c].maison, M = L.maisons[h - 1], rf = FIG[h - 1], r = M.resultante || FIG[(num(M.base) - 1 + 0) % 16];
+        if (!M.resultante) return true;
+        return imp(M.resultante) - imp(rf) >= 0;
+      });
+      if (ok) sig.push('la résultante de chaque pôle est au moins aussi activée que la figure de repos de sa maison');
+    })();
     var nulProbable = nulProbableAvant;
     if (L.temoins.etat === 'MEME_CAMP') nulProbable.push('les deux témoins (' + L.temoins.m13 + ', ' + L.temoins.m14 + ') sont dans le même camp');
     else if (L.temoins.etat === 'PARTAGES') sig.push('les deux témoins sont partagés entre les deux camps (' + L.temoins.m13 + ' pour ' + L.temoins.campM13 + ', ' + L.temoins.m14 + ' pour ' + L.temoins.campM14 + ')');
