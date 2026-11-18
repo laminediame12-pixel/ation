@@ -1804,10 +1804,12 @@
  </div>
 
  <div class="legend-box">
+ <div id="canalLegende" style="margin-bottom:0.45rem; line-height:1.7;">
  <span style="color:#ef4444;">&#9644;</span> Feu &nbsp;
  <span style="color:#eab308;">&#9644;</span> Air &nbsp;
  <span style="color:#3b82f6;">&#9644;</span> Eau &nbsp;
  <span style="color:#22c55e;">&#9644;</span> Terre &nbsp;
+ </div>
  <span style="color:#22c55e; font-weight:700;">&#9632; Vert</span> : figure dans sa maison de repos &nbsp;
  <span style="color:#38bdf8; font-weight:700;">&#9633; Bleu ciel</span> : résultante alliée (maison paire)
  </div>
@@ -2919,6 +2921,7 @@
  renderPyramid();
  renderCercleDesFronts();
  renderCanalMap();
+ renderLegendeCanaux();
  renderSumMaisonPills();
  if (document.getElementById("sumResultBox").style.display === "flex") {
  calculateCustomSum();
@@ -3378,6 +3381,22 @@
  };
  document.getElementById("strategicPoleType").textContent = L.mode === "MEME_FRONT" ? "Même front" : L.mode === "MEME_BOUCLE" ? "Même boucle, fronts différents" : "Boucles différentes";
  document.getElementById("strategicPoleGrid").innerHTML = carte("R1", safeT1, "#60a5fa") + carte("R7", safeT2, "#f87171");
+ }
+
+ // Légende des 4 canaux sous la pyramide : niveaux saturés (lignes à deux points, en base) des 4 maisons de chaque canal ; Feu + Air, Eau + Terre, puis leur différence, avec leur part du total des quatre canaux.
+ function renderLegendeCanaux() {
+ const el = document.getElementById("canalLegende");
+ const M = currentHouses;
+ if (!el || !M || M.length < 17) return;
+ const defs = [["Feu", "#ef4444"], ["Air", "#eab308"], ["Eau", "#3b82f6"], ["Terre", "#22c55e"]];
+ const n = defs.map((d, c) => [1, 2, 3, 4].reduce((t, k) => t + (M[c + 4 * (k - 1) + 1] || []).filter(v => v === 0).length, 0));
+ const total = n.reduce((a, b) => a + b, 0);
+ const pct = v => total > 0 ? (Math.round(v / total * 1000) / 10).toString().replace(".", ",") + " %" : "—";
+ const chip = c => `<span style="white-space:nowrap;">[<span style="color:${defs[c][1]};">&#9644;</span> ${defs[c][0]} : <b>${n[c]}</b>]</span>`;
+ const a = n[0] + n[1], b = n[2] + n[3], d = Math.abs(a - b);
+ el.innerHTML = `<div>${chip(0)} ${chip(1)} = <b>${a}</b> [${pct(a)}]</div>
+ <div>${chip(2)} ${chip(3)} = <b>${b}</b> [${pct(b)}]</div>
+ <div style="font-weight:700;">Différence : [<b>${d}</b>] [${pct(d)}]</div>`;
  }
 
  function renderPyramid() {
