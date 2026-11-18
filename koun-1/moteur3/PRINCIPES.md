@@ -81,3 +81,7 @@ Chaque front protège son front binôme (A↔C, B↔D). Le niveau de saturation 
 ## Autres sorties étudiées sur la saturation des fronts (non retenues)
 - Verdict : le front de R1 plus saturé que celui de R7 donne le gagnant 12 fois sur 24 ; protecteur plus saturé 10 sur 18 ; prédateur moins saturé 8 sur 23 ; front + protecteur − prédateur 12 sur 27 : aucun signal.
 - Nul : l'égalité de saturation des deux fronts de R1 et R7 se retrouve dans 7 nuls sur 9 mais aussi dans 8 victoires sur 32 (écart moyen 0,33 contre 1,44). Comme principe de nul dans le moteur (NS-1), elle laisse le développement à 24/27 et fait passer le lot 1 de 8/14 à 7/14 : non retenue, à garder comme indice.
+
+## Correction du rythme (Belgique–Italie 4-1 affiché « Fermé »)
+Les rôles des figures d'activation (Fermante / Ouvrante) lisaient encore la maison de repos en logique « un point = ouvert », alors que le niveau d'activation est la ligne à deux points. Ils lisent maintenant les deux points, dans le moteur et dans la page. Belgique–Italie (4-1) passe de Fermé à Saturé ; Niger–Maroc (0-1) passe de Fermé à Contenu. Aucun résultat de buts ne change (Over/Under 24/23/21, Deux marquent 13/26) : c'est PS-1 qui décide, le rythme n'intervient plus que pour l'affichage.
+Mesure du rythme Fermé : sur les 26 scores réels il ne sépare pas les matchs fermés des autres (5 matchs sur 9 à trois buts ou moins avec l'ancienne lecture, 3 sur 5 avec la nouvelle). RY-2 reste donc un principe posé par le propriétaire, non prouvé.

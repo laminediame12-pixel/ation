@@ -477,7 +477,7 @@
         [b, r].forEach(function (fg) {
           var ro = ROLES_ACTIVATION[num(fg)];
           if (!ro || ro[1] !== c) return;
-          var reposActive = POINTS[FIG[h - 1]][c] === 1;       // convention du 3.0.0 pour les rôles : un point = ouvert
+          var reposActive = POINTS[FIG[h - 1]][c] === 2;       // niveau d'activation = ligne à deux points (décision du propriétaire)
           if (ro[0] === 'F') { if (!reposActive) verrou++; else brise++; } else { if (!reposActive) libre++; else sat++; }
         });
       }
