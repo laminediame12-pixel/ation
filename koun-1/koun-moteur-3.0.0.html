@@ -2424,6 +2424,25 @@
   }
   function poleVraimentChezLui(L, c) { var f = c.figure; return L.chezElle(f) && !L.annuleePar(f) && !(f !== 'Populus' && !L.chezElleEnBase(f) && L.maisons[num(f) - 1].base === 'Populus'); }
 
+  // Équilibre d'activation entre les deux parties du thème.
+  // Partie 1 : M1, M2, M3, M4, M9, M10, M13, M15 ; partie 2 : M5, M6, M7, M8, M11, M12, M14, M16.
+  // Dans chaque partie, les maisons prennent tour à tour une ligne : Feu, Air, Eau, Terre, puis de nouveau Feu, Air, Eau, Terre.
+  // Une ligne impaire compte 1. On lit la base et la résultante (en M16, sans résultante, la base).
+  var PARTIE1 = [1, 2, 3, 4, 9, 10, 13, 15], PARTIE2 = [5, 6, 7, 8, 11, 12, 14, 16];
+  function niveauxParties(L) {
+    function somme(part, couche) {
+      return part.reduce(function (t, h, i) {
+        var m = L.maisons[h - 1], f = couche === 'base' ? m.base : (m.resultante || m.base);
+        return t + (POINTS[f][i % 4] === 1 ? 1 : 0);
+      }, 0);
+    }
+    var b1 = somme(PARTIE1, 'base'), b2 = somme(PARTIE2, 'base'), r1 = somme(PARTIE1, 'res'), r2 = somme(PARTIE2, 'res');
+    return { base1: b1, base2: b2, res1: r1, res2: r2, ecartBase: b1 - b2, ecartRes: r1 - r2 };
+  }
+  function equilibreCompense(L) { var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
+  function texteEquilibre(n) {
+    return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait.' : 'équilibre compensé.');
+  }
   var CAS = [
     // ───────── Victoire assurée : boucles différentes ─────────
     { id: 'VA-1', famille: 'Victoire assurée', titre: 'Boucles différentes : trois figures du front ou du front binôme chez elles', statut: 'EN_ESSAI',
@@ -2466,6 +2485,13 @@
         var th = [4, 8, 12, 16].filter(function (h) { var m = L.maisons[h - 1]; return m.base === 'Tristitia' || m.resultante === 'Tristitia'; });
         if (!th.length) return null;
         return N('Nul : front miroir ' + L.R1.front + ', ' + L.R1.figure + ' + ' + L.R7.figure + ' donne Tristitia, qui est dans une maison de Terre (M' + th.join(', M') + ').');
+      } },
+    { id: 'NU-1', famille: 'Même front', titre: 'Le nul : les deux parties du thème sont en équilibre d’activation', statut: 'EN_ESSAI',
+      enonce: 'Pôles dans le même front, sans figure au repos décisive. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul.',
+      condition: function (L) {
+        if (L.R1.front !== L.R7.front) return null;
+        var n = equilibreCompense(L); if (!n) return null;
+        return N('Nul : même front ' + L.R1.front + ', sans figure au repos décisive. ' + texteEquilibre(n));
       } },
     { id: 'MF-4', famille: 'Même front', titre: 'Équilibre rompu : le pôle le plus lourd', statut: 'EN_ESSAI',
       enonce: 'Pôles dans le même front, sans figure au repos décisive, et la figure d’équilibre n’est posée ni dans une maison d’équilibre ni sur l’axe : le match se décide. Le pôle qui pèse le plus en base gagne ; à poids égal, le pôle le plus présent dans le thème.',
@@ -2582,6 +2608,13 @@
       } },
     // ───────── Famille « Témoins » : le cas du nul en boucles différentes ─────────
     // ───────── Famille « Dernier recours » : lue quand rien d'autre n'a tranché ─────────
+    { id: 'NU-2', famille: 'Équilibre d’activation', titre: 'Le nul : les deux parties du thème sont en équilibre d’activation', statut: 'EN_ESSAI',
+      enonce: 'Même boucle ou boucles différentes, aucun cas de victoire ne s’est appliqué. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul.',
+      condition: function (L) {
+        if (L.R1.front === L.R7.front) return null;
+        var n = equilibreCompense(L); if (!n) return null;
+        return N('Nul : aucun cas de victoire ne s’applique. ' + texteEquilibre(n));
+      } },
     { id: 'DR-1', famille: 'Dernier recours', titre: 'L’axe angulaire désigne un pôle', statut: 'EN_ESSAI',
       enonce: 'La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne.',
       condition: function (L) {
