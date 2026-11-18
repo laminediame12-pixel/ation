@@ -4674,10 +4674,13 @@
 
  // 2. Mise à jour Ligne 2 : Deux marquent
  const bttsTag = document.getElementById("bttsTag");
- bttsTag.textContent = btts ? "Oui" : "Non";
- bttsTag.className = btts ? "tag-yes" : "tag-no";
- document.getElementById("bttsDetailSub").textContent = btts
- ? `Flux bilatéral actif (R1: ${Math.round(winState.scoreR1)} · R7: ${Math.round(winState.scoreR7)})`
+ // Deux marquent : cohérent avec le score prévu (les deux camps marquent si les deux ont au moins un but).
+ const scoreMatch = String(kounMetrics.scoreStr).match(/(\d+)\s*-\s*(\d+)/);
+ const bttsFinal = scoreMatch ? (+scoreMatch[1] > 0 && +scoreMatch[2] > 0) : btts;
+ bttsTag.textContent = bttsFinal ? "Oui" : "Non";
+ bttsTag.className = bttsFinal ? "tag-yes" : "tag-no";
+ document.getElementById("bttsDetailSub").textContent = bttsFinal
+ ? (btts ? `Flux bilatéral actif (R1: ${Math.round(winState.scoreR1)} · R7: ${Math.round(winState.scoreR7)})` : `Score prévu ${kounMetrics.scoreStr} : les deux camps marquent`)
  : (!r1CanScore && !r7CanScore ? "Double verrouillage offensif" : (!r1CanScore ? `${t1} verrouillé` : (!r7CanScore ? `${t2} verrouillé` : "Impulsion unilatérale")));
 
  // 3. Mise à jour Ligne 3 : Incident
@@ -4727,7 +4730,7 @@
  <strong>&#127968; Figures de repos liées aux Fronts (&ge;2 sans antagoniste)</strong> :
  <strong>R1 (${safeT1})</strong> = <strong>${winState.r1RestLink.count}</strong> [${escapeHTML(r1ReposTxt)}] &nbsp;|&nbsp;
  <strong>R7 (${safeT2})</strong> = <strong>${winState.r7RestLink.count}</strong> [${escapeHTML(r7ReposTxt)}]
- ${rubeusInTerre ? ` &nbsp;&bull;&nbsp; <strong style="color:#f87171;">Rubeus en Terre (${rubeusTerreHits.join(", ")}) : Jamais Nul</strong>` : ''}
+ ${rubeusInTerre ? ` &nbsp;&bull;&nbsp; <strong style="color:#f87171;">Rubeus en Terre (${rubeusTerreHits.join(", ")}) : ${isDrawEffective ? "lecture 3.0.0 « jamais nul », écartée par le Moteur 2 (nul)" : "Jamais Nul"}</strong>` : ''}
  </span>
  <span><strong>${safeT1} (Pôle &amp; Croisement)</strong> : [${baseR1.name} (${baseR1.front}) &rarr; Res: ${resR1.name} (${resR1.front}) | ${parityTag} &bull; ${winState.poleR1.tag}${winState.r1Passed ? ` &bull; Chef (${winState.r1PassCount})` : ""}${duelNote}${rubR1Note}]</span>
  <span><strong>${safeT2} (Pôle &amp; Croisement)</strong> : [${baseR7.name} (${baseR7.front}) &rarr; Res: ${resR7.name} (${resR7.front}) | ${winState.poleR7.tag}${winState.r7Passed ? ` &bull; Chef (${winState.r7PassCount})` : ""}${rubR7Note}]</span>
