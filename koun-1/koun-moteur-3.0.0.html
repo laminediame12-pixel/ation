@@ -1881,9 +1881,9 @@
  <div class="canal-legend">
  <span><span style="color:#60a5fa;">&#9632;</span> contour bleu = maison R1</span>
  <span><span style="color:#f87171;">&#9632;</span> contour rouge = maison R7</span>
- <span>case pleine = canal ouvert (1) &nbsp;·&nbsp; case sombre = canal fermé (2)</span>
+ <span>case pleine = ligne à deux points (niveau activé) &nbsp;·&nbsp; case sombre = ligne à un point</span>
  <span>ligne B = base &nbsp;·&nbsp; ligne R = résultante</span>
- <span>Verrou tenu = repos fermé et base fermée &nbsp;·&nbsp; percé = repos fermé mais base ouverte &nbsp;·&nbsp; saturé = repos ouvert et base ouverte (1⊕1=2) &nbsp;·&nbsp; libre = repos ouvert, base fermée</span>
+ <span>Verrou tenu = repos et base non activés (un point) &nbsp;·&nbsp; percé = repos non activé mais base activée (deux points) &nbsp;·&nbsp; saturé = repos et base activés (deux points) &nbsp;·&nbsp; libre = repos activé, base non activée</span>
  </div>
  </div>
 
@@ -3668,11 +3668,12 @@
  const acts = [];
  const locks = { tenu: [], force: [], saturation: [], libre: [] };
  for (let h = 1; h <= 16; h++) {
- const baseOpen = M[h][c.idx] === 1;
- const resOpen = R[h][c.idx] === 1;
+ // niveau d'activation : une ligne à deux points (valeur 0) est activée ; une ligne à un point ne l'est pas
+ const baseOpen = M[h][c.idx] === 0;
+ const resOpen = R[h][c.idx] === 0;
  if (baseOpen) openB++;
  if (resOpen) openR++;
- const restClosed = HOUSE_REST_FIG[h].vec[c.idx] !== 1;
+ const restClosed = HOUSE_REST_FIG[h].vec[c.idx] !== 0;
  let kind;
  if (restClosed && !baseOpen) kind = "tenu";
  else if (restClosed && baseOpen) kind = "force";
@@ -3727,9 +3728,9 @@
  rhythm.innerHTML = `
  <div>
  <div class="canal-rhythm-title" style="color:${regimeCol};">Rythme du thème : ${regime}</div>
- <div class="canal-rhythm-sub">Ouverture ${openPct}% · Fermeture ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span></div>
+ <div class="canal-rhythm-sub">Deux points ${openPct}% · Un point ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span></div>
  </div>
- <div class="canal-bar" title="Part des canaux ouverts (couleur) contre fermés">
+ <div class="canal-bar" title="Part des lignes à deux points (couleur) contre lignes à un point">
  <span style="width:${openPct}%; background:linear-gradient(90deg,#ef4444,#eab308,#3b82f6,#22c55e);"></span>
  </div>
  `;
@@ -3742,7 +3743,7 @@
  return `
  <div class="canal-card" style="border-top-color:${c.color};">
  <div class="canal-card-name" style="color:${c.color};">${c.name} <span>Front ${c.front}</span></div>
- <div class="canal-card-meta">Ouvert ${ratio}% · Base ${c.openB}/16 · Rés ${c.openR}/16 · <span style="color:${c.lockCol};">${c.lockState}</span></div>
+ <div class="canal-card-meta">Deux points ${ratio}% · Base ${c.openB}/16 · Rés ${c.openR}/16 · <span style="color:${c.lockCol};">${c.lockState}</span></div>
  <div class="canal-acts">${chips}</div>
  </div>`;
  }).join("");
@@ -3771,7 +3772,7 @@
  </div>`;
  }).join("") + `
  <div class="canal-lock" style="grid-column:1/-1;border-left:3px solid #38bdf8;">
- <div class="canal-lock-head"><span style="color:#38bdf8;">Trajets maisons Terre (notation 1=ouvert 2=fermé)</span></div>
+ <div class="canal-lock-head"><span style="color:#38bdf8;">Trajets maisons Terre (notation : nombre de points)</span></div>
  <div style="font-size:0.68rem;line-height:1.55;color:#cbd5e1;">${terrePaths}</div>
  </div>
 `;
@@ -3786,10 +3787,10 @@
  [["B", M], ["R", R]].forEach(([tag, arr]) => {
  grid += `<div class="canal-rlabel" style="color:${c.color};">${c.name} ${tag}</div>`;
  for (let h = 1; h <= 16; h++) {
- const open = arr[h][c.idx] === 1;
+ const open = arr[h][c.idx] === 0;
  const cls = `canal-cell${open ? " open" : ""}${h === r1House ? " is-r1" : ""}${h === r7House ? " is-r7" : ""}`;
  const bg = open ? `background:${c.color};` : "";
- grid += `<div class="${cls}" style="${bg}" title="M${h} ${tag} · ${c.name} ${open ? "ouvert" : "fermé"}"></div>`;
+ grid += `<div class="${cls}" style="${bg}" title="M${h} ${tag} · ${c.name} ${open ? "deux points" : "un point"}"></div>`;
  }
  });
  });
