@@ -1149,69 +1149,6 @@
  }
 
  /* CALCULATEUR DEDIE R1 & R7 (FRONTS BASE/RES & CROISEMENT) */
- .r1r7-calc-panel {
- background: #0b1324;
- border: 1.5px solid #2563eb;
- border-radius: 8px;
- padding: 0.9rem 1rem;
- margin-top: 1rem;
- }
- .r1r7-calc-title {
- font-size: 0.88rem;
- font-weight: 800;
- color: #60a5fa;
- text-transform: uppercase;
- letter-spacing: 0.04em;
- margin-bottom: 0.25rem;
- display: flex;
- justify-content: space-between;
- align-items: center;
- flex-wrap: wrap;
- gap: 0.4rem;
- }
- .r1r7-grid {
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 0.8rem;
- margin: 0.7rem 0;
- }
- @media (max-width: 720px) {
- .r1r7-grid { grid-template-columns: 1fr; }
- }
- .r1r7-camp-box {
- background: #10192e;
- border: 1px solid #23304a;
- border-radius: 6px;
- padding: 0.65rem 0.75rem;
- }
- .r1r7-camp-box.r1-box { border-left: 3px solid #3b82f6; }
- .r1r7-camp-box.r7-box { border-left: 3px solid #ef4444; }
- .r1r7-table {
- width: 100%;
- border-collapse: collapse;
- font-size: 0.74rem;
- margin-top: 0.55rem;
- }
- .r1r7-table th, .r1r7-table td {
- border: 1px solid #23304a;
- padding: 0.42rem 0.55rem;
- text-align: left;
- vertical-align: top;
- }
- .r1r7-table th {
- background: #131f38;
- color: #93c5fd;
- font-weight: 700;
- }
- .r1r7-cross-summary {
- background: rgba(15, 23, 42, 0.85);
- border: 1px solid #38bdf8;
- border-radius: 6px;
- padding: 0.65rem 0.8rem;
- margin-top: 0.65rem;
- font-size: 0.76rem;
- line-height: 1.5;
- }
 
  /* CERCLE DES FRONTS */
  .circle-container {
@@ -1922,61 +1859,6 @@
  <div id="sumResultDots"></div>
  </div>
 
- <hr style="border:none; border-top:1px solid var(--border-color); margin: 1.1rem 0;">
-
- <!-- CALCULATEUR DÉDIÉ R1 ET R7 (FRONTS EN BASE & RÉSULTANTE + ANTAGONISTES + CROISEMENT) -->
- <div class="r1r7-calc-panel" id="r1r7CalcPanel">
- <div class="r1r7-calc-title">
- <span>&#9878; CALCULATEUR DE R1 ET R7 (FRONTS BASE &amp; RÉSULTANTE &bull; CROISEMENT UNIFIÉ)</span>
- <button type="button" class="btn-slate" style="padding:0.25rem 0.6rem; font-size:0.7rem;" onclick="syncR1R7FromTheme()">Synchroniser avec le thème actuel</button>
- </div>
- <div style="font-size:0.72rem; color:var(--text-muted);">
- Synchronisé avec le Moteur 3 : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le verdict du Moteur 3 sur le thème simulé.
- </div>
-
- <div class="r1r7-grid">
- <div class="r1r7-camp-box r1-box">
- <div style="font-weight:800; color:#60a5fa; font-size:0.8rem; margin-bottom:0.45rem;" id="calcR1Header">CAMP R1 (Équipe 1)</div>
- <div class="form-grid-2" style="margin-bottom:0.35rem;">
- <div class="form-group" style="margin-bottom:0;">
- <label>Maison R1</label>
- <select id="calcR1House" onchange="onManualR1R7HouseChange()"></select>
- </div>
- <div class="form-group" style="margin-bottom:0;">
- <label>Figure Base R1</label>
- <select id="calcR1BaseFig" onchange="onManualR1R7HouseChange()"></select>
- </div>
- </div>
- <div class="form-group" style="margin-bottom:0;">
- <label>Résultante R1 (Base + Repos R1)</label>
- <select id="calcR1ResFig" onchange="runR1R7Calculator(false)"></select>
- </div>
- </div>
-
- <div class="r1r7-camp-box r7-box">
- <div style="font-weight:800; color:#f87171; font-size:0.8rem; margin-bottom:0.45rem;" id="calcR7Header">CAMP R7 (Équipe 2)</div>
- <div class="form-grid-2" style="margin-bottom:0.35rem;">
- <div class="form-group" style="margin-bottom:0;">
- <label>Maison R7</label>
- <select id="calcR7House" onchange="onManualR1R7HouseChange()"></select>
- </div>
- <div class="form-group" style="margin-bottom:0;">
- <label>Figure Base R7</label>
- <select id="calcR7BaseFig" onchange="onManualR1R7HouseChange()"></select>
- </div>
- </div>
- <div class="form-group" style="margin-bottom:0;">
- <label>Résultante R7 (Base + Repos R7)</label>
- <select id="calcR7ResFig" onchange="runR1R7Calculator(false)"></select>
- </div>
- </div>
- </div>
-
- <div id="r1r7CalcOutput"></div>
- </div>
-
- </div>
-
  <!-- BUTTONS TELECHARGER LE THEME (IMAGES) -->
  <div style="text-align:center; margin: 1.1rem 0; display:flex; justify-content:center; gap:0.8rem; flex-wrap:wrap;">
  <button type="button" class="btn-blue" style="padding: 0.65rem 1.5rem; font-size:0.82rem; border-radius:6px;" onclick="downloadPyramidPNG()">
@@ -2644,26 +2526,6 @@
  sel.value = defaults[idx];
  });
 
- ["calcR1House", "calcR7House"].forEach(id => {
- const sel = document.getElementById(id);
- for (let h = 1; h <= 16; h++) {
- const rf = HOUSE_REST_FIG[h];
- const opt = document.createElement("option");
- opt.value = h;
- opt.textContent = `M${h} (Repos: ${rf.name} · Front ${rf.front})`;
- sel.appendChild(opt);
- }
- });
- ["calcR1BaseFig", "calcR1ResFig", "calcR7BaseFig", "calcR7ResFig"].forEach(id => {
- const sel = document.getElementById(id);
- ALL_16_VECS.forEach(f => {
- const opt = document.createElement("option");
- opt.value = f.vec.join(",");
- opt.textContent = `${f.num} — ${f.name} [Front ${f.front} · ${f.elem}]`;
- sel.appendChild(opt);
- });
- });
-
  const calcGrid = document.getElementById("sumSelectsGrid");
  for (let i = 1; i <= 8; i++) {
  const div = document.createElement("div");
@@ -2876,7 +2738,6 @@
  setTeamLogo(document.getElementById("logoTeam1"), t1);
  setTeamLogo(document.getElementById("logoTeam2"), t2);
  computeVerdict();
- runR1R7Calculator(false);
  }
 
  function parseQuickNumbers() {
@@ -2928,7 +2789,6 @@
 
  renderValidation();
  computeVerdict();
- syncR1R7FromTheme();
  renderPyramid();
  renderCercleDesFronts();
  renderCanalMap();
@@ -3460,167 +3320,6 @@
  });
  antResEl.textContent = antResList.length ? antResList.join(" · ") : "Aucune";
  }
- }
-
- function syncR1R7FromTheme() {
- const M = currentHouses;
- const R = currentResultantes;
- if (!M || M.length < 17) return;
- const { r1House, r7House } = getR1R7Houses(M);
-
- document.getElementById("calcR1House").value = r1House;
- document.getElementById("calcR7House").value = r7House;
- document.getElementById("calcR1BaseFig").value = M[r1House].join(",");
- document.getElementById("calcR1ResFig").value = R[r1House].join(",");
- document.getElementById("calcR7BaseFig").value = M[r7House].join(",");
- document.getElementById("calcR7ResFig").value = R[r7House].join(",");
-
- runR1R7Calculator(true);
- }
-
- function onManualR1R7HouseChange() {
- const h1 = parseInt(document.getElementById("calcR1House").value, 10);
- const h7 = parseInt(document.getElementById("calcR7House").value, 10);
- const b1 = document.getElementById("calcR1BaseFig").value.split(",").map(Number);
- const b7 = document.getElementById("calcR7BaseFig").value.split(",").map(Number);
-
- const r1 = xorV(b1, HOUSE_REST_FIG[h1].vec);
- const r7 = xorV(b7, HOUSE_REST_FIG[h7].vec);
- document.getElementById("calcR1ResFig").value = r1.join(",");
- document.getElementById("calcR7ResFig").value = r7.join(",");
- runR1R7Calculator(false);
- }
-
- function runR1R7Calculator(isSynced) {
- const M = currentHouses;
- const R = currentResultantes;
- if (!M || M.length < 17) return;
-
- const t1 = document.getElementById("team1Input").value || "Équipe 1";
- const t2 = document.getElementById("team2Input").value || "Équipe 2";
- const safeT1 = escapeHTML(t1);
- const safeT2 = escapeHTML(t2);
-
- const h1 = parseInt(document.getElementById("calcR1House").value, 10);
- const h7 = parseInt(document.getElementById("calcR7House").value, 10);
-
- const baseR1 = getFigByVec(document.getElementById("calcR1BaseFig").value.split(",").map(Number));
- const resR1 = getFigByVec(document.getElementById("calcR1ResFig").value.split(",").map(Number));
- const baseR7 = getFigByVec(document.getElementById("calcR7BaseFig").value.split(",").map(Number));
- const resR7 = getFigByVec(document.getElementById("calcR7ResFig").value.split(",").map(Number));
-
- document.getElementById("calcR1Header").textContent = `CAMP R1 — ${t1} (Maison M${h1} · Repos: ${HOUSE_REST_FIG[h1].name})`;
- document.getElementById("calcR7Header").textContent = `CAMP R7 — ${t2} (Maison M${h7} · Repos: ${HOUSE_REST_FIG[h7].name})`;
-
- const M_sim = M.map(v => Array.isArray(v) ? [...v] : v);
- const R_sim = R.map(v => Array.isArray(v) ? [...v] : v);
- M_sim[h1] = [...baseR1.vec];
- R_sim[h1] = [...resR1.vec];
- M_sim[h7] = [...baseR7.vec];
- R_sim[h7] = [...resR7.vec];
-
-
- const byFront = { A: { base: [], res: [] }, B: { base: [], res: [] }, C: { base: [], res: [] }, D: { base: [], res: [] } };
- for (let i = 1; i <= 16; i++) {
- const bf = getFigByVec(M_sim[i]);
- const rf = getFigByVec(R_sim[i]);
- byFront[bf.front].base.push(`M${i} (${bf.name})`);
- byFront[rf.front].res.push(`M${i} (${rf.name})`);
- }
-
- const totalFrontCount = (fId) => byFront[fId].base.length + byFront[fId].res.length;
- const predatorOf = (fId) => Object.keys(FRONT_ANTAGONISM).find(k => FRONT_ANTAGONISM[k] === fId);
-
- const formatFrontPresence = (fId) => {
- const bList = byFront[fId].base;
- const rList = byFront[fId].res;
- return `<strong>Front ${fId}</strong> (${bList.length + rList.length} présences)<br>` +
- `<span style="color:#93c5fd;">Base (${bList.length}) :</span> ${bList.length ? bList.join(", ") : "Aucune"}<br>` +
- `<span style="color:#2dd4bf;">Résultante (${rList.length}) :</span> ${rList.length ? rList.join(", ") : "Aucune"}`;
- };
-
- const r1BaseTarget = FRONT_ANTAGONISM[baseR1.front];
- const r1BasePred = predatorOf(baseR1.front);
- const r1ResTarget = FRONT_ANTAGONISM[resR1.front];
- const r1ResPred = predatorOf(resR1.front);
-
- const r7BaseTarget = FRONT_ANTAGONISM[baseR7.front];
- const r7BasePred = predatorOf(baseR7.front);
- const r7ResTarget = FRONT_ANTAGONISM[resR7.front];
- const r7ResPred = predatorOf(resR7.front);
-
-
- // Moteur 3 : même lecture que la fenêtre du verdict, appliquée au thème simulé (maisons et figures du calculateur, pôles choisis).
- let crossConclusion = "";
- try {
- const thSim = {};
- for (let k = 1; k <= 16; k++) thSim[k] = KOUN3.FIG[getFigByVec(M_sim[k]).num - 1];
- const vv = KOUN3.verdict(KOUN3.lire(thSim, { R1: h1, R7: h7 }));
- const polesStandard = (((h7 - h1) % 16) + 16) % 16 === 6;
- const modif = isSynced ? "" : " <em>(thème simulé : maisons ou figures modifiées" + (polesStandard ? "" : " ; pôles hors R7 = R1 + 6, les principes n'ont été vérifiés que sur ce schéma") + ")</em>";
- const tete = vv.verdict === "N"
- ? `<span style="color:#facc15; font-weight:800;">Match nul</span>`
- : (vv.verdict === "1"
- ? `<span style="color:#60a5fa; font-weight:800;">Victoire R1 (${safeT1})</span>`
- : (vv.verdict === "2" ? `<span style="color:#f87171; font-weight:800;">Victoire R7 (${safeT2})</span>` : `<span style="color:#facc15; font-weight:800;">Aucun verdict</span>`));
- crossConclusion = `${tete} — Moteur 3 · <strong>${escapeHTML(vv.principe || "aucun principe")}</strong> ${escapeHTML(vv.titre || vv.enonce)}${vv.assuree ? " (assurée)" : ""}${modif}<br>`
- + `<span style="color:#cbd5e1; font-size:0.72rem;">${escapeHTML(vv.raison)}</span>`;
- } catch (e) { crossConclusion = "Moteur 3 : lecture impossible pour ce thème simulé."; }
-
- document.getElementById("r1r7CalcOutput").innerHTML = `
- <div style="font-size:0.76rem; font-weight:800; color:#e2e8f0; margin-top:0.5rem;">1. Fronts existants dans le thème (Base &amp; Résultante) — R1, R7 et leurs Antagonistes</div>
- <table class="r1r7-table">
- <thead>
- <tr>
- <th style="width:18%;">Pôle / Rôle</th>
- <th style="width:41%;">Front du Camp dans le thème</th>
- <th style="width:41%;">Front Antagoniste (Attaqué &amp; Prédateur)</th>
- </tr>
- </thead>
- <tbody>
- <tr>
- <td><strong style="color:#60a5fa;">R1 Base (M${h1})</strong><br>${baseR1.name}</td>
- <td>${formatFrontPresence(baseR1.front)}</td>
- <td>
- <span style="color:#eab308;">Attaque (${baseR1.front}&rarr;${r1BaseTarget}) :</span> ${formatFrontPresence(r1BaseTarget)}
- <hr style="border:none; border-top:1px dashed #23304a; margin:4px 0;">
- <span style="color:#f87171;">Subit (${r1BasePred}&rarr;${baseR1.front}) :</span> ${formatFrontPresence(r1BasePred)}
- </td>
- </tr>
- <tr>
- <td><strong style="color:#60a5fa;">R1 Résultante (M${h1})</strong><br>${resR1.name}</td>
- <td>${formatFrontPresence(resR1.front)}</td>
- <td>
- <span style="color:#eab308;">Attaque (${resR1.front}&rarr;${r1ResTarget}) :</span> ${formatFrontPresence(r1ResTarget)}
- <hr style="border:none; border-top:1px dashed #23304a; margin:4px 0;">
- <span style="color:#f87171;">Subit (${r1ResPred}&rarr;${resR1.front}) :</span> ${formatFrontPresence(r1ResPred)}
- </td>
- </tr>
- <tr>
- <td><strong style="color:#f87171;">R7 Base (M${h7})</strong><br>${baseR7.name}</td>
- <td>${formatFrontPresence(baseR7.front)}</td>
- <td>
- <span style="color:#eab308;">Attaque (${baseR7.front}&rarr;${r7BaseTarget}) :</span> ${formatFrontPresence(r7BaseTarget)}
- <hr style="border:none; border-top:1px dashed #23304a; margin:4px 0;">
- <span style="color:#f87171;">Subit (${r7BasePred}&rarr;${baseR7.front}) :</span> ${formatFrontPresence(r7BasePred)}
- </td>
- </tr>
- <tr>
- <td><strong style="color:#f87171;">R7 Résultante (M${h7})</strong><br>${resR7.name}</td>
- <td>${formatFrontPresence(resR7.front)}</td>
- <td>
- <span style="color:#eab308;">Attaque (${resR7.front}&rarr;${r7ResTarget}) :</span> ${formatFrontPresence(r7ResTarget)}
- <hr style="border:none; border-top:1px dashed #23304a; margin:4px 0;">
- <span style="color:#f87171;">Subit (${r7ResPred}&rarr;${resR7.front}) :</span> ${formatFrontPresence(r7ResPred)}
- </td>
- </tr>
- </tbody>
- </table>
-
- <div class="r1r7-cross-summary">
- <strong>Verdict :</strong> ${crossConclusion}<br>
- </div>
- `;
  }
 
  let sumCalcMode = "maison";
