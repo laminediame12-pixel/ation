@@ -19,13 +19,12 @@ Provenances : **PROPRIETAIRE** (posé par vous) · **PORTE_3.0.0** (règle de vo
 | NU-2 | DEVELOPPEMENT | Nul : équilibre d'activation des deux parties, juge hors de son repos | 3/3 | 1/1 |
 | NU-3 | DEVELOPPEMENT | Nul : équilibre des affinités Feu-Air / Eau-Terre en base, juge hors de son repos | 2/3 | — |
 | FC-2 | DEVELOPPEMENT | Dernier principe de victoire, par les portes du cercle des fronts B → A → D → C → B : figures du front du pôle placées chez sa proie ou chez son front binôme (protecteur) moins celles placées chez le front prédateur, en base et en résultante | 1/3 | 7/7 |
-| BM-1 | DEVELOPPEMENT | Binôme de M1 chez elle (a juré) ou dans son canal (acceptée), en base ou en résultante : R7 ne gagne pas, un verdict R7 devient R1 (appliqué après tous les autres principes) | 1/1 | — |
 | FP-1 | DEVELOPPEMENT | Mêmes forces de camps (cas des deux pôles de même front) : la somme des forces du pôle lui-même la plus haute gagne | — | — |
 | CC-1 | PROPRIETAIRE (provisoire) | Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle | aucun thème réel à égalité de forces | — |
 
 Abandonnés (ils ont échoué hors développement ou n'ont jamais été vérifiés) : PF-1, PF-3, MF-1, MF-4, PR-1 à PR-6, DR-1, DR-C, DR-6 à DR-9, ainsi que le contrôle de cohérence qui écartait des familles entières.
 
-**Résultat :** développement 23/27 (repère « toujours R1 » : 13/27) ; lot 1 : 12/14 (repère « toujours R1 » : 8/14). Attention : FC-2 a été retenu parmi une quinzaine de lectures essayées sur ces mêmes 41 thèmes ; ce n'est donc pas une validation. Il faut un lot neuf. Ancien FC-1 (force des fronts) : 24/27 et 8/14, supprimé.
+**Résultat :** développement 22/27 (repère « toujours R1 » : 13/27) ; lot 1 : 12/14 (repère « toujours R1 » : 8/14). Attention : FC-2 a été retenu parmi une quinzaine de lectures essayées sur ces mêmes 41 thèmes ; ce n'est donc pas une validation. Il faut un lot neuf. Ancien FC-1 (force des fronts) : 24/27 et 8/14, supprimé.
 
 ## Pénalité et carton rouge — PORTE_3.0.0, NON_TESTE
 - Rubeus en base dans une maison impaire, avec un front lié à un pôle : carton rouge pour ce camp.
@@ -89,13 +88,15 @@ Mesure du rythme Fermé : sur les 26 scores réels il ne sépare pas les matchs 
 
 ## CO-1 : deux thèmes d'un même match (DEVELOPPEMENT, non validé)
 Deux thèmes lus avec le même repère (R1 = équipe 1) peuvent se contredire. Accord des deux verdicts : verdict commun. Désaccord, dans l'ordre :
-1. **Axe angulaire (posé par le propriétaire)** : le thème dont la somme M1+M4+M7+M10 est elle-même en maison angulaire (M1, M4, M7 ou M10, en base ou en résultante) l'emporte ; si les deux ou aucun ne le sont, on passe au critère suivant.
-2. La force du principe : victoire assurée (4), principe de structure (3), FC-2 (2), FP-1 (1), CC-1 (0).
-3. À rang égal, la marge du principe ; égalité complète : nul.
-Le score et les lignes de buts sont ceux du thème retenu ; la page affiche l'accord ou le désaccord sur Deux marquent et Over/Under 1,5 / 2,5 / 3,5, ainsi que la position de la somme de l'axe de chaque thème.
-Origine du critère 1 : le match 1-15-3-9 / 1-9-8-1 (réel 1-4). Le thème juste (1-9-8-1) a la somme en M10, le faux (1-15-3-9) l'a en M9. Le critère a donc été posé à partir de ce match, qui ne valide plus rien : il devient développement. Sur les 43 thèmes, le moteur n'est pas plus juste quand la somme est en maison angulaire (74 % contre 90 % avec l'axe complet, 86 % contre 76 % avec les maisons 1, 4, 7, 10 en base ou en résultante, version retenue) : un lot neuf de matchs à deux thèmes est nécessaire.
+1. **Fiabilité (FI-1)** : le thème le plus fiable l'emporte (binôme de M1 juré ou accepté + somme de l'axe angulaire en maison angulaire).
+2. **Axe angulaire** : à fiabilité égale, le thème dont la somme M1+M4+M7+M10 est en maison angulaire.
+3. La force du principe : victoire assurée (4), principe de structure (3), FC-2 (2), FP-1 (1), CC-1 (0).
+4. À rang égal, la marge du principe ; égalité complète : nul.
+Le score et les lignes de buts sont ceux du thème retenu ; la page affiche l'accord ou le désaccord sur Deux marquent et Over/Under 1,5 / 2,5 / 3,5, et la fiabilité de chaque thème.
+Origine : match 1-15-3-9 / 1-9-8-1 (réel 1-4). Les deux thèmes sont « moyen » (le premier : binôme juré, axe non validé ; le second : binôme hors canal, axe validé), l'axe départage et donne le thème juste. Ce match a servi à poser les critères : il est du développement.
 
-## BM-1 : le binôme de M1, son emplacement (posé par le propriétaire)
-Le binôme de M1 est la figure qui suit celle de M1 de deux numéros (Puer → Caput). Quand une figure est dans sa maison de repos, elle « a juré » ; quand elle est dans son canal (une maison de même rang que sa maison de repos : M3, M7, M11, M15 pour Caput), elle est « acceptée ». Binôme juré ou accepté, en base ou en résultante : R7 ne gagne pas.
-Mesure sur les 41 thèmes de référence : binôme juré ou accepté dans 17 thèmes (16 thèmes distincts, 2-9-6-5 figure dans les deux jeux) : R1 gagne 11 fois, nul 6 fois, **R7 jamais**. Hors de son canal (24 thèmes) : R1 10, R7 11, nul 3. Probabilité de 0 victoire R7 sur 17 si le taux était celui du reste (46 %) : environ 3 sur 100 000. Le moteur seul se trompait une fois sur ces 17 (8-5-11-7, FC-2 donnait R7, réel R1) : BM-1 le corrige, développement 22/27 → 23/27, lot 1 inchangé à 12/14.
-Réserves : seulement 3 définitions du binôme ont été comparées, mais la règle a été choisie en regardant ces 41 thèmes, et les deux thèmes du match 1-15-3-9 / 1-9-8-1 sont du développement. Le principe agit sur 40 % des combinaisons de mères (26 452 sur 65 536) et fait passer 8 612 verdicts R7 en R1. Il faut un lot neuf pour le valider.
+## FI-1 : la fiabilité du thème (posée par le propriétaire)
+Le binôme de M1 ne décide pas du vainqueur : il valide le thème. Binôme de M1 = la figure qui suit celle de M1 de deux numéros (Puer → Caput). Chez elle, dans sa maison de repos, elle « a juré » ; dans son canal (une maison de même rang que sa maison de repos), elle est « acceptée ». La deuxième validation est la somme de l'axe angulaire (M1+M4+M7+M10) en maison angulaire (M1, M4, M7 ou M10, en base ou en résultante). Deux validations : thème fiable ; une : moyen ; aucune : peu fiable. La fiabilité ne change pas le verdict : elle s'affiche avec la confiance et départage deux thèmes d'un même match (CO-1).
+Mesure sur les 41 thèmes de référence (verdict du moteur juste) : binôme accepté 16/17 (94 %), hors canal 18/24 (75 %) ; axe validé 18/21 (86 %), non validé 16/20 (80 %) ; au moins une validation (fiable ou moyen) 27/30 (90 %), aucune (peu fiable) 7/11 (64 %). Axe et binôme : 7/8, 11/13, 9/9 (binôme seul) et 7/11. Sur les combinaisons de mères : fiable 13 159, moyen 32 742, peu fiable 19 635.
+Réserves : définitions choisies en regardant ces thèmes ; effectifs faibles (11 thèmes peu fiables) ; le match à deux thèmes 1-15-3-9 / 1-9-8-1 est du développement (les deux thèmes sont « moyen »).
+Une version précédente faisait du binôme un principe de verdict (R7 ne gagne pas quand le binôme est accepté : R7 0 sur 17) ; le propriétaire l'a corrigée : le binôme valide le thème, il ne désigne pas de vainqueur. Cette version a été retirée.
