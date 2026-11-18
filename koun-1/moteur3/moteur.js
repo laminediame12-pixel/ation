@@ -369,7 +369,7 @@
   });
   // Dernier principe de victoire : la force des camps, par le cercle des fronts.
   // Les fronts circulent B → A → D → C → B : chaque front attaque le suivant. Le front binôme (A↔C, B↔D) protège le front ; le front qui l'attaque est son prédateur.
-  // Force du camp d'un pôle = force de son front + force de son front binôme (protecteur) − force de son front prédateur.
+  // Force du camp d'un pôle = force de son front + force de son front binôme (protecteur) − force du front prédateur − force de la figure antagoniste du pôle.
   // La force d'un front = la somme des forces de toutes les positions de ses figures dans le thème (base et résultante).
   var SUIVANT = { B: 'A', A: 'D', D: 'C', C: 'B' }, PREDATEUR = { A: 'B', D: 'A', C: 'D', B: 'C' }, BINOME_FRONT = { A: 'C', C: 'A', B: 'D', D: 'B' };
   function forceFigures(L, figs) {
@@ -382,10 +382,10 @@
   }
   function forceCamp(L, c) {
     var F = FRONTS[(num(L[c].figure) - 1) % 4], P = BINOME_FRONT[F], D = PREDATEUR[F];
-    var sf = forceFront(L, F), sp = forceFront(L, P), sd = forceFront(L, D);
-    return { total: sf + sp - sd, front: F, force: sf, protecteur: P, forceProtecteur: sp, predateur: D, forcePredateur: sd };
+    var sf = forceFront(L, F), sp = forceFront(L, P), sd = forceFront(L, D), sa = forceFigures(L, [L[c].antagoniste]);
+    return { total: sf + sp - sd - sa, front: F, force: sf, protecteur: P, forceProtecteur: sp, predateur: D, forcePredateur: sd, antagoniste: L[c].antagoniste, forceAntagoniste: sa };
   }
-  var FORCE_POLES = { id: 'FC-1', provenance: 'DEVELOPPEMENT', enonce: 'Le camp le plus fort gagne, par le cercle des fronts B → A → D → C → B : force de son front + force de son front binôme, qui le protège, − force du front qui l’attaque ; égalité : CC-1.' };
+  var FORCE_POLES = { id: 'FC-1', provenance: 'DEVELOPPEMENT', enonce: 'Le camp le plus fort gagne, par le cercle des fronts B → A → D → C → B : force de son front + force de son front binôme, qui le protège, − force du front qui l’attaque − force de la figure antagoniste du pôle ; égalité des camps : FP-1, puis CC-1.' };
 
   // Comptage des niveaux d'activation par deux, au niveau des canaux : nombre de lignes à deux points dans les quatre résultantes des maisons d'un canal
   // (une ligne à deux points = la figure et la figure de repos de la maison s'accordent sur ce niveau). En M16, sans résultante, la base.
@@ -421,9 +421,9 @@
       var gc = ca > cb ? 'R1' : 'R7';
       return { verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
     }
-    var g = a > b ? 'R1' : 'R7';
+    var g = a > b ? 'R1' : 'R7', C = g === 'R1' ? f1 : f7;
     return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'La force des camps',
-      raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. Cercle des fronts B → A → D → C → B. Camp ' + g + ' (front ' + (g === 'R1' ? f1 : f7).front + ') : ' + (g === 'R1' ? f1 : f7).force + ' + ' + (g === 'R1' ? f1 : f7).forceProtecteur + ' (front ' + (g === 'R1' ? f1 : f7).protecteur + ', protecteur) − ' + (g === 'R1' ? f1 : f7).forcePredateur + ' (front ' + (g === 'R1' ? f1 : f7).predateur + ', prédateur) = ' + Math.max(a, b) + ', contre ' + Math.min(a, b) + ' pour l’autre camp.', assuree: false };
+      raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. Cercle des fronts B → A → D → C → B. Camp ' + g + ' (front ' + C.front + ') : ' + C.force + ' + ' + C.forceProtecteur + ' (front ' + C.protecteur + ', protecteur) − ' + C.forcePredateur + ' (front ' + C.predateur + ', prédateur) − ' + C.forceAntagoniste + ' (antagoniste ' + C.antagoniste + ') = ' + Math.max(a, b) + ', contre ' + Math.min(a, b) + ' pour l’autre camp.', assuree: false };
   }
 
   // ───────── PÉNALITÉ ET CARTON ROUGE (règle du 3.0.0) ─────────
