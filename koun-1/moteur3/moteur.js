@@ -413,17 +413,17 @@
       var pa = forceFigures(L, [L.R1.figure]), pb = forceFigures(L, [L.R7.figure]);
       if (pa !== pb) {
         var gp = pa > pb ? 'R1' : 'R7';
-        return { verdict: pa > pb ? '1' : '2', principe: 'FP-1', provenance: 'DEVELOPPEMENT', enonce: 'Les camps ont la même force : le pôle le plus fort (somme des forces de toutes ses positions) gagne.', titre: 'La force du pôle',
+        return { marge: Math.abs(pa - pb), verdict: pa > pb ? '1' : '2', principe: 'FP-1', provenance: 'DEVELOPPEMENT', enonce: 'Les camps ont la même force : le pôle le plus fort (somme des forces de toutes ses positions) gagne.', titre: 'La force du pôle',
           raison: 'Victoire ' + gp + ' : les deux camps ont la même force (' + a + ') ; la somme des forces de ' + L[gp].figure + ' (' + Math.max(pa, pb) + ') dépasse celle de l’autre pôle (' + Math.min(pa, pb) + ').', assuree: false };
       }
       var ca = concordanceCanal(L, canalDuPole(L.R1)), cb = concordanceCanal(L, canalDuPole(L.R7)), c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7);
       var base = 'Les forces des deux camps et des deux pôles sont égales (' + a + ' et ' + pa + '). Canal ' + c1 + ' de R1 (M' + L.R1.maison + ') : ' + ca + ' lignes à deux points ; canal ' + c7 + ' de R7 (M' + L.R7.maison + ') : ' + cb + '.';
       if (ca === cb) return { verdict: 'N', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le nul par le comptage des deux points des canaux', raison: 'Nul : ' + base + ' Les deux canaux sont à égalité.', assuree: false, provisoire: true };
       var gc = ca > cb ? 'R1' : 'R7';
-      return { verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
+      return { marge: Math.abs(ca - cb), verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
     }
     var g = a > b ? 'R1' : 'R7', C = g === 'R1' ? f1 : f7;
-    return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'Les portes du cercle des fronts',
+    return { marge: Math.abs(a - b), verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'Les portes du cercle des fronts',
       raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. Cercle des fronts B → A → D → C → B. Camp ' + g + ' (front ' + C.front + ') : ' + C.bon + ' figure(s) du front chez sa proie ou chez le front binôme ' + C.protecteur + ' (protecteur), moins ' + C.mal + ' chez le front prédateur ' + C.predateur + ' = ' + Math.max(a, b) + ', contre ' + Math.min(a, b) + ' pour l’autre camp. ', assuree: false };
   }
 
@@ -589,7 +589,29 @@
     var L = K.lire(theme), v = verdict(L);
     return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict) };
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts, rythme: rythme };
+
+  // ───────── DEUX THÈMES D'UN MÊME MATCH : CONCILIATION (CO-1) ─────────
+  // Deux thèmes lus avec le même repère (R1 = équipe 1, R7 = équipe 2) peuvent donner deux verdicts différents. Règle : on compare la force du principe qui a décidé chaque thème.
+  // Rang : victoire assurée = 4 ; principe de structure (VA-1, MF-2, MF-3, NU-1, AX-1, CL-1, CL-2, PF-2, NU-2, NU-3) = 3 ; FC-2 = 2 ; FP-1 = 1 ; CC-1 = 0. À rang égal, on compare la marge (écart du principe). Égalité complète : nul.
+  var RANG_FORCE = { 'FC-2': 2, 'FP-1': 1, 'CC-1': 0 };
+  function rangVerdict(v) { return v.assuree ? 4 : (RANG_FORCE[v.principe] !== undefined ? RANG_FORCE[v.principe] : 3); }
+  var CONCILIATION = { id: 'CO-1', provenance: 'DEVELOPPEMENT', enonce: 'Deux thèmes du même match, même repère (R1 = équipe 1) : accord = verdict commun ; désaccord = le thème dont le principe est le plus fort l\u2019emporte (assuré, structure, FC-2, FP-1, CC-1), puis la marge ; égalité complète = nul.' };
+  function concilier(ra, rb) {
+    var va = ra.verdict, vb = rb.verdict, A = { verdict: va.verdict, principe: va.principe, rang: rangVerdict(va), marge: va.marge || 0 }, B = { verdict: vb.verdict, principe: vb.principe, rang: rangVerdict(vb), marge: vb.marge || 0 };
+    var out = { id: CONCILIATION.id, provenance: CONCILIATION.provenance, enonce: CONCILIATION.enonce, a: A, b: B, accord: va.verdict === vb.verdict }, retenu, raison;
+    if (out.accord) { retenu = rangVerdict(va) >= rangVerdict(vb) ? 'A' : 'B'; raison = 'Les deux thèmes donnent le même verdict (' + va.principe + ' et ' + vb.principe + ').'; out.verdict = va.verdict; }
+    else {
+      var cmp = A.rang !== B.rang ? (A.rang > B.rang ? 1 : -1) : (va.verdict !== 'N' && vb.verdict !== 'N' && A.marge !== B.marge ? (A.marge > B.marge ? 1 : -1) : 0);
+      if (cmp === 0) { out.verdict = 'N'; retenu = va.verdict === 'N' ? 'A' : vb.verdict === 'N' ? 'B' : 'A'; raison = 'Les deux thèmes se contredisent avec la même force (rang ' + A.rang + ', marge ' + A.marge + ' et ' + B.marge + ') : nul.'; }
+      else { out.verdict = cmp > 0 ? va.verdict : vb.verdict; retenu = cmp > 0 ? 'A' : 'B'; raison = 'Les deux thèmes se contredisent : le thème ' + retenu + ' l\u2019emporte, ' + (A.rang !== B.rang ? 'son principe (' + (cmp > 0 ? A.principe : B.principe) + ', rang ' + Math.max(A.rang, B.rang) + ') est plus fort que celui de l\u2019autre (rang ' + Math.min(A.rang, B.rang) + ')' : 'à rang égal sa marge est plus grande (' + Math.max(A.marge, B.marge) + ' contre ' + Math.min(A.marge, B.marge) + ')') + '.'; }
+    }
+    out.retenu = retenu; out.raison = raison;
+    var rb2 = retenu === 'A' ? ra : rb, bA = ra.buts, bB = rb.buts, bR = rb2.buts;
+    out.score = bR.score;
+    out.lignes = { deuxMarquent: { a: bA.deuxMarquent.oui, b: bB.deuxMarquent.oui, accord: bA.deuxMarquent.oui === bB.deuxMarquent.oui }, over15: { accord: bA.overUnder.over15 === bB.overUnder.over15 }, over25: { accord: bA.overUnder.over25 === bB.overUnder.over25 }, over35: { accord: bA.overUnder.over35 === bB.overUnder.over35 } };
+    return out;
+  }
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
