@@ -17,7 +17,7 @@ Elle ne décide rien. Elle décrit le thème :
 - la construction des 16 maisons à partir des 4 mères ;
 - la résultante de chaque maison (base + figure de repos de la maison) ;
 - les fronts A, B, C, D, leurs points cardinaux et leurs éléments ;
-- les forces (100 % dans sa maison de repos, sinon le barème des éléments) ;
+- les forces : seule la maison de repos (100 %) est incontestable, la maison de l'antagoniste vaut 0 %. Ailleurs la force suit le niveau d'activation (points impairs) : 100 % à écart nul avec la figure de repos de la maison, 25 points de moins par niveau d'écart, 1 % en élément destructeur (Eau contre Feu, Air contre Terre), 0 % si la figure est paralysée gravement ;
 - la maison antagoniste : une figure dans la maison de repos de celle qui l'attaque (k−3) est pénalisée, faible et fragile aux attaques ; c'est le contraire de sa propre maison, sa force s'inverse (0 %) ;
 - le double repos (deux figures liées par l'attaque, chacune chez elle, s'annulent) ;
 - les pôles (R1 = maison de repos de la figure de M1, R7 = R1 + 6) ;
@@ -60,32 +60,26 @@ Quand une famille dit « un seul pôle remplit ceci », le cas ne tranche pas si
 |---|---|---|---|
 | MF-1 | Même front | Pôles dans le même front, et l'antagoniste d'un seul pôle est dans sa propre maison de repos : cette figure au repos est décisive, ce pôle est dominé et l'autre gagne, même entre miroirs. | aucun |
 | MF-2 | Même front | Pôles dans le même front, moitiés différentes, et un seul pôle a son partenaire de moitié dans sa maison de repos : cette figure au repos est décisive, ce pôle gagne. | 1 juste |
-| MF-3 | Même front | **Le cas du nul.** Pôles dans le même front (miroirs compris), sans figure au repos décisive. Leur somme, la figure d'équilibre (4, 8 ou 12 ; 16 si les deux pôles sont la même figure), est en base dans une maison d'équilibre (M4, M8, M12, M16) ou sur l'axe angulaire (M1, M4, M7, M10) : nul. Nul aussi en cas d'égalité parfaite des deux pôles. | 3 justes |
+| MF-3 | Même front | **Le seul principe du nul : le front miroir.** R1 + R7 donne Tristitia (pôles miroirs, même front) et Tristitia est dans une maison de Terre (M4, M8, M12, M16), en base ou en résultante : nul. | 1 juste (13·6·6·15) |
 | MF-4 | Même front | Sans figure au repos décisive, et la figure d'équilibre n'est posée nulle part : le match se décide. Le pôle qui pèse le plus en base gagne ; à poids égal, le pôle le plus présent. | aucun |
 | PF-1 | Pôle sans force | Un seul des deux pôles est éteint (sa figure ne dépasse 1 % dans aucune position) : l’autre gagne. | 1 juste |
 | PF-2 | Pôle sans force | Un pôle attaque l’autre directement ; l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne à plus de 1 % : l’attaquant gagne. | 3 justes |
 | PF-3 | Pôle sans force | Un seul pôle est dans la maison de son antagoniste (0 %) sans être fort ailleurs en base (au moins 70 %) : l’autre gagne. | aucun |
 | AX-1 | Pôles sur l'axe | Les pôles sont en M4 et M10 (Albus en M1). M10 est la somme de M3 et M4 : le pôle de M4 engendre celui de M10. Le pôle de M4 gagne, sauf si le pôle de M10 l'attaque directement. | 2 justes (il est juste sur les 6 matchs réels avec Albus en M1 ; 4 sont tranchés avant lui par la famille « Pôle sans force ») |
-| RA-1 | Repos annulés | Le thème a des figures dans leur maison de repos, mais chacune est annulée (son attaquant est aussi au repos, ou il est deux fois en base hors positions à 1 % ou 0 %) : nul. | 1 juste |
 | PR-1 | Verrou de front | Deux figures du front d’un pôle sont en base, chacune dans sa maison de repos à 100 %, et l’autre pôle n’a pas de verrou : ce pôle gagne. | aucun |
 | PR-2 | Pôle et front au repos | Un seul pôle remplit ceci : il est chez lui en base, son antagoniste non ; son front direct est chez lui, l’antagoniste de ce front non ; les deux autres figures du front occupent des maisons paires. Ce pôle gagne. | aucun |
 | PR-3 | Attaquant en M8 | Un seul pôle remplit ceci : il attaque l’autre directement, il est en M8, et une autre figure de son front est en M4 ou M12. Ce pôle gagne. | aucun |
 | PR-4 | Pôle chez son antagoniste | Un pôle est dans la maison de son antagoniste direct, son front direct ou le front de son miroir est absent, et l’adversaire a une figure de son front en maison paire (M4 ou M12 si son front est Terre ou Eau) : l’adversaire gagne. | aucun |
 | PR-5 | Attaqué sans front direct | Un pôle attaque l’autre directement, et le pôle attaqué n’a pas son front direct dans le thème : le pôle attaqué perd. | aucun |
+| VA-1 | Victoire assurée | Boucles différentes. Un pôle a trois figures ou plus de son front ou du front binôme dans leur maison de repos (base ou résultante, hors annulées) et l'autre en a moins : victoire assurée. | 1 juste (2·12·4·4) |
 | CL-1 | Pôle chez lui | Pôles dans la même boucle, fronts différents. Un seul pôle est dans sa maison de repos (non annulé, pas un simple reflet de Populus) : il gagne. | 2 justes |
 | CL-2 | Pôle chez lui | Pôles dans des boucles différentes. On compare R1 et son binôme à R7 et son binôme : la paire qui a le plus de figures chez elles (sans les figures annulées ni les reflets) gagne. La victoire est « assurée » si une figure somme du vainqueur est sur l’axe angulaire en base, sans somme adverse sur l’axe ni somme égale à un pôle. | 3 justes |
 | PR-6 | Front Sud ou Nord au repos | Pôles dans la même boucle ou le même front. Un seul pôle a une figure Sud ou Nord de son front (autre que lui) dans sa maison de repos, reflets de Populus exclus : ce pôle gagne. | aucun |
-| TM-1 | Témoins | **Le cas du nul en boucles différentes.** Sans figure au repos décisive, les deux témoins (M13 et M14) sont deux figures différentes de la même boucle, donc du même camp : nul. Témoins partagés entre les deux camps, ou identiques : le match se décide. | 3 justes (le signal est juste sur les 15 matchs réels en boucles différentes) |
 | DR-1 | Dernier recours | La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne. | 1 juste |
-| DR-2 | Dernier recours | (Même boucle seulement.) La somme de l’axe angulaire ou la somme 3-5-11-15 est elle-même un pôle : le thème se referme sur ce pôle, nul. | 3 justes |
-| DR-3 | Dernier recours | (Même boucle seulement.) La somme au point D du cercle (M4 + M5) est le miroir d’un pôle : nul. | aucun |
-| DR-4 | Dernier recours | Pôles dans la même boucle, à six figures d’écart (l’un attaque une figure qui attaque l’autre) : nul. | aucun |
-| DR-5 | Dernier recours | Pôles dans la même boucle, et rien ne les a départagés : nul. | 1 juste, 1 faux (13·12·8·15) |
 | DR-6 | Dernier recours | Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne. | 1 juste |
 | DR-7 | Dernier recours | Boucles différentes, ancrages égaux. La somme au point B (M8 + M9) ou C (M12 + M13) est le miroir d’un seul pôle : ce pôle gagne. | aucun |
 | DR-8 | Dernier recours | Boucles différentes, ancrages égaux. Les signaux du cercle (pôle au bord d’un point, pôle en amont) désignent un seul pôle : il gagne. | aucun |
 | DR-9 | Dernier recours | Boucles différentes, témoins partagés ou identiques, et rien d'autre n'a désigné un pôle : celui qui pèse le plus en base gagne ; à poids égal, le plus présent. | aucun |
-| DR-10 | Dernier recours | Égalité parfaite des deux pôles et rien ne les départage : nul. | aucun |
 
 ## Les signaux
 
@@ -199,3 +193,8 @@ Quatre verdicts ont été donnés avant de connaître le résultat (trois matchs
 - `construire.js` : assemble l'atelier et le moteur dans `koun-1-complet.html`.
 - `tester.js` : test de bout en bout dans un navigateur.
 - `../archives/koun-1-v1.15.4.html` : l'atelier de départ, avec l'ancien moteur.
+
+
+## Intrusions et paralysies
+
+Une figure k posée en base dans la maison de la figure qu'elle attaque (k en M k+3) paralyse cette figure, où qu'elle soit dans le thème (`L.paralysies`). Exemple : Amissio en M9 paralyse Fortuna Minor. Le degré dépend de la position de la cible : **grave** si elle est dans une maison d'élément destructeur (sa force tombe à 0 %), sinon elle est **soutenue**. La résultante de l'intrus est toujours de front A ou C (voir `ANTAGONISE.md`). En M8 (Tristitia), la résultante d'une figure est son miroir.
