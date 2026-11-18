@@ -18,14 +18,13 @@ Provenances : **PROPRIETAIRE** (posé par vous) · **PORTE_3.0.0** (règle de vo
 | PF-2 | DEVELOPPEMENT | Attaque directe sur un pôle sans défense | 2/2 | 1/1 |
 | NU-2 | DEVELOPPEMENT | Nul : équilibre d'activation des deux parties, juge hors de son repos | 3/3 | 1/1 |
 | NU-3 | DEVELOPPEMENT | Nul : équilibre des affinités Feu-Air / Eau-Terre en base, juge hors de son repos | 2/3 | — |
-| FC-1 | DEVELOPPEMENT | Dernier principe de victoire, par le cercle des fronts B → A → D → C → B : force du front du pôle + force de son front binôme (protecteur) − force du front qui l'attaque (prédateur) − force de la figure antagoniste du pôle | 3/3 | 3/7 |
-| FP-1 | DEVELOPPEMENT | Mêmes forces de camps (cas des deux pôles de même front) : la somme des forces du pôle lui-même la plus haute gagne | — | 0/2 |
-
-| CC-1 | PROPRIETAIRE (provisoire) | Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle | aucun thème réel à égalité de forces | aucun |
+| FC-1 | DEVELOPPEMENT | Dernier principe de victoire, par le cercle des fronts B → A → D → C → B : force du front du pôle + force de son front binôme (protecteur) − force du front qui l'attaque (prédateur) − force de la figure antagoniste du pôle | 3/3 | 3/9 |
+| FP-1 | DEVELOPPEMENT | Mêmes forces de camps (cas des deux pôles de même front) : la somme des forces du pôle lui-même la plus haute gagne | — | — |
+| CC-1 | PROPRIETAIRE (provisoire) | Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle | aucun thème réel à égalité de forces | — |
 
 Abandonnés (ils ont échoué hors développement ou n'ont jamais été vérifiés) : PF-1, PF-3, MF-1, MF-4, PR-1 à PR-6, DR-1, DR-C, DR-6 à DR-9, ainsi que le contrôle de cohérence qui écartait des familles entières.
 
-**Résultat :** développement 24/27 (repère « toujours R1 » : 13/27) ; lot 1 : 9/14 (repère « toujours R1 » : 9/14, moteur à cas d'avant : 6/14). Les cinq principes spécifiques qui ont décidé le lot 1 sont tous justes (5/5) ; le dernier principe FC-1 fait 4/9 : c'est lui qui reste le plus faible.
+**Résultat :** développement 24/27 (repère « toujours R1 » : 13/27) ; lot 1 : 8/14 (repère « toujours R1 » : 8/14, moteur à cas d'avant : 6/14). Les cinq principes spécifiques qui ont décidé le lot 1 sont tous justes (5/5) ; le dernier principe FC-1 fait 3/9 : c'est lui qui reste le plus faible.
 
 ## Pénalité et carton rouge — PORTE_3.0.0, NON_TESTE
 - Rubeus en base dans une maison impaire, avec un front lié à un pôle : carton rouge pour ce camp.
@@ -46,7 +45,7 @@ Indice de friction (fronts Feu/Air en M1, M5, M7, M8, M12 ; Terre ; duel d'antag
 
 ## Over/Under 1,5 · 2,5 · 3,5 — PORTE_3.0.0
 Indice net = flux (circuit 3-5-11-13 et M10, juge, front A des pôles, deux marquent) moins 0,65 fois les verrous de Terre (M8, M12, juge). Seuils du propriétaire : 7 → Over 1,5 ; 9,5 → Over 2,5 ; 14,5 → Over 3,5.
-**Mesures avec le principe RY-1 (ci-dessous) : 1,5 : 24/26 (repère 24/26) · 2,5 : 23/26 (repère 23/26) · 3,5 : 18/26 (repère 17/26) ; sans lui : 23/26, 19/26, 10/26.**
+**Mesures avec les principes PS-1, RY-1 et RY-2 (ci-dessous) : 1,5 : 24/26 (repère 24/26) · 2,5 : 23/26 (repère 23/26) · 3,5 : 21/26 (repère 17/26).**
 Les 26 scores sont élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
 
 ## Ce que cette reconstruction n'est pas
@@ -64,7 +63,7 @@ Quand les forces des deux pôles sont égales, plus aucun thème n'est sans verd
 ## FC-1 : la force des camps par le cercle des fronts
 Les fronts circulent B → A → D → C → B : chaque front attaque le suivant, et le front binôme (A↔C, B↔D) protège le front, car le prédateur d'un front est le binôme de celui qu'il attaque. La force du camp d'un pôle = force de son front + force de son front binôme − force du front prédateur − force de la figure antagoniste du pôle ; la force d'un front est la somme des forces de toutes les positions de ses figures.
 Quand les deux pôles ont le même front, les camps sont identiques : le moteur compare alors la force des deux pôles (FP-1), puis le comptage des deux points par canal (CC-1).
-Mesures : développement 24/27, lot 1 9/14 (8/14 sans l'antagoniste du pôle). Les écarts entre variantes tiennent à un match.
+Mesures : développement 24/27, lot 1 8/14 (après la correction du score de Niger–Maroc). Les écarts entre variantes tiennent à un match.
 
 ## RY-1 : le rythme du thème Saturé donne l'Over (posé par le propriétaire)
 Le rythme du thème est celui de la cartographie des 4 canaux, avec le niveau d'activation en lignes à deux points : Ouvert, Fermé, Saturé, Contenu, Structuré, Percé (le moteur le calcule comme la page ; vérifié identique sur 676 thèmes). Quand le rythme est Saturé, le moteur annonce Over 1,5, Over 2,5 et Over 3,5 (au moins quatre buts dans le score prévu).

@@ -13,8 +13,8 @@
 - `node outils/embarquer.js` : réembarque `moteur3/moteur.js` dans la page `koun-moteur-3.0.0.html`.
 
 ## Lot 1 (14 thèmes, export du 18 novembre 2026)
-Évalué avant tout ajustement avec l'ancien moteur à cas : 6/14, contre 9/14 pour « toujours R1 » et 9/14 pour le 3.0.0 d'origine. Cet ancien moteur et ses couches ont été supprimés.
-Moteur 3 (table rase) : développement 24/27, lot 1 8/14 (« toujours R1 » : 13/27 et 9/14). Scores réels (`scores-reels.json`, 26 matchs) : Deux marquent 13/26, Over/Under 1,5 24/26, 2,5 20/26, 3,5 9/26, but en première mi-temps 5/6 ; corners, pénalité et carton non testés.
+Évalué avant tout ajustement avec l'ancien moteur à cas : 6/14, contre 9/14 pour « toujours R1 » et 9/14 pour le 3.0.0 d'origine (avec le score de Niger–Maroc saisi à l'époque, 5-0, corrigé depuis). Cet ancien moteur et ses couches ont été supprimés.
+Moteur 3 (table rase) : développement 24/27, lot 1 8/14 (« toujours R1 » : 13/27 et 8/14). Scores réels (`scores-reels.json`, 26 matchs) : Deux marquent 13/26, Over/Under 1,5 24/26, 2,5 23/26, 3,5 21/26 (« toujours Over » : 24, 23, 17), but en première mi-temps 5/6 ; corners, pénalité et carton non testés.
 
 ## Mesures sur résultats réels, victoires seulement
 | Mesure | 27 de développement | Lot 1 |
