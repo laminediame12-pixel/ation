@@ -2339,7 +2339,26 @@
   var NUL_CANAL = { id: 'CC-1', provenance: 'PROPRIETAIRE', provisoire: true,
     enonce: 'Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle. Principe provisoire, en attendant mieux.' };
 
+
+  // BM-1 : le binôme de M1 (la figure qui suit celle de M1 de deux numéros, même front binôme). Chez elle, dans sa maison de repos, elle « a juré » ; dans son canal (une maison de même rang que sa maison de repos) elle est « acceptée ».
+  // Binôme de M1 juré ou accepté, en base ou en résultante : R7 ne gagne pas (le verdict R7 devient R1).
+  function binomeM1(L) {
+    var f = fig(num(L.maisons[0].base) + 2), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
+    var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
+    return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
+  }
+  var BINOME_M1 = { id: 'BM-1', provenance: 'DEVELOPPEMENT', enonce: 'Le binôme de M1 (figure qui suit celle de M1 de deux numéros) est chez elle (elle a juré) ou dans son canal (elle est acceptée), en base ou en résultante : R7 ne gagne pas ; un verdict R7 devient R1.' };
   function verdict(L) {
+    var r0 = verdictBrut(L), bm = binomeM1(L);
+    if (r0.verdict === '2' && bm.accepte) {
+      var r = {}; for (var k in r0) r[k] = r0[k];
+      r.verdict = '1'; r.principeInitial = r0.principe; r.principe = BINOME_M1.id; r.provenance = BINOME_M1.provenance; r.enonce = BINOME_M1.enonce; r.titre = 'Le binôme de M1 est accepté';
+      r.raison = 'Victoire R1 : le binôme de M1, ' + bm.figure + ', ' + (bm.chezElle ? 'a juré (elle est dans sa maison de repos M' + bm.numero + ')' : 'est acceptée (elle est dans son canal)') + ' (' + bm.emplacements.join(', ') + '), donc R7 ne gagne pas. Sans ce principe, ' + r0.principe + ' donnait R7.';
+      r.assuree = false; return r;
+    }
+    return r0;
+  }
+  function verdictBrut(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
       var p = PRINCIPES_VERDICT[i], r = p.cas.condition(L);
       if (r) return { verdict: r.verdict, principe: p.id, provenance: p.provenance, enonce: p.enonce, raison: r.raison, assuree: !!r.assuree, titre: p.cas.titre };
@@ -2558,7 +2577,7 @@
     out.lignes = { deuxMarquent: { a: bA.deuxMarquent.oui, b: bB.deuxMarquent.oui, accord: bA.deuxMarquent.oui === bB.deuxMarquent.oui }, over15: { accord: bA.overUnder.over15 === bB.overUnder.over15 }, over25: { accord: bA.overUnder.over25 === bB.overUnder.over25 }, over35: { accord: bA.overUnder.over35 === bB.overUnder.over35 } };
     return out;
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, binomeM1: binomeM1, BINOME_M1: BINOME_M1, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

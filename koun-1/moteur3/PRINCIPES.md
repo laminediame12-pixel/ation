@@ -19,12 +19,13 @@ Provenances : **PROPRIETAIRE** (posé par vous) · **PORTE_3.0.0** (règle de vo
 | NU-2 | DEVELOPPEMENT | Nul : équilibre d'activation des deux parties, juge hors de son repos | 3/3 | 1/1 |
 | NU-3 | DEVELOPPEMENT | Nul : équilibre des affinités Feu-Air / Eau-Terre en base, juge hors de son repos | 2/3 | — |
 | FC-2 | DEVELOPPEMENT | Dernier principe de victoire, par les portes du cercle des fronts B → A → D → C → B : figures du front du pôle placées chez sa proie ou chez son front binôme (protecteur) moins celles placées chez le front prédateur, en base et en résultante | 1/3 | 7/7 |
+| BM-1 | DEVELOPPEMENT | Binôme de M1 chez elle (a juré) ou dans son canal (acceptée), en base ou en résultante : R7 ne gagne pas, un verdict R7 devient R1 (appliqué après tous les autres principes) | 1/1 | — |
 | FP-1 | DEVELOPPEMENT | Mêmes forces de camps (cas des deux pôles de même front) : la somme des forces du pôle lui-même la plus haute gagne | — | — |
 | CC-1 | PROPRIETAIRE (provisoire) | Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle | aucun thème réel à égalité de forces | — |
 
 Abandonnés (ils ont échoué hors développement ou n'ont jamais été vérifiés) : PF-1, PF-3, MF-1, MF-4, PR-1 à PR-6, DR-1, DR-C, DR-6 à DR-9, ainsi que le contrôle de cohérence qui écartait des familles entières.
 
-**Résultat :** développement 22/27 (repère « toujours R1 » : 13/27) ; lot 1 : 12/14 (repère « toujours R1 » : 8/14). Attention : FC-2 a été retenu parmi une quinzaine de lectures essayées sur ces mêmes 41 thèmes ; ce n'est donc pas une validation. Il faut un lot neuf. Ancien FC-1 (force des fronts) : 24/27 et 8/14, supprimé.
+**Résultat :** développement 23/27 (repère « toujours R1 » : 13/27) ; lot 1 : 12/14 (repère « toujours R1 » : 8/14). Attention : FC-2 a été retenu parmi une quinzaine de lectures essayées sur ces mêmes 41 thèmes ; ce n'est donc pas une validation. Il faut un lot neuf. Ancien FC-1 (force des fronts) : 24/27 et 8/14, supprimé.
 
 ## Pénalité et carton rouge — PORTE_3.0.0, NON_TESTE
 - Rubeus en base dans une maison impaire, avec un front lié à un pôle : carton rouge pour ce camp.
@@ -93,3 +94,8 @@ Deux thèmes lus avec le même repère (R1 = équipe 1) peuvent se contredire. A
 3. À rang égal, la marge du principe ; égalité complète : nul.
 Le score et les lignes de buts sont ceux du thème retenu ; la page affiche l'accord ou le désaccord sur Deux marquent et Over/Under 1,5 / 2,5 / 3,5, ainsi que la position de la somme de l'axe de chaque thème.
 Origine du critère 1 : le match 1-15-3-9 / 1-9-8-1 (réel 1-4). Le thème juste (1-9-8-1) a la somme en M10, le faux (1-15-3-9) l'a en M9. Le critère a donc été posé à partir de ce match, qui ne valide plus rien : il devient développement. Sur les 43 thèmes, le moteur n'est pas plus juste quand la somme est en maison angulaire (74 % contre 90 % avec l'axe complet, 86 % contre 76 % avec les maisons 1, 4, 7, 10 en base ou en résultante, version retenue) : un lot neuf de matchs à deux thèmes est nécessaire.
+
+## BM-1 : le binôme de M1, son emplacement (posé par le propriétaire)
+Le binôme de M1 est la figure qui suit celle de M1 de deux numéros (Puer → Caput). Quand une figure est dans sa maison de repos, elle « a juré » ; quand elle est dans son canal (une maison de même rang que sa maison de repos : M3, M7, M11, M15 pour Caput), elle est « acceptée ». Binôme juré ou accepté, en base ou en résultante : R7 ne gagne pas.
+Mesure sur les 41 thèmes de référence : binôme juré ou accepté dans 17 thèmes (16 thèmes distincts, 2-9-6-5 figure dans les deux jeux) : R1 gagne 11 fois, nul 6 fois, **R7 jamais**. Hors de son canal (24 thèmes) : R1 10, R7 11, nul 3. Probabilité de 0 victoire R7 sur 17 si le taux était celui du reste (46 %) : environ 3 sur 100 000. Le moteur seul se trompait une fois sur ces 17 (8-5-11-7, FC-2 donnait R7, réel R1) : BM-1 le corrige, développement 22/27 → 23/27, lot 1 inchangé à 12/14.
+Réserves : seulement 3 définitions du binôme ont été comparées, mais la règle a été choisie en regardant ces 41 thèmes, et les deux thèmes du match 1-15-3-9 / 1-9-8-1 sont du développement. Le principe agit sur 40 % des combinaisons de mères (26 452 sur 65 536) et fait passer 4 392 verdicts R7 en R1. Il faut un lot neuf pour le valider.

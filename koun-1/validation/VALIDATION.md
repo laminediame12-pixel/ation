@@ -14,7 +14,7 @@
 
 ## Lot 1 (14 thèmes, export du 18 novembre 2026)
 Évalué avant tout ajustement avec l'ancien moteur à cas : 6/14, contre 9/14 pour « toujours R1 » et 9/14 pour le 3.0.0 d'origine (avec le score de Niger–Maroc saisi à l'époque, 5-0, corrigé depuis). Cet ancien moteur et ses couches ont été supprimés.
-Moteur 3 (table rase, FC-2 : portes du cercle) : développement 22/27, lot 1 12/14 (retenu après une quinzaine de variantes essayées sur ces mêmes thèmes, donc à valider sur un lot neuf ; avec l'ancien FC-1 : 24/27 et 8/14) (« toujours R1 » : 13/27 et 8/14). Scores réels (`scores-reels.json`, 26 matchs) : Deux marquent 13/26, Over/Under 1,5 24/26, 2,5 23/26, 3,5 21/26 (« toujours Over » : 24, 23, 17), but en première mi-temps 5/6 ; corners, pénalité et carton non testés.
+Moteur 3 (table rase, FC-2 : portes du cercle) : développement 23/27 avec BM-1, lot 1 12/14 (retenu après une quinzaine de variantes essayées sur ces mêmes thèmes, donc à valider sur un lot neuf ; avec l'ancien FC-1 : 24/27 et 8/14) (« toujours R1 » : 13/27 et 8/14). Scores réels (`scores-reels.json`, 26 matchs) : Deux marquent 13/26, Over/Under 1,5 24/26, 2,5 23/26, 3,5 21/26 (« toujours Over » : 24, 23, 17), but en première mi-temps 5/6 ; corners, pénalité et carton non testés.
 
 ## Mesures sur résultats réels, victoires seulement
 | Mesure | 27 de développement | Lot 1 |
