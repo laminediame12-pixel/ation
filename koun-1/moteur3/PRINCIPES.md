@@ -18,13 +18,13 @@ Provenances : **PROPRIETAIRE** (posé par vous) · **PORTE_3.0.0** (règle de vo
 | PF-2 | DEVELOPPEMENT | Attaque directe sur un pôle sans défense | 2/2 | 1/1 |
 | NU-2 | DEVELOPPEMENT | Nul : équilibre d'activation des deux parties, juge hors de son repos | 3/3 | 1/1 |
 | NU-3 | DEVELOPPEMENT | Nul : équilibre des affinités Feu-Air / Eau-Terre en base, juge hors de son repos | 2/3 | — |
-| FP-1 | DEVELOPPEMENT | Dernier principe : la somme des forces des positions du pôle la plus haute gagne | 3/3 | 3/9 |
+| FC-1 | DEVELOPPEMENT | Dernier principe de victoire : force du camp = force du pôle et de son front + force de son front binôme − force de son antagoniste ; le camp le plus fort gagne | 3/3 | 4/9 |
 
 | CC-1 | PROPRIETAIRE (provisoire) | Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle | aucun thème réel à égalité de forces | aucun |
 
 Abandonnés (ils ont échoué hors développement ou n'ont jamais été vérifiés) : PF-1, PF-3, MF-1, MF-4, PR-1 à PR-6, DR-1, DR-C, DR-6 à DR-9, ainsi que le contrôle de cohérence qui écartait des familles entières.
 
-**Résultat :** développement 24/27 (repère « toujours R1 » : 13/27) ; lot 1 : 8/14 (repère « toujours R1 » : 9/14, moteur 2 d'avant : 6/14). Les cinq principes non-fallback qui ont décidé le lot 1 sont tous justes (5/5) ; le dernier principe FP-1 fait 3/9 : c'est lui qu'il faut remplacer.
+**Résultat :** développement 24/27 (repère « toujours R1 » : 13/27) ; lot 1 : 9/14 (repère « toujours R1 » : 9/14, moteur à cas d'avant : 6/14). Les cinq principes spécifiques qui ont décidé le lot 1 sont tous justes (5/5) ; le dernier principe FC-1 fait 4/9 : c'est lui qui reste le plus faible.
 
 ## Pénalité et carton rouge — PORTE_3.0.0, NON_TESTE
 - Rubeus en base dans une maison impaire, avec un front lié à un pôle : carton rouge pour ce camp.
@@ -49,7 +49,7 @@ Indice net = flux (circuit 3-5-11-13 et M10, juge, front A des pôles, deux marq
 Les 26 scores sont très élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
 
 ## Ce que cette reconstruction n'est pas
-- Les principes de victoire reconstruits ne sont pas prouvés : ils sont réunis et classés par provenance et par résultats réels. Le dernier principe (FP-1) est le plus faible et décide encore 9 des 14 thèmes du lot 1.
+- Les principes de victoire reconstruits ne sont pas prouvés : ils sont réunis et classés par provenance et par résultats réels. Le dernier principe (FC-1) est le plus faible et décide encore 9 des 14 thèmes du lot 1.
 - Les sorties de buts, de corners et de pénalité reprennent vos règles du 3.0.0 : elles ne sont pas validées, sauf là où les mesures sont données ci-dessus.
 
 ## Dans la page koun-moteur-3.0.0.html
@@ -59,3 +59,6 @@ Les 26 scores sont très élevés (18 matchs sur 26 au-dessus de 3,5) : les seui
 
 ## Égalité des forces (CC-1)
 Quand les forces des deux pôles sont égales, plus aucun thème n'est sans verdict : CC-1 tranche (sur les 65 536 combinaisons de mères : 3 928 thèmes, dont 591 nuls). C'est un principe provisoire posé par le propriétaire ; aucun des 41 matchs réels connus n'est à égalité de forces, donc il n'a aucune mesure réelle.
+
+## FC-1 : la force des camps (remplace FP-1)
+FP-1 ne comptait que la figure du pôle. FC-1 compte le camp : le pôle et les figures de son front, les figures de son front binôme, moins la force de son antagoniste. Mesures sur les victoires seulement, comparées au pôle seul : développement 11/19 contre 15/19, lot 1 6/13 contre 6/13. Pris isolément il n'est donc pas meilleur ; dans le moteur, comme dernier principe, il fait 3/3 en développement et 4/9 sur le lot 1 (3/9 avec le pôle seul). Choix demandé par le propriétaire.
