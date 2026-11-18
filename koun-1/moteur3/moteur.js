@@ -511,7 +511,7 @@
   function buts(L, v) {
     var sansVerdict = v === null || v === undefined;
     if (sansVerdict) v = '1';
-    var sov = somme(L, [3, 5, 11, 13]), conv = K.additionner(sov, L.maisons[9].base), juge = L.maisons[14].base;
+    var sov = somme(L, [1, 3, 5, 11, 13]), conv = K.additionner(sov, L.maisons[9].base), juge = L.maisons[14].base;
     var fr1 = [L.maisons[L.R1.maison - 1].base, res(L, L.R1.maison)].map(front), fr7 = [L.maisons[L.R7.maison - 1].base, res(L, L.R7.maison)].map(front);
     // deux marquent : les deux camps peuvent marquer et au moins une figure de boucle impaire donne l'élan
     var elan = [L.maisons[L.R1.maison - 1].base, res(L, L.R1.maison), L.maisons[L.R7.maison - 1].base, res(L, L.R7.maison), juge].some(impair);

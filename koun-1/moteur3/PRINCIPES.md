@@ -44,7 +44,7 @@ Somme M1+M5+M12+M15 : le but a lieu si elle est de boucle impaire et présente, 
 Indice de friction (fronts Feu/Air en M1, M5, M7, M8, M12 ; Terre ; duel d'antagonistes ; verrou de Terre sous forte attaque) : 10,5 Over 3.5 ; 13,5 Over 4.5 ; sinon Under 4.5. Aucune donnée de corners.
 
 ## Over/Under 1,5 · 2,5 · 3,5 — PORTE_3.0.0
-Indice net = flux (circuit 3-5-11-13 et M10, juge, front A des pôles, deux marquent) moins 0,65 fois les verrous de Terre (M8, M12, juge). Seuils du propriétaire : 7 → Over 1,5 ; 9,5 → Over 2,5 ; 14,5 → Over 3,5.
+Indice net = flux (circuit 1-3-5-11-13 (M1 ajoutée par le propriétaire) et M10, juge, front A des pôles, deux marquent) moins 0,65 fois les verrous de Terre (M8, M12, juge). Seuils du propriétaire : 7 → Over 1,5 ; 9,5 → Over 2,5 ; 14,5 → Over 3,5.
 **Mesures avec les principes PS-1, RY-1 et RY-2 (ci-dessous) : 1,5 : 24/26 (repère 24/26) · 2,5 : 23/26 (repère 23/26) · 3,5 : 21/26 (repère 17/26).**
 Les 26 scores sont élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
 
