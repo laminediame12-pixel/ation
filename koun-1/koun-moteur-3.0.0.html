@@ -2462,6 +2462,9 @@
     // Rythme du thème Saturé : au-dessus de 1,5, de 2,5 et de 3,5 buts (principe du propriétaire RY-1), donc au moins quatre buts
     var ry = rythme(L), saturé = ry.regime === 'Saturé';
     if (saturé && total < 4) total = 4;
+    // Rythme du thème Fermé : pas plus de Over 2,5 (principe du propriétaire RY-2), donc au plus trois buts (deux pour un nul)
+    var fermé = ry.regime === 'Fermé';
+    if (fermé && total > (nul ? 2 : 3)) total = nul ? 2 : 3;
     var g1, g2;
     if (nul) { g1 = g2 = total / 2; }
     else {
@@ -2490,7 +2493,7 @@
     var sortie = {
       deuxMarquent: { oui: bttsFinal, brut: btts, pole1PeutMarquer: p1, pole7PeutMarquer: p7, elan: elan, provenance: 'PORTE_3.0.0 (seuil de 50 %), reconstruit sur les forces de la structure', teste: 'testé sur 26 scores réels' },
       score: g1 + ' - ' + g2, g1: g1, g2: g2, total: T,
-      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, rythme: ry.regime, rythmeSature: saturé, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
+      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, rythme: ry.regime, rythmeSature: saturé, rythmeFerme: fermé, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
       butsMT1: { oui: T > 0 && htBut, libelle: mt, somme: bm, provenance: 'PORTE_3.0.0 (ButMT M1+M5+M12+M15)', teste: 'testé sur 6 matchs avec mi-temps connue' },
       corners: { libelle: corners, friction: fric, provenance: 'PORTE_3.0.0 (indice de friction)', teste: 'NON_TESTE (aucun résultat de corners dans les données)' }
     };
@@ -3238,7 +3241,7 @@
  // Ligne 6 : Over / Under 1,5 · 2,5 · 3,5
  const ou = b.overUnder;
  document.getElementById("overUnderTag").textContent = ou.over35 ? "Over 3.5" : ou.over25 ? "Over 2.5" : ou.over15 ? "Over 1.5" : "Under 1.5";
- document.getElementById("overUnderDetailSub").textContent = `1,5 : ${ou.over15 ? "Over" : "Under"} · 2,5 : ${ou.over25 ? "Over" : "Under"} · 3,5 : ${ou.over35 ? "Over" : "Under"} · indice net ${ou.indiceNet} · rythme ${ou.rythme}${ou.rythmeSature ? " (RY-1 : Over 1,5, 2,5 et 3,5)" : ""}`;
+ document.getElementById("overUnderDetailSub").textContent = `1,5 : ${ou.over15 ? "Over" : "Under"} · 2,5 : ${ou.over25 ? "Over" : "Under"} · 3,5 : ${ou.over35 ? "Over" : "Under"} · indice net ${ou.indiceNet} · rythme ${ou.rythme}${ou.rythmeSature ? " (RY-1 : Over 1,5, 2,5 et 3,5)" : (ou.rythmeFerme ? " (RY-2 : pas plus de Over 2,5)" : "")}`;
 
  // Détails : les principes, dans l'ordre, avec ce qu'ils disent sur ce thème
  const lignesPrincipes = KOUN3.PRINCIPES_VERDICT.map(pr => {
