@@ -957,9 +957,9 @@
  color: #22c55e;
  }
  .res-sub-box .dot {
- background-color: #cbd5e1;
- width: 5.5px;
- height: 5.5px;
+ background-color: #f8fafc;
+ width: 6.5px;
+ height: 6.5px;
  }
  .res-sub-box.res-is-green .dot {
  background-color: #22c55e;
@@ -4212,15 +4212,16 @@
  const t1 = escapeHTML(nom1);
  const t2 = escapeHTML(nom2);
 
- let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="900" height="700" font-family="Arial, Helvetica, sans-serif">`;
- svgContent += `<rect width="900" height="700" fill="#090e1a"/>`;
+ const H = showRes ? 815 : 700;
+ let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 ${H}" width="900" height="${H}" font-family="Arial, Helvetica, sans-serif">`;
+ svgContent += `<rect width="900" height="${H}" fill="#090e1a"/>`;
  svgContent += `<text x="450" y="40" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="800">BOUCLIER GÉOMANTIQUE — ${escapeHTML(nom1.toUpperCase())} vs ${escapeHTML(nom2.toUpperCase())}</text>`;
 
  const rowsConfig = [
- { houses: [8, 7, 6, 5, 4, 3, 2, 1], y: 110, spacing: 100, startX: 90 },
- { houses: [12, 11, 10, 9], y: 260, spacing: 195, startX: 165 },
- { houses: [14, 13], y: 410, spacing: 380, startX: 260 },
- { houses: [15, 16], y: 560, spacing: 380, startX: 260 }
+ { houses: [8, 7, 6, 5, 4, 3, 2, 1], y: showRes ? 70 : 110, spacing: 100, startX: 90 },
+ { houses: [12, 11, 10, 9], y: showRes ? 255 : 260, spacing: 195, startX: 165 },
+ { houses: [14, 13], y: showRes ? 440 : 410, spacing: 380, startX: 260 },
+ { houses: [15, 16], y: showRes ? 625 : 560, spacing: 380, startX: 260 }
  ];
 
  rowsConfig.forEach(row => {
@@ -4236,7 +4237,7 @@
  let strokeCol = isR1 ? "#3b82f6" : (isR7 ? "#ef4444" : (isRest ? "#22c55e" : "#2c3b59"));
  let strokeW = (isR1 || isR7) ? "3" : "1.5";
  let bgCol = isR1 ? "rgba(30,58,138,0.4)" : (isR7 ? "rgba(127,29,29,0.4)" : "#131c2e");
- const tileHeight = showRes ? 125 : 95;
+ const tileHeight = showRes ? 172 : 95;
 
  svgContent += `<rect x="${x}" y="${y}" width="82" height="${tileHeight}" rx="8" fill="${bgCol}" stroke="${strokeCol}" stroke-width="${strokeW}"/>`;
  svgContent += `<text x="${x + 41}" y="${y + 20}" text-anchor="middle" fill="${isR1 ? '#60a5fa' : (isR7 ? '#f87171' : '#cbd5e1')}" font-size="11" font-weight="800">M${h} • ${fig.num}${isR1 ? ' [R1]' : (isR7 ? ' [R7]' : '')}</text>`;
@@ -4252,8 +4253,21 @@
  });
 
  if (showRes) {
- svgContent += `<line x1="${x + 8}" y1="${y + 88}" x2="${x + 74}" y2="${y + 88}" stroke="#334155" stroke-dasharray="2,2"/>`;
- svgContent += `<text x="${x + 41}" y="${y + 104}" text-anchor="middle" fill="#2dd4bf" font-size="${resFig.name.length > 11 ? 7.5 : 9}" font-weight="700">Res ${resFig.num} (${resFig.name})</text>`;
+ // la résultante est dessinée comme la base : mêmes points ; verte et encadrée quand elle est dans sa maison de repos
+ const resRest = resFig.dom.includes(h);
+ const dotCol = resRest ? "#22c55e" : "#f8fafc";
+ if (resRest) svgContent += `<rect x="${x + 5}" y="${y + 92}" width="72" height="74" rx="5" fill="rgba(34,197,94,0.12)" stroke="#22c55e" stroke-width="1"/>`;
+ else svgContent += `<line x1="${x + 8}" y1="${y + 88}" x2="${x + 74}" y2="${y + 88}" stroke="#334155" stroke-dasharray="2,2"/>`;
+ svgContent += `<text x="${x + 41}" y="${y + 105}" text-anchor="middle" fill="${resRest ? '#22c55e' : '#94a3b8'}" font-size="9" font-weight="700">${h} • Res ${resFig.num}</text>`;
+ resFig.vec.forEach((b, lIdx) => {
+ const py = y + 118 + lIdx * 12;
+ if (b === 1) {
+ svgContent += `<circle cx="${x + 41}" cy="${py}" r="3" fill="${dotCol}"/>`;
+ } else {
+ svgContent += `<circle cx="${x + 32}" cy="${py}" r="3" fill="${dotCol}"/>`;
+ svgContent += `<circle cx="${x + 50}" cy="${py}" r="3" fill="${dotCol}"/>`;
+ }
+ });
  }
  });
  });
@@ -4262,7 +4276,7 @@
 
  const canvas = document.createElement("canvas");
  canvas.width = 900;
- canvas.height = 700;
+ canvas.height = H;
  const ctx = canvas.getContext("2d");
  ctx.fillStyle = "#090e1a";
  ctx.fillRect(0, 0, canvas.width, canvas.height);
