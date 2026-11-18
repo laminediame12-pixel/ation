@@ -20,6 +20,8 @@ Provenances : **PROPRIETAIRE** (posé par vous) · **PORTE_3.0.0** (règle de vo
 | NU-3 | DEVELOPPEMENT | Nul : équilibre des affinités Feu-Air / Eau-Terre en base, juge hors de son repos | 2/3 | — |
 | FP-1 | DEVELOPPEMENT | Dernier principe : la somme des forces des positions du pôle la plus haute gagne | 3/3 | 3/9 |
 
+| CC-1 | PROPRIETAIRE (provisoire) | Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle | aucun thème réel à égalité de forces | aucun |
+
 Abandonnés (ils ont échoué hors développement ou n'ont jamais été vérifiés) : PF-1, PF-3, MF-1, MF-4, PR-1 à PR-6, DR-1, DR-C, DR-6 à DR-9, ainsi que le contrôle de cohérence qui écartait des familles entières.
 
 **Résultat :** développement 24/27 (repère « toujours R1 » : 13/27) ; lot 1 : 8/14 (repère « toujours R1 » : 9/14, moteur 2 d'avant : 6/14). Les cinq principes non-fallback qui ont décidé le lot 1 sont tous justes (5/5) ; le dernier principe FP-1 fait 3/9 : c'est lui qu'il faut remplacer.
@@ -54,3 +56,6 @@ Les 26 scores sont très élevés (18 matchs sur 26 au-dessus de 3,5) : les seui
 - Une seule couche de moteur : le Moteur 3. Le moteur 2 n'y est plus embarqué.
 - Supprimés de la page : les fonctions de décision du 3.0.0 (PrincipeUniqueDuWin, Nul, Pénalité, calcul des buts et corners, impact stratégique des pôles, dualité des cercles, résonance des maisons Terre, structure du nul par parties) et l'ancienne `computeVerdict` (1 370 lignes environ).
 - Restent, en lecture seule et sans rôle dans le verdict : la pyramide (paralysies réciproques, mutation des maisons), l'inspecteur de maison, la cartographie des canaux (rôles d'activation, trajets de flux), le cercle des fronts et les calculateurs de somme.
+
+## Égalité des forces (CC-1)
+Quand les forces des deux pôles sont égales, plus aucun thème n'est sans verdict : CC-1 tranche (sur les 65 536 combinaisons de mères : 3 928 thèmes, dont 591 nuls). C'est un principe provisoire posé par le propriétaire ; aucun des 41 matchs réels connus n'est à égalité de forces, donc il n'a aucune mesure réelle.

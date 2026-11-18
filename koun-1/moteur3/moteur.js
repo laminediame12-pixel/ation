@@ -373,13 +373,33 @@
   }
   var FORCE_POLES = { id: 'FP-1', provenance: 'DEVELOPPEMENT', enonce: 'Le pôle dont la somme des forces (toutes ses positions, base et résultante) est la plus haute gagne ; égalité : pas de verdict.' };
 
+  // Comptage des niveaux d'activation par deux, au niveau des canaux : nombre de lignes à deux points dans les quatre résultantes des maisons d'un canal
+  // (une ligne à deux points = la figure et la figure de repos de la maison s'accordent sur ce niveau). En M16, sans résultante, la base.
+  function concordanceCanal(L, lettre) {
+    var t = 0;
+    for (var h = 1; h <= 16; h++) {
+      if (FRONTS[(h - 1) % 4] !== lettre) continue;
+      var m = L.maisons[h - 1];
+      POINTS[m.resultante || m.base].forEach(function (v) { if (v === 2) t++; });
+    }
+    return t;
+  }
+  var NUL_CANAL = { id: 'CC-1', provenance: 'PROPRIETAIRE', provisoire: true,
+    enonce: 'Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle. Principe provisoire, en attendant mieux.' };
+
   function verdict(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
       var p = PRINCIPES_VERDICT[i], r = p.cas.condition(L);
       if (r) return { verdict: r.verdict, principe: p.id, provenance: p.provenance, enonce: p.enonce, raison: r.raison, assuree: !!r.assuree, titre: p.cas.titre };
     }
     var a = sommeForces(L, 'R1'), b = sommeForces(L, 'R7');
-    if (a === b) return { verdict: null, principe: null, provenance: null, enonce: 'Aucun principe ne tranche.', raison: 'Aucun principe ne s’applique et les forces des pôles sont égales.', assuree: false };
+    if (a === b) {
+      var ca = concordanceCanal(L, canalDuPole(L.R1)), cb = concordanceCanal(L, canalDuPole(L.R7)), c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7);
+      var base = 'Les forces des deux pôles sont égales (' + a + '). Canal ' + c1 + ' de R1 (M' + L.R1.maison + ') : ' + ca + ' lignes à deux points ; canal ' + c7 + ' de R7 (M' + L.R7.maison + ') : ' + cb + '.';
+      if (ca === cb) return { verdict: 'N', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le nul par le comptage des deux points des canaux', raison: 'Nul : ' + base + ' Les deux canaux sont à égalité.', assuree: false, provisoire: true };
+      var gc = ca > cb ? 'R1' : 'R7';
+      return { verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
+    }
     var g = a > b ? 'R1' : 'R7';
     return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'La force des pôles',
       raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. La somme des forces de ' + L[g].figure + ' (' + Math.max(a, b) + ') dépasse celle de l’autre pôle (' + Math.min(a, b) + ').', assuree: false };
@@ -493,7 +513,7 @@
     var L = K.lire(theme), v = verdict(L);
     return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict) };
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
