@@ -849,6 +849,11 @@ table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px soli
       if (L.sentencePole) nulFaibles.push('M16 porte le pôle ' + L.sentencePole);
       if (!axePole && L.sommes[0].pole === 'R7') nulFaibles.push('la somme de l’axe angulaire est le pôle R7');
       function camp(nom, c) { if (!c) return; (c === g ? pour : contre).push(nom + ' pour ' + c); }
+      // Un pôle posé en base dans la maison de la figure qu'il attaque (k en M k+3) donne une résultante A ou C : 6 matchs réels sur 6 (tous côté R7), il ne gagne pas (4 défaites, 2 nuls).
+      ['R1', 'R7'].forEach(function (c) {
+        var p = num(L[c].figure), h = ((p + 2) % 16) + 1;
+        if (num(L.maisons[h - 1].base) === p && c === g) contre.push('le pôle ' + c + ' est posé en M' + h + ', la maison de la figure qu’il attaque (résultante ' + L.maisons[h - 1].resultante + ' ; ce pôle n’a gagné aucun des 6 matchs réels où cela s’est vu)');
+      });
       if (g) {
         m.signaux12.forEach(function (x) { pour.push('pas de nul : ' + x); });
         nulFiables.forEach(function (x) { contre.push('vers le nul : ' + x); });
