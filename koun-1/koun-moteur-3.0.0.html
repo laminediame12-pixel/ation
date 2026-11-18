@@ -4185,13 +4185,19 @@
  const img = new Image();
  const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
  const url = URL.createObjectURL(svgBlob);
+ img.onerror = function() {
+ URL.revokeObjectURL(url);
+ alert("Le téléchargement du cercle a échoué : l'image n'a pas pu être construite.");
+ };
  img.onload = function() {
  ctx.drawImage(img, 0, 0, 1760, 1240);
  URL.revokeObjectURL(url);
  const a = document.createElement("a");
  a.download = "cercle_des_fronts_koun.png";
  a.href = canvas.toDataURL("image/png");
+ document.body.appendChild(a);
  a.click();
+ document.body.removeChild(a);
  };
  img.src = url;
  }
@@ -4201,12 +4207,14 @@
  const R = currentResultantes;
  const showRes = document.getElementById("showResultantes").checked;
  const { r1House, r7House } = getR1R7Houses(M);
- const t1 = escapeHTML(document.getElementById("team1Input").value || "Équipe 1");
- const t2 = escapeHTML(document.getElementById("team2Input").value || "Équipe 2");
+ const nom1 = document.getElementById("team1Input").value || "Équipe 1";
+ const nom2 = document.getElementById("team2Input").value || "Équipe 2";
+ const t1 = escapeHTML(nom1);
+ const t2 = escapeHTML(nom2);
 
  let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="900" height="700" font-family="Arial, Helvetica, sans-serif">`;
  svgContent += `<rect width="900" height="700" fill="#090e1a"/>`;
- svgContent += `<text x="450" y="40" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="800">BOUCLIER GÉOMANTIQUE — ${t1.toUpperCase()} vs ${t2.toUpperCase()}</text>`;
+ svgContent += `<text x="450" y="40" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="800">BOUCLIER GÉOMANTIQUE — ${escapeHTML(nom1.toUpperCase())} vs ${escapeHTML(nom2.toUpperCase())}</text>`;
 
  const rowsConfig = [
  { houses: [8, 7, 6, 5, 4, 3, 2, 1], y: 110, spacing: 100, startX: 90 },
@@ -4231,7 +4239,7 @@
  const tileHeight = showRes ? 125 : 95;
 
  svgContent += `<rect x="${x}" y="${y}" width="82" height="${tileHeight}" rx="8" fill="${bgCol}" stroke="${strokeCol}" stroke-width="${strokeW}"/>`;
- svgContent += `<text x="${x + 41}" y="${y + 20}" text-anchor="middle" fill="${isR1 ? '#60a5fa' : (isR7 ? '#f87171' : '#cbd5e1')}" font-size="11" font-weight="800">M${h} &bull; ${fig.num}${isR1 ? ' [R1]' : (isR7 ? ' [R7]' : '')}</text>`;
+ svgContent += `<text x="${x + 41}" y="${y + 20}" text-anchor="middle" fill="${isR1 ? '#60a5fa' : (isR7 ? '#f87171' : '#cbd5e1')}" font-size="11" font-weight="800">M${h} • ${fig.num}${isR1 ? ' [R1]' : (isR7 ? ' [R7]' : '')}</text>`;
 
  fig.vec.forEach((b, lIdx) => {
  const py = y + 36 + lIdx * 12;
@@ -4245,7 +4253,7 @@
 
  if (showRes) {
  svgContent += `<line x1="${x + 8}" y1="${y + 88}" x2="${x + 74}" y2="${y + 88}" stroke="#334155" stroke-dasharray="2,2"/>`;
- svgContent += `<text x="${x + 41}" y="${y + 104}" text-anchor="middle" fill="#2dd4bf" font-size="9.5" font-weight="700">Res ${resFig.num} (${resFig.name})</text>`;
+ svgContent += `<text x="${x + 41}" y="${y + 104}" text-anchor="middle" fill="#2dd4bf" font-size="${resFig.name.length > 11 ? 7.5 : 9}" font-weight="700">Res ${resFig.num} (${resFig.name})</text>`;
  }
  });
  });
@@ -4262,13 +4270,19 @@
  const img = new Image();
  const svgBlob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
  const url = URL.createObjectURL(svgBlob);
+ img.onerror = function() {
+ URL.revokeObjectURL(url);
+ alert("Le téléchargement de la pyramide a échoué : l'image n'a pas pu être construite.");
+ };
  img.onload = function() {
  ctx.drawImage(img, 0, 0);
  URL.revokeObjectURL(url);
  const a = document.createElement("a");
  a.download = "pyramide_geomantique_koun.png";
  a.href = canvas.toDataURL("image/png");
+ document.body.appendChild(a);
  a.click();
+ document.body.removeChild(a);
  };
  img.src = url;
  }
