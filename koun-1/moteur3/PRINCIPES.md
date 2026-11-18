@@ -46,7 +46,7 @@ Indice de friction (fronts Feu/Air en M1, M5, M7, M8, M12 ; Terre ; duel d'antag
 
 ## Over/Under 1,5 · 2,5 · 3,5 — PORTE_3.0.0
 Indice net = flux (circuit 3-5-11-13 et M10, juge, front A des pôles, deux marquent) moins 0,65 fois les verrous de Terre (M8, M12, juge). Seuils du propriétaire : 7 → Over 1,5 ; 9,5 → Over 2,5 ; 14,5 → Over 3,5.
-**Mesures avec le principe RY-1 (ci-dessous) : 1,5 : 24/26 (repère 24/26) · 2,5 : 23/26 (repère 23/26) · 3,5 : 18/26 (repère 17/26) ; sans lui : 23/26, 19/26, 10/26.**
+**Mesures avec les principes RY-1, RY-2 et SB-1 (ci-dessous) : 1,5 : 24/26 (repère 24/26) · 2,5 : 23/26 (repère 23/26) · 3,5 : 17/26 (repère 17/26).**
 Les 26 scores sont élevés (18 matchs sur 26 au-dessus de 3,5) : les seuils du propriétaire sont trop bas pour ces données. Je n'ai pas ajusté les seuils sur ces 26 scores, faute de lot de validation.
 
 ## Ce que cette reconstruction n'est pas
@@ -71,3 +71,8 @@ Le rythme du thème est celui de la cartographie des 4 canaux, avec le niveau d'
 Mesures sur les 26 scores réels : 12 matchs au rythme Saturé, avec plus de 1,5 buts 11 fois, plus de 2,5 buts 11 fois, plus de 3,5 buts 10 fois. Le principe fait passer les Over/Under de 23/19/10 à 24/23/18 sur 26. Observation du propriétaire avant mesure : les mesures la confirment, mais sur les mêmes matchs, sans lot de validation.
 ## RY-2 : le rythme du thème Fermé ne dépasse pas l'Over 2,5 (posé par le propriétaire)
 Quand le rythme est Fermé, le moteur ne dépasse pas Over 2,5 : au plus trois buts dans le score prévu (deux pour un nul), donc Under 3,5. Le moteur annonçait déjà Under 3,5 sur les 7 matchs au rythme Fermé de vos données ; la mesure reste donc 24/23/18 sur 26 pour Over/Under 1,5 / 2,5 / 3,5. Parmi ces 7 matchs, 4 ont 3 buts ou moins et 3 en ont 4, 5 et 9 : le principe est juste 4 fois sur 7 pour le seuil 3,5. Un principe « Fermé donne Under 2,5 ou 1,5 » n'est pas retenu : un seul des 7 matchs est sous 1,5 but.
+
+## SB-1 : les niveaux saturés du canal de la somme des fronts (posé par le propriétaire, seuil tiré des données)
+On additionne les fronts de R1 et R7 dans le groupe des fronts (A+B = C, A+C = B, A+D = A, B+C = A, B+D = B, C+D = C ; deux fronts égaux donnent D). Cela désigne un canal. On compte, dans les maisons 1 à 15, les niveaux saturés de ce canal : le repos et la résultante sont tous deux à deux points sur sa ligne (c'est la même condition en base).
+Règle : trois niveaux saturés ou plus, Over 3,5 ; deux ou moins, pas plus de Over 2,5. Le seuil de 3 vient des 26 scores réels (corrélation de 0,43 entre ce nombre et le total de buts sur le lot 1) ; ce n'est pas un seuil du propriétaire.
+Mesure sur les 26 scores, Over 3,5 : SB-1 seul 20/26 ; avec les rythmes RY-1 et RY-2 appliqués ensuite 17/26. RY-2 (Fermé, au plus Over 2,5) contredit SB-1 sur trois matchs réels (5·14·6·14, Belgique–Italie, PSG–Real : plus de 3,5 buts) et RY-1 (Saturé, Over) le contredit sur 12·6·1·9. Dans le moteur, les rythmes sont appliqués après SB-1 : à choisir par le propriétaire.

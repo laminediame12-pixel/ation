@@ -496,6 +496,16 @@
     return { regime: regime, pourcentDeuxPoints: pct, libres: libre, saturations: sat, verrousIntacts: verrou, verrousBrises: brise };
   }
 
+  // Opération sur les fronts de R1 et R7 : la somme des deux fronts (groupe des fronts : A+B=C, A+C=B, A+D=A, B+C=A, B+D=B, C+D=C, deux fronts égaux = D) désigne un canal.
+  // Niveaux saturés de ce canal : maisons 1 à 15 dont le repos et la résultante sont tous deux à deux points sur la ligne du canal
+  // (identique en base : le repos et la base sont alors tous deux à deux points).
+  var SOMME_FRONTS = { AB: 'C', AC: 'B', AD: 'A', BC: 'A', BD: 'B', CD: 'C', BA: 'C', CA: 'B', DA: 'A', CB: 'A', DB: 'B', DC: 'C', AA: 'D', BB: 'D', CC: 'D', DD: 'D' };
+  function saturesSommeFronts(L) {
+    var f1 = FRONTS[(num(L.R1.figure) - 1) % 4], f7 = FRONTS[(num(L.R7.figure) - 1) % 4], canal = SOMME_FRONTS[f1 + f7], c = FRONTS.indexOf(canal), n = 0;
+    for (var h = 1; h <= 15; h++) if (POINTS[FIG[h - 1]][c] === 2 && POINTS[L.maisons[h - 1].resultante][c] === 2) n++;
+    return { canal: canal, n: n, fronts: f1 + ' + ' + f7 };
+  }
+
   function buts(L, v) {
     var sansVerdict = v === null || v === undefined;
     if (sansVerdict) v = '1';
@@ -527,6 +537,9 @@
     var nul = v === 'N', total;
     if (nul) { total = net < 7 ? 0 : net < 14.5 ? 2 : 4; if (btts && total < 2) total = 2; }
     else { total = net < 7 ? 1 : net < 9.5 ? 2 : net < 14.5 ? 3 : 4; if (btts && total < 3) total = 3; }
+    // Niveaux saturés du canal de la somme des fronts (principe SB-1, seuil de 3 tiré des matchs de développement) : trois ou plus, Over 3,5 ; deux ou moins, pas plus de Over 2,5
+    var sb = saturesSommeFronts(L);
+    if (sb.n >= 3) { if (total < 4) total = 4; } else if (total > (nul ? 2 : 3)) total = nul ? 2 : 3;
     // Rythme du thème Saturé : au-dessus de 1,5, de 2,5 et de 3,5 buts (principe du propriétaire RY-1), donc au moins quatre buts
     var ry = rythme(L), saturé = ry.regime === 'Saturé';
     if (saturé && total < 4) total = 4;
@@ -561,7 +574,7 @@
     var sortie = {
       deuxMarquent: { oui: bttsFinal, brut: btts, pole1PeutMarquer: p1, pole7PeutMarquer: p7, elan: elan, provenance: 'PORTE_3.0.0 (seuil de 50 %), reconstruit sur les forces de la structure', teste: 'testé sur 26 scores réels' },
       score: g1 + ' - ' + g2, g1: g1, g2: g2, total: T,
-      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, rythme: ry.regime, rythmeSature: saturé, rythmeFerme: fermé, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
+      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, satures: sb, rythme: ry.regime, rythmeSature: saturé, rythmeFerme: fermé, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
       butsMT1: { oui: T > 0 && htBut, libelle: mt, somme: bm, provenance: 'PORTE_3.0.0 (ButMT M1+M5+M12+M15)', teste: 'testé sur 6 matchs avec mi-temps connue' },
       corners: { libelle: corners, friction: fric, provenance: 'PORTE_3.0.0 (indice de friction)', teste: 'NON_TESTE (aucun résultat de corners dans les données)' }
     };
