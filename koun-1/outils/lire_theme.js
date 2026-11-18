@@ -1,17 +1,11 @@
-// Lecture d'un thème par le moteur 2. Usage : node lire_theme.js 2 12 4 4
-const K = require('../moteur2/moteur.js');
-const m = process.argv.slice(2, 6).map(n => K.FIG[n - 1]), th = K.construireTheme(...m), a = K.analyser(th), L = a.lecture;
-const lab = f => K.num(f) + ' ' + f + ' (' + K.frontDe(f) + '·' + K.CARDINAL[K.num(f)] + ')';
-const pos = f => L.positions(f).map(p => 'M' + p.maison + (p.couche === 'base' ? 'b' : 'r') + ' ' + (p.force === null ? 'nc' : p.force + '%')).join(', ') || 'absente';
-console.log('mères', m.join(', '));
-console.log('R1 M' + L.R1.maison, lab(L.R1.figure), '| R7 M' + L.R7.maison, lab(L.R7.figure));
-for (const x of L.maisons) console.log('M' + x.maison, K.elementMaison(x.maison), '|', lab(x.base), (L.force(x.base, x.maison) ?? 'nc') + '%', '→', x.resultante ? lab(x.resultante) + ' ' + (L.force(x.resultante, x.maison) ?? 'nc') + '%' : '—');
-for (const c of K.CAS) { const r = c.condition(L); console.log(c.id, r ? r.verdict + ' · ' + r.raison : '—'); }
-console.log('DÉCISION', a.decision.verdict, a.decision.phase, '|', a.decision.raison);
-for (const k of ['R1', 'R7']) { const c = L[k]; console.log(k, 'front:', c.frontDirect.map(f => f + ' [' + pos(f) + ']').join(' · '), '\n   antagoniste', c.antagoniste, '[' + pos(c.antagoniste) + '] | contrôleur', c.controleur, '[' + pos(c.controleur) + ']'); }
-console.log('R1 attaque R7:', K.num(L.R7.figure) === K.num(K.fig(K.num(L.R1.figure) + 3)), '| R7 attaque R1:', K.num(L.R1.figure) === K.num(K.fig(K.num(L.R7.figure) + 3)));
-console.log('au repos:', K.FIG.filter(f => L.chezElle(f)).map(f => f + ' M' + K.num(f) + (L.chezElleEnBase(f) ? ' base' : ' rés')).join(', ') || 'aucune', '| annulations', L.annulations.map(x => x.attaquant + '↔' + x.cible).join(', ') || 'aucune');
-console.log('témoin', K.temoin(th, new Date()).lignes.map(l => l.titre + ': ' + l.figure + (l.present ? ' ✓' : ' ✗')).join(' | '));
-console.log('mode', L.mode);
-if (L.confrontation.R1) for (const k of ['R1', 'R7']) console.log(k, 'camp:', L.confrontation[k].map(x => x.numero + (x.absente ? ' absent' : ' (' + x.positions.map(p => 'm' + p.maison).join(',') + ')' + (x.chezElle ? '*' : ''))).join(' - '));
-console.log('pénalisées (maison antagoniste):', L.penalisees.map(x => x.figure + ' M' + x.maison + ' ' + x.couche).join(', ') || 'aucune');
+// Lit un thème avec le moteur 3 : node outils/lire_theme.js 12 6 3 2   (numéros des figures de M1 à M4)
+const K = require('../moteur3/moteur.js');
+const m = process.argv.slice(2).map(Number);
+if (m.length !== 4 || m.some(x => !(x >= 1 && x <= 16))) { console.log('Usage : node outils/lire_theme.js M1 M2 M3 M4 (numéros 1 à 16)'); process.exit(1); }
+const r = K.analyser(K.construireTheme(...m.map(K.fig))), L = r.lecture, v = r.verdict, b = r.buts, p = r.penalite;
+console.log('Mères :', m.map(x => x + ' ' + K.fig(x)).join(' | '));
+console.log('R1 : M' + L.R1.maison, L.R1.figure, '| R7 : M' + L.R7.maison, L.R7.figure, '|', L.mode);
+console.log('Verdict :', v.verdict === 'N' ? 'nul' : v.verdict === '1' ? 'victoire R1' : v.verdict === '2' ? 'victoire R7' : 'aucun', '·', v.principe, '(' + v.provenance + ')');
+console.log(v.raison);
+console.log('Score prévu', b.score, '| deux marquent', b.deuxMarquent.oui ? 'oui' : 'non', '| Over 1,5 / 2,5 / 3,5 :', [b.overUnder.over15, b.overUnder.over25, b.overUnder.over35].map(x => x ? 'Over' : 'Under').join(' / '));
+console.log('Buts MT-1 :', b.butsMT1.libelle, '| corners :', b.corners.libelle, '| pénalité / carton :', p.libelle);

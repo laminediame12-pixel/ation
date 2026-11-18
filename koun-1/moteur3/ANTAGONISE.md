@@ -2,7 +2,7 @@
 
 Fronts : A = 1-5-9-13 (Feu), B = 2-6-10-14 (Air), C = 3-7-11-15 (Eau), D = 4-8-12-16 (Terre).
 
-Une figure k attaque la figure k+3, son antagonisé. Posée dans la maison de repos de cet antagonisé (M k+3), la figure k donne en résultante k ⊕ (k+3). Ce fichier est généré par `outils/antagonise_doc.js`.
+Une figure k attaque la figure k+3, son antagonisé. Posée dans la maison de repos de cet antagonisé (M k+3), la figure k donne en résultante k ⊕ (k+3). Résultat de calcul vérifié sur les 16 figures.
 
 ## 1. Les 16 cas
 

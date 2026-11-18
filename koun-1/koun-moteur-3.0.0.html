@@ -3173,35 +3173,9 @@
  }
 
  const FRONT_ANTAGONISM = { A: "D", D: "C", C: "B", B: "A" };
- const FRONT_BINOME = { A: "C", C: "A", B: "D", D: "B" };
-
- const FRONT_CIRCLE_HOUSES = {
- A: [1, 5, 9, 13],
- B: [2, 6, 10, 14],
- C: [3, 7, 11, 15],
- D: [4, 8, 12, 16]
- };
-
- function getFrontDuelDelta(frontAtt, frontDef) {
- if (FRONT_ANTAGONISM[frontAtt] === frontDef) return 1;
- if (FRONT_ANTAGONISM[frontDef] === frontAtt) return -1;
- return 0;
- }
-
- function evalHouseMutation(h, baseFig, resFig) {
- const isEvenHouse = (h % 2 === 0);
- const restFront = HOUSE_REST_FIG[h].front;
- if (isEvenHouse) {
- const allianceType = (restFront === "D") ? "Alliance directe (même Front)" : "Alliance binôme (A↔C / B↔D)";
- return { isEvenHouse: true, bonus: 22, label: allianceType };
- } else {
- const duel = getFrontDuelDelta(resFig.front, baseFig.front);
- return {
- isEvenHouse: false,
- bonus: duel * 18,
- label: duel === 1 ? "Rupture offensive (Res attaque Base)" : "Rupture antagoniste (Res subit Base)"
- };
- }
+ function evalHouseMutation(h) {
+ // Lecture de la maison : paire ou impaire (aucun poids, aucun rôle dans le verdict).
+ return { isEvenHouse: h % 2 === 0, label: h % 2 === 0 ? "Maison paire" : "Maison impaire" };
  }
 
  function getHouseElementOperator(h) {
@@ -3217,25 +3191,6 @@
  detail: active.length ? `Inverse les lignes : ${active.join(" + ")}` : "Aucune ligne inversée"
  };
  }
-
- const MIRROR_FIGURES_MAP = {
- "Puer": "Puella",
- "Puella": "Puer",
- "Albus": "Rubeus",
- "Rubeus": "Albus",
- "Caput Draconis": "Cauda Draconis",
- "Cauda Draconis": "Caput Draconis",
- "Tristitia": "Laetitia",
- "Laetitia": "Tristitia",
- "Acquisitio": "Amissio",
- "Amissio": "Acquisitio",
- "Via": "Populus",
- "Populus": "Via",
- "Carcer": "Conjunctio",
- "Conjunctio": "Carcer",
- "Fortuna Major": "Fortuna Minor",
- "Fortuna Minor": "Fortuna Major"
- };
 
  const ELEMENT_ACTIVATION_ROLES = {
  1: { role: "Fermante", targetElem: "Eau", lineIdx: 2, desc: "Ferme Eau" },
@@ -3288,9 +3243,6 @@
  label
  };
  }
-
- const PARTIE1_HOUSES = [1, 2, 3, 4, 9, 10, 13, 15];
- const PARTIE2_HOUSES = [5, 6, 7, 8, 11, 12, 14, 16];
 
  // ═════════════ VERDICT : le Moteur 3 décide, principe par principe ═════════════
  const PROVENANCES_M3 = {
@@ -3597,29 +3549,6 @@
  const r7ResTarget = FRONT_ANTAGONISM[resR7.front];
  const r7ResPred = predatorOf(resR7.front);
 
- const evalCrossPair = (label, f1, name1, f2, name2) => {
- const d = getFrontDuelDelta(f1, f2);
- let verdict = "Neutre / Même axe";
- let col = "#94a3b8";
- if (d === 1) {
- verdict = `Avantage R1 (${f1} → ${f2} : ${name1} attaque ${name2})`;
- col = "#60a5fa";
- } else if (d === -1) {
- verdict = `Avantage R7 (${f2} → ${f1} : ${name2} attaque ${name1})`;
- col = "#f87171";
- }
- return `<tr>
- <td><strong>${label}</strong></td>
- <td>${name1} (<strong>Front ${f1}</strong> · ${totalFrontCount(f1)} prés.)</td>
- <td>${name2} (<strong>Front ${f2}</strong> · ${totalFrontCount(f2)} prés.)</td>
- <td style="color:${col}; font-weight:700;">${verdict}</td>
- </tr>`;
- };
-
- const r1Support = totalFrontCount(baseR1.front) + totalFrontCount(resR1.front);
- const r7Support = totalFrontCount(baseR7.front) + totalFrontCount(resR7.front);
- const r1Pressure = totalFrontCount(r1BasePred) + totalFrontCount(r1ResPred);
- const r7Pressure = totalFrontCount(r7BasePred) + totalFrontCount(r7ResPred);
 
  // Moteur 3 : même lecture que la fenêtre du verdict, appliquée au thème simulé (maisons et figures du calculateur, pôles choisis).
  let crossConclusion = "";
@@ -3688,28 +3617,8 @@
  </tbody>
  </table>
 
- <div style="font-size:0.76rem; font-weight:800; color:#e2e8f0; margin-top:0.75rem;">2. Tableau de Croisement (R1 &times; R7 en Base et Résultante)</div>
- <table class="r1r7-table">
- <thead>
- <tr>
- <th>Axe de croisement</th>
- <th>Camp R1 (${safeT1})</th>
- <th>Camp R7 (${safeT2})</th>
- <th>Résultat du duel (A &rarr; D &rarr; C &rarr; B &rarr; A)</th>
- </tr>
- </thead>
- <tbody>
- ${evalCrossPair("Base R1 × Base R7", baseR1.front, baseR1.name, baseR7.front, baseR7.name)}
- ${evalCrossPair("Résultante R1 × Résultante R7", resR1.front, resR1.name, resR7.front, resR7.name)}
- ${evalCrossPair("Base R1 × Résultante R7", baseR1.front, baseR1.name, resR7.front, resR7.name)}
- ${evalCrossPair("Résultante R1 × Base R7", resR1.front, resR1.name, baseR7.front, baseR7.name)}
- </tbody>
- </table>
-
  <div class="r1r7-cross-summary">
  <strong>Verdict :</strong> ${crossConclusion}<br>
- &bull; <strong>Soutien brut dans le thème :</strong> R1 = <strong>${r1Support}</strong> présences (Base Front ${baseR1.front} + Res Front ${resR1.front}) vs R7 = <strong>${r7Support}</strong> présences (Base Front ${baseR7.front} + Res Front ${resR7.front}).<br>
- &bull; <strong>Pression subie par les antagonistes :</strong> R1 subit <strong>${r1Pressure}</strong> présences (Fronts ${r1BasePred}/${r1ResPred}) vs R7 subit <strong>${r7Pressure}</strong> présences (Fronts ${r7BasePred}/${r7ResPred}).
  </div>
  `;
  }
