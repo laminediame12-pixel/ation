@@ -423,7 +423,7 @@
       return { verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
     }
     var g = a > b ? 'R1' : 'R7', C = g === 'R1' ? f1 : f7;
-    return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'La force des camps',
+    return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'Les portes du cercle des fronts',
       raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. Cercle des fronts B → A → D → C → B. Camp ' + g + ' (front ' + C.front + ') : ' + C.bon + ' figure(s) du front chez sa proie ou chez le front binôme ' + C.protecteur + ' (protecteur), moins ' + C.mal + ' chez le front prédateur ' + C.predateur + ' = ' + Math.max(a, b) + ', contre ' + Math.min(a, b) + ' pour l’autre camp. ', assuree: false };
   }
 
