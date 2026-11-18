@@ -6066,6 +6066,15 @@
  setSavedThemes([]);
  }
 
+ function exportSavedThemes() {
+ const blob = new Blob([JSON.stringify(getSavedThemes(), null, 1)], { type: "application/json" });
+ const a = document.createElement("a");
+ a.href = URL.createObjectURL(blob);
+ a.download = "koun-themes-sauvegardes.json";
+ document.body.appendChild(a); a.click(); document.body.removeChild(a);
+ setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+ }
+
  function renderSavedThemesList() {
  const list = getSavedThemes();
  document.getElementById("savedCountBadge").textContent = list.length;
@@ -6078,20 +6087,58 @@
  return;
  }
 
- container.innerHTML = list.map(item => `
+ // Moteur actuel : le verdict est recalculé à l'affichage (celui enregistré date du moment de la sauvegarde) et comparé au score réel.
+ const lireMoteur = (item) => {
+ try {
+ const figs = item.mVecs.map(v => KOUN2.fig(getFigByVec(v.split(",").map(Number)).num));
+ return KOUN2.analyser(KOUN2.construireTheme(...figs)).decision;
+ } catch (e) { return null; }
+ };
+ const issueReelle = (item) => {
+ const m = String(item.score || "").match(/(\d+)\s*[-–:]\s*(\d+)/);
+ if (!m) return null;
+ return +m[1] > +m[2] ? "1" : +m[1] < +m[2] ? "2" : "N";
+ };
+ let juges = 0, justes = 0, manquesNul = 0, manquesVic = 0, sansCas = 0;
+ const cartes = list.map(item => {
+ const d = lireMoteur(item), reel = issueReelle(item);
+ const v = d ? d.verdict : null;
+ const txt = v === "N" ? "Match nul" : v === "1" ? "Victoire " + escapeHTML(item.t1) : v === "2" ? "Victoire " + escapeHTML(item.t2) : "aucun cas (lecture 3.0.0)";
+ let badge = "";
+ if (reel) {
+ juges++;
+ if (v === reel) { justes++; badge = `<span style="color:#4ade80; font-weight:800;">&#10003; concordant</span>`; }
+ else {
+ if (v === null) sansCas++; else if (reel === "N") manquesNul++; else manquesVic++;
+ const reelTxt = reel === "N" ? "nul" : reel === "1" ? "victoire " + escapeHTML(item.t1) : "victoire " + escapeHTML(item.t2);
+ badge = `<span style="color:#f87171; font-weight:800;">&#10007; à côté</span> <span style="color:#94a3b8;">(réel : ${reelTxt})</span>`;
+ }
+ }
+ const cas = d && d.phase ? ` &bull; <strong>${escapeHTML(d.phase)}</strong>` : "";
+ return `
  <div class="saved-theme-card">
  <div class="saved-theme-top">
  <div class="saved-theme-match">${escapeHTML(item.t1)} vs ${escapeHTML(item.t2)} ${item.score ? `(${escapeHTML(item.score)})` : ""}</div>
  <span style="font-size:0.65rem; color:#eab308; font-weight:700;">${escapeHTML(item.date)} ${escapeHTML(item.time)}</span>
  </div>
  <div class="saved-theme-meta">${escapeHTML(item.verdictTxt)} &bull; Sauv. ${escapeHTML(item.savedAt)}</div>
+ <div class="saved-theme-meta" style="color:#cbd5e1;">&#129504; Moteur actuel : ${txt}${cas} ${badge}</div>
  <div class="saved-theme-mothers">M1–M4 : ${escapeHTML(item.mNames.join(" | "))}</div>
  <div class="saved-theme-actions">
  <button type="button" class="btn-blue" onclick="loadSavedTheme(${Number(item.id)})">Charger le thème</button>
  <button type="button" class="btn-slate" style="background:#7f1d1d;" onclick="deleteSavedTheme(${Number(item.id)})">Supprimer</button>
  </div>
  </div>
- `).join("");
+ `;
+ });
+ const bilan = juges
+ ? `<div style="background:#0c1220; border:1px solid #23304a; border-radius:8px; padding:8px 10px; margin-bottom:8px; font-size:0.74rem; color:#e2e8f0; line-height:1.5;">
+ <strong>&#129504; Moteur actuel sur vos thèmes sauvegardés avec un score :</strong> ${justes} concordants sur ${juges}.
+ ${juges - justes ? `<br>À côté : ${manquesNul} nul(s) manqué(s), ${manquesVic} victoire(s) mal donnée(s)${sansCas ? `, ${sansCas} sans cas` : ""}.` : ""}
+ <br><button type="button" class="btn-slate" style="margin-top:4px; font-size:0.7rem;" onclick="exportSavedThemes()">&#11015; Exporter les thèmes (JSON)</button>
+ </div>`
+ : `<div style="margin-bottom:8px;"><button type="button" class="btn-slate" style="font-size:0.7rem;" onclick="exportSavedThemes()">&#11015; Exporter les thèmes (JSON)</button></div>`;
+ container.innerHTML = bilan + cartes.join("");
  }
 
  function downloadCirclePNG() {
