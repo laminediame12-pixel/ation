@@ -78,6 +78,7 @@ Quand une famille dit « un seul pôle remplit ceci », le cas ne tranche pas si
 | PR-6 | Front Sud ou Nord au repos | Pôles dans la même boucle ou le même front. Un seul pôle a une figure Sud ou Nord de son front (autre que lui) dans sa maison de repos, reflets de Populus exclus : ce pôle gagne. | aucun |
 | NU-2 | Équilibre d'activation | Même condition que NU-1 (équilibre compensé, juge hors de son repos), pour les autres modes, lue seulement quand aucun cas de victoire ne s'est appliqué (avant le dernier recours). | 3 justes (2·7·2·12, 5·9·7·13, 2·9·6·5), aucun faux |
 | DR-1 | Dernier recours | La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne. | 1 juste |
+| DR-C | Dernier recours | Le duel se joue entre le canal de la maison de R1 et celui de la maison de R7 (toujours Feu-Eau ou Air-Terre, car R7 = R1 + 6). Le canal dont les figures ont le plus de positions dans le thème (base et résultante) donne la victoire à son pôle. | 3 justes (8·5·11·7, 13·12·8·15, 12·6·1·9) |
 | DR-6 | Dernier recours | Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne. | 1 juste |
 | DR-7 | Dernier recours | Boucles différentes, ancrages égaux. La somme au point B (M8 + M9) ou C (M12 + M13) est le miroir d’un seul pôle : ce pôle gagne. | aucun |
 | DR-8 | Dernier recours | Boucles différentes, ancrages égaux. Les signaux du cercle (pôle au bord d’un point, pôle en amont) désignent un seul pôle : il gagne. | aucun |
@@ -204,3 +205,11 @@ Une figure k posée en base dans la maison de la figure qu'elle attaque (k en M 
 ## Comptage des lignes à deux points
 
 En boucles différentes, on compte les lignes à deux points (4 niveaux, base et résultante) dans les maisons de la boucle de chaque pôle. Le camp qui en compte le plus a gagné 10 des 12 victoires réelles en boucles différentes (1 égalité), mais l'accord avec le moteur sur tous les thèmes n'est que de 63 %. Le moteur en fait un signal : « pour » quand il va dans le sens du verdict, simple indice sinon. Il ne décide jamais.
+
+
+## Les canaux : le duel R1 / R7
+
+- Les quatre canaux sont les fronts : A Feu, B Air, C Eau, D Terre. La boucle impaire réunit Feu et Eau, la boucle paire Air et Terre : dans une boucle, le binôme d'un canal est son élément destructeur. Les affinités (Feu-Air, Eau-Terre) traversent les boucles.
+- Les canaux forment un groupe où Terre est le neutre. La relation entre une figure et le canal d'une maison fixe le canal de la résultante : même canal → Terre, affinité → Eau, binôme (même boucle) → Air, antagonistes (Feu-Terre, Air-Eau) → Feu.
+- R7 = R1 + 6, donc la maison de R7 est toujours dans le canal binôme de celle de R1 : si R1 est en maison Eau, R7 est en maison Feu ; Terre contre Air de même. Le duel R1 / R7 est un duel de canaux, et une figure dans sa maison de repos maintient la force de son canal.
+- Le cas DR-C applique ce principe : il compare la présence des deux canaux dans le thème.

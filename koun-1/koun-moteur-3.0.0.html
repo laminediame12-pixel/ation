@@ -2455,6 +2455,10 @@
     }
     return { R1: compte(L.R1), R7: compte(L.R7) };
   }
+  // Duel par les canaux : R7 = R1 + 6, donc la maison de R7 est toujours dans le canal binôme de celle de R1 (Feu-Eau ou Air-Terre).
+  // Le canal d'un pôle est celui de sa maison. Sa présence = les positions (base et résultante) des figures de ce canal dans le thème.
+  function canalDuPole(c) { return FRONTS[(c.maison - 1) % 4]; }
+  function presenceCanal(L, lettre) { return figuresDuFront(lettre).reduce(function (t, g) { return t + L.positions(g).length; }, 0); }
   function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
     return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos.';
@@ -2640,6 +2644,14 @@
         var rr = L.maisons[cp.maison - 1].resultante, fr = cp.frontDirect.filter(function (f) { return f !== cp.figure && !L.absente(f); });
         return V(cp, L, 'Victoire ' + ax.pole + ' : la somme de l’axe angulaire donne ' + ax.figure + ', le pôle ' + ax.pole + ', qui siège lui-même sur l’axe en M' + cp.maison + '. L’axe désigne ce pôle.' +
           (rr ? ' En M' + cp.maison + ' il donne ' + rr + ' en résultante.' : '') + (fr.length ? ' Son front est présent : ' + fr.join(', ') + '.' : ''));
+      } },
+    { id: 'DR-C', famille: 'Dernier recours', titre: 'Le canal le mieux présent', statut: 'EN_ESSAI',
+      enonce: 'Le duel se joue entre le canal de la maison de R1 et celui de la maison de R7 (toujours Feu-Eau ou Air-Terre). Le canal dont les figures ont le plus de positions dans le thème (base et résultante) donne la victoire à son pôle.',
+      condition: function (L) {
+        var c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7), p1 = presenceCanal(L, c1), p7 = presenceCanal(L, c7);
+        if (p1 === p7) return null;
+        var g = p1 > p7 ? L.R1 : L.R7, cg = p1 > p7 ? c1 : c7;
+        return V(g, L, 'Victoire ' + g.camp + ' : le duel se joue entre le canal ' + c1 + ' (maison de R1, M' + L.R1.maison + ') et le canal ' + c7 + ' (maison de R7, M' + L.R7.maison + '). Le canal ' + cg + ' compte ' + Math.max(p1, p7) + ' positions dans le thème contre ' + Math.min(p1, p7) + '.');
       } },
     { id: 'DR-6', famille: 'Dernier recours', titre: 'La boucle la mieux ancrée', statut: 'EN_ESSAI',
       enonce: 'Boucles différentes. Une boucle a plus de figures chez elles en base (non annulées) que l’autre : son pôle gagne.',
