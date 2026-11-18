@@ -1758,9 +1758,9 @@
  </div>
  </div>
 
- <!-- Ligne Moteur 2 : cas décisif et raison -->
+ <!-- Ligne Moteur 3 : principe décisif et raison -->
  <div class="verdict-line-item" id="m2Row" style="display:block;">
- <div class="verdict-line-label" style="margin-bottom:3px;">&#129504; Moteur 2 · cas décisif :</div>
+ <div class="verdict-line-label" style="margin-bottom:3px;">&#129504; Moteur 3 · principe décisif :</div>
  <div id="m2Case" style="font-weight:700; color:#4ade80; font-size:0.78rem;">—</div>
  <div id="m2Reason" style="color:#cbd5e1; font-size:0.72rem; line-height:1.4; margin-top:2px;"></div>
  </div>
@@ -1931,7 +1931,7 @@
  <button type="button" class="btn-slate" style="padding:0.25rem 0.6rem; font-size:0.7rem;" onclick="syncR1R7FromTheme()">Synchroniser avec le thème actuel</button>
  </div>
  <div style="font-size:0.72rem; color:var(--text-muted);">
- Synchronisé avec le Moteur 2 (verdict par cas) : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le score de croisement (lecture 3.0.0, ne décide plus).
+ Synchronisé avec le Moteur 3 (verdict par principes) : évalue automatiquement ou manuellement les Fronts de R1 et R7 en Base et en Résultante, leurs antagonistes, et le score de croisement (lecture 3.0.0, ne décide plus).
  </div>
 
  <div class="r1r7-grid">
@@ -2903,6 +2903,181 @@
 })(typeof window !== 'undefined' ? window : globalThis);
 
 /* ═══ fin Moteur 2 ═══ */
+/* ═══ Moteur 3 : table rase des principes ═══ */
+/* koun — moteur 3 : table rase des principes.
+   La structure (thème, résultantes, forces, pôles) vient du moteur 2 : ce sont des calculs exacts, pas des principes de verdict.
+   Tout ce qui décide (victoire, nul, pénalité, deux marquent, buts MT-1, corners, Over/Under) est reconstruit ici, principe par principe.
+   Chaque principe porte sa provenance :
+     PROPRIETAIRE : posé par le propriétaire.
+     PORTE_3.0.0  : règle du 3.0.0 du propriétaire, reprise telle quelle.
+     DEVELOPPEMENT: issu des matchs de développement, tient sur le lot 1 de validation.
+     DEV_SEUL     : issu des matchs de développement seulement, jamais confirmé hors développement.
+   Aucun principe ajusté sur un lot de validation. Un principe sans donnée réelle est marqué NON_TESTE. */
+(function (root) {
+  'use strict';
+  var K = (typeof require !== 'undefined' && typeof module !== 'undefined') ? require('../moteur2/moteur.js') : root.KOUN2;
+  var FIG = K.FIG, num = K.num, fig = K.fig, FRONTS = ['A', 'B', 'C', 'D'];
+  var POINTS = {
+    'Puer': [1, 1, 2, 1], 'Laetitia': [1, 2, 2, 2], 'Caput': [2, 1, 1, 1], 'Albus': [2, 2, 1, 2],
+    'Via': [1, 1, 1, 1], 'Amissio': [1, 2, 1, 2], 'Rubeus': [2, 1, 2, 2], 'Tristitia': [2, 2, 2, 1],
+    'Fortuna Minor': [1, 1, 2, 2], 'Carcer': [1, 2, 2, 1], 'Conjunctio': [2, 1, 1, 2], 'Fortuna Major': [2, 2, 1, 1],
+    'Cauda Draconis': [1, 1, 1, 2], 'Puella': [1, 2, 1, 1], 'Aquisitio': [2, 1, 2, 1], 'Populus': [2, 2, 2, 2]
+  };
+  var MIROIR = { 'Puer': 'Puella', 'Puella': 'Puer', 'Albus': 'Rubeus', 'Rubeus': 'Albus', 'Caput': 'Cauda Draconis', 'Cauda Draconis': 'Caput',
+    'Tristitia': 'Laetitia', 'Laetitia': 'Tristitia', 'Aquisitio': 'Amissio', 'Amissio': 'Aquisitio', 'Via': 'Populus', 'Populus': 'Via',
+    'Carcer': 'Conjunctio', 'Conjunctio': 'Carcer', 'Fortuna Major': 'Fortuna Minor', 'Fortuna Minor': 'Fortuna Major' };
+  var ANTAGONISTE_FRONT = { A: 'D', D: 'C', C: 'B', B: 'A' };
+  function front(f) { return FRONTS[(num(f) - 1) % 4]; }
+  function impair(f) { return num(f) % 2 === 1; }
+  function ouverts(f) { return POINTS[f].filter(function (v) { return v === 1; }).length; }
+  function res(L, h) { var m = L.maisons[h - 1]; return m.resultante || m.base; }
+
+  // ───────── VICTOIRE ET NUL ─────────
+  // On reprend du moteur 2 les conditions de ces principes, dans l'ordre d'origine. Les autres cas du moteur 2 sont abandonnés.
+  var VERDICT = [
+    ['VA-1', 'PROPRIETAIRE', 'Victoire assurée : trois figures ou plus du front ou du front binôme chez elles (boucles différentes).'],
+    ['MF-2', 'PROPRIETAIRE', 'Même front : un seul pôle a son partenaire de moitié chez lui.'],
+    ['MF-3', 'PROPRIETAIRE', 'Nul, front miroir : R1 + R7 donne Tristitia, posée dans une maison de Terre.'],
+    ['NU-1', 'DEVELOPPEMENT', 'Nul, même front : équilibre d’activation des deux parties du thème, juge hors de son repos.'],
+    ['AX-1', 'DEV_SEUL', 'Pôles en M4 et M10 : le pôle de M4 engendre l’autre.'],
+    ['CL-1', 'DEVELOPPEMENT', 'Même boucle : un seul pôle chez lui.'],
+    ['CL-2', 'DEVELOPPEMENT', 'Boucles différentes : le pôle et son binôme chez eux.'],
+    ['PF-2', 'DEVELOPPEMENT', 'Attaque directe sur un pôle sans défense.'],
+    ['NU-2', 'DEVELOPPEMENT', 'Nul : équilibre d’activation des deux parties du thème, juge hors de son repos.'],
+    ['NU-3', 'DEVELOPPEMENT', 'Nul : équilibre des affinités Feu-Air et Eau-Terre en base, juge hors de son repos.']
+  ];
+  var PRINCIPES_VERDICT = VERDICT.map(function (p) {
+    var cas = K.CAS.filter(function (c) { return c.id === p[0]; })[0];
+    return { id: p[0], provenance: p[1], enonce: p[2], cas: cas };
+  });
+  // Dernier principe : la force des pôles. Une figure dans sa maison de repos garde sa force ; on additionne les forces de toutes les positions du pôle.
+  function sommeForces(L, c) {
+    return L.positions(L[c].figure).reduce(function (t, x) { return t + (x.force === null ? 100 : x.force); }, 0);
+  }
+  var FORCE_POLES = { id: 'FP-1', provenance: 'DEVELOPPEMENT', enonce: 'Le pôle dont la somme des forces (toutes ses positions, base et résultante) est la plus haute gagne ; égalité : pas de verdict.' };
+
+  function verdict(L) {
+    for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
+      var p = PRINCIPES_VERDICT[i], r = p.cas.condition(L);
+      if (r) return { verdict: r.verdict, principe: p.id, provenance: p.provenance, enonce: p.enonce, raison: r.raison, assuree: !!r.assuree, titre: p.cas.titre };
+    }
+    var a = sommeForces(L, 'R1'), b = sommeForces(L, 'R7');
+    if (a === b) return { verdict: null, principe: null, provenance: null, enonce: 'Aucun principe ne tranche.', raison: 'Aucun principe ne s’applique et les forces des pôles sont égales.', assuree: false };
+    var g = a > b ? 'R1' : 'R7';
+    return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'La force des pôles',
+      raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. La somme des forces de ' + L[g].figure + ' (' + Math.max(a, b) + ') dépasse celle de l’autre pôle (' + Math.min(a, b) + ').', assuree: false };
+  }
+
+  // ───────── PÉNALITÉ ET CARTON ROUGE (règle du 3.0.0) ─────────
+  function penalite(L) {
+    var fR1 = {}, fR7 = {};
+    [L.maisons[L.R1.maison - 1].base, res(L, L.R1.maison)].forEach(function (f) { fR1[front(f)] = true; });
+    [L.maisons[L.R7.maison - 1].base, res(L, L.R7.maison)].forEach(function (f) { fR7[front(f)] = true; });
+    var t1 = [], t7 = [], rouge = false, pen = false;
+    for (var h = 1; h <= 16; h += 2) {
+      var b = L.maisons[h - 1].base;
+      if (b !== 'Rubeus') continue;
+      if (fR1[front(b)]) { t1.push('Rubeus (front ' + front(b) + ') en base M' + h + ' (impaire) dans la boucle de R1 : carton rouge'); rouge = true; }
+      if (fR7[front(b)]) { t7.push('Rubeus (front ' + front(b) + ') en base M' + h + ' (impaire) dans la boucle de R7 : carton rouge'); rouge = true; }
+    }
+    var m12 = L.maisons[11].base;
+    if (m12 === 'Cauda Draconis') {
+      if (fR1[front(m12)]) { t1.push('Cauda Draconis (front ' + front(m12) + ') en M12 dans la boucle de R1 : carton rouge'); rouge = true; }
+      if (fR7[front(m12)]) { t7.push('Cauda Draconis (front ' + front(m12) + ') en M12 dans la boucle de R7 : carton rouge'); rouge = true; }
+    }
+    var duo = { 'Cauda Draconis': 1, 'Rubeus': 1 };
+    [['R1', t1], ['R7', t7]].forEach(function (x) {
+      var h = L[x[0]].maison, bf = L.maisons[h - 1].base, rf = res(L, h);
+      var trouves = [bf, rf].filter(function (f, i, a) { return duo[f] && a.indexOf(f) === i; });
+      if (trouves.length) { x[1].push(trouves.join(' / ') + ' dans la maison de repos de ' + x[0] + ' (M' + h + ') : pénalité contre ' + x[0]); pen = true; }
+    });
+    var camp = t1.length && t7.length ? 'R1 et R7' : t1.length ? 'R1' : t7.length ? 'R7' : null;
+    return { actif: !!camp, camp: camp, carton: rouge, penalty: pen, libelle: !camp ? 'Aucun' : rouge && pen ? 'Carton rouge + pénalité' : rouge ? 'Carton rouge' : 'Pénalité', raisons: t1.concat(t7), provenance: 'PORTE_3.0.0', teste: 'NON_TESTE (aucun résultat de pénalité ou de carton dans les données)' };
+  }
+
+  // ───────── BUTS : indice de flux, verrous de Terre, deux marquent, buts MT-1, corners, Over/Under ─────────
+  function somme(L, hs) {
+    return hs.map(function (h) { return L.maisons[h - 1].base; }).reduce(function (x, y) { return K.additionner(x, y); });
+  }
+  function peutMarquer(L, c) {
+    var f = L[c].figure, pos = L.positions(f);
+    var forte = pos.some(function (x) { return x.force !== null && x.force >= 50 || x.force === null; });
+    var paralysee = L.paralysies.some(function (p) { return p.cible === f && p.degre === 'GRAVE'; });
+    return forte && !paralysee && !L.annuleePar(f);
+  }
+  function buts(L, v) {
+    var sov = somme(L, [3, 5, 11, 13]), conv = K.additionner(sov, L.maisons[9].base), juge = L.maisons[14].base;
+    var fr1 = [L.maisons[L.R1.maison - 1].base, res(L, L.R1.maison)].map(front), fr7 = [L.maisons[L.R7.maison - 1].base, res(L, L.R7.maison)].map(front);
+    // deux marquent : les deux camps peuvent marquer et au moins une figure de boucle impaire donne l'élan
+    var elan = [L.maisons[L.R1.maison - 1].base, res(L, L.R1.maison), L.maisons[L.R7.maison - 1].base, res(L, L.R7.maison), juge].some(impair);
+    var p1 = peutMarquer(L, 'R1'), p7 = peutMarquer(L, 'R7'), btts = p1 && p7 && elan;
+    // flux offensif
+    var flux = ouverts(sov) * 2 + ouverts(conv) * 2 + ouverts(juge) * 1.5;
+    if (impair(sov)) flux += 2.5;
+    if (impair(conv)) flux += 2.5;
+    if (fr1.indexOf('A') >= 0) flux += 2;
+    if (fr7.indexOf('A') >= 0) flux += 2;
+    if (btts) flux += 3;
+    // verrous de Terre
+    var verrous = 0;
+    [L.maisons[7].base, res(L, 8), L.maisons[11].base, res(L, 12)].forEach(function (f) {
+      if (front(f) === 'D') verrous += 1.5;
+      if (f === 'Carcer' || f === 'Tristitia' || f === 'Populus') verrous += 1.5;
+    });
+    if (juge === 'Populus' || juge === 'Carcer' || juge === 'Tristitia') verrous += 2.5;
+    [8, 12].forEach(function (h) {
+      if (L.maisons[h - 1].base === 'Populus') verrous += 1;
+      if (L.enMaisonAntagoniste(L.maisons[h - 1].base, h)) flux += 1.2;
+    });
+    var net = Math.max(0, flux - verrous * 0.65);
+    // total de buts attendu : seuils du propriétaire (7, 9,5, 14,5), cohérent avec le verdict et « deux marquent »
+    var nul = v === 'N', total;
+    if (nul) { total = net < 7 ? 0 : net < 14.5 ? 2 : 4; if (btts && total < 2) total = 2; }
+    else { total = net < 7 ? 1 : net < 9.5 ? 2 : net < 14.5 ? 3 : 4; if (btts && total < 3) total = 3; }
+    var g1, g2;
+    if (nul) { g1 = g2 = total / 2; }
+    else {
+      var perd = btts ? (total >= 4 ? 1 : 1) : 0, gagne = total - perd;
+      if (v === '1') { g1 = gagne; g2 = perd; } else { g1 = perd; g2 = gagne; }
+    }
+    var bttsFinal = g1 > 0 && g2 > 0;
+    var T = g1 + g2;
+    // buts MT-1 (ButMT du 3.0.0) : somme M1+M5+M12+M15
+    var bm = somme(L, [1, 5, 12, 15]), posBm = L.positions(bm), basesBm = posBm.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; });
+    var pivots = [L.maisons[0].base, L.maisons[4].base, L.maisons[11].base, res(L, 15)].filter(impair).length;
+    var reposDansFront = [['R1', 'base'], ['R1', 'res'], ['R7', 'base'], ['R7', 'res']].some(function (x) {
+      var h = L[x[0]].maison, f = x[1] === 'base' ? L.maisons[h - 1].base : res(L, h);
+      return front(f) === front(bm) && num(f) === h;
+    });
+    var miroirBm = MIROIR[bm], miroirPresent = miroirBm && L.positions(miroirBm).length > 0;
+    var htBut = (impair(bm) && posBm.length > 0) || basesBm.some(function (h) { return h === 1 || h === 5 || h === 12 || h === 15; }) || (miroirPresent && reposDansFront && pivots >= 2);
+    var mt = T === 0 ? 'Aucun but en première mi-temps' : htBut ? (T >= 3 && net >= 14.5 ? 'Au moins deux buts en première mi-temps' : 'Au moins un but en première mi-temps') : 'Aucun but en première mi-temps probable';
+    // corners MT-1 (friction du 3.0.0)
+    var fric = 0;
+    [1, 5, 7, 8, 12].forEach(function (h) { var f = front(L.maisons[h - 1].base); if (f === 'A' || f === 'B') fric += 2; if (f === 'D') fric += 1.5; });
+    var a = front(L.maisons[L.R1.maison - 1].base), b = front(L.maisons[L.R7.maison - 1].base);
+    if (ANTAGONISTE_FRONT[a] === b || ANTAGONISTE_FRONT[b] === a) fric += 2.5;
+    if (verrous >= 4.5 && flux >= 9) fric += 3;
+    var corners = fric >= 13.5 ? 'Over 4.5' : fric >= 10.5 ? 'Over 3.5' : 'Under 4.5';
+    return {
+      deuxMarquent: { oui: bttsFinal, brut: btts, pole1PeutMarquer: p1, pole7PeutMarquer: p7, elan: elan, provenance: 'PORTE_3.0.0 (seuil de 50 %), reconstruit sur les forces du moteur 2', teste: 'testé sur 26 scores réels' },
+      score: g1 + ' - ' + g2, g1: g1, g2: g2, total: T,
+      overUnder: { over15: T > 1.5, over25: T > 2.5, over35: T > 3.5, indiceNet: Math.round(net * 10) / 10, flux: Math.round(flux * 10) / 10, verrous: verrous, provenance: 'PORTE_3.0.0 (indice de flux, seuils 7 / 9,5 / 14,5)', teste: 'testé sur 26 scores réels' },
+      butsMT1: { oui: T > 0 && htBut, libelle: mt, somme: bm, provenance: 'PORTE_3.0.0 (ButMT M1+M5+M12+M15)', teste: 'testé sur 6 matchs avec mi-temps connue' },
+      corners: { libelle: corners, friction: fric, provenance: 'PORTE_3.0.0 (indice de friction)', teste: 'NON_TESTE (aucun résultat de corners dans les données)' }
+    };
+  }
+
+  function analyser(theme) {
+    var L = K.lire(theme), v = verdict(L);
+    return { lecture: L, verdict: v, penalite: penalite(L), buts: buts(L, v.verdict || '1') };
+  }
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, construireTheme: K.construireTheme, fig: fig, num: num, FIG: FIG, lire: K.lire, analyser: analyser, verdict: verdict, penalite: penalite, buts: buts };
+  root.KOUN3 = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ═══ fin Moteur 3 ═══ */
 </script>
 <script>
  function escapeHTML(str) {
@@ -4637,9 +4812,11 @@
  const winState = evalPrincipeUniqueDuWin(ctx);
 
  // Moteur 2 : le premier cas qui s'applique décide (nul, R1 ou R7). Sans cas, les principes 3.0.0 décident.
- let m2 = null;
+ let m2 = null, m3 = null;
  try {
- m2 = KOUN2.analyser(KOUN2.construireTheme(...[1, 2, 3, 4].map(i => KOUN2.fig(getFigByVec(M[i]).num)))).decision;
+ m3 = KOUN3.analyser(KOUN3.construireTheme(...[1, 2, 3, 4].map(i => KOUN3.fig(getFigByVec(M[i]).num))));
+ const v3 = m3.verdict;
+ m2 = { verdict: v3.verdict, phase: v3.principe, regle: v3.titre || v3.enonce, raison: v3.raison, famille: v3.provenance, statut: v3.provenance, victoireAssuree: v3.assuree };
  } catch (e) { m2 = null; }
  const m2Decide = !!(m2 && m2.verdict);
  // Le nul ne vient plus que du Moteur 2 (front miroir : R1 + R7 = Tristitia en maison de Terre). Les voies de nul 3.0.0 ne décident plus.
@@ -4649,7 +4826,7 @@
  if (!isDrawEffective) {
  winState.winningSide = (m2.verdict === "1") ? "R1" : "R7";
  winState.winnerTeam = (winState.winningSide === "R1") ? t1 : t2;
- winState.tieBreakerReason = "Moteur 2 · " + m2.phase;
+ winState.tieBreakerReason = "Moteur 3 · " + m2.phase;
  winState.confidenceLabel = m2.victoireAssuree ? "Victoire assurée" : (m2.precision && m2.precision.niveau ? m2.precision.niveau : "Cas " + m2.phase);
  }
  }
@@ -4776,6 +4953,41 @@
  // 6. Mise à jour Ligne 6 : Over / Under
  document.getElementById("overUnderTag").textContent = kounMetrics.ouLabel;
  document.getElementById("overUnderDetailSub").textContent = `Circuit 3-5-11-13 (${kounMetrics.figSov.name}) → M10 (${kounMetrics.figConvM10.name}) · ${kounMetrics.ouRegime}`;
+ // Moteur 3 : les sorties (score, deux marquent, incident, buts MT-1, corners, Over/Under) viennent de ses principes.
+ if (m3) {
+ const issueFinale = isDrawEffective ? "N" : (winState.winningSide === "R1" ? "1" : "2");
+ const b3 = KOUN3.buts(m3.lecture, issueFinale), p3 = m3.penalite;
+ document.getElementById("predictedScoreBadge").textContent = b3.score;
+ document.getElementById("confidenceText").textContent = m2Decide
+ ? `${m2.phase} · ${({ PROPRIETAIRE: "principe du propriétaire", DEVELOPPEMENT: "issu du développement", DEV_SEUL: "développement seul", "PORTE_3.0.0": "règle du 3.0.0" })[m2.statut] || m2.statut}${m2.victoireAssuree ? " · assurée" : ""}`
+ : "Aucun principe ne tranche";
+ const bt = document.getElementById("bttsTag");
+ bt.textContent = b3.deuxMarquent.oui ? "Oui" : "Non";
+ bt.className = b3.deuxMarquent.oui ? "tag-yes" : "tag-no";
+ document.getElementById("bttsDetailSub").textContent = b3.deuxMarquent.oui
+ ? `Score prévu ${b3.score} : les deux camps marquent (R1 ${b3.deuxMarquent.pole1PeutMarquer ? "peut marquer" : "verrouillé"}, R7 ${b3.deuxMarquent.pole7PeutMarquer ? "peut marquer" : "verrouillé"})`
+ : `${!b3.deuxMarquent.pole1PeutMarquer ? t1 + " verrouillé" : ""}${!b3.deuxMarquent.pole1PeutMarquer && !b3.deuxMarquent.pole7PeutMarquer ? " · " : ""}${!b3.deuxMarquent.pole7PeutMarquer ? t2 + " verrouillé" : ""}${b3.deuxMarquent.pole1PeutMarquer && b3.deuxMarquent.pole7PeutMarquer ? "Un seul camp marque dans le score prévu" : ""}`;
+ const inc = document.getElementById("incidentTag");
+ if (p3.actif) {
+ const camp = p3.camp === "R1" ? `${t1} (R1)` : p3.camp === "R7" ? `${t2} (R7)` : `${t1} et ${t2}`;
+ inc.textContent = `${p3.libelle} (${camp})`;
+ inc.className = "tag-red-pill";
+ document.getElementById("incidentDetailSub").textContent = p3.raisons[0] || "";
+ } else {
+ inc.textContent = "Aucun";
+ inc.className = "tag-neutral-pill";
+ document.getElementById("incidentDetailSub").textContent = "Aucun signal de carton ni de pénalité";
+ }
+ const hg = document.getElementById("htGoalTag");
+ hg.textContent = b3.butsMT1.oui ? "Oui" : "Non";
+ hg.className = b3.butsMT1.oui ? "tag-yes" : "tag-no";
+ document.getElementById("htGoalsDetailSub").textContent = b3.butsMT1.libelle + " (somme M1+M5+M12+M15 : " + b3.butsMT1.somme + ")";
+ document.getElementById("htCornersTag").textContent = b3.corners.libelle;
+ document.getElementById("htCornersDetailSub").textContent = `Indice de friction ${b3.corners.friction}`;
+ const ou = b3.overUnder;
+ document.getElementById("overUnderTag").textContent = ou.over35 ? "Over 3.5" : ou.over25 ? "Over 2.5" : ou.over15 ? "Over 1.5" : "Under 1.5";
+ document.getElementById("overUnderDetailSub").textContent = `1,5 : ${ou.over15 ? "Over" : "Under"} · 2,5 : ${ou.over25 ? "Over" : "Under"} · 3,5 : ${ou.over35 ? "Over" : "Under"} · indice net ${ou.indiceNet}`;
+ }
 
  const parityTag = (r1House % 2 === 0) ? "Maison Paire · Res Alliée" : "Maison Impaire · Res Rupture";
  const duelNote = winState.resDuel === 1 ? " [Res Domine R7]" : (winState.resDuel === -1 ? " [Res Subit R7]" : "");
@@ -4784,11 +4996,11 @@
  const r1ReposTxt = winState.r1RestLink.count ? winState.r1RestLink.validRestHouses.join(", ") : "Aucune";
  const r7ReposTxt = winState.r7RestLink.count ? winState.r7RestLink.validRestHouses.join(", ") : "Aucune";
 
- document.getElementById("m2Case").textContent = m2Decide ? `${m2.phase} · ${m2.regle} (${m2.statut === "REGLE_CONFIRMEE" ? "règle confirmée" : "en essai"}${m2.victoireAssuree ? ", victoire assurée" : ""})` : "Aucun cas ne s'applique : la lecture 3.0.0 (score) départage, sans nul";
+ document.getElementById("m2Case").textContent = m2Decide ? `${m2.phase} · ${m2.regle} (${({ PROPRIETAIRE: "posé par le propriétaire", DEVELOPPEMENT: "issu du développement", DEV_SEUL: "développement seul, non confirmé", "PORTE_3.0.0": "règle du 3.0.0" })[m2.statut] || m2.statut}${m2.victoireAssuree ? ", victoire assurée" : ""})` : "Aucun principe ne tranche : la lecture 3.0.0 (score) départage, sans nul";
  document.getElementById("m2Reason").textContent = m2Decide ? m2.raison : "";
  document.getElementById("verdictBreakdown").innerHTML = `
  <span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#fde047;">
- <strong>&#9989; PrincipeUniqueDuWin (${isDrawEffective ? 'Suspendu : le Moteur 2 donne le nul' : 'Actif'})</strong> :
+ <strong>&#9989; PrincipeUniqueDuWin (${isDrawEffective ? 'Suspendu : le Moteur 3 donne le nul' : 'Actif'})</strong> :
  <strong>${safeT1} (R1=M${r1House})</strong> = <strong>${Math.round(winState.scoreR1)} pts</strong> [Base ${winState.strR1Base}% · Res ${winState.strR1Res}%]
  &nbsp;vs&nbsp;
  <strong>${safeT2} (R7=M${r7House})</strong> = <strong>${Math.round(winState.scoreR7)} pts</strong> [Base ${winState.strR7Base}% · Res ${winState.strR7Res}%]
@@ -4798,14 +5010,14 @@
  <strong>&#127968; Figures de repos liées aux Fronts (&ge;2 sans antagoniste)</strong> :
  <strong>R1 (${safeT1})</strong> = <strong>${winState.r1RestLink.count}</strong> [${escapeHTML(r1ReposTxt)}] &nbsp;|&nbsp;
  <strong>R7 (${safeT2})</strong> = <strong>${winState.r7RestLink.count}</strong> [${escapeHTML(r7ReposTxt)}]
- ${rubeusInTerre ? ` &nbsp;&bull;&nbsp; <strong style="color:#f87171;">Rubeus en Terre (${rubeusTerreHits.join(", ")}) : ${isDrawEffective ? "lecture 3.0.0 « jamais nul », écartée par le Moteur 2 (nul)" : "Jamais Nul"}</strong>` : ''}
+ ${rubeusInTerre ? ` &nbsp;&bull;&nbsp; <strong style="color:#f87171;">Rubeus en Terre (${rubeusTerreHits.join(", ")}) : ${isDrawEffective ? "lecture 3.0.0 « jamais nul », écartée par le Moteur 3 (nul)" : "Jamais Nul"}</strong>` : ''}
  </span>
  <span><strong>${safeT1} (Pôle &amp; Croisement)</strong> : [${baseR1.name} (${baseR1.front}) &rarr; Res: ${resR1.name} (${resR1.front}) | ${parityTag} &bull; ${winState.poleR1.tag}${winState.r1Passed ? ` &bull; Chef (${winState.r1PassCount})` : ""}${duelNote}${rubR1Note}]</span>
  <span><strong>${safeT2} (Pôle &amp; Croisement)</strong> : [${baseR7.name} (${baseR7.front}) &rarr; Res: ${resR7.name} (${resR7.front}) | ${winState.poleR7.tag}${winState.r7Passed ? ` &bull; Chef (${winState.r7PassCount})` : ""}${rubR7Note}]</span>
  <span><strong>Juge M15</strong> : ${baseM15.name} (Res: ${resM15.name}) &bull; <strong>Sentence M16</strong> : ${baseM16.name} (Res alliée: ${resM16.name})</span>
  <span style="width:100%; border-top:1px dashed #334155; padding-top:4px; margin-top:2px; color:${isDrawEffective ? '#facc15' : '#94a3b8'};">
- <strong>&#9878; PrincipeUniqueDuNul</strong> <em>(lecture 3.0.0, ne décide plus ; le nul vient du Moteur 2)</em> :
- ${isDrawEffective ? `<strong style="color:#4ade80;">ACTIF (NUL — Moteur 2 ${escapeHTML(m2 ? m2.phase : "")})</strong>` : `<strong>${rawNulState.isDraw ? "Lecture 3.0.0, ne décide plus : " : ""}${escapeHTML(rawNulState.activeWayLabel)}</strong>`} &mdash;
+ <strong>&#9878; PrincipeUniqueDuNul</strong> <em>(lecture 3.0.0, ne décide plus ; le nul vient du Moteur 3)</em> :
+ ${isDrawEffective ? `<strong style="color:#4ade80;">ACTIF (NUL — Moteur 3 ${escapeHTML(m2 ? m2.phase : "")})</strong>` : `<strong>${rawNulState.isDraw ? "Lecture 3.0.0, ne décide plus : " : ""}${escapeHTML(rawNulState.activeWayLabel)}</strong>`} &mdash;
  [1] R1/R7 Miroirs (${baseR1.name} / ${baseR7.name}) : <strong>${rawNulState.cond1_R1R7Mirror ? 'Oui' : 'Non'}</strong> &bull;
  [2] Somme R1+R7 = ${rawNulState.sumR1R7.name} (M${rawNulState.sumR1R7.dom[0]}) : <strong>${rawNulState.cond2_SumTerre ? 'Oui' : 'Non'}</strong> &bull;
  [3] Témoins M13/M14 (${escapeHTML(rawNulState.witnessType)}) : <strong>${rawNulState.cond3_Witnesses ? 'Oui' : 'Non'}</strong> &bull;
@@ -5125,8 +5337,9 @@
  let m2c = null;
  try {
  const thSim = {};
- for (let k = 1; k <= 16; k++) thSim[k] = KOUN2.FIG[getFigByVec(M_sim[k]).num - 1];
- m2c = KOUN2.analyser(thSim, { R1: h1, R7: h7 }, true).decision;
+ for (let k = 1; k <= 16; k++) thSim[k] = KOUN3.FIG[getFigByVec(M_sim[k]).num - 1];
+ const vv = KOUN3.verdict(KOUN3.lire(thSim, { R1: h1, R7: h7 }));
+ m2c = { verdict: vv.verdict, phase: vv.principe, regle: vv.titre || vv.enonce, raison: vv.raison, victoireAssuree: vv.assuree };
  } catch (e) { m2c = null; }
  if (m2c && m2c.verdict) {
  const lecture30 = crossConclusion
@@ -5139,11 +5352,11 @@
  : (m2c.verdict === "1"
  ? `<span style="color:#60a5fa; font-weight:800;">Victoire R1 (${safeT1})</span>`
  : `<span style="color:#f87171; font-weight:800;">Victoire R7 (${safeT2})</span>`);
- crossConclusion = `${tete} — Moteur 2 · <strong>${escapeHTML(m2c.phase)}</strong> ${escapeHTML(m2c.regle)}${m2c.victoireAssuree ? " (assurée)" : ""}${modif}<br>`
+ crossConclusion = `${tete} — Moteur 3 · <strong>${escapeHTML(m2c.phase)}</strong> ${escapeHTML(m2c.regle)}${m2c.victoireAssuree ? " (assurée)" : ""}${modif}<br>`
  + `<span style="color:#cbd5e1; font-size:0.72rem;">${escapeHTML(m2c.raison)}</span><br>`
  + `<span style="color:#94a3b8; font-size:0.72rem;">${lecture30}</span>`;
  } else {
- crossConclusion = `<span style="color:#facc15;">Moteur 2 : aucun cas ne s'applique, la lecture 3.0.0 (score) départage, sans nul.</span><br>` + crossConclusion;
+ crossConclusion = `<span style="color:#facc15;">Moteur 3 : aucun principe ne tranche, la lecture 3.0.0 (score) départage, sans nul.</span><br>` + crossConclusion;
  }
 
  document.getElementById("r1r7CalcOutput").innerHTML = `
@@ -6158,8 +6371,9 @@
  // Moteur actuel : le verdict est recalculé à l'affichage (celui enregistré date du moment de la sauvegarde) et comparé au score réel.
  const lireMoteur = (item) => {
  try {
- const figs = item.mVecs.map(v => KOUN2.fig(getFigByVec(v.split(",").map(Number)).num));
- return KOUN2.analyser(KOUN2.construireTheme(...figs)).decision;
+ const figs = item.mVecs.map(v => KOUN3.fig(getFigByVec(v.split(",").map(Number)).num));
+ const vv = KOUN3.verdict(KOUN3.lire(KOUN3.construireTheme(...figs)));
+ return { verdict: vv.verdict, phase: vv.principe };
  } catch (e) { return null; }
  };
  const issueReelle = (item) => {
@@ -6201,7 +6415,7 @@
  });
  const bilan = juges
  ? `<div style="background:#0c1220; border:1px solid #23304a; border-radius:8px; padding:8px 10px; margin-bottom:8px; font-size:0.74rem; color:#e2e8f0; line-height:1.5;">
- <strong>&#129504; Moteur actuel sur vos thèmes sauvegardés avec un score :</strong> ${justes} concordants sur ${juges}.
+ <strong>&#129504; Moteur 3 sur vos thèmes sauvegardés avec un score :</strong> ${justes} concordants sur ${juges}.
  ${juges - justes ? `<br>À côté : ${manquesNul} nul(s) manqué(s), ${manquesVic} victoire(s) mal donnée(s)${sansCas ? `, ${sansCas} sans cas` : ""}.` : ""}
  <br><button type="button" class="btn-slate" style="margin-top:4px; font-size:0.7rem;" onclick="exportSavedThemes()">&#11015; Exporter les thèmes (JSON)</button>
  </div>`

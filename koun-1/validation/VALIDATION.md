@@ -35,3 +35,6 @@
 | Toujours R1 | 13/19 | 9/13 |
 
 Le canal maintenu, et donc DR-C qui le décide, ne tient pas hors développement.
+
+## Moteur 3 (table rase), évalué le 18 novembre 2026
+`node outils/evaluer3.js` : développement 24/27, lot 1 8/14 (repère « toujours R1 » 9/14). Détail et provenance de chaque principe dans `moteur3/PRINCIPES.md`. Scores réels (`validation/scores-reels.json`, 26 matchs) : Deux marquent 13/26, Over/Under 1,5 24/26, 2,5 20/26, 3,5 9/26, mi-temps 5/6 ; corners, pénalité et carton non testés.
