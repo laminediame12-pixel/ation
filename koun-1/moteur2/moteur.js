@@ -442,6 +442,13 @@
     }
     return t;
   }
+  // Équilibre des affinités : Feu va avec Air, Eau avec Terre. On compte, sur les 16 maisons, les lignes à deux points de chaque niveau.
+  // Base : Feu + Air = Eau + Terre. La résultante ne montre pas cet équilibre (0 sur 8 nuls).
+  function niveauxAffinites(L) {
+    var lv = [0, 0, 0, 0];
+    L.maisons.forEach(function (m) { for (var i = 0; i < 4; i++) if (POINTS[m.base][i] === 2) lv[i]++; });
+    return { niveaux: lv, feuAir: lv[0] + lv[1], eauTerre: lv[2] + lv[3] };
+  }
   function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
     return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos.';
@@ -617,6 +624,13 @@
         if (L.R1.front === L.R7.front) return null;
         var n = equilibreCompense(L); if (!n) return null;
         return N('Nul : aucun cas de victoire ne s’applique. ' + texteEquilibre(n));
+      } },
+    { id: 'NU-3', famille: 'Équilibre d’activation', titre: 'Le nul : les affinités Feu-Air et Eau-Terre s’équilibrent en base', statut: 'EN_ESSAI',
+      enonce: 'Aucun cas de victoire ne s’est appliqué et le juge (M15) n’est pas chez lui. En base, les lignes à deux points des niveaux Feu et Air (réunis) égalent celles des niveaux Eau et Terre (réunis) sur les 16 maisons : nul.',
+      condition: function (L) {
+        if (jugeChezLui(L)) return null;
+        var n = niveauxAffinites(L); if (n.feuAir !== n.eauTerre) return null;
+        return N('Nul : aucun cas de victoire ne s’applique. En base, Feu + Air compte ' + n.feuAir + ' lignes à deux points (Feu ' + n.niveaux[0] + ', Air ' + n.niveaux[1] + ') et Eau + Terre en compte autant (Eau ' + n.niveaux[2] + ', Terre ' + n.niveaux[3] + ') : les affinités s’équilibrent, et le juge (M15) n’est pas dans sa maison de repos.');
       } },
     { id: 'DR-1', famille: 'Dernier recours', titre: 'L’axe angulaire désigne un pôle', statut: 'EN_ESSAI',
       enonce: 'La somme de l’axe angulaire (M1+M4+M7+M10) est un pôle qui siège lui-même en M1, M4, M7 ou M10 : ce pôle gagne.',
