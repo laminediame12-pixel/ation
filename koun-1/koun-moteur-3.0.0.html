@@ -2299,16 +2299,25 @@
     var cas = K.CAS.filter(function (c) { return c.id === p[0]; })[0];
     return { id: p[0], provenance: p[1], enonce: p[2], cas: cas };
   });
-  // Dernier principe de victoire : la force des camps. Le camp d'un pôle = le pôle, les figures de son front et celles de son front binôme ;
-  // on y soustrait la force de son antagoniste. La force d'une figure = la somme des forces de toutes ses positions (base et résultante).
+  // Dernier principe de victoire : la force des camps, par le cercle des fronts.
+  // Les fronts circulent B → A → D → C → B : chaque front attaque le suivant. Le front binôme (A↔C, B↔D) protège le front ; le front qui l'attaque est son prédateur.
+  // Force du camp d'un pôle = force de son front + force de son front binôme (protecteur) − force de son front prédateur.
+  // La force d'un front = la somme des forces de toutes les positions de ses figures dans le thème (base et résultante).
+  var SUIVANT = { B: 'A', A: 'D', D: 'C', C: 'B' }, PREDATEUR = { A: 'B', D: 'A', C: 'D', B: 'C' }, BINOME_FRONT = { A: 'C', C: 'A', B: 'D', D: 'B' };
   function forceFigures(L, figs) {
     return figs.reduce(function (t, g) { return t + L.positions(g).reduce(function (u, x) { return u + (x.force === null ? 100 : x.force); }, 0); }, 0);
   }
-  function forceCamp(L, c) {
-    var p = L[c], soutienFront = forceFigures(L, p.frontDirect), soutienBinome = forceFigures(L, p.frontBinome), pression = forceFigures(L, [p.antagoniste]);
-    return { total: soutienFront + soutienBinome - pression, front: soutienFront, binome: soutienBinome, antagoniste: pression };
+  function forceFront(L, lettre) {
+    return FIG.filter(function (g) { return FRONTS[(num(g) - 1) % 4] === lettre; }).reduce(function (t, g) {
+      return t + L.positions(g).reduce(function (u, x) { return u + (x.force === null ? 100 : x.force); }, 0);
+    }, 0);
   }
-  var FORCE_POLES = { id: 'FC-1', provenance: 'DEVELOPPEMENT', enonce: 'Le camp le plus fort gagne : force du pôle et des figures de son front, plus celles de son front binôme, moins la force de son antagoniste ; égalité : CC-1.' };
+  function forceCamp(L, c) {
+    var F = FRONTS[(num(L[c].figure) - 1) % 4], P = BINOME_FRONT[F], D = PREDATEUR[F];
+    var sf = forceFront(L, F), sp = forceFront(L, P), sd = forceFront(L, D);
+    return { total: sf + sp - sd, front: F, force: sf, protecteur: P, forceProtecteur: sp, predateur: D, forcePredateur: sd };
+  }
+  var FORCE_POLES = { id: 'FC-1', provenance: 'DEVELOPPEMENT', enonce: 'Le camp le plus fort gagne, par le cercle des fronts B → A → D → C → B : force de son front + force de son front binôme, qui le protège, − force du front qui l’attaque ; égalité : CC-1.' };
 
   // Comptage des niveaux d'activation par deux, au niveau des canaux : nombre de lignes à deux points dans les quatre résultantes des maisons d'un canal
   // (une ligne à deux points = la figure et la figure de repos de la maison s'accordent sur ce niveau). En M16, sans résultante, la base.
@@ -2331,15 +2340,22 @@
     }
     var f1 = forceCamp(L, 'R1'), f7 = forceCamp(L, 'R7'), a = f1.total, b = f7.total;
     if (a === b) {
+      // même total de camp (c'est le cas quand les deux pôles ont le même front) : on compare la force des deux pôles eux-mêmes
+      var pa = forceFigures(L, [L.R1.figure]), pb = forceFigures(L, [L.R7.figure]);
+      if (pa !== pb) {
+        var gp = pa > pb ? 'R1' : 'R7';
+        return { verdict: pa > pb ? '1' : '2', principe: 'FP-1', provenance: 'DEVELOPPEMENT', enonce: 'Les camps ont la même force : le pôle le plus fort (somme des forces de toutes ses positions) gagne.', titre: 'La force du pôle',
+          raison: 'Victoire ' + gp + ' : les deux camps ont la même force (' + a + ') ; la somme des forces de ' + L[gp].figure + ' (' + Math.max(pa, pb) + ') dépasse celle de l’autre pôle (' + Math.min(pa, pb) + ').', assuree: false };
+      }
       var ca = concordanceCanal(L, canalDuPole(L.R1)), cb = concordanceCanal(L, canalDuPole(L.R7)), c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7);
-      var base = 'Les forces des deux camps sont égales (' + a + '). Canal ' + c1 + ' de R1 (M' + L.R1.maison + ') : ' + ca + ' lignes à deux points ; canal ' + c7 + ' de R7 (M' + L.R7.maison + ') : ' + cb + '.';
+      var base = 'Les forces des deux camps et des deux pôles sont égales (' + a + ' et ' + pa + '). Canal ' + c1 + ' de R1 (M' + L.R1.maison + ') : ' + ca + ' lignes à deux points ; canal ' + c7 + ' de R7 (M' + L.R7.maison + ') : ' + cb + '.';
       if (ca === cb) return { verdict: 'N', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le nul par le comptage des deux points des canaux', raison: 'Nul : ' + base + ' Les deux canaux sont à égalité.', assuree: false, provisoire: true };
       var gc = ca > cb ? 'R1' : 'R7';
       return { verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
     }
     var g = a > b ? 'R1' : 'R7';
     return { verdict: a > b ? '1' : '2', principe: FORCE_POLES.id, provenance: FORCE_POLES.provenance, enonce: FORCE_POLES.enonce, titre: 'La force des camps',
-      raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. Force du camp ' + g + ' : ' + (g === 'R1' ? f1 : f7).front + ' (pôle et son front) + ' + (g === 'R1' ? f1 : f7).binome + ' (front binôme) − ' + (g === 'R1' ? f1 : f7).antagoniste + ' (antagoniste) = ' + Math.max(a, b) + ', contre ' + Math.min(a, b) + ' pour l’autre camp.', assuree: false };
+      raison: 'Victoire ' + g + ' : aucun principe de victoire ou de nul ne s’applique. Cercle des fronts B → A → D → C → B. Camp ' + g + ' (front ' + (g === 'R1' ? f1 : f7).front + ') : ' + (g === 'R1' ? f1 : f7).force + ' + ' + (g === 'R1' ? f1 : f7).forceProtecteur + ' (front ' + (g === 'R1' ? f1 : f7).protecteur + ', protecteur) − ' + (g === 'R1' ? f1 : f7).forcePredateur + ' (front ' + (g === 'R1' ? f1 : f7).predateur + ', prédateur) = ' + Math.max(a, b) + ', contre ' + Math.min(a, b) + ' pour l’autre camp.', assuree: false };
   }
 
   // ───────── PÉNALITÉ ET CARTON ROUGE (règle du 3.0.0) ─────────
@@ -3200,6 +3216,7 @@
  <span style="width:100%; border-bottom:1px solid #1e293b; padding-bottom:4px; margin-bottom:2px; color:#4ade80;"><strong>&#129504; Verdict</strong> : ${escapeHTML(v.raison)}</span>
  ${lignesPrincipes}
  <span style="width:100%; color:${v.principe === KOUN3.FORCE_POLES.id ? "#4ade80" : "#64748b"};">${v.principe === KOUN3.FORCE_POLES.id ? "&#9654; " : "&nbsp;&nbsp;"}<strong>${KOUN3.FORCE_POLES.id}</strong> <em>(issu du développement)</em> : ${escapeHTML(KOUN3.FORCE_POLES.enonce)}</span>
+ <span style="width:100%; color:${v.principe === "FP-1" ? "#4ade80" : "#64748b"};">${v.principe === "FP-1" ? "&#9654; " : "&nbsp;&nbsp;"}<strong>FP-1</strong> <em>(issu du développement)</em> : même force des camps (cas des deux pôles de même front) : le pôle le plus fort, somme des forces de toutes ses positions, gagne.</span>
  <span style="width:100%; color:${v.principe === "CC-1" ? "#4ade80" : "#64748b"};">${v.principe === "CC-1" ? "&#9654; " : "&nbsp;&nbsp;"}<strong>CC-1</strong> <em>(posé par le propriétaire, provisoire)</em> : ${escapeHTML(KOUN3.NUL_CANAL.enonce)}</span>
  <span style="width:100%; border-top:1px dashed #334155; padding-top:4px; margin-top:2px; color:#fca5a5;"><strong>&#9888; Pénalité et carton</strong> <em>(règle du 3.0.0, non testée)</em> : ${p.actif ? escapeHTML(p.libelle + " : " + p.raisons.join(" ; ")) : "aucun signal"}</span>
  <span style="width:100%; color:#cbd5e1;"><strong>&#9917; Deux marquent</strong> <em>(testé sur 26 scores réels)</em> : ${t1} ${b.deuxMarquent.pole1PeutMarquer ? "peut marquer" : "verrouillé"}, ${t2} ${b.deuxMarquent.pole7PeutMarquer ? "peut marquer" : "verrouillé"}, élan ${b.deuxMarquent.elan ? "présent" : "absent"}.</span>
@@ -3218,7 +3235,7 @@
  <span>${camp} — ${nom} (M${c.maison} · canal ${CANAL[(c.maison - 1) % 4]})</span>
  <span style="font-size:0.68rem; background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px; color:#fde047;">${escapeHTML(c.figure)} · front ${c.front}</span>
  </div>
- <div style="color:#cbd5e1; font-size:0.72rem;">${L.chezElle(c.figure) ? "Chez lui. " : ""}${L.annuleePar(c.figure) ? "Annulé par " + escapeHTML(L.annuleePar(c.figure).attaquant) + ". " : ""}Positions : ${escapeHTML(lignes || "aucune")}.${paral ? " " + escapeHTML(paral) + "." : ""} Antagoniste : ${escapeHTML(c.antagoniste)}.</div>
+ <div style="color:#cbd5e1; font-size:0.72rem;">${L.chezElle(c.figure) ? "Chez lui. " : ""}${L.annuleePar(c.figure) ? "Annulé par " + escapeHTML(L.annuleePar(c.figure).attaquant) + ". " : ""}Positions : ${escapeHTML(lignes || "aucune")}.${paral ? " " + escapeHTML(paral) + "." : ""} Antagoniste : ${escapeHTML(c.antagoniste)}. Cercle B → A → D → C → B : front ${c.front}, protecteur ${({ A: 'C', C: 'A', B: 'D', D: 'B' })[c.front]}, prédateur ${({ A: 'B', D: 'A', C: 'D', B: 'C' })[c.front]}.</div>
  </div>`;
  };
  document.getElementById("strategicPoleType").textContent = L.mode === "MEME_FRONT" ? "Même front" : L.mode === "MEME_BOUCLE" ? "Même boucle, fronts différents" : "Boucles différentes";
