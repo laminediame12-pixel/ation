@@ -1,0 +1,7 @@
+{
+ "nom": "Lot du 19/11/2026 (suite) : match virtuel FC 26 (Championship d'Angleterre), thème valide tiré au hasard avant le match",
+ "regle": "Un lot ne sert qu'une fois. Score : équipe 1 - équipe 2 (R1 = équipe 1).",
+ "matchs": [
+  { "equipe1": "Newcastle United", "equipe2": "Aston Villa", "date": "19/11/2026", "theme": "3-13-13-1", "score": "1-3" }
+ ]
+}
