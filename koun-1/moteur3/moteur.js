@@ -417,9 +417,9 @@
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
   // FI-5 : validation du thème (propriétaire) : (1) le binôme de M1 est présent et en maison angulaire (M1, M4, M7 ou M10, base ou résultante) ; (2) la figure somme de l'axe angulaire (M1+M4+M7+M10) est présente et en maison angulaire ;
-  // (3) la figure somme 3-5-11-15 (M3+M5+M11+M15) est présente quelque part dans le thème ; (4) la figure du jour du match est présente quelque part dans le thème (base ou résultante). Toutes : thème valide ; sinon non valide.
+  // (3) la figure somme 3-5-11-15 (M3+M5+M11+M15) est présente quelque part dans le thème ; (4) au moins une des figures du jour du match est présente quelque part dans le thème (base ou résultante). Toutes : thème valide ; sinon non valide.
   // La figure du jour dépend de la date du match (jour de la semaine) : sans date, le moteur n'applique que les trois premières conditions.
-  var JOURS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], FIGURE_DU_JOUR = [12, 16, 1, 11, 15, 6, 10];   // Fortuna Major, Populus, Puer, Conjunctio, Aquisitio, Amissio, Carcer
+  var JOURS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], FIGURE_DU_JOUR = [[12], [16, 5], [1, 7], [11], [15], [6], [10]];   // dimanche Fortuna Major ; lundi Populus et Via ; mardi Puer et Rubeus ; mercredi Conjunctio ; jeudi Aquisitio ; vendredi Amissio ; samedi Carcer
   var FIABILITE = { id: 'FI-5', provenance: 'PROPRIETAIRE', enonce: 'Validation du thème : le binôme de M1 et la figure somme de l’axe angulaire (M1+M4+M7+M10) sont présents et en maison angulaire (1, 4, 7 ou 10, base ou résultante) ; la figure somme 3-5-11-15 et la figure du jour sont présentes quelque part dans le thème. Toutes les conditions : thème valide ; sinon non valide. La validation ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
   function fiabilite(L, jour) {
     var b = binomeM1(L), a = axeValide(L), ANG = [1, 4, 7, 10];
@@ -428,7 +428,13 @@
     a.presente = a.base.length + a.resultante.length > 0;
     function presence(f) { var p = L.positions(f); return { figure: f, presente: p.length > 0, base: p.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), resultante: p.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; }) }; }
     var s3 = presence(L.sommes[1].figure), j = null, n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0) + (s3.presente ? 1 : 0), total = 3;
-    if (jour !== undefined && jour !== null && jour >= 0 && jour <= 6) { j = presence(fig(FIGURE_DU_JOUR[jour])); j.jour = JOURS[jour]; total = 4; if (j.presente) n++; }
+    if (jour !== undefined && jour !== null && jour >= 0 && jour <= 6) {
+      // un jour peut avoir plusieurs figures : la condition est remplie si au moins une des figures du jour est présente dans le thème
+      var fj = FIGURE_DU_JOUR[jour].map(function (x) { return presence(fig(x)); });
+      j = { jour: JOURS[jour], figures: fj, figure: fj.map(function (x) { return x.figure; }).join(', '), presente: fj.some(function (x) { return x.presente; }),
+        base: [].concat.apply([], fj.map(function (x) { return x.base; })), resultante: [].concat.apply([], fj.map(function (x) { return x.resultante; })) };
+      total = 4; if (j.presente) n++;
+    }
     var valide = n === total;
     return { niveau: n, total: total, valide: valide, libelle: valide ? 'valide' : 'non valide', binome: b, axe: a, somme3: s3, jour: j };
   }
