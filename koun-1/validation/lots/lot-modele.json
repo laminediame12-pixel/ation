@@ -1,0 +1,7 @@
+{
+ "nom": "lot-modele (à copier, remplir, renommer : lot-2026-11-xx.json)",
+ "regle": "Un lot ne sert qu'une fois : le moteur gelé est évalué dessus, puis le lot passe en développement. Score : équipe 1 - équipe 2 (R1 = équipe 1). Date : jj/mm/aaaa (sert à la figure du jour). Les lignes avec exemple : true sont ignorées : supprimer cette ligne et saisir vos vrais matchs.",
+ "matchs": [
+  { "exemple": true, "equipe1": "EXEMPLE FICTIF A", "equipe2": "EXEMPLE FICTIF B", "date": "22/11/2026", "theme": "12-9-4-5", "score": "2-1" }
+ ]
+}
