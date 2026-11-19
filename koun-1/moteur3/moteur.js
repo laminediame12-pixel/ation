@@ -406,10 +406,11 @@
     enonce: 'Forces des pôles égales : on compte les lignes à deux points des quatre résultantes du canal de la maison de chaque pôle. Égalité : nul ; sinon le canal qui en compte le plus donne la victoire à son pôle. Principe provisoire, en attendant mieux.' };
 
 
-  // Le binôme de M1 (la figure qui suit celle de M1 de deux numéros, même front binôme) ne décide pas du vainqueur : il valide le thème.
+  // Le binôme de M1 (sa partenaire de front binôme : 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16) ne décide pas du vainqueur : il valide le thème.
   // Chez elle, dans sa maison de repos, la figure « a juré » ; dans son canal (une maison de même rang que sa maison de repos), elle est « acceptée ».
   function binomeM1(L) {
-    var f = fig(num(L.maisons[0].base) + 2), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
+    // Binôme d'une figure : sa partenaire de front binôme dans le même couple (1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16), comme dans la page d'origine (BINOMES_MAP). Rang 1 ou 2 dans le bloc de 4 : numéro + 2 ; rang 3 ou 4 : numéro − 2.
+    var n0 = num(L.maisons[0].base), f = fig(n0 % 4 === 1 || n0 % 4 === 2 ? n0 + 2 : n0 - 2), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
