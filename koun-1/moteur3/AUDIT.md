@@ -56,7 +56,7 @@ Observation d'ensemble : sur les 18 thèmes, 16 verdicts sont justes, mais « to
 
 | Élément | Provenance | Contenu | Décision |
 |---|---|---|---|
-| FI-3 : le thème est valide si le binôme de M1 **et** la somme de l'axe angulaire (M1+M4+M7+M10) sont présents et ont un emplacement en maison angulaire (M1, M4, M7, M10, base ou résultante) | PROPRIÉTAIRE (mise en œuvre : MOI) | 10 016 valides sur 65 536 ; 3 des 26 scores réels valides ; la définition de l'angulaire (4 ou 6 maisons) a été choisie par moi | ☐ |
+| FI-4 : le thème est valide si (1) le binôme de M1 et (2) la somme de l'axe angulaire sont présents et en maison angulaire, et (3) la somme 3-5-11-15 est présente quelque part | PROPRIÉTAIRE (mise en œuvre : MOI) | 8 785 valides sur 65 536 ; 3 des 26 scores réels valides | ☐ |
 | Binôme de M1 = partenaire de front binôme (1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16) | 3.0.0 | **J'avais d'abord utilisé n+2 pour toutes les figures : erreur corrigée** | ☐ |
 | CO-1 : deux thèmes d'un même match, désaccord : le thème valide l'emporte, puis celui dont l'axe est validé, puis le principe le plus fort (assuré 4, structure 3, FC-2 2, FP-1 1, CC-1 0), puis la marge, puis nul | PROPRIÉTAIRE (axe, validité) / **MOI** (rangs, marge) | Testé sur un seul match (lot 2), qui a servi à poser le critère de l'axe | ☐ |
 
@@ -78,10 +78,10 @@ Observation d'ensemble : sur les 18 thèmes, 16 verdicts sont justes, mais « to
 
 ## E. Couches de l'ancien système
 
-**Retirées de la page à votre demande :** le panneau « Thème porté », la figure du jour (et le badge jour/période à côté de la date), la somme 3-5-11-15 affichée comme indication, la table `BINOMES_MAP` de la page (le binôme vient maintenant du moteur, pour éviter deux calculs parallèles).
+**Retirées de la page :** le panneau « Thème porté », la figure du jour (et le badge jour/période à côté de la date), la table `BINOMES_MAP` de la page (le binôme vient maintenant du moteur, pour éviter deux calculs parallèles).
 
 **Encore présent, à votre décision :**
-- La somme 3-5-11-15 reste dans le moteur (`L.sommes`) : elle intervient dans la condition « victoire assurée » de CL-2 avec la somme de l'axe angulaire. Non affichée.
+- ~~La somme 3-5-11-15 dans CL-2~~ : retirée de la condition « victoire assurée » (elle sert à la validation du thème, comme vous l'avez précisé) ; elle est de nouveau affichée dans le panneau Validation, comptée.
 - Les rôles Fermante / Ouvrante des figures d'activation : ils servent au rythme du thème (Ouvert, Fermé, Saturé, etc.), donc à RY-1 et RY-2.
 - Deux orthographes de la figure 15 : « Acquisitio » (page, vos exports) et « Aquisitio » (moteur et documents).
 

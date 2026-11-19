@@ -1593,7 +1593,7 @@
  <div class="validation-title">Validation</div>
  <div id="validationList"></div>
  <div style="margin: 0.45rem 0;">
- <span class="pill-valid" id="themeValidBadge">Thème valide : 4/4</span>
+ <span class="pill-valid" id="themeValidBadge">Thème valide : 3/3</span>
  </div>
  <button type="button" class="btn-green" onclick="saveThemeAlert()">Sauvegarder ce thème</button>
  </div>
@@ -2249,7 +2249,7 @@
         var a = paireChezElle(L, L.R1), b = paireChezElle(L, L.R7);
         if (a.length === b.length) return null;
         var g = a.length > b.length ? L.R1 : L.R7, p = autrePole(L, g), cg = g === L.R1 ? a : b, cp = g === L.R1 ? b : a;
-        var sa = L.sommes.filter(function (x) { return x.camp === g.camp && x.surAxe.length; })[0], sp = L.sommes.some(function (x) { return x.camp === p.camp && x.surAxe.length; }) || L.sommes.some(function (x) { return x.pole; });
+        var axe = [L.sommes[0]], sa = axe.filter(function (x) { return x.camp === g.camp && x.surAxe.length; })[0], sp = axe.some(function (x) { return x.camp === p.camp && x.surAxe.length; }) || axe.some(function (x) { return x.pole; });   // la somme 3-5-11-15 ne sert pas à la victoire assurée : elle sert à la validation du thème
         var sure = !!sa && !sp;
         return V(g, L, 'Victoire ' + g.camp + (sure ? ' assurée' : '') + ' : boucles différentes, paire ' + paireDe(g).join(' + ') + ' contre ' + paireDe(p).join(' + ') + '. ' +
           cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : ''), sure);
@@ -2358,16 +2358,18 @@
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
-  // FI-3 : validation du thème (corrigée par le propriétaire) : le binôme de M1 (la figure qui suit celle de M1 de deux numéros) et la figure somme de l'axe angulaire (M1+M4+M7+M10) doivent tous deux être présents dans le thème
-  // et avoir au moins un emplacement (base ou résultante) en maison angulaire (M1, M4, M7 ou M10). Sinon le thème est non valide. La validation ne change pas le verdict ; elle départage deux thèmes du même match.
-  var FIABILITE = { id: 'FI-3', provenance: 'DEVELOPPEMENT', enonce: 'Validation du thème : le binôme de M1 et la figure somme de l’axe angulaire (M1+M4+M7+M10) sont présents dans le thème et en maison angulaire (1, 4, 7 ou 10, en base ou en résultante). Sinon le thème est non valide. La validation ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
+  // FI-4 : validation du thème (propriétaire) : (1) le binôme de M1 est présent et en maison angulaire (M1, M4, M7 ou M10, base ou résultante) ; (2) la figure somme de l'axe angulaire (M1+M4+M7+M10) est présente et en maison angulaire ;
+  // (3) la figure somme 3-5-11-15 (M3+M5+M11+M15) est présente quelque part dans le thème (base ou résultante). Les trois : thème valide ; sinon non valide. La validation ne change pas le verdict ; elle départage deux thèmes du même match.
+  var FIABILITE = { id: 'FI-4', provenance: 'PROPRIETAIRE', enonce: 'Validation du thème : le binôme de M1 et la figure somme de l’axe angulaire (M1+M4+M7+M10) sont présents et en maison angulaire (1, 4, 7 ou 10, base ou résultante) ; la figure somme 3-5-11-15 est présente quelque part dans le thème. Les trois conditions : thème valide ; sinon non valide. La validation ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
   function fiabilite(L) {
     var b = binomeM1(L), a = axeValide(L), ANG = [1, 4, 7, 10];
     var pb = L.positions(b.figure).map(function (x) { return x.maison; });
     b.presente = pb.length > 0; b.surAxe = pb.filter(function (h) { return ANG.indexOf(h) >= 0; }); b.enAxe = b.surAxe.length > 0;
     a.presente = a.base.length + a.resultante.length > 0;
-    var n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0), valide = n === 2;
-    return { niveau: n, valide: valide, libelle: valide ? 'valide' : 'non valide', binome: b, axe: a };
+    var f3 = L.sommes[1].figure, p3 = L.positions(f3), s3 = { figure: f3, presente: p3.length > 0,
+      base: p3.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), resultante: p3.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; }) };
+    var n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0) + (s3.presente ? 1 : 0), valide = n === 3;
+    return { niveau: n, valide: valide, libelle: valide ? 'valide' : 'non valide', binome: b, axe: a, somme3: s3 };
   }
   function verdict(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
@@ -3046,6 +3048,11 @@
  ok: !!(fi3 && fi3.binome.enAxe),
  title: `Binôme de M1 : ${fi3 ? fi3.binome.figure : ""}`,
  sub: `binôme de ${figM1.name} · ${fi3 ? (fi3.binome.presente ? fi3.binome.emplacements.join(", ") : "absent du thème") + " · " + angTxt(fi3.binome) : ""}`
+ },
+ {
+ ok: !!(fi3 && fi3.somme3.presente),
+ title: `Somme 3-5-11-15 : ${fi3 ? fi3.somme3.figure : ""}`,
+ sub: `M3 + M5 + M11 + M15 · ${fi3 ? (fi3.somme3.presente ? [fi3.somme3.base.length ? "base M" + fi3.somme3.base.join(", M") : "", fi3.somme3.resultante.length ? "résultante M" + fi3.somme3.resultante.join(", M") : ""].filter(Boolean).join(" · ") + " · présente dans le thème" : "absente du thème") : ""}`
  }
  ];
 
@@ -3062,12 +3069,12 @@
  `).join("");
 
  const validBadge = document.getElementById("themeValidBadge");
- if (validCount === 2) {
+ if (validCount === 3) {
  validBadge.className = "pill-valid";
- validBadge.textContent = `Thème valide : ${validCount}/2`;
+ validBadge.textContent = `Thème valide : ${validCount}/3`;
  } else {
  validBadge.className = "pill-invalid";
- validBadge.textContent = `Thème non valide : ${validCount}/2`;
+ validBadge.textContent = `Thème non valide : ${validCount}/3`;
  }
  }
 
@@ -3251,7 +3258,7 @@
  else { winTxt.textContent = "Aucun verdict"; }
  document.getElementById("predictedScoreBadge").textContent = b.score;
  const fi = m3.fiabilite;
- const fiTxt = `thème ${fi.libelle} (binôme de M1 ${!fi.binome.presente ? "absent" : fi.binome.enAxe ? "en maison angulaire" : "hors maison angulaire"}, somme de l'axe ${!fi.axe.presente ? "absente" : fi.axe.valide ? "en maison angulaire" : "hors maison angulaire"})`;
+ const fiTxt = `thème ${fi.libelle} (binôme de M1 ${!fi.binome.presente ? "absent" : fi.binome.enAxe ? "en maison angulaire" : "hors maison angulaire"}, somme de l'axe ${!fi.axe.presente ? "absente" : fi.axe.valide ? "en maison angulaire" : "hors maison angulaire"}, somme 3-5-11-15 ${fi.somme3.presente ? "présente" : "absente"})`;
  document.getElementById("confidenceText").textContent = v.principe
  ? `${v.principe} · ${prov}${v.assuree ? " · assurée" : ""}${v.niveauNul ? " · nul " + v.niveauNul : ""} · ${fiTxt}`
  : `Aucun principe ne tranche · ${fiTxt}`;
