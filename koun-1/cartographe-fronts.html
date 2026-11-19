@@ -6,7 +6,7 @@ h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-siz
 .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-bottom:12px}.lg i{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
 .fr{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:8px}.fr h2{font-size:15px;margin:2px 4px 0}.fr h2 small{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
-.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Trait épais : deux points des deux côtés · fin : un point des deux côtés · tireté : niveaux différents. Point plein : les deux lignes qui se croisent ont la même concordance. La Terre ne traverse pas : elle dévie de 1 vers 5 et de 9 vers 13. R1 bleu, R7 rouge, cadre tireté = figure absente du thème.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
+.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Trait épais : deux points des deux côtés · fin : un point des deux côtés · tireté : niveaux différents. Point plein : les deux lignes qui se croisent ont la même concordance. La Terre coupe Feu, Air et Eau, puis dévie vers le niveau Terre correspondant : de 1 vers 5 (vers le haut) et de 9 vers 13 (vers le bas). Le coin de la déviation n'est pas une intersection. R1 bleu, R7 rouge, cadre tireté = figure absente du thème.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
    Structure exacte (thème, résultantes, forces, pôles, paralysies) puis, principe par principe, victoire, nul, pénalité, deux marquent,
    buts MT-1, corners, Over/Under 1,5 · 2,5 · 3,5. Chaque principe porte sa provenance :
      PROPRIETAIRE : posé par le propriétaire ; PORTE_3.0.0 : règle du 3.0.0 reprise ; DEVELOPPEMENT : issu des matchs de développement,
@@ -744,16 +744,16 @@ function bloc(z,L){
  const x0=100,x1=360,y0=94,y1=366;
  for(let i=0;i<3;i++)out.push('<line x1="'+x0+'" y1="'+Y[i]+'" x2="'+x1+'" y2="'+Y[i]+'" '+sty(H[i],i)+'/>');
  for(let j=0;j<3;j++)out.push('<line x1="'+X[j]+'" y1="'+y0+'" x2="'+X[j]+'" y2="'+y1+'" '+sty(V[j],j)+'/>');
- const d1=[x0,Y[3],X[3],y0],d2=[x1,Y[3],X[3],y1];
- out.push('<line x1="'+d1[0]+'" y1="'+d1[1]+'" x2="'+d1[2]+'" y2="'+d1[3]+'" '+sty(D1,3)+'/>');
- out.push('<line x1="'+d2[0]+'" y1="'+d2[1]+'" x2="'+d2[2]+'" y2="'+d2[3]+'" '+sty(D2,3)+'/>');
+ // Terre : la liaison part de la figure, coupe Feu, Air, Eau, puis dévie au niveau Terre correspondant de la figure voisine (1→5 : vers le haut ; 9→13 : vers le bas)
+ const R=11,XT=X[3],YT=Y[3];
+ const pth=(c,d)=>'<path d="'+d+'" '+sty(c,3)+'/>';
+ out.push(pth(D1,'M '+x0+' '+YT+' L '+(XT-R)+' '+YT+' Q '+XT+' '+YT+' '+XT+' '+(YT-R)+' L '+XT+' '+y0));
+ out.push(pth(D2,'M '+x1+' '+YT+' L '+(XT+R)+' '+YT+' Q '+XT+' '+YT+' '+XT+' '+(YT+R)+' L '+XT+' '+y1));
  // intersections : toutes (3×3 droites + croisements de la déviation 1→5 avec les droites) ; point plein si les deux lignes ont la même concordance
  const pts=[];
  for(let i=0;i<3;i++)for(let j=0;j<3;j++)pts.push({x:X[j],y:Y[i],c1:H[i],e1:i,c2:V[j],e2:j});
- const cross=(dd,c,hs)=>{const [ax,ay,bx,by]=dd;
-  for(let i=0;i<3;i++){const t=(Y[i]-ay)/(by-ay);if(t>0&&t<1){const x=ax+t*(bx-ax);if(x>x0&&x<x1)pts.push({x,y:Y[i],c1:H[i],e1:i,c2:c,e2:3})}}
-  for(let j=0;j<3;j++){const t=(X[j]-ax)/(bx-ax);if(t>0&&t<1){const y=ay+t*(by-ay);if(y>y0&&y<y1)pts.push({x:X[j],y,c1:V[j],e1:j,c2:c,e2:3})}}};
- cross(d1,D1);cross(d2,D2);
+ for(let j=0;j<3;j++)pts.push({x:X[j],y:YT,c1:V[j],e1:j,c2:D1,e2:3});   // la Terre 1→5 coupe les lignes verticales Feu, Air, Eau
+ for(let i=0;i<3;i++)pts.push({x:XT,y:Y[i],c1:H[i],e1:i,c2:D1,e2:3});   // puis, après la déviation, les lignes horizontales Feu, Air, Eau
  let nPlein=0;pts.forEach(q=>{const same=q.c1===q.c2&&q.c1!=='dif';if(same)nPlein++;
   out.push(same?'<circle cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>':'<circle cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
  [0,1,2].forEach(i=>out.push('<text x="112" y="'+(Y[i]-7)+'" text-anchor="middle" font-size="10" font-weight="700" fill="'+EC[i]+'">'+ELC[i]+'</text>'));
