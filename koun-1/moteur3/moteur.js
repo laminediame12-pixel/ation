@@ -428,6 +428,8 @@
   function verdict(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
       var p = PRINCIPES_VERDICT[i], r = p.cas.condition(L);
+      // Règle du propriétaire : en même front, le nul ne repose pas sur le front seul ; il demande aussi l'équilibre des deux parties du thème (somme des écarts de la base et de la résultante nulle).
+      if (r && r.verdict === 'N' && L.R1.front === L.R7.front) { var nn = niveauxParties(L); if (nn.ecartBase + nn.ecartRes !== 0) r = null; }
       if (r) return { verdict: r.verdict, principe: p.id, provenance: p.provenance, enonce: p.enonce, raison: r.raison, assuree: !!r.assuree, niveauNul: r.niveauNul || null, titre: p.cas.titre };
     }
     var f1 = passages(L, 'R1'), f7 = passages(L, 'R7'), a = f1.total, b = f7.total;
@@ -441,6 +443,9 @@
       }
       var ca = concordanceCanal(L, canalDuPole(L.R1)), cb = concordanceCanal(L, canalDuPole(L.R7)), c1 = canalDuPole(L.R1), c7 = canalDuPole(L.R7);
       var base = 'Les forces des deux camps et des deux pôles sont égales (' + a + ' et ' + pa + '). Canal ' + c1 + ' de R1 (M' + L.R1.maison + ') : ' + ca + ' lignes à deux points ; canal ' + c7 + ' de R7 (M' + L.R7.maison + ') : ' + cb + '.';
+      // même règle : en même front, l'égalité des canaux ne donne le nul que si les deux parties du thème sont en équilibre ; sinon pas de nul, R1 par défaut (aucune règle ne tranche)
+      var npar = niveauxParties(L);
+      if (ca === cb && npar.ecartBase + npar.ecartRes !== 0) return { verdict: '1', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Égalité des canaux sans équilibre des parties', raison: 'Pas de nul : ' + base + ' Les deux canaux sont à égalité, mais les deux parties du thème ne sont pas en équilibre (partie 1 : ' + npar.base1 + ' en base, ' + npar.res1 + ' en résultante ; partie 2 : ' + npar.base2 + ' en base, ' + npar.res2 + ' en résultante). Victoire R1 par défaut : aucune règle ne tranche.', assuree: false, marge: 0 };
       if (ca === cb) return { verdict: 'N', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le nul par le comptage des deux points des canaux', raison: 'Nul : ' + base + ' Les deux canaux sont à égalité.', assuree: false, provisoire: true };
       var gc = ca > cb ? 'R1' : 'R7';
       return { marge: Math.abs(ca - cb), verdict: ca > cb ? '1' : '2', principe: NUL_CANAL.id, provenance: NUL_CANAL.provenance, enonce: NUL_CANAL.enonce, titre: 'Le comptage des deux points des canaux', raison: 'Victoire ' + gc + ' : ' + base + ' Le canal de ' + gc + ' en compte plus.', assuree: false, provisoire: true };
