@@ -416,18 +416,21 @@
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
-  // FI-4 : validation du thème (propriétaire) : (1) le binôme de M1 est présent et en maison angulaire (M1, M4, M7 ou M10, base ou résultante) ; (2) la figure somme de l'axe angulaire (M1+M4+M7+M10) est présente et en maison angulaire ;
-  // (3) la figure somme 3-5-11-15 (M3+M5+M11+M15) est présente quelque part dans le thème (base ou résultante). Les trois : thème valide ; sinon non valide. La validation ne change pas le verdict ; elle départage deux thèmes du même match.
-  var FIABILITE = { id: 'FI-4', provenance: 'PROPRIETAIRE', enonce: 'Validation du thème : le binôme de M1 et la figure somme de l’axe angulaire (M1+M4+M7+M10) sont présents et en maison angulaire (1, 4, 7 ou 10, base ou résultante) ; la figure somme 3-5-11-15 est présente quelque part dans le thème. Les trois conditions : thème valide ; sinon non valide. La validation ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
-  function fiabilite(L) {
+  // FI-5 : validation du thème (propriétaire) : (1) le binôme de M1 est présent et en maison angulaire (M1, M4, M7 ou M10, base ou résultante) ; (2) la figure somme de l'axe angulaire (M1+M4+M7+M10) est présente et en maison angulaire ;
+  // (3) la figure somme 3-5-11-15 (M3+M5+M11+M15) est présente quelque part dans le thème ; (4) la figure du jour du match est présente quelque part dans le thème (base ou résultante). Toutes : thème valide ; sinon non valide.
+  // La figure du jour dépend de la date du match (jour de la semaine) : sans date, le moteur n'applique que les trois premières conditions.
+  var JOURS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], FIGURE_DU_JOUR = [12, 16, 1, 11, 15, 6, 10];   // Fortuna Major, Populus, Puer, Conjunctio, Aquisitio, Amissio, Carcer
+  var FIABILITE = { id: 'FI-5', provenance: 'PROPRIETAIRE', enonce: 'Validation du thème : le binôme de M1 et la figure somme de l’axe angulaire (M1+M4+M7+M10) sont présents et en maison angulaire (1, 4, 7 ou 10, base ou résultante) ; la figure somme 3-5-11-15 et la figure du jour sont présentes quelque part dans le thème. Toutes les conditions : thème valide ; sinon non valide. La validation ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
+  function fiabilite(L, jour) {
     var b = binomeM1(L), a = axeValide(L), ANG = [1, 4, 7, 10];
     var pb = L.positions(b.figure).map(function (x) { return x.maison; });
     b.presente = pb.length > 0; b.surAxe = pb.filter(function (h) { return ANG.indexOf(h) >= 0; }); b.enAxe = b.surAxe.length > 0;
     a.presente = a.base.length + a.resultante.length > 0;
-    var f3 = L.sommes[1].figure, p3 = L.positions(f3), s3 = { figure: f3, presente: p3.length > 0,
-      base: p3.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), resultante: p3.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; }) };
-    var n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0) + (s3.presente ? 1 : 0), valide = n === 3;
-    return { niveau: n, valide: valide, libelle: valide ? 'valide' : 'non valide', binome: b, axe: a, somme3: s3 };
+    function presence(f) { var p = L.positions(f); return { figure: f, presente: p.length > 0, base: p.filter(function (x) { return x.couche === 'base'; }).map(function (x) { return x.maison; }), resultante: p.filter(function (x) { return x.couche !== 'base'; }).map(function (x) { return x.maison; }) }; }
+    var s3 = presence(L.sommes[1].figure), j = null, n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0) + (s3.presente ? 1 : 0), total = 3;
+    if (jour !== undefined && jour !== null && jour >= 0 && jour <= 6) { j = presence(fig(FIGURE_DU_JOUR[jour])); j.jour = JOURS[jour]; total = 4; if (j.presente) n++; }
+    var valide = n === total;
+    return { niveau: n, total: total, valide: valide, libelle: valide ? 'valide' : 'non valide', binome: b, axe: a, somme3: s3, jour: j };
   }
   function verdict(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
@@ -646,9 +649,9 @@
     }
     return { mode: L.mode, lignes: lignes, totaux: tot, pole1: L.R1.maison, pole7: L.R7.maison };
   }
-  function analyser(theme) {
+  function analyser(theme, jour) {
     var L = K.lire(theme), v = verdict(L);
-    return { lecture: L, verdict: v, axe: axeValide(L), fiabilite: fiabilite(L), penalite: penalite(L), buts: buts(L, v.verdict) };
+    return { lecture: L, verdict: v, axe: axeValide(L), fiabilite: fiabilite(L, jour), penalite: penalite(L), buts: buts(L, v.verdict) };
   }
 
   // ───────── DEUX THÈMES D'UN MÊME MATCH : CONCILIATION (CO-1) ─────────
@@ -665,12 +668,12 @@
   var RANG_FORCE = { 'FC-2': 2, 'FP-1': 1, 'CC-1': 0 };
   function rangVerdict(v) { return v.assuree ? 4 : (RANG_FORCE[v.principe] !== undefined ? RANG_FORCE[v.principe] : 3); }
   var CONCILIATION = { id: 'CO-1', provenance: 'DEVELOPPEMENT', enonce: 'Deux thèmes du même match, même repère (R1 = équipe 1) : accord = verdict commun ; désaccord = le thème valide l\u2019emporte (binôme de M1 et somme de l\u2019axe angulaire tous deux en maison angulaire) ; à validité égale, celui dont la somme de l\u2019axe angulaire est en maison angulaire ; sinon le thème dont le principe est le plus fort (assuré, structure, FC-2, FP-1, CC-1), puis la marge ; égalité complète = nul.' };
-  function concilier(ra, rb) {
+  function concilier(ra, rb, jour) {
     var va = ra.verdict, vb = rb.verdict, A = { verdict: va.verdict, principe: va.principe, rang: rangVerdict(va), marge: va.marge || 0 }, B = { verdict: vb.verdict, principe: vb.principe, rang: rangVerdict(vb), marge: vb.marge || 0 };
     var out = { id: CONCILIATION.id, provenance: CONCILIATION.provenance, enonce: CONCILIATION.enonce, a: A, b: B, accord: va.verdict === vb.verdict }, retenu, raison;
     if (out.accord) { retenu = rangVerdict(va) >= rangVerdict(vb) ? 'A' : 'B'; raison = 'Les deux thèmes donnent le même verdict (' + va.principe + ' et ' + vb.principe + ').'; out.verdict = va.verdict; }
     else {
-      var axA = axeValide(ra.lecture), axB = axeValide(rb.lecture), fA = fiabilite(ra.lecture), fB = fiabilite(rb.lecture);
+      var axA = axeValide(ra.lecture), axB = axeValide(rb.lecture), fA = fiabilite(ra.lecture, jour), fB = fiabilite(rb.lecture, jour);
       out.axe = { a: axA, b: axB }; out.fiabilite = { a: fA, b: fB };
       var parFiab = fA.valide !== fB.valide, cmp = parFiab ? (fA.valide ? 1 : -1) : axA.valide !== axB.valide ? (axA.valide ? 1 : -1) : A.rang !== B.rang ? (A.rang > B.rang ? 1 : -1) : (va.verdict !== 'N' && vb.verdict !== 'N' && A.marge !== B.marge ? (A.marge > B.marge ? 1 : -1) : 0), parAxe = !parFiab && axA.valide !== axB.valide;
       if (cmp === 0) { out.verdict = 'N'; retenu = va.verdict === 'N' ? 'A' : vb.verdict === 'N' ? 'B' : 'A'; raison = 'Les deux thèmes se contredisent avec la même force (rang ' + A.rang + ', marge ' + A.marge + ' et ' + B.marge + ') : nul.'; }
@@ -682,7 +685,7 @@
     out.lignes = { deuxMarquent: { a: bA.deuxMarquent.oui, b: bB.deuxMarquent.oui, accord: bA.deuxMarquent.oui === bB.deuxMarquent.oui }, over15: { accord: bA.overUnder.over15 === bB.overUnder.over15 }, over25: { accord: bA.overUnder.over25 === bB.overUnder.over25 }, over35: { accord: bA.overUnder.over35 === bB.overUnder.over35 } };
     return out;
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, canauxDifferents: canauxDifferents, binomeM1: binomeM1, fiabilite: fiabilite, FIABILITE: FIABILITE, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, canauxDifferents: canauxDifferents, binomeM1: binomeM1, fiabilite: fiabilite, FIABILITE: FIABILITE, JOURS: JOURS, FIGURE_DU_JOUR: FIGURE_DU_JOUR, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

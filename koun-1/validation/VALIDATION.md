@@ -52,3 +52,5 @@ Correction (FI-3, binôme corrigé : partenaire symétrique 1-3, 2-4, 5-7, 6-8, 
 Mise à jour : CL-2 utilise désormais les couples symétriques du binôme : développement 20/27 (22/27 avant), lot 1 12/14, 18 thèmes 16/18. Les mesures de développement citées plus haut (22/27) datent d'avant cette correction.
 
 Mise à jour (FI-4) : la somme 3-5-11-15 (présente quelque part) entre dans la validation du thème, en plus du binôme de M1 et de la somme de l'axe angulaire en maison angulaire. Sur 41 thèmes : valides 8/10, non valides 24/31 ; sur 26 scores réels : valides 3/3, non valides 18/23. Les 18 thèmes de travail restent ceux de `themes-18.json`.
+
+Mise à jour (FI-5) : la figure du jour (jour de la semaine de la date du match) entre dans la validation du thème, comme quatrième condition. Elle n'est mesurable que sur les 14 matchs du lot 1, seuls à avoir une date : un thème valide (PSG–Bayern), identique avec ou sans le jour.
