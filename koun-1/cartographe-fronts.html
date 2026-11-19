@@ -6,7 +6,7 @@ h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-siz
 .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-bottom:12px}.lg i{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
 .fr{min-width:0;background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:8px}.fr h2{font-size:15px;margin:2px 4px 0}.fr h2 small{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
-.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><select id="mode"><option value="fronts">Les 4 fronts</option><option value="sommes">Sommes de deux fronts (A+B … D+C)</option></select><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Trait épais : deux points des deux côtés · fin : un point des deux côtés · tireté : niveaux différents. Point plein : les deux lignes qui se croisent ont la même concordance. La Terre coupe Feu, Air et Eau, puis dévie vers le niveau Terre correspondant : de 1 vers 5 (vers le haut) et de 9 vers 13 (vers le bas). Le coin de la déviation n'est pas une intersection. R1 bleu, R7 rouge, cadre tireté = figure absente du thème.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
+.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><select id="mode"><option value="fronts">Les 4 fronts</option><option value="sommes">Sommes de deux fronts (A+B … D+C)</option></select><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Chaque liaison porte son opération : niveau de la figure + niveau de la figure en face = résultat. Niveaux égaux : 2 (lien saturé, trait épais). Niveaux différents : 1 (lien non saturé, trait tireté). Point plein : deux liens saturés qui se croisent. Anneau tireté : deux liens non saturés. Petit point : un de chaque. La Terre coupe Feu, Air et Eau, puis dévie vers le niveau Terre correspondant (1 vers 5, 9 vers 13) ; le coin n'est pas une intersection. 💔 : figure placée dans la maison de son antagoniste (maison ennemie), quand un thème est chargé. R1 bleu, R7 rouge, cadre tireté = figure absente.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
    Structure exacte (thème, résultantes, forces, pôles, paralysies) puis, principe par principe, victoire, nul, pénalité, deux marquent,
    buts MT-1, corners, Over/Under 1,5 · 2,5 · 3,5. Chaque principe porte sa provenance :
      PROPRIETAIRE : posé par le propriétaire ; PORTE_3.0.0 : règle du 3.0.0 reprise ; DEVELOPPEMENT : issu des matchs de développement,
@@ -725,22 +725,24 @@ h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-siz
 </script><script>
 const FIGS=[{"n":"Puer","p":[1,1,2,1]},{"n":"Laetitia","p":[1,2,2,2]},{"n":"Caput","p":[2,1,1,1]},{"n":"Albus","p":[2,2,1,2]},{"n":"Via","p":[1,1,1,1]},{"n":"Amissio","p":[1,2,1,2]},{"n":"Rubeus","p":[2,1,2,2]},{"n":"Tristitia","p":[2,2,2,1]},{"n":"Fortuna Minor","p":[1,1,2,2]},{"n":"Carcer","p":[1,2,2,1]},{"n":"Conjunctio","p":[2,1,1,2]},{"n":"Fortuna Major","p":[2,2,1,1]},{"n":"Cauda Draconis","p":[1,1,1,2]},{"n":"Puella","p":[1,2,1,1]},{"n":"Aquisitio","p":[2,1,2,1]},{"n":"Populus","p":[2,2,2,2]}];const EC0=['#ef4444','#eab308','#3b82f6','#94a3b8'];const FR='ABCD',EL=['Feu','Air','Eau','Terre'],ELC=['F','A','E','T'];
 const FRN={A:'Feu',B:'Air',C:'Eau',D:'Terre'};
-const cl=(a,b)=>a===2&&b===2?'sat':a===1&&b===1?'act':'dif';
+const cl=(a,b)=>(a+b)%2===0?'sat':'non';const res1=(a,b)=>(a+b)%2===0?2:1;
 function bloc(z,L){const f=z+1;return blocN(f,f+8,f+4,f+12,null,L)}
 function blocN(left,right,top,bot,sub,L){
  // boucle du front : f, f+4, f+8, f+12 ; miroirs (k, k+8) face à face : gauche/droite et haut/bas
 
  const pos=n=>{if(!L)return{txt:'',abs:false};const nm=FIGS[n-1].n;const b=[],r=[];L.maisons.forEach(m=>{if(m.base===nm)b.push(m.maison);if(m.resultante===nm)r.push(m.maison)});
   const t=[b.length?'base M'+b.join(',M'):'',r.length?'rés. M'+r.join(',M'):''].filter(Boolean).join(' · ');return{txt:t||'absente',abs:!b.length&&!r.length}};
+ const enn=n=>{if(!L)return[];const nm=FIGS[n-1].n;return L.positions(nm).filter(x=>L.enMaisonAntagoniste(nm,x.maison)).map(x=>'M'+x.maison+(x.couche==='base'?' base':' rés.'))};
  const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
  const EC=['#ef4444','#eab308','#3b82f6','#94a3b8'];
  const S=34,X=[0,1,2,3].map(j=>230-1.5*S+j*S),Y=X;const out=[];
  const dotsV=(n,cx)=>FIGS[n-1].p.map((p,i)=>p===2?'<circle cx="'+(cx-6)+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/><circle cx="'+(cx+6)+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/>':'<circle cx="'+cx+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/>').join('');
  const dotsH=(n,cy)=>FIGS[n-1].p.map((p,j)=>p===2?'<circle cx="'+X[j]+'" cy="'+(cy-6)+'" r="5" fill="'+EC[j]+'"/><circle cx="'+X[j]+'" cy="'+(cy+6)+'" r="5" fill="'+EC[j]+'"/>':'<circle cx="'+X[j]+'" cy="'+cy+'" r="5" fill="'+EC[j]+'"/>').join('');
- const lab=(n,x,y,anchor,ix)=>{const q=pos(n),pl=pol(n),sb=sub?sub[ix]:'';const l2=[sb,L?q.txt:''].filter(Boolean).join(' · ');return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" font-size="12.5" font-weight="600" '+(q.abs?'class="mu"':'')+'>'+n+' · '+FIGS[n-1].n+(pl?'  '+pl:'')+'</text>'+(l2?'<text x="'+x+'" y="'+(y+14)+'" text-anchor="'+anchor+'" font-size="10.5" class="mu">'+l2+'</text>':'')};
- const H=[0,1,2,3].map(i=>cl(FIGS[left-1].p[i],FIGS[right-1].p[i])),V=[0,1,2,3].map(j=>cl(FIGS[top-1].p[j],FIGS[bot-1].p[j]));
- const D1=cl(FIGS[left-1].p[3],FIGS[top-1].p[3]),D2=cl(FIGS[right-1].p[3],FIGS[bot-1].p[3]);
- const sty=(c,el)=>'stroke="'+EC[el]+'" stroke-linecap="round" fill="none" '+(c==='dif'?'stroke-width="2.5" stroke-dasharray="7 6" opacity=".9"':c==='sat'?'stroke-width="5" opacity=".95"':'stroke-width="2.5" opacity=".95"');
+ const lab=(n,x,y,anchor,ix)=>{const q=pos(n),pl=pol(n),sb=sub?sub[ix]:'';const en=enn(n),l2=[sb,L?q.txt:'',en.length?'💔 maison ennemie '+en.join(', '):''].filter(Boolean).join(' · ');return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" font-size="12.5" font-weight="600" '+(q.abs?'class="mu"':'')+'>'+n+' · '+FIGS[n-1].n+(pl?'  '+pl:'')+'</text>'+(l2?'<text x="'+x+'" y="'+(y+14)+'" text-anchor="'+anchor+'" font-size="10.5" class="mu">'+l2+'</text>':'')};
+ const LP=FIGS[left-1].p,RP=FIGS[right-1].p,TP=FIGS[top-1].p,BP=FIGS[bot-1].p;
+ const H=[0,1,2,3].map(i=>cl(LP[i],RP[i])),V=[0,1,2,3].map(j=>cl(TP[j],BP[j]));
+ const D1=cl(LP[3],TP[3]),D2=cl(RP[3],BP[3]);
+ const sty=(c,el)=>'stroke="'+EC[el]+'" stroke-linecap="round" fill="none" '+(c==='non'?'stroke-width="2.5" stroke-dasharray="7 6" opacity=".9"':'stroke-width="5" opacity=".95"');
  // niveaux Feu, Air, Eau : lignes droites face à face (gauche-droite, haut-bas). Terre : pas de ligne droite, elle dévie (1→5 et 9→13).
  const x0=100,x1=360,y0=94,y1=366;
  for(let i=0;i<3;i++)out.push('<line x1="'+x0+'" y1="'+Y[i]+'" x2="'+x1+'" y2="'+Y[i]+'" '+sty(H[i],i)+'/>');
@@ -755,23 +757,27 @@ function blocN(left,right,top,bot,sub,L){
  for(let i=0;i<3;i++)for(let j=0;j<3;j++)pts.push({x:X[j],y:Y[i],c1:H[i],e1:i,c2:V[j],e2:j});
  for(let j=0;j<3;j++)pts.push({x:X[j],y:YT,c1:V[j],e1:j,c2:D1,e2:3});   // la Terre 1→5 coupe les lignes verticales Feu, Air, Eau
  for(let i=0;i<3;i++)pts.push({x:XT,y:Y[i],c1:H[i],e1:i,c2:D1,e2:3});   // puis, après la déviation, les lignes horizontales Feu, Air, Eau
- let nPlein=0;pts.forEach(q=>{const same=q.c1===q.c2&&q.c1!=='dif';if(same)nPlein++;
-  out.push(same?'<circle cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>':'<circle cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
- [0,1,2].forEach(i=>out.push('<text x="112" y="'+(Y[i]-7)+'" text-anchor="middle" font-size="10" font-weight="700" fill="'+EC[i]+'">'+ELC[i]+'</text>'));
- [0,1,2].forEach(j=>out.push('<text x="'+(X[j]+10)+'" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="'+EC[j]+'">'+ELC[j]+'</text>'));
- out.push('<text x="112" y="'+(Y[3]+16)+'" text-anchor="middle" font-size="10" font-weight="700" fill="'+EC[3]+'">T</text>');
+ let nPlein=0,nAnneau=0;pts.forEach(q=>{const x=q.x.toFixed(1),y=q.y.toFixed(1);
+  if(q.c1==='sat'&&q.c2==='sat'){nPlein++;out.push('<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>')}
+  else if(q.c1==='non'&&q.c2==='non'){nAnneau++;out.push('<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="var(--card)" stroke="'+EC[q.e1]+'" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="'+x+'" cy="'+y+'" r="2" fill="'+EC[q.e2]+'"/>')}
+  else out.push('<circle cx="'+x+'" cy="'+y+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
+ // opérations dans les cases des liaisons : a + b = résultat (2 = saturé, 1 = non saturé)
+ const pill=(cx,cy,el,a,b)=>{const r=res1(a,b),t=ELC[el]+' '+a+'+'+b+'='+r,w=t.length*5.4+12;return '<rect x="'+(cx-w/2).toFixed(1)+'" y="'+(cy-8)+'" width="'+w.toFixed(1)+'" height="16" rx="8" fill="var(--card)" stroke="'+EC[el]+'" stroke-width="1.6"'+(r===1?' stroke-dasharray="3 2"':'')+'/><text x="'+cx+'" y="'+(cy+3.5)+'" text-anchor="middle" font-size="9.5" font-weight="700">'+t+'</text>'};
+ for(let i=0;i<3;i++)out.push(pill(140,Y[i],i,LP[i],RP[i]));
+ for(let j=0;j<3;j++)out.push(pill(X[j],108+16*j,j,TP[j],BP[j]));
+ out.push(pill(140,YT,3,LP[3],TP[3]));out.push(pill(322,YT,3,RP[3],BP[3]));
  const nodeBox=(n,x,y,w,h)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="none" stroke="'+(pol(n)==='R1'?'var(--r1)':pol(n)==='R7'?'var(--r7)':'var(--ln)')+'" stroke-width="'+(pol(n)?2.5:1.5)+'" '+(pos(n).abs?'stroke-dasharray="5 4"':'')+'/>';
  out.push(nodeBox(left,40,158,60,146)+dotsV(left,70)+nodeBox(right,360,158,60,146)+dotsV(right,390));
  out.push(nodeBox(top,160,34,140,60)+dotsH(top,64)+nodeBox(bot,160,366,140,60)+dotsH(bot,396));
  out.push(lab(left,70,322,'middle',0));out.push(lab(right,390,322,'middle',1));
  out.push(lab(top,230,16,'middle',2));out.push(lab(bot,230,444,'middle',3));
- const hc=H.filter(c=>c!=='dif').length,vc=V.filter(c=>c!=='dif').length;
- return {svg:'<svg viewBox="0 0 460 474" role="img" aria-label="Carte des liaisons">'+out.join('')+'</svg>',h:hc,v:vc,nI:pts.length,nP:nPlein,t1:D1!=='dif',t2:D2!=='dif'};
+ const hc=H.filter(c=>c==='sat').length,vc=V.filter(c=>c==='sat').length;
+ return {svg:'<svg viewBox="0 0 460 474" role="img" aria-label="Carte des liaisons">'+out.join('')+'</svg>',h:hc,v:vc,nI:pts.length,nP:nPlein,nA:nAnneau,t1:D1==='sat',t2:D2==='sat'};
 }
 const add=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();for(let k=0;k<16;k++)if(FIGS[k].p.join()===q)return k+1;return null};
 const COMBOS=[['A','B'],['A','C'],['A','D'],['B','C'],['B','D'],['C','D'],['D','C']];
 let MODE='fronts';
-function carte(titre,detail,b,tab){const d=document.createElement('div');d.className='fr';d.innerHTML='<h2>'+titre+' <small>'+detail+'</small></h2><div class="rs">Miroirs : '+b.mh+' ('+b.h+'/4 niveaux concordants) · '+b.mv+' ('+b.v+'/4) · Terre déviée : '+b.d1+' '+(b.t1?'concordante':'différente')+', '+b.d2+' '+(b.t2?'concordante':'différente')+' · '+b.nI+' intersections, '+b.nP+' pleines</div>'+b.svg+(tab||'');document.getElementById('g').appendChild(d)}
+function carte(titre,detail,b,tab){const d=document.createElement('div');d.className='fr';d.innerHTML='<h2>'+titre+' <small>'+detail+'</small></h2><div class="rs">Miroirs : '+b.mh+' ('+b.h+'/4 liens saturés) · '+b.mv+' ('+b.v+'/4) · Terre déviée : '+b.d1+' '+(b.t1?'saturée':'non saturée')+', '+b.d2+' '+(b.t2?'saturée':'non saturée')+' · '+b.nI+' intersections : '+b.nP+' saturées, '+b.nA+' non saturées</div>'+b.svg+(tab||'');document.getElementById('g').appendChild(d)}
 function rendre(L){
  const g=document.getElementById('g');g.innerHTML='';
  if(MODE==='fronts'){
@@ -783,10 +789,7 @@ function rendre(L){
    const sub=[fx+'+'+fy,(fx+8)+'+'+(fy+8),(fx+4)+'+'+(fy+4),(fx+12)+'+'+(fy+12)];
    const b=blocN(l,r,t,bo,sub,L);b.mh=l+'↔'+r;b.mv=t+'↔'+bo;b.d1=l+'→'+t;b.d2=r+'→'+bo;
    const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
-   const vec=q=>q.map((x,i)=>'<span style="color:'+EC0[i]+'">'+x+'</span>').join('-');
-   const rows=[0,4,8,12].map((i,ri)=>'<tr><th>'+(fx+i)+' '+FIGS[fx+i-1].n+'<div class="op">'+vec(FIGS[fx+i-1].p)+'</div></th>'+[0,4,8,12].map((j,ci)=>{const r=add(fx+i,fy+j);return '<td'+(ri===ci?' class="dg"':'')+'><div class="op">'+vec(FIGS[fx+i-1].p)+'<br>+ '+vec(FIGS[fy+j-1].p)+'<br>= '+vec(FIGS[r-1].p)+'</div><div class="rn">'+(fx+i)+'+'+(fy+j)+' = '+r+' '+FIGS[r-1].n+'</div></td>'}).join('')+'</tr>').join('');
-   const fz='ABCD'[(add(fx,fy)-1)%4];
-   const tab='<div class="tbn">Les 16 opérations : une figure de '+X+' (lignes) + une figure de '+Y+' (colonnes). Niveaux Feu-Air-Eau-Terre, 1 ou 2 points : niveaux égaux = 2, niveaux différents = 1. Résultat : toujours le front '+fz+' ('+FRN[fz]+'). Gras : les 4 sommes de la carte.</div><div class="tbw"><table class="tb"><tr><th>'+X+' + '+Y+'</th>'+[0,4,8,12].map(j=>'<th>'+(fy+j)+' '+FIGS[fy+j-1].n+'<div class="op">'+vec(FIGS[fy+j-1].p)+'</div></th>').join('')+'</tr>'+rows+'</table></div>';
+   const fz='ABCD'[(add(fx,fy)-1)%4];const tab='<div class="tbn">Les 16 sommes d\u2019une figure de '+X+' et d\u2019une figure de '+Y+' tombent toujours dans le front '+fz+' ('+FRN[fz]+').</div>';
    carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : sommes figure par figure, position par position'+note,b,tab)})
  }
 }
