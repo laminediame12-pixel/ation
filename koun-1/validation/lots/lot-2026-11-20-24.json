@@ -1,6 +1,6 @@
 {
- "nom": "Lot du 20 au 24/11/2026 (6) : 77 matchs, thèmes valides (4 critères, figure du jour) tirés au hasard avant les matchs, sans verdict",
- "regle": "Un lot ne sert qu'une fois. Score : équipe 1 - équipe 2 (R1 = équipe 1). Matchs de date ou d'adversaire incertains écartés.",
+ "nom": "Lot du 20 au 25/11/2026 (6) : 82 matchs, thèmes valides (4 critères, figure du jour) tirés au hasard avant les matchs, sans verdict",
+ "regle": "Un lot ne sert qu'une fois. Score : équipe 1 - équipe 2 (R1 = équipe 1). Matchs de date ou d'adversaire incertains écartés. Complété le 19/11 par 5 matchs de MLS (barrage Orlando–Cincinnati et Seattle–Real Salt Lake, Inter Miami–Columbus, St. Louis–LAFC, San Jose–Houston), dates en heure de Sofascore (UTC).",
  "matchs": [
   {
    "date": "2026-11-20",
@@ -693,6 +693,51 @@
    "equipe2": "Betis",
    "jour": "Mardi",
    "theme": "13-12-13-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "MLS",
+   "equipe1": "Orlando",
+   "equipe2": "Cincinnati",
+   "jour": "Vendredi",
+   "theme": "5-3-16-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "MLS",
+   "equipe1": "Seattle",
+   "equipe2": "Real Salt Lake",
+   "jour": "Vendredi",
+   "theme": "12-8-10-3",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "MLS",
+   "equipe1": "Inter Miami",
+   "equipe2": "Columbus",
+   "jour": "Samedi",
+   "theme": "6-15-12-8",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "MLS",
+   "equipe1": "St. Louis",
+   "equipe2": "LAFC",
+   "jour": "Mardi",
+   "theme": "6-1-11-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "MLS",
+   "equipe1": "San Jose",
+   "equipe2": "Houston",
+   "jour": "Mercredi",
+   "theme": "14-9-11-5",
    "score": null
   }
  ]
