@@ -194,7 +194,9 @@
   function ditAncres(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
   function detailAncres(L) { return 'ancrages en base, non annulés : boucle de R1 ' + ditAncres(ancresBoucle(L, L.R1)) + ' ; boucle de R7 ' + ditAncres(ancresBoucle(L, L.R7)) + '.'; }
   // Paire du pôle (lui et son binôme) : figures chez elles, sans celles annulées par leur attaquant au repos ni les reflets.
-  function paireDe(c) { return [c.figure, fig(num(c.figure) + 2)]; }
+  // Binôme d'une figure : sa partenaire de front binôme dans le même couple (1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16), comme dans la page d'origine : rang 1 ou 2 dans le bloc de 4 → numéro + 2 ; rang 3 ou 4 → numéro − 2.
+  function binomeDe(f) { var n = num(f); return fig(n % 4 === 1 || n % 4 === 2 ? n + 2 : n - 2); }
+  function paireDe(c) { return [c.figure, binomeDe(c.figure)]; }
   function paireChezElle(L, c) {
     var adv = autrePole(L, c);
     return paireDe(c).filter(function (f) {
@@ -410,7 +412,7 @@
   // Chez elle, dans sa maison de repos, la figure « a juré » ; dans son canal (une maison de même rang que sa maison de repos), elle est « acceptée ».
   function binomeM1(L) {
     // Binôme d'une figure : sa partenaire de front binôme dans le même couple (1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16), comme dans la page d'origine (BINOMES_MAP). Rang 1 ou 2 dans le bloc de 4 : numéro + 2 ; rang 3 ou 4 : numéro − 2.
-    var n0 = num(L.maisons[0].base), f = fig(n0 % 4 === 1 || n0 % 4 === 2 ? n0 + 2 : n0 - 2), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
+    var f = binomeDe(L.maisons[0].base), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }

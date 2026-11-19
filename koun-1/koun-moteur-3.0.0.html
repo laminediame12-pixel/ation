@@ -1546,11 +1546,11 @@
  </div>
  <div class="form-grid-2">
  <div class="form-group">
- <label>Date du match <span id="dayNameBadge" style="color:#eab308; font-weight:700;"></span></label>
+ <label>Date du match</label>
  <input type="date" id="matchDate" oninput="renderValidation()" onchange="renderValidation()">
  </div>
  <div class="form-group">
- <label>Heure du match <span id="periodBadge" style="color:#38bdf8; font-weight:700;"></span></label>
+ <label>Heure du match</label>
  <input type="time" id="matchTime" oninput="renderValidation()" onchange="renderValidation()">
  </div>
  </div>
@@ -1593,8 +1593,7 @@
  <div class="validation-title">Validation</div>
  <div id="validationList"></div>
  <div style="margin: 0.45rem 0;">
- <span class="pill-valid" id="themeValidBadge">Thème valide : 4/4</span><br>
- <span class="pill-valid" id="themeCarriedBadge">Thème porté : Acquisitio, liaison de M1, en M4 (résultante)</span>
+ <span class="pill-valid" id="themeValidBadge">Thème valide : 4/4</span>
  </div>
  <button type="button" class="btn-green" onclick="saveThemeAlert()">Sauvegarder ce thème</button>
  </div>
@@ -2137,7 +2136,9 @@
   function ditAncres(l) { return l.length ? l.map(function (f) { return f + ' en M' + num(f); }).join(', ') : 'aucun'; }
   function detailAncres(L) { return 'ancrages en base, non annulés : boucle de R1 ' + ditAncres(ancresBoucle(L, L.R1)) + ' ; boucle de R7 ' + ditAncres(ancresBoucle(L, L.R7)) + '.'; }
   // Paire du pôle (lui et son binôme) : figures chez elles, sans celles annulées par leur attaquant au repos ni les reflets.
-  function paireDe(c) { return [c.figure, fig(num(c.figure) + 2)]; }
+  // Binôme d'une figure : sa partenaire de front binôme dans le même couple (1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16), comme dans la page d'origine : rang 1 ou 2 dans le bloc de 4 → numéro + 2 ; rang 3 ou 4 → numéro − 2.
+  function binomeDe(f) { var n = num(f); return fig(n % 4 === 1 || n % 4 === 2 ? n + 2 : n - 2); }
+  function paireDe(c) { return [c.figure, binomeDe(c.figure)]; }
   function paireChezElle(L, c) {
     var adv = autrePole(L, c);
     return paireDe(c).filter(function (f) {
@@ -2353,7 +2354,7 @@
   // Chez elle, dans sa maison de repos, la figure « a juré » ; dans son canal (une maison de même rang que sa maison de repos), elle est « acceptée ».
   function binomeM1(L) {
     // Binôme d'une figure : sa partenaire de front binôme dans le même couple (1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16), comme dans la page d'origine (BINOMES_MAP). Rang 1 ou 2 dans le bloc de 4 : numéro + 2 ; rang 3 ou 4 : numéro − 2.
-    var n0 = num(L.maisons[0].base), f = fig(n0 % 4 === 1 || n0 % 4 === 2 ? n0 + 2 : n0 - 2), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
+    var f = binomeDe(L.maisons[0].base), n = num(f), pos = L.positions(f), rang = function (h) { return (h - 1) % 4; };
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
@@ -2976,34 +2977,9 @@
  }
  }
 
- const BINOMES_MAP = {
- "Puer": "Caput Draconis",
- "Caput Draconis": "Puer",
- "Laetitia": "Albus",
- "Albus": "Laetitia",
- "Via": "Rubeus",
- "Rubeus": "Via",
- "Amissio": "Tristitia",
- "Tristitia": "Amissio",
- "Fortuna Minor": "Conjunctio",
- "Conjunctio": "Fortuna Minor",
- "Carcer": "Fortuna Major",
- "Fortuna Major": "Carcer",
- "Cauda Draconis": "Acquisitio",
- "Acquisitio": "Cauda Draconis",
- "Puella": "Populus",
- "Populus": "Puella"
- };
 
- const DAY_FIGURES = [
- { day: "Dimanche", fig: "Fortuna Major" },
- { day: "Lundi", fig: "Populus" },
- { day: "Mardi", fig: "Puer" },
- { day: "Mercredi", fig: "Conjunctio" },
- { day: "Jeudi", fig: "Acquisitio" },
- { day: "Vendredi", fig: "Amissio" },
- { day: "Samedi", fig: "Carcer" }
- ];
+
+
 
  function findPresenceInTheme(targetName, M, R) {
  const baseHouses = [];
@@ -3049,52 +3025,12 @@
  return m ? `${m[3]}/${m[2]}/${m[1]}` : val;
  }
 
- function getDayInfoFromDateStr(dateStr) {
- const iso = normalizeDateToISO(dateStr);
- const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
- if (m) {
- const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
- if (!isNaN(d.getTime())) {
- return DAY_FIGURES[d.getDay()];
- }
- }
- const now = new Date();
- return DAY_FIGURES[now.getDay()];
- }
-
  function renderValidation() {
  const M = currentHouses;
  const R = currentResultantes;
  if (!M || M.length < 17) return;
 
- const figAng = getFigByVec(xorV(xorV(M[1], M[4]), xorV(M[7], M[10])));
- const presAng = findPresenceInTheme(figAng.name, M, R);
-
  const figM1 = getFigByVec(M[1]);
- const binomeName = BINOMES_MAP[figM1.name] || HOUSE_REST_FIG[figM1.binHouse].name;
- const presBin = findPresenceInTheme(binomeName, M, R);
-
- const dateVal = document.getElementById("matchDate").value;
- const timeVal = document.getElementById("matchTime").value || "12:00";
- const hour = parseInt(timeVal.split(":")[0], 10);
- const period = (!isNaN(hour) && (hour >= 18 || hour < 6)) ? "de nuit" : "de jour";
- const dayInfo = getDayInfoFromDateStr(dateVal);
- const dayBadge = document.getElementById("dayNameBadge");
- const perBadge = document.getElementById("periodBadge");
- if (dayBadge) dayBadge.textContent = `(${dayInfo.day} · ${dayInfo.fig})`;
- if (perBadge) perBadge.textContent = `(${period})`;
- const presJour = findPresenceInTheme(dayInfo.fig, M, R);
-
- const figSum = getFigByVec(xorV(xorV(M[3], M[5]), xorV(M[11], M[15])));
- const presSum = findPresenceInTheme(figSum.name, M, R);
-
- function formatLoc(pres) {
- if (!pres.found) return "absente du thème (ni base ni résultante)";
- const parts = [];
- if (pres.baseHouses.length) parts.push(`base ${pres.baseHouses.join(", ")}`);
- if (pres.resHouses.length) parts.push(`res. ${pres.resHouses.join(", ")}`);
- return parts.join(" · ");
- }
 
  // Validation du thème (FI-3) : le binôme de M1 et la figure somme de l'axe angulaire doivent être présents ET en maison angulaire (M1, M4, M7 ou M10, base ou résultante). Les deux autres lignes sont des indications, non comptées.
  let fi3 = null;
@@ -3103,24 +3039,20 @@
  const criteria = [
  {
  ok: !!(fi3 && fi3.axe.valide),
- title: `Somme de l'axe angulaire : ${fi3 ? fi3.axe.figure : figAng.name}`,
- sub: `M1 + M4 + M7 + M10 · ${formatLoc(presAng)} · ${fi3 ? angTxt(fi3.axe) : ""}`
+ title: `Somme de l'axe angulaire : ${fi3 ? fi3.axe.figure : ""}`,
+ sub: `M1 + M4 + M7 + M10 · ${fi3 ? (fi3.axe.presente ? [fi3.axe.base.length ? "base M" + fi3.axe.base.join(", M") : "", fi3.axe.resultante.length ? "résultante M" + fi3.axe.resultante.join(", M") : ""].filter(Boolean).join(" · ") : "absente du thème") + " · " + angTxt(fi3.axe) : ""}`
  },
  {
  ok: !!(fi3 && fi3.binome.enAxe),
- title: `Binôme de M1 : ${fi3 ? fi3.binome.figure : binomeName}`,
- sub: `binôme de ${figM1.name} · ${formatLoc(presBin)} · ${fi3 ? angTxt(fi3.binome) : ""}`
+ title: `Binôme de M1 : ${fi3 ? fi3.binome.figure : ""}`,
+ sub: `binôme de ${figM1.name} · ${fi3 ? (fi3.binome.presente ? fi3.binome.emplacements.join(", ") : "absent du thème") + " · " + angTxt(fi3.binome) : ""}`
  }
- ];
- const indications = [
- { ok: presJour.found, title: `Indication · Figure du jour : ${dayInfo.fig}`, sub: `${dayInfo.day} (${period}) · ${formatLoc(presJour)}` },
- { ok: presSum.found, title: `Indication · Somme 3-5-11-15 : ${figSum.name}`, sub: `M3 + M5 + M11 + M15 · ${formatLoc(presSum)}` }
  ];
 
  const validCount = criteria.filter(c => c.ok).length;
 
- document.getElementById("validationList").innerHTML = criteria.concat(indications).map((it, k) => `
- <div class="val-item ${it.ok ? "" : "is-invalid"}"${k >= criteria.length ? ' style="opacity:0.65;"' : ""}>
+ document.getElementById("validationList").innerHTML = criteria.map(it => `
+ <div class="val-item ${it.ok ? "" : "is-invalid"}">
  <div>
  <div class="val-item-title">${escapeHTML(it.title)}</div>
  <div class="val-item-sub">${escapeHTML(it.sub)}</div>
@@ -3137,30 +3069,6 @@
  validBadge.className = "pill-invalid";
  validBadge.textContent = `Thème non valide : ${validCount}/2`;
  }
-
- const carriedBadge = document.getElementById("themeCarriedBadge");
- let carriedText = "Aucun thème porté détecté";
- let hasCarried = false;
- for (let m = 2; m <= 4; m++) {
- const figM = getFigByVec(M[m]);
- const liaison = getFigByVec(xorV(M[1], M[m]));
- if (getFigByVec(R[m]).name === figM1.name || liaison.name === figM.name || getFigByVec(R[1]).name === figM.name) {
- hasCarried = true;
- carriedText = `Thème porté : ${figM.name}, liaison de M1, en M${m} (résultante)`;
- break;
- }
- }
- if (!hasCarried) {
- for (let h = 13; h <= 16; h++) {
- if (getFigByVec(M[h]).name === figM1.name || getFigByVec(R[h]).name === figM1.name) {
- hasCarried = true;
- carriedText = `Thème porté : ${figM1.name}, passation de M1, en M${h} (résultante)`;
- break;
- }
- }
- }
- carriedBadge.className = hasCarried ? "pill-valid" : "pill-carried";
- carriedBadge.textContent = carriedText;
  }
 
  function getR1R7Houses(M) {

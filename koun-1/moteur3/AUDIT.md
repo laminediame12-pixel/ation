@@ -23,7 +23,7 @@ Le moteur applique ces principes dans l'ordre ; le premier qui s'applique décid
 | 4 | NU-1 | MOI | Même front : somme des écarts de la base et de la résultante entre les deux parties nulle, juge (M15) hors de son repos : nul. | 4,0 % | 2/2 | 0/0 | 0/0 | Équilibre des parties choisi sur 9 nuls | ☐ |
 | 5 | AX-1 | 3.0.0 / MOI | Pôles en M4 et M10 : le pôle de M4 gagne, sauf attaque directe du pôle de M10. | 5,2 % | 5/5 | 0/0 | 3/3 | Aucun test hors développement | ☐ |
 | 6 | CL-1 | MOI | Même boucle, fronts différents : un seul pôle est vraiment chez lui (non annulé, pas un simple reflet de Populus). | 6,1 % | 2/2 | 1/1 | 1/1 | 5 cas réels | ☐ |
-| 7 | CL-2 | MOI | Boucles différentes : le pôle et son « binôme » (**numéro + 2**) contre l'autre pôle et le sien ; la paire avec le plus de figures chez elles gagne. | 14,3 % | 2/3 | 1/1 | 1/1 | **Binôme n + 2 : différent de la page d'origine (couples symétriques) pour 8 figures sur 16** | ☐ |
+| 7 | CL-2 | MOI | Boucles différentes : le pôle et son binôme (**couples symétriques de la page d'origine : 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16**, corrigé) contre l'autre pôle et le sien ; la paire avec le plus de figures chez elles gagne. | 14,3 % → voir PRINCIPES | 1/2 | 1/1 | 1/1 | Corrigé à votre demande : 3 908 verdicts changent sur les combinaisons, développement 22/27 → 20/27 | ☐ |
 | 8 | PF-2 | MOI | Un pôle attaque directement l'autre (k attaque k+3) ; l'attaqué a 1 % ou moins dans sa maison ; l'attaquant plus de 1 % : l'attaquant gagne. | 1,7 % | 2/2 | 1/1 | 1/1 | 4 cas réels | ☐ |
 | 9 | NU-2 | MOI | Fronts différents : mêmes équilibre et juge que NU-1 : nul (assuré si les deux écarts sont nuls, probable sinon). | 11,9 % | 3/3 | 1/1 | 2/2 | Niveau « assuré » : 3 thèmes distincts | ☐ |
 | 10 | NU-3 | MOI | En base, lignes à deux points Feu+Air = Eau+Terre sur les 16 maisons, juge hors repos : nul. | 3,6 % | 2/3 | 0/0 | 0/0 | Aucun cas dans les 18 thèmes ; 2 sur 3 en développement | ☐ |
@@ -76,14 +76,14 @@ Observation d'ensemble : sur les 18 thèmes, 16 verdicts sont justes, mais « to
 
 ---
 
-## E. Couches de l'ancien système encore présentes
+## E. Couches de l'ancien système
 
-- Le panneau « Thème porté » du 3.0.0 (inchangé).
-- La figure du jour et la somme 3-5-11-15 (indications non comptées dans la validation).
-- Les rôles Fermante / Ouvrante des figures d'activation du rythme (lecture à deux points depuis votre consigne).
-- Les noms de figures « Acquisitio » (page) et « Aquisitio » (moteur) : deux orthographes.
+**Retirées de la page à votre demande :** le panneau « Thème porté », la figure du jour (et le badge jour/période à côté de la date), la somme 3-5-11-15 affichée comme indication, la table `BINOMES_MAP` de la page (le binôme vient maintenant du moteur, pour éviter deux calculs parallèles).
 
-Décision : ☐ garder ☐ supprimer, à préciser par élément.
+**Encore présent, à votre décision :**
+- La somme 3-5-11-15 reste dans le moteur (`L.sommes`) : elle intervient dans la condition « victoire assurée » de CL-2 avec la somme de l'axe angulaire. Non affichée.
+- Les rôles Fermante / Ouvrante des figures d'activation : ils servent au rythme du thème (Ouvert, Fermé, Saturé, etc.), donc à RY-1 et RY-2.
+- Deux orthographes de la figure 15 : « Acquisitio » (page, vos exports) et « Aquisitio » (moteur et documents).
 
 ---
 
@@ -109,10 +109,10 @@ Décision : ☐ garder ☐ supprimer, à préciser par élément.
 ## H. Points qui attendent votre décision
 
 1. **Repli « R1 par défaut »** (principe 14) : le garder, le remplacer par autre chose, ou laisser le moteur sans verdict ?
-2. **CL-2 et le binôme n + 2** : le passer aux couples symétriques de la page d'origine ?
+2. ~~CL-2 et le binôme n + 2~~ : fait (couples symétriques).
 3. **MF-3** : garder le nul quel que soit l'équilibre des parties, ou le soumettre à l'équilibre comme les autres ?
 4. **VA-1 « assuré »** : garder le mot, alors qu'il est juste 2 fois sur 4 ?
 5. **FP-1 et FC-2** : garder, remplacer ou supprimer ? FP-1 a 0 juste sur 3 thèmes réels, FC-2 décide 29,5 % des combinaisons.
 6. **PS-1, RY-2, répartition du score** : garder ou retirer (seuil et règles tirés des mêmes scores).
 7. **Seuils de buts avec le circuit à 5 maisons** : à recaler ou à garder.
-8. **Éléments de l'ancien système** (section E) : garder ou supprimer.
+8. **Éléments de l'ancien système restants** (section E) : la somme 3-5-11-15 dans CL-2, les rôles Fermante / Ouvrante, l'orthographe de la figure 15.
