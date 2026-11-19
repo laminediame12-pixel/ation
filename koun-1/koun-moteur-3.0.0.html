@@ -4069,7 +4069,26 @@
  const t1 = escapeHTML(nom1);
  const t2 = escapeHTML(nom2);
 
- const H = showRes ? 815 : 700;
+ const H0 = showRes ? 815 : 700;
+ // Bandeau des verdicts (mêmes résultats que la page : ils viennent du moteur) sous la pyramide.
+ let m3 = null;
+ try { m3 = KOUN3.analyser(KOUN3.construireTheme(...[1, 2, 3, 4].map(i => KOUN3.fig(getFigByVec(M[i]).num))), jourDuMatch()); } catch (e) { m3 = null; }
+ const wrapTxt = (txt, n) => { const out = []; let cur = ""; String(txt || "").split(/\s+/).forEach(w => { if ((cur + " " + w).trim().length > n) { out.push(cur.trim()); cur = w; } else cur = (cur + " " + w).trim(); }); if (cur) out.push(cur); return out; };
+ const lignesVerdict = [];
+ if (m3) {
+ const v = m3.verdict, bu = m3.buts, fi = m3.fiabilite;
+ const gagnant = v.verdict === "N" ? "Match nul" + (v.niveauNul ? " " + v.niveauNul : "") : v.verdict === "1" ? "Victoire : " + nom1 : v.verdict === "2" ? "Victoire : " + nom2 : "Aucun verdict";
+ lignesVerdict.push({ t: "VERDICT : " + gagnant + "   ·   score prévu " + bu.score, c: "#fbbf24", s: 17, w: 800 });
+ lignesVerdict.push({ t: "Principe " + (v.principe || "—") + (v.assuree ? " (victoire assurée)" : ""), c: "#cbd5e1", s: 12, w: 700 });
+ const lr = wrapTxt(v.raison, 124);
+ lr.slice(0, 6).forEach((l, k) => lignesVerdict.push({ t: (k === 5 && lr.length > 6) ? l + " …" : l, c: "#94a3b8", s: 11, w: 400 }));
+ lignesVerdict.push({ t: "Deux marquent : " + (bu.deuxMarquent.oui ? "Oui" : "Non") + "   ·   Over/Under : 1,5 " + (bu.overUnder.over15 ? "Over" : "Under") + " · 2,5 " + (bu.overUnder.over25 ? "Over" : "Under") + " · 3,5 " + (bu.overUnder.over35 ? "Over" : "Under") + "   ·   rythme " + bu.overUnder.rythme, c: "#e2e8f0", s: 12, w: 700 });
+ const nb = (fi.binome.enAxe ? 1 : 0) + (fi.axe.valide ? 1 : 0) + (fi.somme3.presente ? 1 : 0) + (fi.jour && fi.jour.presente ? 1 : 0), tot = fi.jour ? 4 : 3;
+ lignesVerdict.push({ t: "Thème " + fi.libelle + " (" + nb + "/" + tot + ") : binôme de M1 " + fi.binome.figure + (fi.binome.enAxe ? " en maison angulaire" : " hors maison angulaire") + " · somme de l'axe " + fi.axe.figure + (fi.axe.valide ? " en maison angulaire" : " hors maison angulaire") + " · somme 3-5-11-15 " + fi.somme3.figure + (fi.somme3.presente ? " présente" : " absente") + (fi.jour ? " · figure du jour " + fi.jour.figure + (fi.jour.presente ? " présente" : " absente") : ""), c: fi.valide ? "#4ade80" : "#f87171", s: 11, w: 700, wrap: 122 });
+ }
+ const dateM = document.getElementById("matchDate") ? document.getElementById("matchDate").value : "";
+ const extra = lignesVerdict.length ? 40 + lignesVerdict.reduce((t, l) => t + (l.wrap ? wrapTxt(l.t, l.wrap).length : 1) * (l.s + 9), 0) + 14 : 0;
+ const H = H0 + extra;
  let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 ${H}" width="900" height="${H}" font-family="Arial, Helvetica, sans-serif">`;
  svgContent += `<rect width="900" height="${H}" fill="#090e1a"/>`;
  svgContent += `<text x="450" y="40" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="800">BOUCLIER GÉOMANTIQUE — ${escapeHTML(nom1.toUpperCase())} vs ${escapeHTML(nom2.toUpperCase())}</text>`;
@@ -4129,6 +4148,18 @@
  });
  });
 
+ if (lignesVerdict.length) {
+ let yy = H0 + 8;
+ svgContent += `<line x1="40" y1="${yy}" x2="860" y2="${yy}" stroke="#334155" stroke-width="1"/>`;
+ yy += 26;
+ lignesVerdict.forEach(l => {
+ (l.wrap ? wrapTxt(l.t, l.wrap) : [l.t]).forEach(ligne => {
+ svgContent += `<text x="450" y="${yy}" text-anchor="middle" fill="${l.c}" font-size="${l.s}" font-weight="${l.w}">${escapeHTML(ligne)}</text>`;
+ yy += l.s + 9;
+ });
+ });
+ if (dateM) svgContent += `<text x="450" y="${H - 8}" text-anchor="middle" fill="#64748b" font-size="10">Match du ${escapeHTML(formatISOToFR(dateM))} · moteur 3</text>`;
+ }
  svgContent += `</svg>`;
 
  const canvas = document.createElement("canvas");
