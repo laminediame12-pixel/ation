@@ -28,5 +28,15 @@
   "matchs": 3,
   "verdictJustes": 2,
   "toujoursR1": 1
+ },
+ {
+  "lot": "lot-2026-11-19d.json",
+  "hashLot": "1e82c4f56a22c229143658b18b69f74d180905a5e59d916f281112cc44c65a32",
+  "date": "2026-11-19",
+  "hashMoteur": "1085191731f3d3411919d3cd8c95675ca8af2d652954c58a2fed1e54a3ae4fa3",
+  "etiquette": "moteur3-gele-1",
+  "matchs": 3,
+  "verdictJustes": 1,
+  "toujoursR1": 1
  }
 ]
