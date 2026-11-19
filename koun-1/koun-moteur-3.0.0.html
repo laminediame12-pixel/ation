@@ -2209,13 +2209,11 @@
         return N('Nul : front miroir ' + L.R1.front + ', ' + L.R1.figure + ' + ' + L.R7.figure + ' donne Tristitia, qui est dans une maison de Terre (M' + th.join(', M') + ').');
       } },
     { id: 'NU-1', famille: 'Même front', titre: 'Le nul : les deux parties du thème sont en équilibre d’activation', statut: 'EN_ESSAI',
-      enonce: 'Pôles dans le même front, sans figure au repos décisive. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul. Nul assuré quand les deux écarts sont nuls, nul probable quand ils sont opposés et non nuls.',
+      enonce: 'Pôles dans le même front, sans figure au repos décisive. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul.',
       condition: function (L) {
         if (L.R1.front !== L.R7.front) return null;
         var n = equilibreCompense(L); if (!n) return null;
-        var r1 = N('Nul : même front ' + L.R1.front + ', sans figure au repos décisive. ' + texteEquilibre(n));
-        r1.niveauNul = n.ecartBase === 0 && n.ecartRes === 0 ? 'assuré' : 'probable';   // mêmes deux niveaux de nul que NU-2
-        return r1;
+        return N('Nul : même front ' + L.R1.front + ', sans figure au repos décisive. ' + texteEquilibre(n));
       } },
     { id: 'PF-2', famille: 'Pôle sans force', titre: 'Attaque directe sur un pôle sans défense', statut: 'EN_ESSAI',
       enonce: 'Un pôle attaque l’autre directement ; l’attaqué n’a que 1 % ou moins dans sa maison de pôle et l’attaquant tient la sienne à plus de 1 % : l’attaquant gagne.',
