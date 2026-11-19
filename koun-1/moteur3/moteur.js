@@ -212,15 +212,34 @@
   // Dans chaque partie, les maisons prennent tour à tour une ligne : Feu, Air, Eau, Terre, puis de nouveau Feu, Air, Eau, Terre.
   // Une ligne à deux points compte 1 (niveau concordant). On lit la base et la résultante (en M16, sans résultante, la base).
   var PARTIE1 = [1, 2, 3, 4, 9, 10, 13, 15], PARTIE2 = [5, 6, 7, 8, 11, 12, 14, 16];
+  // ÉQUATION DE L'ÉQUILIBRE (établie par le calcul sur les 65 536 thèmes, vérifiée par outils/verifier_equations.js).
+  // Les niveaux de toutes les maisons sont des sommes (XOR) des 16 bits des mères : m(i, c) = niveau c de la mère i, 1 = ligne à un point, 0 = ligne à deux points.
+  // Les quatre premières maisons de chaque partie se compensent en base ; il reste deux quatuors :
+  //   A = (M9 Feu, M10 Air, M13 Eau, M15 Terre) : A1 = m1F+m2F, A2 = m3A+m4A, A3 = m1E+m2E+m3E+m4E, A4 = m1T+m2T+m3T+m4F+m4A+m4E
+  //   B = (M11 Feu, M12 Air, M14 Eau, M16 Terre) : B1 = m1F+m1A, B2 = m2E+m2T, B3 = m3F+m3A+m3E+m3T, B4 = m2T+m3T+m4F+m4A+m4E
+  // Écart de base (partie 1 − partie 2, en niveaux saturés) = poids(B) − poids(A).
+  // Écart de résultante = poids(B xor (0,0,1,0)) − poids(A xor (1,0,1,1)) + 2·(m3E − m4T) ; (1,0,1,1) et (0,0,1,0) sont les bits de repos des maisons de A et de B.
+  // Nul assuré : les deux écarts sont nuls. Nul probable : leur somme est nulle sans que les deux le soient. Le juge (M15) hors de son repos est exigé à part (equilibreCompense).
+  function equilibreEquation(L) {
+    var X = [0, 1, 2, 3].map(function (i) { return [0, 1, 2, 3].map(function (l) { return POINTS[L.maisons[i].base][l] === 1 ? 1 : 0; }); });
+    var A = [X[0][0] ^ X[1][0], X[2][1] ^ X[3][1], X[0][2] ^ X[1][2] ^ X[2][2] ^ X[3][2], X[0][3] ^ X[1][3] ^ X[2][3] ^ X[3][0] ^ X[3][1] ^ X[3][2]];
+    var B = [X[0][0] ^ X[0][1], X[1][2] ^ X[1][3], X[2][0] ^ X[2][1] ^ X[2][2] ^ X[2][3], X[1][3] ^ X[2][3] ^ X[3][0] ^ X[3][1] ^ X[3][2]];
+    var rA = [1, 0, 1, 1], rB = [0, 0, 1, 0];
+    function poids(v) { return v.reduce(function (a, b) { return a + b; }, 0); }
+    var pA = poids(A), pB = poids(B), correction = 2 * (X[2][2] - X[3][3]);
+    var eb = pB - pA, er = poids(B.map(function (v, k) { return v ^ rB[k]; })) - poids(A.map(function (v, k) { return v ^ rA[k]; })) + correction;
+    return { A: A, B: B, poidsA: pA, poidsB: pB, correction: correction, ecartBase: eb, ecartRes: er, assure: eb === 0 && er === 0, probable: eb + er === 0 && !(eb === 0 && er === 0) };
+  }
   function niveauxParties(L) {
+    // comptages affichés dans le texte ; les écarts qui décident viennent de l'équation (identiques au comptage direct sur les 65 536 thèmes)
     function somme(part, couche) {
       return part.reduce(function (t, h, i) {
         var m = L.maisons[h - 1], f = couche === 'base' ? m.base : (m.resultante || m.base);
         return t + (POINTS[f][i % 4] === 2 ? 1 : 0);
       }, 0);
     }
-    var b1 = somme(PARTIE1, 'base'), b2 = somme(PARTIE2, 'base'), r1 = somme(PARTIE1, 'res'), r2 = somme(PARTIE2, 'res');
-    return { base1: b1, base2: b2, res1: r1, res2: r2, ecartBase: b1 - b2, ecartRes: r1 - r2 };
+    var b1 = somme(PARTIE1, 'base'), b2 = somme(PARTIE2, 'base'), r1 = somme(PARTIE1, 'res'), r2 = somme(PARTIE2, 'res'), eq = equilibreEquation(L);
+    return { base1: b1, base2: b2, res1: r1, res2: r2, ecartBase: eq.ecartBase, ecartRes: eq.ecartRes, equation: eq };
   }
   // Le juge (M15) tranche : s'il est dans sa maison de repos (Aquisitio en base ou en résultante, c'est-à-dire Aquisitio ou Populus en base), il est décisif et l'équilibre ne donne pas le nul.
   // Les 8 nuls réels ont un juge hors de son repos ; 8 matchs décidés sur 19 ont le juge chez lui.
@@ -233,7 +252,7 @@
   }
   function equilibreCompense(L) { if (jugeChezLui(L)) return null; var n = niveauxParties(L); return n.ecartBase + n.ecartRes === 0 ? n : null; }
   function texteEquilibre(n) {
-    return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos.';
+    return 'partie 1 (M1, M2, M3, M4, M9, M10, M13, M15) : ' + n.base1 + ' en base, ' + n.res1 + ' en résultante ; partie 2 (M5, M6, M7, M8, M11, M12, M14, M16) : ' + n.base2 + ' en base, ' + n.res2 + ' en résultante. Ce que la base laisse d’un côté, la résultante le rend de l’autre : ' + (n.ecartBase === 0 ? 'équilibre parfait' : 'équilibre compensé') + ', et le juge (M15) n’est pas dans sa maison de repos. Équation : poids de (M9 Feu, M10 Air, M13 Eau, M15 Terre) = ' + n.equation.poidsA + ', de (M11 Feu, M12 Air, M14 Eau, M16 Terre) = ' + n.equation.poidsB + ' ; écart de base ' + n.equation.ecartBase + ' ; écart de résultante ' + n.equation.ecartRes + ' (correction 2·(m3E − m4T) = ' + n.equation.correction + ').';
   }
   var CAS = [
     // ───────── Victoire assurée : boucles différentes ─────────
@@ -691,7 +710,7 @@
     out.lignes = { deuxMarquent: { a: bA.deuxMarquent.oui, b: bB.deuxMarquent.oui, accord: bA.deuxMarquent.oui === bB.deuxMarquent.oui }, over15: { accord: bA.overUnder.over15 === bB.overUnder.over15 }, over25: { accord: bA.overUnder.over25 === bB.overUnder.over25 }, over35: { accord: bA.overUnder.over35 === bB.overUnder.over35 } };
     return out;
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, canauxDifferents: canauxDifferents, binomeM1: binomeM1, fiabilite: fiabilite, FIABILITE: FIABILITE, JOURS: JOURS, FIGURE_DU_JOUR: FIGURE_DU_JOUR, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, canauxDifferents: canauxDifferents, binomeM1: binomeM1, fiabilite: fiabilite, FIABILITE: FIABILITE, JOURS: JOURS, FIGURE_DU_JOUR: FIGURE_DU_JOUR, axeValide: axeValide, concilier: concilier, equilibre: equilibreEquation, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
