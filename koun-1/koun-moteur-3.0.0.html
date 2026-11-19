@@ -4321,6 +4321,24 @@
  setTeamLogo(document.getElementById("logoTeam1"), document.getElementById("team1Input").value || "Pays Bas");
  setTeamLogo(document.getElementById("logoTeam2"), document.getElementById("team2Input").value || "Grèce");
  autoCastSand(true);
+
+ // Ouverture par lien : ?theme=2-6-2-12&date=2026-11-20&e1=Équipe1&e2=Équipe2 charge le thème (mères), la date et les équipes ;
+ // la page calcule alors tout elle-même, avec le moteur. Sans paramètre, rien ne change.
+ (function chargerDepuisLien() {
+ let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
+ const th = q.get("theme");
+ if (!th || !/^\d{1,2}([-,]\d{1,2}){3}$/.test(th)) return;
+ if (q.get("e1")) document.getElementById("team1Input").value = q.get("e1");
+ if (q.get("e2")) document.getElementById("team2Input").value = q.get("e2");
+ if (q.get("date") && /^\d{4}-\d{2}-\d{2}$/.test(q.get("date"))) document.getElementById("matchDate").value = q.get("date");
+ document.getElementById("matchScore").value = "";
+ const dm = document.getElementById("drawMode"); if (dm) { dm.value = "manuel"; toggleDrawMode(); }
+ document.getElementById("quickNumbers").value = th.replace(/,/g, "-");
+ parseQuickNumbers();
+ updateMatchLabels();
+ renderValidation();
+ computeVerdict();
+ })();
 </script>
 </body>
 </html>
