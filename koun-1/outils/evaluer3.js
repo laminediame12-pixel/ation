@@ -12,14 +12,12 @@ console.log('  27 de développement :', D.j + '/' + D.n, '| toujours R1 :', DEV.
 console.log('  lot 1 (validation)  :', L.j + '/' + L.n, '| toujours R1 :', lot.filter(r => r.a === '1').length + '/' + L.n);
 console.log('  par principe, développement :', fmt(D.par));
 console.log('  par principe, lot 1          :', fmt(L.par));
-// Tri par fiabilité du thème (FI-1) : les thèmes fiables ou moyens sont étudiés, les thèmes peu fiables sont mis de côté.
-const tri = (set) => { const g = { 2: [], 1: [], 0: [] }; set.det.forEach(x => { const L = K3.lire(K3.construireTheme(...x.r.m.map(K3.fig))); g[K3.fiabilite(L).niveau].push(x); }); return g; };
+// Tri par validation du thème (FI-3) : les thèmes valides sont étudiés, les thèmes non valides sont mis de côté.
+const tri = (set) => { const g = { valide: [], non: [] }; set.det.forEach(x => { const L = K3.lire(K3.construireTheme(...x.r.m.map(K3.fig))); g[K3.fiabilite(L).valide ? 'valide' : 'non'].push(x); }); return g; };
 const triD = tri(D), triL = tri(L);
 const jt = (a) => a.filter(x => (x.v.verdict || '—') === x.r.a).length;
-console.log('  par fiabilité (développement + lot 1) :');
-[[2, 'fiables'], [1, 'moyens'], [0, 'peu fiables, mis de côté']].forEach(([n, lib]) => { const a = triD[n].concat(triL[n]); console.log('    ' + lib.padEnd(26) + jt(a) + '/' + a.length + ' (développement ' + jt(triD[n]) + '/' + triD[n].length + ', lot 1 ' + jt(triL[n]) + '/' + triL[n].length + ')'); });
-const ret = triD[2].concat(triD[1], triL[2], triL[1]);
-console.log('    étudiés (fiables + moyens) : ' + jt(ret) + '/' + ret.length);
+console.log('  par validation du thème (développement + lot 1) :');
+[['valide', 'valides (étudiés)'], ['non', 'non valides (mis de côté)']].forEach(([n, lib]) => { const a = triD[n].concat(triL[n]); console.log('    ' + lib.padEnd(26) + jt(a) + '/' + a.length + ' (développement ' + jt(triD[n]) + '/' + triD[n].length + ', lot 1 ' + jt(triL[n]) + '/' + triL[n].length + ')'); });
 const sc = JSON.parse(fs.readFileSync(path.join(__dirname, '../validation/scores-reels.json'), 'utf8'));
 let b = 0, o15 = 0, o25 = 0, o35 = 0, mt = 0, nmt = 0, scoreOk = 0, issueOk = 0;
 const lignes = [];

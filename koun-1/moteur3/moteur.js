@@ -413,15 +413,16 @@
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
-  // FI-2 : fiabilité du thème (le propriétaire a changé la validation) : le binôme de M1 ET la somme de l'axe angulaire (M1+M4+M7+M10) doivent être en maison angulaire (M1, M4, M7 ou M10, en base ou en résultante).
-  // Les deux : thème fiable ; un seul : moyen ; aucun : peu fiable. La fiabilité ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.
-  var FIABILITE = { id: 'FI-2', provenance: 'DEVELOPPEMENT', enonce: 'Fiabilité du thème : le binôme de M1 (la figure qui suit celle de M1 de deux numéros) et la somme de l’axe angulaire (M1+M4+M7+M10) doivent tous deux être en maison angulaire (1, 4, 7 ou 10, en base ou en résultante). Deux validations : fiable ; une : moyen ; aucune : peu fiable. La fiabilité ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
+  // FI-3 : validation du thème (corrigée par le propriétaire) : le binôme de M1 (la figure qui suit celle de M1 de deux numéros) et la figure somme de l'axe angulaire (M1+M4+M7+M10) doivent tous deux être présents dans le thème
+  // et avoir au moins un emplacement (base ou résultante) en maison angulaire (M1, M4, M7 ou M10). Sinon le thème est non valide. La validation ne change pas le verdict ; elle départage deux thèmes du même match.
+  var FIABILITE = { id: 'FI-3', provenance: 'DEVELOPPEMENT', enonce: 'Validation du thème : le binôme de M1 et la figure somme de l’axe angulaire (M1+M4+M7+M10) sont présents dans le thème et en maison angulaire (1, 4, 7 ou 10, en base ou en résultante). Sinon le thème est non valide. La validation ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
   function fiabilite(L) {
     var b = binomeM1(L), a = axeValide(L), ANG = [1, 4, 7, 10];
     var pb = L.positions(b.figure).map(function (x) { return x.maison; });
-    b.surAxe = pb.filter(function (h) { return ANG.indexOf(h) >= 0; }); b.enAxe = b.surAxe.length > 0;
-    var n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0);
-    return { niveau: n, libelle: n === 2 ? 'fiable' : n === 1 ? 'moyen' : 'peu fiable', binome: b, axe: a };
+    b.presente = pb.length > 0; b.surAxe = pb.filter(function (h) { return ANG.indexOf(h) >= 0; }); b.enAxe = b.surAxe.length > 0;
+    a.presente = a.base.length + a.resultante.length > 0;
+    var n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0), valide = n === 2;
+    return { niveau: n, valide: valide, libelle: valide ? 'valide' : 'non valide', binome: b, axe: a };
   }
   function verdict(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
@@ -653,7 +654,7 @@
   }
   var RANG_FORCE = { 'FC-2': 2, 'FP-1': 1, 'CC-1': 0 };
   function rangVerdict(v) { return v.assuree ? 4 : (RANG_FORCE[v.principe] !== undefined ? RANG_FORCE[v.principe] : 3); }
-  var CONCILIATION = { id: 'CO-1', provenance: 'DEVELOPPEMENT', enonce: 'Deux thèmes du même match, même repère (R1 = équipe 1) : accord = verdict commun ; désaccord = le thème le plus fiable l\u2019emporte (binôme de M1 juré ou accepté, somme de l\u2019axe angulaire en maison angulaire) ; à fiabilité égale, celui dont la somme de l\u2019axe angulaire est en maison angulaire ; sinon le thème dont le principe est le plus fort (assuré, structure, FC-2, FP-1, CC-1), puis la marge ; égalité complète = nul.' };
+  var CONCILIATION = { id: 'CO-1', provenance: 'DEVELOPPEMENT', enonce: 'Deux thèmes du même match, même repère (R1 = équipe 1) : accord = verdict commun ; désaccord = le thème valide l\u2019emporte (binôme de M1 et somme de l\u2019axe angulaire tous deux en maison angulaire) ; à validité égale, celui dont la somme de l\u2019axe angulaire est en maison angulaire ; sinon le thème dont le principe est le plus fort (assuré, structure, FC-2, FP-1, CC-1), puis la marge ; égalité complète = nul.' };
   function concilier(ra, rb) {
     var va = ra.verdict, vb = rb.verdict, A = { verdict: va.verdict, principe: va.principe, rang: rangVerdict(va), marge: va.marge || 0 }, B = { verdict: vb.verdict, principe: vb.principe, rang: rangVerdict(vb), marge: vb.marge || 0 };
     var out = { id: CONCILIATION.id, provenance: CONCILIATION.provenance, enonce: CONCILIATION.enonce, a: A, b: B, accord: va.verdict === vb.verdict }, retenu, raison;
@@ -661,9 +662,9 @@
     else {
       var axA = axeValide(ra.lecture), axB = axeValide(rb.lecture), fA = fiabilite(ra.lecture), fB = fiabilite(rb.lecture);
       out.axe = { a: axA, b: axB }; out.fiabilite = { a: fA, b: fB };
-      var parFiab = fA.niveau !== fB.niveau, cmp = parFiab ? (fA.niveau > fB.niveau ? 1 : -1) : axA.valide !== axB.valide ? (axA.valide ? 1 : -1) : A.rang !== B.rang ? (A.rang > B.rang ? 1 : -1) : (va.verdict !== 'N' && vb.verdict !== 'N' && A.marge !== B.marge ? (A.marge > B.marge ? 1 : -1) : 0), parAxe = !parFiab && axA.valide !== axB.valide;
+      var parFiab = fA.valide !== fB.valide, cmp = parFiab ? (fA.valide ? 1 : -1) : axA.valide !== axB.valide ? (axA.valide ? 1 : -1) : A.rang !== B.rang ? (A.rang > B.rang ? 1 : -1) : (va.verdict !== 'N' && vb.verdict !== 'N' && A.marge !== B.marge ? (A.marge > B.marge ? 1 : -1) : 0), parAxe = !parFiab && axA.valide !== axB.valide;
       if (cmp === 0) { out.verdict = 'N'; retenu = va.verdict === 'N' ? 'A' : vb.verdict === 'N' ? 'B' : 'A'; raison = 'Les deux thèmes se contredisent avec la même force (rang ' + A.rang + ', marge ' + A.marge + ' et ' + B.marge + ') : nul.'; }
-      else { out.verdict = cmp > 0 ? va.verdict : vb.verdict; retenu = cmp > 0 ? 'A' : 'B'; raison = 'Les deux thèmes se contredisent : le thème ' + retenu + ' l\u2019emporte, ' + (parFiab ? 'il est plus fiable (' + (cmp > 0 ? fA : fB).libelle + ' contre ' + (cmp > 0 ? fB : fA).libelle + ')' : parAxe ? 'la somme de son axe angulaire (' + (cmp > 0 ? axA : axB).figure + ') est en maison angulaire M' + (cmp > 0 ? axA : axB).surAxe[0] + ', celle de l\u2019autre thème ne l\u2019est pas' : A.rang !== B.rang ? 'son principe (' + (cmp > 0 ? A.principe : B.principe) + ', rang ' + Math.max(A.rang, B.rang) + ') est plus fort que celui de l\u2019autre (rang ' + Math.min(A.rang, B.rang) + ')' : 'à rang égal sa marge est plus grande (' + Math.max(A.marge, B.marge) + ' contre ' + Math.min(A.marge, B.marge) + ')') + '.'; }
+      else { out.verdict = cmp > 0 ? va.verdict : vb.verdict; retenu = cmp > 0 ? 'A' : 'B'; raison = 'Les deux thèmes se contredisent : le thème ' + retenu + ' l\u2019emporte, ' + (parFiab ? 'il est valide et l\u2019autre non (binôme de M1 et somme de l\u2019axe angulaire en maison angulaire)' : parAxe ? 'la somme de son axe angulaire (' + (cmp > 0 ? axA : axB).figure + ') est en maison angulaire M' + (cmp > 0 ? axA : axB).surAxe[0] + ', celle de l\u2019autre thème ne l\u2019est pas' : A.rang !== B.rang ? 'son principe (' + (cmp > 0 ? A.principe : B.principe) + ', rang ' + Math.max(A.rang, B.rang) + ') est plus fort que celui de l\u2019autre (rang ' + Math.min(A.rang, B.rang) + ')' : 'à rang égal sa marge est plus grande (' + Math.max(A.marge, B.marge) + ' contre ' + Math.min(A.marge, B.marge) + ')') + '.'; }
     }
     out.retenu = retenu; out.raison = raison;
     var rb2 = retenu === 'A' ? ra : rb, bA = ra.buts, bB = rb.buts, bR = rb2.buts;
