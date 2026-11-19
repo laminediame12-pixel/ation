@@ -1,5 +1,6 @@
 {
  "etiquette": "moteur3-gele-1",
  "hashMoteur": "1085191731f3d3411919d3cd8c95675ca8af2d652954c58a2fed1e54a3ae4fa3",
- "note": "Moteur gelé pour la validation : tout lot neuf est évalué sur ce moteur sans réglage préalable. Pour dégeler, régler le moteur, puis refaire un gel (nouvelle étiquette et nouveau hash) : les anciens résultats ne valent plus que pour l'ancien gel."
+ "note": "Moteur gelé pour la validation : tout lot neuf est évalué sur ce moteur sans réglage préalable. Pour dégeler, régler le moteur, puis refaire un gel (nouvelle étiquette et nouveau hash) : les anciens résultats ne valent plus que pour l'ancien gel. L'étiquette git n'a pas pu être poussée sur le dépôt distant (le serveur refuse les étiquettes) : le gel repose sur l'empreinte du fichier et sur ce commit.",
+ "commitMoteur": "7eb9a81fb6030e23d445ec6fa6de33f14168a894"
 }
