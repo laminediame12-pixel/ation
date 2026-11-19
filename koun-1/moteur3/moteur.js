@@ -602,6 +602,35 @@
     return sortie;
   }
 
+
+  // ───────── FIGURES PAR CANAL D'ACCUEIL : orientation, saturation, concordance (structure, pas un principe de verdict) ─────────
+  // Chaque maison appartient à un canal (rang dans le bloc : Feu M1 M5 M9 M13, Air M2 M6 M10 M14, Eau M3 M7 M11 M15, Terre M4 M8 M12 M16). Une figure a le canal de son front.
+  // Relations : propre canal, canal adjacent (Feu-Air, Air-Eau, Eau-Terre, Terre-Feu) ou canal opposé (Feu-Eau, Air-Terre). Le front de la résultante est la combinaison du front de la figure et de celui de la maison :
+  // propre canal : front D ; canal opposé : front B (Air) ; canal adjacent : front A ou C. Sur les 4 figures d'un front dans les 4 maisons d'un canal, certains niveaux sont toujours (ou jamais) concordants.
+  var NOMS_NIVEAUX = ['Feu', 'Air', 'Eau', 'Terre'], LETTRES_FRONT = ['A', 'B', 'C', 'D'], FIXES_CACHE = {};
+  function niveauxFixes(z, w) {
+    var k = z + '/' + w; if (FIXES_CACHE[k]) return FIXES_CACHE[k];
+    var figs = FIG.filter(function (g) { return (num(g) - 1) % 4 === z; }), hs = [1, 2, 3, 4].map(function (i) { return w + 1 + 4 * (i - 1); }), toujours = [], jamais = [];
+    for (var l = 0; l < 4; l++) {
+      var n = 0; figs.forEach(function (g) { hs.forEach(function (h) { if (POINTS[g][l] === POINTS[FIG[h - 1]][l]) n++; }); });
+      if (n === 16) toujours.push(l); if (n === 0) jamais.push(l);
+    }
+    return (FIXES_CACHE[k] = { toujours: toujours, jamais: jamais });
+  }
+  function canauxDifferents(L) {
+    var par = num(L.R1.figure) % 2, lignes = [], tot = { R1: { propre: 0, adjacent: 0, oppose: 0 }, R7: { propre: 0, adjacent: 0, oppose: 0 } };
+    for (var h = 1; h <= 16; h++) {
+      var f = L.maisons[h - 1].base, w = (h - 1) % 4, z = (num(f) - 1) % 4, d = (w - z + 4) % 4, rel = d === 0 ? 'propre' : d === 2 ? 'oppose' : 'adjacent';
+      var r = h < 16 ? res(L, h) : f, conc = [], sat = [], camp = num(f) % 2 === par ? 'R1' : 'R7', fx = niveauxFixes(z, w);
+      for (var i = 0; i < 4; i++) { if (POINTS[f][i] === POINTS[FIG[h - 1]][i]) conc.push(i); if (POINTS[f][i] === 2) sat.push(i); }
+      var ok = fx.toujours.every(function (i) { return conc.indexOf(i) >= 0; }) && fx.jamais.every(function (i) { return conc.indexOf(i) < 0; });
+      tot[camp][rel]++;
+      lignes.push({ maison: h, canal: NOMS_NIVEAUX[w], figure: f, front: LETTRES_FRONT[z], camp: camp, relation: rel, resultante: r, orientation: LETTRES_FRONT[(num(r) - 1) % 4],
+        saturation: sat.map(function (i) { return NOMS_NIVEAUX[i]; }), concordance: conc.map(function (i) { return NOMS_NIVEAUX[i]; }),
+        toujours: fx.toujours.map(function (i) { return NOMS_NIVEAUX[i]; }), jamais: fx.jamais.map(function (i) { return NOMS_NIVEAUX[i]; }), regleOk: ok });
+    }
+    return { mode: L.mode, lignes: lignes, totaux: tot, pole1: L.R1.maison, pole7: L.R7.maison };
+  }
   function analyser(theme) {
     var L = K.lire(theme), v = verdict(L);
     return { lecture: L, verdict: v, axe: axeValide(L), fiabilite: fiabilite(L), penalite: penalite(L), buts: buts(L, v.verdict) };
@@ -638,7 +667,7 @@
     out.lignes = { deuxMarquent: { a: bA.deuxMarquent.oui, b: bB.deuxMarquent.oui, accord: bA.deuxMarquent.oui === bB.deuxMarquent.oui }, over15: { accord: bA.overUnder.over15 === bB.overUnder.over15 }, over25: { accord: bA.overUnder.over25 === bB.overUnder.over25 }, over35: { accord: bA.overUnder.over35 === bB.overUnder.over35 } };
     return out;
   }
-  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, binomeM1: binomeM1, fiabilite: fiabilite, FIABILITE: FIABILITE, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
+  var API = { version: '3.0.0-table-rase', PRINCIPES_VERDICT: PRINCIPES_VERDICT, FORCE_POLES: FORCE_POLES, NUL_CANAL: NUL_CANAL, construireTheme: construireTheme, fig: fig, num: num, FIG: FIG, lire: lire, analyser: analyser, verdict: verdict, canauxDifferents: canauxDifferents, binomeM1: binomeM1, fiabilite: fiabilite, FIABILITE: FIABILITE, axeValide: axeValide, concilier: concilier, CONCILIATION: CONCILIATION, penalite: penalite, buts: buts, rythme: rythme };
   root.KOUN3 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
