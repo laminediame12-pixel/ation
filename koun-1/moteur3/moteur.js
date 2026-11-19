@@ -311,11 +311,14 @@
           cg.map(function (f) { return f + ' en M' + num(f); }).join(' et ') + (cg.length > 1 ? ' sont dans leur maison de repos' : ' est dans sa maison de repos') + ' ; en face, ' + (cp.length ? 'seulement ' + cp.join(', ') : 'aucune') + '.' + (sure ? ' De plus, ' + sa.figure + ', ' + sa.nom + ', est sur l’axe angulaire en base (M' + sa.surAxe.join(', M') + ') et appartient au camp de ' + g.camp + '.' : ''), sure);
       } },
     { id: 'NU-2', famille: 'Équilibre d’activation', titre: 'Le nul : les deux parties du thème sont en équilibre d’activation', statut: 'EN_ESSAI',
-      enonce: 'Même boucle ou boucles différentes, aucun cas de victoire ne s’est appliqué. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul.',
+      enonce: 'Même boucle ou boucles différentes, aucun cas de victoire ne s’est appliqué. Les niveaux d’activation des deux parties du thème s’équilibrent : l’écart de la base et celui de la résultante se compensent (somme nulle) : nul. Nul assuré quand les deux écarts sont nuls, nul probable quand ils sont opposés et non nuls.',
       condition: function (L) {
         if (L.R1.front === L.R7.front) return null;
         var n = equilibreCompense(L); if (!n) return null;
-        return N('Nul : aucun cas de victoire ne s’applique. ' + texteEquilibre(n));
+        // Deux niveaux de nul : strict (écart de la base et écart de la résultante tous deux nuls) = nul assuré ; compensé (écarts opposés non nuls) = nul probable.
+        var r = N('Nul : aucun cas de victoire ne s’applique. ' + texteEquilibre(n));
+        r.niveauNul = n.ecartBase === 0 && n.ecartRes === 0 ? 'assuré' : 'probable';
+        return r;
       } },
     { id: 'NU-3', famille: 'Équilibre d’activation', titre: 'Le nul : les affinités Feu-Air et Eau-Terre s’équilibrent en base', statut: 'EN_ESSAI',
       enonce: 'Aucun cas de victoire ne s’est appliqué et le juge (M15) n’est pas chez lui. En base, les lignes à deux points des niveaux Feu et Air (réunis) égalent celles des niveaux Eau et Terre (réunis) sur les 16 maisons : nul.',
@@ -419,7 +422,7 @@
   function verdict(L) {
     for (var i = 0; i < PRINCIPES_VERDICT.length; i++) {
       var p = PRINCIPES_VERDICT[i], r = p.cas.condition(L);
-      if (r) return { verdict: r.verdict, principe: p.id, provenance: p.provenance, enonce: p.enonce, raison: r.raison, assuree: !!r.assuree, titre: p.cas.titre };
+      if (r) return { verdict: r.verdict, principe: p.id, provenance: p.provenance, enonce: p.enonce, raison: r.raison, assuree: !!r.assuree, niveauNul: r.niveauNul || null, titre: p.cas.titre };
     }
     var f1 = passages(L, 'R1'), f7 = passages(L, 'R7'), a = f1.total, b = f7.total;
     if (a === b) {
