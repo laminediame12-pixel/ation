@@ -88,19 +88,18 @@ Mesure du rythme Fermé : sur les 26 scores réels il ne sépare pas les matchs 
 
 ## CO-1 : deux thèmes d'un même match (DEVELOPPEMENT, non validé)
 Deux thèmes lus avec le même repère (R1 = équipe 1) peuvent se contredire. Accord des deux verdicts : verdict commun. Désaccord, dans l'ordre :
-1. **Fiabilité (FI-1)** : le thème le plus fiable l'emporte (binôme de M1 juré ou accepté + somme de l'axe angulaire en maison angulaire).
+1. **Fiabilité (FI-2)** : le thème le plus fiable l'emporte (binôme de M1 et somme de l'axe angulaire en maison angulaire).
 2. **Axe angulaire** : à fiabilité égale, le thème dont la somme M1+M4+M7+M10 est en maison angulaire.
 3. La force du principe : victoire assurée (4), principe de structure (3), FC-2 (2), FP-1 (1), CC-1 (0).
 4. À rang égal, la marge du principe ; égalité complète : nul.
 Le score et les lignes de buts sont ceux du thème retenu ; la page affiche l'accord ou le désaccord sur Deux marquent et Over/Under 1,5 / 2,5 / 3,5, et la fiabilité de chaque thème.
 Origine : match 1-15-3-9 / 1-9-8-1 (réel 1-4). Les deux thèmes sont « moyen » (le premier : binôme juré, axe non validé ; le second : binôme hors canal, axe validé), l'axe départage et donne le thème juste. Ce match a servi à poser les critères : il est du développement.
 
-## FI-1 : la fiabilité du thème (posée par le propriétaire)
-Le binôme de M1 ne décide pas du vainqueur : il valide le thème. Binôme de M1 = la figure qui suit celle de M1 de deux numéros (Puer → Caput). Chez elle, dans sa maison de repos, elle « a juré » ; dans son canal (une maison de même rang que sa maison de repos), elle est « acceptée ». La deuxième validation est la somme de l'axe angulaire (M1+M4+M7+M10) en maison angulaire (M1, M4, M7 ou M10, en base ou en résultante). Deux validations : thème fiable ; une : moyen ; aucune : peu fiable. La fiabilité ne change pas le verdict : elle s'affiche avec la confiance et départage deux thèmes d'un même match (CO-1).
-Mesure sur les 41 thèmes de référence (verdict du moteur juste) : binôme accepté 16/17 (94 %), hors canal 18/24 (75 %) ; axe validé 18/21 (86 %), non validé 16/20 (80 %) ; au moins une validation (fiable ou moyen) 27/30 (90 %), aucune (peu fiable) 7/11 (64 %). Axe et binôme : 7/8, 11/13, 9/9 (binôme seul) et 7/11. Sur les combinaisons de mères : fiable 13 159, moyen 32 742, peu fiable 19 635.
-Réserves : définitions choisies en regardant ces thèmes ; effectifs faibles (11 thèmes peu fiables) ; le match à deux thèmes 1-15-3-9 / 1-9-8-1 est du développement (les deux thèmes sont « moyen »).
-Une version précédente faisait du binôme un principe de verdict (R7 ne gagne pas quand le binôme est accepté : R7 0 sur 17) ; le propriétaire l'a corrigée : le binôme valide le thème, il ne désigne pas de vainqueur. Cette version a été retirée.
-
+## FI-2 : la fiabilité du thème (validation changée par le propriétaire)
+Le binôme de M1 ne décide pas du vainqueur : il valide le thème. Binôme de M1 = la figure qui suit celle de M1 de deux numéros (Puer → Caput). **Nouvelle règle (FI-2) : le binôme de M1 et la somme de l'axe angulaire (M1+M4+M7+M10) doivent tous deux être en maison angulaire** (M1, M4, M7 ou M10, en base ou en résultante). Deux validations : thème fiable ; une : moyen ; aucune : peu fiable. La fiabilité ne change pas le verdict : elle s'affiche avec la confiance et départage deux thèmes d'un même match (CO-1).
+Ancienne règle (FI-1) : le binôme chez lui (a juré) ou dans son canal (accepté), et la somme en maison angulaire. Elle est remplacée ; la liste des 18 thèmes de travail (`validation/themes-18.json`) a été choisie avec FI-1 et reste figée.
+Mesure avec FI-2 : 41 thèmes (développement + lot 1), verdict juste : fiables 12/13, moyens 12/14, peu fiables 10/14. 26 scores réels : fiables 5/6 (Over 3,5 : 4/6), moyens 7/8, peu fiables 9/12. Sur les combinaisons de mères : 11 280 fiables, 31 680 moyens, 22 576 peu fiables. Trois thèmes étudiés : Soudan–Sénégal (moyen : somme Amissio en M4 et M7), Allemagne–Pays Bas (moyen : binôme Conjunctio en M4), Belgique–Italie (moyen : binôme Caput en M7).
+Réserves : définition posée pour « voir », effectifs faibles, thèmes de mesure aussi thèmes de choix de la règle.
 ## NU-2 : deux niveaux de nul (à la demande du propriétaire)
 Partie 1 = M1, M2, M3, M4, M9, M10, M13, M15 (branche des mères et juge) ; partie 2 = M5, M6, M7, M8, M11, M12, M14, M16 (branche des filles et conciliateur). Chaque maison lit un seul niveau, en diagonale (Feu, Air, Eau, Terre, puis on recommence). Au repos : partie 1 = 3 niveaux saturés, partie 2 = 5 en base (écart −2) ; 8 et 8 en résultante.
 - **Nul assuré** : l'écart de la base et celui de la résultante sont tous deux nuls (équilibre strict) et le juge est hors de son repos.

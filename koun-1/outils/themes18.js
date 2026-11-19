@@ -2,9 +2,9 @@
 const fs = require('fs'), path = require('path');
 const K3 = require('../moteur3/moteur.js');
 const sc = JSON.parse(fs.readFileSync(path.join(__dirname, '../validation/scores-reels.json'), 'utf8'));
-const rows = sc.map(e => { const th = K3.construireTheme(...e.themes.map(K3.fig)); const L = K3.lire(th); return { e, fi: K3.fiabilite(L), r: K3.analyser(th) }; }).filter(x => x.fi.niveau >= 1);
-const out = rows.map(x => ({ match: x.e.match, themes: x.e.themes, score: x.e.score.join('-'), fiabilite: x.fi.libelle }));
-fs.writeFileSync(path.join(__dirname, '../validation/themes-18.json'), JSON.stringify(out, null, 1));
+// La liste des 18 est figée dans validation/themes-18.json (choisie avec l'ancienne validation FI-1, avant le passage à FI-2).
+const liste = JSON.parse(fs.readFileSync(path.join(__dirname, '../validation/themes-18.json'), 'utf8')).map(x => x.match);
+const rows = sc.filter(e => liste.indexOf(e.match) >= 0).map(e => { const th = K3.construireTheme(...e.themes.map(K3.fig)); const L = K3.lire(th); return { e, fi: K3.fiabilite(L), r: K3.analyser(th) }; });
 let v = 0, b = 0, o35 = 0, o25 = 0, o15 = 0;
 rows.forEach(x => {
   const [a, c] = x.e.score, reel = a > c ? '1' : a < c ? '2' : 'N', T = a + c;

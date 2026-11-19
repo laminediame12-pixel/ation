@@ -413,10 +413,14 @@
     var chez = pos.some(function (x) { return x.maison === n; }), canal = pos.some(function (x) { return x.maison !== n && rang(x.maison) === rang(n); });
     return { figure: f, numero: n, chezElle: chez, dansSonCanal: canal, accepte: chez || canal, emplacements: pos.map(function (x) { return (x.couche === 'base' ? 'base' : 'résultante') + ' M' + x.maison; }) };
   }
-  // FI-1 : fiabilité du thème = deux validations posées par le propriétaire : binôme de M1 juré ou accepté ; somme de l'axe angulaire en maison angulaire. Deux : fiable ; une : moyen ; aucune : peu fiable.
-  var FIABILITE = { id: 'FI-1', provenance: 'DEVELOPPEMENT', enonce: 'Fiabilité du thème : le binôme de M1 est chez elle (a juré) ou dans son canal (acceptée), et la somme de l’axe angulaire (M1+M4+M7+M10) est en maison angulaire (1, 4, 7 ou 10). Deux validations : fiable ; une : moyen ; aucune : peu fiable. La fiabilité ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
+  // FI-2 : fiabilité du thème (le propriétaire a changé la validation) : le binôme de M1 ET la somme de l'axe angulaire (M1+M4+M7+M10) doivent être en maison angulaire (M1, M4, M7 ou M10, en base ou en résultante).
+  // Les deux : thème fiable ; un seul : moyen ; aucun : peu fiable. La fiabilité ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.
+  var FIABILITE = { id: 'FI-2', provenance: 'DEVELOPPEMENT', enonce: 'Fiabilité du thème : le binôme de M1 (la figure qui suit celle de M1 de deux numéros) et la somme de l’axe angulaire (M1+M4+M7+M10) doivent tous deux être en maison angulaire (1, 4, 7 ou 10, en base ou en résultante). Deux validations : fiable ; une : moyen ; aucune : peu fiable. La fiabilité ne change pas le verdict, elle indique la confiance et départage deux thèmes du même match.' };
   function fiabilite(L) {
-    var b = binomeM1(L), a = axeValide(L), n = (b.accepte ? 1 : 0) + (a.valide ? 1 : 0);
+    var b = binomeM1(L), a = axeValide(L), ANG = [1, 4, 7, 10];
+    var pb = L.positions(b.figure).map(function (x) { return x.maison; });
+    b.surAxe = pb.filter(function (h) { return ANG.indexOf(h) >= 0; }); b.enAxe = b.surAxe.length > 0;
+    var n = (b.enAxe ? 1 : 0) + (a.valide ? 1 : 0);
     return { niveau: n, libelle: n === 2 ? 'fiable' : n === 1 ? 'moyen' : 'peu fiable', binome: b, axe: a };
   }
   function verdict(L) {
