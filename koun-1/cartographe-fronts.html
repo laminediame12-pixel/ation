@@ -2,11 +2,11 @@
 @media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f1f5f9;--card:#fff;--ln:#cbd5e1;--tx:#0f172a;--mu:#64748b;--dot:#0f172a;--sat:#16a34a;--act:#2563eb;--dif:#d97706}}
 *{box-sizing:border-box}body{margin:0 auto;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,sans-serif;padding:0 16px 40px;max-width:1000px}
 h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-size:13px}
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.bar input{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 9px;font:inherit;width:150px}.bar button{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 12px;font:inherit;cursor:pointer}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.bar input{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 9px;font:inherit;width:150px}.tbn{color:var(--mu);font-size:12px;margin:8px 4px 4px}.tb{border-collapse:collapse;width:100%;font-size:11.5px;margin-bottom:4px}.tb th,.tb td{border:1px solid var(--ln);padding:3px 5px;text-align:center}.tb th{color:var(--mu);font-weight:600}.tb td.dg{font-weight:800}.bar select{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 9px;font:inherit}.bar button{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 12px;font:inherit;cursor:pointer}
 .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-bottom:12px}.lg i{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
 .fr{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:8px}.fr h2{font-size:15px;margin:2px 4px 0}.fr h2 small{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
-.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Trait épais : deux points des deux côtés · fin : un point des deux côtés · tireté : niveaux différents. Point plein : les deux lignes qui se croisent ont la même concordance. La Terre coupe Feu, Air et Eau, puis dévie vers le niveau Terre correspondant : de 1 vers 5 (vers le haut) et de 9 vers 13 (vers le bas). Le coin de la déviation n'est pas une intersection. R1 bleu, R7 rouge, cadre tireté = figure absente du thème.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
+.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><select id="mode"><option value="fronts">Les 4 fronts</option><option value="sommes">Sommes de deux fronts (A+B … D+C)</option></select><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Trait épais : deux points des deux côtés · fin : un point des deux côtés · tireté : niveaux différents. Point plein : les deux lignes qui se croisent ont la même concordance. La Terre coupe Feu, Air et Eau, puis dévie vers le niveau Terre correspondant : de 1 vers 5 (vers le haut) et de 9 vers 13 (vers le bas). Le coin de la déviation n'est pas une intersection. R1 bleu, R7 rouge, cadre tireté = figure absente du thème.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
    Structure exacte (thème, résultantes, forces, pôles, paralysies) puis, principe par principe, victoire, nul, pénalité, deux marquent,
    buts MT-1, corners, Over/Under 1,5 · 2,5 · 3,5. Chaque principe porte sa provenance :
      PROPRIETAIRE : posé par le propriétaire ; PORTE_3.0.0 : règle du 3.0.0 reprise ; DEVELOPPEMENT : issu des matchs de développement,
@@ -726,9 +726,10 @@ h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-siz
 const FIGS=[{"n":"Puer","p":[1,1,2,1]},{"n":"Laetitia","p":[1,2,2,2]},{"n":"Caput","p":[2,1,1,1]},{"n":"Albus","p":[2,2,1,2]},{"n":"Via","p":[1,1,1,1]},{"n":"Amissio","p":[1,2,1,2]},{"n":"Rubeus","p":[2,1,2,2]},{"n":"Tristitia","p":[2,2,2,1]},{"n":"Fortuna Minor","p":[1,1,2,2]},{"n":"Carcer","p":[1,2,2,1]},{"n":"Conjunctio","p":[2,1,1,2]},{"n":"Fortuna Major","p":[2,2,1,1]},{"n":"Cauda Draconis","p":[1,1,1,2]},{"n":"Puella","p":[1,2,1,1]},{"n":"Aquisitio","p":[2,1,2,1]},{"n":"Populus","p":[2,2,2,2]}];const FR='ABCD',EL=['Feu','Air','Eau','Terre'],ELC=['F','A','E','T'];
 const FRN={A:'Feu',B:'Air',C:'Eau',D:'Terre'};
 const cl=(a,b)=>a===2&&b===2?'sat':a===1&&b===1?'act':'dif';
-function bloc(z,L){
+function bloc(z,L){const f=z+1;return blocN(f,f+8,f+4,f+12,null,L)}
+function blocN(left,right,top,bot,sub,L){
  // boucle du front : f, f+4, f+8, f+12 ; miroirs (k, k+8) face à face : gauche/droite et haut/bas
- const f=z+1,left=f,right=f+8,top=f+4,bot=f+12;
+
  const pos=n=>{if(!L)return{txt:'',abs:false};const nm=FIGS[n-1].n;const b=[],r=[];L.maisons.forEach(m=>{if(m.base===nm)b.push(m.maison);if(m.resultante===nm)r.push(m.maison)});
   const t=[b.length?'base M'+b.join(',M'):'',r.length?'rés. M'+r.join(',M'):''].filter(Boolean).join(' · ');return{txt:t||'absente',abs:!b.length&&!r.length}};
  const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
@@ -736,7 +737,7 @@ function bloc(z,L){
  const S=34,X=[0,1,2,3].map(j=>230-1.5*S+j*S),Y=X;const out=[];
  const dotsV=(n,cx)=>FIGS[n-1].p.map((p,i)=>p===2?'<circle cx="'+(cx-6)+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/><circle cx="'+(cx+6)+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/>':'<circle cx="'+cx+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/>').join('');
  const dotsH=(n,cy)=>FIGS[n-1].p.map((p,j)=>p===2?'<circle cx="'+X[j]+'" cy="'+(cy-6)+'" r="5" fill="'+EC[j]+'"/><circle cx="'+X[j]+'" cy="'+(cy+6)+'" r="5" fill="'+EC[j]+'"/>':'<circle cx="'+X[j]+'" cy="'+cy+'" r="5" fill="'+EC[j]+'"/>').join('');
- const lab=(n,x,y,anchor)=>{const q=pos(n),pl=pol(n);return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" font-size="12.5" font-weight="600" '+(q.abs?'class="mu"':'')+'>'+n+' · '+FIGS[n-1].n+(pl?'  '+pl:'')+'</text>'+(L?'<text x="'+x+'" y="'+(y+14)+'" text-anchor="'+anchor+'" font-size="10.5" class="mu">'+q.txt+'</text>':'')};
+ const lab=(n,x,y,anchor,ix)=>{const q=pos(n),pl=pol(n),sb=sub?sub[ix]:'';const l2=[sb,L?q.txt:''].filter(Boolean).join(' · ');return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" font-size="12.5" font-weight="600" '+(q.abs?'class="mu"':'')+'>'+n+' · '+FIGS[n-1].n+(pl?'  '+pl:'')+'</text>'+(l2?'<text x="'+x+'" y="'+(y+14)+'" text-anchor="'+anchor+'" font-size="10.5" class="mu">'+l2+'</text>':'')};
  const H=[0,1,2,3].map(i=>cl(FIGS[left-1].p[i],FIGS[right-1].p[i])),V=[0,1,2,3].map(j=>cl(FIGS[top-1].p[j],FIGS[bot-1].p[j]));
  const D1=cl(FIGS[left-1].p[3],FIGS[top-1].p[3]),D2=cl(FIGS[right-1].p[3],FIGS[bot-1].p[3]);
  const sty=(c,el)=>'stroke="'+EC[el]+'" stroke-linecap="round" fill="none" '+(c==='dif'?'stroke-width="2.5" stroke-dasharray="7 6" opacity=".9"':c==='sat'?'stroke-width="5" opacity=".95"':'stroke-width="2.5" opacity=".95"');
@@ -762,20 +763,35 @@ function bloc(z,L){
  const nodeBox=(n,x,y,w,h)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="none" stroke="'+(pol(n)==='R1'?'var(--r1)':pol(n)==='R7'?'var(--r7)':'var(--ln)')+'" stroke-width="'+(pol(n)?2.5:1.5)+'" '+(pos(n).abs?'stroke-dasharray="5 4"':'')+'/>';
  out.push(nodeBox(left,40,158,60,146)+dotsV(left,70)+nodeBox(right,360,158,60,146)+dotsV(right,390));
  out.push(nodeBox(top,160,34,140,60)+dotsH(top,64)+nodeBox(bot,160,366,140,60)+dotsH(bot,396));
- out.push(lab(left,70,322,'middle'));out.push(lab(right,390,322,'middle'));
- out.push(lab(top,230,16,'middle'));out.push(lab(bot,230,444,'middle'));
+ out.push(lab(left,70,322,'middle',0));out.push(lab(right,390,322,'middle',1));
+ out.push(lab(top,230,16,'middle',2));out.push(lab(bot,230,444,'middle',3));
  const hc=H.filter(c=>c!=='dif').length,vc=V.filter(c=>c!=='dif').length;
- return {svg:'<svg viewBox="0 0 460 474" role="img" aria-label="Front '+FR[z]+'">'+out.join('')+'</svg>',h:hc,v:vc,nI:pts.length,nP:nPlein,t1:D1!=='dif',t2:D2!=='dif'};
+ return {svg:'<svg viewBox="0 0 460 474" role="img" aria-label="Carte des liaisons">'+out.join('')+'</svg>',h:hc,v:vc,nI:pts.length,nP:nPlein,t1:D1!=='dif',t2:D2!=='dif'};
 }
+const add=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();for(let k=0;k<16;k++)if(FIGS[k].p.join()===q)return k+1;return null};
+const COMBOS=[['A','B'],['A','C'],['A','D'],['B','C'],['B','D'],['C','D'],['D','C']];
+let MODE='fronts';
+function carte(titre,detail,b,tab){const d=document.createElement('div');d.className='fr';d.innerHTML='<h2>'+titre+' <small>'+detail+'</small></h2><div class="rs">Miroirs : '+b.mh+' ('+b.h+'/4 niveaux concordants) · '+b.mv+' ('+b.v+'/4) · Terre déviée : '+b.d1+' '+(b.t1?'concordante':'différente')+', '+b.d2+' '+(b.t2?'concordante':'différente')+' · '+b.nI+' intersections, '+b.nP+' pleines</div>'+b.svg+(tab||'');document.getElementById('g').appendChild(d)}
 function rendre(L){
  const g=document.getElementById('g');g.innerHTML='';
- for(let z=0;z<4;z++){const b=bloc(z,L);const names=[1,5,9,13].map(k=>FIGS[k+z-1].n).join(' · ');
-  const d=document.createElement('div');d.className='fr';
-  d.innerHTML='<h2>Front '+FR[z]+' <small>'+FRN[FR[z]]+' · '+names+'</small></h2><div class="rs">Miroirs : '+(z+1)+'↔'+(z+9)+' ('+b.h+'/4 niveaux concordants) · '+(z+5)+'↔'+(z+13)+' ('+b.v+'/4) · Terre déviée : '+(z+1)+'→'+(z+5)+' '+(b.t1?'concordante':'différente')+', '+(z+9)+'→'+(z+13)+' '+(b.t2?'concordante':'différente')+' · '+b.nI+' intersections, '+b.nP+' pleines</div>'+b.svg;g.appendChild(d)}
+ if(MODE==='fronts'){
+  for(let z=0;z<4;z++){const f=z+1,b=bloc(z,L);b.mh=f+'↔'+(f+8);b.mv=(f+4)+'↔'+(f+12);b.d1=f+'→'+(f+4);b.d2=(f+8)+'→'+(f+12);
+   carte('Front '+FR[z],FRN[FR[z]]+' · '+[1,5,9,13].map(k=>FIGS[k+z-1].n).join(' · '),b)}
+ }else{
+  COMBOS.forEach(([X,Y])=>{const zx=FR.indexOf(X),zy=FR.indexOf(Y),fx=zx+1,fy=zy+1;
+   const S=k=>add(fx+k,fy+k);const l=S(0),r=S(8),t=S(4),bo=S(12);
+   const sub=[fx+'+'+fy,(fx+8)+'+'+(fy+8),(fx+4)+'+'+(fy+4),(fx+12)+'+'+(fy+12)];
+   const b=blocN(l,r,t,bo,sub,L);b.mh=l+'↔'+r;b.mv=t+'↔'+bo;b.d1=l+'→'+t;b.d2=r+'→'+bo;
+   const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
+   const rows=[0,4,8,12].map((i,ri)=>'<tr><th>'+(fx+i)+' '+FIGS[fx+i-1].n+'</th>'+[0,4,8,12].map((j,ci)=>{const r=add(fx+i,fy+j);return '<td'+(ri===ci?' class="dg"':'')+'>'+r+' '+FIGS[r-1].n+'</td>'}).join('')+'</tr>').join('');
+   const fz='ABCD'[(add(fx,fy)-1)%4];
+   const tab='<div class="tbn">Les 16 sommes : une figure de '+X+' (lignes) + une figure de '+Y+' (colonnes). Résultat : toujours le front '+fz+' ('+FRN[fz]+'), chacune de ses 4 figures une fois par ligne et par colonne. Gras : les 4 sommes de la carte.</div><table class="tb"><tr><th>'+X+' + '+Y+'</th>'+[0,4,8,12].map(j=>'<th>'+(fy+j)+' '+FIGS[fy+j-1].n+'</th>').join('')+'</tr>'+rows+'</table>';
+   carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : sommes figure par figure, position par position'+note,b,tab)})
+ }
 }
 function charger(){const v=document.getElementById('th').value.trim();const p=v.split(/[-,\s]+/).map(Number).filter(n=>n>=1&&n<=16);
  if(p.length!==4){rendre(null);document.getElementById('info').textContent='Structure seule (aucun thème).';return}
  const L=KOUN3.lire(KOUN3.construireTheme(...p.map(KOUN3.fig)));rendre(L);document.getElementById('info').textContent='Thème '+p.join('-')+' · R1 '+L.R1.figure+' (M'+L.R1.maison+') · R7 '+L.R7.figure+' (M'+L.R7.maison+')'}
-document.getElementById('go').onclick=charger;document.getElementById('th').addEventListener('keydown',e=>{if(e.key==='Enter')charger()});
+document.getElementById('go').onclick=charger;document.getElementById('mode').onchange=e=>{MODE=e.target.value;charger()};document.getElementById('th').addEventListener('keydown',e=>{if(e.key==='Enter')charger()});
 try{const q=new URLSearchParams(location.search).get('theme');if(q)document.getElementById('th').value=q}catch(e){}
 charger();</script></body></html>
