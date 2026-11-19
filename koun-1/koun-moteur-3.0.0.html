@@ -3900,6 +3900,11 @@
  const sb = hs.reduce((t, h) => t + satDe(M, h), 0), sr = hs.reduce((t, h) => t + satDe(R, h), 0);
  const detail = hs.map(h => "M" + h + " " + satDe(M, h) + "/4").join(" · ");
  const ec = sb - REPOS_SAT[c.idx];
+ // Énergie qui passe : pour chaque niveau (Feu, Air, Eau, Terre), nombre de maisons du canal (sur 4) où la base s'écarte de la fréquence de repos de la maison (niveau renversé, une ligne à un point dans la résultante).
+ const LV = ["Feu", "Air", "Eau", "Terre"];
+ const passe = LV.map((n, l) => hs.reduce((t, h) => t + ((R[h] || [])[l] === 1 ? 1 : 0), 0));
+ c.passe = passe;
+ c.passeTxt = "Énergie qui passe (niveaux renversés, sur 4 maisons) : " + LV.map((n, l) => `${n} <b>${passe[l]}</b>`).join(" · ");
  c.sat = { base: sb, res: sr, repos: REPOS_SAT[c.idx] };
  c.satTxt = `Saturation du canal : <b>${sb}</b> saturés · <b>${16 - sb}</b> non saturés sur 16 (base) · repos ${REPOS_SAT[c.idx]} (${ec >= 0 ? "+" : ""}${ec}) · résultante ${sr}/16<br><span style="color:#94a3b8;">${detail}</span>`;
  });
@@ -3914,6 +3919,7 @@
  <div class="canal-card-name" style="color:${c.color};">${c.name} <span>Front ${c.front}</span></div>
  <div class="canal-card-meta">Deux points ${ratio}% · Base ${c.openB}/16 · Rés ${c.openR}/16 · <span style="color:${c.lockCol};">${c.lockState}</span></div>
  <div class="canal-card-meta" style="color:#e2e8f0;">${c.satTxt}</div>
+ <div class="canal-card-meta" style="color:#fbbf24;">${c.passeTxt}</div>
  <div class="canal-acts">${chips}</div>
  </div>`;
  }).join("");
