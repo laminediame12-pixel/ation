@@ -56,3 +56,6 @@ Mise à jour (FI-4) : la somme 3-5-11-15 (présente quelque part) entre dans la 
 Mise à jour (FI-5) : la figure du jour (jour de la semaine de la date du match) entre dans la validation du thème, comme quatrième condition. Elle n'est mesurable que sur les 14 matchs du lot 1, seuls à avoir une date : un thème valide (PSG–Bayern), identique avec ou sans le jour.
 
 Protocole de validation sur lots neufs : voir `validation/PROTOCOLE.md` (moteur gelé `moteur3-gele-1`, outil `outils/evaluer_lot.js`, registre `validation/registre.json`).
+
+## Thèmes documentés (lots neufs évalués sur le moteur gelé)
+Les 9 matchs évalués sur le moteur gelé `moteur3-gele-1` sont documentés comme fait constant dans `validation/THEMES-DOCUMENTES.md` (tableau, thème complet, pôles, validation, annonce du moteur, résultat) et `validation/themes-documentes.json` (mêmes données lisibles par programme). Régénération : `node outils/documenter_lots.js`. Bilan sur ces 9 matchs : verdict 4/9 (« toujours R1 » : 3/9), Deux marquent 6/9, Over/Under 1,5 : 7/9, 2,5 : 3/9, 3,5 : 4/9. Quand le moteur annonce R1 : 2/3 ; R7 : 2/5 ; nul : 0/1. Ces matchs sont du développement : ils ne valident plus rien.
