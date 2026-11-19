@@ -1,0 +1,8 @@
+{
+ "nom": "Lot du 19/11/2026 : matchs virtuels FC 26 (Championship d'Angleterre), thèmes valides tirés au hasard avant les matchs",
+ "regle": "Un lot ne sert qu'une fois. Score : équipe 1 - équipe 2 (R1 = équipe 1).",
+ "matchs": [
+  { "equipe1": "Manchester City", "equipe2": "West Ham United", "date": "19/11/2026", "theme": "6-12-12-8", "score": "3-1" },
+  { "equipe1": "Sunderland", "equipe2": "Brighton et Hove Albion", "date": "19/11/2026", "theme": "3-2-16-1", "score": "1-1" }
+ ]
+}
