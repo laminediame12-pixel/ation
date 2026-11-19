@@ -78,11 +78,23 @@ Observation d'ensemble : sur les 18 thèmes, 16 verdicts sont justes, mais « to
 
 ## E. Couches de l'ancien système
 
-**Retirées de la page :** le panneau « Thème porté », le badge « période » (jour/nuit) à côté de l'heure, la table `BINOMES_MAP` de la page (le binôme vient maintenant du moteur, pour éviter deux calculs parallèles).
+**Retirées de la page (à votre demande « tout ce qui ne fonctionne pas ou n'intervient pas dans le calcul du moteur ») :**
+- le panneau « Thème porté » ;
+- le badge « période » (jour/nuit), la table `BINOMES_MAP` ;
+- les cartes de verrous des canaux, les pastilles Fermante / Ouvrante, la ligne « Trajet flux » et leurs fonctions (`evaluateActivationRole`, `ELEMENT_ACTIVATION_ROLES`, `analyzeHouseFluxPath`, `evalFluxTrajectory`, `vecToNotation`) ;
+- le calcul parallèle du rythme du thème : la page affiche maintenant le rythme calculé par le moteur ;
+- l'étiquette « maison paire / impaire » (« aucun rôle dans le verdict »), la règle « Rubeus toujours rouge », la couleur « résultante alliée », les « opérateurs » des maisons ;
+- les forces 100/75/50/0 de l'inspecteur de maison : il affiche les forces du moteur ;
+- le calcul parallèle des paralysies (`detectReciprocalParalyses`) ;
+- les « Ant. : … » des cartes de figures absentes (la table de la page donnait l'antagoniste dans le sens opposé à celui du moteur) ;
+- les règles CSS devenues inutiles.
+
+**Maison ennemie :** la pyramide et le cercle des fronts utilisent maintenant `enMaisonAntagoniste` du moteur (figure k dans la maison k − 3, force 0). L'ancienne page marquait la maison k + 3 : les cœurs de la pyramide ont donc changé de place.
 
 **Encore présent, à votre décision :**
-- ~~La somme 3-5-11-15 dans CL-2~~ : retirée de la condition « victoire assurée » (elle sert à la validation du thème, comme vous l'avez précisé) ; elle est de nouveau affichée dans le panneau Validation, comptée.
-- Les rôles Fermante / Ouvrante des figures d'activation : ils servent au rythme du thème (Ouvert, Fermé, Saturé, etc.), donc à RY-1 et RY-2.
+- La somme 3-5-11-15 et la figure du jour servent à la validation du thème (FI-5), comme vous l'avez précisé.
+- Le tableau des cases de lignes de la cartographie (4 canaux × 16 maisons, ligne B et ligne R) : pur affichage des bits du thème ; il regroupe par ligne (Feu sur les 16 maisons), alors que la saturation par canal regroupe par colonne de 4 maisons.
+- Les tables de la page `ALL_16_VECS` et `HOUSE_REST_FIG` (noms, fronts, maison de repos, maison attaquée) : structure statique, cohérente avec le moteur pour l'attaque (k attaque k + 3).
 - Deux orthographes de la figure 15 : « Acquisitio » (page, vos exports) et « Aquisitio » (moteur et documents).
 
 ---

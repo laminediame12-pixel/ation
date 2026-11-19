@@ -942,10 +942,6 @@
  border: 1px solid #ec4899;
  background: rgba(236, 72, 153, 0.10);
  }
- .res-sub-box.res-is-allied {
- border: 1px solid rgba(56, 189, 248, 0.45);
- background: rgba(56, 189, 248, 0.06);
- }
  .res-sub-label {
  font-size: 0.64rem;
  font-weight: 700;
@@ -1237,20 +1233,6 @@
  color: #94a3b8;
  margin: 0.25rem 0 0.4rem;
  }
- .canal-acts {
- display: flex;
- flex-wrap: wrap;
- gap: 0.25rem;
- }
- .canal-act {
- font-size: 0.66rem;
- font-weight: 700;
- padding: 0.12rem 0.35rem;
- border-radius: 999px;
- background: #1e293b;
- color: #e2e8f0;
- border: 1px solid #334155;
- }
  .canal-grid-wrap { overflow-x: auto; }
  .canal-grid {
  display: grid;
@@ -1288,38 +1270,8 @@
  font-size: 0.68rem;
  color: #94a3b8;
  }
- .canal-locks {
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 0.55rem;
- margin: 0.75rem 0 0.35rem;
- }
  @media (max-width: 820px) {
- .canal-locks { grid-template-columns: 1fr; }
  }
- .canal-lock {
- background: #0c1220;
- border: 1px solid #23304a;
- border-radius: 8px;
- padding: 0.55rem 0.7rem 0.65rem;
- font-size: 0.7rem;
- line-height: 1.45;
- }
- .canal-lock-head {
- display: flex;
- justify-content: space-between;
- align-items: baseline;
- gap: 0.4rem;
- font-weight: 800;
- margin-bottom: 0.25rem;
- }
- .canal-lock-state {
- font-size: 0.68rem;
- padding: 0.08rem 0.4rem;
- border-radius: 999px;
- border: 1px solid #334155;
- }
- .canal-lock b { color: #e2e8f0; }
 
  .house-inspector {
  background: #0c1220;
@@ -1810,7 +1762,7 @@
  <span style="color:#22c55e;">&#9644;</span> Terre &nbsp;
  </div>
  <span style="color:#22c55e; font-weight:700;">&#9632; Vert</span> : figure dans sa maison de repos &nbsp;
- <span style="color:#38bdf8; font-weight:700;">&#9633; Bleu ciel</span> : résultante alliée (maison paire)
+ <span style="color:#ef4444; font-weight:700;">&#128148; Rouge</span> : figure dans la maison de son antagoniste (moteur)
  </div>
 
  <div class="canal-levels" id="canalLevels"></div>
@@ -1884,7 +1836,6 @@
  <summary style="cursor:pointer; padding:0.55rem 0.75rem; font-weight:800; color:#fbbf24; font-size:0.8rem;">Figures par canal d'accueil : orientation, saturation, concordance</summary>
  <div id="canauxDifferents" style="padding:0 0.6rem 0.6rem; overflow-x:auto;"></div>
  </details>
- <div class="canal-locks" id="canalLocks"></div>
  <div class="canal-grid-wrap">
  <div class="canal-grid" id="canalGrid"></div>
  </div>
@@ -3132,115 +3083,11 @@
  return { r1House, r7House, figM1 };
  }
 
- function detectReciprocalParalyses(M, R) {
- const paralyzedFigures = new Map();
- const addReason = (figName, reason) => {
- if (!paralyzedFigures.has(figName)) paralyzedFigures.set(figName, []);
- paralyzedFigures.get(figName).push(reason);
- };
-
- const anchoredAtRest = new Set();
- for (let h = 1; h <= 16; h++) {
- const bF = getFigByVec(M[h]);
- const rF = getFigByVec(R[h]);
- if (bF.dom.includes(h)) anchoredAtRest.add(bF.name);
- if (rF.dom.includes(h)) anchoredAtRest.add(rF.name);
- }
-
- for (let h = 1; h <= 16; h++) {
- const hostRestFig = HOUSE_REST_FIG[h];
- const slots = [
- { layer: "Base", fig: getFigByVec(M[h]) },
- { layer: "Res", fig: getFigByVec(R[h]) }
- ];
- slots.forEach(s => {
- if (s.fig.antDom.includes(h)) {
- if (!anchoredAtRest.has(hostRestFig.name)) {
- addReason(hostRestFig.name, `Intrusion : ${s.fig.name} (${s.layer}) en M${h}`);
- }
- if (!anchoredAtRest.has(s.fig.name)) {
- addReason(s.fig.name, `Exposition : ${s.fig.name} (${s.layer}) chez ${hostRestFig.name} (M${h})`);
- }
- }
- if (FRONT_ANTAGONISM[hostRestFig.front] === s.fig.front && !anchoredAtRest.has(s.fig.name)) {
- addReason(s.fig.name, `Capture : ${s.fig.name} (${s.layer}) chez ${hostRestFig.name} (M${h})`);
- }
- });
- }
- return paralyzedFigures;
- }
 
  const FRONT_ANTAGONISM = { A: "D", D: "C", C: "B", B: "A" };
- function evalHouseMutation(h) {
- // Lecture de la maison : paire ou impaire (aucun poids, aucun rôle dans le verdict).
- return { isEvenHouse: h % 2 === 0, label: h % 2 === 0 ? "Maison paire" : "Maison impaire" };
- }
 
- function getHouseElementOperator(h) {
- if (h === 4) return { short: "Op. Eau", detail: "Agit uniquement sur la ligne Eau (b3)" };
- if (h === 8) return { short: "Op. Terre", detail: "Agit uniquement sur la ligne Terre (b4)" };
- if (h === 12) return { short: "Op. Eau+Terre", detail: "Agit simultanément sur Eau et Terre (M4⊕M8)" };
- if (h === 16) return { short: "Op. Neutre", detail: "Élément neutre (conserve les 4 lignes intactes)" };
- const rest = HOUSE_REST_FIG[h];
- const names = ["Feu", "Air", "Eau", "Terre"];
- const active = rest.vec.map((b, i) => b === 1 ? names[i] : null).filter(Boolean);
- return {
- short: active.length ? `Op. ${active.join("+")}` : "Op. Neutre",
- detail: active.length ? `Inverse les lignes : ${active.join(" + ")}` : "Aucune ligne inversée"
- };
- }
 
- const ELEMENT_ACTIVATION_ROLES = {
- 1: { role: "Fermante", targetElem: "Eau", lineIdx: 2, desc: "Ferme Eau" },
- 3: { role: "Fermante", targetElem: "Feu", lineIdx: 0, desc: "Ferme Feu" },
- 13: { role: "Fermante", targetElem: "Terre", lineIdx: 3, desc: "Ferme Terre" },
- 14: { role: "Fermante", targetElem: "Air", lineIdx: 1, desc: "Ferme Air" },
- 2: { role: "Ouvrante", targetElem: "Feu", lineIdx: 0, desc: "Ouvre Feu" },
- 4: { role: "Ouvrante", targetElem: "Eau", lineIdx: 2, desc: "Ouvre Eau" },
- 7: { role: "Ouvrante", targetElem: "Air", lineIdx: 1, desc: "Ouvre Air" },
- 8: { role: "Ouvrante", targetElem: "Terre", lineIdx: 3, desc: "Ouvre Terre" }
- };
 
- function evaluateActivationRole(fig, houseNum) {
- const rest = HOUSE_REST_FIG[houseNum];
- const act = ELEMENT_ACTIVATION_ROLES[fig.num];
- const openCount = fig.vec.reduce((a, b) => a + b, 0);
- const closedCount = 4 - openCount;
- let att = openCount * 22;
- let res = closedCount * 22;
- let locked = false;
- let label = "Équilibrée";
-
- if (act) {
- const houseOpen = (rest.vec[act.lineIdx] === 0); // niveau d'activation = deux points
- if (act.role === "Fermante") {
- if (!houseOpen) {
- att += 24; res += 18;
- label = `Fermante (${act.desc}) · Verrou intact`;
- } else {
- att -= 12; res -= 24;
- label = `Fermante (${act.desc}) · Verrou brisé`;
- }
- } else {
- if (!houseOpen) {
- att += 18; res += 24;
- label = `Ouvrante (${act.desc}) · Canal libre`;
- } else {
- att += 10; res -= 14; locked = true;
- label = `Ouvrante (${act.desc}) · Saturation 1⊕1=2`;
- }
- }
- }
- return {
- att: Math.max(0, Math.min(100, att)),
- res: Math.max(0, Math.min(100, res)),
- openCount,
- closedCount,
- locked,
- act,
- label
- };
- }
 
  // ═════════════ VERDICT : le Moteur 3 décide, principe par principe ═════════════
  const PROVENANCES_M3 = {
@@ -3412,6 +3259,9 @@
  const showRes = document.getElementById("showResultantes").checked;
  const container = document.getElementById("pyramidContainer");
  const { r1House, r7House } = getR1R7Houses(M);
+ // Une seule source : le moteur (maison ennemie, paralysies). La page ne recalcule plus rien.
+ let Lx = null;
+ try { Lx = KOUN3.lire(KOUN3.construireTheme(...[1, 2, 3, 4].map(i => KOUN3.fig(getFigByVec(M[i]).num)))); } catch (e) { Lx = null; }
 
  const rows = [
  { houses: [8, 7, 6, 5, 4, 3, 2, 1], cls: "pyr-row" },
@@ -3426,21 +3276,17 @@
  const resFig = getFigByVec(currentResultantes[h]);
  const isAtRest = fig.dom.includes(h);
  const resAtRest = resFig.dom.includes(h);
- const restOwner = HOUSE_REST_FIG[h];
- const baseCapture = (FRONT_ANTAGONISM[restOwner.front] === fig.front);
- const resCapture = (FRONT_ANTAGONISM[restOwner.front] === resFig.front);
- const baseAntagonist = fig.antDom.includes(h) || baseCapture;
- const resAntagonist = resFig.antDom.includes(h) || resCapture;
- const isRed = fig.name === "Rubeus" || baseAntagonist;
+ const baseAntagonist = !!(Lx && Lx.enMaisonAntagoniste(KOUN3.fig(fig.num), h));
+ const resAntagonist = !!(Lx && Lx.enMaisonAntagoniste(KOUN3.fig(resFig.num), h));
+ const isRed = baseAntagonist;
  const isR1 = (h === r1House);
  const isR7 = (h === r7House);
  const borderCls = isR1 ? "is-r1-blue" : (isR7 ? "is-r7-red" : (isAtRest ? "border-green" : (isRed ? "border-red" : "")));
  const campBadge = isR1 ? `<span class="camp-tag camp-tag-r1">R1</span>` : (isR7 ? `<span class="camp-tag camp-tag-r7">R7</span>` : "");
 
- const mutInfo = evalHouseMutation(h, fig, resFig);
- const resStateCls = resAtRest ? "res-is-green" : (resAntagonist ? "res-is-antagonist" : (mutInfo.isEvenHouse ? "res-is-allied" : ""));
+ const resStateCls = resAtRest ? "res-is-green" : (resAntagonist ? "res-is-antagonist" : "");
  const resHtml = showRes ? `
- <div class="res-sub-box ${resStateCls}" title="Maison M${h} (${mutInfo.isEvenHouse ? 'Paire' : 'Impaire'}) &rarr; Résultante : ${resFig.num} (${resFig.name}) | ${mutInfo.label}">
+ <div class="res-sub-box ${resStateCls}" title="Maison M${h} &rarr; Résultante : ${resFig.num} (${resFig.name})">
  <div class="res-sub-label">${h} &bull; Res ${resFig.num}</div>
  ${renderDotsHTML(currentResultantes[h])}
  ${resAntagonist ? `<span class="res-heart-badge" title="Antagoniste en M${h}">&#128148;</span>` : ""}
@@ -3485,27 +3331,16 @@
  cardsContainer.innerHTML = absentObjs.map(f => {
  const fCol = frontBadgeCols[f.front] || "#94a3b8";
  return `
- <div class="absent-fig-card" style="border-left: 3px solid ${fCol};" title="${f.num} — ${f.name} | Front ${f.front} (${f.elem}) | Repos : M${f.dom[0]} | Antagoniste : ${f.antFig}">
+ <div class="absent-fig-card" style="border-left: 3px solid ${fCol};" title="${f.num} — ${f.name} | Front ${f.front} (${f.elem}) | Repos : M${f.dom[0]}">
  ${renderDotsHTML(f.vec)}
  <div class="absent-fig-info">
  <div class="absent-fig-name">${f.num} &bull; ${f.name}</div>
  <div class="absent-fig-meta">Front <strong style="color:${fCol};">${f.front}</strong> (${f.elem}) &bull; Repos M${f.dom[0]}</div>
- <div class="absent-fig-meta">Ant. : ${f.antFig}</div>
  </div>
  </div>
  `;
  }).join("");
  }
- }
-
- const antResEl = document.getElementById("antagonistResTxt");
- if (antResEl) {
- const parMapPyr = detectReciprocalParalyses(M, currentResultantes);
- const antResList = [];
- parMapPyr.forEach((reasons, figName) => {
- antResList.push(`${figName} (${reasons.join(" / ")})`);
- });
- antResEl.textContent = antResList.length ? antResList.join(" · ") : "Aucune";
  }
  }
 
@@ -3676,32 +3511,28 @@
  const restFig = HOUSE_REST_FIG[h];
  const resFig = getFigByVec(currentResultantes[h]);
  const deriv = HOUSE_DERIVATION[h] || { from: [], to: [] };
- const mutInfo = evalHouseMutation(h, baseFig, resFig);
 
+ // Forces : celles du moteur (une seule source). Chez elle : 100 % ; maison de son antagoniste : 0 % ; sinon 25 % par niveau de concordance.
+ let Lx = null;
+ try { Lx = KOUN3.lire(KOUN3.construireTheme(...[1, 2, 3, 4].map(i => KOUN3.fig(getFigByVec(currentHouses[i]).num)))); } catch (e) { Lx = null; }
  const evalForce = (fig) => {
- if (fig.dom.includes(h)) return "100% (Repos)";
- if (fig.antDom.includes(h)) return "0% (Antagoniste)";
- if (fig.binHouse === h) return "75% (Binôme)";
- return "50% (Neutre)";
+ if (!Lx) return "";
+ const f = Lx.force(KOUN3.fig(fig.num), h);
+ return f === null ? "100 % (chez elle)" : f + " %";
  };
 
  const fromTxt = deriv.from.length ? deriv.from.map(x => `M${x}`).join(" + ") : "Tirage initial (Mère)";
  const toTxt = deriv.to.length ? deriv.to.map(x => `M${x}`).join(", ") : "Clôture du thème (Sentence)";
- const mutBadgeCol = mutInfo.isEvenHouse ? "#38bdf8" : "#f59e0b";
- const opInfo = getHouseElementOperator(h);
- const terreCompatTxt = "";
 
  document.getElementById("houseInspector").innerHTML = `
  <div>
- <strong>Maison M${h} (${mutInfo.isEvenHouse ? "Paire" : "Impaire"})</strong> [Front ${restFig.front} &mdash; ${restFig.loopType} &bull; ${restFig.elem}]
- &bull; <span style="color:#a78bfa; font-weight:700;">${opInfo.detail}</span>
+ <strong>Maison M${h}</strong> [Front ${restFig.front} &mdash; ${restFig.loopType} &bull; ${restFig.elem}]
  &bull; Repos : <span style="color:#eab308;">${restFig.name}</span>
- &bull; Attaque : M${restFig.attacks} &bull; Binôme : Front ${restFig.binFront} (M${restFig.binHouse})${terreCompatTxt}
+ &bull; Attaque : M${restFig.attacks} &bull; Binôme : Front ${restFig.binFront} (M${restFig.binHouse})
  </div>
  <div>
  Base : <span style="color:#38bdf8;">${baseFig.name}</span> (${evalForce(baseFig)})
  &nbsp;|&nbsp; Résultante : ${baseFig.name} + ${restFig.name} = <span style="color:#2dd4bf;">${resFig.name}</span> (${evalForce(resFig)})
- &bull; <span style="color:${mutBadgeCol}; font-weight:700;">${mutInfo.label}</span>
  </div>
  <div style="width:100%; border-top:1px solid #1e293b; padding-top:0.35rem; margin-top:0.15rem; font-size:0.73rem;">
  <span style="color:#f97316; font-weight:700;">&#9473; D'où elle vient :</span> ${fromTxt}
@@ -3712,100 +3543,8 @@
  renderCercleDesFronts();
  }
 
- function vecToNotation(vec) {
- return (vec || []).map(b => (b === 1 ? "1" : "2")).join("");
- }
 
- /**
- * Trajet de flux d'une maison :
- * - transmission intacte : Populus en base (ou résultante = repos) → le trajet du repos passe tel quel
- * - inversion : figure de base en maison ennemie (antDom) → trajet retourné
- * - passage partiel : sinon, ligne par ligne Base ⊕ Repos
- */
- function analyzeHouseFluxPath(h, M, R) {
- const rest = HOUSE_REST_FIG[h];
- const baseFig = getFigByVec(M[h]);
- const resFig = getFigByVec(R[h]);
- const baseIsPopulus = baseFig.name === "Populus";
- const resMatchesRest = resFig.vec.every((b, i) => b === rest.vec[i]);
- const transmissionIntact = baseIsPopulus || resMatchesRest;
- const baseAntagonist = baseFig.antDom.includes(h);
- const resAntagonist = resFig.antDom.includes(h);
- const pathInverted = baseAntagonist;
 
- let pathLabel = "Passage filtré";
- let pathCol = "#94a3b8";
- if (transmissionIntact && baseIsPopulus) {
- pathLabel = "Transmission intacte (Populus)";
- pathCol = "#38bdf8";
- } else if (transmissionIntact) {
- pathLabel = "Transmission intacte (Res = Repos)";
- pathCol = "#2dd4bf";
- } else if (pathInverted) {
- pathLabel = "Trajet inversé (maison ennemie)";
- pathCol = "#f87171";
- }
-
- const lines = [0, 1, 2, 3].map(idx => {
- const restOpen = rest.vec[idx] === 1;
- const baseOpen = M[h][idx] === 1;
- const resOpen = R[h][idx] === 1;
- let fate = "stable";
- if (restOpen && resOpen && !baseOpen) fate = "repos_transmis";
- else if (!restOpen && !resOpen && !baseOpen) fate = "verrou_tenu";
- else if (!restOpen && resOpen && baseOpen) fate = "verrou_perce";
- else if (restOpen && !resOpen && baseOpen) fate = "saturation";
- else if (restOpen !== resOpen) fate = "modifie";
- return { idx, restOpen, baseOpen, resOpen, fate };
- });
-
- return {
- h,
- rest,
- baseFig,
- resFig,
- baseNot: vecToNotation(baseFig.vec),
- restNot: vecToNotation(rest.vec),
- resNot: vecToNotation(resFig.vec),
- baseIsPopulus,
- transmissionIntact,
- pathInverted,
- baseAntagonist,
- resAntagonist,
- pathLabel,
- pathCol,
- lines
- };
- }
-
- function evalFluxTrajectory(M, R) {
- const houses = [];
- let intact = 0, inverted = 0, populusMirrors = 0;
- let terreIntact = 0, terreInverted = 0;
- for (let h = 1; h <= 16; h++) {
- const p = analyzeHouseFluxPath(h, M, R);
- houses.push(p);
- if (p.transmissionIntact) intact++;
- if (p.pathInverted) inverted++;
- if (p.baseIsPopulus) populusMirrors++;
- if ([4, 8, 12, 16].includes(h)) {
- if (p.transmissionIntact) terreIntact++;
- if (p.pathInverted) terreInverted++;
- }
- }
-
- const summary = `Intactes ${intact}/16 · Inversées ${inverted}/16 · Terre ${terreIntact}/4 intactes, ${terreInverted}/4 inversées`;
-
- return {
- houses,
- intact,
- inverted,
- populusMirrors,
- terreIntact,
- terreInverted,
- summary
- };
- }
 
  const CANAL_DEFS = [
  { idx: 0, name: "Feu", front: "A", color: "#ef4444" },
@@ -3844,144 +3583,45 @@
  if (!root || !M || M.length < 17) return;
 
  const { r1House, r7House } = getR1R7Houses(M);
- let openAll = 0;
- let closedAll = 0;
- let libre = 0, sat = 0, verrou = 0, brise = 0;
 
- const locksEl = document.getElementById("canalLocks");
- const perCanal = CANAL_DEFS.map(c => {
- let openB = 0, openR = 0;
- const acts = [];
- const locks = { tenu: [], force: [], saturation: [], libre: [] };
- for (let h = 1; h <= 16; h++) {
- // niveau d'activation : une ligne à deux points (valeur 0) est activée ; une ligne à un point ne l'est pas
- const baseOpen = M[h][c.idx] === 0;
- const resOpen = R[h][c.idx] === 0;
- if (baseOpen) openB++;
- if (resOpen) openR++;
- const restClosed = HOUSE_REST_FIG[h].vec[c.idx] !== 0;
- let kind;
- if (restClosed && !baseOpen) kind = "tenu";
- else if (restClosed && baseOpen) kind = "force";
- else if (!restClosed && baseOpen) kind = "saturation";
- else kind = "libre";
- locks[kind].push(h);
- const layers = [
- { layer: "B", fig: getFigByVec(M[h]) },
- { layer: "R", fig: getFigByVec(R[h]) }
- ];
- layers.forEach(s => {
- const act = ELEMENT_ACTIVATION_ROLES[s.fig.num];
- if (!act || act.lineIdx !== c.idx) return;
- const ev = evaluateActivationRole(s.fig, h);
- acts.push({ h, layer: s.layer, fig: s.fig, ev, kind });
- if (ev.label.indexOf("Canal libre") >= 0) libre++;
- else if (ev.label.indexOf("Saturation") >= 0) sat++;
- else if (ev.label.indexOf("Verrou intact") >= 0) verrou++;
- else if (ev.label.indexOf("Verrou brisé") >= 0) brise++;
- });
- }
- openAll += openB + openR;
- closedAll += (16 - openB) + (16 - openR);
- const nT = locks.tenu.length, nF = locks.force.length, nS = locks.saturation.length, nL = locks.libre.length;
- let lockState = "Verrou partiel";
- let lockCol = "#eab308";
- if (nT >= 6 && nF <= 2) { lockState = "Verrou dominant"; lockCol = "#94a3b8"; }
- else if (nF >= 5) { lockState = "Verrou percé"; lockCol = "#f87171"; }
- else if (nS >= 5) { lockState = "Saturation"; lockCol = "#f97316"; }
- else if (nL >= 6 && nT <= 3) { lockState = "Canal libre"; lockCol = "#4ade80"; }
- return { ...c, openB, openR, acts, locks, lockState, lockCol, nT, nF, nS, nL };
- });
-
- const total = openAll + closedAll || 1;
- const openPct = Math.round((openAll / total) * 100);
- let regime = "Contenu";
- let regimeCol = "#eab308";
- if (openPct >= 62 && libre >= verrou) { regime = "Ouvert"; regimeCol = "#4ade80"; }
- else if (openPct <= 42 || verrou > libre + 1) { regime = "Fermé"; regimeCol = "#94a3b8"; }
- else if (sat >= 3 && openPct >= 50) { regime = "Saturé"; regimeCol = "#f97316"; }
-
- const fluxTraj = evalFluxTrajectory(M, R);
- if (fluxTraj.terreIntact >= 3 && fluxTraj.terreInverted === 0 && (regime === "Contenu" || regime === "Fermé")) {
- regime = "Structuré (trajets intacts)";
- regimeCol = "#94a3b8";
- }
- if (fluxTraj.terreInverted >= 2 && openPct >= 50) {
- regime = "Percé (trajets inversés)";
- regimeCol = "#f97316";
- }
-
+ // Rythme du thème : calculé par le moteur (une seule source) ; la page ne fait que l'afficher.
+ let ry = null;
+ try { ry = KOUN3.rythme(KOUN3.lire(KOUN3.construireTheme(...[1, 2, 3, 4].map(i => KOUN3.fig(getFigByVec(M[i]).num))))); } catch (e) { ry = null; }
+ if (ry) {
+ const regimeCol = ry.regime === "Ouvert" ? "#4ade80" : (ry.regime === "Saturé" || ry.regime.indexOf("Percé") === 0) ? "#f97316" : ry.regime === "Contenu" ? "#eab308" : "#94a3b8";
  rhythm.innerHTML = `
  <div>
- <div class="canal-rhythm-title" style="color:${regimeCol};">Rythme du thème : ${regime}</div>
- <div class="canal-rhythm-sub">Deux points ${openPct}% · Un point ${100 - openPct}% · Canaux libres ${libre} · Verrous intacts ${verrou} · Saturations ${sat} · Verrous brisés ${brise}<br><span style="color:#cbd5e1;">Trajet flux : ${fluxTraj.summary}</span></div>
+ <div class="canal-rhythm-title" style="color:${regimeCol};">Rythme du thème : ${escapeHTML(ry.regime)}</div>
+ <div class="canal-rhythm-sub">Deux points ${ry.pourcentDeuxPoints}% · Un point ${100 - ry.pourcentDeuxPoints}% · Canaux libres ${ry.libres} · Verrous intacts ${ry.verrousIntacts} · Saturations ${ry.saturations} · Verrous brisés ${ry.verrousBrises}</div>
  </div>
  <div class="canal-bar" title="Part des lignes à deux points (couleur) contre lignes à un point">
- <span style="width:${openPct}%; background:linear-gradient(90deg,#ef4444,#eab308,#3b82f6,#22c55e);"></span>
+ <span style="width:${ry.pourcentDeuxPoints}%; background:linear-gradient(90deg,#ef4444,#eab308,#3b82f6,#22c55e);"></span>
  </div>
  `;
+ }
 
  // Saturation d'un canal dans le thème : les 4 maisons du canal (rang dans le bloc : Feu M1 M5 M9 M13, Air M2 M6 M10 M14, Eau M3 M7 M11 M15, Terre M4 M8 M12 M16) ont chacune 4 niveaux, soit 16 niveaux ; un niveau saturé est une ligne à deux points.
  const REPOS_SAT = [4, 8, 8, 12];
- perCanal.forEach(c => {
+ const LV = ["Feu", "Air", "Eau", "Terre"];
+ const perCanal = CANAL_DEFS.map(c => {
  const hs = [c.idx + 1, c.idx + 5, c.idx + 9, c.idx + 13];
  const satDe = (V, h) => (V[h] || M[h]).filter(v => v === 0).length;
  const sb = hs.reduce((t, h) => t + satDe(M, h), 0), sr = hs.reduce((t, h) => t + satDe(R, h), 0);
  const detail = hs.map(h => "M" + h + " " + satDe(M, h) + "/4").join(" · ");
  const ec = sb - REPOS_SAT[c.idx];
- // Énergie qui passe : pour chaque niveau (Feu, Air, Eau, Terre), nombre de maisons du canal (sur 4) où la base s'écarte de la fréquence de repos de la maison (niveau renversé, une ligne à un point dans la résultante).
- const LV = ["Feu", "Air", "Eau", "Terre"];
+ // Énergie qui passe : pour chaque niveau, nombre de maisons du canal (sur 4) où la base s'écarte de la fréquence de repos de la maison (niveau renversé).
  const passe = LV.map((n, l) => hs.reduce((t, h) => t + ((R[h] || [])[l] === 1 ? 1 : 0), 0));
- c.passe = passe;
- c.passeTxt = "Énergie qui passe (niveaux renversés, sur 4 maisons) : " + LV.map((n, l) => `${n} <b>${passe[l]}</b>`).join(" · ");
- c.sat = { base: sb, res: sr, repos: REPOS_SAT[c.idx] };
- c.satTxt = `Saturation du canal : <b>${sb}</b> saturés · <b>${16 - sb}</b> non saturés sur 16 (base) · repos ${REPOS_SAT[c.idx]} (${ec >= 0 ? "+" : ""}${ec}) · résultante ${sr}/16<br><span style="color:#94a3b8;">${detail}</span>`;
+ const satTxt = `Saturation du canal : <b>${sb}</b> saturés · <b>${16 - sb}</b> non saturés sur 16 (base) · repos ${REPOS_SAT[c.idx]} (${ec >= 0 ? "+" : ""}${ec}) · résultante ${sr}/16<br><span style="color:#94a3b8;">${detail}</span>`;
+ const passeTxt = "Énergie qui passe (niveaux renversés, sur 4 maisons) : " + LV.map((n, l) => `${n} <b>${passe[l]}</b>`).join(" · ");
+ return { ...c, passe, satTxt, passeTxt };
  });
 
- cards.innerHTML = perCanal.map(c => {
- const ratio = Math.round(((c.openB + c.openR) / 32) * 100);
- const chips = c.acts.length
- ? c.acts.slice(0, 6).map(a => `<span class="canal-act" title="${escapeHTML(a.ev.label)}">M${a.h}${a.layer} ${escapeHTML(a.fig.name.split(" ")[0])} · ${escapeHTML(a.ev.label.split("·")[1] || a.ev.act.role)}</span>`).join("")
- : `<span class="canal-act">Aucune figure d'activation sur ce canal</span>`;
- return `
+ cards.innerHTML = perCanal.map(c => `
  <div class="canal-card" style="border-top-color:${c.color};">
  <div class="canal-card-name" style="color:${c.color};">${c.name} <span>Front ${c.front}</span></div>
- <div class="canal-card-meta">Deux points ${ratio}% · Base ${c.openB}/16 · Rés ${c.openR}/16 · <span style="color:${c.lockCol};">${c.lockState}</span></div>
  <div class="canal-card-meta" style="color:#e2e8f0;">${c.satTxt}</div>
  <div class="canal-card-meta" style="color:#fbbf24;">${c.passeTxt}</div>
- <div class="canal-acts">${chips}</div>
- </div>`;
- }).join("");
-
- const fmtH = (arr) => arr.length ? arr.map(h => "M" + h).join(" ") : "—";
- const opsOf = (c, role) => c.acts.filter(a => a.ev.act && a.ev.act.role === role);
- if (locksEl) {
- const terrePaths = [4, 8, 12, 16].map(h => {
- const p = fluxTraj.houses[h - 1];
- return `M${h} ${escapeHTML(p.baseFig.name)} ${p.baseNot} ⊕ ${escapeHTML(p.rest.name)} ${p.restNot} → ${escapeHTML(p.resFig.name)} ${p.resNot} · <span style="color:${p.pathCol};">${escapeHTML(p.pathLabel)}</span>`;
- }).join("<br>");
- locksEl.innerHTML = perCanal.map(c => {
- const ferm = opsOf(c, "Fermante").map(a => `M${a.h}${a.layer} ${a.fig.name}`).join(", ") || "absente";
- const ouvr = opsOf(c, "Ouvrante").map(a => `M${a.h}${a.layer} ${a.fig.name}`).join(", ") || "absente";
- return `
- <div class="canal-lock" style="border-left:3px solid ${c.color};">
- <div class="canal-lock-head">
- <span style="color:${c.color};">Verrou ${c.name}</span>
- <span class="canal-lock-state" style="color:${c.lockCol}; border-color:${c.lockCol};">${c.lockState}</span>
- </div>
- <div>Tenus <b>${c.nT}</b> : ${fmtH(c.locks.tenu)}</div>
- <div>Percés <b>${c.nF}</b> : ${fmtH(c.locks.force)}</div>
- <div>Saturés <b>${c.nS}</b> : ${fmtH(c.locks.saturation)}</div>
- <div>Libres <b>${c.nL}</b> : ${fmtH(c.locks.libre)}</div>
- <div style="margin-top:0.25rem; color:#94a3b8;">Fermante : ${escapeHTML(ferm)}<br>Ouvrante : ${escapeHTML(ouvr)}</div>
- </div>`;
- }).join("") + `
- <div class="canal-lock" style="grid-column:1/-1;border-left:3px solid #38bdf8;">
- <div class="canal-lock-head"><span style="color:#38bdf8;">Trajets maisons Terre (notation : nombre de points)</span></div>
- <div style="font-size:0.68rem;line-height:1.55;color:#cbd5e1;">${terrePaths}</div>
- </div>
-`;
- }
+ </div>`).join("");
 
  let grid = `<div></div>`;
  for (let h = 1; h <= 16; h++) {
@@ -4128,6 +3768,9 @@
 
  const frontColors = { A: "#ef4444", B: "#eab308", C: "#3b82f6", D: "#22c55e" };
 
+ // Maison ennemie : celle du moteur (une seule source).
+ let Lc = null;
+ try { Lc = KOUN3.lire(KOUN3.construireTheme(...[1, 2, 3, 4].map(k => KOUN3.fig(getFigByVec(currentHouses[k]).num)))); } catch (e) { Lc = null; }
  order.forEach(mNum => {
  const p = coords[mNum];
  const vec = currentHouses[mNum];
@@ -4137,8 +3780,8 @@
 
  const baseAtRest = baseFig.dom.includes(mNum);
  const resAtRest = resFig.dom.includes(mNum);
- const baseAnt = baseFig.antDom.includes(mNum);
- const resAnt = resFig.antDom.includes(mNum);
+ const baseAnt = !!(Lc && Lc.enMaisonAntagoniste(KOUN3.fig(baseFig.num), mNum));
+ const resAnt = !!(Lc && Lc.enMaisonAntagoniste(KOUN3.fig(resFig.num), mNum));
 
  const frontCol = frontColors[restFig.front] || "#475569";
  let strokeCol = (baseAtRest || resAtRest) ? "#22c55e" : frontCol;
