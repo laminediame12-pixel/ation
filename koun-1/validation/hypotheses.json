@@ -1969,6 +1969,13 @@
       "regle": "un pôle est protégé si le protecteur (f−6) de sa figure est dans sa maison de repos ; le pôle seul protégé gagne",
       "origine": "Circuit Souverain 1-3-5-11-13 (propriétaire) : f + antagoniste(f) tombe toujours sur ces cinq figures ; protecteur = prédateur du prédateur",
       "note": "posée avant le test, testée une seule fois"
+    },
+    {
+      "id": "H-DEPART",
+      "statut": "RÉFUTÉE 2026-11-20 : 22 matchs indépendants, 4 justes, 4 faux (hasard), 14 sans appel ; non activée",
+      "regle": "entre R1 et R7, le pôle dont la figure a la Terre saturée (2 points) alors que l'autre non gagne (départage des figures annulées par la saturation commune)",
+      "origine": "question du propriétaire : deux figures saturées face à face, la différence f+g ne porte que sur la Terre dans les maisons miroir",
+      "note": "posée avant le test, testée une seule fois ; sous-ensemble à saturation commune : 3 justes 2 faux (5 appels) ; matchs construits : 2 justes 2 faux 3 sur nul"
     }
   ],
   "lectures": [
