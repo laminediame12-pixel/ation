@@ -37,6 +37,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets",
      "score": "1-3"
+    },
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "date_match": "2026-02-14",
+     "match": "Zurich–Lucerne",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R1, R7, R7, R7, R1] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -135,6 +148,19 @@
      "prediction": "pas de victoire claire",
      "detail": "R1 4 ; R7 4",
      "score": "1-3"
+    },
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "date_match": "2026-02-14",
+     "match": "Zurich–Lucerne",
+     "prediction": "R1",
+     "detail": "R1 4 (Laetitia, miroir, binôme, antagoniste) contre R7 2",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -220,7 +246,21 @@
    "id": "H-CROIX",
    "posee_le": "2026-11-20",
    "enonce": "Le pôle dont la maison est sous croix (✖ : la maison porte en base son antagoniste, la figure h − 3) perd. Si aucun pôle ou les deux sont sous croix : pas de victoire. Née de 4-6-7-16 (R7 en M10 sous croix, 5-0 pour R1) et de 10-2-12-3 (R1 en M10 sous croix, 1-3) : ces deux matchs ne comptent donc pas comme test. Limite connue : dans les deux cas c'est Rubeus, pôle, en M10 ; la règle ne distingue pas « sous croix » de « Rubeus pôle en M10 ».",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "date_match": "2026-02-14",
+     "match": "Zurich–Lucerne",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M14 et M4 ; arrêts en M1, M3, M15 : aucun pôle sous croix",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -286,6 +326,19 @@
    ],
    "score": "1-3",
    "juste": true
+  },
+  {
+   "theme": [
+    14,
+    9,
+    16,
+    9
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": "2026-02-14",
+   "lecture": "R1 (faible)",
+   "statut": "lecture de l'analyste, pas une règle : aucune structure nette, aucun pôle sous croix ; seule H-NIV4, encore à l'essai, désigne un pôle (R1). Trois indicateurs sur cinq vont vers R7.",
+   "score": null
   }
  ]
 }
