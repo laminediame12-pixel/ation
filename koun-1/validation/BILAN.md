@@ -21,6 +21,9 @@ Commande : `node outils/valider.js`. Données : 37 matchs avec score (15 sur les
 
 Aucun des 22 matchs indépendants n'est nul ; les règles de nul se sont donc déclenchées à tort 12 fois au plus.
 
+## H-REPOS (règle du propriétaire, activée à sa demande)
+Le pôle qui possède ses deux fronts au repos, sans que l'antagoniste y soit, gagne. Interprétation du moteur : au moins une figure de son front et une de son front binôme dans leur maison de repos, sans que leur antagoniste (f − 3) soit lui aussi chez lui. Résultat : 22 matchs indépendants, 3 appels dont 2 justes ; 15 matchs construits, 1 appel juste. Elle ne se prononce que sur environ un match sur dix ; c'est le seul verdict actif.
+
 ## Corrections
 - 9-13-2-13 (2-0) et 2-9-6-5 (3-3) figuraient déjà avec leur score dans `scores-reels.json` : ils ne comptent pas comme appels à l'aveugle.
 - Le « bon bilan » de l'échantillon (8 verdicts justes sur 8) venait de règles ajustées sur ces matchs.

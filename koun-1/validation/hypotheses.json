@@ -1913,6 +1913,55 @@
    ],
    "a_surveiller": "Dans l'échantillon, les quatre matchs à total 6 remplissent aussi H-BIN-E ; sur l'ensemble des thèmes possibles, un thème à total 6 sur deux ne remplit pas H-BIN-E. Le verdict « nul » exige donc les deux.",
    "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Total de 6 seul : 0 nul / 4 sur les matchs indépendants (aucun nul parmi eux). Remarque : 2-9-6-5 (3-3) figurait déjà dans scores-reels.json."
+  },
+  {
+   "id": "H-REPOS",
+   "posee_le": "2026-11-20",
+   "enonce": "Le pôle qui possède ses deux fronts (le front de sa figure et son front binôme) au repos, sans que l'antagoniste des figures y soit, gagne. Règle posée par le propriétaire, activée à sa demande avant d'être testée. Interprétation du moteur : un front est possédé quand au moins une de ses figures est dans sa maison de repos (base ou résultante) sans que son antagoniste (f − 3) soit lui aussi dans sa propre maison de repos ; un pôle gagne s'il possède ses deux fronts et l'autre pôle non.",
+   "predictions": [],
+   "statut": "Activée dans le verdict le 2026-11-20. Évaluation (outils/valider.js) : 22 matchs indépendants, 3 appels, 2 justes, 1 faux ; 15 matchs construits, 1 appel juste. Au total 3 justes sur 4 appels, sur 37 matchs ; elle ne se prononce que sur environ un match sur dix.",
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      1,
+      7,
+      3,
+      4
+     ],
+     "prediction": "R1",
+     "score": "4-1"
+    },
+    {
+     "theme": [
+      1,
+      15,
+      3,
+      9
+     ],
+     "prediction": "R1",
+     "score": "1-4 : faux"
+    },
+    {
+     "theme": [
+      15,
+      13,
+      7,
+      8
+     ],
+     "prediction": "R7",
+     "score": "3-4 : juste"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "prediction": "R1",
+     "score": "5-1 : juste"
+    }
+   ]
   }
  ],
  "lectures": [

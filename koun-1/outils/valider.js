@@ -22,6 +22,8 @@ indep.forEach(d => { const L = M.lire(d.m), n = M.noeuds(L), P = M.poles(L), T =
   if (I.binomeEauEquilibre) reg['H-BIN-E seule (nul)'][d.c === 'N' ? 0 : 1]++;
   if (T.totalBase === 6) reg['témoins = 6 seuls (nul)'][d.c === 'N' ? 0 : 1]++; });
 console.log('\nAnciennes règles sur les matchs indépendants (appels justes / faux) :'); Object.entries(reg).forEach(([k, v]) => console.log('  ', k.padEnd(30), v[0], '/', v[1]));
+// règle du propriétaire H-REPOS (deux fronts au repos, sans antagoniste) : appels sur les matchs indépendants et sur les matchs construits
+for (const [nom, liste] of [['indépendants', indep], ['construits', data.filter(d => !d.indep)]]) { let ok = 0, faux = 0, si = 0; liste.forEach(d => { const g = M.repos(M.lire(d.m)).gagnant; if (!g) si++; else if (g === d.c) ok++; else faux++; }); console.log('H-REPOS sur les matchs ' + nom + ' : justes', ok, '| faux', faux, '| sans appel', si); }
 // validation croisée d'une règle apprise (signe de l'écart R1 − R7 d'une mesure de structure)
 const Lt = 'FAET';
 function mesures(m) { const L = M.lire(m), P = M.poles(L), I = M.interactions(L), C = M.connexions(L), X = M.multiplicite(L), A = M.activation(L), TS = M.terreSaturee(L), n = M.noeuds(L), z1 = (L.R1.figure - 1) % 4, z7 = (L.R7.figure - 1) % 4, a = {}, b = {}, g = {};

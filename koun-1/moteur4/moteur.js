@@ -270,11 +270,28 @@
     return { base: base, resultante: res, saturesBase: [sat(base[0]), sat(base[1])], saturesResultante: [sat(res[0]), sat(res[1])], totalBase: sat(base[0]) + sat(base[1]), totalResultante: sat(res[0]) + sat(res[1]), juge: { base: b[15], resultante: L.resu(15) } };
   }
 
-  // VERDICT. Aucune règle de verdict ne tient : H-CROIX, H-5, H-TEMOINS et H-BIN-E ont été construites sur quinze matchs puis réfutées sur 22 matchs indépendants
-  // (H-CROIX 1 juste / 2 faux ; nul par témoins + binôme Eau 0 / 3 ; voir validation/BILAN.md et outils/valider.js). La validation croisée sur 37 matchs ne bat pas les bases de comparaison
-  // (vainqueur : 68 % contre 65 % pour « toujours R1 » ; nul : 89 % contre 84 % pour « jamais nul »). Le verdict reste donc vide : une règle n'y entre que si elle bat ces bases sur des matchs indépendants.
+  // Figures au repos (règle du propriétaire, H-REPOS) : une figure est « au repos » quand elle est placée dans sa maison de repos (base ou résultante de la maison de même numéro) ;
+  // elle n'est pas annulée quand son antagoniste (f − 3) n'est pas lui aussi au repos. Chaque pôle a deux fronts (le front de sa figure et son front binôme) ; il « possède » un front
+  // quand au moins une de ses figures y est au repos sans être annulée.
+  function repos(L) {
+    var T = L.theme, chez = function (f) { return T.bases[f] === f || (f < 16 && T.resultantes[f] === f); };
+    function pole(c) {
+      var z = (c.figure - 1) % 4, fronts = [z, (z + 2) % 4].map(function (zz) {
+        var figs = [1, 2, 3, 4].map(function (i) { return zz + 4 * (i - 1) + 1; }), ok = figs.filter(function (f) { return chez(f) && !chez(mod(f - 3)); });
+        return { front: K.front(zz + 1), figures: ok, annulees: figs.filter(function (f) { return chez(f) && chez(mod(f - 3)); }), n: ok.length };
+      });
+      return { fronts: fronts, deuxFronts: fronts[0].n > 0 && fronts[1].n > 0, total: fronts[0].n + fronts[1].n };
+    }
+    var a = pole(L.R1), b = pole(L.R7);
+    return { R1: a, R7: b, gagnant: a.deuxFronts && !b.deuxFronts ? 'R1' : b.deuxFronts && !a.deuxFronts ? 'R7' : null };
+  }
+  // VERDICT. Règle du propriétaire, activée à sa demande (H-REPOS) : le pôle qui possède ses deux fronts (le front de sa figure et son front binôme) au repos, sans que l'antagoniste des figures y soit, gagne.
+  // Interprétation retenue : un front est « possédé » quand au moins une de ses figures est dans sa maison de repos sans que son antagoniste (f − 3) y soit aussi ; un pôle gagne s'il possède ses deux fronts et l'autre non.
+  // Bilan sur 37 matchs (outils/valider.js) : 4 appels, 3 justes, 1 faux ; elle ne se prononce que sur environ un match sur dix. Les anciennes règles (H-CROIX, H-5, H-TEMOINS, H-BIN-E) sont réfutées et retirées.
   function verdict(L) {
-    return { v: null, regle: null, statut: null, raison: 'aucune règle ne bat la base de comparaison (validation/BILAN.md)' };
+    var R = repos(L);
+    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (3 justes sur 4 appels sur 37 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' };
+    return { v: null, regle: null, statut: null, raison: 'H-REPOS ne se prononce pas (aucun pôle ne possède seul ses deux fronts au repos)' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
@@ -285,7 +302,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -28,4 +28,4 @@ Une règle revient ici quand elle est posée avant les chiffres, testée une foi
 La formule ceil(T/2)+1 (T = maisons à résultante saturée en Terre) était juste sur 6 matchs hors Via en base de M8 mais a été réfutée à l'aveugle sur 2-12-4-4 (4 buts prévus, 6 réels). Elle est retirée du moteur et du verdict. Le comptage de Terre (`KOUN4.terreSaturee`) reste, comme structure exacte.
 
 ## Verdict
-Le verdict est vide. Les règles H-CROIX, H-5, H-TEMOINS et H-BIN-E, construites sur quinze matchs, ont été réfutées sur 22 matchs indépendants ; la validation croisée sur 37 matchs ne bat pas les bases de comparaison. Voir `validation/BILAN.md` ; `node outils/valider.js` refait l'évaluation à chaque nouveau match.
+Un seul verdict est actif : H-REPOS (règle du propriétaire) : le pôle qui possède ses deux fronts au repos, sans que l'antagoniste y soit, gagne. Les règles H-CROIX, H-5, H-TEMOINS et H-BIN-E sont réfutées sur 22 matchs indépendants. Voir `validation/BILAN.md` ; `node outils/valider.js` refait l'évaluation.
