@@ -97,11 +97,11 @@
       12,
       15
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-28",
+     "match": "Tijuana–Pumas",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [égal, égal, R1, R1, égal] : non nets",
-     "score": null
+     "score": "1-1"
     }
    ],
    "resultats_apres_pose": [
@@ -359,11 +359,11 @@
       12,
       15
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-28",
+     "match": "Tijuana–Pumas",
      "prediction": "pas de victoire",
      "detail": "pôles en M10 et M16 ; arrêts en M5, M8, M9 : aucun pôle sous croix",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -899,11 +899,11 @@
       12,
       15
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-28",
+     "match": "Tijuana–Pumas",
      "prediction": "2-2",
      "detail": "Via en base de M8 : nul ; T = 7, n = 1 (résultantes Cauda) : (7 − 1)/3 = 2 buts par équipe",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -927,7 +927,8 @@
      "prediction": "2-2 ((9−3)/3 = 2)",
      "score": "2-2"
     }
-   ]
+   ],
+   "statut": "Formule (T − n)/3 réfutée le 2026-11-20 sur 10-12-12-15 (inscrite avant le score) : prévu 2-2, score 1-1. Le nul est juste dans les trois matchs avec Via en base de M8 ; il reste dans H-UNIV, clause 1."
   },
   {
    "id": "H-UNIV",
@@ -941,11 +942,11 @@
       12,
       15
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-28",
+     "match": "Tijuana–Pumas",
      "prediction": "nul (Via en base de M8)",
      "detail": "clause 1 : Via en base de M8 donne le nul ; clauses 2 et 3 (buts et vainqueur par la Terre) ne s'appliquent pas dans cette classe",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -1036,6 +1037,45 @@
      "clause": "Via-M8",
      "prediction": "nul",
      "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
+    }
+   ],
+   "statut": "Clause 1 (Via en base de M8 = nul) : 3 matchs sur 3, dont deux prédits à l'aveugle (5-1-10-10, 10-12-12-15). Clauses 2 et 3 : inchangées, hors Via en base de M8."
+  },
+  {
+   "id": "H-VIA8-B",
+   "posee_le": "2026-11-20",
+   "enonce": "Avec Via en base de M8, le match est nul et chaque équipe marque ceil(v / 2) buts, où v est le nombre de maisons où Via est en base. Née des trois matchs avec Via en base de M8 (v = 1, 3, 1 pour 1-1, 2-2, 1-1), qui ne comptent donc pas comme test ; plusieurs comptes de Via, de Cauda et de Terre ont été regardés avant de la retenir.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "1-1 (v=1)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "2-2 (v=3)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "1-1 (v=1)",
+     "score": "1-1"
     }
    ]
   }
@@ -1148,10 +1188,11 @@
     15
    ],
    "posee_le": "2026-11-20",
-   "date_match": null,
+   "date_match": "2026-02-28",
    "lecture": "nul, 2-2",
    "statut": "lecture de l'analyste d'après H-UNIV et H-VIA8-NUL : troisième thème avec Via en base de M8, mêmes pôles dans le même front (Conjunctio et Aquisitio, front C), aucun pôle sous croix.",
-   "score": null
+   "score": "1-1",
+   "juste": "nul juste, score 2-2 faux"
   }
  ]
 }
