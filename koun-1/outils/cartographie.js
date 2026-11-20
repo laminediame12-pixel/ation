@@ -44,11 +44,14 @@ const sommes = [['A','B'],['A','C'],['A','D'],['B','C'],['B','D'],['C','D'],['D'
   return { combinaison: X + '+' + Y, repos: X, base: Y, recul: 3 * d, croix: c, front_des_resultantes: front(additionner(zx + 1, zy + 1)), intersections: intersections(c),
            statut_alignement: d === 1 ? 'antagoniste (n−3) : identique à la carte du front ' + X : 'recul de 3 par pas de front : supposé, non confirmé par le propriétaire' };
 });
+// ── Les 16 maisons face à leur antagoniste : résultante, niveaux saturés, élément naturel, maison que la résultante attaque (R+3)
+const maisons = Array.from({ length: 16 }, (_, i) => { const h = i + 1, a = antagoniste(h), r = additionner(a, h), sat = POINTS[r - 1].map((x, l) => x === 2 ? NIV[l] : null).filter(Boolean), el = NIV[(h - 1) % 4];
+  return { maison: h, element: el, antagoniste: a, resultante: r, niveaux_satures: sat, element_sature: sat.includes(el), cible: ((r + 2) % 16) + 1, miroir: miroir(h) }; });
 const doc = { version: 1, source: 'outils/cartographie.js', statut: 'description de la carte ; aucune règle du moteur ne l\'utilise ; non validé sur des scores',
   regles: { addition: 'niveaux égaux : 2 points (saturé) ; niveaux différents : 1 point (non saturé)', front: '(numéro − 1) mod 4 : A Feu, B Air, C Eau, D Terre', antagoniste: 'n − 3 (modulo 16)', controleur: 'n − 6', miroir: 'n + 8',
     croix: 'haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos) ; de l\'extérieur vers le centre : base, maison au repos, résultante = base + maison', liaisons: 'la résultante décide, niveau par niveau : 2 saturé, 1 non saturé ; chaque moitié de liaison porte l\'état de sa résultante',
     terre: 'la Terre du haut (f) dévie vers la droite (f+4), celle du bas (f+8) vers la gauche (f+12) : 15 intersections, pas de seizième', somme: 'X+Y : figures du front X au repos, figures du front Y en base ; base de la maison h = h − 3·d, d = (Y − X) mod 4' },
-  figures, fronts, sommes };
+  figures, fronts, sommes, maisons };
 
 // ── Vérifications
 const verifs = []; const ok = (nomV, cond, detail) => verifs.push([nomV, !!cond, detail || '']);
@@ -73,6 +76,9 @@ ok('A+B, B+C, C+D (d = 1) donnent exactement la carte du front X', ['A+B','B+C',
 ok('D+C est différent de C+D (le premier front est au repos)', JSON.stringify(sommes.find(s => s.combinaison === 'D+C').croix) !== JSON.stringify(sommes.find(s => s.combinaison === 'C+D').croix));
 ok('chaque somme : base + maison = résultante dans les 28 branches', sommes.every(s => SLOTS.every(([sl]) => { const b = s.croix[sl]; return b.resultante === additionner(b.base, b.maison); })));
 
+ok('les attaques des antagonistes (résultante + 3) n\'arrivent que sur 5 maisons : M4, M6, M8, M14, M16', JSON.stringify([...new Set(maisons.map(m => m.cible))].sort((a, b) => a - b)) === '[4,6,8,14,16]');
+ok('M8 est la seule maison où la résultante de l\'antagoniste est l\'antagoniste du miroir (Via en M8 → Cauda, antagoniste de Populus en M16)', maisons.filter(m => m.resultante === antagoniste(m.miroir)).map(m => m.maison).join() === '8');
+ok('canaux : Feu et Eau attaquent l\'Air, l\'Air attaque la Terre, la Terre s\'attaque elle-même', [[0, 'Air'], [1, 'Terre'], [2, 'Air'], [3, 'Terre']].every(([c, e]) => maisons.filter(m => (m.maison - 1) % 4 === c).every(m => NIV[(m.cible - 1) % 4] === e)));
 const sortie = path.join(__dirname, '..', 'moteur3', 'cartographie.json'), json = JSON.stringify(doc, null, 1);
 if (process.argv.includes('--verifier')) { const cur = fs.existsSync(sortie) ? fs.readFileSync(sortie, 'utf8') : ''; verifs.push(['fichier cartographie.json à jour', cur === json, '']); }
 else fs.writeFileSync(sortie, json);

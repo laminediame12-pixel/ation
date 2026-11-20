@@ -1219,5 +1219,199 @@
    },
    "statut_alignement": "recul de 3 par pas de front : supposé, non confirmé par le propriétaire"
   }
+ ],
+ "maisons": [
+  {
+   "maison": 1,
+   "element": "Feu",
+   "antagoniste": 14,
+   "resultante": 11,
+   "niveaux_satures": [
+    "Feu",
+    "Terre"
+   ],
+   "element_sature": true,
+   "cible": 14,
+   "miroir": 9
+  },
+  {
+   "maison": 2,
+   "element": "Air",
+   "antagoniste": 15,
+   "resultante": 1,
+   "niveaux_satures": [
+    "Eau"
+   ],
+   "element_sature": false,
+   "cible": 4,
+   "miroir": 10
+  },
+  {
+   "maison": 3,
+   "element": "Eau",
+   "antagoniste": 16,
+   "resultante": 3,
+   "niveaux_satures": [
+    "Feu"
+   ],
+   "element_sature": false,
+   "cible": 6,
+   "miroir": 11
+  },
+  {
+   "maison": 4,
+   "element": "Terre",
+   "antagoniste": 1,
+   "resultante": 5,
+   "niveaux_satures": [],
+   "element_sature": false,
+   "cible": 8,
+   "miroir": 12
+  },
+  {
+   "maison": 5,
+   "element": "Feu",
+   "antagoniste": 2,
+   "resultante": 3,
+   "niveaux_satures": [
+    "Feu"
+   ],
+   "element_sature": true,
+   "cible": 6,
+   "miroir": 13
+  },
+  {
+   "maison": 6,
+   "element": "Air",
+   "antagoniste": 3,
+   "resultante": 1,
+   "niveaux_satures": [
+    "Eau"
+   ],
+   "element_sature": false,
+   "cible": 4,
+   "miroir": 14
+  },
+  {
+   "maison": 7,
+   "element": "Eau",
+   "antagoniste": 4,
+   "resultante": 11,
+   "niveaux_satures": [
+    "Feu",
+    "Terre"
+   ],
+   "element_sature": false,
+   "cible": 14,
+   "miroir": 15
+  },
+  {
+   "maison": 8,
+   "element": "Terre",
+   "antagoniste": 5,
+   "resultante": 13,
+   "niveaux_satures": [
+    "Terre"
+   ],
+   "element_sature": true,
+   "cible": 16,
+   "miroir": 16
+  },
+  {
+   "maison": 9,
+   "element": "Feu",
+   "antagoniste": 6,
+   "resultante": 11,
+   "niveaux_satures": [
+    "Feu",
+    "Terre"
+   ],
+   "element_sature": true,
+   "cible": 14,
+   "miroir": 1
+  },
+  {
+   "maison": 10,
+   "element": "Air",
+   "antagoniste": 7,
+   "resultante": 1,
+   "niveaux_satures": [
+    "Eau"
+   ],
+   "element_sature": false,
+   "cible": 4,
+   "miroir": 2
+  },
+  {
+   "maison": 11,
+   "element": "Eau",
+   "antagoniste": 8,
+   "resultante": 3,
+   "niveaux_satures": [
+    "Feu"
+   ],
+   "element_sature": false,
+   "cible": 6,
+   "miroir": 3
+  },
+  {
+   "maison": 12,
+   "element": "Terre",
+   "antagoniste": 9,
+   "resultante": 5,
+   "niveaux_satures": [],
+   "element_sature": false,
+   "cible": 8,
+   "miroir": 4
+  },
+  {
+   "maison": 13,
+   "element": "Feu",
+   "antagoniste": 10,
+   "resultante": 3,
+   "niveaux_satures": [
+    "Feu"
+   ],
+   "element_sature": true,
+   "cible": 6,
+   "miroir": 5
+  },
+  {
+   "maison": 14,
+   "element": "Air",
+   "antagoniste": 11,
+   "resultante": 1,
+   "niveaux_satures": [
+    "Eau"
+   ],
+   "element_sature": false,
+   "cible": 4,
+   "miroir": 6
+  },
+  {
+   "maison": 15,
+   "element": "Eau",
+   "antagoniste": 12,
+   "resultante": 11,
+   "niveaux_satures": [
+    "Feu",
+    "Terre"
+   ],
+   "element_sature": false,
+   "cible": 14,
+   "miroir": 7
+  },
+  {
+   "maison": 16,
+   "element": "Terre",
+   "antagoniste": 13,
+   "resultante": 13,
+   "niveaux_satures": [
+    "Terre"
+   ],
+   "element_sature": true,
+   "cible": 16,
+   "miroir": 8
+  }
  ]
 }

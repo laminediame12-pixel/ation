@@ -46,6 +46,35 @@ Les figures du front X sont au repos, celles du front Y en base ; D+C ≠ C+D. B
 - **Relations entre fronts (carte réelle)** : les résultantes réelles des 16 maisons n'ont que 8 relations de somme constante, toutes issues de la construction du thème (M9 = M1+M2 …) : r1+r2+r9 = Carcer ; r3+r4+r10 = Fortuna Minor ; r5+r6+r11 = Fortuna Major ; r7+r8+r12 = Conjunctio ; r9+r10+r13 = Puella ; r11+r12+r14 = Cauda Draconis ; r13+r14+r15 = Populus (donc A + B = C sur la branche gauche) ; r1+r15+r16 = Laetitia. Aucune autre : 255 sommes constantes = 2^8 − 1.
 - **Carte réelle** : le mode « Thème réel » de la page met dans chaque maison la vraie base du thème (la carte structurelle étant le cas où l'antagoniste y est). Bases et résultantes identiques au moteur (80 maisons sur 5 thèmes).
 
+## Les 16 maisons face à leur antagoniste (vérifié)
+Résultante de l'antagoniste dans la maison h ; sa figure attaque la maison R+3 (k attaque k+3).
+
+| Maison | Élément | Antagoniste | Résultante | Niveaux saturés | Élément de la maison saturé | Attaque (R+3) |
+|---|---|---|---|---|---|---|
+| M1 Puer | Feu | 14 Puella | 11 Conjunctio | Feu+Terre | oui | M14 |
+| M2 Laetitia | Air | 15 Aquisitio | 1 Puer | Eau | non | M4 |
+| M3 Caput | Eau | 16 Populus | 3 Caput | Feu | non | M6 |
+| M4 Albus | Terre | 1 Puer | 5 Via | aucun | non | M8 |
+| M5 Via | Feu | 2 Laetitia | 3 Caput | Feu | oui | M6 |
+| M6 Amissio | Air | 3 Caput | 1 Puer | Eau | non | M4 |
+| M7 Rubeus | Eau | 4 Albus | 11 Conjunctio | Feu+Terre | non | M14 |
+| M8 Tristitia | Terre | 5 Via | 13 Cauda Draconis | Terre | oui | M16 (miroir) |
+| M9 Fortuna Minor | Feu | 6 Amissio | 11 Conjunctio | Feu+Terre | oui | M14 |
+| M10 Carcer | Air | 7 Rubeus | 1 Puer | Eau | non | M4 |
+| M11 Conjunctio | Eau | 8 Tristitia | 3 Caput | Feu | non | M6 |
+| M12 Fortuna Major | Terre | 9 Fortuna Minor | 5 Via | aucun | non | M8 |
+| M13 Cauda Draconis | Feu | 10 Carcer | 3 Caput | Feu | oui | M6 |
+| M14 Puella | Air | 11 Conjunctio | 1 Puer | Eau | non | M4 |
+| M15 Aquisitio | Eau | 12 Fortuna Major | 11 Conjunctio | Feu+Terre | non | M14 |
+| M16 Populus | Terre | 13 Cauda Draconis | 13 Cauda Draconis | Terre | oui | M16 |
+
+- **Cinq cibles seulement** : M4, M6, M8, M14, M16. Les 11 autres maisons ne reçoivent jamais l'attaque d'un antagoniste ancré chez un autre.
+- **Entre canaux** : Feu et Eau attaquent l'Air (M6, M14), l'Air attaque la Terre (M4), la Terre s'attaque elle-même (M8, M16). Air et Terre reçoivent, Feu et Eau émettent.
+- **Élément de la maison** : il reste saturé dans les quatre maisons Feu et dans M8 et M16 ; il est perdu dans toutes les maisons Air et Eau, et dans M4 et M12 (résultante Via, tout non saturé).
+- **M8 est unique** : Via en M8 donne Cauda, l'antagoniste de Populus, donc l'attaque passe à son miroir M16.
+- **Terre** : M4 et M12 (Via) attaquent M8, M8 (Cauda) attaque M16, M16 se frappe elle-même.
+- **Chaîne vers le puits** (maison numérotée par la résultante) : tout aboutit à M3 (Caput), en 1 à 3 pas.
+
 ## Pour le moteur
 ```text
 antagoniste(n) = ((n − 4) mod 16) + 1
