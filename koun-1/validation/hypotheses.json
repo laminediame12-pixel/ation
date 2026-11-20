@@ -888,6 +888,102 @@
      "score": "2-2"
     }
    ]
+  },
+  {
+   "id": "H-UNIV",
+   "posee_le": "2026-11-20",
+   "enonce": "Constat sur les huit matchs connus. (1) La Terre fait le jeu. (2) Si Via est en base de M8 (il paralyse Tristitia sur ses quatre niveaux), le match est nul. (3) Sinon : total des buts = ceil(T/2) + 1, T = maisons à résultante saturée en Terre ; vainqueur = le pôle dont le front a le plus de maisons à résultante saturée en Terre, égalité : pas de victoire. Cette formulation réunit H-VIA8-NUL, H-TERRE-BUTS et H-TERRE-V ; aucune formule unique ne couvre les huit matchs (la meilleure, sans Via, en couvre six). Chaque clause garde son propre statut ; chaque nouveau thème reçoit une prédiction complète avant son score.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "clause": "hors Via-M8",
+     "prediction": "5 buts ; pas de victoire (Terre 2-2)",
+     "score": "5-0 : total juste, vainqueur sans appel"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "clause": "hors Via-M8",
+     "prediction": "3 buts ; R1",
+     "score": "3-0 : juste, juste"
+    },
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "clause": "hors Via-M8",
+     "prediction": "4 buts ; R1",
+     "score": "3-1 : juste, juste"
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "clause": "hors Via-M8",
+     "prediction": "4 buts ; R7",
+     "score": "1-3 : juste, juste"
+    },
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "clause": "hors Via-M8",
+     "prediction": "5 buts ; R7",
+     "score": "1-4 : juste, juste"
+    },
+    {
+     "theme": [
+      1,
+      3,
+      15,
+      4
+     ],
+     "clause": "hors Via-M8",
+     "prediction": "6 buts ; pas de victoire (Terre 2-2)",
+     "score": "4-2 : total juste (à l'aveugle), vainqueur sans appel"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "clause": "Via-M8",
+     "prediction": "nul",
+     "score": "1-1 : juste"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "clause": "Via-M8",
+     "prediction": "nul",
+     "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
+    }
+   ]
   }
  ],
  "lectures": [
