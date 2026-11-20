@@ -179,7 +179,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R7, R7, R1, R1] : non nets",
-     "score": null
+     "score": "3-3"
     }
    ],
    "resultats_apres_pose": [
@@ -520,7 +520,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire",
      "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème : aucun pôle sous croix",
-     "score": null
+     "score": "3-3"
     }
    ],
    "cas_connus_hors_test": [
@@ -1556,7 +1556,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de nul",
      "detail": "Terre par front A/B/C/D = 2/2/2/1 : la signature des nuls (A 3-4, B 0-1, C 2, D 2) est absente",
-     "score": null
+     "score": "3-3"
     }
    ],
    "cas_connus_hors_test": [
@@ -1691,7 +1691,14 @@
      "score": "3-0"
     }
    ],
-   "statut": "Premier appel à l'aveugle « pas de nul » juste : 9-13-2-13 (B = 2, signature absente), 2-0. Un appel « pas de nul » est peu informatif ; le premier appel « nul » à l'aveugle reste à venir."
+   "statut": "RÉFUTÉE le 2026-11-20 sur 2-9-6-5 (inscrite avant le score) : « pas de nul » prévu (Terre par front 2/2/2/1, signature absente), score 3-3. La signature n'est pas celle de tous les nuls. Retirée."
+  },
+  {
+   "id": "NOTE-2-9-6-5",
+   "posee_le": "2026-11-20",
+   "enonce": "Note, pas une règle. 2-9-6-5 (3-3) est signalé par le propriétaire comme totalement symétrique et comme contenant le motif principal du nul. Faits relevés : première rangée de la pyramide M8 M7 M6 M5 | M4 M3 M2 M1 = Tristitia, Fortuna Major, Aquisitio, Via | Via, Amissio, Fortuna Minor, Laetitia ; les paires opposées donnent M4 + M5 = Populus (Via = Via), M3 + M6 = Via (Amissio et Aquisitio, complémentaires), M2 + M7 = Tristitia (Fortuna Minor et Fortuna Major, miroirs), M1 + M8 = Carcer. Paires miroir h / h+8 à base égale : M3 = M11 (Amissio), M8 = M16 (Tristitia). Résultantes égales : M3 = M4 (Puer), M5 = M8 (Populus), M6 = M13 (Via), M10 = M11 = M15 (Fortuna Minor). Aucune des mesures de symétrie testées (82 mesures de saturation, symétrie de la matrice des mères, paires miroir, moitiés M1-7 / M9-15, égalités entre les mesures de R1 et de R7) ne sépare les six nuls des neuf autres matchs.",
+   "predictions": [],
+   "cas_connus_hors_test": []
   }
  ],
  "lectures": [
@@ -1889,7 +1896,8 @@
    "date_match": null,
    "lecture": "R7 (faible)",
    "statut": "lecture de l'analyste, pas une règle : aucune règle encore en jeu ne désigne un vainqueur ; Tristitia, la figure du pôle R7, est chez elle en M8 (résultante Populus, tous niveaux saturés) et trois indicateurs sur cinq vont vers R7. Pas de nul prédit.",
-   "score": null
+   "score": "3-3",
+   "juste": false
   }
  ]
 }

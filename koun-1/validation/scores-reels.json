@@ -580,5 +580,19 @@
    0
   ],
   "lot": "lot"
+ },
+ {
+  "themes": [
+   2,
+   9,
+   6,
+   5
+  ],
+  "match": "équipes et date à préciser",
+  "score": [
+   3,
+   3
+  ],
+  "lot": "lot"
  }
 ]
