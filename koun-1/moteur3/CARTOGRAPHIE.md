@@ -43,6 +43,7 @@ Les figures du front X sont au repos, celles du front Y en base ; D+C ≠ C+D. B
 - **Lien avec le Circuit Souverain** : la résultante d'une figure dans la maison de son antagoniste ne prend que 5 valeurs, exactement M1+M3+M5+M11+M13 du moteur : Puer ← maisons 2, 6, 10, 14 ; Caput ← 3, 5, 11, 13 ; Conjunctio ← 1, 7, 9, 15 ; Via ← 4, 12 ; Cauda Draconis ← 8, 16. Leur somme est Puer.
 - **Fronts et binômes** : A et C (binômes) ont les mêmes résultantes {Conjunctio, Caput} en positions échangées ; B n'a que Puer ; D a {Via, Cauda Draconis}.
 - **Extrêmes** : Populus (2222) est tout saturé ; Via (1111) est tout non saturé, et c'est la résultante des maisons 4 et 12 avec leur antagoniste : quatre liaisons non saturées.
+- **Relations entre fronts (carte réelle)** : les résultantes réelles des 16 maisons n'ont que 8 relations de somme constante, toutes issues de la construction du thème (M9 = M1+M2 …) : r1+r2+r9 = Carcer ; r3+r4+r10 = Fortuna Minor ; r5+r6+r11 = Fortuna Major ; r7+r8+r12 = Conjunctio ; r9+r10+r13 = Puella ; r11+r12+r14 = Cauda Draconis ; r13+r14+r15 = Populus (donc A + B = C sur la branche gauche) ; r1+r15+r16 = Laetitia. Aucune autre : 255 sommes constantes = 2^8 − 1.
 - **Carte réelle** : le mode « Thème réel » de la page met dans chaque maison la vraie base du thème (la carte structurelle étant le cas où l'antagoniste y est). Bases et résultantes identiques au moteur (80 maisons sur 5 thèmes).
 
 ## Pour le moteur
