@@ -1,0 +1,21 @@
+{
+ "note": "Hypothèses posées AVANT de connaître le score. Elles viennent de deux matchs déjà connus (4-6-7-16 : 5-0 ; 4-1-6-7 : 3-0), donc ces deux matchs ne comptent pas comme test. Seuls comptent les matchs dont la prédiction est inscrite ici avant le score. Une hypothèse réfutée est retirée, pas modifiée.",
+ "hypotheses": [
+  {
+   "id": "H-ANT",
+   "posee_le": "2026-11-20",
+   "enonce": "Le pôle dont l'antagoniste est le moins saturé gagne (saturation cumulée de la résultante des maisons où se trouve l'antagoniste, base ou résultante). Antagoniste absent = 0. Égalité : pas de victoire.",
+   "predictions": [
+    {"theme": [10, 2, 12, 3], "date_match": null, "prediction": "R1", "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7", "score": null}
+   ]
+  },
+  {
+   "id": "H-5",
+   "posee_le": "2026-11-20",
+   "enonce": "Si les cinq indicateurs de l'analyse des pôles (saturation du front, du front binôme, du binôme, de l'antagoniste (moins = mieux), niveau propre) désignent le même pôle, ce pôle gagne. Sinon : pas de victoire claire.",
+   "predictions": [
+    {"theme": [10, 2, 12, 3], "date_match": null, "prediction": "pas de victoire claire", "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets", "score": null}
+   ]
+  }
+ ]
+}
