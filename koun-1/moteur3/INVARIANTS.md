@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (85 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (102 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -178,3 +178,31 @@ Dans les deux cas, **la seule maison impossible seule est M15** : le Juge est to
 
 ## I19 — Les maisons angulaires
 - Les 4 bases de M1, M4, M7, M10 ne prennent que 8 192 configurations (1/8). Lois internes : M1 Eau et M7 Feu sont saturés ensemble ; M4 Eau et M7 Terre sont toujours opposés ; M4 Eau + M7 Eau + M10 Eau : nombre impair de niveaux non saturés.
+
+## I20 — Les sommes des quatre axes
+S1 = M1+M4+M7+M10 (axe angulaire), S2 = M13+M16+M3+M6, S3 = M9+M12+M15+M2, S4 = M5+M8+M11+M14. Toujours :
+
+| Somme | Égale à |
+|---|---|
+| S1 | M1 + M3 + M7 |
+| S3 | **M12 + M16** (deux maisons seulement) |
+| S4 | **M5 + M7** (deux maisons seulement) |
+| S2 | aucun ensemble de 3 maisons ou moins : la plus irréductible |
+| S1 + S2 | M5 + M8 |
+| S1 + S3 | M3 + M8 + M15 |
+| S1 + S4 | M1 + M3 + M5 |
+| S2 + S3 | M3 + M5 + M15 |
+| S2 + S4 | M1 + M3 + M8 |
+| S3 + S4 | M5 + M8 + M16 |
+
+- **La somme des 15 premières maisons est toujours Populus** (M1+…+M15 = 0), donc la somme des 16 maisons vaut M16.
+- La somme des résultantes d'un axe est sa somme de bases plus Albus (axes 1 et 3) ou Fortuna Major (axes 2 et 4).
+
+## I21 — Lois internes des axes 2, 3, 4
+- **Axe 2** (M13, M16, M3, M6) : rang 14, 3 lois internes. Exemple : M3 Air et M6 Eau saturés ensemble.
+- **Axe 3** (M9, M12, M15, M2) : rang 13, 7 lois internes, dont le Juge M15 pair.
+- **Axe 4** (M5, M8, M11, M14) : aucune loi interne. Ses 4 maisons sont libres et déterminent tout le thème.
+
+## I22 — La somme d'un axe dans son axe
+- La somme d'un axe est présente dans les maisons de son axe (base ou résultante) pour 32 608 · 24 376 · 27 232 · 27 120 thèmes (axes 1 à 4).
+- Le quadruplet (S1, S2, S3, S4) prend 32 768 valeurs (2 puissance 15), chacune pour exactement 2 thèmes : les quatre sommes d'axe ne distinguent pas deux thèmes sur deux.

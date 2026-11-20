@@ -191,6 +191,31 @@ const AXES = [[1, 4, 7, 10], [13, 16, 3, 6], [9, 12, 15, 2], [5, 8, 11, 14]];
   ok('I19 lois internes (résultantes) : M1 Eau et M7 Feu saturés ensemble ; M4 Eau et M7 Terre toujours opposés ; M4 Eau + M7 Eau + M10 Eau : nombre impair de niveaux non saturés', themes.every(r => sat(r[1], 2) === sat(r[7], 0) && sat(r[4], 2) !== sat(r[7], 3) && ([4, 7, 10].filter(h => !sat(r[h], 2)).length % 2) === 1));
 }
 
+// I20 — Les sommes des quatre axes s'écrivent avec peu de maisons
+{
+  const S = (t, a) => AXES[a].reduce((x, h) => add(x, t[h]), 16), M = (t, ...hs) => hs.reduce((x, h) => add(x, t[h]), 16);
+  const egalites = [['S1 = M1+M3+M7', t => S(t, 0) === M(t, 1, 3, 7)], ['S3 = M12+M16', t => S(t, 2) === M(t, 12, 16)], ['S4 = M5+M7', t => S(t, 3) === M(t, 5, 7)], ['S1+S2 = M5+M8', t => add(S(t, 0), S(t, 1)) === M(t, 5, 8)],
+    ['S1+S3 = M3+M8+M15', t => add(S(t, 0), S(t, 2)) === M(t, 3, 8, 15)], ['S1+S4 = M1+M3+M5', t => add(S(t, 0), S(t, 3)) === M(t, 1, 3, 5)], ['S2+S3 = M3+M5+M15', t => add(S(t, 1), S(t, 2)) === M(t, 3, 5, 15)],
+    ['S2+S4 = M1+M3+M8', t => add(S(t, 1), S(t, 3)) === M(t, 1, 3, 8)], ['S3+S4 = M5+M8+M16', t => add(S(t, 2), S(t, 3)) === M(t, 5, 8, 16)]];
+  egalites.forEach(([nom, f]) => ok('I20 ' + nom + ' (S1 = M1+M4+M7+M10, S2 = M13+M16+M3+M6, S3 = M9+M12+M15+M2, S4 = M5+M8+M11+M14)', bases.every(f)));
+  ok('I20 la somme des 15 premières maisons est toujours Populus (M1+…+M15 = 0, donc la somme des 16 = M16)', bases.every(t => M(t, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) === 16));
+  ok('I20 somme des résultantes d\'un axe = somme de ses bases + (Albus pour les axes 1 et 3, Fortuna Major pour les axes 2 et 4)', themes.every((r, i) => AXES.every((a, k) => a.reduce((x, h) => add(x, r[h]), 16) === add(S(bases[i], k), [4, 12, 4, 12][k]))));
+  const e = (m, l) => 1 << (4 * m + l), Mm = {}; for (let m = 1; m <= 4; m++) Mm[m] = [0, 1, 2, 3].map(l => e(m - 1, l)); for (let l = 0; l < 4; l++) Mm[5 + l] = [0, 1, 2, 3].map(m => e(m, l));
+  const ad = (a, b) => a.map((x, i) => x ^ b[i]); Mm[9] = ad(Mm[1], Mm[2]); Mm[10] = ad(Mm[3], Mm[4]); Mm[11] = ad(Mm[5], Mm[6]); Mm[12] = ad(Mm[7], Mm[8]); Mm[13] = ad(Mm[9], Mm[10]); Mm[14] = ad(Mm[11], Mm[12]); Mm[15] = ad(Mm[13], Mm[14]); Mm[16] = ad(Mm[15], Mm[1]);
+  const forme = hs => [0, 1, 2, 3].map(l => hs.reduce((x, h) => x ^ Mm[h][l], 0)); let trouve = false;
+  for (let m = 1; m < 65536 && !trouve; m++) { if (m.toString(2).split('1').length - 1 > 3) continue; const hs = []; for (let h = 0; h < 16; h++) if (m >> h & 1) hs.push(h + 1); if (forme(hs).every((v, l) => v === forme(AXES[1])[l])) trouve = true; }
+  ok('I20 S2 n\'est la somme d\'aucun ensemble de 3 maisons ou moins', !trouve);
+  // I21 — Lois internes des axes 2, 3 et 4
+  [[1, 3, 14], [2, 7, 13], [3, 0, 0]].forEach(([k, attendu, rang]) => { const a = AXES[k], vars = []; a.forEach(h => { for (let l = 0; l < 4; l++) vars.push({ h, l, f: Mm[h][l], r: P(h)[l] === 1 ? 1 : 0 }); });
+    const lois = []; for (let m = 1; m < 65536; m++) { let x = 0, c = 0; for (let q = 0; q < 16; q++) if (m >> q & 1) { x ^= vars[q].f; c ^= vars[q].r; } if (x === 0) lois.push({ m, c }); }
+    ok('I21 axe ' + (k + 1) + ' (M' + a.join(', M') + ') : ' + lois.length + ' lois internes' + (lois.length ? ', toutes vérifiées' : ' : ses 4 maisons sont libres et déterminent tout le thème'), lois.length === attendu && lois.every(({ m, c }) => themes.every(r => (vars.filter((_, q) => m >> q & 1).filter(v => !sat(r[v.h], v.l)).length % 2) === c))); });
+  // I22 — La somme d'un axe est-elle présente dans les maisons de cet axe ?
+  const pres = AXES.map((a, k) => bases.filter((t, i) => { const Sx = S(t, k), r = themes[i]; return a.some(h => t[h] === Sx || r[h] === Sx); }).length);
+  ok('I22 somme d\'axe présente dans les maisons de son axe (base ou résultante) : 32 608 · 24 376 · 27 232 · 27 120 thèmes (axes 1 à 4)', JSON.stringify(pres) === '[32608,24376,27232,27120]');
+  const vu = new Map(); bases.forEach(t => { const k = [0, 1, 2, 3].map(q => S(t, q)).join(); vu.set(k, (vu.get(k) || 0) + 1); });
+  ok('I22 le quadruplet (S1, S2, S3, S4) prend 32 768 valeurs, chacune exactement pour 2 thèmes', vu.size === 32768 && [...vu.values()].every(v => v === 2));
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
   for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
