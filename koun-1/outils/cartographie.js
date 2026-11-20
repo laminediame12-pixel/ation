@@ -1,7 +1,7 @@
 // Cartographie des fronts : génère moteur3/cartographie.json et vérifie la structure.
 // Usage : node outils/cartographie.js            (écrit moteur3/cartographie.json et affiche le bilan des vérifications)
 //         node outils/cartographie.js --verifier (compare avec le fichier existant, sans l'écrire)
-// Aucune règle du moteur n'utilise cette structure : c'est la description exacte de la carte (cartographe-fronts.html), pour une intégration future.
+// Aucune règle du moteur n'utilise cette structure : c'est la description exacte de la carte (koun.html (section « Cartographie des fronts »)), pour une intégration future.
 const fs = require('fs'), path = require('path');
 const K = require('./_lecture.js');
 

@@ -1,6 +1,6 @@
 # Cartographie des fronts
 
-Carte `cartographe-fronts.html`. Données complètes : `cartographie.json` (généré et vérifié par `node outils/cartographie.js`).
+Carte `koun.html (section « Cartographie des fronts »)`. Données complètes : `cartographie.json` (généré et vérifié par `node outils/cartographie.js`).
 
 ## Définitions
 - **Addition** (celle du moteur) : niveaux égaux = 2 points (saturé) ; différents = 1 point (non saturé). Ex. 1-1-1-1 + 2-2-1-1 = 1-1-2-2.
