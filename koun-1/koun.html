@@ -335,7 +335,7 @@ JOURS.forEach(function(j,k){var o=document.createElement('option');o.value=k;o.t
 if(qs.get('jour'))jr.value=qs.get('jour');
 function fig(n,cls){var v=K.niveaux(n),s='<div class="pt">';v.forEach(function(x){s+='<i>'+(x===2?'<b></b><b></b>':'<b></b>')+'</i>'});return s+'</div>'}
 function ct(L,h,c0,sp){var p1=L.R1.maison===h,p7=L.R7.maison===h,b=L.base(h),r=L.resu(h),chez=b===h||r===h,ant=((b-4)%16+16)%16+1===h||((r-4)%16+16)%16+1===h;
- return '<div class="ht'+(p1?' p1':p7?' p7':'')+(chez?' ch':'')+'" style="grid-column:'+c0+' / span '+sp+'"><div class="mh">M'+h+'</div>'+(p1?'<div class="tag">R1</div>':p7?'<div class="tag">R7</div>':'')+(ant?'<span class="ht-h" title="figure dans la maison de son antagoniste">💔</span>':'')+fig(b)+'<div class="nm">'+K.nom(b)+'</div><div class="rs">'+fig(r)+'<div class="nm">'+K.nom(r)+'</div></div></div>'}
+ return '<div class="ht'+(p1?' p1':p7?' p7':'')+(chez?' ch':'')+'" style="grid-column:'+c0+' / span '+sp+'"><div class="mh">M'+h+'</div>'+(p1?'<div class="tag">R1</div>':p7?'<div class="tag">R7</div>':'')+(ant?'<span class="ht-h" title="figure dans la maison de son antagoniste">💔</span>':'')+fig(b)+'<div class="rs">'+fig(r)+'</div></div>'}
 function pyramide(L){var g='<div class="pyr"><div class="cap" style="grid-column:1/span 8">Filles M8 ← M5 (lignes des mères)</div><div class="cap" style="grid-column:9/span 8">Mères M4 ← M1 (tirage)</div>';
  [8,7,6,5,4,3,2,1].forEach(function(h,i){g+=ct(L,h,1+2*i,2)});
  g+='<div class="cap" style="grid-column:1/-1">Nièces : M9 = M1+M2 · M10 = M3+M4 · M11 = M5+M6 · M12 = M7+M8</div>';
