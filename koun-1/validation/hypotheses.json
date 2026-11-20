@@ -115,6 +115,19 @@
      "prediction": "R1",
      "detail": "les cinq indicateurs désignent R1 (net) : premier thème net depuis 4-6-7-16",
      "score": "5-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R1, R7, R7, R7, égal] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -391,6 +404,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M2 et M8 ; seul arrêt : M5 : aucun pôle sous croix",
      "score": "5-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M3 et M9 ; arrêts en M4 et M8 : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -851,6 +877,19 @@
      "prediction": "R1",
      "detail": "front D de R1 : 3 maisons à résultante saturée en Terre ; front C de R7 : 1",
      "score": "5-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "même boucle ; fronts C et A : 4 maisons saturées en Terre chacun",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1013,6 +1052,19 @@
      "prediction": "R1, 4 buts au total",
      "detail": "hors Via en base de M8 : clauses 2 et 3",
      "score": "5-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "nul (Via en base de M8)",
+     "detail": "clause 1 : Via en base de M8 = nul",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1111,7 +1163,21 @@
    "id": "H-VIA8-B",
    "posee_le": "2026-11-20",
    "enonce": "Avec Via en base de M8, le match est nul et chaque équipe marque ceil(v / 2) buts, où v est le nombre de maisons où Via est en base. Née des trois matchs avec Via en base de M8 (v = 1, 3, 1 pour 1-1, 2-2, 1-1), qui ne comptent donc pas comme test ; plusieurs comptes de Via, de Cauda et de Terre ont été regardés avant de la retenir.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "1-1",
+     "detail": "Via en base de M8 et de M15 : v = 2, ceil(2/2) = 1 but par équipe",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -1273,6 +1339,19 @@
    "statut": "lecture de l'analyste d'après H-UNIV : hors Via en base de M8, donc buts et vainqueur par la Terre ; les cinq indicateurs de structure désignent aussi R1.",
    "score": "5-1",
    "juste": "vainqueur juste, 4 buts faux"
+  },
+  {
+   "theme": [
+    3,
+    10,
+    3,
+    1
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "nul, 1-1",
+   "statut": "lecture de l'analyste d'après H-UNIV (clause 1) et H-VIA8-B : quatrième thème avec Via en base de M8 ; les deux pôles sont dans la même boucle et ont la même Terre.",
+   "score": null
   }
  ]
 }
