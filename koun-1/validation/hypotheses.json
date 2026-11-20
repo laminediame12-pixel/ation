@@ -154,6 +154,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R1, R1, R1, égal] : non nets",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      9,
+      13,
+      2,
+      13
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [égal, égal, égal, R1, égal] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -469,6 +482,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      9,
+      13,
+      2,
+      13
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1",
+     "detail": "R7 (Fortuna Major, M15) est sous croix : Fortuna Major est ancré en base de M15, la maison d'Aquisitio dont il est l'antagoniste ; R1 en M9 ne l'est pas",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1478,7 +1504,21 @@
    "id": "H-NUL-TERRE",
    "posee_le": "2026-11-20",
    "enonce": "Le match est nul quand le nombre de maisons à résultante saturée en Terre par front vaut A = 3 ou 4, B = 0 ou 1, C = 2, D = 2. Né des cinq nuls connus (12-8-10-3, 5-1-10-10, 10-12-12-15, 12-14-8-10, 2-6-7-9 : A/B/C/D = 3/1/2/2, 4/1/2/2, 3/0/2/2, 4/1/2/2, 3/1/2/2) ; aucun des huit autres matchs n'a cette signature, mais cinq nuls ont été regardés pour la trouver : ils ne comptent pas comme test. Contient les thèmes Via en M8 (quatre des cinq nuls) mais aussi 2-6-7-9, où M8 porte Populus. Si le nombre par front ne correspond pas : pas de prédiction de nul.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      9,
+      13,
+      2,
+      13
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de nul",
+     "detail": "Terre par front A/B/C/D = 3/2/2/2 : B = 2 > 1, la signature des nuls est absente",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -1782,6 +1822,19 @@
    "statut": "lecture de l'analyste d'après H-TERRE-V (thème hors Via en base de M8 : M8 porte Populus). Trois des cinq indicateurs de structure vont vers R1, donc la lecture est fragile. Aucune prédiction de buts : la formule est retirée.",
    "score": "1-1",
    "juste": false
+  },
+  {
+   "theme": [
+    9,
+    13,
+    2,
+    13
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R1 (faible)",
+   "statut": "lecture de l'analyste d'après H-CROIX (jamais testée à l'aveugle : née de deux matchs) ; le pôle R7 est sous croix ; la signature des nuls est absente. Même front pour les deux pôles (D), donc la Terre ne les sépare pas.",
+   "score": null
   }
  ]
 }
