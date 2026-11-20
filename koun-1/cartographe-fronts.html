@@ -772,7 +772,7 @@ function blocN(left,right,top,bot,sub,L,tri){
   if(q.c1==='sat'&&q.c2==='sat'){nP++;out.push('<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>')}
   else if(q.c1==='non'&&q.c2==='non'){nA++;out.push('<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="var(--card)" stroke="'+EC[q.e1]+'" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="'+x+'" cy="'+y+'" r="2" fill="'+EC[q.e2]+'"/>')}
   else out.push('<circle cx="'+x+'" cy="'+y+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
- const info=(tri?'Somme des deux fronts, anneau par anneau : base + maison au repos = résultante : ':'Base + maison au repos = résultante : ')+[BT,BR,BB,BL].map(b=>b.b+'+'+b.h+'='+b.r+' ('+b.c+'/4 saturés)').join(' · ')+' · '+pts.length+' intersections : '+nP+' saturées, '+nA+' non saturées'+(L?' · 💔 : l’antagoniste est bien en base dans la maison, dans ce thème':'');
+ const info=(tri?'Base + maison au repos = résultante : ':'Base + maison au repos = résultante : ')+[BT,BR,BB,BL].map(b=>b.b+'+'+b.h+'='+b.r+' ('+b.c+'/4 saturés)').join(' · ')+' · '+pts.length+' intersections : '+nP+' saturées, '+nA+' non saturées'+(L?' · 💔 : l’antagoniste est bien en base dans la maison, dans ce thème':'');
  return {svg:'<svg viewBox="0 0 560 580" role="img" aria-label="Carte en croix">'+out.join('')+'</svg>',nI:pts.length,nP:nP,nA:nA,info:info};
 }
 const add=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();for(let k=0;k<16;k++)if(FIGS[k].p.join()===q)return k+1;return null};
@@ -785,12 +785,14 @@ function rendre(L){
   for(let z=0;z<4;z++){const f=z+1,b=bloc(z,L);b.mh=f+'↔'+(f+8);b.mv=(f+4)+'↔'+(f+12);b.d1=f+'→'+(f+4);b.d2=(f+8)+'→'+(f+12);
    carte('Front '+FR[z],FRN[FR[z]]+' · '+[1,5,9,13].map(k=>FIGS[k+z-1].n).join(' · '),b)}
  }else{
-  COMBOS.forEach(([X,Y])=>{const zx=FR.indexOf(X),zy=FR.indexOf(Y),fx=zx+1,fy=zy+1;
-   const ant=h=>((h-4)%16+16)%16+1;
-   const tri={};[['top',0],['right',4],['bot',8],['left',12]].forEach(([nm,k])=>{const hx=fx+k,hy=fy+k,bx=ant(hx),by=ant(hy);tri[nm]={h:add(hx,hy),b:add(bx,by)}});
-   const b=blocN(tri.left.h,tri.right.h,tri.top.h,tri.bot.h,null,L,tri);const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
-   const fz='ABCD'[(add(fx,fy)-1)%4];const tab='<div class="tbn">Les 16 sommes d\u2019une figure de '+X+' et d\u2019une figure de '+Y+' tombent toujours dans le front '+fz+' ('+FRN[fz]+').</div>';
-   carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : somme des anneaux correspondants (base + base, maison + maison, résultante + résultante)'+note,b,tab)})
+  COMBOS.forEach(([X,Y])=>{const zx=FR.indexOf(X),zy=FR.indexOf(Y),fx=zx+1,d=((zy-zx)%4+4)%4;
+   // X+Y : les figures du front X sont au repos (anneau jaune), celles du front Y sont en base (anneau rouge), la résultante est leur somme.
+   // La base de la maison h est la figure du front Y obtenue en reculant de 3 par pas de front : h−3·d (d = 1 : l'antagoniste n−3, comme dans la carte du front A).
+   const bs=h=>((h-1-3*d)%16+16)%16+1;
+   const tri={};[['top',0],['right',4],['bot',8],['left',12]].forEach(([nm,k])=>{const hx=fx+k;tri[nm]={h:hx,b:bs(hx)}});
+   const b=blocN(tri.left.h,tri.right.h,tri.top.h,tri.bot.h,null,L,tri);
+   const fz='ABCD'[(add(fx,zy+1)-1)%4];const tab='<div class="tbn">Maisons au repos : figures du front '+X+' ('+[tri.top.h,tri.right.h,tri.bot.h,tri.left.h].join(', ')+'). Bases : figures du front '+Y+' ('+[tri.top.b,tri.right.b,tri.bot.b,tri.left.b].join(', ')+'), prises à h−'+(3*d)+'. Les résultantes tombent dans le front '+fz+' ('+FRN[fz]+').</div>';
+   carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : les figures du front '+X+' sont au repos, celles du front '+Y+' sont en base',b,tab)})
  }
 }
 function charger(){const v=document.getElementById('th').value.trim();const p=v.split(/[-,\s]+/).map(Number).filter(n=>n>=1&&n<=16);
