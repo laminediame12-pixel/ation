@@ -729,7 +729,7 @@ const cl=(a,b)=>(a+b)%2===0?'sat':'non';const res1=(a,b)=>(a+b)%2===0?2:1;
 function bloc(z,L){const f=z+1;return blocN(f+12,f+4,f,f+8,null,L)}
 // Représentation en croix : haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos). Dans chaque branche, de l'extérieur vers le centre :
 // la figure de base (l'antagoniste de la maison), la figure de la maison au repos, la résultante (base + maison). Les liaisons relient les résultantes.
-function blocN(left,right,top,bot,sub,L){
+function blocN(left,right,top,bot,sub,L,tri){
  const EC=['#ef4444','#eab308','#3b82f6','#94a3b8'];
  const CX=280,CY=280,S=26,X=[0,1,2,3].map(j=>CX-39+S*j),Y=X,BW=44,BH=104,DR=130,PITCH=52,EDGE=DR-BW/2;
  const out=[];
@@ -737,8 +737,9 @@ function blocN(left,right,top,bot,sub,L){
  const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
  const antOf=h=>((h-4)%16+16)%16+1;
  const addN=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();return FIGS.findIndex(f=>f.p.join()===q)+1};
- const br=h=>{const b=antOf(h),r=addN(b,h),lv=FIGS[h-1].p.map((x,i)=>{const y=FIGS[b-1].p[i];return{a:y,b:x,r:res1(y,x)}});return{h:h,b:b,r:r,lv:lv,c:lv.filter(o=>o.r===2).length,reel:!!(L&&L.maisons[h-1].base===FIGS[b-1].n)}};
- const BT=br(top),BR=br(right),BB=br(bot),BL=br(left);
+ const mk=(b,h)=>{const r=addN(b,h),lv=FIGS[h-1].p.map((x,i)=>{const y=FIGS[b-1].p[i];return{a:y,b:x,r:res1(y,x)}});return{h:h,b:b,r:r,lv:lv,c:lv.filter(o=>o.r===2).length,reel:!!(L&&!tri&&L.maisons[h-1].base===FIGS[b-1].n)}};
+ const br=(k,h)=>tri&&tri[k]?mk(tri[k].b,tri[k].h):mk(antOf(h),h);
+ const BT=br('top',top),BR=br('right',right),BB=br('bot',bot),BL=br('left',left);
  const dot=(c,x,y,i,two,vert)=>two?(vert?'<circle cx="'+(x-6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+(x+6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>':'<circle cx="'+x+'" cy="'+(y-6)+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+x+'" cy="'+(y+6)+'" r="4.3" fill="'+EC[i]+'"/>'):'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>';
  const stroke=n=>pol(n)==='R1'?'var(--r1)':pol(n)==='R7'?'var(--r7)':'var(--ln)';
  // boîte verticale (gauche, droite) : niveaux en lignes alignées sur la grille ; boîte horizontale (haut, bas) : niveaux en colonnes
@@ -771,7 +772,7 @@ function blocN(left,right,top,bot,sub,L){
   if(q.c1==='sat'&&q.c2==='sat'){nP++;out.push('<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>')}
   else if(q.c1==='non'&&q.c2==='non'){nA++;out.push('<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="var(--card)" stroke="'+EC[q.e1]+'" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="'+x+'" cy="'+y+'" r="2" fill="'+EC[q.e2]+'"/>')}
   else out.push('<circle cx="'+x+'" cy="'+y+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
- const info='Base + maison au repos = résultante : '+[BT,BR,BB,BL].map(b=>b.b+'+'+b.h+'='+b.r+' ('+b.c+'/4 saturés)').join(' · ')+' · '+pts.length+' intersections : '+nP+' saturées, '+nA+' non saturées'+(L?' · 💔 : l’antagoniste est bien en base dans la maison, dans ce thème':'');
+ const info=(tri?'Somme des deux fronts, anneau par anneau : base + maison au repos = résultante : ':'Base + maison au repos = résultante : ')+[BT,BR,BB,BL].map(b=>b.b+'+'+b.h+'='+b.r+' ('+b.c+'/4 saturés)').join(' · ')+' · '+pts.length+' intersections : '+nP+' saturées, '+nA+' non saturées'+(L?' · 💔 : l’antagoniste est bien en base dans la maison, dans ce thème':'');
  return {svg:'<svg viewBox="0 0 560 580" role="img" aria-label="Carte en croix">'+out.join('')+'</svg>',nI:pts.length,nP:nP,nA:nA,info:info};
 }
 const add=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();for(let k=0;k<16;k++)if(FIGS[k].p.join()===q)return k+1;return null};
@@ -785,11 +786,11 @@ function rendre(L){
    carte('Front '+FR[z],FRN[FR[z]]+' · '+[1,5,9,13].map(k=>FIGS[k+z-1].n).join(' · '),b)}
  }else{
   COMBOS.forEach(([X,Y])=>{const zx=FR.indexOf(X),zy=FR.indexOf(Y),fx=zx+1,fy=zy+1;
-   const S=k=>add(fx+k,fy+k);const hh=S(0),dd=S(4),bb=S(8),gg=S(12);
-   const sub=[(fx+12)+'+'+(fy+12),(fx+4)+'+'+(fy+4),fx+'+'+fy,(fx+8)+'+'+(fy+8)];
-   const b=blocN(gg,dd,hh,bb,sub,L);const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
+   const ant=h=>((h-4)%16+16)%16+1;
+   const tri={};[['top',0],['right',4],['bot',8],['left',12]].forEach(([nm,k])=>{const hx=fx+k,hy=fy+k,bx=ant(hx),by=ant(hy);tri[nm]={h:add(hx,hy),b:add(bx,by)}});
+   const b=blocN(tri.left.h,tri.right.h,tri.top.h,tri.bot.h,null,L,tri);const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
    const fz='ABCD'[(add(fx,fy)-1)%4];const tab='<div class="tbn">Les 16 sommes d\u2019une figure de '+X+' et d\u2019une figure de '+Y+' tombent toujours dans le front '+fz+' ('+FRN[fz]+').</div>';
-   carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : sommes figure par figure, position par position'+note,b,tab)})
+   carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : somme des anneaux correspondants (base + base, maison + maison, résultante + résultante)'+note,b,tab)})
  }
 }
 function charger(){const v=document.getElementById('th').value.trim();const p=v.split(/[-,\s]+/).map(Number).filter(n=>n>=1&&n<=16);
