@@ -6,7 +6,7 @@ h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-siz
 .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-bottom:12px}.lg i{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
 .fr{min-width:0;background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:8px}.fr h2{font-size:15px;margin:2px 4px 0}.fr h2 small{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
-.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><select id="mode"><option value="fronts">Les 4 fronts</option><option value="sommes">Sommes de deux fronts (A+B … D+C)</option></select><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Chaque figure est placée dans la maison de son antagoniste (figure n−3) : au-dessus, la figure de la maison (l'antagoniste) ; au milieu, la figure, en gras ; dessous, la résultante. À chaque figure : « n + antagoniste = résultante ». C'est la résultante qui décide, niveau par niveau, si la liaison est saturée ou non : niveau égal, 2, saturé (trait épais) ; niveau différent, 1, non saturé (trait tireté). Chaque liaison porte son opération : niveau de la figure + niveau de l'antagoniste = résultat, et est tracée en deux moitiés, une par figure. Point plein : deux liens saturés qui se croisent ; anneau tireté : deux non saturés ; petit point : un de chaque. La Terre coupe Feu, Air et Eau, puis dévie vers le niveau Terre correspondant (1 vers 5, 9 vers 13). Avec un thème : emplacements des figures, 💔 maison ennemie, R1 bleu, R7 rouge, cadre tireté = figure absente.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
+.fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}svg{width:100%;height:auto;display:block}svg text{fill:var(--tx);font-family:system-ui,sans-serif}.mu{fill:var(--mu)!important}</style></head><body><h1>Cartographe des fronts</h1><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, écartées, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard : deux paires par front, une à l'horizontale et une à la verticale. Elles se croisent au centre.</p><div class="bar"><select id="mode"><option value="fronts">Les 4 fronts</option><option value="sommes">Sommes de deux fronts (A+B … D+C)</option></select><input id="th" placeholder="thème : 2-6-2-12" inputmode="numeric"><button id="go" type="button">Afficher</button><span id="info" class="s" style="margin:0"></span></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Croix : haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos). Dans chaque branche, de l'extérieur vers le centre : anneau rouge, la figure de base (l'antagoniste n−3 de la maison) ; anneau jaune, la figure de la maison au repos ; anneau vert, la résultante (base + maison). La résultante décide, niveau par niveau, si la liaison est saturée (2, trait épais) ou non (1, tireté). Les liaisons relient les résultantes opposées ; chaque moitié porte l'état de sa résultante. Point plein : deux liens saturés qui se croisent ; anneau tireté : deux non saturés ; petit point : un de chaque. La Terre dévie : du haut (f) vers la droite (f+4), du bas (f+8) vers la gauche (f+12) ; le coin n'est pas une intersection. Avec un thème : cadre bleu R1, rouge R7, tireté = figure absente du thème, 💔 = l'antagoniste est bien en base dans cette maison.</span></div><div class="grid" id="g"></div><script>/* koun — moteur 3 : table rase des principes (fichier autonome).
    Structure exacte (thème, résultantes, forces, pôles, paralysies) puis, principe par principe, victoire, nul, pénalité, deux marquent,
    buts MT-1, corners, Over/Under 1,5 · 2,5 · 3,5. Chaque principe porte sa provenance :
      PROPRIETAIRE : posé par le propriétaire ; PORTE_3.0.0 : règle du 3.0.0 reprise ; DEVELOPPEMENT : issu des matchs de développement,
@@ -726,67 +726,53 @@ h1{font-size:20px;margin:18px 0 4px}p.s{color:var(--mu);margin:0 0 10px;font-siz
 const FIGS=[{"n":"Puer","p":[1,1,2,1]},{"n":"Laetitia","p":[1,2,2,2]},{"n":"Caput","p":[2,1,1,1]},{"n":"Albus","p":[2,2,1,2]},{"n":"Via","p":[1,1,1,1]},{"n":"Amissio","p":[1,2,1,2]},{"n":"Rubeus","p":[2,1,2,2]},{"n":"Tristitia","p":[2,2,2,1]},{"n":"Fortuna Minor","p":[1,1,2,2]},{"n":"Carcer","p":[1,2,2,1]},{"n":"Conjunctio","p":[2,1,1,2]},{"n":"Fortuna Major","p":[2,2,1,1]},{"n":"Cauda Draconis","p":[1,1,1,2]},{"n":"Puella","p":[1,2,1,1]},{"n":"Aquisitio","p":[2,1,2,1]},{"n":"Populus","p":[2,2,2,2]}];const EC0=['#ef4444','#eab308','#3b82f6','#94a3b8'];const FR='ABCD',EL=['Feu','Air','Eau','Terre'],ELC=['F','A','E','T'];
 const FRN={A:'Feu',B:'Air',C:'Eau',D:'Terre'};
 const cl=(a,b)=>(a+b)%2===0?'sat':'non';const res1=(a,b)=>(a+b)%2===0?2:1;
-function bloc(z,L){const f=z+1;return blocN(f,f+8,f+4,f+12,null,L)}
+function bloc(z,L){const f=z+1;return blocN(f+12,f+4,f,f+8,null,L)}
+// Représentation en croix : haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos). Dans chaque branche, de l'extérieur vers le centre :
+// la figure de base (l'antagoniste de la maison), la figure de la maison au repos, la résultante (base + maison). Les liaisons relient les résultantes.
 function blocN(left,right,top,bot,sub,L){
- // boucle du front : f, f+4, f+8, f+12 ; miroirs (k, k+8) face à face : gauche/droite et haut/bas
-
- const pos=n=>{if(!L)return{txt:'',abs:false};const nm=FIGS[n-1].n;const b=[],r=[];L.maisons.forEach(m=>{if(m.base===nm)b.push(m.maison);if(m.resultante===nm)r.push(m.maison)});
-  const t=[b.length?'base M'+b.join(',M'):'',r.length?'rés. M'+r.join(',M'):''].filter(Boolean).join(' · ');return{txt:t||'absente',abs:!b.length&&!r.length}};
- const enn=n=>{if(!L)return[];const nm=FIGS[n-1].n;return L.positions(nm).filter(x=>L.enMaisonAntagoniste(nm,x.maison)).map(x=>'M'+x.maison+(x.couche==='base'?' base':' rés.'))};
- const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
  const EC=['#ef4444','#eab308','#3b82f6','#94a3b8'];
- const S=34,X=[0,1,2,3].map(j=>230-1.5*S+j*S),Y=X;const out=[];
- const dotsV=(n,cx)=>FIGS[n-1].p.map((p,i)=>p===2?'<circle cx="'+(cx-6)+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/><circle cx="'+(cx+6)+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/>':'<circle cx="'+cx+'" cy="'+Y[i]+'" r="5" fill="'+EC[i]+'"/>').join('');
- const dotsH=(n,cy)=>FIGS[n-1].p.map((p,j)=>p===2?'<circle cx="'+X[j]+'" cy="'+(cy-6)+'" r="5" fill="'+EC[j]+'"/><circle cx="'+X[j]+'" cy="'+(cy+6)+'" r="5" fill="'+EC[j]+'"/>':'<circle cx="'+X[j]+'" cy="'+cy+'" r="5" fill="'+EC[j]+'"/>').join('');
- const lab=(n,x,y,anchor,ix)=>{const q=pos(n),pl=pol(n),sb=sub?sub[ix]:'',sp=SUPS[ix],rv=sp.lv.map(o=>o.r).join(),rn=FIGS.findIndex(f=>f.p.join()===rv)+1;const en=enn(n),l2=[sb,L?q.txt:'',en.length?'💔 maison ennemie '+en.join(', '):''].filter(Boolean).join(' · ');
-  return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" font-size="12.5" font-weight="600" '+(q.abs?'class="mu"':'')+'>'+n+' · '+FIGS[n-1].n+(pl?'  '+pl:'')+'</text>'+'<text x="'+x+'" y="'+(y+14)+'" text-anchor="'+anchor+'" font-size="11.5" font-weight="800">'+n+'+'+sp.ant+' = '+rn+' '+FIGS[rn-1].n+'</text>'+(l2?'<text x="'+x+'" y="'+(y+28)+'" text-anchor="'+anchor+'" font-size="10" class="mu">'+l2+'</text>':'')};
- const LP=FIGS[left-1].p,RP=FIGS[right-1].p,TP=FIGS[top-1].p,BP=FIGS[bot-1].p;
- // Chaque figure est placée dans la maison de son antagoniste (figure n−3) : figure de la maison au-dessus, la figure (en gras) au milieu, la résultante dessous.
- const supOf=n=>{const a=((n-4)%16+16)%16+1;const lv=FIGS[n-1].p.map((x,i)=>({a:x,b:FIGS[a-1].p[i],r:res1(x,FIGS[a-1].p[i])}));return{ant:a,lv:lv,c:lv.filter(o=>o.r===2).length}};
- const SUPS=[supOf(left),supOf(right),supOf(top),supOf(bot)];
- const endL=(sp,own,mir,i)=>({st:sp.lv[i].r===2?'sat':'non',a:sp.lv[i].a,b:sp.lv[i].b,r:sp.lv[i].r});
- const EL_=[0,1,2].map(i=>endL(SUPS[0],LP,RP,i)),ER_=[0,1,2].map(i=>endL(SUPS[1],RP,LP,i)),ET_=[0,1,2].map(j=>endL(SUPS[2],TP,BP,j)),EB_=[0,1,2].map(j=>endL(SUPS[3],BP,TP,j));
- // Terre : 1→5 (gauche vers haut) et 9→13 (droite vers bas)
- EL_[3]=endL(SUPS[0],LP,TP,3);ET_[3]=endL(SUPS[2],TP,LP,3);ER_[3]=endL(SUPS[1],RP,BP,3);EB_[3]=endL(SUPS[3],BP,RP,3);
- const sty=(c,el)=>c==='none'?'stroke="var(--ln)" stroke-linecap="round" fill="none" stroke-width="2.5" stroke-dasharray="2 5"':'stroke="'+EC[el]+'" stroke-linecap="round" fill="none" '+(c==='non'?'stroke-width="2.5" stroke-dasharray="7 6" opacity=".9"':'stroke-width="5" opacity=".95"');
- // niveaux Feu, Air, Eau : droites face à face, tracées en deux moitiés (chaque moitié porte l'état de sa figure). Terre : elle coupe puis dévie (1→5 et 9→13).
- const x0=100,x1=360,y0=94,y1=366,CX=230;
- for(let i=0;i<3;i++){out.push('<line x1="'+x0+'" y1="'+Y[i]+'" x2="'+CX+'" y2="'+Y[i]+'" '+sty(EL_[i].st,i)+'/>');out.push('<line x1="'+CX+'" y1="'+Y[i]+'" x2="'+x1+'" y2="'+Y[i]+'" '+sty(ER_[i].st,i)+'/>')}
- for(let j=0;j<3;j++){out.push('<line x1="'+X[j]+'" y1="'+y0+'" x2="'+X[j]+'" y2="'+CX+'" '+sty(ET_[j].st,j)+'/>');out.push('<line x1="'+X[j]+'" y1="'+CX+'" x2="'+X[j]+'" y2="'+y1+'" '+sty(EB_[j].st,j)+'/>')}
- const R=11,XT=X[3],YT=Y[3];
- const pth=(c,d)=>'<path d="'+d+'" '+sty(c,3)+'/>';
- out.push(pth(EL_[3].st,'M '+x0+' '+YT+' L '+(XT-R)+' '+YT));
- out.push(pth(ET_[3].st,'M '+(XT-R)+' '+YT+' Q '+XT+' '+YT+' '+XT+' '+(YT-R)+' L '+XT+' '+y0));
- out.push(pth(ER_[3].st,'M '+x1+' '+YT+' L '+(XT+R)+' '+YT));
- out.push(pth(EB_[3].st,'M '+(XT+R)+' '+YT+' Q '+XT+' '+YT+' '+XT+' '+(YT+R)+' L '+XT+' '+y1));
- // intersections : l'état de chaque ligne au point est celui de sa moitié
- const hS=(i,x)=>x<CX?EL_[i].st:ER_[i].st,vS=(j,y)=>y<CX?ET_[j].st:EB_[j].st;
+ const CX=280,CY=280,S=26,X=[0,1,2,3].map(j=>CX-39+S*j),Y=X,BW=44,BH=104,DR=130,PITCH=52,EDGE=DR-BW/2;
+ const out=[];
+ const pos=n=>{if(!L)return{abs:false};const nm=FIGS[n-1].n;let t=false;L.maisons.forEach(m=>{if(m.base===nm||m.resultante===nm)t=true});return{abs:!t}};
+ const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
+ const antOf=h=>((h-4)%16+16)%16+1;
+ const addN=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();return FIGS.findIndex(f=>f.p.join()===q)+1};
+ const br=h=>{const b=antOf(h),r=addN(b,h),lv=FIGS[h-1].p.map((x,i)=>{const y=FIGS[b-1].p[i];return{a:y,b:x,r:res1(y,x)}});return{h:h,b:b,r:r,lv:lv,c:lv.filter(o=>o.r===2).length,reel:!!(L&&L.maisons[h-1].base===FIGS[b-1].n)}};
+ const BT=br(top),BR=br(right),BB=br(bot),BL=br(left);
+ const dot=(c,x,y,i,two,vert)=>two?(vert?'<circle cx="'+(x-6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+(x+6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>':'<circle cx="'+x+'" cy="'+(y-6)+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+x+'" cy="'+(y+6)+'" r="4.3" fill="'+EC[i]+'"/>'):'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>';
+ const stroke=n=>pol(n)==='R1'?'var(--r1)':pol(n)==='R7'?'var(--r7)':'var(--ln)';
+ // boîte verticale (gauche, droite) : niveaux en lignes alignées sur la grille ; boîte horizontale (haut, bas) : niveaux en colonnes
+ const boxV=(n,cx,lab)=>'<rect x="'+(cx-BW/2)+'" y="'+(CY-BH/2)+'" width="'+BW+'" height="'+BH+'" rx="7" fill="var(--card)" stroke="'+stroke(n)+'" stroke-width="'+(pol(n)?2.5:1.5)+'"'+(pos(n).abs?' stroke-dasharray="4 3"':'')+'/>'+FIGS[n-1].p.map((p,i)=>dot(0,cx,Y[i],i,p===2,true)).join('')+'<text x="'+cx+'" y="'+(CY+BH/2+14)+'" text-anchor="middle" font-size="12" font-weight="700">'+lab+'</text>';
+ const boxH=(n,cy,lab)=>'<rect x="'+(CX-BH/2)+'" y="'+(cy-BW/2)+'" width="'+BH+'" height="'+BW+'" rx="7" fill="var(--card)" stroke="'+stroke(n)+'" stroke-width="'+(pol(n)?2.5:1.5)+'"'+(pos(n).abs?' stroke-dasharray="4 3"':'')+'/>'+FIGS[n-1].p.map((p,j)=>dot(0,X[j],cy,j,p===2,false)).join('')+'<text x="'+(CX+BH/2+8)+'" y="'+(cy+4)+'" text-anchor="start" font-size="12" font-weight="700">'+lab+'</text>';
+ const HF=[158,210,262],FC=['#16a34a','#eab308','#ef4444'],FN=['résultante','maison au repos','base'];
+ HF.forEach((h,k)=>{out.push('<rect x="'+(CX-h)+'" y="'+(CY-h)+'" width="'+(2*h)+'" height="'+(2*h)+'" rx="14" fill="none" stroke="'+FC[k]+'" stroke-width="2.5" opacity=".85"/>');out.push('<text x="'+(CX-h+10)+'" y="'+(CY-h-5)+'" font-size="9.5" font-weight="700" fill="'+FC[k]+'" style="fill:'+FC[k]+'">'+FN[k]+'</text>')});
+ const rd=k=>DR+PITCH*k,tag=b=>b.b+(b.reel?' 💔':'');
+ [[BT,'T'],[BB,'B']].forEach(([b,w])=>{const sg=w==='T'?-1:1;out.push(boxH(b.r,CY+sg*rd(0),b.r),boxH(b.h,CY+sg*rd(1),b.h),boxH(b.b,CY+sg*rd(2),tag(b)))});
+ [[BL,-1],[BR,1]].forEach(([b,sg])=>{out.push(boxV(b.r,CX+sg*rd(0),b.r),boxV(b.h,CX+sg*rd(1),b.h),boxV(b.b,CX+sg*rd(2),tag(b)))});
+ // états des liaisons : ceux de la résultante, niveau par niveau (2 saturé, 1 non saturé)
+ const st=(b,i)=>b.lv[i].r===2?'sat':'non';
+ const sty=c=>c==='non'?'stroke-width="2.5" stroke-dasharray="7 6" opacity=".9"':'stroke-width="5" opacity=".95"';
+ const line=(x1,y1,x2,y2,c,el)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+EC[el]+'" stroke-linecap="round" fill="none" '+sty(c)+'/>';
+ const xL=CX-EDGE,xR=CX+EDGE,yT=CY-EDGE,yB=CY+EDGE;
+ for(let i=0;i<3;i++){out.push(line(xL,Y[i],CX,Y[i],st(BL,i),i),line(CX,Y[i],xR,Y[i],st(BR,i),i))}
+ for(let j=0;j<3;j++){out.push(line(X[j],yT,X[j],CY,st(BT,j),j),line(X[j],CY,X[j],yB,st(BB,j),j))}
+ // Terre : dévie. Haut (1) → droite (5) ; bas (9) → gauche (13)
+ const R=9,XT=X[3],YT=Y[3],pth=(d,c)=>'<path d="'+d+'" stroke="'+EC[3]+'" stroke-linecap="round" fill="none" '+sty(c)+'/>';
+ out.push(pth('M '+XT+' '+yT+' L '+XT+' '+(YT-R)+' Q '+XT+' '+YT+' '+(XT+R)+' '+YT,st(BT,3)));
+ out.push(pth('M '+(XT+R)+' '+YT+' L '+xR+' '+YT,st(BR,3)));
+ out.push(pth('M '+XT+' '+yB+' L '+XT+' '+(YT+R)+' Q '+XT+' '+YT+' '+(XT-R)+' '+YT,st(BB,3)));
+ out.push(pth('M '+(XT-R)+' '+YT+' L '+xL+' '+YT,st(BL,3)));
+ const hS=(i,x)=>x<CX?st(BL,i):st(BR,i),vS=(j,y)=>y<CY?st(BT,j):st(BB,j);
  const pts=[];
  for(let i=0;i<3;i++)for(let j=0;j<3;j++)pts.push({x:X[j],y:Y[i],c1:hS(i,X[j]),e1:i,c2:vS(j,Y[i]),e2:j});
- for(let j=0;j<3;j++)pts.push({x:X[j],y:YT,c1:vS(j,YT),e1:j,c2:EL_[3].st,e2:3});
- for(let i=0;i<3;i++)pts.push({x:XT,y:Y[i],c1:hS(i,XT),e1:i,c2:ET_[3].st,e2:3});
- let nPlein=0,nAnneau=0;pts.forEach(q=>{const x=q.x.toFixed(1),y=q.y.toFixed(1);
-  if(q.c1==='sat'&&q.c2==='sat'){nPlein++;out.push('<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>')}
-  else if(q.c1==='non'&&q.c2==='non'){nAnneau++;out.push('<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="var(--card)" stroke="'+EC[q.e1]+'" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="'+x+'" cy="'+y+'" r="2" fill="'+EC[q.e2]+'"/>')}
+ for(let i=0;i<3;i++)pts.push({x:XT,y:Y[i],c1:hS(i,XT),e1:i,c2:st(BT,3),e2:3});
+ for(let j=0;j<3;j++)pts.push({x:X[j],y:YT,c1:vS(j,YT),e1:j,c2:st(BL,3),e2:3});
+ let nP=0,nA=0;pts.forEach(q=>{const x=q.x.toFixed(1),y=q.y.toFixed(1);
+  if(q.c1==='sat'&&q.c2==='sat'){nP++;out.push('<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>')}
+  else if(q.c1==='non'&&q.c2==='non'){nA++;out.push('<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="var(--card)" stroke="'+EC[q.e1]+'" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="'+x+'" cy="'+y+'" r="2" fill="'+EC[q.e2]+'"/>')}
   else out.push('<circle cx="'+x+'" cy="'+y+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
- // représentation symbolique : la figure dans la maison de son antagoniste
- const blk=(sp,n,cx,cy)=>{const row=(vec,y,w)=>'<text x="'+cx+'" y="'+y+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="'+w+'">'+vec.map((v,i)=>'<tspan fill="'+EC[i]+'">'+v+'</tspan>').join('')+'</text>';
-  const ant=FIGS[sp.ant-1].p,fg=FIGS[n-1].p,rs=sp.lv.map(o=>o.r);
-  return '<text x="'+cx+'" y="'+cy+'" text-anchor="middle" font-size="9" class="mu">ant. '+sp.ant+' '+FIGS[sp.ant-1].n+'</text>'+row(ant,cy+13,500)+row(fg,cy+27,900)+'<line x1="'+(cx-18)+'" y1="'+(cy+31)+'" x2="'+(cx+18)+'" y2="'+(cy+31)+'" stroke="var(--mu)" stroke-width="1"/>'+row(rs,cy+44,500)};
- // opérations dans les cases des liaisons : a + b = résultat (2 = saturé, 1 = non saturé)
- const pill=(cx,cy,el,e)=>{const t=e.st==='none'?ELC[el]+' —':ELC[el]+' '+e.a+'+'+e.b+'='+e.r,w=t.length*5.4+12;return '<rect x="'+(cx-w/2).toFixed(1)+'" y="'+(cy-8)+'" width="'+w.toFixed(1)+'" height="16" rx="8" fill="var(--card)" stroke="'+EC[el]+'" stroke-width="1.6"'+(e.st!=='sat'?' stroke-dasharray="3 2"':'')+'/><text x="'+cx+'" y="'+(cy+3.5)+'" text-anchor="middle" font-size="9.5" font-weight="700">'+t+'</text>'};
- for(let i=0;i<3;i++){out.push(pill(140,Y[i],i,EL_[i]));out.push(pill(320,Y[i],i,ER_[i]))}
- for(let j=0;j<3;j++){out.push(pill(X[j],108+16*j,j,ET_[j]));out.push(pill(X[j],300+16*j,j,EB_[j]))}
- out.push(pill(140,YT,3,EL_[3]));out.push(pill(322,YT,3,ER_[3]));
- out.push(pill(XT,156,3,ET_[3]));out.push(pill(XT,348,3,EB_[3]));
- const nodeBox=(n,x,y,w,h)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="none" stroke="'+(pol(n)==='R1'?'var(--r1)':pol(n)==='R7'?'var(--r7)':'var(--ln)')+'" stroke-width="'+(pol(n)?2.5:1.5)+'" '+(pos(n).abs?'stroke-dasharray="5 4"':'')+'/>';
- out.push(nodeBox(left,40,158,60,146)+dotsV(left,70)+nodeBox(right,360,158,60,146)+dotsV(right,390));
- out.push(nodeBox(top,160,34,140,60)+dotsH(top,64)+nodeBox(bot,160,366,140,60)+dotsH(bot,396));
- out.push(lab(left,70,322,'middle',0));out.push(lab(right,390,322,'middle',1));
- out.push(blk(SUPS[0],left,70,102));out.push(blk(SUPS[1],right,390,102));out.push(blk(SUPS[2],top,368,44));out.push(blk(SUPS[3],bot,368,376));
- const topLab=lab(top,230,12,'middle',2);out.push(lab(bot,230,444,'middle',3));
- const info='Chaque figure dans la maison de son antagoniste — '+[[left,0],[right,1],[top,2],[bot,3]].map(x=>x[0]+' (ant. '+SUPS[x[1]].ant+') : '+SUPS[x[1]].c+'/4').join(' · ')+' niveaux saturés · '+pts.length+' intersections : '+nPlein+' saturées, '+nAnneau+' non saturées';
- return {svg:'<svg viewBox="0 0 460 504" role="img" aria-label="Carte des liaisons">'+topLab+'<g transform="translate(0,22)">'+out.join('')+'</g></svg>',h:[0,1,2,3].filter(i=>EL_[i].st==='sat'&&(L?ER_[i].st==='sat':true)).length,v:[0,1,2,3].filter(j=>ET_[j].st==='sat'&&(L?EB_[j].st==='sat':true)).length,nI:pts.length,nP:nPlein,nA:nAnneau,t1:EL_[3].st==='sat',t2:ER_[3].st==='sat',info:info};
+ const info='Base + maison au repos = résultante : '+[BT,BR,BB,BL].map(b=>b.b+'+'+b.h+'='+b.r+' ('+b.c+'/4 saturés)').join(' · ')+' · '+pts.length+' intersections : '+nP+' saturées, '+nA+' non saturées'+(L?' · 💔 : l’antagoniste est bien en base dans la maison, dans ce thème':'');
+ return {svg:'<svg viewBox="0 0 560 580" role="img" aria-label="Carte en croix">'+out.join('')+'</svg>',nI:pts.length,nP:nP,nA:nA,info:info};
 }
 const add=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();for(let k=0;k<16;k++)if(FIGS[k].p.join()===q)return k+1;return null};
 const COMBOS=[['A','B'],['A','C'],['A','D'],['B','C'],['B','D'],['C','D'],['D','C']];
@@ -799,10 +785,9 @@ function rendre(L){
    carte('Front '+FR[z],FRN[FR[z]]+' · '+[1,5,9,13].map(k=>FIGS[k+z-1].n).join(' · '),b)}
  }else{
   COMBOS.forEach(([X,Y])=>{const zx=FR.indexOf(X),zy=FR.indexOf(Y),fx=zx+1,fy=zy+1;
-   const S=k=>add(fx+k,fy+k);const l=S(0),r=S(8),t=S(4),bo=S(12);
-   const sub=[fx+'+'+fy,(fx+8)+'+'+(fy+8),(fx+4)+'+'+(fy+4),(fx+12)+'+'+(fy+12)];
-   const b=blocN(l,r,t,bo,sub,L);b.mh=l+'↔'+r;b.mv=t+'↔'+bo;b.d1=l+'→'+t;b.d2=r+'→'+bo;
-   const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
+   const S=k=>add(fx+k,fy+k);const hh=S(0),dd=S(4),bb=S(8),gg=S(12);
+   const sub=[(fx+12)+'+'+(fy+12),(fx+4)+'+'+(fy+4),fx+'+'+fy,(fx+8)+'+'+(fy+8)];
+   const b=blocN(gg,dd,hh,bb,sub,L);const note=(X==='D'&&Y==='C')?' · identique à C+D (l’addition est commutative)':'';
    const fz='ABCD'[(add(fx,fy)-1)%4];const tab='<div class="tbn">Les 16 sommes d\u2019une figure de '+X+' et d\u2019une figure de '+Y+' tombent toujours dans le front '+fz+' ('+FRN[fz]+').</div>';
    carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : sommes figure par figure, position par position'+note,b,tab)})
  }
