@@ -102,6 +102,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [égal, égal, R1, R1, égal] : non nets",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1",
+     "detail": "les cinq indicateurs désignent R1 (net) : premier thème net depuis 4-6-7-16",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -364,6 +377,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M10 et M16 ; arrêts en M5, M8, M9 : aucun pôle sous croix",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M2 et M8 ; seul arrêt : M5 : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -698,6 +724,19 @@
      "prediction": "6 buts au total",
      "detail": "T = 9 : ceil(9/2)+1 = 6. Via en base de M8 : cas où la formule a échoué une fois (12-8-10-3) ; deuxième test de cette classe.",
      "score": "2-2"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "4 buts au total",
+     "detail": "T = 6 maisons à résultante saturée en Terre : ceil(6/2)+1 = 4 ; pas de Via ni de Cauda en base de M8",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -798,6 +837,19 @@
      "prediction": "R1",
      "detail": "front A de R1 : 4 maisons à résultante saturée en Terre ; front D de R7 : 2",
      "score": "2-2"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1",
+     "detail": "front D de R1 : 3 maisons à résultante saturée en Terre ; front C de R7 : 1",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -947,6 +999,19 @@
      "prediction": "nul (Via en base de M8)",
      "detail": "clause 1 : Via en base de M8 donne le nul ; clauses 2 et 3 (buts et vainqueur par la Terre) ne s'appliquent pas dans cette classe",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1, 4 buts au total",
+     "detail": "hors Via en base de M8 : clauses 2 et 3",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1193,6 +1258,19 @@
    "statut": "lecture de l'analyste d'après H-UNIV et H-VIA8-NUL : troisième thème avec Via en base de M8, mêmes pôles dans le même front (Conjunctio et Aquisitio, front C), aucun pôle sous croix.",
    "score": "1-1",
    "juste": "nul juste, score 2-2 faux"
+  },
+  {
+   "theme": [
+    2,
+    12,
+    4,
+    4
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R1, 4 buts",
+   "statut": "lecture de l'analyste d'après H-UNIV : hors Via en base de M8, donc buts et vainqueur par la Terre ; les cinq indicateurs de structure désignent aussi R1.",
+   "score": null
   }
  ]
 }
