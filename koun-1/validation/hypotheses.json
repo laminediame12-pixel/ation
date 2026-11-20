@@ -1,2179 +1,2186 @@
 {
- "note": "Hypothèses posées AVANT de connaître le score. Elles viennent de deux matchs déjà connus (4-6-7-16 : 5-0 ; 4-1-6-7 : 3-0), donc ces deux matchs ne comptent pas comme test. Seuls comptent les matchs dont la prédiction est inscrite ici avant le score. Une hypothèse réfutée est retirée, pas modifiée.",
- "hypotheses": [
-  {
-   "id": "H-ANT",
-   "posee_le": "2026-11-20",
-   "enonce": "Le pôle dont l'antagoniste est le moins saturé gagne (saturation cumulée de la résultante des maisons où se trouve l'antagoniste, base ou résultante). Antagoniste absent = 0. Égalité : pas de victoire.",
-   "predictions": [
+  "note": "Hypothèses posées AVANT de connaître le score. Elles viennent de deux matchs déjà connus (4-6-7-16 : 5-0 ; 4-1-6-7 : 3-0), donc ces deux matchs ne comptent pas comme test. Seuls comptent les matchs dont la prédiction est inscrite ici avant le score. Une hypothèse réfutée est retirée, pas modifiée.",
+  "hypotheses": [
     {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "date_match": null,
-     "prediction": "R1",
-     "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7",
-     "score": "1-3"
+      "id": "H-ANT",
+      "posee_le": "2026-11-20",
+      "enonce": "Le pôle dont l'antagoniste est le moins saturé gagne (saturation cumulée de la résultante des maisons où se trouve l'antagoniste, base ou résultante). Antagoniste absent = 0. Égalité : pas de victoire.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "date_match": null,
+          "prediction": "R1",
+          "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7",
+          "score": "1-3"
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 6-8-8-11 (posée avant ce thème) : H-ANT donne R7, le score est 3-1 pour R1. Retirée du moteur, gardée ici pour mémoire."
+    },
+    {
+      "id": "H-5",
+      "posee_le": "2026-11-20",
+      "enonce": "Si les cinq indicateurs de l'analyse des pôles (saturation du front, du front binôme, du binôme, de l'antagoniste (moins = mieux), niveau propre) désignent le même pôle, ce pôle gagne. Sinon : pas de victoire claire.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "date_match": null,
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "date_match": "2026-02-14",
+          "match": "Zurich–Lucerne",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R1, R7, R7, R7, R1] : non nets",
+          "score": "1-4"
+        },
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R7, R1, R7, R7, égal] : non nets",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "date_match": "2026-11-20",
+          "match": "Seattle–Salt Lake",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R1, R1, R1, R7, R1] : non unanimes",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "date_match": "2026-02-22",
+          "match": "Austin–Minnesota",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R1, R1, R7, R1, égal] : non nets",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "date_match": "2026-02-28",
+          "match": "Tijuana–Pumas",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [égal, égal, R1, R1, égal] : non nets",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "date_match": "2026-02-18",
+          "match": "Bayern Munich–Hoffenheim",
+          "prediction": "R1",
+          "detail": "les cinq indicateurs désignent R1 (net) : premier thème net depuis 4-6-7-16",
+          "score": "5-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "date_match": "2026-02-22",
+          "match": "Tigres UANL–Pachuca",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R1, R7, R7, R7, égal] : non nets",
+          "score": "1-2"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "date_match": "2026-02-10",
+          "match": "Napoli–Côme",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R1, R7, R7, R1, égal] : non nets",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R7, R1, R1, R1, égal] : non nets",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            9,
+            13,
+            2,
+            13
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [égal, égal, égal, R1, égal] : non nets",
+          "score": "2-0"
+        },
+        {
+          "theme": [
+            2,
+            9,
+            6,
+            5
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R7, R7, R7, R1, R1] : non nets",
+          "score": "3-3"
+        },
+        {
+          "theme": [
+            6,
+            6,
+            10,
+            2
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire claire",
+          "detail": "indicateurs [R1, R1, R7, R1, R1] : quatre sur cinq pour R1, non unanimes",
+          "score": null
+        }
+      ],
+      "resultats_apres_pose": [
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "pas de victoire claire",
+          "score": "3-1",
+          "juste": null
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "pas de victoire claire",
+          "score": "1-3",
+          "juste": null
+        }
+      ],
+      "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Aucun appel sur les matchs indépendants ; un seul appel juste (2-12-4-4) sur les matchs construits."
+    },
+    {
+      "id": "H-NIV1",
+      "posee_le": "2026-11-20",
+      "enonce": "Chaque pôle a 4 niveaux d'activation (2 points = activé). Son canal est l'élément de son front ; le canal compatible est Feu↔Air et Eau↔Terre. Le pôle dont le plus de niveaux activés tombent sur son canal ou sur le canal compatible gagne (0 à 2). Égalité : pas de victoire.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "date_match": null,
+          "prediction": "R1",
+          "detail": "R1 Rubeus : Eau et Terre activés (2) ; R7 Carcer : Air activé, canal Air (1)",
+          "score": "1-3"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "pas de victoire (2-2)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "R1 (2-0)",
+          "score": "3-0"
+        }
+      ],
+      "resultats_apres_pose": [
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "R1",
+          "score": "3-1",
+          "juste": true
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-NIV1 donne R1, le score est 1-3. Retirée du moteur."
+    },
+    {
+      "id": "H-NIV4",
+      "posee_le": "2026-11-20",
+      "enonce": "Même procédé pour le miroir, le binôme et l'antagoniste de chaque pôle, chacun avec son propre canal. Le pôle dont la somme des quatre comptes (pôle + miroir + binôme + antagoniste) est la plus grande gagne. Égalité : pas de victoire.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "date_match": null,
+          "prediction": "pas de victoire claire",
+          "detail": "R1 4 ; R7 4",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "date_match": "2026-02-14",
+          "match": "Zurich–Lucerne",
+          "prediction": "R1",
+          "detail": "R1 4 (Laetitia, miroir, binôme, antagoniste) contre R7 2",
+          "score": "1-4"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "pas de victoire (4-4)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "R1 (4-2)",
+          "score": "3-0"
+        }
+      ],
+      "resultats_apres_pose": [
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "R1",
+          "score": "3-1",
+          "juste": true
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "pas de victoire claire",
+          "score": "1-3",
+          "juste": null
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 14-9-16-9 (inscrite avant le score) : H-NIV4 donne R1, le score est 1-4 pour R7. Retirée du moteur."
+    },
+    {
+      "id": "H-BUTS",
+      "posee_le": "2026-11-20",
+      "enonce": "Le nombre de buts d'un pôle est le nombre de niveaux distincts connectés dans la croix de son front : Feu, Air, Eau en vertical ou horizontal (résultantes de deux maisons opposées toutes deux saturées à ce niveau), Terre déviée (haut→droite ou bas→gauche). Le score prédit est (niveaux connectés du front de R1) - (niveaux connectés du front de R7). Né du match 6-8-8-11 (3-1 : D a Feu, Eau, Terre ; A a Feu), qui ne compte donc pas comme test.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "date_match": null,
+          "prediction": "1-1",
+          "detail": "R1 front C : Feu (M15↔M7) ; R7 front B : Eau (M2↔M10)",
+          "score": "1-3"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "3-1",
+          "score": "3-1"
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-BUTS donne 1-1, le score est 1-3. Retirée du moteur."
+    },
+    {
+      "id": "H-CROIX",
+      "posee_le": "2026-11-20",
+      "enonce": "Le pôle dont la maison est sous croix (✖ : la maison porte en base son antagoniste, la figure h − 3) perd. Si aucun pôle ou les deux sont sous croix : pas de victoire. Née de 4-6-7-16 (R7 en M10 sous croix, 5-0 pour R1) et de 10-2-12-3 (R1 en M10 sous croix, 1-3) : ces deux matchs ne comptent donc pas comme test. Limite connue : dans les deux cas c'est Rubeus, pôle, en M10 ; la règle ne distingue pas « sous croix » de « Rubeus pôle en M10 ».",
+      "predictions": [
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "date_match": "2026-02-14",
+          "match": "Zurich–Lucerne",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M14 et M4 ; arrêts en M1, M3, M15 : aucun pôle sous croix",
+          "score": "1-4"
+        },
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M1 et M7 ; arrêts en M5 et M9 : aucun pôle sous croix",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "date_match": "2026-11-20",
+          "match": "Seattle–Salt Lake",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M12 et M2 ; seul arrêt : M8 : aucun pôle sous croix",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "date_match": "2026-02-22",
+          "match": "Austin–Minnesota",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M5 et M11 ; seul arrêt : M8 : aucun pôle sous croix",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "date_match": "2026-02-28",
+          "match": "Tijuana–Pumas",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M10 et M16 ; arrêts en M5, M8, M9 : aucun pôle sous croix",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "date_match": "2026-02-18",
+          "match": "Bayern Munich–Hoffenheim",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M2 et M8 ; seul arrêt : M5 : aucun pôle sous croix",
+          "score": "5-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "date_match": "2026-02-22",
+          "match": "Tigres UANL–Pachuca",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M3 et M9 ; arrêts en M4 et M8 : aucun pôle sous croix",
+          "score": "1-2"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "date_match": "2026-02-10",
+          "match": "Napoli–Côme",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M12 et M2 ; arrêts en M8 et M14 : aucun pôle sous croix",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            9,
+            13,
+            2,
+            13
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "R1",
+          "detail": "R7 (Fortuna Major, M15) est sous croix : Fortuna Major est ancré en base de M15, la maison d'Aquisitio dont il est l'antagoniste ; R1 en M9 ne l'est pas",
+          "score": "2-0"
+        },
+        {
+          "theme": [
+            2,
+            9,
+            6,
+            5
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème : aucun pôle sous croix",
+          "score": "3-3"
+        },
+        {
+          "theme": [
+            6,
+            6,
+            10,
+            2
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de victoire",
+          "detail": "pôles en M6 et M12 ; aucun arrêt dans le thème",
+          "score": null
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "R1 (R7 sous croix en M10)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "R7 (R1 sous croix en M10)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "pas de victoire (aucun pôle sous croix)",
+          "score": "3-0"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "pas de victoire (aucun pôle sous croix)",
+          "score": "3-1"
+        }
+      ],
+      "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Appels : 1 juste / 2 faux sur les matchs indépendants. Remarque : le « premier appel à l'aveugle » de 9-13-2-13 n'était pas à l'aveugle : ce thème figurait déjà, avec son score 2-0, dans scores-reels.json (lot dev)."
+    },
+    {
+      "id": "H-EXPO",
+      "posee_le": "2026-11-20",
+      "enonce": "Dans la boucle de chaque pôle (les 8 figures de même parité que la figure du pôle), une figure est exposée quand elle est placée dans le thème, qu'elle est attaquée (sa figure f−3 est placée) et que son protecteur (f−6) est absent. Le pôle qui a le plus de figures exposées dans sa boucle perd. Égalité : pas de victoire. Seul 14-9-16-9 était lu avant son score (la raison « deux figures exposées chez R1 » était inscrite) ; les quatre autres matchs ne comptent pas comme test.",
+      "predictions": [
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "pas de victoire",
+          "detail": "même boucle : exposées 1 contre 1 (Aquisitio ×3 des deux côtés)",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "date_match": "2026-11-20",
+          "match": "Seattle–Salt Lake",
+          "prediction": "R1",
+          "detail": "figures exposées : R1 1, R7 2 (le pôle qui en a le plus perd)",
+          "score": "1-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "R1 (exposées R1 0, R7 2)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "pas de victoire (0-0)",
+          "score": "3-0"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "R1 (0-1)",
+          "score": "3-1"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "pas de victoire (1-1)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "prediction": "R7 (R1 2, R7 0)",
+          "score": "1-4",
+          "note": "raison inscrite avant le score"
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 12-8-10-3 (inscrite avant le score) : H-EXPO donne R1, le match est nul 1-1. Retirée."
+    },
+    {
+      "id": "H-FRONT",
+      "posee_le": "2026-11-20",
+      "enonce": "Le pôle dont le front a le plus de niveaux distincts connectés gagne : dans la croix du front, Feu, Air, Eau en vertical ou en horizontal (résultantes de deux maisons opposées saturées toutes deux), Terre déviée (haut→droite ou bas→gauche). Égalité : pas de victoire. Née de 6-8-8-11 et 4-1-6-7 ; aucun test à l'aveugle avant 1-3-15-4.",
+      "predictions": [
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "R7",
+          "detail": "front C de R7 : Feu, Air, Eau (3) ; front A de R1 : Feu (1)",
+          "score": "4-2"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "pas de victoire (2-2)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "R1 (1-0)",
+          "score": "3-0"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "R1 (3-1)",
+          "score": "3-1"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "pas de victoire (1-1)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "prediction": "pas de victoire (2-2)",
+          "score": "1-4"
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 1-3-15-4 (inscrite avant le score) : H-FRONT donne R7, le score est 4-2 pour R1. Retirée."
+    },
+    {
+      "id": "H-PARA",
+      "posee_le": "2026-11-20",
+      "enonce": "Une figure est paralysée quand son antagoniste (f − 3) est ancré en base de sa maison ; son canal (élément de son front) est paralysé quand ce niveau fait partie des niveaux à un point de l'antagoniste. Le pôle dont la boucle (les 8 figures de même parité que sa figure) contient une figure à canal paralysé gagne ; si les deux boucles ou aucune : pas de victoire. Née des cinq matchs connus (3 justes, 1 mixte, 1 sans paralysie), qui ne comptent pas comme test.",
+      "predictions": [
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "pas de victoire",
+          "detail": "Via et Fortuna Minor paralysées (canal Feu) en front A ; les deux pôles sont dans la même boucle (A et C)",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "date_match": "2026-11-20",
+          "match": "Seattle–Salt Lake",
+          "prediction": "R7",
+          "detail": "seule la boucle de R7 (B+D) a un canal paralysé : Tristitia, paralysée par Via en M8 sur les 4 niveaux (canal Terre)",
+          "score": "1-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "R1 (Carcer, front B, dans la boucle D+B de R1)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "pas de victoire (aucun canal paralysé)",
+          "score": "3-0"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "pas de victoire (Via dans la boucle de R7, Puella dans celle de R1)",
+          "score": "3-1"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "R7 (Carcer, front B, front de R7)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "prediction": "R7 (Puer, Aquisitio dans la boucle A+C de R7)",
+          "score": "1-4"
+        }
+      ],
+      "statut": "réfutée le 2026-11-20 sur 12-8-10-3 (inscrite avant le score) : H-PARA donne R7, le match est nul 1-1. Retirée."
+    },
+    {
+      "id": "H-TERRE-BUTS",
+      "posee_le": "2026-11-20",
+      "enonce": "Le nombre total de buts du match est ceil(T/2) + 1, où T est le nombre de maisons (sur 16) dont la résultante est saturée en Terre (niveau Terre à deux points). Piste du propriétaire (« peut-être la Terre est le marquage ») ; la formule est tirée des cinq matchs connus : T = 4, 5, 6, 8, 8 pour 3, 4, 4, 5, 5 buts (plusieurs mesures de Terre ont été regardées, donc la coïncidence n'est pas exclue). Ces matchs ne comptent pas comme test.",
+      "predictions": [
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "6 buts au total",
+          "detail": "T = 9 maisons à résultante saturée en Terre : ceil(9/2) + 1 = 6",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "date_match": "2026-11-20",
+          "match": "Seattle–Salt Lake",
+          "prediction": "5 buts au total",
+          "detail": "T = 8 maisons à résultante saturée en Terre : ceil(8/2)+1 = 5. Via en base de M8 : le total pourrait être réduit (remarque du propriétaire) ; un total inférieur à 5 irait dans ce sens.",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "date_match": "2026-02-22",
+          "match": "Austin–Minnesota",
+          "prediction": "6 buts au total",
+          "detail": "T = 9 : ceil(9/2)+1 = 6. Via en base de M8 : cas où la formule a échoué une fois (12-8-10-3) ; deuxième test de cette classe.",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "date_match": "2026-02-18",
+          "match": "Bayern Munich–Hoffenheim",
+          "prediction": "4 buts au total",
+          "detail": "T = 6 maisons à résultante saturée en Terre : ceil(6/2)+1 = 4 ; pas de Via ni de Cauda en base de M8",
+          "score": "5-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "3 buts (T=4)",
+          "score": "3-0"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "4 buts (T=5)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "4 buts (T=6)",
+          "score": "3-1"
+        },
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "5 buts (T=8)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "prediction": "5 buts (T=8)",
+          "score": "1-4"
+        }
+      ],
+      "statut": "RÉFUTÉE le 2026-11-20 sur 2-12-4-4 (inscrite avant le score, hors Via en base de M8) : 4 buts prévus, 6 réels (5-1). Bilan : juste sur 6 matchs hors Via en M8 mais construite sur eux ; à l'aveugle, 1 juste (1-3-15-4) et 1 fausse. Formule retirée du moteur et de la page ; le comptage de Terre (terreSaturee) reste comme structure.",
+      "a_surveiller": "Via en base de M8 : 12-8-10-3 = 1-1, 2 buts au lieu de 5. Motifs relevés dans ce thème, sans règle tirée : Tristitia (pôle R7) paralysée sur ses 4 niveaux par Via ; 5 des 8 maisons saturées en Terre ont pour résultante Cauda Draconis (Terre seule), alors que les six autres matchs en ont 0 à 2 ; ces cinq résultantes Cauda attaquent toutes M16 (13+3). Cauda en base de M8 (1-3-15-4) n'a pas réduit les buts."
+    },
+    {
+      "id": "H-TERRE-V",
+      "posee_le": "2026-11-20",
+      "enonce": "Le pôle dont le front a le plus de maisons à résultante saturée en Terre gagne ; égalité : pas de victoire. Tirée des cinq matchs connus (4 appels justes sur 4, 1 sans appel) : ils ne comptent pas comme test.",
+      "predictions": [
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "date_match": "2026-11-20",
+          "match": "équipes à préciser",
+          "prediction": "pas de victoire",
+          "detail": "front A de R1 : 2 maisons ; front C de R7 : 2 maisons",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "date_match": "2026-11-20",
+          "match": "Seattle–Salt Lake",
+          "prediction": "pas de victoire",
+          "detail": "front C de R1 : 2 maisons ; front D de R7 : 2 maisons",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "date_match": "2026-02-22",
+          "match": "Austin–Minnesota",
+          "prediction": "R1",
+          "detail": "front A de R1 : 4 maisons à résultante saturée en Terre ; front D de R7 : 2",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "date_match": "2026-02-18",
+          "match": "Bayern Munich–Hoffenheim",
+          "prediction": "R1",
+          "detail": "front D de R1 : 3 maisons à résultante saturée en Terre ; front C de R7 : 1",
+          "score": "5-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "date_match": "2026-02-22",
+          "match": "Tigres UANL–Pachuca",
+          "prediction": "pas de victoire",
+          "detail": "même boucle ; fronts C et A : 4 maisons saturées en Terre chacun",
+          "score": "1-2"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "date_match": "2026-02-10",
+          "match": "Napoli–Côme",
+          "prediction": "R1",
+          "detail": "front D de R1 : 2 maisons saturées en Terre ; front B de R7 : 1 (dans la classe Via en M8, où cette règle a déjà échoué une fois)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "R7",
+          "detail": "front D de R7 : 2 maisons saturées en Terre ; front B de R1 : 1 (hors Via en base de M8)",
+          "score": "1-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "pas de victoire (2-2)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "R1 (1-0)",
+          "score": "3-0"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "R1 (3-1)",
+          "score": "3-1"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "R7 (1-2)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "prediction": "R7 (1-2)",
+          "score": "1-4"
+        }
+      ],
+      "statut": "RÉFUTÉE le 2026-11-20 sur 2-6-7-9 (inscrite avant le score, hors Via en base de M8) : R7 prévu, nul 1-1. Bilan à l'aveugle : 1 juste (2-12-4-4) et 3 fausses (5-1-10-10, 12-14-8-10, 2-6-7-9). Retirée."
+    },
+    {
+      "id": "H-VIA8",
+      "posee_le": "2026-11-20",
+      "enonce": "Quand Via est en base de M8, le match est nul 1-1 (Via paralyse Tristitia sur ses quatre niveaux et annule les buts). Née d'un seul match (12-8-10-3, 1-1), qui ne compte pas comme test ; 5-1-10-10 est son premier test. Condition supplémentaire à observer : dans 5-1-10-10, Via est aussi la figure du pôle R1 et occupe M1, M5 et M8.",
+      "predictions": [
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "date_match": "2026-02-22",
+          "match": "Austin–Minnesota",
+          "prediction": "1-1",
+          "detail": "Via en base de M8 (et de M1, M5) ; formule des buts non fiable dans cette classe",
+          "score": "2-2"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "1-1",
+          "score": "1-1"
+        }
+      ],
+      "statut": "Le score exact 1-1 est faux (2-2) : H-VIA8 telle qu'écrite est réfutée. Son contenu « le match est nul » est juste dans les deux matchs avec Via en base de M8 ; repris, sans modifier celle-ci, dans H-VIA8-NUL."
+    },
+    {
+      "id": "H-VIA8-NUL",
+      "posee_le": "2026-11-20",
+      "enonce": "Quand Via est en base de M8, le match est nul, et chaque équipe marque (T − n) / 3, où T est le nombre de maisons à résultante saturée en Terre et n le nombre de maisons dont la résultante est Cauda Draconis. Si T − n n'est pas divisible par 3, seul le nul est prédit. Née des deux matchs avec Via en base de M8 (12-8-10-3 : 1-1 ; 5-1-10-10 : 2-2), qui ne comptent donc pas comme test ; le nul avait été prédit pour 5-1-10-10 (par H-VIA8), mais pas la formule.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "date_match": "2026-02-28",
+          "match": "Tijuana–Pumas",
+          "prediction": "2-2",
+          "detail": "Via en base de M8 : nul ; T = 7, n = 1 (résultantes Cauda) : (7 − 1)/3 = 2 buts par équipe",
+          "score": "1-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "1-1 ((8−5)/3 = 1)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "2-2 ((9−3)/3 = 2)",
+          "score": "2-2"
+        }
+      ],
+      "statut": "Formule (T − n)/3 réfutée le 2026-11-20 sur 10-12-12-15 (inscrite avant le score) : prévu 2-2, score 1-1. Le nul est juste dans les trois matchs avec Via en base de M8 ; il reste dans H-UNIV, clause 1."
+    },
+    {
+      "id": "H-UNIV",
+      "posee_le": "2026-11-20",
+      "enonce": "Constat sur les huit matchs connus. (1) La Terre fait le jeu. (2) Si Via est en base de M8 (il paralyse Tristitia sur ses quatre niveaux), le match est nul. (3) Sinon : total des buts = ceil(T/2) + 1, T = maisons à résultante saturée en Terre ; vainqueur = le pôle dont le front a le plus de maisons à résultante saturée en Terre, égalité : pas de victoire. Cette formulation réunit H-VIA8-NUL, H-TERRE-BUTS et H-TERRE-V ; aucune formule unique ne couvre les huit matchs (la meilleure, sans Via, en couvre six). Chaque clause garde son propre statut ; chaque nouveau thème reçoit une prédiction complète avant son score.",
+      "predictions": [
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "date_match": "2026-02-28",
+          "match": "Tijuana–Pumas",
+          "prediction": "nul (Via en base de M8)",
+          "detail": "clause 1 : Via en base de M8 donne le nul ; clauses 2 et 3 (buts et vainqueur par la Terre) ne s'appliquent pas dans cette classe",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "date_match": "2026-02-18",
+          "match": "Bayern Munich–Hoffenheim",
+          "prediction": "R1, 4 buts au total",
+          "detail": "hors Via en base de M8 : clauses 2 et 3",
+          "score": "5-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "date_match": "2026-02-22",
+          "match": "Tigres UANL–Pachuca",
+          "prediction": "nul (Via en base de M8)",
+          "detail": "clause 1 : Via en base de M8 = nul",
+          "score": "1-2"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "clause": "hors Via-M8",
+          "prediction": "5 buts ; pas de victoire (Terre 2-2)",
+          "score": "5-0 : total juste, vainqueur sans appel"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "clause": "hors Via-M8",
+          "prediction": "3 buts ; R1",
+          "score": "3-0 : juste, juste"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "clause": "hors Via-M8",
+          "prediction": "4 buts ; R1",
+          "score": "3-1 : juste, juste"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "clause": "hors Via-M8",
+          "prediction": "4 buts ; R7",
+          "score": "1-3 : juste, juste"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "clause": "hors Via-M8",
+          "prediction": "5 buts ; R7",
+          "score": "1-4 : juste, juste"
+        },
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "clause": "hors Via-M8",
+          "prediction": "6 buts ; pas de victoire (Terre 2-2)",
+          "score": "4-2 : total juste (à l'aveugle), vainqueur sans appel"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "clause": "Via-M8",
+          "prediction": "nul",
+          "score": "1-1 : juste"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "clause": "Via-M8",
+          "prediction": "nul",
+          "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
+        }
+      ],
+      "statut": "Dissoute le 2026-11-20 : clause 1 réfutée (3-10-3-1), clause 2 réfutée (2-12-4-4), clause 3 (H-TERRE-V) réfutée (2-6-7-9). Remplacée par H-SYS-A/B/C pour les thèmes Via en M8 et par H-NUL-TERRE pour les nuls."
+    },
+    {
+      "id": "H-VIA8-B",
+      "posee_le": "2026-11-20",
+      "enonce": "Avec Via en base de M8, le match est nul et chaque équipe marque ceil(v / 2) buts, où v est le nombre de maisons où Via est en base. Née des trois matchs avec Via en base de M8 (v = 1, 3, 1 pour 1-1, 2-2, 1-1), qui ne comptent donc pas comme test ; plusieurs comptes de Via, de Cauda et de Terre ont été regardés avant de la retenir.",
+      "predictions": [
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "date_match": "2026-02-22",
+          "match": "Tigres UANL–Pachuca",
+          "prediction": "1-1",
+          "detail": "Via en base de M8 et de M15 : v = 2, ceil(2/2) = 1 but par équipe",
+          "score": "1-2"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "1-1 (v=1)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "2-2 (v=3)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "1-1 (v=1)",
+          "score": "1-1"
+        }
+      ],
+      "statut": "Réfutée le 2026-11-20 sur 3-10-3-1 (inscrite avant le score) : 1-1 prévu, score 1-2."
+    },
+    {
+      "id": "H-SYS-A",
+      "posee_le": "2026-11-20",
+      "enonce": "Via en base de M8 donne le nul seulement si M8 est la seule maison de Terre (M4, M8, M12, M16) sous croix. Si une autre maison de Terre est aussi sous croix (une figure de plus paralysée dans le front D), pas de nul. Née des quatre matchs avec Via en base de M8 : les trois nuls n'ont que M8 sous croix parmi les maisons de Terre ; 3-10-3-1 (1-2) a M4 et M8. Aucun de ces quatre matchs ne compte comme test.",
+      "predictions": [
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "date_match": "2026-02-10",
+          "match": "Napoli–Côme",
+          "prediction": "nul",
+          "detail": "Via en base de M8 ; M8 est la seule maison de Terre sous croix (M14 est une maison d'Air)",
+          "score": "1-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "nul (M8 seule)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "nul (M8 seule)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "nul (M8 seule)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "prediction": "pas de nul (M4 et M8)",
+          "score": "1-2"
+        }
+      ],
+      "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (M8 seule maison de Terre sous croix), score 1-1. À l'essai."
+    },
+    {
+      "id": "H-SYS-B",
+      "posee_le": "2026-11-20",
+      "enonce": "Via en base de M8 donne le nul seulement si T, le nombre de maisons à résultante saturée en Terre, est inférieur à 10. Même origine que H-SYS-A (T = 8, 9, 7 pour les trois nuls ; 12 pour 1-2) ; les deux hypothèses se séparent sur un thème avec Via en M8 qui aurait une seule maison de Terre sous croix et T ≥ 10, ou deux maisons sous croix et T < 10.",
+      "predictions": [
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "date_match": "2026-02-10",
+          "match": "Napoli–Côme",
+          "prediction": "nul",
+          "detail": "Via en base de M8 ; T = 9, inférieur à 10",
+          "score": "1-1"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "nul (T=8)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "nul (T=9)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "nul (T=7)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "prediction": "pas de nul (T=12)",
+          "score": "1-2"
+        }
+      ],
+      "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (T = 9 < 10), score 1-1. À l'essai ; ne se sépare pas de H-SYS-A sur ce match."
+    },
+    {
+      "id": "H-SYS-C",
+      "posee_le": "2026-11-20",
+      "enonce": "Via en base de M8 donne le nul seulement si les deux liaisons de Terre du front D, M4→M8 (haut→droite) et M12→M16 (bas→gauche), sont rompues (résultantes non saturées toutes deux en Terre). Si l'une est connectée, pas de nul. Née des cinq matchs avec Via en base de M8 : M4→M8 est rompue dans les cinq (M4 n'a jamais la Terre saturée en résultante) ; M12→M16 est rompue dans les quatre nuls et connectée dans 3-10-3-1 (1-2). Aucun de ces matchs ne compte comme test. H-SYS-A, H-SYS-B et H-SYS-C séparent les mêmes cinq matchs ; elles se départageront sur un thème où elles divergent.",
+      "predictions": [],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "nul (T1 et T2 rompues)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "nul (T1 et T2 rompues)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "nul (T1 et T2 rompues)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "prediction": "nul (T1 et T2 rompues)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "prediction": "pas de nul (T2 connectée)",
+          "score": "1-2"
+        }
+      ]
+    },
+    {
+      "id": "H-NUL-TERRE",
+      "posee_le": "2026-11-20",
+      "enonce": "Le match est nul quand le nombre de maisons à résultante saturée en Terre par front vaut A = 3 ou 4, B = 0 ou 1, C = 2, D = 2. Né des cinq nuls connus (12-8-10-3, 5-1-10-10, 10-12-12-15, 12-14-8-10, 2-6-7-9 : A/B/C/D = 3/1/2/2, 4/1/2/2, 3/0/2/2, 4/1/2/2, 3/1/2/2) ; aucun des huit autres matchs n'a cette signature, mais cinq nuls ont été regardés pour la trouver : ils ne comptent pas comme test. Contient les thèmes Via en M8 (quatre des cinq nuls) mais aussi 2-6-7-9, où M8 porte Populus. Si le nombre par front ne correspond pas : pas de prédiction de nul.",
+      "predictions": [
+        {
+          "theme": [
+            9,
+            13,
+            2,
+            13
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de nul",
+          "detail": "Terre par front A/B/C/D = 3/2/2/2 : B = 2 > 1, la signature des nuls est absente",
+          "score": "2-0"
+        },
+        {
+          "theme": [
+            2,
+            9,
+            6,
+            5
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de nul",
+          "detail": "Terre par front A/B/C/D = 2/2/2/1 : la signature des nuls (A 3-4, B 0-1, C 2, D 2) est absente",
+          "score": "3-3"
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "nul (3/1/2/2)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "nul (4/1/2/2)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "nul (3/0/2/2)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "prediction": "nul (4/1/2/2)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "prediction": "nul (3/1/2/2)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            3,
+            10,
+            3,
+            1
+          ],
+          "prediction": "pas de nul (4/1/4/3)",
+          "score": "1-2"
+        },
+        {
+          "theme": [
+            4,
+            6,
+            7,
+            16
+          ],
+          "prediction": "pas de nul (2/2/2/2)",
+          "score": "5-0"
+        },
+        {
+          "theme": [
+            1,
+            3,
+            15,
+            4
+          ],
+          "prediction": "pas de nul (2/3/2/2)",
+          "score": "4-2"
+        },
+        {
+          "theme": [
+            14,
+            9,
+            16,
+            9
+          ],
+          "prediction": "pas de nul (2/1/3/2)",
+          "score": "1-4"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "pas de nul (1/2/1/1)",
+          "score": "1-3"
+        },
+        {
+          "theme": [
+            6,
+            8,
+            8,
+            11
+          ],
+          "prediction": "pas de nul (1/1/1/3)",
+          "score": "3-1"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "prediction": "pas de nul (0/2/1/3)",
+          "score": "5-1"
+        },
+        {
+          "theme": [
+            4,
+            1,
+            6,
+            7
+          ],
+          "prediction": "pas de nul (0/1/1/2)",
+          "score": "3-0"
+        }
+      ],
+      "statut": "RÉFUTÉE le 2026-11-20 sur 2-9-6-5 (inscrite avant le score) : « pas de nul » prévu (Terre par front 2/2/2/1, signature absente), score 3-3. La signature n'est pas celle de tous les nuls. Retirée."
+    },
+    {
+      "id": "NOTE-2-9-6-5",
+      "posee_le": "2026-11-20",
+      "enonce": "Note, pas une règle. 2-9-6-5 (3-3) est signalé par le propriétaire comme totalement symétrique et comme contenant le motif principal du nul. Faits relevés : première rangée de la pyramide M8 M7 M6 M5 | M4 M3 M2 M1 = Tristitia, Fortuna Major, Aquisitio, Via | Via, Amissio, Fortuna Minor, Laetitia ; les paires opposées donnent M4 + M5 = Populus (Via = Via), M3 + M6 = Via (Amissio et Aquisitio, complémentaires), M2 + M7 = Tristitia (Fortuna Minor et Fortuna Major, miroirs), M1 + M8 = Carcer. Paires miroir h / h+8 à base égale : M3 = M11 (Amissio), M8 = M16 (Tristitia). Résultantes égales : M3 = M4 (Puer), M5 = M8 (Populus), M6 = M13 (Via), M10 = M11 = M15 (Fortuna Minor). Aucune des mesures de symétrie testées (82 mesures de saturation, symétrie de la matrice des mères, paires miroir, moitiés M1-7 / M9-15, égalités entre les mesures de R1 et de R7) ne sépare les six nuls des neuf autres matchs.",
+      "predictions": [],
+      "cas_connus_hors_test": []
+    },
+    {
+      "id": "H-BIN-E",
+      "posee_le": "2026-11-20",
+      "enonce": "Match nul probable quand le nombre de liaisons binôme saturées en Eau (la résultante d'une maison et celle de sa maison binôme toutes deux saturées en Eau) dans la boucle de R1 est égal à celui de la boucle de R7 et non nul ; sinon pas de nul. Née de l'analyse par canal demandée par le propriétaire : vraie pour les six nuls connus (2/2, 2/2, 2/2, 4/4, 4/4, 4/4), fausse pour sept des neuf autres matchs (0/0 dans cinq d'entre eux, inégale dans deux) ; deux matchs décisifs la satisfont aussi (10-2-12-3 : 1-3 ; 2-12-4-4 : 5-1), donc « nul » est juste 6 fois sur 8 quand la condition est vraie. Aucun de ces quinze matchs ne compte comme test.",
+      "predictions": [
+        {
+          "theme": [
+            6,
+            6,
+            10,
+            2
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "pas de nul",
+          "detail": "liaisons binôme en Eau : R1 2, R7 4, non égales : la condition du nul est fausse",
+          "score": null
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "nul (2/2)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "nul (2/2)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "nul (2/2)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "prediction": "nul (4/4)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "prediction": "nul (4/4)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            9,
+            6,
+            5
+          ],
+          "prediction": "nul (4/4)",
+          "score": "3-3"
+        },
+        {
+          "theme": [
+            10,
+            2,
+            12,
+            3
+          ],
+          "prediction": "nul (2/2)",
+          "score": "1-3 : faux"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "prediction": "nul (4/4)",
+          "score": "5-1 : faux"
+        }
+      ],
+      "a_surveiller": "Seule, elle ne suffit pas : 2 nuls sur 4 matchs dans l'échantillon. Elle est vraie pour environ 38 % de tous les thèmes possibles, donc la verdict « nul » exige aussi H-TEMOINS.",
+      "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Vraie seule : 0 nul / 12 ; avec H-TEMOINS : 0 / 3."
+    },
+    {
+      "id": "H-TEMOINS",
+      "posee_le": "2026-11-20",
+      "enonce": "Si la somme des niveaux saturés des bases des deux témoins (M13 et M14) est de 6, le match est nul. Pas d'appel sinon. Née de la remarque du propriétaire (« les deux témoins jouent quelque chose au nul ») : sur les quinze matchs connus, 4 nuls sur 6 ont ce total de 6 (5-1-10-10, 10-12-12-15, 12-14-8-10, 2-9-6-5) et aucun des neuf autres matchs ne l'atteint (leurs totaux sont 2 ou 4) ; les deux autres nuls (12-8-10-3, 2-6-7-9) ont un total de 4. Ces quatre nuls remplissent aussi H-BIN-E. Aucun de ces matchs ne compte comme test.",
+      "predictions": [
+        {
+          "theme": [
+            6,
+            6,
+            10,
+            2
+          ],
+          "date_match": null,
+          "match": "équipes et date à préciser",
+          "prediction": "nul",
+          "detail": "bases de M13 et M14 : Tristitia et Tristitia, 3 + 3 = 6 niveaux saturés",
+          "score": null
+        }
+      ],
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            5,
+            1,
+            10,
+            10
+          ],
+          "prediction": "nul (6)",
+          "score": "2-2"
+        },
+        {
+          "theme": [
+            10,
+            12,
+            12,
+            15
+          ],
+          "prediction": "nul (6)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            12,
+            14,
+            8,
+            10
+          ],
+          "prediction": "nul (6)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            9,
+            6,
+            5
+          ],
+          "prediction": "nul (6)",
+          "score": "3-3"
+        },
+        {
+          "theme": [
+            12,
+            8,
+            10,
+            3
+          ],
+          "prediction": "pas d'appel (4)",
+          "score": "1-1"
+        },
+        {
+          "theme": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "prediction": "pas d'appel (4)",
+          "score": "1-1"
+        }
+      ],
+      "a_surveiller": "Dans l'échantillon, les quatre matchs à total 6 remplissent aussi H-BIN-E ; sur l'ensemble des thèmes possibles, un thème à total 6 sur deux ne remplit pas H-BIN-E. Le verdict « nul » exige donc les deux.",
+      "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Total de 6 seul : 0 nul / 4 sur les matchs indépendants (aucun nul parmi eux). Remarque : 2-9-6-5 (3-3) figurait déjà dans scores-reels.json."
+    },
+    {
+      "id": "H-REPOS",
+      "posee_le": "2026-11-20",
+      "enonce": "Le pôle qui possède ses deux fronts (le front de sa figure et son front binôme) au repos, sans que l'antagoniste des figures y soit, gagne. Règle posée par le propriétaire, activée à sa demande avant d'être testée. Interprétation du moteur : un front est possédé quand au moins une de ses figures est dans sa maison de repos (base ou résultante) sans que son antagoniste (f − 3) soit lui aussi dans sa propre maison de repos ; un pôle gagne s'il possède ses deux fronts et l'autre pôle non.",
+      "predictions": [],
+      "statut": "Activée dans le verdict le 2026-11-20. Évaluation (outils/valider.js) : 22 matchs indépendants, 3 appels, 2 justes, 1 faux ; 15 matchs construits, 1 appel juste. Au total 3 justes sur 4 appels, sur 37 matchs ; elle ne se prononce que sur environ un match sur dix.",
+      "cas_connus_hors_test": [
+        {
+          "theme": [
+            1,
+            7,
+            3,
+            4
+          ],
+          "prediction": "R1",
+          "score": "4-1"
+        },
+        {
+          "theme": [
+            1,
+            15,
+            3,
+            9
+          ],
+          "prediction": "R1",
+          "score": "1-4 : faux"
+        },
+        {
+          "theme": [
+            15,
+            13,
+            7,
+            8
+          ],
+          "prediction": "R7",
+          "score": "3-4 : juste"
+        },
+        {
+          "theme": [
+            2,
+            12,
+            4,
+            4
+          ],
+          "prediction": "R1",
+          "score": "5-1 : juste"
+        }
+      ]
+    },
+    {
+      "id": "H-PROTECTEUR",
+      "statut": "RÉFUTÉE 2026-11-20 : sur les 22 matchs indépendants 4 justes, 4 faux (hasard), 14 sans appel ; non activée",
+      "regle": "un pôle est protégé si le protecteur (f−6) de sa figure est dans sa maison de repos ; le pôle seul protégé gagne",
+      "origine": "Circuit Souverain 1-3-5-11-13 (propriétaire) : f + antagoniste(f) tombe toujours sur ces cinq figures ; protecteur = prédateur du prédateur",
+      "note": "posée avant le test, testée une seule fois"
     }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 6-8-8-11 (posée avant ce thème) : H-ANT donne R7, le score est 3-1 pour R1. Retirée du moteur, gardée ici pour mémoire."
-  },
-  {
-   "id": "H-5",
-   "posee_le": "2026-11-20",
-   "enonce": "Si les cinq indicateurs de l'analyse des pôles (saturation du front, du front binôme, du binôme, de l'antagoniste (moins = mieux), niveau propre) désignent le même pôle, ce pôle gagne. Sinon : pas de victoire claire.",
-   "predictions": [
+  ],
+  "lectures": [
     {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "date_match": null,
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets",
-     "score": "1-3"
+      "theme": [
+        10,
+        2,
+        12,
+        3
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": null,
+      "lecture": "R7",
+      "statut": "lecture de l'analyste, pas une règle. Posée après l'ajout des nœuds et l'étude de Puella en M8, avant le score. Elle remplace la lecture R1 donnée plus tôt ; les prédictions H-ANT (R1) et H-5 (pas de victoire claire) restent inscrites telles quelles.",
+      "raisons": [
+        "M10 est sous croix (arrêt) : l'attaque de Rubeus sur Carcer reste en M10",
+        "Puella en M8 : résultante Amissio (miroir) ; Amissio n'existe dans le thème que par là",
+        "Puella 5 emplacements, Air saturé 5/5, son antagoniste Conjunctio est absent",
+        "Air saturé des deux côtés de la liaison M16 (maison de R7) ↔ M8",
+        "quatre indicateurs sur cinq pour R7"
+      ],
+      "score": "1-3",
+      "juste": true
     },
     {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "date_match": "2026-02-14",
-     "match": "Zurich–Lucerne",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R1, R7, R7, R7, R1] : non nets",
-     "score": "1-4"
+      "theme": [
+        14,
+        9,
+        16,
+        9
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-14",
+      "lecture": "R1 (faible)",
+      "statut": "lecture de l'analyste, pas une règle : aucune structure nette, aucun pôle sous croix ; seule H-NIV4, encore à l'essai, désigne un pôle (R1). Trois indicateurs sur cinq vont vers R7.",
+      "score": "1-4",
+      "juste": false,
+      "note": "carton rouge côté R7"
     },
     {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R7, R1, R7, R7, égal] : non nets",
-     "score": "4-2"
+      "theme": [
+        14,
+        9,
+        16,
+        9
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-14",
+      "lecture": "R7",
+      "statut": "lecture de l'analyste, pas une règle ; remplace la lecture R1 (faible) inscrite plus tôt, qui reste conservée. Posée avant le score, après la lecture de la boucle par le propriétaire.",
+      "raisons": [
+        "boucle de R1 (fronts B et D) : un seul niveau commun connecté (Eau) ; boucle de R7 (fronts A et C) : deux (Terre et Feu)",
+        "multiplicité : deux figures exposées dans la boucle de R1 (Fortuna Major ×3, Puella ×3), aucune dans celle de R7",
+        "H-NIV4 (R1) n'a qu'un test et un non-appel : je ne m'y fie pas"
+      ],
+      "score": "1-4",
+      "juste": true,
+      "note": "carton rouge côté R7"
     },
     {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "date_match": "2026-11-20",
-     "match": "Seattle–Salt Lake",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R1, R1, R1, R7, R1] : non unanimes",
-     "score": "1-1"
+      "theme": [
+        1,
+        3,
+        15,
+        4
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-11-20",
+      "lecture": "R7 (faible)",
+      "statut": "lecture de l'analyste, pas une règle : les deux pôles sont dans la même boucle (figures impaires), donc toute mesure de boucle est égale des deux côtés ; seule la mesure par front sépare : front C de R7 (Feu, Air, Eau connectés) contre front A de R1 (Feu).",
+      "score": "4-2",
+      "juste": false
     },
     {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "date_match": "2026-02-22",
-     "match": "Austin–Minnesota",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R1, R1, R7, R1, égal] : non nets",
-     "score": "2-2"
+      "theme": [
+        12,
+        8,
+        10,
+        3
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-11-20",
+      "lecture": "R1",
+      "statut": "lecture de l'analyste, pas une règle : Via en base de M8 paralyse Tristitia, la figure du pôle R7, sur ses quatre niveaux (le cas « Via saccage tout » du propriétaire) ; quatre indicateurs sur cinq vont vers R1. Contredit H-PARA (R7) : ce match départagera les deux. Total des buts : 5 par la formule, avec réduction possible.",
+      "score": "1-1",
+      "juste": false
     },
     {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "date_match": "2026-02-28",
-     "match": "Tijuana–Pumas",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [égal, égal, R1, R1, égal] : non nets",
-     "score": "1-1"
+      "theme": [
+        5,
+        1,
+        10,
+        10
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-22",
+      "lecture": "R1 (faible) ou nul",
+      "statut": "lecture de l'analyste, pas une règle : la Terre du front donne R1 (4 contre 2), mais Via est en base de M8, classe où le seul exemple connu est un nul 1-1. Je ne tranche pas entre les deux : H-TERRE-V dit R1, H-VIA8 dit 1-1.",
+      "score": "2-2",
+      "juste": null,
+      "note": "lecture « R1 faible ou nul » : le nul est juste, R1 est faux"
     },
     {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "date_match": "2026-02-18",
-     "match": "Bayern Munich–Hoffenheim",
-     "prediction": "R1",
-     "detail": "les cinq indicateurs désignent R1 (net) : premier thème net depuis 4-6-7-16",
-     "score": "5-1"
+      "theme": [
+        10,
+        12,
+        12,
+        15
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-28",
+      "lecture": "nul, 2-2",
+      "statut": "lecture de l'analyste d'après H-UNIV et H-VIA8-NUL : troisième thème avec Via en base de M8, mêmes pôles dans le même front (Conjunctio et Aquisitio, front C), aucun pôle sous croix.",
+      "score": "1-1",
+      "juste": "nul juste, score 2-2 faux"
     },
     {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "date_match": "2026-02-22",
-     "match": "Tigres UANL–Pachuca",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R1, R7, R7, R7, égal] : non nets",
-     "score": "1-2"
+      "theme": [
+        2,
+        12,
+        4,
+        4
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-18",
+      "lecture": "R1, 4 buts",
+      "statut": "lecture de l'analyste d'après H-UNIV : hors Via en base de M8, donc buts et vainqueur par la Terre ; les cinq indicateurs de structure désignent aussi R1.",
+      "score": "5-1",
+      "juste": "vainqueur juste, 4 buts faux"
     },
     {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "date_match": "2026-02-10",
-     "match": "Napoli–Côme",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R1, R7, R7, R1, égal] : non nets",
-     "score": "1-1"
+      "theme": [
+        3,
+        10,
+        3,
+        1
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-22",
+      "lecture": "nul, 1-1",
+      "statut": "lecture de l'analyste d'après H-UNIV (clause 1) et H-VIA8-B : quatrième thème avec Via en base de M8 ; les deux pôles sont dans la même boucle et ont la même Terre.",
+      "score": "1-2",
+      "juste": false
     },
     {
-     "theme": [
-      2,
-      6,
-      7,
-      9
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R7, R1, R1, R1, égal] : non nets",
-     "score": "1-1"
+      "theme": [
+        12,
+        14,
+        8,
+        10
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": "2026-02-10",
+      "lecture": "nul",
+      "statut": "lecture de l'analyste : cinquième thème avec Via en base de M8 ; M8 est la seule maison de Terre sous croix et T = 9, donc H-SYS-A et H-SYS-B disent nul ; H-TERRE-V dit R1 mais a déjà échoué dans cette classe. Ce thème ne départage pas H-SYS-A et H-SYS-B.",
+      "score": "1-1",
+      "juste": true
     },
     {
-     "theme": [
-      9,
-      13,
-      2,
-      13
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [égal, égal, égal, R1, égal] : non nets",
-     "score": "2-0"
+      "theme": [
+        2,
+        6,
+        7,
+        9
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": null,
+      "lecture": "R7 (faible)",
+      "statut": "lecture de l'analyste d'après H-TERRE-V (thème hors Via en base de M8 : M8 porte Populus). Trois des cinq indicateurs de structure vont vers R1, donc la lecture est fragile. Aucune prédiction de buts : la formule est retirée.",
+      "score": "1-1",
+      "juste": false
     },
     {
-     "theme": [
-      2,
-      9,
-      6,
-      5
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R7, R7, R7, R1, R1] : non nets",
-     "score": "3-3"
+      "theme": [
+        9,
+        13,
+        2,
+        13
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": null,
+      "lecture": "R1 (faible)",
+      "statut": "lecture de l'analyste d'après H-CROIX (jamais testée à l'aveugle : née de deux matchs) ; le pôle R7 est sous croix ; la signature des nuls est absente. Même front pour les deux pôles (D), donc la Terre ne les sépare pas.",
+      "score": "2-0",
+      "juste": true
     },
     {
-     "theme": [
-      6,
-      6,
-      10,
-      2
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire claire",
-     "detail": "indicateurs [R1, R1, R7, R1, R1] : quatre sur cinq pour R1, non unanimes",
-     "score": null
+      "theme": [
+        2,
+        9,
+        6,
+        5
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": null,
+      "lecture": "R7 (faible)",
+      "statut": "lecture de l'analyste, pas une règle : aucune règle encore en jeu ne désigne un vainqueur ; Tristitia, la figure du pôle R7, est chez elle en M8 (résultante Populus, tous niveaux saturés) et trois indicateurs sur cinq vont vers R7. Pas de nul prédit.",
+      "score": "3-3",
+      "juste": false
+    },
+    {
+      "theme": [
+        6,
+        6,
+        10,
+        2
+      ],
+      "posee_le": "2026-11-20",
+      "date_match": null,
+      "lecture": "pas de verdict",
+      "statut": "H-TEMOINS (6, nul) et H-BIN-E (non égale, pas de nul) se contredisent, donc le verdict de l'interface se tait ; H-CROIX et H-5 ne se prononcent pas. Aucun avis de vainqueur : la majorité des indicateurs (4 sur 5 pour R1) n'a été juste que 2 fois sur 6 sur les thèmes sans verdict. Ce match départage H-TEMOINS et H-BIN-E.",
+      "score": null
     }
-   ],
-   "resultats_apres_pose": [
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "pas de victoire claire",
-     "score": "3-1",
-     "juste": null
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "pas de victoire claire",
-     "score": "1-3",
-     "juste": null
-    }
-   ],
-   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Aucun appel sur les matchs indépendants ; un seul appel juste (2-12-4-4) sur les matchs construits."
-  },
-  {
-   "id": "H-NIV1",
-   "posee_le": "2026-11-20",
-   "enonce": "Chaque pôle a 4 niveaux d'activation (2 points = activé). Son canal est l'élément de son front ; le canal compatible est Feu↔Air et Eau↔Terre. Le pôle dont le plus de niveaux activés tombent sur son canal ou sur le canal compatible gagne (0 à 2). Égalité : pas de victoire.",
-   "predictions": [
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "date_match": null,
-     "prediction": "R1",
-     "detail": "R1 Rubeus : Eau et Terre activés (2) ; R7 Carcer : Air activé, canal Air (1)",
-     "score": "1-3"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "pas de victoire (2-2)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "R1 (2-0)",
-     "score": "3-0"
-    }
-   ],
-   "resultats_apres_pose": [
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "R1",
-     "score": "3-1",
-     "juste": true
-    }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-NIV1 donne R1, le score est 1-3. Retirée du moteur."
-  },
-  {
-   "id": "H-NIV4",
-   "posee_le": "2026-11-20",
-   "enonce": "Même procédé pour le miroir, le binôme et l'antagoniste de chaque pôle, chacun avec son propre canal. Le pôle dont la somme des quatre comptes (pôle + miroir + binôme + antagoniste) est la plus grande gagne. Égalité : pas de victoire.",
-   "predictions": [
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "date_match": null,
-     "prediction": "pas de victoire claire",
-     "detail": "R1 4 ; R7 4",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "date_match": "2026-02-14",
-     "match": "Zurich–Lucerne",
-     "prediction": "R1",
-     "detail": "R1 4 (Laetitia, miroir, binôme, antagoniste) contre R7 2",
-     "score": "1-4"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "pas de victoire (4-4)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "R1 (4-2)",
-     "score": "3-0"
-    }
-   ],
-   "resultats_apres_pose": [
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "R1",
-     "score": "3-1",
-     "juste": true
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "pas de victoire claire",
-     "score": "1-3",
-     "juste": null
-    }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 14-9-16-9 (inscrite avant le score) : H-NIV4 donne R1, le score est 1-4 pour R7. Retirée du moteur."
-  },
-  {
-   "id": "H-BUTS",
-   "posee_le": "2026-11-20",
-   "enonce": "Le nombre de buts d'un pôle est le nombre de niveaux distincts connectés dans la croix de son front : Feu, Air, Eau en vertical ou horizontal (résultantes de deux maisons opposées toutes deux saturées à ce niveau), Terre déviée (haut→droite ou bas→gauche). Le score prédit est (niveaux connectés du front de R1) - (niveaux connectés du front de R7). Né du match 6-8-8-11 (3-1 : D a Feu, Eau, Terre ; A a Feu), qui ne compte donc pas comme test.",
-   "predictions": [
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "date_match": null,
-     "prediction": "1-1",
-     "detail": "R1 front C : Feu (M15↔M7) ; R7 front B : Eau (M2↔M10)",
-     "score": "1-3"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "3-1",
-     "score": "3-1"
-    }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-BUTS donne 1-1, le score est 1-3. Retirée du moteur."
-  },
-  {
-   "id": "H-CROIX",
-   "posee_le": "2026-11-20",
-   "enonce": "Le pôle dont la maison est sous croix (✖ : la maison porte en base son antagoniste, la figure h − 3) perd. Si aucun pôle ou les deux sont sous croix : pas de victoire. Née de 4-6-7-16 (R7 en M10 sous croix, 5-0 pour R1) et de 10-2-12-3 (R1 en M10 sous croix, 1-3) : ces deux matchs ne comptent donc pas comme test. Limite connue : dans les deux cas c'est Rubeus, pôle, en M10 ; la règle ne distingue pas « sous croix » de « Rubeus pôle en M10 ».",
-   "predictions": [
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "date_match": "2026-02-14",
-     "match": "Zurich–Lucerne",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M14 et M4 ; arrêts en M1, M3, M15 : aucun pôle sous croix",
-     "score": "1-4"
-    },
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M1 et M7 ; arrêts en M5 et M9 : aucun pôle sous croix",
-     "score": "4-2"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "date_match": "2026-11-20",
-     "match": "Seattle–Salt Lake",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M12 et M2 ; seul arrêt : M8 : aucun pôle sous croix",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "date_match": "2026-02-22",
-     "match": "Austin–Minnesota",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M5 et M11 ; seul arrêt : M8 : aucun pôle sous croix",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "date_match": "2026-02-28",
-     "match": "Tijuana–Pumas",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M10 et M16 ; arrêts en M5, M8, M9 : aucun pôle sous croix",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "date_match": "2026-02-18",
-     "match": "Bayern Munich–Hoffenheim",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M2 et M8 ; seul arrêt : M5 : aucun pôle sous croix",
-     "score": "5-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "date_match": "2026-02-22",
-     "match": "Tigres UANL–Pachuca",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M3 et M9 ; arrêts en M4 et M8 : aucun pôle sous croix",
-     "score": "1-2"
-    },
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "date_match": "2026-02-10",
-     "match": "Napoli–Côme",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M12 et M2 ; arrêts en M8 et M14 : aucun pôle sous croix",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      6,
-      7,
-      9
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      9,
-      13,
-      2,
-      13
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "R1",
-     "detail": "R7 (Fortuna Major, M15) est sous croix : Fortuna Major est ancré en base de M15, la maison d'Aquisitio dont il est l'antagoniste ; R1 en M9 ne l'est pas",
-     "score": "2-0"
-    },
-    {
-     "theme": [
-      2,
-      9,
-      6,
-      5
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème : aucun pôle sous croix",
-     "score": "3-3"
-    },
-    {
-     "theme": [
-      6,
-      6,
-      10,
-      2
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de victoire",
-     "detail": "pôles en M6 et M12 ; aucun arrêt dans le thème",
-     "score": null
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "R1 (R7 sous croix en M10)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "R7 (R1 sous croix en M10)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "pas de victoire (aucun pôle sous croix)",
-     "score": "3-0"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "pas de victoire (aucun pôle sous croix)",
-     "score": "3-1"
-    }
-   ],
-   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Appels : 1 juste / 2 faux sur les matchs indépendants. Remarque : le « premier appel à l'aveugle » de 9-13-2-13 n'était pas à l'aveugle : ce thème figurait déjà, avec son score 2-0, dans scores-reels.json (lot dev)."
-  },
-  {
-   "id": "H-EXPO",
-   "posee_le": "2026-11-20",
-   "enonce": "Dans la boucle de chaque pôle (les 8 figures de même parité que la figure du pôle), une figure est exposée quand elle est placée dans le thème, qu'elle est attaquée (sa figure f−3 est placée) et que son protecteur (f−6) est absent. Le pôle qui a le plus de figures exposées dans sa boucle perd. Égalité : pas de victoire. Seul 14-9-16-9 était lu avant son score (la raison « deux figures exposées chez R1 » était inscrite) ; les quatre autres matchs ne comptent pas comme test.",
-   "predictions": [
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "pas de victoire",
-     "detail": "même boucle : exposées 1 contre 1 (Aquisitio ×3 des deux côtés)",
-     "score": "4-2"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "date_match": "2026-11-20",
-     "match": "Seattle–Salt Lake",
-     "prediction": "R1",
-     "detail": "figures exposées : R1 1, R7 2 (le pôle qui en a le plus perd)",
-     "score": "1-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "R1 (exposées R1 0, R7 2)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "pas de victoire (0-0)",
-     "score": "3-0"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "R1 (0-1)",
-     "score": "3-1"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "pas de victoire (1-1)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "prediction": "R7 (R1 2, R7 0)",
-     "score": "1-4",
-     "note": "raison inscrite avant le score"
-    }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 12-8-10-3 (inscrite avant le score) : H-EXPO donne R1, le match est nul 1-1. Retirée."
-  },
-  {
-   "id": "H-FRONT",
-   "posee_le": "2026-11-20",
-   "enonce": "Le pôle dont le front a le plus de niveaux distincts connectés gagne : dans la croix du front, Feu, Air, Eau en vertical ou en horizontal (résultantes de deux maisons opposées saturées toutes deux), Terre déviée (haut→droite ou bas→gauche). Égalité : pas de victoire. Née de 6-8-8-11 et 4-1-6-7 ; aucun test à l'aveugle avant 1-3-15-4.",
-   "predictions": [
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "R7",
-     "detail": "front C de R7 : Feu, Air, Eau (3) ; front A de R1 : Feu (1)",
-     "score": "4-2"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "pas de victoire (2-2)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "R1 (1-0)",
-     "score": "3-0"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "R1 (3-1)",
-     "score": "3-1"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "pas de victoire (1-1)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "prediction": "pas de victoire (2-2)",
-     "score": "1-4"
-    }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 1-3-15-4 (inscrite avant le score) : H-FRONT donne R7, le score est 4-2 pour R1. Retirée."
-  },
-  {
-   "id": "H-PARA",
-   "posee_le": "2026-11-20",
-   "enonce": "Une figure est paralysée quand son antagoniste (f − 3) est ancré en base de sa maison ; son canal (élément de son front) est paralysé quand ce niveau fait partie des niveaux à un point de l'antagoniste. Le pôle dont la boucle (les 8 figures de même parité que sa figure) contient une figure à canal paralysé gagne ; si les deux boucles ou aucune : pas de victoire. Née des cinq matchs connus (3 justes, 1 mixte, 1 sans paralysie), qui ne comptent pas comme test.",
-   "predictions": [
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "pas de victoire",
-     "detail": "Via et Fortuna Minor paralysées (canal Feu) en front A ; les deux pôles sont dans la même boucle (A et C)",
-     "score": "4-2"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "date_match": "2026-11-20",
-     "match": "Seattle–Salt Lake",
-     "prediction": "R7",
-     "detail": "seule la boucle de R7 (B+D) a un canal paralysé : Tristitia, paralysée par Via en M8 sur les 4 niveaux (canal Terre)",
-     "score": "1-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "R1 (Carcer, front B, dans la boucle D+B de R1)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "pas de victoire (aucun canal paralysé)",
-     "score": "3-0"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "pas de victoire (Via dans la boucle de R7, Puella dans celle de R1)",
-     "score": "3-1"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "R7 (Carcer, front B, front de R7)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "prediction": "R7 (Puer, Aquisitio dans la boucle A+C de R7)",
-     "score": "1-4"
-    }
-   ],
-   "statut": "réfutée le 2026-11-20 sur 12-8-10-3 (inscrite avant le score) : H-PARA donne R7, le match est nul 1-1. Retirée."
-  },
-  {
-   "id": "H-TERRE-BUTS",
-   "posee_le": "2026-11-20",
-   "enonce": "Le nombre total de buts du match est ceil(T/2) + 1, où T est le nombre de maisons (sur 16) dont la résultante est saturée en Terre (niveau Terre à deux points). Piste du propriétaire (« peut-être la Terre est le marquage ») ; la formule est tirée des cinq matchs connus : T = 4, 5, 6, 8, 8 pour 3, 4, 4, 5, 5 buts (plusieurs mesures de Terre ont été regardées, donc la coïncidence n'est pas exclue). Ces matchs ne comptent pas comme test.",
-   "predictions": [
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "6 buts au total",
-     "detail": "T = 9 maisons à résultante saturée en Terre : ceil(9/2) + 1 = 6",
-     "score": "4-2"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "date_match": "2026-11-20",
-     "match": "Seattle–Salt Lake",
-     "prediction": "5 buts au total",
-     "detail": "T = 8 maisons à résultante saturée en Terre : ceil(8/2)+1 = 5. Via en base de M8 : le total pourrait être réduit (remarque du propriétaire) ; un total inférieur à 5 irait dans ce sens.",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "date_match": "2026-02-22",
-     "match": "Austin–Minnesota",
-     "prediction": "6 buts au total",
-     "detail": "T = 9 : ceil(9/2)+1 = 6. Via en base de M8 : cas où la formule a échoué une fois (12-8-10-3) ; deuxième test de cette classe.",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "date_match": "2026-02-18",
-     "match": "Bayern Munich–Hoffenheim",
-     "prediction": "4 buts au total",
-     "detail": "T = 6 maisons à résultante saturée en Terre : ceil(6/2)+1 = 4 ; pas de Via ni de Cauda en base de M8",
-     "score": "5-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "3 buts (T=4)",
-     "score": "3-0"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "4 buts (T=5)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "4 buts (T=6)",
-     "score": "3-1"
-    },
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "5 buts (T=8)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "prediction": "5 buts (T=8)",
-     "score": "1-4"
-    }
-   ],
-   "statut": "RÉFUTÉE le 2026-11-20 sur 2-12-4-4 (inscrite avant le score, hors Via en base de M8) : 4 buts prévus, 6 réels (5-1). Bilan : juste sur 6 matchs hors Via en M8 mais construite sur eux ; à l'aveugle, 1 juste (1-3-15-4) et 1 fausse. Formule retirée du moteur et de la page ; le comptage de Terre (terreSaturee) reste comme structure.",
-   "a_surveiller": "Via en base de M8 : 12-8-10-3 = 1-1, 2 buts au lieu de 5. Motifs relevés dans ce thème, sans règle tirée : Tristitia (pôle R7) paralysée sur ses 4 niveaux par Via ; 5 des 8 maisons saturées en Terre ont pour résultante Cauda Draconis (Terre seule), alors que les six autres matchs en ont 0 à 2 ; ces cinq résultantes Cauda attaquent toutes M16 (13+3). Cauda en base de M8 (1-3-15-4) n'a pas réduit les buts."
-  },
-  {
-   "id": "H-TERRE-V",
-   "posee_le": "2026-11-20",
-   "enonce": "Le pôle dont le front a le plus de maisons à résultante saturée en Terre gagne ; égalité : pas de victoire. Tirée des cinq matchs connus (4 appels justes sur 4, 1 sans appel) : ils ne comptent pas comme test.",
-   "predictions": [
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "date_match": "2026-11-20",
-     "match": "équipes à préciser",
-     "prediction": "pas de victoire",
-     "detail": "front A de R1 : 2 maisons ; front C de R7 : 2 maisons",
-     "score": "4-2"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "date_match": "2026-11-20",
-     "match": "Seattle–Salt Lake",
-     "prediction": "pas de victoire",
-     "detail": "front C de R1 : 2 maisons ; front D de R7 : 2 maisons",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "date_match": "2026-02-22",
-     "match": "Austin–Minnesota",
-     "prediction": "R1",
-     "detail": "front A de R1 : 4 maisons à résultante saturée en Terre ; front D de R7 : 2",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "date_match": "2026-02-18",
-     "match": "Bayern Munich–Hoffenheim",
-     "prediction": "R1",
-     "detail": "front D de R1 : 3 maisons à résultante saturée en Terre ; front C de R7 : 1",
-     "score": "5-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "date_match": "2026-02-22",
-     "match": "Tigres UANL–Pachuca",
-     "prediction": "pas de victoire",
-     "detail": "même boucle ; fronts C et A : 4 maisons saturées en Terre chacun",
-     "score": "1-2"
-    },
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "date_match": "2026-02-10",
-     "match": "Napoli–Côme",
-     "prediction": "R1",
-     "detail": "front D de R1 : 2 maisons saturées en Terre ; front B de R7 : 1 (dans la classe Via en M8, où cette règle a déjà échoué une fois)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      6,
-      7,
-      9
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "R7",
-     "detail": "front D de R7 : 2 maisons saturées en Terre ; front B de R1 : 1 (hors Via en base de M8)",
-     "score": "1-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "pas de victoire (2-2)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "R1 (1-0)",
-     "score": "3-0"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "R1 (3-1)",
-     "score": "3-1"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "R7 (1-2)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "prediction": "R7 (1-2)",
-     "score": "1-4"
-    }
-   ],
-   "statut": "RÉFUTÉE le 2026-11-20 sur 2-6-7-9 (inscrite avant le score, hors Via en base de M8) : R7 prévu, nul 1-1. Bilan à l'aveugle : 1 juste (2-12-4-4) et 3 fausses (5-1-10-10, 12-14-8-10, 2-6-7-9). Retirée."
-  },
-  {
-   "id": "H-VIA8",
-   "posee_le": "2026-11-20",
-   "enonce": "Quand Via est en base de M8, le match est nul 1-1 (Via paralyse Tristitia sur ses quatre niveaux et annule les buts). Née d'un seul match (12-8-10-3, 1-1), qui ne compte pas comme test ; 5-1-10-10 est son premier test. Condition supplémentaire à observer : dans 5-1-10-10, Via est aussi la figure du pôle R1 et occupe M1, M5 et M8.",
-   "predictions": [
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "date_match": "2026-02-22",
-     "match": "Austin–Minnesota",
-     "prediction": "1-1",
-     "detail": "Via en base de M8 (et de M1, M5) ; formule des buts non fiable dans cette classe",
-     "score": "2-2"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "1-1",
-     "score": "1-1"
-    }
-   ],
-   "statut": "Le score exact 1-1 est faux (2-2) : H-VIA8 telle qu'écrite est réfutée. Son contenu « le match est nul » est juste dans les deux matchs avec Via en base de M8 ; repris, sans modifier celle-ci, dans H-VIA8-NUL."
-  },
-  {
-   "id": "H-VIA8-NUL",
-   "posee_le": "2026-11-20",
-   "enonce": "Quand Via est en base de M8, le match est nul, et chaque équipe marque (T − n) / 3, où T est le nombre de maisons à résultante saturée en Terre et n le nombre de maisons dont la résultante est Cauda Draconis. Si T − n n'est pas divisible par 3, seul le nul est prédit. Née des deux matchs avec Via en base de M8 (12-8-10-3 : 1-1 ; 5-1-10-10 : 2-2), qui ne comptent donc pas comme test ; le nul avait été prédit pour 5-1-10-10 (par H-VIA8), mais pas la formule.",
-   "predictions": [
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "date_match": "2026-02-28",
-     "match": "Tijuana–Pumas",
-     "prediction": "2-2",
-     "detail": "Via en base de M8 : nul ; T = 7, n = 1 (résultantes Cauda) : (7 − 1)/3 = 2 buts par équipe",
-     "score": "1-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "1-1 ((8−5)/3 = 1)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "2-2 ((9−3)/3 = 2)",
-     "score": "2-2"
-    }
-   ],
-   "statut": "Formule (T − n)/3 réfutée le 2026-11-20 sur 10-12-12-15 (inscrite avant le score) : prévu 2-2, score 1-1. Le nul est juste dans les trois matchs avec Via en base de M8 ; il reste dans H-UNIV, clause 1."
-  },
-  {
-   "id": "H-UNIV",
-   "posee_le": "2026-11-20",
-   "enonce": "Constat sur les huit matchs connus. (1) La Terre fait le jeu. (2) Si Via est en base de M8 (il paralyse Tristitia sur ses quatre niveaux), le match est nul. (3) Sinon : total des buts = ceil(T/2) + 1, T = maisons à résultante saturée en Terre ; vainqueur = le pôle dont le front a le plus de maisons à résultante saturée en Terre, égalité : pas de victoire. Cette formulation réunit H-VIA8-NUL, H-TERRE-BUTS et H-TERRE-V ; aucune formule unique ne couvre les huit matchs (la meilleure, sans Via, en couvre six). Chaque clause garde son propre statut ; chaque nouveau thème reçoit une prédiction complète avant son score.",
-   "predictions": [
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "date_match": "2026-02-28",
-     "match": "Tijuana–Pumas",
-     "prediction": "nul (Via en base de M8)",
-     "detail": "clause 1 : Via en base de M8 donne le nul ; clauses 2 et 3 (buts et vainqueur par la Terre) ne s'appliquent pas dans cette classe",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "date_match": "2026-02-18",
-     "match": "Bayern Munich–Hoffenheim",
-     "prediction": "R1, 4 buts au total",
-     "detail": "hors Via en base de M8 : clauses 2 et 3",
-     "score": "5-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "date_match": "2026-02-22",
-     "match": "Tigres UANL–Pachuca",
-     "prediction": "nul (Via en base de M8)",
-     "detail": "clause 1 : Via en base de M8 = nul",
-     "score": "1-2"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "clause": "hors Via-M8",
-     "prediction": "5 buts ; pas de victoire (Terre 2-2)",
-     "score": "5-0 : total juste, vainqueur sans appel"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "clause": "hors Via-M8",
-     "prediction": "3 buts ; R1",
-     "score": "3-0 : juste, juste"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "clause": "hors Via-M8",
-     "prediction": "4 buts ; R1",
-     "score": "3-1 : juste, juste"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "clause": "hors Via-M8",
-     "prediction": "4 buts ; R7",
-     "score": "1-3 : juste, juste"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "clause": "hors Via-M8",
-     "prediction": "5 buts ; R7",
-     "score": "1-4 : juste, juste"
-    },
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "clause": "hors Via-M8",
-     "prediction": "6 buts ; pas de victoire (Terre 2-2)",
-     "score": "4-2 : total juste (à l'aveugle), vainqueur sans appel"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "clause": "Via-M8",
-     "prediction": "nul",
-     "score": "1-1 : juste"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "clause": "Via-M8",
-     "prediction": "nul",
-     "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
-    }
-   ],
-   "statut": "Dissoute le 2026-11-20 : clause 1 réfutée (3-10-3-1), clause 2 réfutée (2-12-4-4), clause 3 (H-TERRE-V) réfutée (2-6-7-9). Remplacée par H-SYS-A/B/C pour les thèmes Via en M8 et par H-NUL-TERRE pour les nuls."
-  },
-  {
-   "id": "H-VIA8-B",
-   "posee_le": "2026-11-20",
-   "enonce": "Avec Via en base de M8, le match est nul et chaque équipe marque ceil(v / 2) buts, où v est le nombre de maisons où Via est en base. Née des trois matchs avec Via en base de M8 (v = 1, 3, 1 pour 1-1, 2-2, 1-1), qui ne comptent donc pas comme test ; plusieurs comptes de Via, de Cauda et de Terre ont été regardés avant de la retenir.",
-   "predictions": [
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "date_match": "2026-02-22",
-     "match": "Tigres UANL–Pachuca",
-     "prediction": "1-1",
-     "detail": "Via en base de M8 et de M15 : v = 2, ceil(2/2) = 1 but par équipe",
-     "score": "1-2"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "1-1 (v=1)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "2-2 (v=3)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "1-1 (v=1)",
-     "score": "1-1"
-    }
-   ],
-   "statut": "Réfutée le 2026-11-20 sur 3-10-3-1 (inscrite avant le score) : 1-1 prévu, score 1-2."
-  },
-  {
-   "id": "H-SYS-A",
-   "posee_le": "2026-11-20",
-   "enonce": "Via en base de M8 donne le nul seulement si M8 est la seule maison de Terre (M4, M8, M12, M16) sous croix. Si une autre maison de Terre est aussi sous croix (une figure de plus paralysée dans le front D), pas de nul. Née des quatre matchs avec Via en base de M8 : les trois nuls n'ont que M8 sous croix parmi les maisons de Terre ; 3-10-3-1 (1-2) a M4 et M8. Aucun de ces quatre matchs ne compte comme test.",
-   "predictions": [
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "date_match": "2026-02-10",
-     "match": "Napoli–Côme",
-     "prediction": "nul",
-     "detail": "Via en base de M8 ; M8 est la seule maison de Terre sous croix (M14 est une maison d'Air)",
-     "score": "1-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "nul (M8 seule)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "nul (M8 seule)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "nul (M8 seule)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "prediction": "pas de nul (M4 et M8)",
-     "score": "1-2"
-    }
-   ],
-   "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (M8 seule maison de Terre sous croix), score 1-1. À l'essai."
-  },
-  {
-   "id": "H-SYS-B",
-   "posee_le": "2026-11-20",
-   "enonce": "Via en base de M8 donne le nul seulement si T, le nombre de maisons à résultante saturée en Terre, est inférieur à 10. Même origine que H-SYS-A (T = 8, 9, 7 pour les trois nuls ; 12 pour 1-2) ; les deux hypothèses se séparent sur un thème avec Via en M8 qui aurait une seule maison de Terre sous croix et T ≥ 10, ou deux maisons sous croix et T < 10.",
-   "predictions": [
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "date_match": "2026-02-10",
-     "match": "Napoli–Côme",
-     "prediction": "nul",
-     "detail": "Via en base de M8 ; T = 9, inférieur à 10",
-     "score": "1-1"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "nul (T=8)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "nul (T=9)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "nul (T=7)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "prediction": "pas de nul (T=12)",
-     "score": "1-2"
-    }
-   ],
-   "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (T = 9 < 10), score 1-1. À l'essai ; ne se sépare pas de H-SYS-A sur ce match."
-  },
-  {
-   "id": "H-SYS-C",
-   "posee_le": "2026-11-20",
-   "enonce": "Via en base de M8 donne le nul seulement si les deux liaisons de Terre du front D, M4→M8 (haut→droite) et M12→M16 (bas→gauche), sont rompues (résultantes non saturées toutes deux en Terre). Si l'une est connectée, pas de nul. Née des cinq matchs avec Via en base de M8 : M4→M8 est rompue dans les cinq (M4 n'a jamais la Terre saturée en résultante) ; M12→M16 est rompue dans les quatre nuls et connectée dans 3-10-3-1 (1-2). Aucun de ces matchs ne compte comme test. H-SYS-A, H-SYS-B et H-SYS-C séparent les mêmes cinq matchs ; elles se départageront sur un thème où elles divergent.",
-   "predictions": [],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "nul (T1 et T2 rompues)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "nul (T1 et T2 rompues)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "nul (T1 et T2 rompues)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "prediction": "nul (T1 et T2 rompues)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "prediction": "pas de nul (T2 connectée)",
-     "score": "1-2"
-    }
-   ]
-  },
-  {
-   "id": "H-NUL-TERRE",
-   "posee_le": "2026-11-20",
-   "enonce": "Le match est nul quand le nombre de maisons à résultante saturée en Terre par front vaut A = 3 ou 4, B = 0 ou 1, C = 2, D = 2. Né des cinq nuls connus (12-8-10-3, 5-1-10-10, 10-12-12-15, 12-14-8-10, 2-6-7-9 : A/B/C/D = 3/1/2/2, 4/1/2/2, 3/0/2/2, 4/1/2/2, 3/1/2/2) ; aucun des huit autres matchs n'a cette signature, mais cinq nuls ont été regardés pour la trouver : ils ne comptent pas comme test. Contient les thèmes Via en M8 (quatre des cinq nuls) mais aussi 2-6-7-9, où M8 porte Populus. Si le nombre par front ne correspond pas : pas de prédiction de nul.",
-   "predictions": [
-    {
-     "theme": [
-      9,
-      13,
-      2,
-      13
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de nul",
-     "detail": "Terre par front A/B/C/D = 3/2/2/2 : B = 2 > 1, la signature des nuls est absente",
-     "score": "2-0"
-    },
-    {
-     "theme": [
-      2,
-      9,
-      6,
-      5
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de nul",
-     "detail": "Terre par front A/B/C/D = 2/2/2/1 : la signature des nuls (A 3-4, B 0-1, C 2, D 2) est absente",
-     "score": "3-3"
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "nul (3/1/2/2)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "nul (4/1/2/2)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "nul (3/0/2/2)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "prediction": "nul (4/1/2/2)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      6,
-      7,
-      9
-     ],
-     "prediction": "nul (3/1/2/2)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      3,
-      10,
-      3,
-      1
-     ],
-     "prediction": "pas de nul (4/1/4/3)",
-     "score": "1-2"
-    },
-    {
-     "theme": [
-      4,
-      6,
-      7,
-      16
-     ],
-     "prediction": "pas de nul (2/2/2/2)",
-     "score": "5-0"
-    },
-    {
-     "theme": [
-      1,
-      3,
-      15,
-      4
-     ],
-     "prediction": "pas de nul (2/3/2/2)",
-     "score": "4-2"
-    },
-    {
-     "theme": [
-      14,
-      9,
-      16,
-      9
-     ],
-     "prediction": "pas de nul (2/1/3/2)",
-     "score": "1-4"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "pas de nul (1/2/1/1)",
-     "score": "1-3"
-    },
-    {
-     "theme": [
-      6,
-      8,
-      8,
-      11
-     ],
-     "prediction": "pas de nul (1/1/1/3)",
-     "score": "3-1"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "prediction": "pas de nul (0/2/1/3)",
-     "score": "5-1"
-    },
-    {
-     "theme": [
-      4,
-      1,
-      6,
-      7
-     ],
-     "prediction": "pas de nul (0/1/1/2)",
-     "score": "3-0"
-    }
-   ],
-   "statut": "RÉFUTÉE le 2026-11-20 sur 2-9-6-5 (inscrite avant le score) : « pas de nul » prévu (Terre par front 2/2/2/1, signature absente), score 3-3. La signature n'est pas celle de tous les nuls. Retirée."
-  },
-  {
-   "id": "NOTE-2-9-6-5",
-   "posee_le": "2026-11-20",
-   "enonce": "Note, pas une règle. 2-9-6-5 (3-3) est signalé par le propriétaire comme totalement symétrique et comme contenant le motif principal du nul. Faits relevés : première rangée de la pyramide M8 M7 M6 M5 | M4 M3 M2 M1 = Tristitia, Fortuna Major, Aquisitio, Via | Via, Amissio, Fortuna Minor, Laetitia ; les paires opposées donnent M4 + M5 = Populus (Via = Via), M3 + M6 = Via (Amissio et Aquisitio, complémentaires), M2 + M7 = Tristitia (Fortuna Minor et Fortuna Major, miroirs), M1 + M8 = Carcer. Paires miroir h / h+8 à base égale : M3 = M11 (Amissio), M8 = M16 (Tristitia). Résultantes égales : M3 = M4 (Puer), M5 = M8 (Populus), M6 = M13 (Via), M10 = M11 = M15 (Fortuna Minor). Aucune des mesures de symétrie testées (82 mesures de saturation, symétrie de la matrice des mères, paires miroir, moitiés M1-7 / M9-15, égalités entre les mesures de R1 et de R7) ne sépare les six nuls des neuf autres matchs.",
-   "predictions": [],
-   "cas_connus_hors_test": []
-  },
-  {
-   "id": "H-BIN-E",
-   "posee_le": "2026-11-20",
-   "enonce": "Match nul probable quand le nombre de liaisons binôme saturées en Eau (la résultante d'une maison et celle de sa maison binôme toutes deux saturées en Eau) dans la boucle de R1 est égal à celui de la boucle de R7 et non nul ; sinon pas de nul. Née de l'analyse par canal demandée par le propriétaire : vraie pour les six nuls connus (2/2, 2/2, 2/2, 4/4, 4/4, 4/4), fausse pour sept des neuf autres matchs (0/0 dans cinq d'entre eux, inégale dans deux) ; deux matchs décisifs la satisfont aussi (10-2-12-3 : 1-3 ; 2-12-4-4 : 5-1), donc « nul » est juste 6 fois sur 8 quand la condition est vraie. Aucun de ces quinze matchs ne compte comme test.",
-   "predictions": [
-    {
-     "theme": [
-      6,
-      6,
-      10,
-      2
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "pas de nul",
-     "detail": "liaisons binôme en Eau : R1 2, R7 4, non égales : la condition du nul est fausse",
-     "score": null
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "nul (2/2)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "nul (2/2)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "nul (2/2)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "prediction": "nul (4/4)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      6,
-      7,
-      9
-     ],
-     "prediction": "nul (4/4)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      9,
-      6,
-      5
-     ],
-     "prediction": "nul (4/4)",
-     "score": "3-3"
-    },
-    {
-     "theme": [
-      10,
-      2,
-      12,
-      3
-     ],
-     "prediction": "nul (2/2)",
-     "score": "1-3 : faux"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "prediction": "nul (4/4)",
-     "score": "5-1 : faux"
-    }
-   ],
-   "a_surveiller": "Seule, elle ne suffit pas : 2 nuls sur 4 matchs dans l'échantillon. Elle est vraie pour environ 38 % de tous les thèmes possibles, donc la verdict « nul » exige aussi H-TEMOINS.",
-   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Vraie seule : 0 nul / 12 ; avec H-TEMOINS : 0 / 3."
-  },
-  {
-   "id": "H-TEMOINS",
-   "posee_le": "2026-11-20",
-   "enonce": "Si la somme des niveaux saturés des bases des deux témoins (M13 et M14) est de 6, le match est nul. Pas d'appel sinon. Née de la remarque du propriétaire (« les deux témoins jouent quelque chose au nul ») : sur les quinze matchs connus, 4 nuls sur 6 ont ce total de 6 (5-1-10-10, 10-12-12-15, 12-14-8-10, 2-9-6-5) et aucun des neuf autres matchs ne l'atteint (leurs totaux sont 2 ou 4) ; les deux autres nuls (12-8-10-3, 2-6-7-9) ont un total de 4. Ces quatre nuls remplissent aussi H-BIN-E. Aucun de ces matchs ne compte comme test.",
-   "predictions": [
-    {
-     "theme": [
-      6,
-      6,
-      10,
-      2
-     ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
-     "prediction": "nul",
-     "detail": "bases de M13 et M14 : Tristitia et Tristitia, 3 + 3 = 6 niveaux saturés",
-     "score": null
-    }
-   ],
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      5,
-      1,
-      10,
-      10
-     ],
-     "prediction": "nul (6)",
-     "score": "2-2"
-    },
-    {
-     "theme": [
-      10,
-      12,
-      12,
-      15
-     ],
-     "prediction": "nul (6)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      12,
-      14,
-      8,
-      10
-     ],
-     "prediction": "nul (6)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      9,
-      6,
-      5
-     ],
-     "prediction": "nul (6)",
-     "score": "3-3"
-    },
-    {
-     "theme": [
-      12,
-      8,
-      10,
-      3
-     ],
-     "prediction": "pas d'appel (4)",
-     "score": "1-1"
-    },
-    {
-     "theme": [
-      2,
-      6,
-      7,
-      9
-     ],
-     "prediction": "pas d'appel (4)",
-     "score": "1-1"
-    }
-   ],
-   "a_surveiller": "Dans l'échantillon, les quatre matchs à total 6 remplissent aussi H-BIN-E ; sur l'ensemble des thèmes possibles, un thème à total 6 sur deux ne remplit pas H-BIN-E. Le verdict « nul » exige donc les deux.",
-   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Total de 6 seul : 0 nul / 4 sur les matchs indépendants (aucun nul parmi eux). Remarque : 2-9-6-5 (3-3) figurait déjà dans scores-reels.json."
-  },
-  {
-   "id": "H-REPOS",
-   "posee_le": "2026-11-20",
-   "enonce": "Le pôle qui possède ses deux fronts (le front de sa figure et son front binôme) au repos, sans que l'antagoniste des figures y soit, gagne. Règle posée par le propriétaire, activée à sa demande avant d'être testée. Interprétation du moteur : un front est possédé quand au moins une de ses figures est dans sa maison de repos (base ou résultante) sans que son antagoniste (f − 3) soit lui aussi dans sa propre maison de repos ; un pôle gagne s'il possède ses deux fronts et l'autre pôle non.",
-   "predictions": [],
-   "statut": "Activée dans le verdict le 2026-11-20. Évaluation (outils/valider.js) : 22 matchs indépendants, 3 appels, 2 justes, 1 faux ; 15 matchs construits, 1 appel juste. Au total 3 justes sur 4 appels, sur 37 matchs ; elle ne se prononce que sur environ un match sur dix.",
-   "cas_connus_hors_test": [
-    {
-     "theme": [
-      1,
-      7,
-      3,
-      4
-     ],
-     "prediction": "R1",
-     "score": "4-1"
-    },
-    {
-     "theme": [
-      1,
-      15,
-      3,
-      9
-     ],
-     "prediction": "R1",
-     "score": "1-4 : faux"
-    },
-    {
-     "theme": [
-      15,
-      13,
-      7,
-      8
-     ],
-     "prediction": "R7",
-     "score": "3-4 : juste"
-    },
-    {
-     "theme": [
-      2,
-      12,
-      4,
-      4
-     ],
-     "prediction": "R1",
-     "score": "5-1 : juste"
-    }
-   ]
-  }
- ],
- "lectures": [
-  {
-   "theme": [
-    10,
-    2,
-    12,
-    3
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": null,
-   "lecture": "R7",
-   "statut": "lecture de l'analyste, pas une règle. Posée après l'ajout des nœuds et l'étude de Puella en M8, avant le score. Elle remplace la lecture R1 donnée plus tôt ; les prédictions H-ANT (R1) et H-5 (pas de victoire claire) restent inscrites telles quelles.",
-   "raisons": [
-    "M10 est sous croix (arrêt) : l'attaque de Rubeus sur Carcer reste en M10",
-    "Puella en M8 : résultante Amissio (miroir) ; Amissio n'existe dans le thème que par là",
-    "Puella 5 emplacements, Air saturé 5/5, son antagoniste Conjunctio est absent",
-    "Air saturé des deux côtés de la liaison M16 (maison de R7) ↔ M8",
-    "quatre indicateurs sur cinq pour R7"
-   ],
-   "score": "1-3",
-   "juste": true
-  },
-  {
-   "theme": [
-    14,
-    9,
-    16,
-    9
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-14",
-   "lecture": "R1 (faible)",
-   "statut": "lecture de l'analyste, pas une règle : aucune structure nette, aucun pôle sous croix ; seule H-NIV4, encore à l'essai, désigne un pôle (R1). Trois indicateurs sur cinq vont vers R7.",
-   "score": "1-4",
-   "juste": false,
-   "note": "carton rouge côté R7"
-  },
-  {
-   "theme": [
-    14,
-    9,
-    16,
-    9
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-14",
-   "lecture": "R7",
-   "statut": "lecture de l'analyste, pas une règle ; remplace la lecture R1 (faible) inscrite plus tôt, qui reste conservée. Posée avant le score, après la lecture de la boucle par le propriétaire.",
-   "raisons": [
-    "boucle de R1 (fronts B et D) : un seul niveau commun connecté (Eau) ; boucle de R7 (fronts A et C) : deux (Terre et Feu)",
-    "multiplicité : deux figures exposées dans la boucle de R1 (Fortuna Major ×3, Puella ×3), aucune dans celle de R7",
-    "H-NIV4 (R1) n'a qu'un test et un non-appel : je ne m'y fie pas"
-   ],
-   "score": "1-4",
-   "juste": true,
-   "note": "carton rouge côté R7"
-  },
-  {
-   "theme": [
-    1,
-    3,
-    15,
-    4
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-11-20",
-   "lecture": "R7 (faible)",
-   "statut": "lecture de l'analyste, pas une règle : les deux pôles sont dans la même boucle (figures impaires), donc toute mesure de boucle est égale des deux côtés ; seule la mesure par front sépare : front C de R7 (Feu, Air, Eau connectés) contre front A de R1 (Feu).",
-   "score": "4-2",
-   "juste": false
-  },
-  {
-   "theme": [
-    12,
-    8,
-    10,
-    3
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-11-20",
-   "lecture": "R1",
-   "statut": "lecture de l'analyste, pas une règle : Via en base de M8 paralyse Tristitia, la figure du pôle R7, sur ses quatre niveaux (le cas « Via saccage tout » du propriétaire) ; quatre indicateurs sur cinq vont vers R1. Contredit H-PARA (R7) : ce match départagera les deux. Total des buts : 5 par la formule, avec réduction possible.",
-   "score": "1-1",
-   "juste": false
-  },
-  {
-   "theme": [
-    5,
-    1,
-    10,
-    10
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-22",
-   "lecture": "R1 (faible) ou nul",
-   "statut": "lecture de l'analyste, pas une règle : la Terre du front donne R1 (4 contre 2), mais Via est en base de M8, classe où le seul exemple connu est un nul 1-1. Je ne tranche pas entre les deux : H-TERRE-V dit R1, H-VIA8 dit 1-1.",
-   "score": "2-2",
-   "juste": null,
-   "note": "lecture « R1 faible ou nul » : le nul est juste, R1 est faux"
-  },
-  {
-   "theme": [
-    10,
-    12,
-    12,
-    15
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-28",
-   "lecture": "nul, 2-2",
-   "statut": "lecture de l'analyste d'après H-UNIV et H-VIA8-NUL : troisième thème avec Via en base de M8, mêmes pôles dans le même front (Conjunctio et Aquisitio, front C), aucun pôle sous croix.",
-   "score": "1-1",
-   "juste": "nul juste, score 2-2 faux"
-  },
-  {
-   "theme": [
-    2,
-    12,
-    4,
-    4
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-18",
-   "lecture": "R1, 4 buts",
-   "statut": "lecture de l'analyste d'après H-UNIV : hors Via en base de M8, donc buts et vainqueur par la Terre ; les cinq indicateurs de structure désignent aussi R1.",
-   "score": "5-1",
-   "juste": "vainqueur juste, 4 buts faux"
-  },
-  {
-   "theme": [
-    3,
-    10,
-    3,
-    1
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-22",
-   "lecture": "nul, 1-1",
-   "statut": "lecture de l'analyste d'après H-UNIV (clause 1) et H-VIA8-B : quatrième thème avec Via en base de M8 ; les deux pôles sont dans la même boucle et ont la même Terre.",
-   "score": "1-2",
-   "juste": false
-  },
-  {
-   "theme": [
-    12,
-    14,
-    8,
-    10
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": "2026-02-10",
-   "lecture": "nul",
-   "statut": "lecture de l'analyste : cinquième thème avec Via en base de M8 ; M8 est la seule maison de Terre sous croix et T = 9, donc H-SYS-A et H-SYS-B disent nul ; H-TERRE-V dit R1 mais a déjà échoué dans cette classe. Ce thème ne départage pas H-SYS-A et H-SYS-B.",
-   "score": "1-1",
-   "juste": true
-  },
-  {
-   "theme": [
-    2,
-    6,
-    7,
-    9
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": null,
-   "lecture": "R7 (faible)",
-   "statut": "lecture de l'analyste d'après H-TERRE-V (thème hors Via en base de M8 : M8 porte Populus). Trois des cinq indicateurs de structure vont vers R1, donc la lecture est fragile. Aucune prédiction de buts : la formule est retirée.",
-   "score": "1-1",
-   "juste": false
-  },
-  {
-   "theme": [
-    9,
-    13,
-    2,
-    13
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": null,
-   "lecture": "R1 (faible)",
-   "statut": "lecture de l'analyste d'après H-CROIX (jamais testée à l'aveugle : née de deux matchs) ; le pôle R7 est sous croix ; la signature des nuls est absente. Même front pour les deux pôles (D), donc la Terre ne les sépare pas.",
-   "score": "2-0",
-   "juste": true
-  },
-  {
-   "theme": [
-    2,
-    9,
-    6,
-    5
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": null,
-   "lecture": "R7 (faible)",
-   "statut": "lecture de l'analyste, pas une règle : aucune règle encore en jeu ne désigne un vainqueur ; Tristitia, la figure du pôle R7, est chez elle en M8 (résultante Populus, tous niveaux saturés) et trois indicateurs sur cinq vont vers R7. Pas de nul prédit.",
-   "score": "3-3",
-   "juste": false
-  },
-  {
-   "theme": [
-    6,
-    6,
-    10,
-    2
-   ],
-   "posee_le": "2026-11-20",
-   "date_match": null,
-   "lecture": "pas de verdict",
-   "statut": "H-TEMOINS (6, nul) et H-BIN-E (non égale, pas de nul) se contredisent, donc le verdict de l'interface se tait ; H-CROIX et H-5 ne se prononcent pas. Aucun avis de vainqueur : la majorité des indicateurs (4 sur 5 pour R1) n'a été juste que 2 fois sur 6 sur les thèmes sans verdict. Ce match départage H-TEMOINS et H-BIN-E.",
-   "score": null
-  }
- ]
+  ]
 }
