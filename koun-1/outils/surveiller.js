@@ -11,10 +11,13 @@ ok('invariants de la structure', lancer('invariants.js'));
 ok('cartographie : fichier à jour et vérifications', lancer('cartographie.js', ['--verifier']));
 
 // 2. aucune règle de verdict dans le moteur : seules les lectures de la liste blanche sont exportées
-const M4 = require(path.join(racine, 'moteur4/moteur.js')), permis = ['version', 'lire', 'fiabilite', 'equilibre', 'analyser', 'poles', 'noeuds', 'faits', 'activation', 'connexions', 'multiplicite', 'paralysie', 'paralysieFigure', 'liaisonsTerre', 'terreSaturee', 'interactions', 'temoins'];
+const M4 = require(path.join(racine, 'moteur4/moteur.js')), permis = ['version', 'lire', 'fiabilite', 'equilibre', 'analyser', 'poles', 'noeuds', 'faits', 'activation', 'connexions', 'multiplicite', 'paralysie', 'paralysieFigure', 'liaisonsTerre', 'terreSaturee', 'interactions', 'temoins', 'verdict'];
 const extra = Object.keys(M4).filter(k => !permis.includes(k));
 ok('moteur 4 : aucune fonction hors liste blanche (pas de verdict)', extra.length === 0, extra.join(', '));
-ok('moteur 4 : pas de mot « verdict » dans le code', !/verdict\s*[:(=]/.test(lire('moteur4/moteur.js').replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '')));
+const src = lire('moteur4/moteur.js'), reg = src.slice(src.indexOf('function verdict(L)'), src.indexOf('// Lecture comparée'));
+const ids = [...new Set((reg.match(/H-[A-Z0-9]+(?:-[A-Z0-9]+)*/g) || []))], hyp = JSON.parse(lire('validation/hypotheses.json')).hypotheses;
+const mauvais = ids.filter(id => { const h = hyp.filter(x => x.id === id)[0]; return !h || /^(réfutée|RÉFUTÉE|Dissoute)/.test(h.statut || ''); });
+ok('verdict : seules des règles inscrites et non réfutées y entrent (' + ids.join(', ') + ')', mauvais.length === 0, mauvais.join(', '));
 
 // 3. la page embarque exactement le noyau et le moteur 4
 const page = lire('koun.html'), noyau = lire('moteur3/noyau.js').trim();

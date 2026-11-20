@@ -269,6 +269,22 @@
     var base = [b[13], b[14]], res = [L.resu(13), L.resu(14)];
     return { base: base, resultante: res, saturesBase: [sat(base[0]), sat(base[1])], saturesResultante: [sat(res[0]), sat(res[1])], totalBase: sat(base[0]) + sat(base[1]), totalResultante: sat(res[0]) + sat(res[1]), juge: { base: b[15], resultante: L.resu(15) } };
   }
+
+  // VERDICT. Seules des règles inscrites dans validation/hypotheses.json et non réfutées y entrent, dans cet ordre (la première qui se prononce l'emporte) :
+  //   H-TEMOINS : somme des niveaux saturés des bases de M13 et M14 égale à 6 : nul ;
+  //   H-CROIX : un seul pôle sous croix (sa maison porte en base son antagoniste) : l'autre pôle gagne ;
+  //   H-5 : les cinq indicateurs de l'analyse des pôles désignent le même pôle : ce pôle gagne ;
+  //   H-BIN-E : liaisons binôme en Eau égales et non nulles dans la boucle de R1 et de R7 : nul probable.
+  // Si aucune ne se prononce : pas de verdict (et « pas de nul » quand H-BIN-E est fausse). Toutes sont à l'essai : voir statut dans validation/hypotheses.json.
+  function verdict(L) {
+    var T = temoins(L), I = interactions(L), n = noeuds(L), P = poles(L), sous = function (c) { return n.arrets.some(function (a) { return a.maison === c.maison; }); };
+    if (T.totalBase === 6) return { v: 'N', regle: 'H-TEMOINS', statut: 'à l\u2019essai', raison: 'les deux témoins M13 et M14 ont ensemble 6 niveaux saturés en base' };
+    var s1 = sous(L.R1), s7 = sous(L.R7);
+    if (s1 !== s7) return { v: s1 ? '2' : '1', regle: 'H-CROIX', statut: 'à l\u2019essai', raison: (s1 ? 'R1' : 'R7') + ' est sous croix (son antagoniste est ancré en base de sa maison) : il perd' };
+    if (P.net) return { v: P.net === 'R1' ? '1' : '2', regle: 'H-5', statut: 'à l\u2019essai', raison: 'les cinq indicateurs de structure désignent ' + P.net };
+    if (I.binomeEauEquilibre) return { v: 'N', regle: 'H-BIN-E', statut: 'à l\u2019essai (6 sur 8 quand elle est vraie)', raison: 'liaisons binôme en Eau égales et non nulles dans les deux boucles' };
+    return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce' + (I.binomeEauEquilibre ? '' : ' ; pas de nul (H-BIN-E fausse)') };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -278,7 +294,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
