@@ -76,4 +76,6 @@ for (let q = 0; q < 65536; q += 11) { const m = [q & 15, (q >> 4) & 15, (q >> 8)
   const sat = (h, l) => N.niveaux(h === 16 ? T.bases[16] : T.resultantes[h])[l] === 2, bin = h => (h - 1) % 4 < 2 ? h + 2 : h - 2;
   for (const [k, pole] of [['R1', L.R1], ['R7', L.R7]]) { const z = (pole.figure - 1) % 4, z2 = (z + 2) % 4, hs = [1, 2, 3, 4].flatMap(i => [z + 4 * (i - 1) + 1, z2 + 4 * (i - 1) + 1]); let n = 0; hs.forEach(h => { if (sat(h, 2) && sat(bin(h), 2)) n++; }); if (I[k].boucle.binome[2] !== n) malI++; } }
 if (malI) add('interactions');
+// Témoins : totaux de saturation des bases de M13 et M14 sur les quinze matchs connus
+[[[4,6,7,16],4],[[4,1,6,7],4],[[6,8,8,11],4],[[10,2,12,3],4],[[14,9,16,9],4],[[1,3,15,4],2],[[2,12,4,4],2],[[12,8,10,3],4],[[5,1,10,10],6],[[10,12,12,15],6],[[12,14,8,10],6],[[3,10,3,1],4],[[2,6,7,9],4],[[9,13,2,13],4],[[2,9,6,5],6]].forEach(([m,v]) => { if (K4.temoins(K4.lire(m)).totalBase !== v) add('témoins ' + m.join('-')); });
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);

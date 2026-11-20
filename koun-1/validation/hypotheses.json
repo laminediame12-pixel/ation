@@ -1787,6 +1787,74 @@
      "score": "5-1 : faux"
     }
    ]
+  },
+  {
+   "id": "H-TEMOINS",
+   "posee_le": "2026-11-20",
+   "enonce": "Si la somme des niveaux saturés des bases des deux témoins (M13 et M14) est de 6, le match est nul. Pas d'appel sinon. Née de la remarque du propriétaire (« les deux témoins jouent quelque chose au nul ») : sur les quinze matchs connus, 4 nuls sur 6 ont ce total de 6 (5-1-10-10, 10-12-12-15, 12-14-8-10, 2-9-6-5) et aucun des neuf autres matchs ne l'atteint (leurs totaux sont 2 ou 4) ; les deux autres nuls (12-8-10-3, 2-6-7-9) ont un total de 4. Ces quatre nuls remplissent aussi H-BIN-E. Aucun de ces matchs ne compte comme test.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "nul (6)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "nul (6)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "prediction": "nul (6)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      9,
+      6,
+      5
+     ],
+     "prediction": "nul (6)",
+     "score": "3-3"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "pas d'appel (4)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      6,
+      7,
+      9
+     ],
+     "prediction": "pas d'appel (4)",
+     "score": "1-1"
+    }
+   ]
   }
  ],
  "lectures": [

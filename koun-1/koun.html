@@ -428,6 +428,13 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var a = pole(L.R1), b = pole(L.R7), eq = a.boucle.binome[2] === b.boucle.binome[2] && a.boucle.binome[2] > 0;
     return { R1: a, R7: b, binomeEauEquilibre: eq };
   }
+
+  // Les deux témoins (M13 et M14) : leurs figures en base et en résultante, leurs niveaux saturés, la somme des niveaux saturés de leurs deux bases (hypothèse H-TEMOINS : 6 = nul).
+  function temoins(L) {
+    var sat = function (f) { return K.niveaux(f).filter(function (v) { return v === 2; }).length; }, b = L.theme.bases;
+    var base = [b[13], b[14]], res = [L.resu(13), L.resu(14)];
+    return { base: base, resultante: res, saturesBase: [sat(base[0]), sat(base[1])], saturesResultante: [sat(res[0]), sat(res[1])], totalBase: sat(base[0]) + sat(base[1]), totalResultante: sat(res[0]) + sat(res[1]), juge: { base: b[15], resultante: L.resu(15) } };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -437,7 +444,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -639,10 +646,13 @@ function interHtml(L){var I=M.interactions(L),N4=['Feu','Air','Eau','Terre'],nom
  noms.forEach(function(n){h+='<tr><th>'+n[1]+'</th><td>'+I.R1.boucle[n[0]].join(' · ')+'</td><td>'+I.R7.boucle[n[0]].join(' · ')+'</td></tr>'});
  return h+'</table><div class="bil">Liaisons binôme en Eau : R1 '+I.R1.boucle.binome[2]+', R7 '+I.R7.boucle.binome[2]+(I.binomeEauEquilibre?' · égales et non nulles (H-BIN-E : nul probable)':' · H-BIN-E : pas de nul')+'</div>'}
 
+function temHtml(L){var X=M.temoins(L),nm=K.nom,sat=function(f){return K.niveaux(f).map(function(v,i){return v===2?'FAET'.charAt(i):'.'}).join('')};
+ return '<h4 style="margin:14px 0 4px;font-size:13px;color:var(--ac)">Les deux témoins (M13 et M14) et le juge</h4><table><tr><th></th><th>Base</th><th>Résultante</th></tr>'+[0,1].map(function(i){return '<tr><th>M'+(13+i)+'</th><td>'+nm(X.base[i])+' ['+sat(X.base[i])+']</td><td>'+nm(X.resultante[i])+' ['+sat(X.resultante[i])+']</td></tr>'}).join('')+'<tr><th>M15 (juge)</th><td>'+nm(X.juge.base)+'</td><td>'+nm(X.juge.resultante)+'</td></tr></table><div class="bil">Niveaux saturés des deux bases : '+X.totalBase+(X.totalBase>=6?' · H-TEMOINS : nul':' · H-TEMOINS : pas d\u2019appel')+' (résultantes : '+X.totalResultante+')</div>'}
+
 window.POLES={maj:function(meres){var L=M.lire(meres),P=M.poles(L),a=P.R1,e=P.R7,i=P.indicateurs;
  var rows=[['front_',0,1],['frontBinome',1,1],['binome',2,1],['antagoniste',3,-1]].map(function(r){var k=r[0],fv=i[r[1]];return '<tr><th>'+a[k].nom+' / '+e[k].nom+(k==='antagoniste'?' (moins = mieux)':'')+'</th>'+cell(a[k],fv>0)+cell(e[k],fv<0)+'</tr>'});
  var net=P.net?'Les 5 indicateurs désignent '+P.net+'.':'Indicateurs mêlés ou nuls : pas de structure nette.';
- $('polB').innerHTML='<table><tr><th></th><th class="a">R1 · '+K.nom(a.figure)+' M'+a.maison+' · maison '+a.saturationMaison+'/4</th><th class="b">R7 · '+K.nom(e.figure)+' M'+e.maison+' · maison '+e.saturationMaison+'/4</th></tr>'+rows.join('')+'</table><div class="bil">'+net+'</div><div class="dt" style="color:var(--mu);font-size:11px;margin-top:4px">Σ = niveaux saturés cumulés de la résultante des maisons où se trouve la figure (B base, R résultante, ★ chez elle, [FAET] niveaux saturés). Niveau propre = le niveau du front du groupe ; 5e indicateur : emplacements du front et du front binôme où il est saturé. Lecture de la structure, pas un verdict.</div>'+activHtml(L)+butsHtml(L)+multHtml(L)+interHtml(L)+paraHtml(L)+noeudsHtml(L,P)+faitsHtml(L)}};
+ $('polB').innerHTML='<table><tr><th></th><th class="a">R1 · '+K.nom(a.figure)+' M'+a.maison+' · maison '+a.saturationMaison+'/4</th><th class="b">R7 · '+K.nom(e.figure)+' M'+e.maison+' · maison '+e.saturationMaison+'/4</th></tr>'+rows.join('')+'</table><div class="bil">'+net+'</div><div class="dt" style="color:var(--mu);font-size:11px;margin-top:4px">Σ = niveaux saturés cumulés de la résultante des maisons où se trouve la figure (B base, R résultante, ★ chez elle, [FAET] niveaux saturés). Niveau propre = le niveau du front du groupe ; 5e indicateur : emplacements du front et du front binôme où il est saturé. Lecture de la structure, pas un verdict.</div>'+activHtml(L)+butsHtml(L)+multHtml(L)+temHtml(L)+interHtml(L)+paraHtml(L)+noeudsHtml(L,P)+faitsHtml(L)}};
 })();</script><script>
 (function(){
 var K=KOUN_NOYAU,M=KOUN4,JOURS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
