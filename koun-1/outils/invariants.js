@@ -121,7 +121,48 @@ const placements = {};
   ok('I13 les ensembles impossibles minimaux sont 26 couples + 23 triples + 16 quadruplets + 6 quintuplets (attaquant)', [2, 3, 4, 5].map(k => placements.attaquant.filter(x => x.length === k).length).join() === '26,23,16,6');
 }
 
+// I14 — Le binôme et le miroir sont des translations par des figures constantes
+{
+  const bin = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2, mir = n => ((n + 7) % 16) + 1;
+  ok('I14 miroir(n) = n + Tristitia ; binôme(n) = n + Amissio pour les blocs M1-4 et M9-12, n + Puella pour M5-8 et M13-16 ; Puella = Amissio + Tristitia ; binôme et miroir commutent',
+    F.every(f => mir(f.num) === add(f.num, 8) && bin(f.num) === add(f.num, Math.floor((f.num - 1) / 4) % 2 === 0 ? 6 : 14) && bin(mir(f.num)) === mir(bin(f.num))) && add(6, 8) === 14);
+}
+{
+  const bin = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2, mir = n => ((n + 7) % 16) + 1, antag = n => ((n - 4) % 16 + 16) % 16 + 1, R = h => add(antag(h), h);
+  ok('I14 antagonistes en place : les résultantes de deux maisons binômes des fronts A et C (maisons impaires) sont miroir l\'une de l\'autre ; jamais pour les fronts B et D', [1, 3, 5, 7, 9, 11, 13, 15].every(h => R(bin(h)) === mir(R(h))) && [2, 4, 6, 8, 10, 12, 14, 16].every(h => R(bin(h)) !== mir(R(h))));
+}
+// I15 — Les quartets : orbites des maisons sous le binôme et le miroir
+const QUARTETS = [[1, 3, 9, 11], [2, 4, 10, 12], [5, 7, 13, 15], [6, 8, 14, 16]];
+{
+  const comptes = hs => { const vu = new Set(); for (const t of bases) vu.add(hs.map(h => t[h]).join()); return vu.size; };
+  ok('I15 les quartets {M1,M3,M9,M11}, {M2,M4,M10,M12}, {M5,M7,M13,M15}, {M6,M8,M14,M16} : somme de leurs figures de repos = Populus', QUARTETS.every(q => q.reduce((a, h) => add(a, h), 16) === 16));
+  ok('I15 les 4 bases d\'un quartet ne prennent que 8 192 configurations (1/8) ; deux quartets quelconques déterminent tout le thème', QUARTETS.every(q => comptes(q) === 8192) && QUARTETS.every((q, i) => QUARTETS.every((r, j) => j <= i || comptes([...q, ...r]) === 65536)));
+  const e = (m, l) => 1 << (4 * m + l), Mm = {}; for (let m = 1; m <= 4; m++) Mm[m] = [0, 1, 2, 3].map(l => e(m - 1, l)); for (let l = 0; l < 4; l++) Mm[5 + l] = [0, 1, 2, 3].map(m => e(m, l));
+  const ad = (a, b) => a.map((x, i) => x ^ b[i]); Mm[9] = ad(Mm[1], Mm[2]); Mm[10] = ad(Mm[3], Mm[4]); Mm[11] = ad(Mm[5], Mm[6]); Mm[12] = ad(Mm[7], Mm[8]); Mm[13] = ad(Mm[9], Mm[10]); Mm[14] = ad(Mm[11], Mm[12]); Mm[15] = ad(Mm[13], Mm[14]); Mm[16] = ad(Mm[15], Mm[1]);
+  QUARTETS.forEach((q, i) => { const vars = []; q.forEach(h => { for (let l = 0; l < 4; l++) vars.push({ h, l, f: Mm[h][l], r: P(h)[l] === 1 ? 1 : 0 }); });
+    const lois = []; for (let m = 1; m < 65536; m++) { let x = 0, c = 0; for (let k = 0; k < 16; k++) if (m >> k & 1) { x ^= vars[k].f; c ^= vars[k].r; } if (x === 0) lois.push({ m, c }); }
+    ok('I15 quartet ' + (i + 1) + ' (M' + q.join(', M') + ') : 7 lois internes (3 indépendantes), toutes vérifiées', lois.length === 7 && lois.every(({ m, c }) => themes.every(r => (vars.filter((_, k) => m >> k & 1).filter(v => !sat(r[v.h], v.l)).length % 2) === c))); });
+}
+// I16 — Placements du binôme ou du miroir dans la maison : quels ensembles de maisons peuvent les porter ensemble ?
+const placements2 = {};
+{
+  const bin = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2, mir = n => ((n + 7) % 16) + 1;
+  const lectures = { binome: [h => bin(h), [380, 5, { 1: 1, 2: 32, 3: 8, 4: 13, 5: 1 }]], miroir: [h => mir(h), [568, 6, { 1: 1, 2: 24, 3: 11, 4: 7, 5: 3 }]] };
+  for (const nom of Object.keys(lectures)) {
+    const [cible, [nbFais, maxAtt, minAtt]] = lectures[nom], observes = new Set(), distribution = {};
+    for (const b of bases) { let m = 0, k = 0; for (let h = 1; h <= 16; h++) if (b[h] === cible(h)) { m |= 1 << (h - 1); k++; } observes.add(m); distribution[k] = (distribution[k] || 0) + 1; }
+    const faisables = new Set(); observes.forEach(m => { for (let t = m; ; t = (t - 1) & m) { faisables.add(t); if (t === 0) break; } });
+    const maxK = Math.max(...[...observes].map(m => m.toString(2).split('1').length - 1));
+    const imp = []; for (let m = 1; m < 65536; m++) { if (faisables.has(m)) continue; let minimal = true; for (let h = 0; h < 16 && minimal; h++) if ((m >> h & 1) && !faisables.has(m & ~(1 << h))) minimal = false; if (minimal) imp.push(m); }
+    const tailles = {}; imp.forEach(m => { const k = m.toString(2).split('1').length - 1; tailles[k] = (tailles[k] || 0) + 1; });
+    placements2[nom] = imp.map(m => { const o = []; for (let h = 0; h < 16; h++) if (m >> h & 1) o.push(h + 1); return o; });
+    ok('I16 (' + nom + ') exactement ' + nbFais + ' ensembles de maisons peuvent porter ensemble ' + (nom === 'binome' ? 'leur binôme' : 'leur miroir') + ', au plus ' + maxAtt + ' à la fois ; seule M15 ne peut jamais le faire seule (le Juge est toujours pair)',
+      faisables.size === nbFais && maxK === maxAtt && JSON.stringify(tailles) === JSON.stringify(minAtt) && placements2[nom].filter(x => x.length === 1).map(x => x[0]).join() === '15', 'répartition : ' + JSON.stringify(distribution));
+  }
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
-if (process.argv.includes('--liste')) { for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
+if (process.argv.includes('--liste')) { for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
+  for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
 console.log('\nLes 14 couples de liaisons jamais connectées ensemble :'); excl.forEach(([a, b]) => console.log('  ' + a + '  ✕  ' + b));
 console.log(mauvais ? '\n' + mauvais + ' échec(s)' : '\nToutes les propriétés sont vérifiées sur les 65 536 thèmes (' + verifs.length + ').'); process.exit(mauvais ? 1 : 0);

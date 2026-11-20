@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (66 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (76 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -139,3 +139,27 @@ Maisons qui ne peuvent jamais le faire ensemble (minimaux) :
 - Attaquant : 26 couples, 23 triples, 16 quadruplets, 6 quintuplets. Couples : M4+M5, M3+M6, M1+M7, M3+M7, M3+M8, M6+M9, M7+M9, M6+M10, M7+M10, M1+M11, M2+M11, M4+M11, M9+M11, M1+M12, M4+M12, M9+M12, M6+M13, M7+M13, M8+M13, M12+M13, M1+M14, M2+M14, M3+M14, M4+M14, M9+M14, M14+M16. Les triples de construction M1+M2+M9, M3+M4+M10, M5+M6+M11, M7+M8+M12, M9+M10+M13, M11+M12+M14 sont aussi impossibles.
 - Victime : 1 maison seule (M15 ne peut jamais porter Laetitia : le Juge est toujours pair), 22 couples, 14 triples, 8 quadruplets, 6 quintuplets. Couples : M2+M5, M3+M5, M4+M5, M1+M6, M4+M6, M2+M7, M3+M7, M4+M7, M3+M8, M6+M10, M8+M10, M1+M11, M9+M11, M1+M12, M2+M12, M3+M12, M4+M12, M9+M12, M5+M13, M11+M13, M2+M14, M13+M14.
 - La liste complète s'obtient avec `node outils/invariants.js --liste`.
+
+## I14 — Le binôme et le miroir sont des translations
+- **Miroir** : n ↦ n + Tristitia (inversion du niveau Terre), pour toutes les figures.
+- **Binôme** (couples 1-3, 2-4, 5-7, …) : n ↦ n + Amissio (1212) dans les blocs M1-4 et M9-12, n ↦ n + Puella (1211) dans les blocs M5-8 et M13-16.
+- **Puella = Amissio + Tristitia** : dans les blocs impairs, le binôme est le miroir du binôme des blocs pairs. Binôme et miroir commutent.
+- Avec leurs antagonistes en place, **les résultantes de deux maisons binômes des fronts A et C sont miroir l'une de l'autre** (M1-M3 : Conjunctio et Caput, etc.) ; jamais pour les fronts B et D.
+
+## I15 — Les quartets
+Les orbites des maisons sous le binôme et le miroir sont quatre quartets : **{M1, M3, M9, M11}, {M2, M4, M10, M12}, {M5, M7, M13, M15}, {M6, M8, M14, M16}**.
+- La somme des figures de repos de chaque quartet est Populus.
+- Les 4 bases d'un quartet ne prennent que 8 192 configurations (1/8) ; **deux quartets quelconques déterminent tout le thème**.
+- Chaque quartet a 7 lois internes (3 indépendantes). Exemples : M1 Feu + M1 Air + M11 Feu : pair ; M3 Feu + M3 Air + M11 Eau : pair ; dans le quartet de M15, M15 Feu + Air + Eau + Terre : pair (le Juge).
+
+## I16 — Le binôme ou le miroir dans la maison
+Quels ensembles de maisons peuvent porter ensemble leur binôme (b = binôme de h), ou leur miroir (b = miroir de h) ?
+
+| | Binôme | Miroir |
+|---|---|---|
+| Ensembles possibles (sur 65 536) | 380 | 568 |
+| Maximum simultané | 5 (32 thèmes) | 6 (9 thèmes) |
+| Thèmes avec 0, 1, 2, 3, 4, 5, 6 placements | 23 449 · 26 604 · 12 166 · 2 796 · 489 · 32 | 25 350 · 24 400 · 11 357 · 3 524 · 780 · 116 · 9 |
+| Impossibles minimaux (1, 2, 3, 4, 5 maisons) | 1 · 32 · 8 · 13 · 1 | 1 · 24 · 11 · 7 · 3 |
+
+Dans les deux cas, **la seule maison impossible seule est M15** : le Juge est toujours pair, or son binôme (Cauda) et son miroir (Rubeus) sont impairs. Les listes de couples s'obtiennent avec `node outils/invariants.js --liste`.
