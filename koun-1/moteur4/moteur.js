@@ -230,6 +230,10 @@
     var sat = function (h) { return K.niveaux(L.resu(h))[3] === 2; }, par = [0, 1, 2, 3].map(function (z) { return [1, 2, 3, 4].filter(function (i) { return sat(z + 4 * (i - 1) + 1); }).length; });
     return { total: par.reduce(function (a, b) { return a + b; }, 0), parFront: par };
   }
+
+  // Buts d'après la Terre (règle du propriétaire : la saturation de Terre est le marquage ; il a vérifié le niveau Terre). Formule de comptage : buts au total = ceil(T/2) + 1, T = maisons à résultante saturée en Terre.
+  // La formule vient de cinq matchs (4-1-6-7, 10-2-12-3, 6-8-8-11, 4-6-7-16, 14-9-16-9) ; sa première prédiction à l'aveugle est 1-3-15-4 (6 buts).
+  function butsTerre(L) { var t = terreSaturee(L).total; return { T: t, total: Math.ceil(t / 2) + 1 }; }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -239,7 +243,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { butsTerre: butsTerre, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

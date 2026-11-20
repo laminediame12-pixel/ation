@@ -23,3 +23,6 @@ Aucune règle de verdict n'est démontrée. Retirées :
 - Tout le reste de l’ancien moteur (supprimé) : développement, CC-1, « R1 par défaut », pénalité/carton, buts, corners, Over/Under, rythme.
 
 Une règle revient ici quand elle est posée avant les chiffres, testée une fois sur un lot neuf, et confirmée.
+
+## Buts d'après la Terre (`KOUN4.butsTerre`)
+Règle du propriétaire : la saturation de Terre est le marquage. T = nombre de maisons à résultante saturée en Terre ; buts au total = ceil(T/2) + 1 (formule tirée de cinq matchs, première prédiction à l'aveugle : 1-3-15-4, 6 buts). La ligne « Buts au total » du verdict et l'Over/Under qui en découle sont alimentés par elle ; toutes les autres lignes restent sans verdict.
