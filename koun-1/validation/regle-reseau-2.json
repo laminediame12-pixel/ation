@@ -1,0 +1,11 @@
+{
+ "nom": "R-RESEAU-2",
+ "date_de_gel": "2026-11-20",
+ "origine": "Changement de R-RESEAU-1 autorisé par le propriétaire si le test allait mal. R-RESEAU-1 testée une fois sur 26 thèmes : issue juste 5/26 (19 %), moins bien que « toujours victoire R1 » (14/26) et que le moteur (20/26), avec 13 égalités annoncées sur 26. R-RESEAU-2 ajoute l'élément du modèle du propriétaire que R-RESEAU-1 avait laissé de côté (« il reste à voir ce niveau avec l'élément naturel de la maison : compatible ou pas »). Elle n'a PAS été exécutée sur les 26 thèmes.",
+ "regle": "Identique à R-RESEAU-1, sauf qu'une liaison vivante compte pour sa compatibilité au lieu de 1 : poids = part des nœuds traversés (maison 1 à 15) dont l'élément naturel (canal de la maison : Feu M1, M5, M9, M13 ; Air M2, M6, M10, M14 ; Eau M3, M7, M11, M15 ; Terre M4, M8, M12) est le niveau de la liaison. Le camp qui a le plus grand total l'emporte ; à égalité : nul.",
+ "arret": "variante du propriétaire (antagoniste ancré dans la maison qu'il attaque) ; variante du moteur rapportée à part",
+ "donnees": "uniquement le lot neuf validation/lots/lot-2026-11-20-24.json (82 matchs, thèmes tirés avant les matchs), au fil des scores connus. Les 26 thèmes déjà vus ne servent pas à valider cette règle.",
+ "mesure": "issue juste sur trois issues, Wilson à 95 %, comparée à « toujours victoire R1 » et au verdict du moteur gelé sur les mêmes matchs",
+ "mode_operatoire": "node outils/evaluer_reseau.js --lot --regle2, une seule fois, quand les scores du lot seront renseignés. Tout nouveau changement sera une nouvelle hypothèse et attendra un autre lot.",
+ "script": "outils/evaluer_reseau.js"
+}

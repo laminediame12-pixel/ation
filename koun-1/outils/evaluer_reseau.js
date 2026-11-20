@@ -10,7 +10,7 @@ const FR = ['A', 'B', 'C', 'D'];
 
 // Liaisons vivantes d'un front. variante 'proprietaire' : un nœud est un arrêt si la maison porte en base son antagoniste (base = h − 3) ;
 // variante 'moteur' : un nœud est un arrêt si la figure en base est dans la maison de son antagoniste (maison = base − 3, enMaisonAntagoniste du moteur).
-function vivantes(base, z, variante) {
+function vivantes(base, z, variante, regle2) {
   const res = h => add(base[h], h), stop = h => variante === 'moteur' ? h === ant(base[h]) : base[h] === ant(h);
   const T = z + 1, R = z + 5, B = z + 9, Lf = z + 13;
   let vives = 0, coupees = 0;
@@ -18,14 +18,14 @@ function vivantes(base, z, variante) {
     const vert = P(res(T))[l] === 2 && P(res(B))[l] === 2, hor = P(res(Lf))[l] === 2 && P(res(R))[l] === 2;
     [[vert, [0, 1, 2, 3].map(i => 4 * l + i + 1)], [hor, [0, 1, 2, 3].map(j => 4 * j + l + 1)]].forEach(([c, hs]) => {
       if (!c) return; const noeuds = hs.filter(h => h !== 16);
-      if (noeuds.some(stop)) coupees++; else vives++; });
+      if (noeuds.some(stop)) coupees++; else vives += regle2 ? noeuds.filter(h => (h - 1) % 4 === l).length / noeuds.length : 1; });
   }
   return { vives, coupees };
 }
-function lecture(themes, variante) {
+function lecture(themes, variante, regle2) {
   const L = K.lire(K.construireTheme(...themes.map(K.fig))), base = {};
   L.maisons.forEach(m => { base[m.maison] = K.num(m.base); });
-  const camp = lettre => { const z = FR.indexOf(lettre); return vivantes(base, z, variante).vives + vivantes(base, (z + 2) % 4, variante).vives; };
+  const camp = lettre => { const z = FR.indexOf(lettre); return vivantes(base, z, variante, regle2).vives + vivantes(base, (z + 2) % 4, variante, regle2).vives; };
   const c1 = camp(L.R1.front), c7 = camp(L.R7.front);
   return { c1, c7, issue: c1 > c7 ? '1' : c1 < c7 ? '2' : 'N', verdictMoteur: K.analyser(K.construireTheme(...themes.map(K.fig))).verdict.verdict };
 }
@@ -37,11 +37,17 @@ const docs = JSON.parse(fs.readFileSync(path.join(V, 'themes-documentes.json'), 
 const data = [];
 sc.filter(e => l18.includes(e.match)).forEach(e => data.push({ nom: e.match, th: e.themes, a: e.score[0], b: e.score[1] }));
 docs.forEach(d => { const [a, b] = d.reel.score.split('-').map(Number); data.push({ nom: d.equipe1 + ' – ' + d.equipe2, th: d.theme.split('-').map(Number), a, b }); });
-const utiles = data.filter(d => d.th.join('-') !== '8-5-11-7');
+const REGLE2 = process.argv.includes('--regle2'), LOT = process.argv.includes('--lot');
+let utiles = data.filter(d => d.th.join('-') !== '8-5-11-7');
+if (LOT) {   // lot neuf : validation/lots/lot-2026-11-20-24.json, seulement les matchs dont le score est connu
+  const lot = JSON.parse(fs.readFileSync(path.join(V, 'lots', 'lot-2026-11-20-24.json'), 'utf8')).matchs.filter(m => m.score);
+  utiles = lot.map(m => { const [a, b] = m.score.split('-').map(Number); return { nom: m.equipe1 + ' – ' + m.equipe2, th: m.theme.split('-').map(Number), a, b }; });
+  if (!utiles.length) { console.log('Aucun score renseigné dans le lot : rien à évaluer.'); process.exit(0); }
+}
 
 const reel = d => d.a > d.b ? '1' : d.a < d.b ? '2' : 'N';
 function bilan(variante) {
-  const rows = utiles.map(d => ({ d, ...lecture(d.th, variante) })); const M = { '1': { '1': 0, 'N': 0, '2': 0 }, 'N': { '1': 0, 'N': 0, '2': 0 }, '2': { '1': 0, 'N': 0, '2': 0 } };
+  const rows = utiles.map(d => ({ d, ...lecture(d.th, variante, REGLE2) })); const M = { '1': { '1': 0, 'N': 0, '2': 0 }, 'N': { '1': 0, 'N': 0, '2': 0 }, '2': { '1': 0, 'N': 0, '2': 0 } };
   rows.forEach(r => { M[reel(r.d)][r.issue]++; });
   const ok = rows.filter(r => r.issue === reel(r.d)).length, okMot = rows.filter(r => r.verdictMoteur === reel(r.d)).length, toujours1 = rows.filter(r => reel(r.d) === '1').length;
   const egal = rows.filter(r => r.issue === 'N').length;
@@ -50,7 +56,7 @@ function bilan(variante) {
 const wilson = (k, n) => { const z = 1.96, p = k / n, d = 1 + z * z / n, c = p + z * z / (2 * n), r = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)); return [((c - r) / d * 100).toFixed(0), ((c + r) / d * 100).toFixed(0)]; };
 ['proprietaire', 'moteur'].forEach(v => {
   const b = bilan(v), w = wilson(b.ok, b.n);
-  console.log('\n=== Règle R-RESEAU-1, variante « ' + v + ' »' + (v === 'proprietaire' ? ' (principale)' : ' (secondaire)') + ' — ' + b.n + ' thèmes ===');
+  console.log('\n=== Règle ' + (REGLE2 ? 'R-RESEAU-2' : 'R-RESEAU-1') + (LOT ? ' sur le lot neuf' : '') + ', variante « ' + v + ' »' + (v === 'proprietaire' ? ' (principale)' : ' (secondaire)') + ' — ' + b.n + ' thèmes ===');
   console.log('Issue juste (victoire R1 / nul / victoire R7) :', b.ok + '/' + b.n, '(' + (100 * b.ok / b.n).toFixed(0) + ' %, Wilson 95 % ' + w[0] + ' à ' + w[1] + ' %)');
   console.log('Témoins : toujours « victoire R1 » ' + b.toujours1 + '/' + b.n + ' ; verdict du moteur ' + b.okMot + '/' + b.n + ' ; égalités annoncées par la règle : ' + b.egal + '/' + b.n);
   console.log('Matrice (lignes : réel ; colonnes : annoncé 1 / nul / 2) :');
