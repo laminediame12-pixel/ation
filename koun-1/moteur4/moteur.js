@@ -302,7 +302,15 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  // CHAÎNE du protecteur : f (la figure du pôle), a = antagoniste (f−3) qui l'attaque, p = protecteur (f−6) qui attaque a. Filiations des trois figures prises deux à deux
+  // (somme = XOR exact) : f+a et a+p tombent toujours sur le Circuit Souverain (figures 1-3-5-11-13) ; f+a+(a+p) = f+p. Lecture de structure, pas un verdict.
+  function chaine(L) { var T = L.theme, A = K.additionner, chez = function (f) { return T.bases[f] === f || (f < 16 && T.resultantes[f] === f); };
+    function un(c) { var f = c.figure, a = mod(f - 3), p = mod(f - 6), s1 = A(f, a), s2 = A(a, p), s3 = A(f, p), circuit = [1, 3, 5, 11, 13];
+      return { figure: f, antagoniste: a, protecteur: p, protecteurChezLui: chez(p), antagonisteChezLui: chez(a),
+        filiations: [{ de: [f, a], somme: s1, circuit: circuit.indexOf(s1) >= 0 }, { de: [a, p], somme: s2, circuit: circuit.indexOf(s2) >= 0 }, { de: [f, p], somme: s3, circuit: circuit.indexOf(s3) >= 0 }],
+        protecteurEstSomme: s1 === p }; }
+    return { R1: un(L.R1), R7: un(L.R7) }; }
+  var API = { chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
