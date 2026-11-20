@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (108 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (112 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -234,3 +234,9 @@ Rubeus (7, 2122) : seul l'Air est à un point. Son binôme est Via, son miroir A
 - **Rubeus en base de plusieurs maisons** : 593 ensembles de maisons possibles, 7 au plus. Impossibles minimaux : M15 seule, 25 couples, 13 triples, 10 quadruplets, 4 quintuplets.
 - **Rubeus en résultante de plusieurs maisons** : 317 ensembles possibles, 5 au plus. Impossibles minimaux : M15 seule, 34 couples, 14 triples, 7 quadruplets, 3 quintuplets.
 - La liste des couples s'obtient avec `node outils/invariants.js --liste`.
+
+## I24 — Via, Rubeus, Cauda, Aquisitio en M12 et M6 ; Rubeus comme pôle
+- **Via (5), Rubeus (7), Cauda Draconis (13) et Aquisitio (15)** sont exactement les figures dont l'Air est à un point et dont le Feu égale l'Eau (un coset du groupe du binôme et du miroir). Dans **chaque maison**, leurs quatre résultantes ont le même état de l'Air et le même rapport Feu/Eau.
+- Dans toutes les maisons paires (canaux Air et Terre, dont M6 et M12), leur **Air est non saturé**. En M12 leurs résultantes sont Caput (Rubeus), Conjunctio (Aquisitio), Puer (Cauda), Fortuna Minor (Via) : l'Air est toujours non saturé et un seul de Feu et Eau est saturé.
+- **Pôles** (R1 = maison du numéro de la figure de M1, R7 = R1 + 6). Si M1 = Amissio (pôles en M6 et M12), R1 a toujours son Feu à deux points et R7 à un point : les deux pôles ne sont alors jamais du même front.
+- Rubeus peut être le pôle R1 dans 9 maisons (M2, M3, M4, M6, M7, M9, M10, M12, M13) et le pôle R7 dans 11 (M2 à M11 et M13), **jamais R7 en M12** (son Feu à deux points est incompatible avec le Feu à un point que M1 = Amissio impose à R7). En M6 il peut l'être des deux côtés. Effectifs : 512 thèmes pour R1 en M6 ou M12 et pour R7 en M6.

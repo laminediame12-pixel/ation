@@ -247,6 +247,20 @@ const rubeus = {};
   famille('Rubeus en résultante de plusieurs maisons', (t, r, h) => r[h] === RUB, 317, 5, { 1: 1, 2: 34, 3: 14, 4: 7, 5: 3 });
 }
 
+// I24 — Le quartet de figures {Via, Rubeus, Cauda Draconis, Aquisitio} dans les maisons, et Rubeus comme pôle (R1 = maison du numéro de la figure de M1, R7 = R1 + 6)
+{
+  const Q = [5, 7, 13, 15], air = r => P(r)[1] === 2, feuEau = r => (P(r)[0] === 2) !== (P(r)[2] === 2);
+  ok('I24 Via, Rubeus, Cauda, Aquisitio (5, 7, 13, 15) sont les figures à Air à un point et Feu = Eau ; dans chaque maison leurs quatre résultantes ont toutes le même état de l\'Air et le même rapport Feu/Eau', Q.every(f => P(f)[1] === 1 && P(f)[0] === P(f)[2]) && F.filter(f => f.niveaux[1] === 1 && f.niveaux[0] === f.niveaux[2]).length === 4
+    && [...Array(16).keys()].every(i => { const h = i + 1, rs = Q.map(f => add(f, h)); return rs.every(r => air(r) === air(rs[0]) && feuEau(r) === feuEau(rs[0])); }));
+  ok('I24 dans toutes les maisons paires (canaux Air et Terre, dont M6 et M12), ces quatre figures ont leur Air non saturé ; en M12 leurs résultantes sont Caput, Conjunctio, Puer, Fortuna Minor (Air non saturé, un seul de Feu et Eau saturé)',
+    [2, 4, 6, 8, 10, 12, 14, 16].every(h => Q.every(f => !air(add(f, h)))) && JSON.stringify(Q.map(f => add(f, 12))) === '[9,3,1,11]');
+  // pôles : niveaux imposés par M1
+  const R7de = n => ((n + 5) % 16) + 1, avec = n => bases.filter(t => t[1] === n);
+  ok('I24 si M1 = Amissio (pôles en M6 et M12), R1 a toujours son Feu à deux points et R7 à un point : les deux pôles ne sont jamais du même front', avec(6).every(t => P(t[6])[0] === 2 && P(t[12])[0] === 1));
+  const parR1 = {}, parR7 = {}; bases.forEach(t => { const h1 = t[1], h7 = R7de(h1); if (t[h1] === 7) parR1[h1] = (parR1[h1] || 0) + 1; if (t[h7] === 7) parR7[h7] = (parR7[h7] || 0) + 1; });
+  ok('I24 Rubeus peut être le pôle R1 dans 9 maisons (M2, M3, M4, M6, M7, M9, M10, M12, M13) et le pôle R7 dans 11 (M2 à M11 et M13) : jamais R7 en M12', JSON.stringify(Object.keys(parR1).map(Number).sort((a, b) => a - b)) === '[2,3,4,6,7,9,10,12,13]' && JSON.stringify(Object.keys(parR7).map(Number).sort((a, b) => a - b)) === '[2,3,4,5,6,7,8,9,10,11,13]' && !parR7[12], 'R1 : ' + JSON.stringify(parR1) + ' ; R7 : ' + JSON.stringify(parR7));
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { for (const nom of Object.keys(rubeus)) if (Array.isArray(rubeus[nom])) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + rubeus[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
   for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
