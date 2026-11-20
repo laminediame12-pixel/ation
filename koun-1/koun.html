@@ -15,7 +15,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
 <h1>Koun — moteur 4</h1><p class="s">Lecture exacte du thème à partir des quatre mères. Aucun verdict : aucune règle de victoire ou de nul n'est démontrée.</p>
 <div id="lanc"><h2>Lancement du thème</h2><label>Mode de lancement</label><select id="lMode"><option value="sable">Tirage aléatoire du sable (16 jets)</option><option value="manuel">Manuel — choisir les mères</option><option value="rapide">Entrée rapide par numéros</option></select>
 <div id="lSable" style="margin-top:8px"><div class="pad" id="lPad"><b>✋ Toucher le sable</b><div class="sm" style="font-size:12px;color:var(--mu)">Chaque frappe projette la ligne suivante : un nombre de points au hasard ; impair = 1 point, pair = 2 points. 4 lignes = une mère (Feu, Air, Eau, Terre).</div></div><div class="sl" id="lLines"></div><div class="br"><button type="button" id="lFull">⚄ Jet complet (16 lignes)</button><button type="button" id="lRaz">Nouveau tracé</button></div></div>
-<div id="lRapide" style="display:none;margin-top:8px"><input id="lNum" placeholder="ex : 8-5-11-7" inputmode="numeric"></div>
+<div id="lRapide" style="display:none;margin-top:8px"><input id="lNum" placeholder="ex : 2-3-11-7 (espace = tiret)" inputmode="numeric"></div>
 <div id="lManuel" style="display:none;margin-top:8px;font-size:12px;color:var(--mu)">Choisis les quatre mères dans les listes ci-dessous.</div>
 <div class="br"><button type="button" class="go" id="lGo">Lancer le thème</button></div><div class="msg" id="lMsg"></div></div><div class="f" id="meres"></div>
 <label>Jour du match (pour la figure du jour, facultatif)</label><select id="jour" style="margin-bottom:12px"><option value="">— sans date —</option></select>
@@ -364,5 +364,6 @@ function go(){var v=$('lMode').value;
  if(v==='sable'){if(lines.length<16){msg('Il faut 16 lignes ('+lines.length+'/16) : touche le sable ou fais un jet complet.');return}appliquer(meresDeLignes());msg('')}
  else if(v==='rapide'){var m=$('lNum').value.trim().split(/[^0-9]+/).filter(Boolean).map(Number);if(m.length!==4||m.some(function(x){return x<1||x>16})){msg('Entrée attendue : quatre numéros de 1 à 16, par exemple 8-5-11-7.');return}appliquer(m);msg('')}
  else{mer.dispatchEvent(new Event('change'));msg('')}}
+$('lNum').addEventListener('input',function(){var v=this.value.replace(/[\s,;.\/]+/g,'-').replace(/[^0-9-]/g,'').replace(/-{2,}/g,'-').replace(/^-/,''),parts=v.split('-');if(parts.length>4){parts=parts.slice(0,4)}parts=parts.map(function(x){return x.length>2||+x>16?x.slice(0,-1):x});v=parts.join('-');this.value=v});
 $('lGo').onclick=go;$('lNum').addEventListener('keydown',function(e){if(e.key==='Enter')go()});grille();
 })();</script></body></html>
