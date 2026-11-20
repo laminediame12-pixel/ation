@@ -108,12 +108,13 @@
    6,
    7
   ],
-  "match": "4·1·6·7",
+  "match": "Los Angeles–Inter Miami",
   "score": [
    3,
    0
   ],
-  "lot": "dev"
+  "lot": "dev",
+  "date": "2026-02-22"
  },
  {
   "themes": [
@@ -391,11 +392,12 @@
    6,
    7
   ],
-  "match": "équipes et date à préciser",
+  "match": "Los Angeles–Inter Miami",
   "score": [
    3,
    0
   ],
-  "lot": "lot"
+  "lot": "lot",
+  "date": "2026-02-22"
  }
 ]
