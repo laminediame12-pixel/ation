@@ -45,6 +45,27 @@ ok('I6 aucun ensemble générateur ne contient à la fois une mère (M1-M4) et u
 ok('I6 M15 n\'appartient à aucun ensemble générateur ; M3, M4 et M13 sont dans 19 d\'entre eux', generateurs.every(g => !g.includes(15)) && [3, 4, 13].every(h => generateurs.filter(g => g.includes(h)).length === 19));
 ok('I6 les 4 mères (M1-M4) et les 4 filles (M5-M8) sont chacune un ensemble générateur', [[1, 2, 3, 4], [5, 6, 7, 8]].every(x => generateurs.some(g => g.join() === x.join())));
 
+// I7 — Les 84 lois à trois niveaux = les 8 triples de construction × 4 niveaux, où chaque niveau d'une maison de M1..M8 peut être remplacé par son jumeau de transposition (I5).
+// I8 — Ces lois sont complètes : 16 lois de transposition + 32 lois de construction = 48 lois indépendantes, qui engendrent toutes les lois entre niveaux de maisons.
+{
+  const e = (m, l) => 1 << (4 * m + l), Mm = {}; for (let m = 1; m <= 4; m++) Mm[m] = [0, 1, 2, 3].map(l => e(m - 1, l)); for (let l = 0; l < 4; l++) Mm[5 + l] = [0, 1, 2, 3].map(m => e(m, l));
+  const ad = (a, b) => a.map((x, i) => x ^ b[i]); Mm[9] = ad(Mm[1], Mm[2]); Mm[10] = ad(Mm[3], Mm[4]); Mm[11] = ad(Mm[5], Mm[6]); Mm[12] = ad(Mm[7], Mm[8]); Mm[13] = ad(Mm[9], Mm[10]); Mm[14] = ad(Mm[11], Mm[12]); Mm[15] = ad(Mm[13], Mm[14]); Mm[16] = ad(Mm[15], Mm[1]);
+  const bit = (h, l) => 4 * (h - 1) + l, formes = []; for (let h = 1; h <= 16; h++) for (let l = 0; l < 4; l++) formes.push({ h, l, f: Mm[h][l] });
+  const jumeau = ([h, l]) => h <= 4 ? [5 + l, h - 1] : h <= 8 ? [l + 1, h - 5] : null, cle = t => t.map(([h, l]) => h + ':' + l).sort().join(' ');
+  const triples = new Set(); for (let i = 0; i < 64; i++) for (let j = i + 1; j < 64; j++) for (let k = j + 1; k < 64; k++) if ((formes[i].f ^ formes[j].f ^ formes[k].f) === 0) triples.add(cle([formes[i], formes[j], formes[k]].map(v => [v.h, v.l])));
+  // engendrées : 8 triples × 4 niveaux, puis toutes les substitutions par les jumeaux
+  const engendrees = new Set(); TRIPLES.forEach(t => { for (let l = 0; l < 4; l++) { const base = t.map(h => [h, l]); const n = base.length; for (let m = 0; m < (1 << n); m++) { const v = base.map((b, i) => (m >> i & 1) && jumeau(b) ? jumeau(b) : b); engendrees.add(cle(v)); } } });
+  ok('I7 il y a exactement 84 lois à trois niveaux, toutes engendrées par les 32 lois de construction et la transposition', triples.size === 84 && engendrees.size === 84 && [...triples].every(x => engendrees.has(x)), triples.size + ' lois');
+  let tous = true; triples.forEach(x => { const t = x.split(' ').map(y => y.split(':').map(Number)); const c = t.reduce((a, [h, l]) => a ^ (P(h)[l] === 1 ? 1 : 0), 0); if (!themes.every(r => (t.filter(([h, l]) => !sat(r[h], l)).length % 2) === c)) tous = false; });
+  ok('I7 chacune des 84 lois : parité du nombre de niveaux non saturés fixe sur les 65 536 thèmes', tous);
+  // I8 : rang de l'ensemble des 48 lois (vecteurs sur 64 variables) = 48 = 64 − rang des 64 formes
+  const lois = []; for (let m = 0; m < 4; m++) for (let lp = 0; lp < 4; lp++) lois.push((1n << BigInt(bit(m + 1, lp))) | (1n << BigInt(bit(5 + lp, m))));
+  TRIPLES.forEach(t => { for (let l = 0; l < 4; l++) lois.push(t.reduce((a, h) => a | (1n << BigInt(bit(h, l))), 0n)); });
+  const rang = vs => { const b = []; vs.forEach(x => { for (const y of b) { const z = x ^ y; if (z < x) x = z; } if (x) b.push(x); }); return b.length; };
+  const rangFormes = (() => { const b = []; formes.forEach(v => { let x = v.f; for (const y of b) x = Math.min(x, x ^ y); if (x) b.push(x); }); return b.length; })();
+  ok('I8 les 16 lois de transposition et les 32 lois de construction sont indépendantes (rang 48) et il n\'y a que 64 − 16 = 48 lois indépendantes en tout', rang(lois) === 48 && 64 - rangFormes === 48);
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
 console.log('\nLes 14 couples de liaisons jamais connectées ensemble :'); excl.forEach(([a, b]) => console.log('  ' + a + '  ✕  ' + b));

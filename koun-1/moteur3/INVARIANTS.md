@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (37 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (40 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -51,10 +51,31 @@ Le niveau l' de la mère M(m+1) est le même que le niveau m de la fille M(5+l')
 | M3 | M5 Eau ≠ | M6 Eau = | M7 Eau ≠ | M8 Eau ≠ |
 | M4 | M5 Terre ≠ | M6 Terre = | M7 Terre ≠ | M8 Terre ≠ |
 
-La diagonale est I1. Il existe aussi 84 lois entre trois niveaux, dont 43 qui mêlent des niveaux différents.
+La diagonale est I1.
 
 ## I6 — Quelles maisons déterminent le thème
 - **55 ensembles de 4 maisons seulement** (sur 1 820) déterminent tout le thème : deux thèmes différents ont toujours des figures différentes dans au moins une de ces 4 maisons. Les 4 mères en sont un, les 4 filles un autre.
 - **Aucun de ces ensembles ne contient à la fois une mère et une fille** : chaque mère est liée à chaque fille par une loi de I5.
 - **M15 n'appartient à aucun de ces ensembles** : c'est la somme de M1 à M8, elle ne porte aucune information propre. M3, M4 et M13 sont dans 19 de ces ensembles, M13 et M16 dans 13 ou plus.
 - La liste complète s'obtient avec `node outils/invariants.js --liste`.
+
+## I7 — Les 84 lois à trois niveaux
+Ce sont les 8 triples de construction (I2) vus à chacun des 4 niveaux, où chaque niveau d'une maison de M1 à M8 peut être remplacé par son jumeau de transposition (I5). Il n'y en a pas d'autres.
+
+| Triple | Formes par niveau | Lois |
+|---|---|---|
+| M1 + M2 + M9 | 4 | 16 |
+| M3 + M4 + M10 | 4 | 16 |
+| M5 + M6 + M11 | 4 | 16 |
+| M7 + M8 + M12 | 4 | 16 |
+| M9 + M10 + M13 | 1 | 4 |
+| M11 + M12 + M14 | 1 | 4 |
+| M13 + M14 + M15 | 1 | 4 |
+| M1 + M15 + M16 | 2 | 8 |
+| **Total** | | **84** |
+
+Parité : celle du triple de départ, inversée à chaque remplacement par un jumeau « ≠ » de I5. Exemple : M5 + M6 + M11 au Feu a un nombre pair de niveaux non saturés ; en remplaçant M5 Feu par son jumeau M1 Feu (« = »), on obtient « M1 Feu + M6 Feu + M11 Feu : nombre pair ».
+43 de ces lois mêlent des niveaux différents, 41 sont d'un seul niveau.
+
+## I8 — Il n'y a rien d'autre
+Les 16 lois de transposition (I5) et les 32 lois de construction (8 triples × 4 niveaux, I2) sont indépendantes (rang 48). Un thème a 64 niveaux de maisons pour 16 degrés de liberté (les 4 mères) : il n'y a que 64 − 16 = 48 lois indépendantes. **Toute loi entre niveaux de maisons est donc une combinaison de ces 48.**
