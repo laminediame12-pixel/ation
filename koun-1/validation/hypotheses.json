@@ -475,6 +475,78 @@
      "score": "1-4"
     }
    ]
+  },
+  {
+   "id": "H-PARA",
+   "posee_le": "2026-11-20",
+   "enonce": "Une figure est paralysée quand son antagoniste (f − 3) est ancré en base de sa maison ; son canal (élément de son front) est paralysé quand ce niveau fait partie des niveaux à un point de l'antagoniste. Le pôle dont la boucle (les 8 figures de même parité que sa figure) contient une figure à canal paralysé gagne ; si les deux boucles ou aucune : pas de victoire. Née des cinq matchs connus (3 justes, 1 mixte, 1 sans paralysie), qui ne comptent pas comme test.",
+   "predictions": [
+    {
+     "theme": [
+      1,
+      3,
+      15,
+      4
+     ],
+     "date_match": "2026-11-20",
+     "match": "équipes à préciser",
+     "prediction": "pas de victoire",
+     "detail": "Via et Fortuna Minor paralysées (canal Feu) en front A ; les deux pôles sont dans la même boucle (A et C)",
+     "score": null
+    }
+   ],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "prediction": "R1 (Carcer, front B, dans la boucle D+B de R1)",
+     "score": "5-0"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "prediction": "pas de victoire (aucun canal paralysé)",
+     "score": "3-0"
+    },
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "pas de victoire (Via dans la boucle de R7, Puella dans celle de R1)",
+     "score": "3-1"
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "R7 (Carcer, front B, front de R7)",
+     "score": "1-3"
+    },
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "prediction": "R7 (Puer, Aquisitio dans la boucle A+C de R7)",
+     "score": "1-4"
+    }
+   ]
   }
  ],
  "lectures": [

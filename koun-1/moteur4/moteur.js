@@ -197,6 +197,33 @@
     }
     return { mult: mult, R1: boucle(L.R1), R7: boucle(L.R7) };
   }
+
+  // Paralysie par l'antagoniste (lecture du propriétaire). La figure f de la maison h est paralysée quand son antagoniste a = f − 3 est ancré en base de sa maison : la résultante est a + f.
+  // Les niveaux paralysés de f sont ceux dont la saturation change entre f et cette résultante : exactement les niveaux à un point de l'antagoniste. Le canal de f (l'élément de son front) est paralysé
+  // quand son niveau fait partie des niveaux changés. Exemple : Conjunctio (2112) en M14 change l'Air et l'Eau de Puella.
+  function paralysieFigure(f) {
+    var a = mod(f - 3), x = K.niveaux(f), r = K.niveaux(K.additionner(a, f)), niv = [];
+    for (var i = 0; i < 4; i++) if ((x[i] === 2) !== (r[i] === 2)) niv.push(LETTRES[i]);
+    var canal = LETTRES[(f - 1) % 4];
+    return { figure: f, antagoniste: a, resultante: K.additionner(a, f), niveaux: niv.join(''), canal: canal, canalParalyse: niv.indexOf(canal) >= 0 };
+  }
+  function paralysie(L) {
+    var b = L.theme.bases, liste = [];
+    for (var h = 1; h <= 16; h++) if (b[h] === mod(h - 3)) {
+      var p = paralysieFigure(h), m = mod(h + 8), pm = paralysieFigure(m), commun = p.niveaux.split('').filter(function (l) { return pm.niveaux.indexOf(l) >= 0; }).join('');
+      p.maison = h; p.front = K.front(h); p.miroir = m; p.niveauxMiroir = pm.niveaux; p.communAvecMiroir = commun; liste.push(p);
+    }
+    return liste;
+  }
+  // Liaisons de Terre : la Terre dévie dans la croix de chaque front (haut f → droite f+4, bas f+8 → gauche f+12) et relie ainsi les deux paires de maisons miroir du front.
+  // Une liaison est connectée si les deux résultantes sont saturées en Terre ; sinon elle est rompue, et on dit de quel côté.
+  function liaisonsTerre(L) {
+    var sat = function (h) { return K.niveaux(L.resu(h))[3] === 2; };
+    return [1, 2, 3, 4].map(function (f) {
+      var lien = function (a, c) { var x = sat(a), y = sat(c); return { de: a, vers: c, etat: x && y ? 'connectée' : (!x && !y ? 'rompue des deux côtés' : (x ? 'rompue en M' + c : 'rompue en M' + a)) }; };
+      return { front: K.front(f), liens: [lien(f, f + 4), lien(f + 8, f + 12)] };
+    });
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -206,7 +233,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

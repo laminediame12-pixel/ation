@@ -63,4 +63,8 @@ for (let q = 0; q < 65536; q += 7) { const m = [q & 15, (q >> 4) & 15, (q >> 8) 
   const c = f => { let n = 0; for (let h = 1; h <= 16; h++) if (T.bases[h] === f || (h < 16 && T.resultantes[h] === f)) n++; return n; };
   for (const [k, pole] of [['R1', L.R1], ['R7', L.R7]]) { let tot = 0; for (let f = 1; f <= 16; f++) if (f % 2 === pole.figure % 2) tot += c(f); if (X[k].total !== tot || X[k].figures.length !== 8) malM++; } }
 if (malM) add('multiplicité');
+// Paralysie : les niveaux changés sont exactement les niveaux à un point de l'antagoniste, pour les 16 figures
+for (let f = 1; f <= 16; f++) { const P = K4.paralysieFigure(f), an = N.niveaux(m16(f - 3)).map((v, i) => v === 1 ? 'FAET'[i] : '').join(''); if (P.niveaux !== an) add('paralysie ' + f); }
+// Exemple du propriétaire : Conjunctio en M14 change l'Air et l'Eau de Puella
+if (K4.paralysieFigure(14).niveaux !== 'AE' || K4.paralysieFigure(14).antagoniste !== 11) add('exemple Conjunctio/Puella');
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);
