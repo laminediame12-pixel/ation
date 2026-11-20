@@ -127,7 +127,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R7, R7, R7, égal] : non nets",
-     "score": null
+     "score": "1-2"
     }
    ],
    "resultats_apres_pose": [
@@ -416,7 +416,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire",
      "detail": "pôles en M3 et M9 ; arrêts en M4 et M8 : aucun pôle sous croix",
-     "score": null
+     "score": "1-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -889,7 +889,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire",
      "detail": "même boucle ; fronts C et A : 4 maisons saturées en Terre chacun",
-     "score": null
+     "score": "1-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -1064,7 +1064,7 @@
      "match": "équipes et date à préciser",
      "prediction": "nul (Via en base de M8)",
      "detail": "clause 1 : Via en base de M8 = nul",
-     "score": null
+     "score": "1-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -1157,7 +1157,7 @@
      "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
     }
    ],
-   "statut": "Clause 1 (Via en M8 = nul) : 3 sur 3. Clause 2 (buts par la Terre) : réfutée sur 2-12-4-4. Clause 3 (vainqueur par la Terre) : juste à l'aveugle sur 2-12-4-4, sans appel dans les matchs à égalité."
+   "statut": "Clause 1 (Via en base de M8 = nul) : 3 sur 4, réfutée telle qu'écrite sur 3-10-3-1 (nul prédit, score 1-2). Remarque du propriétaire : Via en M8 n'est pas un motif isolé, c'est un système. Voir H-SYS-A et H-SYS-B. Clause 2 : réfutée (2-12-4-4). Clause 3 (vainqueur par la Terre) : juste à l'aveugle sur 2-12-4-4."
   },
   {
    "id": "H-VIA8-B",
@@ -1175,7 +1175,7 @@
      "match": "équipes et date à préciser",
      "prediction": "1-1",
      "detail": "Via en base de M8 et de M15 : v = 2, ceil(2/2) = 1 but par équipe",
-     "score": null
+     "score": "1-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -1208,6 +1208,103 @@
      ],
      "prediction": "1-1 (v=1)",
      "score": "1-1"
+    }
+   ],
+   "statut": "Réfutée le 2026-11-20 sur 3-10-3-1 (inscrite avant le score) : 1-1 prévu, score 1-2."
+  },
+  {
+   "id": "H-SYS-A",
+   "posee_le": "2026-11-20",
+   "enonce": "Via en base de M8 donne le nul seulement si M8 est la seule maison de Terre (M4, M8, M12, M16) sous croix. Si une autre maison de Terre est aussi sous croix (une figure de plus paralysée dans le front D), pas de nul. Née des quatre matchs avec Via en base de M8 : les trois nuls n'ont que M8 sous croix parmi les maisons de Terre ; 3-10-3-1 (1-2) a M4 et M8. Aucun de ces quatre matchs ne compte comme test.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "nul (M8 seule)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "nul (M8 seule)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "nul (M8 seule)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "prediction": "pas de nul (M4 et M8)",
+     "score": "1-2"
+    }
+   ]
+  },
+  {
+   "id": "H-SYS-B",
+   "posee_le": "2026-11-20",
+   "enonce": "Via en base de M8 donne le nul seulement si T, le nombre de maisons à résultante saturée en Terre, est inférieur à 10. Même origine que H-SYS-A (T = 8, 9, 7 pour les trois nuls ; 12 pour 1-2) ; les deux hypothèses se séparent sur un thème avec Via en M8 qui aurait une seule maison de Terre sous croix et T ≥ 10, ou deux maisons sous croix et T < 10.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "nul (T=8)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "nul (T=9)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "nul (T=7)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "prediction": "pas de nul (T=12)",
+     "score": "1-2"
     }
    ]
   }
@@ -1351,7 +1448,8 @@
    "date_match": null,
    "lecture": "nul, 1-1",
    "statut": "lecture de l'analyste d'après H-UNIV (clause 1) et H-VIA8-B : quatrième thème avec Via en base de M8 ; les deux pôles sont dans la même boucle et ont la même Terre.",
-   "score": null
+   "score": "1-2",
+   "juste": false
   }
  ]
 }
