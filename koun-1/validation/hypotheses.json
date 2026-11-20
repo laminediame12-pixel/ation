@@ -167,6 +167,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [égal, égal, égal, R1, égal] : non nets",
      "score": "2-0"
+    },
+    {
+     "theme": [
+      2,
+      9,
+      6,
+      5
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R7, R7, R7, R1, R1] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -495,6 +508,19 @@
      "prediction": "R1",
      "detail": "R7 (Fortuna Major, M15) est sous croix : Fortuna Major est ancré en base de M15, la maison d'Aquisitio dont il est l'antagoniste ; R1 en M9 ne l'est pas",
      "score": "2-0"
+    },
+    {
+     "theme": [
+      2,
+      9,
+      6,
+      5
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1518,6 +1544,19 @@
      "prediction": "pas de nul",
      "detail": "Terre par front A/B/C/D = 3/2/2/2 : B = 2 > 1, la signature des nuls est absente",
      "score": "2-0"
+    },
+    {
+     "theme": [
+      2,
+      9,
+      6,
+      5
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de nul",
+     "detail": "Terre par front A/B/C/D = 2/2/2/1 : la signature des nuls (A 3-4, B 0-1, C 2, D 2) est absente",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1838,6 +1877,19 @@
    "statut": "lecture de l'analyste d'après H-CROIX (jamais testée à l'aveugle : née de deux matchs) ; le pôle R7 est sous croix ; la signature des nuls est absente. Même front pour les deux pôles (D), donc la Terre ne les sépare pas.",
    "score": "2-0",
    "juste": true
+  },
+  {
+   "theme": [
+    2,
+    9,
+    6,
+    5
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R7 (faible)",
+   "statut": "lecture de l'analyste, pas une règle : aucune règle encore en jeu ne désigne un vainqueur ; Tristitia, la figure du pôle R7, est chez elle en M8 (résultante Populus, tous niveaux saturés) et trois indicateurs sur cinq vont vers R7. Pas de nul prédit.",
+   "score": null
   }
  ]
 }
