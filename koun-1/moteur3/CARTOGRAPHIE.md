@@ -75,6 +75,11 @@ Résultante de l'antagoniste dans la maison h ; sa figure attaque la maison R+3 
 - **Terre** : M4 et M12 (Via) attaquent M8, M8 (Cauda) attaque M16, M16 se frappe elle-même.
 - **Chaîne vers le puits** (maison numérotée par la résultante) : tout aboutit à M3 (Caput), en 1 à 3 pas.
 
+## Binôme + figure (vérifié)
+Binômes : couples symétriques 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16.
+- **Figure + binôme** : toujours Amissio (1212) pour les figures des blocs M1-4 et M9-12 (Air et Terre saturés), toujours Puella (1211) pour M5-8 et M13-16 (Air seul). L'Air est toujours saturé, le Feu et l'Eau jamais ; la Terre seulement dans M1-4 et M9-12. Le résultat est toujours dans le front B (Air).
+- **Résultante de la maison + résultante de son binôme** : Tristitia (Feu, Air, Eau saturés) pour les couples A/C (M1-3, M5-7, M9-11, M13-15) ; Albus (Feu, Air, Terre) pour M2-4 et M10-12 ; Fortuna Major (Feu, Air) pour M6-8 et M14-16. Feu et Air sont toujours saturés.
+
 ## Pour le moteur
 ```text
 antagoniste(n) = ((n − 4) mod 16) + 1

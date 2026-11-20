@@ -79,6 +79,9 @@ ok('chaque somme : base + maison = résultante dans les 28 branches', sommes.eve
 ok('les attaques des antagonistes (résultante + 3) n\'arrivent que sur 5 maisons : M4, M6, M8, M14, M16', JSON.stringify([...new Set(maisons.map(m => m.cible))].sort((a, b) => a - b)) === '[4,6,8,14,16]');
 ok('M8 est la seule maison où la résultante de l\'antagoniste est l\'antagoniste du miroir (Via en M8 → Cauda, antagoniste de Populus en M16)', maisons.filter(m => m.resultante === antagoniste(m.miroir)).map(m => m.maison).join() === '8');
 ok('canaux : Feu et Eau attaquent l\'Air, l\'Air attaque la Terre, la Terre s\'attaque elle-même', [[0, 'Air'], [1, 'Terre'], [2, 'Air'], [3, 'Terre']].every(([c, e]) => maisons.filter(m => (m.maison - 1) % 4 === c).every(m => NIV[(m.cible - 1) % 4] === e)));
+const binome = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2;   // couples symétriques 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16
+ok('figure + binôme : Amissio (Air+Terre saturés) dans les blocs M1-4 et M9-12, Puella (Air seul) dans M5-8 et M13-16 ; Air toujours saturé, Feu et Eau jamais', figures.every(f => { const s = additionner(f.num, binome(f.num)), b = Math.floor((f.num - 1) / 4); return s === (b % 2 === 0 ? 6 : 14) && POINTS[s - 1][0] === 1 && POINTS[s - 1][1] === 2 && POINTS[s - 1][2] === 1; }));
+ok('résultante de la maison + résultante de son binôme : Feu et Air toujours saturés (Tristitia, Albus ou Fortuna Major)', maisons.every(m => { const s = additionner(m.resultante, maisons[binome(m.maison) - 1].resultante); return POINTS[s - 1][0] === 2 && POINTS[s - 1][1] === 2; }));
 const sortie = path.join(__dirname, '..', 'moteur3', 'cartographie.json'), json = JSON.stringify(doc, null, 1);
 if (process.argv.includes('--verifier')) { const cur = fs.existsSync(sortie) ? fs.readFileSync(sortie, 'utf8') : ''; verifs.push(['fichier cartographie.json à jour', cur === json, '']); }
 else fs.writeFileSync(sortie, json);
