@@ -25,4 +25,4 @@ Aucune règle de verdict n'est démontrée. Retirées :
 Une règle revient ici quand elle est posée avant les chiffres, testée une fois sur un lot neuf, et confirmée.
 
 ## Buts d'après la Terre (`KOUN4.butsTerre`)
-Règle du propriétaire : la saturation de Terre est le marquage. T = nombre de maisons à résultante saturée en Terre ; buts au total = ceil(T/2) + 1 (formule tirée de cinq matchs, première prédiction à l'aveugle : 1-3-15-4, 6 buts). La ligne « Buts au total » du verdict et l'Over/Under qui en découle sont alimentés par elle ; toutes les autres lignes restent sans verdict.
+Règle du propriétaire : la saturation de Terre est le marquage. T = nombre de maisons à résultante saturée en Terre ; buts au total = ceil(T/2) + 1 (formule tirée de cinq matchs ; première prédiction à l'aveugle : 1-3-15-4, 6 buts prévus, score 4-2, exacte : admise, à confirmer sur d'autres matchs). La ligne « Buts au total » du verdict et l'Over/Under qui en découle sont alimentés par elle ; toutes les autres lignes restent sans verdict.

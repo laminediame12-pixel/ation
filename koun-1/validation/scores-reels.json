@@ -446,5 +446,20 @@
   "lot": "lot",
   "rouge": "R7",
   "penalty": null
+ },
+ {
+  "themes": [
+   1,
+   3,
+   15,
+   4
+  ],
+  "match": "équipes à préciser",
+  "date": "2026-11-20",
+  "score": [
+   4,
+   2
+  ],
+  "lot": "lot"
  }
 ]
