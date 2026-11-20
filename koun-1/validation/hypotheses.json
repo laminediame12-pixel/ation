@@ -166,7 +166,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [égal, égal, égal, R1, égal] : non nets",
-     "score": null
+     "score": "2-0"
     }
    ],
    "resultats_apres_pose": [
@@ -494,7 +494,7 @@
      "match": "équipes et date à préciser",
      "prediction": "R1",
      "detail": "R7 (Fortuna Major, M15) est sous croix : Fortuna Major est ancré en base de M15, la maison d'Aquisitio dont il est l'antagoniste ; R1 en M9 ne l'est pas",
-     "score": null
+     "score": "2-0"
     }
    ],
    "cas_connus_hors_test": [
@@ -538,7 +538,8 @@
      "prediction": "pas de victoire (aucun pôle sous croix)",
      "score": "3-1"
     }
-   ]
+   ],
+   "statut": "Premier appel à l'aveugle juste : 9-13-2-13, R7 sous croix, R1 prévu, 2-0 pour R1. À l'essai (un seul appel à l'aveugle ; trois appels au total, tous justes, deux construits dessus)."
   },
   {
    "id": "H-EXPO",
@@ -1516,7 +1517,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de nul",
      "detail": "Terre par front A/B/C/D = 3/2/2/2 : B = 2 > 1, la signature des nuls est absente",
-     "score": null
+     "score": "2-0"
     }
    ],
    "cas_connus_hors_test": [
@@ -1650,7 +1651,8 @@
      "prediction": "pas de nul (0/1/1/2)",
      "score": "3-0"
     }
-   ]
+   ],
+   "statut": "Premier appel à l'aveugle « pas de nul » juste : 9-13-2-13 (B = 2, signature absente), 2-0. Un appel « pas de nul » est peu informatif ; le premier appel « nul » à l'aveugle reste à venir."
   }
  ],
  "lectures": [
@@ -1834,7 +1836,8 @@
    "date_match": null,
    "lecture": "R1 (faible)",
    "statut": "lecture de l'analyste d'après H-CROIX (jamais testée à l'aveugle : née de deux matchs) ; le pôle R7 est sous croix ; la signature des nuls est absente. Même front pour les deux pôles (D), donc la Terre ne les sépare pas.",
-   "score": null
+   "score": "2-0",
+   "juste": true
   }
  ]
 }
