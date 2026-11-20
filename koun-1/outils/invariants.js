@@ -216,8 +216,39 @@ const AXES = [[1, 4, 7, 10], [13, 16, 3, 6], [9, 12, 15, 2], [5, 8, 11, 14]];
   ok('I22 le quadruplet (S1, S2, S3, S4) prend 32 768 valeurs, chacune exactement pour 2 thèmes', vu.size === 32768 && [...vu.values()].every(v => v === 2));
 }
 
+// I23 — Rubeus (7, 2122 : seul l'Air est à un point) dans toutes les maisons
+const rubeus = {};
+{
+  const RUB = 7, bitR = l => P(RUB)[l] === 1 ? 1 : 0, nb = {};
+  const par = h => bases.filter(t => t[h] === RUB).length, parR = h => themes.filter(r => r[h] === RUB).length;
+  ok('I23 Rubeus est en base de chaque maison dans exactement 4 096 thèmes (1/16), sauf M15 où il n\'est jamais (Rubeus est impair, le Juge est toujours pair) ; même chose pour la résultante', [...Array(16).keys()].every(i => par(i + 1) === (i + 1 === 15 ? 0 : 4096) && parR(i + 1) === (i + 1 === 15 ? 0 : 4096)));
+  let absent = 0, maxB = 0, maxR = 0, maxT = 0; themes.forEach((r, i) => { const t = bases[i]; let b = 0, c = 0; for (let h = 1; h <= 16; h++) { if (t[h] === RUB) b++; if (r[h] === RUB) c++; } if (b + c === 0) absent++; maxB = Math.max(maxB, b); maxR = Math.max(maxR, c); maxT = Math.max(maxT, b + c); });
+  ok('I23 Rubeus est absent du thème (ni en base ni en résultante) dans 8 764 thèmes sur 65 536 ; au plus 7 en base (6 thèmes), 5 en résultante, 9 au total', absent === 8764 && maxB === 7 && maxR === 5 && maxT === 9);
+  ok('I23 résultante de Rubeus en M7 : Populus ; en M16 : Rubeus ; en M14 : Via (aucun niveau saturé) ; en M10 : Puer', add(RUB, 7) === 16 && add(RUB, 16) === 7 && add(RUB, 14) === 5 && add(RUB, 10) === 1);
+  // ce que Rubeus en base de la maison h impose dans tous les thèmes : niveaux constants ailleurs
+  const attendu = {}; const bitDe = (h, l) => (t) => P(t[h])[l] === 1 ? 1 : 0;
+  for (let h = 1; h <= 16; h++) { if (h === 15) continue; const cons = []; const sel = bases.filter(t => t[h] === RUB);
+    for (let h2 = 1; h2 <= 16; h2++) if (h2 !== h) for (let l = 0; l < 4; l++) { const v0 = P(sel[0][h2])[l] === 1 ? 1 : 0; if (sel.every(t => (P(t[h2])[l] === 1 ? 1 : 0) === v0)) cons.push(h2 + ':' + l + '=' + v0); }
+    attendu[h] = cons.sort().join(' '); }
+  const att = {};
+  for (let k = 1; k <= 4; k++) { const l = k - 1, c = []; for (let j = 0; j < 4; j++) c.push((5 + j) + ':' + l + '=' + bitR(j)); c.push('11:' + l + '=' + (bitR(0) ^ bitR(1)), '12:' + l + '=' + (bitR(2) ^ bitR(3)), '14:' + l + '=' + (bitR(0) ^ bitR(1) ^ bitR(2) ^ bitR(3))); att[k] = c.sort().join(' ');
+    const l2 = k - 1, d = []; for (let j = 0; j < 4; j++) d.push((1 + j) + ':' + l2 + '=' + bitR(j)); d.push('9:' + l2 + '=' + (bitR(0) ^ bitR(1)), '10:' + l2 + '=' + (bitR(2) ^ bitR(3)), '13:' + l2 + '=' + (bitR(0) ^ bitR(1) ^ bitR(2) ^ bitR(3))); att[4 + k] = d.sort().join(' '); }
+  for (let h = 9; h <= 14; h++) att[h] = ''; att[16] = '14:0=1';
+  ok('I23 Rubeus en base de M1 à M4 (ou M5 à M8) impose 7 niveaux ailleurs : le niveau k des filles (ou des mères) reproduit Rubeus, et M11, M12, M14 (ou M9, M10, M13) en découlent ; en M16 : M14 Feu à un point ; en M9 à M14 : rien', Object.keys(att).every(h => attendu[h] === att[h]));
+  rubeus.attendu = attendu;
+  // familles de maisons portant Rubeus ensemble
+  const famille = (nom, cible, nbFais, maxK, mins) => { const observes = new Set(); for (let i = 0; i < 65536; i++) { let m = 0; for (let h = 1; h <= 16; h++) if (cible(bases[i], themes[i], h)) m |= 1 << (h - 1); observes.add(m); }
+    const fais = new Set(); observes.forEach(m => { for (let t = m; ; t = (t - 1) & m) { fais.add(t); if (t === 0) break; } });
+    const imp = []; for (let m = 1; m < 65536; m++) { if (fais.has(m)) continue; let mn = true; for (let h = 0; h < 16 && mn; h++) if ((m >> h & 1) && !fais.has(m & ~(1 << h))) mn = false; if (mn) imp.push(m); }
+    const tail = {}; imp.forEach(m => { const k = m.toString(2).split('1').length - 1; tail[k] = (tail[k] || 0) + 1; });
+    const mx = Math.max(...[...observes].map(m => m.toString(2).split('1').length - 1));
+    ok('I23 ' + nom + ' : ' + nbFais + ' ensembles de maisons possibles, au plus ' + maxK + ', impossibles minimaux ' + JSON.stringify(mins).replace(/"/g, ''), fais.size === nbFais && mx === maxK && JSON.stringify(tail) === JSON.stringify(mins)); rubeus[nom] = imp.map(m => { const o = []; for (let h = 0; h < 16; h++) if (m >> h & 1) o.push(h + 1); return o; }); };
+  famille('Rubeus en base de plusieurs maisons', (t, r, h) => t[h] === RUB, 593, 7, { 1: 1, 2: 25, 3: 13, 4: 10, 5: 4 });
+  famille('Rubeus en résultante de plusieurs maisons', (t, r, h) => r[h] === RUB, 317, 5, { 1: 1, 2: 34, 3: 14, 4: 7, 5: 3 });
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
-if (process.argv.includes('--liste')) { for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
+if (process.argv.includes('--liste')) { for (const nom of Object.keys(rubeus)) if (Array.isArray(rubeus[nom])) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + rubeus[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
   for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
 console.log('\nLes 14 couples de liaisons jamais connectées ensemble :'); excl.forEach(([a, b]) => console.log('  ' + a + '  ✕  ' + b));
 console.log(mauvais ? '\n' + mauvais + ' échec(s)' : '\nToutes les propriétés sont vérifiées sur les 65 536 thèmes (' + verifs.length + ').'); process.exit(mauvais ? 1 : 0);

@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (102 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (108 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -206,3 +206,31 @@ S1 = M1+M4+M7+M10 (axe angulaire), S2 = M13+M16+M3+M6, S3 = M9+M12+M15+M2, S4 = 
 ## I22 — La somme d'un axe dans son axe
 - La somme d'un axe est présente dans les maisons de son axe (base ou résultante) pour 32 608 · 24 376 · 27 232 · 27 120 thèmes (axes 1 à 4).
 - Le quadruplet (S1, S2, S3, S4) prend 32 768 valeurs (2 puissance 15), chacune pour exactement 2 thèmes : les quatre sommes d'axe ne distinguent pas deux thèmes sur deux.
+
+## I23 — Rubeus dans toutes les maisons
+Rubeus (7, 2122) : seul l'Air est à un point. Son binôme est Via, son miroir Aquisitio, son antagoniste Albus ; il est lui-même l'antagoniste de la maison M10 (Carcer). Résultante de Rubeus en base de chaque maison :
+
+| Maison (figure de repos) | Résultante de Rubeus | Niveaux saturés |
+|---|---|---|
+| M1 Puer | 10 Carcer | Air+Eau |
+| M2 Laetitia | 9 Fortuna Minor | Eau+Terre |
+| M3 Caput | 12 Fortuna Major | Feu+Air |
+| M4 Albus (chez son antagoniste Albus) | 11 Conjunctio | Feu+Terre |
+| M5 Via | 14 Puella | Air |
+| M6 Amissio | 13 Cauda Draconis | Terre |
+| M7 Rubeus (sa propre maison) | 16 Populus | Feu+Air+Eau+Terre |
+| M8 Tristitia | 15 Aquisitio | Feu+Eau |
+| M9 Fortuna Minor | 2 Laetitia | Air+Eau+Terre |
+| M10 Carcer (l'attaquant dans la maison qu'il attaque) | 1 Puer | Eau |
+| M11 Conjunctio | 4 Albus | Feu+Air+Terre |
+| M12 Fortuna Major | 3 Caput | Feu |
+| M13 Cauda Draconis | 6 Amissio | Air+Terre |
+| M14 Puella | 5 Via | aucun |
+| M15 Aquisitio | impossible : Rubeus est impair, le Juge est pair | |
+| M16 Populus | 7 Rubeus | Feu+Eau+Terre |
+
+- **Fréquence** : Rubeus est en base de chaque maison dans exactement 4 096 thèmes (1/16), et résultante de chaque maison dans 4 096, **sauf M15 où il n'est jamais** (le Juge est pair). Il est absent du thème (ni base ni résultante) dans 8 764 thèmes sur 65 536 ; au plus 7 en base (6 thèmes), 5 en résultante, 9 au total.
+- **Ce que Rubeus impose ailleurs** : en base de M1 à M4, le niveau k des filles M5 à M8 reproduit Rubeus (M5 saturé, M6 à un point, M7 et M8 saturés pour le niveau k), et M11, M12, M14 en découlent (1 point, saturé, 1 point). En base de M5 à M8, c'est le niveau des mères M1 à M4 qui le reproduit, et M9, M10, M13 en découlent. En M16, M14 Feu est à un point. En M9 à M14 : rien n'est imposé ailleurs.
+- **Rubeus en base de plusieurs maisons** : 593 ensembles de maisons possibles, 7 au plus. Impossibles minimaux : M15 seule, 25 couples, 13 triples, 10 quadruplets, 4 quintuplets.
+- **Rubeus en résultante de plusieurs maisons** : 317 ensembles possibles, 5 au plus. Impossibles minimaux : M15 seule, 34 couples, 14 triples, 7 quadruplets, 3 quintuplets.
+- La liste des couples s'obtient avec `node outils/invariants.js --liste`.
