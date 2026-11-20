@@ -176,6 +176,27 @@
     }
     return { R1: front(L.R1), R7: front(L.R7) };
   }
+
+  // Multiplicité : combien de fois une même figure est placée dans le thème (maisons où elle est en base ou en résultante, une maison comptée une fois), et ce qu'elle fait de cette multiplicité.
+  // Prédateur : la figure f attaque f+3 ; sa multiplicité s'oppose à celle de sa cible. Proie : elle est attaquée par f−3. Protecteur : f protège f+6, car f attaque f+3, l'attaquant de f+6.
+  // La boucle d'un pôle est l'ensemble des 8 figures de même parité que sa figure (deux fronts : B et D pour les pairs, A et C pour les impairs).
+  function multiplicite(L) {
+    var T = L.theme, b = T.bases, mult = {};
+    for (var f = 1; f <= 16; f++) { var c = 0; for (var h = 1; h <= 16; h++) if (b[h] === f || (h < 16 && T.resultantes[h] === f)) c++; mult[f] = c; }
+    function boucle(c) {
+      var par = c.figure % 2, figures = [], tot = 0, exposees = 0, predateurs = 0;
+      for (var f = 1; f <= 16; f++) {
+        if (f % 2 !== par) continue;
+        var t = mod(f + 3), a = mod(f - 3), p = mod(f + 6), g = mod(f - 6);
+        var x = { figure: f, front: K.front(f), m: mult[f], predateur: { cible: t, m: mult[t], libre: mult[f] > 0 && mult[t] === 0 }, proie: { attaquant: a, m: mult[a] }, protecteur: { protege: p, attaquantDuProtege: t, m: mult[t], garde: Math.min(mult[f], mult[t]) }, protegePar: { figure: g, m: mult[g] } };
+        x.exposee = mult[f] > 0 && mult[a] > 0 && mult[g] === 0;
+        tot += mult[f]; if (x.exposee) exposees++; if (mult[f] > 0 && mult[t] > 0) predateurs++;
+        figures.push(x);
+      }
+      return { figures: figures, total: tot, exposees: exposees, predateurs: predateurs };
+    }
+    return { mult: mult, R1: boucle(L.R1), R7: boucle(L.R7) };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -185,7 +206,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

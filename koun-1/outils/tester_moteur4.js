@@ -57,4 +57,10 @@ for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 1
     if ((r(f)[3] === 2 && r(f + 4)[3] === 2) || (r(f + 8)[3] === 2 && r(f + 12)[3] === 2)) set.add(3);
     if (C[c].n !== set.size) malC++; } }
 if (malC) add('niveaux connectés');
+// Multiplicité : somme des placements de la boucle = recomptage indépendant
+let malM = 0;
+for (let q = 0; q < 65536; q += 7) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K4.lire(m), T = N.construire(m), X = K4.multiplicite(L);
+  const c = f => { let n = 0; for (let h = 1; h <= 16; h++) if (T.bases[h] === f || (h < 16 && T.resultantes[h] === f)) n++; return n; };
+  for (const [k, pole] of [['R1', L.R1], ['R7', L.R7]]) { let tot = 0; for (let f = 1; f <= 16; f++) if (f % 2 === pole.figure % 2) tot += c(f); if (X[k].total !== tot || X[k].figures.length !== 8) malM++; } }
+if (malM) add('multiplicité');
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);
