@@ -1,0 +1,1223 @@
+{
+ "version": 1,
+ "source": "outils/cartographie.js",
+ "statut": "description de la carte ; aucune règle du moteur ne l'utilise ; non validé sur des scores",
+ "regles": {
+  "addition": "niveaux égaux : 2 points (saturé) ; niveaux différents : 1 point (non saturé)",
+  "front": "(numéro − 1) mod 4 : A Feu, B Air, C Eau, D Terre",
+  "antagoniste": "n − 3 (modulo 16)",
+  "controleur": "n − 6",
+  "miroir": "n + 8",
+  "croix": "haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos) ; de l'extérieur vers le centre : base, maison au repos, résultante = base + maison",
+  "liaisons": "la résultante décide, niveau par niveau : 2 saturé, 1 non saturé ; chaque moitié de liaison porte l'état de sa résultante",
+  "terre": "la Terre du haut (f) dévie vers la droite (f+4), celle du bas (f+8) vers la gauche (f+12) : 15 intersections, pas de seizième",
+  "somme": "X+Y : figures du front X au repos, figures du front Y en base ; base de la maison h = h − 3·d, d = (Y − X) mod 4"
+ },
+ "figures": [
+  {
+   "num": 1,
+   "nom": "Puer",
+   "niveaux": [
+    1,
+    1,
+    2,
+    1
+   ],
+   "front": "A",
+   "element": "Feu",
+   "antagoniste": 14,
+   "controleur": 11,
+   "miroir": 9
+  },
+  {
+   "num": 2,
+   "nom": "Laetitia",
+   "niveaux": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "front": "B",
+   "element": "Air",
+   "antagoniste": 15,
+   "controleur": 12,
+   "miroir": 10
+  },
+  {
+   "num": 3,
+   "nom": "Caput",
+   "niveaux": [
+    2,
+    1,
+    1,
+    1
+   ],
+   "front": "C",
+   "element": "Eau",
+   "antagoniste": 16,
+   "controleur": 13,
+   "miroir": 11
+  },
+  {
+   "num": 4,
+   "nom": "Albus",
+   "niveaux": [
+    2,
+    2,
+    1,
+    2
+   ],
+   "front": "D",
+   "element": "Terre",
+   "antagoniste": 1,
+   "controleur": 14,
+   "miroir": 12
+  },
+  {
+   "num": 5,
+   "nom": "Via",
+   "niveaux": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "front": "A",
+   "element": "Feu",
+   "antagoniste": 2,
+   "controleur": 15,
+   "miroir": 13
+  },
+  {
+   "num": 6,
+   "nom": "Amissio",
+   "niveaux": [
+    1,
+    2,
+    1,
+    2
+   ],
+   "front": "B",
+   "element": "Air",
+   "antagoniste": 3,
+   "controleur": 16,
+   "miroir": 14
+  },
+  {
+   "num": 7,
+   "nom": "Rubeus",
+   "niveaux": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "front": "C",
+   "element": "Eau",
+   "antagoniste": 4,
+   "controleur": 1,
+   "miroir": 15
+  },
+  {
+   "num": 8,
+   "nom": "Tristitia",
+   "niveaux": [
+    2,
+    2,
+    2,
+    1
+   ],
+   "front": "D",
+   "element": "Terre",
+   "antagoniste": 5,
+   "controleur": 2,
+   "miroir": 16
+  },
+  {
+   "num": 9,
+   "nom": "Fortuna Minor",
+   "niveaux": [
+    1,
+    1,
+    2,
+    2
+   ],
+   "front": "A",
+   "element": "Feu",
+   "antagoniste": 6,
+   "controleur": 3,
+   "miroir": 1
+  },
+  {
+   "num": 10,
+   "nom": "Carcer",
+   "niveaux": [
+    1,
+    2,
+    2,
+    1
+   ],
+   "front": "B",
+   "element": "Air",
+   "antagoniste": 7,
+   "controleur": 4,
+   "miroir": 2
+  },
+  {
+   "num": 11,
+   "nom": "Conjunctio",
+   "niveaux": [
+    2,
+    1,
+    1,
+    2
+   ],
+   "front": "C",
+   "element": "Eau",
+   "antagoniste": 8,
+   "controleur": 5,
+   "miroir": 3
+  },
+  {
+   "num": 12,
+   "nom": "Fortuna Major",
+   "niveaux": [
+    2,
+    2,
+    1,
+    1
+   ],
+   "front": "D",
+   "element": "Terre",
+   "antagoniste": 9,
+   "controleur": 6,
+   "miroir": 4
+  },
+  {
+   "num": 13,
+   "nom": "Cauda Draconis",
+   "niveaux": [
+    1,
+    1,
+    1,
+    2
+   ],
+   "front": "A",
+   "element": "Feu",
+   "antagoniste": 10,
+   "controleur": 7,
+   "miroir": 5
+  },
+  {
+   "num": 14,
+   "nom": "Puella",
+   "niveaux": [
+    1,
+    2,
+    1,
+    1
+   ],
+   "front": "B",
+   "element": "Air",
+   "antagoniste": 11,
+   "controleur": 8,
+   "miroir": 6
+  },
+  {
+   "num": 15,
+   "nom": "Aquisitio",
+   "niveaux": [
+    2,
+    1,
+    2,
+    1
+   ],
+   "front": "C",
+   "element": "Eau",
+   "antagoniste": 12,
+   "controleur": 9,
+   "miroir": 7
+  },
+  {
+   "num": 16,
+   "nom": "Populus",
+   "niveaux": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "front": "D",
+   "element": "Terre",
+   "antagoniste": 13,
+   "controleur": 10,
+   "miroir": 8
+  }
+ ],
+ "fronts": {
+  "A": {
+   "element": "Feu",
+   "figures": [
+    1,
+    5,
+    9,
+    13
+   ],
+   "croix": {
+    "haut": {
+     "maison": 1,
+     "base": 14,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "droite": {
+     "maison": 5,
+     "base": 2,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "bas": {
+     "maison": 9,
+     "base": 6,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "gauche": {
+     "maison": 13,
+     "base": 10,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    }
+   },
+   "intersections": {
+    "total": 15,
+    "pleins": 2,
+    "anneaux": 6
+   }
+  },
+  "B": {
+   "element": "Air",
+   "figures": [
+    2,
+    6,
+    10,
+    14
+   ],
+   "croix": {
+    "haut": {
+     "maison": 2,
+     "base": 15,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "droite": {
+     "maison": 6,
+     "base": 3,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "bas": {
+     "maison": 10,
+     "base": 7,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "gauche": {
+     "maison": 14,
+     "base": 11,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    }
+   },
+   "intersections": {
+    "total": 15,
+    "pleins": 1,
+    "anneaux": 8
+   }
+  },
+  "C": {
+   "element": "Eau",
+   "figures": [
+    3,
+    7,
+    11,
+    15
+   ],
+   "croix": {
+    "haut": {
+     "maison": 3,
+     "base": 16,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "droite": {
+     "maison": 7,
+     "base": 4,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "bas": {
+     "maison": 11,
+     "base": 8,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "gauche": {
+     "maison": 15,
+     "base": 12,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    }
+   },
+   "intersections": {
+    "total": 15,
+    "pleins": 2,
+    "anneaux": 6
+   }
+  },
+  "D": {
+   "element": "Terre",
+   "figures": [
+    4,
+    8,
+    12,
+    16
+   ],
+   "croix": {
+    "haut": {
+     "maison": 4,
+     "base": 1,
+     "resultante": 5,
+     "niveaux_resultante": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 0
+    },
+    "droite": {
+     "maison": 8,
+     "base": 5,
+     "resultante": 13,
+     "niveaux_resultante": [
+      1,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 1
+    },
+    "bas": {
+     "maison": 12,
+     "base": 9,
+     "resultante": 5,
+     "niveaux_resultante": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 0
+    },
+    "gauche": {
+     "maison": 16,
+     "base": 13,
+     "resultante": 13,
+     "niveaux_resultante": [
+      1,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 1
+    }
+   },
+   "intersections": {
+    "total": 15,
+    "pleins": 0,
+    "anneaux": 12
+   }
+  }
+ },
+ "sommes": [
+  {
+   "combinaison": "A+B",
+   "repos": "A",
+   "base": "B",
+   "recul": 3,
+   "croix": {
+    "haut": {
+     "maison": 1,
+     "base": 14,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "droite": {
+     "maison": 5,
+     "base": 2,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "bas": {
+     "maison": 9,
+     "base": 6,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "gauche": {
+     "maison": 13,
+     "base": 10,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    }
+   },
+   "front_des_resultantes": "C",
+   "intersections": {
+    "total": 15,
+    "pleins": 2,
+    "anneaux": 6
+   },
+   "statut_alignement": "antagoniste (n−3) : identique à la carte du front A"
+  },
+  {
+   "combinaison": "A+C",
+   "repos": "A",
+   "base": "C",
+   "recul": 6,
+   "croix": {
+    "haut": {
+     "maison": 1,
+     "base": 11,
+     "resultante": 14,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "droite": {
+     "maison": 5,
+     "base": 15,
+     "resultante": 6,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "bas": {
+     "maison": 9,
+     "base": 3,
+     "resultante": 14,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "gauche": {
+     "maison": 13,
+     "base": 7,
+     "resultante": 6,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    }
+   },
+   "front_des_resultantes": "B",
+   "intersections": {
+    "total": 15,
+    "pleins": 2,
+    "anneaux": 6
+   },
+   "statut_alignement": "recul de 3 par pas de front : supposé, non confirmé par le propriétaire"
+  },
+  {
+   "combinaison": "A+D",
+   "repos": "A",
+   "base": "D",
+   "recul": 9,
+   "croix": {
+    "haut": {
+     "maison": 1,
+     "base": 8,
+     "resultante": 9,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "droite": {
+     "maison": 5,
+     "base": 12,
+     "resultante": 9,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "bas": {
+     "maison": 9,
+     "base": 16,
+     "resultante": 9,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "gauche": {
+     "maison": 13,
+     "base": 4,
+     "resultante": 9,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 2
+    }
+   },
+   "front_des_resultantes": "A",
+   "intersections": {
+    "total": 15,
+    "pleins": 3,
+    "anneaux": 4
+   },
+   "statut_alignement": "recul de 3 par pas de front : supposé, non confirmé par le propriétaire"
+  },
+  {
+   "combinaison": "B+C",
+   "repos": "B",
+   "base": "C",
+   "recul": 3,
+   "croix": {
+    "haut": {
+     "maison": 2,
+     "base": 15,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "droite": {
+     "maison": 6,
+     "base": 3,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "bas": {
+     "maison": 10,
+     "base": 7,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "gauche": {
+     "maison": 14,
+     "base": 11,
+     "resultante": 1,
+     "niveaux_resultante": [
+      1,
+      1,
+      2,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "non_sature",
+      "sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    }
+   },
+   "front_des_resultantes": "A",
+   "intersections": {
+    "total": 15,
+    "pleins": 1,
+    "anneaux": 8
+   },
+   "statut_alignement": "antagoniste (n−3) : identique à la carte du front B"
+  },
+  {
+   "combinaison": "B+D",
+   "repos": "B",
+   "base": "D",
+   "recul": 6,
+   "croix": {
+    "haut": {
+     "maison": 2,
+     "base": 12,
+     "resultante": 14,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "droite": {
+     "maison": 6,
+     "base": 16,
+     "resultante": 6,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "bas": {
+     "maison": 10,
+     "base": 4,
+     "resultante": 14,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      1
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "gauche": {
+     "maison": 14,
+     "base": 8,
+     "resultante": 6,
+     "niveaux_resultante": [
+      1,
+      2,
+      1,
+      2
+     ],
+     "liens": [
+      "non_sature",
+      "sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    }
+   },
+   "front_des_resultantes": "B",
+   "intersections": {
+    "total": 15,
+    "pleins": 2,
+    "anneaux": 6
+   },
+   "statut_alignement": "recul de 3 par pas de front : supposé, non confirmé par le propriétaire"
+  },
+  {
+   "combinaison": "C+D",
+   "repos": "C",
+   "base": "D",
+   "recul": 3,
+   "croix": {
+    "haut": {
+     "maison": 3,
+     "base": 16,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "droite": {
+     "maison": 7,
+     "base": 4,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    },
+    "bas": {
+     "maison": 11,
+     "base": 8,
+     "resultante": 3,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "non_sature"
+     ],
+     "saturees": 1
+    },
+    "gauche": {
+     "maison": 15,
+     "base": 12,
+     "resultante": 11,
+     "niveaux_resultante": [
+      2,
+      1,
+      1,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "non_sature",
+      "sature"
+     ],
+     "saturees": 2
+    }
+   },
+   "front_des_resultantes": "C",
+   "intersections": {
+    "total": 15,
+    "pleins": 2,
+    "anneaux": 6
+   },
+   "statut_alignement": "antagoniste (n−3) : identique à la carte du front C"
+  },
+  {
+   "combinaison": "D+C",
+   "repos": "D",
+   "base": "C",
+   "recul": 9,
+   "croix": {
+    "haut": {
+     "maison": 4,
+     "base": 11,
+     "resultante": 7,
+     "niveaux_resultante": [
+      2,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 3
+    },
+    "droite": {
+     "maison": 8,
+     "base": 15,
+     "resultante": 7,
+     "niveaux_resultante": [
+      2,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 3
+    },
+    "bas": {
+     "maison": 12,
+     "base": 3,
+     "resultante": 7,
+     "niveaux_resultante": [
+      2,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 3
+    },
+    "gauche": {
+     "maison": 16,
+     "base": 7,
+     "resultante": 7,
+     "niveaux_resultante": [
+      2,
+      1,
+      2,
+      2
+     ],
+     "liens": [
+      "sature",
+      "non_sature",
+      "sature",
+      "sature"
+     ],
+     "saturees": 3
+    }
+   },
+   "front_des_resultantes": "C",
+   "intersections": {
+    "total": 15,
+    "pleins": 8,
+    "anneaux": 1
+   },
+   "statut_alignement": "recul de 3 par pas de front : supposé, non confirmé par le propriétaire"
+  }
+ ]
+}

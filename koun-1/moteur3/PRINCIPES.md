@@ -124,3 +124,6 @@ Les niveaux des 16 maisons sont des sommes (XOR) des 16 bits des mères, m(i, c)
 - **Écart de résultante** = poids(B ⊕ (0,0,1,0)) − poids(A ⊕ (1,0,1,1)) + 2·(m3E − m4T).
 - **Nul assuré** : les deux écarts sont nuls (6 656 thèmes ; 4 608 avec le juge hors repos). **Nul probable** : somme nulle sans que les deux le soient (13 824 thèmes ; 10 752 avec le juge hors repos). Le juge M15 hors de son repos est exigé à part. 15 bits des mères sur 16 interviennent (m2A n'a aucun effet).
 Le moteur décide l'équilibre (NU-1, NU-2, règle du nul en même front, repli de CC-1) avec ces équations ; le comptage direct des deux parties n'est conservé que pour le texte. `node outils/verifier_equations.js` vérifie sur les 65 536 thèmes que l'équation et le comptage direct donnent les mêmes écarts (0 écart). Aucun verdict ne change : même résultat qu'avant sur les 65 536 combinaisons. La raison d'un nul de NU-1 et de NU-2 affiche maintenant les poids des deux quatuors, les écarts et la correction 2·(m3E − m4T).
+
+## Cartographie des fronts (structure, sans effet sur le verdict)
+La carte des fronts (croix base · maison au repos · résultante, liaisons saturées ou non, Terre déviée, sommes de deux fronts) est décrite dans `CARTOGRAPHIE.md` et dans `cartographie.json`. Aucune règle du moteur ne l'utilise et elle n'est validée sur aucun score.
