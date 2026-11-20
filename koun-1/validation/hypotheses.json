@@ -123,8 +123,8 @@
       3,
       1
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Tigres UANL–Pachuca",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R7, R7, R7, égal] : non nets",
      "score": "1-2"
@@ -412,8 +412,8 @@
       3,
       1
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Tigres UANL–Pachuca",
      "prediction": "pas de victoire",
      "detail": "pôles en M3 et M9 ; arrêts en M4 et M8 : aucun pôle sous croix",
      "score": "1-2"
@@ -885,8 +885,8 @@
       3,
       1
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Tigres UANL–Pachuca",
      "prediction": "pas de victoire",
      "detail": "même boucle ; fronts C et A : 4 maisons saturées en Terre chacun",
      "score": "1-2"
@@ -1060,8 +1060,8 @@
       3,
       1
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Tigres UANL–Pachuca",
      "prediction": "nul (Via en base de M8)",
      "detail": "clause 1 : Via en base de M8 = nul",
      "score": "1-2"
@@ -1171,8 +1171,8 @@
       3,
       1
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Tigres UANL–Pachuca",
      "prediction": "1-1",
      "detail": "Via en base de M8 et de M15 : v = 2, ceil(2/2) = 1 but par équipe",
      "score": "1-2"
@@ -1445,7 +1445,7 @@
     1
    ],
    "posee_le": "2026-11-20",
-   "date_match": null,
+   "date_match": "2026-02-22",
    "lecture": "nul, 1-1",
    "statut": "lecture de l'analyste d'après H-UNIV (clause 1) et H-VIA8-B : quatrième thème avec Via en base de M8 ; les deux pôles sont dans la même boucle et ont la même Terre.",
    "score": "1-2",
