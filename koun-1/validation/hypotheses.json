@@ -76,6 +76,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R1, R1, R7, R1] : non unanimes",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R1, R1, R7, R1, égal] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -312,6 +325,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M12 et M2 ; seul arrêt : M8 : aucun pôle sous croix",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M5 et M11 ; seul arrêt : M8 : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -633,6 +659,19 @@
      "prediction": "5 buts au total",
      "detail": "T = 8 maisons à résultante saturée en Terre : ceil(8/2)+1 = 5. Via en base de M8 : le total pourrait être réduit (remarque du propriétaire) ; un total inférieur à 5 irait dans ce sens.",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "6 buts au total",
+     "detail": "T = 9 : ceil(9/2)+1 = 6. Via en base de M8 : cas où la formule a échoué une fois (12-8-10-3) ; deuxième test de cette classe.",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -720,6 +759,19 @@
      "prediction": "pas de victoire",
      "detail": "front C de R1 : 2 maisons ; front D de R7 : 2 maisons",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1",
+     "detail": "front A de R1 : 4 maisons à résultante saturée en Terre ; front D de R7 : 2",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -772,6 +824,38 @@
      ],
      "prediction": "R7 (1-2)",
      "score": "1-4"
+    }
+   ]
+  },
+  {
+   "id": "H-VIA8",
+   "posee_le": "2026-11-20",
+   "enonce": "Quand Via est en base de M8, le match est nul 1-1 (Via paralyse Tristitia sur ses quatre niveaux et annule les buts). Née d'un seul match (12-8-10-3, 1-1), qui ne compte pas comme test ; 5-1-10-10 est son premier test. Condition supplémentaire à observer : dans 5-1-10-10, Via est aussi la figure du pôle R1 et occupe M1, M5 et M8.",
+   "predictions": [
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "1-1",
+     "detail": "Via en base de M8 (et de M1, M5) ; formule des buts non fiable dans cette classe",
+     "score": null
+    }
+   ],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "1-1",
+     "score": "1-1"
     }
    ]
   }
@@ -860,6 +944,19 @@
    "statut": "lecture de l'analyste, pas une règle : Via en base de M8 paralyse Tristitia, la figure du pôle R7, sur ses quatre niveaux (le cas « Via saccage tout » du propriétaire) ; quatre indicateurs sur cinq vont vers R1. Contredit H-PARA (R7) : ce match départagera les deux. Total des buts : 5 par la formule, avec réduction possible.",
    "score": "1-1",
    "juste": false
+  },
+  {
+   "theme": [
+    5,
+    1,
+    10,
+    10
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R1 (faible) ou nul",
+   "statut": "lecture de l'analyste, pas une règle : la Terre du front donne R1 (4 contre 2), mais Via est en base de M8, classe où le seul exemple connu est un nul 1-1. Je ne tranche pas entre les deux : H-TERRE-V dit R1, H-VIA8 dit 1-1.",
+   "score": null
   }
  ]
 }
