@@ -38,6 +38,13 @@ Les figures du front X sont au repos, celles du front Y en base ; D+C ≠ C+D. B
 
 À confirmer : le recul de 6 ou 9 (A+C, A+D, B+D, D+C) n'est pas dans le dessin du propriétaire.
 
+## Lecture de la structure (vérifié)
+- **Les 15 et le 16e** : les 16 figures forment un groupe par l'addition ; Populus est le neutre (x + Populus = x) et chaque figure est son propre inverse (x + x = Populus, figure dans sa maison : tout saturé). Il y a 15 figures non neutres et 15 intersections. Le 16e point (Terre × Terre) est le coin où la Terre dévie : pas de croisement. M16 est la maison de Populus : sa résultante est sa base. *Hypothèse non prouvée par la géométrie : la cellule (niveau i, niveau j) correspond à la maison 4j+i+1 (canal × bloc), donc (Terre, Terre) = M16.*
+- **Lien avec le Circuit Souverain** : la résultante d'une figure dans la maison de son antagoniste ne prend que 5 valeurs, exactement M1+M3+M5+M11+M13 du moteur : Puer ← maisons 2, 6, 10, 14 ; Caput ← 3, 5, 11, 13 ; Conjunctio ← 1, 7, 9, 15 ; Via ← 4, 12 ; Cauda Draconis ← 8, 16. Leur somme est Puer.
+- **Fronts et binômes** : A et C (binômes) ont les mêmes résultantes {Conjunctio, Caput} en positions échangées ; B n'a que Puer ; D a {Via, Cauda Draconis}.
+- **Extrêmes** : Populus (2222) est tout saturé ; Via (1111) est tout non saturé, et c'est la résultante des maisons 4 et 12 avec leur antagoniste : quatre liaisons non saturées.
+- **Carte réelle** : le mode « Thème réel » de la page met dans chaque maison la vraie base du thème (la carte structurelle étant le cas où l'antagoniste y est). Bases et résultantes identiques au moteur (80 maisons sur 5 thèmes).
+
 ## Pour le moteur
 ```text
 antagoniste(n) = ((n − 4) mod 16) + 1
