@@ -1985,6 +1985,24 @@
       "reserves": "mesure choisie après avoir vu les données (6 candidates, 5 écartées) ; les deux pôles d'un même match ne sont pas indépendants ; n=4 non monotone sur 5 observations",
       "note": "affiché comme indice dans la fenêtre du verdict ; à tester sur les prochains matchs avant toute activation",
       "quantite_par_figure": "2026-11-20 : poids propres à chaque maison (16) ou à chaque figure résultante (16), régression ridge validée en laissant un match de côté : r 0,13-0,16 et erreur 1,43-1,50 buts, contre r 0,22 et 1,44 pour le simple compte n et 1,47 pour la moyenne constante. 74 observations ne suffisent pas pour fixer 16 poids : la quantité par figure n'est pas déterminable avec ces données ; on garde le compte égal (≈ +0,8 but par maison saturée jusqu'à 3). Front direct commun à R1 et R7 : 4 matchs sur 37, compté pour chaque pôle."
+    },
+    {
+      "id": "H-MARQ-VICTOIRE",
+      "statut": "NON CONCLUANT 2026-11-20 : sur les 22 matchs indépendants 11 justes, 6 faux, 5 sans appel (égalité de n) = 65 % contre 65 % pour « toujours R1 » ; non activée",
+      "regle": "le pôle au plus grand n (Terre saturée sur les maisons de son front direct) gagne ; posée avant le test, sans paramètre",
+      "note": "tous matchs : 16 justes 6 faux (73 %) contre 64 % pour « toujours R1 », mais les matchs construits ont servi à choisir la mesure"
+    },
+    {
+      "id": "H-MARQ-DOUBLE",
+      "statut": "SIGNAL (post hoc, à confirmer sur matchs futurs) ; non activée",
+      "regle": "un pôle marque 2 buts ou plus quand n >= 2, au plus 1 but quand n <= 1",
+      "resultat": "74 pôles-matchs : n=0 25 % (4 obs), n=1 33 % (18), n=2 62 % (34), n=3 69 % (13), n=4 80 % (5) ; n<=1 : 7/22 (32 %), n>=2 : 34/52 (65 %) ; avec seuil appris en laissant un match de côté : 66 % contre 55 % pour la réponse constante",
+      "reserves": "mesure n choisie sur les mêmes données ; pôles d'un même match non indépendants"
+    },
+    {
+      "id": "H-MARQ-TOTAL",
+      "statut": "RÉFUTÉE 2026-11-20 : Over 1,5 / 2,5 / 3,5 par n1+n7 (seuil appris, un match de côté) 95 % / 81 % / 57 % = la réponse constante (95 % / 81 % / 62 %) ; rien de plus",
+      "regle": "le total de buts suit n1+n7"
     }
   ],
   "lectures": [
