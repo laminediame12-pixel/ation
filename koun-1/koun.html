@@ -1,7 +1,7 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Koun — moteur 4</title>
 <style>
-:root{--bg:#f6f4ef;--card:#fff;--tx:#1d1b18;--mu:#6b665d;--ln:#d9d4c8;--ac:#8a4b12;--r1:#b3261e;--r7:#1b5fb3}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#171613;--card:#211f1b;--tx:#ece7dc;--mu:#a39d90;--ln:#3a362e;--ac:#e0a35a;--r1:#ff8a80;--r7:#82b1ff}}
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1d1b18;--mu:#6b665d;--ln:#d9d4c8;--ac:#8a4b12;--r1:#2563eb;--r7:#d92d20;--dot:#1d1b18;--sat:#16a34a;--act:#2563eb;--dif:#d97706}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#171613;--card:#211f1b;--tx:#ece7dc;--mu:#a39d90;--ln:#3a362e;--ac:#e0a35a;--r1:#82b1ff;--r7:#ff8a80;--dot:#ece7dc;--sat:#22c55e;--act:#3b82f6;--dif:#f59e0b}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,sans-serif;padding:16px;max-width:760px;margin:0 auto}
 h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:13px}
 .f{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}label{font-size:12px;color:var(--mu);display:block}select,input{width:100%;font:inherit;padding:6px;border:1px solid var(--ln);border-radius:8px;background:var(--card);color:var(--tx)}
@@ -11,11 +11,11 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
 .p1 .tag{color:var(--r1)}.p7 .tag{color:var(--r7)}
 .box{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px}.box h2{font-size:14px;margin:0 0 6px;color:var(--ac)}
 .ok{color:#2e7d32;font-weight:700}.ko{color:var(--r1);font-weight:700}
-</style></head><body>
+#carto{margin-top:12px;background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:0 12px}#carto>summary{cursor:pointer;padding:10px 0;font-weight:700;color:var(--ac);list-style:none}#carto>summary::-webkit-details-marker{display:none}#carto>summary::after{content:"⌃";float:right;transform:rotate(180deg);transition:transform .15s}#carto[open]>summary::after{transform:none}#carto[open]{padding-bottom:12px}#carto .s{color:var(--mu);margin:0 0 10px;font-size:13px}#carto .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}#carto .bar input{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 9px;font:inherit;width:150px}#carto .tbn{color:var(--mu);font-size:12px;margin:8px 4px 4px}#carto .tb{border-collapse:collapse;width:100%;font-size:11.5px;margin-bottom:4px}#carto .tbw{overflow-x:auto}#carto .tb{min-width:520px}#carto .tb th,#carto .tb td{border:1px solid var(--ln);padding:4px 5px;text-align:center;vertical-align:top}#carto .op{font-family:ui-monospace,monospace;font-size:11px;line-height:1.35;white-space:nowrap;font-weight:600}#carto .rn{font-size:10.5px;color:var(--mu);margin-top:2px}#carto .tb td.dg .rn{color:var(--tx);font-weight:700}#carto .tb th{color:var(--mu);font-weight:600}#carto .tb td.dg{font-weight:800}#carto .bar select{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 9px;font:inherit}#carto .bar button{background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px 12px;font:inherit;cursor:pointer}#carto .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-bottom:12px}#carto .lg i{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}#carto .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){#carto .grid{grid-template-columns:1fr}}#carto .fr{min-width:0;background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:8px}#carto .fr h2{font-size:15px;margin:2px 4px 0}#carto .fr h2 small{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}#carto .fr .rs{color:var(--mu);font-size:12px;margin:0 4px 2px}#carto svg{width:100%;height:auto;display:block}#carto svg text{fill:var(--tx);font-family:system-ui,sans-serif}#carto .mu{fill:var(--mu)!important}</style></head><body>
 <h1>Koun — moteur 4</h1><p class="s">Lecture exacte du thème à partir des quatre mères. Aucun verdict : aucune règle de victoire ou de nul n'est démontrée.</p>
 <div class="f" id="meres"></div>
 <label>Jour du match (pour la figure du jour, facultatif)</label><select id="jour" style="margin-bottom:12px"><option value="">— sans date —</option></select>
-<div id="py"></div><div id="lec"></div>
+<div id="py"></div><div id="lec"></div><details id="carto"><summary>Cartographie des fronts</summary><p class="s">Chaque front est une boucle de 4 figures. Les figures miroir (k et k+8) sont face à face, avec leurs 4 niveaux d'activation (Feu, Air, Eau, Terre) en regard. Le thème saisi plus haut s'applique à la carte.</p><div class="bar"><select id="mode"><option value="fronts">Les 4 fronts</option><option value="sommes">Sommes de deux fronts (A+B … D+C)</option><option value="reel">Thème réel (vraies bases dans les maisons)</option></select></div><div class="lg"><span><i style="background:#ef4444"></i>Feu</span><span><i style="background:#eab308"></i>Air</span><span><i style="background:#3b82f6"></i>Eau</span><span><i style="background:#94a3b8"></i>Terre</span></div><div class="lg"><span>Croix : haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos). Dans chaque branche, de l'extérieur vers le centre : anneau rouge, la figure de base (l'antagoniste n−3 de la maison) ; anneau jaune, la figure de la maison au repos ; anneau vert, la résultante (base + maison). La résultante décide, niveau par niveau, si la liaison est saturée (2, trait épais) ou non (1, tireté). Les liaisons relient les résultantes opposées ; chaque moitié porte l'état de sa résultante. Point plein : deux liens saturés qui se croisent ; anneau tireté : deux non saturés ; petit point : un de chaque. La Terre dévie : du haut (f) vers la droite (f+4), du bas (f+8) vers la gauche (f+12) ; le coin n'est pas une intersection. Avec un thème : cadre bleu R1, rouge R7, tireté = figure absente du thème, 💔 = l'antagoniste est bien en base dans cette maison.</span></div><div class="grid" id="g"></div></details>
 <script>
 /* koun — noyau structurel (fichier autonome, sans aucune règle de verdict).
    Tout ce qui suit est une fonction exacte des quatre mères, démontrée sur les 65 536 thèmes (moteur3/INVARIANTS.md, outils/invariants.js).
@@ -187,7 +187,95 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
-</script><script>
+</script><script>(function(){const N=KOUN_NOYAU,FIGN=N.FIGURES.map(f=>f[0]),numF=f=>FIGN.indexOf(f)+1,figF=n=>FIGN[((n-1)%16+16)%16];
+function lireNoms(meres){const T=N.construire(meres),P=N.poles(T),m=[];for(let h=1;h<=16;h++)m.push({maison:h,base:figF(T.bases[h]),resultante:h===16?null:figF(T.resultantes[h])});const p=x=>({maison:x.maison,figure:figF(x.figure),front:N.front(x.figure)});return{maisons:m,R1:p(P.R1),R7:p(P.R7)}}
+
+const FIGS=[{"n":"Puer","p":[1,1,2,1]},{"n":"Laetitia","p":[1,2,2,2]},{"n":"Caput","p":[2,1,1,1]},{"n":"Albus","p":[2,2,1,2]},{"n":"Via","p":[1,1,1,1]},{"n":"Amissio","p":[1,2,1,2]},{"n":"Rubeus","p":[2,1,2,2]},{"n":"Tristitia","p":[2,2,2,1]},{"n":"Fortuna Minor","p":[1,1,2,2]},{"n":"Carcer","p":[1,2,2,1]},{"n":"Conjunctio","p":[2,1,1,2]},{"n":"Fortuna Major","p":[2,2,1,1]},{"n":"Cauda Draconis","p":[1,1,1,2]},{"n":"Puella","p":[1,2,1,1]},{"n":"Aquisitio","p":[2,1,2,1]},{"n":"Populus","p":[2,2,2,2]}];const EC0=['#ef4444','#eab308','#3b82f6','#94a3b8'];const FR='ABCD',EL=['Feu','Air','Eau','Terre'],ELC=['F','A','E','T'];
+const FRN={A:'Feu',B:'Air',C:'Eau',D:'Terre'};
+const cl=(a,b)=>(a+b)%2===0?'sat':'non';const res1=(a,b)=>(a+b)%2===0?2:1;
+function bloc(z,L){const f=z+1;return blocN(f+12,f+4,f,f+8,null,L)}
+// Représentation en croix : haut f, droite f+4, bas f+8, gauche f+12 (maisons au repos). Dans chaque branche, de l'extérieur vers le centre :
+// la figure de base (l'antagoniste de la maison), la figure de la maison au repos, la résultante (base + maison). Les liaisons relient les résultantes.
+function blocN(left,right,top,bot,sub,L,tri){
+ const EC=['#ef4444','#eab308','#3b82f6','#94a3b8'];
+ const CX=280,CY=280,S=26,X=[0,1,2,3].map(j=>CX-39+S*j),Y=X,BW=44,BH=104,DR=130,PITCH=52,EDGE=DR-BW/2;
+ const out=[];
+ const pos=n=>{if(!L)return{abs:false};const nm=FIGS[n-1].n;let t=false;L.maisons.forEach(m=>{if(m.base===nm||m.resultante===nm)t=true});return{abs:!t}};
+ const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
+ const antOf=h=>((h-4)%16+16)%16+1;
+ const addN=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();return FIGS.findIndex(f=>f.p.join()===q)+1};
+ const mk=(b,h)=>{const r=addN(b,h),lv=FIGS[h-1].p.map((x,i)=>{const y=FIGS[b-1].p[i];return{a:y,b:x,r:res1(y,x)}});return{h:h,b:b,r:r,lv:lv,c:lv.filter(o=>o.r===2).length,reel:!!(L&&!tri&&L.maisons[h-1].base===FIGS[b-1].n)}};
+ const br=(k,h)=>tri&&tri[k]?mk(tri[k].b,tri[k].h):mk(antOf(h),h);
+ const BT=br('top',top),BR=br('right',right),BB=br('bot',bot),BL=br('left',left);
+ const dot=(c,x,y,i,two,vert)=>two?(vert?'<circle cx="'+(x-6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+(x+6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>':'<circle cx="'+x+'" cy="'+(y-6)+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+x+'" cy="'+(y+6)+'" r="4.3" fill="'+EC[i]+'"/>'):'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>';
+ const stroke=n=>pol(n)==='R1'?'var(--r1)':pol(n)==='R7'?'var(--r7)':'var(--ln)';
+ // boîte verticale (gauche, droite) : niveaux en lignes alignées sur la grille ; boîte horizontale (haut, bas) : niveaux en colonnes
+ const boxV=(n,cx,lab)=>'<rect x="'+(cx-BW/2)+'" y="'+(CY-BH/2)+'" width="'+BW+'" height="'+BH+'" rx="7" fill="var(--card)" stroke="'+stroke(n)+'" stroke-width="'+(pol(n)?2.5:1.5)+'"'+(pos(n).abs?' stroke-dasharray="4 3"':'')+'/>'+FIGS[n-1].p.map((p,i)=>dot(0,cx,Y[i],i,p===2,true)).join('')+'<text x="'+cx+'" y="'+(CY+BH/2+14)+'" text-anchor="middle" font-size="12" font-weight="700">'+lab+'</text>';
+ const boxH=(n,cy,lab)=>'<rect x="'+(CX-BH/2)+'" y="'+(cy-BW/2)+'" width="'+BH+'" height="'+BW+'" rx="7" fill="var(--card)" stroke="'+stroke(n)+'" stroke-width="'+(pol(n)?2.5:1.5)+'"'+(pos(n).abs?' stroke-dasharray="4 3"':'')+'/>'+FIGS[n-1].p.map((p,j)=>dot(0,X[j],cy,j,p===2,false)).join('')+'<text x="'+(CX+BH/2+8)+'" y="'+(cy+4)+'" text-anchor="start" font-size="12" font-weight="700">'+lab+'</text>';
+ const HF=[158,210,262],FC=['#16a34a','#eab308','#ef4444'],FN=['résultante','maison au repos','base'];
+ HF.forEach((h,k)=>{out.push('<rect x="'+(CX-h)+'" y="'+(CY-h)+'" width="'+(2*h)+'" height="'+(2*h)+'" rx="14" fill="none" stroke="'+FC[k]+'" stroke-width="2.5" opacity=".85"/>');out.push('<text x="'+(CX-h+10)+'" y="'+(CY-h-5)+'" font-size="9.5" font-weight="700" fill="'+FC[k]+'" style="fill:'+FC[k]+'">'+FN[k]+'</text>')});
+ const rd=k=>DR+PITCH*k,tag=b=>b.b+(b.reel?' 💔':'');
+ [[BT,'T'],[BB,'B']].forEach(([b,w])=>{const sg=w==='T'?-1:1;out.push(boxH(b.r,CY+sg*rd(0),b.r),boxH(b.h,CY+sg*rd(1),b.h),boxH(b.b,CY+sg*rd(2),tag(b)))});
+ [[BL,-1],[BR,1]].forEach(([b,sg])=>{out.push(boxV(b.r,CX+sg*rd(0),b.r),boxV(b.h,CX+sg*rd(1),b.h),boxV(b.b,CX+sg*rd(2),tag(b)))});
+ // états des liaisons : ceux de la résultante, niveau par niveau (2 saturé, 1 non saturé)
+ const st=(b,i)=>b.lv[i].r===2?'sat':'non';
+ const sty=c=>c==='non'?'stroke-width="2.5" stroke-dasharray="7 6" opacity=".9"':'stroke-width="5" opacity=".95"';
+ const line=(x1,y1,x2,y2,c,el)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+EC[el]+'" stroke-linecap="round" fill="none" '+sty(c)+'/>';
+ const xL=CX-EDGE,xR=CX+EDGE,yT=CY-EDGE,yB=CY+EDGE;
+ for(let i=0;i<3;i++){out.push(line(xL,Y[i],CX,Y[i],st(BL,i),i),line(CX,Y[i],xR,Y[i],st(BR,i),i))}
+ for(let j=0;j<3;j++){out.push(line(X[j],yT,X[j],CY,st(BT,j),j),line(X[j],CY,X[j],yB,st(BB,j),j))}
+ // Terre : dévie. Haut (1) → droite (5) ; bas (9) → gauche (13)
+ const R=9,XT=X[3],YT=Y[3],pth=(d,c)=>'<path d="'+d+'" stroke="'+EC[3]+'" stroke-linecap="round" fill="none" '+sty(c)+'/>';
+ out.push(pth('M '+XT+' '+yT+' L '+XT+' '+(YT-R)+' Q '+XT+' '+YT+' '+(XT+R)+' '+YT,st(BT,3)));
+ out.push(pth('M '+(XT+R)+' '+YT+' L '+xR+' '+YT,st(BR,3)));
+ out.push(pth('M '+XT+' '+yB+' L '+XT+' '+(YT+R)+' Q '+XT+' '+YT+' '+(XT-R)+' '+YT,st(BB,3)));
+ out.push(pth('M '+(XT-R)+' '+YT+' L '+xL+' '+YT,st(BL,3)));
+ const hS=(i,x)=>x<CX?st(BL,i):st(BR,i),vS=(j,y)=>y<CY?st(BT,j):st(BB,j);
+ const pts=[];
+ for(let i=0;i<3;i++)for(let j=0;j<3;j++)pts.push({x:X[j],y:Y[i],c1:hS(i,X[j]),e1:i,c2:vS(j,Y[i]),e2:j,h:4*j+i+1});
+ for(let i=0;i<3;i++)pts.push({x:XT,y:Y[i],c1:hS(i,XT),e1:i,c2:st(BT,3),e2:3,h:13+i});
+ for(let j=0;j<3;j++)pts.push({x:X[j],y:YT,c1:vS(j,YT),e1:j,c2:st(BL,3),e2:3,h:4*j+4});
+ let nP=0,nA=0;pts.forEach(q=>{const x=q.x.toFixed(1),y=q.y.toFixed(1);
+  if(q.c1==='sat'&&q.c2==='sat'){nP++;out.push('<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+EC[q.e1]+'" stroke="'+EC[q.e2]+'" stroke-width="3.5"/>')}
+  else if(q.c1==='non'&&q.c2==='non'){nA++;out.push('<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="var(--card)" stroke="'+EC[q.e1]+'" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="'+x+'" cy="'+y+'" r="2" fill="'+EC[q.e2]+'"/>')}
+  else out.push('<circle cx="'+x+'" cy="'+y+'" r="3.2" fill="var(--card)" stroke="var(--mu)" stroke-width="1.5"/>')});
+
+ let nArr=0;pts.forEach(q=>{const stop=L&&FIGS.findIndex(x=>x.n===L.maisons[q.h-1].base)+1===antOf(q.h);if(stop){nArr++;out.push('<circle cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="10" fill="none" stroke="#dc2626" stroke-width="2"/><path d="M '+(q.x-4.5)+' '+(q.y-4.5)+' L '+(q.x+4.5)+' '+(q.y+4.5)+' M '+(q.x+4.5)+' '+(q.y-4.5)+' L '+(q.x-4.5)+' '+(q.y+4.5)+'" stroke="#dc2626" stroke-width="2"/>')}
+  out.push('<text x="'+(q.x+7).toFixed(1)+'" y="'+(q.y-7).toFixed(1)+'" font-size="8.5" font-weight="700" fill="'+(stop?'#dc2626':'var(--mu)')+'" style="fill:'+(stop?'#dc2626':'var(--mu)')+'">M'+q.h+'</text>')});
+ const info=(tri?'Base + maison au repos = résultante : ':'Base + maison au repos = résultante : ')+[BT,BR,BB,BL].map(b=>b.b+'+'+b.h+'='+b.r+' ('+b.c+'/4 saturés)').join(' · ')+' · '+pts.length+' intersections : '+nP+' saturées, '+nA+' non saturées'+(L&&!tri?' · ✖ arrêts (maison ancrée chez son antagoniste) : '+nArr:'')+(L?' · 💔 : l’antagoniste est bien en base dans la maison, dans ce thème':'');
+ return {svg:'<svg viewBox="0 0 560 580" role="img" aria-label="Carte en croix">'+out.join('')+'</svg>',nI:pts.length,nP:nP,nA:nA,info:info};
+}
+const add=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();for(let k=0;k<16;k++)if(FIGS[k].p.join()===q)return k+1;return null};
+const COMBOS=[['A','B'],['A','C'],['A','D'],['B','C'],['B','D'],['C','D'],['D','C']];
+let MODE='fronts';
+function carte(titre,detail,b,tab){const d=document.createElement('div');d.className='fr';d.innerHTML='<h2>'+titre+' <small>'+detail+'</small></h2><div class="rs">'+(b.info?b.info:'Miroirs : '+b.mh+' ('+b.h+'/4 liens saturés) · '+b.mv+' ('+b.v+'/4) · Terre déviée : '+b.d1+' '+(b.t1?'saturée':'non saturée')+', '+b.d2+' '+(b.t2?'saturée':'non saturée')+' · '+b.nI+' intersections : '+b.nP+' saturées, '+b.nA+' non saturées')+'</div>'+b.svg+(tab||'');document.getElementById('g').appendChild(d)}
+function rendre(L){
+ const g=document.getElementById('g');g.innerHTML='';
+ if(MODE==='reel'){
+  if(!L){g.innerHTML='<p class="s">Saisir un thème pour voir la carte réelle.</p>';return}
+  for(let z=0;z<4;z++){const f=z+1,tri={};[['top',0],['right',4],['bot',8],['left',12]].forEach(([nm,k])=>{const h=f+k;tri[nm]={h:h,b:FIGS.findIndex(x=>x.n===L.maisons[h-1].base)+1}});
+   const b=blocN(tri.left.h,tri.right.h,tri.top.h,tri.bot.h,null,L,tri);carte('Front '+FR[z]+' · thème réel',FRN[FR[z]]+' · la base de chaque maison est celle du thème',b)}
+ }else if(MODE==='fronts'){
+  for(let z=0;z<4;z++){const f=z+1,b=bloc(z,L);b.mh=f+'↔'+(f+8);b.mv=(f+4)+'↔'+(f+12);b.d1=f+'→'+(f+4);b.d2=(f+8)+'→'+(f+12);
+   carte('Front '+FR[z],FRN[FR[z]]+' · '+[1,5,9,13].map(k=>FIGS[k+z-1].n).join(' · '),b)}
+ }else{
+  COMBOS.forEach(([X,Y])=>{const zx=FR.indexOf(X),zy=FR.indexOf(Y),fx=zx+1,d=((zy-zx)%4+4)%4;
+   // X+Y : les figures du front X sont au repos (anneau jaune), celles du front Y sont en base (anneau rouge), la résultante est leur somme.
+   // La base de la maison h est la figure du front Y obtenue en reculant de 3 par pas de front : h−3·d (d = 1 : l'antagoniste n−3, comme dans la carte du front A).
+   const bs=h=>((h-1-3*d)%16+16)%16+1;
+   const tri={};[['top',0],['right',4],['bot',8],['left',12]].forEach(([nm,k])=>{const hx=fx+k;tri[nm]={h:hx,b:bs(hx)}});
+   const b=blocN(tri.left.h,tri.right.h,tri.top.h,tri.bot.h,null,L,tri);
+   const fz='ABCD'[(add(fx,zy+1)-1)%4];const tab='<div class="tbn">Maisons au repos : figures du front '+X+' ('+[tri.top.h,tri.right.h,tri.bot.h,tri.left.h].join(', ')+'). Bases : figures du front '+Y+' ('+[tri.top.b,tri.right.b,tri.bot.b,tri.left.b].join(', ')+'), prises à h−'+(3*d)+'. Les résultantes tombent dans le front '+fz+' ('+FRN[fz]+').</div>';
+   carte(X+'+'+Y,FRN[FR[zx]]+' + '+FRN[FR[zy]]+' : les figures du front '+X+' sont au repos, celles du front '+Y+' sont en base',b,tab)})
+ }
+}
+
+let LC=null,pret=false;
+document.getElementById('mode').onchange=e=>{MODE=e.target.value;if(pret)rendre(LC)};
+window.CARTO={maj:function(meres){LC=lireNoms(meres);if(document.getElementById('carto').open){pret=true;rendre(LC)}else pret=false},
+ ouvrir:function(){pret=true;rendre(LC)}};
+document.getElementById('carto').addEventListener('toggle',function(){if(this.open&&LC){pret=true;rendre(LC)}});
+})();</script><script>
 (function(){
 var K=KOUN_NOYAU,M=KOUN4,JOURS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 var $=function(i){return document.getElementById(i)},mer=$('meres'),jr=$('jour'),qs=new URLSearchParams(location.search),init=(qs.get('theme')||'1-1-1-1').split('-').map(Number);
@@ -208,6 +296,6 @@ function rendre(){
  +'<div class="box"><h2>Équilibre des deux parties</h2>Écart de base : '+e.ecartBase+' · écart de résultante : '+e.ecartRes+' · '+(e.equilibre?'<span class="ok">en équilibre</span>':'<span class="ko">pas en équilibre</span>')+'</div>'
  +'<div class="box"><h2>Validation FI-5</h2>'+f.niveau+' condition(s) sur '+f.total+' : '+(f.valide?'<span class="ok">thème valide</span>':'<span class="ko">thème non valide</span>')+'</div>';
 }
-mer.addEventListener('change',rendre);jr.addEventListener('change',rendre);rendre();
+var _r=rendre;rendre=function(){_r();window.CARTO&&CARTO.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}))};mer.addEventListener('change',rendre);jr.addEventListener('change',rendre);rendre();
 })();
 </script></body></html>
