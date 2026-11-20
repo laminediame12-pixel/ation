@@ -95,7 +95,33 @@ ok('I6 les 4 mères (M1-M4) et les 4 filles (M5-M8) sont chacune un ensemble gé
   ok('I11 le front de M5 est la transposée de ceux de M1 et M2 : Feu(M5) = Feu(M1), Air(M5) = Feu(M2) ; le front de M6 : Feu(M6) = Air(M1), Air(M6) = Air(M2)', bases.every(b => P(b[5])[0] === P(b[1])[0] && P(b[5])[1] === P(b[2])[0] && P(b[6])[0] === P(b[1])[1] && P(b[6])[1] === P(b[2])[1]));
 }
 
+// I12 — Le miroir (n ↔ n+8) est l'inversion du niveau Terre ; l'antagoniste (n−3) et le miroir commutent ; mêmes résultantes pour deux maisons miroir
+{
+  const mir = n => ((n + 7) % 16) + 1, antag = n => ((n - 4) % 16 + 16) % 16 + 1, R = h => add(antag(h), h);
+  ok('I12 chaque figure + son miroir = Tristitia : le miroir ne change que le niveau Terre (Feu, Air, Eau identiques)', F.every(f => add(f.num, mir(f.num)) === 8 && [0, 1, 2].every(l => P(mir(f.num))[l] === P(f.num)[l]) && P(mir(f.num))[3] !== P(f.num)[3]));
+  ok('I12 l\'antagoniste du miroir est le miroir de l\'antagoniste ; figure + miroir de son antagoniste ∈ {Caput, Via, Fortuna Minor, Conjunctio, Cauda Draconis}', F.every(f => antag(mir(f.num)) === mir(antag(f.num))) && JSON.stringify([...new Set(F.map(f => add(f.num, mir(antag(f.num)))))].sort((a, b) => a - b)) === '[3,5,9,11,13]');
+  ok('I12 deux maisons miroir ont la même résultante quand elles portent leurs antagonistes : R(h) = R(h+8) pour h = 1 à 8', [1, 2, 3, 4, 5, 6, 7, 8].every(h => R(h) === R(h + 8)));
+  ok('I12 M8 est la seule maison dont la résultante (antagoniste dans sa maison) est l\'antagoniste de sa maison miroir', F.filter(f => R(f.num) === antag(mir(f.num))).map(f => f.num).join() === '8');
+}
+// I13 — Placements de l'antagoniste : quels ensembles de maisons peuvent porter ensemble leur antagoniste ? (deux lectures)
+//   « attaquant » : la maison h porte en base la figure h−3 (l'antagoniste ancré chez la victime) ; « victime » : la maison h porte en base la figure h+3 (la figure chez son antagoniste, enMaisonAntagoniste du moteur)
+const placements = {};
+{
+  const lectures = { attaquant: h => ((h - 4) % 16 + 16) % 16 + 1, victime: h => ((h + 2) % 16) + 1 }, attendu = { attaquant: [841, 6], victime: [638, 7] };
+  for (const nom of Object.keys(lectures)) {
+    const cible = lectures[nom], observes = new Set(), distribution = {};
+    for (const b of bases) { let m = 0, k = 0; for (let h = 1; h <= 16; h++) if (b[h] === cible(h)) { m |= 1 << (h - 1); k++; } observes.add(m); distribution[k] = (distribution[k] || 0) + 1; }
+    const faisables = new Set(); observes.forEach(m => { for (let t = m; ; t = (t - 1) & m) { faisables.add(t); if (t === 0) break; } });
+    const maxK = Math.max(...[...observes].map(m => m.toString(2).split('1').length - 1));
+    ok('I13 (' + nom + ') exactement ' + attendu[nom][0] + ' ensembles de maisons peuvent porter ensemble leur antagoniste, au plus ' + attendu[nom][1] + ' à la fois', faisables.size === attendu[nom][0] && maxK === attendu[nom][1], 'répartition du nombre de placements par thème : ' + JSON.stringify(distribution));
+    const impossibles = []; for (let m = 1; m < 65536; m++) { if (faisables.has(m)) continue; let minimal = true; for (let h = 0; h < 16 && minimal; h++) if ((m >> h & 1) && !faisables.has(m & ~(1 << h))) minimal = false; if (minimal) impossibles.push(m); }
+    placements[nom] = impossibles.map(m => { const o = []; for (let h = 0; h < 16; h++) if (m >> h & 1) o.push(h + 1); return o; });
+  }
+  ok('I13 (victime) M15 ne peut jamais porter la figure h+3 (Laetitia, impaire) : le Juge est toujours pair', placements.victime.some(x => x.length === 1 && x[0] === 15) && placements.victime.filter(x => x.length === 1).length === 1);
+  ok('I13 les ensembles impossibles minimaux sont 26 couples + 23 triples + 16 quadruplets + 6 quintuplets (attaquant)', [2, 3, 4, 5].map(k => placements.attaquant.filter(x => x.length === k).length).join() === '26,23,16,6');
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
-if (process.argv.includes('--liste')) { console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
+if (process.argv.includes('--liste')) { for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
 console.log('\nLes 14 couples de liaisons jamais connectées ensemble :'); excl.forEach(([a, b]) => console.log('  ' + a + '  ✕  ' + b));
 console.log(mauvais ? '\n' + mauvais + ' échec(s)' : '\nToutes les propriétés sont vérifiées sur les 65 536 thèmes (' + verifs.length + ').'); process.exit(mauvais ? 1 : 0);

@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (58 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (66 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -116,3 +116,26 @@ Toutes les lois entre niveaux des 4 maisons d'un front (parité du nombre de niv
 - Les fronts des 16 maisons ne prennent que **4 096 configurations** sur 65 536 thèmes (chacune 16 fois) : 12 degrés de liberté et 20 lois entre fronts.
 - Chaque maison est la somme de Klein de ses constituantes : front(M9) = front(M1) + front(M2), …, front(M16) = front(M15) + front(M1) (A+B=C, A+C=B, A+D=A, B+C=A, B+D=B, C+D=C, X+X=D).
 - **Les fronts de M5 et M6 sont la transposée de ceux de M1 et M2** : Feu(M5) = Feu(M1), Air(M5) = Feu(M2), Feu(M6) = Air(M1), Air(M6) = Air(M2). Le front de M7 et de M8 n'est pas déterminé par les fronts de M1 et M2 : il dépend aussi de leur Eau et de leur Terre.
+
+## I12 — Le miroir et l'antagoniste
+- **Le miroir (n ↔ n+8) inverse seulement le niveau Terre.** Chaque figure + son miroir = Tristitia (2221), pour les 8 paires : Puer 1121 ↔ Fortuna Minor 1122, Tristitia 2221 ↔ Populus 2222, etc. Feu, Air et Eau sont identiques, la Terre est inversée. Tristitia est l'« opérateur miroir ».
+- L'antagoniste (n−3) et le miroir commutent : l'antagoniste du miroir est le miroir de l'antagoniste. Figure + miroir de son antagoniste ne prend que 5 valeurs : Caput, Via, Fortuna Minor, Conjunctio, Cauda Draconis.
+- **Deux maisons miroir ont la même résultante** quand elles portent leurs antagonistes : R(h) = R(h+8). C'est pourquoi, dans la carte en croix, les résultantes opposées (haut/bas, gauche/droite) sont la même figure.
+- **M8 est la seule maison** dont la résultante (avec son antagoniste) est l'antagoniste de sa maison miroir.
+
+## I13 — Quels antagonistes peuvent être en place ensemble
+Deux lectures d'« antagoniste dans la maison ennemie » :
+- **attaquant** : la maison h porte en base la figure h−3 (l'antagoniste ancré chez la victime, lecture de la carte) ;
+- **victime** : la maison h porte en base la figure h+3 (la figure dans la maison de son antagoniste, `enMaisonAntagoniste` du moteur).
+
+| | Attaquant | Victime |
+|---|---|---|
+| Ensembles de maisons qui peuvent porter ensemble leur antagoniste (sur 65 536 ensembles) | 841 | 638 |
+| Maximum simultané | 6 (28 thèmes) | 7 (1 seul thème : 4-8-15-13, M1, M5, M7, M8, M9, M14, M16) |
+| Thèmes sans aucun placement | 21 831 | 25 823 |
+| Avec 1, 2, 3, 4, 5, 6 placements | 24 726 · 13 454 · 4 336 · 983 · 178 · 28 | 23 842 · 11 171 · 3 717 · 825 · 144 · 13 |
+
+Maisons qui ne peuvent jamais le faire ensemble (minimaux) :
+- Attaquant : 26 couples, 23 triples, 16 quadruplets, 6 quintuplets. Couples : M4+M5, M3+M6, M1+M7, M3+M7, M3+M8, M6+M9, M7+M9, M6+M10, M7+M10, M1+M11, M2+M11, M4+M11, M9+M11, M1+M12, M4+M12, M9+M12, M6+M13, M7+M13, M8+M13, M12+M13, M1+M14, M2+M14, M3+M14, M4+M14, M9+M14, M14+M16. Les triples de construction M1+M2+M9, M3+M4+M10, M5+M6+M11, M7+M8+M12, M9+M10+M13, M11+M12+M14 sont aussi impossibles.
+- Victime : 1 maison seule (M15 ne peut jamais porter Laetitia : le Juge est toujours pair), 22 couples, 14 triples, 8 quadruplets, 6 quintuplets. Couples : M2+M5, M3+M5, M4+M5, M1+M6, M4+M6, M2+M7, M3+M7, M4+M7, M3+M8, M6+M10, M8+M10, M1+M11, M9+M11, M1+M12, M2+M12, M3+M12, M4+M12, M9+M12, M5+M13, M11+M13, M2+M14, M13+M14.
+- La liste complète s'obtient avec `node outils/invariants.js --liste`.
