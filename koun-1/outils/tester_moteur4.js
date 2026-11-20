@@ -48,4 +48,13 @@ for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 1
   const a = sc(P0.R1.figure), e = sc(P0.R7.figure);
   if (A.R1.score1 !== a[0] || A.R1.score4 !== a[1] || A.R7.score1 !== e[0] || A.R7.score4 !== e[1]) malA++; }
 if (malA) add('niveaux d\'activation');
+// Niveaux connectés du front : recalcul indépendant à partir des nœuds (états « plein » et « vide » ne suffisent pas : on recompte les liaisons)
+let malC = 0;
+for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K4.lire(m), C = K4.connexions(L), T = N.construire(m);
+  const r = h => N.niveaux(h === 16 ? T.bases[16] : T.resultantes[h]);
+  for (const [c, pole] of [['R1', L.R1], ['R7', L.R7]]) { const f = (pole.figure - 1) % 4 + 1, set = new Set();
+    for (let l = 0; l < 3; l++) { if (r(f)[l] === 2 && r(f + 8)[l] === 2) set.add(l); if (r(f + 12)[l] === 2 && r(f + 4)[l] === 2) set.add(l); }
+    if ((r(f)[3] === 2 && r(f + 4)[3] === 2) || (r(f + 8)[3] === 2 && r(f + 12)[3] === 2)) set.add(3);
+    if (C[c].n !== set.size) malC++; } }
+if (malC) add('niveaux connectés');
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);

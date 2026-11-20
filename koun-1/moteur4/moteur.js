@@ -157,6 +157,25 @@
     var a = pole(L.R1), e = pole(L.R7), v = function (x, y) { return x > y ? 'R1' : x < y ? 'R7' : null; };
     return { R1: a, R7: e, h1: v(a.score1, e.score1), h4: v(a.score4, e.score4) };
   }
+
+  // Niveaux connectés du front d'un pôle (indice des buts, hypothèse H-BUTS) : dans la croix du front (haut f, droite f+4, bas f+8, gauche f+12), un niveau est connecté quand la liaison
+  // entre deux maisons opposées est saturée des deux côtés : Feu, Air, Eau en vertical (haut-bas) ou en horizontal (gauche-droite) ; Terre déviée (haut→droite ou bas→gauche).
+  // On compte les niveaux distincts connectés (0 à 4).
+  function connexions(L) {
+    var sat = function (h, l) { return K.niveaux(L.resu(h))[l] === 2; };
+    function front(c) {
+      var f = (c.figure - 1) % 4 + 1, haut = f, droite = f + 4, bas = f + 8, gauche = f + 12, liaisons = [], niv = {};
+      for (var l = 0; l < 3; l++) {
+        if (sat(haut, l) && sat(bas, l)) { liaisons.push(LETTRES[l] + ' vertical M' + haut + '↔M' + bas); niv[l] = 1; }
+        if (sat(gauche, l) && sat(droite, l)) { liaisons.push(LETTRES[l] + ' horizontal M' + gauche + '↔M' + droite); niv[l] = 1; }
+      }
+      if (sat(haut, 3) && sat(droite, 3)) { liaisons.push('T déviée M' + haut + '→M' + droite); niv[3] = 1; }
+      if (sat(bas, 3) && sat(gauche, 3)) { liaisons.push('T déviée M' + bas + '→M' + gauche); niv[3] = 1; }
+      var lettres = LETTRES.filter(function (x, i) { return niv[i]; }).join('');
+      return { front: K.front(c.figure), niveaux: lettres, n: lettres.length, liaisons: liaisons };
+    }
+    return { R1: front(L.R1), R7: front(L.R7) };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -166,7 +185,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

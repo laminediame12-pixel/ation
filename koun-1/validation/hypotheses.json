@@ -18,7 +18,8 @@
      "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7",
      "score": null
     }
-   ]
+   ],
+   "statut": "réfutée le 2026-11-20 sur 6-8-8-11 (posée avant ce thème) : H-ANT donne R7, le score est 3-1 pour R1. Retirée du moteur, gardée ici pour mémoire."
   },
   {
    "id": "H-5",
@@ -36,6 +37,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets",
      "score": null
+    }
+   ],
+   "resultats_apres_pose": [
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "pas de victoire claire",
+     "score": "3-1",
+     "juste": null
     }
    ]
   },
@@ -78,6 +92,19 @@
      "prediction": "R1 (2-0)",
      "score": "3-0"
     }
+   ],
+   "resultats_apres_pose": [
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "R1",
+     "score": "3-1",
+     "juste": true
+    }
    ]
   },
   {
@@ -118,6 +145,50 @@
      ],
      "prediction": "R1 (4-2)",
      "score": "3-0"
+    }
+   ],
+   "resultats_apres_pose": [
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "R1",
+     "score": "3-1",
+     "juste": true
+    }
+   ]
+  },
+  {
+   "id": "H-BUTS",
+   "posee_le": "2026-11-20",
+   "enonce": "Le nombre de buts d'un pôle est le nombre de niveaux distincts connectés dans la croix de son front : Feu, Air, Eau en vertical ou horizontal (résultantes de deux maisons opposées toutes deux saturées à ce niveau), Terre déviée (haut→droite ou bas→gauche). Le score prédit est (niveaux connectés du front de R1) - (niveaux connectés du front de R7). Né du match 6-8-8-11 (3-1 : D a Feu, Eau, Terre ; A a Feu), qui ne compte donc pas comme test.",
+   "predictions": [
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "date_match": null,
+     "prediction": "1-1",
+     "detail": "R1 front C : Feu (M15↔M7) ; R7 front B : Eau (M2↔M10)",
+     "score": null
+    }
+   ],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "3-1",
+     "score": "3-1"
     }
    ]
   }
