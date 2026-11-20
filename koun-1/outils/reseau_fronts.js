@@ -1,5 +1,5 @@
 // Modèle du propriétaire : liaison connectée à un niveau si les deux figures miroir (branches opposées) saturent ce niveau ; elle traverse des maisons (nœuds) ; un nœud dont la maison est ancrée chez l'antagoniste coupe la liaison.
-const K=require('../moteur3/moteur.js');const J=require('../moteur3/cartographie.json');const F=J.figures;
+const K=require('./_lecture.js');const J=require('../moteur3/cartographie.json');const F=J.figures;
 const NIV=['Feu','Air','Eau','Terre'];
 const ant=h=>((h-4)%16+16)%16+1;
 const niv=(a,b)=>(a+b)%2===0?2:1;const P=n=>F[n-1].niveaux;

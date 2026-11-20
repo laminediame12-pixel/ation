@@ -1,20 +1,10 @@
-// Vérifie le noyau structurel (moteur3/noyau.js) contre le moteur gelé et contre les invariants. Usage : node outils/tester_noyau.js
-const K = require('../moteur3/moteur.js'), N = require('../moteur3/noyau.js');
+// Vérifie le noyau structurel (moteur3/noyau.js) contre les invariants. Usage : node outils/tester_noyau.js
+const N = require('../moteur3/noyau.js');
 const verifs = []; const ok = (n, c, d) => verifs.push([n, !!c, d || '']);
 const themes = [];
 for (let q = 0; q < 65536; q++) themes.push([q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1));
 
-// 1. le noyau reconstruit exactement ce que calcule le moteur gelé
-let egal = true, poles = true, derives = true;
-themes.forEach(m => {
-  const L = K.lire(K.construireTheme(...m.map(K.fig))), T = N.construire(m);
-  for (let h = 1; h <= 16; h++) { const mm = L.maisons[h - 1]; if (K.num(mm.base) !== T.bases[h]) egal = false; if (K.num(mm.resultante || mm.base) !== T.resultantes[h]) egal = false; }
-  const P = N.poles(T); if (L.R1.maison !== P.R1.maison || K.num(L.R1.figure) !== P.R1.figure || L.R7.maison !== P.R7.maison || K.num(L.R7.figure) !== P.R7.figure) poles = false;
-  [['R1', P.R1], ['R7', P.R7]].forEach(([c, p]) => { const o = L[c]; if (o.front !== N.front(p.figure) || K.num(o.antagoniste) !== N.antagoniste(p.figure) || K.num(o.miroir) !== N.miroir(p.figure)) derives = false; });
-});
-ok('construire : bases et résultantes identiques à celles du moteur gelé sur les 65 536 thèmes', egal);
-ok('poles : maisons et figures de R1 et R7 identiques à celles du moteur', poles);
-ok('front, antagoniste et miroir (addition de Tristitia) identiques à ceux du moteur pour les figures des pôles', derives);
+// 1. binôme
 ok('binôme = couples symétriques 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16 (addition de Amissio ou de Puella)', [...Array(16).keys()].every(i => N.binome(i + 1) === ((i % 4 < 2) ? i + 3 : i - 1)));
 
 // 2. le vérificateur accepte tous les thèmes et rejette toute altération
@@ -43,4 +33,4 @@ const c = N.deduire({ 4: 1, 5: 2 }); ok('deduire : M4 = Puer et M5 = Laetitia so
 const d = N.deduire({ 1: 7 }); ok('deduire : Rubeus en M1 impose 7 niveaux ailleurs (I23)', d.coherent && d.imposes.length === 7, d.imposes.length + ' niveaux');
 
 let mauvais = 0; verifs.forEach(([n, cnd, dd]) => { if (!cnd) mauvais++; console.log((cnd ? 'OK     ' : 'ÉCHEC  ') + n + (dd ? ' — ' + dd : '')); });
-console.log(mauvais ? mauvais + ' échec(s)' : 'Le noyau est conforme au moteur gelé et aux invariants (' + verifs.length + ' contrôles).'); process.exit(mauvais ? 1 : 0);
+console.log(mauvais ? mauvais + ' échec(s)' : 'Le noyau est conforme aux invariants (' + verifs.length + ' contrôles).'); process.exit(mauvais ? 1 : 0);

@@ -1,6 +1,6 @@
 // Propriétés invariantes de la structure, vérifiées sur les 65 536 thèmes (tout l'espace des thèmes : c'est une preuve par énumération).
 // Usage : node outils/invariants.js   (aucune règle de verdict ici : seulement des lois de la structure)
-const K = require('../moteur3/moteur.js'), J = require('../moteur3/cartographie.json'), F = J.figures;
+const K = require('./_lecture.js'), J = require('../moteur3/cartographie.json'), F = J.figures;
 const P = n => F[n - 1].niveaux, NIV = ['Feu', 'Air', 'Eau', 'Terre'];
 const niv = (a, b) => (a + b) % 2 === 0 ? 2 : 1, add = (a, b) => F.findIndex(f => f.niveaux.join() === P(a).map((x, i) => niv(x, P(b)[i])).join()) + 1;
 const sat = (r, l) => P(r)[l] === 2;                                              // niveau l de la figure r saturé (2 points)
@@ -266,8 +266,6 @@ const rubeus = {};
   const Q = [5, 7, 13, 15], R7de = n => ((n + 5) % 16) + 1, cnt = {};
   bases.forEach(t => { const h1 = t[1], h7 = R7de(h1); [['R1', h1], ['R7', h7]].forEach(([r, h]) => { if ((h === 6 || h === 12) && Q.includes(t[h])) { const k = r + ' M' + h + ' ' + t[h]; cnt[k] = (cnt[k] || 0) + 1; } }); });
   ok('I25 pôles du quartet en M6 et M12 : R1 est Rubeus ou Aquisitio (M6 ou M12), R7 est Cauda ou Via en M12 et Rubeus ou Aquisitio en M6, chaque cas dans 512 thèmes', JSON.stringify(Object.keys(cnt).sort()) === JSON.stringify(['R1 M12 15', 'R1 M12 7', 'R1 M6 15', 'R1 M6 7', 'R7 M12 13', 'R7 M12 5', 'R7 M6 15', 'R7 M6 7'].sort()) && Object.values(cnt).every(v => v === 512), JSON.stringify(cnt));
-  let actif = 0, rouge = 0, pen = 0; for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), r = K.penalite(K.lire(K.construireTheme(...m.map(K.fig)))); if (r.actif) actif++; if (r.carton) rouge++; if (r.penalty) pen++; }
-  ok('I25 la règle de pénalité et carton rouge actuelle du moteur (3.0.0, aucune donnée pour la tester) s\'active dans 34 676 thèmes sur 65 536 (53 %) : carton rouge 21 891, pénalité 23 424', actif === 34676 && rouge === 21891 && pen === 23424);
 }
 
 // I26 — Tristitia (8, 2221 : seule la Terre est à un point) dans toutes les maisons

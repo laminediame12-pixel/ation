@@ -3,7 +3,7 @@
 //         node outils/cartographie.js --verifier (compare avec le fichier existant, sans l'écrire)
 // Aucune règle du moteur n'utilise cette structure : c'est la description exacte de la carte (cartographe-fronts.html), pour une intégration future.
 const fs = require('fs'), path = require('path');
-const K = require('../moteur3/moteur.js');
+const K = require('./_lecture.js');
 
 // Niveaux d'activation (Feu, Air, Eau, Terre) de chaque figure, en points (1 ou 2), numérotées par leur maison de repos. Même table que le moteur (contrôlée plus bas).
 const POINTS = [[1,1,2,1],[1,2,2,2],[2,1,1,1],[2,2,1,2],[1,1,1,1],[1,2,1,2],[2,1,2,2],[2,2,2,1],[1,1,2,2],[1,2,2,1],[2,1,1,2],[2,2,1,1],[1,1,1,2],[1,2,1,1],[2,1,2,1],[2,2,2,2]];

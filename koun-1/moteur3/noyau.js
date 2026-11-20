@@ -2,7 +2,7 @@
    Tout ce qui suit est une fonction exacte des quatre mères, démontrée sur les 65 536 thèmes (moteur3/INVARIANTS.md, outils/invariants.js).
    Une seule table : les 16 figures et leurs niveaux. Le reste est de l'algèbre : addition (niveaux égaux = 2 points, différents = 1),
    miroir = + Tristitia, binôme = + Amissio (blocs M1-4, M9-12) ou + Puella (blocs M5-8, M13-16), antagoniste = n − 3, front = (n − 1) mod 4.
-   API : construire, verifier, deduire, poles, plus les opérations de base. Le moteur de verdict (moteur.js, gelé) n'est pas modifié. */
+   API : construire, verifier, deduire, poles, plus les opérations de base. Aucune règle de verdict. */
 (function (root) {
   'use strict';
   var FIGURES = [
