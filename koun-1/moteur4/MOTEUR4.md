@@ -1,23 +1,17 @@
-# Moteur 4 — le noyau et les seuls principes posés
+# Moteur 4 — le noyau, lu
 
-`moteur4/moteur.js` repose sur `moteur3/noyau.js` (structure exacte). Le moteur gelé `moteur3/moteur.js` n'est pas modifié ; la page système l'utilise encore.
+Nouveau moteur, indépendant : `moteur4/moteur.js` sur `moteur3/noyau.js`. Il **ne prédit rien**.
 
-## Ce qu'il fait
-- **VA-1** victoire assurée (boucles différentes, ≥3 figures du front ou du front binôme chez elles, sans annulation).
-- **MF-2** même front : un seul partenaire de moitié chez lui.
-- **MF-3** nul : front miroir, Tristitia en maison de Terre, **et** équilibre des deux parties du thème.
-- **FI-5** validation du thème.
-- Sinon : `verdict: null` — pas de verdict.
+## Ce qu'il contient (exact ou vérifié)
+- Thème, bases, résultantes, pôles R1/R7, mode (même front / même boucle / boucles différentes), lien R1+R7 : fonctions exactes des 4 mères.
+- Équilibre des deux parties : équation vérifiée sur les 65 536 thèmes.
+- FI-5 : validation du thème posée par le propriétaire ; elle ne dit rien du résultat.
+- Contrôle : `node outils/tester_moteur4.js` (65 536 thèmes, 0 écart).
 
-## Ce qu'il ne fait plus
-Principes de développement (NU-1, AX-1, CL-1, CL-2, PF-2, NU-2, NU-3, FC-2, FP-1, CO-1), CC-1, « R1 par défaut », pénalité/carton, buts, corners, Over/Under, rythme.
+## Ce qu'il ne contient pas, et pourquoi
+Aucune règle de verdict n'est démontrée. Retirées :
+- **VA-1** : « assurée » est faux (juste 1/2, puis 1/1 ; faux 2 fois sur 4 dans l'audit) ; elle repose aussi sur le barème de force (25 points par niveau, destructeur, intrusion), inventé.
+- **MF-2** (3 cas réels) et **MF-3** (1 cas réel) : posées, jamais prouvées.
+- Tout le reste du moteur 3 : développement, CC-1, « R1 par défaut », pénalité/carton, buts, corners, Over/Under, rythme.
 
-## Preuve (`node outils/tester_moteur4.js`)
-Sur les 65 536 thèmes : verdict identique au gelé pour les 4 138 thèmes où VA-1 (2 570), MF-2 (1 304) ou MF-3 (264) décide ; abstention sur les 61 398 autres ; FI-5 identique sur 524 288 lectures.
-
-## Usage
-```js
-var r = KOUN4.analyser([m1, m2, m3, m4], jour); // mères en numéros 1..16
-r.verdict   // { verdict: '1' | '2' | 'N' | null, principe, raison, assuree }
-r.fiabilite // { niveau, total, valide }
-```
+Une règle revient ici quand elle est posée avant les chiffres, testée une fois sur un lot neuf, et confirmée.
