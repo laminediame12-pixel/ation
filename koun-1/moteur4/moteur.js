@@ -92,6 +92,57 @@
     });
     return { fronts: fronts, arrets: stops, niveaux: LETTRES };
   }
+
+  // Faits du thème : ce que la structure impose et que la simple lecture des placements ne montre pas.
+  // 1. relations : pour chaque maison, la relation de sa base avec la maison (neutre = Populus, chez elle, miroir h+8, binôme, miroir du binôme, antagoniste ancré h−3, victime h+3).
+  // 2. attaques : entre les groupes des deux pôles, figure k attaque k+3 (cercle des fronts A→D→C→B→A) ; attaquant absent = victime non attaquée ; deux chez elles = double repos.
+  // 3. uniques : figures d'un groupe qui n'ont qu'un emplacement, et par quelle relation.
+  // 4. liaisons : niveaux saturés des deux côtés entre la maison d'un pôle et sa maison miroir (h+8) et sa maison binôme.
+  function faits(L) {
+    var T = L.theme, b = T.bases, P = poles(L), nsat = function (f) { return K.niveaux(f).filter(function (v) { return v === 2; }).length; };
+    function tags(h, f) {
+      var t = [];
+      if (f === 16 && h !== 16) t.push('neutre');
+      if (f === h) t.push('chez elle');
+      if (f === K.miroir(h)) t.push('miroir');
+      if (f === K.binome(h)) t.push('binôme');
+      if (f === K.miroir(K.binome(h))) t.push('miroir du binôme');
+      if (f === mod(h - 3)) t.push('antagoniste ancré');
+      if (f === mod(h + 3)) t.push('victime');
+      return t;
+    }
+    var relations = [];
+    for (var h = 1; h <= 16; h++) { var t = tags(h, b[h]); if (t.length) relations.push({ maison: h, figure: b[h], relations: t, resultante: L.resu(h) }); }
+    function resume(g, f) { var x = g.figures.filter(function (y) { return y.figure === f; })[0]; var pl = x ? x.emplacements : []; return { figure: f, emplacements: pl.length, saturation: pl.reduce(function (a, e) { return a + e.satures; }, 0), chezElle: pl.some(function (e) { return e.chezElle; }) }; }
+    var attaques = [];
+    [['R1', 'R7'], ['R7', 'R1']].forEach(function (pr) {
+      ['front_', 'frontBinome'].forEach(function (gk) {
+        var G = P[pr[0]][gk], f0 = (G.figures[0].figure - 1) % 4;
+        ['front_', 'frontBinome'].forEach(function (hk) {
+          var H = P[pr[1]][hk];
+          if ((H.figures[0].figure - 1) % 4 !== (f0 + 3) % 4) return;
+          G.figures.forEach(function (x) {
+            var k = x.figure, v = mod(k + 3), a = resume(G, k), w = resume(H, v), st;
+            if (a.emplacements === 0 && w.emplacements === 0) st = 'les deux absents'; else if (a.emplacements === 0) st = 'attaquant absent : victime non attaquée'; else if (w.emplacements === 0) st = 'victime absente';
+            else if (a.chezElle && w.chezElle) st = 'double repos : les deux chez elles'; else st = a.saturation > w.saturation ? 'attaquant plus saturé' : a.saturation < w.saturation ? 'victime plus saturée' : 'égalité';
+            attaques.push({ de: pr[0], vers: pr[1], attaquant: a, victime: w, statut: st });
+          });
+        });
+      });
+    });
+    var uniques = [];
+    ['R1', 'R7'].forEach(function (c) { ['front_', 'frontBinome', 'binome', 'antagoniste'].forEach(function (gk) { P[c][gk].figures.forEach(function (x) { if (x.emplacements.length === 1) { var e = x.emplacements[0]; uniques.push({ pole: c, groupe: P[c][gk].nom, figure: x.figure, maison: e.maison, couche: e.couche, relations: tags(e.maison, x.figure) }); } }); }); });
+    var liaisons = [];
+    [['R1', L.R1], ['R7', L.R7]].forEach(function (pc) {
+      var h = pc[1].maison, bn = (h - 1) % 4 < 2 ? h + 2 : h - 2;
+      [['miroir', mod(h + 8)], ['binôme', bn]].forEach(function (o) {
+        var x = K.niveaux(L.resu(h)), y = K.niveaux(L.resu(o[1])), n = [];
+        for (var l = 0; l < 4; l++) if (x[l] === 2 && y[l] === 2) n.push(LETTRES[l]);
+        liaisons.push({ pole: pc[0], maison: h, avec: o[0], maisonAvec: o[1], niveaux: n.join('') });
+      });
+    });
+    return { relations: relations, attaques: attaques, uniques: uniques, liaisons: liaisons };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -101,7 +152,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

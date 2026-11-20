@@ -250,6 +250,57 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     });
     return { fronts: fronts, arrets: stops, niveaux: LETTRES };
   }
+
+  // Faits du thème : ce que la structure impose et que la simple lecture des placements ne montre pas.
+  // 1. relations : pour chaque maison, la relation de sa base avec la maison (neutre = Populus, chez elle, miroir h+8, binôme, miroir du binôme, antagoniste ancré h−3, victime h+3).
+  // 2. attaques : entre les groupes des deux pôles, figure k attaque k+3 (cercle des fronts A→D→C→B→A) ; attaquant absent = victime non attaquée ; deux chez elles = double repos.
+  // 3. uniques : figures d'un groupe qui n'ont qu'un emplacement, et par quelle relation.
+  // 4. liaisons : niveaux saturés des deux côtés entre la maison d'un pôle et sa maison miroir (h+8) et sa maison binôme.
+  function faits(L) {
+    var T = L.theme, b = T.bases, P = poles(L), nsat = function (f) { return K.niveaux(f).filter(function (v) { return v === 2; }).length; };
+    function tags(h, f) {
+      var t = [];
+      if (f === 16 && h !== 16) t.push('neutre');
+      if (f === h) t.push('chez elle');
+      if (f === K.miroir(h)) t.push('miroir');
+      if (f === K.binome(h)) t.push('binôme');
+      if (f === K.miroir(K.binome(h))) t.push('miroir du binôme');
+      if (f === mod(h - 3)) t.push('antagoniste ancré');
+      if (f === mod(h + 3)) t.push('victime');
+      return t;
+    }
+    var relations = [];
+    for (var h = 1; h <= 16; h++) { var t = tags(h, b[h]); if (t.length) relations.push({ maison: h, figure: b[h], relations: t, resultante: L.resu(h) }); }
+    function resume(g, f) { var x = g.figures.filter(function (y) { return y.figure === f; })[0]; var pl = x ? x.emplacements : []; return { figure: f, emplacements: pl.length, saturation: pl.reduce(function (a, e) { return a + e.satures; }, 0), chezElle: pl.some(function (e) { return e.chezElle; }) }; }
+    var attaques = [];
+    [['R1', 'R7'], ['R7', 'R1']].forEach(function (pr) {
+      ['front_', 'frontBinome'].forEach(function (gk) {
+        var G = P[pr[0]][gk], f0 = (G.figures[0].figure - 1) % 4;
+        ['front_', 'frontBinome'].forEach(function (hk) {
+          var H = P[pr[1]][hk];
+          if ((H.figures[0].figure - 1) % 4 !== (f0 + 3) % 4) return;
+          G.figures.forEach(function (x) {
+            var k = x.figure, v = mod(k + 3), a = resume(G, k), w = resume(H, v), st;
+            if (a.emplacements === 0 && w.emplacements === 0) st = 'les deux absents'; else if (a.emplacements === 0) st = 'attaquant absent : victime non attaquée'; else if (w.emplacements === 0) st = 'victime absente';
+            else if (a.chezElle && w.chezElle) st = 'double repos : les deux chez elles'; else st = a.saturation > w.saturation ? 'attaquant plus saturé' : a.saturation < w.saturation ? 'victime plus saturée' : 'égalité';
+            attaques.push({ de: pr[0], vers: pr[1], attaquant: a, victime: w, statut: st });
+          });
+        });
+      });
+    });
+    var uniques = [];
+    ['R1', 'R7'].forEach(function (c) { ['front_', 'frontBinome', 'binome', 'antagoniste'].forEach(function (gk) { P[c][gk].figures.forEach(function (x) { if (x.emplacements.length === 1) { var e = x.emplacements[0]; uniques.push({ pole: c, groupe: P[c][gk].nom, figure: x.figure, maison: e.maison, couche: e.couche, relations: tags(e.maison, x.figure) }); } }); }); });
+    var liaisons = [];
+    [['R1', L.R1], ['R7', L.R7]].forEach(function (pc) {
+      var h = pc[1].maison, bn = (h - 1) % 4 < 2 ? h + 2 : h - 2;
+      [['miroir', mod(h + 8)], ['binôme', bn]].forEach(function (o) {
+        var x = K.niveaux(L.resu(h)), y = K.niveaux(L.resu(o[1])), n = [];
+        for (var l = 0; l < 4; l++) if (x[l] === 2 && y[l] === 2) n.push(LETTRES[l]);
+        liaisons.push({ pole: pc[0], maison: h, avec: o[0], maisonAvec: o[1], niveaux: n.join('') });
+      });
+    });
+    return { relations: relations, attaques: attaques, uniques: uniques, liaisons: liaisons };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -259,7 +310,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -411,10 +462,19 @@ function noeudsHtml(L,P){var n=M.noeuds(L),lv=['Feu','Air','Eau','Terre'],h1=L.R
  var ar=n.arrets.length?n.arrets.map(function(a){return 'M'+a.maison+' ('+K.nom(a.figure)+')'}).join(', '):'aucun';
  var po=function(c,h){var st=n.arrets.filter(function(a){return a.maison===h})[0];return c+' en M'+h+(h===16?' : pas de nœud (coin de la Terre)':st?' : <b style="color:#dc2626">sous croix ✖</b> (antagoniste '+K.nom(st.figure)+' ancré)':' : nœud sans arrêt')};
  return '<h4 style="margin:12px 0 0;font-size:13px;color:var(--ac)">Les 15 nœuds : intersections des canaux</h4><div class="lgd">Lignes : niveau horizontal, colonnes : niveau vertical (F Feu, A Air, E Eau, T Terre) ; chaque case est la maison 4×colonne + ligne + 1. Vert : les deux liaisons saturées ; tireté : aucune ; gris : une seule. ✖ : l\u2019antagoniste de la maison y est ancré (arrêt). Cadre bleu R1, rouge R7.</div><div class="nd">'+g+'</div><div class="bil" style="font-weight:400">Arrêts : '+ar+'<br>'+po('R1',h1)+'<br>'+po('R7',h7)+'</div>'}
+function faitsHtml(L){var F=M.faits(L),nm=K.nom,h='<h4 style="margin:14px 0 4px;font-size:13px;color:var(--ac)">Faits du thème : ce que la structure impose</h4>';
+ h+='<div class="lgd"><b>Relations base ↔ maison</b> (la figure posée en base a un lien avec la maison qui la reçoit ; sa résultante en découle)</div><div class="lgd" style="color:var(--tx)">'+(F.relations.length?F.relations.map(function(r){return 'M'+r.maison+' '+nm(r.figure)+' <i>'+r.relations.join(' / ')+'</i> → '+nm(r.resultante)}).join('<br>'):'aucune')+'</div>';
+ h+='<div class="lgd" style="margin-top:8px"><b>Attaques entre les fronts des deux pôles</b> (la figure k attaque k+3 ; cercle des fronts A→D→C→B→A)</div>';
+ if(!F.attaques.length)h+='<div class="lgd" style="color:var(--tx)">Aucun front d\u2019un pôle n\u2019attaque un front de l\u2019autre (fronts non adjacents dans le cercle).</div>';
+ else{h+='<table><tr><th>Sens</th><th>Attaquant</th><th>Victime</th><th>État</th></tr>'+F.attaques.map(function(a){var cl=/non attaquée|double/.test(a.statut)?' class="fv"':'';return '<tr><td>'+a.de+' → '+a.vers+'</td><td>'+nm(a.attaquant.figure)+' · '+a.attaquant.emplacements+' empl. · Σ'+a.attaquant.saturation+'</td><td>'+nm(a.victime.figure)+' · '+a.victime.emplacements+' empl. · Σ'+a.victime.saturation+'</td><td'+cl+'>'+a.statut+'</td></tr>'}).join('')+'</table>'}
+ h+='<div class="lgd" style="margin-top:8px"><b>Figures à emplacement unique</b> (un seul placement tient la figure)</div><div class="lgd" style="color:var(--tx)">'+(F.uniques.length?F.uniques.map(function(u){return u.pole+' · '+u.groupe+' : '+nm(u.figure)+' '+(u.couche==='base'?'en base':'en résultante')+' M'+u.maison+(u.relations.length?' <i>('+u.relations.join(' / ')+')</i>':'')}).join('<br>'):'aucune')+'</div>';
+ h+='<div class="lgd" style="margin-top:8px"><b>Liaisons de la maison de chaque pôle</b> (niveaux saturés des deux côtés)</div><div class="lgd" style="color:var(--tx)">'+F.liaisons.map(function(l){return l.pole+' M'+l.maison+' ↔ '+l.avec+' M'+l.maisonAvec+' : '+(l.niveaux||'aucun')}).join('<br>')+'</div>';
+ return h}
+
 window.POLES={maj:function(meres){var L=M.lire(meres),P=M.poles(L),a=P.R1,e=P.R7,i=P.indicateurs;
  var rows=[['front_',0,1],['frontBinome',1,1],['binome',2,1],['antagoniste',3,-1]].map(function(r){var k=r[0],fv=i[r[1]];return '<tr><th>'+a[k].nom+' / '+e[k].nom+(k==='antagoniste'?' (moins = mieux)':'')+'</th>'+cell(a[k],fv>0)+cell(e[k],fv<0)+'</tr>'});
  var net=P.net?'Les 5 indicateurs désignent '+P.net+'.':'Indicateurs mêlés ou nuls : pas de structure nette.';
- $('polB').innerHTML='<table><tr><th></th><th class="a">R1 · '+K.nom(a.figure)+' M'+a.maison+' · maison '+a.saturationMaison+'/4</th><th class="b">R7 · '+K.nom(e.figure)+' M'+e.maison+' · maison '+e.saturationMaison+'/4</th></tr>'+rows.join('')+'</table><div class="bil">'+net+'</div><div class="dt" style="color:var(--mu);font-size:11px;margin-top:4px">Σ = niveaux saturés cumulés de la résultante des maisons où se trouve la figure (B base, R résultante, ★ chez elle, [FAET] niveaux saturés). Niveau propre = le niveau du front du groupe ; 5e indicateur : emplacements du front et du front binôme où il est saturé. Lecture de la structure, pas un verdict.</div>'+noeudsHtml(L,P)}};
+ $('polB').innerHTML='<table><tr><th></th><th class="a">R1 · '+K.nom(a.figure)+' M'+a.maison+' · maison '+a.saturationMaison+'/4</th><th class="b">R7 · '+K.nom(e.figure)+' M'+e.maison+' · maison '+e.saturationMaison+'/4</th></tr>'+rows.join('')+'</table><div class="bil">'+net+'</div><div class="dt" style="color:var(--mu);font-size:11px;margin-top:4px">Σ = niveaux saturés cumulés de la résultante des maisons où se trouve la figure (B base, R résultante, ★ chez elle, [FAET] niveaux saturés). Niveau propre = le niveau du front du groupe ; 5e indicateur : emplacements du front et du front binôme où il est saturé. Lecture de la structure, pas un verdict.</div>'+noeudsHtml(L,P)+faitsHtml(L)}};
 })();</script><script>
 (function(){
 var K=KOUN_NOYAU,M=KOUN4,JOURS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];

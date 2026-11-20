@@ -34,4 +34,10 @@ for (let q = 0; q < 65536; q++) {
 }
 if (mal) add('analyse des pôles');
 console.log('analyse des pôles (5 indicateurs) : nets R1', netR1, 'R7', netR7, 'écarts', mal);
+// Faits : les placements « miroir », « binôme », « antagoniste ancré », « victime » doivent reproduire les distributions démontrées (I13, I16)
+const dist = { miroir: {}, binôme: {}, 'antagoniste ancré': {}, victime: {} };
+for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), F = K4.faits(K4.lire(m)), c = { miroir: 0, binôme: 0, 'antagoniste ancré': 0, victime: 0 };
+  F.relations.forEach(r => r.relations.forEach(t => { if (t in c) c[t]++; })); Object.keys(c).forEach(k => dist[k][c[k]] = (dist[k][c[k]] || 0) + 1); }
+const att = { miroir: [25350, 24400, 11357, 3524, 780, 116, 9], binôme: [23449, 26604, 12166, 2796, 489, 32], 'antagoniste ancré': [21831, 24726, 13454, 4336, 983, 178, 28], victime: [25823, 23842, 11171, 3717, 825, 144, 13, 1] };
+Object.keys(att).forEach(k => { const lu = Object.keys(dist[k]).map(Number).sort((a, b) => a - b).map(n => dist[k][n]); if (JSON.stringify(lu) !== JSON.stringify(att[k])) { add('faits ' + k); console.log(k, JSON.stringify(lu)); } });
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);
