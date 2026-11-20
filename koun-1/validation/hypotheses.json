@@ -215,6 +215,54 @@
     }
    ],
    "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-BUTS donne 1-1, le score est 1-3. Retirée du moteur."
+  },
+  {
+   "id": "H-CROIX",
+   "posee_le": "2026-11-20",
+   "enonce": "Le pôle dont la maison est sous croix (✖ : la maison porte en base son antagoniste, la figure h − 3) perd. Si aucun pôle ou les deux sont sous croix : pas de victoire. Née de 4-6-7-16 (R7 en M10 sous croix, 5-0 pour R1) et de 10-2-12-3 (R1 en M10 sous croix, 1-3) : ces deux matchs ne comptent donc pas comme test. Limite connue : dans les deux cas c'est Rubeus, pôle, en M10 ; la règle ne distingue pas « sous croix » de « Rubeus pôle en M10 ».",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "prediction": "R1 (R7 sous croix en M10)",
+     "score": "5-0"
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "R7 (R1 sous croix en M10)",
+     "score": "1-3"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "prediction": "pas de victoire (aucun pôle sous croix)",
+     "score": "3-0"
+    },
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "pas de victoire (aucun pôle sous croix)",
+     "score": "3-1"
+    }
+   ]
   }
  ],
  "lectures": [
