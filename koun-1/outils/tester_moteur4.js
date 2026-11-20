@@ -72,4 +72,6 @@ let malT = 0; for (let q = 0; q < 65536; q += 5) { const m = [q & 15, (q >> 4) &
 if (malT) add('terre saturée');
 // Buts d'après la Terre : T des cinq matchs connus et formule
 [[[4,1,6,7],4,3],[[10,2,12,3],5,4],[[6,8,8,11],6,4],[[4,6,7,16],8,5],[[14,9,16,9],8,5],[[1,3,15,4],9,6]].forEach(([m,T,b]) => { const x = K4.butsTerre(K4.lire(m)); if (x.T !== T || x.total !== b) add('buts Terre ' + m.join('-')); });
+// Alerte M8 : seule 1-3-15-4 (Cauda en base de M8) la déclenche parmi les six matchs connus
+[[[4,6,7,16],false],[[4,1,6,7],false],[[6,8,8,11],false],[[10,2,12,3],false],[[14,9,16,9],false],[[1,3,15,4],true]].forEach(([m,a]) => { if (!!K4.butsTerre(K4.lire(m)).alerte !== a) add('alerte M8 ' + m.join('-')); });
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);

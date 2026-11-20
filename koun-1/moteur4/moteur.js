@@ -233,7 +233,13 @@
 
   // Buts d'après la Terre (règle du propriétaire : la saturation de Terre est le marquage ; il a vérifié le niveau Terre). Formule de comptage : buts au total = ceil(T/2) + 1, T = maisons à résultante saturée en Terre.
   // La formule vient de cinq matchs (4-1-6-7, 10-2-12-3, 6-8-8-11, 4-6-7-16, 14-9-16-9) ; sa première prédiction à l'aveugle, 1-3-15-4 (6 buts prévus, score 4-2), est exacte : formule admise, à confirmer.
-  function butsTerre(L) { var t = terreSaturee(L).total; return { T: t, total: Math.ceil(t / 2) + 1 }; }
+  // Alerte (propriétaire) : Via ou Cauda Draconis en M8 peut annuler ou diminuer le nombre de buts (Via en M8 donne Cauda, Terre saturée ; Cauda en M8 donne Via, tout non saturé ; l'effet touche Populus en M16).
+  // Le total n'est pas modifié : le seul cas connu (1-3-15-4, Cauda en base de M8, 6 buts prévus et réels) n'a montré aucun écart ; la saturation de M8 est déjà dans T par sa résultante.
+  function butsTerre(L) {
+    var t = terreSaturee(L).total, b8 = L.theme.bases[8], alerte = null;
+    if (b8 === 5 || b8 === 13) alerte = K.nom(b8) + ' en base de M8 : résultante ' + K.nom(L.resu(8)) + ', effet possible sur les buts (déjà compté dans T par la saturation de M8)';
+    return { T: t, total: Math.ceil(t / 2) + 1, alerte: alerte };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
