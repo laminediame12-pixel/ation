@@ -219,7 +219,7 @@
      "juste": null
     }
    ],
-   "statut": "Premier appel net à l'aveugle juste : 2-12-4-4, cinq indicateurs pour R1, 5-1 pour R1. À l'essai."
+   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Aucun appel sur les matchs indépendants ; un seul appel juste (2-12-4-4) sur les matchs construits."
   },
   {
    "id": "H-NIV1",
@@ -591,7 +591,7 @@
      "score": "3-1"
     }
    ],
-   "statut": "Premier appel à l'aveugle juste : 9-13-2-13, R7 sous croix, R1 prévu, 2-0 pour R1. À l'essai (un seul appel à l'aveugle ; trois appels au total, tous justes, deux construits dessus)."
+   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Appels : 1 juste / 2 faux sur les matchs indépendants. Remarque : le « premier appel à l'aveugle » de 9-13-2-13 n'était pas à l'aveugle : ce thème figurait déjà, avec son score 2-0, dans scores-reels.json (lot dev)."
   },
   {
    "id": "H-EXPO",
@@ -1827,7 +1827,8 @@
      "score": "5-1 : faux"
     }
    ],
-   "a_surveiller": "Seule, elle ne suffit pas : 2 nuls sur 4 matchs dans l'échantillon. Elle est vraie pour environ 38 % de tous les thèmes possibles, donc la verdict « nul » exige aussi H-TEMOINS."
+   "a_surveiller": "Seule, elle ne suffit pas : 2 nuls sur 4 matchs dans l'échantillon. Elle est vraie pour environ 38 % de tous les thèmes possibles, donc la verdict « nul » exige aussi H-TEMOINS.",
+   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Vraie seule : 0 nul / 12 ; avec H-TEMOINS : 0 / 3."
   },
   {
    "id": "H-TEMOINS",
@@ -1910,7 +1911,8 @@
      "score": "1-1"
     }
    ],
-   "a_surveiller": "Dans l'échantillon, les quatre matchs à total 6 remplissent aussi H-BIN-E ; sur l'ensemble des thèmes possibles, un thème à total 6 sur deux ne remplit pas H-BIN-E. Le verdict « nul » exige donc les deux."
+   "a_surveiller": "Dans l'échantillon, les quatre matchs à total 6 remplissent aussi H-BIN-E ; sur l'ensemble des thèmes possibles, un thème à total 6 sur deux ne remplit pas H-BIN-E. Le verdict « nul » exige donc les deux.",
+   "statut": "RÉFUTÉE le 2026-11-20 sur 22 matchs indépendants (outils/valider.js). Retirée du verdict. Total de 6 seul : 0 nul / 4 sur les matchs indépendants (aucun nul parmi eux). Remarque : 2-9-6-5 (3-3) figurait déjà dans scores-reels.json."
   }
  ],
  "lectures": [

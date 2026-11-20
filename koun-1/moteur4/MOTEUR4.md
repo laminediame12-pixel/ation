@@ -27,5 +27,5 @@ Une règle revient ici quand elle est posée avant les chiffres, testée une foi
 ## Buts d'après la Terre : formule réfutée
 La formule ceil(T/2)+1 (T = maisons à résultante saturée en Terre) était juste sur 6 matchs hors Via en base de M8 mais a été réfutée à l'aveugle sur 2-12-4-4 (4 buts prévus, 6 réels). Elle est retirée du moteur et du verdict. Le comptage de Terre (`KOUN4.terreSaturee`) reste, comme structure exacte.
 
-## Verdict actif (`KOUN4.verdict`)
-Le verdict de victoire/nul est alimenté par les règles à l'essai, dans cet ordre : H-CROIX (un seul pôle sous croix : l'autre gagne), H-5 (cinq indicateurs concordants), puis le nul seulement si H-TEMOINS (bases de M13 et M14 : 6 niveaux saturés) et H-BIN-E (liaisons binôme en Eau égales et non nulles) sont vraies ensemble. Chacune seule n'est pas un verdict (H-BIN-E seule : 2 nuls sur 4 dans l'échantillon ; H-TEMOINS seule : jamais vue sans H-BIN-E). Sinon : pas de verdict. Sur les quinze matchs qui ont servi à les construire : 8 verdicts justes, 0 faux, 7 sans verdict ; ces chiffres ne valent pas test. `outils/surveiller.js` refuse toute règle absente de `validation/hypotheses.json` ou réfutée.
+## Verdict
+Le verdict est vide. Les règles H-CROIX, H-5, H-TEMOINS et H-BIN-E, construites sur quinze matchs, ont été réfutées sur 22 matchs indépendants ; la validation croisée sur 37 matchs ne bat pas les bases de comparaison. Voir `validation/BILAN.md` ; `node outils/valider.js` refait l'évaluation à chaque nouveau match.

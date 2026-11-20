@@ -270,20 +270,11 @@
     return { base: base, resultante: res, saturesBase: [sat(base[0]), sat(base[1])], saturesResultante: [sat(res[0]), sat(res[1])], totalBase: sat(base[0]) + sat(base[1]), totalResultante: sat(res[0]) + sat(res[1]), juge: { base: b[15], resultante: L.resu(15) } };
   }
 
-  // VERDICT. Seules des règles inscrites dans validation/hypotheses.json et non réfutées y entrent, dans cet ordre (la première qui se prononce l'emporte) :
-  //   H-CROIX : un seul pôle sous croix (sa maison porte en base son antagoniste) : l'autre pôle gagne ;
-  //   H-5 : les cinq indicateurs de l'analyse des pôles désignent le même pôle : ce pôle gagne ;
-  //   H-TEMOINS et H-BIN-E ensemble : bases de M13 et M14 à 6 niveaux saturés ET liaisons binôme en Eau égales et non nulles dans les deux boucles : nul.
-  // Chacune de ces deux dernières seule n'est pas un verdict : H-BIN-E seule a 2 nuls sur 4 dans l'échantillon, H-TEMOINS seule n'y a jamais été vue sans H-BIN-E.
-  // Si aucune ne se prononce : pas de verdict (et « pas de nul » quand H-BIN-E est fausse). Toutes sont à l'essai : voir statut dans validation/hypotheses.json.
+  // VERDICT. Aucune règle de verdict ne tient : H-CROIX, H-5, H-TEMOINS et H-BIN-E ont été construites sur quinze matchs puis réfutées sur 22 matchs indépendants
+  // (H-CROIX 1 juste / 2 faux ; nul par témoins + binôme Eau 0 / 3 ; voir validation/BILAN.md et outils/valider.js). La validation croisée sur 37 matchs ne bat pas les bases de comparaison
+  // (vainqueur : 68 % contre 65 % pour « toujours R1 » ; nul : 89 % contre 84 % pour « jamais nul »). Le verdict reste donc vide : une règle n'y entre que si elle bat ces bases sur des matchs indépendants.
   function verdict(L) {
-    var T = temoins(L), I = interactions(L), n = noeuds(L), P = poles(L), sous = function (c) { return n.arrets.some(function (a) { return a.maison === c.maison; }); };
-    var s1 = sous(L.R1), s7 = sous(L.R7);
-    if (s1 !== s7) return { v: s1 ? '2' : '1', regle: 'H-CROIX', statut: 'à l\u2019essai', raison: (s1 ? 'R1' : 'R7') + ' est sous croix (son antagoniste est ancré en base de sa maison) : il perd' };
-    if (P.net) return { v: P.net === 'R1' ? '1' : '2', regle: 'H-5', statut: 'à l\u2019essai', raison: 'les cinq indicateurs de structure désignent ' + P.net };
-    if (T.totalBase === 6 && I.binomeEauEquilibre) return { v: 'N', regle: 'H-TEMOINS + H-BIN-E', statut: 'à l\u2019essai (4 sur 4 dans l\u2019échantillon)', raison: 'les témoins M13 et M14 ont 6 niveaux saturés en base et les liaisons binôme en Eau sont égales et non nulles' };
-    var note = !I.binomeEauEquilibre ? ' ; pas de nul (H-BIN-E fausse)' : (T.totalBase === 6 ? ' ; nul possible (témoins 6, mais H-BIN-E fausse)' : ' ; nul possible (H-BIN-E vraie, témoins non 6 : 2 sur 4 en échantillon)');
-    return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce' + note };
+    return { v: null, regle: null, statut: null, raison: 'aucune règle ne bat la base de comparaison (validation/BILAN.md)' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
