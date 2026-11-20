@@ -1376,6 +1376,64 @@
     }
    ],
    "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (T = 9 < 10), score 1-1. À l'essai ; ne se sépare pas de H-SYS-A sur ce match."
+  },
+  {
+   "id": "H-SYS-C",
+   "posee_le": "2026-11-20",
+   "enonce": "Via en base de M8 donne le nul seulement si les deux liaisons de Terre du front D, M4→M8 (haut→droite) et M12→M16 (bas→gauche), sont rompues (résultantes non saturées toutes deux en Terre). Si l'une est connectée, pas de nul. Née des cinq matchs avec Via en base de M8 : M4→M8 est rompue dans les cinq (M4 n'a jamais la Terre saturée en résultante) ; M12→M16 est rompue dans les quatre nuls et connectée dans 3-10-3-1 (1-2). Aucun de ces matchs ne compte comme test. H-SYS-A, H-SYS-B et H-SYS-C séparent les mêmes cinq matchs ; elles se départageront sur un thème où elles divergent.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "nul (T1 et T2 rompues)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "nul (T1 et T2 rompues)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "nul (T1 et T2 rompues)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "prediction": "nul (T1 et T2 rompues)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "prediction": "pas de nul (T2 connectée)",
+     "score": "1-2"
+    }
+   ]
   }
  ],
  "lectures": [
