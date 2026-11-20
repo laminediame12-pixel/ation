@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (40 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (58 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -79,3 +79,40 @@ Parité : celle du triple de départ, inversée à chaque remplacement par un ju
 
 ## I8 — Il n'y a rien d'autre
 Les 16 lois de transposition (I5) et les 32 lois de construction (8 triples × 4 niveaux, I2) sont indépendantes (rang 48). Un thème a 64 niveaux de maisons pour 16 degrés de liberté (les 4 mères) : il n'y a que 64 − 16 = 48 lois indépendantes. **Toute loi entre niveaux de maisons est donc une combinaison de ces 48.**
+
+## I9 — Les fronts entre eux : degrés de liberté
+Les 4 bases des maisons d'un même front (canal : A = M1, M5, M9, M13 ; B = M2, M6, M10, M14 ; C = M3, M7, M11, M15 ; D = M4, M8, M12, M16) ne sont pas libres :
+
+| Front | Configurations possibles de ses 4 bases (sur 65 536) |
+|---|---|
+| A | 8 192 (1/8) |
+| B | 4 096 (1/16) |
+| C | 4 096 (1/16) |
+| D | 8 192 (1/8) |
+
+- Pour deux fronts, les 8 maisons **déterminent tout le thème** pour A+C, A+D, B+C, B+D et C+D. **A+B est la seule paire qui ne le fait pas** (32 768 configurations) : il manque un degré de liberté.
+
+## I10 — Lois internes à chaque front
+Toutes les lois entre niveaux des 4 maisons d'un front (parité du nombre de niveaux non saturés des résultantes). Nombre de lois : A 7 (3 indépendantes), B 15 (4), C 15 (4), D 7 (3). Les plus courtes :
+
+| Front | Loi | Non saturés |
+|---|---|---|
+| A | M1 Feu + M5 Feu | pair |
+| A | M1 Feu + M5 Air + M9 Feu | impair |
+| A | M5 Feu + M5 Air + M9 Feu | impair |
+| B | M2 Air + M6 Air | pair |
+| B | M6 Eau + M6 Terre + M10 Air | impair |
+| C | M3 Eau + M7 Eau | impair |
+| C | M3 Feu + M3 Air + M11 Eau | pair |
+| C | M15 Feu + M15 Air + M15 Eau + M15 Terre | pair |
+| D | M4 Terre + M8 Terre | impair |
+| D | M4 Eau + M4 Terre + M12 Terre | pair |
+| D | M4 Eau + M8 Terre + M12 Terre | impair |
+
+- **Le Juge M15 est toujours pair** (nombre pair de niveaux à un point) : c'est une loi interne du front C, et elle retrouve la règle classique de la géomancie.
+- Ces lois internes expliquent les exclusions de I3 qui restent dans un front (A vertical Feu ✕ A horizontal Air, C vertical Eau ✕ C horizontal Eau, D vertical Terre ✕ D horizontal Terre).
+
+## I11 — La couche des fronts
+- Les fronts des 16 maisons ne prennent que **4 096 configurations** sur 65 536 thèmes (chacune 16 fois) : 12 degrés de liberté et 20 lois entre fronts.
+- Chaque maison est la somme de Klein de ses constituantes : front(M9) = front(M1) + front(M2), …, front(M16) = front(M15) + front(M1) (A+B=C, A+C=B, A+D=A, B+C=A, B+D=B, C+D=C, X+X=D).
+- **Les fronts de M5 et M6 sont la transposée de ceux de M1 et M2** : Feu(M5) = Feu(M1), Air(M5) = Feu(M2), Feu(M6) = Air(M1), Air(M6) = Air(M2). Le front de M7 et de M8 n'est pas déterminé par les fronts de M1 et M2 : il dépend aussi de leur Eau et de leur Terre.

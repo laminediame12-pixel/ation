@@ -66,6 +66,35 @@ ok('I6 les 4 mères (M1-M4) et les 4 filles (M5-M8) sont chacune un ensemble gé
   ok('I8 les 16 lois de transposition et les 32 lois de construction sont indépendantes (rang 48) et il n\'y a que 64 − 16 = 48 lois indépendantes en tout', rang(lois) === 48 && 64 - rangFormes === 48);
 }
 
+// I9 — Degrés de liberté des fronts : les 4 bases des maisons d'un front (canal) ne sont pas indépendantes ; combien de configurations possibles ?
+{
+  const canal = z => [z + 1, z + 5, z + 9, z + 13], noms = 'ABCD', attendu = { A: 8192, B: 4096, C: 4096, D: 8192 };
+  const comptes = hs => { const vu = new Set(); for (const t of bases) vu.add(hs.map(h => t[h]).join()); return vu.size; };
+  for (let z = 0; z < 4; z++) ok('I9 front ' + noms[z] + ' : ses 4 bases ne prennent que ' + attendu[noms[z]] + ' configurations sur 65 536', comptes(canal(z)) === attendu[noms[z]]);
+  const paires = []; for (let a = 0; a < 4; a++) for (let b = a + 1; b < 4; b++) paires.push([a, b]);
+  paires.forEach(([a, b]) => { const n = comptes([...canal(a), ...canal(b)]), tout = !(a === 0 && b === 1); ok('I9 fronts ' + noms[a] + '+' + noms[b] + ' : leurs 8 maisons ' + (tout ? 'déterminent tout le thème' : 'ne déterminent pas tout le thème (32 768 configurations)'), tout ? n === 65536 : n === 32768); });
+}
+// I10 — Lois internes à chaque front : toutes les lois entre niveaux des 4 maisons d'un même canal (parité du nombre de niveaux non saturés des résultantes)
+{
+  const e = (m, l) => 1 << (4 * m + l), Mm = {}; for (let m = 1; m <= 4; m++) Mm[m] = [0, 1, 2, 3].map(l => e(m - 1, l)); for (let l = 0; l < 4; l++) Mm[5 + l] = [0, 1, 2, 3].map(m => e(m, l));
+  const ad = (a, b) => a.map((x, i) => x ^ b[i]); Mm[9] = ad(Mm[1], Mm[2]); Mm[10] = ad(Mm[3], Mm[4]); Mm[11] = ad(Mm[5], Mm[6]); Mm[12] = ad(Mm[7], Mm[8]); Mm[13] = ad(Mm[9], Mm[10]); Mm[14] = ad(Mm[11], Mm[12]); Mm[15] = ad(Mm[13], Mm[14]); Mm[16] = ad(Mm[15], Mm[1]);
+  const attendu = [7, 15, 15, 7]; let total = 0;
+  for (let z = 0; z < 4; z++) { const hs = [z + 1, z + 5, z + 9, z + 13], vars = []; hs.forEach(h => { for (let l = 0; l < 4; l++) vars.push({ h, l, f: Mm[h][l], r: P(h)[l] === 1 ? 1 : 0 }); });
+    const lois = []; for (let m = 1; m < 65536; m++) { let x = 0, c = 0; for (let i = 0; i < 16; i++) if (m >> i & 1) { x ^= vars[i].f; c ^= vars[i].r; } if (x === 0) lois.push({ m, c }); }
+    const bon = lois.every(({ m, c }) => themes.every(r => (vars.filter((_, i) => m >> i & 1).filter(v => !sat(r[v.h], v.l)).length % 2) === c));
+    ok('I10 front ' + 'ABCD'[z] + ' : ' + lois.length + ' lois internes (' + Math.log2(lois.length + 1) + ' indépendantes), toutes vérifiées', lois.length === attendu[z] && bon); total += lois.length; }
+  ok('I10 le Juge M15 a toujours un nombre pair de niveaux non saturés (une loi interne du front C) : le Juge est toujours pair', themes.every(r => [0, 1, 2, 3].filter(l => !sat(r[15], l)).length % 2 === 0) && bases.every(b => P(b[15]).filter(x => x === 1).length % 2 === 0));
+}
+// I11 — Couche des fronts : les fronts des 16 maisons ne prennent que 4 096 configurations ; M5 et M6 sont les transposées de M1 et M2 ; chaque maison est la somme (loi de Klein) de ses constituantes
+{
+  const front = n => (n - 1) % 4, vu = new Set(); bases.forEach(b => vu.add(b.slice(1).map(front).join('')));
+  ok('I11 les fronts des 16 maisons ne prennent que 4 096 configurations sur les 65 536 thèmes (chacune apparaît 16 fois)', vu.size === 4096);
+  const kl = (x, y) => front(add(x + 1, y + 1));    // somme de deux fronts dans le groupe de Klein : A+B=C, A+C=B, A+D=A, B+C=A, B+D=B, C+D=C, X+X=D
+  const construction = [[9, 1, 2], [10, 3, 4], [11, 5, 6], [12, 7, 8], [13, 9, 10], [14, 11, 12], [15, 13, 14], [16, 15, 1]];
+  ok('I11 front(M9) = front(M1)+front(M2), …, front(M16) = front(M15)+front(M1) (somme de Klein)', bases.every(b => construction.every(([c, x, y]) => front(b[c]) === kl(front(b[x]), front(b[y])))));
+  ok('I11 le front de M5 est la transposée de ceux de M1 et M2 : Feu(M5) = Feu(M1), Air(M5) = Feu(M2) ; le front de M6 : Feu(M6) = Air(M1), Air(M6) = Air(M2)', bases.every(b => P(b[5])[0] === P(b[1])[0] && P(b[5])[1] === P(b[2])[0] && P(b[6])[0] === P(b[1])[1] && P(b[6])[1] === P(b[2])[1]));
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
 console.log('\nLes 14 couples de liaisons jamais connectées ensemble :'); excl.forEach(([a, b]) => console.log('  ' + a + '  ✕  ' + b));
