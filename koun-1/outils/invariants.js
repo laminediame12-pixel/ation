@@ -270,6 +270,37 @@ const rubeus = {};
   ok('I25 la règle de pénalité et carton rouge actuelle du moteur (3.0.0, aucune donnée pour la tester) s\'active dans 34 676 thèmes sur 65 536 (53 %) : carton rouge 21 891, pénalité 23 424', actif === 34676 && rouge === 21891 && pen === 23424);
 }
 
+// I26 — Tristitia (8, 2221 : seule la Terre est à un point) dans toutes les maisons
+{
+  const TR = 8, mir = n => ((n + 7) % 16) + 1, bin = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2, TERRE = [4, 8, 12, 16];
+  ok('I26 Tristitia en base de la maison h donne toujours la résultante miroir de h (M8 → Populus, M4 → M12, M16 → M8, …)', [...Array(16).keys()].every(i => add(TR, i + 1) === mir(i + 1)));
+  ok('I26 Populus, Tristitia, Amissio et Puella en base de la maison h donnent exactement les quatre figures du quartet de h (h, son miroir, son binôme, le miroir de son binôme)', [...Array(16).keys()].every(i => { const h = i + 1, q = new Set([h, mir(h), bin(h), mir(bin(h))]), rs = [16, 8, 6, 14].map(b => add(b, h)); return new Set(rs).size === 4 && rs.every(r => q.has(r)); }));
+  const bc = Array(17).fill(0), rc = Array(17).fill(0); let absent = 0, maxT = 0;
+  themes.forEach((r, i) => { const t = bases[i]; let c = 0; for (let h = 1; h <= 16; h++) { if (t[h] === TR) { bc[h]++; c++; } if (r[h] === TR) { rc[h]++; c++; } } if (!c) absent++; maxT = Math.max(maxT, c); });
+  ok('I26 Tristitia est en base, et résultante, de chaque maison dans 4 096 thèmes, sauf M15 (jamais : Tristitia est impaire, le Juge est pair) ; absente de 8 985 thèmes ; au plus 9 occurrences (3 thèmes)', [...Array(16).keys()].every(i => bc[i + 1] === (i + 1 === 15 ? 0 : 4096) && rc[i + 1] === (i + 1 === 15 ? 0 : 4096)) && absent === 8985 && maxT === 9);
+  ok('I26 Tristitia est la résultante de la maison h exactement quand la maison porte en base le miroir de h : les placements « Tristitia en résultante » sont les placements « miroir dans la maison » (I16)', themes.every((r, i) => [...Array(16).keys()].every(k => (r[k + 1] === TR) === (bases[i][k + 1] === mir(k + 1)))));
+  // niveaux imposés ailleurs par Tristitia en base de la maison h, comparés à l'algèbre
+  const e = (m, l) => 1 << (4 * m + l), Mm = {}; for (let m = 1; m <= 4; m++) Mm[m] = [0, 1, 2, 3].map(l => e(m - 1, l)); for (let l = 0; l < 4; l++) Mm[5 + l] = [0, 1, 2, 3].map(m => e(m, l));
+  const ad = (a, b) => a.map((x, i) => x ^ b[i]); Mm[9] = ad(Mm[1], Mm[2]); Mm[10] = ad(Mm[3], Mm[4]); Mm[11] = ad(Mm[5], Mm[6]); Mm[12] = ad(Mm[7], Mm[8]); Mm[13] = ad(Mm[9], Mm[10]); Mm[14] = ad(Mm[11], Mm[12]); Mm[15] = ad(Mm[13], Mm[14]); Mm[16] = ad(Mm[15], Mm[1]);
+  const bitT = l => P(TR)[l] === 1 ? 1 : 0; let exact = true;
+  for (let h = 1; h <= 16; h++) { if (h === 15) continue; const sel = bases.filter(t => t[h] === TR), data = [], algebre = [];
+    for (let h2 = 1; h2 <= 16; h2++) if (h2 !== h) for (let l = 0; l < 4; l++) { const v0 = P(sel[0][h2])[l] === 1 ? 1 : 0; if (sel.every(t => (P(t[h2])[l] === 1 ? 1 : 0) === v0)) data.push(h2 + ':' + l + '=' + v0);
+      for (let m = 1; m < 16; m++) { let x = 0, c = 0; for (let q = 0; q < 4; q++) if (m >> q & 1) { x ^= Mm[h][q]; c ^= bitT(q); } if (x === Mm[h2][l]) { algebre.push(h2 + ':' + l + '=' + c); break; } } }
+    if (data.sort().join() !== algebre.sort().join() || (h <= 8 ? data.length !== 7 : (h === 16 ? data.length !== 1 : data.length !== 0))) exact = false; }
+  ok('I26 Tristitia en base de M1 à M4 (ou M5 à M8) impose 7 niveaux ailleurs, en M16 un seul (M14 Feu à un point), en M9 à M14 aucun : les niveaux constants observés sont exactement ceux que donne l\'algèbre', exact);
+  const obs = new Set(); bases.forEach(t => { let m = 0; for (let h = 1; h <= 16; h++) if (t[h] === TR) m |= 1 << (h - 1); obs.add(m); });
+  const fais = new Set(); obs.forEach(m => { for (let t = m; ; t = (t - 1) & m) { fais.add(t); if (t === 0) break; } });
+  const imp = []; for (let m = 1; m < 65536; m++) { if (fais.has(m)) continue; let mn = true; for (let h = 0; h < 16 && mn; h++) if ((m >> h & 1) && !fais.has(m & ~(1 << h))) mn = false; if (mn) imp.push(m); }
+  const tail = {}; imp.forEach(m => { const k = m.toString(2).split('1').length - 1; tail[k] = (tail[k] || 0) + 1; });
+  ok('I26 Tristitia en base de plusieurs maisons : 562 ensembles possibles, 7 au plus, impossibles minimaux {1:1, 2:25, 3:15, 4:4, 5:4} (M15 seule)', fais.size === 562 && Math.max(...[...obs].map(m => m.toString(2).split('1').length - 1)) === 7 && JSON.stringify(tail) === JSON.stringify({ 1: 1, 2: 25, 3: 15, 4: 4, 5: 4 }));
+  // pôles miroirs (R1 + R7 = Tristitia), condition du nul NU-1
+  const R7de = n => ((n + 5) % 16) + 1; const mp = []; bases.forEach((t, i) => { const h1 = t[1], h7 = R7de(h1); if (add(t[h1], t[h7]) === TR) mp.push(i); });
+  const parN = {}; mp.forEach(i => { parN[bases[i][1]] = (parN[bases[i][1]] || 0) + 1; });
+  const trTerre = i => TERRE.some(h => bases[i][h] === TR || themes[i][h] === TR);
+  ok('I26 les pôles R1 et R7 sont miroirs (R1 + R7 = Tristitia, même front) dans 3 072 thèmes, jamais quand la figure de M1 est Puer, Via, Amissio, Conjunctio ou Aquisitio ; avec Tristitia dans une maison de Terre (M4, M8, M12, M16) : 1 180 ; Tristitia dans une maison de Terre, tous thèmes : 24 376',
+    mp.length === 3072 && [1, 5, 6, 11, 15].every(n => !parN[n]) && [2, 3, 4, 7, 8, 9, 10, 12, 13, 14, 16].every(n => parN[n]) && mp.filter(trTerre).length === 1180 && bases.filter((t, i) => trTerre(i)).length === 24376);
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { for (const nom of Object.keys(rubeus)) if (Array.isArray(rubeus[nom])) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + rubeus[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
   for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }

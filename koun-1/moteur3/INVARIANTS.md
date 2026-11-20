@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (114 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (121 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -244,3 +244,13 @@ Rubeus (7, 2122) : seul l'Air est à un point. Son binôme est Via, son miroir A
 ## I25 — Pénalité et carton rouge : les pôles du quartet, et la règle actuelle
 - Pôles du quartet {Via, Rubeus, Cauda, Aquisitio} en M6 ou M12 : **en M12, R1 est Rubeus ou Aquisitio et R7 est Cauda ou Via** ; en M6, R1 et R7 sont Rubeus ou Aquisitio. Chaque cas se produit dans 512 thèmes (4 096 au total).
 - **La règle actuelle du moteur** (reprise du 3.0.0 : Rubeus en base d'une maison impaire liée à un pôle, Cauda en M12 liée à un pôle, Cauda ou Rubeus dans la maison de repos d'un pôle) s'active dans **34 676 thèmes sur 65 536 (53 %)** : carton rouge dans 21 891, pénalité dans 23 424. **Aucune donnée ne permet de la tester** : les champs « penalty » et « carton rouge » des matchs enregistrés sont vides.
+
+## I26 — Tristitia dans toutes les maisons
+Tristitia (8, 2221) : seule la Terre est à un point ; c'est l'opérateur du miroir (I12).
+- **Tristitia en base de la maison h donne toujours la résultante « miroir de h »** (h + 8). Exemples : M8 → Populus, M4 → M12 (Fortuna Major), M12 → M4 (Albus), M16 → M8 (Tristitia).
+- Populus, Tristitia, Amissio et Puella (le groupe du binôme et du miroir) en base de la maison h donnent **exactement les quatre figures du quartet de h** : Populus donne h elle-même, Tristitia son miroir, Amissio ou Puella son binôme et le miroir de son binôme.
+- **Fréquence** : Tristitia est en base de chaque maison dans 4 096 thèmes, et résultante de chaque maison dans 4 096, **sauf M15** (jamais : Tristitia est impaire, le Juge est pair). Absente du thème dans 8 985 thèmes ; au plus 9 occurrences (3 thèmes).
+- **Tristitia est la résultante de la maison h exactement quand la maison porte en base le miroir de h** : ces placements sont ceux du miroir dans la maison (I16 : 568 ensembles, 6 au plus).
+- **Ce que Tristitia impose ailleurs** (en base) : de M1 à M4 (ou M5 à M8), 7 niveaux (le niveau k des filles ou des mères reproduit Tristitia, avec M11, M12, M14 ou M9, M10, M13) ; en M16, un seul (M14 Feu à un point) ; de M9 à M14, aucun.
+- **Tristitia en base de plusieurs maisons** : 562 ensembles possibles, 7 au plus. Impossibles minimaux : M15 seule, 25 couples, 15 triples, 4 quadruplets, 4 quintuplets.
+- **Pôles miroirs** (condition du nul NU-1 : R1 + R7 = Tristitia) : 3 072 thèmes sur 65 536, **jamais quand la figure de M1 est Puer, Via, Amissio, Conjunctio ou Aquisitio**. Dans ces 3 072 thèmes, Tristitia est dans une maison de Terre (M4, M8, M12, M16), en base ou en résultante, pour 1 180 d'entre eux. Tristitia est dans une maison de Terre dans 24 376 thèmes en tout.
