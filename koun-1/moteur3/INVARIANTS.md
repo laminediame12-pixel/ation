@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (112 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (114 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -240,3 +240,7 @@ Rubeus (7, 2122) : seul l'Air est à un point. Son binôme est Via, son miroir A
 - Dans toutes les maisons paires (canaux Air et Terre, dont M6 et M12), leur **Air est non saturé**. En M12 leurs résultantes sont Caput (Rubeus), Conjunctio (Aquisitio), Puer (Cauda), Fortuna Minor (Via) : l'Air est toujours non saturé et un seul de Feu et Eau est saturé.
 - **Pôles** (R1 = maison du numéro de la figure de M1, R7 = R1 + 6). Si M1 = Amissio (pôles en M6 et M12), R1 a toujours son Feu à deux points et R7 à un point : les deux pôles ne sont alors jamais du même front.
 - Rubeus peut être le pôle R1 dans 9 maisons (M2, M3, M4, M6, M7, M9, M10, M12, M13) et le pôle R7 dans 11 (M2 à M11 et M13), **jamais R7 en M12** (son Feu à deux points est incompatible avec le Feu à un point que M1 = Amissio impose à R7). En M6 il peut l'être des deux côtés. Effectifs : 512 thèmes pour R1 en M6 ou M12 et pour R7 en M6.
+
+## I25 — Pénalité et carton rouge : les pôles du quartet, et la règle actuelle
+- Pôles du quartet {Via, Rubeus, Cauda, Aquisitio} en M6 ou M12 : **en M12, R1 est Rubeus ou Aquisitio et R7 est Cauda ou Via** ; en M6, R1 et R7 sont Rubeus ou Aquisitio. Chaque cas se produit dans 512 thèmes (4 096 au total).
+- **La règle actuelle du moteur** (reprise du 3.0.0 : Rubeus en base d'une maison impaire liée à un pôle, Cauda en M12 liée à un pôle, Cauda ou Rubeus dans la maison de repos d'un pôle) s'active dans **34 676 thèmes sur 65 536 (53 %)** : carton rouge dans 21 891, pénalité dans 23 424. **Aucune donnée ne permet de la tester** : les champs « penalty » et « carton rouge » des matchs enregistrés sont vides.

@@ -261,6 +261,15 @@ const rubeus = {};
   ok('I24 Rubeus peut être le pôle R1 dans 9 maisons (M2, M3, M4, M6, M7, M9, M10, M12, M13) et le pôle R7 dans 11 (M2 à M11 et M13) : jamais R7 en M12', JSON.stringify(Object.keys(parR1).map(Number).sort((a, b) => a - b)) === '[2,3,4,6,7,9,10,12,13]' && JSON.stringify(Object.keys(parR7).map(Number).sort((a, b) => a - b)) === '[2,3,4,5,6,7,8,9,10,11,13]' && !parR7[12], 'R1 : ' + JSON.stringify(parR1) + ' ; R7 : ' + JSON.stringify(parR7));
 }
 
+// I25 — Pôles du quartet {Via, Rubeus, Cauda, Aquisitio} en M6 et M12 ; fréquence de la règle de pénalité / carton rouge actuelle du moteur (3.0.0, non testée)
+{
+  const Q = [5, 7, 13, 15], R7de = n => ((n + 5) % 16) + 1, cnt = {};
+  bases.forEach(t => { const h1 = t[1], h7 = R7de(h1); [['R1', h1], ['R7', h7]].forEach(([r, h]) => { if ((h === 6 || h === 12) && Q.includes(t[h])) { const k = r + ' M' + h + ' ' + t[h]; cnt[k] = (cnt[k] || 0) + 1; } }); });
+  ok('I25 pôles du quartet en M6 et M12 : R1 est Rubeus ou Aquisitio (M6 ou M12), R7 est Cauda ou Via en M12 et Rubeus ou Aquisitio en M6, chaque cas dans 512 thèmes', JSON.stringify(Object.keys(cnt).sort()) === JSON.stringify(['R1 M12 15', 'R1 M12 7', 'R1 M6 15', 'R1 M6 7', 'R7 M12 13', 'R7 M12 5', 'R7 M6 15', 'R7 M6 7'].sort()) && Object.values(cnt).every(v => v === 512), JSON.stringify(cnt));
+  let actif = 0, rouge = 0, pen = 0; for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), r = K.penalite(K.lire(K.construireTheme(...m.map(K.fig)))); if (r.actif) actif++; if (r.carton) rouge++; if (r.penalty) pen++; }
+  ok('I25 la règle de pénalité et carton rouge actuelle du moteur (3.0.0, aucune donnée pour la tester) s\'active dans 34 676 thèmes sur 65 536 (53 %) : carton rouge 21 891, pénalité 23 424', actif === 34676 && rouge === 21891 && pen === 23424);
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { for (const nom of Object.keys(rubeus)) if (Array.isArray(rubeus[nom])) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + rubeus[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
   for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
