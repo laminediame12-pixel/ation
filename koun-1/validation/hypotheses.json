@@ -136,11 +136,11 @@
       8,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-10",
+     "match": "Napoli–Côme",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R7, R7, R1, égal] : non nets",
-     "score": null
+     "score": "1-1"
     }
    ],
    "resultats_apres_pose": [
@@ -438,11 +438,11 @@
       8,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-10",
+     "match": "Napoli–Côme",
      "prediction": "pas de victoire",
      "detail": "pôles en M12 et M2 ; arrêts en M8 et M14 : aucun pôle sous croix",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -924,11 +924,11 @@
       8,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-10",
+     "match": "Napoli–Côme",
      "prediction": "R1",
      "detail": "front D de R1 : 2 maisons saturées en Terre ; front B de R7 : 1 (dans la classe Via en M8, où cette règle a déjà échoué une fois)",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -983,7 +983,7 @@
      "score": "1-4"
     }
    ],
-   "statut": "Appel à l'aveugle juste hors Via en M8 : 2-12-4-4, R1 prévu, 5-1 pour R1 (appel précédent faux dans la classe Via en M8). À l'essai."
+   "statut": "Appel à l'aveugle juste hors Via en M8 (2-12-4-4) ; faux deux fois dans la classe Via en M8 (5-1-10-10 et 12-14-8-10, R1 prévu, nuls). Limitée aux thèmes sans Via en base de M8."
   },
   {
    "id": "H-VIA8",
@@ -1263,11 +1263,11 @@
       8,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-10",
+     "match": "Napoli–Côme",
      "prediction": "nul",
      "detail": "Via en base de M8 ; M8 est la seule maison de Terre sous croix (M14 est une maison d'Air)",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -1311,7 +1311,8 @@
      "prediction": "pas de nul (M4 et M8)",
      "score": "1-2"
     }
-   ]
+   ],
+   "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (M8 seule maison de Terre sous croix), score 1-1. À l'essai."
   },
   {
    "id": "H-SYS-B",
@@ -1325,11 +1326,11 @@
       8,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-10",
+     "match": "Napoli–Côme",
      "prediction": "nul",
      "detail": "Via en base de M8 ; T = 9, inférieur à 10",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -1373,7 +1374,8 @@
      "prediction": "pas de nul (T=12)",
      "score": "1-2"
     }
-   ]
+   ],
+   "statut": "Premier appel à l'aveugle juste : 12-14-8-10, nul prédit (T = 9 < 10), score 1-1. À l'essai ; ne se sépare pas de H-SYS-A sur ce match."
   }
  ],
  "lectures": [
@@ -1526,10 +1528,11 @@
     10
    ],
    "posee_le": "2026-11-20",
-   "date_match": null,
+   "date_match": "2026-02-10",
    "lecture": "nul",
    "statut": "lecture de l'analyste : cinquième thème avec Via en base de M8 ; M8 est la seule maison de Terre sous croix et T = 9, donc H-SYS-A et H-SYS-B disent nul ; H-TERRE-V dit R1 mais a déjà échoué dans cette classe. Ce thème ne départage pas H-SYS-A et H-SYS-B.",
-   "score": null
+   "score": "1-1",
+   "juste": true
   }
  ]
 }
