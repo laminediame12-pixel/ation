@@ -63,6 +63,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R1, R7, R7, égal] : non nets",
      "score": "4-2"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R1, R1, R1, R7, R1] : non unanimes",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -286,6 +299,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M1 et M7 ; arrêts en M5 et M9 : aucun pôle sous croix",
      "score": "4-2"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M12 et M2 ; seul arrêt : M8 : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -348,6 +374,19 @@
      "prediction": "pas de victoire",
      "detail": "même boucle : exposées 1 contre 1 (Aquisitio ×3 des deux côtés)",
      "score": "4-2"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1",
+     "detail": "figures exposées : R1 1, R7 2 (le pôle qui en a le plus perd)",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -494,6 +533,19 @@
      "prediction": "pas de victoire",
      "detail": "Via et Fortuna Minor paralysées (canal Feu) en front A ; les deux pôles sont dans la même boucle (A et C)",
      "score": "4-2"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R7",
+     "detail": "seule la boucle de R7 (B+D) a un canal paralysé : Tristitia, paralysée par Via en M8 sur les 4 niveaux (canal Terre)",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -566,6 +618,19 @@
      "prediction": "6 buts au total",
      "detail": "T = 9 maisons à résultante saturée en Terre : ceil(9/2) + 1 = 6",
      "score": "4-2"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "5 buts au total",
+     "detail": "T = 8 maisons à résultante saturée en Terre : ceil(8/2)+1 = 5. Via en base de M8 : le total pourrait être réduit (remarque du propriétaire) ; un total inférieur à 5 irait dans ce sens.",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -640,6 +705,19 @@
      "prediction": "pas de victoire",
      "detail": "front A de R1 : 2 maisons ; front C de R7 : 2 maisons",
      "score": "4-2"
+    },
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "front C de R1 : 2 maisons ; front D de R7 : 2 maisons",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -766,6 +844,19 @@
    "statut": "lecture de l'analyste, pas une règle : les deux pôles sont dans la même boucle (figures impaires), donc toute mesure de boucle est égale des deux côtés ; seule la mesure par front sépare : front C de R7 (Feu, Air, Eau connectés) contre front A de R1 (Feu).",
    "score": "4-2",
    "juste": false
+  },
+  {
+   "theme": [
+    12,
+    8,
+    10,
+    3
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R1",
+   "statut": "lecture de l'analyste, pas une règle : Via en base de M8 paralyse Tristitia, la figure du pôle R7, sur ses quatre niveaux (le cas « Via saccage tout » du propriétaire) ; quatre indicateurs sur cinq vont vers R1. Contredit H-PARA (R7) : ce match départagera les deux. Total des buts : 5 par la formule, avec réduction possible.",
+   "score": null
   }
  ]
 }
