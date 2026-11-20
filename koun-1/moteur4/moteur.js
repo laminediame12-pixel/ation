@@ -28,7 +28,7 @@
     var eb = s(B) - s(A), er = s(B.map(function (v, k) { return v ^ rB[k]; })) - s(A.map(function (v, k) { return v ^ rA[k]; })) + 2 * (X[2][2] - X[3][3]);
     return { ecartBase: eb, ecartRes: er, equilibre: eb + er === 0 };
   }
-  // FI-5 : binôme de M1 et somme de l'axe angulaire en maison angulaire, somme 3-5-11-15 présente, figure du jour présente (si jour donné).
+  // FI-5 : binôme de M1 en maison angulaire ; somme de l'axe angulaire présente (son emplacement est ignoré) ; somme 3-5-11-15 présente ; figure du jour présente (si jour donné).
   var FIGURE_DU_JOUR = [[12], [16, 5], [1, 7], [11], [15, 3], [6, 3], [10, 8]];
   function fiabilite(L, jour) {
     var ANG = [1, 4, 7, 10], T = L.theme.bases;
@@ -36,7 +36,7 @@
     var somme = function (hs) { return hs.map(function (h) { return T[h]; }).reduce(K.additionner); };
     var m1 = T[1], bin = (m1 - 1) % 4 < 2 ? m1 + 2 : m1 - 2;
     var enAxe = function (f) { return maisons(f).some(function (h) { return ANG.indexOf(h) >= 0; }); };
-    var c = [enAxe(bin), enAxe(somme([1, 4, 7, 10])), maisons(somme([3, 5, 11, 15])).length > 0];
+    var c = [enAxe(bin), maisons(somme([1, 4, 7, 10])).length > 0, maisons(somme([3, 5, 11, 15])).length > 0];
     if (jour !== undefined && jour !== null && jour >= 0 && jour <= 6) c.push(FIGURE_DU_JOUR[jour].some(function (f) { return maisons(f).length > 0; }));
     var n = c.filter(Boolean).length;
     return { niveau: n, total: c.length, valide: n === c.length };

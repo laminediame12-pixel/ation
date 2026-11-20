@@ -16,7 +16,7 @@ for (let q = 0; q < 65536; q++) {
   // FI-5 : même validation que l'invariant I18 (sans jour)
   const ANG = [1, 4, 7, 10], pres = hs => { const s = new Set(); hs.forEach(h => { s.add(L.base(h)); s.add(L.resu(h)); }); return s; }, tous = pres([...Array(16).keys()].map(i => i + 1)), ang = pres(ANG);
   const b = (m[0] - 1) % 4 < 2 ? m[0] + 2 : m[0] - 2, som = hs => hs.map(h => T.bases[h]).reduce(N.additionner);
-  const v = ang.has(b) && ang.has(som(ANG)) && tous.has(som([3, 5, 11, 15]));
+  const v = ang.has(b) && tous.has(som(ANG)) && tous.has(som([3, 5, 11, 15]));
   if (K4.fiabilite(L).valide !== v) add('FI-5');
 }
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);

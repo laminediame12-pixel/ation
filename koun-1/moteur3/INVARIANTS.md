@@ -174,7 +174,7 @@ Dans les deux cas, **la seule maison impossible seule est M15** : le Juge est to
 - **S = M1 + M4 + M7 + M10 est toujours égale à M1 + M3 + M7** (M10 = M3 + M4, M4 s'annule).
 - **Le niveau Eau de S est toujours celui de M1.** Pour le Feu, l'Air et la Terre, S et M1 s'accordent dans exactement la moitié des thèmes.
 - Les 4 sommes d'axe n'ont qu'une seule loi entre leurs 16 niveaux : le nombre de niveaux Feu, Air et Terre à un point des sommes des axes 2, 3 et 4 est toujours pair.
-- **Validation FI-5 (sans le jour)** : les 8 combinaisons des 3 critères existent toutes. 8 785 thèmes les remplissent tous (le moteur compte aussi 8 785). Effectifs : binôme de M1 en maison angulaire 21 632 ; somme de l'axe en maison angulaire 32 608 ; somme 3-5-11-15 présente 57 171.
+- **Validation FI-5 (sans le jour)** : les 8 combinaisons des 3 critères existent toutes. 17 309 thèmes les remplissent tous (le moteur compte aussi 17 309). Le critère de la somme de l'axe ne demande plus que sa présence (emplacement ignoré, décision du propriétaire). Effectifs : binôme de M1 en maison angulaire 21 632 ; somme de l'axe présente 59 808 ; somme 3-5-11-15 présente 57 171.
 
 ## I19 — Les maisons angulaires
 - Les 4 bases de M1, M4, M7, M10 ne prennent que 8 192 configurations (1/8). Lois internes : M1 Eau et M7 Feu sont saturés ensemble ; M4 Eau et M7 Terre sont toujours opposés ; M4 Eau + M7 Eau + M10 Eau : nombre impair de niveaux non saturés.

@@ -180,9 +180,9 @@ const AXES = [[1, 4, 7, 10], [13, 16, 3, 6], [9, 12, 15, 2], [5, 8, 11, 14]];
   // validation FI-5 sans le jour : binôme de M1, somme de l'axe, somme 3-5-11-15
   const bin = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2, ANG = [1, 4, 7, 10], cnt = {}; let valides = 0;
   themes.forEach((r, i) => { const t = bases[i], angPres = new Set(); ANG.forEach(h => { angPres.add(t[h]); angPres.add(r[h]); }); const tous = new Set(); for (let h = 1; h <= 16; h++) { tous.add(t[h]); tous.add(r[h]); }
-    const c1 = angPres.has(bin(t[1])), c2 = angPres.has(somme(t, [1, 4, 7, 10])), c3 = tous.has(somme(t, [3, 5, 11, 15])); const k = (c1 ? '1' : '-') + (c2 ? '2' : '-') + (c3 ? '3' : '-'); cnt[k] = (cnt[k] || 0) + 1; });
+    const c1 = angPres.has(bin(t[1])), c2 = tous.has(somme(t, [1, 4, 7, 10])), c3 = tous.has(somme(t, [3, 5, 11, 15])); const k = (c1 ? '1' : '-') + (c2 ? '2' : '-') + (c3 ? '3' : '-'); cnt[k] = (cnt[k] || 0) + 1; });
   let moteur = 0; for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1); if (K.fiabilite(K.lire(K.construireTheme(...m.map(K.fig)))).valide) moteur++; }
-  ok('I18 validation FI-5 sans le jour : les 8 combinaisons des 3 critères existent toutes ; 8 785 thèmes les remplissent tous (le moteur compte aussi 8 785)', Object.keys(cnt).length === 8 && cnt['123'] === 8785 && moteur === 8785, JSON.stringify(cnt));
+  ok('I18 validation FI-5 sans le jour : les 8 combinaisons des 3 critères existent toutes ; 17 309 thèmes les remplissent tous (le moteur compte aussi 17 309)  ; emplacement de la somme de l\'axe est ignoré', Object.keys(cnt).length === 8 && cnt['123'] === 17309 && moteur === 17309, JSON.stringify(cnt));
 }
 // I19 — Les maisons angulaires M1, M4, M7, M10 : degrés de liberté et lois internes
 {

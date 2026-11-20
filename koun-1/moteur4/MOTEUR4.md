@@ -5,7 +5,7 @@ Nouveau moteur, seul moteur du dépôt : `moteur4/moteur.js` sur `moteur3/noyau.
 ## Ce qu'il contient (exact ou vérifié)
 - Thème, bases, résultantes, pôles R1/R7, mode (même front / même boucle / boucles différentes), lien R1+R7 : fonctions exactes des 4 mères.
 - Équilibre des deux parties : équation vérifiée sur les 65 536 thèmes.
-- FI-5 : validation du thème posée par le propriétaire ; elle ne dit rien du résultat.
+- FI-5 : validation du thème posée par le propriétaire ; elle ne dit rien du résultat. Binôme de M1 en maison angulaire, somme de l'axe angulaire présente (emplacement ignoré), somme 3-5-11-15 présente, figure du jour présente.
 - Contrôle : `node outils/tester_moteur4.js` (65 536 thèmes, 0 écart).
 
 ## Ce qu'il ne contient pas, et pourquoi
