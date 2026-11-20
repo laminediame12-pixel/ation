@@ -383,5 +383,19 @@
   ],
   "lot": "lot",
   "date": "2026-02-08"
+ },
+ {
+  "themes": [
+   4,
+   1,
+   6,
+   7
+  ],
+  "match": "équipes et date à préciser",
+  "score": [
+   3,
+   0
+  ],
+  "lot": "lot"
  }
 ]
