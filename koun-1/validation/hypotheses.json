@@ -304,6 +304,65 @@
      "score": "3-1"
     }
    ]
+  },
+  {
+   "id": "H-EXPO",
+   "posee_le": "2026-11-20",
+   "enonce": "Dans la boucle de chaque pôle (les 8 figures de même parité que la figure du pôle), une figure est exposée quand elle est placée dans le thème, qu'elle est attaquée (sa figure f−3 est placée) et que son protecteur (f−6) est absent. Le pôle qui a le plus de figures exposées dans sa boucle perd. Égalité : pas de victoire. Seul 14-9-16-9 était lu avant son score (la raison « deux figures exposées chez R1 » était inscrite) ; les quatre autres matchs ne comptent pas comme test.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "prediction": "R1 (exposées R1 0, R7 2)",
+     "score": "5-0"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "prediction": "pas de victoire (0-0)",
+     "score": "3-0"
+    },
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "R1 (0-1)",
+     "score": "3-1"
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "pas de victoire (1-1)",
+     "score": "1-3"
+    },
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "prediction": "R7 (R1 2, R7 0)",
+     "score": "1-4",
+     "note": "raison inscrite avant le score"
+    }
+   ]
   }
  ],
  "lectures": [
