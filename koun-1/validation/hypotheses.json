@@ -89,6 +89,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R1, R7, R1, égal] : non nets",
      "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [égal, égal, R1, R1, égal] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -338,6 +351,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M5 et M11 ; seul arrêt : M8 : aucun pôle sous croix",
      "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M10 et M16 ; arrêts en M5, M8, M9 : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -865,7 +891,21 @@
    "id": "H-VIA8-NUL",
    "posee_le": "2026-11-20",
    "enonce": "Quand Via est en base de M8, le match est nul, et chaque équipe marque (T − n) / 3, où T est le nombre de maisons à résultante saturée en Terre et n le nombre de maisons dont la résultante est Cauda Draconis. Si T − n n'est pas divisible par 3, seul le nul est prédit. Née des deux matchs avec Via en base de M8 (12-8-10-3 : 1-1 ; 5-1-10-10 : 2-2), qui ne comptent donc pas comme test ; le nul avait été prédit pour 5-1-10-10 (par H-VIA8), mais pas la formule.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "2-2",
+     "detail": "Via en base de M8 : nul ; T = 7, n = 1 (résultantes Cauda) : (7 − 1)/3 = 2 buts par équipe",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -893,7 +933,21 @@
    "id": "H-UNIV",
    "posee_le": "2026-11-20",
    "enonce": "Constat sur les huit matchs connus. (1) La Terre fait le jeu. (2) Si Via est en base de M8 (il paralyse Tristitia sur ses quatre niveaux), le match est nul. (3) Sinon : total des buts = ceil(T/2) + 1, T = maisons à résultante saturée en Terre ; vainqueur = le pôle dont le front a le plus de maisons à résultante saturée en Terre, égalité : pas de victoire. Cette formulation réunit H-VIA8-NUL, H-TERRE-BUTS et H-TERRE-V ; aucune formule unique ne couvre les huit matchs (la meilleure, sans Via, en couvre six). Chaque clause garde son propre statut ; chaque nouveau thème reçoit une prédiction complète avant son score.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "nul (Via en base de M8)",
+     "detail": "clause 1 : Via en base de M8 donne le nul ; clauses 2 et 3 (buts et vainqueur par la Terre) ne s'appliquent pas dans cette classe",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -1085,6 +1139,19 @@
    "score": "2-2",
    "juste": null,
    "note": "lecture « R1 faible ou nul » : le nul est juste, R1 est faux"
+  },
+  {
+   "theme": [
+    10,
+    12,
+    12,
+    15
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "nul, 2-2",
+   "statut": "lecture de l'analyste d'après H-UNIV et H-VIA8-NUL : troisième thème avec Via en base de M8, mêmes pôles dans le même front (Conjunctio et Aquisitio, front C), aucun pôle sous croix.",
+   "score": null
   }
  ]
 }
