@@ -161,6 +161,36 @@ const placements2 = {};
   }
 }
 
+// I17 — Le cycle d'attaque (h attaque h+3) et les quatre axes de quatre attaquants consécutifs, dont l'axe angulaire M1, M4, M7, M10
+const AXES = [[1, 4, 7, 10], [13, 16, 3, 6], [9, 12, 15, 2], [5, 8, 11, 14]];
+{
+  const cycle = []; let h = 1; for (let i = 0; i < 16; i++) { cycle.push(h); h = ((h + 2) % 16) + 1; }
+  ok('I17 l\'attaque h → h+3 est un seul cycle de 16 maisons ; il se découpe en 4 axes de 4 attaquants consécutifs : {M1,M4,M7,M10}, {M13,M16,M3,M6}, {M9,M12,M15,M2}, {M5,M8,M11,M14}', new Set(cycle).size === 16 && AXES.every((a, i) => a.join() === cycle.slice(4 * i, 4 * i + 4).join()));
+  ok('I17 chaque axe contient une maison de chaque front, toujours dans l\'ordre A, D, C, B (le cercle des fronts)', AXES.every(a => a.map(x => 'ABCD'[(x - 1) % 4]).join('') === 'ADCB'));
+  const comptes = hs => { const vu = new Set(); for (const t of bases) vu.add(hs.map(x => t[x]).join()); return vu.size; };
+  ok('I17 les 4 bases d\'un axe prennent 8 192, 16 384, 8 192 et 65 536 configurations (axes 1 à 4) ; somme des figures de repos : Albus, Fortuna Major, Albus, Fortuna Major', JSON.stringify(AXES.map(comptes)) === '[8192,16384,8192,65536]' && JSON.stringify(AXES.map(a => a.reduce((x, y) => add(x, y), 16))) === '[4,12,4,12]');
+}
+// I18 — La somme de l'axe angulaire S = M1+M4+M7+M10
+{
+  const somme = (t, hs) => hs.reduce((x, h) => add(x, t[h]), 16), egalNiveau = l => bases.filter(t => P(somme(t, [1, 4, 7, 10]))[l] === P(t[1])[l]).length;
+  ok('I18 S = M1+M4+M7+M10 est toujours égale à M1+M3+M7 (M10 = M3+M4)', bases.every(t => somme(t, [1, 4, 7, 10]) === somme(t, [1, 3, 7])));
+  ok('I18 le niveau Eau de S est toujours celui de M1 ; Feu, Air et Terre le sont dans exactement la moitié des thèmes', egalNiveau(2) === 65536 && [0, 1, 3].every(l => egalNiveau(l) === 32768));
+  const bitBase = (t, a, l) => P(somme(t, AXES[a]))[l] === 1 ? 1 : 0;
+  ok('I18 les 4 sommes d\'axe n\'ont qu\'une seule loi entre leurs 16 niveaux : parité paire du nombre de niveaux Feu, Air et Terre à un point des sommes des axes 2, 3 et 4', bases.every(t => [1, 2, 3].reduce((x, a) => x ^ bitBase(t, a, 0) ^ bitBase(t, a, 1) ^ bitBase(t, a, 3), 0) === 0));
+  // validation FI-5 sans le jour : binôme de M1, somme de l'axe, somme 3-5-11-15
+  const bin = n => ((n - 1) % 4 < 2) ? n + 2 : n - 2, ANG = [1, 4, 7, 10], cnt = {}; let valides = 0;
+  themes.forEach((r, i) => { const t = bases[i], angPres = new Set(); ANG.forEach(h => { angPres.add(t[h]); angPres.add(r[h]); }); const tous = new Set(); for (let h = 1; h <= 16; h++) { tous.add(t[h]); tous.add(r[h]); }
+    const c1 = angPres.has(bin(t[1])), c2 = angPres.has(somme(t, [1, 4, 7, 10])), c3 = tous.has(somme(t, [3, 5, 11, 15])); const k = (c1 ? '1' : '-') + (c2 ? '2' : '-') + (c3 ? '3' : '-'); cnt[k] = (cnt[k] || 0) + 1; });
+  let moteur = 0; for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1); if (K.fiabilite(K.lire(K.construireTheme(...m.map(K.fig)))).valide) moteur++; }
+  ok('I18 validation FI-5 sans le jour : les 8 combinaisons des 3 critères existent toutes ; 8 785 thèmes les remplissent tous (le moteur compte aussi 8 785)', Object.keys(cnt).length === 8 && cnt['123'] === 8785 && moteur === 8785, JSON.stringify(cnt));
+}
+// I19 — Les maisons angulaires M1, M4, M7, M10 : degrés de liberté et lois internes
+{
+  const comptes = new Set(); for (const t of bases) comptes.add([1, 4, 7, 10].map(h => t[h]).join());
+  ok('I19 les 4 bases des maisons angulaires ne prennent que 8 192 configurations (1/8)', comptes.size === 8192);
+  ok('I19 lois internes (résultantes) : M1 Eau et M7 Feu saturés ensemble ; M4 Eau et M7 Terre toujours opposés ; M4 Eau + M7 Eau + M10 Eau : nombre impair de niveaux non saturés', themes.every(r => sat(r[1], 2) === sat(r[7], 0) && sat(r[4], 2) !== sat(r[7], 3) && ([4, 7, 10].filter(h => !sat(r[h], 2)).length % 2) === 1));
+}
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
 if (process.argv.includes('--liste')) { for (const nom of Object.keys(placements2)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements2[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); }
   for (const nom of Object.keys(placements)) { console.log('\\nEnsembles de maisons impossibles ensemble (' + nom + ') :'); [2, 3, 4, 5].forEach(k => console.log('  ' + k + ' maisons : ' + placements[nom].filter(x => x.length === k).map(x => 'M' + x.join('+M')).join(' | '))); } console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }

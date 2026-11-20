@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (76 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (85 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -163,3 +163,18 @@ Quels ensembles de maisons peuvent porter ensemble leur binôme (b = binôme de 
 | Impossibles minimaux (1, 2, 3, 4, 5 maisons) | 1 · 32 · 8 · 13 · 1 | 1 · 24 · 11 · 7 · 3 |
 
 Dans les deux cas, **la seule maison impossible seule est M15** : le Juge est toujours pair, or son binôme (Cauda) et son miroir (Rubeus) sont impairs. Les listes de couples s'obtiennent avec `node outils/invariants.js --liste`.
+
+## I17 — Le cycle d'attaque et les quatre axes
+- L'attaque h → h+3 est **un seul cycle de 16 maisons** : 1 → 4 → 7 → 10 → 13 → 16 → 3 → 6 → 9 → 12 → 15 → 2 → 5 → 8 → 11 → 14.
+- Il se découpe en quatre axes de quatre attaquants consécutifs : **{M1, M4, M7, M10}** (l'axe angulaire), {M13, M16, M3, M6}, {M9, M12, M15, M2}, {M5, M8, M11, M14}.
+- Chaque axe contient une maison de chaque front, **toujours dans l'ordre A, D, C, B** : c'est le cercle des fronts.
+- Les 4 bases d'un axe prennent 8 192, 16 384, 8 192 et 65 536 configurations (axes 1 à 4) ; l'axe 4 {M5, M8, M11, M14} détermine tout le thème. La somme des figures de repos est Albus pour les axes 1 et 3, Fortuna Major pour les axes 2 et 4.
+
+## I18 — La somme de l'axe angulaire
+- **S = M1 + M4 + M7 + M10 est toujours égale à M1 + M3 + M7** (M10 = M3 + M4, M4 s'annule).
+- **Le niveau Eau de S est toujours celui de M1.** Pour le Feu, l'Air et la Terre, S et M1 s'accordent dans exactement la moitié des thèmes.
+- Les 4 sommes d'axe n'ont qu'une seule loi entre leurs 16 niveaux : le nombre de niveaux Feu, Air et Terre à un point des sommes des axes 2, 3 et 4 est toujours pair.
+- **Validation FI-5 (sans le jour)** : les 8 combinaisons des 3 critères existent toutes. 8 785 thèmes les remplissent tous (le moteur compte aussi 8 785). Effectifs : binôme de M1 en maison angulaire 21 632 ; somme de l'axe en maison angulaire 32 608 ; somme 3-5-11-15 présente 57 171.
+
+## I19 — Les maisons angulaires
+- Les 4 bases de M1, M4, M7, M10 ne prennent que 8 192 configurations (1/8). Lois internes : M1 Eau et M7 Feu sont saturés ensemble ; M4 Eau et M7 Terre sont toujours opposés ; M4 Eau + M7 Eau + M10 Eau : nombre impair de niveaux non saturés.
