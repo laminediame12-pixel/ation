@@ -49,7 +49,7 @@
      "match": "Zurich–Lucerne",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R7, R7, R7, R1] : non nets",
-     "score": null
+     "score": "1-4"
     }
    ],
    "resultats_apres_pose": [
@@ -160,7 +160,7 @@
      "match": "Zurich–Lucerne",
      "prediction": "R1",
      "detail": "R1 4 (Laetitia, miroir, binôme, antagoniste) contre R7 2",
-     "score": null
+     "score": "1-4"
     }
    ],
    "cas_connus_hors_test": [
@@ -208,7 +208,8 @@
      "score": "1-3",
      "juste": null
     }
-   ]
+   ],
+   "statut": "réfutée le 2026-11-20 sur 14-9-16-9 (inscrite avant le score) : H-NIV4 donne R1, le score est 1-4 pour R7. Retirée du moteur."
   },
   {
    "id": "H-BUTS",
@@ -258,7 +259,7 @@
      "match": "Zurich–Lucerne",
      "prediction": "pas de victoire",
      "detail": "pôles en M14 et M4 ; arrêts en M1, M3, M15 : aucun pôle sous croix",
-     "score": null
+     "score": "1-4"
     }
    ],
    "cas_connus_hors_test": [
@@ -338,7 +339,9 @@
    "date_match": "2026-02-14",
    "lecture": "R1 (faible)",
    "statut": "lecture de l'analyste, pas une règle : aucune structure nette, aucun pôle sous croix ; seule H-NIV4, encore à l'essai, désigne un pôle (R1). Trois indicateurs sur cinq vont vers R7.",
-   "score": null
+   "score": "1-4",
+   "juste": false,
+   "note": "carton rouge côté R7"
   },
   {
    "theme": [
@@ -356,7 +359,9 @@
     "multiplicité : deux figures exposées dans la boucle de R1 (Fortuna Major ×3, Puella ×3), aucune dans celle de R7",
     "H-NIV4 (R1) n'a qu'un test et un non-appel : je ne m'y fie pas"
    ],
-   "score": null
+   "score": "1-4",
+   "juste": true,
+   "note": "carton rouge côté R7"
   }
  ]
 }

@@ -429,5 +429,22 @@
   ],
   "lot": "lot",
   "date": "2026-02-23"
+ },
+ {
+  "themes": [
+   14,
+   9,
+   16,
+   9
+  ],
+  "match": "Zurich–Lucerne",
+  "date": "2026-02-14",
+  "score": [
+   1,
+   4
+  ],
+  "lot": "lot",
+  "rouge": "R7",
+  "penalty": null
  }
 ]

@@ -311,7 +311,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
 
   // Niveaux d'activation et canal (règle posée par le propriétaire) : un pôle a 4 niveaux d'activation (2 points = activé). Son canal est l'élément de son front ;
   // le canal compatible est Feu↔Air, Eau↔Terre. On compte les niveaux activés qui tombent sur son canal ou sur le canal compatible. Même procédé pour son miroir, son binôme et son antagoniste,
-  // chacun avec son propre canal. Score 1 : le pôle seul (0 à 2) ; score 4 : pôle + miroir + binôme + antagoniste. H-NIV1 (score 1) est réfutée ; H-NIV4 (score 4 : le plus grand gagne, égalité : pas de victoire) reste à l'essai.
+  // chacun avec son propre canal. Score 1 : le pôle seul (0 à 2) ; score 4 : pôle + miroir + binôme + antagoniste. H-NIV1 (score 1) et H-NIV4 (score 4) sont réfutées ; les comptes restent comme structure.
   var COMPAT = [1, 0, 3, 2];
   function activation(L) {
     function compte(f) { var z = (f - 1) % 4, lv = K.niveaux(f), n = []; lv.forEach(function (v, i) { if (v === 2 && (i === z || i === COMPAT[z])) n.push(LETTRES[i]); }); return { figure: f, niveaux: lv.map(function (v, i) { return v === 2 ? LETTRES[i] : '.'; }).join(''), canal: LETTRES[z], compatible: LETTRES[COMPAT[z]], coincide: n.join(''), n: n.length }; }
@@ -319,8 +319,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       var p = c.figure, parts = [['pôle', p], ['miroir', K.miroir(p)], ['binôme', (p - 1) % 4 < 2 ? p + 2 : p - 2], ['antagoniste', mod(p - 3)]].map(function (x) { var r = compte(x[1]); r.role = x[0]; return r; });
       return { parts: parts, score1: parts[0].n, score4: parts.reduce(function (a, x) { return a + x.n; }, 0) };
     }
-    var a = pole(L.R1), e = pole(L.R7), v = function (x, y) { return x > y ? 'R1' : x < y ? 'R7' : null; };
-    return { R1: a, R7: e, h4: v(a.score4, e.score4) };
+    var a = pole(L.R1), e = pole(L.R7);
+    return { R1: a, R7: e };
   }
 
   // Niveaux connectés du front d'un pôle (structure ; l'hypothèse H-BUTS qui en faisait les buts est réfutée) : dans la croix du front (haut f, droite f+4, bas f+8, gauche f+12), un niveau est connecté quand la liaison
@@ -551,8 +551,8 @@ function faitsHtml(L){var F=M.faits(L),nm=K.nom,h='<h4 style="margin:14px 0 4px;
 
 function activHtml(L){var A=M.activation(L),nm=K.nom;
  function col(c){return '<td><span class="big">Score 1 : '+c.score1+' · Score 4 : '+c.score4+'</span>'+c.parts.map(function(x){return '<span class="dt">'+x.role+' : '+nm(x.figure)+' ['+x.niveaux+'] canal '+x.canal+'/'+x.compatible+' → '+(x.coincide||'aucun')+' ('+x.n+')</span>'}).join('')+'</td>'}
- var v4=A.h4?'H-NIV4 : '+A.h4:'H-NIV4 : égalité, pas de victoire';
- return '<h4 style="margin:14px 0 4px;font-size:13px;color:var(--ac)">Niveaux d\u2019activation et canal</h4><div class="lgd">Niveaux activés (2 points) de la figure qui tombent sur son canal (élément de son front) ou sur le canal compatible (Feu↔Air, Eau↔Terre). Score 1 : le pôle ; score 4 : pôle + miroir + binôme + antagoniste. H-NIV1 (score 1) est réfutée ; H-NIV4 est à l\u2019essai.</div><table><tr><th class="a">R1</th><th class="b">R7</th></tr><tr>'+col(A.R1)+col(A.R7)+'</tr></table><div class="bil">'+v4+'</div>'}
+ var v4='H-NIV1 et H-NIV4 sont réfutées : structure seule.';
+ return '<h4 style="margin:14px 0 4px;font-size:13px;color:var(--ac)">Niveaux d\u2019activation et canal</h4><div class="lgd">Niveaux activés (2 points) de la figure qui tombent sur son canal (élément de son front) ou sur le canal compatible (Feu↔Air, Eau↔Terre). Score 1 : le pôle ; score 4 : pôle + miroir + binôme + antagoniste. H-NIV1 et H-NIV4 sont réfutées.</div><table><tr><th class="a">R1</th><th class="b">R7</th></tr><tr>'+col(A.R1)+col(A.R7)+'</tr></table><div class="bil">'+v4+'</div>'}
 
 function butsHtml(L){var C=M.connexions(L);
  function col(c,r){return '<td><span class="big">'+c.n+' niveau(x) connecté(s) : '+(c.niveaux||'aucun')+'</span><span class="dt">Front '+c.front+' · '+(c.liaisons.join('<br>')||'aucune liaison connectée')+'</span></td>'}
@@ -697,7 +697,7 @@ function jugerVerdict(r){var g=parse(r.score),out=[],v=r.verdict;if(!g||!v)retur
  if(v.overUnder)Object.keys(v.overUnder).forEach(function(l){var lv=parseFloat(l.replace(',','.')),over=g[0]+g[1]>lv;out.push({n:'Over/Under '+l,ok:(v.overUnder[l]==='Over')===over})});
  return out}
 function hypotheses(r){var g=parse(r.score);if(!g)return[];var w=gagnant(g),P=M.poles(M.lire(r.theme)),a=P.R1.antagoniste.saturation,e=P.R7.antagoniste.saturation,ant=a<e?'R1':a>e?'R7':null;
- var AC=M.activation(M.lire(r.theme));return[{n:'H-5',p:P.net,ok:P.net?P.net===w:null},{n:'H-NIV4',p:AC.h4,ok:AC.h4?AC.h4===w:null}]}
+ return[{n:'H-5',p:P.net,ok:P.net?P.net===w:null}]}
 function carte(r,i){var g=parse(r.score),ev=jugerVerdict(r),ko=ev.some(function(x){return !x.ok}),ok=ev.length&&!ko,cls=ev.length?(ok?'ok':'ko'):'';
  var h='<div class="sv '+cls+'"><span class="bd">'+(ev.length?(ok?'Verdict juste':'Verdict faux'):'Pas de verdict')+'</span><div class="t">'+nomMatch(r.match)+(r.match.date?' · '+r.match.date:'')+'</div><div>Thème '+r.theme.join('-')+' · score '+r.score+(g?' ('+nomG(gagnant(g),r.match)+')':' (score non lisible)')+' · penalty '+r.penalty+' · rouge '+r.rouge+'</div>';
  h+=ev.map(function(x){return '<span class="ch '+(x.ok?'ok':'ko')+'">'+x.n+' '+(x.ok?'✓':'✗')+'</span>'}).join('');
