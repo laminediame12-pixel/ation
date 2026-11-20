@@ -11,7 +11,7 @@ ok('invariants de la structure', lancer('invariants.js'));
 ok('cartographie : fichier à jour et vérifications', lancer('cartographie.js', ['--verifier']));
 
 // 2. aucune règle de verdict dans le moteur : seules les lectures de la liste blanche sont exportées
-const M4 = require(path.join(racine, 'moteur4/moteur.js')), permis = ['version', 'lire', 'fiabilite', 'equilibre', 'analyser', 'poles', 'noeuds', 'faits', 'activation', 'connexions', 'multiplicite', 'paralysie', 'paralysieFigure', 'liaisonsTerre', 'terreSaturee', 'butsTerre'];
+const M4 = require(path.join(racine, 'moteur4/moteur.js')), permis = ['version', 'lire', 'fiabilite', 'equilibre', 'analyser', 'poles', 'noeuds', 'faits', 'activation', 'connexions', 'multiplicite', 'paralysie', 'paralysieFigure', 'liaisonsTerre', 'terreSaturee'];
 const extra = Object.keys(M4).filter(k => !permis.includes(k));
 ok('moteur 4 : aucune fonction hors liste blanche (pas de verdict)', extra.length === 0, extra.join(', '));
 ok('moteur 4 : pas de mot « verdict » dans le code', !/verdict\s*[:(=]/.test(lire('moteur4/moteur.js').replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '')));

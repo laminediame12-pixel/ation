@@ -231,16 +231,7 @@
     return { total: par.reduce(function (a, b) { return a + b; }, 0), parFront: par };
   }
 
-  // Buts d'après la Terre (règle du propriétaire : la saturation de Terre est le marquage ; il a vérifié le niveau Terre). Formule de comptage : buts au total = ceil(T/2) + 1, T = maisons à résultante saturée en Terre.
-  // La formule vient de cinq matchs (4-1-6-7, 10-2-12-3, 6-8-8-11, 4-6-7-16, 14-9-16-9) ; sa première prédiction à l'aveugle, 1-3-15-4 (6 buts prévus, score 4-2), est exacte : formule admise, à confirmer.
-  // Alerte (propriétaire) : Via ou Cauda Draconis en M8 peut annuler ou diminuer le nombre de buts (Via en M8 donne Cauda, Terre saturée ; Cauda en M8 donne Via, tout non saturé ; l'effet touche Populus en M16).
-  // Le total n'est pas modifié. Via en base de M8 : deux échecs constatés (12-8-10-3, 5 prévus, 2 réels, 1-1 ; 5-1-10-10, 6 prévus, 4 réels, 2-2). Cauda en base de M8 : 1-3-15-4, sans écart.
-  function butsTerre(L) {
-    var t = terreSaturee(L).total, b8 = L.theme.bases[8], alerte = null;
-    if (b8 === 5) alerte = 'Via en base de M8 : formule non fiable, deux nuls sur deux (12-8-10-3 : 1-1 pour 5 buts prévus ; 5-1-10-10 : 2-2 pour 6 prévus)';
-    else if (b8 === 13) alerte = 'Cauda Draconis en base de M8 : résultante Via ; un seul cas connu (1-3-15-4), sans écart';
-    return { T: t, total: Math.ceil(t / 2) + 1, alerte: alerte };
-  }
+  // La formule des buts par la Terre (ceil(T/2)+1) a été réfutée (2-12-4-4 : 4 prévus, 6 réels) et retirée ; le comptage de Terre (terreSaturee) reste comme structure.
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -250,7 +241,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { butsTerre: butsTerre, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -110,11 +110,11 @@
       4,
       4
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-18",
+     "match": "Bayern Munich–Hoffenheim",
      "prediction": "R1",
      "detail": "les cinq indicateurs désignent R1 (net) : premier thème net depuis 4-6-7-16",
-     "score": null
+     "score": "5-1"
     }
    ],
    "resultats_apres_pose": [
@@ -140,7 +140,8 @@
      "score": "1-3",
      "juste": null
     }
-   ]
+   ],
+   "statut": "Premier appel net à l'aveugle juste : 2-12-4-4, cinq indicateurs pour R1, 5-1 pour R1. À l'essai."
   },
   {
    "id": "H-NIV1",
@@ -385,11 +386,11 @@
       4,
       4
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-18",
+     "match": "Bayern Munich–Hoffenheim",
      "prediction": "pas de victoire",
      "detail": "pôles en M2 et M8 ; seul arrêt : M5 : aucun pôle sous croix",
-     "score": null
+     "score": "5-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -732,11 +733,11 @@
       4,
       4
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-18",
+     "match": "Bayern Munich–Hoffenheim",
      "prediction": "4 buts au total",
      "detail": "T = 6 maisons à résultante saturée en Terre : ceil(6/2)+1 = 4 ; pas de Via ni de Cauda en base de M8",
-     "score": null
+     "score": "5-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -791,7 +792,7 @@
      "score": "1-4"
     }
    ],
-   "statut": "ADMISE sur 6 matchs sur 6 hors Via en base de M8 ; ÉCHEC dans les deux matchs avec Via en base de M8 (12-8-10-3 : 5 prévus, 2 réels ; 5-1-10-10 : 6 prévus, 4 réels). Elle est donc limitée aux thèmes sans Via en base de M8.",
+   "statut": "RÉFUTÉE le 2026-11-20 sur 2-12-4-4 (inscrite avant le score, hors Via en base de M8) : 4 buts prévus, 6 réels (5-1). Bilan : juste sur 6 matchs hors Via en M8 mais construite sur eux ; à l'aveugle, 1 juste (1-3-15-4) et 1 fausse. Formule retirée du moteur et de la page ; le comptage de Terre (terreSaturee) reste comme structure.",
    "a_surveiller": "Via en base de M8 : 12-8-10-3 = 1-1, 2 buts au lieu de 5. Motifs relevés dans ce thème, sans règle tirée : Tristitia (pôle R7) paralysée sur ses 4 niveaux par Via ; 5 des 8 maisons saturées en Terre ont pour résultante Cauda Draconis (Terre seule), alors que les six autres matchs en ont 0 à 2 ; ces cinq résultantes Cauda attaquent toutes M16 (13+3). Cauda en base de M8 (1-3-15-4) n'a pas réduit les buts."
   },
   {
@@ -845,11 +846,11 @@
       4,
       4
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-18",
+     "match": "Bayern Munich–Hoffenheim",
      "prediction": "R1",
      "detail": "front D de R1 : 3 maisons à résultante saturée en Terre ; front C de R7 : 1",
-     "score": null
+     "score": "5-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -904,7 +905,7 @@
      "score": "1-4"
     }
    ],
-   "statut": "Première prédiction à l'aveugle fausse : 5-1-10-10, R1 prévu, nul 2-2, dans un thème avec Via en base de M8 (classe signalée par le propriétaire). Limitée aux thèmes sans Via en base de M8 ; en attente d'un appel à l'aveugle hors de cette classe."
+   "statut": "Appel à l'aveugle juste hors Via en M8 : 2-12-4-4, R1 prévu, 5-1 pour R1 (appel précédent faux dans la classe Via en M8). À l'essai."
   },
   {
    "id": "H-VIA8",
@@ -1007,11 +1008,11 @@
       4,
       4
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-18",
+     "match": "Bayern Munich–Hoffenheim",
      "prediction": "R1, 4 buts au total",
      "detail": "hors Via en base de M8 : clauses 2 et 3",
-     "score": null
+     "score": "5-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -1104,7 +1105,7 @@
      "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
     }
    ],
-   "statut": "Clause 1 (Via en base de M8 = nul) : 3 matchs sur 3, dont deux prédits à l'aveugle (5-1-10-10, 10-12-12-15). Clauses 2 et 3 : inchangées, hors Via en base de M8."
+   "statut": "Clause 1 (Via en M8 = nul) : 3 sur 3. Clause 2 (buts par la Terre) : réfutée sur 2-12-4-4. Clause 3 (vainqueur par la Terre) : juste à l'aveugle sur 2-12-4-4, sans appel dans les matchs à égalité."
   },
   {
    "id": "H-VIA8-B",
@@ -1267,10 +1268,11 @@
     4
    ],
    "posee_le": "2026-11-20",
-   "date_match": null,
+   "date_match": "2026-02-18",
    "lecture": "R1, 4 buts",
    "statut": "lecture de l'analyste d'après H-UNIV : hors Via en base de M8, donc buts et vainqueur par la Terre ; les cinq indicateurs de structure désignent aussi R1.",
-   "score": null
+   "score": "5-1",
+   "juste": "vainqueur juste, 4 buts faux"
   }
  ]
 }

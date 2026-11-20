@@ -507,5 +507,20 @@
    1
   ],
   "lot": "lot"
+ },
+ {
+  "themes": [
+   2,
+   12,
+   4,
+   4
+  ],
+  "match": "Bayern Munich–Hoffenheim",
+  "date": "2026-02-18",
+  "score": [
+   5,
+   1
+  ],
+  "lot": "lot"
  }
 ]
