@@ -437,19 +437,19 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   }
 
   // VERDICT. Seules des règles inscrites dans validation/hypotheses.json et non réfutées y entrent, dans cet ordre (la première qui se prononce l'emporte) :
-  //   H-TEMOINS : somme des niveaux saturés des bases de M13 et M14 égale à 6 : nul ;
   //   H-CROIX : un seul pôle sous croix (sa maison porte en base son antagoniste) : l'autre pôle gagne ;
   //   H-5 : les cinq indicateurs de l'analyse des pôles désignent le même pôle : ce pôle gagne ;
-  //   H-BIN-E : liaisons binôme en Eau égales et non nulles dans la boucle de R1 et de R7 : nul probable.
+  //   H-TEMOINS et H-BIN-E ensemble : bases de M13 et M14 à 6 niveaux saturés ET liaisons binôme en Eau égales et non nulles dans les deux boucles : nul.
+  // Chacune de ces deux dernières seule n'est pas un verdict : H-BIN-E seule a 2 nuls sur 4 dans l'échantillon, H-TEMOINS seule n'y a jamais été vue sans H-BIN-E.
   // Si aucune ne se prononce : pas de verdict (et « pas de nul » quand H-BIN-E est fausse). Toutes sont à l'essai : voir statut dans validation/hypotheses.json.
   function verdict(L) {
     var T = temoins(L), I = interactions(L), n = noeuds(L), P = poles(L), sous = function (c) { return n.arrets.some(function (a) { return a.maison === c.maison; }); };
-    if (T.totalBase === 6) return { v: 'N', regle: 'H-TEMOINS', statut: 'à l\u2019essai', raison: 'les deux témoins M13 et M14 ont ensemble 6 niveaux saturés en base' };
     var s1 = sous(L.R1), s7 = sous(L.R7);
     if (s1 !== s7) return { v: s1 ? '2' : '1', regle: 'H-CROIX', statut: 'à l\u2019essai', raison: (s1 ? 'R1' : 'R7') + ' est sous croix (son antagoniste est ancré en base de sa maison) : il perd' };
     if (P.net) return { v: P.net === 'R1' ? '1' : '2', regle: 'H-5', statut: 'à l\u2019essai', raison: 'les cinq indicateurs de structure désignent ' + P.net };
-    if (I.binomeEauEquilibre) return { v: 'N', regle: 'H-BIN-E', statut: 'à l\u2019essai (6 sur 8 quand elle est vraie)', raison: 'liaisons binôme en Eau égales et non nulles dans les deux boucles' };
-    return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce' + (I.binomeEauEquilibre ? '' : ' ; pas de nul (H-BIN-E fausse)') };
+    if (T.totalBase === 6 && I.binomeEauEquilibre) return { v: 'N', regle: 'H-TEMOINS + H-BIN-E', statut: 'à l\u2019essai (4 sur 4 dans l\u2019échantillon)', raison: 'les témoins M13 et M14 ont 6 niveaux saturés en base et les liaisons binôme en Eau sont égales et non nulles' };
+    var note = !I.binomeEauEquilibre ? ' ; pas de nul (H-BIN-E fausse)' : (T.totalBase === 6 ? ' ; nul possible (témoins 6, mais H-BIN-E fausse)' : ' ; nul possible (H-BIN-E vraie, témoins non 6 : 2 sur 4 en échantillon)');
+    return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce' + note };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
@@ -698,7 +698,7 @@ function rendre(){
  +'<div class="box"><h2>Équilibre des deux parties</h2>Écart de base : '+e.ecartBase+' · écart de résultante : '+e.ecartRes+' · '+(e.equilibre?'<span class="ok">en équilibre</span>':'<span class="ko">pas en équilibre</span>')+'</div>'
  ;
 }
-var _r=rendre;rendre=function(){_r();(function(mm){var V=KOUN4.verdict(KOUN4.lire(mm));window.VERDICT&&VERDICT.rendre(V.v===null?{note:'Aucune règle ne se prononce sur ce thème'+(V.raison.indexOf('pas de nul')>=0?' ; pas de nul (H-BIN-E fausse).':'.')}:{victoire:{v:V.v,raison:V.regle+' · '+V.statut+' : '+V.raison}})})([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.POLES&&POLES.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CALC&&CALC.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CERCLE&&CERCLE.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CARTO&&CARTO.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}))};mer.addEventListener('change',rendre);jr.addEventListener('change',rendre);rendre();
+var _r=rendre;rendre=function(){_r();(function(mm){var V=KOUN4.verdict(KOUN4.lire(mm));window.VERDICT&&VERDICT.rendre(V.v===null?{note:V.raison.charAt(0).toUpperCase()+V.raison.slice(1)+'.'}:{victoire:{v:V.v,raison:V.regle+' · '+V.statut+' : '+V.raison}})})([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.POLES&&POLES.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CALC&&CALC.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CERCLE&&CERCLE.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CARTO&&CARTO.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}))};mer.addEventListener('change',rendre);jr.addEventListener('change',rendre);rendre();
 })();
 </script><script>(function(){
 var K=KOUN_NOYAU,$=function(i){return document.getElementById(i)},mer=$('meres'),lines=[],rnd=function(n){var a=new Uint32Array(1);crypto.getRandomValues(a);return 1+a[0]%n};

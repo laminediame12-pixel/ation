@@ -1786,7 +1786,8 @@
      "prediction": "nul (4/4)",
      "score": "5-1 : faux"
     }
-   ]
+   ],
+   "a_surveiller": "Seule, elle ne suffit pas : 2 nuls sur 4 matchs dans l'échantillon. Elle est vraie pour environ 38 % de tous les thèmes possibles, donc la verdict « nul » exige aussi H-TEMOINS."
   },
   {
    "id": "H-TEMOINS",
@@ -1854,7 +1855,8 @@
      "prediction": "pas d'appel (4)",
      "score": "1-1"
     }
-   ]
+   ],
+   "a_surveiller": "Dans l'échantillon, les quatre matchs à total 6 remplissent aussi H-BIN-E ; sur l'ensemble des thèmes possibles, un thème à total 6 sur deux ne remplit pas H-BIN-E. Le verdict « nul » exige donc les deux."
   }
  ],
  "lectures": [
