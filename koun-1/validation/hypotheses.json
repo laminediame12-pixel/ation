@@ -153,7 +153,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R1, R1, R1, égal] : non nets",
-     "score": null
+     "score": "1-1"
     }
    ],
    "resultats_apres_pose": [
@@ -468,7 +468,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire",
      "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -967,7 +967,7 @@
      "match": "équipes et date à préciser",
      "prediction": "R7",
      "detail": "front D de R7 : 2 maisons saturées en Terre ; front B de R1 : 1 (hors Via en base de M8)",
-     "score": null
+     "score": "1-1"
     }
    ],
    "cas_connus_hors_test": [
@@ -1022,7 +1022,7 @@
      "score": "1-4"
     }
    ],
-   "statut": "Appel à l'aveugle juste hors Via en M8 (2-12-4-4) ; faux deux fois dans la classe Via en M8 (5-1-10-10 et 12-14-8-10, R1 prévu, nuls). Limitée aux thèmes sans Via en base de M8."
+   "statut": "RÉFUTÉE le 2026-11-20 sur 2-6-7-9 (inscrite avant le score, hors Via en base de M8) : R7 prévu, nul 1-1. Bilan à l'aveugle : 1 juste (2-12-4-4) et 3 fausses (5-1-10-10, 12-14-8-10, 2-6-7-9). Retirée."
   },
   {
    "id": "H-VIA8",
@@ -1235,7 +1235,7 @@
      "score": "2-2 : juste (nul prédit à l'aveugle, score exact faux)"
     }
    ],
-   "statut": "Clause 1 (Via en base de M8 = nul) : 3 sur 4, réfutée telle qu'écrite sur 3-10-3-1 (nul prédit, score 1-2). Remarque du propriétaire : Via en M8 n'est pas un motif isolé, c'est un système. Voir H-SYS-A et H-SYS-B. Clause 2 : réfutée (2-12-4-4). Clause 3 (vainqueur par la Terre) : juste à l'aveugle sur 2-12-4-4."
+   "statut": "Dissoute le 2026-11-20 : clause 1 réfutée (3-10-3-1), clause 2 réfutée (2-12-4-4), clause 3 (H-TERRE-V) réfutée (2-6-7-9). Remplacée par H-SYS-A/B/C pour les thèmes Via en M8 et par H-NUL-TERRE pour les nuls."
   },
   {
    "id": "H-VIA8-B",
@@ -1473,6 +1473,144 @@
      "score": "1-2"
     }
    ]
+  },
+  {
+   "id": "H-NUL-TERRE",
+   "posee_le": "2026-11-20",
+   "enonce": "Le match est nul quand le nombre de maisons à résultante saturée en Terre par front vaut A = 3 ou 4, B = 0 ou 1, C = 2, D = 2. Né des cinq nuls connus (12-8-10-3, 5-1-10-10, 10-12-12-15, 12-14-8-10, 2-6-7-9 : A/B/C/D = 3/1/2/2, 4/1/2/2, 3/0/2/2, 4/1/2/2, 3/1/2/2) ; aucun des huit autres matchs n'a cette signature, mais cinq nuls ont été regardés pour la trouver : ils ne comptent pas comme test. Contient les thèmes Via en M8 (quatre des cinq nuls) mais aussi 2-6-7-9, où M8 porte Populus. Si le nombre par front ne correspond pas : pas de prédiction de nul.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "nul (3/1/2/2)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "nul (4/1/2/2)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "nul (3/0/2/2)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "prediction": "nul (4/1/2/2)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      6,
+      7,
+      9
+     ],
+     "prediction": "nul (3/1/2/2)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      3,
+      10,
+      3,
+      1
+     ],
+     "prediction": "pas de nul (4/1/4/3)",
+     "score": "1-2"
+    },
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "prediction": "pas de nul (2/2/2/2)",
+     "score": "5-0"
+    },
+    {
+     "theme": [
+      1,
+      3,
+      15,
+      4
+     ],
+     "prediction": "pas de nul (2/3/2/2)",
+     "score": "4-2"
+    },
+    {
+     "theme": [
+      14,
+      9,
+      16,
+      9
+     ],
+     "prediction": "pas de nul (2/1/3/2)",
+     "score": "1-4"
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "pas de nul (1/2/1/1)",
+     "score": "1-3"
+    },
+    {
+     "theme": [
+      6,
+      8,
+      8,
+      11
+     ],
+     "prediction": "pas de nul (1/1/1/3)",
+     "score": "3-1"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "prediction": "pas de nul (0/2/1/3)",
+     "score": "5-1"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "prediction": "pas de nul (0/1/1/2)",
+     "score": "3-0"
+    }
+   ]
   }
  ],
  "lectures": [
@@ -1642,7 +1780,8 @@
    "date_match": null,
    "lecture": "R7 (faible)",
    "statut": "lecture de l'analyste d'après H-TERRE-V (thème hors Via en base de M8 : M8 porte Populus). Trois des cinq indicateurs de structure vont vers R1, donc la lecture est fragile. Aucune prédiction de buts : la formule est retirée.",
-   "score": null
+   "score": "1-1",
+   "juste": false
   }
  ]
 }
