@@ -141,6 +141,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R7, R7, R1, égal] : non nets",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      6,
+      7,
+      9
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R7, R1, R1, R1, égal] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -443,6 +456,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M12 et M2 ; arrêts en M8 et M14 : aucun pôle sous croix",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      6,
+      7,
+      9
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -929,6 +955,19 @@
      "prediction": "R1",
      "detail": "front D de R1 : 2 maisons saturées en Terre ; front B de R7 : 1 (dans la classe Via en M8, où cette règle a déjà échoué une fois)",
      "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      6,
+      7,
+      9
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R7",
+     "detail": "front D de R7 : 2 maisons saturées en Terre ; front B de R1 : 1 (hors Via en base de M8)",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1591,6 +1630,19 @@
    "statut": "lecture de l'analyste : cinquième thème avec Via en base de M8 ; M8 est la seule maison de Terre sous croix et T = 9, donc H-SYS-A et H-SYS-B disent nul ; H-TERRE-V dit R1 mais a déjà échoué dans cette classe. Ce thème ne départage pas H-SYS-A et H-SYS-B.",
    "score": "1-1",
    "juste": true
+  },
+  {
+   "theme": [
+    2,
+    6,
+    7,
+    9
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R7 (faible)",
+   "statut": "lecture de l'analyste d'après H-TERRE-V (thème hors Via en base de M8 : M8 porte Populus). Trois des cinq indicateurs de structure vont vers R1, donc la lecture est fragile. Aucune prédiction de buts : la formule est retirée.",
+   "score": null
   }
  ]
 }
