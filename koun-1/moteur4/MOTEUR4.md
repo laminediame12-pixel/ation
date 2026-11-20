@@ -13,6 +13,9 @@ Pour chaque pôle : front, front binôme, binôme, antagoniste. Pour chaque figu
 1. saturation cumulée du front ; 2. du front binôme ; 3. du binôme ; 4. de l'antagoniste (moins = mieux) ; 5. emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
 « Net » : les cinq désignent le même pôle. C'est une lecture de la structure, pas un verdict ; aucune règle de victoire n'est encore inscrite.
 
+## Les 15 nœuds (`KOUN4.noeuds`)
+Intersections des canaux dans la croix de chaque front : nœud (niveau horizontal i, niveau vertical j) = maison 4j + i + 1 ; M16 n'a pas de nœud. Pour chaque front : état de chaque nœud (plein : deux liaisons saturées, vide : aucune, mixte : une) et arrêts (maison qui porte en base son antagoniste h − 3). Recoupé avec la carte en croix de la page sur 40 thèmes × 4 fronts (0 écart).
+
 ## Ce qu'il ne contient pas, et pourquoi
 Aucune règle de verdict n'est démontrée. Retirées :
 - **VA-1** : « assurée » est faux (juste 1/2, puis 1/1 ; faux 2 fois sur 4 dans l'audit) ; elle repose aussi sur le barème de force (25 points par niveau, destructeur, intrusion), inventé.
