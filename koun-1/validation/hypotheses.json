@@ -1983,7 +1983,8 @@
       "regle": "le front direct d'un pôle marque par la Terre : n = nombre de maisons du front (f, f+4, f+8, f+12) dont la résultante (base pour la maison 16) a la Terre saturée ; plus n est grand, plus le pôle marque",
       "resultat": "74 pôles-matchs (37 matchs) : corrélation n/buts 0,30 ; construits 0,26 ; indépendants 0,33 ; p = 0,004 seule, 0,016 corrigée du choix parmi 6 mesures ; buts moyens par n : 0:0,8 1:1,6 2:2,5 3:3,1 4:2,4 (5 obs)",
       "reserves": "mesure choisie après avoir vu les données (6 candidates, 5 écartées) ; les deux pôles d'un même match ne sont pas indépendants ; n=4 non monotone sur 5 observations",
-      "note": "affiché comme indice dans la fenêtre du verdict ; à tester sur les prochains matchs avant toute activation"
+      "note": "affiché comme indice dans la fenêtre du verdict ; à tester sur les prochains matchs avant toute activation",
+      "quantite_par_figure": "2026-11-20 : poids propres à chaque maison (16) ou à chaque figure résultante (16), régression ridge validée en laissant un match de côté : r 0,13-0,16 et erreur 1,43-1,50 buts, contre r 0,22 et 1,44 pour le simple compte n et 1,47 pour la moyenne constante. 74 observations ne suffisent pas pour fixer 16 poids : la quantité par figure n'est pas déterminable avec ces données ; on garde le compte égal (≈ +0,8 but par maison saturée jusqu'à 3). Front direct commun à R1 et R7 : 4 matchs sur 37, compté pour chaque pôle."
     }
   ],
   "lectures": [
