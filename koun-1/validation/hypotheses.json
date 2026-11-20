@@ -128,6 +128,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R7, R7, R7, égal] : non nets",
      "score": "1-2"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R1, R7, R7, R1, égal] : non nets",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -417,6 +430,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M3 et M9 ; arrêts en M4 et M8 : aucun pôle sous croix",
      "score": "1-2"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M12 et M2 ; arrêts en M8 et M14 : aucun pôle sous croix",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -890,6 +916,19 @@
      "prediction": "pas de victoire",
      "detail": "même boucle ; fronts C et A : 4 maisons saturées en Terre chacun",
      "score": "1-2"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "R1",
+     "detail": "front D de R1 : 2 maisons saturées en Terre ; front B de R7 : 1 (dans la classe Via en M8, où cette règle a déjà échoué une fois)",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1216,7 +1255,21 @@
    "id": "H-SYS-A",
    "posee_le": "2026-11-20",
    "enonce": "Via en base de M8 donne le nul seulement si M8 est la seule maison de Terre (M4, M8, M12, M16) sous croix. Si une autre maison de Terre est aussi sous croix (une figure de plus paralysée dans le front D), pas de nul. Née des quatre matchs avec Via en base de M8 : les trois nuls n'ont que M8 sous croix parmi les maisons de Terre ; 3-10-3-1 (1-2) a M4 et M8. Aucun de ces quatre matchs ne compte comme test.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "nul",
+     "detail": "Via en base de M8 ; M8 est la seule maison de Terre sous croix (M14 est une maison d'Air)",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -1264,7 +1317,21 @@
    "id": "H-SYS-B",
    "posee_le": "2026-11-20",
    "enonce": "Via en base de M8 donne le nul seulement si T, le nombre de maisons à résultante saturée en Terre, est inférieur à 10. Même origine que H-SYS-A (T = 8, 9, 7 pour les trois nuls ; 12 pour 1-2) ; les deux hypothèses se séparent sur un thème avec Via en M8 qui aurait une seule maison de Terre sous croix et T ≥ 10, ou deux maisons sous croix et T < 10.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "nul",
+     "detail": "Via en base de M8 ; T = 9, inférieur à 10",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -1450,6 +1517,19 @@
    "statut": "lecture de l'analyste d'après H-UNIV (clause 1) et H-VIA8-B : quatrième thème avec Via en base de M8 ; les deux pôles sont dans la même boucle et ont la même Terre.",
    "score": "1-2",
    "juste": false
+  },
+  {
+   "theme": [
+    12,
+    14,
+    8,
+    10
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "nul",
+   "statut": "lecture de l'analyste : cinquième thème avec Via en base de M8 ; M8 est la seule maison de Terre sous croix et T = 9, donc H-SYS-A et H-SYS-B disent nul ; H-TERRE-V dit R1 mais a déjà échoué dans cette classe. Ce thème ne départage pas H-SYS-A et H-SYS-B.",
+   "score": null
   }
  ]
 }
