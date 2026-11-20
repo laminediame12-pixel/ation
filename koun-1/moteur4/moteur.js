@@ -224,6 +224,12 @@
       return { front: K.front(f), liens: [lien(f, f + 4), lien(f + 8, f + 12)] };
     });
   }
+
+  // Saturation de Terre : nombre de maisons dont la résultante est saturée en Terre (total sur les 16 maisons et par front). Structure seule.
+  function terreSaturee(L) {
+    var sat = function (h) { return K.niveaux(L.resu(h))[3] === 2; }, par = [0, 1, 2, 3].map(function (z) { return [1, 2, 3, 4].filter(function (i) { return sat(z + 4 * (i - 1) + 1); }).length; });
+    return { total: par.reduce(function (a, b) { return a + b; }, 0), parFront: par };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -233,7 +239,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -67,4 +67,7 @@ if (malM) add('multiplicité');
 for (let f = 1; f <= 16; f++) { const P = K4.paralysieFigure(f), an = N.niveaux(m16(f - 3)).map((v, i) => v === 1 ? 'FAET'[i] : '').join(''); if (P.niveaux !== an) add('paralysie ' + f); }
 // Exemple du propriétaire : Conjunctio en M14 change l'Air et l'Eau de Puella
 if (K4.paralysieFigure(14).niveaux !== 'AE' || K4.paralysieFigure(14).antagoniste !== 11) add('exemple Conjunctio/Puella');
+// Terre saturée : total = somme des quatre fronts, et recomptage direct
+let malT = 0; for (let q = 0; q < 65536; q += 5) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K4.lire(m), T = N.construire(m), X = K4.terreSaturee(L); let n = 0; for (let h = 1; h <= 16; h++) if (N.niveaux(h === 16 ? T.bases[16] : T.resultantes[h])[3] === 2) n++; if (X.total !== n || X.parFront.reduce((a, b) => a + b, 0) !== n) malT++; }
+if (malT) add('terre saturée');
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);
