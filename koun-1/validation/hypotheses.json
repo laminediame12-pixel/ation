@@ -6,7 +6,18 @@
    "posee_le": "2026-11-20",
    "enonce": "Le pôle dont l'antagoniste est le moins saturé gagne (saturation cumulée de la résultante des maisons où se trouve l'antagoniste, base ou résultante). Antagoniste absent = 0. Égalité : pas de victoire.",
    "predictions": [
-    {"theme": [10, 2, 12, 3], "date_match": null, "prediction": "R1", "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7", "score": null}
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "date_match": null,
+     "prediction": "R1",
+     "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7",
+     "score": null
+    }
    ]
   },
   {
@@ -14,8 +25,41 @@
    "posee_le": "2026-11-20",
    "enonce": "Si les cinq indicateurs de l'analyse des pôles (saturation du front, du front binôme, du binôme, de l'antagoniste (moins = mieux), niveau propre) désignent le même pôle, ce pôle gagne. Sinon : pas de victoire claire.",
    "predictions": [
-    {"theme": [10, 2, 12, 3], "date_match": null, "prediction": "pas de victoire claire", "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets", "score": null}
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "date_match": null,
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets",
+     "score": null
+    }
    ]
+  }
+ ],
+ "lectures": [
+  {
+   "theme": [
+    10,
+    2,
+    12,
+    3
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "R7",
+   "statut": "lecture de l'analyste, pas une règle. Posée après l'ajout des nœuds et l'étude de Puella en M8, avant le score. Elle remplace la lecture R1 donnée plus tôt ; les prédictions H-ANT (R1) et H-5 (pas de victoire claire) restent inscrites telles quelles.",
+   "raisons": [
+    "M10 est sous croix (arrêt) : l'attaque de Rubeus sur Carcer reste en M10",
+    "Puella en M8 : résultante Amissio (miroir) ; Amissio n'existe dans le thème que par là",
+    "Puella 5 emplacements, Air saturé 5/5, son antagoniste Conjunctio est absent",
+    "Air saturé des deux côtés de la liaison M16 (maison de R7) ↔ M8",
+    "quatre indicateurs sur cinq pour R7"
+   ],
+   "score": null
   }
  ]
 }
