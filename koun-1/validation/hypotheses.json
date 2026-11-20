@@ -88,7 +88,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R1, R7, R1, égal] : non nets",
-     "score": null
+     "score": "2-2"
     }
    ],
    "resultats_apres_pose": [
@@ -337,7 +337,7 @@
      "match": "équipes et date à préciser",
      "prediction": "pas de victoire",
      "detail": "pôles en M5 et M11 ; seul arrêt : M8 : aucun pôle sous croix",
-     "score": null
+     "score": "2-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -671,7 +671,7 @@
      "match": "équipes et date à préciser",
      "prediction": "6 buts au total",
      "detail": "T = 9 : ceil(9/2)+1 = 6. Via en base de M8 : cas où la formule a échoué une fois (12-8-10-3) ; deuxième test de cette classe.",
-     "score": null
+     "score": "2-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -726,7 +726,7 @@
      "score": "1-4"
     }
    ],
-   "statut": "ADMISE sur 6 matchs sur 7, ÉCHEC sur 12-8-10-3 (5 buts prévus, 2 réels) : le seul match avec Via en base de M8, le cas que le propriétaire avait signalé avant le score. La formule est donc valable hors Via en base de M8 ; ce cas reste sans formule (un seul match).",
+   "statut": "ADMISE sur 6 matchs sur 6 hors Via en base de M8 ; ÉCHEC dans les deux matchs avec Via en base de M8 (12-8-10-3 : 5 prévus, 2 réels ; 5-1-10-10 : 6 prévus, 4 réels). Elle est donc limitée aux thèmes sans Via en base de M8.",
    "a_surveiller": "Via en base de M8 : 12-8-10-3 = 1-1, 2 buts au lieu de 5. Motifs relevés dans ce thème, sans règle tirée : Tristitia (pôle R7) paralysée sur ses 4 niveaux par Via ; 5 des 8 maisons saturées en Terre ont pour résultante Cauda Draconis (Terre seule), alors que les six autres matchs en ont 0 à 2 ; ces cinq résultantes Cauda attaquent toutes M16 (13+3). Cauda en base de M8 (1-3-15-4) n'a pas réduit les buts."
   },
   {
@@ -771,7 +771,7 @@
      "match": "équipes et date à préciser",
      "prediction": "R1",
      "detail": "front A de R1 : 4 maisons à résultante saturée en Terre ; front D de R7 : 2",
-     "score": null
+     "score": "2-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -825,7 +825,8 @@
      "prediction": "R7 (1-2)",
      "score": "1-4"
     }
-   ]
+   ],
+   "statut": "Première prédiction à l'aveugle fausse : 5-1-10-10, R1 prévu, nul 2-2, dans un thème avec Via en base de M8 (classe signalée par le propriétaire). Limitée aux thèmes sans Via en base de M8 ; en attente d'un appel à l'aveugle hors de cette classe."
   },
   {
    "id": "H-VIA8",
@@ -843,7 +844,7 @@
      "match": "équipes et date à préciser",
      "prediction": "1-1",
      "detail": "Via en base de M8 (et de M1, M5) ; formule des buts non fiable dans cette classe",
-     "score": null
+     "score": "2-2"
     }
    ],
    "cas_connus_hors_test": [
@@ -856,6 +857,35 @@
      ],
      "prediction": "1-1",
      "score": "1-1"
+    }
+   ],
+   "statut": "Le score exact 1-1 est faux (2-2) : H-VIA8 telle qu'écrite est réfutée. Son contenu « le match est nul » est juste dans les deux matchs avec Via en base de M8 ; repris, sans modifier celle-ci, dans H-VIA8-NUL."
+  },
+  {
+   "id": "H-VIA8-NUL",
+   "posee_le": "2026-11-20",
+   "enonce": "Quand Via est en base de M8, le match est nul, et chaque équipe marque (T − n) / 3, où T est le nombre de maisons à résultante saturée en Terre et n le nombre de maisons dont la résultante est Cauda Draconis. Si T − n n'est pas divisible par 3, seul le nul est prédit. Née des deux matchs avec Via en base de M8 (12-8-10-3 : 1-1 ; 5-1-10-10 : 2-2), qui ne comptent donc pas comme test ; le nul avait été prédit pour 5-1-10-10 (par H-VIA8), mais pas la formule.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "1-1 ((8−5)/3 = 1)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "2-2 ((9−3)/3 = 2)",
+     "score": "2-2"
     }
    ]
   }
@@ -956,7 +986,9 @@
    "date_match": null,
    "lecture": "R1 (faible) ou nul",
    "statut": "lecture de l'analyste, pas une règle : la Terre du front donne R1 (4 contre 2), mais Via est en base de M8, classe où le seul exemple connu est un nul 1-1. Je ne tranche pas entre les deux : H-TERRE-V dit R1, H-VIA8 dit 1-1.",
-   "score": null
+   "score": "2-2",
+   "juste": null,
+   "note": "lecture « R1 faible ou nul » : le nul est juste, R1 est faux"
   }
  ]
 }

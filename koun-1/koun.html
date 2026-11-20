@@ -400,10 +400,10 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   // Buts d'après la Terre (règle du propriétaire : la saturation de Terre est le marquage ; il a vérifié le niveau Terre). Formule de comptage : buts au total = ceil(T/2) + 1, T = maisons à résultante saturée en Terre.
   // La formule vient de cinq matchs (4-1-6-7, 10-2-12-3, 6-8-8-11, 4-6-7-16, 14-9-16-9) ; sa première prédiction à l'aveugle, 1-3-15-4 (6 buts prévus, score 4-2), est exacte : formule admise, à confirmer.
   // Alerte (propriétaire) : Via ou Cauda Draconis en M8 peut annuler ou diminuer le nombre de buts (Via en M8 donne Cauda, Terre saturée ; Cauda en M8 donne Via, tout non saturé ; l'effet touche Populus en M16).
-  // Le total n'est pas modifié. Via en base de M8 : échec constaté (12-8-10-3, 5 buts prévus, 2 réels, 1-1). Cauda en base de M8 : 1-3-15-4, sans écart.
+  // Le total n'est pas modifié. Via en base de M8 : deux échecs constatés (12-8-10-3, 5 prévus, 2 réels, 1-1 ; 5-1-10-10, 6 prévus, 4 réels, 2-2). Cauda en base de M8 : 1-3-15-4, sans écart.
   function butsTerre(L) {
     var t = terreSaturee(L).total, b8 = L.theme.bases[8], alerte = null;
-    if (b8 === 5) alerte = 'Via en base de M8 : formule non fiable (12-8-10-3 : 5 buts prévus, 2 réels)';
+    if (b8 === 5) alerte = 'Via en base de M8 : formule non fiable, deux nuls sur deux (12-8-10-3 : 1-1 pour 5 buts prévus ; 5-1-10-10 : 2-2 pour 6 prévus)';
     else if (b8 === 13) alerte = 'Cauda Draconis en base de M8 : résultante Via ; un seul cas connu (1-3-15-4), sans écart';
     return { T: t, total: Math.ceil(t / 2) + 1, alerte: alerte };
   }

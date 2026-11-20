@@ -28,3 +28,5 @@ Une règle revient ici quand elle est posée avant les chiffres, testée une foi
 Règle du propriétaire : la saturation de Terre est le marquage. T = nombre de maisons à résultante saturée en Terre ; buts au total = ceil(T/2) + 1 (formule tirée de cinq matchs ; première prédiction à l'aveugle : 1-3-15-4, 6 buts prévus, score 4-2, exacte : admise, à confirmer sur d'autres matchs). La ligne « Buts au total » du verdict et l'Over/Under qui en découle sont alimentés par elle ; toutes les autres lignes restent sans verdict.
 
 **Échec constaté :** 12-8-10-3 (Via en base de M8) : 5 buts prévus, 2 réels (1-1). La formule reste admise hors Via en base de M8 (6 matchs sur 6) ; ce cas n'a pas de formule.
+
+**Deuxième échec :** 5-1-10-10 (Via en base de M8) : 6 buts prévus, 4 réels (2-2). Les deux matchs avec Via en base de M8 finissent nuls. La formule des buts n'est valable que hors Via en base de M8.
