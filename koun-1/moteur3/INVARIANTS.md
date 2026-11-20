@@ -1,6 +1,6 @@
 # Propriétés invariantes de la structure
 
-Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (17 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
+Vraies pour les 65 536 thèmes (tout l'espace des thèmes : preuve par énumération). `node outils/invariants.js` les revérifie (37 contrôles). Elles décrivent la structure ; aucune ne parle encore d'un score. « Saturé » = niveau à 2 points ; la résultante d'une maison est sa base + sa figure de repos.
 
 ## I1 — La diagonale de transposition
 Les mères (M1 à M4) et les filles (M5 à M8) partagent leur diagonale, et cela se lit sur les résultantes :
@@ -40,3 +40,21 @@ Les 14 exclusions :
 ## I4 — Bornes
 - Sur les 16 résultantes, le nombre de niveaux saturés est toujours entre 17 et 47 (sur 64).
 - Les résultantes des quatre maisons du canal Eau (ou du canal Terre) ont toujours au moins 2 niveaux saturés au total ; pour les canaux Feu et Air, il peut n'y en avoir aucun.
+
+## I5 — Les 16 lois de transposition (toutes les égalités entre deux niveaux de deux maisons)
+Le niveau l' de la mère M(m+1) est le même que le niveau m de la fille M(5+l') : les filles sont les colonnes des mères. Sur les résultantes, ces deux niveaux sont saturés ensemble (=) ou toujours opposés (≠), selon les figures de repos. C'est la liste complète des lois entre deux niveaux : il n'en existe pas d'autres.
+
+| Mère | Feu avec… | Air avec… | Eau avec… | Terre avec… |
+|---|---|---|---|---|
+| M1 | M5 Feu = | M6 Feu = | M7 Feu = | M8 Feu ≠ |
+| M2 | M5 Air = | M6 Air = | M7 Air ≠ | M8 Air = |
+| M3 | M5 Eau ≠ | M6 Eau = | M7 Eau ≠ | M8 Eau ≠ |
+| M4 | M5 Terre ≠ | M6 Terre = | M7 Terre ≠ | M8 Terre ≠ |
+
+La diagonale est I1. Il existe aussi 84 lois entre trois niveaux, dont 43 qui mêlent des niveaux différents.
+
+## I6 — Quelles maisons déterminent le thème
+- **55 ensembles de 4 maisons seulement** (sur 1 820) déterminent tout le thème : deux thèmes différents ont toujours des figures différentes dans au moins une de ces 4 maisons. Les 4 mères en sont un, les 4 filles un autre.
+- **Aucun de ces ensembles ne contient à la fois une mère et une fille** : chaque mère est liée à chaque fille par une loi de I5.
+- **M15 n'appartient à aucun de ces ensembles** : c'est la somme de M1 à M8, elle ne porte aucune information propre. M3, M4 et M13 sont dans 19 de ces ensembles, M13 et M16 dans 13 ou plus.
+- La liste complète s'obtient avec `node outils/invariants.js --liste`.

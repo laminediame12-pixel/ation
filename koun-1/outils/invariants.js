@@ -4,7 +4,7 @@ const K = require('../moteur3/moteur.js'), J = require('../moteur3/cartographie.
 const P = n => F[n - 1].niveaux, NIV = ['Feu', 'Air', 'Eau', 'Terre'];
 const niv = (a, b) => (a + b) % 2 === 0 ? 2 : 1, add = (a, b) => F.findIndex(f => f.niveaux.join() === P(a).map((x, i) => niv(x, P(b)[i])).join()) + 1;
 const sat = (r, l) => P(r)[l] === 2;                                              // niveau l de la figure r saturé (2 points)
-const themes = []; for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K.lire(K.construireTheme(...m.map(K.fig))); const r = [0]; L.maisons.forEach(x => r.push(add(K.num(x.base), x.maison))); themes.push(r); }
+const themes = [], bases = []; for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K.lire(K.construireTheme(...m.map(K.fig))); const r = [0], b = [0]; L.maisons.forEach(x => { b.push(K.num(x.base)); r.push(add(K.num(x.base), x.maison)); }); themes.push(r); bases.push(b); }
 const verifs = []; const ok = (n, c, d) => verifs.push([n, !!c, d || '']);
 const toujours = (f) => themes.every(f);
 
@@ -31,6 +31,21 @@ ok('I4 niveaux saturés sur les 16 résultantes : toujours entre 17 et 47 (sur 6
 const canal = (r, c) => [0, 1, 2, 3].reduce((s, k) => s + [0, 1, 2, 3].filter(l => sat(r[c + 1 + 4 * k], l)).length, 0);
 ok('I4 canaux Eau et Terre : au moins 2 niveaux saturés dans les résultantes de leurs 4 maisons ; Feu et Air peuvent n\'en avoir aucun', [0, 1, 2, 3].every(c => Math.min(...themes.map(r => canal(r, c))) === (c >= 2 ? 2 : 0)));
 
+// I5 — Les 16 lois de transposition : le niveau l' de la mère M(m+1) et le niveau m de la fille M(5+l') sont le même (les filles sont les colonnes des mères). Sur les résultantes : saturés ensemble, ou toujours opposés.
+const REST = (h, l) => P(h)[l] === 1 ? 1 : 0, paires = [];
+for (let m = 0; m < 4; m++) for (let lp = 0; lp < 4; lp++) { const a = m + 1, b = 5 + lp, meme = REST(a, lp) === REST(b, m); paires.push([a, lp, b, m, meme]);
+  ok('I5 M' + a + ' ' + NIV[lp] + ' ~ M' + b + ' ' + NIV[m] + (meme ? ' : saturés ensemble' : ' : toujours opposés'), toujours(r => meme ? sat(r[a], lp) === sat(r[b], m) : sat(r[a], lp) !== sat(r[b], m))); }
+
+// I6 — Ensembles de 4 maisons qui déterminent tout le thème : énumération des 1 820 ensembles (tous les thèmes doivent donner des quadruplets de bases distincts)
+const generateurs = []; for (let a = 1; a <= 16; a++) for (let b = a + 1; b <= 16; b++) for (let c = b + 1; c <= 16; c++) for (let d = c + 1; d <= 16; d++) {
+  const vu = new Uint8Array(65536); let distincts = 0; for (const t of bases) { const k = ((t[a] - 1) << 12) | ((t[b] - 1) << 8) | ((t[c] - 1) << 4) | (t[d] - 1); if (!vu[k]) { vu[k] = 1; distincts++; } }
+  if (distincts === 65536) generateurs.push([a, b, c, d]); }
+ok('I6 exactement 55 ensembles de 4 maisons (sur 1 820) déterminent tout le thème', generateurs.length === 55, generateurs.length + ' ensembles');
+ok('I6 aucun ensemble générateur ne contient à la fois une mère (M1-M4) et une fille (M5-M8)', generateurs.every(g => !(g.some(h => h <= 4) && g.some(h => h >= 5 && h <= 8))));
+ok('I6 M15 n\'appartient à aucun ensemble générateur ; M3, M4 et M13 sont dans 19 d\'entre eux', generateurs.every(g => !g.includes(15)) && [3, 4, 13].every(h => generateurs.filter(g => g.includes(h)).length === 19));
+ok('I6 les 4 mères (M1-M4) et les 4 filles (M5-M8) sont chacune un ensemble générateur', [[1, 2, 3, 4], [5, 6, 7, 8]].every(x => generateurs.some(g => g.join() === x.join())));
+
 let mauvais = 0; verifs.forEach(([n, c, d]) => { if (!c) mauvais++; console.log((c ? 'OK     ' : 'ÉCHEC  ') + n + (d ? ' — ' + d : '')); });
+if (process.argv.includes('--liste')) { console.log('\nEnsembles générateurs :'); generateurs.forEach(g => console.log('  M' + g.join(', M'))); }
 console.log('\nLes 14 couples de liaisons jamais connectées ensemble :'); excl.forEach(([a, b]) => console.log('  ' + a + '  ✕  ' + b));
 console.log(mauvais ? '\n' + mauvais + ' échec(s)' : '\nToutes les propriétés sont vérifiées sur les 65 536 thèmes (' + verifs.length + ').'); process.exit(mauvais ? 1 : 0);
