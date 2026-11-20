@@ -84,8 +84,8 @@
       10,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Austin–Minnesota",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R1, R7, R1, égal] : non nets",
      "score": "2-2"
@@ -333,8 +333,8 @@
       10,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Austin–Minnesota",
      "prediction": "pas de victoire",
      "detail": "pôles en M5 et M11 ; seul arrêt : M8 : aucun pôle sous croix",
      "score": "2-2"
@@ -667,8 +667,8 @@
       10,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Austin–Minnesota",
      "prediction": "6 buts au total",
      "detail": "T = 9 : ceil(9/2)+1 = 6. Via en base de M8 : cas où la formule a échoué une fois (12-8-10-3) ; deuxième test de cette classe.",
      "score": "2-2"
@@ -767,8 +767,8 @@
       10,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Austin–Minnesota",
      "prediction": "R1",
      "detail": "front A de R1 : 4 maisons à résultante saturée en Terre ; front D de R7 : 2",
      "score": "2-2"
@@ -840,8 +840,8 @@
       10,
       10
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-02-22",
+     "match": "Austin–Minnesota",
      "prediction": "1-1",
      "detail": "Via en base de M8 (et de M1, M5) ; formule des buts non fiable dans cette classe",
      "score": "2-2"
@@ -983,7 +983,7 @@
     10
    ],
    "posee_le": "2026-11-20",
-   "date_match": null,
+   "date_match": "2026-02-22",
    "lecture": "R1 (faible) ou nul",
    "statut": "lecture de l'analyste, pas une règle : la Terre du front donne R1 (4 contre 2), mais Via est en base de M8, classe où le seul exemple connu est un nul 1-1. Je ne tranche pas entre les deux : H-TERRE-V dit R1, H-VIA8 dit 1-1.",
    "score": "2-2",
