@@ -71,8 +71,8 @@
       10,
       3
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-11-20",
+     "match": "Seattle–Salt Lake",
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R1, R1, R1, R7, R1] : non unanimes",
      "score": "1-1"
@@ -307,8 +307,8 @@
       10,
       3
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-11-20",
+     "match": "Seattle–Salt Lake",
      "prediction": "pas de victoire",
      "detail": "pôles en M12 et M2 ; seul arrêt : M8 : aucun pôle sous croix",
      "score": "1-1"
@@ -382,8 +382,8 @@
       10,
       3
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-11-20",
+     "match": "Seattle–Salt Lake",
      "prediction": "R1",
      "detail": "figures exposées : R1 1, R7 2 (le pôle qui en a le plus perd)",
      "score": "1-1"
@@ -542,8 +542,8 @@
       10,
       3
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-11-20",
+     "match": "Seattle–Salt Lake",
      "prediction": "R7",
      "detail": "seule la boucle de R7 (B+D) a un canal paralysé : Tristitia, paralysée par Via en M8 sur les 4 niveaux (canal Terre)",
      "score": "1-1"
@@ -628,8 +628,8 @@
       10,
       3
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-11-20",
+     "match": "Seattle–Salt Lake",
      "prediction": "5 buts au total",
      "detail": "T = 8 maisons à résultante saturée en Terre : ceil(8/2)+1 = 5. Via en base de M8 : le total pourrait être réduit (remarque du propriétaire) ; un total inférieur à 5 irait dans ce sens.",
      "score": "1-1"
@@ -715,8 +715,8 @@
       10,
       3
      ],
-     "date_match": null,
-     "match": "équipes et date à préciser",
+     "date_match": "2026-11-20",
+     "match": "Seattle–Salt Lake",
      "prediction": "pas de victoire",
      "detail": "front C de R1 : 2 maisons ; front D de R7 : 2 maisons",
      "score": "1-1"
@@ -855,7 +855,7 @@
     3
    ],
    "posee_le": "2026-11-20",
-   "date_match": null,
+   "date_match": "2026-11-20",
    "lecture": "R1",
    "statut": "lecture de l'analyste, pas une règle : Via en base de M8 paralyse Tristitia, la figure du pôle R7, sur ses quatre niveaux (le cas « Via saccage tout » du propriétaire) ; quatre indicateurs sur cinq vont vers R1. Contredit H-PARA (R7) : ce match départagera les deux. Total des buts : 5 par la formule, avec réduction possible.",
    "score": "1-1",

@@ -469,11 +469,13 @@
    10,
    3
   ],
-  "match": "équipes et date à préciser",
+  "match": "Seattle–Salt Lake",
   "score": [
    1,
    1
   ],
-  "lot": "lot"
+  "lot": "lot",
+  "date": "2026-11-20",
+  "heure": "03:30"
  }
 ]
