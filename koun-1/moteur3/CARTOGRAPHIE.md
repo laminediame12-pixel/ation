@@ -80,6 +80,10 @@ Binômes : couples symétriques 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16.
 - **Figure + binôme** : toujours Amissio (1212) pour les figures des blocs M1-4 et M9-12 (Air et Terre saturés), toujours Puella (1211) pour M5-8 et M13-16 (Air seul). L'Air est toujours saturé, le Feu et l'Eau jamais ; la Terre seulement dans M1-4 et M9-12. Le résultat est toujours dans le front B (Air).
 - **Résultante de la maison + résultante de son binôme** : Tristitia (Feu, Air, Eau saturés) pour les couples A/C (M1-3, M5-7, M9-11, M13-15) ; Albus (Feu, Air, Terre) pour M2-4 et M10-12 ; Fortuna Major (Feu, Air) pour M6-8 et M14-16. Feu et Air sont toujours saturés.
 
+## Binôme + antagoniste (vérifié)
+- **Binôme + antagoniste** d'une figure ne dépend que de son front : A donne toujours Fortuna Minor (Eau+Terre saturés), C donne Puer (Eau), D donne Aquisitio (Feu+Eau), B donne Caput (Feu) dans les blocs M1-4 et M9-12 ou Conjunctio (Feu+Terre) dans M5-8 et M13-16. Cinq résultats en tout : Puer, Caput, Fortuna Minor, Conjunctio, Aquisitio.
+- **L'antagoniste du binôme est le binôme de l'antagoniste** pour les figures des fronts A et C, et pour elles seules (les fronts qui saturent le Feu et la Terre dans la carte).
+
 ## Pour le moteur
 ```text
 antagoniste(n) = ((n − 4) mod 16) + 1
