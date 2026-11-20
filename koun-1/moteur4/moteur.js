@@ -146,7 +146,7 @@
 
   // Niveaux d'activation et canal (règle posée par le propriétaire) : un pôle a 4 niveaux d'activation (2 points = activé). Son canal est l'élément de son front ;
   // le canal compatible est Feu↔Air, Eau↔Terre. On compte les niveaux activés qui tombent sur son canal ou sur le canal compatible. Même procédé pour son miroir, son binôme et son antagoniste,
-  // chacun avec son propre canal. Score 1 : le pôle seul (0 à 2) ; score 4 : pôle + miroir + binôme + antagoniste. Le plus grand gagne ; égalité : pas de victoire.
+  // chacun avec son propre canal. Score 1 : le pôle seul (0 à 2) ; score 4 : pôle + miroir + binôme + antagoniste. H-NIV1 (score 1) est réfutée ; H-NIV4 (score 4 : le plus grand gagne, égalité : pas de victoire) reste à l'essai.
   var COMPAT = [1, 0, 3, 2];
   function activation(L) {
     function compte(f) { var z = (f - 1) % 4, lv = K.niveaux(f), n = []; lv.forEach(function (v, i) { if (v === 2 && (i === z || i === COMPAT[z])) n.push(LETTRES[i]); }); return { figure: f, niveaux: lv.map(function (v, i) { return v === 2 ? LETTRES[i] : '.'; }).join(''), canal: LETTRES[z], compatible: LETTRES[COMPAT[z]], coincide: n.join(''), n: n.length }; }
@@ -155,10 +155,10 @@
       return { parts: parts, score1: parts[0].n, score4: parts.reduce(function (a, x) { return a + x.n; }, 0) };
     }
     var a = pole(L.R1), e = pole(L.R7), v = function (x, y) { return x > y ? 'R1' : x < y ? 'R7' : null; };
-    return { R1: a, R7: e, h1: v(a.score1, e.score1), h4: v(a.score4, e.score4) };
+    return { R1: a, R7: e, h4: v(a.score4, e.score4) };
   }
 
-  // Niveaux connectés du front d'un pôle (indice des buts, hypothèse H-BUTS) : dans la croix du front (haut f, droite f+4, bas f+8, gauche f+12), un niveau est connecté quand la liaison
+  // Niveaux connectés du front d'un pôle (structure ; l'hypothèse H-BUTS qui en faisait les buts est réfutée) : dans la croix du front (haut f, droite f+4, bas f+8, gauche f+12), un niveau est connecté quand la liaison
   // entre deux maisons opposées est saturée des deux côtés : Feu, Air, Eau en vertical (haut-bas) ou en horizontal (gauche-droite) ; Terre déviée (haut→droite ou bas→gauche).
   // On compte les niveaux distincts connectés (0 à 4).
   function connexions(L) {

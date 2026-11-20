@@ -16,7 +16,7 @@
      "date_match": null,
      "prediction": "R1",
      "detail": "Antagoniste de R1 (Albus) absent : 0 ; antagoniste de R7 (Rubeus) : 7",
-     "score": null
+     "score": "1-3"
     }
    ],
    "statut": "réfutée le 2026-11-20 sur 6-8-8-11 (posée avant ce thème) : H-ANT donne R7, le score est 3-1 pour R1. Retirée du moteur, gardée ici pour mémoire."
@@ -36,7 +36,7 @@
      "date_match": null,
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R7, R7, R1, R7] : non nets",
-     "score": null
+     "score": "1-3"
     }
    ],
    "resultats_apres_pose": [
@@ -49,6 +49,17 @@
      ],
      "prediction": "pas de victoire claire",
      "score": "3-1",
+     "juste": null
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "pas de victoire claire",
+     "score": "1-3",
      "juste": null
     }
    ]
@@ -68,7 +79,7 @@
      "date_match": null,
      "prediction": "R1",
      "detail": "R1 Rubeus : Eau et Terre activés (2) ; R7 Carcer : Air activé, canal Air (1)",
-     "score": null
+     "score": "1-3"
     }
    ],
    "cas_connus_hors_test": [
@@ -105,7 +116,8 @@
      "score": "3-1",
      "juste": true
     }
-   ]
+   ],
+   "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-NIV1 donne R1, le score est 1-3. Retirée du moteur."
   },
   {
    "id": "H-NIV4",
@@ -122,7 +134,7 @@
      "date_match": null,
      "prediction": "pas de victoire claire",
      "detail": "R1 4 ; R7 4",
-     "score": null
+     "score": "1-3"
     }
    ],
    "cas_connus_hors_test": [
@@ -158,6 +170,17 @@
      "prediction": "R1",
      "score": "3-1",
      "juste": true
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "pas de victoire claire",
+     "score": "1-3",
+     "juste": null
     }
    ]
   },
@@ -176,7 +199,7 @@
      "date_match": null,
      "prediction": "1-1",
      "detail": "R1 front C : Feu (M15↔M7) ; R7 front B : Eau (M2↔M10)",
-     "score": null
+     "score": "1-3"
     }
    ],
    "cas_connus_hors_test": [
@@ -190,7 +213,8 @@
      "prediction": "3-1",
      "score": "3-1"
     }
-   ]
+   ],
+   "statut": "réfutée le 2026-11-20 sur 10-2-12-3 (inscrite avant le score) : H-BUTS donne 1-1, le score est 1-3. Retirée du moteur."
   }
  ],
  "lectures": [
@@ -212,7 +236,8 @@
     "Air saturé des deux côtés de la liaison M16 (maison de R7) ↔ M8",
     "quatre indicateurs sur cinq pour R7"
    ],
-   "score": null
+   "score": "1-3",
+   "juste": true
   }
  ]
 }
