@@ -180,6 +180,19 @@
      "prediction": "pas de victoire claire",
      "detail": "indicateurs [R7, R7, R7, R1, R1] : non nets",
      "score": "3-3"
+    },
+    {
+     "theme": [
+      6,
+      6,
+      10,
+      2
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire claire",
+     "detail": "indicateurs [R1, R1, R7, R1, R1] : quatre sur cinq pour R1, non unanimes",
+     "score": null
     }
    ],
    "resultats_apres_pose": [
@@ -521,6 +534,19 @@
      "prediction": "pas de victoire",
      "detail": "pôles en M2 et M8 ; aucun arrêt dans le thème : aucun pôle sous croix",
      "score": "3-3"
+    },
+    {
+     "theme": [
+      6,
+      6,
+      10,
+      2
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de victoire",
+     "detail": "pôles en M6 et M12 ; aucun arrêt dans le thème",
+     "score": null
     }
    ],
    "cas_connus_hors_test": [
@@ -1704,7 +1730,21 @@
    "id": "H-BIN-E",
    "posee_le": "2026-11-20",
    "enonce": "Match nul probable quand le nombre de liaisons binôme saturées en Eau (la résultante d'une maison et celle de sa maison binôme toutes deux saturées en Eau) dans la boucle de R1 est égal à celui de la boucle de R7 et non nul ; sinon pas de nul. Née de l'analyse par canal demandée par le propriétaire : vraie pour les six nuls connus (2/2, 2/2, 2/2, 4/4, 4/4, 4/4), fausse pour sept des neuf autres matchs (0/0 dans cinq d'entre eux, inégale dans deux) ; deux matchs décisifs la satisfont aussi (10-2-12-3 : 1-3 ; 2-12-4-4 : 5-1), donc « nul » est juste 6 fois sur 8 quand la condition est vraie. Aucun de ces quinze matchs ne compte comme test.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      6,
+      6,
+      10,
+      2
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "pas de nul",
+     "detail": "liaisons binôme en Eau : R1 2, R7 4, non égales : la condition du nul est fausse",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -1793,7 +1833,21 @@
    "id": "H-TEMOINS",
    "posee_le": "2026-11-20",
    "enonce": "Si la somme des niveaux saturés des bases des deux témoins (M13 et M14) est de 6, le match est nul. Pas d'appel sinon. Née de la remarque du propriétaire (« les deux témoins jouent quelque chose au nul ») : sur les quinze matchs connus, 4 nuls sur 6 ont ce total de 6 (5-1-10-10, 10-12-12-15, 12-14-8-10, 2-9-6-5) et aucun des neuf autres matchs ne l'atteint (leurs totaux sont 2 ou 4) ; les deux autres nuls (12-8-10-3, 2-6-7-9) ont un total de 4. Ces quatre nuls remplissent aussi H-BIN-E. Aucun de ces matchs ne compte comme test.",
-   "predictions": [],
+   "predictions": [
+    {
+     "theme": [
+      6,
+      6,
+      10,
+      2
+     ],
+     "date_match": null,
+     "match": "équipes et date à préciser",
+     "prediction": "nul",
+     "detail": "bases de M13 et M14 : Tristitia et Tristitia, 3 + 3 = 6 niveaux saturés",
+     "score": null
+    }
+   ],
    "cas_connus_hors_test": [
     {
      "theme": [
@@ -2056,6 +2110,19 @@
    "statut": "lecture de l'analyste, pas une règle : aucune règle encore en jeu ne désigne un vainqueur ; Tristitia, la figure du pôle R7, est chez elle en M8 (résultante Populus, tous niveaux saturés) et trois indicateurs sur cinq vont vers R7. Pas de nul prédit.",
    "score": "3-3",
    "juste": false
+  },
+  {
+   "theme": [
+    6,
+    6,
+    10,
+    2
+   ],
+   "posee_le": "2026-11-20",
+   "date_match": null,
+   "lecture": "pas de verdict",
+   "statut": "H-TEMOINS (6, nul) et H-BIN-E (non égale, pas de nul) se contredisent, donc le verdict de l'interface se tait ; H-CROIX et H-5 ne se prononcent pas. Aucun avis de vainqueur : la majorité des indicateurs (4 sur 5 pour R1) n'a été juste que 2 fois sur 6 sur les thèmes sans verdict. Ce match départage H-TEMOINS et H-BIN-E.",
+   "score": null
   }
  ]
 }
