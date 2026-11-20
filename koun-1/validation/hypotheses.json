@@ -1976,6 +1976,14 @@
       "regle": "entre R1 et R7, le pôle dont la figure a la Terre saturée (2 points) alors que l'autre non gagne (départage des figures annulées par la saturation commune)",
       "origine": "question du propriétaire : deux figures saturées face à face, la différence f+g ne porte que sur la Terre dans les maisons miroir",
       "note": "posée avant le test, testée une seule fois ; sous-ensemble à saturation commune : 3 justes 2 faux (5 appels) ; matchs construits : 2 justes 2 faux 3 sur nul"
+    },
+    {
+      "id": "H-MARQUAGE",
+      "statut": "SIGNAL découvert 2026-11-20 (non pré-enregistré) : à confirmer sur des matchs futurs ; non utilisé dans le verdict",
+      "regle": "le front direct d'un pôle marque par la Terre : n = nombre de maisons du front (f, f+4, f+8, f+12) dont la résultante (base pour la maison 16) a la Terre saturée ; plus n est grand, plus le pôle marque",
+      "resultat": "74 pôles-matchs (37 matchs) : corrélation n/buts 0,30 ; construits 0,26 ; indépendants 0,33 ; p = 0,004 seule, 0,016 corrigée du choix parmi 6 mesures ; buts moyens par n : 0:0,8 1:1,6 2:2,5 3:3,1 4:2,4 (5 obs)",
+      "reserves": "mesure choisie après avoir vu les données (6 candidates, 5 écartées) ; les deux pôles d'un même match ne sont pas indépendants ; n=4 non monotone sur 5 observations",
+      "note": "affiché comme indice dans la fenêtre du verdict ; à tester sur les prochains matchs avant toute activation"
     }
   ],
   "lectures": [
