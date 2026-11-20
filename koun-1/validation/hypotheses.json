@@ -38,6 +38,88 @@
      "score": null
     }
    ]
+  },
+  {
+   "id": "H-NIV1",
+   "posee_le": "2026-11-20",
+   "enonce": "Chaque pôle a 4 niveaux d'activation (2 points = activé). Son canal est l'élément de son front ; le canal compatible est Feu↔Air et Eau↔Terre. Le pôle dont le plus de niveaux activés tombent sur son canal ou sur le canal compatible gagne (0 à 2). Égalité : pas de victoire.",
+   "predictions": [
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "date_match": null,
+     "prediction": "R1",
+     "detail": "R1 Rubeus : Eau et Terre activés (2) ; R7 Carcer : Air activé, canal Air (1)",
+     "score": null
+    }
+   ],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "prediction": "pas de victoire (2-2)",
+     "score": "5-0"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "prediction": "R1 (2-0)",
+     "score": "3-0"
+    }
+   ]
+  },
+  {
+   "id": "H-NIV4",
+   "posee_le": "2026-11-20",
+   "enonce": "Même procédé pour le miroir, le binôme et l'antagoniste de chaque pôle, chacun avec son propre canal. Le pôle dont la somme des quatre comptes (pôle + miroir + binôme + antagoniste) est la plus grande gagne. Égalité : pas de victoire.",
+   "predictions": [
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "date_match": null,
+     "prediction": "pas de victoire claire",
+     "detail": "R1 4 ; R7 4",
+     "score": null
+    }
+   ],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      4,
+      6,
+      7,
+      16
+     ],
+     "prediction": "pas de victoire (4-4)",
+     "score": "5-0"
+    },
+    {
+     "theme": [
+      4,
+      1,
+      6,
+      7
+     ],
+     "prediction": "R1 (4-2)",
+     "score": "3-0"
+    }
+   ]
   }
  ],
  "lectures": [

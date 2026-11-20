@@ -40,4 +40,12 @@ for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 1
   F.relations.forEach(r => r.relations.forEach(t => { if (t in c) c[t]++; })); Object.keys(c).forEach(k => dist[k][c[k]] = (dist[k][c[k]] || 0) + 1); }
 const att = { miroir: [25350, 24400, 11357, 3524, 780, 116, 9], binôme: [23449, 26604, 12166, 2796, 489, 32], 'antagoniste ancré': [21831, 24726, 13454, 4336, 983, 178, 28], victime: [25823, 23842, 11171, 3717, 825, 144, 13, 1] };
 Object.keys(att).forEach(k => { const lu = Object.keys(dist[k]).map(Number).sort((a, b) => a - b).map(n => dist[k][n]); if (JSON.stringify(lu) !== JSON.stringify(att[k])) { add('faits ' + k); console.log(k, JSON.stringify(lu)); } });
+// Niveaux d'activation : recalcul indépendant des scores 1 et 4
+let malA = 0;
+for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), T = N.construire(m), P0 = N.poles(T), A = K4.activation(K4.lire(m));
+  const cp = f => { const z = (f - 1) % 4, lv = N.niveaux(f); return [0, 1, 2, 3].filter(i => lv[i] === 2 && (i === z || i === [1, 0, 3, 2][z])).length; };
+  const sc = p => [cp(p), cp(p) + cp(N.miroir(p)) + cp((p - 1) % 4 < 2 ? p + 2 : p - 2) + cp(m16(p - 3))];
+  const a = sc(P0.R1.figure), e = sc(P0.R7.figure);
+  if (A.R1.score1 !== a[0] || A.R1.score4 !== a[1] || A.R7.score1 !== e[0] || A.R7.score4 !== e[1]) malA++; }
+if (malA) add('niveaux d\'activation');
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);
