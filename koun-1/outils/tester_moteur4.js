@@ -70,4 +70,10 @@ if (K4.paralysieFigure(14).niveaux !== 'AE' || K4.paralysieFigure(14).antagonist
 // Terre saturée : total = somme des quatre fronts, et recomptage direct
 let malT = 0; for (let q = 0; q < 65536; q += 5) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K4.lire(m), T = N.construire(m), X = K4.terreSaturee(L); let n = 0; for (let h = 1; h <= 16; h++) if (N.niveaux(h === 16 ? T.bases[16] : T.resultantes[h])[3] === 2) n++; if (X.total !== n || X.parFront.reduce((a, b) => a + b, 0) !== n) malT++; }
 if (malT) add('terre saturée');
+// Interactions par canal : recomptage direct des liaisons binôme en Eau sur la boucle de chaque pôle (échantillon)
+let malI = 0;
+for (let q = 0; q < 65536; q += 11) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), L = K4.lire(m), T = N.construire(m), I = K4.interactions(L);
+  const sat = (h, l) => N.niveaux(h === 16 ? T.bases[16] : T.resultantes[h])[l] === 2, bin = h => (h - 1) % 4 < 2 ? h + 2 : h - 2;
+  for (const [k, pole] of [['R1', L.R1], ['R7', L.R7]]) { const z = (pole.figure - 1) % 4, z2 = (z + 2) % 4, hs = [1, 2, 3, 4].flatMap(i => [z + 4 * (i - 1) + 1, z2 + 4 * (i - 1) + 1]); let n = 0; hs.forEach(h => { if (sat(h, 2) && sat(bin(h), 2)) n++; }); if (I[k].boucle.binome[2] !== n) malI++; } }
+if (malI) add('interactions');
 console.log(t, 'thèmes ; écarts :', JSON.stringify(bad)); process.exit(Object.keys(bad).length ? 1 : 0);

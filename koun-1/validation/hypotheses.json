@@ -1699,6 +1699,94 @@
    "enonce": "Note, pas une règle. 2-9-6-5 (3-3) est signalé par le propriétaire comme totalement symétrique et comme contenant le motif principal du nul. Faits relevés : première rangée de la pyramide M8 M7 M6 M5 | M4 M3 M2 M1 = Tristitia, Fortuna Major, Aquisitio, Via | Via, Amissio, Fortuna Minor, Laetitia ; les paires opposées donnent M4 + M5 = Populus (Via = Via), M3 + M6 = Via (Amissio et Aquisitio, complémentaires), M2 + M7 = Tristitia (Fortuna Minor et Fortuna Major, miroirs), M1 + M8 = Carcer. Paires miroir h / h+8 à base égale : M3 = M11 (Amissio), M8 = M16 (Tristitia). Résultantes égales : M3 = M4 (Puer), M5 = M8 (Populus), M6 = M13 (Via), M10 = M11 = M15 (Fortuna Minor). Aucune des mesures de symétrie testées (82 mesures de saturation, symétrie de la matrice des mères, paires miroir, moitiés M1-7 / M9-15, égalités entre les mesures de R1 et de R7) ne sépare les six nuls des neuf autres matchs.",
    "predictions": [],
    "cas_connus_hors_test": []
+  },
+  {
+   "id": "H-BIN-E",
+   "posee_le": "2026-11-20",
+   "enonce": "Match nul probable quand le nombre de liaisons binôme saturées en Eau (la résultante d'une maison et celle de sa maison binôme toutes deux saturées en Eau) dans la boucle de R1 est égal à celui de la boucle de R7 et non nul ; sinon pas de nul. Née de l'analyse par canal demandée par le propriétaire : vraie pour les six nuls connus (2/2, 2/2, 2/2, 4/4, 4/4, 4/4), fausse pour sept des neuf autres matchs (0/0 dans cinq d'entre eux, inégale dans deux) ; deux matchs décisifs la satisfont aussi (10-2-12-3 : 1-3 ; 2-12-4-4 : 5-1), donc « nul » est juste 6 fois sur 8 quand la condition est vraie. Aucun de ces quinze matchs ne compte comme test.",
+   "predictions": [],
+   "cas_connus_hors_test": [
+    {
+     "theme": [
+      12,
+      8,
+      10,
+      3
+     ],
+     "prediction": "nul (2/2)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      5,
+      1,
+      10,
+      10
+     ],
+     "prediction": "nul (2/2)",
+     "score": "2-2"
+    },
+    {
+     "theme": [
+      10,
+      12,
+      12,
+      15
+     ],
+     "prediction": "nul (2/2)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      12,
+      14,
+      8,
+      10
+     ],
+     "prediction": "nul (4/4)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      6,
+      7,
+      9
+     ],
+     "prediction": "nul (4/4)",
+     "score": "1-1"
+    },
+    {
+     "theme": [
+      2,
+      9,
+      6,
+      5
+     ],
+     "prediction": "nul (4/4)",
+     "score": "3-3"
+    },
+    {
+     "theme": [
+      10,
+      2,
+      12,
+      3
+     ],
+     "prediction": "nul (2/2)",
+     "score": "1-3 : faux"
+    },
+    {
+     "theme": [
+      2,
+      12,
+      4,
+      4
+     ],
+     "prediction": "nul (4/4)",
+     "score": "5-1 : faux"
+    }
+   ]
   }
  ],
  "lectures": [

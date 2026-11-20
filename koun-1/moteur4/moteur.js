@@ -232,6 +232,36 @@
   }
 
   // La formule des buts par la Terre (ceil(T/2)+1) a été réfutée (2-12-4-4 : 4 prévus, 6 réels) et retirée ; le comptage de Terre (terreSaturee) reste comme structure.
+
+  // Interactions par canal (lecture du propriétaire : une figure dans une maison ne vaut rien sans ce qui l'entoure). Pour chaque maison h et chaque niveau l (Feu, Air, Eau, Terre) :
+  //   miroir : la résultante de h et celle de sa maison miroir h+8 sont toutes deux saturées à ce niveau ;
+  //   binôme : idem avec la maison binôme (couples 1-3, 2-4, 5-7, 6-8, 9-11, 10-12, 13-15, 14-16) ;
+  //   paralysie : le niveau de h est saturé et l'antagoniste (f − 3) de sa figure de résultante est placé dans le thème avec ce niveau à un point ;
+  //   propre : le niveau saturé est celui de l'élément de la maison.
+  // Comptes sur la boucle de chaque pôle (les 8 maisons de ses deux fronts) et sur son front.
+  function interactions(L) {
+    var T = L.theme, s = function (h, l) { return K.niveaux(L.resu(h))[l] === 2; };
+    var presente = function (f) { for (var h = 1; h <= 16; h++) if (T.bases[h] === f || (h < 16 && T.resultantes[h] === f)) return true; return false; };
+    var mir = function (h) { return mod(h + 8); }, bin = function (h) { return (h - 1) % 4 < 2 ? h + 2 : h - 2; };
+    function compte(maisons) {
+      var o = { miroir: [0, 0, 0, 0], binome: [0, 0, 0, 0], paralysie: [0, 0, 0, 0], propre: [0, 0, 0, 0] };
+      maisons.forEach(function (h) {
+        var f = L.resu(h), a = mod(f - 3);
+        for (var l = 0; l < 4; l++) {
+          if (!s(h, l)) continue;
+          if (s(mir(h), l)) o.miroir[l]++;
+          if (s(bin(h), l)) o.binome[l]++;
+          if (presente(a) && K.niveaux(a)[l] === 1) o.paralysie[l]++;
+          if (l === (h - 1) % 4) o.propre[l]++;
+        }
+      });
+      return o;
+    }
+    var fr = function (z) { return [1, 2, 3, 4].map(function (i) { return z + 4 * (i - 1) + 1; }); };
+    function pole(c) { var z = (c.figure - 1) % 4, z2 = (z + 2) % 4; return { boucle: compte(fr(z).concat(fr(z2))), front: compte(fr(z)) }; }
+    var a = pole(L.R1), b = pole(L.R7), eq = a.boucle.binome[2] === b.boucle.binome[2] && a.boucle.binome[2] > 0;
+    return { R1: a, R7: b, binomeEauEquilibre: eq };
+  }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
   // 5 : plus d'emplacements (front + front binôme) où le niveau propre du groupe, celui de son front, est saturé.
@@ -241,7 +271,7 @@
     var net = ind.every(function (x) { return x > 0; }) ? 'R1' : ind.every(function (x) { return x < 0; }) ? 'R7' : null;
     return { R1: a, R7: e, indicateurs: ind, net: net };
   }
-  var API = { terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
