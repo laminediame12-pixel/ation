@@ -2351,7 +2351,7 @@
     },
     {
       "id": "H-MT-MECANISME",
-      "statut": "EN OBSERVATION 2026-11-21 : corrigée après Nice–PSG ; 15 matchs sur 15 (avant correction 13 sur 15 : Orlando et Nice–PSG manqués)",
+      "statut": "EN OBSERVATION : construction 15 sur 15 ; annoncés avant le score : Aston Villa juste, Nice–PSG faux (ancienne règle), Napoli–Torino faux (règle corrigée)",
       "regle": "but en première mi-temps quand la figure-somme des bases de 1-5-12-15 est rapide (Feu et Air saturés, hors Populus), ou quand elle est attaquée : son antagoniste (f−3) est en base d'une maison sans que son protecteur (f−6) soit en base ; sinon pas de but attendu",
       "cas": "rapides : Troyes, Bayern, Manchester City, Coventry, Union Berlin (5 buts) ; attaquées sans protecteur : Bournemouth, Millwall, Chelsea, Tottenham (4 buts) ; ni rapide ni attaquée : Athletic (0-0), Cercle Bruges (Populus, 0-0) ; attaque bloquée par le protecteur : Southampton (Fortuna Major en M14, protecteur Fortuna Minor en M10, 0-0) et Orlando (Amissio en M15, protecteur Caput en M2) : but à la 26e malgré le blocage, seul cas non expliqué",
       "origine": "recherche de la cause des 0-0 (demande du propriétaire : chercher pourquoi et comment) ; antagoniste = attaquant, protecteur = prédateur de l'attaquant (f−6 attaque f−3)",
@@ -2380,6 +2380,19 @@
           "mi_temps": "1-2",
           "juste": false,
           "cote": "le PSG a marqué deux fois (désigné), Nice une fois (non désigné)"
+        },
+        {
+          "match": "Napoli–Torino",
+          "theme": [
+            5,
+            10,
+            11,
+            11
+          ],
+          "annonce": "but en 1re mi-temps, Torino (figure Albus rapide, protecteur Puella en M6 et M7 dans le front de Torino)",
+          "mi_temps": "0-0",
+          "juste": false,
+          "remarque": "Torino était « bloqué » au marquage ; la figure Albus n'est qu'en résultante de M1 (aucun ancrage en base) ; cause du 0-0 non trouvée"
         }
       ],
       "puissance_2026_11_21": "nombre de buts en 1re mi-temps (14 matchs, Coventry corrigé à 2-2) : le facteur le plus lié est le nombre de fois où la figure de 1-5-12-15 est ancrée en base (corrélation 0,47) ; présence en résultante seule : -0,03 ; antagoniste en base 0,07 ; protecteur -0,05 ; niveaux saturés 0,05 ; somme des n -0,10. Coventry–Crystal Palace (2-2) : Albus en base de M4 (chez elle), M5 et M9, rapide, présente aussi en résultante de M10 et M14 (front de R1) ; base de M4 dans le front D de R7 : la figure touche les deux fronts et les deux équipes marquent deux fois.",
