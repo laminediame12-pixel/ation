@@ -94,3 +94,10 @@ croix(f, d)    = haut branche(f, f−3d) · droite branche(f+4, f+4−3d) · bas
 front : d = 1 ; somme X+Y : f = première figure de X, d = (Y − X) mod 4
 ```
 Aucune règle du moteur ne l'utilise encore.
+
+
+## La Terre, relais entre les figures d'un front (vérifié le 2026-11-21)
+- Dans la croix d'un front, les canaux Feu, Air et Eau relient les figures miroir (haut ↔ bas, gauche ↔ droite) : leur somme vaut toujours Tristitia et leur Terre est toujours opposée (8 paires sur 8).
+- La Terre dévie : haut → droite et bas → gauche. Elle relie donc les deux paires miroir entre elles, et c'est le seul canal qui le fait. Les sommes de ces paires sont Albus (Terre égale, l'Eau change) ou Fortuna Major (Terre et Eau changent) selon le front.
+- Accès aux maisons : les canaux horizontaux Feu, Air et Eau touchent 12 maisons (les fronts A, B, C), les verticaux 12 maisons (1 à 12). Le front D (4, 8, 12, 16) n'est atteint que par la Terre, et la déviation ne lui laisse que 3 maisons par canal (4, 8, 12 en horizontal ; 13, 14, 15 en vertical) : le coin 16 est perdu, d'où 15 intersections et non 16.
+- Marquage : le nombre n de maisons du front direct dont la résultante a la Terre saturée (corrélation 0,30 avec les buts) fait mieux que le nombre de liaisons Terre connectées du front (0,12), bien que les deux soient corrélés (0,78) : le marqueur est la Terre de chaque maison, pas la liaison complète.
