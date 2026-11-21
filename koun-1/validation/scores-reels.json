@@ -620,8 +620,23 @@
   "lot": "incident",
   "rouge": "R7",
   "penalty": "R1",
-  "note": "fourni par le propriétaire le 2026-11-21 ; Troyes (R1) 3-1 Le Havre (R7), penalty R1, rouge R7 ; H-REPOS appelait R7 (faux)",
-  "date": "2026-11-20"
+  "note": "fourni par le propriétaire le 2026-11-21 ; Troyes (R1) 3-1 Le Havre (R7), penalty R1, rouge R7 ; H-REPOS appelait R7 (faux) ; détails Sofascore fournis le 2026-11-21 : mi-temps 1-1, penalty Troyes à 90'+8, rouge Le Havre en fin de match",
+  "date": "2026-11-20",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "19' A. Mille",
+    "69' A. Mille",
+    "90'+8 R. Ripart (penalty)"
+   ],
+   "R7": [
+    "3' J. Maja"
+   ]
+  },
+  "competition": "Ligue 1 (France), journée 11, 20/11/2026 19:45"
  },
  {
   "themes": [
