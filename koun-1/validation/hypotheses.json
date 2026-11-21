@@ -2029,6 +2029,15 @@
       "reserves": "règle formulée après les trois cas, en remplacement de H-ROUGE réfutée ; trois cas seulement ; tous les incidents connus sont côté R7 (le côté reste inconnu) ; il faut des matchs sans incident pour mesurer les fausses alertes",
       "quatrieme_cas": "14-14-9-16 (rouge R1), posé avant le thème : aucun arrêt ne relie les fronts (arrêt unique M1, antagoniste Puella du front B, maison du front A de R1 ; le front D de R7 n'est pas touché) → pas d'indice, incident non annoncé : manqué. L'incident est donc 3 fois sur 4 annoncé ; la règle ne dit pas qu'il n'y a pas d'incident sans lien, mais elle n'est pas nécessaire.",
       "cote_rouge": "pôle dont le front contient la maison touchée (victime) = pôle expulsé : 3 sur 4 (16-1-8-14, 14-9-16-9, 14-14-9-16 ; manqué en 11-5-11-4 où le rouge est R7 alors que la maison touchée est dans le front B de R1) ; à confirmer, non retenu"
+    },
+    {
+      "id": "H-FIGURES-NEG",
+      "statut": "CANDIDATE 2026-11-21 (propriétaire, formulée à partir de 4 cas) : non testable aujourd'hui faute de matchs sans incident ; non activée",
+      "regle": "incident probable quand la résultante de M12 est l'une de Fortuna Major, Via, Conjunctio, Aquisitio, Caput, Cauda, Rubeus, Puer, ou quand la résultante de M6 est l'une de Cauda, Rubeus, Puer ; le pôle lié à la maison reçoit l'incident, les deux poles liés en reçoivent chacun une part",
+      "cas": "16-1-8-14 : M12 Aquisitio et M6 Cauda → penalty R1 + rouge R7 ; 14-9-16-9 : M12 Fortuna Major → rouge R7 ; 11-5-11-4 : M6 Rubeus → rouge R7 ; 14-14-9-16 : M12 Fortuna Major → rouge R1 ; en base, la liste n'est vraie que dans 2 cas sur 4 : c'est la résultante qui compte",
+      "detection": "4 thèmes sur 4 ont une maison active, mais la liste touche 59,4 % de tous les thèmes (M12 ou M6) : probabilité 0,12 d'avoir 4 sur 4 par hasard",
+      "pole_lie": "par la maison du pôle dans le front de la maison active : 16-1-8-14 R1 par M12 et R7 par M6 (penalty R1 et rouge R7, juste des deux côtés) ; 14-9-16-9 R7 par M12 (rouge R7, juste) ; 11-5-11-4 aucun pôle lié alors que le rouge est R7 ; 14-14-9-16 R7 lié par M12 alors que le rouge est R1 : 2 cas sur 4 corrects",
+      "reserves": "liste construite sur ces 4 cas ; il faut des matchs où penalty et rouge sont explicitement absents pour mesurer les fausses alertes"
     }
   ],
   "lectures": [
