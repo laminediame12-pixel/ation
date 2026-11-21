@@ -327,14 +327,15 @@
   function equivalences(maisons) { var C = catalogue(), k = C.cle(maisons); return { minimale: C.classes[k], forme: C.forme[k], equivalentes: 256, fonctions: C.nb }; }
   // COORDONNÉES (piste H-COORD-VICTOIRE, en observation) : l'état du nœud (plein 2, mixte 1, vide 0) de la coordination base(M1)+base(M7), puis de la résultante de M9,
   // dans le front de chaque pôle. Le pôle dont ces nœuds sont les plus pleins l'emporte (somme des signes des deux écarts, nulle = pas d'appel).
-  function coordonnees(L) { var T = L.theme, N = noeuds(L), val = { plein: 2, mixte: 1, vide: 0 }, c1 = K.additionner(T.bases[1], T.bases[7]), c2 = T.resultantes[9];
+  function coordonnees(L) { var T = L.theme, N = noeuds(L), val = { plein: 2, mixte: 1, vide: 0 }, c1 = K.additionner(T.bases[1], T.bases[7]), c2 = T.resultantes[9], c3 = K.additionner(T.bases[2], T.bases[8]);
     function etat(front, c) { var f = N.fronts.filter(function (x) { return x.front === front; })[0], n = f && f.noeuds.filter(function (x) { return x.maison === c; })[0]; return n ? val[n.etat] : 0; }
-    var a1 = etat(L.R1.front, c1), b1 = etat(L.R7.front, c1), a2 = etat(L.R1.front, c2), b2 = etat(L.R7.front, c2), s = Math.sign(a1 - b1) + Math.sign(a2 - b2);
-    return { coordination: c1, residuM9: c2, R1: { m1m7: a1, m9: a2 }, R7: { m1m7: b1, m9: b2 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
+    // axe M2+M8 ajouté le 2026-11-21 (criblage des six axes opposés : M1+M7 et M2+M8 sont les seuls à départager mieux que « toujours R1 »)
+    var a1 = etat(L.R1.front, c1), b1 = etat(L.R7.front, c1), a2 = etat(L.R1.front, c2), b2 = etat(L.R7.front, c2), a3 = etat(L.R1.front, c3), b3 = etat(L.R7.front, c3), s = Math.sign(a1 - b1) + Math.sign(a2 - b2) + Math.sign(a3 - b3);
+    return { coordination: c1, residuM9: c2, axe28: c3, R1: { m1m7: a1, m9: a2, m2m8: a3 }, R7: { m1m7: b1, m9: b2, m2m8: b3 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
   function verdict(L) {
     var R = repos(L), Q = coordonnees(L);
     if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (4 justes sur 6 appels sur 40 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
-    if (Q.gagnant) return { v: Q.gagnant === 'R1' ? '1' : '2', regle: 'H-COORD-VICTOIRE', statut: 'piste en observation (17 justes sur 20 appels sur 34 matchs décisifs ; « toujours R1 » : 16 sur 20 ; non significatif)', raison: Q.gagnant + ' a les nœuds de coordination les plus pleins dans son front (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; plein 2, mixte 1, vide 0)' };
+    if (Q.gagnant) return { v: Q.gagnant === 'R1' ? '1' : '2', regle: 'H-COORD-VICTOIRE', statut: 'piste en observation (18 justes sur 22 appels sur 34 matchs décisifs ; « toujours R1 » : 15 sur 22 ; non significatif)', raison: Q.gagnant + ' a les nœuds de coordination les plus pleins dans son front (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)' };
     return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS : aucun pôle ne possède seul ses deux fronts au repos ; coordonnées : nœuds à égalité)' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
@@ -370,8 +371,10 @@
     // deux marquent : produit des deux probabilités (hypothèse d'indépendance : 75 % prédit en moyenne contre 73 % observé sur 37 matchs) ; buts attendus : somme des moyennes par n
     // TÉMOIN M5+M7 (signal post hoc, trouvé par criblage des 255 combinaisons distinctes) : quand la Terre de la figure base(M5)+base(M7) n'est pas saturée, les deux équipes ont marqué
     // dans 20 matchs sur 20 observés ; saturée, dans 9 sur 20.
-    var tf = K.additionner(T.bases[5], T.bases[7]), terre = K.niveaux(tf)[3] === 2;
-    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, deuxMarquent: !terre, obsPas: terre ? { oui: 9, sur: 20 } : { oui: 20, sur: 20 } }, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
+    // second témoin M4+M10 (ajouté le 2026-11-21) : quand la Terre de M5+M7 est saturée, celle de M4+M10 départage (ouverte 5 sur 9, saturée 4 sur 11).
+    var tf = K.additionner(T.bases[5], T.bases[7]), terre = K.niveaux(tf)[3] === 2, t2 = K.additionner(T.bases[4], T.bases[10]), terre2 = K.niveaux(t2)[3] === 2,
+      OBS_TEMOIN = { ouverte: { oui: 20, sur: 20 }, m410ouverte: { oui: 5, sur: 9 }, m410saturee: { oui: 4, sur: 11 } };
+    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;

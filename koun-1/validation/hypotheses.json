@@ -2290,7 +2290,8 @@
       "regle": "le pôle dont le nœud de la coordination base(M1)+base(M7), puis celui de la résultante de M9, est le plus plein dans son front (plein 2, mixte 1, vide 0) gagne ; somme des signes des deux écarts, pas d'appel si elle est nulle",
       "resultat": "34 matchs décisifs : nœud M1+M7 seul 14 sur 19 (74 %), nœud de la résultante de M9 seul 16 sur 21 (76 %) ; les deux ensemble 17 justes, 3 faux, 14 sans appel (85 %) contre 16 sur 20 (80 %) pour « toujours R1 » sur les mêmes appels ; le thème 1-2-6-15 (5-0, R1) est conforme (M1+M7 plein pour R1 et vide pour R7 ; M9 plein et mixte) ; probabilité du meilleur taux parmi 20 mesures par hasard 0,28 : non significatif",
       "reserves": "mesures posées le jour même avant le calcul mais choisies parmi plusieurs ; le gain sur « toujours R1 » n'est que d'un match sur les mêmes appels ; testée seulement sur des matchs déjà vus",
-      "integration": "2026-11-21 : intégrée au verdict de la page et du moteur à la demande du propriétaire, après H-REPOS (qui garde la priorité), étiquetée « piste en observation » ; sort du verdict si, sur au moins 15 nouveaux appels indépendants, elle est indiscernable de « toujours R1 »"
+      "integration": "2026-11-21 : intégrée au verdict de la page et du moteur à la demande du propriétaire, après H-REPOS (qui garde la priorité), étiquetée « piste en observation » ; sort du verdict si, sur au moins 15 nouveaux appels indépendants, elle est indiscernable de « toujours R1 »",
+      "axe_M2M8": "2026-11-21 : axe M2+M8 ajouté à la règle (criblage des six axes opposés : M1+M7 74 %, M2+M8 72 %, autres au niveau de « toujours R1 ») ; trois nœuds : 18 justes, 4 faux, 12 sans appel sur 34 décisifs, « toujours R1 » 15 sur 22"
     },
     {
       "theme": [
@@ -2338,7 +2339,8 @@
       "regle": "quand la Terre de la figure base(M5)+base(M7) n'est pas saturée, les deux équipes marquent ; saturée, la règle ne dit rien",
       "resultat": "40 matchs : Terre non saturée 20 sur 20 (100 %), saturée 9 sur 20 (45 %) ; indépendants 10 sur 10 contre 7 sur 15 ; construits 10 sur 10 contre 2 sur 5 ; corrélation -0,62 avec « deux marquent » ; probabilité du meilleur de 5100 tests (255 combinaisons × 4 niveaux × 5 résultats) par hasard : 0,055 (200 permutations) : limite",
       "reserves": "trouvé par criblage ; la base « les deux marquent » est de 73 % ; non testé sur des matchs que la recherche n'a pas vus",
-      "combinaisons": "exact : il n'existe que 256 fonctions de somme distinctes (255 non nulles) pour les combinaisons de maisons ; tailles minimales : 16 d'une maison, 79 de deux, 124 de trois, 36 de quatre ; 1-5-12-15 (buts HT1) ≡ M1+M6+M13 ≡ M2+M3+M4+M6 ; Circuit souverain 1-3-5-11-13 ≡ M2+M4+M6 ; les données de première mi-temps manquent au corpus : 1-5-12-15 n'a pas pu être testé (liens faibles avec les buts totaux, |r| <= 0,46)"
+      "combinaisons": "exact : il n'existe que 256 fonctions de somme distinctes (255 non nulles) pour les combinaisons de maisons ; tailles minimales : 16 d'une maison, 79 de deux, 124 de trois, 36 de quatre ; 1-5-12-15 (buts HT1) ≡ M1+M6+M13 ≡ M2+M3+M4+M6 ; Circuit souverain 1-3-5-11-13 ≡ M2+M4+M6 ; les données de première mi-temps manquent au corpus : 1-5-12-15 n'a pas pu être testé (liens faibles avec les buts totaux, |r| <= 0,46)",
+      "temoin_M4M10": "2026-11-21 : second témoin M4+M10 ; Terre de M5+M7 ouverte 20 sur 20 ; saturée : Terre de M4+M10 ouverte 5 sur 9, saturée 4 sur 11 ; seul, M4+M10 ouverte 21 sur 25 contre 8 sur 15"
     },
     {
       "id": "H-RYTHME",

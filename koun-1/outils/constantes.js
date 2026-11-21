@@ -14,8 +14,9 @@ if (lu(/MARQUAGE_P2 = \[([^\]]+)\]/).trim() !== P2.join(', ')) err('MARQUAGE_P2 
 if (lu(/MARQUAGE_P1 = \[([^\]]+)\]/).split(',').map(x => (+x).toFixed(2)).join(',') !== P1.join(',')) err('MARQUAGE_P1 : moteur [' + lu(/MARQUAGE_P1 = \[([^\]]+)\]/) + '] données [' + P1.join(', ') + ']');
 if (lu(/MARQUAGE_MOYENNES = \[([^\]]+)\]/).split(',').map(x => +x).join(',') !== MO.join(',')) err('MARQUAGE_MOYENNES : données [' + MO.join(', ') + ']');
 if (!src.includes(O.length + ' pôles-matchs')) err('nombre de pôles-matchs : données ' + O.length);
-let t = { o: 0, s: 0, so: 0, ss: 0 }; D.forEach(d => { const T = M.lire(d.m).theme, f = A(T.bases[5], T.bases[7]), b = d.sc[0] > 0 && d.sc[1] > 0; if (K.niveaux(f)[3] === 2) { t.ss++; if (b) t.so++; } else { t.s++; if (b) t.o++; } });
-if (!src.includes('{ oui: ' + t.so + ', sur: ' + t.ss + ' } : { oui: ' + t.o + ', sur: ' + t.s + ' }')) err('témoin M5+M7 : données ' + t.o + '/' + t.s + ' et ' + t.so + '/' + t.ss);
+const t = { ouverte: [0, 0], m410ouverte: [0, 0], m410saturee: [0, 0] }; D.forEach(d => { const T = M.lire(d.m).theme, s1 = K.niveaux(A(T.bases[5], T.bases[7]))[3] === 2, s2 = K.niveaux(A(T.bases[4], T.bases[10]))[3] === 2, k = !s1 ? 'ouverte' : s2 ? 'm410saturee' : 'm410ouverte'; t[k][1]++; if (d.sc[0] > 0 && d.sc[1] > 0) t[k][0]++; });
+const attendu = 'ouverte: { oui: ' + t.ouverte[0] + ', sur: ' + t.ouverte[1] + ' }, m410ouverte: { oui: ' + t.m410ouverte[0] + ', sur: ' + t.m410ouverte[1] + ' }, m410saturee: { oui: ' + t.m410saturee[0] + ', sur: ' + t.m410saturee[1] + ' }';
+if (!src.includes(attendu)) err('témoins M5+M7 et M4+M10 : données ' + attendu);
 let rp = 0, rn = 0; D.forEach(d => { const g = M.repos(M.lire(d.m)).gagnant; if (g) { rn++; if (g === (d.sc[0] > d.sc[1] ? 'R1' : d.sc[0] < d.sc[1] ? 'R7' : 'N')) rp++; } });
 if (!src.includes(rp + ' justes sur ' + rn + ' appels sur ' + D.length + ' matchs')) err('H-REPOS : données ' + rp + ' justes sur ' + rn + ' appels sur ' + D.length + ' matchs');
 const dec = D.filter(d => d.sc[0] !== d.sc[1]); let c = { o: 0, n: 0, r1: 0 }; dec.forEach(d => { const g = M.coordonnees(M.lire(d.m)).gagnant; if (!g) return; c.n++; const r = d.sc[0] > d.sc[1] ? 'R1' : 'R7'; if (g === r) c.o++; if (r === 'R1') c.r1++; });
