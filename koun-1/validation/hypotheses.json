@@ -1963,7 +1963,8 @@
         }
       ],
       "mise_a_jour_2026-11-21": "thème 16-1-8-14 (score 3-1, penalty R1, rouge R7) : H-REPOS appelait R7, R1 a gagné : faux ; bilan 3 justes sur 5 appels sur 38 matchs (indépendants : 2 justes, 2 faux ; construits : 1 juste) ; « toujours R1 » : 66 % sur les décisifs",
-      "mise_a_jour_2026-11-21b": "5-3-16-11 : R7 annoncé, Orlando City 1-3 Cincinnati : juste ; bilan 4 justes sur 6 appels sur 39 matchs"
+      "mise_a_jour_2026-11-21b": "5-3-16-11 : R7 annoncé, Orlando City 1-3 Cincinnati : juste ; bilan 4 justes sur 6 appels sur 39 matchs",
+      "mise_a_jour_2026-11-21c": "décompte vérifié par outils/valider.js : 4 justes sur 6 appels sur 40 matchs (indépendants 3 justes 2 faux ; construits 1 juste)"
     },
     {
       "id": "H-PROTECTEUR",
@@ -2288,7 +2289,8 @@
       "statut": "PISTE post hoc 2026-11-21 (propriétaire : « n'oublie pas les coordonnées ») : en observation ; prédictions inscrites pour le coupon du 21/11/2026 avant les scores",
       "regle": "le pôle dont le nœud de la coordination base(M1)+base(M7), puis celui de la résultante de M9, est le plus plein dans son front (plein 2, mixte 1, vide 0) gagne ; somme des signes des deux écarts, pas d'appel si elle est nulle",
       "resultat": "34 matchs décisifs : nœud M1+M7 seul 14 sur 19 (74 %), nœud de la résultante de M9 seul 16 sur 21 (76 %) ; les deux ensemble 17 justes, 3 faux, 14 sans appel (85 %) contre 16 sur 20 (80 %) pour « toujours R1 » sur les mêmes appels ; le thème 1-2-6-15 (5-0, R1) est conforme (M1+M7 plein pour R1 et vide pour R7 ; M9 plein et mixte) ; probabilité du meilleur taux parmi 20 mesures par hasard 0,28 : non significatif",
-      "reserves": "mesures posées le jour même avant le calcul mais choisies parmi plusieurs ; le gain sur « toujours R1 » n'est que d'un match sur les mêmes appels ; testée seulement sur des matchs déjà vus"
+      "reserves": "mesures posées le jour même avant le calcul mais choisies parmi plusieurs ; le gain sur « toujours R1 » n'est que d'un match sur les mêmes appels ; testée seulement sur des matchs déjà vus",
+      "integration": "2026-11-21 : intégrée au verdict de la page et du moteur à la demande du propriétaire, après H-REPOS (qui garde la priorité), étiquetée « piste en observation » ; sort du verdict si, sur au moins 15 nouveaux appels indépendants, elle est indiscernable de « toujours R1 »"
     },
     {
       "theme": [

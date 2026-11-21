@@ -288,10 +288,17 @@
   // VERDICT. Règle du propriétaire, activée à sa demande (H-REPOS) : le pôle qui possède ses deux fronts (le front de sa figure et son front binôme) au repos, sans que l'antagoniste des figures y soit, gagne.
   // Interprétation retenue : un front est « possédé » quand au moins une de ses figures est dans sa maison de repos sans que son antagoniste (f − 3) y soit aussi ; un pôle gagne s'il possède ses deux fronts et l'autre non.
   // Bilan sur 37 matchs (outils/valider.js) : 4 appels, 3 justes, 1 faux ; elle ne se prononce que sur environ un match sur dix. Les anciennes règles (H-CROIX, H-5, H-TEMOINS, H-BIN-E) sont réfutées et retirées.
+  // COORDONNÉES (piste H-COORD-VICTOIRE, en observation) : l'état du nœud (plein 2, mixte 1, vide 0) de la coordination base(M1)+base(M7), puis de la résultante de M9,
+  // dans le front de chaque pôle. Le pôle dont ces nœuds sont les plus pleins l'emporte (somme des signes des deux écarts, nulle = pas d'appel).
+  function coordonnees(L) { var T = L.theme, N = noeuds(L), val = { plein: 2, mixte: 1, vide: 0 }, c1 = K.additionner(T.bases[1], T.bases[7]), c2 = T.resultantes[9];
+    function etat(front, c) { var f = N.fronts.filter(function (x) { return x.front === front; })[0], n = f && f.noeuds.filter(function (x) { return x.maison === c; })[0]; return n ? val[n.etat] : 0; }
+    var a1 = etat(L.R1.front, c1), b1 = etat(L.R7.front, c1), a2 = etat(L.R1.front, c2), b2 = etat(L.R7.front, c2), s = Math.sign(a1 - b1) + Math.sign(a2 - b2);
+    return { coordination: c1, residuM9: c2, R1: { m1m7: a1, m9: a2 }, R7: { m1m7: b1, m9: b2 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
   function verdict(L) {
-    var R = repos(L);
-    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (3 justes sur 6 appels sur 39 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' };
-    return { v: null, regle: null, statut: null, raison: 'H-REPOS ne se prononce pas (aucun pôle ne possède seul ses deux fronts au repos)' };
+    var R = repos(L), Q = coordonnees(L);
+    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (4 justes sur 6 appels sur 40 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
+    if (Q.gagnant) return { v: Q.gagnant === 'R1' ? '1' : '2', regle: 'H-COORD-VICTOIRE', statut: 'piste en observation (17 justes sur 20 appels sur 34 matchs décisifs ; « toujours R1 » : 16 sur 20 ; non significatif)', raison: Q.gagnant + ' a les nœuds de coordination les plus pleins dans son front (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; plein 2, mixte 1, vide 0)' };
+    return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS : aucun pôle ne possède seul ses deux fronts au repos ; coordonnées : nœuds à égalité)' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
@@ -348,7 +355,7 @@
       cote = e1 === 'vide' && e7 !== 'vide' ? 'R1' : e7 === 'vide' && e1 !== 'vide' ? 'R7' : null;
     return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens,
       rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote } }; }
-  var API = { incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
