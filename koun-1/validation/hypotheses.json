@@ -2402,10 +2402,11 @@
     },
     {
       "id": "H-BLOCAGE-REPOS",
-      "statut": "PISTE 2026-11-21 (Dundee–Hearts 0-8) : en observation, non intégrée",
+      "statut": "INTÉGRÉE 2026-11-21 au marquage des équipes (lu avec n, à la place de n seul) ; en observation",
       "regle": "niveau de blocage d'un pôle = nombre de figures au repos sans leur antagoniste dans ses deux fronts (H-REPOS) ; 0 = pôle exposé à rester muet ; 2 ou plus = il marque",
       "resultat": "82 pôles-matchs : 0 figure au repos → 1,70 but en moyenne, 6 sur 30 sans but ; 1 → 2,42, 5 sur 31 ; 2 → 2,71, 0 sur 14 ; 3 → 2,75, 0 sur 4 ; 5 → 5 buts. Dundee–Hearts : Dundee 0 (aucun but), Hearts 2 (Puer et Via au repos dans le front A) et n = 4 sur 4 (Terre saturée sur les quatre maisons du front C) : 8 buts",
-      "note": "Dundee–Hearts : mi-temps 0-4 (1re mi-temps annoncée avec but, figure Albus rapide, puissance forte, marqueur Hearts : juste) ; rouge côté Dundee (détecteur d'incident probable 4/6) ; victoire : pas d'appel (H-REPOS et coordonnées muets)"
+      "note": "Dundee–Hearts : mi-temps 0-4 (1re mi-temps annoncée avec but, figure Albus rapide, puissance forte, marqueur Hearts : juste) ; rouge côté Dundee (détecteur d'incident probable 4/6) ; victoire : pas d'appel (H-REPOS et coordonnées muets)",
+      "niveaux": "n >= 2 et au moins une figure au repos : fort (37 pôles, 3,05 buts, 76 % à 2 buts ou plus, 92 % au moins un) ; n >= 2 sans figure au repos : freiné (20 ; 1,95 ; 45 % ; 85 %) ; n <= 1 avec : faible (14 ; 1,71 ; 36 % ; 86 %) ; n <= 1 sans : bloqué (11 ; 1,09 ; 27 % ; 64 %)"
     }
   ],
   "lectures": [

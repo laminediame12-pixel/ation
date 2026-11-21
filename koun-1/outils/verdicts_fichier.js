@@ -19,10 +19,10 @@ D.forEach(d => {
   const dm = Q.temoin.deuxMarquent ? 'Oui (témoin M5+M7)' : pct(Q.temoin.obsPas.oui / Q.temoin.obsPas.sur);
   const lignes = [
     ['Victoire', vic, vs, V.v === '1' ? 'k1' : V.v === '2' ? 'k7' : ''],
-    [d.e1 + ' marque 2 buts ou plus', 'n = ' + Q.R1.n + '/4 · ' + pct(Q.R1.p2), 'Terre saturée sur ' + Q.R1.n + (Q.R1.n > 1 ? ' maisons' : ' maison') + ' du front ' + Q.R1.front, Q.R1.p2 >= .5 ? 'ko' : 'kx'],
-    [d.e2 + ' marque 2 buts ou plus', 'n = ' + Q.R7.n + '/4 · ' + pct(Q.R7.p2), 'Terre saturée sur ' + Q.R7.n + (Q.R7.n > 1 ? ' maisons' : ' maison') + ' du front ' + Q.R7.front, Q.R7.p2 >= .5 ? 'ko' : 'kx'],
+    [d.e1 + ' marque', Q.R1.niveau.charAt(0).toUpperCase() + Q.R1.niveau.slice(1) + ' · ' + pct(Q.R1.p2n) + ' (2 buts ou plus)', 'Terre saturée sur ' + Q.R1.n + '/4 maisons du front ' + Q.R1.front + ' · ' + Q.R1.repos + ' figure(s) au repos', Q.R1.p2n >= .5 ? 'ko' : 'kx'],
+    [d.e2 + ' marque', Q.R7.niveau.charAt(0).toUpperCase() + Q.R7.niveau.slice(1) + ' · ' + pct(Q.R7.p2n) + ' (2 buts ou plus)', 'Terre saturée sur ' + Q.R7.n + '/4 maisons du front ' + Q.R7.front + ' · ' + Q.R7.repos + ' figure(s) au repos', Q.R7.p2n >= .5 ? 'ko' : 'kx'],
     ['Deux marquent', dm, 'Terre de M5+M7 (' + K.nom(Q.temoin.figure) + ') ' + (Q.temoin.terreSaturee ? 'saturée' : 'non saturée'), Q.temoin.deuxMarquent ? 'ko' : ''],
-    ['Buts au total', '≈ ' + String(Q.butsAttendus).replace('.', ','), 'somme des buts moyens par n', ''],
+    ['Buts au total', '≈ ' + String(Q.butsAttendus).replace('.', ','), 'somme des buts moyens des deux niveaux', ''],
     ['Rouge ou penalty', inc + ' · ' + I.score + '/6' + rouge, I.parametres.filter(p => p.actif).map(p => p.id).join(', ') || 'aucun paramètre actif', I.niveau === 'probable' ? 'kx' : ''],
     ['But en 1re mi-temps', Y.butAttendu ? 'Oui : ' + (Y.marqueurs.length ? Y.marqueurs.map(p => p === 'R1' ? d.e1 : d.e2).join(' et ') : 'équipe non déterminée') : 'Pas de but attendu', Y.cause + ' · puissance ' + Y.puissance + ' · ' + Y.vitesse + ' (1-5-12-15 = ' + K.nom(Y.figure) + ')', Y.butAttendu ? 'ko' : '']];
   const bloc = '<div class="kv"><div class="kvt">Verdict koun (moteur ' + M.version + ')</div>' + lignes.map(l => '<div class="kr"><span class="kl">' + esc(l[0]) + '<small>' + esc(l[2]) + '</small></span><span class="kg ' + l[3] + '">' + esc(l[1]) + '</span></div>').join('') + '</div>';
