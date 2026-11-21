@@ -375,8 +375,11 @@
     // dans 20 matchs sur 20 observés ; saturée, dans 9 sur 20.
     // second témoin M4+M10 (ajouté le 2026-11-21) : quand la Terre de M5+M7 est saturée, celle de M4+M10 départage (ouverte 5 sur 9, saturée 4 sur 11).
     var tf = K.additionner(T.bases[5], T.bases[7]), terre = K.niveaux(tf)[3] === 2, t2 = K.additionner(T.bases[4], T.bases[10]), terre2 = K.niveaux(t2)[3] === 2,
-      OBS_TEMOIN = { ouverte: { oui: 20, sur: 20 }, m410ouverte: { oui: 5, sur: 10 }, m410saturee: { oui: 4, sur: 11 } };
-    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
+      // Binôme de la figure M5+M7 (2026-11-21, propriétaire) : placé chez lui (sa maison de repos) ou chez son antagoniste, il confirme l'état de la figure ;
+      // Terre saturée et binôme placé : les deux n'ont jamais marqué (0 sur 5).
+      bt = K.binome(tf), hbt = mod(bt - 3), btPlace = T.bases[bt] === bt || (bt < 16 && T.resultantes[bt] === bt) || T.bases[hbt] === bt || (hbt < 16 && T.resultantes[hbt] === bt),
+      OBS_TEMOIN = { ouverte: { oui: 20, sur: 20 }, binomePlace: { oui: 0, sur: 5 }, m410ouverte: { oui: 5, sur: 8 }, m410saturee: { oui: 4, sur: 8 } };
+    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, binome: bt, binomePlace: btPlace, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : btPlace ? OBS_TEMOIN.binomePlace : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;

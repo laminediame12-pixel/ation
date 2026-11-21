@@ -8,8 +8,8 @@ const l2 = lire('validation/lot-2.json')[0]; aj(l2.themes[0], l2.score.split('-'
 const D = [...tous.values()]; let nbErr = 0;
 const O = []; D.forEach(d => { const q = M.marquage(M.lire(d.m)); O.push({ n: q.R1.n, g: d.sc[0] }, { n: q.R7.n, g: d.sc[1] }); });
 if (!src.includes(O.length + ' pôles-matchs')) err('nombre de pôles-matchs : données ' + O.length);
-const t = { ouverte: [0, 0], m410ouverte: [0, 0], m410saturee: [0, 0] }; D.forEach(d => { const T = M.lire(d.m).theme, s1 = K.niveaux(A(T.bases[5], T.bases[7]))[3] === 2, s2 = K.niveaux(A(T.bases[4], T.bases[10]))[3] === 2, k = !s1 ? 'ouverte' : s2 ? 'm410saturee' : 'm410ouverte'; t[k][1]++; if (d.sc[0] > 0 && d.sc[1] > 0) t[k][0]++; });
-const attendu = 'ouverte: { oui: ' + t.ouverte[0] + ', sur: ' + t.ouverte[1] + ' }, m410ouverte: { oui: ' + t.m410ouverte[0] + ', sur: ' + t.m410ouverte[1] + ' }, m410saturee: { oui: ' + t.m410saturee[0] + ', sur: ' + t.m410saturee[1] + ' }';
+const t = { ouverte: [0, 0], binomePlace: [0, 0], m410ouverte: [0, 0], m410saturee: [0, 0] }; D.forEach(d => { const q = M.marquage(M.lire(d.m)).temoin, k = !q.terreSaturee ? 'ouverte' : q.binomePlace ? 'binomePlace' : q.terre2Saturee ? 'm410saturee' : 'm410ouverte'; t[k][1]++; if (d.sc[0] > 0 && d.sc[1] > 0) t[k][0]++; });
+const attendu = Object.keys(t).map(k => k + ': { oui: ' + t[k][0] + ', sur: ' + t[k][1] + ' }').join(', ');
 if (!src.includes(attendu)) err('témoins M5+M7 et M4+M10 : données ' + attendu);
 let rp = 0, rn = 0; D.forEach(d => { const g = M.repos(M.lire(d.m)).gagnant; if (g) { rn++; if (g === (d.sc[0] > d.sc[1] ? 'R1' : d.sc[0] < d.sc[1] ? 'R7' : 'N')) rp++; } });
 if (!src.includes(rp + ' justes sur ' + rn + ' appels sur ' + D.length + ' matchs')) err('H-REPOS : données ' + rp + ' justes sur ' + rn + ' appels sur ' + D.length + ' matchs');

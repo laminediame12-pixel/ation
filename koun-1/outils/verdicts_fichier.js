@@ -16,7 +16,7 @@ D.forEach(d => {
   const vs = V.v ? (V.regle === 'H-REPOS' ? 'H-REPOS, règle du propriétaire' : 'coordonnées, piste en observation') : 'aucune règle ne se prononce';
   const inc = I.niveau === 'probable' ? 'Probable' : I.niveau === 'possible' ? 'Possible' : 'Pas d’indice';
   const rouge = I.rouge.probable ? ' · rouge probable' + (I.rouge.cote ? ' côté ' + (I.rouge.cote === 'R1' ? d.e1 : d.e2) : '') : '';
-  const dm = Q.temoin.deuxMarquent ? 'Oui (témoin M5+M7)' : pct(Q.temoin.obsPas.oui / Q.temoin.obsPas.sur);
+  const dm = Q.temoin.deuxMarquent ? 'Oui' : Q.temoin.obsPas.oui === 0 ? 'Non (binôme)' : pct(Q.temoin.obsPas.oui / Q.temoin.obsPas.sur);
   const lignes = [
     ['Victoire', vic, vs, V.v === '1' ? 'k1' : V.v === '2' ? 'k7' : ''],
     [d.e1 + ' marque', Q.R1.niveau.charAt(0).toUpperCase() + Q.R1.niveau.slice(1) + ' · ' + pct(Q.R1.p2n) + ' (2 buts ou plus)', 'Terre saturée sur ' + Q.R1.n + '/4 maisons du front ' + Q.R1.front + ' · ' + Q.R1.repos + ' figure(s) au repos', Q.R1.p2n >= .5 ? 'ko' : 'kx'],
