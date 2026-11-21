@@ -2054,8 +2054,8 @@
       ],
       "posee_le": "2026-11-21",
       "lecture": "prédictions inscrites avant le score",
-      "statut": "en attente du score et des incidents",
-      "score": null,
+      "statut": "jugé le 2026-11-21 : Westerlo–Charleroi 2-1, 22/02/2026, RAS (ni penalty ni rouge)",
+      "score": "2-1",
       "note": "à renseigner avec équipes, date, score, penalty et rouge",
       "appels": {
         "H-REPOS": "pas d'appel (aucun pôle ne possède seul ses deux fronts au repos)",
@@ -2063,6 +2063,14 @@
         "H-INCIDENT": "pas d'indice : aucun arrêt dans le thème",
         "H-FIGURES-NEG": "M6 a pour résultante Cauda (dans la liste de M6) : incident possible, côté R7 (son siège M10 est dans le front B de M6) ; M12 a pour résultante Laetitia, hors liste",
         "coordination": "M6+M12 = Via, nœud M5 (Feu × Air) : ne touche pas la Terre ; si un incident survient, cela contredit la lecture « coordination sur un nœud de la Terre »"
+      },
+      "jugement": {
+        "avertissement": "le score 2-1 figurait déjà dans le corpus (lot dev) quand j'ai inscrit les prédictions : les lignes de buts ne sont pas un test à l'aveugle (les fréquences par n incluaient ce match) ; seule l'information d'incident était nouvelle",
+        "H-REPOS": "pas d'appel (aucun pôle ne possède seul ses deux fronts au repos)",
+        "H-MARQ-DOUBLE": "R1 n=2 a marqué 2 (conforme) ; R7 n=3 a marqué 1 (non conforme) ; les deux ont marqué (conforme) ; total 3 contre 5,6 attendu",
+        "H-INCIDENT": "pas d'indice, RAS : juste (premier cas sans incident)",
+        "H-FIGURES-NEG": "M6 en liste (Cauda), incident possible côté R7 : RAS, fausse alerte (premier cas sans incident)",
+        "coordination": "Via (nœud M5, sans Terre) et pas d'incident : cohérent avec la lecture « coordination sur un nœud de la Terre »"
       }
     }
   ],

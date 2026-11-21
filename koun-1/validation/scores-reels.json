@@ -94,12 +94,16 @@
    10,
    10
   ],
-  "match": "4·7·10·10",
+  "match": "Westerlo–Charleroi",
   "score": [
    2,
    1
   ],
-  "lot": "dev"
+  "lot": "dev",
+  "date": "2026-02-22",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "score déjà dans le corpus (lot dev) ; équipes, date et incidents précisés par le propriétaire le 2026-11-21 : RAS, ni penalty ni rouge"
  },
  {
   "themes": [
