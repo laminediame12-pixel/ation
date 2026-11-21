@@ -288,6 +288,21 @@
   // VERDICT. Règle du propriétaire, activée à sa demande (H-REPOS) : le pôle qui possède ses deux fronts (le front de sa figure et son front binôme) au repos, sans que l'antagoniste des figures y soit, gagne.
   // Interprétation retenue : un front est « possédé » quand au moins une de ses figures est dans sa maison de repos sans que son antagoniste (f − 3) y soit aussi ; un pôle gagne s'il possède ses deux fronts et l'autre non.
   // Bilan sur 37 matchs (outils/valider.js) : 4 appels, 3 justes, 1 faux ; elle ne se prononce que sur environ un match sur dix. Les anciennes règles (H-CROIX, H-5, H-TEMOINS, H-BIN-E) sont réfutées et retirées.
+  // COMBINAISONS DE MAISONS (exact) : la somme des bases d'un ensemble de maisons est une fonction linéaire (XOR) des 16 bits du thème. Les 16 maisons n'ont que 8 maisons
+  // indépendantes (M1 à M8) : il n'existe que 256 fonctions de somme distinctes (255 non nulles), chacune égale à une somme de maisons parmi M1..M8. equivalences(maisons) donne
+  // la forme sur M1..M8, la plus courte écriture et le nombre de combinaisons qui lui sont équivalentes (256).
+  var CAT = null;
+  function catalogue() { if (CAT) return CAT;
+    var vec = {}, h, l, b, m, v = function (f) { return K.niveaux(f).reduce(function (x, n, i) { return x | ((n === 1 ? 1 : 0) << i); }, 0); },
+      fig = function (x) { return K.FIGURES.map(function (f, i) { return i + 1; }).filter(function (i) { return K.niveaux(i).every(function (n, k) { return n === (((x >> k) & 1) ? 1 : 2); }); })[0]; };
+    for (h = 1; h <= 16; h++) vec[h] = [0, 0, 0, 0];
+    for (b = 0; b < 16; b++) { var meres = [0, 1, 2, 3].map(function (mm) { return fig(mm === (b >> 2) ? (1 << (b & 3)) : 0); }), T = K.construire(meres);
+      for (h = 1; h <= 16; h++) { var x = v(T.bases[h]); for (l = 0; l < 4; l++) if ((x >> l) & 1) vec[h][l] |= (1 << b); } }
+    var cle = function (hs) { var r = [0, 0, 0, 0]; hs.forEach(function (q) { for (var k = 0; k < 4; k++) r[k] ^= vec[q][k]; }); return r.join(','); }, classes = {}, forme = {};
+    for (m = 0; m < 65536; m++) { var hs = []; for (h = 1; h <= 16; h++) if ((m >> (h - 1)) & 1) hs.push(h);
+      var k = cle(hs), c = classes[k], mieux = !c || hs.length < c.length; if (c && hs.length === c.length) for (var z = 0; z < hs.length; z++) if (hs[z] !== c[z]) { mieux = hs[z] < c[z]; break; } if (mieux) classes[k] = hs; if (m < 256) forme[k] = hs; }
+    CAT = { cle: cle, classes: classes, forme: forme, nb: Object.keys(classes).length }; return CAT; }
+  function equivalences(maisons) { var C = catalogue(), k = C.cle(maisons); return { minimale: C.classes[k], forme: C.forme[k], equivalentes: 256, fonctions: C.nb }; }
   // COORDONNÉES (piste H-COORD-VICTOIRE, en observation) : l'état du nœud (plein 2, mixte 1, vide 0) de la coordination base(M1)+base(M7), puis de la résultante de M9,
   // dans le front de chaque pôle. Le pôle dont ces nœuds sont les plus pleins l'emporte (somme des signes des deux écarts, nulle = pas d'appel).
   function coordonnees(L) { var T = L.theme, N = noeuds(L), val = { plein: 2, mixte: 1, vide: 0 }, c1 = K.additionner(T.bases[1], T.bases[7]), c2 = T.resultantes[9];
@@ -331,7 +346,10 @@
       return { front: K.front(z + 1), maisons: hs, n: n, butsMoyens: MARQUAGE_MOYENNES[n], p2: MARQUAGE_P2[n].p, p1: MARQUAGE_P1[n], obs: MARQUAGE_P2[n].obs }; }
     var a = un(L.R1), b = un(L.R7);
     // deux marquent : produit des deux probabilités (hypothèse d'indépendance : 75 % prédit en moyenne contre 73 % observé sur 37 matchs) ; buts attendus : somme des moyennes par n
-    return { R1: a, R7: b, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
+    // TÉMOIN M5+M7 (signal post hoc, trouvé par criblage des 255 combinaisons distinctes) : quand la Terre de la figure base(M5)+base(M7) n'est pas saturée, les deux équipes ont marqué
+    // dans 20 matchs sur 20 observés ; saturée, dans 9 sur 20.
+    var tf = K.additionner(T.bases[5], T.bases[7]), terre = K.niveaux(tf)[3] === 2;
+    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, deuxMarquent: !terre, obsPas: terre ? { oui: 9, sur: 20 } : { oui: 20, sur: 20 } }, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;
@@ -355,7 +373,7 @@
       cote = e1 === 'vide' && e7 !== 'vide' ? 'R1' : e7 === 'vide' && e1 !== 'vide' ? 'R7' : null;
     return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens,
       rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote } }; }
-  var API = { coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

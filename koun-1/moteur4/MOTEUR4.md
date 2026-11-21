@@ -40,3 +40,7 @@ Ces fonctions ne décident rien ; elles affichent des signaux dont le statut est
 
 ## Ce que la page affiche (`koun.html`)
 Verdict de victoire : H-REPOS seul. Fenêtre du verdict : n et probabilité de marquer 2 buts ou plus par pôle, « Deux marquent » et buts attendus (indices), « Rouge ou penalty » (détecteur à six paramètres). Toutes ces lignes portent l'étiquette « indice non vérifié ».
+
+## Combinaisons de maisons et témoins (exact + signal)
+- `KOUN4.equivalences(maisons)` : il n'existe que 256 fonctions de somme distinctes pour les combinaisons de maisons (255 non nulles), parce que les 16 maisons n'ont que 8 maisons indépendantes. Renvoie la forme sur M1..M8 et la plus courte écriture (1-5-12-15 ≡ M1+M6+M13 ≡ M2+M3+M4+M6 ; Circuit souverain ≡ M2+M4+M6). La page l'affiche dans « Maisons de calcul ».
+- `KOUN4.marquage(L).temoin` : témoin M5+M7 : Terre de base(M5)+base(M7) non saturée → les deux équipes marquent (20 matchs sur 20), saturée → 9 sur 20. Signal post hoc (H-TEMOIN-M5M7), affiché dans « Deux marquent ».

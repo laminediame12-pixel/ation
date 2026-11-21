@@ -2331,6 +2331,14 @@
       "verifie": "les 9 maisons nommées sur les captures (M5 à M12 et le juge M15 Amissio) sont exactement celles de notre construction ; R1 Carcer et R7 Fortuna Minor aussi ; les trigones de l'application sont nos fronts sans la 4e maison ; la force de l'application n'a pas été reproduite (24 définitions essayées) ; comparer la saturation de la résultante de M1 et de M7 : 12 sur 28 (43 %) sur 34 matchs décisifs, par les bases 16 sur 25 (64 %) : aucun signal",
       "score": null,
       "note": "à renseigner : équipes, date, score, penalty, rouge"
+    },
+    {
+      "id": "H-TEMOIN-M5M7",
+      "statut": "SIGNAL post hoc 2026-11-21 (criblage des 255 combinaisons de maisons) : en observation ; affiché comme indice dans « Deux marquent »",
+      "regle": "quand la Terre de la figure base(M5)+base(M7) n'est pas saturée, les deux équipes marquent ; saturée, la règle ne dit rien",
+      "resultat": "40 matchs : Terre non saturée 20 sur 20 (100 %), saturée 9 sur 20 (45 %) ; indépendants 10 sur 10 contre 7 sur 15 ; construits 10 sur 10 contre 2 sur 5 ; corrélation -0,62 avec « deux marquent » ; probabilité du meilleur de 5100 tests (255 combinaisons × 4 niveaux × 5 résultats) par hasard : 0,055 (200 permutations) : limite",
+      "reserves": "trouvé par criblage ; la base « les deux marquent » est de 73 % ; non testé sur des matchs que la recherche n'a pas vus",
+      "combinaisons": "exact : il n'existe que 256 fonctions de somme distinctes (255 non nulles) pour les combinaisons de maisons ; tailles minimales : 16 d'une maison, 79 de deux, 124 de trois, 36 de quatre ; 1-5-12-15 (buts HT1) ≡ M1+M6+M13 ≡ M2+M3+M4+M6 ; Circuit souverain 1-3-5-11-13 ≡ M2+M4+M6 ; les données de première mi-temps manquent au corpus : 1-5-12-15 n'a pas pu être testé (liens faibles avec les buts totaux, |r| <= 0,46)"
     }
   ],
   "lectures": [
