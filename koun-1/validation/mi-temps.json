@@ -254,5 +254,29 @@
   },
   "prediction_avant": "pas de but attendu (attaque de Cauda bloquée par le protecteur Carcer) ; si but : PSG ; publication : 1X",
   "note": "mi-temps 1-2 (propriétaire, 2026-11-21) ; score final non fourni"
+ },
+ {
+  "themes": [
+   6,
+   15,
+   12,
+   8
+  ],
+  "match": "Inter Miami–Columbus",
+  "date": "2026-11-21",
+  "competition": "MLS",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "provisoire": true,
+  "buts": {
+   "R1": [],
+   "R7": [
+    "9'"
+   ]
+  },
+  "prediction_avant": "but en 1re mi-temps des deux équipes (H-MT-MECANISME, figure Fortuna Major rapide) ; Columbus « bloqué » ; victoire : avantage Columbus, nul possible",
+  "note": "match en cours au moment de la saisie : but de Columbus à la 9e ; mi-temps à confirmer"
  }
 ]
