@@ -325,11 +325,23 @@
     var a = un(L.R1), b = un(L.R7);
     // deux marquent : produit des deux probabilités (hypothèse d'indépendance : 75 % prédit en moyenne contre 73 % observé sur 37 matchs) ; buts attendus : somme des moyennes par n
     return { R1: a, R7: b, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
-  // INCIDENT (signal post hoc sur 3 cas, à confirmer ; ce n'est PAS une règle de verdict) : penalty ou rouge probable quand un arrêt (antagoniste ancré en base d'une maison)
-  // relie les fronts directs de R1 et de R7 : le front de l'antagoniste ancré est celui d'un pôle, le front de la maison touchée est celui de l'autre. Le côté n'est pas déterminé.
-  function incident(L) { var z1 = (L.R1.figure - 1) % 4, z7 = (L.R7.figure - 1) % 4,
-      liens = noeuds(L).arrets.filter(function (a) { var att = (a.figure - 1) % 4, vic = (a.maison - 1) % 4; return (att === z1 && vic === z7) || (att === z7 && vic === z1); }).map(function (a) { return { maison: a.maison, antagoniste: a.figure, sens: (a.figure - 1) % 4 === z1 ? 'R1→R7' : 'R7→R1' }; });
-    return { probable: liens.length > 0, liens: liens }; }
+  // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
+  // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
+  //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;
+  //  P3 la résultante de M6 est Cauda ou Rubeus ; P4 la base de M9 est la figure d'un des deux pôles ; P5 la Terre de la coordination base(M1)+base(M7) n'est pas saturée ;
+  //  P6 la coordination base(M6)+base(M12) tombe sur un nœud touchant le canal Terre (maisons 4, 8, 12, 13, 14, 15).
+  function incident(L) { var T = L.theme, z1 = (L.R1.figure - 1) % 4, z7 = (L.R7.figure - 1) % 4,
+      liens = noeuds(L).arrets.filter(function (a) { var att = (a.figure - 1) % 4, vic = (a.maison - 1) % 4; return (att === z1 && vic === z7) || (att === z7 && vic === z1); }).map(function (a) { return { maison: a.maison, antagoniste: a.figure, sens: (a.figure - 1) % 4 === z1 ? 'R1→R7' : 'R7→R1' }; }),
+      c1 = K.additionner(T.bases[1], T.bases[7]), c2 = K.additionner(T.bases[6], T.bases[12]), i2 = (c2 - 1) % 4, j2 = Math.floor((c2 - 1) / 4),
+      p = [
+        { id: 'P1', actif: liens.length > 0, texte: 'un arrêt relie les fronts de R1 et de R7' + (liens.length ? ' (M' + liens[0].maison + ', ' + liens[0].sens + ')' : '') },
+        { id: 'P2', actif: [5, 15, 3, 1, 12].indexOf(T.resultantes[12]) >= 0, texte: 'la résultante de M12 (' + K.nom(T.resultantes[12]) + ') est une figure d\'incident' },
+        { id: 'P3', actif: [13, 7].indexOf(T.resultantes[6]) >= 0, texte: 'la résultante de M6 (' + K.nom(T.resultantes[6]) + ') est une figure d\'incident' },
+        { id: 'P4', actif: T.bases[9] === L.R1.figure || T.bases[9] === L.R7.figure, texte: 'la base de M9 (' + K.nom(T.bases[9]) + ') est la figure ' + (T.bases[9] === L.R1.figure ? 'de R1 : l\'autre pôle (R7) reçoit' : T.bases[9] === L.R7.figure ? 'de R7 : l\'autre pôle (R1) reçoit' : 'd\'un pôle') },
+        { id: 'P5', actif: K.niveaux(c1)[3] !== 2, texte: 'la Terre de M1+M7 (' + K.nom(c1) + ') n\'est pas saturée' },
+        { id: 'P6', actif: i2 === 3 || j2 === 3, texte: 'la coordination M6+M12 (' + K.nom(c2) + ', nœud M' + c2 + ') touche la Terre' }],
+      score = p.filter(function (x) { return x.actif; }).length;
+    return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens }; }
   var API = { incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
