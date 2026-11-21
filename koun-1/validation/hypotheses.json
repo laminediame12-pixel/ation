@@ -2171,6 +2171,111 @@
       "score": "7-0",
       "note": "à renseigner : équipes, date, penalty, rouge",
       "jugement": "détecteur d'incident : pas d'indice (1/6), RAS : juste ; rouge non probable (P6 inactif), RAS : juste ; H-REPOS : pas d'appel"
+    },
+    {
+      "theme": [
+        16,
+        2,
+        4,
+        13
+      ],
+      "posee_le": "2026-11-21",
+      "match": "Pohang Steelers – Anyang",
+      "date_match": "2026-11-21",
+      "lecture": "thème tiré au hasard par l'assistant (générateur aléatoire, thème absent du corpus), prédictions inscrites avant le score",
+      "statut": "en attente du score et des incidents",
+      "appels": {
+        "H-REPOS": "pas d'appel",
+        "marquage": "R1 Fortuna Major n=2 (63 % de 2 buts ou plus), R7 Tristitia n=2 (63 %) ; deux marquent 79 % ; total ≈ 5",
+        "incident": "possible 2/6",
+        "rouge": "probable"
+      },
+      "score": null,
+      "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
+    },
+    {
+      "theme": [
+        13,
+        12,
+        13,
+        16
+      ],
+      "posee_le": "2026-11-21",
+      "match": "Central Coast Mariners – Perth Glory",
+      "date_match": "2026-11-21",
+      "lecture": "thème tiré au hasard par l'assistant (générateur aléatoire, thème absent du corpus), prédictions inscrites avant le score",
+      "statut": "en attente du score et des incidents",
+      "appels": {
+        "H-REPOS": "R1 (Central Coast Mariners)",
+        "marquage": "R1 Fortuna Major n=1 (32 % de 2 buts ou plus), R7 Cauda Draconis n=0 (33 %) ; deux marquent 53 % ; total ≈ 2.7",
+        "incident": "aucun 1/6",
+        "rouge": "probable"
+      },
+      "score": null,
+      "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
+    },
+    {
+      "theme": [
+        12,
+        10,
+        9,
+        9
+      ],
+      "posee_le": "2026-11-21",
+      "match": "Jeonbuk Hyundai Motors – Séoul",
+      "date_match": "2026-11-21",
+      "lecture": "thème tiré au hasard par l'assistant (générateur aléatoire, thème absent du corpus), prédictions inscrites avant le score",
+      "statut": "en attente du score et des incidents",
+      "appels": {
+        "H-REPOS": "pas d'appel",
+        "marquage": "R1 Rubeus n=2 (63 % de 2 buts ou plus), R7 Carcer n=0 (33 %) ; deux marquent 60 % ; total ≈ 3.7",
+        "incident": "possible 2/6",
+        "rouge": "non"
+      },
+      "score": null,
+      "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
+    },
+    {
+      "theme": [
+        12,
+        13,
+        15,
+        12
+      ],
+      "posee_le": "2026-11-21",
+      "match": "Kawasaki Frontale – Avispa Fukuoka",
+      "date_match": "2026-11-21",
+      "lecture": "thème tiré au hasard par l'assistant (générateur aléatoire, thème absent du corpus), prédictions inscrites avant le score",
+      "statut": "en attente du score et des incidents",
+      "appels": {
+        "H-REPOS": "pas d'appel",
+        "marquage": "R1 Conjunctio n=3 (69 % de 2 buts ou plus), R7 Cauda Draconis n=1 (32 %) ; deux marquent 79 % ; total ≈ 4.6",
+        "incident": "possible 2/6",
+        "rouge": "probable"
+      },
+      "score": null,
+      "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
+    },
+    {
+      "theme": [
+        15,
+        13,
+        10,
+        5
+      ],
+      "posee_le": "2026-11-21",
+      "match": "Sanfrecce Hiroshima – Yokohama F-Marinos",
+      "date_match": "2026-11-21",
+      "lecture": "thème tiré au hasard par l'assistant (générateur aléatoire, thème absent du corpus), prédictions inscrites avant le score",
+      "statut": "en attente du score et des incidents",
+      "appels": {
+        "H-REPOS": "pas d'appel",
+        "marquage": "R1 Carcer n=1 (32 % de 2 buts ou plus), R7 Caput n=3 (69 %) ; deux marquent 79 % ; total ≈ 4.6",
+        "incident": "possible 2/6",
+        "rouge": "probable"
+      },
+      "score": null,
+      "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
     }
   ],
   "lectures": [
