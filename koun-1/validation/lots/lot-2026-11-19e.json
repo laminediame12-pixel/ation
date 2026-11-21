@@ -1,0 +1,22 @@
+{
+ "nom": "Lot du 19/11/2026 (5) : Championnat du Qatar et Ligue Pro des Émirats, thèmes valides (jeudi) tirés au hasard, scores à venir",
+ "regle": "Un lot ne sert qu'une fois. Score : équipe 1 - équipe 2 (R1 = équipe 1). Thèmes tirés alors que les deux matchs étaient en cours (0-0, 8e et 12e minute de la 1re mi-temps).",
+ "matchs": [
+  {
+   "equipe1": "Al Ahli Doha",
+   "equipe2": "Al Shamal",
+   "date": "19/11/2026",
+   "theme": "13-11-13-3",
+   "annonce": "Victoire Al Ahli Doha (VA-1), 2-1, les deux marquent, Over 1,5 / 2,5, Under 3,5",
+   "score": null
+  },
+  {
+   "equipe1": "Al Ain",
+   "equipe2": "Al Dhafra",
+   "date": "19/11/2026",
+   "theme": "9-12-15-12",
+   "annonce": "Victoire Al Dhafra (FC-2), 1-2, les deux marquent, Over 1,5 / 2,5, Under 3,5",
+   "score": null
+  }
+ ]
+}

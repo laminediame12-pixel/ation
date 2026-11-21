@@ -1,0 +1,352 @@
+[
+ {
+  "id": 1794946055058,
+  "t1": "Argentine ",
+  "t2": "Costa Rica",
+  "date": "17/11/2026",
+  "time": "23:00",
+  "score": "5-0",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Match réel",
+  "mVecs": [
+   "1,0,0,0",
+   "0,0,1,1",
+   "0,1,0,1",
+   "1,0,1,1"
+  ],
+  "mNames": [
+   "2 Laetitia",
+   "12 Fortuna Major",
+   "15 Acquisitio",
+   "14 Puella"
+  ],
+  "verdictTxt": "Victoire : Argentine  (3 - 0)",
+  "savedAt": "17/11/2026 20:07"
+ },
+ {
+  "id": 1794945816025,
+  "t1": "Niger",
+  "t2": "Maroc",
+  "date": "17/11/2026",
+  "time": "20:00",
+  "score": "0-1",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Match réel",
+  "mVecs": [
+   "0,1,1,0",
+   "1,1,1,0",
+   "1,1,0,0",
+   "1,1,1,0"
+  ],
+  "mNames": [
+   "11 Conjunctio",
+   "13 Cauda Draconis",
+   "9 Fortuna Minor",
+   "13 Cauda Draconis"
+  ],
+  "verdictTxt": "Victoire : Maroc (0 - 3)",
+  "savedAt": "17/11/2026 20:03"
+ },
+ {
+  "id": 1794889286378,
+  "t1": "Nice ",
+  "t2": "Lorient",
+  "date": "16/11/2026",
+  "time": "22:40",
+  "score": "3-3",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "1,0,0,0",
+   "1,1,0,0",
+   "1,0,1,0",
+   "1,1,1,1"
+  ],
+  "mNames": [
+   "2 Laetitia",
+   "9 Fortuna Minor",
+   "6 Amissio",
+   "5 Via"
+  ],
+  "verdictTxt": "Victoire : Lorient (0 - 3)",
+  "savedAt": "17/11/2026 04:21"
+ },
+ {
+  "id": 1794872954840,
+  "t1": "Rome",
+  "t2": "Chelsea ",
+  "date": "16/11/2026",
+  "time": "22:40",
+  "score": "4-3",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "1,1,1,0",
+   "0,0,1,0",
+   "0,1,0,1",
+   "0,1,0,0"
+  ],
+  "mNames": [
+   "13 Cauda Draconis",
+   "4 Albus",
+   "15 Acquisitio",
+   "7 Rubeus"
+  ],
+  "verdictTxt": "Victoire : Chelsea  (0 - 2)",
+  "savedAt": "16/11/2026 23:49"
+ },
+ {
+  "id": 1794866273178,
+  "t1": "Allemagne ",
+  "t2": "Pays Bas",
+  "date": "16/11/2026",
+  "time": "19:07",
+  "score": "5-0",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Match réel",
+  "mVecs": [
+   "1,1,0,0",
+   "0,1,1,0",
+   "0,0,0,1",
+   "0,1,0,0"
+  ],
+  "mNames": [
+   "9 Fortuna Minor",
+   "11 Conjunctio",
+   "8 Tristitia",
+   "7 Rubeus"
+  ],
+  "verdictTxt": "Victoire : Allemagne  (3 - 0)",
+  "savedAt": "16/11/2026 21:57"
+ },
+ {
+  "id": 1794860173303,
+  "t1": "Soudan ",
+  "t2": "Sénégal ",
+  "date": "16/11/2026",
+  "time": "13:00",
+  "score": "2-4",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Match réel",
+  "mVecs": [
+   "0,0,1,1",
+   "1,0,1,0",
+   "0,1,1,1",
+   "1,0,0,0"
+  ],
+  "mNames": [
+   "12 Fortuna Major",
+   "6 Amissio",
+   "3 Caput Draconis",
+   "2 Laetitia"
+  ],
+  "verdictTxt": "Victoire : Sénégal  (0 - 1)",
+  "savedAt": "16/11/2026 20:16"
+ },
+ {
+  "id": 1794813178802,
+  "t1": "France ",
+  "t2": "Turquie ",
+  "date": "15/11/2026",
+  "time": "13:00",
+  "score": "2-1",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Match réel",
+  "mVecs": [
+   "0,1,1,1",
+   "1,0,1,0",
+   "1,1,1,1",
+   "0,1,1,1"
+  ],
+  "mNames": [
+   "3 Caput Draconis",
+   "6 Amissio",
+   "5 Via",
+   "3 Caput Draconis"
+  ],
+  "verdictTxt": "Victoire : France  (3 - 0)",
+  "savedAt": "16/11/2026 07:12"
+ },
+ {
+  "id": 1794812903867,
+  "t1": "Belgique ",
+  "t2": "Italie ",
+  "date": "15/11/2026",
+  "time": "13:00",
+  "score": "4-1",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Match réel",
+  "mVecs": [
+   "1,1,0,1",
+   "0,1,0,0",
+   "0,1,1,1",
+   "0,0,1,0"
+  ],
+  "mNames": [
+   "1 Puer",
+   "7 Rubeus",
+   "3 Caput Draconis",
+   "4 Albus"
+  ],
+  "verdictTxt": "Victoire : Belgique  (3 - 0)",
+  "savedAt": "16/11/2026 07:08"
+ },
+ {
+  "id": 1794785643908,
+  "t1": "Atletico Madrid ",
+  "t2": "Borussia Dortmund ",
+  "date": "15/11/2026",
+  "time": "15:20",
+  "score": "3-4",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "0,1,0,1",
+   "1,1,1,0",
+   "0,1,0,0",
+   "0,0,0,1"
+  ],
+  "mNames": [
+   "15 Acquisitio",
+   "13 Cauda Draconis",
+   "7 Rubeus",
+   "8 Tristitia"
+  ],
+  "verdictTxt": "Victoire : Borussia Dortmund  (0 - 2)",
+  "savedAt": "15/11/2026 23:34"
+ },
+ {
+  "id": 1794785602669,
+  "t1": "Paris Saint-Germain ",
+  "t2": "Real Madrid ",
+  "date": "15/11/2026",
+  "time": "10:20",
+  "score": "4-5",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "0,1,0,0",
+   "0,0,0,0",
+   "0,1,1,1",
+   "0,0,1,1"
+  ],
+  "mNames": [
+   "7 Rubeus",
+   "16 Populus",
+   "3 Caput Draconis",
+   "12 Fortuna Major"
+  ],
+  "verdictTxt": "Victoire : Real Madrid  (0 - 3)",
+  "savedAt": "15/11/2026 23:33"
+ },
+ {
+  "id": 1794785544729,
+  "t1": "Roma ",
+  "t2": "Bayern Munich ",
+  "date": "15/11/2026",
+  "time": "09:40",
+  "score": "3-5",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "0,0,1,1",
+   "1,0,0,1",
+   "0,1,1,1",
+   "1,0,0,0"
+  ],
+  "mNames": [
+   "12 Fortuna Major",
+   "10 Carcer",
+   "3 Caput Draconis",
+   "2 Laetitia"
+  ],
+  "verdictTxt": "Victoire : Pays Bas (3 - 0)",
+  "savedAt": "15/11/2026 23:32"
+ },
+ {
+  "id": 1794785479352,
+  "t1": "Juventus ",
+  "t2": "Olympique Lyonnais ",
+  "date": "15/11/2026",
+  "time": "08:50",
+  "score": "6-4",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "1,0,1,0",
+   "0,1,1,0",
+   "1,0,1,1",
+   "0,1,1,0"
+  ],
+  "mNames": [
+   "6 Amissio",
+   "11 Conjunctio",
+   "14 Puella",
+   "11 Conjunctio"
+  ],
+  "verdictTxt": "Victoire : Juventus  (3 - 0)",
+  "savedAt": "15/11/2026 23:31"
+ },
+ {
+  "id": 1794785405945,
+  "t1": "Paris Saint-Germain ",
+  "t2": "Bayern Munich ",
+  "date": "15/11/2026",
+  "time": "03:40",
+  "score": "3-1",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "1,1,0,1",
+   "1,0,1,0",
+   "1,1,1,0",
+   "0,1,0,1"
+  ],
+  "mNames": [
+   "1 Puer",
+   "6 Amissio",
+   "13 Cauda Draconis",
+   "15 Acquisitio"
+  ],
+  "verdictTxt": "Victoire : Match Nul (1 - 1)",
+  "savedAt": "15/11/2026 23:30"
+ },
+ {
+  "id": 1794785329034,
+  "t1": "Liverpool ",
+  "t2": "Manchester City ",
+  "date": "15/11/2026",
+  "time": "02:10",
+  "score": "6-2",
+  "penalty": "-",
+  "redCard": "-",
+  "gameMode": "Simulation",
+  "mVecs": [
+   "0,0,1,1",
+   "1,0,1,1",
+   "1,0,0,1",
+   "0,1,0,1"
+  ],
+  "mNames": [
+   "12 Fortuna Major",
+   "14 Puella",
+   "10 Carcer",
+   "15 Acquisitio"
+  ],
+  "verdictTxt": "Victoire : Liverpool  (2 - 0)",
+  "savedAt": "15/11/2026 23:28"
+ }
+]

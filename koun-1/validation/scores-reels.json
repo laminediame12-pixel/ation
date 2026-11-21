@@ -1,0 +1,633 @@
+[
+ {
+  "themes": [
+   8,
+   5,
+   11,
+   7
+  ],
+  "match": "8·5·11·7",
+  "score": [
+   7,
+   0
+  ],
+  "lot": "dev",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "RAS : ni penalty ni rouge (propriétaire, 2026-11-21) ; équipes et date à préciser"
+ },
+ {
+  "themes": [
+   9,
+   13,
+   2,
+   13
+  ],
+  "match": "équipes et date à préciser",
+  "score": [
+   2,
+   0
+  ],
+  "lot": "dev",
+  "but_mt1": true,
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   5,
+   14,
+   6,
+   14
+  ],
+  "match": "5·14·6·14",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "dev",
+  "but_mt1": true
+ },
+ {
+  "themes": [
+   7,
+   5,
+   9,
+   6
+  ],
+  "match": "7·5·9·6",
+  "score": [
+   4,
+   0
+  ],
+  "lot": "dev",
+  "but_mt1": true
+ },
+ {
+  "themes": [
+   13,
+   12,
+   8,
+   15
+  ],
+  "match": "13·12·8·15",
+  "score": [
+   0,
+   3
+  ],
+  "lot": "dev",
+  "but_mt1": false
+ },
+ {
+  "themes": [
+   4,
+   7,
+   5,
+   8
+  ],
+  "match": "4·7·5·8",
+  "score": [
+   1,
+   0
+  ],
+  "lot": "dev",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "RAS : ni penalty ni rouge (propriétaire, 2026-11-21) ; équipes et date à préciser"
+ },
+ {
+  "themes": [
+   4,
+   7,
+   10,
+   10
+  ],
+  "match": "Westerlo–Charleroi",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "dev",
+  "date": "2026-02-22",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "score déjà dans le corpus (lot dev) ; équipes, date et incidents précisés par le propriétaire le 2026-11-21 : RAS, ni penalty ni rouge"
+ },
+ {
+  "themes": [
+   4,
+   1,
+   6,
+   7
+  ],
+  "match": "Los Angeles–Inter Miami",
+  "score": [
+   3,
+   0
+  ],
+  "lot": "dev",
+  "date": "2026-02-22",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   4,
+   6,
+   7,
+   16
+  ],
+  "match": "Paris–Marseille",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "dev",
+  "date": "2026-02-08",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   2,
+   9,
+   6,
+   5
+  ],
+  "match": "Nice–Lorient",
+  "score": [
+   3,
+   3
+  ],
+  "lot": "dev",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)",
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   12,
+   6,
+   1,
+   9
+  ],
+  "match": "12·6·1·9",
+  "score": [
+   1,
+   2
+  ],
+  "lot": "dev",
+  "but_mt1": false
+ },
+ {
+  "themes": [
+   13,
+   7,
+   3,
+   13
+  ],
+  "match": "13·7·3·13",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "dev",
+  "but_mt1": false
+ },
+ {
+  "themes": [
+   2,
+   12,
+   15,
+   14
+  ],
+  "match": "Argentine–Costa Rica",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   11,
+   13,
+   9,
+   13
+  ],
+  "match": "Niger–Maroc",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   13,
+   4,
+   15,
+   7
+  ],
+  "match": "Rome–Chelsea",
+  "score": [
+   4,
+   3
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   9,
+   11,
+   8,
+   7
+  ],
+  "match": "Allemagne–Pays Bas",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   6,
+   3,
+   2
+  ],
+  "match": "Soudan–Sénégal",
+  "score": [
+   2,
+   4
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   3,
+   6,
+   5,
+   3
+  ],
+  "match": "France–Turquie",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   1,
+   7,
+   3,
+   4
+  ],
+  "match": "Belgique–Italie",
+  "score": [
+   4,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   15,
+   13,
+   7,
+   8
+  ],
+  "match": "Atletico Madrid–Borussia Dortmund",
+  "score": [
+   3,
+   4
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   7,
+   16,
+   3,
+   12
+  ],
+  "match": "Paris Saint-Germain–Real Madrid",
+  "score": [
+   4,
+   5
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   10,
+   3,
+   2
+  ],
+  "match": "Roma–Bayern Munich",
+  "score": [
+   3,
+   5
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   6,
+   11,
+   14,
+   11
+  ],
+  "match": "Juventus–Olympique Lyonnais",
+  "score": [
+   6,
+   4
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   1,
+   6,
+   13,
+   15
+  ],
+  "match": "Paris Saint-Germain–Bayern Munich",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   14,
+   10,
+   15
+  ],
+  "match": "Liverpool–Manchester City",
+  "score": [
+   6,
+   2
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   6,
+   8,
+   8,
+   11
+  ],
+  "match": "Al Hazem–Al Ettifaq",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "lot",
+  "date": "2026-02-27"
+ },
+ {
+  "themes": [
+   10,
+   2,
+   12,
+   3
+  ],
+  "match": "Potosí–Bolívar",
+  "score": [
+   1,
+   3
+  ],
+  "lot": "lot",
+  "date": "2026-02-23"
+ },
+ {
+  "themes": [
+   14,
+   9,
+   16,
+   9
+  ],
+  "match": "Zurich–Lucerne",
+  "date": "2026-02-14",
+  "score": [
+   1,
+   4
+  ],
+  "lot": "lot",
+  "rouge": "R7",
+  "penalty": null
+ },
+ {
+  "themes": [
+   1,
+   3,
+   15,
+   4
+  ],
+  "match": "équipes à préciser",
+  "date": "2026-11-20",
+  "score": [
+   4,
+   2
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   8,
+   10,
+   3
+  ],
+  "match": "Seattle–Salt Lake",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot",
+  "date": "2026-11-20",
+  "heure": "03:30"
+ },
+ {
+  "themes": [
+   5,
+   1,
+   10,
+   10
+  ],
+  "match": "Austin–Minnesota",
+  "score": [
+   2,
+   2
+  ],
+  "lot": "lot",
+  "date": "2026-02-22"
+ },
+ {
+  "themes": [
+   10,
+   12,
+   12,
+   15
+  ],
+  "match": "Tijuana–Pumas",
+  "date": "2026-02-28",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   2,
+   12,
+   4,
+   4
+  ],
+  "match": "Bayern Munich–Hoffenheim",
+  "date": "2026-02-18",
+  "score": [
+   5,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   3,
+   10,
+   3,
+   1
+  ],
+  "match": "Tigres UANL–Pachuca",
+  "score": [
+   1,
+   2
+  ],
+  "lot": "lot",
+  "date": "2026-02-22"
+ },
+ {
+  "themes": [
+   12,
+   14,
+   8,
+   10
+  ],
+  "match": "Napoli–Côme",
+  "date": "2026-02-10",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   2,
+   6,
+   7,
+   9
+  ],
+  "match": "équipes et date à préciser",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   16,
+   1,
+   8,
+   14
+  ],
+  "match": "Troyes–Le Havre",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "incident",
+  "rouge": "R7",
+  "penalty": "R1",
+  "note": "fourni par le propriétaire le 2026-11-21 ; Troyes (R1) 3-1 Le Havre (R7), penalty R1, rouge R7 ; H-REPOS appelait R7 (faux) ; détails Sofascore fournis le 2026-11-21 : mi-temps 1-1, penalty Troyes à 90'+8, rouge Le Havre en fin de match",
+  "date": "2026-11-20",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "19' A. Mille",
+    "69' A. Mille",
+    "90'+8 R. Ripart (penalty)"
+   ],
+   "R7": [
+    "3' J. Maja"
+   ]
+  },
+  "competition": "Ligue 1 (France), journée 11, 20/11/2026 19:45"
+ },
+ {
+  "themes": [
+   5,
+   3,
+   16,
+   11
+  ],
+  "match": "Orlando City–Cincinnati",
+  "date": "2026-11-20",
+  "score": [
+   1,
+   3
+  ],
+  "lot": "incident",
+  "rouge": "Non",
+  "penalty": "R7",
+  "note": "détails Sofascore fournis le 2026-11-21 : mi-temps 1-1, penalty Cincinnati à 43', aucun carton rouge ; date corrigée (20/11 et non 22/11)",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "26' M. Ojeda"
+   ],
+   "R7": [
+    "43' Evander (penalty)",
+    "50' Evander",
+    "85' S. Gidi"
+   ]
+  },
+  "competition": "MLS, playoffs, Wild Card Round, 20/11/2026 00:30"
+ },
+ {
+  "themes": [
+   1,
+   2,
+   6,
+   15
+  ],
+  "match": "équipes à préciser",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "decisif",
+  "rouge": null,
+  "penalty": null,
+  "note": "5-0 fourni par le propriétaire le 2026-11-21 ; thème absent du corpus avant ce message ; incidents non précisés"
+ }
+]

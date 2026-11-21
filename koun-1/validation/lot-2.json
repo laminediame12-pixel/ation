@@ -1,0 +1,9 @@
+[
+ {
+  "match": "deux thèmes d'un même match",
+  "themes": [[1, 15, 3, 9], [1, 9, 8, 1]],
+  "score": "1-4",
+  "repere": "R1 = équipe 1 dans les deux thèmes ; score donné équipe 1 - équipe 2",
+  "note": "premier test de CO-1 (conciliation de deux thèmes) ; non utilisé pour ajuster le moteur"
+ }
+]
