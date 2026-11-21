@@ -85,5 +85,21 @@
    "R7": []
   },
   "note": "match en cours au moment de la saisie : 1-0 pour Bournemouth à la 19e ; score de mi-temps à confirmer"
+ },
+ {
+  "themes": [
+   10,
+   11,
+   6,
+   4
+  ],
+  "match": "Millwall–QPR",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "note": "mi-temps 0-1 (propriétaire, 2026-11-21) ; score final non fourni"
  }
 ]
