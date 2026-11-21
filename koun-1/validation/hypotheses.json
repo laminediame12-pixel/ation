@@ -2151,6 +2151,25 @@
       "cas": "rouges : 16-1-8-14 (M6+M12 = Albus, nœud M4 T×F ; rouge R7 ; nœud M1+M7 M8 vide dans le front C de R7), 14-9-16-9 (Aquisitio, M15 E×T ; rouge R7 ; nœud M12 vide dans le front A de R7), 11-5-11-4 (Aquisitio, M15 ; rouge R7 ; nœud M10 vide dans le front B de R1 : côté manqué), 14-14-9-16 (Albus, M4 ; rouge R1 ; nœud M3 vide dans le front A de R1) ; sans rouge : 5-3-16-11 (Fortuna Minor, M9 F×E, rouge non précisé), 4-7-10-10 (Via, M5 F×A), 4-7-5-8 (Via, M5)",
       "resultat": "détection du rouge : 4 sur 4, aucune fausse alerte sur 3 ; côté : 3 sur 4",
       "reserves": "P6 s'active dans 44 % des thèmes : à l'échelle des matchs elle donnerait beaucoup de fausses alertes si le rouge est rare ; le classement parfait 4/3 arrive par hasard 0,7 % pour ce paramètre précis, mais il a été trouvé après coup parmi plusieurs ; côté non confirmé (3 sur 4, trop peu) ; le rouge de 5-3-16-11 n'est pas précisé"
+    },
+    {
+      "theme": [
+        8,
+        5,
+        11,
+        7
+      ],
+      "posee_le": "2026-11-21",
+      "lecture": "prédiction d'incident inscrite avant l'information d'incident",
+      "statut": "en attente de penalty / rouge ; score 7-0 déjà dans le corpus (lot dev)",
+      "appels": {
+        "détecteur d'incident": "pas d'indice (1/6 : seul P5, Terre de M1+M7 = Caput non saturée)",
+        "rouge": "non probable (P6 inactif)",
+        "H-REPOS": "pas d'appel"
+      },
+      "avertissement": "le score 7-0 est déjà connu : au marquage R1 (n=3) a marqué 7 et R7 (n=1) 0, conforme des deux côtés mais déjà compté dans les fréquences",
+      "score": "7-0",
+      "note": "à renseigner : équipes, date, penalty, rouge"
     }
   ],
   "lectures": [
