@@ -357,17 +357,11 @@
     return { R1: un(L.R1), R7: un(L.R7) }; }
   // MARQUAGE (signal découvert le 2026-11-20, à confirmer sur des matchs futurs ; ce n'est PAS une règle de verdict). Le front direct d'un pôle (les 4 maisons f, f+4, f+8, f+12) marque
   // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 82 pôles-matchs :
-  // buts moyens par n = 0:0,8 · 1:1,6 · 2:2,5 · 3:3,1 · 4:2,4 (5 obs seulement) ; corrélation 0,30 ; p = 0,016 après correction du choix parmi 6 mesures.
   var NIVEAUX_MARQUAGE = { fort: { sur: 37, un: 34, deux: 28, moy: 3.05 }, 'freiné': { sur: 20, un: 17, deux: 9, moy: 1.95 }, faible: { sur: 14, un: 12, deux: 5, moy: 1.71 }, 'bloqué': { sur: 11, un: 7, deux: 3, moy: 1.09 } };
-  var MARQUAGE_MOYENNES = [1.2, 1.5, 2.4, 3.1, 3.3];
-  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (82 pôles-matchs)
-  // part des pôles qui ont marqué au moins 1 but selon n (82 pôles-matchs ; 4, 18, 34, 13, 5 observations)
-  var MARQUAGE_P1 = [0.67, 0.79, 0.84, 1.00, 1.00];
-  var MARQUAGE_P2 = [{ p: 0.33, obs: 6 }, { p: 0.32, obs: 19 }, { p: 0.61, obs: 38 }, { p: 0.69, obs: 13 }, { p: 0.83, obs: 6 }];
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
-      return { front: K.front(z + 1), maisons: hs, n: n, butsMoyens: MARQUAGE_MOYENNES[n], p2: MARQUAGE_P2[n].p, p1: MARQUAGE_P1[n], obs: MARQUAGE_P2[n].obs }; }
+      return { front: K.front(z + 1), maisons: hs, n: n }; }
     var a = un(L.R1), b = un(L.R7), RP = repos(L);
     // NIVEAU DE MARQUAGE d'une équipe (2026-11-21) : la Terre de son front direct (n) et son blocage (figures au repos sans antagoniste dans ses deux fronts, H-REPOS) lus ensemble.
     // Fréquences observées (82 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).
@@ -379,7 +373,7 @@
     // second témoin M4+M10 (ajouté le 2026-11-21) : quand la Terre de M5+M7 est saturée, celle de M4+M10 départage (ouverte 5 sur 9, saturée 4 sur 11).
     var tf = K.additionner(T.bases[5], T.bases[7]), terre = K.niveaux(tf)[3] === 2, t2 = K.additionner(T.bases[4], T.bases[10]), terre2 = K.niveaux(t2)[3] === 2,
       OBS_TEMOIN = { ouverte: { oui: 20, sur: 20 }, m410ouverte: { oui: 5, sur: 10 }, m410saturee: { oui: 4, sur: 11 } };
-    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
+    return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;
