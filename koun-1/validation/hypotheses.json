@@ -2369,6 +2369,13 @@
       ],
       "puissance_2026_11_21": "nombre de buts en 1re mi-temps (14 matchs, Coventry corrigé à 2-2) : le facteur le plus lié est le nombre de fois où la figure de 1-5-12-15 est ancrée en base (corrélation 0,47) ; présence en résultante seule : -0,03 ; antagoniste en base 0,07 ; protecteur -0,05 ; niveaux saturés 0,05 ; somme des n -0,10. Coventry–Crystal Palace (2-2) : Albus en base de M4 (chez elle), M5 et M9, rapide, présente aussi en résultante de M10 et M14 (front de R1) ; base de M4 dans le front D de R7 : la figure touche les deux fronts et les deux équipes marquent deux fois.",
       "integration_puissance": "2026-11-21 : intégrée à la ligne « Rythme des buts (1re mi-temps) » : puissance faible (0 ancrage en base), moyenne (1), forte (2 ou plus), et fronts des pôles touchés ; Coventry–Crystal Palace : 4e but à la 45e (Crystal Palace)"
+    },
+    {
+      "id": "H-MT-MARQUEUR",
+      "statut": "PISTE post hoc 2026-11-21 : 7 pôles sur 7 ; affichée dans la ligne « Rythme des buts (1re mi-temps) »",
+      "regle": "quand un but est attendu en première mi-temps, marque le pôle dont le front direct contient une maison où la figure de 1-5-12-15 ou son protecteur (f−6) est ancré en base",
+      "resultat": "10 matchs avec but en 1re mi-temps, 20 pôles, 15 ont marqué : la règle désigne 7 pôles, tous ont marqué (Bayern R7, Millwall R7, Coventry R1 et R7, Orlando R1, Union Berlin R1 et R7) ; les 13 autres pôles ont marqué 8 fois : la règle ne dit rien d'eux",
+      "reserves": "trouvée après coup parmi une dizaine de critères ; elle ne désigne pas le marqueur dans la moitié des matchs (équipe non déterminée)"
     }
   ],
   "lectures": [

@@ -25,7 +25,11 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 1,
@@ -48,7 +52,9 @@
    "incidentScore": 5,
    "rouge": "R7",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 2,
@@ -71,7 +77,11 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 3,
@@ -94,7 +104,9 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 4,
@@ -117,7 +129,9 @@
    "incidentScore": 2,
    "rouge": "R1",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 5,
@@ -140,7 +154,9 @@
    "incidentScore": 3,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 6,
@@ -163,7 +179,12 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 7,
@@ -186,7 +207,9 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 8,
@@ -209,7 +232,12 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 9,
@@ -232,7 +260,9 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 10,
@@ -255,7 +285,12 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 11,
@@ -278,7 +313,11 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 12,
@@ -301,7 +340,11 @@
    "incidentScore": 3,
    "rouge": "R1",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 13,
@@ -324,7 +367,9 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 14,
@@ -347,7 +392,9 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 15,
@@ -370,7 +417,11 @@
    "incidentScore": 1,
    "rouge": "R7",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 16,
@@ -393,7 +444,9 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 17,
@@ -416,7 +469,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 18,
@@ -439,7 +496,12 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 19,
@@ -462,7 +524,12 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 20,
@@ -485,7 +552,11 @@
    "incidentScore": 4,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 21,
@@ -508,7 +579,11 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 22,
@@ -531,7 +606,9 @@
    "incidentScore": 3,
    "rouge": "R7",
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 23,
@@ -554,7 +631,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 24,
@@ -577,7 +658,9 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 25,
@@ -600,7 +683,9 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 26,
@@ -623,7 +708,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 27,
@@ -646,7 +735,12 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 28,
@@ -669,7 +763,9 @@
    "incidentScore": 1,
    "rouge": "R7",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 29,
@@ -692,7 +788,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 30,
@@ -715,7 +815,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 31,
@@ -738,7 +842,11 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 32,
@@ -761,7 +869,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 33,
@@ -784,7 +896,11 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 34,
@@ -807,7 +923,9 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "forte"
   },
   {
    "i": 35,
@@ -830,7 +948,9 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "forte"
   },
   {
    "i": 36,
@@ -853,7 +973,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 37,
@@ -876,7 +1000,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 38,
@@ -899,7 +1027,9 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 39,
@@ -922,7 +1052,12 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 40,
@@ -945,7 +1080,11 @@
    "incidentScore": 4,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 41,
@@ -968,7 +1107,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 42,
@@ -991,7 +1134,9 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 43,
@@ -1014,7 +1159,11 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 44,
@@ -1037,7 +1186,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 45,
@@ -1060,7 +1213,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 46,
@@ -1083,7 +1240,11 @@
    "incidentScore": 3,
    "rouge": "R1",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 47,
@@ -1106,7 +1267,11 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 48,
@@ -1129,7 +1294,12 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 49,
@@ -1152,7 +1322,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 50,
@@ -1175,7 +1349,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 51,
@@ -1198,7 +1376,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 52,
@@ -1221,7 +1403,11 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 53,
@@ -1244,7 +1430,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 54,
@@ -1267,7 +1457,11 @@
    "incidentScore": 2,
    "rouge": "R1",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 55,
@@ -1290,7 +1484,9 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 56,
@@ -1313,7 +1509,9 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 57,
@@ -1336,7 +1534,11 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 58,
@@ -1359,7 +1561,11 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 59,
@@ -1382,7 +1588,9 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 60,
@@ -1405,7 +1613,11 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 61,
@@ -1428,7 +1640,11 @@
    "incidentScore": 1,
    "rouge": "côté non déterminé",
    "rythme": "lente",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 62,
@@ -1451,7 +1667,9 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 63,
@@ -1474,7 +1692,11 @@
    "incidentScore": 2,
    "rouge": "R7",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 64,
@@ -1497,7 +1719,11 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 65,
@@ -1520,7 +1746,12 @@
    "incidentScore": 3,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 66,
@@ -1543,7 +1774,9 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 67,
@@ -1566,7 +1799,9 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 68,
@@ -1589,7 +1824,9 @@
    "incidentScore": 1,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 69,
@@ -1612,7 +1849,9 @@
    "incidentScore": 3,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 70,
@@ -1635,7 +1874,12 @@
    "incidentScore": 2,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 71,
@@ -1658,7 +1902,12 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte"
   },
   {
    "i": 72,
@@ -1681,7 +1930,9 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne"
   },
   {
    "i": 73,
@@ -1704,7 +1955,9 @@
    "incidentScore": 3,
    "rouge": "R7",
    "rythme": "lente",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   },
   {
    "i": 74,
@@ -1727,7 +1980,11 @@
    "incidentScore": 0,
    "rouge": null,
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible"
   },
   {
    "i": 75,
@@ -1750,7 +2007,12 @@
    "incidentScore": 3,
    "rouge": "R1",
    "rythme": "rapide",
-   "butPremiereMT": true
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne"
   },
   {
    "i": 76,
@@ -1773,8 +2035,11 @@
    "incidentScore": 2,
    "rouge": "côté non déterminé",
    "rythme": "intermédiaire",
-   "butPremiereMT": false
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible"
   }
  ],
- "ajout_2026_11_21": "butPremiereMT ajouté (H-MT-MECANISME) après coup pour les matchs déjà saisis ; pour les matchs non joués, c'est une prédiction"
+ "ajout_2026_11_21": "butPremiereMT ajouté (H-MT-MECANISME) après coup pour les matchs déjà saisis ; pour les matchs non joués, c'est une prédiction",
+ "ajout_marqueurs": "2026-11-21 : marqueurs et puissance de la 1re mi-temps ajoutés (H-MT-MARQUEUR), les autres champs sont inchangés"
 }

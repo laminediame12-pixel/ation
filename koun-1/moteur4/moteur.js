@@ -300,6 +300,8 @@
       // PUISSANCE (piste, H-MT-MECANISME) : nombre d'ancrages de la figure en base (0 faible, 1 moyenne, 2 ou plus forte) et fronts directs des pôles qu'elle touche (base ou résultante).
       ancrages: enBase(f).length, puissance: enBase(f).length >= 2 ? 'forte' : enBase(f).length === 1 ? 'moyenne' : 'faible',
       touche: ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || (h < 16 && T.resultantes[h] === f); }); }),
+      // MARQUEUR (piste, 7 pôles sur 7) : le pôle dont le front direct contient une maison où la figure ou son protecteur est ancré en base marque en première mi-temps.
+      marqueurs: ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || T.bases[h] === pro; }); }),
       vitesse: vit, front: K.front(f), antagoniste: ant, antagonisteEnBase: ba, protecteur: pro, protecteurEnBase: bp, attaquee: attaque, butAttendu: rapide || attaque,
       cause: rapide ? 'figure rapide (Feu et Air saturés)' : attaque ? 'figure attaquée : ' + K.nom(ant) + ' en base de M' + ba.join(', M') + ', sans son protecteur ' + K.nom(pro) :
         ba.length ? 'attaque de ' + K.nom(ant) + ' (M' + ba.join(', M') + ') bloquée par le protecteur ' + K.nom(pro) + ' (M' + bp.join(', M') + ')' : f === 16 ? 'Populus, toute fermée' : 'figure ni rapide ni attaquée' }; }
