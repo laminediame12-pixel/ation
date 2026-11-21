@@ -254,22 +254,5 @@
   },
   "prediction_avant": "pas de but attendu (attaque de Cauda bloquée par le protecteur Carcer) ; si but : PSG ; publication : 1X",
   "note": "mi-temps 1-2 (propriétaire, 2026-11-21) ; score final non fourni"
- },
- {
-  "themes": [
-   5,
-   10,
-   11,
-   11
-  ],
-  "match": "Napoli–Torino",
-  "date": "2026-11-21",
-  "competition": "Serie A",
-  "mi_temps": [
-   0,
-   0
-  ],
-  "prediction_avant": "but de Torino en 1re mi-temps (H-MT-MECANISME / H-MT-MARQUEUR) ; Torino « bloqué » au marquage",
-  "note": "mi-temps 0-0 (propriétaire, 2026-11-21) ; score final non fourni"
  }
 ]

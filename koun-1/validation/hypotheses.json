@@ -2291,7 +2291,8 @@
       "resultat": "34 matchs décisifs : nœud M1+M7 seul 14 sur 19 (74 %), nœud de la résultante de M9 seul 16 sur 21 (76 %) ; les deux ensemble 17 justes, 3 faux, 14 sans appel (85 %) contre 16 sur 20 (80 %) pour « toujours R1 » sur les mêmes appels ; le thème 1-2-6-15 (5-0, R1) est conforme (M1+M7 plein pour R1 et vide pour R7 ; M9 plein et mixte) ; probabilité du meilleur taux parmi 20 mesures par hasard 0,28 : non significatif",
       "reserves": "mesures posées le jour même avant le calcul mais choisies parmi plusieurs ; le gain sur « toujours R1 » n'est que d'un match sur les mêmes appels ; testée seulement sur des matchs déjà vus",
       "integration": "2026-11-21 : intégrée au verdict de la page et du moteur à la demande du propriétaire, après H-REPOS (qui garde la priorité), étiquetée « piste en observation » ; sort du verdict si, sur au moins 15 nouveaux appels indépendants, elle est indiscernable de « toujours R1 »",
-      "axe_M2M8": "2026-11-21 : axe M2+M8 ajouté à la règle (criblage des six axes opposés : M1+M7 74 %, M2+M8 72 %, autres au niveau de « toujours R1 ») ; trois nœuds : 18 justes, 4 faux, 12 sans appel sur 34 décisifs, « toujours R1 » 15 sur 22"
+      "axe_M2M8": "2026-11-21 : axe M2+M8 ajouté à la règle (criblage des six axes opposés : M1+M7 74 %, M2+M8 72 %, autres au niveau de « toujours R1 ») ; trois nœuds : 18 justes, 4 faux, 12 sans appel sur 34 décisifs, « toujours R1 » 15 sur 22",
+      "napoli_torino": "Napoli annoncé avant le score, 1-0 : juste ; bilan 19 justes sur 23 appels sur 36 décisifs"
     },
     {
       "theme": [
@@ -2341,7 +2342,8 @@
       "reserves": "trouvé par criblage ; la base « les deux marquent » est de 73 % ; non testé sur des matchs que la recherche n'a pas vus",
       "combinaisons": "exact : il n'existe que 256 fonctions de somme distinctes (255 non nulles) pour les combinaisons de maisons ; tailles minimales : 16 d'une maison, 79 de deux, 124 de trois, 36 de quatre ; 1-5-12-15 (buts HT1) ≡ M1+M6+M13 ≡ M2+M3+M4+M6 ; Circuit souverain 1-3-5-11-13 ≡ M2+M4+M6 ; les données de première mi-temps manquent au corpus : 1-5-12-15 n'a pas pu être testé (liens faibles avec les buts totaux, |r| <= 0,46)",
       "temoin_M4M10": "2026-11-21 : second témoin M4+M10 ; Terre de M5+M7 ouverte 20 sur 20 ; saturée : Terre de M4+M10 ouverte 5 sur 9, saturée 4 sur 11 ; seul, M4+M10 ouverte 21 sur 25 contre 8 sur 15",
-      "binome_place": "2026-11-21 (propriétaire : le binôme confirme l'action de la figure ; binôme chez lui ou chez son antagoniste) : Terre de M5+M7 ouverte et binôme chez lui : 2 sur 2 ; Terre saturée et binôme placé (chez lui 0/2, chez son antagoniste 0/2, les deux 0/1) : les deux n'ont jamais marqué, 0 sur 5 ; Terre saturée sans binôme placé : 9 sur 16 (M4+M10 ouverte 5 sur 8, saturée 4 sur 8). Intégré : « Non » quand la Terre est saturée et le binôme placé. Première mi-temps : binôme chez lui (Bayern, Union Berlin) : but ; chez son antagoniste (Athletic) : 0-0 ; rien ne change au mécanisme."
+      "binome_place": "2026-11-21 (propriétaire : le binôme confirme l'action de la figure ; binôme chez lui ou chez son antagoniste) : Terre de M5+M7 ouverte et binôme chez lui : 2 sur 2 ; Terre saturée et binôme placé (chez lui 0/2, chez son antagoniste 0/2, les deux 0/1) : les deux n'ont jamais marqué, 0 sur 5 ; Terre saturée sans binôme placé : 9 sur 16 (M4+M10 ouverte 5 sur 8, saturée 4 sur 8). Intégré : « Non » quand la Terre est saturée et le binôme placé. Première mi-temps : binôme chez lui (Bayern, Union Berlin) : but ; chez son antagoniste (Athletic) : 0-0 ; rien ne change au mécanisme.",
+      "napoli_torino": "1-0 : Terre de M5+M7 (Caput) ouverte, « oui » annoncé : faux ; premier échec (20 sur 21) ; M1+M5+M7 (Laetitia, Terre saturée) et le blocage de Torino avaient raison"
     },
     {
       "id": "H-RYTHME",
@@ -2421,7 +2423,8 @@
       "regle": "niveau de blocage d'un pôle = nombre de figures au repos sans leur antagoniste dans ses deux fronts (H-REPOS) ; 0 = pôle exposé à rester muet ; 2 ou plus = il marque",
       "resultat": "82 pôles-matchs : 0 figure au repos → 1,70 but en moyenne, 6 sur 30 sans but ; 1 → 2,42, 5 sur 31 ; 2 → 2,71, 0 sur 14 ; 3 → 2,75, 0 sur 4 ; 5 → 5 buts. Dundee–Hearts : Dundee 0 (aucun but), Hearts 2 (Puer et Via au repos dans le front A) et n = 4 sur 4 (Terre saturée sur les quatre maisons du front C) : 8 buts",
       "note": "Dundee–Hearts : mi-temps 0-4 (1re mi-temps annoncée avec but, figure Albus rapide, puissance forte, marqueur Hearts : juste) ; rouge côté Dundee (détecteur d'incident probable 4/6) ; victoire : pas d'appel (H-REPOS et coordonnées muets)",
-      "niveaux": "n >= 2 et au moins une figure au repos : fort (37 pôles, 3,05 buts, 76 % à 2 buts ou plus, 92 % au moins un) ; n >= 2 sans figure au repos : freiné (20 ; 1,95 ; 45 % ; 85 %) ; n <= 1 avec : faible (14 ; 1,71 ; 36 % ; 86 %) ; n <= 1 sans : bloqué (11 ; 1,09 ; 27 % ; 64 %)"
+      "niveaux": "n >= 2 et au moins une figure au repos : fort (37 pôles, 3,05 buts, 76 % à 2 buts ou plus, 92 % au moins un) ; n >= 2 sans figure au repos : freiné (20 ; 1,95 ; 45 % ; 85 %) ; n <= 1 avec : faible (14 ; 1,71 ; 36 % ; 86 %) ; n <= 1 sans : bloqué (11 ; 1,09 ; 27 % ; 64 %)",
+      "napoli_torino": "Torino « bloqué » : 0 but (juste) ; Napoli « freiné » : 1 but"
     }
   ],
   "lectures": [

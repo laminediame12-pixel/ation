@@ -662,5 +662,26 @@
    ]
   },
   "note": "capture Sofascore fournie le 2026-11-21 ; mi-temps 0-4 et rouge côté Dundee lus sur le graphique Match Momentum ; penalty non visible"
+ },
+ {
+  "themes": [
+   5,
+   10,
+   11,
+   11
+  ],
+  "match": "Napoli–Torino",
+  "date": "2026-11-21",
+  "competition": "Serie A",
+  "score": [
+   1,
+   0
+  ],
+  "mi_temps": [
+   0,
+   0
+  ],
+  "lot": "decisif",
+  "note": "score final et mi-temps fournis par le propriétaire le 2026-11-21 ; incidents non précisés ; prédictions gelées avant le score dans predictions-20-24-novembre.json"
  }
 ]

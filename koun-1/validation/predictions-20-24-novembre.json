@@ -1051,7 +1051,16 @@
    ],
    "puissance": "faible",
    "butPremiereMT_v2": true,
-   "butPremiereMT_v3": false
+   "butPremiereMT_v3": false,
+   "resultat": {
+    "score": "1-0",
+    "mi_temps": "0-0",
+    "victoire": "juste (Napoli)",
+    "deuxMarquent": "faux (oui annoncé)",
+    "butsAttendus": "4,3 annoncé, 1 réel",
+    "butPremiereMT": "v1 et v2 faux (but annoncé), v3 juste (binôme isolé, ajoutée après la mi-temps)",
+    "note": "Torino « bloqué » (version actuelle) : 0 but"
+   }
   },
   {
    "i": 37,
