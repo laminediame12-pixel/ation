@@ -640,5 +640,22 @@
   "rouge": null,
   "penalty": "R7",
   "note": "penalty pour R7 ; rouge non précisé ; prédictions inscrites avant le score (thème absent du corpus)"
+ },
+ {
+  "themes": [
+   1,
+   2,
+   6,
+   15
+  ],
+  "match": "équipes à préciser",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "decisif",
+  "rouge": null,
+  "penalty": null,
+  "note": "5-0 fourni par le propriétaire le 2026-11-21 ; thème absent du corpus avant ce message ; incidents non précisés"
  }
 ]

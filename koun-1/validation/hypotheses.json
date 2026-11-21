@@ -2189,7 +2189,8 @@
         "H-REPOS": "pas d'appel",
         "marquage": "R1 Fortuna Major n=2 (63 % de 2 buts ou plus), R7 Tristitia n=2 (63 %) ; deux marquent 79 % ; total ≈ 5",
         "incident": "possible 2/6",
-        "rouge": "probable"
+        "rouge": "probable",
+        "H-COORD-VICTOIRE": "pas d'appel"
       },
       "score": null,
       "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
@@ -2210,7 +2211,8 @@
         "H-REPOS": "R1 (Central Coast Mariners)",
         "marquage": "R1 Fortuna Major n=1 (32 % de 2 buts ou plus), R7 Cauda Draconis n=0 (33 %) ; deux marquent 53 % ; total ≈ 2.7",
         "incident": "aucun 1/6",
-        "rouge": "probable"
+        "rouge": "probable",
+        "H-COORD-VICTOIRE": "pas d'appel"
       },
       "score": null,
       "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
@@ -2231,7 +2233,8 @@
         "H-REPOS": "pas d'appel",
         "marquage": "R1 Rubeus n=2 (63 % de 2 buts ou plus), R7 Carcer n=0 (33 %) ; deux marquent 60 % ; total ≈ 3.7",
         "incident": "possible 2/6",
-        "rouge": "non"
+        "rouge": "non",
+        "H-COORD-VICTOIRE": "R7"
       },
       "score": null,
       "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
@@ -2252,7 +2255,8 @@
         "H-REPOS": "pas d'appel",
         "marquage": "R1 Conjunctio n=3 (69 % de 2 buts ou plus), R7 Cauda Draconis n=1 (32 %) ; deux marquent 79 % ; total ≈ 4.6",
         "incident": "possible 2/6",
-        "rouge": "probable"
+        "rouge": "probable",
+        "H-COORD-VICTOIRE": "pas d'appel"
       },
       "score": null,
       "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
@@ -2273,10 +2277,36 @@
         "H-REPOS": "pas d'appel",
         "marquage": "R1 Carcer n=1 (32 % de 2 buts ou plus), R7 Caput n=3 (69 %) ; deux marquent 79 % ; total ≈ 4.6",
         "incident": "possible 2/6",
-        "rouge": "probable"
+        "rouge": "probable",
+        "H-COORD-VICTOIRE": "R7"
       },
       "score": null,
       "note": "à renseigner : score, penalty, rouge ; tirage par l'assistant, pas par le propriétaire"
+    },
+    {
+      "id": "H-COORD-VICTOIRE",
+      "statut": "PISTE post hoc 2026-11-21 (propriétaire : « n'oublie pas les coordonnées ») : en observation ; prédictions inscrites pour le coupon du 21/11/2026 avant les scores",
+      "regle": "le pôle dont le nœud de la coordination base(M1)+base(M7), puis celui de la résultante de M9, est le plus plein dans son front (plein 2, mixte 1, vide 0) gagne ; somme des signes des deux écarts, pas d'appel si elle est nulle",
+      "resultat": "34 matchs décisifs : nœud M1+M7 seul 14 sur 19 (74 %), nœud de la résultante de M9 seul 16 sur 21 (76 %) ; les deux ensemble 17 justes, 3 faux, 14 sans appel (85 %) contre 16 sur 20 (80 %) pour « toujours R1 » sur les mêmes appels ; le thème 1-2-6-15 (5-0, R1) est conforme (M1+M7 plein pour R1 et vide pour R7 ; M9 plein et mixte) ; probabilité du meilleur taux parmi 20 mesures par hasard 0,28 : non significatif",
+      "reserves": "mesures posées le jour même avant le calcul mais choisies parmi plusieurs ; le gain sur « toujours R1 » n'est que d'un match sur les mêmes appels ; testée seulement sur des matchs déjà vus"
+    },
+    {
+      "theme": [
+        1,
+        2,
+        6,
+        15
+      ],
+      "posee_le": "2026-11-21",
+      "lecture": "thème fourni par le propriétaire avec le score 5-0 ; absent du corpus avant ce message",
+      "statut": "jugé : 5-0, R1 gagne",
+      "score": "5-0",
+      "jugement": {
+        "H-REPOS": "pas d'appel",
+        "H-MARQ-VICTOIRE (n)": "n égal (2 et 2), pas d'appel",
+        "H-COORD-VICTOIRE": "R1 (nœud M1+M7 plein dans le front de R1, vide pour R7 ; nœud de la résultante de M9 plein contre mixte) : conforme, mais ce match a servi au criblage",
+        "incident": "possible 2/6, incidents non précisés"
+      }
     }
   ],
   "lectures": [
