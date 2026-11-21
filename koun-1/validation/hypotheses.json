@@ -2044,6 +2044,26 @@
       "miroirs_et_saturation": "2026-11-21 : la liste de M12 (Fortuna Major, Via, Conjunctio, Aquisitio, Caput, Cauda, Rubeus, Puer) contient trois paires miroir complètes (Via–Cauda, Conjunctio–Caput, Aquisitio–Rubeus) et deux figures dont le miroir est exclu (Puer–Fortuna Minor, Fortuna Major–Albus) ; les paires (2,10), (6,14), (8,16) sont entièrement hors liste. Dans chaque paire complète, une figure a la Terre saturée et l'autre non (miroir = Terre inversée). Dans les 4 cas, la figure incident en M12 a toujours la Terre NON saturée (Aquisitio, Fortuna Major ×2) et celle en M6 la Terre SATURÉE (Cauda, Rubeus). Version resserrée (post hoc) : résultante de M12 ∈ {Via, Aquisitio, Caput, Puer, Fortuna Major} (Terre ○) ou résultante de M6 ∈ {Cauda, Rubeus} (Terre ●) : 4 cas sur 4 ; fréquence 39,8 % des thèmes (31,3 % pour M12, 12,5 % pour M6, 3,9 % les deux) ; seul le cas avec penalty ET rouge (16-1-8-14) a les deux ; probabilité du 4 sur 4 au hasard 0,025, non indépendante (version construite sur ces cas). La figure miroir de la figure incident n'est pas dans la maison miroir (M4 / M14) : un seul cas sur 7 (14-14-9-16, M12/M4, Fortuna Major/Albus).",
       "algebre_M6_M12": "2026-11-21, exact : Fortuna Major (repos M12) + Amissio (repos M6) = Carcer ; {Populus, Amissio, Fortuna Major, Carcer} est un groupe fermé (somme de deux éléments dedans) ; les 16 figures se rangent en 4 classes de ce groupe : {Puer, Caput, Rubeus, Cauda}, {Via, Fortuna Minor, Conjunctio, Aquisitio}, {Laetitia, Albus, Tristitia, Puella}, {Populus, Amissio, Fortuna Major, Carcer} ; la résultante de M6 ou M12 = base + figure de repos, qui est dans le groupe, donc base et résultante sont dans la même classe ; Puer, Rubeus, Cauda (liste de M6) sont trois figures de la classe de Puer et leurs sommes deux à deux sont Carcer, Fortuna Major, Amissio ; Carcer + Puer = Rubeus (Carcer crée Rubeus), Carcer + Cauda = Caput ; la liste de M12 = classe de Puer + Via, Aquisitio, Conjunctio (classe de Via sans Fortuna Minor) + Fortuna Major ; sont hors liste la classe de Laetitia, Populus, Amissio, Carcer, Fortuna Minor. Résultante contre base : la résultante est dans la liste dans 4 cas sur 4, la base dans 2 sur 4. Pas de test de la détermination sans matchs sans incident.",
       "coordination_M6_M12": "2026-11-21 : coordination = base(M6) + base(M12). Exact pour tous les thèmes : coordination = base(M5) + base(M14) (aussi = M5+M11+M12 = M5+M13+M15 = M6+M7+M8 = M6+M11+M14) ; elle prend chaque figure 4096 fois sur 65 536 thèmes ; somme des résultantes r6+r12 = coordination + Carcer. Cas : 16-1-8-14 Rubeus+Conjunctio = Albus (M4) ; 14-14-9-16 Albus ; 14-9-16-9 et 11-5-11-4 Aquisitio (M15). Le nœud de la maison h croise le canal horizontal de niveau (h-1)%4 et le vertical de niveau (h-1)/4 : M4 = Terre × Feu (comme le propriétaire l'a lu) ; M15 = Eau × Terre. Les 4 coordinations tombent sur un nœud touchant le canal Terre (6 nœuds sur 15, 40 % : 4 sur 4 = 2,6 % au hasard, post hoc). La figure du nœud n'est saturée aux deux niveaux de ses canaux que pour 3 maisons sur 15 (M4, M6, M10) : pas une loi générale."
+    },
+    {
+      "theme": [
+        4,
+        7,
+        10,
+        10
+      ],
+      "posee_le": "2026-11-21",
+      "lecture": "prédictions inscrites avant le score",
+      "statut": "en attente du score et des incidents",
+      "predictions": {
+        "H-REPOS": "pas d'appel (aucun pôle ne possède seul ses deux fronts au repos)",
+        "H-MARQ-DOUBLE": "R1 (Carcer, M4, front B) n=2 : probablement 2 buts ou plus (63 %) ; R7 (Populus, M10, front D) n=3 : 2 buts ou plus (69 %) ; deux marquent 89 % ; total ≈ 5,6",
+        "H-INCIDENT": "pas d'indice : aucun arrêt dans le thème",
+        "H-FIGURES-NEG": "M6 a pour résultante Cauda (dans la liste de M6) : incident possible, côté R7 (son siège M10 est dans le front B de M6) ; M12 a pour résultante Laetitia, hors liste",
+        "coordination": "M6+M12 = Via, nœud M5 (Feu × Air) : ne touche pas la Terre ; si un incident survient, cela contredit la lecture « coordination sur un nœud de la Terre »"
+      },
+      "score": null,
+      "note": "à renseigner avec équipes, date, score, penalty et rouge"
     }
   ],
   "lectures": [
