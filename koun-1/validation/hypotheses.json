@@ -2082,7 +2082,7 @@
       ],
       "posee_le": "2026-11-21",
       "lecture": "prédictions d'incident inscrites avant l'information d'incident",
-      "statut": "en attente de l'information penalty / rouge",
+      "statut": "jugé le 2026-11-21 : 1-0, RAS (ni penalty ni rouge) ; équipes et date à préciser",
       "appels": {
         "H-INCIDENT": "pas d'indice : aucun arrêt dans le thème",
         "H-FIGURES-NEG": "M12 a pour résultante Amissio et M6 Fortuna Minor : aucune dans les listes, pas d'incident annoncé",
@@ -2091,7 +2091,8 @@
       },
       "avertissement": "le score 1-0 (R1 1, R7 0) est déjà dans le corpus (lot dev) : les lignes de buts ne sont pas un test à l'aveugle ; au marquage, R1 et R7 ont n = 2 chacun mais ont marqué 1 et 0 (non conforme des deux côtés, déjà compté dans les fréquences)",
       "score": "1-0",
-      "note": "à renseigner : équipes, date, penalty, rouge"
+      "note": "à renseigner : équipes, date, penalty, rouge",
+      "jugement": "H-INCIDENT : pas d'indice, RAS : juste ; H-FIGURES-NEG : aucune maison active, pas d'incident annoncé, RAS : juste ; coordination sans Terre (nœud M5), pas d'incident : cohérent ; H-REPOS : pas d'appel"
     }
   ],
   "lectures": [
