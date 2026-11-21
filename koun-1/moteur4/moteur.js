@@ -301,14 +301,17 @@
       COMBI = [1, 5, 12, 15], dedans = function (h) { return COMBI.indexOf(h) >= 0; },
       bloquee = ba.length > 0 && bp.some(function (h) { return !dedans(h); }) && !ba.some(dedans),
       vit = n[0] === 2 && n[1] === 2 ? 'rapide' : n[0] === 1 && n[1] === 1 ? 'lente' : 'intermédiaire', rapide = vit === 'rapide' && f !== 16, attaque = ba.length > 0 && !bloquee;
+    // Liaison au binôme (2026-11-21, après Napoli–Torino 0-0, demande du propriétaire) : la figure ne fait marquer que si son binôme est relié au thème : le binôme,
+    // son antagoniste ou son protecteur est ancré en base quelque part. Binôme isolé = la figure ne transmet pas.
+    var bi = K.binome(f), biLie = enBase(bi).length > 0 || enBase(mod(bi - 3)).length > 0 || enBase(mod(bi - 6)).length > 0;
     return { figure: f, classe: s === 0 ? 'tout ouverte' : s === 4 ? 'toute fermée' : s === 1 ? 'fermante' : s === 3 ? 'ouvrante' : n[3] === 2 ? 'mobile' : 'fixe',
       // PUISSANCE (piste, H-MT-MECANISME) : nombre d'ancrages de la figure en base (0 faible, 1 moyenne, 2 ou plus forte) et fronts directs des pôles qu'elle touche (base ou résultante).
       ancrages: enBase(f).length, puissance: enBase(f).length >= 2 ? 'forte' : enBase(f).length === 1 ? 'moyenne' : 'faible',
       touche: ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || (h < 16 && T.resultantes[h] === f); }); }),
       // MARQUEUR (piste, 7 pôles sur 7) : le pôle dont le front direct contient une maison où la figure ou son protecteur est ancré en base marque en première mi-temps.
       marqueurs: ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || T.bases[h] === pro; }); }),
-      vitesse: vit, front: K.front(f), antagoniste: ant, antagonisteEnBase: ba, protecteur: pro, protecteurEnBase: bp, attaquee: attaque, butAttendu: rapide || attaque,
-      cause: rapide ? 'figure rapide (Feu et Air saturés)' : attaque ? 'figure attaquée : ' + K.nom(ant) + ' en base de M' + ba.join(', M') + (ba.some(dedans) ? ' (de l\'intérieur de 1-5-12-15)' : '') + (bp.length ? ', protecteur ' + K.nom(pro) + ' pris dans la combinaison (M' + bp.join(', M') + ')' : ', sans son protecteur ' + K.nom(pro)) :
+      vitesse: vit, front: K.front(f), antagoniste: ant, antagonisteEnBase: ba, protecteur: pro, protecteurEnBase: bp, attaquee: attaque, binome: bi, binomeLie: biLie, butAttendu: (rapide || attaque) && biLie,
+      cause: (rapide || attaque) && !biLie ? 'binôme ' + K.nom(bi) + ' isolé (ni lui, ni son antagoniste, ni son protecteur en base) : la figure ne transmet pas' : rapide ? 'figure rapide (Feu et Air saturés)' : attaque ? 'figure attaquée : ' + K.nom(ant) + ' en base de M' + ba.join(', M') + (ba.some(dedans) ? ' (de l\'intérieur de 1-5-12-15)' : '') + (bp.length ? ', protecteur ' + K.nom(pro) + ' pris dans la combinaison (M' + bp.join(', M') + ')' : ', sans son protecteur ' + K.nom(pro)) :
         ba.length ? 'attaque de ' + K.nom(ant) + ' (M' + ba.join(', M') + ') bloquée par le protecteur ' + K.nom(pro) + ' (M' + bp.join(', M') + ')' : f === 16 ? 'Populus, toute fermée' : 'figure ni rapide ni attaquée' }; }
   // COMBINAISONS DE MAISONS (exact) : la somme des bases d'un ensemble de maisons est une fonction linéaire (XOR) des 16 bits du thème. Les 16 maisons n'ont que 8 maisons
   // indépendantes (M1 à M8) : il n'existe que 256 fonctions de somme distinctes (255 non nulles), chacune égale à une somme de maisons parmi M1..M8. equivalences(maisons) donne
