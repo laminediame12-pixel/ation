@@ -2339,6 +2339,13 @@
       "resultat": "40 matchs : Terre non saturée 20 sur 20 (100 %), saturée 9 sur 20 (45 %) ; indépendants 10 sur 10 contre 7 sur 15 ; construits 10 sur 10 contre 2 sur 5 ; corrélation -0,62 avec « deux marquent » ; probabilité du meilleur de 5100 tests (255 combinaisons × 4 niveaux × 5 résultats) par hasard : 0,055 (200 permutations) : limite",
       "reserves": "trouvé par criblage ; la base « les deux marquent » est de 73 % ; non testé sur des matchs que la recherche n'a pas vus",
       "combinaisons": "exact : il n'existe que 256 fonctions de somme distinctes (255 non nulles) pour les combinaisons de maisons ; tailles minimales : 16 d'une maison, 79 de deux, 124 de trois, 36 de quatre ; 1-5-12-15 (buts HT1) ≡ M1+M6+M13 ≡ M2+M3+M4+M6 ; Circuit souverain 1-3-5-11-13 ≡ M2+M4+M6 ; les données de première mi-temps manquent au corpus : 1-5-12-15 n'a pas pu être testé (liens faibles avec les buts totaux, |r| <= 0,46)"
+    },
+    {
+      "id": "H-RYTHME",
+      "statut": "LECTURE du propriétaire 2026-11-21 : à tester dès que des minutes de buts et des scores de mi-temps seront au corpus ; affichée dans Maisons de calcul",
+      "regle": "le type de la figure (fermante, ouvrante, fixe, mobile) et ses niveaux indiquent les buts et leur rythme ; Feu et Air saturés = rapide ; la coordination de deux figures sur le même niveau (Eau-Eau, Air-Air, Feu-Feu) compte aussi",
+      "exact": "classes par nombre de niveaux saturés : 0 Via ; 1 fermantes Puer, Caput, Cauda, Puella ; 3 ouvrantes Laetitia, Albus, Rubeus, Tristitia ; 4 Populus ; 2 : fixes (Terre non saturée) Carcer, Fortuna Major, Aquisitio et mobiles (Terre saturée) Amissio, Fortuna Minor, Conjunctio, en trois paires opposées terme à terme (Fortuna Major / Fortuna Minor, Aquisitio / Amissio, Carcer / Conjunctio) ; Feu et Air saturés ensemble = exactement les 4 figures du front D (Albus, Tristitia, Fortuna Major, Populus) ; Feu et Air ouverts = front A",
+      "premier_cas": "Troyes–Le Havre (16-1-8-14) : 1-5-12-15 en bases = Fortuna Major (fixe, Feu et Air saturés : rapide) ; buts à la 3e et à la 19e minute, mi-temps 1-1 : cohérent, un seul cas"
     }
   ],
   "lectures": [
