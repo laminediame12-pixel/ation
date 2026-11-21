@@ -500,8 +500,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     return { coordination: c1, residuM9: c2, axe28: c3, R1: { m1m7: a1, m9: a2, m2m8: a3 }, R7: { m1m7: b1, m9: b2, m2m8: b3 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
   function verdict(L) {
     var R = repos(L), Q = coordonnees(L);
-    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (4 justes sur 6 appels sur 40 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
-    if (Q.gagnant) return { v: Q.gagnant === 'R1' ? '1' : '2', regle: 'H-COORD-VICTOIRE', statut: 'piste en observation (18 justes sur 22 appels sur 34 matchs décisifs ; « toujours R1 » : 15 sur 22 ; non significatif)', raison: Q.gagnant + ' a les nœuds de coordination les plus pleins dans son front (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)' };
+    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (4 justes sur 6 appels sur 41 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
+    if (Q.gagnant) return { v: Q.gagnant === 'R1' ? '1' : '2', regle: 'H-COORD-VICTOIRE', statut: 'piste en observation (18 justes sur 22 appels sur 35 matchs décisifs ; « toujours R1 » : 15 sur 22 ; non significatif)', raison: Q.gagnant + ' a les nœuds de coordination les plus pleins dans son front (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)' };
     return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS : aucun pôle ne possède seul ses deux fronts au repos ; coordonnées : nœuds à égalité)' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
@@ -522,13 +522,13 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
         protecteurEstSomme: s1 === p }; }
     return { R1: un(L.R1), R7: un(L.R7) }; }
   // MARQUAGE (signal découvert le 2026-11-20, à confirmer sur des matchs futurs ; ce n'est PAS une règle de verdict). Le front direct d'un pôle (les 4 maisons f, f+4, f+8, f+12) marque
-  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 80 pôles-matchs :
+  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 82 pôles-matchs :
   // buts moyens par n = 0:0,8 · 1:1,6 · 2:2,5 · 3:3,1 · 4:2,4 (5 obs seulement) ; corrélation 0,30 ; p = 0,016 après correction du choix parmi 6 mesures.
-  var MARQUAGE_MOYENNES = [1.2, 1.5, 2.5, 3.1, 2.4];
-  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (80 pôles-matchs)
-  // part des pôles qui ont marqué au moins 1 but selon n (80 pôles-matchs ; 4, 18, 34, 13, 5 observations)
-  var MARQUAGE_P1 = [0.67, 0.79, 0.86, 1.00, 1.00];
-  var MARQUAGE_P2 = [{ p: 0.33, obs: 6 }, { p: 0.32, obs: 19 }, { p: 0.62, obs: 37 }, { p: 0.69, obs: 13 }, { p: 0.80, obs: 5 }];
+  var MARQUAGE_MOYENNES = [1.2, 1.5, 2.4, 3.1, 3.3];
+  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (82 pôles-matchs)
+  // part des pôles qui ont marqué au moins 1 but selon n (82 pôles-matchs ; 4, 18, 34, 13, 5 observations)
+  var MARQUAGE_P1 = [0.67, 0.79, 0.84, 1.00, 1.00];
+  var MARQUAGE_P2 = [{ p: 0.33, obs: 6 }, { p: 0.32, obs: 19 }, { p: 0.61, obs: 38 }, { p: 0.69, obs: 13 }, { p: 0.83, obs: 6 }];
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
@@ -539,7 +539,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     // dans 20 matchs sur 20 observés ; saturée, dans 9 sur 20.
     // second témoin M4+M10 (ajouté le 2026-11-21) : quand la Terre de M5+M7 est saturée, celle de M4+M10 départage (ouverte 5 sur 9, saturée 4 sur 11).
     var tf = K.additionner(T.bases[5], T.bases[7]), terre = K.niveaux(tf)[3] === 2, t2 = K.additionner(T.bases[4], T.bases[10]), terre2 = K.niveaux(t2)[3] === 2,
-      OBS_TEMOIN = { ouverte: { oui: 20, sur: 20 }, m410ouverte: { oui: 5, sur: 9 }, m410saturee: { oui: 4, sur: 11 } };
+      OBS_TEMOIN = { ouverte: { oui: 20, sur: 20 }, m410ouverte: { oui: 5, sur: 10 }, m410saturee: { oui: 4, sur: 11 } };
     return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.

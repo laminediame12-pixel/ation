@@ -2399,6 +2399,13 @@
       "regle": "figure-somme des bases de 1-5-12-15 cherchée dans les bases du thème : en M1, M4, M7, M10 l'équipe 1 encaisse ; en M2, M5, M8, M11 l'équipe 2 encaisse ; en M3, M9, M14, M16 double chance 1X ; en M6, M12, M13, M15 double chance 2X ; condition : la somme de 1-4-7-10 doit être présente dans le thème",
       "resultat": "1re mi-temps (14 matchs) : la figure n'est en base nulle part dans 7 matchs (la règle se tait) ; signaux justes 6 sur 11 ; la condition 1-4-7-10 est remplie dans 12 matchs sur 14, elle ne filtre presque rien. Match entier (39 matchs) : équipe 2 encaisse 13 sur 13 (taux habituel 37 sur 39), équipe 1 encaisse 6 sur 8 (30 sur 39), 1X 4 sur 7 (28 sur 39), 2X 4 sur 10 (17 sur 39). Désaccords avec H-MT-MARQUEUR : Bayern–Cologne (figure en M8, la règle fait encaisser l'équipe 2, c'est l'équipe 2 qui a marqué ; M8 est la maison de R7, dans son front) et Millwall–QPR (figure en M5, front de R7, QPR a marqué) : la lecture par le front du pôle donne le bon côté.",
       "nice_psg": "annonçait 1X (Populus en M16) : Nice menée 1-2 à la pause : faux"
+    },
+    {
+      "id": "H-BLOCAGE-REPOS",
+      "statut": "PISTE 2026-11-21 (Dundee–Hearts 0-8) : en observation, non intégrée",
+      "regle": "niveau de blocage d'un pôle = nombre de figures au repos sans leur antagoniste dans ses deux fronts (H-REPOS) ; 0 = pôle exposé à rester muet ; 2 ou plus = il marque",
+      "resultat": "82 pôles-matchs : 0 figure au repos → 1,70 but en moyenne, 6 sur 30 sans but ; 1 → 2,42, 5 sur 31 ; 2 → 2,71, 0 sur 14 ; 3 → 2,75, 0 sur 4 ; 5 → 5 buts. Dundee–Hearts : Dundee 0 (aucun but), Hearts 2 (Puer et Via au repos dans le front A) et n = 4 sur 4 (Terre saturée sur les quatre maisons du front C) : 8 buts",
+      "note": "Dundee–Hearts : mi-temps 0-4 (1re mi-temps annoncée avec but, figure Albus rapide, puissance forte, marqueur Hearts : juste) ; rouge côté Dundee (détecteur d'incident probable 4/6) ; victoire : pas d'appel (H-REPOS et coordonnées muets)"
     }
   ],
   "lectures": [

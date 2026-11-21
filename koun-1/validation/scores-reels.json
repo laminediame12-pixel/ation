@@ -629,5 +629,38 @@
   "rouge": null,
   "penalty": null,
   "note": "5-0 fourni par le propriétaire le 2026-11-21 ; thème absent du corpus avant ce message ; incidents non précisés"
+ },
+ {
+  "themes": [
+   16,
+   7,
+   12,
+   8
+  ],
+  "match": "Dundee–Hearts",
+  "date": "2026-11-21",
+  "competition": "Écosse, Scottish Premiership, journée 14",
+  "score": [
+   0,
+   8
+  ],
+  "mi_temps": [
+   0,
+   4
+  ],
+  "lot": "incident",
+  "rouge": "R1",
+  "penalty": null,
+  "buts": {
+   "R1": [],
+   "R7": [
+    "23' S. Kerjota",
+    "79' S. S. Guendouz",
+    "81' S. Kerjota",
+    "89' S. Findlay",
+    "+4 buts (dont un contre son camp en 1re mi-temps)"
+   ]
+  },
+  "note": "capture Sofascore fournie le 2026-11-21 ; mi-temps 0-4 et rouge côté Dundee lus sur le graphique Match Momentum ; penalty non visible"
  }
 ]
