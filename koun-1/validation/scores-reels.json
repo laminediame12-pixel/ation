@@ -646,15 +646,30 @@
    11
   ],
   "match": "Orlando City–Cincinnati",
-  "date": "2026-11-22",
+  "date": "2026-11-20",
   "score": [
    1,
    3
   ],
   "lot": "incident",
-  "rouge": null,
+  "rouge": "Non",
   "penalty": "R7",
-  "note": "penalty pour R7 ; rouge non précisé ; prédictions inscrites avant le score (thème absent du corpus)"
+  "note": "détails Sofascore fournis le 2026-11-21 : mi-temps 1-1, penalty Cincinnati à 43', aucun carton rouge ; date corrigée (20/11 et non 22/11)",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "26' M. Ojeda"
+   ],
+   "R7": [
+    "43' Evander (penalty)",
+    "50' Evander",
+    "85' S. Gidi"
+   ]
+  },
+  "competition": "MLS, playoffs, Wild Card Round, 20/11/2026 00:30"
  },
  {
   "themes": [
