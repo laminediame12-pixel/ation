@@ -2072,6 +2072,26 @@
         "H-FIGURES-NEG": "M6 en liste (Cauda), incident possible côté R7 : RAS, fausse alerte (premier cas sans incident)",
         "coordination": "Via (nœud M5, sans Terre) et pas d'incident : cohérent avec la lecture « coordination sur un nœud de la Terre »"
       }
+    },
+    {
+      "theme": [
+        4,
+        7,
+        5,
+        8
+      ],
+      "posee_le": "2026-11-21",
+      "lecture": "prédictions d'incident inscrites avant l'information d'incident",
+      "statut": "en attente de l'information penalty / rouge",
+      "appels": {
+        "H-INCIDENT": "pas d'indice : aucun arrêt dans le thème",
+        "H-FIGURES-NEG": "M12 a pour résultante Amissio et M6 Fortuna Minor : aucune dans les listes, pas d'incident annoncé",
+        "coordination": "M6+M12 = Via, nœud M5 (Feu × Air), sans Terre : pas d'incident",
+        "H-REPOS": "pas d'appel"
+      },
+      "avertissement": "le score 1-0 (R1 1, R7 0) est déjà dans le corpus (lot dev) : les lignes de buts ne sont pas un test à l'aveugle ; au marquage, R1 et R7 ont n = 2 chacun mais ont marqué 1 et 0 (non conforme des deux côtés, déjà compté dans les fréquences)",
+      "score": "1-0",
+      "note": "à renseigner : équipes, date, penalty, rouge"
     }
   ],
   "lectures": [
