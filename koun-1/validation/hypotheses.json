@@ -2433,6 +2433,12 @@
       "regle": "le pôle dont les deux canaux Terre du front direct (haut → droite et bas → gauche, déviation de la Terre) sont saturés dans les résultantes marque : marquage inévitable",
       "resultat": "84 pôles-matchs : deux canaux saturés 6 sur 6 ont marqué (3,33 buts en moyenne) ; un seul canal 21 sur 22 (seule exception 4-7-5-8, R7, 1-0) ; aucun canal 44 sur 56",
       "noeuds": "remarques du propriétaire : M1 est l'intersection des deux canaux Feu (Feu × Feu) et M11 celle des deux canaux Eau (exact) ; Air × Air est M6 (M2 est Air horizontal × Feu vertical) ; Terre × Terre serait M16, le coin qui n'existe pas : la Terre ne se croise pas, elle relie (déviation vers le front direct)"
+    },
+    {
+      "id": "H-MT2-CANDIDATES",
+      "statut": "POSÉES AVANT LES DONNÉES 2026-11-21 : à tester quand les scores finaux des matchs à mi-temps connue seront réunis (une dizaine au moins)",
+      "regle": "la deuxième mi-temps a sa propre combinaison (le propriétaire sait qu'elle existe mais ne l'a pas). Candidates construites par la structure seule : A) 7-11-6-9, les maisons opposées (à 6) de 1-5-12-15 ; B) 9-13-4-7, les maisons miroir (à 8) de 1-5-12-15 ; C) recherche parmi les 255 combinaisons distinctes, contre les buts de deuxième mi-temps, avec correction du nombre d'essais",
+      "observation": "les équipes « bloquées » (Terre du front fermée, aucune figure au repos) ont marqué en 1re mi-temps 5 fois sur 6 ; en 2e mi-temps, Orlando et Torino n'ont rien marqué : le blocage pourrait être celui de la deuxième période"
     }
   ],
   "lectures": [
