@@ -1991,9 +1991,10 @@
     },
     {
       "id": "H-MARQ-VICTOIRE",
-      "statut": "NON CONCLUANT 2026-11-20 : sur les 22 matchs indépendants 11 justes, 6 faux, 5 sans appel (égalité de n) = 65 % contre 65 % pour « toujours R1 » ; non activée",
+      "statut": "EN OBSERVATION 2026-11-21 : plus grand n gagne 17 fois sur 23 (74 %) sur les 33 matchs décisifs (10 égalités de n), contre 15 sur 23 (65 %) pour « toujours R1 » ; probabilité de ce taux par hasard, corrigée du choix parmi 12 mesures : 0,26 (non significatif) ; non activée dans le verdict",
       "regle": "le pôle au plus grand n (Terre saturée sur les maisons de son front direct) gagne ; posée avant le test, sans paramètre",
-      "note": "tous matchs : 16 justes 6 faux (73 %) contre 64 % pour « toujours R1 », mais les matchs construits ont servi à choisir la mesure"
+      "note": "tous matchs : 16 justes 6 faux (73 %) contre 64 % pour « toujours R1 », mais les matchs construits ont servi à choisir la mesure",
+      "criblage_2026-11-21": "12 mesures par pôle comparées sur 33 matchs décisifs (plus grand = vainqueur) : n 17/23 (74 %), niveaux saturés du front direct 16/25 (64 %), liaisons saturées 12/20 (60 %), Terre de la maison du pôle 13/21 (62 %), saturation de la maison du pôle 16/29 (55 %), figures au repos du front direct 9/16, binôme 14/25 (56 %) ; le front de l'antagoniste moins saturé 12/28 (43 %) et les arrêts du front direct 5/15 ne vont pas dans le sens attendu. Thème 8-5-11-7 (7-0) : R1 n=3, R7 n=1 ; niveaux saturés du front direct 9 contre 6, du binôme 12 contre 8, de l'antagoniste 6 contre 12, liaisons 2 contre 0 ; R7 meilleur seulement sur la maison du pôle (saturation 3 contre 1)."
     },
     {
       "id": "H-MARQ-DOUBLE",
