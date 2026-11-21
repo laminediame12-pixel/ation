@@ -1962,7 +1962,8 @@
           "score": "5-1 : juste"
         }
       ],
-      "mise_a_jour_2026-11-21": "thème 16-1-8-14 (score 3-1, penalty R1, rouge R7) : H-REPOS appelait R7, R1 a gagné : faux ; bilan 3 justes sur 5 appels sur 38 matchs (indépendants : 2 justes, 2 faux ; construits : 1 juste) ; « toujours R1 » : 66 % sur les décisifs"
+      "mise_a_jour_2026-11-21": "thème 16-1-8-14 (score 3-1, penalty R1, rouge R7) : H-REPOS appelait R7, R1 a gagné : faux ; bilan 3 justes sur 5 appels sur 38 matchs (indépendants : 2 justes, 2 faux ; construits : 1 juste) ; « toujours R1 » : 66 % sur les décisifs",
+      "mise_a_jour_2026-11-21b": "5-3-16-11 : R7 annoncé, Orlando City 1-3 Cincinnati : juste ; bilan 4 justes sur 6 appels sur 39 matchs"
     },
     {
       "id": "H-PROTECTEUR",
@@ -2096,7 +2097,7 @@
     },
     {
       "id": "H-COORD-M1M7",
-      "statut": "PISTE post hoc 2026-11-21 (6 cas d'incident étiquetés) : non activée, prédiction à tester sur les prochains matchs",
+      "statut": "RÉFUTÉE 2026-11-21 : 5-3-16-11 (Terre saturée, annoncé RAS) a eu un penalty R7 : 6 cas sur 7, la règle est contredite ; non activée",
       "regle": "coordination = base(M1) + base(M7) ; incident (penalty ou rouge) probable quand la Terre de cette figure n'est pas saturée ; pas d'incident quand elle l'est",
       "cas": "16-1-8-14 Tristitia (T non saturée) → penalty R1 + rouge R7 ; 14-9-16-9 Fortuna Major (T○) → rouge R7 ; 11-5-11-4 Carcer (T○) → rouge R7 ; 14-14-9-16 Caput (T○) → rouge R1 ; 4-7-10-10 Amissio (T●) → RAS ; 4-7-5-8 Laetitia (T●) → RAS : 6 cas sur 6",
       "reserves": "trouvée après coup parmi plusieurs niveaux et sens possibles (probabilité d'un classement parfait par hasard 1,6 % pour un niveau et un sens, environ 12 % en tenant compte des 4 niveaux et 2 sens) ; la Terre est non saturée dans la moitié des thèmes, la règle déclencherait donc sur la moitié des matchs",
@@ -2111,7 +2112,7 @@
       ],
       "posee_le": "2026-11-21",
       "lecture": "prédictions inscrites avant le score et les incidents (thème absent du corpus)",
-      "statut": "en attente du score, des équipes, de la date et des incidents",
+      "statut": "jugé le 2026-11-21 : Orlando City 1-3 Cincinnati (22/11/2026), penalty R7, rouge non précisé",
       "appels": {
         "H-REPOS": "R7 gagne (Aquisitio, M11) : R7 possède seul ses deux fronts au repos, sans leur antagoniste",
         "H-MARQ-DOUBLE": "R1 (Laetitia, M5, front B) n=0 et R7 (Aquisitio, M11, front C) n=0 : au plus 1 but chacun (75 % des pôles à n=0 ont marqué moins de 2 buts, 4 observations seulement) ; deux marquent 25 % ; total ≈ 1,6 (n=0 n'existe que dans 4 % des thèmes)",
@@ -2120,8 +2121,26 @@
         "H-COORD-M1M7": "M1+M7 = Albus, Terre saturée : RAS",
         "coordination M6+M12": "Fortuna Minor, nœud M9 (Feu × Eau), sans Terre : pas d'incident"
       },
-      "score": null,
-      "note": "à renseigner : équipes, date, score, penalty, rouge"
+      "score": "1-3",
+      "note": "à renseigner : équipes, date, score, penalty, rouge",
+      "jugement": {
+        "H-REPOS": "R7 annoncé, R7 a gagné : juste (4 justes sur 6 appels)",
+        "H-MARQ-DOUBLE": "R1 n=0 a marqué 1 (conforme) ; R7 n=0 a marqué 3 (non conforme) ; les deux ont marqué (annoncé à 25 %) ; total 4 contre 1,6 : raté",
+        "H-INCIDENT": "pas d'indice, penalty R7 : incident manqué",
+        "H-FIGURES-NEG": "aucune maison active, pas d'incident annoncé, penalty R7 : manqué",
+        "H-COORD-M1M7": "Terre saturée annoncée RAS, penalty R7 : contredite, piste réfutée",
+        "coordination M6+M12": "sans Terre, pas d'incident annoncé : manqué",
+        "lecture_du_proprietaire": "base de M9 = Laetitia = figure de R1 ; résultante de M9 = Rubeus ; opposé de M9 = M3 dont la base Populus est toute saturée"
+      }
+    },
+    {
+      "id": "H-M9-POLE",
+      "statut": "PISTE post hoc 2026-11-21 (propriétaire), 2 cas sur 7 : non activée, prédiction à tester",
+      "regle": "quand la figure en base de M9 est la figure de l'un des deux pôles, l'autre pôle reçoit l'incident",
+      "cas": "5-3-16-11 : base de M9 = Laetitia = figure de R1, penalty R7 ; 14-14-9-16 : base de M9 = Populus = figure de R7, rouge R1 ; les 5 autres thèmes étiquetés n'ont pas cette coïncidence (3 ont un incident sans elle, 2 sont RAS)",
+      "frequence": "12,5 % des thèmes pour R1 et 12,5 % pour R7 (25 % au total)",
+      "reserves": "vue après coup sur deux cas ; elle n'explique pas les trois incidents où la base de M9 n'est la figure d'aucun pôle",
+      "algebre": "base(M9) = base(M1)+base(M2) (filiation) ; r(h)+r(h+8) = b(h)+b(h+8)+Tristitia pour h de 1 à 7, parce que les figures de repos de deux maisons opposées sont miroir (h+(h+8) = Tristitia) ; dans 5-3-16-11 aucune paire de maisons opposées n'a des résultantes miroir"
     }
   ],
   "lectures": [

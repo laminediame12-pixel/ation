@@ -619,5 +619,23 @@
   "penalty": "R1",
   "note": "fourni par le propriétaire le 2026-11-21 ; Troyes (R1) 3-1 Le Havre (R7), penalty R1, rouge R7 ; H-REPOS appelait R7 (faux)",
   "date": "2026-11-20"
+ },
+ {
+  "themes": [
+   5,
+   3,
+   16,
+   11
+  ],
+  "match": "Orlando City–Cincinnati",
+  "date": "2026-11-22",
+  "score": [
+   1,
+   3
+  ],
+  "lot": "incident",
+  "rouge": null,
+  "penalty": "R7",
+  "note": "penalty pour R7 ; rouge non précisé ; prédictions inscrites avant le score (thème absent du corpus)"
  }
 ]
