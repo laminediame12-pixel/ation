@@ -2022,11 +2022,13 @@
     },
     {
       "id": "H-INCIDENT",
-      "statut": "SIGNAL post hoc 2026-11-21 (3 cas) : indice affiché, non activé comme verdict",
+      "statut": "SIGNAL post hoc 2026-11-21 : 3 incidents sur 4 annoncés ; indice affiché, non activé comme verdict",
       "regle": "penalty ou rouge probable quand un arrêt (antagoniste ancré en base d'une maison) relie les fronts directs de R1 et de R7 (front de l'antagoniste = un pôle, front de la maison touchée = l'autre) ; le côté n'est pas déterminé",
       "cas": "16-1-8-14 (penalty R1, rouge R7) : arrêt M11/Tristitia, R1→R7 ; 14-9-16-9 (rouge R7) : arrêt M1/Puella, R1→R7 ; 11-5-11-4 (rouge R7) : arrêt M10/Rubeus, R7→R1",
       "frequence": "8324 thèmes sur 65 536 (12,7 %) ; 3 cas sur 3 : probabilité 0,2 % par hasard pour ces trois seuls thèmes ; lot 1 (14 matchs, incident non renseigné) : 1 match concerné",
-      "reserves": "règle formulée après les trois cas, en remplacement de H-ROUGE réfutée ; trois cas seulement ; tous les incidents connus sont côté R7 (le côté reste inconnu) ; il faut des matchs sans incident pour mesurer les fausses alertes"
+      "reserves": "règle formulée après les trois cas, en remplacement de H-ROUGE réfutée ; trois cas seulement ; tous les incidents connus sont côté R7 (le côté reste inconnu) ; il faut des matchs sans incident pour mesurer les fausses alertes",
+      "quatrieme_cas": "14-14-9-16 (rouge R1), posé avant le thème : aucun arrêt ne relie les fronts (arrêt unique M1, antagoniste Puella du front B, maison du front A de R1 ; le front D de R7 n'est pas touché) → pas d'indice, incident non annoncé : manqué. L'incident est donc 3 fois sur 4 annoncé ; la règle ne dit pas qu'il n'y a pas d'incident sans lien, mais elle n'est pas nécessaire.",
+      "cote_rouge": "pôle dont le front contient la maison touchée (victime) = pôle expulsé : 3 sur 4 (16-1-8-14, 14-9-16-9, 14-14-9-16 ; manqué en 11-5-11-4 où le rouge est R7 alors que la maison touchée est dans le front B de R1) ; à confirmer, non retenu"
     }
   ],
   "lectures": [
