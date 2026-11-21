@@ -158,5 +158,29 @@
    ]
   },
   "note": "mi-temps 2-1, buts à la 5e et 30e (Coventry) et 13e (Crystal Palace) (propriétaire, 2026-11-21) ; score final non fourni"
+ },
+ {
+  "themes": [
+   4,
+   6,
+   8,
+   2
+  ],
+  "match": "Union Berlin–Leipzig",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "18'"
+   ],
+   "R7": [
+    "41'"
+   ]
+  },
+  "note": "mi-temps 1-1, buts à la 18e (Union Berlin) et 41e (Leipzig) (propriétaire, 2026-11-21) ; adversaire identifié dans le fichier du 20 au 24 novembre ; score final non fourni"
  }
 ]
