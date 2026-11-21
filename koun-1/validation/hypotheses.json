@@ -1961,7 +1961,8 @@
           "prediction": "R1",
           "score": "5-1 : juste"
         }
-      ]
+      ],
+      "mise_a_jour_2026-11-21": "thème 16-1-8-14 (score 3-1, penalty R1, rouge R7) : H-REPOS appelait R7, R1 a gagné : faux ; bilan 3 justes sur 5 appels sur 38 matchs (indépendants : 2 justes, 2 faux ; construits : 1 juste) ; « toujours R1 » : 66 % sur les décisifs"
     },
     {
       "id": "H-PROTECTEUR",
@@ -1998,7 +1999,8 @@
       "regle": "un pôle marque 2 buts ou plus quand n >= 2, au plus 1 but quand n <= 1",
       "resultat": "74 pôles-matchs : n=0 25 % (4 obs), n=1 33 % (18), n=2 62 % (34), n=3 69 % (13), n=4 80 % (5) ; n<=1 : 7/22 (32 %), n>=2 : 34/52 (65 %) ; avec seuil appris en laissant un match de côté : 66 % contre 55 % pour la réponse constante",
       "reserves": "mesure n choisie sur les mêmes données ; pôles d'un même match non indépendants",
-      "robustesse": "2026-11-21 : écart n>=2 / n<=1 de 34 points (65 % contre 32 %), même sens dans tous les sous-ensembles : indépendants 71 % contre 38 %, construits 57 % contre 22 %, R1 72 % contre 50 %, R7 57 % contre 21 %, fronts A 82/38, B 88/17, C 43/29 (le plus faible), D 63/100 (une seule observation à n<=1) ; buts moyens 2,62 contre 1,41 ; p = 0,018 par permutation des scores entre matchs (les deux pôles d'un match restent ensemble) ; en retirant un match à la fois l'écart reste entre 31 et 36 points. Reste post hoc : mesure n choisie sur ces données."
+      "robustesse": "2026-11-21 : écart n>=2 / n<=1 de 34 points (65 % contre 32 %), même sens dans tous les sous-ensembles : indépendants 71 % contre 38 %, construits 57 % contre 22 %, R1 72 % contre 50 %, R7 57 % contre 21 %, fronts A 82/38, B 88/17, C 43/29 (le plus faible), D 63/100 (une seule observation à n<=1) ; buts moyens 2,62 contre 1,41 ; p = 0,018 par permutation des scores entre matchs (les deux pôles d'un match restent ensemble) ; en retirant un match à la fois l'écart reste entre 31 et 36 points. Reste post hoc : mesure n choisie sur ces données.",
+      "mise_a_jour_2026-11-21": "match 16-1-8-14 (3-1) : R1 n=2 a marqué 3 (conforme), R7 n=1 a marqué 1 (conforme) ; 76 pôles-matchs : n>=2 35/53 (66 %), n<=1 7/23 (30 %) ; 2 cas conformes sur 2, ce match n'a pas servi à choisir la mesure"
     },
     {
       "id": "H-MARQ-TOTAL",
@@ -2028,7 +2030,8 @@
       "frequence": "8324 thèmes sur 65 536 (12,7 %) ; 3 cas sur 3 : probabilité 0,2 % par hasard pour ces trois seuls thèmes ; lot 1 (14 matchs, incident non renseigné) : 1 match concerné",
       "reserves": "règle formulée après les trois cas, en remplacement de H-ROUGE réfutée ; trois cas seulement ; tous les incidents connus sont côté R7 (le côté reste inconnu) ; il faut des matchs sans incident pour mesurer les fausses alertes",
       "quatrieme_cas": "14-14-9-16 (rouge R1), posé avant le thème : aucun arrêt ne relie les fronts (arrêt unique M1, antagoniste Puella du front B, maison du front A de R1 ; le front D de R7 n'est pas touché) → pas d'indice, incident non annoncé : manqué. L'incident est donc 3 fois sur 4 annoncé ; la règle ne dit pas qu'il n'y a pas d'incident sans lien, mais elle n'est pas nécessaire.",
-      "cote_rouge": "pôle dont le front contient la maison touchée (victime) = pôle expulsé : 3 sur 4 (16-1-8-14, 14-9-16-9, 14-14-9-16 ; manqué en 11-5-11-4 où le rouge est R7 alors que la maison touchée est dans le front B de R1) ; à confirmer, non retenu"
+      "cote_rouge": "pôle dont le front contient la maison touchée (victime) = pôle expulsé : 3 sur 4 (16-1-8-14, 14-9-16-9, 14-14-9-16 ; manqué en 11-5-11-4 où le rouge est R7 alors que la maison touchée est dans le front B de R1) ; à confirmer, non retenu",
+      "mise_a_jour_2026-11-21": "16-1-8-14 est le premier cas avec score : 3-1, penalty R1, rouge R7"
     },
     {
       "id": "H-FIGURES-NEG",

@@ -30,3 +30,8 @@ Le pôle qui possède ses deux fronts au repos, sans que l'antagoniste y soit, g
 
 ## Ce qui est exact
 La structure d'un thème (maisons, résultantes, pôles, liaisons, paralysies, témoins, interactions par canal) est calculée exactement et contrôlée (`node outils/surveiller.js`).
+
+
+## Mise à jour du 2026-11-21 : thème 16-1-8-14 (3-1, penalty R1, rouge R7)
+
+Premier match étiqueté avec incidents. H-REPOS appelait R7 ; R1 a gagné 3-1 : faux. Bilan H-REPOS : 3 justes sur 5 appels sur 38 matchs (indépendants : 2 justes, 2 faux ; construits : 1 juste), contre 66 % pour « toujours R1 ». Le signal de marquage tient sur ce match : R1 (n = 2) marque 3, R7 (n = 1) marque 1.

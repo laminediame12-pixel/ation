@@ -594,5 +594,22 @@
    3
   ],
   "lot": "lot"
+ },
+ {
+  "themes": [
+   16,
+   1,
+   8,
+   14
+  ],
+  "match": "équipes à préciser",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "incident",
+  "rouge": "R7",
+  "penalty": "R1",
+  "note": "fourni par le propriétaire le 2026-11-21 ; H-REPOS appelait R7 (faux)"
  }
 ]
