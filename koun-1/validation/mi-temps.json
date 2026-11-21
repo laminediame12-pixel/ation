@@ -152,7 +152,7 @@
   "competition": "Premier League",
   "mi_temps": [
    2,
-   1
+   2
   ],
   "buts": {
    "R1": [
@@ -160,10 +160,11 @@
     "30'"
    ],
    "R7": [
-    "13'"
+    "13'",
+    "?"
    ]
   },
-  "note": "mi-temps 2-1, buts à la 5e et 30e (Coventry) et 13e (Crystal Palace) (propriétaire, 2026-11-21) ; score final non fourni"
+  "note": "mi-temps 2-2 (correction du propriétaire, 2026-11-21 ; 2-1 saisi d'abord) ; buts à la 5e et 30e (Coventry), 13e et un second but de Crystal Palace avant la pause ; score final non fourni"
  },
  {
   "themes": [
