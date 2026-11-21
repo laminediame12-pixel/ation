@@ -133,5 +133,30 @@
    0
   ],
   "note": "mi-temps 0-0 (propriétaire, 2026-11-21) ; score final non fourni"
+ },
+ {
+  "themes": [
+   3,
+   15,
+   10,
+   4
+  ],
+  "match": "Coventry–Crystal Palace",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "mi_temps": [
+   2,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "5'",
+    "30'"
+   ],
+   "R7": [
+    "13'"
+   ]
+  },
+  "note": "mi-temps 2-1, buts à la 5e et 30e (Coventry) et 13e (Crystal Palace) (propriétaire, 2026-11-21) ; score final non fourni"
  }
 ]
