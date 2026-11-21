@@ -602,7 +602,7 @@
    8,
    14
   ],
-  "match": "équipes à préciser",
+  "match": "Troyes–Le Havre",
   "score": [
    3,
    1
@@ -610,6 +610,7 @@
   "lot": "incident",
   "rouge": "R7",
   "penalty": "R1",
-  "note": "fourni par le propriétaire le 2026-11-21 ; H-REPOS appelait R7 (faux)"
+  "note": "fourni par le propriétaire le 2026-11-21 ; Troyes (R1) 3-1 Le Havre (R7), penalty R1, rouge R7 ; H-REPOS appelait R7 (faux)",
+  "date": "2026-11-20"
  }
 ]
