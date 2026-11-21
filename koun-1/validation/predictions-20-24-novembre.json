@@ -29,7 +29,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 1,
@@ -54,7 +55,8 @@
    "rythme": "rapide",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 2,
@@ -81,7 +83,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 3,
@@ -106,7 +109,8 @@
    "rythme": "rapide",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 4,
@@ -131,7 +135,8 @@
    "rythme": "rapide",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 5,
@@ -156,7 +161,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 6,
@@ -184,7 +190,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 7,
@@ -209,7 +216,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 8,
@@ -237,7 +245,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 9,
@@ -262,7 +271,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 10,
@@ -290,7 +300,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 11,
@@ -317,7 +328,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 12,
@@ -344,7 +356,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 13,
@@ -369,7 +382,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 14,
@@ -394,7 +408,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 15,
@@ -421,7 +436,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 16,
@@ -446,7 +462,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 17,
@@ -473,7 +490,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 18,
@@ -501,7 +519,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 19,
@@ -529,7 +548,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 20,
@@ -556,7 +576,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 21,
@@ -583,7 +604,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 22,
@@ -608,7 +630,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 23,
@@ -635,7 +658,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 24,
@@ -660,7 +684,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 25,
@@ -685,7 +710,8 @@
    "rythme": "rapide",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 26,
@@ -712,7 +738,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 27,
@@ -740,7 +767,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 28,
@@ -765,7 +793,8 @@
    "rythme": "rapide",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 29,
@@ -792,7 +821,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 30,
@@ -819,7 +849,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 31,
@@ -846,7 +877,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 32,
@@ -873,7 +905,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 33,
@@ -900,7 +933,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 34,
@@ -925,7 +959,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 35,
@@ -950,7 +985,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 36,
@@ -977,7 +1013,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 37,
@@ -1004,7 +1041,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 38,
@@ -1029,7 +1067,8 @@
    "rythme": "rapide",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 39,
@@ -1057,7 +1096,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 40,
@@ -1084,7 +1124,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 41,
@@ -1111,7 +1152,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 42,
@@ -1136,7 +1178,8 @@
    "rythme": "lente",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 43,
@@ -1163,7 +1206,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 44,
@@ -1190,7 +1234,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 45,
@@ -1217,7 +1262,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 46,
@@ -1244,7 +1290,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 47,
@@ -1271,7 +1318,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 48,
@@ -1299,7 +1347,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 49,
@@ -1326,7 +1375,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 50,
@@ -1353,7 +1403,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 51,
@@ -1380,7 +1431,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 52,
@@ -1407,7 +1459,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 53,
@@ -1434,7 +1487,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 54,
@@ -1461,7 +1515,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 55,
@@ -1486,7 +1541,8 @@
    "rythme": "lente",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 56,
@@ -1511,7 +1567,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 57,
@@ -1538,7 +1595,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 58,
@@ -1565,7 +1623,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 59,
@@ -1590,7 +1649,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 60,
@@ -1617,7 +1677,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 61,
@@ -1644,7 +1705,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 62,
@@ -1669,7 +1731,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 63,
@@ -1696,7 +1759,8 @@
    "marqueursPremiereMT": [
     "R1"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 64,
@@ -1723,7 +1787,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 65,
@@ -1751,7 +1816,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": false
   },
   {
    "i": 66,
@@ -1776,7 +1842,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 67,
@@ -1801,7 +1868,8 @@
    "rythme": "rapide",
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": true
   },
   {
    "i": 68,
@@ -1826,7 +1894,8 @@
    "rythme": "lente",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 69,
@@ -1851,7 +1920,8 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 70,
@@ -1879,7 +1949,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 71,
@@ -1907,7 +1978,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "forte"
+   "puissance": "forte",
+   "butPremiereMT_v2": true
   },
   {
    "i": 72,
@@ -1932,7 +2004,8 @@
    "rythme": "lente",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": false
   },
   {
    "i": 73,
@@ -1957,7 +2030,8 @@
    "rythme": "lente",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 74,
@@ -1984,7 +2058,8 @@
    "marqueursPremiereMT": [
     "R7"
    ],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   },
   {
    "i": 75,
@@ -2012,7 +2087,8 @@
     "R1",
     "R7"
    ],
-   "puissance": "moyenne"
+   "puissance": "moyenne",
+   "butPremiereMT_v2": true
   },
   {
    "i": 76,
@@ -2037,9 +2113,11 @@
    "rythme": "intermédiaire",
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
-   "puissance": "faible"
+   "puissance": "faible",
+   "butPremiereMT_v2": false
   }
  ],
  "ajout_2026_11_21": "butPremiereMT ajouté (H-MT-MECANISME) après coup pour les matchs déjà saisis ; pour les matchs non joués, c'est une prédiction",
- "ajout_marqueurs": "2026-11-21 : marqueurs et puissance de la 1re mi-temps ajoutés (H-MT-MARQUEUR), les autres champs sont inchangés"
+ "ajout_marqueurs": "2026-11-21 : marqueurs et puissance de la 1re mi-temps ajoutés (H-MT-MARQUEUR), les autres champs sont inchangés",
+ "ajout_v2": "2026-11-21 : butPremiereMT_v2 = règle corrigée après Nice–PSG ; butPremiereMT d'origine conservé"
 }

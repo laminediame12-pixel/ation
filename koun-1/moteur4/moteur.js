@@ -295,7 +295,12 @@
     // Mécanisme (H-MT-MECANISME, 12 matchs sur 13) : but en première mi-temps quand la figure est rapide (hors Populus, toute fermée), ou quand elle est attaquée :
     // son antagoniste (f−3) est en base quelque part sans que son protecteur (f−6) y soit.
     var enBase = function (g) { var r = []; for (var h = 1; h <= 16; h++) if (T.bases[h] === g) r.push(h); return r; }, ant = mod(f - 3), pro = mod(f - 6), ba = enBase(ant), bp = enBase(pro),
-      vit = n[0] === 2 && n[1] === 2 ? 'rapide' : n[0] === 1 && n[1] === 1 ? 'lente' : 'intermédiaire', rapide = vit === 'rapide' && f !== 16, attaque = ba.length > 0 && bp.length === 0;
+      // Correction après Nice–PSG (1-2) : les maisons 1, 5, 12, 15 fabriquent la figure. Un protecteur ancré dans l'une d'elles est pris dans la figure et ne protège pas ;
+      // un antagoniste ancré dans l'une d'elles attaque de l'intérieur et rien ne le bloque. L'attaque n'est bloquée que par un protecteur ancré hors de ces maisons,
+      // et seulement si aucun antagoniste n'est ancré dedans.
+      COMBI = [1, 5, 12, 15], dedans = function (h) { return COMBI.indexOf(h) >= 0; },
+      bloquee = ba.length > 0 && bp.some(function (h) { return !dedans(h); }) && !ba.some(dedans),
+      vit = n[0] === 2 && n[1] === 2 ? 'rapide' : n[0] === 1 && n[1] === 1 ? 'lente' : 'intermédiaire', rapide = vit === 'rapide' && f !== 16, attaque = ba.length > 0 && !bloquee;
     return { figure: f, classe: s === 0 ? 'tout ouverte' : s === 4 ? 'toute fermée' : s === 1 ? 'fermante' : s === 3 ? 'ouvrante' : n[3] === 2 ? 'mobile' : 'fixe',
       // PUISSANCE (piste, H-MT-MECANISME) : nombre d'ancrages de la figure en base (0 faible, 1 moyenne, 2 ou plus forte) et fronts directs des pôles qu'elle touche (base ou résultante).
       ancrages: enBase(f).length, puissance: enBase(f).length >= 2 ? 'forte' : enBase(f).length === 1 ? 'moyenne' : 'faible',
@@ -303,7 +308,7 @@
       // MARQUEUR (piste, 7 pôles sur 7) : le pôle dont le front direct contient une maison où la figure ou son protecteur est ancré en base marque en première mi-temps.
       marqueurs: ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || T.bases[h] === pro; }); }),
       vitesse: vit, front: K.front(f), antagoniste: ant, antagonisteEnBase: ba, protecteur: pro, protecteurEnBase: bp, attaquee: attaque, butAttendu: rapide || attaque,
-      cause: rapide ? 'figure rapide (Feu et Air saturés)' : attaque ? 'figure attaquée : ' + K.nom(ant) + ' en base de M' + ba.join(', M') + ', sans son protecteur ' + K.nom(pro) :
+      cause: rapide ? 'figure rapide (Feu et Air saturés)' : attaque ? 'figure attaquée : ' + K.nom(ant) + ' en base de M' + ba.join(', M') + (ba.some(dedans) ? ' (de l\'intérieur de 1-5-12-15)' : '') + (bp.length ? ', protecteur ' + K.nom(pro) + ' pris dans la combinaison (M' + bp.join(', M') + ')' : ', sans son protecteur ' + K.nom(pro)) :
         ba.length ? 'attaque de ' + K.nom(ant) + ' (M' + ba.join(', M') + ') bloquée par le protecteur ' + K.nom(pro) + ' (M' + bp.join(', M') + ')' : f === 16 ? 'Populus, toute fermée' : 'figure ni rapide ni attaquée' }; }
   // COMBINAISONS DE MAISONS (exact) : la somme des bases d'un ensemble de maisons est une fonction linéaire (XOR) des 16 bits du thème. Les 16 maisons n'ont que 8 maisons
   // indépendantes (M1 à M8) : il n'existe que 256 fonctions de somme distinctes (255 non nulles), chacune égale à une somme de maisons parmi M1..M8. equivalences(maisons) donne

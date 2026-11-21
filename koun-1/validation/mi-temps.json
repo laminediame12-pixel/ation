@@ -228,5 +228,31 @@
   ],
   "prediction_avant": "pas de but attendu en 1re mi-temps (H-MT-MECANISME), annoncée avant le score",
   "note": "mi-temps 0-0 (propriétaire, 2026-11-21) ; score final non fourni"
+ },
+ {
+  "themes": [
+   10,
+   1,
+   7,
+   13
+  ],
+  "match": "Nice–PSG",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "mi_temps": [
+   1,
+   2
+  ],
+  "buts": {
+   "R1": [
+    "8'"
+   ],
+   "R7": [
+    "31'",
+    "32'"
+   ]
+  },
+  "prediction_avant": "pas de but attendu (attaque de Cauda bloquée par le protecteur Carcer) ; si but : PSG ; publication : 1X",
+  "note": "mi-temps 1-2 (propriétaire, 2026-11-21) ; score final non fourni"
  }
 ]

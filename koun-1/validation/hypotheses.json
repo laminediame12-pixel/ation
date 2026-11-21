@@ -2349,7 +2349,7 @@
     },
     {
       "id": "H-MT-MECANISME",
-      "statut": "EN OBSERVATION 2026-11-21 : 12 matchs sur 13 pour la construction, puis 1 sur 1 annoncé d'avance (Aston Villa–Sunderland, pas de but attendu, 0-0) ; affichée dans la ligne « Rythme des buts (1re mi-temps) »",
+      "statut": "EN OBSERVATION 2026-11-21 : corrigée après Nice–PSG ; 15 matchs sur 15 (avant correction 13 sur 15 : Orlando et Nice–PSG manqués)",
       "regle": "but en première mi-temps quand la figure-somme des bases de 1-5-12-15 est rapide (Feu et Air saturés, hors Populus), ou quand elle est attaquée : son antagoniste (f−3) est en base d'une maison sans que son protecteur (f−6) soit en base ; sinon pas de but attendu",
       "cas": "rapides : Troyes, Bayern, Manchester City, Coventry, Union Berlin (5 buts) ; attaquées sans protecteur : Bournemouth, Millwall, Chelsea, Tottenham (4 buts) ; ni rapide ni attaquée : Athletic (0-0), Cercle Bruges (Populus, 0-0) ; attaque bloquée par le protecteur : Southampton (Fortuna Major en M14, protecteur Fortuna Minor en M10, 0-0) et Orlando (Amissio en M15, protecteur Caput en M2) : but à la 26e malgré le blocage, seul cas non expliqué",
       "origine": "recherche de la cause des 0-0 (demande du propriétaire : chercher pourquoi et comment) ; antagoniste = attaquant, protecteur = prédateur de l'attaquant (f−6 attaque f−3)",
@@ -2365,10 +2365,24 @@
           "annonce": "pas de but (Cauda, ni rapide ni attaquée, protecteur Rubeus en M13 et M16)",
           "mi_temps": "0-0",
           "juste": true
+        },
+        {
+          "match": "Nice–PSG",
+          "theme": [
+            10,
+            1,
+            7,
+            13
+          ],
+          "annonce": "pas de but ; si but, PSG",
+          "mi_temps": "1-2",
+          "juste": false,
+          "cote": "le PSG a marqué deux fois (désigné), Nice une fois (non désigné)"
         }
       ],
       "puissance_2026_11_21": "nombre de buts en 1re mi-temps (14 matchs, Coventry corrigé à 2-2) : le facteur le plus lié est le nombre de fois où la figure de 1-5-12-15 est ancrée en base (corrélation 0,47) ; présence en résultante seule : -0,03 ; antagoniste en base 0,07 ; protecteur -0,05 ; niveaux saturés 0,05 ; somme des n -0,10. Coventry–Crystal Palace (2-2) : Albus en base de M4 (chez elle), M5 et M9, rapide, présente aussi en résultante de M10 et M14 (front de R1) ; base de M4 dans le front D de R7 : la figure touche les deux fronts et les deux équipes marquent deux fois.",
-      "integration_puissance": "2026-11-21 : intégrée à la ligne « Rythme des buts (1re mi-temps) » : puissance faible (0 ancrage en base), moyenne (1), forte (2 ou plus), et fronts des pôles touchés ; Coventry–Crystal Palace : 4e but à la 45e (Crystal Palace)"
+      "integration_puissance": "2026-11-21 : intégrée à la ligne « Rythme des buts (1re mi-temps) » : puissance faible (0 ancrage en base), moyenne (1), forte (2 ou plus), et fronts des pôles touchés ; Coventry–Crystal Palace : 4e but à la 45e (Crystal Palace)",
+      "correction_nice_psg": "Nice–PSG (mi-temps 1-2, buts 8e, 31e, 32e) : annoncé « pas de but » (attaque de Cauda en M4 et M13 bloquée par Carcer en M1 et M15) : faux. Les maisons 1, 5, 12, 15 fabriquent la figure : un protecteur ancré dans l'une d'elles est pris dans la figure et ne protège pas ; un antagoniste ancré dedans attaque de l'intérieur. Règle corrigée : l'attaque n'est bloquée que si le protecteur est ancré hors de 1-5-12-15 et qu'aucun antagoniste n'y est ancré. Explique aussi Orlando (antagoniste Amissio en M15, intérieur) ; Southampton reste bloqué (antagoniste M14 et protecteur M10, tous deux dehors) : 0-0."
     },
     {
       "id": "H-MT-MARQUEUR",
@@ -2381,7 +2395,8 @@
       "id": "H-COMBI-1-5-12-15-AXES",
       "statut": "VÉRIFIÉE 2026-11-21 sur les données existantes (règle publiée sur un réseau social, transmise par le propriétaire) : ne fait pas mieux que les taux habituels ; non intégrée",
       "regle": "figure-somme des bases de 1-5-12-15 cherchée dans les bases du thème : en M1, M4, M7, M10 l'équipe 1 encaisse ; en M2, M5, M8, M11 l'équipe 2 encaisse ; en M3, M9, M14, M16 double chance 1X ; en M6, M12, M13, M15 double chance 2X ; condition : la somme de 1-4-7-10 doit être présente dans le thème",
-      "resultat": "1re mi-temps (14 matchs) : la figure n'est en base nulle part dans 7 matchs (la règle se tait) ; signaux justes 6 sur 11 ; la condition 1-4-7-10 est remplie dans 12 matchs sur 14, elle ne filtre presque rien. Match entier (39 matchs) : équipe 2 encaisse 13 sur 13 (taux habituel 37 sur 39), équipe 1 encaisse 6 sur 8 (30 sur 39), 1X 4 sur 7 (28 sur 39), 2X 4 sur 10 (17 sur 39). Désaccords avec H-MT-MARQUEUR : Bayern–Cologne (figure en M8, la règle fait encaisser l'équipe 2, c'est l'équipe 2 qui a marqué ; M8 est la maison de R7, dans son front) et Millwall–QPR (figure en M5, front de R7, QPR a marqué) : la lecture par le front du pôle donne le bon côté."
+      "resultat": "1re mi-temps (14 matchs) : la figure n'est en base nulle part dans 7 matchs (la règle se tait) ; signaux justes 6 sur 11 ; la condition 1-4-7-10 est remplie dans 12 matchs sur 14, elle ne filtre presque rien. Match entier (39 matchs) : équipe 2 encaisse 13 sur 13 (taux habituel 37 sur 39), équipe 1 encaisse 6 sur 8 (30 sur 39), 1X 4 sur 7 (28 sur 39), 2X 4 sur 10 (17 sur 39). Désaccords avec H-MT-MARQUEUR : Bayern–Cologne (figure en M8, la règle fait encaisser l'équipe 2, c'est l'équipe 2 qui a marqué ; M8 est la maison de R7, dans son front) et Millwall–QPR (figure en M5, front de R7, QPR a marqué) : la lecture par le front du pôle donne le bon côté.",
+      "nice_psg": "annonçait 1X (Populus en M16) : Nice menée 1-2 à la pause : faux"
     }
   ],
   "lectures": [
