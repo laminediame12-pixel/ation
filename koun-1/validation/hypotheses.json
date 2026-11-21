@@ -2011,6 +2011,14 @@
       "regle": "score d'un pôle = nombre de liaisons saturées de son front direct (connexions) moins le nombre de maisons de ce front où l'antagoniste est ancré en base (arrêt) ; le plus grand score gagne, égalité sans appel",
       "origine": "note « Cartographie des fronts » du propriétaire (3 justes sur 4 appels sur 8 matchs : échantillon trop petit)",
       "note": "choix posés avant le test : liaisons de branches (pas les nœuds), frein = arrêt binaire, front direct seul, Terre au même poids ; construits : 3 justes 4 faux 4 sur nul"
+    },
+    {
+      "id": "H-ROUGE",
+      "statut": "CANDIDATE 2026-11-21 (post hoc, 2 cas) : à tester sur les prochains matchs, non activée",
+      "regle": "le carton rouge va au pôle dont le front direct contient une maison en arrêt (antagoniste ancré en base) quand l'autre pôle n'en contient pas",
+      "cas": "16-1-8-14 (penalty R1, rouge R7) : un seul arrêt, M11 (Tristitia en base, antagoniste de Conjunctio), dans le front C de R7 ; 14-9-16-9 Zurich–Lucerne (rouge R7) : arrêt en M1 (Puella) dans le front A de R7, aucun dans le front B de R1",
+      "reserves": "2 cas seulement, trouvés après coup ; la règle parle dans 27 % des thèmes (9152 R1, 8528 R7 sur 65 536) alors que le rouge est rare : si elle n'est pas confirmée par des matchs sans rouge, elle sera réfutée ; les 14 matchs du lot 1 portent « - » pour penalty et rouge (aucun incident ou non renseigné : à préciser), et la règle y aurait donné 5 appels (R1 ×4, R7 ×1)",
+      "penalty": "piste : l'arrêt relie le front de l'antagoniste ancré (attaquant) à celui de la maison touchée (victime) ; en 16-1-8-14 l'attaquant Tristitia (maison 8) est dans le front D de R1 et la victime en M11 dans le front C de R7 (penalty R1, rouge R7) ; en 14-9-16-9 le même schéma donnerait penalty R1, or le penalty y est noté absent : 1 cas sur 2"
     }
   ],
   "lectures": [
