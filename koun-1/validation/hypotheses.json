@@ -2309,6 +2309,28 @@
         "H-COORD-VICTOIRE": "R1 (nœud M1+M7 plein dans le front de R1, vide pour R7 ; nœud de la résultante de M9 plein contre mixte) : conforme, mais ce match a servi au criblage",
         "incident": "possible 2/6, incidents non précisés"
       }
+    },
+    {
+      "theme": [
+        8,
+        13,
+        9,
+        15
+      ],
+      "posee_le": "2026-11-21",
+      "lecture": "thème lu sur deux captures d'une autre application du propriétaire (zone M7 remporte) ; absent du corpus ; score non fourni",
+      "statut": "en attente du score",
+      "appels": {
+        "H-REPOS": "pas d'appel",
+        "H-MARQ-VICTOIRE (n)": "égal (2 et 2), pas d'appel",
+        "H-COORD-VICTOIRE": "égalité des nœuds, pas d'appel",
+        "marquage": "R1 Carcer n=2, R7 Fortuna Minor n=2 ; deux marquent 79 % ; total ≈ 5",
+        "incident": "aucun 1/6, rouge non probable",
+        "autre application": "la zone M7 remporte (force totale 5 contre 10, trajectoires fortes 0/5 contre 1/5)"
+      },
+      "verifie": "les 9 maisons nommées sur les captures (M5 à M12 et le juge M15 Amissio) sont exactement celles de notre construction ; R1 Carcer et R7 Fortuna Minor aussi ; les trigones de l'application sont nos fronts sans la 4e maison ; la force de l'application n'a pas été reproduite (24 définitions essayées) ; comparer la saturation de la résultante de M1 et de M7 : 12 sur 28 (43 %) sur 34 matchs décisifs, par les bases 16 sur 25 (64 %) : aucun signal",
+      "score": null,
+      "note": "à renseigner : équipes, date, score, penalty, rouge"
     }
   ],
   "lectures": [
