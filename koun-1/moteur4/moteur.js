@@ -314,10 +314,12 @@
   // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 74 pôles-matchs :
   // buts moyens par n = 0:0,8 · 1:1,6 · 2:2,5 · 3:3,1 · 4:2,4 (5 obs seulement) ; corrélation 0,30 ; p = 0,016 après correction du choix parmi 6 mesures.
   var MARQUAGE_MOYENNES = [0.8, 1.6, 2.5, 3.1, 2.4];
+  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (74 pôles-matchs)
+  var MARQUAGE_P2 = [{ p: 0.25, obs: 4 }, { p: 0.33, obs: 18 }, { p: 0.62, obs: 34 }, { p: 0.69, obs: 13 }, { p: 0.80, obs: 5 }];
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
-      return { front: K.front(z + 1), maisons: hs, n: n, butsMoyens: MARQUAGE_MOYENNES[n] }; }
+      return { front: K.front(z + 1), maisons: hs, n: n, butsMoyens: MARQUAGE_MOYENNES[n], p2: MARQUAGE_P2[n].p, obs: MARQUAGE_P2[n].obs }; }
     return { R1: un(L.R1), R7: un(L.R7) }; }
   var API = { marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;

@@ -34,8 +34,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
 <div id="py"></div><details id="calc"><summary>Maisons de calcul : somme des figures</summary><div class="pre" id="cPre"></div><div class="sm" style="display:flex;gap:8px;align-items:center">Couche : <select id="cLay" style="width:auto"><option value="base">Base</option><option value="res">Résultante</option></select><button type="button" id="cClr">Effacer</button></div><div class="pg" id="cGrid"></div><div id="cOut" class="sm">Sélectionne au moins deux maisons.</div></details><div id="vd"><h2>Verdict</h2><div class="vs"><span class="tp a" id="vT1">Équipe 1</span><span>VS</span><span class="tp b" id="vT2">Équipe 2</span></div>
 <div class="vr"><div class="vl">🏆 Victoire<span class="vs2" id="vVs"></span></div><span class="tg" id="vVt">Pas de verdict</span></div>
 <div class="vr"><div class="vl">⚽ Deux marquent<span class="vs2" id="vBs"></span></div><span class="tg" id="vBt">Pas de verdict</span></div>
-<div class="vr"><div class="vl">⚽ <span id="vM1n">R1</span> marque<span class="vs2" id="vM1s"></span></div><span class="tg" id="vM1t">Pas de verdict</span></div>
-<div class="vr"><div class="vl">⚽ <span id="vM7n">R7</span> marque<span class="vs2" id="vM7s"></span></div><span class="tg" id="vM7t">Pas de verdict</span></div>
+<div class="vr"><div class="vl">⚽ <span id="vM1n">R1</span> marque 2 buts ou plus<span class="vs2" id="vM1s"></span></div><span class="tg" id="vM1t">Pas de verdict</span></div>
+<div class="vr"><div class="vl">⚽ <span id="vM7n">R7</span> marque 2 buts ou plus<span class="vs2" id="vM7s"></span></div><span class="tg" id="vM7t">Pas de verdict</span></div>
 <div class="vr"><div class="vl">⚠ Rouge ou penalty<span class="vs2" id="vIs"></span></div><span class="tg" id="vIt">Pas de verdict</span></div>
 <div class="vr"><div class="vl">🥅 Buts au total<span class="vs2" id="vTs"></span></div><span class="tg" id="vTt">Pas de verdict</span></div>
 <div class="vr"><div class="vl">📈 Over / Under <select id="vOl"><option>1,5</option><option selected>2,5</option><option>3,5</option><option>4,5</option><option>5,5</option></select><span class="vs2" id="vOs"></span></div><span class="tg" id="vOt">Pas de verdict</span></div>
@@ -480,10 +480,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 74 pôles-matchs :
   // buts moyens par n = 0:0,8 · 1:1,6 · 2:2,5 · 3:3,1 · 4:2,4 (5 obs seulement) ; corrélation 0,30 ; p = 0,016 après correction du choix parmi 6 mesures.
   var MARQUAGE_MOYENNES = [0.8, 1.6, 2.5, 3.1, 2.4];
+  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (74 pôles-matchs)
+  var MARQUAGE_P2 = [{ p: 0.25, obs: 4 }, { p: 0.33, obs: 18 }, { p: 0.62, obs: 34 }, { p: 0.69, obs: 13 }, { p: 0.80, obs: 5 }];
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
-      return { front: K.front(z + 1), maisons: hs, n: n, butsMoyens: MARQUAGE_MOYENNES[n] }; }
+      return { front: K.front(z + 1), maisons: hs, n: n, butsMoyens: MARQUAGE_MOYENNES[n], p2: MARQUAGE_P2[n].p, obs: MARQUAGE_P2[n].obs }; }
     return { R1: un(L.R1), R7: un(L.R7) }; }
   var API = { marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
@@ -724,7 +726,7 @@ function rendre(){
  +'<div class="box"><h2>Équilibre des deux parties</h2>Écart de base : '+e.ecartBase+' · écart de résultante : '+e.ecartRes+' · '+(e.equilibre?'<span class="ok">en équilibre</span>':'<span class="ko">pas en équilibre</span>')+'</div>'
  ;
 }
-var _r=rendre;rendre=function(){_r();(function(mm){var LL=KOUN4.lire(mm),V=KOUN4.verdict(LL),Q=KOUN4.marquage(LL),mq={};['R1','R7'].forEach(function(c){var q=Q[c];mq[c]={oui:q.n>0,raison:'indice (non vérifié) : Terre saturée sur '+q.n+'/4 maisons du front '+q.front+' · en moyenne ≈ '+q.butsMoyens.toString().replace('.',',')+' but'+(q.butsMoyens>=2?'s':'')}});window.VERDICT&&VERDICT.rendre(V.v===null?{note:V.raison.charAt(0).toUpperCase()+V.raison.slice(1)+'.',marque:mq}:{victoire:{v:V.v,raison:V.regle+' · '+V.statut+' : '+V.raison},marque:mq})})([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.POLES&&POLES.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CALC&&CALC.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CERCLE&&CERCLE.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CARTO&&CARTO.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}))};mer.addEventListener('change',rendre);jr.addEventListener('change',rendre);rendre();
+var _r=rendre;rendre=function(){_r();(function(mm){var LL=KOUN4.lire(mm),V=KOUN4.verdict(LL),Q=KOUN4.marquage(LL),mq={};['R1','R7'].forEach(function(c){var q=Q[c];mq[c]={oui:q.p2>=0.5,tag:'n = '+q.n+'/4 · '+Math.round(q.p2*100)+' %',raison:'Terre saturée sur '+q.n+' des 4 maisons du front '+q.front+' · '+Math.round(q.p2*100)+' % des pôles à n = '+q.n+' ont marqué 2 buts ou plus ('+q.obs+' observations) · buts moyens ≈ '+String(q.butsMoyens).replace('.',',')+' · indice non vérifié (H-MARQ-DOUBLE)'}});window.VERDICT&&VERDICT.rendre(V.v===null?{note:V.raison.charAt(0).toUpperCase()+V.raison.slice(1)+'.',marque:mq}:{victoire:{v:V.v,raison:V.regle+' · '+V.statut+' : '+V.raison},marque:mq})})([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.POLES&&POLES.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CALC&&CALC.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CERCLE&&CERCLE.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}));window.CARTO&&CARTO.maj([].map.call(mer.querySelectorAll('select'),function(s){return +s.value}))};mer.addEventListener('change',rendre);jr.addEventListener('change',rendre);rendre();
 })();
 </script><script>(function(){
 var K=KOUN_NOYAU,$=function(i){return document.getElementById(i)},mer=$('meres'),lines=[],rnd=function(n){var a=new Uint32Array(1);crypto.getRandomValues(a);return 1+a[0]%n};
@@ -762,7 +764,7 @@ function rendre(v){var e1=$('mE1').value.trim()||'Équipe 1',e2=$('mE2').value.t
  if(!v){tag('vTt','',none);tag('vM1t','',none);tag('vM7t','',none);tag('vVt','',none);tag('vBt','',none);tag('vIt','',none);tag('vOt','',none);tag('vCt','',none);$('vNote').style.display='block';return}
  $('vNote').style.display=v.note?'block':'none';if(v.note)$('vNote').textContent=v.note;
  var a=v.victoire;if(a){tag('vVt',a.v==='1'?'v1':a.v==='2'?'v2':'vn',a.v==='1'?'Victoire '+e1:a.v==='2'?'Victoire '+e2:'Match nul');$('vVs').textContent=a.raison||''}else tag('vVt','',none);
- ['R1','R7'].forEach(function(c){var m=v.marque&&v.marque[c],n=c==='R1'?'vM1':'vM7';if(m){tag(n+'t',m.oui?'vo':'vx',m.oui?'Oui':'Non');$(n+'s').textContent=m.raison||''}else tag(n+'t','',none)});
+ ['R1','R7'].forEach(function(c){var m=v.marque&&v.marque[c],n=c==='R1'?'vM1':'vM7';if(m){tag(n+'t',m.oui?'vo':'vx',m.tag||(m.oui?'Oui':'Non'));$(n+'s').textContent=m.raison||''}else tag(n+'t','',none)});
  if(v.buts){tag('vTt','vo',v.buts.total+' buts');$('vTs').textContent=v.buts.raison||''}else tag('vTt','',none);
  var b=v.deuxMarquent;if(b){tag('vBt',b.oui?'vo':'vx',b.oui?'Oui':'Non');$('vBs').textContent=b.raison||''}else tag('vBt','',none);
  var c=v.incident;if(c){tag('vIt',c.oui?'vx':'vo',c.oui?'Oui':'Non');$('vIs').textContent=c.raison||''}else tag('vIt','',none);
