@@ -2433,20 +2433,23 @@
       "regle": "le pôle dont les deux canaux Terre du front direct (haut → droite et bas → gauche, déviation de la Terre) sont saturés dans les résultantes marque : marquage inévitable",
       "resultat": "84 pôles-matchs : deux canaux saturés 6 sur 6 ont marqué (3,33 buts en moyenne) ; un seul canal 21 sur 22 (seule exception 4-7-5-8, R7, 1-0) ; aucun canal 44 sur 56",
       "noeuds": "remarques du propriétaire : M1 est l'intersection des deux canaux Feu (Feu × Feu) et M11 celle des deux canaux Eau (exact) ; Air × Air est M6 (M2 est Air horizontal × Feu vertical) ; Terre × Terre serait M16, le coin qui n'existe pas : la Terre ne se croise pas, elle relie (déviation vers le front direct)",
-      "mise_a_jour_web": "55 matchs (13 scores trouvés sur le web) : deux canaux saturés 9 sur 9 ont marqué ; un canal 28 sur 35 ; aucun 50 sur 64 : la règle sûre tient, un seul canal ne distingue plus"
+      "mise_a_jour_web": "55 matchs (13 scores trouvés sur le web) : deux canaux saturés 9 sur 9 ont marqué ; un canal 28 sur 35 ; aucun 50 sur 64 : la règle sûre tient, un seul canal ne distingue plus",
+      "mise_a_jour_web2": "69 matchs : deux canaux saturés 10 sur 10 ; un canal 36 sur 45 ; aucun 63 sur 81"
     },
     {
       "id": "H-MT2-CANDIDATES",
       "statut": "POSÉES AVANT LES DONNÉES 2026-11-21 : à tester quand les scores finaux des matchs à mi-temps connue seront réunis (une dizaine au moins)",
       "regle": "la deuxième mi-temps a sa propre combinaison (le propriétaire sait qu'elle existe mais ne l'a pas). Candidates construites par la structure seule : A) 7-11-6-9, les maisons opposées (à 6) de 1-5-12-15 ; B) 9-13-4-7, les maisons miroir (à 8) de 1-5-12-15 ; C) recherche parmi les 255 combinaisons distinctes, contre les buts de deuxième mi-temps, avec correction du nombre d'essais",
       "observation": "les équipes « bloquées » (Terre du front fermée, aucune figure au repos) ont marqué en 1re mi-temps 5 fois sur 6 ; en 2e mi-temps, Orlando et Torino n'ont rien marqué : le blocage pourrait être celui de la deuxième période",
-      "premier_test": "17 matchs avec mi-temps et score final : but en 2e mi-temps dans 14. Candidate A (7-11-6-9) : Eau de la figure saturée 13 sur 14 avec but, Eau ouverte 1 sur 3 (niveau choisi après coup parmi 8 essais) ; candidate B (9-13-4-7) : Eau saturée dans les 17 cas, ne départage pas. Blocage par période : équipes « bloquées » 4 sur 5 ont marqué en 1re mi-temps, 1 sur 5 en 2e (Nice à la 90+5)."
+      "premier_test": "17 matchs avec mi-temps et score final : but en 2e mi-temps dans 14. Candidate A (7-11-6-9) : Eau de la figure saturée 13 sur 14 avec but, Eau ouverte 1 sur 3 (niveau choisi après coup parmi 8 essais) ; candidate B (9-13-4-7) : Eau saturée dans les 17 cas, ne départage pas. Blocage par période : équipes « bloquées » 4 sur 5 ont marqué en 1re mi-temps, 1 sur 5 en 2e (Nice à la 90+5).",
+      "recherche_mecanisme": "19 matchs avec mi-temps et score final (16 avec but en 2e mi-temps) : le mécanisme de la 1re mi-temps appliqué aux 255 combinaisons ; la meilleure, 3+5+7+15, explique 16 matchs sur 19 mais ne désigne l'équipe qui marque que 7 fois sur 15 ; la répartition des scores montre que beaucoup de combinaisons atteignent 12 à 15 : rien de distinct. Les candidates structurelles A (8/17) et B (6/17) ne tiennent pas avec ce mécanisme. Il manque surtout des deuxièmes mi-temps sans but (3 seulement)."
     },
     {
       "id": "JUGEMENT-WEB-2026-11-21",
       "statut": "jugement à l'aveugle des prédictions gelées avant les scores (predictions-20-24-novembre.json, version d'origine) sur 13 matchs dont le score a été trouvé sur le web",
       "resultat": "victoire : 3 justes, 1 faux (Bournemouth–Forest), 2 sur des nuls (Bayern–Cologne, Manchester City–Fulham), 7 sans appel ; deux marquent 8 sur 13 ; n >= 2 ↔ 2 buts ou plus 12 sur 26 ; totaux annoncés trop hauts (4,6 à 6,2 contre 2,7 réels en moyenne, ancienne formule par n) ; la 1re mi-temps ne compte pas : son mécanisme a été construit sur ces mi-temps",
-      "sources": "ESPN, Sofascore, Sky Sports, bundesliga.com, sporza.be, NBC Sports, livescore"
+      "sources": "ESPN, Sofascore, Sky Sports, bundesliga.com, sporza.be, NBC Sports, livescore",
+      "suite": "27 matchs trouvés sur le web au total (13 puis 14) : prédictions gelées d'origine : victoire 7 justes, 4 faux, 3 sur nul, 13 sans appel ; deux marquent 16 sur 27"
     }
   ],
   "lectures": [

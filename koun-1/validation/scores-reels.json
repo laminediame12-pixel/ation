@@ -1007,5 +1007,251 @@
   },
   "penalty": "R7",
   "rouge": null
+ },
+ {
+  "themes": [
+   14,
+   12,
+   3,
+   16
+  ],
+  "match": "Stoke–Birmingham",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   1,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   16,
+   2,
+   15,
+   10
+  ],
+  "match": "Middlesbrough–Bristol City",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   2,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   4,
+   13,
+   9,
+   10
+  ],
+  "match": "West Ham–Preston",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   1,
+   13,
+   15,
+   4
+  ],
+  "match": "Lincoln–Wrexham",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   1,
+   9,
+   4,
+   15
+  ],
+  "match": "Sheffield United–Watford",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   4,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   7,
+   2,
+   8,
+   5
+  ],
+  "match": "Bolton–Portsmouth",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   15,
+   8,
+   4,
+   15
+  ],
+  "match": "Celtic–St Mirren",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   4,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   1,
+   1,
+   11,
+   13
+  ],
+  "match": "Falkirk–St Johnstone",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   11,
+   1,
+   2,
+   16
+  ],
+  "match": "Hibernian–Dundee United",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   0,
+   4
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   6,
+   12,
+   11,
+   12
+  ],
+  "match": "Motherwell–Rangers",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   1,
+   2
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "mi_temps": [
+   1,
+   1
+  ]
+ },
+ {
+  "themes": [
+   12,
+   4,
+   16,
+   12
+  ],
+  "match": "Alavés–Deportivo",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   11,
+   4,
+   1,
+   13
+  ],
+  "match": "Rayo Vallecano–Valencia",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   5,
+   13,
+   11,
+   11
+  ],
+  "match": "Sevilla–Betis",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   1,
+   2,
+   13,
+   5
+  ],
+  "match": "Real Madrid–Celta",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "mi_temps": [
+   0,
+   1
+  ]
  }
 ]
