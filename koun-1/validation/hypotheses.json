@@ -2292,7 +2292,8 @@
       "reserves": "mesures posées le jour même avant le calcul mais choisies parmi plusieurs ; le gain sur « toujours R1 » n'est que d'un match sur les mêmes appels ; testée seulement sur des matchs déjà vus",
       "integration": "2026-11-21 : intégrée au verdict de la page et du moteur à la demande du propriétaire, après H-REPOS (qui garde la priorité), étiquetée « piste en observation » ; sort du verdict si, sur au moins 15 nouveaux appels indépendants, elle est indiscernable de « toujours R1 »",
       "axe_M2M8": "2026-11-21 : axe M2+M8 ajouté à la règle (criblage des six axes opposés : M1+M7 74 %, M2+M8 72 %, autres au niveau de « toujours R1 ») ; trois nœuds : 18 justes, 4 faux, 12 sans appel sur 34 décisifs, « toujours R1 » 15 sur 22",
-      "napoli_torino": "Napoli annoncé avant le score, 1-0 : juste ; bilan 19 justes sur 23 appels sur 36 décisifs"
+      "napoli_torino": "Napoli annoncé avant le score, 1-0 : juste ; bilan 19 justes sur 23 appels sur 36 décisifs",
+      "force_2026_11_21": "intégré : écart des trois nœuds 2 ou 3 = domination (15 justes sur 18, aucun nul) ; écart 1 = avantage, nul possible (4 justes sur 8, 3 nuls) ; écart nul = pas d'appel, nul possible (3 des 6 nuls). Les 4 appels faux sont tous des victoires d'un seul but ; victoires par 2 buts ou plus : 17 sur 17."
     },
     {
       "theme": [

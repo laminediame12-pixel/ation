@@ -337,9 +337,13 @@
     return { coordination: c1, residuM9: c2, axe28: c3, R1: { m1m7: a1, m9: a2, m2m8: a3 }, R7: { m1m7: b1, m9: b2, m2m8: b3 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
   function verdict(L) {
     var R = repos(L), Q = coordonnees(L);
-    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', regle: 'H-REPOS', statut: 'règle du propriétaire (4 justes sur 6 appels sur 42 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
-    if (Q.gagnant) return { v: Q.gagnant === 'R1' ? '1' : '2', regle: 'H-COORD-VICTOIRE', statut: 'piste en observation (19 justes sur 23 appels sur 36 matchs décisifs ; « toujours R1 » : 16 sur 23 ; non significatif)', raison: Q.gagnant + ' a les nœuds de coordination les plus pleins dans son front (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)' };
-    return { v: null, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS : aucun pôle ne possède seul ses deux fronts au repos ; coordonnées : nœuds à égalité)' };
+    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire (4 justes sur 6 appels sur 42 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
+    // Coordonnées (2026-11-21) : l'écart des trois nœuds dit la force de l'avantage. Écart 2 ou 3 : domination (15 justes sur 18 appels, aucun nul) ;
+    // écart 1 : avantage, nul possible (4 justes sur 8, 3 nuls) ; écart nul : pas d'appel, nul possible.
+    var e = Math.abs(Q.ecart), cote = Q.gagnant, det = ' (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)';
+    if (e >= 2) return { v: cote === 'R1' ? '1' : '2', force: 'domination', regle: 'H-COORD-VICTOIRE', statut: 'domination : 15 justes sur 18 appels, aucun nul (en tout 19 justes sur 23 appels sur 36 matchs décisifs ; « toujours R1 » : 16 sur 23)', raison: cote + ' domine : ' + e + ' nœuds de coordination sur 3 plus pleins dans son front' + det };
+    if (e === 1) return { v: cote === 'R1' ? '1' : '2', force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: 'avantage : 4 justes sur 8 appels, 3 nuls', raison: cote + ' n\'a l\'avantage que sur un nœud de coordination' + det };
+    return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS muet ; nœuds de coordination à égalité : 3 des 6 nuls observés)' + det };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;

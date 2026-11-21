@@ -12,8 +12,8 @@ D.forEach(d => {
   for (let h = 1; h <= 16; h++) { const r = h < 16 ? T.resultantes[h] : T.bases[16]; if (d.h[h - 1][0] !== T.bases[h] || (h < 16 && d.h[h - 1][1] !== r)) ecarts.push(d.i + ' M' + h); }
   if (d.r1 !== L.R1.maison || d.r7 !== L.R7.maison) ecarts.push(d.i + ' pôles');
   const V = M.verdict(L), Q = M.marquage(L), I = M.incident(L), Y = M.rythme(L);
-  const vic = V.v ? 'Victoire ' + (V.v === '1' ? d.e1 : d.e2) : 'Pas d’appel';
-  const vs = V.v ? (V.regle === 'H-REPOS' ? 'H-REPOS, règle du propriétaire' : 'coordonnées, piste en observation') : 'aucune règle ne se prononce';
+  const eq = V.v === '1' ? d.e1 : V.v === '2' ? d.e2 : null, vic = !eq ? 'Pas d’appel · nul possible' : V.force === 'avantage' ? 'Avantage ' + eq + ' · nul possible' : V.force === 'domination' ? 'Victoire ' + eq + ' (domination)' : 'Victoire ' + eq;
+  const vs = V.v ? (V.regle === 'H-REPOS' ? 'H-REPOS, règle du propriétaire' : V.force === 'domination' ? 'coordonnées : 2 ou 3 nœuds sur 3' : 'coordonnées : un seul nœud') : 'nœuds de coordination à égalité';
   const inc = I.niveau === 'probable' ? 'Probable' : I.niveau === 'possible' ? 'Possible' : 'Pas d’indice';
   const rouge = I.rouge.probable ? ' · rouge probable' + (I.rouge.cote ? ' côté ' + (I.rouge.cote === 'R1' ? d.e1 : d.e2) : '') : '';
   const dm = Q.temoin.deuxMarquent ? 'Oui' : Q.temoin.obsPas.oui === 0 ? 'Non (binôme)' : pct(Q.temoin.obsPas.oui / Q.temoin.obsPas.sur);
@@ -29,7 +29,7 @@ D.forEach(d => {
   const re = new RegExp('(<section class="card"[^>]*data-i="' + d.i + '">[\\s\\S]*?)(</section>)');
   if (!re.test(s)) ecarts.push(d.i + ' carte introuvable');
   s = s.replace(re, (m, a, b) => a + bloc + b);
-  P.push({ i: d.i, date: d.d, competition: d.c, match: d.e1 + ' – ' + d.e2, theme: d.th, victoire: V.v ? (V.v === '1' ? 'R1' : 'R7') : null, regle: V.regle, nR1: Q.R1.n, nR7: Q.R7.n, deuxMarquent: Q.temoin.deuxMarquent, butsAttendus: Q.butsAttendus, incident: I.niveau, incidentScore: I.score, rouge: I.rouge.probable ? (I.rouge.cote || 'côté non déterminé') : null, rythme: Y.vitesse, butPremiereMT: Y.butAttendu, marqueursPremiereMT: Y.marqueurs, puissance: Y.puissance });
+  P.push({ i: d.i, date: d.d, competition: d.c, match: d.e1 + ' – ' + d.e2, theme: d.th, victoire: V.v ? (V.v === '1' ? 'R1' : 'R7') : null, force: V.force, regle: V.regle, nR1: Q.R1.n, nR7: Q.R7.n, deuxMarquent: Q.temoin.deuxMarquent, butsAttendus: Q.butsAttendus, incident: I.niveau, incidentScore: I.score, rouge: I.rouge.probable ? (I.rouge.cote || 'côté non déterminé') : null, rythme: Y.vitesse, butPremiereMT: Y.butAttendu, marqueursPremiereMT: Y.marqueurs, puissance: Y.puissance });
 });
 const css = '.kv{margin-top:10px;border-top:1px solid var(--ln);padding-top:8px}.kvt{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}.kr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;border-bottom:1px dashed var(--ln)}.kr:last-child{border-bottom:0}.kl{font-size:13px;min-width:0;flex:1}.kl small{display:block;color:var(--mu);font-size:11px}.kg{font-size:12.5px;font-weight:600;border:1px solid var(--ln);border-radius:12px;padding:2px 9px;max-width:58%;text-align:right}.kg.k1{border-color:var(--r1);color:var(--r1)}.kg.k7{border-color:var(--r7);color:var(--r7)}.kg.ko{border-color:var(--ac);color:var(--ac)}.kg.kx{border-color:#f59e0b;color:#f59e0b}.kn{font-size:12px;color:var(--mu);margin:4px 0 10px}';
 s = s.replace('</style>', css + '</style>');
