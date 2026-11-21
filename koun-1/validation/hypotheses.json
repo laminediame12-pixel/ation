@@ -2101,6 +2101,27 @@
       "cas": "16-1-8-14 Tristitia (T non saturée) → penalty R1 + rouge R7 ; 14-9-16-9 Fortuna Major (T○) → rouge R7 ; 11-5-11-4 Carcer (T○) → rouge R7 ; 14-14-9-16 Caput (T○) → rouge R1 ; 4-7-10-10 Amissio (T●) → RAS ; 4-7-5-8 Laetitia (T●) → RAS : 6 cas sur 6",
       "reserves": "trouvée après coup parmi plusieurs niveaux et sens possibles (probabilité d'un classement parfait par hasard 1,6 % pour un niveau et un sens, environ 12 % en tenant compte des 4 niveaux et 2 sens) ; la Terre est non saturée dans la moitié des thèmes, la règle déclencherait donc sur la moitié des matchs",
       "corpus": "sur les 38 matchs : coordination b1+b7 = figure de R1 une fois, = figure de R7 une fois ; aucun lien net avec les buts ou le résultat (meilleur des 30 tests : corrélation 0,32, p = 0,56 par permutation)"
+    },
+    {
+      "theme": [
+        5,
+        3,
+        16,
+        11
+      ],
+      "posee_le": "2026-11-21",
+      "lecture": "prédictions inscrites avant le score et les incidents (thème absent du corpus)",
+      "statut": "en attente du score, des équipes, de la date et des incidents",
+      "appels": {
+        "H-REPOS": "R7 gagne (Aquisitio, M11) : R7 possède seul ses deux fronts au repos, sans leur antagoniste",
+        "H-MARQ-DOUBLE": "R1 (Laetitia, M5, front B) n=0 et R7 (Aquisitio, M11, front C) n=0 : au plus 1 but chacun (75 % des pôles à n=0 ont marqué moins de 2 buts, 4 observations seulement) ; deux marquent 25 % ; total ≈ 1,6 (n=0 n'existe que dans 4 % des thèmes)",
+        "H-INCIDENT": "pas d'indice : les arrêts M3 (Populus) et M5 (Laetitia) ne relient pas le front de R1 à celui de R7",
+        "H-FIGURES-NEG": "M12 a pour résultante Albus et M6 Caput : aucune dans les listes (Caput n'est pas dans la liste de M6) ; pas d'incident annoncé",
+        "H-COORD-M1M7": "M1+M7 = Albus, Terre saturée : RAS",
+        "coordination M6+M12": "Fortuna Minor, nœud M9 (Feu × Eau), sans Terre : pas d'incident"
+      },
+      "score": null,
+      "note": "à renseigner : équipes, date, score, penalty, rouge"
     }
   ],
   "lectures": [
