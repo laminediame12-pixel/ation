@@ -325,7 +325,12 @@
     var a = un(L.R1), b = un(L.R7);
     // deux marquent : produit des deux probabilités (hypothèse d'indépendance : 75 % prédit en moyenne contre 73 % observé sur 37 matchs) ; buts attendus : somme des moyennes par n
     return { R1: a, R7: b, deuxMarquent: a.p1 * b.p1, butsAttendus: Math.round((a.butsMoyens + b.butsMoyens) * 10) / 10 }; }
-  var API = { marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  // INCIDENT (signal post hoc sur 3 cas, à confirmer ; ce n'est PAS une règle de verdict) : penalty ou rouge probable quand un arrêt (antagoniste ancré en base d'une maison)
+  // relie les fronts directs de R1 et de R7 : le front de l'antagoniste ancré est celui d'un pôle, le front de la maison touchée est celui de l'autre. Le côté n'est pas déterminé.
+  function incident(L) { var z1 = (L.R1.figure - 1) % 4, z7 = (L.R7.figure - 1) % 4,
+      liens = noeuds(L).arrets.filter(function (a) { var att = (a.figure - 1) % 4, vic = (a.maison - 1) % 4; return (att === z1 && vic === z7) || (att === z7 && vic === z1); }).map(function (a) { return { maison: a.maison, antagoniste: a.figure, sens: (a.figure - 1) % 4 === z1 ? 'R1→R7' : 'R7→R1' }; });
+    return { probable: liens.length > 0, liens: liens }; }
+  var API = { incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
