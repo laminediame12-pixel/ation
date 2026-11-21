@@ -2017,7 +2017,7 @@
     },
     {
       "id": "H-ROUGE",
-      "statut": "RÉFUTÉE 2026-11-21 : posée avant le thème 11-5-11-4 (rouge R7) : un arrêt en M10 dans le front B de R1, aucun chez R7 → elle appelait R1, le rouge est côté R7 ; non activée",
+      "statut": "EN OBSERVATION 2026-11-21 : 3 cas sur 4 (côté du rouge) ; la règle « pôle dont le front contient un arrêt » est conservée comme piste de côté, intégrée dans P1 du détecteur d'incident ; ancienne mention « réfutée » retirée : un cas contraire sur 4 est insuffisant",
       "regle": "le carton rouge va au pôle dont le front direct contient une maison en arrêt (antagoniste ancré en base) quand l'autre pôle n'en contient pas",
       "cas": "16-1-8-14 (penalty R1, rouge R7) : un seul arrêt, M11 (Tristitia en base, antagoniste de Conjunctio), dans le front C de R7 ; 14-9-16-9 Zurich–Lucerne (rouge R7) : arrêt en M1 (Puella) dans le front A de R7, aucun dans le front B de R1",
       "reserves": "2 cas seulement, trouvés après coup ; la règle parle dans 27 % des thèmes (9152 R1, 8528 R7 sur 65 536) alors que le rouge est rare : si elle n'est pas confirmée par des matchs sans rouge, elle sera réfutée ; les 14 matchs du lot 1 portent « - » pour penalty et rouge (aucun incident ou non renseigné : à préciser), et la règle y aurait donné 5 appels (R1 ×4, R7 ×1)",
@@ -2098,7 +2098,7 @@
     },
     {
       "id": "H-COORD-M1M7",
-      "statut": "RÉFUTÉE 2026-11-21 : 5-3-16-11 (Terre saturée, annoncé RAS) a eu un penalty R7 : 6 cas sur 7, la règle est contredite ; non activée",
+      "statut": "EN OBSERVATION 2026-11-21 : 6 cas sur 7 (4 incidents avec Terre non saturée, 2 RAS avec Terre saturée ; 1 incident avec Terre saturée) ; gardée comme paramètre P5 du détecteur d'incident ; ancienne mention « réfutée » retirée : un cas contraire sur 7 ne réfute pas un signal probabiliste",
       "regle": "coordination = base(M1) + base(M7) ; incident (penalty ou rouge) probable quand la Terre de cette figure n'est pas saturée ; pas d'incident quand elle l'est",
       "cas": "16-1-8-14 Tristitia (T non saturée) → penalty R1 + rouge R7 ; 14-9-16-9 Fortuna Major (T○) → rouge R7 ; 11-5-11-4 Carcer (T○) → rouge R7 ; 14-14-9-16 Caput (T○) → rouge R1 ; 4-7-10-10 Amissio (T●) → RAS ; 4-7-5-8 Laetitia (T●) → RAS : 6 cas sur 6",
       "reserves": "trouvée après coup parmi plusieurs niveaux et sens possibles (probabilité d'un classement parfait par hasard 1,6 % pour un niveau et un sens, environ 12 % en tenant compte des 4 niveaux et 2 sens) ; la Terre est non saturée dans la moitié des thèmes, la règle déclencherait donc sur la moitié des matchs",
