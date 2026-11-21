@@ -292,8 +292,14 @@
   // mi-temps : Feu et Air saturés (front D) = rapide, Feu et Air ouverts (front A) = lent, sinon intermédiaire ; classe de la figure : fermante (1 niveau saturé), ouvrante (3),
   // fixe (2, Terre non saturée), mobile (2, Terre saturée), Via (0), Populus (4).
   function rythme(L) { var T = L.theme, f = [1, 5, 12, 15].map(function (h) { return T.bases[h]; }).reduce(K.additionner), n = K.niveaux(f), s = n.filter(function (v) { return v === 2; }).length;
+    // Mécanisme (H-MT-MECANISME, 12 matchs sur 13) : but en première mi-temps quand la figure est rapide (hors Populus, toute fermée), ou quand elle est attaquée :
+    // son antagoniste (f−3) est en base quelque part sans que son protecteur (f−6) y soit.
+    var enBase = function (g) { var r = []; for (var h = 1; h <= 16; h++) if (T.bases[h] === g) r.push(h); return r; }, ant = mod(f - 3), pro = mod(f - 6), ba = enBase(ant), bp = enBase(pro),
+      vit = n[0] === 2 && n[1] === 2 ? 'rapide' : n[0] === 1 && n[1] === 1 ? 'lente' : 'intermédiaire', rapide = vit === 'rapide' && f !== 16, attaque = ba.length > 0 && bp.length === 0;
     return { figure: f, classe: s === 0 ? 'tout ouverte' : s === 4 ? 'toute fermée' : s === 1 ? 'fermante' : s === 3 ? 'ouvrante' : n[3] === 2 ? 'mobile' : 'fixe',
-      vitesse: n[0] === 2 && n[1] === 2 ? 'rapide' : n[0] === 1 && n[1] === 1 ? 'lente' : 'intermédiaire', front: K.front(f) }; }
+      vitesse: vit, front: K.front(f), antagoniste: ant, antagonisteEnBase: ba, protecteur: pro, protecteurEnBase: bp, attaquee: attaque, butAttendu: rapide || attaque,
+      cause: rapide ? 'figure rapide (Feu et Air saturés)' : attaque ? 'figure attaquée : ' + K.nom(ant) + ' en base de M' + ba.join(', M') + ', sans son protecteur ' + K.nom(pro) :
+        ba.length ? 'attaque de ' + K.nom(ant) + ' (M' + ba.join(', M') + ') bloquée par le protecteur ' + K.nom(pro) + ' (M' + bp.join(', M') + ')' : f === 16 ? 'Populus, toute fermée' : 'figure ni rapide ni attaquée' }; }
   // COMBINAISONS DE MAISONS (exact) : la somme des bases d'un ensemble de maisons est une fonction linéaire (XOR) des 16 bits du thème. Les 16 maisons n'ont que 8 maisons
   // indépendantes (M1 à M8) : il n'existe que 256 fonctions de somme distinctes (255 non nulles), chacune égale à une somme de maisons parmi M1..M8. equivalences(maisons) donne
   // la forme sur M1..M8, la plus courte écriture et le nombre de combinaisons qui lui sont équivalentes (256).

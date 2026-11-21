@@ -2346,6 +2346,13 @@
       "regle": "le type de la figure (fermante, ouvrante, fixe, mobile) et ses niveaux indiquent les buts et leur rythme ; Feu et Air saturés = rapide ; la coordination de deux figures sur le même niveau (Eau-Eau, Air-Air, Feu-Feu) compte aussi",
       "exact": "classes par nombre de niveaux saturés : 0 Via ; 1 fermantes Puer, Caput, Cauda, Puella ; 3 ouvrantes Laetitia, Albus, Rubeus, Tristitia ; 4 Populus ; 2 : fixes (Terre non saturée) Carcer, Fortuna Major, Aquisitio et mobiles (Terre saturée) Amissio, Fortuna Minor, Conjunctio, en trois paires opposées terme à terme (Fortuna Major / Fortuna Minor, Aquisitio / Amissio, Carcer / Conjunctio) ; Feu et Air saturés ensemble = exactement les 4 figures du front D (Albus, Tristitia, Fortuna Major, Populus) ; Feu et Air ouverts = front A",
       "premier_cas": "Troyes–Le Havre (16-1-8-14) : 1-5-12-15 en bases = Fortuna Major (fixe, Feu et Air saturés : rapide) ; buts à la 3e et à la 19e minute, mi-temps 1-1 : cohérent, un seul cas"
+    },
+    {
+      "id": "H-MT-MECANISME",
+      "statut": "EN OBSERVATION 2026-11-21 : 12 matchs sur 13 ; affichée dans la ligne « Rythme des buts (1re mi-temps) »",
+      "regle": "but en première mi-temps quand la figure-somme des bases de 1-5-12-15 est rapide (Feu et Air saturés, hors Populus), ou quand elle est attaquée : son antagoniste (f−3) est en base d'une maison sans que son protecteur (f−6) soit en base ; sinon pas de but attendu",
+      "cas": "rapides : Troyes, Bayern, Manchester City, Coventry, Union Berlin (5 buts) ; attaquées sans protecteur : Bournemouth, Millwall, Chelsea, Tottenham (4 buts) ; ni rapide ni attaquée : Athletic (0-0), Cercle Bruges (Populus, 0-0) ; attaque bloquée par le protecteur : Southampton (Fortuna Major en M14, protecteur Fortuna Minor en M10, 0-0) et Orlando (Amissio en M15, protecteur Caput en M2) : but à la 26e malgré le blocage, seul cas non expliqué",
+      "origine": "recherche de la cause des 0-0 (demande du propriétaire : chercher pourquoi et comment) ; antagoniste = attaquant, protecteur = prédateur de l'attaquant (f−6 attaque f−3)"
     }
   ],
   "lectures": [

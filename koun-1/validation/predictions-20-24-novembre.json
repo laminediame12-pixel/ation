@@ -24,7 +24,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 1,
@@ -46,7 +47,8 @@
    "incident": "probable",
    "incidentScore": 5,
    "rouge": "R7",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 2,
@@ -68,7 +70,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 3,
@@ -90,7 +93,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": false
   },
   {
    "i": 4,
@@ -112,7 +116,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "R1",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 5,
@@ -134,7 +139,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 6,
@@ -156,7 +162,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 7,
@@ -178,7 +185,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 8,
@@ -200,7 +208,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 9,
@@ -222,7 +231,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 10,
@@ -244,7 +254,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 11,
@@ -266,7 +277,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 12,
@@ -288,7 +300,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "R1",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 13,
@@ -310,7 +323,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 14,
@@ -332,7 +346,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 15,
@@ -354,7 +369,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "R7",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 16,
@@ -376,7 +392,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 17,
@@ -398,7 +415,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 18,
@@ -420,7 +438,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 19,
@@ -442,7 +461,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 20,
@@ -464,7 +484,8 @@
    "incident": "probable",
    "incidentScore": 4,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 21,
@@ -486,7 +507,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 22,
@@ -508,7 +530,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "R7",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 23,
@@ -530,7 +553,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 24,
@@ -552,7 +576,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 25,
@@ -574,7 +599,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 26,
@@ -596,7 +622,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 27,
@@ -618,7 +645,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 28,
@@ -640,7 +668,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "R7",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 29,
@@ -662,7 +691,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": false
   },
   {
    "i": 30,
@@ -684,7 +714,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 31,
@@ -706,7 +737,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 32,
@@ -728,7 +760,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 33,
@@ -750,7 +783,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 34,
@@ -772,7 +806,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 35,
@@ -794,7 +829,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 36,
@@ -816,7 +852,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 37,
@@ -838,7 +875,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 38,
@@ -860,7 +898,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": false
   },
   {
    "i": 39,
@@ -882,7 +921,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 40,
@@ -904,7 +944,8 @@
    "incident": "probable",
    "incidentScore": 4,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 41,
@@ -926,7 +967,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 42,
@@ -948,7 +990,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 43,
@@ -970,7 +1013,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 44,
@@ -992,7 +1036,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 45,
@@ -1014,7 +1059,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 46,
@@ -1036,7 +1082,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "R1",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 47,
@@ -1058,7 +1105,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 48,
@@ -1080,7 +1128,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 49,
@@ -1102,7 +1151,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 50,
@@ -1124,7 +1174,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 51,
@@ -1146,7 +1197,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 52,
@@ -1168,7 +1220,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 53,
@@ -1190,7 +1243,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 54,
@@ -1212,7 +1266,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "R1",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 55,
@@ -1234,7 +1289,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 56,
@@ -1256,7 +1312,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 57,
@@ -1278,7 +1335,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 58,
@@ -1300,7 +1358,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 59,
@@ -1322,7 +1381,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": true
   },
   {
    "i": 60,
@@ -1344,7 +1404,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 61,
@@ -1366,7 +1427,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": "côté non déterminé",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": true
   },
   {
    "i": 62,
@@ -1388,7 +1450,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 63,
@@ -1410,7 +1473,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "R7",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 64,
@@ -1432,7 +1496,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 65,
@@ -1454,7 +1519,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 66,
@@ -1476,7 +1542,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 67,
@@ -1498,7 +1565,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 68,
@@ -1520,7 +1588,8 @@
    "incident": "aucun",
    "incidentScore": 1,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 69,
@@ -1542,7 +1611,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 70,
@@ -1564,7 +1634,8 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 71,
@@ -1586,7 +1657,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 72,
@@ -1608,7 +1680,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 73,
@@ -1630,7 +1703,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "R7",
-   "rythme": "lente"
+   "rythme": "lente",
+   "butPremiereMT": false
   },
   {
    "i": 74,
@@ -1652,7 +1726,8 @@
    "incident": "aucun",
    "incidentScore": 0,
    "rouge": null,
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   },
   {
    "i": 75,
@@ -1674,7 +1749,8 @@
    "incident": "probable",
    "incidentScore": 3,
    "rouge": "R1",
-   "rythme": "rapide"
+   "rythme": "rapide",
+   "butPremiereMT": true
   },
   {
    "i": 76,
@@ -1696,7 +1772,9 @@
    "incident": "possible",
    "incidentScore": 2,
    "rouge": "côté non déterminé",
-   "rythme": "intermédiaire"
+   "rythme": "intermédiaire",
+   "butPremiereMT": false
   }
- ]
+ ],
+ "ajout_2026_11_21": "butPremiereMT ajouté (H-MT-MECANISME) après coup pour les matchs déjà saisis ; pour les matchs non joués, c'est une prédiction"
 }
