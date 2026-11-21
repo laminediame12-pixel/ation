@@ -61,7 +61,13 @@
    0,
    1
   ],
-  "note": "mi-temps 0-1 (propriétaire, 2026-11-21) ; score final non fourni"
+  "note": "mi-temps 0-1 (propriétaire, 2026-11-21) ; score final non fourni ; but de Fulham à la 16e",
+  "buts": {
+   "R1": [],
+   "R7": [
+    "16'"
+   ]
+  }
  },
  {
   "themes": [
