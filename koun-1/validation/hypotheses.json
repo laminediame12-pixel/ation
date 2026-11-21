@@ -2349,10 +2349,24 @@
     },
     {
       "id": "H-MT-MECANISME",
-      "statut": "EN OBSERVATION 2026-11-21 : 12 matchs sur 13 ; affichée dans la ligne « Rythme des buts (1re mi-temps) »",
+      "statut": "EN OBSERVATION 2026-11-21 : 12 matchs sur 13 pour la construction, puis 1 sur 1 annoncé d'avance (Aston Villa–Sunderland, pas de but attendu, 0-0) ; affichée dans la ligne « Rythme des buts (1re mi-temps) »",
       "regle": "but en première mi-temps quand la figure-somme des bases de 1-5-12-15 est rapide (Feu et Air saturés, hors Populus), ou quand elle est attaquée : son antagoniste (f−3) est en base d'une maison sans que son protecteur (f−6) soit en base ; sinon pas de but attendu",
       "cas": "rapides : Troyes, Bayern, Manchester City, Coventry, Union Berlin (5 buts) ; attaquées sans protecteur : Bournemouth, Millwall, Chelsea, Tottenham (4 buts) ; ni rapide ni attaquée : Athletic (0-0), Cercle Bruges (Populus, 0-0) ; attaque bloquée par le protecteur : Southampton (Fortuna Major en M14, protecteur Fortuna Minor en M10, 0-0) et Orlando (Amissio en M15, protecteur Caput en M2) : but à la 26e malgré le blocage, seul cas non expliqué",
-      "origine": "recherche de la cause des 0-0 (demande du propriétaire : chercher pourquoi et comment) ; antagoniste = attaquant, protecteur = prédateur de l'attaquant (f−6 attaque f−3)"
+      "origine": "recherche de la cause des 0-0 (demande du propriétaire : chercher pourquoi et comment) ; antagoniste = attaquant, protecteur = prédateur de l'attaquant (f−6 attaque f−3)",
+      "avant_le_score": [
+        {
+          "match": "Aston Villa–Sunderland",
+          "theme": [
+            2,
+            16,
+            9,
+            16
+          ],
+          "annonce": "pas de but (Cauda, ni rapide ni attaquée, protecteur Rubeus en M13 et M16)",
+          "mi_temps": "0-0",
+          "juste": true
+        }
+      ]
     }
   ],
   "lectures": [

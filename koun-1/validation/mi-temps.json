@@ -210,5 +210,22 @@
    "R7": []
   },
   "note": "mi-temps 1-0, but à la 15e (propriétaire, 2026-11-21) ; score final non fourni"
+ },
+ {
+  "themes": [
+   2,
+   16,
+   9,
+   16
+  ],
+  "match": "Aston Villa–Sunderland",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "mi_temps": [
+   0,
+   0
+  ],
+  "prediction_avant": "pas de but attendu en 1re mi-temps (H-MT-MECANISME), annoncée avant le score",
+  "note": "mi-temps 0-0 (propriétaire, 2026-11-21) ; score final non fourni"
  }
 ]
