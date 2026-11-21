@@ -1,8 +1,9 @@
 // Étude des buts de première mi-temps : lit les matchs du corpus qui ont un score de mi-temps (champ mi_temps de validation/scores-reels.json)
-// et donne pour chacun la figure de 1-5-12-15 (bases et résultantes), sa classe, son rythme, sa présence dans le thème ; à partir de 10 matchs,
+// (et de validation/mi-temps.json, matchs sans score final) et donne pour chacun la figure de 1-5-12-15 (bases et résultantes), sa classe, son rythme, sa présence dans le thème ; à partir de 10 matchs,
 // crible les 255 combinaisons distinctes de maisons contre « au moins un but en 1re mi-temps » et le nombre de buts en 1re mi-temps. Usage : node outils/mi_temps.js
 const fs = require('fs'), path = require('path'), M = require('../moteur4/moteur.js'), K = require('../moteur3/noyau.js'), A = K.additionner, nm = K.nom;
-const S = JSON.parse(fs.readFileSync(path.join(__dirname, '../validation/scores-reels.json'), 'utf8')).filter(x => Array.isArray(x.mi_temps));
+const lireJ = f => JSON.parse(fs.readFileSync(path.join(__dirname, '../validation', f), 'utf8'));
+const S = lireJ('scores-reels.json').filter(x => Array.isArray(x.mi_temps)).concat(lireJ('mi-temps.json'));
 const cls = f => { const n = K.niveaux(f), s = n.filter(v => v === 2).length; return (s === 0 ? 'Via' : s === 4 ? 'Populus' : s === 1 ? 'fermante' : s === 3 ? 'ouvrante' : n[3] === 2 ? 'mobile' : 'fixe') + ', ' + (n[0] === 2 && n[1] === 2 ? 'rapide' : n[0] === 1 && n[1] === 1 ? 'lente' : 'intermédiaire'); };
 const lv = f => K.niveaux(f).map((v, i) => 'FAET'[i] + (v === 2 ? '●' : '○')).join('');
 console.log(S.length + ' matchs avec mi-temps');
