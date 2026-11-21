@@ -2142,6 +2142,14 @@
       "frequence": "12,5 % des thèmes pour R1 et 12,5 % pour R7 (25 % au total)",
       "reserves": "vue après coup sur deux cas ; elle n'explique pas les trois incidents où la base de M9 n'est la figure d'aucun pôle",
       "algebre": "base(M9) = base(M1)+base(M2) (filiation) ; r(h)+r(h+8) = b(h)+b(h+8)+Tristitia pour h de 1 à 7, parce que les figures de repos de deux maisons opposées sont miroir (h+(h+8) = Tristitia) ; dans 5-3-16-11 aucune paire de maisons opposées n'a des résultantes miroir"
+    },
+    {
+      "id": "H-ROUGE-COORD",
+      "statut": "PISTE post hoc 2026-11-21 (propriétaire : le rouge exploite la coordination et la saturation aux intersections des canaux) ; non activée comme verdict, affichée en indice",
+      "regle": "rouge probable quand la coordination base(M6)+base(M12) tombe sur un nœud qui touche le canal Terre (maisons 4, 8, 12, 13, 14, 15) ; côté : le pôle dont le front a le nœud de la coordination base(M1)+base(M7) vide (aucune des deux liaisons saturées)",
+      "cas": "rouges : 16-1-8-14 (M6+M12 = Albus, nœud M4 T×F ; rouge R7 ; nœud M1+M7 M8 vide dans le front C de R7), 14-9-16-9 (Aquisitio, M15 E×T ; rouge R7 ; nœud M12 vide dans le front A de R7), 11-5-11-4 (Aquisitio, M15 ; rouge R7 ; nœud M10 vide dans le front B de R1 : côté manqué), 14-14-9-16 (Albus, M4 ; rouge R1 ; nœud M3 vide dans le front A de R1) ; sans rouge : 5-3-16-11 (Fortuna Minor, M9 F×E, rouge non précisé), 4-7-10-10 (Via, M5 F×A), 4-7-5-8 (Via, M5)",
+      "resultat": "détection du rouge : 4 sur 4, aucune fausse alerte sur 3 ; côté : 3 sur 4",
+      "reserves": "P6 s'active dans 44 % des thèmes : à l'échelle des matchs elle donnerait beaucoup de fausses alertes si le rouge est rare ; le classement parfait 4/3 arrive par hasard 0,7 % pour ce paramètre précis, mais il a été trouvé après coup parmi plusieurs ; côté non confirmé (3 sur 4, trop peu) ; le rouge de 5-3-16-11 n'est pas précisé"
     }
   ],
   "lectures": [

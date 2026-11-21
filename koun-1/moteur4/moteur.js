@@ -341,7 +341,13 @@
         { id: 'P5', actif: K.niveaux(c1)[3] !== 2, texte: 'la Terre de M1+M7 (' + K.nom(c1) + ') n\'est pas saturée' },
         { id: 'P6', actif: i2 === 3 || j2 === 3, texte: 'la coordination M6+M12 (' + K.nom(c2) + ', nœud M' + c2 + ') touche la Terre' }],
       score = p.filter(function (x) { return x.actif; }).length;
-    return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens }; }
+    // ROUGE (signal post hoc sur 7 matchs) : P6 (coordination M6+M12 sur un nœud de la Terre) est actif dans les 4 matchs avec rouge et dans aucun des 3 sans rouge ;
+    // côté : le pôle dont le front a le nœud de la coordination M1+M7 vide (aucune des deux liaisons saturées) reçoit le rouge dans 3 cas sur 4.
+    var nd = noeuds(L), etat = function (front) { var f = nd.fronts.filter(function (x) { return x.front === front; })[0], n = f && f.noeuds.filter(function (x) { return x.maison === c1; })[0]; return n ? n.etat : null; },
+      e1 = etat(L.R1.front), e7 = etat(L.R7.front),
+      cote = e1 === 'vide' && e7 !== 'vide' ? 'R1' : e7 === 'vide' && e1 !== 'vide' ? 'R7' : null;
+    return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens,
+      rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote } }; }
   var API = { incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.0.0-noyau-sans-verdict', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
