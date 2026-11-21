@@ -2003,6 +2003,13 @@
       "id": "H-MARQ-TOTAL",
       "statut": "RÉFUTÉE 2026-11-20 : Over 1,5 / 2,5 / 3,5 par n1+n7 (seuil appris, un match de côté) 95 % / 81 % / 57 % = la réponse constante (95 % / 81 % / 62 %) ; rien de plus",
       "regle": "le total de buts suit n1+n7"
+    },
+    {
+      "id": "H-CANAUX",
+      "statut": "RÉFUTÉE 2026-11-21 : 22 matchs indépendants, 8 justes, 7 faux, 7 sans appel (53 %) contre 67 % pour « toujours R1 » sur les mêmes appels ; non activée",
+      "regle": "score d'un pôle = nombre de liaisons saturées de son front direct (connexions) moins le nombre de maisons de ce front où l'antagoniste est ancré en base (arrêt) ; le plus grand score gagne, égalité sans appel",
+      "origine": "note « Cartographie des fronts » du propriétaire (3 justes sur 4 appels sur 8 matchs : échantillon trop petit)",
+      "note": "choix posés avant le test : liaisons de branches (pas les nœuds), frein = arrêt binaire, front direct seul, Terre au même poids ; construits : 3 justes 4 faux 4 sur nul"
     }
   ],
   "lectures": [
