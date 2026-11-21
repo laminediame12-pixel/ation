@@ -11,7 +11,10 @@
    7,
    0
   ],
-  "lot": "dev"
+  "lot": "dev",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "RAS : ni penalty ni rouge (propriétaire, 2026-11-21) ; équipes et date à préciser"
  },
  {
   "themes": [

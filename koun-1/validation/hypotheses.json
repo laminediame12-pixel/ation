@@ -2161,7 +2161,7 @@
       ],
       "posee_le": "2026-11-21",
       "lecture": "prédiction d'incident inscrite avant l'information d'incident",
-      "statut": "en attente de penalty / rouge ; score 7-0 déjà dans le corpus (lot dev)",
+      "statut": "jugé le 2026-11-21 : 7-0, RAS (ni penalty ni rouge)",
       "appels": {
         "détecteur d'incident": "pas d'indice (1/6 : seul P5, Terre de M1+M7 = Caput non saturée)",
         "rouge": "non probable (P6 inactif)",
@@ -2169,7 +2169,8 @@
       },
       "avertissement": "le score 7-0 est déjà connu : au marquage R1 (n=3) a marqué 7 et R7 (n=1) 0, conforme des deux côtés mais déjà compté dans les fréquences",
       "score": "7-0",
-      "note": "à renseigner : équipes, date, penalty, rouge"
+      "note": "à renseigner : équipes, date, penalty, rouge",
+      "jugement": "détecteur d'incident : pas d'indice (1/6), RAS : juste ; rouge non probable (P6 inactif), RAS : juste ; H-REPOS : pas d'appel"
     }
   ],
   "lectures": [
