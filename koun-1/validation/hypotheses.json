@@ -2367,7 +2367,8 @@
           "juste": true
         }
       ],
-      "puissance_2026_11_21": "nombre de buts en 1re mi-temps (14 matchs, Coventry corrigé à 2-2) : le facteur le plus lié est le nombre de fois où la figure de 1-5-12-15 est ancrée en base (corrélation 0,47) ; présence en résultante seule : -0,03 ; antagoniste en base 0,07 ; protecteur -0,05 ; niveaux saturés 0,05 ; somme des n -0,10. Coventry–Crystal Palace (2-2) : Albus en base de M4 (chez elle), M5 et M9, rapide, présente aussi en résultante de M10 et M14 (front de R1) ; base de M4 dans le front D de R7 : la figure touche les deux fronts et les deux équipes marquent deux fois."
+      "puissance_2026_11_21": "nombre de buts en 1re mi-temps (14 matchs, Coventry corrigé à 2-2) : le facteur le plus lié est le nombre de fois où la figure de 1-5-12-15 est ancrée en base (corrélation 0,47) ; présence en résultante seule : -0,03 ; antagoniste en base 0,07 ; protecteur -0,05 ; niveaux saturés 0,05 ; somme des n -0,10. Coventry–Crystal Palace (2-2) : Albus en base de M4 (chez elle), M5 et M9, rapide, présente aussi en résultante de M10 et M14 (front de R1) ; base de M4 dans le front D de R7 : la figure touche les deux fronts et les deux équipes marquent deux fois.",
+      "integration_puissance": "2026-11-21 : intégrée à la ligne « Rythme des buts (1re mi-temps) » : puissance faible (0 ancrage en base), moyenne (1), forte (2 ou plus), et fronts des pôles touchés ; Coventry–Crystal Palace : 4e but à la 45e (Crystal Palace)"
     }
   ],
   "lectures": [
