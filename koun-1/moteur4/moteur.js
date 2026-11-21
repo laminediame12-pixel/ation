@@ -364,7 +364,10 @@
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
-      return { front: K.front(z + 1), maisons: hs, n: n }; }
+      // CANAUX TERRE (règle sûre du propriétaire, 2026-11-21) : les deux liaisons Terre du front direct (haut → droite et bas → gauche) saturées dans les résultantes =
+      // marquage inévitable (6 pôles sur 6 ont marqué ; un seul canal : 21 sur 22).
+      var t = function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; return K.niveaux(r)[3] === 2; }, ct = (t(z + 1) && t(z + 5) ? 1 : 0) + (t(z + 9) && t(z + 13) ? 1 : 0);
+      return { front: K.front(z + 1), maisons: hs, n: n, canauxTerre: ct, marqueSur: ct === 2 }; }
     var a = un(L.R1), b = un(L.R7), RP = repos(L);
     // NIVEAU DE MARQUAGE d'une équipe (2026-11-21) : la Terre de son front direct (n) et son blocage (figures au repos sans antagoniste dans ses deux fronts, H-REPOS) lus ensemble.
     // Fréquences observées (84 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).

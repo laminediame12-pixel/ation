@@ -2425,6 +2425,13 @@
       "note": "Dundee–Hearts : mi-temps 0-4 (1re mi-temps annoncée avec but, figure Albus rapide, puissance forte, marqueur Hearts : juste) ; rouge côté Dundee (détecteur d'incident probable 4/6) ; victoire : pas d'appel (H-REPOS et coordonnées muets)",
       "niveaux": "n >= 2 et au moins une figure au repos : fort (37 pôles, 3,05 buts, 76 % à 2 buts ou plus, 92 % au moins un) ; n >= 2 sans figure au repos : freiné (20 ; 1,95 ; 45 % ; 85 %) ; n <= 1 avec : faible (14 ; 1,71 ; 36 % ; 86 %) ; n <= 1 sans : bloqué (11 ; 1,09 ; 27 % ; 64 %)",
       "napoli_torino": "Torino « bloqué » : 0 but (juste) ; Napoli « freiné » : 1 but"
+    },
+    {
+      "id": "H-CANAUX-TERRE",
+      "statut": "RÈGLE SÛRE du propriétaire, vérifiée le 2026-11-21 : 6 pôles sur 6 ; intégrée aux lignes de marquage des équipes",
+      "regle": "le pôle dont les deux canaux Terre du front direct (haut → droite et bas → gauche, déviation de la Terre) sont saturés dans les résultantes marque : marquage inévitable",
+      "resultat": "84 pôles-matchs : deux canaux saturés 6 sur 6 ont marqué (3,33 buts en moyenne) ; un seul canal 21 sur 22 (seule exception 4-7-5-8, R7, 1-0) ; aucun canal 44 sur 56",
+      "noeuds": "remarques du propriétaire : M1 est l'intersection des deux canaux Feu (Feu × Feu) et M11 celle des deux canaux Eau (exact) ; Air × Air est M6 (M2 est Air horizontal × Feu vertical) ; Terre × Terre serait M16, le coin qui n'existe pas : la Terre ne se croise pas, elle relie (déviation vers le front direct)"
     }
   ],
   "lectures": [
