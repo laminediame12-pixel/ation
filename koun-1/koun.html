@@ -505,13 +505,13 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
         protecteurEstSomme: s1 === p }; }
     return { R1: un(L.R1), R7: un(L.R7) }; }
   // MARQUAGE (signal découvert le 2026-11-20, à confirmer sur des matchs futurs ; ce n'est PAS une règle de verdict). Le front direct d'un pôle (les 4 maisons f, f+4, f+8, f+12) marque
-  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 78 pôles-matchs :
+  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 80 pôles-matchs :
   // buts moyens par n = 0:0,8 · 1:1,6 · 2:2,5 · 3:3,1 · 4:2,4 (5 obs seulement) ; corrélation 0,30 ; p = 0,016 après correction du choix parmi 6 mesures.
   var MARQUAGE_MOYENNES = [1.2, 1.5, 2.5, 3.1, 2.4];
-  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (78 pôles-matchs)
-  // part des pôles qui ont marqué au moins 1 but selon n (78 pôles-matchs ; 4, 18, 34, 13, 5 observations)
-  var MARQUAGE_P1 = [0.67, 0.79, 0.89, 1.00, 1.00];
-  var MARQUAGE_P2 = [{ p: 0.33, obs: 6 }, { p: 0.32, obs: 19 }, { p: 0.63, obs: 35 }, { p: 0.69, obs: 13 }, { p: 0.80, obs: 5 }];
+  // H-MARQ-DOUBLE (signal post hoc) : part des pôles qui ont marqué 2 buts ou plus selon n, et nombre d'observations (80 pôles-matchs)
+  // part des pôles qui ont marqué au moins 1 but selon n (80 pôles-matchs ; 4, 18, 34, 13, 5 observations)
+  var MARQUAGE_P1 = [0.67, 0.79, 0.86, 1.00, 1.00];
+  var MARQUAGE_P2 = [{ p: 0.33, obs: 6 }, { p: 0.32, obs: 19 }, { p: 0.62, obs: 37 }, { p: 0.69, obs: 13 }, { p: 0.80, obs: 5 }];
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });

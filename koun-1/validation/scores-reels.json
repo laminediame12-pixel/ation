@@ -23,13 +23,16 @@
    2,
    13
   ],
-  "match": "9·13·2·13",
+  "match": "équipes et date à préciser",
   "score": [
    2,
    0
   ],
   "lot": "dev",
-  "but_mt1": true
+  "but_mt1": true,
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
  },
  {
   "themes": [
@@ -124,7 +127,10 @@
    0
   ],
   "lot": "dev",
-  "date": "2026-02-22"
+  "date": "2026-02-22",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
  },
  {
   "themes": [
@@ -133,12 +139,16 @@
    7,
    16
   ],
-  "match": "4·6·7·16",
+  "match": "Paris–Marseille",
   "score": [
    5,
    0
   ],
-  "lot": "dev"
+  "lot": "dev",
+  "date": "2026-02-08",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
  },
  {
   "themes": [
@@ -147,12 +157,16 @@
    6,
    5
   ],
-  "match": "2·9·6·5",
+  "match": "Nice–Lorient",
   "score": [
    3,
    3
   ],
-  "lot": "dev"
+  "lot": "dev",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)",
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
  },
  {
   "themes": [
@@ -209,20 +223,6 @@
   "score": [
    0,
    1
-  ],
-  "lot": "lot"
- },
- {
-  "themes": [
-   2,
-   9,
-   6,
-   5
-  ],
-  "match": "Nice–Lorient",
-  "score": [
-   3,
-   3
   ],
   "lot": "lot"
  },
@@ -379,36 +379,6 @@
    2
   ],
   "lot": "lot"
- },
- {
-  "themes": [
-   4,
-   6,
-   7,
-   16
-  ],
-  "match": "Paris–Marseille",
-  "score": [
-   5,
-   0
-  ],
-  "lot": "lot",
-  "date": "2026-02-08"
- },
- {
-  "themes": [
-   4,
-   1,
-   6,
-   7
-  ],
-  "match": "Los Angeles–Inter Miami",
-  "score": [
-   3,
-   0
-  ],
-  "lot": "lot",
-  "date": "2026-02-22"
  },
  {
   "themes": [
@@ -574,34 +544,6 @@
   "score": [
    1,
    1
-  ],
-  "lot": "lot"
- },
- {
-  "themes": [
-   9,
-   13,
-   2,
-   13
-  ],
-  "match": "équipes et date à préciser",
-  "score": [
-   2,
-   0
-  ],
-  "lot": "lot"
- },
- {
-  "themes": [
-   2,
-   9,
-   6,
-   5
-  ],
-  "match": "équipes et date à préciser",
-  "score": [
-   3,
-   3
   ],
   "lot": "lot"
  },

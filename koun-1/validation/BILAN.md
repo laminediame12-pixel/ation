@@ -43,3 +43,10 @@ Premier match étiqueté avec incidents. H-REPOS appelait R7 ; R1 a gagné 3-1 :
 - Signal retenu : le marquage par la Terre du front direct (corrélation 0,30, p = 0,016 corrigée) ; part des pôles à 2 buts ou plus : 66 % pour n >= 2 contre 32 % pour n <= 1. Il a été choisi après coup et reste à confirmer.
 - Incident : détecteur à six paramètres ajustés sur les 8 matchs étiquetés ; rouge annoncé par la coordination M6+M12 sur la Terre (4 sur 4, 0 fausse alerte sur 4). Tout reste à confirmer.
 - Pistes retirées sur 22 matchs indépendants au niveau du hasard : H-PROTECTEUR, H-DEPART, H-CANAUX. Les autres sont « en observation ».
+
+
+## Audit du 2026-11-21
+- Contrôles : tous verts (noyau, moteur, indices sur 65 536 thèmes, invariants, cartographie, liste blanche, verdict, copies embarquées, prédictions gelées, page).
+- Corrigé : les fréquences du marquage dataient d'avant l'ajout de 1-2-6-15 (n = 2 : 37 observations, 62 % de 2 buts ou plus, 86 % d'au moins un but ; 80 pôles-matchs) ; 5 entrées en double retirées de `scores-reels.json` (même thème, même score : 9-13-2-13, 4-1-6-7, 4-6-7-16, 2-9-6-5 ×2), corpus unifié inchangé (40 matchs).
+- Ajouté : `outils/constantes.js`, branché sur la surveillance, qui refuse tout chiffre du moteur (fréquences, témoin, bilans des verdicts) qui ne correspond plus au corpus.
+- État : 40 matchs ; verdict de victoire H-REPOS 4 justes sur 6 appels, puis H-COORD-VICTOIRE 17 justes sur 20 appels (« toujours R1 » 16 sur 20) ; marquage par la Terre (signal le plus solide) ; témoin M5+M7 pour « deux marquent » (20 sur 20 contre 9 sur 20, trouvé par criblage) ; détecteur d'incident construit sur 7 matchs, 2 cas sans incident jugés justes à l'aveugle ; rythme (1-5-12-15) sur 2 cas. Aucune règle n'a encore 15 appels indépendants de sa construction. 6 prédictions attendent leur score (coupon du 21/11 et 8-13-9-15).
