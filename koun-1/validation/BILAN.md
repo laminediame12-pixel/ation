@@ -35,3 +35,11 @@ La structure d'un thème (maisons, résultantes, pôles, liaisons, paralysies, t
 ## Mise à jour du 2026-11-21 : thème 16-1-8-14 (3-1, penalty R1, rouge R7)
 
 Premier match étiqueté avec incidents. H-REPOS appelait R7 ; R1 a gagné 3-1 : faux. Bilan H-REPOS : 3 justes sur 5 appels sur 38 matchs (indépendants : 2 justes, 2 faux ; construits : 1 juste), contre 66 % pour « toujours R1 ». Le signal de marquage tient sur ce match : R1 (n = 2) marque 3, R7 (n = 1) marque 1.
+
+
+## État au 2026-11-21
+- Corpus : 39 matchs avec score ; 8 d'entre eux ont penalty et rouge renseignés (5 avec incident, 3 RAS).
+- Verdict de victoire : H-REPOS seul, 4 justes sur 6 appels ; « toujours R1 » : 64 % sur les décisifs. Rien ne bat clairement les bases de comparaison.
+- Signal retenu : le marquage par la Terre du front direct (corrélation 0,30, p = 0,016 corrigée) ; part des pôles à 2 buts ou plus : 66 % pour n >= 2 contre 32 % pour n <= 1. Il a été choisi après coup et reste à confirmer.
+- Incident : détecteur à six paramètres ajustés sur les 8 matchs étiquetés ; rouge annoncé par la coordination M6+M12 sur la Terre (4 sur 4, 0 fausse alerte sur 4). Tout reste à confirmer.
+- Pistes retirées sur 22 matchs indépendants au niveau du hasard : H-PROTECTEUR, H-DEPART, H-CANAUX. Les autres sont « en observation ».

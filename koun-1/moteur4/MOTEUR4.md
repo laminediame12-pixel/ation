@@ -24,8 +24,19 @@ Aucune règle de verdict n'est démontrée. Retirées :
 
 Une règle revient ici quand elle est posée avant les chiffres, testée une fois sur un lot neuf, et confirmée.
 
-## Buts d'après la Terre : formule réfutée
+## Buts d'après la Terre : formule réfutée, puis marqueur retrouvé sous une autre forme
 La formule ceil(T/2)+1 (T = maisons à résultante saturée en Terre) était juste sur 6 matchs hors Via en base de M8 mais a été réfutée à l'aveugle sur 2-12-4-4 (4 buts prévus, 6 réels). Elle est retirée du moteur et du verdict. Le comptage de Terre (`KOUN4.terreSaturee`) reste, comme structure exacte.
 
 ## Verdict
 Un seul verdict est actif : H-REPOS (règle du propriétaire) : le pôle qui possède ses deux fronts au repos, sans que l'antagoniste y soit, gagne. Les règles H-CROIX, H-5, H-TEMOINS et H-BIN-E sont réfutées sur 22 matchs indépendants. Voir `validation/BILAN.md` ; `node outils/valider.js` refait l'évaluation.
+
+
+## Indices (version 4.1.0) : lectures de signaux, pas des verdicts
+Ces fonctions ne décident rien ; elles affichent des signaux dont le statut est tenu dans `validation/hypotheses.json` (règle du protocole : même exigence pour garder et pour retirer, voir `validation/PROTOCOLE.md`).
+- `KOUN4.marquage(L)` : n = nombre de maisons du front direct d'un pôle dont la résultante a la Terre saturée (0 à 4). Fréquences observées par n (78 pôles-matchs) : part des pôles à 2 buts ou plus 33, 32, 63, 69, 80 % ; buts moyens 1,2, 1,5, 2,5, 3,1, 2,4 ; probabilité que les deux marquent (produit) et buts attendus (somme des moyennes). Corrélation n / buts 0,30 (p = 0,016 corrigée). H-MARQUAGE, H-MARQ-DOUBLE.
+- `KOUN4.incident(L)` : détecteur à six paramètres (P1 arrêt reliant les fronts de R1 et R7, P2 résultante de M12 dans la liste, P3 résultante de M6 dans la liste, P4 base de M9 = figure d'un pôle, P5 Terre de M1+M7 non saturée, P6 coordination M6+M12 sur un nœud de la Terre) ; score 0 à 6 : 3 ou plus probable, 2 possible. `rouge` : P6 et côté (nœud M1+M7 vide dans le front du pôle). Ajusté sur 8 matchs étiquetés (5 incidents, 3 RAS) : ce n'est pas un test.
+- `KOUN4.chaine(L)` : figure, antagoniste, protecteur du pôle et leurs filiations deux à deux (f+a et a+p sont toujours sur le Circuit Souverain 1-3-5-11-13).
+- Contrôle : `node outils/tester_indices.js` (65 536 thèmes).
+
+## Ce que la page affiche (`koun.html`)
+Verdict de victoire : H-REPOS seul. Fenêtre du verdict : n et probabilité de marquer 2 buts ou plus par pôle, « Deux marquent » et buts attendus (indices), « Rouge ou penalty » (détecteur à six paramètres). Toutes ces lignes portent l'étiquette « indice non vérifié ».
