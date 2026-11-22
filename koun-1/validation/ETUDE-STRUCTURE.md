@@ -180,3 +180,7 @@ Toute lecture « niveau d'une maison ou d'une somme de maisons » est une parit�
 ### Affiner le nul avec M10 et M12 (2026-11-22)
 
 À l'intérieur des 38 matchs où le nul reste possible (Feu de M9 ≠ Eau de M11, 15 nuls), les 16 paires « niveau de M10 / niveau de M12 » (égaux ou différents) ont été testées. Meilleure : Feu de M10 et Terre de M12 différents 13 nuls sur 27, égaux 2 sur 11 ; atteinte par hasard dans 69 % des mélanges. M10 et M12 n'affinent pas le nul ; rien n'est intégré. Script : `outils/nul_m10_m12.js`.
+
+### La règle du nul transposée (2026-11-22)
+
+La transposition mères ↔ filles échange point par point le côté M1 et le côté M7 (M1–M4 ↔ M5–M8, M9 ↔ M11, M10 ↔ M12, M13 ↔ M14, M15 ↔ M16). La règle du nul (Feu de M9 ≠ Eau de M11, soit Feu M1 + Feu M2 + Feu M3 + Air M3) transposée devient exactement **Eau de M9 ≠ Feu de M11** (Feu M1 + Air M1 + Eau M1 + Eau M2) : les deux niveaux s'échangent. Les deux règles sont indépendantes (identiques dans la moitié des thèmes). Sur 80 matchs, la transposée ne dit rien du nul (6 nuls sur 32, 9 sur 48) et n'affine pas la règle : à l'intérieur des 38 matchs à nul possible, 6 nuls sur 16 contre 9 sur 22. Le nul suit l'orientation Feu de M9 / Eau de M11, pas son image transposée. Script : `outils/nul_transpose.js`.
