@@ -2536,6 +2536,16 @@
       "observe": "27 matchs étiquetés : un seul pôle à 3 impairs, incident dans 9 matchs sur 13 ; sinon 3 sur 14. Sur les pôles à 3 impairs : 5 penalties pour eux, 4 rouges contre eux (les 4 rouges du corpus). Penalty et rouge ne se séparent pas encore",
       "reserves": "construit après avoir vu les 27 étiquettes ; 13 pôles-événements seulement",
       "appels": "incident sur : Charleroi–Sint-Truiden R7 ; Liverpool–Manchester United R7 ; Burnley–Blackburn R7 ; Barcelona–Villarreal R1 ; Racing–Real Sociedad R1 ; Paris FC–Angers R7 ; Lorient–Rennes R7 ; Sassuolo–Genoa R7 ; Juventus–Venezia R1 ; Atalanta–Inter R1 ; Werder Brême–Hambourg R1 ; Galatasaray–Aston Villa R1 ; Feyenoord–Porto R7 ; Slovan Bratislava–Betis R1. Eintracht–Hoffenheim (R1) déjà vu avant la règle (penalties des deux côtés, rouge Hoffenheim) : non compté"
+    },
+    {
+      "id": "H-ORDRE-R1M2",
+      "statut": "intégrée au verdict le 2026-11-22, en observation ; appels posés avant les matchs à venir",
+      "origine": "remarque du propriétaire : la numérotation des maisons de R1 et R7 suit l'ordre (R1 en h, R7 en h+6)",
+      "structure": "R1 en M2 exactement quand M1 = Laetitia (1 thème sur 16) ; R7 est alors en M8 ; M2 + M9 = M1 = Laetitia sur tous ces thèmes",
+      "regle": "R1 en M2 : nul fréquent et R7 ne gagne pas (double chance 1X). Rubeus (H-DESEQ-RUBEUS) garde la priorité",
+      "observe": "7 matchs : 5 nuls (3-3, 1-1, 1-1, 1-1, 0-0), 2 victoires larges de R1 (5-0 avec Rubeus, 5-1). Maison de R1 criblée sur les 16 : la meilleure pour le nul n'est atteinte par hasard que dans 0,5 % des mélanges. À l'opposé, R1 en M1 : 0 nul sur 10, R1 gagne 7 fois (non intégré)",
+      "autres_pistes_vues": "relecture de tout le thème dans l'ordre à partir de R1 (positions 1 à 16) : 1242 caractéristiques, le seul lien fort est celui-ci (positions 1+8 = Laetitia, qui revient à R1 en M2)",
+      "appels": "nul ou victoire de R1 (pas de victoire de R7) : Zulte Waregem–Antwerp, Getafe–Atlético, AC Milan–Frosinone, Augsburg–Mainz, Bodø/Glimt–LASK ; Marseille–Le Mans porte aussi Rubeus : pas de nul attendu"
     }
   ],
   "lectures": [
