@@ -46,5 +46,8 @@ if (!src.includes('NUL_M14_OBS = { saturee: { nuls: ' + n14.s[0] + ', sur: ' + n
 const ar = { avec: [0, 0, 0, 0], sans: [0, 0, 0, 0] }; D.forEach(d => { const o = M.arrets(M.lire(d.m)).nombre ? ar.avec : ar.sans, g = d.sc[0] + d.sc[1]; o[0]++; o[1] += g; if (g > 2.5) o[2]++; if (g > 3.5) o[3]++; });
 const ars = 'ARRETS_OBS = { avec: { sur: ' + ar.avec.join(', ').replace(/^(\d+), (\d+), (\d+), (\d+)$/, '$1, buts: $2, plus25: $3, plus35: $4') + ' }, sans: { sur: ' + ar.sans.join(', ').replace(/^(\d+), (\d+), (\d+), (\d+)$/, '$1, buts: $2, plus25: $3, plus35: $4') + ' } }';
 if (!src.includes(ars)) err('arrêts : ' + ars);
+const iv = { deux: [0, 0], debordement: [0, 0], arret: [0, 0], aucun: [0, 0] }, vuIv = new Set(); lire('validation/scores-reels.json').forEach(x => { const k = x.themes.join('-'); if (vuIv.has(k) || !('penalty' in x)) return; vuIv.add(k); const c = M.incidentVerdict(M.lire(x.themes)).cas, y = v => v === 'R1' || v === 'R7'; iv[c][1]++; if (y(x.penalty) || y(x.rouge)) iv[c][0]++; });
+const ivs = 'INCIDENT_ARRETS_OBS = { ' + Object.keys(iv).map(k => k + ': { incident: ' + iv[k][0] + ', sur: ' + iv[k][1] + ' }').join(', ') + ' }';
+if (!src.includes(ivs)) err('incident : ' + ivs);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);

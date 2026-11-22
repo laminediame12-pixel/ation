@@ -488,6 +488,13 @@
   function arrets(L) { var b = L.theme.bases, l = []; for (var h = 1; h <= 15; h++) if (b[h] === mod(h - 3)) l.push(h);
     var o = l.length ? ARRETS_OBS.avec : ARRETS_OBS.sans;
     return { maisons: l, nombre: l.length, butsAttendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
+  // INCIDENT, LECTURE DU VERDICT (2026-11-22, H-INCIDENT-PARITE et H-INCIDENT-ARRETS, à la demande du propriétaire, en observation ; remplace dans le verdict
+  // le détecteur à six paramètres, gardé comme lecture). Le pôle dont l'énergie EB déborde seul (3 niveaux impairs) est celui que l'incident concerne
+  // (penalty pour lui ou rouge contre lui) ; un arrêt dans le thème (antagoniste posé dans la maison) dit que l'incident se produit.
+  // Débordement et arrêt : probable ; l'un des deux : possible ; aucun : pas d'indice.
+  var INCIDENT_ARRETS_OBS = { deux: { incident: 8, sur: 10 }, debordement: { incident: 2, sur: 4 }, arret: { incident: 2, sur: 7 }, aucun: { incident: 1, sur: 7 } };
+  function incidentVerdict(L) { var P = pariteIncident(L), A = arrets(L), k = P.pole && A.nombre ? 'deux' : P.pole ? 'debordement' : A.nombre ? 'arret' : 'aucun';
+    return { pole: P.pole, impairsR1: P.impairsR1, impairsR7: P.impairsR7, arrets: A.maisons, cas: k, niveau: k === 'deux' ? 'probable' : k === 'aucun' ? 'aucun' : 'possible', obs: INCIDENT_ARRETS_OBS[k] }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;
@@ -517,7 +524,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
