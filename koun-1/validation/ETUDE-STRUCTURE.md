@@ -38,3 +38,22 @@ Loi exacte (256 couples figure / maison) : le front d'une figure est fixé par s
 Air ouvert signale toujours l'ennemi ; Feu ouvert avec Air saturé signale l'allié.
 
 Sur les 79 matchs : seule la Terre saturée dans le front du pôle désigne le vainqueur (30 justes, 13 faux, c'est H-BALANCE-TERRE). Feu (16/21), Air (24/17) et Eau (21/19), donc la classe du déplacement, ne désignent rien ; compter qui occupe le front (propre, allié, ennemi) ou où vont les figures du pôle ne désigne rien non plus. Séparer la Terre selon l'occupant n'améliore pas le total. Script : `outils/deplacement.js`.
+
+### Liaisons miroirs et Terre rapportée au front de la figure (2026-11-22)
+
+Une figure posée dans une maison coupe la liaison avec la maison miroir (h ± 8) sur les niveaux où elle diffère de la figure de la maison ; son inverse complet (somme Via) coupe tout (exemple : Puer en M4 inverse Albus, l'axe M4–M12 est coupé sur les 4 niveaux).
+
+Lectures de la Terre testées sur 79 matchs (le pôle le plus fort gagne / perd) :
+
+| Lecture | Gagne | Perd |
+|---|---|---|
+| Terre saturée dans les 4 maisons du front (H-BALANCE-TERRE, actuelle) | 30 | 13 |
+| Terre rapportée par les figures du front, depuis les maisons où elles sont posées | 28 | 20 |
+| Résultantes appartenant au front, Terre saturée | 29 | 20 |
+| Figures du front posées avec la Terre à 2 | 28 | 18 |
+| Maisons + Terre rapportée | 30 | 16 |
+| Terre déviée gardée dans les maisons du front | 22 | 12 |
+| Terre rapportée depuis le terrain ennemi | 18 | 19 |
+| Liaisons miroir gardées (Feu, Air, Eau) | 22 | 27 |
+
+Quand la Terre des maisons et la Terre rapportée désignent le même pôle : 15 justes, 2 faux, 5 nuls. Quand elles s'opposent, la Terre des maisons a raison 13 fois, la Terre rapportée 8 fois. Script : `outils/terre_rapportee.js`.
