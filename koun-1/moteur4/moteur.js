@@ -351,7 +351,15 @@
     if (c && !t) return { cat: 'coord', v: c, Q: Q, C: C };
     if (t && c) return { cat: 'oppose', v: 0, Q: Q, C: C };
     return { cat: 'rien', v: 0, Q: Q, C: C }; }
-  function verdict(L) {
+  // FIGURE DU DÉSÉQUILIBRE (règle du propriétaire, 2026-11-22) : la somme des deux pôles R1+R7 (lien). Rubeus = équilibre trop faible, nul quasi impossible.
+  // Observé avant intégration : 6 matchs avec Rubeus, 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1) ; au taux général de nuls (18 %), 0 sur 6 arrive par hasard 3 fois sur 10. En observation (H-DESEQ-RUBEUS).
+  var DESEQ_OBS = { nuls: 0, sur: 6 };
+  function desequilibre(L) { var f = L.lien; return { figure: f, nom: K.nom(f), rubeus: K.nom(f) === 'Rubeus', obs: DESEQ_OBS }; }
+  function verdict(L) { var V = verdictBrut(L), D = desequilibre(L);
+    V.desequilibre = D;
+    if (D.rubeus) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · figure du déséquilibre R1+R7 = Rubeus : équilibre trop faible, nul quasi impossible (' + DESEQ_OBS.nuls + ' nul sur ' + DESEQ_OBS.sur + ' matchs, H-DESEQ-RUBEUS)'; }
+    return V; }
+  function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
       st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux, ' + S.nul + ' nuls sur ' + S.n + ' appels' : '',
       terre = 'Terre du front : R1 ' + Q.R1.n + '/4, R7 ' + Q.R7.n + '/4', noeuds = 'nœuds de coordination : écart ' + C.ecart;
@@ -427,7 +435,7 @@
       cote = e1 === 'vide' && e7 !== 'vide' ? 'R1' : e7 === 'vide' && e1 !== 'vide' ? 'R7' : null;
     return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens,
       rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote } }; }
-  var API = { secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

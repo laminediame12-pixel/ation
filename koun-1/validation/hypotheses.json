@@ -2497,6 +2497,13 @@
       "candidates": "M3+M5 = Conjunctio (4 nuls sur 4 : 2-2, 1-1, 1-1, 0-0) ; M1+M6+M13 (même figure que 1-5-12-15, la combinaison de la 1re mi-temps) = Tristitia (4 sur 5) ; M1+M11 = Conjunctio (4 sur 5) ; M3+M8+M13 = Populus (4 sur 5)",
       "reserves": "2840 caractéristiques testées (255 combinaisons × 16 figures, au moins 4 matchs) sur 78 matchs dont 14 nuls : un lien aussi fort apparaît par hasard dans 58 % des mélanges ; ce ne sont donc que des candidates",
       "a_venir": "matchs du fichier v3 concernés, à juger : FC Dallas–Portland et Levante–Elche (M3+M8+M13 = Populus), Brentford–Everton (1-5-12-15 = Tristitia), Bodø/Glimt–LASK (M3+M5 = Conjunctio), Real Madrid–PSV et Inter Miami–Columbus (M1+M11 = Conjunctio)"
+    },
+    {
+      "id": "H-DESEQ-RUBEUS",
+      "statut": "règle du propriétaire, intégrée au verdict le 2026-11-22 ; en observation",
+      "regle": "la figure du déséquilibre du thème est la somme des deux pôles R1+R7 ; quand elle est Rubeus, l'équilibre est trop faible et le nul quasi impossible",
+      "observe_avant": "6 matchs du corpus avec R1+R7 = Rubeus : 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1). Au taux général de nuls (14 sur 78, 18 %), 0 sur 6 arrive par hasard environ 3 fois sur 10",
+      "seuils": "retrait après 15 essais indépendants au taux de nul général ; confirmée si le nul reste rare sur 15 essais"
     }
   ],
   "lectures": [
