@@ -57,3 +57,9 @@ Lectures de la Terre testées sur 79 matchs (le pôle le plus fort gagne / perd)
 | Liaisons miroir gardées (Feu, Air, Eau) | 22 | 27 |
 
 Quand la Terre des maisons et la Terre rapportée désignent le même pôle : 15 justes, 2 faux, 5 nuls. Quand elles s'opposent, la Terre des maisons a raison 13 fois, la Terre rapportée 8 fois. Script : `outils/terre_rapportee.js`.
+
+### Liaisons par parité (règle du propriétaire, 2026-11-22)
+
+Une liaison vaut la somme des deux niveaux : 2+2 = 2 (saturée), 1+2 = 1 (coupée), 1+1 = 2. Feu, Air, Eau relient la maison à son miroir (h ↔ h+8) ; la Terre relie la maison à son front direct (haut f ↔ droite f+4, bas f+8 ↔ gauche f+12). Exemple vérifié : Terre M4 (Albus) 2 + Terre M8 (Tristitia) 2 = 2 ; Puer en base de M4 : 1 + 2 = 1, la liaison M4–M8 est coupée.
+
+Sur 79 matchs (le pôle le plus lié gagne / perd) : liaisons Terre du front 14 / 21 ; miroir Feu 17 / 13, Air 15 / 22, Eau 16 / 16 ; miroir ensemble 26 / 22 ; toutes 21 / 23 ; meilleur test atteint par hasard dans 72 % des mélanges. Sur la seule maison du pôle : Terre 10 / 17, miroir 21 / 22, toutes 20 / 30. Aucun signal ; la Terre par parité va plutôt à l'inverse (le pôle dont la liaison Terre est coupée gagne un peu plus souvent). Quand elle s'oppose à la balance de la Terre (H-BALANCE-TERRE), la balance a raison 11 fois sur 14. Script : `outils/liaisons_parite.js`.
