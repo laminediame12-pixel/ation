@@ -20,5 +20,7 @@ const nv = Object.entries(NV).map(([k, v]) => (k === 'fort' || k === 'faible' ? 
 if (!src.includes(nv)) err('NIVEAUX_MARQUAGE : données ' + nv);
 let dm = { o: 0, n: 0 }, av = { o: 0, n: 0, nul: 0 }; D.forEach(d => { const Cq = M.coordonnees(M.lire(d.m)), e = Math.abs(Cq.ecart); if (!e) return; const w = d.sc[0] > d.sc[1] ? 1 : d.sc[0] < d.sc[1] ? -1 : 0, o = e >= 2 ? dm : av; o.n++; if (w === Math.sign(Cq.ecart)) o.o++; if (!w && o === av) av.nul++; });
 if (!src.includes('domination : ' + dm.o + ' justes sur ' + dm.n + ' appels') || !src.includes('avantage : ' + av.o + ' justes sur ' + av.n + ' appels, ' + av.nul + ' nuls')) err('coordonnées : domination ' + dm.o + '/' + dm.n + ', avantage ' + av.o + '/' + av.n + ' (' + av.nul + ' nuls)');
+const SR = lire('validation/scores-reels.json'), vu2 = new Set(); let d2 = { o: 0, n: 0 }, a2 = { o: 0, n: 0 }; SR.forEach(x => { const k = x.themes.join('-'); if (!Array.isArray(x.mi_temps) || vu2.has(k)) return; vu2.add(k); const S = M.secondeMiTemps(M.lire(x.themes)); ['R1', 'R7'].forEach((p, i) => { const o = S.marqueurs.includes(p) ? d2 : a2; o.n++; if (x.score[i] - x.mi_temps[i] > 0) o.o++; }); });
+if (!src.includes('designees: { oui: ' + d2.o + ', sur: ' + d2.n + ' }, autres: { oui: ' + a2.o + ', sur: ' + a2.n + ' }')) err('2e mi-temps : désignées ' + d2.o + '/' + d2.n + ', autres ' + a2.o + '/' + a2.n);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);

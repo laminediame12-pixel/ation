@@ -31,7 +31,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 1,
@@ -58,7 +59,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": true
+   "scoreDejaConnu": true,
+   "marqueursSecondeMT": []
   },
   {
    "i": 2,
@@ -87,7 +89,10 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 3,
@@ -114,7 +119,8 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 4,
@@ -141,7 +147,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 5,
@@ -168,7 +177,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 6,
@@ -198,7 +208,8 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 7,
@@ -225,7 +236,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 8,
@@ -255,7 +269,11 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 9,
@@ -282,7 +300,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 10,
@@ -312,7 +333,10 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 11,
@@ -341,7 +365,10 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 12,
@@ -370,7 +397,10 @@
     "R1"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 13,
@@ -397,7 +427,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 14,
@@ -424,7 +457,11 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 15,
@@ -453,7 +490,8 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 16,
@@ -480,7 +518,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 17,
@@ -509,7 +550,8 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 18,
@@ -539,7 +581,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 19,
@@ -569,7 +612,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 20,
@@ -598,7 +642,10 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": true
+   "scoreDejaConnu": true,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 21,
@@ -627,7 +674,10 @@
     "R1"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 22,
@@ -654,7 +704,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 23,
@@ -683,7 +734,11 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 24,
@@ -710,7 +765,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 25,
@@ -737,7 +793,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 26,
@@ -766,7 +823,10 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 27,
@@ -796,7 +856,8 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 28,
@@ -823,7 +884,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 29,
@@ -852,7 +916,11 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 30,
@@ -881,7 +949,8 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 31,
@@ -910,7 +979,11 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 32,
@@ -939,7 +1012,10 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 33,
@@ -968,7 +1044,10 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 34,
@@ -995,7 +1074,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 35,
@@ -1022,7 +1102,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 36,
@@ -1051,7 +1134,8 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": true
+   "scoreDejaConnu": true,
+   "marqueursSecondeMT": []
   },
   {
    "i": 37,
@@ -1080,7 +1164,8 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 38,
@@ -1107,7 +1192,8 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 39,
@@ -1137,7 +1223,8 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 40,
@@ -1166,7 +1253,10 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 41,
@@ -1195,7 +1285,11 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 42,
@@ -1222,7 +1316,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 43,
@@ -1251,7 +1348,8 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 44,
@@ -1280,7 +1378,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 45,
@@ -1309,7 +1408,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 46,
@@ -1338,7 +1438,11 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 47,
@@ -1367,7 +1471,10 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 48,
@@ -1397,7 +1504,11 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 49,
@@ -1426,7 +1537,10 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 50,
@@ -1455,7 +1569,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 51,
@@ -1484,7 +1599,11 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 52,
@@ -1513,7 +1632,8 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 53,
@@ -1542,7 +1662,10 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 54,
@@ -1571,7 +1694,10 @@
     "R1"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 55,
@@ -1598,7 +1724,11 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 56,
@@ -1625,7 +1755,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 57,
@@ -1654,7 +1785,10 @@
     "R1"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 58,
@@ -1683,7 +1817,10 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 59,
@@ -1710,7 +1847,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 60,
@@ -1739,7 +1879,10 @@
     "R1"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 61,
@@ -1768,7 +1911,8 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 62,
@@ -1795,7 +1939,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 63,
@@ -1824,7 +1971,8 @@
     "R1"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 64,
@@ -1853,7 +2001,10 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 65,
@@ -1883,7 +2034,8 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 66,
@@ -1910,7 +2062,8 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 67,
@@ -1937,7 +2090,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 68,
@@ -1964,7 +2118,11 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 69,
@@ -1991,7 +2149,8 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 70,
@@ -2021,7 +2180,8 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 71,
@@ -2051,7 +2211,8 @@
     "R7"
    ],
    "puissance": "forte",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   },
   {
    "i": 72,
@@ -2078,7 +2239,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 73,
@@ -2105,7 +2269,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 74,
@@ -2134,7 +2301,10 @@
     "R7"
    ],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 75,
@@ -2164,7 +2334,11 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 76,
@@ -2191,7 +2365,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "faible",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 77,
@@ -2220,7 +2397,10 @@
     "R1"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": true
+   "scoreDejaConnu": true,
+   "marqueursSecondeMT": [
+    "R7"
+   ]
   },
   {
    "i": 78,
@@ -2247,7 +2427,10 @@
    "butPremiereMT": true,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": true
+   "scoreDejaConnu": true,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 79,
@@ -2277,7 +2460,11 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ]
   },
   {
    "i": 80,
@@ -2304,7 +2491,10 @@
    "butPremiereMT": false,
    "marqueursPremiereMT": [],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": [
+    "R1"
+   ]
   },
   {
    "i": 81,
@@ -2333,7 +2523,9 @@
     "R7"
    ],
    "puissance": "moyenne",
-   "scoreDejaConnu": false
+   "scoreDejaConnu": false,
+   "marqueursSecondeMT": []
   }
- ]
+ ],
+ "ajout_2e_MT": "2026-11-22 : équipes désignées pour la 2e mi-temps (4-5-13-15) ajoutées avant les scores des matchs non joués"
 }

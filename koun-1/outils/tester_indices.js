@@ -6,6 +6,7 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   ['R1', 'R7'].forEach(p => { const z = (L[p].figure - 1) % 4; let n = 0;
     [0, 1, 2, 3].forEach(i => { const h = z + 4 * i + 1, r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
     if (q[p].n !== n || n < 0 || n > 4) err('n ' + [a, b, c, d] + ' ' + p); });
+  const S2 = M.secondeMiTemps(L); if (S2.figure !== [4, 5, 13, 15].map(h => T.bases[h]).reduce(K.additionner)) err('2e MT ' + [a, b, c, d]);
   const Ry = M.rythme(L); if (Ry.figure !== [1, 5, 12, 15].map(h => T.bases[h]).reduce(K.additionner) || !['rapide', 'lente', 'intermédiaire'].includes(Ry.vitesse)) err('rythme ' + [a, b, c, d]);
   ['R1', 'R7'].forEach(p => { if (!['fort', 'freiné', 'faible', 'bloqué'].includes(q[p].niveau)) err('niveau ' + [a, b, c, d]); });
   if (I.parametres.length !== 6 || I.score !== I.parametres.filter(x => x.actif).length || I.probable !== (I.score >= 3)) err('incident ' + [a, b, c, d]);
