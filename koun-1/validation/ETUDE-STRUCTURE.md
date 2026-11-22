@@ -88,6 +88,6 @@ Sur 79 matchs, 168 cases testées : nul, meilleure case D1 = Tristitia (D2 = Lae
 
 ### Thème angulaire (2026-11-22)
 
-Les figures des maisons angulaires M1, M4, M7, M10 deviennent les 4 mères d'un nouveau thème. Structure (65 536 thèmes) : ses mères sont M1, M4, M7, M10 ; sa M9 = M1+M4, sa M10 = M7+M10 ; sa M4 = M10 du principal (car M10 = M3+M4… exactement : angulaire M4 = M10). Comme sa M1 est la M1 du principal, **R1 tombe toujours dans la même maison** dans les deux thèmes (65 536 sur 65 536) ; la figure de R1 est la même dans 10 752 thèmes. Les deux thèmes sont identiques dans 64 cas.
+Les figures des maisons angulaires M1, M4, M7, M10 deviennent les 4 mères d'un nouveau thème. Structure (65 536 thèmes) : ses mères sont M1, M4, M7, M10 ; sa M9 = M1+M4, sa M10 = M7+M10 (ses quatre premières maisons reprennent donc M1, M4, M7 et M10 du principal). Comme sa M1 est la M1 du principal, **R1 tombe toujours dans la même maison** dans les deux thèmes (65 536 sur 65 536) ; la figure de R1 est la même dans 10 752 thèmes. Les deux thèmes sont identiques dans 64 cas.
 
 Sur 79 matchs, 49 cases : vainqueur, rien (meilleure case atteinte par hasard dans 97 % des mélanges ; le verdict du thème angulaire : 14 justes, 10 faux pour R1 ; 8 justes, 12 faux pour R7). Nul : la seule case forte est « R1 en M2 » (5 nuls sur 7), qui est exactement la règle H-ORDRE-R1M2 du thème principal, puisque la maison de R1 ne change pas. Le thème angulaire n'apporte rien de nouveau. Script : `outils/theme_angulaire.js`.
