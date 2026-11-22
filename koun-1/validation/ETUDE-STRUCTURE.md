@@ -168,3 +168,7 @@ Identités exactes (65 536 thèmes) : 3-5-14-12 = M3+M6 (= M3+M5+M11 = M4+M6+M10
 ### Les deux moulins sur la grille des points des mères (2026-11-22)
 
 Moulin A (cases de 3, 5, 14, 12) : Eau M1, Feu M2, Air M4, Terre M3 ; moulin B (cases de 2, 9, 15, 8) : Air M1, Feu M3, Eau M4, Terre M2. Aucun lien exact avec les moulins des maisons (égaux au hasard, 1 thème sur 16) ; par la transposition, le moulin A lu chez les filles égale le moulin B des mères dans 1 thème sur 4. Sur 80 matchs, la poche sans nul ne se retrouve pas pour le moulin A (dans le front d'un seul pôle : 4 nuls sur 32). Moulin B : dans le front de R1 seul, 0 nul sur 17 ; dans le front de R7 seul, 6 nuls sur 10 (asymétrique, repéré après coup). Là où le verdict laisse « nul possible », les deux moulins des mères ne concernent que 5 ou 6 matchs : rien à en tirer. Non intégrés. Script : `outils/moulins_meres.js`.
+
+### Sommes des deux côtés M1 et M7 (2026-11-22)
+
+Côté M1 (1, 2, 3, 4, 9, 10, 13, 15) et côté M7 (5, 6, 7, 8, 11, 12, 14, 16). Identités exactes (65 536 thèmes) : somme du côté M1 = **M14** (= M13+M15 = M11+M12) ; somme du côté M7 = **M14 + M16** (= M1+M13 = M2+M10) ; les deux ensemble = M16. Le côté M1 se résume donc au témoin M14, qui est posé du côté M7. Égalités entre les côtés, avec Populus, M1 ou M7 : au hasard (1 sur 16). Sur 80 matchs, 18 cases : nul, meilleure atteinte par hasard dans 38 % des mélanges ; vainqueur, 68 %. Poche à noter : Terre du côté M1 ouverte et du côté M7 saturée, 16 matchs, 0 nul. Script : `outils/sommes_cotes.js`.
