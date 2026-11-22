@@ -160,3 +160,7 @@ Grille mère × niveau. Coins = Feu et Terre de M1 et de M4 ; centre = Air et Ea
 ### Pourquoi les diagonales des mères et des filles sont égales (2026-11-22)
 
 Les filles sont la transposition des mères : niveau l de la fille k = niveau k de la mère l. Diagonale Feu-Air-Eau-Terre (Feu M1, Air M2, Eau M3, Terre M4) : ses points sont sur la diagonale de la transposition, ils ne bougent pas ; elle est égale à celle des filles (Feu M5, Air M6, Eau M7, Terre M8) dans 65 536 thèmes sur 65 536. Diagonale Terre-Eau-Air-Feu : la transposition la retourne (Terre M5 = Feu M4, Eau M6 = Air M3, Air M7 = Eau M2, Feu M8 = Terre M1, vérifié sur les 65 536 thèmes) ; elle n'est donc égale à celle des filles que lorsqu'elle se lit pareil dans les deux sens : Terre M1 = Feu M4 et Eau M2 = Air M3, soit 16 384 thèmes (1 sur 4). Sur 80 matchs, cette égalité (14 matchs : 2 nuls, R1 5, R7 7) ne départage rien.
+
+### Les deux moulins des bords : 3-5-14-12 et 2-9-15-8 (2026-11-22)
+
+Identités exactes (65 536 thèmes) : 3-5-14-12 = M3+M6 (= M3+M5+M11 = M4+M6+M10) ; 2-9-15-8 = M8+M16 (= M1+M8+M15 = M7+M12+M16) ; les deux ensemble = bords = M16 + centre + coins. 2-9-15-8 égale le centre dans 1 thème sur 8 (le double du hasard) ; les autres égalités au hasard (1 sur 16). Sur 80 matchs, 38 cases : nul, meilleure atteinte par hasard dans 48 % des mélanges ; vainqueur, 77 %. Poche sans nul à surveiller : la figure 3-5-14-12 posée en base dans le front d'un seul pôle, 21 matchs, 0 nul (R1 14, R7 7) ; son front égal à celui de R7, 20 matchs, 0 nul. Script : `outils/moulins_bords.js`.
