@@ -2576,10 +2576,11 @@
     },
     {
       "id": "H-M1-M10",
-      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "statut": "intégrée au verdict le 2026-11-22 comme relais (seulement quand le verdict n'a pas d'appel ; deux arrêts : avantage R1), à la demande du propriétaire ; en observation",
       "structure": "M1 (nœud Feu × Feu, front A) et M10 (nœud Air × Eau, front B) sont les deux seuls nœuds diagonaux dont la figure de maison (Puer, Carcer) a la Terre impaire : la maison y inverse la Terre de la base. Exact sur 65 536 thèmes : résultante de M1 + Puer = maison de R1 ; la résultante de M1 désigne donc la maison de R1 (Aquisitio ⇔ R1 en M2, Populus ⇔ R1 en M1)",
       "observe": "79 matchs. Pôle du front A : M1 saturée en résultante, 19 victoires sur 25, 2,40 buts pour, 0,92 contre ; M1 ouverte, 2 victoires sur 10, 1,70 pour, 3,30 contre. Pôle du front B : M10 saturée, 8 sur 16, 2,13 pour, 1,56 contre ; ouverte, 6 sur 23, 1,04 pour, 2,22 contre. Liaisons Terre par parité M1–M5 et M10–M14 : les deux en arrêt, R1 14, R7 3, 3 nuls (buts R1 2,6, R7 0,8) ; les deux liées, 6 nuls sur 18. Une dizaine de tableaux regardés : à confirmer",
-      "appels": "les deux liaisons en arrêt, R1 attendu : Lens–Toulouse, FC Dallas–Portland, Liverpool–Manchester United, Burnley–Blackburn, Racing–Real Sociedad, Juventus–Venezia, Augsburg–Mainz, Brentford–Everton, Galatasaray–Aston Villa, Arsenal–Dortmund, Leipzig–Lens. Les deux liées, nul à surveiller : Zulte Waregem–Antwerp, Charleroi–Sint-Truiden, Getafe–Atlético, Marseille–Le Mans, Chicago–Charlotte, Feyenoord–Porto, Manchester City–Napoli, Real Madrid–PSV ; Eintracht–Hoffenheim déjà joué (1-0, pas de nul)"
+      "appels": "les deux liaisons en arrêt, R1 attendu : Lens–Toulouse, FC Dallas–Portland, Liverpool–Manchester United, Burnley–Blackburn, Racing–Real Sociedad, Juventus–Venezia, Augsburg–Mainz, Brentford–Everton, Galatasaray–Aston Villa, Arsenal–Dortmund, Leipzig–Lens. Les deux liées, nul à surveiller : Zulte Waregem–Antwerp, Charleroi–Sint-Truiden, Getafe–Atlético, Marseille–Le Mans, Chicago–Charlotte, Feyenoord–Porto, Manchester City–Napoli, Real Madrid–PSV ; Eintracht–Hoffenheim déjà joué (1-0, pas de nul)",
+      "verdict_apres_integration": "79 matchs : 8 appels du relais, 5 justes, 1 faux, 2 nuls"
     }
   ],
   "lectures": [

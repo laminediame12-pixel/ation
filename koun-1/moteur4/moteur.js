@@ -374,7 +374,15 @@
   // Priorité : Rubeus d'abord (le seul R1 en M2 avec Rubeus a fini 5-0).
   var ORDRE_OBS = { m2: { nuls: 5, sur: 7 } };
   function ordre(L) { return { maisonR1: L.R1.maison, maisonR7: L.R7.maison, nulFrequent: L.R1.maison === 2, obs: ORDRE_OBS.m2 }; }
-  function verdict(L) { var V = verdictBrut(L), D = desequilibre(L), J = temoinsJuge(L), O = ordre(L);
+  // RELAIS M1–M10 (2026-11-22, H-M1-M10, intégré à la demande du propriétaire, en observation) : M1 (Puer) et M10 (Carcer) sont les seuls nœuds diagonaux
+  // dont la maison inverse la Terre ; la résultante de M1 + Puer donne la maison de R1 (exact). Quand le verdict n'a pas d'appel et que les deux liaisons Terre
+  // M1–M5 et M10–M14 (parité : 2+2 et 1+1 liées, 1+2 arrêt) sont en arrêt, R1 prend l'avantage. Il ne s'ajoute jamais à un appel existant.
+  var M1M10_STATS = { ok: 5, ko: 1, nul: 2, n: 8 };
+  function m1m10(L) { var T = L.theme, lien = function (x, y) { return K.niveaux(K.additionner(T.resultantes[x], T.resultantes[y]))[3] === 2; }, a = lien(1, 5), b = lien(10, 14);
+    return { m1m5: a, m10m14: b, deuxArrets: !a && !b, stats: M1M10_STATS }; }
+  function verdict(L) { var V = verdictBrut(L), D = desequilibre(L), J = temoinsJuge(L), O = ordre(L), Z = m1m10(L);
+    V.m1m10 = Z;
+    if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     V.desequilibre = D; V.temoinsJuge = J; V.ordre = O;
     if (!D.rubeus && O.nulFrequent) { if (V.v === '2') { V.v = null; V.force = null; } V.nulFrequent = true; V.nulPeuProbable = false; V.doubleChance = '1X'; V.raison += ' · ordre des maisons : R1 en M2, R7 en M8 (M1 = Laetitia, thème décalé d\'un pas) : nul fréquent, R7 n\'y gagne pas (' + ORDRE_OBS.m2.nuls + ' nuls sur ' + ORDRE_OBS.m2.sur + ', les autres sont des victoires de R1 ; H-ORDRE-R1M2)'; return V; }
     if (!D.rubeus && J.nulPeuProbable) { V.nulPeuProbable = true; V.raison += ' · témoins et juge : ' + (J.attaque ? 'M15 (' + K.nom(J.juge) + ') attaque M13+M5 (' + K.nom(J.s13) + ')' : '') + (J.attaque && J.front ? ' et ' : '') + (J.front ? 'M14+M6 (' + K.nom(J.s14) + ') dans le front du juge M15' : '') + ' : nul peu probable (' + TJ_OBS.union.nuls + ' nul sur ' + TJ_OBS.union.sur + ' matchs, H-TEMOINS-JUGE)'; }
@@ -471,7 +479,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 9, sur: 13 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

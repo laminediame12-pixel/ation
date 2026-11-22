@@ -30,5 +30,7 @@ const ip = { s: [0, 0], a: [0, 0] }, vuI = new Set(); lire('validation/scores-re
 if (!src.includes('INCIDENT_PARITE_OBS = { seul: { incident: ' + ip.s[0] + ', sur: ' + ip.s[1] + ' }, autres: { incident: ' + ip.a[0] + ', sur: ' + ip.a[1] + ' } }')) err('parité de l\'incident : seul ' + ip.s + ' autres ' + ip.a);
 const om = [0, 0]; D.forEach(d => { if (M.ordre(M.lire(d.m)).nulFrequent) { om[1]++; if (d.sc[0] === d.sc[1]) om[0]++; } });
 if (!src.includes('ORDRE_OBS = { m2: { nuls: ' + om[0] + ', sur: ' + om[1] + ' } }')) err('ordre R1 en M2 : ' + om);
+const mz = { ok: 0, ko: 0, nul: 0, n: 0 }; D.forEach(d => { const L = M.lire(d.m), V = M.verdict(L); if (V.regle !== 'H-M1-M10') return; mz.n++; const r = Math.sign(d.sc[0] - d.sc[1]); if (!r) mz.nul++; else if (r > 0) mz.ok++; else mz.ko++; });
+if (!src.includes('M1M10_STATS = { ok: ' + mz.ok + ', ko: ' + mz.ko + ', nul: ' + mz.nul + ', n: ' + mz.n + ' }')) err('relais M1–M10 : ' + JSON.stringify(mz));
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);
