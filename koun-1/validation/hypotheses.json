@@ -2668,6 +2668,13 @@
       "origine": "mise en lumière par la correction de la cartographie (arrêts répercutés sur les quatre fronts)",
       "regle": "un arrêt = l'antagoniste d'une maison posé en base dans cette maison (M1 à M15). Thème avec au moins un arrêt → match à buts ; sans arrêt → match fermé",
       "observe": "80 matchs : avec arrêt 4,19 buts par match (48 matchs), sans 2,72 (32) ; écart atteint par hasard dans 0,14 % des mélanges. Plus de 2,5 buts : 36/48 contre 15/32 ; plus de 3,5 : 30/48 contre 9/32. Estimation du total de buts (un match laissé de côté) : moyenne selon arrêt 1,65 d'erreur contre 1,85 pour l'estimation actuelle. Aucun effet sur le nul. Le pôle qui a des arrêts dans son front marque plus (2,21 contre 1,66 buts). 23 314 thèmes sur 65 536 n'ont aucun arrêt"
+    },
+    {
+      "id": "H-INCIDENT-ARRETS",
+      "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée",
+      "regle": "incident (penalty ou rouge) probable quand le débordement d'énergie d'un seul pôle (H-INCIDENT-PARITE) s'accompagne d'au moins un arrêt dans le thème ; l'incident tombe sur le pôle qui déborde",
+      "observe": "28 matchs étiquetés : avec arrêt, incident 10/17 ; sans arrêt 3/11 ; 2 arrêts ou plus 6/8. Croisé : débordement + arrêt 8/10 ; débordement sans arrêt 2/4 ; arrêt sans débordement 2/7 ; ni l'un ni l'autre 1/7. Les arrêts dans le front d'un pôle ne désignent pas mieux le côté que le débordement",
+      "appels": "incident probable : Liverpool–Manchester United (R7), Racing–Real Sociedad (R1), Paris FC–Angers (R7), Sassuolo–Genoa (R7), Atalanta–Inter (R1), Werder–Hambourg (R1), Galatasaray–Aston Villa (R1), Feyenoord–Porto (R7). Déjà joués, conformes mais vus avant la règle : Eintracht–Hoffenheim (penalty pour Eintracht, R1), Barcelona–Villarreal (penalty pour Barcelone, R1)"
     }
   ],
   "lectures": [

@@ -208,3 +208,7 @@ Cibles qui n'ont pas servi à la trouver (`outils/nul_preuves.js`) : nul à la m
 ### Les arrêts et les buts (2026-11-22)
 
 Arrêt = antagoniste d'une maison posé en base dans cette maison (M1 à M15) ; 23 314 thèmes sur 65 536 n'en ont aucun. Sur 80 matchs : avec au moins un arrêt, 4,19 buts par match (48) ; sans, 2,72 (32) ; écart de 1,47 but atteint par hasard dans 0,14 % des mélanges. Plus de 2,5 buts : 75 % contre 47 % ; plus de 3,5 : 63 % contre 28 %. Pour estimer le total de buts, la moyenne selon arrêt oui ou non fait mieux que l'estimation actuelle (1,65 contre 1,85 d'erreur, un match laissé de côté). Rien pour le nul. L'arrêt libère le flux en buts, comme le circuit coupé (voir « Circuit Eau–Terre »). Candidate H-ARRETS-BUTS.
+
+### Les arrêts face au rouge et au penalty (2026-11-22)
+
+28 matchs étiquetés (13 incidents : 10 penalties, 4 rouges). Avec au moins un arrêt, incident 10/17 ; sans arrêt 3/11 ; 2 arrêts ou plus 6/8. Croisés avec le débordement d'énergie d'un seul pôle (règle actuelle) : débordement + arrêt 8/10, débordement seul 2/4, arrêt seul 2/7, aucun 1/7. Le côté : les arrêts dans le front d'un pôle ne désignent pas mieux que le débordement (le pôle qui subit un arrêt venu du front adverse : 2 incidents sur 6, deux rouges contre lui). Candidate H-INCIDENT-ARRETS. Script : `outils/arrets_incident.js`.
