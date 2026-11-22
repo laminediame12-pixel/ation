@@ -369,7 +369,7 @@
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
       // CANAUX TERRE (règle sûre du propriétaire, 2026-11-21) : les deux liaisons Terre du front direct (haut → droite et bas → gauche) saturées dans les résultantes =
-      // marquage inévitable (10 pôles sur 10 ont marqué ; un seul canal : 36 sur 45).
+      // marquage presque inévitable (10 pôles sur 11 ont marqué ; seule exception Strasbourg–Brest 0-1, Strasbourg freiné, sans figure au repos).
       var t = function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; return K.niveaux(r)[3] === 2; }, ct = (t(z + 1) && t(z + 5) ? 1 : 0) + (t(z + 9) && t(z + 13) ? 1 : 0);
       return { front: K.front(z + 1), maisons: hs, n: n, canauxTerre: ct, marqueSur: ct === 2 }; }
     var a = un(L.R1), b = un(L.R7), RP = repos(L);

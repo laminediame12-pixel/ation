@@ -2448,7 +2448,7 @@
     },
     {
       "id": "H-CANAUX-TERRE",
-      "statut": "RÈGLE SÛRE du propriétaire, vérifiée le 2026-11-21 : 6 pôles sur 6 ; intégrée aux lignes de marquage des équipes",
+      "statut": "RÈGLE du propriétaire : 10 pôles sur 11 ont marqué (premier contre-exemple : Strasbourg–Brest 0-1, Strasbourg, niveau freiné, aucune figure au repos) ; intégrée aux lignes de marquage",
       "regle": "le pôle dont les deux canaux Terre du front direct (haut → droite et bas → gauche, déviation de la Terre) sont saturés dans les résultantes marque : marquage inévitable",
       "resultat": "84 pôles-matchs : deux canaux saturés 6 sur 6 ont marqué (3,33 buts en moyenne) ; un seul canal 21 sur 22 (seule exception 4-7-5-8, R7, 1-0) ; aucun canal 44 sur 56",
       "noeuds": "remarques du propriétaire : M1 est l'intersection des deux canaux Feu (Feu × Feu) et M11 celle des deux canaux Eau (exact) ; Air × Air est M6 (M2 est Air horizontal × Feu vertical) ; Terre × Terre serait M16, le coin qui n'existe pas : la Terre ne se croise pas, elle relie (déviation vers le front direct)",
@@ -2469,7 +2469,8 @@
       "statut": "jugement à l'aveugle des prédictions gelées avant les scores (predictions-20-24-novembre.json, version d'origine) sur 13 matchs dont le score a été trouvé sur le web",
       "resultat": "victoire : 3 justes, 1 faux (Bournemouth–Forest), 2 sur des nuls (Bayern–Cologne, Manchester City–Fulham), 7 sans appel ; deux marquent 8 sur 13 ; n >= 2 ↔ 2 buts ou plus 12 sur 26 ; totaux annoncés trop hauts (4,6 à 6,2 contre 2,7 réels en moyenne, ancienne formule par n) ; la 1re mi-temps ne compte pas : son mécanisme a été construit sur ces mi-temps",
       "sources": "ESPN, Sofascore, Sky Sports, bundesliga.com, sporza.be, NBC Sports, livescore",
-      "suite": "27 matchs trouvés sur le web au total (13 puis 14) : prédictions gelées d'origine : victoire 7 justes, 4 faux, 3 sur nul, 13 sans appel ; deux marquent 16 sur 27"
+      "suite": "27 matchs trouvés sur le web au total (13 puis 14) : prédictions gelées d'origine : victoire 7 justes, 4 faux, 3 sur nul, 13 sans appel ; deux marquent 16 sur 27",
+      "suite2": "7 matchs de plus (22/11) : victoire gelée 1 juste, 3 faux, 2 sur des nuls ; deux marquent 5 sur 7 ; sur l'ensemble, les règles de victoire baissent : H-REPOS 8 sur 15, coordonnées 26 sur 37 (« toujours R1 » 23), domination 19 sur 28"
     }
   ],
   "lectures": [
