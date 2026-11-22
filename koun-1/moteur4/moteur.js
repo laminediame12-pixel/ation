@@ -374,10 +374,17 @@
   // Priorité : Rubeus d'abord (le seul R1 en M2 avec Rubeus a fini 5-0).
   var ORDRE_OBS = { m2: { nuls: 5, sur: 7 } };
   function ordre(L) { return { maisonR1: L.R1.maison, maisonR7: L.R7.maison, nulFrequent: L.R1.maison === 2, obs: ORDRE_OBS.m2 }; }
+  // MOULIN 3-5-14-12 (2026-11-22, H-MOULIN-SANS-NUL, intégré à la demande du propriétaire, en observation) : la somme des bases de M3, M5, M14, M12 (= M3 + M6, exact)
+  // posée en base dans le front d'un seul des deux pôles : sur 80 matchs, 21 cas, aucun nul. Dans le verdict, il ne joue que quand aucune autre règle n'a trié le nul
+  // (ni Rubeus, ni R1 en M2, ni témoins face au juge) ; il passe avant la règle M3–M9.
+  var MOULIN_OBS = { nuls: 0, sur: 10 };
+  function moulin(L) { var b = L.theme.bases, f = [3, 5, 14, 12].map(function (h) { return b[h]; }).reduce(K.additionner),
+      dans = function (c) { var z = (c.figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { return b[z + 1 + 4 * i] === f; }); }, a = dans(L.R1), e = dans(L.R7);
+    return { figure: f, dansR1: a, dansR7: e, actif: a !== e, pole: a !== e ? (a ? 'R1' : 'R7') : null, obs: MOULIN_OBS }; }
   // NUL M3–M9 (2026-11-22, H-NUL-M3-M9, intégré à la demande du propriétaire, en observation) : Eau de M3 (toujours égale à l'Eau de M7, point de la diagonale des
   // mères) et Terre de M9 (saturée ⇔ M1 et M2 ont la même Terre) toutes deux saturées. Sur 80 matchs : 10 nuls sur 26 contre 5 sur 54. Dans le verdict, il ne joue que
   // quand aucune autre règle ne trie le nul (ni Rubeus, ni R1 en M2, ni témoins face au juge) : il fait alors passer « nul possible » à « nul fréquent ».
-  var NUL_M3M9_OBS = { nuls: 5, sur: 15 };
+  var NUL_M3M9_OBS = { nuls: 5, sur: 12 };
   function nulM3M9(L) { var b = L.theme.bases, e3 = K.niveaux(b[3])[2] === 2, t9 = K.niveaux(b[9])[3] === 2; return { eauM3: e3, terreM9: t9, actif: e3 && t9, obs: NUL_M3M9_OBS }; }
   // RELAIS M1–M10 (2026-11-22, H-M1-M10, intégré à la demande du propriétaire, en observation) : M1 (Puer) et M10 (Carcer) sont les seuls nœuds diagonaux
   // dont la maison inverse la Terre ; la résultante de M1 + Puer donne la maison de R1 (exact). Quand le verdict n'a pas d'appel et que les deux liaisons Terre
@@ -393,6 +400,8 @@
     if (!D.rubeus && J.nulPeuProbable) { V.nulPeuProbable = true; V.raison += ' · témoins et juge : ' + (J.attaque ? 'M15 (' + K.nom(J.juge) + ') attaque M13+M5 (' + K.nom(J.s13) + ')' : '') + (J.attaque && J.front ? ' et ' : '') + (J.front ? 'M14+M6 (' + K.nom(J.s14) + ') dans le front du juge M15' : '') + ' : nul peu probable (' + TJ_OBS.union.nuls + ' nul sur ' + TJ_OBS.union.sur + ' matchs, H-TEMOINS-JUGE)'; }
     if (J.conteste && !D.rubeus && !J.nulPeuProbable) { V.nulFrequent = true; V.raison += ' · témoins et juge : M13+M5 (' + K.nom(J.s13) + ') attaque le juge M15 : jugement contesté, nul fréquent (' + TJ_OBS.conteste.nuls + ' nuls sur ' + TJ_OBS.conteste.sur + ', H-TEMOINS-JUGE)'; }
     if (D.rubeus) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · figure du déséquilibre R1+R7 = Rubeus : équilibre trop faible, nul quasi impossible (' + DESEQ_OBS.nuls + ' nul sur ' + DESEQ_OBS.sur + ' matchs, H-DESEQ-RUBEUS)'; }
+    var Mo = moulin(L); V.moulin = Mo;
+    if (Mo.actif && !V.nulExclu && !V.nulFrequent && !V.nulPeuProbable) { V.nulPeuProbable = true; V.raison += ' · moulin 3-5-14-12 (' + K.nom(Mo.figure) + ') posé en base dans le front de ' + Mo.pole + ' seulement : nul peu probable (' + MOULIN_OBS.nuls + ' nul sur ' + MOULIN_OBS.sur + ', H-MOULIN-SANS-NUL)'; }
     var Nm = nulM3M9(L); V.nulM3M9 = Nm;
     if (Nm.actif && !V.nulExclu && !V.nulFrequent && !V.nulPeuProbable) { V.nulFrequent = true; V.raison += ' · Eau de M3 (= Eau de M7) et Terre de M9 saturées : nul fréquent (' + NUL_M3M9_OBS.nuls + ' nuls sur ' + NUL_M3M9_OBS.sur + ' quand rien d\'autre ne trie le nul, H-NUL-M3-M9)'; }
     return V; }
@@ -494,7 +503,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -37,5 +37,7 @@ const dfs = "DEFENSE_OBS = { 'percée': { sur: " + df['percée'].sur + ", encais
 if (!src.includes(dfs)) err('défense : ' + dfs);
 const nm9 = [0, 0]; D.forEach(d => { const V = M.verdict(M.lire(d.m)); if (!/H-NUL-M3-M9/.test(V.raison)) return; nm9[1]++; if (d.sc[0] === d.sc[1]) nm9[0]++; });
 if (!src.includes('NUL_M3M9_OBS = { nuls: ' + nm9[0] + ', sur: ' + nm9[1] + ' }')) err('nul M3–M9 : ' + nm9);
+const mo = [0, 0]; D.forEach(d => { const V = M.verdict(M.lire(d.m)); if (!/H-MOULIN-SANS-NUL/.test(V.raison)) return; mo[1]++; if (d.sc[0] === d.sc[1]) mo[0]++; });
+if (!src.includes('MOULIN_OBS = { nuls: ' + mo[0] + ', sur: ' + mo[1] + ' }')) err('moulin : ' + mo);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);
