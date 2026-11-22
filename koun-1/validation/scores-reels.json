@@ -1091,7 +1091,11 @@
    0
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; Brereton Díaz 5' et 8' (penalty), Ayew 61', Peck en 2e mi-temps (Sky Sports, site du club) : mi-temps 2-0",
+  "mi_temps": [
+   2,
+   0
+  ]
  },
  {
   "themes": [
@@ -1299,5 +1303,132 @@
   ],
   "lot": "recherche-web",
   "note": "Bidstrup 40' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Flashscore, Footeo)"
+ },
+ {
+  "themes": [
+   11,
+   16,
+   15,
+   15
+  ],
+  "match": "Newcastle–Arsenal",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   2,
+   2
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Eze 33' (Arsenal), Barnes 49', Thiaw 62', Madueke 78' (ESPN, VAVEL)",
+  "mi_temps": [
+   0,
+   1
+  ]
+ },
+ {
+  "themes": [
+   3,
+   16,
+   2,
+   1
+  ],
+  "match": "Schalke–Stuttgart",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   0,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; 0-0 (bundesliga.com)",
+  "mi_temps": [
+   0,
+   0
+  ]
+ },
+ {
+  "themes": [
+   4,
+   16,
+   11,
+   13
+  ],
+  "match": "Leverkusen–Paderborn",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   4,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; bundesliga.com"
+ },
+ {
+  "themes": [
+   16,
+   1,
+   6,
+   14
+  ],
+  "match": "Mönchengladbach–Dortmund",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Nmecha (ESPN ; minute incertaine)"
+ },
+ {
+  "themes": [
+   1,
+   7,
+   5,
+   13
+  ],
+  "match": "Elversberg–Fribourg",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; bundesliga.com"
+ },
+ {
+  "themes": [
+   10,
+   7,
+   7,
+   13
+  ],
+  "match": "Lazio–Lecce",
+  "date": "2026-11-21",
+  "competition": "Serie A",
+  "score": [
+   3,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Noslin, Frattesi (France 24)"
+ },
+ {
+  "themes": [
+   11,
+   10,
+   2,
+   9
+  ],
+  "match": "Parma–Roma",
+  "date": "2026-11-21",
+  "competition": "Serie A",
+  "score": [
+   1,
+   5
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Malen ×4, Mora (France 24)"
  }
 ]

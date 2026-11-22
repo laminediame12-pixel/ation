@@ -503,12 +503,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     return { coordination: c1, residuM9: c2, axe28: c3, R1: { m1m7: a1, m9: a2, m2m8: a3 }, R7: { m1m7: b1, m9: b2, m2m8: b3 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
   function verdict(L) {
     var R = repos(L), Q = coordonnees(L);
-    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire (8 justes sur 12 appels sur 71 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
+    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire (8 justes sur 15 appels sur 78 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
     // Coordonnées (2026-11-21) : l'écart des trois nœuds dit la force de l'avantage. Écart 2 ou 3 : domination (15 justes sur 18 appels, aucun nul) ;
     // écart 1 : avantage, nul possible (4 justes sur 8, 3 nuls) ; écart nul : pas d'appel, nul possible.
     var e = Math.abs(Q.ecart), cote = Q.gagnant, det = ' (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)';
-    if (e >= 2) return { v: cote === 'R1' ? '1' : '2', force: 'domination', regle: 'H-COORD-VICTOIRE', statut: 'domination : 19 justes sur 24 appels (en tout 26 justes sur 34 appels sur 59 matchs décisifs ; « toujours R1 » : 22 sur 34)', raison: cote + ' domine : ' + e + ' nœuds de coordination sur 3 plus pleins dans son front' + det };
-    if (e === 1) return { v: cote === 'R1' ? '1' : '2', force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: 'avantage : 7 justes sur 16 appels, 5 nuls', raison: cote + ' n\'a l\'avantage que sur un nœud de coordination' + det };
+    if (e >= 2) return { v: cote === 'R1' ? '1' : '2', force: 'domination', regle: 'H-COORD-VICTOIRE', statut: 'domination : 19 justes sur 28 appels (en tout 26 justes sur 37 appels sur 64 matchs décisifs ; « toujours R1 » : 23 sur 37)', raison: cote + ' domine : ' + e + ' nœuds de coordination sur 3 plus pleins dans son front' + det };
+    if (e === 1) return { v: cote === 'R1' ? '1' : '2', force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: 'avantage : 7 justes sur 17 appels, 6 nuls', raison: cote + ' n\'a l\'avantage que sur un nœud de coordination' + det };
     return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS muet ; nœuds de coordination à égalité : 3 des 6 nuls observés)' + det };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
@@ -529,8 +529,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
         protecteurEstSomme: s1 === p }; }
     return { R1: un(L.R1), R7: un(L.R7) }; }
   // MARQUAGE (signal découvert le 2026-11-20, à confirmer sur des matchs futurs ; ce n'est PAS une règle de verdict). Le front direct d'un pôle (les 4 maisons f, f+4, f+8, f+12) marque
-  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 142 pôles-matchs :
-  var NIVEAUX_MARQUAGE = { fort: { sur: 72, un: 60, deux: 40, moy: 2.24 }, 'freiné': { sur: 32, un: 23, deux: 12, moy: 1.59 }, faible: { sur: 21, un: 18, deux: 6, moy: 1.52 }, 'bloqué': { sur: 17, un: 12, deux: 4, moy: 1.06 } };
+  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 156 pôles-matchs :
+  var NIVEAUX_MARQUAGE = { fort: { sur: 75, un: 60, deux: 40, moy: 2.15 }, 'freiné': { sur: 40, un: 28, deux: 16, moy: 1.65 }, faible: { sur: 23, un: 20, deux: 7, moy: 1.52 }, 'bloqué': { sur: 18, un: 13, deux: 4, moy: 1.06 } };
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
@@ -540,7 +540,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       return { front: K.front(z + 1), maisons: hs, n: n, canauxTerre: ct, marqueSur: ct === 2 }; }
     var a = un(L.R1), b = un(L.R7), RP = repos(L);
     // NIVEAU DE MARQUAGE d'une équipe (2026-11-21) : la Terre de son front direct (n) et son blocage (figures au repos sans antagoniste dans ses deux fronts, H-REPOS) lus ensemble.
-    // Fréquences observées (142 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).
+    // Fréquences observées (156 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).
     [[a, 'R1'], [b, 'R7']].forEach(function (x) { var q = x[0], r = RP[x[1]].total, k = q.n >= 2 ? (r ? 'fort' : 'freiné') : (r ? 'faible' : 'bloqué'), o = NIVEAUX_MARQUAGE[k];
       q.repos = r; q.niveau = k; q.p2n = o.deux / o.sur; q.p1n = o.un / o.sur; q.moyN = o.moy; q.obsN = o.sur; });
     // deux marquent : produit des deux probabilités (hypothèse d'indépendance : 75 % prédit en moyenne contre 73 % observé sur 37 matchs) ; buts attendus : somme des moyennes par n
@@ -551,7 +551,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       // Binôme de la figure M5+M7 (2026-11-21, propriétaire) : placé chez lui (sa maison de repos) ou chez son antagoniste, il confirme l'état de la figure ;
       // Terre saturée et binôme placé : les deux n'ont jamais marqué (0 sur 5).
       bt = K.binome(tf), hbt = mod(bt - 3), btPlace = T.bases[bt] === bt || (bt < 16 && T.resultantes[bt] === bt) || T.bases[hbt] === bt || (hbt < 16 && T.resultantes[hbt] === bt),
-      OBS_TEMOIN = { ouverte: { oui: 28, sur: 36 }, binomePlace: { oui: 2, sur: 11 }, m410ouverte: { oui: 6, sur: 11 }, m410saturee: { oui: 7, sur: 13 } };
+      OBS_TEMOIN = { ouverte: { oui: 29, sur: 38 }, binomePlace: { oui: 2, sur: 12 }, m410ouverte: { oui: 7, sur: 13 }, m410saturee: { oui: 7, sur: 15 } };
     return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, binome: bt, binomePlace: btPlace, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : btPlace ? OBS_TEMOIN.binomePlace : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.

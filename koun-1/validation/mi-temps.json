@@ -22,5 +22,27 @@
   },
   "prediction_avant": "but en 1re mi-temps des deux équipes (H-MT-MECANISME, figure Fortuna Major rapide) ; Columbus « bloqué » ; victoire : avantage Columbus, nul possible",
   "note": "match en cours au moment de la saisie : but de Columbus à la 9e ; mi-temps à confirmer"
+ },
+ {
+  "themes": [
+   3,
+   8,
+   10,
+   4
+  ],
+  "match": "Monaco–Auxerre",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "buts": {
+   "R1": [],
+   "R7": [
+    "29' Faivre"
+   ]
+  },
+  "note": "mi-temps trouvée sur le web (ESPN) ; score final non trouvé"
  }
 ]
