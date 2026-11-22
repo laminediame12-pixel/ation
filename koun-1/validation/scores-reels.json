@@ -1450,8 +1450,8 @@
    5,
    9
   ],
-  "match": "équipes à préciser",
-  "date": "2026-11-22",
+  "match": "Orlando City–New York Red Bulls",
+  "date": "2026-02-22",
   "score": [
    1,
    2
@@ -1461,6 +1461,7 @@
    2
   ],
   "lot": "test-2e-MT",
-  "note": "fourni par le propriétaire le 2026-11-22 : 1re mi-temps 0-2, 2e mi-temps 1-0, final 1-2 ; lecture donnée avant le score (4-5-13-15 : les deux équipes désignées pour la 2e mi-temps ; 1re mi-temps : pas de but ; victoire : avantage R7)"
+  "note": "fourni par le propriétaire le 2026-11-22 (Orlando City 1-2 New York Red Bulls, 22/02/2026) : 1re mi-temps 0-2, 2e mi-temps 1-0, final 1-2 ; lecture donnée avant le score (4-5-13-15 : les deux équipes désignées pour la 2e mi-temps ; 1re mi-temps : pas de but ; victoire : avantage R7)",
+  "competition": "MLS"
  }
 ]
