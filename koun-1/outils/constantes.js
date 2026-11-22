@@ -35,9 +35,11 @@ if (!src.includes('M1M10_STATS = { ok: ' + mz.ok + ', ko: ' + mz.ko + ', nul: ' 
 const df = {}; D.forEach(d => { const L = M.lire(d.m), F = M.defense(L); [['R1', 1], ['R7', 0]].forEach(([p, i]) => { const e = F[p].etat; df[e] = df[e] || { sur: 0, encaisses: 0 }; df[e].sur++; df[e].encaisses += d.sc[i]; }); });
 const dfs = "DEFENSE_OBS = { 'percée': { sur: " + df['percée'].sur + ", encaisses: " + df['percée'].encaisses + " }, 'attaque bloquée': { sur: " + df['attaque bloquée'].sur + ", encaisses: " + df['attaque bloquée'].encaisses + " }, 'protégée': { sur: " + df['protégée'].sur + ", encaisses: " + df['protégée'].encaisses + " }, calme: { sur: " + df.calme.sur + ", encaisses: " + df.calme.encaisses + " } }";
 if (!src.includes(dfs)) err('défense : ' + dfs);
-const nm9 = [0, 0]; D.forEach(d => { const V = M.verdict(M.lire(d.m)); if (!/H-NUL-M3-M9/.test(V.raison)) return; nm9[1]++; if (d.sc[0] === d.sc[1]) nm9[0]++; });
+const nm9 = [0, 0]; D.forEach(d => { if (!M.nulM3M9(M.lire(d.m)).actif) return; nm9[1]++; if (d.sc[0] === d.sc[1]) nm9[0]++; });
 if (!src.includes('NUL_M3M9_OBS = { nuls: ' + nm9[0] + ', sur: ' + nm9[1] + ' }')) err('nul M3–M9 : ' + nm9);
-const mo = [0, 0]; D.forEach(d => { const V = M.verdict(M.lire(d.m)); if (!/H-MOULIN-SANS-NUL/.test(V.raison)) return; mo[1]++; if (d.sc[0] === d.sc[1]) mo[0]++; });
+const mo = [0, 0]; D.forEach(d => { if (!M.moulin(M.lire(d.m)).actif) return; mo[1]++; if (d.sc[0] === d.sc[1]) mo[0]++; });
 if (!src.includes('MOULIN_OBS = { nuls: ' + mo[0] + ', sur: ' + mo[1] + ' }')) err('moulin : ' + mo);
+const np = { d: [0, 0], e: [0, 0] }; D.forEach(d => { const o = M.nulParite(M.lire(d.m)).egaux ? np.e : np.d; o[1]++; if (d.sc[0] === d.sc[1]) o[0]++; });
+if (!src.includes('NUL_PARITE_OBS = { differents: { nuls: ' + np.d[0] + ', sur: ' + np.d[1] + ' }, egaux: { nuls: ' + np.e[0] + ', sur: ' + np.e[1] + ' } }')) err('nul parité : ' + JSON.stringify(np));
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);

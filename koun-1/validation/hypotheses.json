@@ -2504,7 +2504,8 @@
       "statut": "règle du propriétaire, intégrée au verdict le 2026-11-22 ; en observation",
       "regle": "la figure du déséquilibre du thème est la somme des deux pôles R1+R7 ; quand elle est Rubeus, l'équilibre est trop faible et le nul quasi impossible",
       "observe_avant": "6 matchs du corpus avec R1+R7 = Rubeus : 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1). Au taux général de nuls (14 sur 78, 18 %), 0 sur 6 arrive par hasard environ 3 fois sur 10",
-      "seuils": "retrait après 15 essais indépendants au taux de nul général ; confirmée si le nul reste rare sur 15 essais"
+      "seuils": "retrait après 15 essais indépendants au taux de nul général ; confirmée si le nul reste rare sur 15 essais",
+      "retiree_du_verdict": "2026-11-22 : retirée du verdict à la demande du propriétaire, remplacée par la seule règle H-NUL-PARITE-M5M6 (Feu de M9 et Eau de M11) pour éviter la confusion ; reste une piste enregistrée"
     },
     {
       "id": "H-TEMOINS-JUGE",
@@ -2513,7 +2514,8 @@
       "observe": "M15 antagoniste de S13 (le juge attaque la somme) : 8 matchs, 0 nul (R1 4, R7 4). S14 dans le même front que M15 : 13 matchs, 0 nul (R1 9, R7 4). Les deux réunies : 26 matchs, 1 nul (attendu au hasard environ 5). Sens inverse, S13 antagoniste de M15 (la somme attaque le juge) : 6 matchs, 3 nuls",
       "reserves": "environ 25 relations comparées sur 78 matchs ; une lecture choisie après coup",
       "a_venir": "Kilmarnock–Aberdeen, Liverpool–Manchester United, Racing–Real Sociedad, Osasuna–Málaga, Augsburg–Mainz, Brentford–Everton (aussi candidat nul H-NUL-FIGURES : les deux pistes s'opposent), Feyenoord–Porto : pas de nul attendu",
-      "correction_2026-11-22": "compte refait sans exclusion : S14 dans le même front que M15 = 19 matchs, 1 nul (le 0 sur 13 excluait les cas déjà classés égal, protecteur ou antagoniste). Union inchangée : 26 matchs, 1 nul. Intégrée au verdict le 2026-11-22 comme « nul peu probable » (et « nul fréquent » quand M13+M5 attaque le juge)"
+      "correction_2026-11-22": "compte refait sans exclusion : S14 dans le même front que M15 = 19 matchs, 1 nul (le 0 sur 13 excluait les cas déjà classés égal, protecteur ou antagoniste). Union inchangée : 26 matchs, 1 nul. Intégrée au verdict le 2026-11-22 comme « nul peu probable » (et « nul fréquent » quand M13+M5 attaque le juge)",
+      "retiree_du_verdict": "2026-11-22 : retirée du verdict à la demande du propriétaire, remplacée par la seule règle H-NUL-PARITE-M5M6 (Feu de M9 et Eau de M11) pour éviter la confusion ; reste une piste enregistrée"
     },
     {
       "id": "H-PARITE-EB",
@@ -2546,7 +2548,8 @@
       "regle": "R1 en M2 : nul fréquent et R7 ne gagne pas (double chance 1X). Rubeus (H-DESEQ-RUBEUS) garde la priorité",
       "observe": "7 matchs : 5 nuls (3-3, 1-1, 1-1, 1-1, 0-0), 2 victoires larges de R1 (5-0 avec Rubeus, 5-1). Maison de R1 criblée sur les 16 : la meilleure pour le nul n'est atteinte par hasard que dans 0,5 % des mélanges. À l'opposé, R1 en M1 : 0 nul sur 10, R1 gagne 7 fois (non intégré)",
       "autres_pistes_vues": "relecture de tout le thème dans l'ordre à partir de R1 (positions 1 à 16) : 1242 caractéristiques, le seul lien fort est celui-ci (positions 1+8 = Laetitia, qui revient à R1 en M2)",
-      "appels": "nul ou victoire de R1 (pas de victoire de R7) : Zulte Waregem–Antwerp, Getafe–Atlético, AC Milan–Frosinone, Augsburg–Mainz, Bodø/Glimt–LASK ; Marseille–Le Mans porte aussi Rubeus : pas de nul attendu"
+      "appels": "nul ou victoire de R1 (pas de victoire de R7) : Zulte Waregem–Antwerp, Getafe–Atlético, AC Milan–Frosinone, Augsburg–Mainz, Bodø/Glimt–LASK ; Marseille–Le Mans porte aussi Rubeus : pas de nul attendu",
+      "retiree_du_verdict": "2026-11-22 : retirée du verdict à la demande du propriétaire, remplacée par la seule règle H-NUL-PARITE-M5M6 (Feu de M9 et Eau de M11) pour éviter la confusion ; reste une piste enregistrée"
     },
     {
       "id": "H-AXE-MIROIR",
@@ -2629,18 +2632,20 @@
       "regle": "Eau de M3 saturée et Terre de M9 saturée : le nul devient fréquent ; sinon il est rare",
       "observe": "80 matchs : les deux saturées, 10 nuls sur 26 (38 %) ; sinon 5 sur 54 (9 %). Croisé avec le verdict : les deux saturées et « nul fréquent » 4 nuls sur 4 ; les deux saturées et « nul possible » 5 sur 15 ; sinon et « nul possible » 3 sur 26 ; sinon et « nul peu probable » 0 sur 17. Choisie parmi 95 cases (meilleure case seule atteinte par hasard dans 12 % des mélanges)",
       "appels": "nul à surveiller : Lens–Toulouse, Monaco–Auxerre, Zulte Waregem–Antwerp, Hull City–Brighton, Osasuna–Málaga, Paris FC–Angers, Lorient–Rennes, Sassuolo–Genoa, Juventus–Venezia, Arsenal–Dortmund, Real Madrid–PSV",
-      "apres_moulin": "2026-11-22 : la poche du moulin passe avant elle ; sur les matchs où M3–M9 trie seule le nul : 5 nuls sur 12"
+      "apres_moulin": "2026-11-22 : la poche du moulin passe avant elle ; sur les matchs où M3–M9 trie seule le nul : 5 nuls sur 12",
+      "retiree_du_verdict": "2026-11-22 : retirée du verdict à la demande du propriétaire, remplacée par la seule règle H-NUL-PARITE-M5M6 (Feu de M9 et Eau de M11) pour éviter la confusion ; reste une piste enregistrée"
     },
     {
       "id": "H-MOULIN-SANS-NUL",
       "statut": "intégrée au verdict le 2026-11-22 à la demande du propriétaire, en observation",
       "structure": "somme des bases 3-5-14-12 = M3 + M6 (exact, 65 536 thèmes)",
       "regle": "la figure 3-5-14-12 posée en base dans le front d'un seul des deux pôles : nul peu probable ; ne joue que si aucune autre règle n'a trié le nul (Rubeus, R1 en M2, témoins face au juge), avant la règle M3–M9",
-      "observe": "80 matchs : 21 cas, aucun nul (R1 14, R7 7) ; dans le verdict, 10 cas où elle trie seule le nul, aucun nul. Repérée parmi 38 lectures des moulins des bords"
+      "observe": "80 matchs : 21 cas, aucun nul (R1 14, R7 7) ; dans le verdict, 10 cas où elle trie seule le nul, aucun nul. Repérée parmi 38 lectures des moulins des bords",
+      "retiree_du_verdict": "2026-11-22 : retirée du verdict à la demande du propriétaire, remplacée par la seule règle H-NUL-PARITE-M5M6 (Feu de M9 et Eau de M11) pour éviter la confusion ; reste une piste enregistrée"
     },
     {
       "id": "H-NUL-PARITE-M5M6",
-      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "statut": "intégrée au verdict le 2026-11-22 comme SEULE règle du nul (remplace Rubeus, R1 en M2, témoins face au juge, moulin, M3–M9), à la demande du propriétaire ; en observation : les 13 appels « nul exclu » posés avant les scores la jugeront",
       "origine": "recherche exhaustive des 65 535 parités des 16 points des mères (outils/nul_exhaustif.js)",
       "regle": "compter les niveaux impairs parmi Feu, Air et Eau de M5 et Eau de M6 (= Feu de M1, M2, M3 et Air de M3) : nombre pair → pas de nul ; nombre impair → nul possible",
       "observe": "80 matchs : les 15 nuls sont tous du côté impair (15 sur 38) ; côté pair, 0 nul sur 42. Réserve importante : avec 15 nuls et 16 points, une parité qui contient tous les nuls peut exister par hasard ; une aussi serrée (au plus 38 matchs) arrive pour 7 tirages au hasard sur 100. La meilleure parité est atteinte par hasard dans 28 % des mélanges",

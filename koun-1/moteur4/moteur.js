@@ -377,14 +377,14 @@
   // MOULIN 3-5-14-12 (2026-11-22, H-MOULIN-SANS-NUL, intégré à la demande du propriétaire, en observation) : la somme des bases de M3, M5, M14, M12 (= M3 + M6, exact)
   // posée en base dans le front d'un seul des deux pôles : sur 80 matchs, 21 cas, aucun nul. Dans le verdict, il ne joue que quand aucune autre règle n'a trié le nul
   // (ni Rubeus, ni R1 en M2, ni témoins face au juge) ; il passe avant la règle M3–M9.
-  var MOULIN_OBS = { nuls: 0, sur: 10 };
+  var MOULIN_OBS = { nuls: 0, sur: 21 };
   function moulin(L) { var b = L.theme.bases, f = [3, 5, 14, 12].map(function (h) { return b[h]; }).reduce(K.additionner),
       dans = function (c) { var z = (c.figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { return b[z + 1 + 4 * i] === f; }); }, a = dans(L.R1), e = dans(L.R7);
     return { figure: f, dansR1: a, dansR7: e, actif: a !== e, pole: a !== e ? (a ? 'R1' : 'R7') : null, obs: MOULIN_OBS }; }
   // NUL M3–M9 (2026-11-22, H-NUL-M3-M9, intégré à la demande du propriétaire, en observation) : Eau de M3 (toujours égale à l'Eau de M7, point de la diagonale des
   // mères) et Terre de M9 (saturée ⇔ M1 et M2 ont la même Terre) toutes deux saturées. Sur 80 matchs : 10 nuls sur 26 contre 5 sur 54. Dans le verdict, il ne joue que
   // quand aucune autre règle ne trie le nul (ni Rubeus, ni R1 en M2, ni témoins face au juge) : il fait alors passer « nul possible » à « nul fréquent ».
-  var NUL_M3M9_OBS = { nuls: 5, sur: 12 };
+  var NUL_M3M9_OBS = { nuls: 10, sur: 26 };
   function nulM3M9(L) { var b = L.theme.bases, e3 = K.niveaux(b[3])[2] === 2, t9 = K.niveaux(b[9])[3] === 2; return { eauM3: e3, terreM9: t9, actif: e3 && t9, obs: NUL_M3M9_OBS }; }
   // RELAIS M1–M10 (2026-11-22, H-M1-M10, intégré à la demande du propriétaire, en observation) : M1 (Puer) et M10 (Carcer) sont les seuls nœuds diagonaux
   // dont la maison inverse la Terre ; la résultante de M1 + Puer donne la maison de R1 (exact). Quand le verdict n'a pas d'appel et que les deux liaisons Terre
@@ -392,18 +392,20 @@
   var M1M10_STATS = { ok: 5, ko: 1, nul: 2, n: 8 };
   function m1m10(L) { var T = L.theme, lien = function (x, y) { return K.niveaux(K.additionner(T.resultantes[x], T.resultantes[y]))[3] === 2; }, a = lien(1, 5), b = lien(10, 14);
     return { m1m5: a, m10m14: b, deuxArrets: !a && !b, stats: M1M10_STATS }; }
-  function verdict(L) { var V = verdictBrut(L), D = desequilibre(L), J = temoinsJuge(L), O = ordre(L), Z = m1m10(L);
-    V.m1m10 = Z;
+  // NUL (2026-11-22, H-NUL-PARITE-M5M6, seule règle du nul dans le verdict, à la demande du propriétaire ; remplace Rubeus, R1 en M2, témoins face au juge,
+  // moulin 3-5-14-12 et M3–M9, qui restent des pistes enregistrées). Le nul n'est possible que si le Feu de M9 (M1 + M2) et l'Eau de M11 (nœud Eau × Eau) diffèrent.
+  // Exact : c'est la parité de Feu M1 + Feu M2 + Feu M3 + Air M3 (= Feu, Air, Eau de M5 et Eau de M6). Sur 80 matchs : différents, 15 nuls sur 38 ; égaux, 0 nul sur 42.
+  // Seule parité, sur les 65 535 possibles, qui enferme les 15 nuls dans au plus 45 matchs ; une aussi serrée sort par hasard environ 7 fois sur 100 : en observation.
+  var NUL_PARITE_OBS = { differents: { nuls: 15, sur: 38 }, egaux: { nuls: 0, sur: 42 } };
+  function nulParite(L) { var b = L.theme.bases, f9 = K.niveaux(b[9])[0], e11 = K.niveaux(b[11])[2];
+    return { feuM9: f9, eauM11: e11, egaux: f9 === e11, obs: NUL_PARITE_OBS }; }
+  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L);
+    V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
-    V.desequilibre = D; V.temoinsJuge = J; V.ordre = O;
-    if (!D.rubeus && O.nulFrequent) { if (V.v === '2') { V.v = null; V.force = null; } V.nulFrequent = true; V.nulPeuProbable = false; V.doubleChance = '1X'; V.raison += ' · ordre des maisons : R1 en M2, R7 en M8 (M1 = Laetitia, thème décalé d\'un pas) : nul fréquent, R7 n\'y gagne pas (' + ORDRE_OBS.m2.nuls + ' nuls sur ' + ORDRE_OBS.m2.sur + ', les autres sont des victoires de R1 ; H-ORDRE-R1M2)'; return V; }
-    if (!D.rubeus && J.nulPeuProbable) { V.nulPeuProbable = true; V.raison += ' · témoins et juge : ' + (J.attaque ? 'M15 (' + K.nom(J.juge) + ') attaque M13+M5 (' + K.nom(J.s13) + ')' : '') + (J.attaque && J.front ? ' et ' : '') + (J.front ? 'M14+M6 (' + K.nom(J.s14) + ') dans le front du juge M15' : '') + ' : nul peu probable (' + TJ_OBS.union.nuls + ' nul sur ' + TJ_OBS.union.sur + ' matchs, H-TEMOINS-JUGE)'; }
-    if (J.conteste && !D.rubeus && !J.nulPeuProbable) { V.nulFrequent = true; V.raison += ' · témoins et juge : M13+M5 (' + K.nom(J.s13) + ') attaque le juge M15 : jugement contesté, nul fréquent (' + TJ_OBS.conteste.nuls + ' nuls sur ' + TJ_OBS.conteste.sur + ', H-TEMOINS-JUGE)'; }
-    if (D.rubeus) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · figure du déséquilibre R1+R7 = Rubeus : équilibre trop faible, nul quasi impossible (' + DESEQ_OBS.nuls + ' nul sur ' + DESEQ_OBS.sur + ' matchs, H-DESEQ-RUBEUS)'; }
-    var Mo = moulin(L); V.moulin = Mo;
-    if (Mo.actif && !V.nulExclu && !V.nulFrequent && !V.nulPeuProbable) { V.nulPeuProbable = true; V.raison += ' · moulin 3-5-14-12 (' + K.nom(Mo.figure) + ') posé en base dans le front de ' + Mo.pole + ' seulement : nul peu probable (' + MOULIN_OBS.nuls + ' nul sur ' + MOULIN_OBS.sur + ', H-MOULIN-SANS-NUL)'; }
-    var Nm = nulM3M9(L); V.nulM3M9 = Nm;
-    if (Nm.actif && !V.nulExclu && !V.nulFrequent && !V.nulPeuProbable) { V.nulFrequent = true; V.raison += ' · Eau de M3 (= Eau de M7) et Terre de M9 saturées : nul fréquent (' + NUL_M3M9_OBS.nuls + ' nuls sur ' + NUL_M3M9_OBS.sur + ' quand rien d\'autre ne trie le nul, H-NUL-M3-M9)'; }
+    var etat = function (v) { return v === 2 ? 'saturé' : 'ouvert'; }, o = NUL_PARITE_OBS;
+    V.nulExclu = false; V.nulPeuProbable = false; V.nulFrequent = false;
+    if (P.egaux) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · nul : Feu de M9 et Eau de M11 tous deux ' + etat(P.feuM9) + 's : nul quasi impossible (' + o.egaux.nuls + ' nul sur ' + o.egaux.sur + ', H-NUL-PARITE-M5M6)'; }
+    else { V.nulPossible = true; V.raison += ' · nul : Feu de M9 ' + etat(P.feuM9) + ', Eau de M11 ' + etat(P.eauM11) + ' : nul possible (' + o.differents.nuls + ' nuls sur ' + o.differents.sur + ', H-NUL-PARITE-M5M6)'; }
     return V; }
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
@@ -503,7 +505,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
