@@ -118,3 +118,9 @@ Croisé (Terre des 2 nœuds diagonaux, écart principal × écart angulaire) : p
 Structure : la résultante d'une maison = base + figure de la maison. Sur les 8 nœuds diagonaux, seules M1 (Puer) et M10 (Carcer) ont une figure de maison à Terre impaire : ce sont les deux seuls nœuds où la maison inverse la Terre de la base ; ailleurs la Terre de la base passe telle quelle dans la résultante.
 
 Sur 79 matchs (front de chaque pôle, le plus fort gagne) : Terre des résultantes 31 justes / 7 faux ; Terre des bases 21 / 20 (rien) ; base ouverte rendue saturée par la maison 24 / 6 ; base saturée rendue ouverte 6 / 18 (c'est le pôle qui en a le moins qui gagne). Par nœud : base ouverte, résultante saturée : le pôle marque 36 fois sur 41, 2,29 buts pour, 1,17 contre ; base saturée, résultante ouverte : 21 sur 33, 1,24 pour, 2,55 contre. La figure posée (propre, alliée, ennemie, proie) ne départage rien (au mieux 15 / 14). Script : `outils/diagonales_dispositions.js`.
+
+### M1 et M10 (2026-11-22)
+
+M1 (nœud Feu × Feu, front A) et M10 (Air × Eau, front B) sont les seuls nœuds diagonaux où la maison inverse la Terre de la base (Puer et Carcer ont la Terre impaire). Exact : résultante de M1 + Puer = maison de R1 ; la résultante de M1 désigne la maison de R1 (Aquisitio ⇔ R1 en M2 : 5 nuls sur 7 ; Populus ⇔ R1 en M1 : 0 nul sur 10).
+
+Pôle du front A : M1 saturée, 19 victoires sur 25 (2,40 buts pour, 0,92 contre) ; ouverte, 2 sur 10 (1,70 pour, 3,30 contre). Pôle du front B : M10 saturée, 8 sur 16 ; ouverte, 6 sur 23 (1,04 pour, 2,22 contre). Liaisons Terre M1–M5 et M10–M14 (parité) : deux arrêts, R1 14, R7 3, 3 nuls ; deux liées, 6 nuls sur 18. Candidate H-M1-M10. Script : `outils/m1_m10.js`.
