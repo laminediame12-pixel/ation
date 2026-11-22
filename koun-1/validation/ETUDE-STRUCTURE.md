@@ -112,3 +112,9 @@ Seul, le thème angulaire ne désigne rien (meilleur test atteint par hasard dan
 24 lectures par thème (diagonale 1-6-11-16, 4-7-10-13 ou les deux ; Feu, Air, Eau, Terre ; résultante ou base) dans le front de chaque pôle. Principal : seule la Terre porte le signal (les deux diagonales : 31 justes, 7 faux ; atteinte par hasard dans 0,1 % des mélanges) ; Feu et Air ne disent rien. Angulaire : aucune lecture significative seule (meilleure : Feu de 1-6-11-16, 7 / 19 à l'inverse, atteinte par hasard dans 31 % des mélanges).
 
 Croisé (Terre des 2 nœuds diagonaux, écart principal × écart angulaire) : principal pour R1 et angulaire à égalité : R1 11, R7 1, 2 nuls ; principal à égalité et angulaire pour R1 : R1 9, R7 3, 1 nul ; principal pour R7 et angulaire à égalité : 6 nuls, R7 3, R1 0. Relais (principal, sinon angulaire) : 41 justes, 10 faux, 16 sans appel. Script : `outils/diagonales_angulaire.js`.
+
+### Nœuds diagonaux : base contre résultante, et disposition des figures (2026-11-22)
+
+Structure : la résultante d'une maison = base + figure de la maison. Sur les 8 nœuds diagonaux, seules M1 (Puer) et M10 (Carcer) ont une figure de maison à Terre impaire : ce sont les deux seuls nœuds où la maison inverse la Terre de la base ; ailleurs la Terre de la base passe telle quelle dans la résultante.
+
+Sur 79 matchs (front de chaque pôle, le plus fort gagne) : Terre des résultantes 31 justes / 7 faux ; Terre des bases 21 / 20 (rien) ; base ouverte rendue saturée par la maison 24 / 6 ; base saturée rendue ouverte 6 / 18 (c'est le pôle qui en a le moins qui gagne). Par nœud : base ouverte, résultante saturée : le pôle marque 36 fois sur 41, 2,29 buts pour, 1,17 contre ; base saturée, résultante ouverte : 21 sur 33, 1,24 pour, 2,55 contre. La figure posée (propre, alliée, ennemie, proie) ne départage rien (au mieux 15 / 14). Script : `outils/diagonales_dispositions.js`.
