@@ -148,3 +148,7 @@ Défense d'un pôle : son antagoniste (f−3) posé en base et son protecteur (f
 ### Intersection des deux diagonales : le carré central 6-7-10-11 (2026-11-22)
 
 Identité exacte : somme(1-6-11-16) + somme(4-7-10-13) = somme des 4 coins (1, 4, 13, 16), le centre 6-7-10-11, compté deux fois, s'annule (Populus). Donc les deux diagonales sont égales exactement quand la somme des 4 coins vaut Populus. Les égalités 1-6-11-16 = 4-7-10-13, = 6-7-10-11, ou centre = Populus arrivent chacune dans 4 096 thèmes sur 65 536 (1 sur 16) ; les trois égales dans 256 (1 sur 256), en base comme en résultante. Sur 80 matchs : diagonales égales 2 fois (5-0, 0-4) ; centre = Populus 9 fois en base (2 nuls), 6 fois en résultante (2 nuls) ; aucun signal pour le nul. Script : `outils/intersection_diagonales.js`.
+
+### Bords, centre et coins (2026-11-22)
+
+Grille 4 × 4 : bords (2, 3, 5, 8, 9, 12, 14, 15), centre (6, 7, 10, 11), coins (1, 4, 13, 16). Identités exactes (65 536 thèmes) : centre = M5+M7+M10 ; coins = M4+M14 (= M3+M9+M15 = M2+M3+M16 …) ; bords + centre + coins = M16 (somme de tout le thème), donc bords = M16 + centre + coins ; diagonales : 1-6-11-16 + 4-7-10-13 = coins. Chaque égalité entre deux groupes, ou avec Populus, arrive dans 1 thème sur 16 ; les trois égales dans 1 sur 256. Les sommes des résultantes ont le même front que celles des bases. Sur 80 matchs, 58 cases (niveaux impairs, Terre, front de chaque somme, zone des maisons des pôles) : nul, meilleure atteinte par hasard dans 98 % des mélanges ; vainqueur, 90 %. Rien. Script : `outils/bords_centre_coins.js`.
