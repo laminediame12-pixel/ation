@@ -2504,6 +2504,14 @@
       "regle": "la figure du déséquilibre du thème est la somme des deux pôles R1+R7 ; quand elle est Rubeus, l'équilibre est trop faible et le nul quasi impossible",
       "observe_avant": "6 matchs du corpus avec R1+R7 = Rubeus : 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1). Au taux général de nuls (14 sur 78, 18 %), 0 sur 6 arrive par hasard environ 3 fois sur 10",
       "seuils": "retrait après 15 essais indépendants au taux de nul général ; confirmée si le nul reste rare sur 15 essais"
+    },
+    {
+      "id": "H-TEMOINS-JUGE",
+      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "calcul": "chaque témoin plus sa maison opposée : S13 = M13+M5, S14 = M14+M6 ; comparées au juge M15. Structure exacte : S13+S14 = M15+M11, donc S13 = S14 seulement si M15 = M11",
+      "observe": "M15 antagoniste de S13 (le juge attaque la somme) : 8 matchs, 0 nul (R1 4, R7 4). S14 dans le même front que M15 : 13 matchs, 0 nul (R1 9, R7 4). Les deux réunies : 26 matchs, 1 nul (attendu au hasard environ 5). Sens inverse, S13 antagoniste de M15 (la somme attaque le juge) : 6 matchs, 3 nuls",
+      "reserves": "environ 25 relations comparées sur 78 matchs ; une lecture choisie après coup",
+      "a_venir": "Kilmarnock–Aberdeen, Liverpool–Manchester United, Racing–Real Sociedad, Osasuna–Málaga, Augsburg–Mainz, Brentford–Everton (aussi candidat nul H-NUL-FIGURES : les deux pistes s'opposent), Feyenoord–Porto : pas de nul attendu"
     }
   ],
   "lectures": [
