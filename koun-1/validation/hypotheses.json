@@ -2488,7 +2488,8 @@
       "regle": "le pôle dont le front direct a le plus de Terre saturée (n) que le front adverse gagne ; la Terre adverse ferme le marquage",
       "resultat": "79 matchs : 30 justes sur 42 appels (« toujours R1 » 22) ; sur les 21 matchs ajoutés après le choix de n : 14 justes (« toujours R1 » 8) ; corrélation n propre − n adverse / buts 0,34 ; buts de R1 selon n de R7 : 2,80 · 2,79 · 1,90 · 1,60 · 1,00",
       "structure": "voir validation/ETUDE-STRUCTURE.md : grille 4 × 4 (front × rang), transposition mères ↔ filles",
-      "integration": "ordre : Terre et coordonnées d'accord → victoire (19 justes, 2 faux, 4 nuls sur 25) ; sinon H-REPOS (6, 3, 3 sur 12) ; sinon Terre seule → avantage, nul possible (6, 5, 2 sur 13) ; sinon coordonnées seules → avantage (3, 3, 2 sur 8) ; Terre et coordonnées opposées → pas d'appel (6 matchs) ; rien → pas d'appel, nul possible (15 matchs)"
+      "integration": "ordre : Terre et coordonnées d'accord → victoire (19 justes, 2 faux, 4 nuls sur 25) ; sinon H-REPOS (6, 3, 3 sur 12) ; sinon Terre seule → avantage, nul possible (6, 5, 2 sur 13) ; sinon coordonnées seules → avantage (3, 3, 2 sur 8) ; Terre et coordonnées opposées → pas d'appel (6 matchs) ; rien → pas d'appel, nul possible (15 matchs)",
+      "remplacee": "2026-11-22 : remplacée dans le verdict par H-DIAGONALES-TERRE (les nœuds diagonaux du front portent le signal ; les deux autres maisons n'apportaient que du bruit). La lecture sur 4 maisons reste utilisée par le marquage"
     },
     {
       "id": "H-NUL-FIGURES",
@@ -2557,12 +2558,13 @@
     },
     {
       "id": "H-DIAGONALES-TERRE",
-      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée (remplacerait la balance de la Terre, sans s'y ajouter)",
+      "statut": "intégrée au verdict le 2026-11-22 à la place de la balance de la Terre (sur demande du propriétaire), en observation ; appels posés avant les matchs à venir",
       "origine": "demande du propriétaire : vérifier la diagonale des nœuds 4-7-10-13",
       "structure": "nœuds : M4 = Terre × Feu, M7 = Eau × Air, M10 = Air × Eau, M13 = Feu × Terre ; un nœud par front (M13 en A, M10 en B, M7 en C, M4 en D) ; l'autre diagonale 1-6-11-16 en a aussi un par front (M1, M6, M11, M16). Somme des bases 4+7+10+13 = M4+M7+M9 = M3+M7+M13 sur les 65 536 thèmes",
       "regle": "dans le front du pôle, compter les 2 nœuds diagonaux (un de chaque diagonale) dont la résultante a la Terre saturée ; le pôle qui en a le plus gagne",
       "observe": "79 matchs : 31 justes, 7 faux, 31 égalités dont 4 nuls (la balance de la Terre sur les 4 maisons : 30 justes, 13 faux). Nœud 4-7-10-13 seul : 19 / 6 ; nœud 1-6-11-16 seul : 22 / 5 ; maisons de rang 2 (filles) seules : 14 / 14. Quand la balance désigne un pôle et que les diagonales sont à égalité : 6 justes, 7 faux ; les deux autres maisons du front n'apportent que du bruit. Choisie après avoir comparé environ 8 lectures",
-      "appels": "Monaco–Auxerre R1 ; Zulte Waregem–Antwerp R7 ; Charleroi–Sint-Truiden R7 ; Burnley–Blackburn R7 ; Barcelona–Villarreal R7 ; Racing–Real Sociedad R7 ; Getafe–Atlético R7 ; Paris FC–Angers R7 ; Lorient–Rennes R1 ; Marseille–Le Mans R7 ; Sassuolo–Genoa R7 ; AC Milan–Frosinone R1 ; Werder–Hambourg R1 ; Bodø/Glimt–LASK R1 ; Manchester City–Napoli R7 ; Leipzig–Lens R7 ; Real Madrid–PSV R7 ; Slovan Bratislava–Betis R1 ; Inter Miami–Columbus R1 ; San Jose–Houston R7"
+      "appels": "Monaco–Auxerre R1 ; Zulte Waregem–Antwerp R7 ; Charleroi–Sint-Truiden R7 ; Burnley–Blackburn R7 ; Barcelona–Villarreal R7 ; Racing–Real Sociedad R7 ; Getafe–Atlético R7 ; Paris FC–Angers R7 ; Lorient–Rennes R1 ; Marseille–Le Mans R7 ; Sassuolo–Genoa R7 ; AC Milan–Frosinone R1 ; Werder–Hambourg R1 ; Bodø/Glimt–LASK R1 ; Manchester City–Napoli R7 ; Leipzig–Lens R7 ; Real Madrid–PSV R7 ; Slovan Bratislava–Betis R1 ; Inter Miami–Columbus R1 ; San Jose–Houston R7",
+      "verdict_apres_integration": "79 matchs : 51 appels, 35 justes, 9 faux, 7 nuls (avant, balance sur 4 maisons : 58 appels, 34 justes, 13 faux, 11 nuls). Terre et coordonnées d'accord : 15 justes, 1 faux, 3 nuls"
     }
   ],
   "lectures": [

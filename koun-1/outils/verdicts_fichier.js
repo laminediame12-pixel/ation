@@ -15,7 +15,7 @@ D.forEach(d => {
   if (d.r1 !== L.R1.maison || d.r7 !== L.R7.maison) ecarts.push(d.i + ' pôles');
   const V = M.verdict(L), Q = M.marquage(L), I = M.incident(L), Y = M.rythme(L);
   const eq = V.v === '1' ? d.e1 : V.v === '2' ? d.e2 : null, nulTxt = V.nulExclu ? 'nul quasi impossible' : V.nulPeuProbable ? 'nul peu probable' : V.nulFrequent ? 'nul fréquent' + (V.doubleChance ? ' (' + V.doubleChance + ')' : '') : null, vic = !eq ? (nulTxt ? 'Pas d’appel · ' + nulTxt : V.nulPossible === false ? 'Pas d’appel · forces opposées' : 'Pas d’appel · nul possible') : V.force === 'avantage' ? 'Avantage ' + eq + ' · ' + (nulTxt || 'nul possible') : 'Victoire ' + eq + (nulTxt ? ' · ' + nulTxt : '');
-  const vs = V.v ? (V.force === 'confirmee' ? 'Terre et coordonnées d’accord' : V.regle === 'H-REPOS' ? 'H-REPOS, règle du propriétaire' : V.regle === 'H-BALANCE-TERRE' ? 'Terre seule' : 'coordonnées seules') : V.raison.split(' (')[0];
+  const vs = V.v ? (V.force === 'confirmee' ? 'nœuds diagonaux et coordonnées d’accord' : V.regle === 'H-REPOS' ? 'H-REPOS, règle du propriétaire' : V.regle === 'H-DIAGONALES-TERRE' ? 'nœuds diagonaux seuls' : 'coordonnées seules') : V.raison.split(' (')[0];
   const inc = I.niveau === 'probable' ? 'Probable' : I.niveau === 'possible' ? 'Possible' : 'Pas d’indice';
   const rouge = I.rouge.probable ? ' · rouge probable' + (I.rouge.cote ? ' côté ' + (I.rouge.cote === 'R1' ? d.e1 : d.e2) : '') : '';
   const dm = Q.temoin.deuxMarquent ? 'Oui' : Q.temoin.obsPas.oui === 0 ? 'Non (binôme)' : pct(Q.temoin.obsPas.oui / Q.temoin.obsPas.sur);

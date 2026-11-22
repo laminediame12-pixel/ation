@@ -340,17 +340,24 @@
     // axe M2+M8 ajouté le 2026-11-21 (criblage des six axes opposés : M1+M7 et M2+M8 sont les seuls à départager mieux que « toujours R1 »)
     var a1 = etat(L.R1.front, c1), b1 = etat(L.R7.front, c1), a2 = etat(L.R1.front, c2), b2 = etat(L.R7.front, c2), a3 = etat(L.R1.front, c3), b3 = etat(L.R7.front, c3), s = Math.sign(a1 - b1) + Math.sign(a2 - b2) + Math.sign(a3 - b3);
     return { coordination: c1, residuM9: c2, axe28: c3, R1: { m1m7: a1, m9: a2, m2m8: a3 }, R7: { m1m7: b1, m9: b2, m2m8: b3 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
-  // VERDICT DE VICTOIRE (2026-11-22) : balance de la Terre (n du front direct de chaque pôle) lue avec les nœuds de coordination, puis H-REPOS.
+  // NŒUDS DIAGONAUX (2026-11-22, H-DIAGONALES-TERRE) : dans le front de la figure du pôle, ses deux nœuds diagonaux, un sur 4-7-10-13 et un sur 1-6-11-16
+  // (A : M13 et M1, B : M10 et M6, C : M7 et M11, D : M4 et M16). On compte ceux dont la résultante a la Terre saturée (0 à 2). Ils remplacent dans le verdict
+  // la balance de la Terre sur les 4 maisons du front : les deux autres maisons n'apportaient que du bruit (79 matchs : 31 justes, 7 faux contre 30, 13).
+  function diagonales(L) { var T = L.theme, rz = function (h) { return h < 16 ? T.resultantes[h] : T.bases[16]; };
+    function un(c) { var z = (c.figure - 1) % 4, hs = [[4, 7, 10, 13], [1, 6, 11, 16]].map(function (d) { return d.filter(function (h) { return (h - 1) % 4 === z; })[0]; });
+      return { maisons: hs, saturees: hs.filter(function (h) { return K.niveaux(rz(h))[3] === 2; }) }; }
+    var a = un(L.R1), b = un(L.R7); return { R1: a, R7: b, ecart: a.saturees.length - b.saturees.length }; }
+  // VERDICT DE VICTOIRE (2026-11-22) : Terre des nœuds diagonaux du front de chaque pôle, lue avec les nœuds de coordination, puis H-REPOS.
   // Ordre : 1) Terre et coordonnées désignent le même pôle : victoire ; 2) H-REPOS ; 3) Terre seule : avantage, nul possible ; 4) coordonnées seules : avantage, nul possible ;
   // 5) Terre et coordonnées opposées : pas d'appel ; 6) rien : pas d'appel, nul possible. Résultats observés dans VERDICT_STATS (justes, faux, nuls, appels).
-  var VERDICT_STATS = { accord: { ok: 19, ko: 2, nul: 4, n: 25 }, repos: { ok: 6, ko: 3, nul: 3, n: 12 }, terre: { ok: 6, ko: 5, nul: 2, n: 13 }, coord: { ok: 3, ko: 3, nul: 2, n: 8 }, oppose: { n: 6 }, rien: { n: 15 } };
-  function categorieVerdict(L) { var Q = marquage(L), C = coordonnees(L), R = repos(L), t = Math.sign(Q.R1.n - Q.R7.n), c = Math.sign(C.ecart), rp = R.gagnant === 'R1' ? 1 : R.gagnant === 'R7' ? -1 : 0;
-    if (t && t === c) return { cat: 'accord', v: t, Q: Q, C: C };
-    if (rp) return { cat: 'repos', v: rp, Q: Q, C: C };
-    if (t && !c) return { cat: 'terre', v: t, Q: Q, C: C };
-    if (c && !t) return { cat: 'coord', v: c, Q: Q, C: C };
-    if (t && c) return { cat: 'oppose', v: 0, Q: Q, C: C };
-    return { cat: 'rien', v: 0, Q: Q, C: C }; }
+  var VERDICT_STATS = { accord: { ok: 15, ko: 1, nul: 3, n: 19 }, repos: { ok: 7, ko: 3, nul: 3, n: 13 }, terre: { ok: 7, ko: 3, nul: 1, n: 11 }, coord: { ok: 6, ko: 2, nul: 0, n: 8 }, oppose: { n: 11 }, rien: { n: 17 } };
+  function categorieVerdict(L) { var Q = marquage(L), C = coordonnees(L), R = repos(L), G = diagonales(L), t = Math.sign(G.ecart), c = Math.sign(C.ecart), rp = R.gagnant === 'R1' ? 1 : R.gagnant === 'R7' ? -1 : 0;
+    if (t && t === c) return { cat: 'accord', v: t, Q: Q, C: C, G: G };
+    if (rp) return { cat: 'repos', v: rp, Q: Q, C: C, G: G };
+    if (t && !c) return { cat: 'terre', v: t, Q: Q, C: C, G: G };
+    if (c && !t) return { cat: 'coord', v: c, Q: Q, C: C, G: G };
+    if (t && c) return { cat: 'oppose', v: 0, Q: Q, C: C, G: G };
+    return { cat: 'rien', v: 0, Q: Q, C: C, G: G }; }
   // FIGURE DU DÉSÉQUILIBRE (règle du propriétaire, 2026-11-22) : la somme des deux pôles R1+R7 (lien). Rubeus = équilibre trop faible, nul quasi impossible.
   // Observé avant intégration : 6 matchs avec Rubeus, 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1) ; au taux général de nuls (18 %), 0 sur 6 arrive par hasard 3 fois sur 10. En observation (H-DESEQ-RUBEUS).
   var DESEQ_OBS = { nuls: 0, sur: 6 };
@@ -377,13 +384,13 @@
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
       st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux, ' + S.nul + ' nuls sur ' + S.n + ' appels' : '',
-      terre = 'Terre du front : R1 ' + Q.R1.n + '/4, R7 ' + Q.R7.n + '/4', noeuds = 'nœuds de coordination : écart ' + C.ecart;
-    if (K0.cat === 'accord') return { v: v, force: 'confirmee', regle: 'H-BALANCE-TERRE et H-COORD-VICTOIRE', statut: st, raison: cote + ' : sa Terre et ses nœuds de coordination l\'emportent (' + terre + ' ; ' + noeuds + ')' };
+      G = K0.G, terre = 'Terre des nœuds diagonaux : R1 ' + G.R1.saturees.length + '/2 (M' + G.R1.maisons.join(', M') + '), R7 ' + G.R7.saturees.length + '/2 (M' + G.R7.maisons.join(', M') + ')', noeuds = 'nœuds de coordination : écart ' + C.ecart;
+    if (K0.cat === 'accord') return { v: v, force: 'confirmee', regle: 'H-DIAGONALES-TERRE et H-COORD-VICTOIRE', statut: st, raison: cote + ' : sa Terre et ses nœuds de coordination l\'emportent (' + terre + ' ; ' + noeuds + ')' };
     if (K0.cat === 'repos') return { v: v, force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire : ' + st, raison: cote + ' possède ses deux fronts au repos, sans que leur antagoniste y soit (' + terre + ')' };
-    if (K0.cat === 'terre') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-BALANCE-TERRE', statut: st, raison: cote + ' a plus de Terre saturée dans son front (' + terre + ') ; les nœuds de coordination sont à égalité' };
-    if (K0.cat === 'coord') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: st, raison: cote + ' a les nœuds de coordination les plus pleins (' + noeuds + ') ; Terre à égalité' };
-    if (K0.cat === 'oppose') return { v: null, force: null, nulPossible: false, regle: null, statut: null, raison: 'forces opposées : la Terre et les nœuds de coordination désignent des pôles différents (' + terre + ' ; ' + noeuds + ')' };
-    return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune force ne se dégage : Terre et nœuds de coordination à égalité, H-REPOS muet (' + terre + ')' };
+    if (K0.cat === 'terre') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-DIAGONALES-TERRE', statut: st, raison: cote + ' a plus de Terre saturée sur ses nœuds diagonaux (' + terre + ') ; les nœuds de coordination sont à égalité' };
+    if (K0.cat === 'coord') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: st, raison: cote + ' a les nœuds de coordination les plus pleins (' + noeuds + ') ; Terre des nœuds diagonaux à égalité' };
+    if (K0.cat === 'oppose') return { v: null, force: null, nulPossible: false, regle: null, statut: null, raison: 'forces opposées : la Terre des nœuds diagonaux et les nœuds de coordination désignent des pôles différents (' + terre + ' ; ' + noeuds + ')' };
+    return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune force ne se dégage : Terre des nœuds diagonaux et nœuds de coordination à égalité, H-REPOS muet (' + terre + ')' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
@@ -464,7 +471,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 9, sur: 13 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
