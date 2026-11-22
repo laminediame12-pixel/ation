@@ -488,7 +488,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   // cette figure ou son protecteur (f−6) est désignée pour marquer en deuxième mi-temps : 14 équipes désignées sur 19 l'ont fait, contre 12 sur 39 non désignées.
   function secondeMiTemps(L) { var T = L.theme, f = [4, 5, 13, 15].map(function (h) { return T.bases[h]; }).reduce(K.additionner), pro = mod(f - 6),
       marqueurs = ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || T.bases[h] === pro; }); });
-    return { figure: f, protecteur: pro, marqueurs: marqueurs, obs: { designees: { oui: 14, sur: 19 }, autres: { oui: 12, sur: 39 } } }; }
+    return { figure: f, protecteur: pro, marqueurs: marqueurs, obs: { designees: { oui: 14, sur: 19 }, autres: { oui: 14, sur: 41 } } }; }
   // COMBINAISONS DE MAISONS (exact) : la somme des bases d'un ensemble de maisons est une fonction linéaire (XOR) des 16 bits du thème. Les 16 maisons n'ont que 8 maisons
   // indépendantes (M1 à M8) : il n'existe que 256 fonctions de somme distinctes (255 non nulles), chacune égale à une somme de maisons parmi M1..M8. equivalences(maisons) donne
   // la forme sur M1..M8, la plus courte écriture et le nombre de combinaisons qui lui sont équivalentes (256).
@@ -521,7 +521,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   // VERDICT DE VICTOIRE (2026-11-22) : Terre des nœuds diagonaux du front de chaque pôle, lue avec les nœuds de coordination, puis H-REPOS.
   // Ordre : 1) Terre et coordonnées désignent le même pôle : victoire ; 2) H-REPOS ; 3) Terre seule : avantage, nul possible ; 4) coordonnées seules : avantage, nul possible ;
   // 5) Terre et coordonnées opposées : pas d'appel ; 6) rien : pas d'appel, nul possible. Résultats observés dans VERDICT_STATS (justes, faux, nuls, appels).
-  var VERDICT_STATS = { accord: { ok: 15, ko: 1, nul: 3, n: 19 }, repos: { ok: 7, ko: 3, nul: 3, n: 13 }, terre: { ok: 7, ko: 3, nul: 1, n: 11 }, coord: { ok: 6, ko: 2, nul: 0, n: 8 }, oppose: { n: 11 }, rien: { n: 17 } };
+  var VERDICT_STATS = { accord: { ok: 15, ko: 1, nul: 4, n: 20 }, repos: { ok: 7, ko: 3, nul: 3, n: 13 }, terre: { ok: 7, ko: 3, nul: 1, n: 11 }, coord: { ok: 6, ko: 2, nul: 0, n: 8 }, oppose: { n: 11 }, rien: { n: 17 } };
   function categorieVerdict(L) { var Q = marquage(L), C = coordonnees(L), R = repos(L), G = diagonales(L), t = Math.sign(G.ecart), c = Math.sign(C.ecart), rp = R.gagnant === 'R1' ? 1 : R.gagnant === 'R7' ? -1 : 0;
     if (t && t === c) return { cat: 'accord', v: t, Q: Q, C: C, G: G };
     if (rp) return { cat: 'repos', v: rp, Q: Q, C: C, G: G };
@@ -589,8 +589,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
         protecteurEstSomme: s1 === p }; }
     return { R1: un(L.R1), R7: un(L.R7) }; }
   // MARQUAGE (signal découvert le 2026-11-20, à confirmer sur des matchs futurs ; ce n'est PAS une règle de verdict). Le front direct d'un pôle (les 4 maisons f, f+4, f+8, f+12) marque
-  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 158 pôles-matchs :
-  var NIVEAUX_MARQUAGE = { fort: { sur: 75, un: 60, deux: 40, moy: 2.15 }, 'freiné': { sur: 42, un: 30, deux: 17, moy: 1.64 }, faible: { sur: 23, un: 20, deux: 7, moy: 1.52 }, 'bloqué': { sur: 18, un: 13, deux: 4, moy: 1.06 } };
+  // par le niveau Terre : on compte, sur ces 4 maisons, celles dont la résultante (maison 16 : la base) a la Terre saturée. n va de 0 à 4. Observé sur 160 pôles-matchs :
+  var NIVEAUX_MARQUAGE = { fort: { sur: 76, un: 61, deux: 41, moy: 2.14 }, 'freiné': { sur: 43, un: 31, deux: 18, moy: 1.65 }, faible: { sur: 23, un: 20, deux: 7, moy: 1.52 }, 'bloqué': { sur: 18, un: 13, deux: 4, moy: 1.06 } };
   function marquage(L) { var T = L.theme;
     function un(c) { var z = (c.figure - 1) % 4, hs = [0, 1, 2, 3].map(function (i) { return z + 4 * i + 1; }), n = 0;
       hs.forEach(function (h) { var r = h < 16 ? T.resultantes[h] : T.bases[16]; if (K.niveaux(r)[3] === 2) n++; });
@@ -600,14 +600,14 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       return { front: K.front(z + 1), maisons: hs, n: n, canauxTerre: ct, marqueSur: ct === 2 }; }
     var a = un(L.R1), b = un(L.R7), RP = repos(L);
     // NIVEAU DE MARQUAGE d'une équipe (2026-11-21) : la Terre de son front direct (n) et son blocage (figures au repos sans antagoniste dans ses deux fronts, H-REPOS) lus ensemble.
-    // Fréquences observées (158 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).
+    // Fréquences observées (160 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).
     [[a, 'R1'], [b, 'R7']].forEach(function (x) { var q = x[0], r = RP[x[1]].total, k = q.n >= 2 ? (r ? 'fort' : 'freiné') : (r ? 'faible' : 'bloqué'), o = NIVEAUX_MARQUAGE[k];
       q.repos = r; q.niveau = k; q.p2n = o.deux / o.sur; q.p1n = o.un / o.sur; q.moyN = o.moy; q.obsN = o.sur; });
     // PARITÉ (paradigme du propriétaire, 2026-11-22, H-PARITE-EB, en observation) : on lit les points impairs (1) et pairs (2), somme = 1+2=1, 1+1=2, 2+2=2.
     // La figure f du pôle, posée dans sa maison, expulse son énergie dans les 15 autres nœuds : E = M16 + f (exact : la somme des 16 bases vaut M16).
     // Pour atteindre son binôme, elle traverse la boucle du front binôme : EB = E + somme des 4 maisons du front de binôme(f). EB à parité équilibrée
     // (exactement 2 niveaux impairs sur 4) : l'énergie passe, le pôle marque. Indépendant de la saturation (vrai dans chaque niveau fort, freiné, faible, bloqué).
-    var PARITE_OBS = { equilibre: { oui: 52, sur: 55 }, autre: { oui: 71, sur: 103 } };
+    var PARITE_OBS = { equilibre: { oui: 52, sur: 55 }, autre: { oui: 73, sur: 105 } };
     [[a, L.R1], [b, L.R7]].forEach(function (x) { var q = x[0], f = x[1].figure, bf = K.binome(f), z = (bf - 1) % 4, E = K.additionner(T.bases[16], f),
       Fb = [0, 1, 2, 3].map(function (i) { return T.bases[z + 1 + 4 * i]; }).reduce(K.additionner), eb = K.additionner(E, Fb), imp = K.niveaux(eb).filter(function (v) { return v === 1; }).length;
       q.parite = { energie: E, boucleBinome: Fb, figure: eb, impairs: imp, equilibre: imp === 2, obs: imp === 2 ? PARITE_OBS.equilibre : PARITE_OBS.autre }; });
@@ -619,12 +619,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       // Binôme de la figure M5+M7 (2026-11-21, propriétaire) : placé chez lui (sa maison de repos) ou chez son antagoniste, il confirme l'état de la figure ;
       // Terre saturée et binôme placé : les deux n'ont jamais marqué (0 sur 5).
       bt = K.binome(tf), hbt = mod(bt - 3), btPlace = T.bases[bt] === bt || (bt < 16 && T.resultantes[bt] === bt) || T.bases[hbt] === bt || (hbt < 16 && T.resultantes[hbt] === bt),
-      OBS_TEMOIN = { ouverte: { oui: 30, sur: 39 }, binomePlace: { oui: 2, sur: 12 }, m410ouverte: { oui: 7, sur: 13 }, m410saturee: { oui: 7, sur: 15 } };
+      OBS_TEMOIN = { ouverte: { oui: 31, sur: 40 }, binomePlace: { oui: 2, sur: 12 }, m410ouverte: { oui: 7, sur: 13 }, m410saturee: { oui: 7, sur: 15 } };
     return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, binome: bt, binomePlace: btPlace, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : btPlace ? OBS_TEMOIN.binomePlace : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
   // DÉFENSE (2026-11-22, demande du propriétaire : l'attaque ne sert à rien si la défense est mauvaise) : l'antagoniste du pôle (f−3) posé en base sans son protecteur
   // (f−6) = défense percée ; protecteur posé = défense tenue (attaque bloquée, ou protégée sans attaque) ; ni l'un ni l'autre = calme. Buts encaissés observés (DEFENSE_OBS).
   // Information sur les buts encaissés ; elle n'entre ni dans le verdict ni dans le calcul des buts (qui reste meilleur : 1,30 d'erreur contre 1,34).
-  var DEFENSE_OBS = { 'percée': { sur: 46, encaisses: 97 }, 'attaque bloquée': { sur: 51, encaisses: 97 }, 'protégée': { sur: 44, encaisses: 65 }, calme: { sur: 17, encaisses: 25 } };
+  var DEFENSE_OBS = { 'percée': { sur: 47, encaisses: 99 }, 'attaque bloquée': { sur: 51, encaisses: 97 }, 'protégée': { sur: 45, encaisses: 67 }, calme: { sur: 17, encaisses: 25 } };
   function defense(L) { var b = L.theme.bases, pose = function (f) { var o = []; for (var h = 1; h <= 16; h++) if (b[h] === f) o.push(h); return o; };
     function un(c) { var a = mod(c.figure - 3), p = mod(c.figure - 6), A = pose(a), P = pose(p), etat = !A.length ? (P.length ? 'protégée' : 'calme') : (P.length ? 'attaque bloquée' : 'percée'), o = DEFENSE_OBS[etat];
       return { antagoniste: a, protecteur: p, maisonsAntagoniste: A, maisonsProtecteur: P, etat: etat, tenue: etat !== 'percée', encaisseMoyen: Math.round(10 * o.encaisses / o.sur) / 10, obs: o }; }
@@ -654,8 +654,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote }, parite: pariteIncident(L) }; }
   // PARITÉ DE L'INCIDENT (2026-11-22, H-INCIDENT-PARITE, en observation) : l'énergie EB d'un pôle (voir marquage, H-PARITE-EB) à 3 niveaux impairs déborde.
   // Quand un seul des deux pôles est dans ce cas, l'incident se fixe sur lui : il obtient un penalty ou reçoit un rouge. Si les deux le sont, les débordements s'annulent.
-  // Observé sur 27 matchs étiquetés : un seul pôle à 3 impairs, incident dans 9 matchs sur 13 ; sinon 3 sur 14. Sur ce pôle : 5 penalties pour lui, 4 rouges contre lui ; penalty et rouge ne se distinguent pas encore.
-  var INCIDENT_PARITE_OBS = { seul: { incident: 9, sur: 13 }, autres: { incident: 3, sur: 14 } };
+  // Observé sur 27 matchs étiquetés : un seul pôle à 3 impairs, incident dans 10 matchs sur 14 ; sinon 3 sur 14. Sur ce pôle : 5 penalties pour lui, 4 rouges contre lui ; penalty et rouge ne se distinguent pas encore.
+  var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
   var API = { defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
