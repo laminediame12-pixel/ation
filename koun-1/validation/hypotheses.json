@@ -2594,6 +2594,12 @@
       "statut": "information affichée le 2026-11-22 (ligne de marquage de chaque équipe) ; n'entre ni dans le verdict ni dans le calcul des buts",
       "regle": "défense percée = antagoniste du pôle (f−3) posé en base sans son protecteur (f−6)",
       "observe": "79 matchs : percée, 2,11 buts encaissés ; attaque bloquée 1,90 ; protégée 1,48 ; calme 1,47. Une défense tient et l'autre percée : 20 victoires, 11 défaites. Pour le nombre de buts, attaque × défense adverse ne fait pas mieux que l'estimation actuelle (1,34 contre 1,30 d'erreur par équipe, un match laissé de côté)"
+    },
+    {
+      "id": "H-COTE-M1-M7",
+      "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée",
+      "regle": "règle du propriétaire : côté M1 = M1, M2, M3, M4, M9, M10, M13, M15 ; côté M7 = M5, M6, M7, M8, M11, M12, M14, M16. La figure-somme 1-5-12-15 posée en base d'un seul côté : ce côté (R1 ou R7) encaisse en 1re mi-temps",
+      "observe": "32 matchs avec mi-temps : figure d'un seul côté dans 11 matchs, le côté désigné encaisse 8 fois (taux de base : une équipe encaisse 34 fois sur 64) ; mais il n'encaisse plus que l'autre que 3 fois, moins 3 fois (souvent 1-1). Figure des deux côtés (9 matchs) : R1 encaisse 7 fois, R7 2 fois (dont Barcelona–Villarreal 0-2). Même règle avec 4-5-13-15 pour la 2e mi-temps : 4 sur 10, ne marche pas"
     }
   ],
   "lectures": [
