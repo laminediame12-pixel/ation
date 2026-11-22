@@ -2481,6 +2481,13 @@
       "sources": "ESPN, Sofascore, Sky Sports, bundesliga.com, sporza.be, NBC Sports, livescore",
       "suite": "27 matchs trouvés sur le web au total (13 puis 14) : prédictions gelées d'origine : victoire 7 justes, 4 faux, 3 sur nul, 13 sans appel ; deux marquent 16 sur 27",
       "suite2": "7 matchs de plus (22/11) : victoire gelée 1 juste, 3 faux, 2 sur des nuls ; deux marquent 5 sur 7 ; sur l'ensemble, les règles de victoire baissent : H-REPOS 8 sur 15, coordonnées 26 sur 37 (« toujours R1 » 23), domination 19 sur 28"
+    },
+    {
+      "id": "H-BALANCE-TERRE",
+      "statut": "SIGNAL 2026-11-22 : le plus solide trouvé pour la victoire ; en observation, non intégré",
+      "regle": "le pôle dont le front direct a le plus de Terre saturée (n) que le front adverse gagne ; la Terre adverse ferme le marquage",
+      "resultat": "79 matchs : 30 justes sur 42 appels (« toujours R1 » 22) ; sur les 21 matchs ajoutés après le choix de n : 14 justes (« toujours R1 » 8) ; corrélation n propre − n adverse / buts 0,34 ; buts de R1 selon n de R7 : 2,80 · 2,79 · 1,90 · 1,60 · 1,00",
+      "structure": "voir validation/ETUDE-STRUCTURE.md : grille 4 × 4 (front × rang), transposition mères ↔ filles"
     }
   ],
   "lectures": [
