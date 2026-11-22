@@ -2637,6 +2637,14 @@
       "structure": "somme des bases 3-5-14-12 = M3 + M6 (exact, 65 536 thèmes)",
       "regle": "la figure 3-5-14-12 posée en base dans le front d'un seul des deux pôles : nul peu probable ; ne joue que si aucune autre règle n'a trié le nul (Rubeus, R1 en M2, témoins face au juge), avant la règle M3–M9",
       "observe": "80 matchs : 21 cas, aucun nul (R1 14, R7 7) ; dans le verdict, 10 cas où elle trie seule le nul, aucun nul. Repérée parmi 38 lectures des moulins des bords"
+    },
+    {
+      "id": "H-NUL-PARITE-M5M6",
+      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "origine": "recherche exhaustive des 65 535 parités des 16 points des mères (outils/nul_exhaustif.js)",
+      "regle": "compter les niveaux impairs parmi Feu, Air et Eau de M5 et Eau de M6 (= Feu de M1, M2, M3 et Air de M3) : nombre pair → pas de nul ; nombre impair → nul possible",
+      "observe": "80 matchs : les 15 nuls sont tous du côté impair (15 sur 38) ; côté pair, 0 nul sur 42. Réserve importante : avec 15 nuls et 16 points, une parité qui contient tous les nuls peut exister par hasard ; une aussi serrée (au plus 38 matchs) arrive pour 7 tirages au hasard sur 100. La meilleure parité est atteinte par hasard dans 28 % des mélanges",
+      "appels": "nul exclu (parité paire) : Kilmarnock–Aberdeen, Zulte Waregem–Antwerp, Racing–Real Sociedad, Osasuna–Málaga, Paris FC–Angers, Lorient–Rennes, Marseille–Le Mans, AC Milan–Frosinone, Atalanta–Inter, Augsburg–Mainz, Chicago–Charlotte, Leipzig–Lens, Real Madrid–PSV"
     }
   ],
   "lectures": [
