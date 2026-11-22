@@ -22,3 +22,19 @@ Une maison h a deux éléments : son **front** (colonne i = (h−1) mod 4 : A Fe
 - Pourquoi les rangs Eau et Terre (nièces, témoins) ne se lisent pas comme figures : ils sont des sommes, la lecture par niveau n'y est pas une transposition.
 - La 2e mi-temps : 4-5-13-15 reste une piste (14 sur 19 équipes désignées), à confirmer.
 - Le nul : il tombe là où les nœuds de coordination sont à égalité et où les Terre se compensent ; à mesurer avec la balance de la Terre.
+
+## Déplacement des figures dans les fronts (2026-11-22)
+
+Thème neutre : chaque figure dans sa propre maison, toutes les résultantes sont Populus (tous les canaux saturés). Une figure f posée dans la maison h donne la résultante f + h : un canal reste saturé exactement quand f et la figure de la maison h ont le même niveau sur ce canal.
+
+Loi exacte (256 couples figure / maison) : le front d'une figure est fixé par ses niveaux Feu et Air (A : Feu 1 Air 1, B : Feu 1 Air 2, C : Feu 2 Air 1, D : Feu 2 Air 2). Donc :
+
+| La figure tombe… | Feu | Air | Eau, Terre |
+|---|---|---|---|
+| dans son propre front | saturé | saturé | selon sa place dans le front |
+| chez l'allié (front du binôme : A↔C, B↔D) | ouvert | saturé | selon sa place |
+| chez l'ennemi (les deux autres fronts) | selon le front | ouvert | selon sa place |
+
+Air ouvert signale toujours l'ennemi ; Feu ouvert avec Air saturé signale l'allié.
+
+Sur les 79 matchs : seule la Terre saturée dans le front du pôle désigne le vainqueur (30 justes, 13 faux, c'est H-BALANCE-TERRE). Feu (16/21), Air (24/17) et Eau (21/19), donc la classe du déplacement, ne désignent rien ; compter qui occupe le front (propre, allié, ennemi) ou où vont les figures du pôle ne désigne rien non plus. Séparer la Terre selon l'occupant n'améliore pas le total. Script : `outils/deplacement.js`.
