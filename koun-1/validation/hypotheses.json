@@ -2621,6 +2621,14 @@
           "resultat": "mi-temps 1-1 : R7 a marqué, JUSTE (1 sur 1 à l'aveugle)"
         }
       ]
+    },
+    {
+      "id": "H-NUL-M3-M9",
+      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "structure": "Eau de M3 = Eau de M7 sur les 65 536 thèmes (point de la diagonale des mères, commun à la mère M3 et à la fille M7). Terre de M9 (= M1 + M2) saturée ⇔ M1 et M2 ont la même Terre. Les deux réunies : 1 thème sur 4",
+      "regle": "Eau de M3 saturée et Terre de M9 saturée : le nul devient fréquent ; sinon il est rare",
+      "observe": "80 matchs : les deux saturées, 10 nuls sur 26 (38 %) ; sinon 5 sur 54 (9 %). Croisé avec le verdict : les deux saturées et « nul fréquent » 4 nuls sur 4 ; les deux saturées et « nul possible » 5 sur 15 ; sinon et « nul possible » 3 sur 26 ; sinon et « nul peu probable » 0 sur 17. Choisie parmi 95 cases (meilleure case seule atteinte par hasard dans 12 % des mélanges)",
+      "appels": "nul à surveiller : Lens–Toulouse, Monaco–Auxerre, Zulte Waregem–Antwerp, Hull City–Brighton, Osasuna–Málaga, Paris FC–Angers, Lorient–Rennes, Sassuolo–Genoa, Juventus–Venezia, Arsenal–Dortmund, Real Madrid–PSV"
     }
   ],
   "lectures": [
