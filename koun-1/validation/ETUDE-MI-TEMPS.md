@@ -14,3 +14,7 @@ Données : `validation/mi-temps.json` et les matchs de `scores-reels.json` qui o
 ## Combinaison 5-7-12-15 pour la 2e mi-temps (2026-11-22)
 
 30 matchs avec mi-temps et score final (une équipe marque en 2e mi-temps 28 fois sur 60). 5-7-12-15 : lecture des côtés (figure fixe : son côté encaisse, sinon il marque) 5 justes sur 12 ; lecture de l'ancrage 11 sur 25. Ne marche pas (classée 1230e sur 1789 combinaisons de 4 maisons). 4-5-13-15 reste la combinaison de la 2e mi-temps : ancrage 14 sur 19 ; côtés 6 sur 11. Script : `outils/combinaison_mt2.js`.
+
+## Lecture des côtés sur les 80 thèmes acquis, score final (2026-11-22)
+
+Une équipe marque dans le match 125 fois sur 160 (78 %). Figure posée d'un seul côté (fixe : ce côté encaisse, sinon il marque), l'équipe désignée : 1-5-12-15, marque 34 fois sur 41, gagne 16, perd 16 ; 4-5-13-15, marque 33 sur 39, gagne 21, perd 10, 8 nuls ; 5-7-12-15, marque 26 sur 32, gagne 13, perd 12. Pour le match entier, seule 4-5-13-15 penche vers un vainqueur, mais elle n'apporte rien au verdict : d'accord avec lui 12 justes, 1 faux, 2 nuls ; quand il est sans appel 4 justes, 2 faux, 3 nuls ; quand elle s'y oppose, le verdict a raison 7 fois contre 5.
