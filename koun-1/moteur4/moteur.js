@@ -355,8 +355,16 @@
   // Observé avant intégration : 6 matchs avec Rubeus, 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1) ; au taux général de nuls (18 %), 0 sur 6 arrive par hasard 3 fois sur 10. En observation (H-DESEQ-RUBEUS).
   var DESEQ_OBS = { nuls: 0, sur: 6 };
   function desequilibre(L) { var f = L.lien; return { figure: f, nom: K.nom(f), rubeus: K.nom(f) === 'Rubeus', obs: DESEQ_OBS }; }
-  function verdict(L) { var V = verdictBrut(L), D = desequilibre(L);
-    V.desequilibre = D;
+  // TÉMOINS ET JUGE (2026-11-22, H-TEMOINS-JUGE, en observation) : S13 = M13+M5 et S14 = M14+M6 (chaque témoin plus sa maison opposée ; exact : S13+S14 = M15+M11),
+  // comparées au juge M15. M15 antagoniste de S13 (le juge attaque) ou S14 dans le front de M15 : nul peu probable. S13 antagoniste de M15 (la somme attaque le juge) : nul fréquent.
+  var TJ_OBS = { attaque: { nuls: 0, sur: 8 }, front: { nuls: 1, sur: 19 }, union: { nuls: 1, sur: 26 }, conteste: { nuls: 3, sur: 6 } };
+  function temoinsJuge(L) { var b = L.theme.bases, j = b[15], s13 = K.additionner(b[13], b[5]), s14 = K.additionner(b[14], b[6]), fr = function (f) { return (f - 1) % 4; };
+    var attaque = mod(j - 3) === s13, front = fr(s14) === fr(j), conteste = mod(s13 - 3) === j;
+    return { juge: j, s13: s13, s14: s14, attaque: attaque, front: front, conteste: conteste, nulPeuProbable: attaque || front, obs: TJ_OBS }; }
+  function verdict(L) { var V = verdictBrut(L), D = desequilibre(L), J = temoinsJuge(L);
+    V.desequilibre = D; V.temoinsJuge = J;
+    if (!D.rubeus && J.nulPeuProbable) { V.nulPeuProbable = true; V.raison += ' · témoins et juge : ' + (J.attaque ? 'M15 (' + K.nom(J.juge) + ') attaque M13+M5 (' + K.nom(J.s13) + ')' : '') + (J.attaque && J.front ? ' et ' : '') + (J.front ? 'M14+M6 (' + K.nom(J.s14) + ') dans le front du juge M15' : '') + ' : nul peu probable (' + TJ_OBS.union.nuls + ' nul sur ' + TJ_OBS.union.sur + ' matchs, H-TEMOINS-JUGE)'; }
+    if (J.conteste && !D.rubeus && !J.nulPeuProbable) { V.nulFrequent = true; V.raison += ' · témoins et juge : M13+M5 (' + K.nom(J.s13) + ') attaque le juge M15 : jugement contesté, nul fréquent (' + TJ_OBS.conteste.nuls + ' nuls sur ' + TJ_OBS.conteste.sur + ', H-TEMOINS-JUGE)'; }
     if (D.rubeus) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · figure du déséquilibre R1+R7 = Rubeus : équilibre trop faible, nul quasi impossible (' + DESEQ_OBS.nuls + ' nul sur ' + DESEQ_OBS.sur + ' matchs, H-DESEQ-RUBEUS)'; }
     return V; }
   function verdictBrut(L) {
@@ -435,7 +443,7 @@
       cote = e1 === 'vide' && e7 !== 'vide' ? 'R1' : e7 === 'vide' && e1 !== 'vide' ? 'R7' : null;
     return { parametres: p, score: score, niveau: score >= 3 ? 'probable' : score === 2 ? 'possible' : 'aucun', probable: score >= 3, liens: liens,
       rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote } }; }
-  var API = { desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

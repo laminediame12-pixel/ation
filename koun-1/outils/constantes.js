@@ -21,5 +21,8 @@ const SR = lire('validation/scores-reels.json'), vu2 = new Set(); let d2 = { o: 
 if (!src.includes('designees: { oui: ' + d2.o + ', sur: ' + d2.n + ' }, autres: { oui: ' + a2.o + ', sur: ' + a2.n + ' }')) err('2e mi-temps : désignées ' + d2.o + '/' + d2.n + ', autres ' + a2.o + '/' + a2.n);
 const dq = { n: 0, s: 0 }; D.forEach(d => { if (M.desequilibre(M.lire(d.m)).rubeus) { dq.s++; if (d.sc[0] === d.sc[1]) dq.n++; } });
 if (!src.includes('DESEQ_OBS = { nuls: ' + dq.n + ', sur: ' + dq.s + ' }')) err('figure du déséquilibre Rubeus : ' + dq.n + ' nuls sur ' + dq.s);
+const tj = { attaque: [0, 0], front: [0, 0], union: [0, 0], conteste: [0, 0] }; D.forEach(d => { const J = M.temoinsJuge(M.lire(d.m)), n = d.sc[0] === d.sc[1] ? 1 : 0; [['attaque', J.attaque], ['front', J.front], ['union', J.nulPeuProbable], ['conteste', J.conteste]].forEach(([k, v]) => { if (v) { tj[k][1]++; tj[k][0] += n; } }); });
+const tjs = 'TJ_OBS = { ' + Object.keys(tj).map(k => k + ': { nuls: ' + tj[k][0] + ', sur: ' + tj[k][1] + ' }').join(', ') + ' }';
+if (!src.includes(tjs)) err('témoins et juge : ' + tjs);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);
