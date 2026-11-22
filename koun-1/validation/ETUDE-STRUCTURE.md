@@ -192,3 +192,7 @@ Aucune des 8 symétries de la grille mère × niveau (rotations, miroirs, transp
 ### M13 et M14 face au nul (2026-11-22)
 
 92 cases sur les 80 matchs (niveaux en base et en résultante, figure, front, égalités de niveaux entre M13 et M14) : la plus forte est la Terre de M14 (base) saturée, 13 nuls sur 40 (ouverte : 2 sur 40) ; meilleure atteinte par hasard dans 29 % des mélanges. À l'intérieur des 38 matchs à nul possible : Terre de M14 saturée 13 nuls sur 22 (59 %), ouverte 2 sur 16 (13 %) ; atteinte par hasard dans 15 % des mélanges. M14 est exactement la somme du côté M1. Candidate H-NUL-M14 posée avant les matchs. Script : `outils/nul_m13_m14.js`.
+
+### La règle du nul et les maisons opposées (2026-11-22)
+
+Opposées (h ↔ h ± 8) : M9 ↔ M1, M11 ↔ M3, M14 ↔ M6. Exact : M9 + M1 = M2 ; M11 + M3 = M3+M5+M6 ; M14 + M6 = M5+M12. Sur 80 matchs, la règle refaite avec les opposées ne marche pas : Feu de M1 ≠ Eau de M3, 5 nuls sur 32 ; Feu de M9+M1 ≠ Eau de M11+M3, 10 sur 40 ; croisées (M9/M3, M1/M11) 6 sur 46 et 6 sur 38. En résultante, la règle est identique (15 sur 38, 0 sur 42) : les figures des maisons M9 (Fortuna Minor) et M11 (Conjunctio) retournent toutes deux le niveau lu, l'écart reste le même. Second étage : Terre de M6 (opposée de M14) 6 sur 15, Terre de M14+M6 8 sur 19 : seule la Terre de M14 sépare (13 sur 22, 2 sur 16) ; parmi ses quatre niveaux, seule la Terre le fait. Les opposées n'ajoutent pas de troisième étage. Script : `outils/nul_opposees.js`.
