@@ -91,3 +91,18 @@ Sur 79 matchs, 168 cases testées : nul, meilleure case D1 = Tristitia (D2 = Lae
 Les figures des maisons angulaires M1, M4, M7, M10 deviennent les 4 mères d'un nouveau thème. Structure (65 536 thèmes) : ses mères sont M1, M4, M7, M10 ; sa M9 = M1+M4, sa M10 = M7+M10 (ses quatre premières maisons reprennent donc M1, M4, M7 et M10 du principal). Comme sa M1 est la M1 du principal, **R1 tombe toujours dans la même maison** dans les deux thèmes (65 536 sur 65 536) ; la figure de R1 est la même dans 10 752 thèmes. Les deux thèmes sont identiques dans 64 cas.
 
 Sur 79 matchs, 49 cases : vainqueur, rien (meilleure case atteinte par hasard dans 97 % des mélanges ; le verdict du thème angulaire : 14 justes, 10 faux pour R1 ; 8 justes, 12 faux pour R7). Nul : la seule case forte est « R1 en M2 » (5 nuls sur 7), qui est exactement la règle H-ORDRE-R1M2 du thème principal, puisque la maison de R1 ne change pas. Le thème angulaire n'apporte rien de nouveau. Script : `outils/theme_angulaire.js`.
+
+### Thème angulaire : les nœuds par rapport aux canaux (2026-11-22)
+
+Nœuds (croisements des canaux, plein / mixte / vide) dans la boucle de front de chaque pôle, thème principal contre thème angulaire, 12 lectures (justes / faux, le plus fort gagne) :
+
+| Lecture | Principal | Angulaire |
+|---|---|---|
+| nœuds pleins | 31 / 22 | 22 / 29 |
+| pleins − vides | 31 / 20 | 22 / 28 |
+| nœuds 4-7-10-13 | 31 / 18 | 18 / 25 |
+| nœuds de la ligne et colonne Terre | 31 / 17 | 25 / 21 |
+| coordonnées | 27 / 11 | 21 / 21 |
+| nœuds diagonaux, Terre (verdict) | 31 / 7 | 23 / 13 |
+
+Seul, le thème angulaire ne désigne rien (meilleur test atteint par hasard dans 57 % des mélanges ; ses nœuds tendent même à l'inverse). Mais il travaille avec le principal : quand ses nœuds pleins contredisent le verdict principal, le principal a raison 15 fois sur 17 ; quand le principal est à égalité (31 matchs), les nœuds diagonaux du thème angulaire désignent le vainqueur 10 fois sur 13 décidés (H-ANGULAIRE-RELAIS, candidate). Script : `outils/angulaire_noeuds.js`.

@@ -2565,6 +2565,13 @@
       "observe": "79 matchs : 31 justes, 7 faux, 31 égalités dont 4 nuls (la balance de la Terre sur les 4 maisons : 30 justes, 13 faux). Nœud 4-7-10-13 seul : 19 / 6 ; nœud 1-6-11-16 seul : 22 / 5 ; maisons de rang 2 (filles) seules : 14 / 14. Quand la balance désigne un pôle et que les diagonales sont à égalité : 6 justes, 7 faux ; les deux autres maisons du front n'apportent que du bruit. Choisie après avoir comparé environ 8 lectures",
       "appels": "Monaco–Auxerre R1 ; Zulte Waregem–Antwerp R7 ; Charleroi–Sint-Truiden R7 ; Burnley–Blackburn R7 ; Barcelona–Villarreal R7 ; Racing–Real Sociedad R7 ; Getafe–Atlético R7 ; Paris FC–Angers R7 ; Lorient–Rennes R1 ; Marseille–Le Mans R7 ; Sassuolo–Genoa R7 ; AC Milan–Frosinone R1 ; Werder–Hambourg R1 ; Bodø/Glimt–LASK R1 ; Manchester City–Napoli R7 ; Leipzig–Lens R7 ; Real Madrid–PSV R7 ; Slovan Bratislava–Betis R1 ; Inter Miami–Columbus R1 ; San Jose–Houston R7",
       "verdict_apres_integration": "79 matchs : 51 appels, 35 justes, 9 faux, 7 nuls (avant, balance sur 4 maisons : 58 appels, 34 justes, 13 faux, 11 nuls). Terre et coordonnées d'accord : 15 justes, 1 faux, 3 nuls"
+    },
+    {
+      "id": "H-ANGULAIRE-RELAIS",
+      "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée",
+      "regle": "quand les nœuds diagonaux du thème principal sont à égalité (pas d'appel), les nœuds diagonaux du thème angulaire (mères M1, M4, M7, M10) désignent le vainqueur",
+      "observe": "79 matchs : le principal est à égalité dans 31 matchs ; le thème angulaire y désigne le vainqueur 10 fois, se trompe 3 fois, 2 nuls. Choisie parmi 12 lectures des nœuds : à confirmer. Autres constats : quand le thème angulaire contredit le principal (nœuds pleins), le principal a raison 15 fois sur 17 ; seul, le thème angulaire ne désigne rien (meilleur test atteint par hasard dans 57 % des mélanges)",
+      "appels": "Genk–La Louvière R1 ; Osasuna–Málaga R7 ; Bologna–Udinese R1 ; Atalanta–Inter R7 ; Feyenoord–Porto R1. Eintracht–Hoffenheim (R7) était déjà joué : 1-0 pour Eintracht, appel faux, compté comme un échec"
     }
   ],
   "lectures": [
