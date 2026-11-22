@@ -2522,6 +2522,20 @@
       "observe": "52 pôles sur 55 ont marqué (95 %) contre 71 sur 103 sinon (69 %) ; 144 caractéristiques de parité criblées, le meilleur lien atteint par hasard dans 2 % des mélanges ; vrai dans chaque niveau de saturation (fort 23/23, freiné 13/14, faible 9/10, bloqué 7/8). Les 3 exceptions sont des R7 écrasés (4-0, 5-0, 3-0). Courbe en cloche : 0 impair 5/8, 1 : 31/43, 2 : 52/55, 3 : 30/44, 4 : 5/8",
       "sans_effet": "aucune caractéristique de parité ne désigne le vainqueur (meilleur lien atteint par hasard dans 92 % des mélanges)",
       "appels": "marque : Kilmarnock–Aberdeen R7 ; Eintracht–Hoffenheim R7 ; Zulte Waregem–Antwerp R1 et R7 ; New England–Philadelphie R1 ; FC Dallas–Portland R1 et R7 ; Barcelona–Villarreal R7 ; Getafe–Atlético R1 ; Paris FC–Angers R1 ; Marseille–Le Mans R7 ; Bologna–Udinese R1 et R7 ; Sassuolo–Genoa R1 ; Juventus–Venezia R7 ; AC Milan–Frosinone R7 ; Atalanta–Inter R7 ; Augsburg–Mainz R1 ; Werder–Hambourg R7 ; Bodø/Glimt–LASK R1 et R7 ; Feyenoord–Porto R1 ; Leipzig–Lens R1 et R7 ; Real Madrid–PSV R7 ; St. Louis–LAFC R1 et R7 ; San Jose–Houston R1 et R7"
+    },
+    {
+      "id": "JUGEMENT-INCIDENT-2026-11-22",
+      "statut": "jugement à l'aveugle du détecteur H-INCIDENT sur 16 matchs étiquetés après sa construction (recherche web)",
+      "resultat": "appel « probable » (3/6 ou plus) : 3 matchs, 2 avec penalty (Chelsea–Leeds, Union–Leipzig) ; « possible » : 7 matchs, 2 avec incident ; sans appel : 6 matchs, 1 avec incident (Real Madrid–Celta). Rouge P6 : prédit dans 8 matchs, aucun rouge observé (0 sur 8). Aucun rouge dans les 16 matchs",
+      "suite": "P6 compte 8 essais à vide ; retrait à 15 essais au hasard selon le protocole"
+    },
+    {
+      "id": "H-INCIDENT-PARITE",
+      "statut": "intégrée au détecteur d'incident le 2026-11-22, en observation ; appels posés avant les matchs à venir",
+      "regle": "énergie EB d'un pôle (M16 + figure + boucle du front binôme, voir H-PARITE-EB) à 3 niveaux impairs : elle déborde. Si un seul des deux pôles déborde, l'incident se fixe sur lui : penalty pour lui ou rouge contre lui. Si les deux débordent, rien de net (1 incident sur 4 matchs)",
+      "observe": "27 matchs étiquetés : un seul pôle à 3 impairs, incident dans 9 matchs sur 13 ; sinon 3 sur 14. Sur les pôles à 3 impairs : 5 penalties pour eux, 4 rouges contre eux (les 4 rouges du corpus). Penalty et rouge ne se séparent pas encore",
+      "reserves": "construit après avoir vu les 27 étiquettes ; 13 pôles-événements seulement",
+      "appels": "incident sur : Charleroi–Sint-Truiden R7 ; Liverpool–Manchester United R7 ; Burnley–Blackburn R7 ; Barcelona–Villarreal R1 ; Racing–Real Sociedad R1 ; Paris FC–Angers R7 ; Lorient–Rennes R7 ; Sassuolo–Genoa R7 ; Juventus–Venezia R1 ; Atalanta–Inter R1 ; Werder Brême–Hambourg R1 ; Galatasaray–Aston Villa R1 ; Feyenoord–Porto R7 ; Slovan Bratislava–Betis R1. Eintracht–Hoffenheim (R1) déjà vu avant la règle (penalties des deux côtés, rouge Hoffenheim) : non compté"
     }
   ],
   "lectures": [

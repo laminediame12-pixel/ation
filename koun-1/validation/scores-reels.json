@@ -774,7 +774,10 @@
    "R7": [
     "16'"
    ]
-  }
+  },
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Fotmob : seulement des jaunes (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -801,7 +804,10 @@
     "19'"
    ],
    "R7": []
-  }
+  },
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "ESPN / VAVEL : aucun penalty ni rouge (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -845,7 +851,10 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)"
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "penalty": "R7",
+  "rouge": "Non",
+  "source_incident": "Sky Sports / ESPN : penalty Calvert-Lewin 53', aucun rouge (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -926,7 +935,10 @@
    "R7": [
     "41'"
    ]
-  }
+  },
+  "penalty": "R7",
+  "rouge": "Non",
+  "source_incident": "Bundesliga.com : penalty Nusa 18' après VAR, aucun rouge (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -953,7 +965,10 @@
     "15'"
    ],
    "R7": []
-  }
+  },
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "SNA : six jaunes, aucun rouge, aucun penalty (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -974,7 +989,10 @@
    0
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)"
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "beIN / ESPN : aucun incident (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1133,7 +1151,10 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "penalty": "R7",
+  "rouge": "Non",
+  "source_incident": "SPFL / Sky : penalty Phillips 68' (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1205,7 +1226,10 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "LaLiga / ESPN : aucun incident mentionné (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1222,7 +1246,10 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "LaLiga / 365Scores : aucun incident mentionné (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1243,7 +1270,10 @@
   "mi_temps": [
    0,
    0
-  ]
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "El Pespunte : penalty réclamé non accordé, aucun rouge (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1264,7 +1294,10 @@
   "mi_temps": [
    0,
    1
-  ]
+  ],
+  "penalty": "R1",
+  "rouge": "Non",
+  "source_incident": "SI / teleprensa : penalty Mbappé manqué, aucun rouge (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1285,7 +1318,10 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "Edjouma 22' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Ouest-France)"
+  "note": "Edjouma 22' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Ouest-France)",
+  "penalty": "R1",
+  "rouge": "Non",
+  "source_incident": "Flashscore / Ouest-France : penalty Godo manqué 90+5 (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1306,7 +1342,10 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "Bidstrup 40' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Flashscore, Footeo)"
+  "note": "Bidstrup 40' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Flashscore, Footeo)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "SNA : aucun rouge (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1327,7 +1366,10 @@
   "mi_temps": [
    0,
    1
-  ]
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Sky Sports / Sports Mole : aucun penalty ni rouge mentionné (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1420,7 +1462,10 @@
   "mi_temps": [
    1,
    0
-  ]
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Goal : aucun expulsé (recherche web du 2026-11-22)"
  },
  {
   "themes": [
@@ -1441,7 +1486,10 @@
   "mi_temps": [
    0,
    1
-  ]
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Corriere dello Sport : penalty réclamé non accordé (recherche web du 2026-11-22)"
  },
  {
   "themes": [

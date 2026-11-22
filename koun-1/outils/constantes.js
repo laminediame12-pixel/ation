@@ -26,5 +26,7 @@ const tjs = 'TJ_OBS = { ' + Object.keys(tj).map(k => k + ': { nuls: ' + tj[k][0]
 if (!src.includes(tjs)) err('témoins et juge : ' + tjs);
 const pa = { e: [0, 0], a: [0, 0] }; D.forEach(d => { const q = M.marquage(M.lire(d.m)); [['R1', 0], ['R7', 1]].forEach(([p, i]) => { const o = q[p].parite.equilibre ? pa.e : pa.a; o[1]++; if (d.sc[i] > 0) o[0]++; }); });
 if (!src.includes('PARITE_OBS = { equilibre: { oui: ' + pa.e[0] + ', sur: ' + pa.e[1] + ' }, autre: { oui: ' + pa.a[0] + ', sur: ' + pa.a[1] + ' } }')) err('parité EB : équilibre ' + pa.e + ' autre ' + pa.a);
+const ip = { s: [0, 0], a: [0, 0] }, vuI = new Set(); lire('validation/scores-reels.json').forEach(x => { const k = x.themes.join('-'); if (vuI.has(k) || !('penalty' in x)) return; vuI.add(k); const o = M.pariteIncident(M.lire(x.themes)).pole ? ip.s : ip.a, y = v => v === 'R1' || v === 'R7'; o[1]++; if (y(x.penalty) || y(x.rouge)) o[0]++; });
+if (!src.includes('INCIDENT_PARITE_OBS = { seul: { incident: ' + ip.s[0] + ', sur: ' + ip.s[1] + ' }, autres: { incident: ' + ip.a[0] + ', sur: ' + ip.a[1] + ' } }')) err('parité de l\'incident : seul ' + ip.s + ' autres ' + ip.a);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);
