@@ -58,6 +58,10 @@
   "provisoire": true,
   "premiers_buts": "R7 (Villarreal) marque les deux premiers buts",
   "penalty": "R1 (Barcelona), manqué",
-  "note": "information du propriétaire, 2026-11-22 ; mi-temps exacte et score final à compléter"
+  "note": "mi-temps donnée par le propriétaire (0-2) ; Villarreal marque les deux buts, Barcelone manque un penalty ; score final à compléter",
+  "mi_temps": [
+   0,
+   2
+  ]
  }
 ]
