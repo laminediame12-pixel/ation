@@ -44,5 +44,20 @@
    ]
   },
   "note": "mi-temps trouvée sur le web (ESPN) ; score final non trouvé"
+ },
+ {
+  "themes": [
+   4,
+   15,
+   15,
+   8
+  ],
+  "match": "Barcelona–Villarreal",
+  "date": "2026-11-22",
+  "competition": "LaLiga",
+  "provisoire": true,
+  "premiers_buts": "R7 (Villarreal) marque les deux premiers buts",
+  "penalty": "R1 (Barcelona), manqué",
+  "note": "information du propriétaire, 2026-11-22 ; mi-temps exacte et score final à compléter"
  }
 ]
