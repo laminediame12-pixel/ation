@@ -450,6 +450,14 @@
       bt = K.binome(tf), hbt = mod(bt - 3), btPlace = T.bases[bt] === bt || (bt < 16 && T.resultantes[bt] === bt) || T.bases[hbt] === bt || (hbt < 16 && T.resultantes[hbt] === bt),
       OBS_TEMOIN = { ouverte: { oui: 30, sur: 39 }, binomePlace: { oui: 2, sur: 12 }, m410ouverte: { oui: 7, sur: 13 }, m410saturee: { oui: 7, sur: 15 } };
     return { R1: a, R7: b, temoin: { figure: tf, terreSaturee: terre, figure2: t2, terre2Saturee: terre2, binome: bt, binomePlace: btPlace, deuxMarquent: !terre, obsPas: !terre ? OBS_TEMOIN.ouverte : btPlace ? OBS_TEMOIN.binomePlace : terre2 ? OBS_TEMOIN.m410saturee : OBS_TEMOIN.m410ouverte }, butsAttendus: Math.round((a.moyN + b.moyN) * 10) / 10 }; }
+  // DÉFENSE (2026-11-22, demande du propriétaire : l'attaque ne sert à rien si la défense est mauvaise) : l'antagoniste du pôle (f−3) posé en base sans son protecteur
+  // (f−6) = défense percée ; protecteur posé = défense tenue (attaque bloquée, ou protégée sans attaque) ; ni l'un ni l'autre = calme. Buts encaissés observés (DEFENSE_OBS).
+  // Information sur les buts encaissés ; elle n'entre ni dans le verdict ni dans le calcul des buts (qui reste meilleur : 1,30 d'erreur contre 1,34).
+  var DEFENSE_OBS = { 'percée': { sur: 46, encaisses: 97 }, 'attaque bloquée': { sur: 51, encaisses: 97 }, 'protégée': { sur: 44, encaisses: 65 }, calme: { sur: 17, encaisses: 25 } };
+  function defense(L) { var b = L.theme.bases, pose = function (f) { var o = []; for (var h = 1; h <= 16; h++) if (b[h] === f) o.push(h); return o; };
+    function un(c) { var a = mod(c.figure - 3), p = mod(c.figure - 6), A = pose(a), P = pose(p), etat = !A.length ? (P.length ? 'protégée' : 'calme') : (P.length ? 'attaque bloquée' : 'percée'), o = DEFENSE_OBS[etat];
+      return { antagoniste: a, protecteur: p, maisonsAntagoniste: A, maisonsProtecteur: P, etat: etat, tenue: etat !== 'percée', encaisseMoyen: Math.round(10 * o.encaisses / o.sur) / 10, obs: o }; }
+    return { R1: un(L.R1), R7: un(L.R7) }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;
@@ -479,7 +487,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 9, sur: 13 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

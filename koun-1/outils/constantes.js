@@ -32,5 +32,8 @@ const om = [0, 0]; D.forEach(d => { if (M.ordre(M.lire(d.m)).nulFrequent) { om[1
 if (!src.includes('ORDRE_OBS = { m2: { nuls: ' + om[0] + ', sur: ' + om[1] + ' } }')) err('ordre R1 en M2 : ' + om);
 const mz = { ok: 0, ko: 0, nul: 0, n: 0 }; D.forEach(d => { const L = M.lire(d.m), V = M.verdict(L); if (V.regle !== 'H-M1-M10') return; mz.n++; const r = Math.sign(d.sc[0] - d.sc[1]); if (!r) mz.nul++; else if (r > 0) mz.ok++; else mz.ko++; });
 if (!src.includes('M1M10_STATS = { ok: ' + mz.ok + ', ko: ' + mz.ko + ', nul: ' + mz.nul + ', n: ' + mz.n + ' }')) err('relais M1–M10 : ' + JSON.stringify(mz));
+const df = {}; D.forEach(d => { const L = M.lire(d.m), F = M.defense(L); [['R1', 1], ['R7', 0]].forEach(([p, i]) => { const e = F[p].etat; df[e] = df[e] || { sur: 0, encaisses: 0 }; df[e].sur++; df[e].encaisses += d.sc[i]; }); });
+const dfs = "DEFENSE_OBS = { 'percée': { sur: " + df['percée'].sur + ", encaisses: " + df['percée'].encaisses + " }, 'attaque bloquée': { sur: " + df['attaque bloquée'].sur + ", encaisses: " + df['attaque bloquée'].encaisses + " }, 'protégée': { sur: " + df['protégée'].sur + ", encaisses: " + df['protégée'].encaisses + " }, calme: { sur: " + df.calme.sur + ", encaisses: " + df.calme.encaisses + " } }";
+if (!src.includes(dfs)) err('défense : ' + dfs);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);

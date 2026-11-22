@@ -2588,6 +2588,12 @@
       "regle": "règle du propriétaire : le pôle dont la figure est dans sa maison, avec la figure de son front direct (liaison Terre) ou de son miroir (± 8) aussi dans sa maison, gagne si l'autre pôle ne l'est pas",
       "observe": "79 matchs : un seul pôle remplit la condition dans 9 matchs (base ou résultante) : 5 victoires, 2 défaites (13-7-3-13 2-1 ; 1-3-15-4 4-2), 2 nuls (Manchester City–Fulham 1-1, Newcastle–Arsenal 2-2). En base seulement : 4 victoires, 1 défaite, 1 nul ; front direct en base : 3 sur 3. Sur 65 536 thèmes, un seul pôle la remplit dans 8,4 % des thèmes",
       "appels": "Burnley–Blackburn R7 (même sens que le verdict)"
+    },
+    {
+      "id": "H-DEFENSE",
+      "statut": "information affichée le 2026-11-22 (ligne de marquage de chaque équipe) ; n'entre ni dans le verdict ni dans le calcul des buts",
+      "regle": "défense percée = antagoniste du pôle (f−3) posé en base sans son protecteur (f−6)",
+      "observe": "79 matchs : percée, 2,11 buts encaissés ; attaque bloquée 1,90 ; protégée 1,48 ; calme 1,47. Une défense tient et l'autre percée : 20 victoires, 11 défaites. Pour le nombre de buts, attaque × défense adverse ne fait pas mieux que l'estimation actuelle (1,34 contre 1,30 d'erreur par équipe, un match laissé de côté)"
     }
   ],
   "lectures": [
