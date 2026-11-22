@@ -2581,6 +2581,13 @@
       "observe": "79 matchs. Pôle du front A : M1 saturée en résultante, 19 victoires sur 25, 2,40 buts pour, 0,92 contre ; M1 ouverte, 2 victoires sur 10, 1,70 pour, 3,30 contre. Pôle du front B : M10 saturée, 8 sur 16, 2,13 pour, 1,56 contre ; ouverte, 6 sur 23, 1,04 pour, 2,22 contre. Liaisons Terre par parité M1–M5 et M10–M14 : les deux en arrêt, R1 14, R7 3, 3 nuls (buts R1 2,6, R7 0,8) ; les deux liées, 6 nuls sur 18. Une dizaine de tableaux regardés : à confirmer",
       "appels": "les deux liaisons en arrêt, R1 attendu : Lens–Toulouse, FC Dallas–Portland, Liverpool–Manchester United, Burnley–Blackburn, Racing–Real Sociedad, Juventus–Venezia, Augsburg–Mainz, Brentford–Everton, Galatasaray–Aston Villa, Arsenal–Dortmund, Leipzig–Lens. Les deux liées, nul à surveiller : Zulte Waregem–Antwerp, Charleroi–Sint-Truiden, Getafe–Atlético, Marseille–Le Mans, Chicago–Charlotte, Feyenoord–Porto, Manchester City–Napoli, Real Madrid–PSV ; Eintracht–Hoffenheim déjà joué (1-0, pas de nul)",
       "verdict_apres_integration": "79 matchs : 8 appels du relais, 5 justes, 1 faux, 2 nuls"
+    },
+    {
+      "id": "H-MAISON-FRONT-MIROIR",
+      "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée (trop rare pour juger)",
+      "regle": "règle du propriétaire : le pôle dont la figure est dans sa maison, avec la figure de son front direct (liaison Terre) ou de son miroir (± 8) aussi dans sa maison, gagne si l'autre pôle ne l'est pas",
+      "observe": "79 matchs : un seul pôle remplit la condition dans 9 matchs (base ou résultante) : 5 victoires, 2 défaites (13-7-3-13 2-1 ; 1-3-15-4 4-2), 2 nuls (Manchester City–Fulham 1-1, Newcastle–Arsenal 2-2). En base seulement : 4 victoires, 1 défaite, 1 nul ; front direct en base : 3 sur 3. Sur 65 536 thèmes, un seul pôle la remplit dans 8,4 % des thèmes",
+      "appels": "Burnley–Blackburn R7 (même sens que le verdict)"
     }
   ],
   "lectures": [
