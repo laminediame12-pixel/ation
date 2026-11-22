@@ -212,3 +212,7 @@ Arrêt = antagoniste d'une maison posé en base dans cette maison (M1 à M15) ; 
 ### Les arrêts face au rouge et au penalty (2026-11-22)
 
 28 matchs étiquetés (13 incidents : 10 penalties, 4 rouges). Avec au moins un arrêt, incident 10/17 ; sans arrêt 3/11 ; 2 arrêts ou plus 6/8. Croisés avec le débordement d'énergie d'un seul pôle (règle actuelle) : débordement + arrêt 8/10, débordement seul 2/4, arrêt seul 2/7, aucun 1/7. Le côté : les arrêts dans le front d'un pôle ne désignent pas mieux que le débordement (le pôle qui subit un arrêt venu du front adverse : 2 incidents sur 6, deux rouges contre lui). Candidate H-INCIDENT-ARRETS. Script : `outils/arrets_incident.js`.
+
+### Nœuds du verdict reliés à leur maison : essai (2026-11-22)
+
+Essai demandé : dans le moteur, le flux d'un nœud ne passe que si la ligne du front ET la résultante de la maison du nœud (h = 4j + i + 1) sont saturées, comme dans la cartographie corrigée. Sur 80 matchs, le verdict passe de 40 justes, 10 faux, 10 nuls (60 appels) à 37 justes, 13 faux, 11 nuls (61 appels) ; les coordonnées seules de 27 justes / 11 faux à 25 / 15. L'essai dégrade le verdict : le moteur garde l'ancienne lecture des nœuds pour les coordonnées ; la cartographie garde la nouvelle (affichage du flux).
