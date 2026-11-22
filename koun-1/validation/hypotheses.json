@@ -2664,7 +2664,7 @@
     },
     {
       "id": "H-ARRETS-BUTS",
-      "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée",
+      "statut": "intégrée au verdict le 2026-11-22 (ligne « Buts au total », remplace la somme des buts moyens des niveaux de marquage), à la demande du propriétaire ; en observation",
       "origine": "mise en lumière par la correction de la cartographie (arrêts répercutés sur les quatre fronts)",
       "regle": "un arrêt = l'antagoniste d'une maison posé en base dans cette maison (M1 à M15). Thème avec au moins un arrêt → match à buts ; sans arrêt → match fermé",
       "observe": "80 matchs : avec arrêt 4,19 buts par match (48 matchs), sans 2,72 (32) ; écart atteint par hasard dans 0,14 % des mélanges. Plus de 2,5 buts : 36/48 contre 15/32 ; plus de 3,5 : 30/48 contre 9/32. Estimation du total de buts (un match laissé de côté) : moyenne selon arrêt 1,65 d'erreur contre 1,85 pour l'estimation actuelle. Aucun effet sur le nul. Le pôle qui a des arrêts dans son front marque plus (2,21 contre 1,66 buts). 23 314 thèmes sur 65 536 n'ont aucun arrêt"
