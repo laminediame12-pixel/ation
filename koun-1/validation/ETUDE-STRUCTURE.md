@@ -144,3 +144,7 @@ Défense d'un pôle : son antagoniste (f−3) posé en base et son protecteur (f
 ### Le nul par l'équilibre des diagonales entre les deux pôles (2026-11-22)
 
 80 matchs, 15 nuls (19 %). 63 cases : catégorie du verdict, égalité des sommes des nœuds diagonaux des deux pôles, même profil par niveau, écart de saturation, liaisons par parité entre les nœuds des deux pôles (chaque niveau, chaque diagonale), somme des 4 nœuds des deux pôles, sommes des diagonales entières. Meilleure case : somme des 8 résultantes diagonales à 3 niveaux impairs, 9 nuls sur 24 (38 %) ; atteinte par hasard dans 21 % des mélanges. Aucune lecture d'équilibre des diagonales ne tient le nul. Cases sans aucun nul (8 matchs chacune) : verdict par les coordonnées seules, somme des 4 nœuds des deux pôles = Rubeus, somme des 8 = Conjunctio. Script : `outils/diagonales_nul2.js`.
+
+### Intersection des deux diagonales : le carré central 6-7-10-11 (2026-11-22)
+
+Identité exacte : somme(1-6-11-16) + somme(4-7-10-13) = somme des 4 coins (1, 4, 13, 16), le centre 6-7-10-11, compté deux fois, s'annule (Populus). Donc les deux diagonales sont égales exactement quand la somme des 4 coins vaut Populus. Les égalités 1-6-11-16 = 4-7-10-13, = 6-7-10-11, ou centre = Populus arrivent chacune dans 4 096 thèmes sur 65 536 (1 sur 16) ; les trois égales dans 256 (1 sur 256), en base comme en résultante. Sur 80 matchs : diagonales égales 2 fois (5-0, 0-4) ; centre = Populus 9 fois en base (2 nuls), 6 fois en résultante (2 nuls) ; aucun signal pour le nul. Script : `outils/intersection_diagonales.js`.
