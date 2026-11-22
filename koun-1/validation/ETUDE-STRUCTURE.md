@@ -67,3 +67,11 @@ Sur 79 matchs (le pôle le plus lié gagne / perd) : liaisons Terre du front 14 
 ### Qui sabote, qui renforce (2026-11-22)
 
 Liaisons par parité du front de chaque pôle ; liaison coupée (1+2) : saboteur = figure posée en base dans la maison impaire ; liaison renforcée : 1+1. Saboteurs classés : figures du pôle, de l'allié (front binôme), du front adverse (celui de l'autre pôle), de l'autre front. Sur 79 matchs, rien ne ressort sauf : le pôle qui a le moins de liaisons Terre renforcées (1+1, les deux maisons à Terre ouverte) gagne 22 fois, perd 7 (meilleur des 13 tests atteint par hasard dans 6 % des mélanges). Ce n'est pas un signal nouveau : il ne contredit jamais la balance de la Terre (H-BALANCE-TERRE) et en est un cas particulier (deux maisons du front à Terre ouverte). Le sabotage par le front adverse ou par l'allié ne désigne rien (21/22, 10/14). Script : `outils/sabotage.js`.
+
+### Circuit Eau–Terre dans la boucle occupée par le pôle (propriétaire, 2026-11-22)
+
+Le pôle est lu dans la boucle de front de la maison qu'il occupe. Circuit : pôle P —Terre— front direct Q —Eau— miroir de Q —Terre— miroir de P —Eau— P (boucle fermée de 4 liaisons) ; Feu et Air vont ensemble sur les liaisons miroir. Relations de fronts : ennemi = front de l'antagoniste (front + 1), allié = binôme (front + 2), proie = front − 1. R7 occupe toujours la boucle alliée de celle de R1 (maison + 6).
+
+Exemple 8-5-11-7 (7-0) : R1 Fortuna Minor en M8 (boucle de sa proie, front D) : Terre M8–M4 arrêt, Eau M4–M12 arrêt, Terre M12–M16 arrêt, Eau M16–M8 liée ; R7 Carcer en M14 (sa boucle) : 2 liaisons sur 4.
+
+Sur 79 matchs (parité) : le pôle au circuit Eau–Terre le plus lié gagne 17 fois, perd 31 (c'est le plus coupé qui gagne) ; circuit coupé sur ses 4 liaisons : le pôle a marqué 12 fois sur 12 (8 fois 2 buts ou plus) ; Feu–Air 23 / 23. Lecture stricte (liée seulement 2+2) : 24 / 22. Meilleur des 8 tests atteint par hasard dans 26 % des mélanges. Boucle occupée : chez sa proie 26/31 pôles marquent (2,1 buts), dans son front 49/62 (1,9), chez l'allié 23/31 (1,6), chez l'ennemi 25/34 (1,4). Script : `outils/circuit.js`.
