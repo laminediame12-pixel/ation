@@ -1239,7 +1239,11 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; buteurs : Antony 50' (Betis), Kike Salas 90+1' (Sevilla) (Eurosport, ESPN)",
+  "mi_temps": [
+   0,
+   0
+  ]
  },
  {
   "themes": [
@@ -1412,7 +1416,11 @@
    0
   ],
   "lot": "recherche-web",
-  "note": "score trouvé sur le web le 2026-11-22 ; Noslin, Frattesi (France 24)"
+  "note": "score trouvé sur le web le 2026-11-22 ; Noslin, Frattesi (France 24) ; buteurs : Noslin 25', 68', Frattesi 90' (DAZN, Goal)",
+  "mi_temps": [
+   1,
+   0
+  ]
  },
  {
   "themes": [
@@ -1429,6 +1437,10 @@
    5
   ],
   "lot": "recherche-web",
-  "note": "score trouvé sur le web le 2026-11-22 ; Malen ×4, Mora (France 24)"
+  "note": "score trouvé sur le web le 2026-11-22 ; Malen ×4, Mora (France 24) ; buteurs : Malen 39' ; Elphege 54' ; Malen 68', Mora 70-71', Malen 77', 90' (Goal, Il Messaggero, Sportmediaset)",
+  "mi_temps": [
+   0,
+   1
+  ]
  }
 ]
