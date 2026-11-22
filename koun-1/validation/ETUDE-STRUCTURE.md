@@ -106,3 +106,9 @@ Nœuds (croisements des canaux, plein / mixte / vide) dans la boucle de front de
 | nœuds diagonaux, Terre (verdict) | 31 / 7 | 23 / 13 |
 
 Seul, le thème angulaire ne désigne rien (meilleur test atteint par hasard dans 57 % des mélanges ; ses nœuds tendent même à l'inverse). Mais il travaille avec le principal : quand ses nœuds pleins contredisent le verdict principal, le principal a raison 15 fois sur 17 ; quand le principal est à égalité (31 matchs), les nœuds diagonaux du thème angulaire désignent le vainqueur 10 fois sur 13 décidés (H-ANGULAIRE-RELAIS, candidate). Script : `outils/angulaire_noeuds.js`.
+
+### Diagonales du thème angulaire, niveau par niveau (2026-11-22)
+
+24 lectures par thème (diagonale 1-6-11-16, 4-7-10-13 ou les deux ; Feu, Air, Eau, Terre ; résultante ou base) dans le front de chaque pôle. Principal : seule la Terre porte le signal (les deux diagonales : 31 justes, 7 faux ; atteinte par hasard dans 0,1 % des mélanges) ; Feu et Air ne disent rien. Angulaire : aucune lecture significative seule (meilleure : Feu de 1-6-11-16, 7 / 19 à l'inverse, atteinte par hasard dans 31 % des mélanges).
+
+Croisé (Terre des 2 nœuds diagonaux, écart principal × écart angulaire) : principal pour R1 et angulaire à égalité : R1 11, R7 1, 2 nuls ; principal à égalité et angulaire pour R1 : R1 9, R7 3, 1 nul ; principal pour R7 et angulaire à égalité : 6 nuls, R7 3, R1 0. Relais (principal, sinon angulaire) : 41 justes, 10 faux, 16 sans appel. Script : `outils/diagonales_angulaire.js`.

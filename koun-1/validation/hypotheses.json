@@ -2571,7 +2571,8 @@
       "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée",
       "regle": "quand les nœuds diagonaux du thème principal sont à égalité (pas d'appel), les nœuds diagonaux du thème angulaire (mères M1, M4, M7, M10) désignent le vainqueur",
       "observe": "79 matchs : le principal est à égalité dans 31 matchs ; le thème angulaire y désigne le vainqueur 10 fois, se trompe 3 fois, 2 nuls. Choisie parmi 12 lectures des nœuds : à confirmer. Autres constats : quand le thème angulaire contredit le principal (nœuds pleins), le principal a raison 15 fois sur 17 ; seul, le thème angulaire ne désigne rien (meilleur test atteint par hasard dans 57 % des mélanges)",
-      "appels": "Genk–La Louvière R1 ; Osasuna–Málaga R7 ; Bologna–Udinese R1 ; Atalanta–Inter R7 ; Feyenoord–Porto R1. Eintracht–Hoffenheim (R7) était déjà joué : 1-0 pour Eintracht, appel faux, compté comme un échec"
+      "appels": "Genk–La Louvière R1 ; Osasuna–Málaga R7 ; Bologna–Udinese R1 ; Atalanta–Inter R7 ; Feyenoord–Porto R1. Eintracht–Hoffenheim (R7) était déjà joué : 1-0 pour Eintracht, appel faux, compté comme un échec",
+      "etude_diagonales": "2026-11-22 : 24 lectures des diagonales du thème angulaire (chaque diagonale, chaque niveau, résultante ou base) : aucune significative seule (meilleure atteinte par hasard dans 31 % des mélanges ; au principal, la Terre des deux nœuds : 0,1 %). Combiné (Terre des 2 nœuds diagonaux) : principal seul 31 justes / 7 faux / 31 sans appel ; relais (principal, sinon angulaire) 41 / 10 / 16 sans appel ; somme des deux 36 / 10. Poche à surveiller pour le nul : principal en faveur de R7 et angulaire à égalité : 6 nuls sur 9, R1 n'y gagne jamais"
     }
   ],
   "lectures": [
