@@ -340,15 +340,27 @@
     // axe M2+M8 ajouté le 2026-11-21 (criblage des six axes opposés : M1+M7 et M2+M8 sont les seuls à départager mieux que « toujours R1 »)
     var a1 = etat(L.R1.front, c1), b1 = etat(L.R7.front, c1), a2 = etat(L.R1.front, c2), b2 = etat(L.R7.front, c2), a3 = etat(L.R1.front, c3), b3 = etat(L.R7.front, c3), s = Math.sign(a1 - b1) + Math.sign(a2 - b2) + Math.sign(a3 - b3);
     return { coordination: c1, residuM9: c2, axe28: c3, R1: { m1m7: a1, m9: a2, m2m8: a3 }, R7: { m1m7: b1, m9: b2, m2m8: b3 }, ecart: s, gagnant: s > 0 ? 'R1' : s < 0 ? 'R7' : null }; }
+  // VERDICT DE VICTOIRE (2026-11-22) : balance de la Terre (n du front direct de chaque pôle) lue avec les nœuds de coordination, puis H-REPOS.
+  // Ordre : 1) Terre et coordonnées désignent le même pôle : victoire ; 2) H-REPOS ; 3) Terre seule : avantage, nul possible ; 4) coordonnées seules : avantage, nul possible ;
+  // 5) Terre et coordonnées opposées : pas d'appel ; 6) rien : pas d'appel, nul possible. Résultats observés dans VERDICT_STATS (justes, faux, nuls, appels).
+  var VERDICT_STATS = { accord: { ok: 19, ko: 2, nul: 4, n: 25 }, repos: { ok: 6, ko: 3, nul: 3, n: 12 }, terre: { ok: 6, ko: 5, nul: 2, n: 13 }, coord: { ok: 3, ko: 3, nul: 2, n: 8 }, oppose: { n: 6 }, rien: { n: 15 } };
+  function categorieVerdict(L) { var Q = marquage(L), C = coordonnees(L), R = repos(L), t = Math.sign(Q.R1.n - Q.R7.n), c = Math.sign(C.ecart), rp = R.gagnant === 'R1' ? 1 : R.gagnant === 'R7' ? -1 : 0;
+    if (t && t === c) return { cat: 'accord', v: t, Q: Q, C: C };
+    if (rp) return { cat: 'repos', v: rp, Q: Q, C: C };
+    if (t && !c) return { cat: 'terre', v: t, Q: Q, C: C };
+    if (c && !t) return { cat: 'coord', v: c, Q: Q, C: C };
+    if (t && c) return { cat: 'oppose', v: 0, Q: Q, C: C };
+    return { cat: 'rien', v: 0, Q: Q, C: C }; }
   function verdict(L) {
-    var R = repos(L), Q = coordonnees(L);
-    if (R.gagnant) return { v: R.gagnant === 'R1' ? '1' : '2', force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire (8 justes sur 15 appels sur 79 matchs)', raison: R.gagnant + ' possède ses deux fronts au repos, sans que leur antagoniste y soit' + (Q.gagnant && Q.gagnant !== R.gagnant ? ' (les coordonnées désignent l\'autre pôle)' : '') };
-    // Coordonnées (2026-11-21) : l'écart des trois nœuds dit la force de l'avantage. Écart 2 ou 3 : domination (15 justes sur 18 appels, aucun nul) ;
-    // écart 1 : avantage, nul possible (4 justes sur 8, 3 nuls) ; écart nul : pas d'appel, nul possible.
-    var e = Math.abs(Q.ecart), cote = Q.gagnant, det = ' (M1+M7 : R1 ' + Q.R1.m1m7 + ', R7 ' + Q.R7.m1m7 + ' ; résultante de M9 : R1 ' + Q.R1.m9 + ', R7 ' + Q.R7.m9 + ' ; M2+M8 : R1 ' + Q.R1.m2m8 + ', R7 ' + Q.R7.m2m8 + ' ; plein 2, mixte 1, vide 0)';
-    if (e >= 2) return { v: cote === 'R1' ? '1' : '2', force: 'domination', regle: 'H-COORD-VICTOIRE', statut: 'domination : 19 justes sur 28 appels (en tout 27 justes sur 38 appels sur 65 matchs décisifs ; « toujours R1 » : 23 sur 38)', raison: cote + ' domine : ' + e + ' nœuds de coordination sur 3 plus pleins dans son front' + det };
-    if (e === 1) return { v: cote === 'R1' ? '1' : '2', force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: 'avantage : 8 justes sur 18 appels, 6 nuls', raison: cote + ' n\'a l\'avantage que sur un nœud de coordination' + det };
-    return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune règle ne se prononce (H-REPOS muet ; nœuds de coordination à égalité : 3 des 6 nuls observés)' + det };
+    var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
+      st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux, ' + S.nul + ' nuls sur ' + S.n + ' appels' : '',
+      terre = 'Terre du front : R1 ' + Q.R1.n + '/4, R7 ' + Q.R7.n + '/4', noeuds = 'nœuds de coordination : écart ' + C.ecart;
+    if (K0.cat === 'accord') return { v: v, force: 'confirmee', regle: 'H-BALANCE-TERRE et H-COORD-VICTOIRE', statut: st, raison: cote + ' : sa Terre et ses nœuds de coordination l\'emportent (' + terre + ' ; ' + noeuds + ')' };
+    if (K0.cat === 'repos') return { v: v, force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire : ' + st, raison: cote + ' possède ses deux fronts au repos, sans que leur antagoniste y soit (' + terre + ')' };
+    if (K0.cat === 'terre') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-BALANCE-TERRE', statut: st, raison: cote + ' a plus de Terre saturée dans son front (' + terre + ') ; les nœuds de coordination sont à égalité' };
+    if (K0.cat === 'coord') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: st, raison: cote + ' a les nœuds de coordination les plus pleins (' + noeuds + ') ; Terre à égalité' };
+    if (K0.cat === 'oppose') return { v: null, force: null, nulPossible: false, regle: null, statut: null, raison: 'forces opposées : la Terre et les nœuds de coordination désignent des pôles différents (' + terre + ' ; ' + noeuds + ')' };
+    return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune force ne se dégage : Terre et nœuds de coordination à égalité, H-REPOS muet (' + terre + ')' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;

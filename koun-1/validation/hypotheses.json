@@ -2484,10 +2484,11 @@
     },
     {
       "id": "H-BALANCE-TERRE",
-      "statut": "SIGNAL 2026-11-22 : le plus solide trouvé pour la victoire ; en observation, non intégré",
+      "statut": "INTÉGRÉE au verdict de victoire le 2026-11-22, lue avec les nœuds de coordination",
       "regle": "le pôle dont le front direct a le plus de Terre saturée (n) que le front adverse gagne ; la Terre adverse ferme le marquage",
       "resultat": "79 matchs : 30 justes sur 42 appels (« toujours R1 » 22) ; sur les 21 matchs ajoutés après le choix de n : 14 justes (« toujours R1 » 8) ; corrélation n propre − n adverse / buts 0,34 ; buts de R1 selon n de R7 : 2,80 · 2,79 · 1,90 · 1,60 · 1,00",
-      "structure": "voir validation/ETUDE-STRUCTURE.md : grille 4 × 4 (front × rang), transposition mères ↔ filles"
+      "structure": "voir validation/ETUDE-STRUCTURE.md : grille 4 × 4 (front × rang), transposition mères ↔ filles",
+      "integration": "ordre : Terre et coordonnées d'accord → victoire (19 justes, 2 faux, 4 nuls sur 25) ; sinon H-REPOS (6, 3, 3 sur 12) ; sinon Terre seule → avantage, nul possible (6, 5, 2 sur 13) ; sinon coordonnées seules → avantage (3, 3, 2 sur 8) ; Terre et coordonnées opposées → pas d'appel (6 matchs) ; rien → pas d'appel, nul possible (15 matchs)"
     }
   ],
   "lectures": [
