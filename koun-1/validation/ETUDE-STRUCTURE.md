@@ -176,3 +176,7 @@ Côté M1 (1, 2, 3, 4, 9, 10, 13, 15) et côté M7 (5, 6, 7, 8, 11, 12, 14, 16).
 ### Recherche exhaustive des motifs du nul (2026-11-22)
 
 Toute lecture « niveau d'une maison ou d'une somme de maisons » est une parité des 16 points des mères : les 65 535 parités ont été testées, plus 68 lectures liées aux pôles et les croisements deux à deux. Parités : la meilleure (Feu, Air, Eau de M5 et Eau de M6 = Feu de M1, M2, M3 et Air de M3, nombre impair de niveaux impairs) contient les 15 nuls dans 38 matchs ; aucun nul dans les 42 autres. Mais avec 15 nuls pour 16 points, une telle parité peut exister par hasard (7 tirages sur 100 en trouvent une aussi serrée) ; meilleure atteinte par hasard dans 28 % des mélanges : candidate H-NUL-PARITE-M5M6, à juger à l'aveugle. Lectures liées aux pôles : la plus forte est le « nul fréquent » du verdict actuel, 11 nuls sur 22 (atteinte par hasard dans 0,3 % des mélanges, mais ses règles ont été trouvées sur ces mêmes matchs). Croisements : 11 nuls sur 13 pour le meilleur, sans valeur (le choix a vu les scores).
+
+### Affiner le nul avec M10 et M12 (2026-11-22)
+
+À l'intérieur des 38 matchs où le nul reste possible (Feu de M9 ≠ Eau de M11, 15 nuls), les 16 paires « niveau de M10 / niveau de M12 » (égaux ou différents) ont été testées. Meilleure : Feu de M10 et Terre de M12 différents 13 nuls sur 27, égaux 2 sur 11 ; atteinte par hasard dans 69 % des mélanges. M10 et M12 n'affinent pas le nul ; rien n'est intégré. Script : `outils/nul_m10_m12.js`.
