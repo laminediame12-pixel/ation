@@ -41,5 +41,7 @@ const mo = [0, 0]; D.forEach(d => { if (!M.moulin(M.lire(d.m)).actif) return; mo
 if (!src.includes('MOULIN_OBS = { nuls: ' + mo[0] + ', sur: ' + mo[1] + ' }')) err('moulin : ' + mo);
 const np = { d: [0, 0], e: [0, 0] }; D.forEach(d => { const o = M.nulParite(M.lire(d.m)).egaux ? np.e : np.d; o[1]++; if (d.sc[0] === d.sc[1]) o[0]++; });
 if (!src.includes('NUL_PARITE_OBS = { differents: { nuls: ' + np.d[0] + ', sur: ' + np.d[1] + ' }, egaux: { nuls: ' + np.e[0] + ', sur: ' + np.e[1] + ' } }')) err('nul parité : ' + JSON.stringify(np));
+const n14 = { s: [0, 0], o: [0, 0] }; D.forEach(d => { const P = M.nulParite(M.lire(d.m)); if (P.egaux) return; const x = P.terreM14 === 2 ? n14.s : n14.o; x[1]++; if (d.sc[0] === d.sc[1]) x[0]++; });
+if (!src.includes('NUL_M14_OBS = { saturee: { nuls: ' + n14.s[0] + ', sur: ' + n14.s[1] + ' }, ouverte: { nuls: ' + n14.o[0] + ', sur: ' + n14.o[1] + ' } }')) err('nul M14 : ' + JSON.stringify(n14));
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);

@@ -397,15 +397,20 @@
   // Exact : c'est la parité de Feu M1 + Feu M2 + Feu M3 + Air M3 (= Feu, Air, Eau de M5 et Eau de M6). Sur 80 matchs : différents, 15 nuls sur 38 ; égaux, 0 nul sur 42.
   // Seule parité, sur les 65 535 possibles, qui enferme les 15 nuls dans au plus 45 matchs ; une aussi serrée sort par hasard environ 7 fois sur 100 : en observation.
   var NUL_PARITE_OBS = { differents: { nuls: 15, sur: 38 }, egaux: { nuls: 0, sur: 42 } };
+  // Second étage (2026-11-22, H-NUL-M14, intégré à la demande du propriétaire, en observation) : quand le nul reste possible, la Terre de M14 (somme du côté M1)
+  // le sépare : saturée → nul fréquent ; ouverte → nul peu probable.
+  var NUL_M14_OBS = { saturee: { nuls: 13, sur: 22 }, ouverte: { nuls: 2, sur: 16 } };
   function nulParite(L) { var b = L.theme.bases, f9 = K.niveaux(b[9])[0], e11 = K.niveaux(b[11])[2];
-    return { feuM9: f9, eauM11: e11, egaux: f9 === e11, obs: NUL_PARITE_OBS }; }
+    return { feuM9: f9, eauM11: e11, egaux: f9 === e11, terreM14: K.niveaux(b[14])[3], obs: NUL_PARITE_OBS }; }
   function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L);
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     var etat = function (v) { return v === 2 ? 'saturé' : 'ouvert'; }, o = NUL_PARITE_OBS;
     V.nulExclu = false; V.nulPeuProbable = false; V.nulFrequent = false;
     if (P.egaux) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · nul : Feu de M9 et Eau de M11 tous deux ' + etat(P.feuM9) + 's : nul quasi impossible (' + o.egaux.nuls + ' nul sur ' + o.egaux.sur + ', H-NUL-PARITE-M5M6)'; }
-    else { V.nulPossible = true; V.raison += ' · nul : Feu de M9 ' + etat(P.feuM9) + ', Eau de M11 ' + etat(P.eauM11) + ' : nul possible (' + o.differents.nuls + ' nuls sur ' + o.differents.sur + ', H-NUL-PARITE-M5M6)'; }
+    else { V.nulPossible = true; var q = NUL_M14_OBS, t14 = P.terreM14 === 2;
+      V.nulFrequent = t14; V.nulPeuProbable = !t14;
+      V.raison += ' · nul : Feu de M9 ' + etat(P.feuM9) + ', Eau de M11 ' + etat(P.eauM11) + ' : le nul reste possible ; Terre de M14 ' + etat(P.terreM14) + 'e : ' + (t14 ? 'nul fréquent (' + q.saturee.nuls + ' nuls sur ' + q.saturee.sur : 'nul peu probable (' + q.ouverte.nuls + ' nuls sur ' + q.ouverte.sur) + ', H-NUL-PARITE-M5M6 et H-NUL-M14)'; }
     return V; }
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
