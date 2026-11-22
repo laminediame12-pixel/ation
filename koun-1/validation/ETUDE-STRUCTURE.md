@@ -188,3 +188,7 @@ La transposition mères ↔ filles échange point par point le côté M1 et le c
 ### Les paires M1–M8, M2–M7, M3–M6, M4–M5, M9–M12, M10–M11, M13–M14 (2026-11-22)
 
 Aucune des 8 symétries de la grille mère × niveau (rotations, miroirs, transposition, antitransposition) n'échange exactement ces paires : ce n'est pas une symétrie de la construction. Appliquées telles quelles à la règle du nul : Feu de M12 ≠ Eau de M10, 6 nuls sur 42 (égaux : 9 sur 38) ; Eau de M12 ≠ Feu de M10, 8 sur 40 (égaux 7 sur 40) ; rien. Règle actuelle : 15 sur 38 (égaux 0 sur 42). Chaque paire, à l'intérieur des 38 matchs à nul possible (même figure, même Terre, parité de la somme) : rien de net. Note : M15 a toujours un nombre pair de niveaux impairs (65 536 thèmes), ce n'est pas un signal. Script : `outils/nul_reflet.js`.
+
+### M13 et M14 face au nul (2026-11-22)
+
+92 cases sur les 80 matchs (niveaux en base et en résultante, figure, front, égalités de niveaux entre M13 et M14) : la plus forte est la Terre de M14 (base) saturée, 13 nuls sur 40 (ouverte : 2 sur 40) ; meilleure atteinte par hasard dans 29 % des mélanges. À l'intérieur des 38 matchs à nul possible : Terre de M14 saturée 13 nuls sur 22 (59 %), ouverte 2 sur 16 (13 %) ; atteinte par hasard dans 15 % des mélanges. M14 est exactement la somme du côté M1. Candidate H-NUL-M14 posée avant les matchs. Script : `outils/nul_m13_m14.js`.

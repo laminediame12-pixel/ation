@@ -2652,6 +2652,13 @@
       "appels": "nul exclu (parité paire) : Kilmarnock–Aberdeen, Zulte Waregem–Antwerp, Racing–Real Sociedad, Osasuna–Málaga, Paris FC–Angers, Lorient–Rennes, Marseille–Le Mans, AC Milan–Frosinone, Atalanta–Inter, Augsburg–Mainz, Chicago–Charlotte, Leipzig–Lens, Real Madrid–PSV",
       "lecture": "forme lisible, exacte sur 65 536 thèmes : nul possible seulement si le Feu de M9 et l'Eau de M11 diffèrent (l'un saturé, l'autre ouvert) ; s'ils sont égaux, pas de nul. M11 est le nœud Eau × Eau ; M9 = M1 + M2",
       "etude_2026_11_22": "seule parité (sur 65 535) qui contient les 15 nuls dans au plus 45 matchs ; ôter un seul des 4 points la détruit ; avec le verdict : P impaire et « nul fréquent » 11 nuls sur 16, P paire 0 nul dans toutes les catégories (dont « fréquent » 0 sur 6). Appui indépendant : nul à la mi-temps, P impaire 11 sur 17, P paire 5 sur 16. Sur les 65 536 thèmes, P impaire dans la moitié, et dans la moitié pour chaque maison de R1"
+    },
+    {
+      "id": "H-NUL-M14",
+      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "regle": "à l'intérieur de la règle du nul (Feu de M9 ≠ Eau de M11) : Terre de M14 (base) saturée → nul probable ; ouverte → nul rare. Rappel exact : M14 = somme du côté M1 (1, 2, 3, 4, 9, 10, 13, 15)",
+      "observe": "80 matchs : nul possible et Terre de M14 saturée 13 nuls sur 22 (59 %) ; nul possible et Terre de M14 ouverte 2 sur 16 (13 %). Sur les 80 : Terre de M14 saturée 13 sur 40, ouverte 2 sur 40. Choisie parmi 80 cases (meilleure atteinte par hasard dans 15 % des mélanges)",
+      "appels": "nul probable (Terre de M14 saturée) : Lens–Toulouse, Charleroi–Sint-Truiden, FC Dallas–Portland, Hull City–Brighton, Liverpool–Manchester United, Sassuolo–Genoa, Levante–Elche, Galatasaray–Aston Villa, Arsenal–Dortmund, Feyenoord–Porto, St. Louis–LAFC, San Jose–Houston. Nul rare (ouverte) : Monaco–Auxerre, Genk–La Louvière, New England–Philadelphie, Barcelona–Villarreal, Getafe–Atlético, Bologna–Udinese, Juventus–Venezia, Werder–Hambourg, Brentford–Everton, Bodø/Glimt–LASK, Manchester City–Napoli, Slovan Bratislava–Betis, Inter Miami–Columbus ; Eintracht–Hoffenheim déjà joué (1-0, pas de nul : conforme)"
     }
   ],
   "lectures": [
