@@ -2489,6 +2489,14 @@
       "resultat": "79 matchs : 30 justes sur 42 appels (« toujours R1 » 22) ; sur les 21 matchs ajoutés après le choix de n : 14 justes (« toujours R1 » 8) ; corrélation n propre − n adverse / buts 0,34 ; buts de R1 selon n de R7 : 2,80 · 2,79 · 1,90 · 1,60 · 1,00",
       "structure": "voir validation/ETUDE-STRUCTURE.md : grille 4 × 4 (front × rang), transposition mères ↔ filles",
       "integration": "ordre : Terre et coordonnées d'accord → victoire (19 justes, 2 faux, 4 nuls sur 25) ; sinon H-REPOS (6, 3, 3 sur 12) ; sinon Terre seule → avantage, nul possible (6, 5, 2 sur 13) ; sinon coordonnées seules → avantage (3, 3, 2 sur 8) ; Terre et coordonnées opposées → pas d'appel (6 matchs) ; rien → pas d'appel, nul possible (15 matchs)"
+    },
+    {
+      "id": "H-NUL-FIGURES",
+      "statut": "CANDIDATES posées le 2026-11-22 avant les scores des matchs à venir ; non intégrées",
+      "regle": "une figure précise à une combinaison précise accompagne le nul",
+      "candidates": "M3+M5 = Conjunctio (4 nuls sur 4 : 2-2, 1-1, 1-1, 0-0) ; M1+M6+M13 (même figure que 1-5-12-15, la combinaison de la 1re mi-temps) = Tristitia (4 sur 5) ; M1+M11 = Conjunctio (4 sur 5) ; M3+M8+M13 = Populus (4 sur 5)",
+      "reserves": "2840 caractéristiques testées (255 combinaisons × 16 figures, au moins 4 matchs) sur 78 matchs dont 14 nuls : un lien aussi fort apparaît par hasard dans 58 % des mélanges ; ce ne sont donc que des candidates",
+      "a_venir": "matchs du fichier v3 concernés, à juger : FC Dallas–Portland et Levante–Elche (M3+M8+M13 = Populus), Brentford–Everton (1-5-12-15 = Tristitia), Bodø/Glimt–LASK (M3+M5 = Conjunctio), Real Madrid–PSV et Inter Miami–Columbus (M1+M11 = Conjunctio)"
     }
   ],
   "lectures": [
