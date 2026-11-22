@@ -2397,6 +2397,25 @@
           "mi_temps": "0-0",
           "juste": false,
           "remarque": "Torino était « bloqué » au marquage ; la figure Albus n'est qu'en résultante de M1 (aucun ancrage en base) ; cause du 0-0 non trouvée"
+        },
+        {
+          "match": "Strasbourg–Brest",
+          "annonce": "but (Strasbourg désigné)",
+          "mi_temps": "0-1",
+          "juste": true,
+          "cote": "faux : c'est Brest qui a marqué"
+        },
+        {
+          "match": "Lille–Lyon",
+          "annonce": "pas de but",
+          "mi_temps": "0-1",
+          "juste": false
+        },
+        {
+          "match": "Bolton–Portsmouth",
+          "annonce": "but des deux (versions 2 et 3)",
+          "mi_temps": "1-1",
+          "juste": true
         }
       ],
       "puissance_2026_11_21": "nombre de buts en 1re mi-temps (14 matchs, Coventry corrigé à 2-2) : le facteur le plus lié est le nombre de fois où la figure de 1-5-12-15 est ancrée en base (corrélation 0,47) ; présence en résultante seule : -0,03 ; antagoniste en base 0,07 ; protecteur -0,05 ; niveaux saturés 0,05 ; somme des n -0,10. Coventry–Crystal Palace (2-2) : Albus en base de M4 (chez elle), M5 et M9, rapide, présente aussi en résultante de M10 et M14 (front de R1) ; base de M4 dans le front D de R7 : la figure touche les deux fronts et les deux équipes marquent deux fois.",
@@ -2442,7 +2461,8 @@
       "regle": "la deuxième mi-temps a sa propre combinaison (le propriétaire sait qu'elle existe mais ne l'a pas). Candidates construites par la structure seule : A) 7-11-6-9, les maisons opposées (à 6) de 1-5-12-15 ; B) 9-13-4-7, les maisons miroir (à 8) de 1-5-12-15 ; C) recherche parmi les 255 combinaisons distinctes, contre les buts de deuxième mi-temps, avec correction du nombre d'essais",
       "observation": "les équipes « bloquées » (Terre du front fermée, aucune figure au repos) ont marqué en 1re mi-temps 5 fois sur 6 ; en 2e mi-temps, Orlando et Torino n'ont rien marqué : le blocage pourrait être celui de la deuxième période",
       "premier_test": "17 matchs avec mi-temps et score final : but en 2e mi-temps dans 14. Candidate A (7-11-6-9) : Eau de la figure saturée 13 sur 14 avec but, Eau ouverte 1 sur 3 (niveau choisi après coup parmi 8 essais) ; candidate B (9-13-4-7) : Eau saturée dans les 17 cas, ne départage pas. Blocage par période : équipes « bloquées » 4 sur 5 ont marqué en 1re mi-temps, 1 sur 5 en 2e (Nice à la 90+5).",
-      "recherche_mecanisme": "19 matchs avec mi-temps et score final (16 avec but en 2e mi-temps) : le mécanisme de la 1re mi-temps appliqué aux 255 combinaisons ; la meilleure, 3+5+7+15, explique 16 matchs sur 19 mais ne désigne l'équipe qui marque que 7 fois sur 15 ; la répartition des scores montre que beaucoup de combinaisons atteignent 12 à 15 : rien de distinct. Les candidates structurelles A (8/17) et B (6/17) ne tiennent pas avec ce mécanisme. Il manque surtout des deuxièmes mi-temps sans but (3 seulement)."
+      "recherche_mecanisme": "19 matchs avec mi-temps et score final (16 avec but en 2e mi-temps) : le mécanisme de la 1re mi-temps appliqué aux 255 combinaisons ; la meilleure, 3+5+7+15, explique 16 matchs sur 19 mais ne désigne l'équipe qui marque que 7 fois sur 15 ; la répartition des scores montre que beaucoup de combinaisons atteignent 12 à 15 : rien de distinct. Les candidates structurelles A (8/17) et B (6/17) ne tiennent pas avec ce mécanisme. Il manque surtout des deuxièmes mi-temps sans but (3 seulement).",
+      "test_22": "22 matchs avec mi-temps et score final (6 deuxièmes mi-temps sans but : Bayern–Cologne, Millwall–QPR, Aston Villa–Sunderland, Bolton–Portsmouth, Strasbourg–Brest, Lille–Lyon) : le meilleur score des 255 combinaisons avec le mécanisme de la 1re mi-temps (18 sur 22) est atteint aussi en mélangeant les résultats dans 30 % des cas : aucune combinaison ne se détache encore"
     },
     {
       "id": "JUGEMENT-WEB-2026-11-21",

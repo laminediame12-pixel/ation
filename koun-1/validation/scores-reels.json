@@ -1108,7 +1108,11 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; 2e mi-temps 0-0 d'après le propriétaire, donc mi-temps 1-1",
+  "mi_temps": [
+   1,
+   1
+  ]
  },
  {
   "themes": [
@@ -1253,5 +1257,47 @@
    0,
    1
   ]
+ },
+ {
+  "themes": [
+   3,
+   1,
+   15,
+   1
+  ],
+  "match": "Strasbourg–Brest",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "score": [
+   0,
+   1
+  ],
+  "mi_temps": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "Edjouma 22' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Ouest-France)"
+ },
+ {
+  "themes": [
+   9,
+   5,
+   12,
+   10
+  ],
+  "match": "Lille–Lyon",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "score": [
+   0,
+   1
+  ],
+  "mi_temps": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "Bidstrup 40' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Flashscore, Footeo)"
  }
 ]
