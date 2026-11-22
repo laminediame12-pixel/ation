@@ -79,3 +79,9 @@ Sur 79 matchs (parité) : le pôle au circuit Eau–Terre le plus lié gagne 17 
 ### La Terre des diagonales et le nul (2026-11-22)
 
 Question du propriétaire : la Terre des diagonales (1-6-11-16 et 4-7-10-13) tient-elle l'équilibre du thème ? Sur 79 matchs (14 nuls), 12 lectures : nombre de nœuds à Terre saturée par diagonale, sur les 8 nœuds, égalité entre les deux diagonales, parité de la Terre des sommes, bases, nœuds des fronts des pôles, nœuds des fronts non occupés. Meilleure case : 3 nœuds sur 8 saturés, 7 nuls sur 20 ; atteinte par hasard dans 53 % des mélanges. La Terre des diagonales ne tient pas le nul. Elle désigne le vainqueur : nœuds diagonaux des fronts des pôles 1 contre 0 : R1 gagne 7 fois sur 7 ; 1 contre 2 : R7 gagne 7 fois, aucun R1, 3 nuls ; 0 contre 2 : R7 3 fois sur 3 (voir H-DIAGONALES-TERRE). Script : `outils/diagonale_nul.js`.
+
+### Diagonales des points des 4 mères (2026-11-22)
+
+Grille mère × niveau. D1 = Feu M1, Air M2, Eau M3, Terre M4 ; D2 = D1 lue à l'envers (la figure retournée) ; D3 = Terre M1, Eau M2, Air M3, Feu M4 ; D4 = D3 retournée. Structure : la diagonale des mères est aussi celle des filles (transposition) ; D1 partage un niveau avec chacune des mères M1 à M4 et des filles M5 à M8 (D1 = M1 dans 1 thème sur 8) ; D2 et D4 n'apportent rien de plus que D1 et D3 (même partition des thèmes, figure retournée) ; D1+D2 = D3+D4 dans 1 thème sur 4. Aucune relation exacte avec les sommes des diagonales de maisons 1-6-11-16 et 4-7-10-13.
+
+Sur 79 matchs, 168 cases testées : nul, meilleure case D1 = Tristitia (D2 = Laetitia, la même) 5 nuls sur 9, atteinte par hasard dans 14 % des mélanges ; vainqueur, meilleure case atteinte par hasard dans 47 % des mélanges. Pas de signal. Script : `outils/diagonales_meres.js`.
