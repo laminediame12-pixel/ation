@@ -2661,6 +2661,13 @@
       "observe": "80 matchs : nul possible et Terre de M14 saturée 13 nuls sur 22 (59 %) ; nul possible et Terre de M14 ouverte 2 sur 16 (13 %). Sur les 80 : Terre de M14 saturée 13 sur 40, ouverte 2 sur 40. Choisie parmi 80 cases (meilleure atteinte par hasard dans 15 % des mélanges)",
       "appels": "nul probable (Terre de M14 saturée) : Lens–Toulouse, Charleroi–Sint-Truiden, FC Dallas–Portland, Hull City–Brighton, Liverpool–Manchester United, Sassuolo–Genoa, Levante–Elche, Galatasaray–Aston Villa, Arsenal–Dortmund, Feyenoord–Porto, St. Louis–LAFC, San Jose–Houston. Nul rare (ouverte) : Monaco–Auxerre, Genk–La Louvière, New England–Philadelphie, Barcelona–Villarreal, Getafe–Atlético, Bologna–Udinese, Juventus–Venezia, Werder–Hambourg, Brentford–Everton, Bodø/Glimt–LASK, Manchester City–Napoli, Slovan Bratislava–Betis, Inter Miami–Columbus ; Eintracht–Hoffenheim déjà joué (1-0, pas de nul : conforme)",
       "epreuves_2026_11_22": "épreuves sur des cibles qui n'ont pas servi à trouver la règle (outils/nul_preuves.js) : nul à la mi-temps (33 matchs) exclu 5/16 (31 %), peu probable 4/8 (50 %), fréquent 7/9 (78 %), hasard 2,3 % ; 2e mi-temps à égalité (30) 19 %, 40 %, 56 %, hasard 5,1 % ; matchs serrés (un but d'écart) : rien (hasard 37 %), la règle vise le nul, pas l'écart. Stable selon l'origine : aucun nul « exclu » dans les trois lots (sans date 0/12, février 2026 0/6, novembre 2026 0/23). Preuve d'ensemble : sur 300 mélanges des scores, jamais une parité n'enferme tous les nuls finaux dans ≤ 38 matchs tout en séparant aussi bien les nuls à la mi-temps (< 0,3 %). Réserve : nul à la mi-temps et nul final ne sont pas indépendants"
+    },
+    {
+      "id": "H-ARRETS-BUTS",
+      "statut": "CANDIDATE posée le 2026-11-22 ; non intégrée",
+      "origine": "mise en lumière par la correction de la cartographie (arrêts répercutés sur les quatre fronts)",
+      "regle": "un arrêt = l'antagoniste d'une maison posé en base dans cette maison (M1 à M15). Thème avec au moins un arrêt → match à buts ; sans arrêt → match fermé",
+      "observe": "80 matchs : avec arrêt 4,19 buts par match (48 matchs), sans 2,72 (32) ; écart atteint par hasard dans 0,14 % des mélanges. Plus de 2,5 buts : 36/48 contre 15/32 ; plus de 3,5 : 30/48 contre 9/32. Estimation du total de buts (un match laissé de côté) : moyenne selon arrêt 1,65 d'erreur contre 1,85 pour l'estimation actuelle. Aucun effet sur le nul. Le pôle qui a des arrêts dans son front marque plus (2,21 contre 1,66 buts). 23 314 thèmes sur 65 536 n'ont aucun arrêt"
     }
   ],
   "lectures": [
