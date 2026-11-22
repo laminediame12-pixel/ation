@@ -2546,6 +2546,14 @@
       "observe": "7 matchs : 5 nuls (3-3, 1-1, 1-1, 1-1, 0-0), 2 victoires larges de R1 (5-0 avec Rubeus, 5-1). Maison de R1 criblée sur les 16 : la meilleure pour le nul n'est atteinte par hasard que dans 0,5 % des mélanges. À l'opposé, R1 en M1 : 0 nul sur 10, R1 gagne 7 fois (non intégré)",
       "autres_pistes_vues": "relecture de tout le thème dans l'ordre à partir de R1 (positions 1 à 16) : 1242 caractéristiques, le seul lien fort est celui-ci (positions 1+8 = Laetitia, qui revient à R1 en M2)",
       "appels": "nul ou victoire de R1 (pas de victoire de R7) : Zulte Waregem–Antwerp, Getafe–Atlético, AC Milan–Frosinone, Augsburg–Mainz, Bodø/Glimt–LASK ; Marseille–Le Mans porte aussi Rubeus : pas de nul attendu"
+    },
+    {
+      "id": "H-AXE-MIROIR",
+      "statut": "CANDIDATE posée le 2026-11-22 avant les matchs à venir ; non intégrée",
+      "origine": "remarque du propriétaire : une figure déplacée change les polarités des canaux de la figure de la maison et coupe la liaison avec son miroir (exemple : Puer en M4 inverse les 4 niveaux d'Albus, Puer + Albus = Via, l'axe M4–M12 est coupé partout)",
+      "structure": "une figure intruse coupe les niveaux où elle diffère de la figure de la maison ; chaque figure a un seul inverse complet (somme Via) qui coupe tout",
+      "observe": "79 matchs, liaisons du front de chaque pôle (Feu, Air, Eau entre miroirs ; Terre déviée) : axe horizontal (f+4 ↔ f+12) le plus lié gagne 25 fois, perd 12 ; axe vertical (f ↔ f+8) 17 contre 22 ; inverse complet dans le front : le pôle qui en a moins gagne 14 fois, perd 7. Le meilleur des 9 tests est atteint par hasard dans 22 % des mélanges : non significatif seul. Mais quand la balance de la Terre est à égalité, l'axe horizontal désigne le vainqueur 9 fois sur 11 décidés (2 nuls)",
+      "appels": "Terre à égalité, l'axe horizontal désigne : Zulte Waregem–Antwerp R1 ; Genk–La Louvière R7 ; New England–Philadelphie R7 ; FC Dallas–Portland R1 ; Liverpool–Manchester United R7 ; Burnley–Blackburn R7 ; Bologna–Udinese R7 ; Chicago–Charlotte R7 ; Manchester City–Napoli R1 ; Real Madrid–PSV R1"
     }
   ],
   "lectures": [
