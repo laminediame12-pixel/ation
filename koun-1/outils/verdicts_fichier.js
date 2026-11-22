@@ -3,6 +3,8 @@
 const fs = require('fs'), M = require('../moteur4/moteur.js'), K = require('../moteur3/noyau.js');
 const [, , ent, sor, pred] = process.argv;
 let s = fs.readFileSync(ent, 'utf8');
+// bouton « Système » : ouvrir le moteur actuel (koun.html, placé dans le même dossier) avec le thème, la date, les équipes et le jour de la semaine
+s = s.replace(/href="koun-moteur-[0-9.]+\.html\?/g, 'href="koun.html?').replace(/href="koun\.html\?theme=([0-9-]+)&date=(\d{4}-\d{2}-\d{2})(&jour=\d)?/g, (m, t, d) => 'href="koun.html?theme=' + t + '&date=' + d + '&jour=' + new Date(d + 'T12:00:00Z').getUTCDay());
 // fichier déjà passé au moteur : on retire les anciens verdicts avant d'ajouter les nouveaux
 s = s.replace(/<div class="kv"><div class="kvt">[\s\S]*?(?=<\/section>)/g, '').replace(/<p class="kn">[\s\S]*?<\/p>/g, '').replace(/\.kv\{margin-top:10px[^<]*?\.kn\{[^}]*\}/g, '');
 const D = JSON.parse(s.match(/DATA=(\[.*?\]);?\s*\n/)[1]);
