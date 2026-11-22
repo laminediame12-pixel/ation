@@ -164,3 +164,7 @@ Les filles sont la transposition des mères : niveau l de la fille k = niveau k 
 ### Les deux moulins des bords : 3-5-14-12 et 2-9-15-8 (2026-11-22)
 
 Identités exactes (65 536 thèmes) : 3-5-14-12 = M3+M6 (= M3+M5+M11 = M4+M6+M10) ; 2-9-15-8 = M8+M16 (= M1+M8+M15 = M7+M12+M16) ; les deux ensemble = bords = M16 + centre + coins. 2-9-15-8 égale le centre dans 1 thème sur 8 (le double du hasard) ; les autres égalités au hasard (1 sur 16). Sur 80 matchs, 38 cases : nul, meilleure atteinte par hasard dans 48 % des mélanges ; vainqueur, 77 %. Poche sans nul à surveiller : la figure 3-5-14-12 posée en base dans le front d'un seul pôle, 21 matchs, 0 nul (R1 14, R7 7) ; son front égal à celui de R7, 20 matchs, 0 nul. Script : `outils/moulins_bords.js`.
+
+### Les deux moulins sur la grille des points des mères (2026-11-22)
+
+Moulin A (cases de 3, 5, 14, 12) : Eau M1, Feu M2, Air M4, Terre M3 ; moulin B (cases de 2, 9, 15, 8) : Air M1, Feu M3, Eau M4, Terre M2. Aucun lien exact avec les moulins des maisons (égaux au hasard, 1 thème sur 16) ; par la transposition, le moulin A lu chez les filles égale le moulin B des mères dans 1 thème sur 4. Sur 80 matchs, la poche sans nul ne se retrouve pas pour le moulin A (dans le front d'un seul pôle : 4 nuls sur 32). Moulin B : dans le front de R1 seul, 0 nul sur 17 ; dans le front de R7 seul, 6 nuls sur 10 (asymétrique, repéré après coup). Là où le verdict laisse « nul possible », les deux moulins des mères ne concernent que 5 ou 6 matchs : rien à en tirer. Non intégrés. Script : `outils/moulins_meres.js`.
