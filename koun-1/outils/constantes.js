@@ -24,5 +24,7 @@ if (!src.includes('DESEQ_OBS = { nuls: ' + dq.n + ', sur: ' + dq.s + ' }')) err(
 const tj = { attaque: [0, 0], front: [0, 0], union: [0, 0], conteste: [0, 0] }; D.forEach(d => { const J = M.temoinsJuge(M.lire(d.m)), n = d.sc[0] === d.sc[1] ? 1 : 0; [['attaque', J.attaque], ['front', J.front], ['union', J.nulPeuProbable], ['conteste', J.conteste]].forEach(([k, v]) => { if (v) { tj[k][1]++; tj[k][0] += n; } }); });
 const tjs = 'TJ_OBS = { ' + Object.keys(tj).map(k => k + ': { nuls: ' + tj[k][0] + ', sur: ' + tj[k][1] + ' }').join(', ') + ' }';
 if (!src.includes(tjs)) err('témoins et juge : ' + tjs);
+const pa = { e: [0, 0], a: [0, 0] }; D.forEach(d => { const q = M.marquage(M.lire(d.m)); [['R1', 0], ['R7', 1]].forEach(([p, i]) => { const o = q[p].parite.equilibre ? pa.e : pa.a; o[1]++; if (d.sc[i] > 0) o[0]++; }); });
+if (!src.includes('PARITE_OBS = { equilibre: { oui: ' + pa.e[0] + ', sur: ' + pa.e[1] + ' }, autre: { oui: ' + pa.a[0] + ', sur: ' + pa.a[1] + ' } }')) err('parité EB : équilibre ' + pa.e + ' autre ' + pa.a);
 function err(m) { nbErr++; console.log('PÉRIMÉ :', m); }
 console.log(D.length + ' matchs, ' + O.length + ' pôles-matchs ; chiffres périmés : ' + nbErr); process.exit(nbErr ? 1 : 0);

@@ -2513,6 +2513,15 @@
       "reserves": "environ 25 relations comparées sur 78 matchs ; une lecture choisie après coup",
       "a_venir": "Kilmarnock–Aberdeen, Liverpool–Manchester United, Racing–Real Sociedad, Osasuna–Málaga, Augsburg–Mainz, Brentford–Everton (aussi candidat nul H-NUL-FIGURES : les deux pistes s'opposent), Feyenoord–Porto : pas de nul attendu",
       "correction_2026-11-22": "compte refait sans exclusion : S14 dans le même front que M15 = 19 matchs, 1 nul (le 0 sur 13 excluait les cas déjà classés égal, protecteur ou antagoniste). Union inchangée : 26 matchs, 1 nul. Intégrée au verdict le 2026-11-22 comme « nul peu probable » (et « nul fréquent » quand M13+M5 attaque le juge)"
+    },
+    {
+      "id": "H-PARITE-EB",
+      "statut": "intégrée au marquage le 2026-11-22, en observation ; appels posés avant les matchs à venir",
+      "paradigme": "parité des points (impair 1, pair 2 ; 1+2=1, 1+1=2, 2+2=2) au lieu de la saturation",
+      "regle": "la figure f d'un pôle expulse son énergie dans les 15 autres nœuds : E = M16 + f (exact, la somme des 16 bases vaut M16 sur les 65 536 thèmes). EB = E + somme de la boucle du front de son binôme. EB avec exactement 2 niveaux impairs (parité équilibrée) : le pôle marque",
+      "observe": "52 pôles sur 55 ont marqué (95 %) contre 71 sur 103 sinon (69 %) ; 144 caractéristiques de parité criblées, le meilleur lien atteint par hasard dans 2 % des mélanges ; vrai dans chaque niveau de saturation (fort 23/23, freiné 13/14, faible 9/10, bloqué 7/8). Les 3 exceptions sont des R7 écrasés (4-0, 5-0, 3-0). Courbe en cloche : 0 impair 5/8, 1 : 31/43, 2 : 52/55, 3 : 30/44, 4 : 5/8",
+      "sans_effet": "aucune caractéristique de parité ne désigne le vainqueur (meilleur lien atteint par hasard dans 92 % des mélanges)",
+      "appels": "marque : Kilmarnock–Aberdeen R7 ; Eintracht–Hoffenheim R7 ; Zulte Waregem–Antwerp R1 et R7 ; New England–Philadelphie R1 ; FC Dallas–Portland R1 et R7 ; Barcelona–Villarreal R7 ; Getafe–Atlético R1 ; Paris FC–Angers R1 ; Marseille–Le Mans R7 ; Bologna–Udinese R1 et R7 ; Sassuolo–Genoa R1 ; Juventus–Venezia R7 ; AC Milan–Frosinone R7 ; Atalanta–Inter R7 ; Augsburg–Mainz R1 ; Werder–Hambourg R7 ; Bodø/Glimt–LASK R1 et R7 ; Feyenoord–Porto R1 ; Leipzig–Lens R1 et R7 ; Real Madrid–PSV R7 ; St. Louis–LAFC R1 et R7 ; San Jose–Houston R1 et R7"
     }
   ],
   "lectures": [

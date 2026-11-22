@@ -410,6 +410,14 @@
     // Fréquences observées (158 pôles-matchs) : fort (n >= 2, au moins une figure au repos), freiné (n >= 2, aucune), faible (n <= 1, au moins une), bloqué (n <= 1, aucune).
     [[a, 'R1'], [b, 'R7']].forEach(function (x) { var q = x[0], r = RP[x[1]].total, k = q.n >= 2 ? (r ? 'fort' : 'freiné') : (r ? 'faible' : 'bloqué'), o = NIVEAUX_MARQUAGE[k];
       q.repos = r; q.niveau = k; q.p2n = o.deux / o.sur; q.p1n = o.un / o.sur; q.moyN = o.moy; q.obsN = o.sur; });
+    // PARITÉ (paradigme du propriétaire, 2026-11-22, H-PARITE-EB, en observation) : on lit les points impairs (1) et pairs (2), somme = 1+2=1, 1+1=2, 2+2=2.
+    // La figure f du pôle, posée dans sa maison, expulse son énergie dans les 15 autres nœuds : E = M16 + f (exact : la somme des 16 bases vaut M16).
+    // Pour atteindre son binôme, elle traverse la boucle du front binôme : EB = E + somme des 4 maisons du front de binôme(f). EB à parité équilibrée
+    // (exactement 2 niveaux impairs sur 4) : l'énergie passe, le pôle marque. Indépendant de la saturation (vrai dans chaque niveau fort, freiné, faible, bloqué).
+    var PARITE_OBS = { equilibre: { oui: 52, sur: 55 }, autre: { oui: 71, sur: 103 } };
+    [[a, L.R1], [b, L.R7]].forEach(function (x) { var q = x[0], f = x[1].figure, bf = K.binome(f), z = (bf - 1) % 4, E = K.additionner(T.bases[16], f),
+      Fb = [0, 1, 2, 3].map(function (i) { return T.bases[z + 1 + 4 * i]; }).reduce(K.additionner), eb = K.additionner(E, Fb), imp = K.niveaux(eb).filter(function (v) { return v === 1; }).length;
+      q.parite = { energie: E, boucleBinome: Fb, figure: eb, impairs: imp, equilibre: imp === 2, obs: imp === 2 ? PARITE_OBS.equilibre : PARITE_OBS.autre }; });
     // deux marquent : produit des deux probabilités (hypothèse d'indépendance : 75 % prédit en moyenne contre 73 % observé sur 37 matchs) ; buts attendus : somme des moyennes par n
     // TÉMOIN M5+M7 (signal post hoc, trouvé par criblage des 255 combinaisons distinctes) : quand la Terre de la figure base(M5)+base(M7) n'est pas saturée, les deux équipes ont marqué
     // dans 20 matchs sur 21 observés ; saturée, dans 9 sur 20.
