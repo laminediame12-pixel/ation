@@ -10,3 +10,7 @@ Données : `validation/mi-temps.json` et les matchs de `scores-reels.json` qui o
 - Détecteur d'incident, somme des n : rien.
 - Criblage des 255 combinaisons (10 matchs) : meilleures corrélations 0,80 à 0,85, au niveau du hasard (p = 0,73 et 0,92 par permutation). 1-5-12-15 ≡ M1+M13+M6 ; la partie M1+M13 (niveau Feu) est parmi les meilleures pour « au moins un but », piste à revoir.
 - À poursuivre : il faut une trentaine de matchs, et surtout des 0-0 et des figures lentes.
+
+## Combinaison 5-7-12-15 pour la 2e mi-temps (2026-11-22)
+
+30 matchs avec mi-temps et score final (une équipe marque en 2e mi-temps 28 fois sur 60). 5-7-12-15 : lecture des côtés (figure fixe : son côté encaisse, sinon il marque) 5 justes sur 12 ; lecture de l'ancrage 11 sur 25. Ne marche pas (classée 1230e sur 1789 combinaisons de 4 maisons). 4-5-13-15 reste la combinaison de la 2e mi-temps : ancrage 14 sur 19 ; côtés 6 sur 11. Script : `outils/combinaison_mt2.js`.
