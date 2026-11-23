@@ -405,12 +405,9 @@
   function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L);
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
-    var etat = function (v) { return v === 2 ? 'saturé' : 'ouvert'; }, o = NUL_PARITE_OBS;
-    V.nulExclu = false; V.nulPeuProbable = false; V.nulFrequent = false;
-    if (P.egaux) { V.nulPossible = false; V.nulExclu = true; V.raison += ' · nul : Feu de M9 et Eau de M11 tous deux ' + etat(P.feuM9) + 's : nul quasi impossible (' + o.egaux.nuls + ' nul sur ' + o.egaux.sur + ', H-NUL-PARITE-M5M6)'; }
-    else { V.nulPossible = true; var q = NUL_M14_OBS, t14 = P.terreM14 === 2;
-      V.nulFrequent = t14; V.nulPeuProbable = !t14;
-      V.raison += ' · nul : Feu de M9 ' + etat(P.feuM9) + ', Eau de M11 ' + etat(P.eauM11) + ' : le nul reste possible ; Terre de M14 ' + etat(P.terreM14) + 'e : ' + (t14 ? 'nul fréquent (' + q.saturee.nuls + ' nuls sur ' + q.saturee.sur : 'nul peu probable (' + q.ouverte.nuls + ' nuls sur ' + q.ouverte.sur) + ', H-NUL-PARITE-M5M6 et H-NUL-M14)'; }
+    // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée
+    // du verdict ; elle reste une lecture (nulParite). Le verdict ne trie plus le nul.
+    V.nulExclu = false; V.nulPeuProbable = false; V.nulFrequent = false; V.nulPossible = true;
     return V; }
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
