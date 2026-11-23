@@ -2645,7 +2645,7 @@
     },
     {
       "id": "H-NUL-PARITE-M5M6",
-      "statut": "intégrée au verdict le 2026-11-22 comme SEULE règle du nul (remplace Rubeus, R1 en M2, témoins face au juge, moulin, M3–M9), à la demande du propriétaire ; en observation : les 13 appels « nul exclu » posés avant les scores la jugeront",
+      "statut": "RÉFUTÉE le 2026-11-23 à l'aveugle : 3 nuls sur 10 matchs annoncés « nul quasi impossible » (Zulte Waregem–Antwerp, Lorient–Rennes, Atalanta–Inter) ; encore dans le verdict en attendant la décision du propriétaire",
       "origine": "recherche exhaustive des 65 535 parités des 16 points des mères (outils/nul_exhaustif.js)",
       "regle": "compter les niveaux impairs parmi Feu, Air et Eau de M5 et Eau de M6 (= Feu de M1, M2, M3 et Air de M3) : nombre pair → pas de nul ; nombre impair → nul possible",
       "observe": "80 matchs : les 15 nuls sont tous du côté impair (15 sur 38) ; côté pair, 0 nul sur 42. Réserve importante : avec 15 nuls et 16 points, une parité qui contient tous les nuls peut exister par hasard ; une aussi serrée (au plus 38 matchs) arrive pour 7 tirages au hasard sur 100. La meilleure parité est atteinte par hasard dans 28 % des mélanges",
@@ -2675,6 +2675,12 @@
       "regle": "incident (penalty ou rouge) probable quand le débordement d'énergie d'un seul pôle (H-INCIDENT-PARITE) s'accompagne d'au moins un arrêt dans le thème ; l'incident tombe sur le pôle qui déborde",
       "observe": "28 matchs étiquetés : avec arrêt, incident 10/17 ; sans arrêt 3/11 ; 2 arrêts ou plus 6/8. Croisé : débordement + arrêt 8/10 ; débordement sans arrêt 2/4 ; arrêt sans débordement 2/7 ; ni l'un ni l'autre 1/7. Les arrêts dans le front d'un pôle ne désignent pas mieux le côté que le débordement",
       "appels": "incident probable : Liverpool–Manchester United (R7), Racing–Real Sociedad (R1), Paris FC–Angers (R7), Sassuolo–Genoa (R7), Atalanta–Inter (R1), Werder–Hambourg (R1), Galatasaray–Aston Villa (R1), Feyenoord–Porto (R7). Déjà joués, conformes mais vus avant la règle : Eintracht–Hoffenheim (penalty pour Eintracht, R1), Barcelona–Villarreal (penalty pour Barcelone, R1)"
+    },
+    {
+      "id": "JUGEMENT-AVEUGLE-2026-11-23",
+      "statut": "jugement à l'aveugle du moteur actuel sur 26 matchs joués après la construction des règles (validation/resultats-aveugles-2026-11-23.json, outils/juger_aveugle.js)",
+      "resultats": "victoire : 9 justes, 5 faux, 6 nuls (20 appels). Nul : « quasi impossible » 3 nuls sur 10 (Zulte Waregem–Antwerp 2-2, Lorient–Rennes 1-1, Atalanta–Inter 4-4), « peu probable » 2/10, « fréquent » 2/6. Marque (parité équilibrée) : 13/19 (68 %, sous le taux de base de 78 %). Buts : avec arrêt 3,77, sans arrêt 3,23 (même sens, écart réduit). Incident (étiquettes partielles) : probable 3/8, possible 2/8, aucun 0/10",
+      "consequences": "H-NUL-PARITE-M5M6 RÉFUTÉE dans sa forme « nul quasi impossible » : 3 nuls sur 10 matchs exclus, alors qu'un seul suffisait à la faire tomber (annoncé avant les scores). H-NUL-M14 : 2 sur 6 en « fréquent », 2 sur 10 en « peu probable » : pas de séparation. H-PARITE-EB : 13/19, ne fait pas mieux que le hasard sur ce lot. H-DIAGONALES-TERRE (verdict) : 9 justes, 5 faux"
     }
   ],
   "lectures": [
