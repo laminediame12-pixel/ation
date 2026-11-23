@@ -1071,13 +1071,202 @@
   "essais": 1
  },
  {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Sabah",
+  "equipe2": "Barcelona",
+  "jour": "Mercredi",
+  "theme": "10-3-3-14",
+  "essais": 1
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Slavia Prague",
+  "equipe2": "Villarreal",
+  "jour": "Mercredi",
+  "theme": "13-7-12-5",
+  "essais": 8
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Atlético",
+  "equipe2": "Viking",
+  "jour": "Mercredi",
+  "theme": "12-2-10-16",
+  "essais": 2
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Club Bruges",
+  "equipe2": "Liverpool",
+  "jour": "Mercredi",
+  "theme": "3-4-7-14",
+  "essais": 11
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Inter",
+  "equipe2": "Stuttgart",
+  "jour": "Mercredi",
+  "theme": "9-10-12-9",
+  "essais": 5
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Shakhtar Donetsk",
+  "equipe2": "Fenerbahçe",
+  "jour": "Mercredi",
+  "theme": "1-15-11-8",
+  "essais": 2
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Lille",
+  "equipe2": "Bayern",
+  "jour": "Mercredi",
+  "theme": "3-15-10-6",
+  "essais": 1
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "PSG",
+  "equipe2": "Roma",
+  "jour": "Mercredi",
+  "theme": "9-10-4-1",
+  "essais": 9
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "Ligue des champions",
+  "equipe1": "Sporting",
+  "equipe2": "Manchester United",
+  "jour": "Mercredi",
+  "theme": "9-5-13-2",
+  "essais": 14
+ },
+ {
+  "date": "2026-11-26",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Fateh",
+  "equipe2": "Al Riyadh",
+  "jour": "Jeudi",
+  "theme": "13-1-2-3",
+  "essais": 8
+ },
+ {
+  "date": "2026-11-26",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Abha",
+  "equipe2": "Al Shabab",
+  "jour": "Jeudi",
+  "theme": "16-7-6-14",
+  "essais": 2
+ },
+ {
+  "date": "2026-11-26",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Faisaly",
+  "equipe2": "Al Diriyah",
+  "jour": "Jeudi",
+  "theme": "1-8-3-4",
+  "essais": 18
+ },
+ {
   "date": "2026-11-27",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Kholood",
+  "equipe2": "Al Khaleej",
+  "jour": "Vendredi",
+  "theme": "5-16-12-11",
+  "essais": 2
+ },
+ {
+  "date": "2026-11-27",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Qadsiah",
+  "equipe2": "Al Fayha",
+  "jour": "Vendredi",
+  "theme": "11-15-10-13",
+  "essais": 7
+ },
+ {
+  "date": "2026-11-27",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Ittihad",
+  "equipe2": "NEOM",
+  "jour": "Vendredi",
+  "theme": "5-4-1-16",
+  "essais": 1
+ },
+ {
+  "date": "2026-11-28",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Hazem",
+  "equipe2": "Al Nassr",
+  "jour": "Samedi",
+  "theme": "3-10-9-13",
+  "essais": 3
+ },
+ {
+  "date": "2026-11-28",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Ettifaq",
+  "equipe2": "Al Hilal",
+  "jour": "Samedi",
+  "theme": "12-7-15-5",
+  "essais": 3
+ },
+ {
+  "date": "2026-11-28",
+  "championnat": "Arabie saoudite",
+  "equipe1": "Al Ahli",
+  "equipe2": "Al Taawoun",
+  "jour": "Samedi",
+  "theme": "2-12-15-4",
+  "essais": 6
+ },
+ {
+  "date": "2026-11-24",
+  "championnat": "MLS",
+  "equipe1": "St. Louis",
+  "equipe2": "LAFC",
+  "jour": "Mardi",
+  "theme": "6-1-11-12",
+  "essais": "repris du lot du 20 au 25"
+ },
+ {
+  "date": "2026-11-25",
+  "championnat": "MLS",
+  "equipe1": "San Jose",
+  "equipe2": "Houston",
+  "jour": "Mercredi",
+  "theme": "14-9-11-5",
+  "essais": "repris du lot du 20 au 25"
+ },
+ {
+  "date": "2026-11-28",
   "championnat": "MLS",
   "equipe1": "Columbus",
   "equipe2": "Inter Miami",
-  "jour": "Vendredi",
-  "theme": "12-16-2-11",
-  "essais": 7
+  "jour": "Samedi",
+  "theme": "14-7-13-13",
+  "essais": 3
+ },
+ {
+  "date": "2026-11-28",
+  "championnat": "MLS",
+  "equipe1": "Real Salt Lake",
+  "equipe2": "Vancouver",
+  "jour": "Samedi",
+  "theme": "6-9-2-8",
+  "essais": 1
  },
  {
   "date": "2026-11-28",
@@ -1085,8 +1274,8 @@
   "equipe1": "Charlotte",
   "equipe2": "Chicago",
   "jour": "Samedi",
-  "theme": "9-1-3-11",
-  "essais": 7
+  "theme": "2-1-4-10",
+  "essais": 2
  },
  {
   "date": "2026-11-28",
@@ -1094,8 +1283,8 @@
   "equipe1": "Houston",
   "equipe2": "San Jose",
   "jour": "Samedi",
-  "theme": "14-5-7-16",
-  "essais": 1
+  "theme": "13-16-14-13",
+  "essais": 2
  },
  {
   "date": "2026-11-28",
@@ -1103,25 +1292,34 @@
   "equipe1": "Philadelphie",
   "equipe2": "New England",
   "jour": "Samedi",
-  "theme": "1-2-11-13",
-  "essais": 2
+  "theme": "3-9-15-8",
+  "essais": 1
  },
  {
   "date": "2026-11-28",
+  "championnat": "MLS",
+  "equipe1": "FC Cincinnati",
+  "equipe2": "Nashville",
+  "jour": "Samedi",
+  "theme": "14-4-11-11",
+  "essais": 7
+ },
+ {
+  "date": "2026-11-29",
   "championnat": "MLS",
   "equipe1": "LAFC",
   "equipe2": "St. Louis",
-  "jour": "Samedi",
-  "theme": "1-15-11-2",
-  "essais": 3
+  "jour": "Dimanche",
+  "theme": "4-13-9-8",
+  "essais": 1
  },
  {
-  "date": "2026-11-28",
+  "date": "2026-11-29",
   "championnat": "MLS",
   "equipe1": "Portland",
   "equipe2": "FC Dallas",
-  "jour": "Samedi",
-  "theme": "1-15-13-5",
-  "essais": 3
+  "jour": "Dimanche",
+  "theme": "5-8-4-11",
+  "essais": 2
  }
 ]
