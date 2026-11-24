@@ -2695,7 +2695,8 @@
    "statut": "NON SOUTENUE (2026-11-24), non intégrée",
    "enonce": "Piste du propriétaire : les points rouges (niveau actif de la base devenu 2 points dans la résultante) et les points actifs de la base, comptés pour les figures qui manquent au pôle (figures de son front absentes des bases, dans leur maison au repos) ou dans les 4 maisons de son front, désignent le pôle qui gagne et déterminent son score.",
    "resultats": "Corpus de 80 matchs : aucune des 5 lectures ne dépasse le hasard (meilleure atteinte par hasard dans 25 % des mélanges pour le vainqueur, 26 % pour les buts ; corrélations avec les buts entre 0,01 et 0,14). À l’aveugle sur 26 matchs : le sens s’inverse ou disparaît (corrélations de −0,19 à −0,11). Les points actifs du front du pôle donnent 16 victoires contre 28 défaites sur le corpus, mais 9 contre 5 à l’aveugle : pas de sens stable.",
-   "outil": "outils/points_rouges.js"
+   "outil": "outils/points_rouges.js, outils/points_rouges_crible.js",
+   "crible": "Criblage large (outils/points_rouges_crible.js) : 110 lectures par pôle (11 groupes de maisons : maison du pôle, maisons où sa figure est posée, son front, front de sa maison, du binôme, de l’antagoniste, binôme-antagoniste-protecteur, figures de son front absentes des bases ou du thème, présentes, absentes du front du pôle ou du binôme ; × rouges, actifs, rouges et actifs niveau par niveau). Vainqueur : meilleure lecture atteinte par hasard dans environ un tiers des mélanges ; validation en laissant un match de côté 6 justes, 25 faux. Buts du pôle : meilleure corrélation |0,20| atteinte par hasard dans plus de la moitié des mélanges ; « compte = buts » au mieux 53/160, sous « toujours 1 but » (55/160). Nul : rien au-dessus du hasard. Aucune lecture ne garde son sens à l’aveugle."
   }
  ],
  "lectures": [
