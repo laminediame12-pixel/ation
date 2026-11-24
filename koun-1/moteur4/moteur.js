@@ -389,7 +389,7 @@
   // RELAIS M1–M10 (2026-11-22, H-M1-M10, intégré à la demande du propriétaire, en observation) : M1 (Puer) et M10 (Carcer) sont les seuls nœuds diagonaux
   // dont la maison inverse la Terre ; la résultante de M1 + Puer donne la maison de R1 (exact). Quand le verdict n'a pas d'appel et que les deux liaisons Terre
   // M1–M5 et M10–M14 (parité : 2+2 et 1+1 liées, 1+2 arrêt) sont en arrêt, R1 prend l'avantage. Il ne s'ajoute jamais à un appel existant.
-  var M1M10_STATS = { ok: 5, ko: 1, nul: 2, n: 8 };
+  var M1M10_STATS = { ok: 9, ko: 3, nul: 3, n: 15 };
   function m1m10(L) { var T = L.theme, lien = function (x, y) { return K.niveaux(K.additionner(T.resultantes[x], T.resultantes[y]))[3] === 2; }, a = lien(1, 5), b = lien(10, 14);
     return { m1m5: a, m10m14: b, deuxArrets: !a && !b, stats: M1M10_STATS }; }
   // NUL (2026-11-22, H-NUL-PARITE-M5M6, seule règle du nul dans le verdict, à la demande du propriétaire ; remplace Rubeus, R1 en M2, témoins face au juge,
@@ -414,9 +414,10 @@
       st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux, ' + S.nul + ' nuls sur ' + S.n + ' appels' : '',
       G = K0.G, terre = 'Terre des nœuds diagonaux : R1 ' + G.R1.saturees.length + '/2 (M' + G.R1.maisons.join(', M') + '), R7 ' + G.R7.saturees.length + '/2 (M' + G.R7.maisons.join(', M') + ')', noeuds = 'nœuds de coordination : écart ' + C.ecart;
     if (K0.cat === 'accord') return { v: v, force: 'confirmee', regle: 'H-DIAGONALES-TERRE et H-COORD-VICTOIRE', statut: st, raison: cote + ' : sa Terre et ses nœuds de coordination l\'emportent (' + terre + ' ; ' + noeuds + ')' };
-    if (K0.cat === 'repos') return { v: v, force: 'repos', regle: 'H-REPOS', statut: 'règle du propriétaire : ' + st, raison: cote + ' possède ses deux fronts au repos, sans que leur antagoniste y soit (' + terre + ')' };
-    if (K0.cat === 'terre') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-DIAGONALES-TERRE', statut: st, raison: cote + ' a plus de Terre saturée sur ses nœuds diagonaux (' + terre + ') ; les nœuds de coordination sont à égalité' };
-    if (K0.cat === 'coord') return { v: v, force: 'avantage', nulPossible: true, regle: 'H-COORD-VICTOIRE', statut: st, raison: cote + ' a les nœuds de coordination les plus pleins (' + noeuds + ') ; Terre des nœuds diagonaux à égalité' };
+    // Resserrement (2026-11-24, revue sur 106 matchs, à la demande du propriétaire) : seules l'accord Terre + coordination (18 justes, 1 faux, 7 nuls ;
+    // aveugle 3/0) et H-M1-M10 (dans verdict) appellent. H-REPOS (7/6, aveugle 0/3), la Terre seule (aveugle 5/4) et la coordination seule (8/4, au niveau
+    // de « R1 gagne toujours ») ne décident plus : elles restent affichées comme indices.
+    if (K0.cat === 'repos' || K0.cat === 'terre' || K0.cat === 'coord') return { v: null, force: null, nulPossible: true, regle: null, statut: null, indice: { cat: K0.cat, cote: cote, regle: K0.cat === 'repos' ? 'H-REPOS' : K0.cat === 'terre' ? 'H-DIAGONALES-TERRE' : 'H-COORD-VICTOIRE', statut: st }, raison: 'pas d\'appel : seul indice, ' + (K0.cat === 'repos' ? 'H-REPOS (' + cote + ' a ses deux fronts au repos)' : K0.cat === 'terre' ? 'la Terre des nœuds diagonaux (' + terre + ')' : 'les nœuds de coordination (' + noeuds + ')') + ' désigne ' + cote + ', sans l\'accord des deux forces ; à l\'aveugle cet indice seul ne fait pas mieux que le hasard' };
     if (K0.cat === 'oppose') return { v: null, force: null, nulPossible: false, regle: null, statut: null, raison: 'forces opposées : la Terre des nœuds diagonaux et les nœuds de coordination désignent des pôles différents (' + terre + ' ; ' + noeuds + ')' };
     return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune force ne se dégage : Terre des nœuds diagonaux et nœuds de coordination à égalité, H-REPOS muet (' + terre + ')' };
   }

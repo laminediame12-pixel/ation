@@ -2720,6 +2720,13 @@
     "Incident": "probable 3/8, possible 2/8, aucun 0/10 à l’aveugle ; corpus « deux » 8/10, « aucun » 1/7 : même sens (étiquettes partielles)."
    },
    "outils": "outils/arrets_fouille.js, outils/verdict_composantes.js"
+  },
+  {
+   "id": "VERDICT-RESSERRE-2026-11-24",
+   "statut": "INTÉGRÉ (à la demande du propriétaire)",
+   "enonce": "Seules l’accord Terre des nœuds diagonaux + coordination et H-M1-M10 appellent la victoire ; H-REPOS, la Terre seule et la coordination seule deviennent des indices affichés sans décider.",
+   "resultats": "Avant : corpus 40/10 (10 nuls), aveugle 9/5 (6 nuls). Après : corpus 24 justes, 4 faux, 7 nuls ; aveugle 8 justes, 0 faux, 4 nuls ; réunis 32/4 (« R1 toujours » sur ces matchs : 26/10). M1-M10 s’applique désormais à plus de matchs : 9/3 (3 nuls) sur le corpus.",
+   "predictions": "validation/predictions-24-30-novembre-verdict-resserre.json"
   }
  ],
  "lectures": [
