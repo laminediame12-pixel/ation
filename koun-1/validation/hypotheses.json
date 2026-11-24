@@ -2689,6 +2689,13 @@
    "resultats": "Corpus de 80 matchs : base · fronts distincts 30 justes, 14 faux (68 %), 30 sans appel ; base + résultante 29/13 ; résultante seule 22/18. Meilleure des 6 variantes atteinte par hasard dans 5,3 % des mélanges. 26 matchs à l'aveugle (pris après coup, la piste n'était pas figée) : base · fronts distincts 7 justes, 4 faux, 4 nuls (64 %), 11 sans appel ; mélanges 67 %. Sur 106 matchs : 37 justes, 18 faux.",
    "outil": "outils/poles_fronts.js",
    "regle_protocole": "adoption après au moins 15 appels jugés au-dessus du hasard sur des matchs figés avant le score"
+  },
+  {
+   "id": "H-POINTS-ROUGES",
+   "statut": "NON SOUTENUE (2026-11-24), non intégrée",
+   "enonce": "Piste du propriétaire : les points rouges (niveau actif de la base devenu 2 points dans la résultante) et les points actifs de la base, comptés pour les figures qui manquent au pôle (figures de son front absentes des bases, dans leur maison au repos) ou dans les 4 maisons de son front, désignent le pôle qui gagne et déterminent son score.",
+   "resultats": "Corpus de 80 matchs : aucune des 5 lectures ne dépasse le hasard (meilleure atteinte par hasard dans 25 % des mélanges pour le vainqueur, 26 % pour les buts ; corrélations avec les buts entre 0,01 et 0,14). À l’aveugle sur 26 matchs : le sens s’inverse ou disparaît (corrélations de −0,19 à −0,11). Les points actifs du front du pôle donnent 16 victoires contre 28 défaites sur le corpus, mais 9 contre 5 à l’aveugle : pas de sens stable.",
+   "outil": "outils/points_rouges.js"
   }
  ],
  "lectures": [
