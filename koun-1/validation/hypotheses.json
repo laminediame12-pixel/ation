@@ -2705,6 +2705,21 @@
    "resultats": "84 matchs avec vainqueur (R1 gagne 51, R7 33). 18 modèles (logistique régularisée, plus proches voisins) : de 40/84 à 51/84. Le meilleur (51/84) égale exactement « R1 gagne toujours » (51/84) et est atteint ou dépassé avec des vainqueurs mélangés dans 14 essais sur 20. Sur les 26 matchs à l’aveugle, « R1 gagne toujours » fait 14 justes, 5 faux ; le verdict du moteur 9 justes, 5 faux.",
    "conclusion": "Dans ces matchs, le thème ne contient pas d’information apprenable sur le vainqueur au-delà de l’avantage de l’équipe de gauche (domicile).",
    "outil": "outils/principe_apprenable.js"
+  },
+  {
+   "id": "REVUE-2026-11-24",
+   "statut": "revue des règles intégrées sur les 106 matchs connus (80 corpus + 26 à l’aveugle)",
+   "resultats": {
+    "H-ARRETS-BUTS": "SOLIDE. Avec au moins un arrêt : 4,19 buts contre 2,72 (corpus), 3,77 contre 3,23 (aveugle, même sens) ; 106 matchs : +1,23 but, atteint par hasard dans 0,3 % des mélanges (règle posée avant) ; meilleure des 15 variantes testées, atteinte par hasard dans 3,6 %. Plus de 2,5 buts : 45/61 avec arrêt contre 23/45 sans. Selon le nombre : 0 → 2,87 ; 1 → 4,55 ; 2 → 3,71 ; 3 → 3,40.",
+    "H-ARRETS-HORS-MERES (candidate, figée)": "Arrêt en M5–M15 : 4,33 contre 2,66 (corpus), 4,18 contre 3,00 (aveugle) ; arrêt seulement chez les mères (M1–M4) : 1,80 but sur 5 matchs. Trouvée en regardant les deux lots : à juger sur le lot du 24 au 30 avant de remplacer la règle.",
+    "Accord diagonales de Terre + coordination": "18 justes, 1 faux, 7 nuls (corpus 15/1, aveugle 3/0) ; « R1 toujours » ferait 12/7 sur ces mêmes matchs.",
+    "H-M1-M10 (deux arrêts M1–M5 et M10–M14)": "R1 gagne 19 fois sur 22 matchs décisifs (corpus 14/3, aveugle 5/0) contre 61 % en général (probabilité de faire aussi bien par hasard : 1 %). Il désigne les matchs où l’équipe de gauche gagne.",
+    "Diagonales de Terre seules": "corpus 31/7, aveugle 5/4 : fortes sur le corpus, pas confirmées à l’aveugle.",
+    "H-COORD-VICTOIRE seule": "8/4, au niveau de « R1 toujours » (7/5).",
+    "H-REPOS": "7 justes, 6 faux (aveugle 0/3) : au niveau du hasard ; 13 appels, retrait au-delà de 15 appels selon le protocole.",
+    "Incident": "probable 3/8, possible 2/8, aucun 0/10 à l’aveugle ; corpus « deux » 8/10, « aucun » 1/7 : même sens (étiquettes partielles)."
+   },
+   "outils": "outils/arrets_fouille.js, outils/verdict_composantes.js"
   }
  ],
  "lectures": [
