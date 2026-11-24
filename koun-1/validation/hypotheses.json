@@ -2727,6 +2727,12 @@
    "enonce": "Seules l’accord Terre des nœuds diagonaux + coordination et H-M1-M10 appellent la victoire ; H-REPOS, la Terre seule et la coordination seule deviennent des indices affichés sans décider.",
    "resultats": "Avant : corpus 40/10 (10 nuls), aveugle 9/5 (6 nuls). Après : corpus 24 justes, 4 faux, 7 nuls ; aveugle 8 justes, 0 faux, 4 nuls ; réunis 32/4 (« R1 toujours » sur ces matchs : 26/10). M1-M10 s’applique désormais à plus de matchs : 9/3 (3 nuls) sur le corpus.",
    "fichier_predictions": "validation/predictions-24-30-novembre-verdict-resserre.json"
+  },
+  {
+   "id": "LOIS-VICTOIRE-2026-11-24",
+   "statut": "recherche de la loi la plus forte avec les relations du système (figure, antagoniste, protecteur, binôme, boucles de parité et de front) ; non intégrée",
+   "resultats": "72 lois sur 106 matchs. Les plus fortes : front du binôme posé en base 34 justes, 16 faux (corpus 27/10, aveugle 7/6) ; protecteur posé en base 29/15 (22/11, 7/4) ; figure du pôle chez elle 20/9 (16/7, 4/2). La meilleure des 72 est atteinte avec des résultats mélangés dans 33 % des cas ; validation en laissant un match de côté 34/16. Loi hiérarchique « figure chez elle, puis front du binôme » : 43/19 (aveugle 9/6). Là où le verdict se tait, ces lois font 19/15 (aveugle 3/4), le niveau du hasard. Verdict actuel : 32/4 ; « R1 gagne toujours » : 51/33.",
+   "outils": "outils/lois_victoire.js, outils/lois_combinees.js"
   }
  ],
  "lectures": [
