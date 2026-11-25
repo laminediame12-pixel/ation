@@ -641,6 +641,9 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var VC = victoireConvergence(L); V.victoireConvergence = VC;
     V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' }
       : { resultat: VC.score < 0 ? '2' : '1', raison: VC.score ? (VC.score > 0 ? 'R1' : 'R7') + ' : ' + VC.texte : 'signes de victoire à égalité (' + VC.texte + ') : avantage du domicile (R1)' };
+    // VICTOIRE NETTE (piste 4, 2026-11-25, outils/ecart_match.js) : victoire désignée avec |score de victoire| ≥ 2 et au moins un arrêt dans le thème.
+    // 106 matchs : 21 cas, vainqueur juste 19 fois, aucun nul, écart de deux buts ou plus 16 fois (aveugle : 3 vainqueurs justes sur 3).
+    if (V.decision.resultat !== 'N' && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ' : sur 21 cas, vainqueur juste 19 fois, aucun nul, deux buts d\'écart ou plus 16 fois) · ' + V.decision.raison; }
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée

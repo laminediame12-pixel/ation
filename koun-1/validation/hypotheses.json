@@ -2850,6 +2850,13 @@
    "enonce": "10 thèmes valides tirés pour chacun des 106 matchs connus : leurs décisions s’accordent-elles, et leur majorité prédit-elle le match ?",
    "resultats": "Accord entre deux thèmes d’un même match 36,2 %, entre deux thèmes de matchs différents 35,4 % : les thèmes tirés pour un match ne se ressemblent pas plus entre eux. Justesse : thème d’origine 64/106, un thème tiré 39,5/106, majorité des tirés 45/106. Mais à l’aveugle (26 matchs) : thème d’origine 14, thème tiré 11,4, majorité des tirés 14 ; l’écart sur le corpus (50 contre 29) vient surtout de ce que les règles ont été construites sur les thèmes d’origine. En passant (piste 3) : thème d’origine valide 46/81, non valide 18/25.",
    "outil": "outils/consensus_themes.js"
+  },
+  {
+   "id": "H-ECART-VICTOIRE-NETTE",
+   "statut": "INTÉGRÉE comme qualificatif de la décision (force « nette »), en observation (piste 4)",
+   "enonce": "Type de match (nul, serré, large). Victoire nette : victoire désignée avec |score de victoire| ≥ 2 et au moins un arrêt.",
+   "resultats": "|victoire| ≥ 2 : large 32/51 contre 20/55 (aveugle 6/8 contre 8/18) ; au moins un arrêt : large 36/61 contre 16/45 (aveugle 8/13 contre 6/13) ; nul fréquent : serré 4/34 seulement (nul ou large). Prédire nul / serré / large pour tous les matchs ne bat pas « toujours large » à l’aveugle (11 contre 14 sur 26). Victoire nette : 21 cas, vainqueur juste 19, aucun nul, large 16 (aveugle : vainqueur 3/3, large 2/3).",
+   "outil": "outils/ecart_match.js"
   }
  ],
  "lectures": [
