@@ -2775,6 +2775,13 @@
    "enonce": "6e signe demandé par le propriétaire, les diagonales des nœuds (1-6-11-16 et 4-7-10-13), niveaux Terre : moins de 4 résultantes à Terre saturée sur les 8 maisons diagonales = actions non concrétisées → pour le nul.",
    "resultats": "7 lectures Terre des diagonales testées seules : aucune ne sépare nettement le nul (16 % à 28 %). Retenue celle qui suit le principe « la Terre concrétise » et la seule qui renforce la convergence : peu concrétisées 11 nuls sur 39 (corpus 8/30, aveugle 3/9) contre 11/67. Convergence v3 : ≤ 0 → 1/18 ; +1 → 2/29 ; +2 → 4/26 ; +3 → 10/25 ; +4 → 4/7 ; +5 → 1/1 ; ≥ +3 → 15/33 (aveugle 3/8) ; ≤ +2 → 7/73 ; corrélation 0,41 (v2 0,38). Thème 12-10-14-5 : +3, nul fréquent. Le gain est petit et le signe a été choisi parmi 14 façons de l’ajouter : à confirmer sur le lot.",
    "outil": "outils/nul_diagonales_terre.js, outils/nul_convergence.js"
+  },
+  {
+   "id": "H-NUL-TEMOINS-JUGE",
+   "statut": "testée, non ajoutée à la convergence (elle l’affaiblit)",
+   "enonce": "Demande du propriétaire : les témoins M13 (fusion des mères) et M14 (fusion des filles), et le juge M15 = M13 + M14 qui confirme (Terre saturée) ou nie (Terre ouverte). Identité exacte : Terre de M15 saturée ⇔ M13 et M14 ont la même Terre.",
+   "resultats": "Juge confirme : 10 nuls sur 53 ; nie : 12 sur 53. Témoins (Terre M13 · M14) : 2·2 9/28, 2·1 4/28, 1·2 8/25, 1·1 1/25 : seule la Terre de M14 compte (17/53 contre 5/53), celle de M13 ne dit rien. Dans la convergence v3 (corrélation 0,41) : juge ±1 → 0,30 ; juge +1/0 → 0,37 ; juge à la place de M14 → 0,22. Le juge n’est donc pas ajouté ; le témoin des filles (M14) est déjà un signe.",
+   "outil": "outils/nul_temoins_juge.js"
   }
  ],
  "lectures": [
