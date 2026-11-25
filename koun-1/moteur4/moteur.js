@@ -425,7 +425,24 @@
     var r1f=L.R1&&L.R1.figure, r7f=L.R7&&L.R7.figure;
     return {phase:phase, detail:detail, scoreN:scoreN, scoreM:scoreM, counts:count, r1:place(r1f), r7:place(r7f), trajR1:r1f?orbit(r1f):[], trajR7:r7f?orbit(r7f):[]};
   }
-  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT;
+  // NUL PAR CONVERGENCE (H-NUL-CONVERGENCE-V3, méthode du propriétaire, 2026-11-25) : le nul n'est jamais dit par un seul signe.
+  // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
+  // équilibre des deux parties +1 ; Terre de M1, M2, M3 identique +1 ; Terre de M14 saturée +1 ; diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) +1.
+  // 106 matchs : score ≤ 0 → 1 nul sur 18 ; +1 → 2/29 ; +2 → 4/26 ; +3 → 10/25 ; +4 → 4/7 ; +5 → 1/1. Lecture : ≥ +3 nul fréquent, ≤ 0 nul écarté, sinon possible.
+  var NUL_CONV_OBS = { ecarte: { nul: 1, sur: 18 }, possible: { nul: 6, sur: 55 }, frequent: { nul: 15, sur: 33 } };
+  function nulConvergence(L) { var T = L.theme, b = T.bases, NOY = [4, 8, 12, 16], MOB = [6, 10, 14], n = 0, m = 0, h, sig = [];
+    for (h = 1; h <= 16; h++) [b[h], L.resu(h)].forEach(function (f) { if (NOY.indexOf(f) >= 0) n++; if (MOB.indexOf(f) >= 0) m++; });
+    var te = function (x) { return K.niveaux(b[x])[3]; }, d = ((L.R7.figure - L.R1.figure) % 16 + 16) % 16;
+    sig.push({ n: 'noyau Terre ' + (m > n ? 'mobile' : 'en équilibre') + ' (' + n + ' noyau, ' + m + ' mobiles)', v: m > n ? -1 : 1 });
+    if (MOB.indexOf(d) >= 0 || MOB.indexOf(L.lien) >= 0) sig.push({ n: 'triplet mobile entre R1 et R7', v: -1 });
+    if (equilibre(L).equilibre) sig.push({ n: 'équilibre des deux parties', v: 1 });
+    if (te(1) === te(2) && te(2) === te(3)) sig.push({ n: 'Terre de M1, M2, M3 identique', v: 1 });
+    if (te(14) === 2) sig.push({ n: 'Terre de M14 saturée (témoin des filles)', v: 1 });
+    if ([1, 6, 11, 16, 4, 7, 10, 13].filter(function (x) { return K.niveaux(x < 16 ? T.resultantes[x] : b[16])[3] === 2; }).length < 4) sig.push({ n: 'diagonales des nœuds peu concrétisées', v: 1 });
+    var s = sig.reduce(function (a, x) { return a + x.v; }, 0), niv = s >= 3 ? 'frequent' : s <= 0 ? 'ecarte' : 'possible', o = NUL_CONV_OBS[niv];
+    return { score: s, niveau: niv, libelle: niv === 'frequent' ? 'nul fréquent' : niv === 'ecarte' ? 'nul écarté' : 'nul possible', signes: sig, obs: o,
+      texte: 'score ' + (s > 0 ? '+' : '') + s + ' (' + sig.map(function (x) { return x.n + ' ' + (x.v > 0 ? '+1' : '−1'); }).join(', ') + ') ; ' + o.nul + ' nuls sur ' + o.sur + ' matchs à ce niveau (H-NUL-CONVERGENCE-V3, en observation)' }; }
+  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT; V.nulConvergence = nulConvergence(L);
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée
@@ -545,7 +562,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
