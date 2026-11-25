@@ -18,3 +18,6 @@ const VAR = {
 console.log(D.length + ' matchs (R1 ' + D.filter(d => d.r > 0).length + ', nuls ' + D.filter(d => !d.r).length + ', R7 ' + D.filter(d => d.r < 0).length + ') — résultat exact juste :');
 for (const [k, f] of Object.entries(VAR)) { const o = { corpus: 0, aveugle: 0 }, n = { corpus: 0, aveugle: 0 }; let nn = 0, nj = 0; D.forEach(d => { const p = f(d); n[d.lot]++; if (p === d.r) o[d.lot]++; if (!p) { nn++; if (!d.r) nj++; } });
   console.log('   ', k.padEnd(86), (o.corpus + o.aveugle) + '/' + D.length, '| corpus ' + o.corpus + '/' + n.corpus + ' · aveugle ' + o.aveugle + '/' + n.aveugle, '| « nul » dit ' + nn + ' fois, juste ' + nj); }
+const VAR2 = { 'F · nul fréquent → nul toujours ; sinon appel, sinon R1': d => d.nc.niveau === 'frequent' ? 0 : appel(d.V) || 1 };
+for (const [k, f] of Object.entries(VAR2)) { const o = { corpus: 0, aveugle: 0 }, n = { corpus: 0, aveugle: 0 }; let nn = 0, nj = 0; D.forEach(d => { const p = f(d); n[d.lot]++; if (p === d.r) o[d.lot]++; if (!p) { nn++; if (!d.r) nj++; } });
+  console.log('   ', k.padEnd(86), (o.corpus + o.aveugle) + '/' + D.length, '| corpus ' + o.corpus + '/' + n.corpus + ' · aveugle ' + o.aveugle + '/' + n.aveugle, '| « nul » dit ' + nn + ' fois, juste ' + nj); }

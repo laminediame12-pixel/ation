@@ -447,6 +447,10 @@
     return { score: s, niveau: niv, libelle: niv === 'frequent' ? 'nul fréquent' : niv === 'ecarte' ? 'nul écarté' : 'nul possible', signes: sig, obs: o,
       texte: 'score ' + (s > 0 ? '+' : '') + s + ' (' + sig.map(function (x) { return x.n + ' ' + (x.v > 0 ? '+1' : '−1'); }).join(', ') + ') ; ' + o.nul + ' nuls sur ' + o.sur + ' matchs à ce niveau (H-NUL-CONVERGENCE-V3, en observation)' }; }
   function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT; V.nulConvergence = nulConvergence(L);
+    // DÉCISION FINALE (2026-11-25, demande du propriétaire : toujours Victoire ou Nul, décidée par le moteur et non par la page ; outils/victoire_ou_nul.js, variante F) :
+    // nul fréquent (convergence ≥ +3) → Nul, même si une victoire est appelée ; sinon la victoire appelée ; sinon victoire de R1 (domicile). 106 matchs : 57 justes, nul dit 34 fois, juste 15.
+    V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' + (V.v ? ' ; ils l\'emportent sur la victoire appelée pour ' + (V.v === '1' ? 'R1' : 'R7') : '') }
+      : V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison } : { resultat: '1', raison: 'aucun vainqueur désigné et nul non fréquent : avantage du domicile (R1 gagne 61 % des matchs décidés)' };
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée
