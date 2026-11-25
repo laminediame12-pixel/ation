@@ -4,7 +4,7 @@
 //   noyau Terre   : phase d'équilibre (noyau ≥ mobile) → pour le nul ; phase mobile → contre
 //   triplet mobile : la distance de R1 à R7 ou leur somme tombe sur Amissio, Carcer ou Puella → contre (le mouvement continue)
 //   équilibre     : écarts de base et de résultante qui s'annulent (M.equilibre) → pour
-//   Terre des mères : Terre saturée en M1, M2, M3 → pour ; Terre de M14 saturée → pour
+//   Terre des mères : Terre de M1, M2, M3 identique (toute saturée ou toute ouverte) → pour ; Terre de M14 saturée → pour
 // On compte les signes pour moins les signes contre, et on regarde le taux de nul par niveau de convergence, lot par lot.
 const fs = require('fs'), path = require('path'), R = path.join(__dirname, '..'), M = require('../moteur4/moteur.js'), K = require('../moteur3/noyau.js');
 const lire = f => JSON.parse(fs.readFileSync(path.join(R, f), 'utf8'));
@@ -19,7 +19,8 @@ const SIGNES = {
   'noyau Terre en équilibre (pour) / mobile (contre)': L => phaseNoyau(L) === 'mobile' ? -1 : 1,
   'triplet mobile entre R1 et R7 (contre)': L => { const d = ((L.R7.figure - L.R1.figure) % 16 + 16) % 16; return MOB.includes(d) || MOB.includes(L.lien) ? -1 : 0; },
   'équilibre des deux parties (pour)': L => M.equilibre(L).equilibre ? 1 : 0,
-  'Terre saturée en M1, M2, M3 (pour)': L => [1, 2, 3].every(h => terre(L.theme.bases, h)) ? 1 : 0,
+  // remplacé le 2026-11-25 (thème 12-10-14-5, nul validé par le propriétaire) : la Terre des trois premières mères identique, toute saturée OU toute ouverte
+  'Terre de M1, M2, M3 identique (pour)': L => { const t = h => K.niveaux(L.theme.bases[h])[3]; return t(1) === t(2) && t(2) === t(3) ? 1 : 0; },
   'Terre de M14 saturée (pour)': L => terre(L.theme.bases, 14) ? 1 : 0,
 };
 const D = [...tous.values()].map(d => { const L = M.lire(d.m), s = {}; for (const k in SIGNES) s[k] = SIGNES[k](L); return { ...d, L, s, score: Object.values(s).reduce((a, b) => a + b, 0), nul: d.sc[0] === d.sc[1] }; });
@@ -37,3 +38,6 @@ const c0 = corr(x, y); let g = 0; const NP = 5000; for (let t = 0; t < NP; t++) 
 console.log('\n   lien score / nul : corrélation ' + c0.toFixed(2) + ' ; atteinte avec des résultats mélangés dans ' + (100 * g / NP).toFixed(1) + ' % des cas');
 console.log('\n3. Le cas donné en exemple : R1 + R7 = Carcer');
 D.filter(d => d.L.lien === 10).forEach(d => console.log('     ' + d.m.join('-').padEnd(12) + d.sc.join('-').padEnd(5) + ' score ' + d.score + ' : ' + Object.entries(d.s).filter(([, v]) => v).map(([k, v]) => k.split(' (')[0] + (v > 0 ? ' +' : ' −')).join(', ')));
+
+console.log('\n4. Thème 12-10-14-5 (nul validé par le propriétaire)');
+{ const L = M.lire([12, 10, 14, 5]), s = {}; for (const k in SIGNES) s[k] = SIGNES[k](L); console.log('     score ' + Object.values(s).reduce((a, b) => a + b, 0) + ' : ' + Object.entries(s).map(([k, v]) => k.split(' (')[0] + ' ' + (v > 0 ? '+1' : v < 0 ? '−1' : '0')).join(', ')); }

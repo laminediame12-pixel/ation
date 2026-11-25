@@ -2761,6 +2761,13 @@
    "enonce": "Méthode du propriétaire : le nul est confirmé par plusieurs signes, jamais un seul. Score = signes pour − signes contre : noyau Terre en équilibre (+1) ou mobile (−1), triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella : −1), équilibre des deux parties (+1), Terre saturée en M1, M2, M3 (+1), Terre de M14 saturée (+1).",
    "resultats": "106 matchs : score ≤ 0 → 1 nul sur 26 (4 %) ; +1 → 6/34 ; +2 → 8/33 ; +3 → 5/11 ; +4 → 2/2 ; score ≥ +3 → 7 nuls sur 13 (54 %). À l’aveugle : ≤ 0 1/5, +1 3/11, +2 1/7, ≥ +3 2/3. Corrélation 0,33, jamais atteinte en mélangeant les résultats (5000 essais) ; mais deux des signes (Terre M1-M3, Terre M14) ont été trouvés sur ces mêmes matchs. Le signe « équilibre » seul ne dit rien (6/32). R1 + R7 = Carcer : 5 matchs, scores −2 à +2, 0 nul.",
    "outil": "outils/nul_convergence.js"
+  },
+  {
+   "id": "H-NUL-CONVERGENCE-V2",
+   "statut": "FIGÉE (validation/predictions-nul-convergence-v2-24-30-novembre.json), remplace le signe Terre M1-M3 de H-NUL-CONVERGENCE ; non intégrée",
+   "enonce": "Thème 12-10-14-5, nul validé par le propriétaire (thème 15-1-4-16 écarté : non valide). Le signe « Terre saturée en M1, M2, M3 » devient « Terre de M1, M2, M3 identique » (toute saturée ou toute ouverte).",
+   "resultats": "Terre de M1-M3 identique : 13 nuls sur 29 (corpus 9/23, aveugle 4/6) ; avec la Terre de M14 saturée : 10 sur 15 (corpus 8/13, aveugle 2/2) ; avec M14 ouverte : 3 sur 14. Convergence v2 : score ≤ 0 → 1/22 ; +1 → 3/34 ; +2 → 10/33 ; +3 → 4/13 ; +4 → 4/4 ; ≥ +3 → 8/17 ; corrélation 0,38 (0,33 avant), jamais atteinte en mélangeant. Thème 12-10-14-5 : score +2 (équilibre +1, Terre M1-M3 identique +1, Terre M14 +1, noyau mobile 7 contre 6 −1). Validité : FI-5 le dit non valide (binôme de M1, Carcer, hors des maisons angulaires : M2, M14, M15), alors que le témoin de l’ancienne page le dit valide.",
+   "outil": "outils/nul_convergence.js"
   }
  ],
  "lectures": [
