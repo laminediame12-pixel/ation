@@ -2864,6 +2864,13 @@
    "enonce": "Quelle équipe profite des buts d’un arrêt ? 5 façons d’attribuer un arrêt à un pôle.",
    "resultats": "61 matchs avec arrêt. Front de la maison de l’arrêt : le pôle de ce côté marque plus 17 fois, moins 12 (aveugle 3/6) ; front de la figure posée 14/14 ; front de la maison du pôle 14/14. Seule lecture nette : quand la figure posée en arrêt est celle du pôle ou son binôme, ce pôle marque MOINS que l’autre (7 fois plus, 15 fois moins ; 1,42 but contre 2,27 ; aveugle : plus 1 fois sur 4) — l’arrêt profite à l’adversaire de celui qui arrête. Comme 8e signe de victoire : 15 justes, 7 faux seul, mais la décision passe de 64 à 62/106 : non ajouté.",
    "outil": "outils/arrets_cote.js"
+  },
+  {
+   "id": "H-TRAJECTOIRE-MI-TEMPS",
+   "statut": "en observation (piste 6), non intégrée : 34 matchs seulement",
+   "enonce": "La trajectoire +6 des pôles vers le noyau Terre et la phase du noyau disent-elles quand le match se décide ? Structure exacte : l’orbite impaire (1-7-13-3-9-15-5-11) n’atteint jamais le noyau ; toute figure paire hors noyau l’atteint en un pas.",
+   "resultats": "34 matchs avec la mi-temps (47 buts en 1re, 58 en 2e). Pôles sur l’orbite paire : 0 → part des buts en 2e mi-temps 88 %, but avant la pause 1/3 ; 1 → 59 %, 15/21 ; 2 → 39 %, 9/10. Phase « en suspens » (Tristitia dominante) : but avant la pause 2/8 seulement, contre 23/26 pour les autres phases. La lecture « rythme » du moteur dit déjà beaucoup (but annoncé 21/23, non 4/11) ; quand elle annonce un but mais que la phase est en suspens : 2/4, sinon 19/19. Victoire nette : but avant la pause 8/8. Effectifs trop petits, surtout à l’aveugle (6 matchs).",
+   "outil": "outils/trajectoire_mi_temps.js"
   }
  ],
  "lectures": [
