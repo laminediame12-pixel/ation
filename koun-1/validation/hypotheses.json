@@ -2839,7 +2839,7 @@
   },
   {
    "id": "H-VICTOIRE-CONVERGENCE",
-   "statut": "INTÉGRÉE dans la décision du moteur (piste 1) ; décisions figées : validation/predictions-decision-v2-24-30-novembre.json",
+   "statut": "RETIRÉE de la décision le 2026-11-25 (à l’aveugle, 37 matchs : 18 justes contre 20 pour « nul fréquent → Nul ; sinon appel ; sinon R1 ») ; le score reste affiché comme indice. Les décisions de cette règle restent figées dans validation/predictions-decision-v2-24-30-novembre.json, celles de la règle rétablie dans validation/predictions-decision-24-30-novembre.json.",
    "enonce": "Victoire par convergence de 7 signes (Terre des nœuds diagonaux, coordination, M1-M10, figure du pôle chez elle, front du binôme posé, protecteur posé, fronts de la figure du pôle). Décision : nul fréquent → Nul ; sinon signe du score ; à 0 → R1.",
    "resultats": "Score ≥ +2 : R1 gagne 28 fois sur 34 ; ≤ −2 : R7 gagne 12 fois sur 17. Décision : 64/106 (corpus 50/80, aveugle 14/26) contre 57/106 (aveugle 15/26) pour la version précédente. La plupart des signes ont été trouvés sur le corpus : le gain réel est à confirmer sur le lot.",
    "outil": "outils/victoire_convergence.js"

@@ -635,12 +635,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     return { score: s, niveau: niv, libelle: niv === 'frequent' ? 'nul fréquent' : niv === 'ecarte' ? 'nul écarté' : 'nul possible', signes: sig, obs: o,
       texte: 'score ' + (s > 0 ? '+' : '') + s + ' (' + sig.map(function (x) { return x.n + ' ' + (x.v > 0 ? '+1' : '−1'); }).join(', ') + ') ; ' + o.nul + ' nuls sur ' + o.sur + ' matchs à ce niveau (H-NUL-CONVERGENCE-V3, en observation)' }; }
   function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT; V.nulConvergence = nulConvergence(L);
-    // DÉCISION FINALE (2026-11-25, demande du propriétaire : toujours Victoire ou Nul, décidée par le moteur) — remplace la version « appel puis domicile » :
-    // nul fréquent (convergence du nul ≥ +3) → Nul ; sinon le signe du score de convergence de la victoire (piste 1, outils/victoire_convergence.js) ; à 0 → R1.
-    // 106 matchs : 64 justes (corpus 50/80, aveugle 14/26) contre 57 pour la version précédente.
+    // DÉCISION FINALE (toujours Victoire ou Nul, décidée par le moteur). La version « convergence de victoire » (piste 1, 64/106 sur les matchs connus)
+    // a été RETIRÉE le 2026-11-25 : à l'aveugle (37 matchs) elle fait 18 justes contre 20 pour celle-ci. Règle : nul fréquent → Nul ; sinon la victoire
+    // appelée (accord Terre + coordination, ou M1-M10) ; sinon victoire de R1 (domicile). Le score de convergence de victoire reste affiché comme indice.
     var VC = victoireConvergence(L); V.victoireConvergence = VC;
-    V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' }
-      : { resultat: VC.score < 0 ? '2' : '1', raison: VC.score ? (VC.score > 0 ? 'R1' : 'R7') + ' : ' + VC.texte : 'signes de victoire à égalité (' + VC.texte + ') : avantage du domicile (R1)' };
+    V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' + (V.v ? ' ; ils l\'emportent sur la victoire appelée pour ' + (V.v === '1' ? 'R1' : 'R7') : '') }
+      : V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison + ' · indice : ' + VC.texte } : { resultat: '1', raison: 'aucun vainqueur appelé et nul non fréquent : avantage du domicile (R1) · indice : ' + VC.texte };
     // VICTOIRE NETTE (piste 4, 2026-11-25, outils/ecart_match.js) : victoire désignée avec |score de victoire| ≥ 2 et au moins un arrêt dans le thème.
     // 106 matchs : 21 cas, vainqueur juste 19 fois, aucun nul, écart de deux buts ou plus 16 fois (aveugle : 3 vainqueurs justes sur 3).
     if (V.decision.resultat !== 'N' && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ' : sur 21 cas, vainqueur juste 19 fois, aucun nul, deux buts d\'écart ou plus 16 fois) · ' + V.decision.raison; }
