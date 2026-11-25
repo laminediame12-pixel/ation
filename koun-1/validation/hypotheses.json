@@ -2809,6 +2809,12 @@
    "statut": "règle formalisée du propriétaire, en observation, filtre d’équilibre (validation/REGLE-H-NOYAU-TERRE.md)",
    "resultats": "Lecture de la page (tout le thème) : mobile 2/24 nuls, équilibre 20/82. Lecture formalisée (figures diagnostiques R1, R7, nœuds diagonaux) : mobile 4/22, équilibre 18/82, Populus concrétisé 4/28 : pas de séparation.",
    "outil": "outils/noyau_terre_formel.js, outils/noyau_terre_nul.js"
+  },
+  {
+   "id": "H-NOYAU-TERRE-CHEZ-ELLE",
+   "statut": "correction du propriétaire intégrée (affichage du noyau et convergence du nul)",
+   "enonce": "Toute figure chez elle est saturée : sa résultante est Populus. Une figure posée dans sa propre maison compte comme Populus dans le noyau ; une figure du noyau chez elle (Albus M4, Tristitia M8, Fortuna Major M12, Populus M16) donne l’équilibre concrétisé. Exemple : Bayern–Cologne (2-6-2-12, nul 1-1) passait pour « en suspens, Terre ouverte » et devient « concrétisé (Tristitia en M8, saturée) ».",
+   "resultats": "Phase sur 106 matchs : figure du noyau chez elle 6 nuls sur 22, mobile 2/19, autre équilibre 14/65. Convergence : corrélation 0,394 (0,409 avant) ; niveaux : écarté 1/15, possible 6/57, fréquent 15/34. Thème 12-10-14-5 : +5 ; Bayern–Cologne : +3 (nul fréquent)."
   }
  ],
  "lectures": [
