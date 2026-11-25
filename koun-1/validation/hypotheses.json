@@ -2796,6 +2796,13 @@
    "enonce": "Demande du propriétaire : ajouter M8 à la comparaison M2–M14.",
    "resultats": "M8 ne change rien : Terre M2 et M14 saturées avec M8 saturée 5/12, avec M8 ouverte 6/14 ; M14 ouverte donne 8 à 10 % quelle que soit M8. Terre saturée sur 0, 1, 2, 3 des trois maisons : 1/11, 5/35, 11/48, 5/12. Somme M2+M8+M14 : Terre saturée 10/47 contre 12/59. Dans la convergence, toute lecture M2-M8-M14 à la place de M14 l’affaiblit (0,31 à 0,35 contre 0,41) et retire un signe au thème 12-10-14-5 (M2 Carcer et M8 Via, Terre ouverte).",
    "outil": "outils/nul_m2_m8_m14.js"
+  },
+  {
+   "id": "H-NUL-M16",
+   "statut": "testée, non retenue",
+   "enonce": "Demande du propriétaire : ajouter M16 à M2, M8, M14.",
+   "resultats": "Terre de M16 seule : 11/52 contre 11/54 (rien). M14 saturée et M16 saturée 8/21, M14 saturée et M16 ouverte 9/32. Terre saturée en M2, M14 et M16 : 7 nuls sur 12 (corpus 5/10, aveugle 2/2) ; saturée sur les quatre M2, M8, M14, M16 : 4/6. Convergence : M16 saturée ajoutée 0,413 (v3 0,409, gain nul) ; M16 ouverte ajoutée 0,355 ; à la place de M14 0,37. Thème 12-10-14-5 : M16 Via (Terre ouverte), donc les lectures « saturée » lui retirent un signe.",
+   "outil": "outils/nul_m16.js"
   }
  ],
  "lectures": [
