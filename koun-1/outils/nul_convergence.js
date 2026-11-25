@@ -21,6 +21,9 @@ const SIGNES = {
   'équilibre des deux parties (pour)': L => M.equilibre(L).equilibre ? 1 : 0,
   // remplacé le 2026-11-25 (thème 12-10-14-5, nul validé par le propriétaire) : la Terre des trois premières mères identique, toute saturée OU toute ouverte
   'Terre de M1, M2, M3 identique (pour)': L => { const t = h => K.niveaux(L.theme.bases[h])[3]; return t(1) === t(2) && t(2) === t(3) ? 1 : 0; },
+  // ajouté le 2026-11-25 (demande du propriétaire, diagonales des nœuds) : la Terre concrétise l'action ; sur les 8 maisons des diagonales 1-6-11-16 et 4-7-10-13,
+  // moins de 4 résultantes à Terre saturée = actions non concrétisées → pour le nul (11/39 contre 11/67 ; seule des 7 lectures diagonales qui ajoute)
+  'diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) (pour)': L => [1, 6, 11, 16, 4, 7, 10, 13].filter(h => K.niveaux(h < 16 ? L.theme.resultantes[h] : L.theme.bases[16])[3] === 2).length < 4 ? 1 : 0,
   'Terre de M14 saturée (pour)': L => terre(L.theme.bases, 14) ? 1 : 0,
 };
 const D = [...tous.values()].map(d => { const L = M.lire(d.m), s = {}; for (const k in SIGNES) s[k] = SIGNES[k](L); return { ...d, L, s, score: Object.values(s).reduce((a, b) => a + b, 0), nul: d.sc[0] === d.sc[1] }; });
@@ -31,6 +34,7 @@ for (const k in SIGNES) { [1, 0, -1].forEach(v => { const X = D.filter(d => d.s[
 console.log('\n2. Convergence : signes pour − signes contre');
 [...new Set(D.map(d => d.score))].sort((a, b) => a - b).forEach(v => console.log(ligne('score ' + (v > 0 ? '+' : '') + v, D.filter(d => d.score === v))));
 console.log(ligne('score ≥ +3 (au moins trois signes concordants)', D.filter(d => d.score >= 3)));
+console.log(ligne('score ≥ +4', D.filter(d => d.score >= 4)));
 console.log(ligne('score ≤ 0', D.filter(d => d.score <= 0)));
 // corrélation rang du score / nul, et contrôle par mélange
 const y = D.map(d => d.nul ? 1 : 0), x = D.map(d => d.score), corr = (a, b) => { const n = a.length, ma = a.reduce((s, v) => s + v) / n, mb = b.reduce((s, v) => s + v) / n; let u = 0, v = 0, w = 0; for (let i = 0; i < n; i++) { u += (a[i] - ma) * (b[i] - mb); v += (a[i] - ma) ** 2; w += (b[i] - mb) ** 2; } return u / Math.sqrt(v * w); };

@@ -2768,6 +2768,13 @@
    "enonce": "Thème 12-10-14-5, nul validé par le propriétaire (thème 15-1-4-16 écarté : non valide). Le signe « Terre saturée en M1, M2, M3 » devient « Terre de M1, M2, M3 identique » (toute saturée ou toute ouverte).",
    "resultats": "Terre de M1-M3 identique : 13 nuls sur 29 (corpus 9/23, aveugle 4/6) ; avec la Terre de M14 saturée : 10 sur 15 (corpus 8/13, aveugle 2/2) ; avec M14 ouverte : 3 sur 14. Convergence v2 : score ≤ 0 → 1/22 ; +1 → 3/34 ; +2 → 10/33 ; +3 → 4/13 ; +4 → 4/4 ; ≥ +3 → 8/17 ; corrélation 0,38 (0,33 avant), jamais atteinte en mélangeant. Thème 12-10-14-5 : score +2 (équilibre +1, Terre M1-M3 identique +1, Terre M14 +1, noyau mobile 7 contre 6 −1). Validité : FI-5 le dit non valide (binôme de M1, Carcer, hors des maisons angulaires : M2, M14, M15), alors que le témoin de l’ancienne page le dit valide.",
    "outil": "outils/nul_convergence.js"
+  },
+  {
+   "id": "H-NUL-CONVERGENCE-V3",
+   "statut": "FIGÉE (validation/predictions-nul-convergence-v3-24-30-novembre.json) ; non intégrée",
+   "enonce": "6e signe demandé par le propriétaire, les diagonales des nœuds (1-6-11-16 et 4-7-10-13), niveaux Terre : moins de 4 résultantes à Terre saturée sur les 8 maisons diagonales = actions non concrétisées → pour le nul.",
+   "resultats": "7 lectures Terre des diagonales testées seules : aucune ne sépare nettement le nul (16 % à 28 %). Retenue celle qui suit le principe « la Terre concrétise » et la seule qui renforce la convergence : peu concrétisées 11 nuls sur 39 (corpus 8/30, aveugle 3/9) contre 11/67. Convergence v3 : ≤ 0 → 1/18 ; +1 → 2/29 ; +2 → 4/26 ; +3 → 10/25 ; +4 → 4/7 ; +5 → 1/1 ; ≥ +3 → 15/33 (aveugle 3/8) ; ≤ +2 → 7/73 ; corrélation 0,41 (v2 0,38). Thème 12-10-14-5 : +3, nul fréquent. Le gain est petit et le signe a été choisi parmi 14 façons de l’ajouter : à confirmer sur le lot.",
+   "outil": "outils/nul_diagonales_terre.js, outils/nul_convergence.js"
   }
  ],
  "lectures": [
