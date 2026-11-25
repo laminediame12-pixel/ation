@@ -731,7 +731,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   // le détecteur à six paramètres, gardé comme lecture). Le pôle dont l'énergie EB déborde seul (3 niveaux impairs) est celui que l'incident concerne
   // (penalty pour lui ou rouge contre lui) ; un arrêt dans le thème (antagoniste posé dans la maison) dit que l'incident se produit.
   // Débordement et arrêt : probable ; l'un des deux : possible ; aucun : pas d'indice.
-  var INCIDENT_ARRETS_OBS = { deux: { incident: 8, sur: 10 }, debordement: { incident: 2, sur: 4 }, arret: { incident: 2, sur: 7 }, aucun: { incident: 1, sur: 7 } };
+  var INCIDENT_ARRETS_OBS = { deux: { incident: 8, sur: 11 }, debordement: { incident: 2, sur: 5 }, arret: { incident: 2, sur: 8 }, aucun: { incident: 1, sur: 7 } };
   function incidentVerdict(L) { var P = pariteIncident(L), A = arrets(L), k = P.pole && A.nombre ? 'deux' : P.pole ? 'debordement' : A.nombre ? 'arret' : 'aucun';
     return { pole: P.pole, impairsR1: P.impairsR1, impairsR7: P.impairsR7, arrets: A.maisons, cas: k, niveau: k === 'deux' ? 'probable' : k === 'aucun' ? 'aucun' : 'possible', obs: INCIDENT_ARRETS_OBS[k] }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
@@ -759,8 +759,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       rouge: { probable: p[5].actif, coordination: c2, noeudM1M7: c1, etatR1: e1, etatR7: e7, cote: cote }, parite: pariteIncident(L) }; }
   // PARITÉ DE L'INCIDENT (2026-11-22, H-INCIDENT-PARITE, en observation) : l'énergie EB d'un pôle (voir marquage, H-PARITE-EB) à 3 niveaux impairs déborde.
   // Quand un seul des deux pôles est dans ce cas, l'incident se fixe sur lui : il obtient un penalty ou reçoit un rouge. Si les deux le sont, les débordements s'annulent.
-  // Observé sur 27 matchs étiquetés : un seul pôle à 3 impairs, incident dans 10 matchs sur 14 ; sinon 3 sur 14. Sur ce pôle : 5 penalties pour lui, 4 rouges contre lui ; penalty et rouge ne se distinguent pas encore.
-  var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
+  // Observé sur 31 matchs étiquetés (mis à jour le 2026-11-25) : un seul pôle à 3 impairs, incident dans 10 matchs sur 16 ; sinon 3 sur 15. Sur ce pôle : 5 penalties pour lui, 4 rouges contre lui ; penalty et rouge ne se distinguent pas encore.
+  var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
   var API = { victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };

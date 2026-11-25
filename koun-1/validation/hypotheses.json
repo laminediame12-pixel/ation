@@ -2871,6 +2871,12 @@
    "enonce": "La trajectoire +6 des pôles vers le noyau Terre et la phase du noyau disent-elles quand le match se décide ? Structure exacte : l’orbite impaire (1-7-13-3-9-15-5-11) n’atteint jamais le noyau ; toute figure paire hors noyau l’atteint en un pas.",
    "resultats": "34 matchs avec la mi-temps (47 buts en 1re, 58 en 2e). Pôles sur l’orbite paire : 0 → part des buts en 2e mi-temps 88 %, but avant la pause 1/3 ; 1 → 59 %, 15/21 ; 2 → 39 %, 9/10. Phase « en suspens » (Tristitia dominante) : but avant la pause 2/8 seulement, contre 23/26 pour les autres phases. La lecture « rythme » du moteur dit déjà beaucoup (but annoncé 21/23, non 4/11) ; quand elle annonce un but mais que la phase est en suspens : 2/4, sinon 19/19. Victoire nette : but avant la pause 8/8. Effectifs trop petits, surtout à l’aveugle (6 matchs).",
    "outil": "outils/trajectoire_mi_temps.js"
+  },
+  {
+   "id": "PISTE-7-INCIDENTS-DONNEES",
+   "statut": "bloquée par les données",
+   "enonce": "Collecte des penalties et rouges des matchs des 20-21 novembre déjà notés (scores connus, incidents inconnus) par recherche web.",
+   "resultats": "Sur ~12 recherches, 3 matchs étiquetés avec certitude (Napoli–Torino, West Ham–Preston, Coventry–Crystal Palace : ni penalty ni rouge ; le moteur disait « possible », « possible », « probable »). La plupart des recherches renvoient d’anciens matchs : les comptes rendus de novembre 2026 sont peu indexés et les sites de résultats sont inaccessibles depuis cet environnement. Chiffres du moteur mis à jour : arrêts et débordement 8/11, débordement 2/5, arrêt 2/8, aucun 1/7 ; parité de l’incident 10/16 contre 3/15. Il faut la saisie penalty / rouge de l’archive pour le lot du 24 au 30."
   }
  ],
  "lectures": [

@@ -682,7 +682,9 @@
    0
   ],
   "lot": "decisif",
-  "note": "score final et mi-temps fournis par le propriétaire le 2026-11-21 ; incidents non précisés ; prédictions gelées avant le score dans predictions-20-24-novembre.json"
+  "note": "score final et mi-temps fournis par le propriétaire le 2026-11-21 ; incidents non précisés ; prédictions gelées avant le score dans predictions-20-24-novembre.json ; incidents relevés le 2026-11-25 : sportflash24, virgilio : seul but McTominay 73e, un seul carton jaune (Anguissa)",
+  "penalty": "Non",
+  "rouge": "Non"
  },
  {
   "themes": [
@@ -896,7 +898,7 @@
    2
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; incidents relevés le 2026-11-25 : sportnewsafrica, VAVEL : jaunes Grimes et Pino, pas de rouge, penalty réclamé par Coventry non accordé",
   "buts": {
    "R1": [
     "5'",
@@ -906,7 +908,9 @@
     "13'",
     "45'"
    ]
-  }
+  },
+  "penalty": "Non",
+  "rouge": "Non"
  },
  {
   "themes": [
@@ -1075,7 +1079,9 @@
    1
   ],
   "lot": "recherche-web",
-  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; incidents relevés le 2026-11-25 : ESPN : 0 carton rouge ; comptes rendus sans penalty",
+  "penalty": "Non",
+  "rouge": "Non"
  },
  {
   "themes": [
