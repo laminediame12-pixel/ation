@@ -1,0 +1,132 @@
+{
+ "fige_le": "2026-11-25",
+ "regle": "Terre saturée en M1, M2 et M3 (⇔ Tristitia en M8, en base ou en résultante) : nul fréquent",
+ "matchs": [
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Olympiacos – AC Milan",
+   "theme": "7-11-6-1",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Premier League",
+   "match": "Nottingham Forest – Chelsea",
+   "theme": "4-6-2-2",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Crystal Palace – Hull City",
+   "theme": "13-6-16-3",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Arsenal – Manchester City",
+   "theme": "7-6-6-15",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Lincoln City – Wolverhampton",
+   "theme": "6-6-6-4",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Derby County – Watford",
+   "theme": "9-2-6-10",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Angers – Lens",
+   "theme": "2-16-13-2",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "PSG – Lorient",
+   "theme": "9-13-6-7",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Le Mans – Lille",
+   "theme": "6-6-9-8",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Betis – Rayo Vallecano",
+   "theme": "9-7-11-15",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Albacete – Tenerife",
+   "theme": "13-7-2-1",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eibar – Burgos",
+   "theme": "4-16-6-6",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Serie A",
+   "match": "Venezia – Bologna",
+   "theme": "13-7-6-3",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Udinese – Fiorentina",
+   "theme": "16-2-4-14",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "NEC Nimègue – Twente",
+   "theme": "2-11-13-7",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "match": "Abha – Al Shabab",
+   "theme": "16-7-6-14",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Real Salt Lake – Vancouver",
+   "theme": "6-9-2-8",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "MLS",
+   "match": "LAFC – St. Louis",
+   "theme": "4-13-9-8",
+   "appel": "nul fréquent (H-NUL-TERRE-M1M2M3)"
+  }
+ ]
+}
