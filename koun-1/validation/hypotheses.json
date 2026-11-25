@@ -2857,6 +2857,13 @@
    "enonce": "Type de match (nul, serré, large). Victoire nette : victoire désignée avec |score de victoire| ≥ 2 et au moins un arrêt.",
    "resultats": "|victoire| ≥ 2 : large 32/51 contre 20/55 (aveugle 6/8 contre 8/18) ; au moins un arrêt : large 36/61 contre 16/45 (aveugle 8/13 contre 6/13) ; nul fréquent : serré 4/34 seulement (nul ou large). Prédire nul / serré / large pour tous les matchs ne bat pas « toujours large » à l’aveugle (11 contre 14 sur 26). Victoire nette : 21 cas, vainqueur juste 19, aucun nul, large 16 (aveugle : vainqueur 3/3, large 2/3).",
    "outil": "outils/ecart_match.js"
+  },
+  {
+   "id": "H-ARRETS-COTE",
+   "statut": "en observation (piste 5), non intégrée",
+   "enonce": "Quelle équipe profite des buts d’un arrêt ? 5 façons d’attribuer un arrêt à un pôle.",
+   "resultats": "61 matchs avec arrêt. Front de la maison de l’arrêt : le pôle de ce côté marque plus 17 fois, moins 12 (aveugle 3/6) ; front de la figure posée 14/14 ; front de la maison du pôle 14/14. Seule lecture nette : quand la figure posée en arrêt est celle du pôle ou son binôme, ce pôle marque MOINS que l’autre (7 fois plus, 15 fois moins ; 1,42 but contre 2,27 ; aveugle : plus 1 fois sur 4) — l’arrêt profite à l’adversaire de celui qui arrête. Comme 8e signe de victoire : 15 justes, 7 faux seul, mais la décision passe de 64 à 62/106 : non ajouté.",
+   "outil": "outils/arrets_cote.js"
   }
  ],
  "lectures": [
