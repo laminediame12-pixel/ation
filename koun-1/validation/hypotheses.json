@@ -2782,6 +2782,13 @@
    "enonce": "Demande du propriétaire : les témoins M13 (fusion des mères) et M14 (fusion des filles), et le juge M15 = M13 + M14 qui confirme (Terre saturée) ou nie (Terre ouverte). Identité exacte : Terre de M15 saturée ⇔ M13 et M14 ont la même Terre.",
    "resultats": "Juge confirme : 10 nuls sur 53 ; nie : 12 sur 53. Témoins (Terre M13 · M14) : 2·2 9/28, 2·1 4/28, 1·2 8/25, 1·1 1/25 : seule la Terre de M14 compte (17/53 contre 5/53), celle de M13 ne dit rien. Dans la convergence v3 (corrélation 0,41) : juge ±1 → 0,30 ; juge +1/0 → 0,37 ; juge à la place de M14 → 0,22. Le juge n’est donc pas ajouté ; le témoin des filles (M14) est déjà un signe.",
    "outil": "outils/nul_temoins_juge.js"
+  },
+  {
+   "id": "H-NUL-M14-M2",
+   "statut": "testée, non retenue (gain faible, contredit le thème 12-10-14-5)",
+   "enonce": "Demande du propriétaire : comparer M14 avec M2.",
+   "resultats": "Terre M2 · M14 : 2·2 11 nuls sur 26 (42 % ; corpus 9/22, aveugle 2/4), 2·1 3/30, 1·2 6/27, 1·1 2/23. Niveaux identiques entre M2 et M14 : 0 → 0/6, 1 → 2/17, 2 → 10/49, 3 → 7/25, 4 → 3/9 (gradient sur le corpus, pas net à l’aveugle). Dans la convergence : « Terre saturée en M2 et M14 » à la place de M14 0,419 (v3 0,409) ; M14 + ressemblance ≥ 3 niveaux 0,446. Mais le thème 12-10-14-5, nul validé, a M2 Carcer (Terre ouverte) et aucun niveau commun entre M2 et M14 : ces lectures lui retireraient un signe. Non retenue.",
+   "outil": "outils/nul_m14_m2.js"
   }
  ],
  "lectures": [
