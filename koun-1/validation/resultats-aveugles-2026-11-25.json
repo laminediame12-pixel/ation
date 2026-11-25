@@ -1,16 +1,156 @@
 {
- "note": "Scores trouvés sur le web le 2026-11-25 pour des matchs du lot du 20 au 25 novembre (thèmes tirés avant les matchs), jamais utilisés pour construire les règles actuelles. Sources : CBS Sports, Sky Sports, telecomasia (Ligue des champions du 24/11) ; ESPN, VAVEL (Brentford–Everton) ; Tuttosport (Levante–Elche, source unique) ; chicagocitywire, Yahoo Sports (Chicago–Charlotte). Incidents : seulement ceux cités par les sources ; les autres matchs ne sont pas étiquetés.",
+ "note": "Scores trouvés sur le web le 2026-11-25 pour des matchs du lot du 20 au 25 novembre (thèmes tirés avant les matchs), jamais utilisés pour construire les règles actuelles. Sources : CBS Sports, Sky Sports, telecomasia (Ligue des champions du 24/11) ; ESPN, VAVEL (Brentford–Everton) ; Tuttosport (Levante–Elche, source unique) ; chicagocitywire, Yahoo Sports (Chicago–Charlotte). Incidents : seulement ceux cités par les sources ; les autres matchs ne sont pas étiquetés. Incidents complétés le 2026-11-25 (COPE, Flashscore, VAVEL, UEFA, ESPN).",
  "matchs": [
-  {"match": "Chicago – Charlotte", "theme": [4, 10, 11, 3], "score": [1, 2], "penalty": "R7 (manqué, but sur le rebond)"},
-  {"match": "Levante – Elche", "theme": [13, 9, 11, 12], "score": [1, 1], "provisoire": true},
-  {"match": "Brentford – Everton", "theme": [12, 11, 3, 3], "score": [4, 0], "rouge": "R7"},
-  {"match": "Bodø/Glimt – LASK", "theme": [2, 8, 9, 4], "score": [1, 0]},
-  {"match": "Galatasaray – Aston Villa", "theme": [9, 15, 5, 9], "score": [1, 0]},
-  {"match": "Arsenal – Dortmund", "theme": [12, 5, 16, 12], "score": [1, 1]},
-  {"match": "Feyenoord – Porto", "theme": [5, 8, 13, 6], "score": [0, 1]},
-  {"match": "Manchester City – Napoli", "theme": [3, 8, 6, 1], "score": [2, 2]},
-  {"match": "Leipzig – Lens", "theme": [5, 12, 14, 11], "score": [3, 1]},
-  {"match": "Real Madrid – PSV", "theme": [14, 14, 8, 2], "score": [5, 1], "penalty": "R7"},
-  {"match": "Slovan Bratislava – Betis", "theme": [13, 12, 13, 4], "score": [0, 2]}
+  {
+   "match": "Chicago – Charlotte",
+   "theme": [
+    4,
+    10,
+    11,
+    3
+   ],
+   "score": [
+    1,
+    2
+   ],
+   "penalty": "R7 (manqué, but sur le rebond)",
+   "note": "penalty pour Charlotte (R7) après VAR, manqué, but de Biel sur le rebond"
+  },
+  {
+   "match": "Levante – Elche",
+   "theme": [
+    13,
+    9,
+    11,
+    12
+   ],
+   "score": [
+    1,
+    1
+   ],
+   "note": "confirmé par COPE/EFE, Flashscore, Valencia Plaza ; ni penalty ni rouge cités"
+  },
+  {
+   "match": "Brentford – Everton",
+   "theme": [
+    12,
+    11,
+    3,
+    3
+   ],
+   "score": [
+    4,
+    0
+   ],
+   "rouge": "R7",
+   "note": "rouge direct pour Tarkowski (Everton, R7)"
+  },
+  {
+   "match": "Bodø/Glimt – LASK",
+   "theme": [
+    2,
+    8,
+    9,
+    4
+   ],
+   "score": [
+    1,
+    0
+   ]
+  },
+  {
+   "match": "Galatasaray – Aston Villa",
+   "theme": [
+    9,
+    15,
+    5,
+    9
+   ],
+   "score": [
+    1,
+    0
+   ]
+  },
+  {
+   "match": "Arsenal – Dortmund",
+   "theme": [
+    12,
+    5,
+    16,
+    12
+   ],
+   "score": [
+    1,
+    1
+   ]
+  },
+  {
+   "match": "Feyenoord – Porto",
+   "theme": [
+    5,
+    8,
+    13,
+    6
+   ],
+   "score": [
+    0,
+    1
+   ]
+  },
+  {
+   "match": "Manchester City – Napoli",
+   "theme": [
+    3,
+    8,
+    6,
+    1
+   ],
+   "score": [
+    2,
+    2
+   ]
+  },
+  {
+   "match": "Leipzig – Lens",
+   "theme": [
+    5,
+    12,
+    14,
+    11
+   ],
+   "score": [
+    3,
+    1
+   ],
+   "note": "penalty incertain : un compte rendu donne le 2e but de Nusa sur penalty (R1), ESPN non ; pas de rouge cité"
+  },
+  {
+   "match": "Real Madrid – PSV",
+   "theme": [
+    14,
+    14,
+    8,
+    2
+   ],
+   "score": [
+    5,
+    1
+   ],
+   "penalty": "R7",
+   "note": "penalty pour PSV après VAR (faute de Tchouaméni, jaune) ; pas de rouge cité"
+  },
+  {
+   "match": "Slovan Bratislava – Betis",
+   "theme": [
+    13,
+    12,
+    13,
+    4
+   ],
+   "score": [
+    0,
+    2
+   ]
+  }
  ]
 }
