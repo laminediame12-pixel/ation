@@ -600,6 +600,22 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var r1f=L.R1&&L.R1.figure, r7f=L.R7&&L.R7.figure;
     return {phase:phase, detail:detail, scoreN:scoreN, scoreM:scoreM, counts:count, r1:place(r1f), r7:place(r7f), trajR1:r1f?orbit(r1f):[], trajR7:r7f?orbit(r7f):[]};
   }
+  // VICTOIRE PAR CONVERGENCE (piste 1, 2026-11-25) : chaque signe désigne R1 (+1), R7 (−1) ou personne ; le score est leur somme.
+  // Signes : Terre des nœuds diagonaux, nœuds de coordination, M1-M10 (→ R1), figure du pôle chez elle, front du binôme posé, protecteur posé,
+  // fronts différents où la figure du pôle est posée. 106 matchs : score ≥ +2 → R1 gagne 28 fois sur 34 ; ≤ −2 → R7 gagne 12 fois sur 17.
+  function victoireConvergence(L) { var b = L.theme.bases, F = [], h, pose = function (g) { for (var x = 1; x <= 16; x++) if (b[x] === g) return true; return false; },
+      fr = function (f) { var z = (f - 1) % 4; return [z + 1, z + 5, z + 9, z + 13]; }, sg = function (a, c) { return a > c ? 1 : a < c ? -1 : 0; }, a1 = L.R1.figure, a7 = L.R7.figure, sig = [];
+    var fronts = function (f) { var s = {}; for (var x = 1; x <= 16; x++) if (b[x] === f) s[(x - 1) % 4] = 1; return Object.keys(s).length; };
+    var fb = function (f) { return fr(K.binome(f)).filter(pose).length; };
+    sig.push({ n: 'Terre des nœuds diagonaux', v: sg(diagonales(L).ecart, 0) });
+    sig.push({ n: 'nœuds de coordination', v: sg(coordonnees(L).ecart, 0) });
+    sig.push({ n: 'M1-M10 (deux arrêts)', v: m1m10(L).deuxArrets ? 1 : 0 });
+    sig.push({ n: 'figure du pôle chez elle', v: sg(b[a1] === a1 ? 1 : 0, b[a7] === a7 ? 1 : 0) });
+    sig.push({ n: 'front du binôme posé', v: sg(fb(a1), fb(a7)) });
+    sig.push({ n: 'protecteur posé', v: sg(pose(mod(a1 - 6)) ? 1 : 0, pose(mod(a7 - 6)) ? 1 : 0) });
+    sig.push({ n: 'fronts de la figure du pôle', v: sg(fronts(a1), fronts(a7)) });
+    var s = sig.reduce(function (t, x) { return t + x.v; }, 0), act = sig.filter(function (x) { return x.v; });
+    return { score: s, signes: sig, texte: 'score de victoire ' + (s > 0 ? '+' : '') + s + (act.length ? ' (' + act.map(function (x) { return x.n + ' ' + (x.v > 0 ? 'R1' : 'R7'); }).join(', ') + ')' : '') + ' ; ' + (Math.abs(s) >= 2 ? (s > 0 ? 'R1 a gagné 28 fois sur 34 à +2 ou plus' : 'R7 a gagné 12 fois sur 17 à −2 ou moins') : 'signes faibles') + ' (106 matchs, en observation)' }; }
   // NUL PAR CONVERGENCE (H-NUL-CONVERGENCE-V3, méthode du propriétaire, 2026-11-25) : le nul n'est jamais dit par un seul signe.
   // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
   // équilibre des deux parties +1 ; Terre de M1, M2, M3 identique +1 ; Terre de M14 saturée +1 ; diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) +1.
@@ -619,10 +635,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     return { score: s, niveau: niv, libelle: niv === 'frequent' ? 'nul fréquent' : niv === 'ecarte' ? 'nul écarté' : 'nul possible', signes: sig, obs: o,
       texte: 'score ' + (s > 0 ? '+' : '') + s + ' (' + sig.map(function (x) { return x.n + ' ' + (x.v > 0 ? '+1' : '−1'); }).join(', ') + ') ; ' + o.nul + ' nuls sur ' + o.sur + ' matchs à ce niveau (H-NUL-CONVERGENCE-V3, en observation)' }; }
   function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT; V.nulConvergence = nulConvergence(L);
-    // DÉCISION FINALE (2026-11-25, demande du propriétaire : toujours Victoire ou Nul, décidée par le moteur et non par la page ; outils/victoire_ou_nul.js, variante F) :
-    // nul fréquent (convergence ≥ +3) → Nul, même si une victoire est appelée ; sinon la victoire appelée ; sinon victoire de R1 (domicile). 106 matchs : 57 justes, nul dit 34 fois, juste 15.
-    V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' + (V.v ? ' ; ils l\'emportent sur la victoire appelée pour ' + (V.v === '1' ? 'R1' : 'R7') : '') }
-      : V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison } : { resultat: '1', raison: 'aucun vainqueur désigné et nul non fréquent : avantage du domicile (R1 gagne 61 % des matchs décidés)' };
+    // DÉCISION FINALE (2026-11-25, demande du propriétaire : toujours Victoire ou Nul, décidée par le moteur) — remplace la version « appel puis domicile » :
+    // nul fréquent (convergence du nul ≥ +3) → Nul ; sinon le signe du score de convergence de la victoire (piste 1, outils/victoire_convergence.js) ; à 0 → R1.
+    // 106 matchs : 64 justes (corpus 50/80, aveugle 14/26) contre 57 pour la version précédente.
+    var VC = victoireConvergence(L); V.victoireConvergence = VC;
+    V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' }
+      : { resultat: VC.score < 0 ? '2' : '1', raison: VC.score ? (VC.score > 0 ? 'R1' : 'R7') + ' : ' + VC.texte : 'signes de victoire à égalité (' + VC.texte + ') : avantage du domicile (R1)' };
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée
@@ -742,7 +760,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 14 }, autres: { incident: 3, sur: 14 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

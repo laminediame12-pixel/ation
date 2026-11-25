@@ -2836,6 +2836,20 @@
    "enonce": "Carcer lié aux pôles R1 / R7 → penalty ou rouge, et pour quel pôle (8 lectures par pôle, 4 lectures du match).",
    "resultats": "47 matchs à incident connu (12 avec incident ; R1 concerné 8 fois, R7 8 fois). Par pôle : de 0 % à 25 % contre 15 % à 18 % sans ; meilleure lecture atteinte avec des incidents mélangés dans 71 % des cas. Match : R1 + R7 = Carcer 0 incident sur 4 ; Carcer en résultante d’une maison de pôle 0/5 ; au moins une opposition à 6 maisons qui donne Carcer 6/26 contre 6/21.",
    "outil": "outils/incident_carcer_poles.js"
+  },
+  {
+   "id": "H-VICTOIRE-CONVERGENCE",
+   "statut": "INTÉGRÉE dans la décision du moteur (piste 1) ; décisions figées : validation/predictions-decision-v2-24-30-novembre.json",
+   "enonce": "Victoire par convergence de 7 signes (Terre des nœuds diagonaux, coordination, M1-M10, figure du pôle chez elle, front du binôme posé, protecteur posé, fronts de la figure du pôle). Décision : nul fréquent → Nul ; sinon signe du score ; à 0 → R1.",
+   "resultats": "Score ≥ +2 : R1 gagne 28 fois sur 34 ; ≤ −2 : R7 gagne 12 fois sur 17. Décision : 64/106 (corpus 50/80, aveugle 14/26) contre 57/106 (aveugle 15/26) pour la version précédente. La plupart des signes ont été trouvés sur le corpus : le gain réel est à confirmer sur le lot.",
+   "outil": "outils/victoire_convergence.js"
+  },
+  {
+   "id": "CONSENSUS-THEMES",
+   "statut": "test de fond (piste 2)",
+   "enonce": "10 thèmes valides tirés pour chacun des 106 matchs connus : leurs décisions s’accordent-elles, et leur majorité prédit-elle le match ?",
+   "resultats": "Accord entre deux thèmes d’un même match 36,2 %, entre deux thèmes de matchs différents 35,4 % : les thèmes tirés pour un match ne se ressemblent pas plus entre eux. Justesse : thème d’origine 64/106, un thème tiré 39,5/106, majorité des tirés 45/106. Mais à l’aveugle (26 matchs) : thème d’origine 14, thème tiré 11,4, majorité des tirés 14 ; l’écart sur le corpus (50 contre 29) vient surtout de ce que les règles ont été construites sur les thèmes d’origine. En passant (piste 3) : thème d’origine valide 46/81, non valide 18/25.",
+   "outil": "outils/consensus_themes.js"
   }
  ],
  "lectures": [
