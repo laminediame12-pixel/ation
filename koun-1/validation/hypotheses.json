@@ -2803,6 +2803,12 @@
    "enonce": "Demande du propriétaire : ajouter M16 à M2, M8, M14.",
    "resultats": "Terre de M16 seule : 11/52 contre 11/54 (rien). M14 saturée et M16 saturée 8/21, M14 saturée et M16 ouverte 9/32. Terre saturée en M2, M14 et M16 : 7 nuls sur 12 (corpus 5/10, aveugle 2/2) ; saturée sur les quatre M2, M8, M14, M16 : 4/6. Convergence : M16 saturée ajoutée 0,413 (v3 0,409, gain nul) ; M16 ouverte ajoutée 0,355 ; à la place de M14 0,37. Thème 12-10-14-5 : M16 Via (Terre ouverte), donc les lectures « saturée » lui retirent un signe.",
    "outil": "outils/nul_m16.js"
+  },
+  {
+   "id": "H-NOYAU-TERRE",
+   "statut": "règle formalisée du propriétaire, en observation, filtre d’équilibre (validation/REGLE-H-NOYAU-TERRE.md)",
+   "resultats": "Lecture de la page (tout le thème) : mobile 2/24 nuls, équilibre 20/82. Lecture formalisée (figures diagnostiques R1, R7, nœuds diagonaux) : mobile 4/22, équilibre 18/82, Populus concrétisé 4/28 : pas de séparation.",
+   "outil": "outils/noyau_terre_formel.js, outils/noyau_terre_nul.js"
   }
  ],
  "lectures": [
