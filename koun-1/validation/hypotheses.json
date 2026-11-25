@@ -2789,6 +2789,13 @@
    "enonce": "Demande du propriétaire : comparer M14 avec M2.",
    "resultats": "Terre M2 · M14 : 2·2 11 nuls sur 26 (42 % ; corpus 9/22, aveugle 2/4), 2·1 3/30, 1·2 6/27, 1·1 2/23. Niveaux identiques entre M2 et M14 : 0 → 0/6, 1 → 2/17, 2 → 10/49, 3 → 7/25, 4 → 3/9 (gradient sur le corpus, pas net à l’aveugle). Dans la convergence : « Terre saturée en M2 et M14 » à la place de M14 0,419 (v3 0,409) ; M14 + ressemblance ≥ 3 niveaux 0,446. Mais le thème 12-10-14-5, nul validé, a M2 Carcer (Terre ouverte) et aucun niveau commun entre M2 et M14 : ces lectures lui retireraient un signe. Non retenue.",
    "outil": "outils/nul_m14_m2.js"
+  },
+  {
+   "id": "H-NUL-M2-M8-M14",
+   "statut": "testée, non retenue",
+   "enonce": "Demande du propriétaire : ajouter M8 à la comparaison M2–M14.",
+   "resultats": "M8 ne change rien : Terre M2 et M14 saturées avec M8 saturée 5/12, avec M8 ouverte 6/14 ; M14 ouverte donne 8 à 10 % quelle que soit M8. Terre saturée sur 0, 1, 2, 3 des trois maisons : 1/11, 5/35, 11/48, 5/12. Somme M2+M8+M14 : Terre saturée 10/47 contre 12/59. Dans la convergence, toute lecture M2-M8-M14 à la place de M14 l’affaiblit (0,31 à 0,35 contre 0,41) et retire un signe au thème 12-10-14-5 (M2 Carcer et M8 Via, Terre ouverte).",
+   "outil": "outils/nul_m2_m8_m14.js"
   }
  ],
  "lectures": [
