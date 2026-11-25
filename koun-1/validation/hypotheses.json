@@ -2822,6 +2822,13 @@
    "enonce": "Piste du propriétaire : toute paire de maisons opposées (h et h+8) dont la somme donne Carcer suscite un conflit qui finit par un penalty ou un rouge.",
    "resultats": "Corpus (21 matchs où penalty et rouge sont renseignés) : au moins une paire Carcer en base 3 incidents sur 5, aucune 4 sur 16 ; deux paires 2/2 (Orlando–Cincinnati, Real Madrid–Celta). À l’aveugle (26 matchs, incidents relevés dans les comptes rendus) : au moins une paire 3/15, aucune 2/11 ; deux paires 1/5 : pas de différence. En résultante : 3/7 contre 9/19, rien. Un premier comptage mélangeait les lots et gonflait l’effet (6/8) : corrigé.",
    "outil": "outils/incident_carcer.js"
+  },
+  {
+   "id": "H-INCIDENT-CARCER-OPPOSITIONS-6",
+   "statut": "testée : pas une règle absolue, léger surplus d’incidents ; en observation",
+   "enonce": "Oppositions du propriétaire à 6 maisons (M1–M7, M2–M8, M3–M9, M4–M10, M5–M11, M6–M12) : chaque opposition dont la somme donne Carcer provoque un penalty ou un rouge.",
+   "resultats": "47 matchs à incident connu : avec au moins une opposition Carcer, pénalité 6 fois sur 19 (32 %) ; sans, 6 sur 28 (21 %). Avant : 3/9 contre 4/12 ; 20-23 novembre : 3/10 contre 2/16. 13 des 19 thèmes à opposition Carcer n’ont eu ni penalty ni rouge.",
+   "outil": "outils/incident_carcer_6.js"
   }
  ],
  "lectures": [
