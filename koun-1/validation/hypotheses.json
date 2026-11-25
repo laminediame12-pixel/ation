@@ -2747,6 +2747,13 @@
    "enonce": "Précision du propriétaire : nul lorsque R1 est en M2 et que M8 porte Tristitia (2 nuls sur 2). Généralisation : Tristitia en M8, en base ou en résultante ; identité exacte : base de M8 ∈ {Tristitia, Populus} ⇔ Terre saturée en M1, M2 et M3 (M8 porte le niveau Terre des mères).",
    "resultats": "R1 en M2 et M8 Tristitia : 2/2. M8 Tristitia en base : 3/3. Terre saturée en M1, M2, M3 : 7 nuls sur 14 (corpus 5/10, aveugle 2/4) contre 21 % ; hasard 1,4 % pour cette lecture seule, environ 25 % en tenant compte des ~20 lectures essayées. Les 7 autres matchs sont presque tous à sens unique (2-0, 5-0, 2-0, 4-0, 2-0, 4-0, 0-1) : match nul ou large victoire, rarement un écart d’un but. Les autres triplets de mères (M2-M3-M4 5/15, M1-M2-M4 5/21, M1-M3-M4 5/19) et les autres filles (M5 2/12, M6 6/16, M7 2/9) font moins bien.",
    "outil": "outils/nul_m2_m8.js"
+  },
+  {
+   "id": "H-NUL-TERRE-M1M2M3-M14",
+   "statut": "FIGÉE (4 matchs du lot du 24 au 30, validation/predictions-nul-terre-m14-24-30-novembre.json) ; non intégrée",
+   "enonce": "Poussée du propriétaire : Tristitia en M8 et Laetitia en M14 (Tristitia + Laetitia = Carcer). Lecture retenue : Terre saturée en M1, M2, M3 (M8 = Tristitia ou Populus) ET Terre saturée en M14 (identité exacte : M4 a un nombre pair de niveaux à 1 point).",
+   "resultats": "6 nuls sur 7 (corpus 5/6, aveugle 1/1) ; le seul non-nul : 5-0. Avec la Terre de M14 ouverte : 1 nul sur 7. Terre de M14 seule : 17 nuls sur 53 contre 5 sur 53 (déjà vue sous H-NUL-M14, faible à l’aveugle). Environ 60 lectures essayées dans cette poussée : la probabilité de trouver un 6 sur 7 par hasard reste de l’ordre de 2 %. Autres demandes : M8 Tristitia et M14 Laetitia 1/1 ; Carcer en M15 4/19 (rien) ; R1 + R7 = Carcer 0/5, = Populus 1/1 ; distance de R1 à R7 de 6, 10 ou 14 (Amissio, Carcer, Puella) : 1 nul sur 19, ces distances écartent le nul ; distance 1 (Puer) 4/6 (aveugle 2/2) ; R1 + R7 = Via 5/11 (aveugle 2/2).",
+   "outil": "outils/nul_carcer.js"
   }
  ],
  "lectures": [

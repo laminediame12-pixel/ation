@@ -1,0 +1,44 @@
+// Poussée du propriétaire (2026-11-25) : Tristitia en M8 et Laetitia en M14 donnent Carcer ; Carcer en M15 ; R1 + R7 = Carcer ou Populus ;
+// écart (distance) de R1 à R7 qui donne Puella (14), Amissio (6) ou Carcer (10). Chaque lecture est jugée sur le nul, 106 matchs, lot par lot.
+const fs = require('fs'), path = require('path'), R = path.join(__dirname, '..'), M = require('../moteur4/moteur.js'), K = require('../moteur3/noyau.js'), A = K.additionner;
+const lire = f => JSON.parse(fs.readFileSync(path.join(R, f), 'utf8'));
+const tous = new Map(), aj = (t, s, lot) => { const k = t.join('-'); if (!tous.has(k)) tous.set(k, { m: t, sc: s, lot }); };
+lire('validation/scores-reels.json').forEach(x => aj(x.themes, x.score, 'corpus')); lire('validation/themes-18.json').forEach(x => aj(x.themes, x.score.split('-').map(Number), 'corpus'));
+aj(lire('validation/lot-2.json')[0].themes[0], lire('validation/lot-2.json')[0].score.split('-').map(Number), 'corpus');
+lire('validation/resultats-aveugles-2026-11-23.json').matchs.forEach(x => aj(x.theme, x.score, 'aveugle'));
+const D = [...tous.values()].map(d => { const L = M.lire(d.m); return { ...d, L, b: L.theme.bases, rz: h => h < 16 ? L.theme.resultantes[h] : L.theme.bases[16], nul: d.sc[0] === d.sc[1], ec: Math.abs(d.sc[0] - d.sc[1]) }; });
+const p0 = D.filter(d => d.nul).length / D.length;
+const C = (n, k) => { let r = 1; for (let i = 0; i < k; i++) r = r * (n - i) / (i + 1); return r; }, queue = (n, k, p) => { let s = 0; for (let i = k; i <= n; i++) s += C(n, i) * p ** i * (1 - p) ** (n - i); return s; };
+function t(nom, f, liste) { const X = D.filter(f), x = X.filter(d => d.nul).length, c = X.filter(d => d.lot === 'corpus'), a = X.filter(d => d.lot === 'aveugle'), un = X.filter(d => d.ec === 1).length;
+  console.log('  ' + nom.padEnd(60), ('nuls ' + x + '/' + X.length + (X.length ? ' (' + Math.round(100 * x / X.length) + ' %)' : '')).padEnd(17), '| corpus ' + c.filter(d => d.nul).length + '/' + c.length + ' · aveugle ' + a.filter(d => d.nul).length + '/' + a.length + ' | écart d\'un but ' + un + (X.length ? ' | hasard ≥ ' + (100 * queue(X.length, x, p0)).toFixed(1) + ' %' : ''));
+  if (liste) X.forEach(d => console.log('       ' + d.m.join('-').padEnd(12) + d.sc.join('-') + (d.nul ? '  ← nul' : ''))); }
+const N = K.nom, dist = d => ((d.L.R7.figure - d.L.R1.figure) % 16 + 16) % 16;
+console.log(D.length + ' matchs, ' + D.filter(d => d.nul).length + ' nuls (' + Math.round(100 * p0) + ' %) ; écart d\'un but en général : ' + D.filter(d => d.ec === 1).length + '/106\n');
+console.log('vérification : Tristitia + Laetitia = ' + N(A(8, 2)) + ' · Carcer : niveaux ' + K.niveaux(10).join('') + ' (Terre ' + (K.niveaux(10)[3] === 2 ? 'saturée' : 'ouverte') + ')\n');
+console.log('A. Tristitia en M8, Laetitia en M14, Carcer');
+t('Tristitia en M8 et Laetitia en M14 (bases)', d => d.b[8] === 8 && d.b[14] === 2, true);
+t('Laetitia en M14 (base)', d => d.b[14] === 2);
+t('M8 + M14 = Carcer (bases)', d => A(d.b[8], d.b[14]) === 10);
+t('Carcer en M15 (base)', d => d.b[15] === 10, true);
+t('Carcer en M15, base ou résultante', d => d.b[15] === 10 || d.rz(15) === 10);
+t('Terre saturée en M1-M2-M3 ET Carcer en M15', d => [1, 2, 3].every(h => K.niveaux(d.b[h])[3] === 2) && d.b[15] === 10, true);
+t('Terre saturée en M1-M2-M3 ET M14 Terre saturée', d => [1, 2, 3].every(h => K.niveaux(d.b[h])[3] === 2) && K.niveaux(d.b[14])[3] === 2);
+t('Terre saturée en M1-M2-M3 ET M14 Terre ouverte', d => [1, 2, 3].every(h => K.niveaux(d.b[h])[3] === 2) && K.niveaux(d.b[14])[3] === 1);
+console.log('\nB. R1 + R7 (somme des deux pôles)');
+t('R1 + R7 = Carcer', d => d.L.lien === 10, true);
+t('R1 + R7 = Populus (R1 = R7)', d => d.L.lien === 16, true);
+t('R1 + R7 = Carcer ou Populus', d => d.L.lien === 10 || d.L.lien === 16);
+t('R1 + R7 = Puella, Amissio ou Carcer (mobiles)', d => [6, 10, 14].includes(d.L.lien));
+[...Array(16)].map((_, i) => i + 1).forEach(f => t('    R1 + R7 = ' + N(f), d => d.L.lien === f));
+console.log('\nC. Distance de R1 à R7 (numéro de R7 − numéro de R1, sur 16)');
+t('distance 6, 10 ou 14 (Amissio, Carcer, Puella)', d => [6, 10, 14].includes(dist(d)));
+t('distance 10 (Carcer)', d => dist(d) === 10, true);
+[...Array(16)].map((_, i) => i).forEach(k => t('    distance ' + k + (k ? ' (' + N(k) + ')' : ' (même figure)'), d => dist(d) === k));
+// Identité : Terre de M14 = somme des Terre de M5 à M8 = somme des quatre niveaux de M4 (chaque fille porte un niveau de M4 en Terre).
+console.log('\nD. Terre de M14');
+const imp = f => K.niveaux(f).filter(v => v === 1).length, okId = [...Array(65536)].every((_, x) => { if (x % 7) return true; const L = M.lire([1 + (x & 15), 1 + ((x >> 4) & 15), 1 + ((x >> 8) & 15), 1 + ((x >> 12) & 15)]); return (K.niveaux(L.theme.bases[14])[3] === 2) === (imp(L.theme.bases[4]) % 2 === 0); });
+console.log('  identité « Terre de M14 saturée ⇔ M4 a un nombre pair de niveaux à 1 point » (thèmes testés) : ' + (okId ? 'exacte' : 'FAUSSE'));
+const t123 = d => [1, 2, 3].every(h => K.niveaux(d.b[h])[3] === 2), t14 = d => K.niveaux(d.b[14])[3] === 2;
+t('Terre saturée en M1, M2, M3 et en M14', d => t123(d) && t14(d), true);
+t('Terre saturée en M14 (seule)', d => t14(d));
+t('Terre saturée en M1, M2, M3, M14 ou Populus/Tristitia… (rappel M1-M3 seul)', d => t123(d));
