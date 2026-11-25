@@ -402,7 +402,30 @@
   var NUL_M14_OBS = { saturee: { nuls: 13, sur: 22 }, ouverte: { nuls: 2, sur: 16 } };
   function nulParite(L) { var b = L.theme.bases, f9 = K.niveaux(b[9])[0], e11 = K.niveaux(b[11])[2];
     return { feuM9: f9, eauM11: e11, egaux: f9 === e11, terreM14: K.niveaux(b[14])[3], obs: NUL_PARITE_OBS }; }
-  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L);
+  // NOYAU TERRE (règle du propriétaire, Koun-35, 2026-11-25 ; affichage seulement, ne décide pas) : noyau Albus, Tristitia, Fortuna Major, Populus ; mobile Amissio, Carcer, Puella.
+  function noyauTerre(L) {
+    var NOYAU={4:1,8:1,12:1,16:1}, MOBILE={6:1,10:1,14:1};
+    if(!L||!L.theme) return {phase:'inconnu',detail:'pas de thème',scoreN:0,scoreM:0,r1:null,r7:null,trajR1:[],trajR7:[]};
+    var b=L.theme.bases||[], figs=[], count={}, scoreN=0, scoreM=0, h, n;
+    for(h=1;h<=16;h++) if(b[h]) figs.push(b[h]);
+    for(h=1;h<=16;h++){ try{n=L.resu(h); if(n) figs.push(n);}catch(e){} }
+    figs.forEach(function(n){ if(NOYAU[n]){scoreN++; count[n]=(count[n]||0)+1;} if(MOBILE[n]){scoreM++; count[n]=(count[n]||0)+1;} });
+    var phase, detail, best=0, bestN=0;
+    if(scoreM>scoreN){ phase='mobile'; detail='dominance Amissio / Carcer / Puella'; }
+    else if(scoreN>0){
+      [4,8,12,16].forEach(function(n){ if((count[n]||0)>best){best=count[n]; bestN=n;} });
+      if(bestN===8){ phase='équilibre en suspens'; detail='Tristitia dominante (Terre ouverte)'; }
+      else if(bestN===16){ phase='équilibre concrétisé'; detail='Populus dominant'; }
+      else if(bestN===4){ phase='équilibre stable'; detail='Albus dominant'; }
+      else if(bestN===12){ phase='équilibre stable'; detail='Fortuna Major dominante'; }
+      else { phase='équilibre'; detail='noyau Terre atteint'; }
+    } else { phase='neutre'; detail='ni mobile ni noyau Terre'; }
+    function orbit(start){ var o=[], x=start; for(var i=0;i<8;i++){ o.push(x); x=((x-1+6)%16)+1; } return o; }
+    function place(fig){ if(!fig) return {fig:null, zone:'—'}; if(NOYAU[fig]) return {fig:fig, zone:'noyau Terre'}; if(MOBILE[fig]) return {fig:fig, zone:'mobile'}; return {fig:fig, zone:'hors cycle'}; }
+    var r1f=L.R1&&L.R1.figure, r7f=L.R7&&L.R7.figure;
+    return {phase:phase, detail:detail, scoreN:scoreN, scoreM:scoreM, counts:count, r1:place(r1f), r7:place(r7f), trajR1:r1f?orbit(r1f):[], trajR7:r7f?orbit(r7f):[]};
+  }
+  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT;
     V.m1m10 = Z; V.nulParite = P;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
     // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée
