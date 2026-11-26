@@ -1,0 +1,39 @@
+1. MAISONS STRATÉGIQUES DE CHAQUE FIGURE
+
+   Figure (front)          chez elle (avantage)   bloque en (nuisance)    l'énergie de            bloquée chez elle par
+   1 Puer (A)              M1                     M4                      Albus (D)               Puella (B) en M1
+   2 Laetitia (B)          M2                     M5                      Via (A)                 Aquisitio (C) en M2
+   3 Caput (C)             M3                     M6                      Amissio (B)             Populus (D) en M3
+   4 Albus (D)             M4                     M7                      Rubeus (C)              Puer (A) en M4
+   5 Via (A)               M5                     M8                      Tristitia (D)           Laetitia (B) en M5
+   6 Amissio (B)           M6                     M9                      Fortuna Minor (A)       Caput (C) en M6
+   7 Rubeus (C)            M7                     M10                     Carcer (B)              Albus (D) en M7
+   8 Tristitia (D)         M8                     M11                     Conjunctio (C)          Via (A) en M8
+   9 Fortuna Minor (A)     M9                     M12                     Fortuna Major (D)       Amissio (B) en M9
+   10 Carcer (B)           M10                    M13                     Cauda Draconis (A)      Rubeus (C) en M10
+   11 Conjunctio (C)       M11                    M14                     Puella (B)              Tristitia (D) en M11
+   12 Fortuna Major (D)    M12                    M15                     Aquisitio (C)           Fortuna Minor (A) en M12
+   13 Cauda Draconis (A)   M13                    M16 (hors arrêt : M16)  Populus (D)             Carcer (B) en M13
+   14 Puella (B)           M14                    M1                      Puer (A)                Conjunctio (C) en M14
+   15 Aquisitio (C)        M15                    M2                      Laetitia (B)            Fortuna Major (D) en M15
+   16 Populus (D)          M16                    M3                      Caput (C)               Cauda Draconis (A) en M16
+
+   Par front : A bloque D (Puer bloque Albus en M4, Via Tristitia en M8, Fortuna Minor Fortuna Major en M12, Cauda Populus en M16),
+   B bloque A, C bloque B, D bloque C — le cycle des attaques. Une figure ne bloque qu'une seule maison : celle de la figure qui la suit de 3.
+
+2. SUR LES MATCHS (126 matchs) — le pôle concerné : victoires / nuls / défaites, buts marqués / encaissés en moyenne
+   une figure de son front fait un arrêt dans le front de l'adversaire (nuire)
+      oui n 16   gagne 7 · nul 2 · perd 7 (victoire 50 % des matchs décidés) · marque 2.13 · encaisse 2.31   | aveugle : gagne 3/5
+      non n 236  gagne 92 · nul 52 · perd 92 (victoire 50 % des matchs décidés) · marque 1.69 · encaisse 1.68   | aveugle : gagne 31/87
+   sa propre figure fait un arrêt (n'importe où)
+      oui n 28   gagne 10 · nul 3 · perd 15 (victoire 40 % des matchs décidés) · marque 1.32 · encaisse 2.21   | aveugle : gagne 3/10
+      non n 224  gagne 89 · nul 51 · perd 84 (victoire 51 % des matchs décidés) · marque 1.77 · encaisse 1.66   | aveugle : gagne 31/82
+   sa propre figure bloque la maison de la figure adverse (M = figure adverse)
+      oui n 2    gagne 1 · nul 0 · perd 1 (victoire 50 % des matchs décidés) · marque 3.00 · encaisse 1.50   | aveugle : gagne 0/0
+      non n 250  gagne 98 · nul 54 · perd 98 (victoire 50 % des matchs décidés) · marque 1.71 · encaisse 1.72   | aveugle : gagne 34/92
+   une maison de son front est bloquée par un arrêt (subir)
+      oui n 48   gagne 23 · nul 7 · perd 18 (victoire 56 % des matchs décidés) · marque 2.06 · encaisse 1.73   | aveugle : gagne 7/16
+      non n 204  gagne 76 · nul 47 · perd 81 (victoire 48 % des matchs décidés) · marque 1.64 · encaisse 1.72   | aveugle : gagne 27/76
+   sa figure est chez elle (avantage)
+      oui n 41   gagne 22 · nul 7 · perd 12 (victoire 65 % des matchs décidés) · marque 2.34 · encaisse 1.44   | aveugle : gagne 5/9
+      non n 211  gagne 77 · nul 47 · perd 87 (victoire 47 % des matchs décidés) · marque 1.60 · encaisse 1.78   | aveugle : gagne 29/83

@@ -2936,6 +2936,13 @@
    "id": "JUGEMENT-LOT-24-30-PARTIEL-25-NOV",
    "statut": "premier jugement du lot du 24 au 30 (9 matchs de Ligue des champions du 25/11, outils/juger_lot_24_30.js)",
    "resultats": "Décision (v3) 2/9 (« R1 toujours » 3/9) : nuls annoncés à tort pour Slavia–Villarreal (0-1) et Inter–Stuttgart (2-0) ; nuls manqués PSG–Roma et Sporting–United (2-2). Deux marquent (lecture globale figée) 4/9 ; lecture liée aux pôles (page actuelle) 6/9. Marquage par pôle 8/18. Piste des fronts 1 juste, 2 faux. Incidents : penalties R1 et R7 dans PSG–Roma et Sporting–United, rouge R7 dans Sporting–United. Les prédictions « deux marquent », « marquage par pôle » et « décision v3 » ont été figées le 26/11 au matin, après ces matchs mais sans en connaître les scores."
+  },
+  {
+   "id": "H-MAISONS-STRATEGIQUES",
+   "statut": "vérifiée en partie (table exacte dans validation/MAISONS-STRATEGIQUES.txt)",
+   "enonce": "Une figure g bloque l’énergie de la figure qu’elle antagonise (g + 3), dans la maison de celle-ci (M g+3) ; elle est forte chez elle (M g). Maisons stratégiques : avantage = chez elle ; nuisance = arrêt dans la maison g + 3.",
+   "resultats": "126 matchs, 252 pôles. Figure chez elle : gagne 22, nul 7, perd 12 (65 % des matchs décidés contre 47 %), marque 2,34 contre 1,60, encaisse 1,44 contre 1,78 ; aveugle gagne 5/9 contre 29/83. Sa propre figure en arrêt : gagne 10, perd 15 (40 %), marque 1,32, encaisse 2,21 — bloquer coûte à celui qui bloque (comme H-ARRETS-COTE). Une figure de son front en arrêt dans le front adverse : 7/7, rien. Subir un arrêt dans son front : 56 % de victoires, pas de tort.",
+   "outil": "outils/maisons_strategiques.js"
   }
  ],
  "lectures": [
