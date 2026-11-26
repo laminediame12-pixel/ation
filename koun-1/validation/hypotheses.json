@@ -2920,7 +2920,7 @@
   },
   {
    "id": "H-MARQUAGE-FRONT-DIRECT",
-   "statut": "testée, non confirmée",
+   "statut": "INTÉGRÉE à la demande du propriétaire (2026-11-26) dans les lignes « R1 marque / R7 marque » (remplace parité et niveau, 37/74 à l’aveugle) ; chiffres observés affichés à côté",
    "enonce": "Correction du propriétaire : le front direct de f est f+4 (Puer → Via, Aquisitio → Caput). Un pôle marque si lui-même ou son front direct est posé dans une maison des canaux Terre saturée par un point 1 de la base, Terre de la résultante ouverte ; sinon il ne marque pas.",
    "resultats": "234 pôles. Figure marquante : marque 30/38 (79 %) sur le corpus, 9/10 (90 %) à l’aveugle ; aucune : marque quand même 95/122 (78 %) et 47/64 (73 %). Sans condition Terre : 76 % / 80 % contre 80 % / 73 %. Avec le miroir (f+8) : 82 % / 90 % contre 77 % / 70 %. Juventus–Venezia : R1 (Populus, front direct Albus) n’a aucune figure marquante en canal Terre et a marqué 4 fois ; R7 (Aquisitio, front direct Caput) n’en a pas non plus et n’a pas marqué.",
    "outil": "outils/marquage_front_direct.js"
