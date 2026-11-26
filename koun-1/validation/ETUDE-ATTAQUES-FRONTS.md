@@ -25,5 +25,12 @@ dans l'ordre des listes (Albus → Caput…) au lieu de l'antagoniste (Populus �
 2. Les restes ne prennent que cinq formes : rien (Via), Terre (Cauda), Feu (Caput), Feu + Terre (Conjunctio), Eau (Puer) — ce sont les sommes f + (f − 3).
 3. Les nœuds de sortie sont M1, M11, M13, M16 et le blocage total ; M6 (Air) n'est jamais une issue d'attaque.
 4. C → B est la seule attaque à issue unique : B garde toujours l'Eau seule (M11).
-5. R1 et R7 sont toujours dans des fronts alliés (A/C ou B/D ; vérifié sur 9 363 thèmes) : les deux pôles ne s'attaquent jamais directement ;
-   l'attaque vient toujours d'un troisième front (D frappe C, B frappe A, A frappe D, C frappe B).
+5. Relation entre les fronts de R1 et R7 (9 363 thèmes) : R1 attaque R7 25 %, R7 attaque R1 25 %, même front 20 %, fronts alliés 30 %.
+   (Une première version de cette note disait « toujours alliés » : c'était faux, corrigé.)
+
+## Sur les matchs (117 connus, outils/attaque_poles.js)
+- **Le front de R7 attaque celui de R1 : 11 nuls sur 30 (37 %)**, dont 5 sur 11 à l'aveugle, contre 14 nuls sur 87 dans les autres cas ;
+  l'avantage du domicile disparaît (R1 9 victoires, R7 10).
+- R1 attaque R7 : 19 / 5 / 15 ; même front : 9 / 4 / 2 ; fronts alliés : 19 / 5 / 9. L'attaquant gagne 29 fois, perd 24 : pas de loi de victoire.
+- « R7 attaque R1 » devient le 7e signe de la convergence du nul (corrélation 0,355 → 0,391 ; nul fréquent à l'aveugle 4/9 → 6/13) ;
+  décision du moteur à l'aveugle : 21 sur 37 (« R1 toujours » 19).

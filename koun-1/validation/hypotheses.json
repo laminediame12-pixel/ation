@@ -2883,6 +2883,12 @@
    "statut": "jugement à l’aveugle du moteur actuel sur 11 matchs terminés du lot du 20 au 25 novembre (validation/resultats-aveugles-2026-11-25.json, outils/juger_aveugle_25.js)",
    "resultats": "Décision juste 4/11 (« R1 toujours » 5/11). Nul dit 1 fois, juste (Levante–Elche 1-1) ; nuls manqués : Arsenal–Dortmund (nul possible), Manchester City–Napoli (nul écarté). Victoires dites 10, justes 3 ; victoire nette 0/1 (Leipzig–Lens 3-1, R7 annoncé). Buts : avec arrêt 3,13 sur 8 matchs, sans arrêt 1,67 sur 3 (même sens que H-ARRETS-BUTS). Sur les 37 matchs à l’aveugle réunis : décision 18/37 contre 19/37 pour « R1 toujours » ; ancien appel (accord + M1-M10) 11 justes, 7 faux ; nul fréquent 4 nuls sur 9.",
    "consequences": "La victoire par convergence (piste 1) ne tient pas sur ce lot ; à reconsidérer selon le protocole quand le lot du 24 au 30 sera joué."
+  },
+  {
+   "id": "H-NUL-ATTAQUE-R7-R1",
+   "statut": "INTÉGRÉE comme 7e signe de la convergence du nul (étude des attaques de fronts du propriétaire) ; décisions figées : validation/predictions-decision-v3-24-30-novembre.json",
+   "resultats": "117 matchs : front de R7 attaque front de R1 → 11 nuls sur 30 (corpus 6/19, aveugle 5/11) contre 14/87. Convergence 0,355 → 0,391 ; décision à l’aveugle 21/37 (avant 20, « R1 toujours » 19). Étude : validation/ETUDE-ATTAQUES-FRONTS.md.",
+   "outil": "outils/attaque_poles.js"
   }
  ],
  "lectures": [

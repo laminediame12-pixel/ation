@@ -448,7 +448,7 @@
   // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
   // équilibre des deux parties +1 ; Terre de M1, M2, M3 identique +1 ; Terre de M14 saturée +1 ; diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) +1.
   // 106 matchs : score ≤ 0 → 1 nul sur 18 ; +1 → 2/29 ; +2 → 4/26 ; +3 → 10/25 ; +4 → 4/7 ; +5 → 1/1. Lecture : ≥ +3 nul fréquent, ≤ 0 nul écarté, sinon possible.
-  var NUL_CONV_OBS = { ecarte: { nul: 1, sur: 15 }, possible: { nul: 6, sur: 57 }, frequent: { nul: 15, sur: 34 } };   // recalculé après la correction « figure chez elle = Populus »
+  var NUL_CONV_OBS = { ecarte: { nul: 1, sur: 14 }, possible: { nul: 4, sur: 53 }, frequent: { nul: 17, sur: 39 } };   // recalculé après la correction « figure chez elle = Populus »
   function nulConvergence(L) { var T = L.theme, b = T.bases, NOY = [4, 8, 12, 16], MOB = [6, 10, 14], n = 0, m = 0, h, sig = [];
     // une figure chez elle compte comme Populus (elle est saturée), comme dans noyauTerre
     for (h = 1; h <= 16; h++) [b[h] === h ? 16 : b[h], L.resu(h)].forEach(function (f) { if (NOY.indexOf(f) >= 0) n++; if (MOB.indexOf(f) >= 0) m++; });
@@ -458,6 +458,9 @@
     if (equilibre(L).equilibre) sig.push({ n: 'équilibre des deux parties', v: 1 });
     if (te(1) === te(2) && te(2) === te(3)) sig.push({ n: 'Terre de M1, M2, M3 identique', v: 1 });
     if (te(14) === 2) sig.push({ n: 'Terre de M14 saturée (témoin des filles)', v: 1 });
+    // 7e signe (2026-11-26, étude des attaques de fronts du propriétaire : A→D, B→A, D→C, C→B) : le front de R7 attaque celui de R1 → pour le nul
+    // (117 matchs : 11 nuls sur 30 ; aveugle 5 sur 11 ; convergence 0,355 → 0,391)
+    var FA = { 0: 3, 1: 0, 3: 2, 2: 1 }; if (FA[(L.R7.figure - 1) % 4] === (L.R1.figure - 1) % 4) sig.push({ n: 'le front de R7 attaque celui de R1', v: 1 });
     if ([1, 6, 11, 16, 4, 7, 10, 13].filter(function (x) { return K.niveaux(x < 16 ? T.resultantes[x] : b[16])[3] === 2; }).length < 4) sig.push({ n: 'diagonales des nœuds peu concrétisées', v: 1 });
     var s = sig.reduce(function (a, x) { return a + x.v; }, 0), niv = s >= 3 ? 'frequent' : s <= 0 ? 'ecarte' : 'possible', o = NUL_CONV_OBS[niv];
     return { score: s, niveau: niv, libelle: niv === 'frequent' ? 'nul fréquent' : niv === 'ecarte' ? 'nul écarté' : 'nul possible', signes: sig, obs: o,
