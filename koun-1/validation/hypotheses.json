@@ -2910,6 +2910,13 @@
    "enonce": "Une figure marque quand elle sature les niveaux du nœud de sa maison (exemple Juventus–Venezia 4-0 : R1 Populus en M9, nœud Feu×Eau).",
    "resultats": "234 pôles. Figure du front saturant le nœud de sa maison : marque 76 % / 75 % (corpus / aveugle) contre 84 % / 80 % sans. Dans les canaux Terre seulement : 78 % / 79 % contre 78 % / 73 %. Résultante saturant le nœud : 78 % / 71 % contre 77 % / 93 %. Le pôle lui-même : 73 % / 86 % contre 80 % / 72 %. Juventus : Conjunctio (front de R7) en M13 sature aussi son nœud Feu×Terre, alors que R7 n’a pas marqué.",
    "outil": "outils/marquage_noeuds.js"
+  },
+  {
+   "id": "H-DOUBLE-CONCORDANCE-ET-RUBEUS-M6",
+   "statut": "testées, non confirmées",
+   "enonce": "(1) Double concordance : M1, M6, M11, M16 portent en base le niveau actif de leur propre élément ; un pôle dont le nœud de maison touche ces niveaux marque. (2) Rubeus en M6 cause toujours une pénalité.",
+   "resultats": "(1) Les deux niveaux du nœud du pôle concordants : marque 78 % / 80 % (corpus / aveugle) contre 78 % / 74 % ; au moins un : 77 % / 79 % contre 80 % / 65 %. Nombre de concordances du thème → buts : 0 → 3,00, 1 → 2,96, 2 → 3,80, 3 → 3,33, 4 → 4,22 (9 matchs). (2) Rubeus en M6 dans 4 matchs à incident connu : 1 incident (Troyes–Le Havre) ; Westerlo–Charleroi étiqueté sans incident. Juventus : Conjunctio en M13 est bien du front de R7 (front C, comme Aquisitio) ; selon la règle R7 aurait dû marquer, il n’a pas marqué.",
+   "outil": "outils/double_concordance.js"
   }
  ],
  "lectures": [
