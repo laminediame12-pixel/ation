@@ -2925,6 +2925,12 @@
    "resultats": "234 pôles. Figure marquante : marque 30/38 (79 %) sur le corpus, 9/10 (90 %) à l’aveugle ; aucune : marque quand même 95/122 (78 %) et 47/64 (73 %). Sans condition Terre : 76 % / 80 % contre 80 % / 73 %. Avec le miroir (f+8) : 82 % / 90 % contre 77 % / 70 %. Juventus–Venezia : R1 (Populus, front direct Albus) n’a aucune figure marquante en canal Terre et a marqué 4 fois ; R7 (Aquisitio, front direct Caput) n’en a pas non plus et n’a pas marqué.",
    "outil": "outils/marquage_front_direct.js",
    "correction_2026_11_26": "Définition de « saturé » corrigée (remplacement) : point 1 de la base devenu 2, ou figure Populus (saturation totale). Juventus–Venezia : R1 Populus en M8 marque, R7 ne marque pas ; Atlético–Viking inchangé. 234 pôles : avec figure marquante 37/50 corpus, 12/13 aveugle ; sans 88/110 et 44/61. Appliquée à « Deux marquent », cette définition ferait perdre 4 justes à l’aveugle (26 → 22) : cette ligne garde sa définition."
+  },
+  {
+   "id": "DEUX-MARQUENT-LIE-AUX-POLES",
+   "statut": "INTÉGRÉ à la demande du propriétaire (2026-11-26)",
+   "enonce": "La ligne « Deux marquent » suit les lignes de chaque pôle : Oui seulement si R1 et R7 ont chacun une figure marquante (marquePole). Elle remplace la lecture globale des canaux Terre (canauxTerre, conservée dans le moteur comme lecture).",
+   "resultats": "Lot du 24 au 30 : Oui 20 fois sur 147 (avant : 122). Sur les 117 matchs connus : 30/80 justes sur le corpus et 18/37 à l’aveugle, contre 51/80 et 26/37 pour la lecture globale des canaux Terre."
   }
  ],
  "lectures": [
