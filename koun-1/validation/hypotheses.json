@@ -2889,6 +2889,13 @@
    "statut": "INTÉGRÉE comme 7e signe de la convergence du nul (étude des attaques de fronts du propriétaire) ; décisions figées : validation/predictions-decision-v3-24-30-novembre.json",
    "resultats": "117 matchs : front de R7 attaque front de R1 → 11 nuls sur 30 (corpus 6/19, aveugle 5/11) contre 14/87. Convergence 0,355 → 0,391 ; décision à l’aveugle 21/37 (avant 20, « R1 toujours » 19). Étude : validation/ETUDE-ATTAQUES-FRONTS.md.",
    "outil": "outils/attaque_poles.js"
+  },
+  {
+   "id": "H-CANAUX-TERRE-MARQUAGE",
+   "statut": "INTÉGRÉE : remplace le témoin M5 + M7 dans la ligne « Deux marquent » ; prédictions figées validation/predictions-deux-marquent-24-30-novembre.json",
+   "enonce": "Règle du propriétaire : les maisons du canal Terre vertical (M13, M14, M15) et horizontal (M4, M8, M12) marquent quand elles sont saturées par le point un de la base (point rouge), même si leur Terre n’est pas saturée.",
+   "resultats": "117 matchs. Au moins une maison des canaux rouge avec Terre de la résultante ouverte : les deux marquent 56 fois sur 86, contre 10 sur 31 (corpus 66 % contre 41 % ; aveugle 64 % contre 11 %). R7 marque : aveugle 79 % contre 22 %. « Deux marquent » juste : corpus 51/80 (témoin 55/80), aveugle 26/37 (témoin 18/37, toujours oui 19/37). Compter toutes les maisons rouges sans condition sur la Terre ne dit rien : c’est la Terre ouverte qui compte.",
+   "outil": "outils/marquage_canaux_terre.js"
   }
  ],
  "lectures": [
