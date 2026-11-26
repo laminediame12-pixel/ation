@@ -8,6 +8,7 @@ const SC = new Map(), ajS = (t, d, sc, pen, rouge) => { const v = { sc: sc.join(
 JSON.parse(fs.readFileSync(path.join(R, 'validation/scores-reels.json'), 'utf8')).forEach(x => ajS(x.themes.join('-'), x.date, x.score, x.penalty, x.rouge));
 JSON.parse(fs.readFileSync(path.join(R, 'validation/resultats-aveugles-2026-11-23.json'), 'utf8')).matchs.forEach(x => ajS(x.theme.join('-'), null, x.score, x.penalty, x.rouge));
 JSON.parse(fs.readFileSync(path.join(R, 'validation/resultats-aveugles-2026-11-25.json'), 'utf8')).matchs.forEach(x => ajS(x.theme.join('-'), null, x.score, x.penalty || (x.match === 'Leipzig – Lens' ? 'incertain (R1 ?)' : x.match === 'Levante – Elche' ? 'Non' : undefined), x.rouge || (x.match === 'Levante – Elche' || x.match === 'Real Madrid – PSV' || x.match === 'Leipzig – Lens' ? 'Non' : undefined)));
+JSON.parse(fs.readFileSync(path.join(R, 'validation/resultats-2026-11-25.json'), 'utf8')).matchs.forEach(x => ajS(x.theme.join('-'), x.date, x.score, x.penalty, x.rouge));
 const connu = x => SC.get(x.theme + '|' + x.date) || SC.get(x.theme) || null;
 const data = LOTS.map(([nom, f]) => ({ lot: nom, m: JSON.parse(fs.readFileSync(path.join(R, f), 'utf8')).map(x => { const k = connu(x); return [x.date, x.championnat, x.equipe1, x.equipe2, x.theme].concat(k ? [k.sc, k.pen, k.rouge] : []); }).sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1])) }));
 let s = fs.readFileSync(P, 'utf8');

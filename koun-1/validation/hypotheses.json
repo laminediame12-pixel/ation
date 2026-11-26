@@ -2931,6 +2931,11 @@
    "statut": "INTÉGRÉ à la demande du propriétaire (2026-11-26)",
    "enonce": "La ligne « Deux marquent » suit les lignes de chaque pôle : Oui seulement si R1 et R7 ont chacun une figure marquante (marquePole). Elle remplace la lecture globale des canaux Terre (canauxTerre, conservée dans le moteur comme lecture).",
    "resultats": "Lot du 24 au 30 : Oui 20 fois sur 147 (avant : 122). Sur les 117 matchs connus : 30/80 justes sur le corpus et 18/37 à l’aveugle, contre 51/80 et 26/37 pour la lecture globale des canaux Terre."
+  },
+  {
+   "id": "JUGEMENT-LOT-24-30-PARTIEL-25-NOV",
+   "statut": "premier jugement du lot du 24 au 30 (9 matchs de Ligue des champions du 25/11, outils/juger_lot_24_30.js)",
+   "resultats": "Décision (v3) 2/9 (« R1 toujours » 3/9) : nuls annoncés à tort pour Slavia–Villarreal (0-1) et Inter–Stuttgart (2-0) ; nuls manqués PSG–Roma et Sporting–United (2-2). Deux marquent (lecture globale figée) 4/9 ; lecture liée aux pôles (page actuelle) 6/9. Marquage par pôle 8/18. Piste des fronts 1 juste, 2 faux. Incidents : penalties R1 et R7 dans PSG–Roma et Sporting–United, rouge R7 dans Sporting–United. Les prédictions « deux marquent », « marquage par pôle » et « décision v3 » ont été figées le 26/11 au matin, après ces matchs mais sans en connaître les scores."
   }
  ],
  "lectures": [
