@@ -24,3 +24,13 @@ console.log('Juventus – Venezia (4-0) : R1 ' + K.nom(J.L.R1.figure) + ' (front
 console.log(D.length + ' matchs, ' + 2 * D.length + ' pôles ; un pôle marque dans ' + pc(D.reduce((s, d) => s + (d.sc[0] > 0) + (d.sc[1] > 0), 0), 2 * D.length) + ' des cas\n');
 for (const [k, f] of Object.entries(VAR)) { console.log(k); for (const lot of ['corpus', 'aveugle']) { let a = 0, n = 0, a0 = 0, n0 = 0; D.filter(d => d.lot === lot).forEach(d => ['R1', 'R7'].forEach((p, i) => { const v = f(d.L, p).length > 0, m = d.sc[i] > 0; if (v) { n++; if (m) a++; } else { n0++; if (m) a0++; } }));
   console.log('    ' + lot.padEnd(8) + ' figure marquante : marque ' + a + '/' + n + ' (' + pc(a, n) + ') · aucune : marque ' + a0 + '/' + n0 + ' (' + pc(a0, n0) + ')'); } }
+// Correction (2026-11-26) : ce qui bloque Juventus, c'est R1 = Populus en M8 (canal Terre, résultante Tristitia à Terre ouverte) : Populus n'a aucun point 1,
+// il ne peut donc pas être « saturé par un point 1 de la base » alors qu'il est déjà entièrement saturé. Définition corrigée de « saturé » (remplacement) :
+// un point 1 de la base saturé, OU la figure posée est Populus (saturation totale).
+const sat2 = (b, h) => b[h] === 16 || rouge(b, h);
+const corr = (L, p) => { const b = L.theme.bases, figs = [L[p].figure, mod(L[p].figure + 4)]; return C6.filter(h => figs.includes(b[h]) && sat2(b, h) && ouverte(L, h)); };
+console.log('\nDéfinition corrigée (point 1 saturé OU Populus) :');
+console.log('   Juventus : R1 ' + (corr(J.L, 'R1').length ? 'marque (M' + corr(J.L, 'R1').join(', M') + ')' : 'ne marque pas') + ' · R7 ' + (corr(J.L, 'R7').length ? 'marque' : 'ne marque pas'));
+const At = M.lire([12, 2, 10, 16]); console.log('   Atlético – Viking : R1 ' + (corr(At, 'R1').length ? 'marque' : 'ne marque pas') + ' · R7 ' + (corr(At, 'R7').length ? 'marque' : 'ne marque pas'));
+for (const lot of ['corpus', 'aveugle']) { let a = 0, n = 0, a0 = 0, n0 = 0; D.filter(d => d.lot === lot).forEach(d => ['R1', 'R7'].forEach((p, i) => { const v = corr(d.L, p).length > 0, m = d.sc[i] > 0; if (v) { n++; if (m) a++; } else { n0++; if (m) a0++; } }));
+  console.log('   ' + lot.padEnd(8) + ' figure marquante : marque ' + a + '/' + n + ' (' + pc(a, n) + ') · aucune : marque ' + a0 + '/' + n0 + ' (' + pc(a0, n0) + ')'); }

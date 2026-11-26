@@ -454,11 +454,12 @@
     return { maisons: m, deuxMarquent: m.length > 0, obs: m.length ? CANAUX_OBS.oui : CANAUX_OBS.non }; }
   // MARQUAGE D'UN PÔLE (règle du propriétaire, 2026-11-26 ; remplace dans la page la lecture par parité et niveau, 37/74 à l'aveugle) :
   // les figures marquantes d'un pôle sont lui-même et son front direct (f + 4 : Puer → Via, Aquisitio → Caput), quand elles sont posées dans une maison
-  // des canaux Terre (M4, M8, M12, M13, M14, M15) saturée par un point 1 de la base, Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
-  // Observé (117 matchs, outils/marquage_front_direct.js) : avec figure marquante, marque 39 fois sur 48 ; sans, il a quand même marqué 142 fois sur 186.
-  var MARQUE_POLE_OBS = { oui: { oui: 39, sur: 48 }, non: { oui: 142, sur: 186 } };
+  // des canaux Terre (M4, M8, M12, M13, M14, M15) où elles sont saturées — par un point 1 de la base devenu 2, ou d'elles-mêmes si c'est Populus (saturation
+  // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
+  // Observé (117 matchs, outils/marquage_front_direct.js) : avec figure marquante, marque 49 fois sur 63 ; sans, il a quand même marqué 132 fois sur 171.
+  var MARQUE_POLE_OBS = { oui: { oui: 49, sur: 63 }, non: { oui: 132, sur: 171 } };
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], figs = [c.figure, mod(c.figure + 4)], imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
-    var m = [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return figs.indexOf(b[h]) >= 0 && [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; }) && K.niveaux(L.theme.resultantes[h])[3] !== 2; });
+    var m = [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return figs.indexOf(b[h]) >= 0 && (b[h] === 16 || [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })) && K.niveaux(L.theme.resultantes[h])[3] !== 2; });
     return { marque: m.length > 0, maisons: m, figures: figs, obs: m.length ? MARQUE_POLE_OBS.oui : MARQUE_POLE_OBS.non }; }
   // NUL PAR CONVERGENCE (H-NUL-CONVERGENCE-V3, méthode du propriétaire, 2026-11-25) : le nul n'est jamais dit par un seul signe.
   // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
