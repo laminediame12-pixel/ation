@@ -2903,6 +2903,13 @@
    "enonce": "Règle du propriétaire : un pôle sans figure marquante ne marque pas ; ses figures marquantes sont lui-même s’il est saturé en canal Terre et ses marqueurs, les figures de son front.",
    "resultats": "234 pôles-matchs (un pôle marque dans 77 % des cas). Avec une figure de son front dans une maison des canaux Terre rouge à Terre ouverte : marque 48/59 (81 %) sur le corpus, 24/28 (86 %) à l’aveugle ; sans : marque quand même 77/101 (76 %) et 32/46 (70 %). La figure du pôle seule : 78 % contre 78 %. Comme prédiction oui/non, 38/74 à l’aveugle contre 56/74 pour « toujours oui ». Constat annexe : la ligne « marque » actuelle du moteur (parité, niveau) fait 37/74 à l’aveugle, sous « toujours oui ».",
    "outil": "outils/marquage_pole_canaux.js"
+  },
+  {
+   "id": "H-MARQUAGE-NOEUDS",
+   "statut": "testée, rien de net ; règle exacte à préciser par le propriétaire",
+   "enonce": "Une figure marque quand elle sature les niveaux du nœud de sa maison (exemple Juventus–Venezia 4-0 : R1 Populus en M9, nœud Feu×Eau).",
+   "resultats": "234 pôles. Figure du front saturant le nœud de sa maison : marque 76 % / 75 % (corpus / aveugle) contre 84 % / 80 % sans. Dans les canaux Terre seulement : 78 % / 79 % contre 78 % / 73 %. Résultante saturant le nœud : 78 % / 71 % contre 77 % / 93 %. Le pôle lui-même : 73 % / 86 % contre 80 % / 72 %. Juventus : Conjunctio (front de R7) en M13 sature aussi son nœud Feu×Terre, alors que R7 n’a pas marqué.",
+   "outil": "outils/marquage_noeuds.js"
   }
  ],
  "lectures": [
