@@ -3042,6 +3042,13 @@
    "statut": "lois de structure (exactes) ajoutées à la matrice ; M16 appliqué au blocage du moteur",
    "enonce": "M16 bloque : toute figure posée en M16 y reste intacte et bloque son adversaire (g + 3), Populus compris. Les quatre pas : lue de M16 vers M1, chaque ligne de la matrice avance par pas de quatre maisons ; chaque pas contient une figure de chaque front dans un ordre fixé par le front de la ligne (A : ABCD, B : BADC, C : CDAB, D : DCBA) ; les têtes des pas (M16, M12, M8, M4) parcourent le front de la figure.",
    "resultats": "Vérifié sur les 16 lignes (outils/matrice_quatre_pas.js). Ligne de Puer : Puer, Laetitia, Conjunctio, Fortuna Major | Cauda, Puella, Rubeus, Tristitia | Fortuna Minor, Carcer, Caput, Albus | Via, Amissio, Aquisitio, Populus. Blocage par Populus en M16 : aucun match de l'archive concerné, chiffres inchangés."
+  },
+  {
+   "id": "ECART-REPOS-NOEUDS-2026-11-27",
+   "statut": "mesuré, non intégré : aucun signal sur les matchs joués ; la carte de repos reste un étalon de lecture",
+   "enonce": "Écart d'un pôle Δ = nœuds pleins de son front dans le thème − nœuds pleins de ce front au repos (thème Populus : A 1, B 3, C 2, D 11). Lectures : le pôle au plus grand Δ gagne ; écart |ΔR1 − ΔR7| nul → nul, grand → domination ; incidents par l'agitation (nœuds changés sur 60) et par les nœuds des axes du dragon (M6/M12 rouge, M5/M11 penalty) devenus pleins dans le front d'un pôle.",
+   "resultats": "147 matchs (126 de développement, 21 du 26 novembre). Plus grand Δ gagne : 39 justes, 41 faux (R1 toujours 49/80) ; test 7/12 (R1 toujours 7/12). Nuls : écart 0 21 %, 1-2 13 %, 3+ 25 % (ensemble 22 %). Avec la victoire annoncée par le moteur : Δ du même côté 54 % justes, contre 55 %. 108 matchs étiquetés : agitation sans effet (rouge 21/21/19 %, penalty 38/29/38 %) ; axe rouge M6/M12 19 % contre 22 %, camp 1/5 ; axe penalty M5/M11 40 % contre 29 % (25/63 contre 13/45), camp 8/16 — indice faible, non intégré.",
+   "outil": "outils/canaux_noeuds_ecart.js"
   }
  ],
  "lectures": [
