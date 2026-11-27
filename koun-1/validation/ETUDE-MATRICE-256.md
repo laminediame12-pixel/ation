@@ -16,3 +16,12 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
      Amissio → M15, Rubeus → M14, Tristitia → M13, Fortuna Minor → M12, Carcer → M11, Conjunctio → M10, Fortuna Major → M9, Cauda → M8, Puella → M7,
      Aquisitio → M6, Populus → M5). Aucun niveau saturé : trajectoire inactive.
    - Les 14 autres trajectoires sont actives sur les niveaux saturés de leur figure (ex. Cauda : Terre seule ; Tristitia : Feu, Air, Eau).
+
+## Fouille sur les matchs (126 matchs, outils/fouille_matrice.js) — étude en cours
+- **Activité totale du thème** (niveaux saturés des résultantes M1–M15) : plus elle est haute, moins il y a de buts — ≤ 26 : 3,89 buts ; ≥ 33 : 3,06 ;
+  même sens à l'aveugle (3,54 contre 2,82).
+- **Ruptures 6-7 et 14-15** : quand la Terre de la résultante est identique de part et d'autre des deux ruptures, moins de buts — 0 rupture identique :
+  3,83 ; 2 : 2,97 ; aveugle 3,47 contre 2,70.
+- **Front du pôle qui concrétise le plus la Terre** : gagne 38, perd 21, marque 2,18 contre 1,41 ; à l'aveugle 8 victoires sur 17 seulement.
+- **Maison du pôle la plus active** : gagne 42, perd 34 ; à l'aveugle 14 sur 22.
+- Cases inactives (Via) et cases pleines (Populus) : pas de lien net avec buts ou nul.
