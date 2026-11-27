@@ -2956,6 +2956,12 @@
    "statut": "INTÉGRÉE à la demande du propriétaire (2026-11-27) : remplace l’estimation par les arrêts seuls dans la ligne « Buts au total » ; prédictions figées validation/predictions-buts-24-30-novembre.json",
    "resultats": "126 matchs : arrêt et M11 plein 4,32 buts (41) ; arrêt et M11 vide 3,37 (35) ; sans arrêt et M11 plein 3,10 (30) ; ni l’un ni l’autre 2,30 (20). Erreur moyenne (un match de côté) : aveugle 1,31 contre 1,33 pour les arrêts seuls ; corpus 1,65 contre 1,61.",
    "outil": "outils/noeuds_doubles.js"
+  },
+  {
+   "id": "DEUX-MARQUENT-M11",
+   "statut": "INTÉGRÉ à la demande du propriétaire (2026-11-27) ; prédictions figées validation/predictions-deux-marquent-v2-24-30-novembre.json",
+   "enonce": "Deux marquent : Oui si R1 et R7 ont chacun une figure marquante, ou si le nœud M11 (Eau²) est plein.",
+   "resultats": "126 matchs : corpus 42/80, aveugle 27/46 (avant : 30/80 et 23/46 ; « toujours oui » 47/80 et 23/46). Oui dit 77 fois, juste 45 ; Non : les deux ont quand même marqué 25 fois sur 49."
   }
  ],
  "lectures": [

@@ -66,3 +66,8 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
   M1 plein 54 % contre 58 % ; M16 (Terre de la base) 54 % contre 57 %. Buts : M11 3,80 / 2,98 ; M1, M6, M16 sans écart.
 - Le pôle et le nœud double de son front (M1 → A, M6 → B, M11 → C, M16 → D) : plein, il marque 81 % (corpus) et 76 % (aveugle) ; vide, 75 % et 73 %.
 - Le pôle et le nœud double de la colonne de sa maison : 77 % dans les deux cas.
+
+## Précision du propriétaire : dans les 15 nœuds, le front prend les deux premiers (Feu, Air), la figure miroir prend les deux autres (Eau, Terre) — vérifié
+- Les 4 figures d'un front ont toujours le même Feu et le même Air : le front, ce sont les deux premiers niveaux (loi 1).
+- Ce qui les distingue est porté par l'Eau et la Terre : la figure et son miroir (f + 8) ne diffèrent que par la Terre ; la figure et son front direct (f + 4)
+  diffèrent par l'Eau (et la Terre une fois sur deux). Ex. Puer 1121, miroir Fortuna Minor 1122, front direct Via 1111.
