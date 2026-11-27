@@ -3000,6 +3000,12 @@
    "enonce": "Populus en base reproduit la figure de la maison. Quand il produit ainsi l'antagoniste (f − 3) du pôle ET celui de son front direct, le pôle est bloqué et ne marque pas.",
    "origine": "Paris – Marseille 4-6-7-16 (5-0) : Albus en M4 contre Rubeus (R7), Tristitia en M8 contre Conjunctio ; Caput et Aquisitio absents.",
    "resultats": "126 matchs : un seul cas (Paris – Marseille), juste. Blocage du pôle seul : 7/11 ont marqué ; du front direct seul : 14/16."
+  },
+  {
+   "id": "EGALITE-N-N-2026-11-27",
+   "statut": "intégrée à la demande du propriétaire ; en cours d'étude (protocole des 15 essais)",
+   "enonce": "Les deux pôles au même niveau de marquage, aucun pôle bloqué (antagoniste f − 3 posé en base qui garde ses points actifs dans la résultante), Populus en base dans la boucle de front d'un pôle → égalité n-n.",
+   "resultats": "126 matchs : 13 cas, 6 nuls (46 %) contre 21 % de nuls en tout."
   }
  ],
  "lectures": [

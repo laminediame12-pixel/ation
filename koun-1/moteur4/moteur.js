@@ -477,8 +477,22 @@
     var Q1 = marquePole(L, 'R1').marque, Q7 = marquePole(L, 'R7').marque;
     if (Q1 !== Q7) { var w = Q1 ? '1' : '2'; V.decision = { resultat: w, raison: 'seul ' + (Q1 ? 'R1' : 'R7') + ' marque selon la règle de marquage' + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
     else if (!Q1) V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage';
+    // ÉGALITÉ n-n (propriétaire, 2026-11-27 ; en cours d'étude, protocole des 15 essais) : les deux pôles au même niveau de marquage, aucun pôle bloqué, et
+    // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 13 cas, 6 nuls (46 % ; 21 % en tout).
+    var EG = egalite(L); V.egalite = EG;
+    if (EG.oui) V.decision = { resultat: 'N', raison: 'égalité n-n (en cours d\'étude) : ' + EG.raison + ' · indice : ' + VC.texte };
     if (Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }
+  // Blocage (propriétaire, 2026-11-27) : l'antagoniste (f − 3) du pôle posé en base (M1–M15) garde ses points actifs dans la résultante — chacun de ses 1 tombe
+  // sur un 2 de la maison, aucune réaction ne le consomme. Populus, sans point actif, ne bloque pas.
+  function blocages(L, p) { var A = mod(L[p].figure - 3), b = L.theme.bases, r = []; if (A === 16) return r;
+    for (var h = 1; h <= 15; h++) if (b[h] === A && K.niveaux(A).every(function (v, l) { return v !== 1 || K.niveaux(h)[l] === 2; })) r.push(h); return r; }
+  var EGALITE_OBS = { cas: 13, nuls: 6 };
+  function egalite(L) { var b = L.theme.bases, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B1 = blocages(L, 'R1'), B7 = blocages(L, 'R7');
+    var boucle = function (f) { var z = (f - 1) % 4; return [z + 1, z + 5, z + 9, z + 13].filter(function (h) { return b[h] === 16; }); }, pb = { R1: boucle(L.R1.figure), R7: boucle(L.R7.figure) };
+    var ident = P1.niveau === P7.niveau && !P1.bloque === !P7.bloque, libre = !B1.length && !B7.length, pop = pb.R1.length > 0 || pb.R7.length > 0, oui = ident && libre && pop;
+    return { oui: oui, identiques: ident, blocages: { R1: B1, R7: B7 }, populusBoucle: pb, obs: EGALITE_OBS,
+      raison: 'pôles au même niveau de marquage (' + P1.niveau + ')' + (libre ? ', aucun pôle bloqué' : ', pôle bloqué par son antagoniste en M' + B1.concat(B7).join(', M')) + (pop ? ', Populus dans la boucle de ' + (pb.R1.length ? 'R1 (M' + pb.R1.join(', M') + ')' : '') + (pb.R1.length && pb.R7.length ? ' et ' : '') + (pb.R7.length ? 'R7 (M' + pb.R7.join(', M') + ')' : '') : ', pas de Populus dans les boucles des pôles') }; }
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
       st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux sur ' + (S.ok + S.ko) + ' appels tranchés' : '',
@@ -592,7 +606,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { egalite: egalite, blocages: blocages, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

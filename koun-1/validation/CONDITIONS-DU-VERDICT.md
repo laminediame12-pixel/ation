@@ -4,13 +4,14 @@ Ordre de priorité : 1 Vainqueur → 2 Deux marquent → 3 R1 / R7 marque → 4 
 La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes : rien ne l'impose. Si un seul pôle marque, c'est lui qui gagne.
 
 ## 1. Vainqueur (`verdict` → `decision`)
-Le système ne prédit plus le nul : tout ce qui le concernait a été supprimé le 2026-11-27. La décision est toujours une victoire.
+Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seule l'égalité n-n (d) peut donner un nul.
 **a. Victoire appelée** (une seule des deux voies) :
 - **Accord** : dans le front de chaque pôle, ses deux nœuds diagonaux (A : M13, M1 · B : M10, M6 · C : M7, M11 · D : M4, M16) ; on compte ceux dont la résultante a la Terre saturée.
   Le pôle qui en a le plus est désigné **et** les nœuds de coordination (base M1 + base M7, résultante de M9, base M2 + base M8, lus dans le front de chaque pôle) désignent le même pôle → victoire de ce pôle.
 - **M1-M10** (seulement si l'accord n'appelle pas) : les liaisons Terre M1–M5 et M10–M14 (somme des résultantes) sont toutes deux en arrêt (Terre impaire) → victoire de R1.
 
 **b. Sinon → victoire de R1** (avantage du domicile).
+**d. Égalité n-n (en cours d'étude)** : les deux pôles au même niveau de marquage, **aucun pôle bloqué** (blocage : l'antagoniste f − 3 du pôle posé en base garde ses points actifs dans la résultante — chacun de ses 1 tombe sur un 2 de la maison), et **Populus en base dans la boucle de front d'un pôle** (maisons f, f + 4, f + 8, f + 12) → chaque équipe peut marquer n buts. 126 matchs : 13 cas, 6 nuls.
 **c. Le marquage commande** : si un seul pôle marque selon la partie 3, la victoire lui revient, quel que soit l'appel.
 **Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 

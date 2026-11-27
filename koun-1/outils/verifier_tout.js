@@ -7,6 +7,7 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   const p1 = M.marquePole(L, 'R1').marque, p7 = M.marquePole(L, 'R7').marque;
   if (H.R1.marque !== p1 || H.R7.marque !== p7 || H.R1.impose || H.R7.impose) e('marquage remplacé par une autre partie', s);
   if (p1 !== p7 && H.decision !== (p1 ? '1' : '2')) e('un seul pôle marque mais il ne gagne pas', s);
+  if (H.decision === 'N' && p1 !== p7) e('égalité alors qu\'un seul pôle marque', s);
   if (H.deux.oui !== (p1 && p7)) e('« deux marquent » différent de la règle de marquage', s);
   if (H.mt1.marqueurs.concat(H.mt2.marqueurs).some(p => !H[p].marque)) e('mi-temps : but pour un pôle qui ne marque pas', s);
   if (H.buts.valeur < (p1 ? 1 : 0) + (p7 ? 1 : 0)) e('buts < pôles qui marquent', s); }
