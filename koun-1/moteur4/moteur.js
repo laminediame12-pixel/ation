@@ -575,13 +575,34 @@
   function arrets(L) { var b = L.theme.bases, l = []; for (var h = 1; h <= 15; h++) if (b[h] === mod(h - 3)) l.push(h);
     var o = l.length ? ARRETS_OBS.avec : ARRETS_OBS.sans;
     return { maisons: l, nombre: l.length, butsAttendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
-  // INCIDENT (2026-11-27, à la demande du propriétaire ; remplace le débordement, sans effet sur 88 matchs étiquetés). Le penalty et le rouge sont lus séparément :
-  //   penalty : un arrêt dans le thème (antagoniste posé dans la maison) — 88 matchs : penalty 22/53 avec arrêt, 7/35 sans ;
-  //   rouge : un pôle bloqué (son antagoniste posé en base garde ses points actifs, M16 comprise) — rouge 13/36 avec blocage, 6/52 sans.
-  //   Les deux : probable ; l'un des deux : possible ; aucun : pas d'indice. Le pôle visé n'est pas désigné (aucun signe fiable). Mesure : outils/fouille_incidents.js.
-  var INCIDENT_OBS = { deux: { incident: 10, sur: 20, penalty: 7, rouge: 6 }, penalty: { incident: 18, sur: 33, penalty: 15, rouge: 5 }, rouge: { incident: 7, sur: 16, penalty: 2, rouge: 7 }, aucun: { incident: 5, sur: 19, penalty: 5, rouge: 1 } };
-  function incidentVerdict(L) { var A = arrets(L), b1 = blocages(L, 'R1'), b7 = blocages(L, 'R7'), pen = A.nombre > 0, rg = b1.length > 0 || b7.length > 0, k = pen && rg ? 'deux' : pen ? 'penalty' : rg ? 'rouge' : 'aucun';
-    return { pole: null, penalty: pen, rouge: rg, arrets: A.maisons, bloques: { R1: b1, R7: b7 }, cas: k, niveau: k === 'deux' ? 'probable' : k === 'aucun' ? 'aucun' : 'possible', obs: INCIDENT_OBS[k] }; }
+  // INCIDENTS (2026-11-27, à la demande du propriétaire ; en cours d'étude ; remplace la lecture arrêt / blocage). Mesures sur 108 matchs étiquetés
+  // (outils/rouges_un_par_un.js, rouge_fausses_alertes.js, camp_du_rouge.js, penaltys_un_par_un.js).
+  // ROUGE — veto : le front de R7 attaque celui de R1 (1 rouge sur 31). Sinon trois signes : le dragon en M6/M12 (Rubeus ou Puer posé en base de M6 ou M12,
+  //   qui y produit Caput ou Cauda), R7 bloqué, R1 bloqué (antagoniste posé en base qui garde ses points actifs). 0 signe 4/35, 1 signe 9/30, 2 ou plus 8/12.
+  //   Camp : un pôle bloqué reçoit le rouge, sauf si son bloqueur est posé dans les Filles (M5–M8) → l'adversaire ; sinon, avec le dragon, le pôle de même
+  //   front que la figure martiale ; sinon R7. 19 rouges sur 21.
+  // PENALTY — deux signes : un arrêt avec des fronts de R1 et R7 non alliés ; la figure d'un pôle est celle de la sentence M16. 0 signe 10/47, 1 signe 22/50,
+  //   2 signes 6/11. Camp : le pôle dont la figure est en M16 ; sinon le pôle dont le front attaque l'autre ; sinon R1. 25 penalties sur 34.
+  var INCIDENT_OBS = { rouge: { veto: { oui: 1, sur: 31 }, 0: { oui: 4, sur: 35 }, 1: { oui: 9, sur: 30 }, 2: { oui: 8, sur: 12 }, camp: { ok: 19, sur: 21 } },
+    penalty: { 0: { oui: 10, sur: 47 }, 1: { oui: 22, sur: 50 }, 2: { oui: 6, sur: 11 }, camp: { ok: 25, sur: 34 } } };
+  function incidentVerdict(L) { var b = L.theme.bases, f1 = (L.R1.figure - 1) % 4, f7 = (L.R7.figure - 1) % 4, AT = { 0: 3, 1: 0, 3: 2, 2: 1 };
+    var rel = f1 === f7 ? 'meme' : AT[f1] === f7 ? 'R1' : AT[f7] === f1 ? 'R7' : 'allies';
+    // rouge
+    var dragon = [6, 12].filter(function (h) { return b[h] === 7 || b[h] === 1; }), bl = { R1: blocages(L, 'R1'), R7: blocages(L, 'R7') };
+    var sr = (dragon.length ? 1 : 0) + (bl.R7.length ? 1 : 0) + (bl.R1.length ? 1 : 0), nr = rel === 'R7' ? 'veto' : Math.min(sr, 2);
+    var niveauR = nr === 'veto' ? 'improbable' : nr === 2 ? 'probable' : nr === 1 ? 'possible' : 'faible', campR = null, pourquoiR = null, v1 = 0, v7 = 0;
+    ['R1', 'R7'].forEach(function (p) { if (!bl[p].length) return; var filles = bl[p].some(function (h) { return h >= 5 && h <= 8; }), c = filles ? (p === 'R1' ? 'R7' : 'R1') : p; if (c === 'R1') v1++; else v7++; });
+    if (v1 !== v7) { campR = v1 > v7 ? 'R1' : 'R7'; pourquoiR = 'blocage'; }
+    if (!campR && dragon.length) { var meme = function (p) { var z = (L[p].figure - 1) % 4; return dragon.some(function (h) { return (b[h] - 1) % 4 === z; }); }, m1 = meme('R1'), m7 = meme('R7'); if (m1 !== m7) { campR = m1 ? 'R1' : 'R7'; pourquoiR = 'dragon'; } }
+    if (!campR) { campR = 'R7'; pourquoiR = 'défaut'; }
+    // penalty
+    var A = arrets(L), e1 = b[16] === L.R1.figure, e7 = b[16] === L.R7.figure, s16 = e1 && e7 ? 'les deux' : e1 ? 'R1' : e7 ? 'R7' : null;
+    var sigA = A.nombre > 0 && rel !== 'allies', sp = (sigA ? 1 : 0) + (s16 ? 1 : 0), niveauP = sp === 2 ? 'probable' : sp === 1 ? 'possible' : 'faible';
+    var campP = s16 === 'R1' || s16 === 'R7' ? s16 : rel === 'R1' || rel === 'R7' ? rel : 'R1', pourquoiP = s16 === 'R1' || s16 === 'R7' ? 'sentence' : rel === 'R1' || rel === 'R7' ? 'attaque' : 'défaut';
+    var niveau = niveauR === 'probable' || niveauP === 'probable' ? 'probable' : niveauR === 'possible' || niveauP === 'possible' ? 'possible' : 'aucun';
+    return { niveau: niveau, pole: null, arrets: A.maisons, fronts: rel,
+      rouge: { niveau: niveauR, signes: sr, dragon: dragon, bloques: bl, veto: nr === 'veto', camp: campR, pourquoi: pourquoiR, obs: INCIDENT_OBS.rouge[nr], obsCamp: INCIDENT_OBS.rouge.camp },
+      penalty: { niveau: niveauP, signes: sp, arret: sigA, sentence: s16, camp: campP, pourquoi: pourquoiP, obs: INCIDENT_OBS.penalty[sp], obsCamp: INCIDENT_OBS.penalty.camp } }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;

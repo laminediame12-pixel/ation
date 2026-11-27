@@ -58,7 +58,14 @@ Elle cède : au moins autant de buts que d'équipes qui marquent.
 - **2e mi-temps (`secondeMiTemps`)** : figure = somme des bases de **M4, M5, M13, M15** ; équipe désignée : celle dont le front porte en base cette figure ou son protecteur.
 - Elles cèdent : ne désignent que des équipes qui marquent ; pas de but en 1re mi-temps si aucune équipe ne marque.
 
-## Incidents (`incidentVerdict`) — indépendants, penalty et rouge lus séparément
-- **Penalty possible** : au moins un arrêt dans le thème (antagoniste h − 3 posé en base dans la maison h). 88 matchs : penalty 22/53 avec arrêt, 7/35 sans.
-- **Rouge possible** : un pôle bloqué (son antagoniste posé en base garde ses points actifs, M16 comprise). Rouge 13/36 avec blocage, 6/52 sans.
-- Les deux : « Penalty et rouge possibles » ; aucun : pas d'indice. Le pôle visé n'est pas désigné.
+## Incidents (`incidentVerdict`) — indépendants, en cours d'étude (108 matchs étiquetés)
+**Rouge**
+- Veto : le front de R7 attaque celui de R1 → pas de rouge (1 rouge sur 31).
+- Sinon, trois signes : **dragon en M6/M12** (Rubeus ou Puer posé en base de M6 ou M12, qui y produit Caput ou Cauda) ; **R7 bloqué** ; **R1 bloqué** (antagoniste f − 3 posé en base qui garde ses points actifs, M16 comprise).
+  0 signe : peu probable (4/35) · 1 signe : possible (9/30) · 2 signes ou plus : probable (8/12).
+- Camp : le pôle bloqué reçoit le rouge, **sauf si son bloqueur est posé dans les Filles (M5–M8)** → l'adversaire ; sinon, avec le dragon, le pôle de même front que la figure martiale ; sinon R7. Juste 19 fois sur 21.
+
+**Penalty**
+- Deux signes : **un arrêt avec des fronts de R1 et R7 non alliés** ; **la figure d'un pôle est celle de la sentence M16**.
+  0 signe : peu probable (10/47) · 1 signe : possible (22/50) · 2 signes : probable (6/11).
+- Camp : le pôle dont la figure est en M16 ; sinon le pôle dont le front attaque l'autre ; sinon R1. Juste 25 fois sur 34.
