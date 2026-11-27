@@ -25,3 +25,20 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
 - **Front du pôle qui concrétise le plus la Terre** : gagne 38, perd 21, marque 2,18 contre 1,41 ; à l'aveugle 8 victoires sur 17 seulement.
 - **Maison du pôle la plus active** : gagne 42, perd 34 ; à l'aveugle 14 sur 22.
 - Cases inactives (Via) et cases pleines (Populus) : pas de lien net avec buts ou nul.
+
+## Lois exactes de la matrice (déchiffrage, 2026-11-27)
+1. **Le front d'une figure, ce sont ses niveaux Feu et Air** : A = Feu 1, Air 1 (Puer, Via, Fortuna Minor, Cauda) ; B = Feu 1, Air 2 (Laetitia, Amissio,
+   Carcer, Puella) ; C = Feu 2, Air 1 (Caput, Rubeus, Conjunctio, Aquisitio) ; D = Feu 2, Air 2 (Albus, Tristitia, Fortuna Major, Populus).
+   Eau et Terre donnent la place de la figure dans son front.
+2. **Les deux points du haut de chaque case (Feu, Air) ne dépendent que des deux fronts** : la matrice est faite de 16 blocs de 4 × 4, chacun d'un seul front
+   de résultante. Même front → résultante du front D (Feu et Air saturés) ; D est neutre (D + X = X) ; A + B = C, A + C = B, B + C = A.
+   Feu saturé ⇔ même Feu (A et B entre eux, C et D entre eux) ; Air saturé ⇔ même Air (A et C, B et D).
+3. **Les deux points du bas (Eau, Terre) ne dépendent que des places dans les fronts.**
+4. **Le miroir (h + 8) inverse la Terre et rien d'autre** — toujours, pour les 16 figures (la somme f + (f + 8) est toujours Tristitia).
+   Donc une figure n'a jamais la même Terre de résultante en M h et en M h + 8 : la moitié droite de la matrice (M9–M16) est la moitié gauche avec la Terre inversée.
+5. **Pourquoi la Terre « saute une maison » sauf en 6-7 et 14-15** : Terre des figures-maisons M1 à M8 = 1 2 1 2 1 2 2 1 ; par la loi 4, M9 à M16 = 2 1 2 1 2 1 1 2.
+   La rupture 6-7 de la première moitié est recopiée par le miroir en 14-15 : il n'y en a que deux, à 8 maisons d'écart.
+6. **Front direct (f + 4) : il inverse toujours l'Eau** (et la Terre une fois sur deux) ; le binôme (± 2), l'antagoniste (− 3) et l'orbite (+ 6) prennent
+   3 à 5 formes selon la figure : seul le miroir est une loi pure.
+7. **Attaques de fronts relues** : A + D = A (Feu et Air bloqués), B + A = C (Feu passe), D + C = C (Feu passe), C + B = A (rien ne passe en Feu/Air) :
+   c'est pourquoi l'Air ne survit jamais à une attaque.
