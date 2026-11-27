@@ -71,3 +71,9 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
 - Les 4 figures d'un front ont toujours le même Feu et le même Air : le front, ce sont les deux premiers niveaux (loi 1).
 - Ce qui les distingue est porté par l'Eau et la Terre : la figure et son miroir (f + 8) ne diffèrent que par la Terre ; la figure et son front direct (f + 4)
   diffèrent par l'Eau (et la Terre une fois sur deux). Ex. Puer 1121, miroir Fortuna Minor 1122, front direct Via 1111.
+
+## M11 dans la cartographie des fronts et le marquage des pôles (outils/m11_cartographie.js)
+- Dans la croix d'un front z, le nœud M11 (Eau × Eau) croise le canal Eau de la branche droite (maison z + 5, front direct) et celui de la branche basse
+  (maison z + 9, miroir). Un pôle touche M11 quand sa figure est l'une de ces deux branches (figures 5 à 12).
+- Le pôle touche M11 : marque 85 % (corpus) et 77 % (aveugle) contre 70 % et 72 %. Avec son canal Eau saturé : 91 % sur le corpus mais 67 % à l'aveugle.
+  Nœud M11 de la croix de son front plein : 77 % / 64 % contre 79 % / 79 %. Touche M11 et nœud plein : 92 % / 69 % contre 76 % / 76 %.
