@@ -94,3 +94,11 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
    Le « mobile » de la règle du noyau Terre naît donc des placements en front allié, l'« équilibre » des placements dans son propre front.
 5. **Arrêts** (g dans la maison g + 3) : la résultante ne prend que cinq formes — Via, Caput, Puer, Conjunctio, Cauda.
 6. **M16 ne transforme rien** (g en M16 = g), et Populus posé dans une maison reproduit la figure de cette maison.
+
+## Lecture structurelle noyau / mobile et le nul (outils/noyau_mobile_structure.js) — 126 matchs, 21 % de nuls
+- Maisons en équilibre (base du même front que la maison) ou mobiles (base en front allié) : pas de lien régulier avec le nul (11 % à 33 % sans ordre).
+  Phase structurelle équilibre 17/72 (24 %) contre mobile 10/54 (19 %).
+- **Équilibre en suspens** (base dans la maison de son miroir → Tristitia) : 2 ou plus → 10 nuls sur 36 (28 %), **aveugle 7 sur 14** ; 0 ou 1 → 17 sur 90 (19 %),
+  aveugle 5 sur 32.
+- **Équilibre concrétisé** (base chez elle → Populus) : 2 ou plus → 5 nuls sur 34 (15 %) ; 3 → 1 sur 11.
+- Mise à la place du signe « noyau Terre » de la convergence du nul : corrélation 0,356 → 0,326 (moins bien) ; non retenue.
