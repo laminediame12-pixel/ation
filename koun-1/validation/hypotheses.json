@@ -2976,6 +2976,12 @@
    "enonce": "Audit de la page sur 263 thèmes (outils/audit_logique.js) : contradictions entre lignes affichées.",
    "resultats": "Avant : Victoire R1 avec « R1 ne marque pas » 104 fois (40 %), buts annoncés sans pôle marquant 117 (44 %), « Deux marquent : Oui » avec un pôle qui ne marque pas 115 (44 %), mi-temps désignant une équipe qui ne marque pas 92 et 86, Nul avec un seul pôle marquant 34, Victoire R7 sans que R7 marque 12. Correction : un score prévu (décision + buts attendus) d’où découlent R1 / R7 marque, Deux marquent et les désignations de mi-temps ; la règle des figures marquantes reste affichée comme indice (en étude). Après : 0 contradiction. Mesure sur 126 matchs : « le pôle marque » 119/160 et 69/92 à l’aveugle (avant 68 et 38) ; « Deux marquent » 49/80 et 25/46 (avant 42 et 27).",
    "outils": "outils/audit_logique.js, outils/verifier_affichage.js"
+  },
+  {
+   "id": "HIERARCHIE-VERDICT-2026-11-27",
+   "statut": "appliquée à la demande du propriétaire ; remplace le score prévu ; prédictions figées validation/predictions-hierarchie-24-30-novembre.json",
+   "enonce": "Chaque partie applique ses conditions et ne cède que si elle contredit une partie plus haute : vainqueur / nul > deux marquent (pôles marquants ou M11) > R1 / R7 (figures marquantes) > volume de buts (arrêts × M11) > mi-temps ; incidents indépendants.",
+   "resultats": "Audit sur 263 thèmes : 0 contradiction. Mesure sur 126 matchs : R1 / R7 marque 100/160 et 61/92 à l’aveugle (règle seule 68 et 38 ; score prévu 119 et 69) ; deux marquent 42/80 et 27/46 (sa propre règle) ; écart moyen sur les buts 1,85 et 1,46 (avant 1,65 et 1,31 : les 0-0 imposés par « nul sans deux marquent » coûtent)."
   }
  ],
  "lectures": [

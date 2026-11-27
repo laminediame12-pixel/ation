@@ -470,13 +470,25 @@
   var BUTS_OBS = { AE: { sur: 41, buts: 177, plus25: 33, plus35: 27 }, A: { sur: 35, buts: 118, plus25: 21, plus35: 18 }, E: { sur: 30, buts: 93, plus25: 16, plus35: 10 }, rien: { sur: 20, buts: 46, plus25: 8, plus35: 4 } };
   function butsEstimes(L) { var A = arrets(L), e = K.niveaux(L.theme.resultantes[11])[2] === 2, k = A.nombre ? (e ? 'AE' : 'A') : (e ? 'E' : 'rien'), o = BUTS_OBS[k];
     return { arrets: A, m11Plein: e, cas: k, attendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
-  // SCORE PRÉVU (audit du 2026-11-27, à la demande du propriétaire : enlever ce qui ne suit pas la logique). Toutes les lignes de marquage en découlent,
-  // pour qu'elles ne se contredisent plus (avant : « Victoire R1 » avec « R1 ne marque pas » dans 40 % des thèmes, des buts sans pôle marquant dans 44 %).
-  // Construction : décision du moteur + buts attendus (arrêts × M11). Nul → k-k avec k = arrondi(buts / 2), au moins 1. Victoire → total = arrondi(buts),
-  // le vainqueur prend la moitié haute. Mesure (126 matchs) : « le pôle marque » juste 119/160 et 69/92 à l'aveugle (règle des figures marquantes : 68 et 38).
-  function scorePrevu(L) { var V = verdict(L), E = butsEstimes(L).attendus, d = V.decision.resultat, a, b;
-    if (d === 'N') { a = b = Math.max(1, Math.round(E / 2)); } else { var t = Math.max(1, Math.round(E)), w = Math.ceil((t + 1) / 2), l = Math.max(0, t - w); a = d === '1' ? w : l; b = d === '1' ? l : w; }
-    return { R1: a, R7: b, texte: a + '-' + b }; }
+  // HIÉRARCHIE DU VERDICT (2026-11-27, à la demande du propriétaire ; remplace le score prévu). Chaque partie applique SES conditions et ne cède que si
+  // elle contredit une partie plus haute :
+  //   1. Vainqueur / Nul (décision du moteur) → le vainqueur marque ; en cas de nul, les deux marquent ou aucun.
+  //   2. Deux marquent (R1 et R7 ont une figure marquante, ou M11 plein) → si oui, chaque pôle marque ; si non et nul : 0-0 ; si non et victoire : le perdant ne marque pas.
+  //   3. R1 / R7 marque (règle des figures marquantes) → seulement là où 1 et 2 laissent le choix.
+  //   4. Volume de buts (arrêts × M11) → au moins autant de buts que d'équipes qui marquent ; 0 si aucune ne marque.
+  //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
+  function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
+    var deuxPropre = (P1.marque && P7.marque) || e, deux = { oui: deuxPropre, raison: P1.marque && P7.marque ? 'R1 et R7 ont chacun une figure marquante' : e ? 'nœud M11 (Eau²) plein' : 'ni les deux pôles marquants, ni M11 plein', impose: false };
+    var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
+    var force = function (p, v, why) { if (m[p].marque !== v) { m[p].marque = v; m[p].impose = why; } };
+    if (d === '1') force('R1', true, 'imposé par la victoire de R1'); if (d === '2') force('R7', true, 'imposé par la victoire de R7');
+    if (deux.oui) { force('R1', true, 'imposé par « deux marquent »'); force('R7', true, 'imposé par « deux marquent »'); }
+    else if (d === 'N') { force('R1', false, 'imposé par le nul sans « deux marquent » (0-0)'); force('R7', false, 'imposé par le nul sans « deux marquent » (0-0)'); }
+    else if (d === '1') force('R7', false, 'imposé par la victoire de R1 sans « deux marquent »');
+    else force('R1', false, 'imposé par la victoire de R7 sans « deux marquent »');
+    var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
+    if (n === 0 && v > 0) { v = 0; aj = 'aucune équipe ne marque'; } else if (v < n) { v = n; aj = n + ' équipes marquent'; }
+    return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B } }; }
   // NUL PAR CONVERGENCE (H-NUL-CONVERGENCE-V3, méthode du propriétaire, 2026-11-25) : le nul n'est jamais dit par un seul signe.
   // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
   // équilibre des deux parties +1 ; Terre de M1, M2, M3 identique +1 ; Terre de M14 saturée +1 ; diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) +1.
@@ -627,7 +639,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { scorePrevu: scorePrevu, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
