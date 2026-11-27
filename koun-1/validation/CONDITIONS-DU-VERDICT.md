@@ -54,7 +54,7 @@ Puis **Populus et figures chez elles** (figure posée en base dans sa propre mai
 | Populus en base, 1 figure chez elle | −0,1 |
 | Populus en base, 2 figures ou plus chez elles | +0,6 |
 | Sans Populus | +0,1 |
-Elle cède : au moins autant de buts que d'équipes qui marquent.
+Elle cède : au moins autant de buts que d'équipes qui marquent ; une égalité où aucun pôle ne marque donne 0 but (0-0).
 
 ## 5. Mi-temps
 - **1re mi-temps (`rythme`)** : figure = somme des bases de **M1, M5, M12, M15**. But attendu si la figure est **rapide** (Feu et Air saturés, hors Populus)

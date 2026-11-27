@@ -641,7 +641,8 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; seule exception : le vainqueur des boucles différentes marque (imposé, ci-dessus).
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
-    if (v < n) { v = n; aj = n + ' équipes marquent'; }
+    if (d === 'N' && n === 0) { v = 0; aj = 'égalité sans pôle qui marque : 0-0'; } // cohérence : une égalité où personne ne marque ne peut être que 0-0
+    else if (v < n) { v = n; aj = n + ' équipes marquent'; }
     // mi-temps : ne désignent que les pôles qui marquent ; pas de but en 1re mi-temps si aucun pôle ne marque (calculé ici, la page ne fait qu'afficher).
     var Y = rythme(L), S = secondeMiTemps(L), mq = function (p) { return m[p].marque; };
     Y.marqueurs = Y.marqueurs.filter(mq); if (!n) Y.butAttendu = false; S.marqueurs = S.marqueurs.filter(mq);
@@ -854,7 +855,7 @@ function blocN(left,right,top,bot,sub,L,tri){
  const CX=280,CY=280,S=26,X=[0,1,2,3].map(j=>CX-39+S*j),Y=X,BW=44,BH=104,DR=130,PITCH=52,EDGE=DR-BW/2;
  const out=[];
  const pos=n=>{if(!L)return{abs:false};const nm=FIGS[n-1].n;let t=false;L.maisons.forEach(m=>{if(m.base===nm||m.resultante===nm)t=true});return{abs:!t}};
- const pol=n=>L&&FIGS[n-1].n===L.R1.figure?'R1':L&&FIGS[n-1].n===L.R7.figure?'R7':'';
+ const pol=n=>{if(!L)return '';const a=FIGS[n-1].n===L.R1.figure,b=FIGS[n-1].n===L.R7.figure;return a&&b?'R1 · R7':a?'R1':b?'R7':''};
  const antOf=h=>((h-4)%16+16)%16+1;
  const addN=(a,b)=>{const q=FIGS[a-1].p.map((x,i)=>(x+FIGS[b-1].p[i])%2===0?2:1).join();return FIGS.findIndex(f=>f.p.join()===q)+1};
  const mk=(b,h)=>{const r=addN(b,h),lv=FIGS[h-1].p.map((x,i)=>{const y=FIGS[b-1].p[i];return{a:y,b:x,r:res1(y,x)}});return{h:h,b:b,r:r,lv:lv,c:lv.filter(o=>o.r===2).length,reel:!!(L&&!tri&&L.maisons[h-1].base===FIGS[b-1].n)}};
@@ -862,7 +863,7 @@ function blocN(left,right,top,bot,sub,L,tri){
  const pkw=(bb,w,n)=>'<g class="pk" data-ck="'+CK+'" data-k="'+bb.k+'" data-w="'+w+'" data-n="'+n+'">';
  const BT=br('top',top),BR=br('right',right),BB=br('bot',bot),BL=br('left',left);
  const dot=(c,x,y,i,two,vert)=>two?(vert?'<circle cx="'+(x-6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+(x+6)+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>':'<circle cx="'+x+'" cy="'+(y-6)+'" r="4.3" fill="'+EC[i]+'"/><circle cx="'+x+'" cy="'+(y+6)+'" r="4.3" fill="'+EC[i]+'"/>'):'<circle cx="'+x+'" cy="'+y+'" r="4.3" fill="'+EC[i]+'"/>';
- const stroke=n=>pol(n)==='R1'?'var(--cr1)':pol(n)==='R7'?'var(--cr7)':'var(--ln)',tint=n=>pol(n)==='R1'?'var(--cr1t)':pol(n)==='R7'?'var(--cr7t)':'var(--card)';
+ const stroke=n=>pol(n).indexOf('R1')===0?'var(--cr1)':pol(n)==='R7'?'var(--cr7)':'var(--ln)',tint=n=>pol(n).indexOf('R1')===0?'var(--cr1t)':pol(n)==='R7'?'var(--cr7t)':'var(--card)';
  // boîte verticale (gauche, droite) : niveaux en lignes alignées sur la grille ; boîte horizontale (haut, bas) : niveaux en colonnes
  const boxV=(n,cx,lab,bb,w)=>pkw(bb,w,n)+'<rect x="'+(cx-BW/2)+'" y="'+(CY-BH/2)+'" width="'+BW+'" height="'+BH+'" rx="7" fill="'+tint(n)+'" stroke="'+(bb.mw[w]?'var(--ac)':stroke(n))+'" stroke-width="'+(bb.mw[w]?3.5:pol(n)?4:1.5)+'"'+(pos(n).abs?' stroke-dasharray="4 3"':'')+'/>'+FIGS[n-1].p.map((p,i)=>dot(0,cx,Y[i],i,p===2,true)).join('')+'<text x="'+cx+'" y="'+(CY+BH/2+14)+'" text-anchor="middle" font-size="12" font-weight="700"'+(pol(n)?' style="fill:'+stroke(n)+'"':'')+'>'+lab+(pol(n)?' · '+pol(n):'')+'</text></g>';
  const boxH=(n,cy,lab,bb,w)=>pkw(bb,w,n)+'<rect x="'+(CX-BH/2)+'" y="'+(cy-BW/2)+'" width="'+BH+'" height="'+BW+'" rx="7" fill="'+tint(n)+'" stroke="'+(bb.mw[w]?'var(--ac)':stroke(n))+'" stroke-width="'+(bb.mw[w]?3.5:pol(n)?4:1.5)+'"'+(pos(n).abs?' stroke-dasharray="4 3"':'')+'/>'+FIGS[n-1].p.map((p,j)=>dot(0,X[j],cy,j,p===2,false)).join('')+'<text x="'+(CX+BH/2+8)+'" y="'+(cy+4)+'" text-anchor="start" font-size="12" font-weight="700"'+(pol(n)?' style="fill:'+stroke(n)+'"':'')+'>'+lab+(pol(n)?' · '+pol(n):'')+'</text></g>';

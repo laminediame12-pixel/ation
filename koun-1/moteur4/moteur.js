@@ -469,7 +469,8 @@
     var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; seule exception : le vainqueur des boucles différentes marque (imposé, ci-dessus).
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
-    if (v < n) { v = n; aj = n + ' équipes marquent'; }
+    if (d === 'N' && n === 0) { v = 0; aj = 'égalité sans pôle qui marque : 0-0'; } // cohérence : une égalité où personne ne marque ne peut être que 0-0
+    else if (v < n) { v = n; aj = n + ' équipes marquent'; }
     // mi-temps : ne désignent que les pôles qui marquent ; pas de but en 1re mi-temps si aucun pôle ne marque (calculé ici, la page ne fait qu'afficher).
     var Y = rythme(L), S = secondeMiTemps(L), mq = function (p) { return m[p].marque; };
     Y.marqueurs = Y.marqueurs.filter(mq); if (!n) Y.butAttendu = false; S.marqueurs = S.marqueurs.filter(mq);
