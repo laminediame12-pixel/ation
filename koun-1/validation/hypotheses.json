@@ -3036,6 +3036,12 @@
    "statut": "intégrée à la demande du propriétaire ; en cours d'étude (précisions des Filles et de « personne ne bloque » tirées des 87 matchs du domaine, sans lot de validation)",
    "enonce": "R1 et R7 dans des boucles différentes (A/C contre B/D) : le front de l'un attaque l'autre. L'attaquant (lui et ses fronts) qui bloque l'attaqué gagne ; la boucle du binôme de l'attaqué qui bloque l'attaquant fait gagner l'attaqué (l'attaquant n'a pas la force de le détruire ni de le bloquer). Précision des données : la défense ne fait gagner l'attaqué que posée dans les Filles (M5–M8) ; ni arme ni défense posée → R7. Le vainqueur marque (imposé).",
    "resultats": "87 matchs du domaine : 47 justes (47/65 décidés), contre 34 pour « R1 toujours » et 31 pour l'ancienne décision. Décision du moteur après intégration : 67/126 (avant 56, R1 toujours 59) ; 26 novembre 10/21 (avant 7, R1 toujours 9). Conflits avec « un seul pôle marque » : règle juste 8 fois contre 4 sur 18. Vainqueur imposé marquant : 21/25. Audit : contradictions 11 (toutes en même boucle, aucun pôle ne marque) au lieu de 22. Outil : outils/victoire_attaque_binome.js."
+  },
+  {
+   "id": "MATRICE-M16-QUATRE-PAS-2026-11-27",
+   "statut": "lois de structure (exactes) ajoutées à la matrice ; M16 appliqué au blocage du moteur",
+   "enonce": "M16 bloque : toute figure posée en M16 y reste intacte et bloque son adversaire (g + 3), Populus compris. Les quatre pas : lue de M16 vers M1, chaque ligne de la matrice avance par pas de quatre maisons ; chaque pas contient une figure de chaque front dans un ordre fixé par le front de la ligne (A : ABCD, B : BADC, C : CDAB, D : DCBA) ; les têtes des pas (M16, M12, M8, M4) parcourent le front de la figure.",
+   "resultats": "Vérifié sur les 16 lignes (outils/matrice_quatre_pas.js). Ligne de Puer : Puer, Laetitia, Conjunctio, Fortuna Major | Cauda, Puella, Rubeus, Tristitia | Fortuna Minor, Carcer, Caput, Albus | Via, Amissio, Aquisitio, Populus. Blocage par Populus en M16 : aucun match de l'archive concerné, chiffres inchangés."
   }
  ],
  "lectures": [

@@ -502,9 +502,10 @@
     return V; }
   // Blocage (propriétaire, 2026-11-27) : l'antagoniste (f − 3) du pôle posé en base (M1–M16) garde ses points actifs dans la résultante — chacun de ses 1 tombe
   // sur un 2 de la maison, aucune réaction ne le consomme. M16, filtre final, garde toujours la figure intacte : elle bloque toujours son adversaire. Populus, sans point actif, ne bloque pas.
+  // M16 bloque (propriétaire, 2026-11-27) : toute figure posée en M16 y reste intacte et bloque son adversaire (la figure g + 3), Populus compris (il bloque Caput).
   function blocages(L, p) { var A = mod(L[p].figure - 3), b = L.theme.bases, r = [];
-    if (A !== 16)
-    for (var h = 1; h <= 16; h++) if (b[h] === A && K.niveaux(A).every(function (v, l) { return v !== 1 || K.niveaux(h)[l] === 2; })) r.push(h);
+    if (A !== 16) { for (var h = 1; h <= 15; h++) if (b[h] === A && K.niveaux(A).every(function (v, l) { return v !== 1 || K.niveaux(h)[l] === 2; })) r.push(h); }
+    if (b[16] === A) r.push(16);
     return r; } // le blocage reste à la figure de base (propriétaire, 2026-11-27) : la maison ne bloque pas
   var EGALITE_OBS = { cas: 11, nuls: 5 };
   function egalite(L) { var b = L.theme.bases, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B1 = blocages(L, 'R1'), B7 = blocages(L, 'R7');

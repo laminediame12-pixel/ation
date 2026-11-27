@@ -66,7 +66,7 @@ Elle cède : au moins autant de buts que d'équipes qui marquent.
 ## Incidents (`incidentVerdict`) — indépendants, en cours d'étude (108 matchs étiquetés)
 **Rouge**
 - Veto (match calme) : le front de R7 attaque celui de R1, **ou Albus / Puella posé sur son axe du dragon M9-M15** (Albus, la paix) → pas de rouge (2 rouges sur 40).
-- Sinon, trois signes : **dragon en M6/M12** (Rubeus ou Puer posé en base de M6 ou M12, qui y produit Caput ou Cauda) ; **R7 bloqué** ; **R1 bloqué** (antagoniste f − 3 posé en base qui garde ses points actifs, M16 comprise).
+- Sinon, trois signes : **dragon en M6/M12** (Rubeus ou Puer posé en base de M6 ou M12, qui y produit Caput ou Cauda) ; **R7 bloqué** ; **R1 bloqué** (antagoniste f − 3 posé en base qui garde ses points actifs ; en M16, toute figure bloque son adversaire, Populus compris).
   0 signe : peu probable (4/30) · 1 signe : possible (8/26) · 2 signes ou plus : probable (8/12).
 - Camp : le pôle bloqué reçoit le rouge, **sauf si son bloqueur est posé dans les Filles (M5–M8)** → l'adversaire ; sinon, avec le dragon, le pôle de même front que la figure martiale ; sinon R7. Juste 19 fois sur 21.
 
