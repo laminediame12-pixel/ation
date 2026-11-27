@@ -34,7 +34,7 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
    de résultante. Même front → résultante du front D (Feu et Air saturés) ; D est neutre (D + X = X) ; A + B = C, A + C = B, B + C = A.
    Feu saturé ⇔ même Feu (A et B entre eux, C et D entre eux) ; Air saturé ⇔ même Air (A et C, B et D).
 3. **Les deux points du bas (Eau, Terre) ne dépendent que des places dans les fronts.**
-4. **Le miroir (h + 8) inverse la Terre et rien d'autre** — toujours, pour les 16 figures (la somme f + (f + 8) est toujours Tristitia).
+4. **Le miroir (h + 8) inverse la Terre** (et aucun autre niveau) — toujours, pour les 16 figures (la somme f + (f + 8) est toujours Tristitia).
    Donc une figure n'a jamais la même Terre de résultante en M h et en M h + 8 : la moitié droite de la matrice (M9–M16) est la moitié gauche avec la Terre inversée.
 5. **Pourquoi la Terre « saute une maison » sauf en 6-7 et 14-15** : Terre des figures-maisons M1 à M8 = 1 2 1 2 1 2 2 1 ; par la loi 4, M9 à M16 = 2 1 2 1 2 1 1 2.
    La rupture 6-7 de la première moitié est recopiée par le miroir en 14-15 : il n'y en a que deux, à 8 maisons d'écart.
@@ -42,3 +42,12 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
    3 à 5 formes selon la figure : seul le miroir est une loi pure.
 7. **Attaques de fronts relues** : A + D = A (Feu et Air bloqués), B + A = C (Feu passe), D + C = C (Feu passe), C + B = A (rien ne passe en Feu/Air) :
    c'est pourquoi l'Air ne survit jamais à une attaque.
+
+## Précision du propriétaire : le miroir inverse la Terre vers le front suivant ; la Terre relie les 4 fronts (vérifié)
+- Dans la grille des nœuds, chaque colonne est un front (A : colonne Feu, B : Air, C : Eau, D : Terre) et la **rangée Terre M13, M14, M15, M16 traverse
+  les quatre fronts** (M13 A, M14 B, M15 C, M16 D) : c'est elle qui relie les 4 fronts.
+- Dans la boucle d'un front (carte en croix : f → f + 4 → f + 8 → f + 12), le canal Terre part de f vers son front direct f + 4, et du miroir f + 8 vers f + 12 :
+  la Terre inversée par le miroir passe ainsi au front suivant (f + 12).
+- Terre des figures au repos dans chaque boucle : A 1 1 | 2 2 ; B 2 2 | 1 1 ; C 1 2 | 2 1 ; D 2 1 | 1 2. Les deux paires reliées par le canal Terre
+  (f, f + 4) et (f + 8, f + 12) sont toujours l'inverse l'une de l'autre (loi du miroir). Au repos, le canal Terre est **lié** dans les fronts A et B
+  (même Terre des deux côtés) et **en arrêt** dans les fronts C et D (Terres opposées).
