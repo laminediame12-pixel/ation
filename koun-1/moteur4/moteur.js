@@ -422,7 +422,7 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs, mesure du 2026-11-27 après le blocage figure par figure) : dans MARQUE_POLE_OBS (outils/mesure_marquage.js).
-  var MARQUE_POLE_OBS = { assure: { oui: 8, sur: 14 }, marque: { oui: 99, sur: 123 }, possible: { oui: 5, sur: 7 }, non: { oui: 82, sur: 108 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_POLE_OBS = { assure: { oui: 9, sur: 16 }, marque: { oui: 100, sur: 124 }, possible: { oui: 6, sur: 8 }, non: { oui: 79, sur: 104 } }; // outils/mesure_marquage.js, 126 matchs
   // PUISSANCE DE MARQUAGE (2026-11-27, règles du propriétaire). Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
   //   dans un canal Terre (M4, M8, M12, M13, M14, M15 : la boucle Terre de chaque front y passe) : la figure réagit — au moins un 1 de la figure rencontre
   //   un 1 de la maison (1 + 1 = 2), sur n'importe lequel de ses 4 niveaux ; la Terre de la résultante n'est pas exigée ;
@@ -434,19 +434,21 @@
   //   moyen, et chacun a son attaquant (le pôle f − 3, le front direct f + 1, le miroir f + 5 ; voir bloqueurs). Pôle bloqué : il n'attaque plus, même avec son front direct,
   //   il ne marque pas. Front direct bloqué : le pôle marque encore par lui-même. Miroir bloqué : il ne compte plus. Paris – Marseille : Rubeus bloqué (Albus intact en M1,
   //   Albus reproduit par Populus en M4) → ne marque pas. 147 matchs : 79 bons verdicts contre 77 avant la chaîne (76 en lisant le blocage figure par figure).
+  //   Une figure posée chez elle ne peut pas y être bloquée (Populus en résultante laisse passer son énergie, voir bloqueurs).
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
     var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 ? K.niveaux(L.theme.resultantes[h])[3] === 2 : [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })); }); };
     // le pôle dans sa propre maison, Terre de la résultante saturée (propriétaire, 2026-11-27 : Paris – Marseille, Populus en M4 → Albus)
     var rc = L.theme.resultantes[c.maison], chez = K.niveaux(rc)[3] === 2 && rc !== 16 ? [c.maison] : []; // chez lui (résultante Populus) : neutre, ne compte pas (Atlético – Viking)
-    var BL = { pole: bloqueurs(L, P), front: bloqueurs(L, F), miroir: bloqueurs(L, Mi) }, e11 = K.niveaux(L.theme.resultantes[11])[2] === 2;
+    var BL = { pole: bloqueurs(L, P, c.maison), front: bloqueurs(L, F), miroir: bloqueurs(L, Mi) }, e11 = K.niveaux(L.theme.resultantes[11])[2] === 2;
     var bp0 = bonnes(P).concat(chez.filter(function (h) { return bonnes(P).indexOf(h) < 0; })), bf0 = bonnes(F), bm0 = bonnes(Mi);
     var niv = function (a, f, m, m11) { return a.length && f.length ? 'assure' : a.length || f.length || m11 ? 'marque' : m.length ? 'possible' : 'non'; };
-    var tout = BL.pole.length > 0, bp = tout ? [] : bp0, bf = tout || BL.front.length ? [] : bf0, bm = tout || BL.miroir.length ? [] : bm0,
-      m11 = !tout && (b[11] === P || (b[11] === F && !BL.front.length)) && e11;
+    var libre = function (pos, fig, bl) { return pos.filter(function (h) { return !bl.length || h === fig; }); }; // une position chez elle laisse passer l'énergie
+    var tout = BL.pole.length > 0, bp = tout ? [] : bp0, bf = tout ? [] : libre(bf0, F, BL.front), bm = tout ? [] : libre(bm0, Mi, BL.miroir),
+      m11 = !tout && (b[11] === P || (b[11] === F && (!BL.front.length || F === 11))) && e11;
     var niveau0 = niv(bp0, bf0, bm0, (b[11] === P || b[11] === F) && e11), niveau = niv(bp, bf, bm, m11);
     // bloque : ce que le blocage a retiré quand il a fait baisser le niveau (sinon null) ; pôle bloqué = tout le pôle
     var p11 = (b[11] === P || b[11] === F) && e11 ? [11] : [], perdus = niveau === niveau0 ? [] : tout ? [{ role: 'pôle', figure: P, par: BL.pole, positions: bp0.concat(bf0, p11, bm0), tout: true }]
-      : [['front direct', F, BL.front, bf0.concat(b[11] === F && e11 ? [11] : [])], ['miroir', Mi, BL.miroir, bm0]].filter(function (x) { return x[2].length && x[3].length; })
+      : [['front direct', F, BL.front, bf0.filter(function (h) { return bf.indexOf(h) < 0; }).concat(b[11] === F && e11 && !m11 ? [11] : [])], ['miroir', Mi, BL.miroir, bm0.filter(function (h) { return bm.indexOf(h) < 0; })]].filter(function (x) { return x[2].length && x[3].length; })
         .map(function (x) { return { role: x[0], figure: x[1], par: x[2], positions: x[3] }; });
     var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm : []).filter(function (h, i, t) { return t.indexOf(h) === i; }).sort(function (x, y) { return x - y; });
     return { marque: niveau !== 'non', niveau: niveau, niveauSansBlocage: niveau0, bloque: perdus.length ? perdus : null, bloqueurs: BL, maisons: maisons, positions: { pole: bp, front: bf, miroir: bm, m11: m11 }, avantage: bp.length + bf.length, figures: [P, F, Mi], obs: MARQUE_POLE_OBS[niveau] }; }
@@ -470,10 +472,10 @@
   //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
   function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
-    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 25 fois sur 29 quand la règle de marquage disait le contraire (126 matchs, 2026-11-27) ; le perdant garde sa règle.
+    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 24 fois sur 27 quand la règle de marquage disait le contraire (126 matchs, 2026-11-27) ; le perdant garde sa règle.
     if (V.boucles && V.boucles.domaine && (d === '1' || d === '2')) { var wq = d === '1' ? 'R1' : 'R7'; if (!m[wq].marque) { m[wq].marque = true; m[wq].impose = 'imposé par la victoire (boucles différentes)'; } }
     // AUCUN PÔLE NE MARQUE ET UNE VICTOIRE EST ANNONCÉE (2026-11-27) : la partie 1 commande, le vainqueur marque (imposé) — sans cela le verdict se contredit
-    // (une victoire sans but). 147 matchs : 6 cas, le vainqueur annoncé a marqué les 6 fois et gagné 5 fois.
+    // (une victoire sans but). 147 matchs : 5 cas, le vainqueur annoncé a marqué les 5 fois et gagné 4 fois.
     else if ((d === '1' || d === '2') && !m.R1.marque && !m.R7.marque) { var wq2 = d === '1' ? 'R1' : 'R7'; m[wq2].marque = true; m[wq2].impose = 'imposé par la victoire (aucun pôle ne marque selon la règle)'; }
     var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; deux exceptions : le vainqueur des boucles différentes marque, et le vainqueur annoncé quand aucun pôle ne marque (imposés, ci-dessus).
@@ -521,15 +523,19 @@
   //   posé en base et gardant ses points actifs — chacun de ses 1 tombe sur un 2 de la maison, aucune réaction ne le consomme (en M16, filtre final, toujours) ;
   //   ou reproduit par Populus — Populus posé dans la maison A y donne la figure A intacte (thème de repos Populus : chaque maison rend sa figure).
   //   Exemples du propriétaire : Populus en M4 donne Albus, qui bloque Rubeus (Paris – Marseille) ; Populus en M16 bloque Caput.
-  // Une figure chez elle (A dans la maison A) ne bloque pas : ses 1 rencontrent ses propres 1, la résultante est Populus (thème de repos saturé).
+  // POPULUS (propriétaire, 2026-11-27) : « Populus en résultante laisse passer l'énergie de la figure où résulte Populus, mais aussi Populus en base bloque
+  //   l'adversaire de la maison où loge Populus ». Populus en base : la maison rend sa figure, qui bloque son adversaire (ci-dessus). Populus en résultante (la figure
+  //   chez elle, thème de repos saturé) : là où elle est chez elle, l'énergie de la figure passe — on ne peut pas l'y bloquer, et elle ne bloque pas (ses 1 rencontrent
+  //   ses propres 1). 147 matchs : pôles chez eux que leur antagoniste bloquait, 8 changent de marquage, 6 justes ; lu à l'inverse (la figure chez elle bloque), 10 changent, 2 justes.
   // Le blocage reste à la figure de base (propriétaire) : la figure de la maison ne bloque que reproduite par Populus.
-  function bloqueurs(L, g) { var A = mod(g - 3), b = L.theme.bases, r = [];
+  function bloqueurs(L, g, ici) { var A = mod(g - 3), b = L.theme.bases, r = [];
+    if (ici === g) return r; // la figure g posée chez elle (maison ici = g) : résultante Populus, son énergie passe
     for (var h = 1; h <= 16; h++) {
       if (b[h] === A && A !== 16 && K.niveaux(A).every(function (v, l) { return v !== 1 || K.niveaux(h)[l] === 2; })) r.push({ maison: h, figure: A, type: h === 16 ? 'M16' : 'intact' });
       else if (b[h] === 16 && h === A) r.push({ maison: h, figure: A, type: 'populus' });
     }
     return r; }
-  function blocages(L, p) { return bloqueurs(L, L[p].figure).map(function (x) { return x.maison; }); }
+  function blocages(L, p) { return bloqueurs(L, L[p].figure, L[p].maison).map(function (x) { return x.maison; }); }
   var EGALITE_OBS = { cas: 10, nuls: 4 };
   function egalite(L) { var b = L.theme.bases, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B1 = blocages(L, 'R1'), B7 = blocages(L, 'R7');
     var boucle = function (f) { var z = (f - 1) % 4; return [z + 1, z + 5, z + 9, z + 13].filter(function (h) { return b[h] === 16; }); }, pb = { R1: boucle(L.R1.figure), R7: boucle(L.R7.figure) };
@@ -633,7 +639,7 @@
   //   comme l'axe martial M6-M12 l'est pour le rouge) ; la 4e mère intacte (figure de base de M4 à Eau saturée, sans réaction avec Albus ; Populus exclu).
   //   0 signe 2/21 (peu probable), 1 ou 2 signes 24/69 (possible), 3 ou plus 12/18 (probable) (outils/fouille_penalty.js, fouille_albus_puella.js).
   //   Camp : le pôle dont la figure est en M16 ; sinon le pôle dont le front attaque l'autre ; sinon R1. 25 penalties sur 34.
-  var INCIDENT_OBS = { rouge: { veto: { oui: 2, sur: 40 }, 0: { oui: 4, sur: 28 }, 1: { oui: 7, sur: 27 }, 2: { oui: 9, sur: 13 }, camp: { ok: 19, sur: 21 } },
+  var INCIDENT_OBS = { rouge: { veto: { oui: 2, sur: 40 }, 0: { oui: 5, sur: 30 }, 1: { oui: 6, sur: 25 }, 2: { oui: 9, sur: 13 }, camp: { ok: 19, sur: 21 } },
     penalty: { faible: { oui: 2, sur: 21 }, possible: { oui: 24, sur: 69 }, probable: { oui: 12, sur: 18 }, camp: { ok: 25, sur: 34 } } };
   function incidentVerdict(L) { var b = L.theme.bases, f1 = (L.R1.figure - 1) % 4, f7 = (L.R7.figure - 1) % 4, AT = { 0: 3, 1: 0, 3: 2, 2: 1 };
     var rel = f1 === f7 ? 'meme' : AT[f1] === f7 ? 'R1' : AT[f7] === f1 ? 'R7' : 'allies';

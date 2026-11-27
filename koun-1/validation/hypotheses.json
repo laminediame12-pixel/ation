@@ -3084,6 +3084,14 @@
    "lecture": "« M1 attaque avec M5 » : M1 est celui qui attaque, M5 son moyen. Pôle bloqué → il n'attaque plus, même avec son front direct (ne marque pas) ; front direct bloqué → le pôle marque encore par lui-même ; miroir bloqué → il ne compte plus. Et quand aucun pôle ne marque alors qu'une victoire est annoncée, le vainqueur marque (partie 1 au-dessus de la partie 3).",
    "resultats": "147 matchs, bons verdicts (victoire juste ou nul annoncé juste) : avant la chaîne 77 (126 : 67, 26/11 : 10) ; figure par figure 76 ; cette lecture 79 (68 et 11). Deux marquent 62/126 → 63 (test 11/21 → 12). Rouge à 2 signes 8/12 → 9/13. Nuls annoncés justes 6 → 7 sur 14 → 15. Contradictions entre parties du verdict (audit_logique, 263 thèmes) : 11 → 0. Moins bien : erreur des buts 1,46 → 1,48 (test 1,47 → 1,52) ; marquage pôle par pôle 145/252 → 138/252, et « ne marque pas » se trompe 82 fois sur 108 (le pôle a marqué). Autres lectures essayées : boucles par les fronts directs (v + 1, a + 1) 44 justes contre 47 ; boucles par le blocage strict 47 contre 62 : non retenues.",
    "outil": "outils/chaine_attaque.js ; vérifications : verifier_affichage 352/352, verifier_tout 65 536 thèmes, audit_logique 0 contradiction, surveiller, constantes"
+  },
+  {
+   "id": "POPULUS-RESULTANTE-ENERGIE-2026-11-27",
+   "statut": "INTÉGRÉ",
+   "origine": "propriétaire : « Populus en résultante laisse passer l'énergie de la Figure où résulte Populus mais aussi Populus en base bloque l'adversaire de la maison où loge Populus »",
+   "lecture": "Populus en base dans la maison h : la maison rend sa figure h, qui bloque h + 3 (déjà dans le moteur). Populus en résultante = la figure posée chez elle : là où elle est chez elle, son énergie passe — elle n'y est pas bloquée (nouveau) et ne bloque pas (inchangé). Thème saturé : 0 figure bloquée ; thème Populus : 15 bloquées, Populus libre chez lui en M16 (R1 y marque, R7 Populus en M6 est bloqué par Cauda reproduite en M13).",
+   "resultats": "147 matchs. Lecture retenue — pôles chez eux que leur antagoniste bloquait : 8 changent de marquage, 6 justes. Lecture inverse (la figure chez elle bloque son adversaire) : 10 changent, 2 justes — écartée. Ensemble : bons verdicts 79 (126 : 69, 26/11 : 10 ; avant la chaîne 77) ; deux marquent 62 → 65 sur 126 (test 11 → 12) ; marquage pôle par pôle 140/252 ; rouge 2 signes 9/13, camp 19/21 ; buts 1,48.",
+   "outil": "outils/chaine_attaque.js"
   }
  ],
  "lectures": [
