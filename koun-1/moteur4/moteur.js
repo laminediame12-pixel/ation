@@ -575,13 +575,13 @@
   function arrets(L) { var b = L.theme.bases, l = []; for (var h = 1; h <= 15; h++) if (b[h] === mod(h - 3)) l.push(h);
     var o = l.length ? ARRETS_OBS.avec : ARRETS_OBS.sans;
     return { maisons: l, nombre: l.length, butsAttendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
-  // INCIDENT, LECTURE DU VERDICT (2026-11-22, H-INCIDENT-PARITE et H-INCIDENT-ARRETS, à la demande du propriétaire, en observation ; remplace dans le verdict
-  // le détecteur à six paramètres, gardé comme lecture). Le pôle dont l'énergie EB déborde seul (3 niveaux impairs) est celui que l'incident concerne
-  // (penalty pour lui ou rouge contre lui) ; un arrêt dans le thème (antagoniste posé dans la maison) dit que l'incident se produit.
-  // Débordement et arrêt : probable ; l'un des deux : possible ; aucun : pas d'indice.
-  var INCIDENT_ARRETS_OBS = { deux: { incident: 8, sur: 11 }, debordement: { incident: 2, sur: 5 }, arret: { incident: 2, sur: 8 }, aucun: { incident: 1, sur: 7 } };
-  function incidentVerdict(L) { var P = pariteIncident(L), A = arrets(L), k = P.pole && A.nombre ? 'deux' : P.pole ? 'debordement' : A.nombre ? 'arret' : 'aucun';
-    return { pole: P.pole, impairsR1: P.impairsR1, impairsR7: P.impairsR7, arrets: A.maisons, cas: k, niveau: k === 'deux' ? 'probable' : k === 'aucun' ? 'aucun' : 'possible', obs: INCIDENT_ARRETS_OBS[k] }; }
+  // INCIDENT (2026-11-27, à la demande du propriétaire ; remplace le débordement, sans effet sur 88 matchs étiquetés). Le penalty et le rouge sont lus séparément :
+  //   penalty : un arrêt dans le thème (antagoniste posé dans la maison) — 88 matchs : penalty 22/53 avec arrêt, 7/35 sans ;
+  //   rouge : un pôle bloqué (son antagoniste posé en base garde ses points actifs, M16 comprise) — rouge 13/36 avec blocage, 6/52 sans.
+  //   Les deux : probable ; l'un des deux : possible ; aucun : pas d'indice. Le pôle visé n'est pas désigné (aucun signe fiable). Mesure : outils/fouille_incidents.js.
+  var INCIDENT_OBS = { deux: { incident: 10, sur: 20, penalty: 7, rouge: 6 }, penalty: { incident: 18, sur: 33, penalty: 15, rouge: 5 }, rouge: { incident: 7, sur: 16, penalty: 2, rouge: 7 }, aucun: { incident: 5, sur: 19, penalty: 5, rouge: 1 } };
+  function incidentVerdict(L) { var A = arrets(L), b1 = blocages(L, 'R1'), b7 = blocages(L, 'R7'), pen = A.nombre > 0, rg = b1.length > 0 || b7.length > 0, k = pen && rg ? 'deux' : pen ? 'penalty' : rg ? 'rouge' : 'aucun';
+    return { pole: null, penalty: pen, rouge: rg, arrets: A.maisons, bloques: { R1: b1, R7: b7 }, cas: k, niveau: k === 'deux' ? 'probable' : k === 'aucun' ? 'aucun' : 'possible', obs: INCIDENT_OBS[k] }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;

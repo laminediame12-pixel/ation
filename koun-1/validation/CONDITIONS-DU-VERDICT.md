@@ -58,7 +58,7 @@ Elle cède : au moins autant de buts que d'équipes qui marquent.
 - **2e mi-temps (`secondeMiTemps`)** : figure = somme des bases de **M4, M5, M13, M15** ; équipe désignée : celle dont le front porte en base cette figure ou son protecteur.
 - Elles cèdent : ne désignent que des équipes qui marquent ; pas de but en 1re mi-temps si aucune équipe ne marque.
 
-## Incidents (`incidentVerdict`) — indépendants
-- **Débordement** : énergie EB d'un pôle à 3 niveaux impairs (figure énergie M16 + figure du pôle, et boucle du front binôme) — l'incident se fixe sur ce pôle si un seul est dans ce cas.
-- **Arrêt** dans le thème.
-- Débordement **et** arrêt → **probable** ; l'un des deux → **possible** ; aucun → **aucun**.
+## Incidents (`incidentVerdict`) — indépendants, penalty et rouge lus séparément
+- **Penalty possible** : au moins un arrêt dans le thème (antagoniste h − 3 posé en base dans la maison h). 88 matchs : penalty 22/53 avec arrêt, 7/35 sans.
+- **Rouge possible** : un pôle bloqué (son antagoniste posé en base garde ses points actifs, M16 comprise). Rouge 13/36 avec blocage, 6/52 sans.
+- Les deux : « Penalty et rouge possibles » ; aucun : pas d'indice. Le pôle visé n'est pas désigné.
