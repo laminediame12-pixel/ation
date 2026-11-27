@@ -616,12 +616,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   // HIÉRARCHIE DU VERDICT (2026-11-27, à la demande du propriétaire ; remplace le score prévu). Chaque partie applique SES conditions et ne cède que si
   // elle contredit une partie plus haute :
   //   1. Vainqueur (décision du moteur) → le vainqueur marque.
-  //   2. Deux marquent (R1 et R7 ont une figure marquante, ou M11 plein) → si oui, chaque pôle marque ; si non : le perdant ne marque pas.
+  //   2. Deux marquent (R1 et R7 marquent tous deux selon la règle de marquage ; M11 plein ne suffit plus, 2026-11-27) → si oui, chaque pôle marque ; si non : le perdant ne marque pas.
   //   3. R1 / R7 marque (règle des figures marquantes) → seulement là où 1 et 2 laissent le choix.
   //   4. Volume de buts (arrêts × M11) → au moins autant de buts que d'équipes qui marquent ; 0 si aucune ne marque.
   //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
   function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
-    var deuxPropre = (P1.marque && P7.marque) || e, deux = { oui: deuxPropre, raison: P1.marque && P7.marque ? 'R1 et R7 ont chacun une figure marquante' : e ? 'nœud M11 (Eau²) plein' : 'ni les deux pôles marquants, ni M11 plein', impose: false };
+    var deuxPropre = P1.marque && P7.marque, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent chacun selon la règle de marquage' : (P1.marque ? 'R7' : P7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
     var force = function (p, v, why) { if (m[p].marque !== v) { m[p].marque = v; m[p].impose = why; } };
     if (d === '1') force('R1', true, 'imposé par la victoire de R1'); if (d === '2') force('R7', true, 'imposé par la victoire de R7');

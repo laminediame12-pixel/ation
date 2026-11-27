@@ -14,7 +14,7 @@ Le système ne prédit plus le nul : tout ce qui le concernait a été supprimé
 **Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 
 ## 2. Deux marquent (`hierarchie` → `deux`)
-**Oui** si R1 et R7 ont chacun une figure marquante (partie 3), **ou** si **M11 est plein** (résultante de M11 avec l'Eau saturée). Sinon Non.
+**Oui** seulement si R1 **et** R7 marquent selon la règle de marquage (partie 3). Sinon Non.
 Ce qu'elle impose : Oui → les deux pôles marquent ; Non → le perdant ne marque pas.
 
 ## 3. R1 / R7 marque (`marquePole`)
