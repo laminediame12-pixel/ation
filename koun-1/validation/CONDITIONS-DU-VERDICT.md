@@ -19,13 +19,17 @@ Le système ne prédit plus le nul : tout ce qui le concernait a été supprimé
 Ce qu'elle impose : Oui → les deux pôles marquent ; Non → le perdant ne marque pas.
 
 ## 3. R1 / R7 marque (`marquePole`)
-Bonne position : figure posée en base en **M4, M8, M12, M13, M14 ou M15**, un 1 de la figure rencontre un 1 de la maison (1 + 1 = 2 ; 2 + 2 est neutre : Populus ne réagit jamais), **Terre de la résultante saturée**.
-- **Marque (assuré)** : le pôle **et** son front direct (f + 4) en bonne position.
-- **Marque** : le pôle **ou** son front direct en bonne position, ou l'un d'eux en **M11** avec l'Eau de la résultante saturée.
-- **Marque possible** : seul le miroir (f + 8) en bonne position.
-- **Ne marque pas** : ni le pôle, ni son front direct, ni son miroir en bonne position.
-- En suspens : but annulé ou bloqué par l'antagoniste.
-Elle ne cède jamais.
+Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
+- en base dans un **canal Terre** (M4, M8, M12, M13, M14, M15) et elle **réagit** : un 1 de la figure rencontre un 1 de la maison (1 + 1 = 2), sur l'un de ses 4 niveaux ;
+- **Populus** en base d'un canal Terre (2 + 2 neutre) : seulement si la Terre de la résultante est saturée (M4, M13) ;
+- le **pôle dans sa propre maison** avec la Terre de la résultante saturée.
+
+Verdict :
+- **Marque (assuré)** : le pôle et son front direct en bonne position.
+- **Marque** : le pôle ou son front direct, ou l'un d'eux en **M11** avec l'Eau de la résultante saturée.
+- **Marque possible** : seul le miroir.
+- **Ne marque pas** : aucun des trois.
+- En suspens : but annulé ou bloqué par l'antagoniste. Elle ne cède jamais.
 
 ## 4. Volume de buts (`butsEstimes`)
 Arrêt = l'antagoniste d'une maison (h − 3) posé en base dans cette maison (M1 à M15). M11 plein = Eau saturée dans la résultante de M11.
