@@ -11,7 +11,7 @@ Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seule l'égal
 - **M1-M10** (seulement si l'accord n'appelle pas) : les liaisons Terre M1–M5 et M10–M14 (somme des résultantes) sont toutes deux en arrêt (Terre impaire) → victoire de R1.
 
 **b. Sinon → victoire de R1** (avantage du domicile).
-**d. Égalité n-n (en cours d'étude)** : les deux pôles au même niveau de marquage, **aucun pôle bloqué** (blocage : l'antagoniste f − 3 du pôle posé en base garde ses points actifs dans la résultante — chacun de ses 1 tombe sur un 2 de la maison), et **Populus en base dans la boucle de front d'un pôle** (maisons f, f + 4, f + 8, f + 12) → chaque équipe peut marquer n buts. 126 matchs : 13 cas, 6 nuls.
+**d. Égalité n-n (en cours d'étude)** : les deux pôles au même niveau de marquage, **aucun pôle bloqué** (blocage : l'antagoniste f − 3 du pôle posé en base, M1 à M16, garde ses points actifs dans la résultante — chacun de ses 1 tombe sur un 2 de la maison ; en M16, filtre final, c'est toujours le cas), et **Populus en base dans la boucle de front d'un pôle** (maisons f, f + 4, f + 8, f + 12) → chaque équipe peut marquer n buts. 126 matchs : 11 cas, 5 nuls.
 **c. Le marquage commande** : si un seul pôle marque selon la partie 3, la victoire lui revient, quel que soit l'appel.
 **Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 
