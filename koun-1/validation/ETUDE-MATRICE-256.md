@@ -80,3 +80,17 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
 - Correction du propriétaire : à Juventus, Albus, front direct de Populus (R1), loge en M11 (plein) — R1 y marque, R7 non. Sur 252 pôles : pôle ou front
   direct logé en M11 plein → marque 78 % (corpus) et 78 % (aveugle) contre 78 % et 75 % ; logé en M11 sans condition : 76 % / 81 % contre 79 % / 74 % ;
   étendu aux quatre nœuds doubles : 72 % / 72 % contre 82 % / 76 %.
+
+## Revue complète de la matrice : ce qu'on n'avait pas vu (2026-11-27, vérifié par le calcul)
+1. **Symétrie** : la matrice est symétrique. Figure g en maison h = figure h en maison g (Caput en M12 = Fortuna Major en M3).
+2. **Activité des 256 cases** : 16 cases à 4 niveaux saturés (Populus), 64 à 3, 96 à 2, 64 à 1, 16 à 0 (Via).
+3. **Une figure dans les maisons de son propre front tombe toujours dans le noyau Terre**, et la place décide de la phase :
+   chez elle → **Populus** (équilibre concrétisé) ; dans la maison de son miroir (g + 8) → **toujours Tristitia** (équilibre en suspens) ;
+   dans la maison de son front direct ou de l'inverse (g ± 4) → **Albus ou Fortuna Major** (équilibre stable).
+4. **La relation des fronts décide du front de la résultante** :
+   même front → front D (noyau Terre : Albus, Tristitia, Fortuna Major, Populus) ;
+   **fronts alliés (A/C, B/D) → front B : Laetitia et le triplet mobile (Amissio, Carcer, Puella)** ;
+   relation d'attaque (A/D, B/A, D/C, C/B) → front A ou C.
+   Le « mobile » de la règle du noyau Terre naît donc des placements en front allié, l'« équilibre » des placements dans son propre front.
+5. **Arrêts** (g dans la maison g + 3) : la résultante ne prend que cinq formes — Via, Caput, Puer, Conjunctio, Cauda.
+6. **M16 ne transforme rien** (g en M16 = g), et Populus posé dans une maison reproduit la figure de cette maison.
