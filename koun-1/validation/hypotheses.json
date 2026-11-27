@@ -2963,6 +2963,12 @@
    "statut": "INTÉGRÉ à la demande du propriétaire (2026-11-27) ; prédictions figées validation/predictions-deux-marquent-v2-24-30-novembre.json",
    "enonce": "Deux marquent : Oui si R1 et R7 ont chacun une figure marquante, ou si le nœud M11 (Eau²) est plein.",
    "resultats": "126 matchs : corpus 42/80, aveugle 27/46 (avant : 30/80 et 23/46 ; « toujours oui » 47/80 et 23/46). Oui dit 77 fois, juste 45 ; Non : les deux ont quand même marqué 25 fois sur 49."
+  },
+  {
+   "id": "H-NUL-M5-CAUDA",
+   "statut": "EN COURS D’ÉTUDE ; figée sur le lot du 24 au 30 (validation/predictions-nul-m5-cauda-24-30-novembre.json)",
+   "enonce": "Motif commun aux thèmes 2-6-2-12 et 2-13-6-16 posés dans la matrice : M5 = Cauda Draconis (la fille M5 porte le Feu des mères : Feu ouvert en M1, M2, M3, saturé en M4), résultante de M5 = Tristitia (équilibre en suspens). Autres motifs communs : M1 = Laetitia, donc R1 en M2 et R7 en M8, résultante de M8 dans le noyau Terre (Populus ou Tristitia).",
+   "resultats": "M5 = Cauda : 5 nuls sur 7 (aveugle 3 sur 3 : Bologna–Udinese 1-1, Lorient–Rennes 1-1, Atalanta–Inter 4-4 ; corpus 2/4). R1 en M2 : 6 nuls sur 13 (aveugle 1/6) ; R1 en M2 et résultante de M8 dans le noyau : 5 sur 7. Résultante de la maison de R7 dans le noyau : 10/41 (pas d’effet). Cinq lectures essayées sur ces deux thèmes : à confirmer."
   }
  ],
  "lectures": [
