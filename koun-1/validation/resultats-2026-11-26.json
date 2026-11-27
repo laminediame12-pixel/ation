@@ -1,0 +1,364 @@
+{
+ "note": "Scores et incidents des matchs du 26/11/2026 de l'archive (lot du 24 au 30, thèmes tirés et prédictions figées avant les matchs). Cherchés sur le web le 2026-11-27 : ESPN, Sky Sports, Sofascore, Flashscore, VAVEL, beIN Sports, sites des clubs et de l'UEFA. Penalty et rouge : temps réglementaire, penalty manqué compté ; « Non » = aucune source ne rapporte d'incident alors qu'au moins une décrit le match.",
+ "matchs": [
+  {
+   "match": "Beşiktaş – Hapoel Beer-Sheva",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    10,
+    14,
+    12,
+    16
+   ],
+   "score": [
+    2,
+    1
+   ],
+   "penalty": "R1 (manqué)",
+   "rouge": "Non"
+  },
+  {
+   "match": "Celta Vigo – Bournemouth",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    7,
+    1,
+    4,
+    7
+   ],
+   "score": [
+    1,
+    2
+   ],
+   "penalty": "Non",
+   "rouge": "R7"
+  },
+  {
+   "match": "Dinamo Zagreb – Leverkusen",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    3,
+    10,
+    13,
+    12
+   ],
+   "score": [
+    0,
+    2
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Marseille – Levski Sofia",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    16,
+    3,
+    6,
+    2
+   ],
+   "score": [
+    1,
+    0
+   ],
+   "penalty": "R1 (2, un manqué)",
+   "rouge": "Non"
+  },
+  {
+   "match": "Olympiacos – AC Milan",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    7,
+    11,
+    6,
+    1
+   ],
+   "score": [
+    2,
+    4
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Viktoria Plzeň – Benfica",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    12,
+    6,
+    15,
+    10
+   ],
+   "score": [
+    4,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Salzbourg – Ararat-Armenia",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    11,
+    11,
+    12,
+    9
+   ],
+   "score": [
+    2,
+    0
+   ],
+   "penalty": "R1 (manqué)",
+   "rouge": "Non"
+  },
+  {
+   "match": "Union Saint-Gilloise – Lech Poznań",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    14,
+    7,
+    4,
+    16
+   ],
+   "score": [
+    2,
+    2
+   ],
+   "penalty": "R1 (manqué)",
+   "rouge": "Non"
+  },
+  {
+   "match": "Hoffenheim – Sturm Graz",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    5,
+    10,
+    4,
+    11
+   ],
+   "score": [
+    3,
+    1
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Crystal Palace – Real Sociedad",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    9,
+    12,
+    13,
+    11
+   ],
+   "score": [
+    2,
+    1
+   ],
+   "penalty": "R1 (2, un manqué)",
+   "rouge": "R7"
+  },
+  {
+   "match": "Ferencváros – Celje",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    12,
+    9,
+    5,
+    5
+   ],
+   "score": [
+    0,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Juventus – Omonia",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    1,
+    2,
+    4,
+    11
+   ],
+   "score": [
+    4,
+    1
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Lyon – Lillestrøm",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    12,
+    5,
+    16,
+    13
+   ],
+   "score": [
+    0,
+    0
+   ],
+   "penalty": "Non (annulé par la VAR)",
+   "rouge": "Non (annulé par la VAR)"
+  },
+  {
+   "match": "NEC Nimègue – Rennes",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    8,
+    9,
+    9,
+    5
+   ],
+   "score": [
+    3,
+    1
+   ],
+   "penalty": "R1",
+   "rouge": "Non"
+  },
+  {
+   "match": "OFI Crète – Anderlecht",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    11,
+    11,
+    15,
+    1
+   ],
+   "score": [
+    1,
+    3
+   ],
+   "penalty": "R1",
+   "rouge": "Non"
+  },
+  {
+   "match": "Sparta Prague – AZ Alkmaar",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    1,
+    9,
+    5,
+    12
+   ],
+   "score": [
+    2,
+    4
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Sunderland – Jagiellonia",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    1,
+    13,
+    3,
+    16
+   ],
+   "score": [
+    1,
+    1
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Torreense – Celtic",
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "theme": [
+    14,
+    3,
+    14,
+    4
+   ],
+   "score": [
+    1,
+    2
+   ],
+   "penalty": "Non",
+   "rouge": "Non"
+  },
+  {
+   "match": "Al Fateh – Al Riyadh",
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "theme": [
+    13,
+    1,
+    2,
+    3
+   ],
+   "score": [
+    1,
+    0
+   ],
+   "penalty": null,
+   "rouge": null,
+   "note": "incidents non trouvés (aucune source ne détaille cartons et penalties)"
+  },
+  {
+   "match": "Abha – Al Shabab",
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "theme": [
+    16,
+    7,
+    6,
+    14
+   ],
+   "score": [
+    0,
+    1
+   ],
+   "penalty": "Non",
+   "rouge": "R7"
+  },
+  {
+   "match": "Al Faisaly – Al Diriyah",
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "theme": [
+    1,
+    8,
+    3,
+    4
+   ],
+   "score": [
+    2,
+    2
+   ],
+   "penalty": null,
+   "rouge": null,
+   "note": "incidents non trouvés (aucune source ne détaille cartons et penalties)"
+  }
+ ]
+}
