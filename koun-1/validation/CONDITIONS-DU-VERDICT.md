@@ -30,6 +30,7 @@ Verdict :
 - **Marque** : le pôle ou son front direct, ou l'un d'eux en **M11** avec l'Eau de la résultante saturée.
 - **Marque possible** : seul le miroir.
 - **Ne marque pas** : aucun des trois.
+- **Ne marque pas (bloqué par l'antagoniste)** : l'antagoniste f − 3 du pôle posé en base (M1–M16) garde ses points actifs dans la résultante (en M16 toujours), ou la figure du pôle est posée dans la maison de son antagoniste.
 - **Ne marque pas (bloqué)** : Populus en base produit l'antagoniste (f − 3) du pôle **et** celui de son front direct (Paris – Marseille : Albus en M4 contre Rubeus, Tristitia en M8 contre Conjunctio). En cours d'étude.
 - En suspens : but annulé ou bloqué par l'antagoniste. Elle ne cède jamais.
 
