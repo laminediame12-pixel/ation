@@ -3049,6 +3049,15 @@
    "enonce": "Écart d'un pôle Δ = nœuds pleins de son front dans le thème − nœuds pleins de ce front au repos (thème Populus : A 1, B 3, C 2, D 11). Lectures : le pôle au plus grand Δ gagne ; écart |ΔR1 − ΔR7| nul → nul, grand → domination ; incidents par l'agitation (nœuds changés sur 60) et par les nœuds des axes du dragon (M6/M12 rouge, M5/M11 penalty) devenus pleins dans le front d'un pôle.",
    "resultats": "147 matchs (126 de développement, 21 du 26 novembre). Plus grand Δ gagne : 39 justes, 41 faux (R1 toujours 49/80) ; test 7/12 (R1 toujours 7/12). Nuls : écart 0 21 %, 1-2 13 %, 3+ 25 % (ensemble 22 %). Avec la victoire annoncée par le moteur : Δ du même côté 54 % justes, contre 55 %. 108 matchs étiquetés : agitation sans effet (rouge 21/21/19 %, penalty 38/29/38 %) ; axe rouge M6/M12 19 % contre 22 %, camp 1/5 ; axe penalty M5/M11 40 % contre 29 % (25/63 contre 13/45), camp 8/16 — indice faible, non intégré.",
    "outil": "outils/canaux_noeuds_ecart.js"
+  },
+  {
+   "id": "DEPLACEMENT-POLES-NOEUDS-2026-11-27",
+   "statut": "piste en cours d'étude (nul), non intégrée ; victoire et incidents : aucun signal",
+   "origine": "demande du propriétaire : vérifier la carte des canaux et des nœuds avec le déplacement de R1 et R7",
+   "enonce": "Le pôle f posé dans sa maison h inverse les canaux de h sur ses niveaux actifs (résultante f + h au lieu de h) et ne change que la carte du front dont h fait partie (R1 et R7 tombent toujours dans les deux fronts d'une même boucle). Effet d'un pôle = nœuds pleins de ce front dans le thème − nœuds pleins du même thème avec la maison du pôle remise au repos. Écart = |effet de R1 − effet de R7|.",
+   "resultats": "147 matchs. Victoire : le déplacement qui remplit le plus gagne 51/84 (R1 toujours 51/84) ; atterrir dans le front adverse 15/33 ; meilleure des 3 lectures atteinte par hasard dans 29 % des mélanges. Nul selon l'écart : 0 → 11/28 (39 %), 1 → 10/45 (22 %), 2 → 7/33 (21 %), 3+ → 4/41 (10 %) ; développement 38 % → 6 %, test du 26/11 2/4 à écart 0 ; sans pôle Populus 33 % → 10 % ; boucles différentes 10/20 (50 %) à écart 0 ; meilleure des 4 lectures du nul atteinte par hasard dans 3 % des mélanges, pente dans 0,5 %. Victoire annoncée par le moteur : écart 0 → 9 nuls sur 24, écart 3+ → 3 nuls sur 37 (juste 62 % contre 46 %) ; l'écart ne dit pas qui gagne. Incidents (108 matchs) : rouge 18 % contre 28 %, penalty 35 % contre 36 %, camps 6/5 et 8/9 : rien.",
+   "exemple": "Nice–Lorient 3-3 (2-9-6-5) : R1 Fortuna Minor en M2 (haut du front B) change M1 M2 M5 M6 sans changer le nombre de nœuds pleins ; R7 Tristitia en M8 (chez elle) ne change aucun nœud ; écart 0 → nul.",
+   "outil": "outils/deplacement_poles_noeuds.js"
   }
  ],
  "lectures": [
