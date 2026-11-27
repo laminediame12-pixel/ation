@@ -9,7 +9,7 @@ lire('validation/scores-reels.json').filter(x => x.penalty != null && x.rouge !=
 lire('validation/incidents-2026-11.json').matchs.forEach(([n, pen, rouge]) => { const k = norm(n); if (vu.has(k)) return; D.push({ nom: n, m: th.get(k), pen, rouge }); });
 const T = { rouge: {}, penalty: {} }, C = { rouge: [0, 0], penalty: [0, 0] };
 D.forEach(d => { const I = M.incidentVerdict(M.lire(d.m));
-  for (const [k, v] of [['rouge', d.rouge], ['penalty', d.pen]]) { const x = I[k], cle = k === 'rouge' && x.veto ? 'veto' : String(Math.min(x.signes, 2)); T[k][cle] = T[k][cle] || [0, 0]; T[k][cle][0] += oui(v) ? 1 : 0; T[k][cle][1]++;
+  for (const [k, v] of [['rouge', d.rouge], ['penalty', d.pen]]) { const x = I[k], cle = k === 'rouge' ? (x.veto ? 'veto' : String(Math.min(x.signes, 2))) : x.niveau; T[k][cle] = T[k][cle] || [0, 0]; T[k][cle][0] += oui(v) ? 1 : 0; T[k][cle][1]++;
     if (oui(v) && !/R1 et R7|les deux/.test(v)) { C[k][1]++; if (v.includes(x.camp)) C[k][0]++; } } });
 console.log(D.length + ' matchs');
-for (const k of ['rouge', 'penalty']) console.log(k.padEnd(8) + Object.keys(T[k]).sort().map(c => (c === 'veto' ? 'veto' : c + ' signe(s)') + ' ' + T[k][c][0] + '/' + T[k][c][1]).join(' · ') + ' · camp ' + C[k][0] + '/' + C[k][1]);
+for (const k of ['rouge', 'penalty']) console.log(k.padEnd(8) + Object.keys(T[k]).sort().map(c => (c === 'veto' || isNaN(+c) ? c : c + ' signe(s)') + ' ' + T[k][c][0] + '/' + T[k][c][1]).join(' · ') + ' · camp ' + C[k][0] + '/' + C[k][1]);

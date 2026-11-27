@@ -3018,6 +3018,12 @@
    "statut": "intégrée à la demande du propriétaire ; en cours d'étude (composition choisie sur les 108 matchs eux-mêmes)",
    "enonce": "Algèbre : chaque figure produit Caput et Cauda sur une paire Carcer de maisons (M1-M7, M2-M8, M3-M13, M4-M14, M5-M11, M6-M12, M9-M15, M10-M16). L'axe martial M6-M12 (Rubeus/Puer) porte le rouge ; l'axe M5-M11 (Laetitia/Tristitia) porte le penalty. Penalty : signes [arrêt avec fronts non alliés, ou front de R1 qui attaque] ; [figure d'un pôle en M16] ; [dragon M5-M11].",
    "resultats": "108 matchs : 0 signe 2/26, 1 signe 21/53, 2 signes 12/26, 3 signes 3/3 ; au moins un signe 36/82 contre 2/26 (aucun tirage au hasard sur 3000 ne fait aussi bien, stable dans les deux moitiés). Axe M5-M11 seul : 13/25 contre 30 %. Conflits Carcer (même figure dans les deux maisons d'une paire) : sans effet (16/46). Outil : outils/fouille_penalty.js."
+  },
+  {
+   "id": "ALBUS-PUELLA-4E-MERE-2026-11-27",
+   "statut": "intégrée à la demande du propriétaire ; en cours d'étude",
+   "enonce": "Les huit paires de figures (g, g+Carcer) ont leurs maisons de repos en paire Carcer et agissent deux à deux sur les maisons de l'autre paire : Puer/Rubeus ↔ Amissio/Fortuna Major (rouge), Laetitia/Tristitia ↔ Via/Conjunctio (penalty), Albus/Puella ↔ Fortuna Minor/Aquisitio, Caput/Cauda ↔ Carcer/Populus. Albus/Puella sur leur axe du dragon M9-M15 : match calme (veto du rouge). 4e mère intacte (base de M4 à Eau saturée, sans réaction avec Albus) : signe du penalty.",
+   "resultats": "108 matchs : dragon M9-M15 par Albus/Puella rouge 1/18 (6 % contre 23 %), stable dans les deux moitiés ; veto élargi 2/40. 4e mère intacte penalty 19/40 (48 %) contre 18/68 ; Fortuna Minor/Aquisitio en 4e mère 7/11 penalty, 0/11 rouge. Échelle penalty à quatre signes : 0 → 2/21, 1–2 → 24/69, 3+ → 12/18. Pôle Albus ou Puella : penalty 3/20 (non intégré, n'améliore pas l'échelle). Outil : outils/fouille_albus_puella.js."
   }
  ],
  "lectures": [
