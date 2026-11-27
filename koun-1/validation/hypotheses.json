@@ -2993,6 +2993,13 @@
    "statut": "appliquée à la demande du propriétaire ; remplace la règle précédente ; en cours d'étude",
    "enonce": "Bonne position : base en M4, M8, M12, M13, M14 ou M15, un 1 de la figure rencontre un 1 de la maison (Populus toujours), Terre de la résultante saturée. Assuré : pôle et front direct (f + 4) en bonne position. Marque : l'un des deux, ou l'un des deux en M11 plein. Possible : seul le miroir (f + 8). Ne marque pas : aucun des trois. En suspens : but annulé par l'antagoniste.",
    "resultats": "126 matchs, 252 pôles : assuré 8/10 ont marqué, marque 84/115, possible 11/18, ne marque pas 91/109 (outils/mesure_marquage.js)."
+  },
+  {
+   "id": "DOUBLE-BLOCAGE-POPULUS-2026-11-27",
+   "statut": "intégrée à la demande du propriétaire ; en cours d'étude (protocole des 15 essais : 0 essai à ce jour hors du match d'origine)",
+   "enonce": "Populus en base reproduit la figure de la maison. Quand il produit ainsi l'antagoniste (f − 3) du pôle ET celui de son front direct, le pôle est bloqué et ne marque pas.",
+   "origine": "Paris – Marseille 4-6-7-16 (5-0) : Albus en M4 contre Rubeus (R7), Tristitia en M8 contre Conjunctio ; Caput et Aquisitio absents.",
+   "resultats": "126 matchs : un seul cas (Paris – Marseille), juste. Blocage du pôle seul : 7/11 ont marqué ; du front direct seul : 14/16."
   }
  ],
  "lectures": [
