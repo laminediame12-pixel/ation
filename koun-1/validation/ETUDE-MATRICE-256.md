@@ -60,3 +60,9 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
 - **Sur 126 matchs** : M11 (Eau²) plein → 3,80 buts contre 2,98 vide, même sens à l'aveugle (3,40 contre 2,90). M1 et M6 : pas d'effet (3,32 / 3,60 ; 3,43 / 3,47).
   Nombre de nœuds doubles pleins : 0 → 2,80 buts, 1 → 3,42, 2 → 3,53, 3 → 3,57. Pôle posé sur un nœud double plein : 10 victoires, 11 défaites ;
   sur un nœud vide : 12 victoires, 6 défaites (petits effectifs).
+
+## Nœuds doubles et marquage (outils/noeuds_doubles_marquage.js)
+- Les deux marquent (56 % en général) : M11 plein 61 % contre 49 % (aveugle 56 % contre 43 %) ; M6 plein 62 % contre 48 % (aveugle 52 % contre 48 %) ;
+  M1 plein 54 % contre 58 % ; M16 (Terre de la base) 54 % contre 57 %. Buts : M11 3,80 / 2,98 ; M1, M6, M16 sans écart.
+- Le pôle et le nœud double de son front (M1 → A, M6 → B, M11 → C, M16 → D) : plein, il marque 81 % (corpus) et 76 % (aveugle) ; vide, 75 % et 73 %.
+- Le pôle et le nœud double de la colonne de sa maison : 77 % dans les deux cas.
