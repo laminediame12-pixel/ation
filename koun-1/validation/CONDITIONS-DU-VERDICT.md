@@ -19,7 +19,7 @@ Le système ne prédit plus le nul : tout ce qui le concernait a été supprimé
 Ce qu'elle impose : Oui → les deux pôles marquent ; Non → le perdant ne marque pas.
 
 ## 3. R1 / R7 marque (`marquePole`)
-Bonne position : figure posée en base en **M4, M8, M12, M13, M14 ou M15**, un 1 de la figure rencontre un 1 de la maison (Populus toujours), **Terre de la résultante saturée**.
+Bonne position : figure posée en base en **M4, M8, M12, M13, M14 ou M15**, un 1 de la figure rencontre un 1 de la maison (1 + 1 = 2 ; 2 + 2 est neutre : Populus ne réagit jamais), **Terre de la résultante saturée**.
 - **Marque (assuré)** : le pôle **et** son front direct (f + 4) en bonne position.
 - **Marque** : le pôle **ou** son front direct en bonne position, ou l'un d'eux en **M11** avec l'Eau de la résultante saturée.
 - **Marque possible** : seul le miroir (f + 8) en bonne position.

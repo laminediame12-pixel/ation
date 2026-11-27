@@ -420,9 +420,9 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs) : avec figure marquante, marque 68 fois sur 88 ; sans, il a quand même marqué 126 fois sur 164.
-  var MARQUE_POLE_OBS = { assure: { oui: 8, sur: 10 }, marque: { oui: 84, sur: 115 }, possible: { oui: 11, sur: 18 }, non: { oui: 91, sur: 109 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_POLE_OBS = { assure: { oui: 6, sur: 8 }, marque: { oui: 83, sur: 111 }, possible: { oui: 10, sur: 17 }, non: { oui: 95, sur: 116 } }; // outils/mesure_marquage.js, 126 matchs
   // PUISSANCE DE MARQUAGE (2026-11-27, règle du propriétaire, remplace la précédente). Bonne position d'une figure : posée en base dans un canal Terre
-  // (M4, M8, M12, M13, M14, M15), au moins un 1 de la figure rencontre un 1 de la maison (Populus compte toujours), et la Terre de la résultante SATURÉE.
+  // (M4, M8, M12, M13, M14, M15), au moins un 1 de la figure rencontre un 1 de la maison (1 + 1 = 2 : seule réaction ; 2 + 2 est neutre comme M16, donc Populus, sans 1, ne réagit jamais), et la Terre de la résultante SATURÉE.
   // Ex. Puer en M8 → Fortuna Minor, Terre saturée ; Cauda chez elle en M13 → Populus : marquage inévitable. Chaque bonne position est un avantage.
   //   marque avec assurance : le pôle ET son front direct (f + 4) en bonne position ;
   //   marque : le pôle OU son front direct en bonne position, ou l'un d'eux en M11 plein (Eau de la résultante saturée) ;
@@ -430,7 +430,7 @@
   //   entre les deux (seul le miroir en bonne position) : marque possible, compté comme marque.
   //   En suspens (à revoir avec le propriétaire) : but annulé ou bloqué par l'antagoniste au même niveau d'activation Terre.
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
-    var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 || [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })) && K.niveaux(L.theme.resultantes[h])[3] === 2; }); };
+    var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && ([0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })) && K.niveaux(L.theme.resultantes[h])[3] === 2; }); };
     var bp = bonnes(P), bf = bonnes(F), bm = bonnes(Mi), m11 = (b[11] === P || b[11] === F) && K.niveaux(L.theme.resultantes[11])[2] === 2;
     var niveau = bp.length && bf.length ? 'assure' : bp.length || bf.length || m11 ? 'marque' : bm.length ? 'possible' : 'non';
     var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm : []).sort(function (x, y) { return x - y; });
