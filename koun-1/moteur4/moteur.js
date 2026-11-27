@@ -422,7 +422,7 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs, mesure du 2026-11-27 après le blocage figure par figure) : dans MARQUE_POLE_OBS (outils/mesure_marquage.js).
-  var MARQUE_POLE_OBS = { assure: { oui: 8, sur: 14 }, marque: { oui: 105, sur: 133 }, possible: { oui: 14, sur: 20 }, non: { oui: 67, sur: 85 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_POLE_OBS = { assure: { oui: 8, sur: 14 }, marque: { oui: 99, sur: 123 }, possible: { oui: 5, sur: 7 }, non: { oui: 82, sur: 108 } }; // outils/mesure_marquage.js, 126 matchs
   // PUISSANCE DE MARQUAGE (2026-11-27, règles du propriétaire). Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
   //   dans un canal Terre (M4, M8, M12, M13, M14, M15 : la boucle Terre de chaque front y passe) : la figure réagit — au moins un 1 de la figure rencontre
   //   un 1 de la maison (1 + 1 = 2), sur n'importe lequel de ses 4 niveaux ; la Terre de la résultante n'est pas exigée ;
@@ -430,9 +430,10 @@
   //   le pôle dans sa propre maison : Terre de la résultante saturée, sauf s'il y est chez lui (résultante Populus, neutre comme M16).
   //   marque avec assurance : le pôle ET son front direct en bonne position ; marque : l'un des deux, ou l'un des deux en M11 plein (Eau saturée) ;
   //   marque possible : seul le miroir ; ne marque pas : aucun des trois.
-  // BLOCAGE FIGURE PAR FIGURE (2026-11-27, chaîne du propriétaire : « M1 attaque avec M5 et M2 attaque M5 ») : le pôle attaque avec son front direct (f + 4), et chaque
-  //   figure marquante a son propre attaquant : le pôle f − 3, le front direct f + 1, le miroir f + 5. Une figure bloquée (voir bloqueurs) ne marque pas ; le pôle marque par
-  //   celles qui restent libres. Le double blocage par Populus (Paris – Marseille) est le cas où le pôle et son front direct sont bloqués tous les deux.
+  // BLOCAGE DANS LA CHAÎNE (2026-11-27, chaîne du propriétaire : « M1 attaque avec M5 et M2 attaque M5 ») : le pôle est celui qui attaque, son front direct (f + 4) est son
+  //   moyen, et chacun a son attaquant (le pôle f − 3, le front direct f + 1, le miroir f + 5 ; voir bloqueurs). Pôle bloqué : il n'attaque plus, même avec son front direct,
+  //   il ne marque pas. Front direct bloqué : le pôle marque encore par lui-même. Miroir bloqué : il ne compte plus. Paris – Marseille : Rubeus bloqué (Albus intact en M1,
+  //   Albus reproduit par Populus en M4) → ne marque pas. 147 matchs : 79 bons verdicts contre 77 avant la chaîne (76 en lisant le blocage figure par figure).
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
     var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 ? K.niveaux(L.theme.resultantes[h])[3] === 2 : [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })); }); };
     // le pôle dans sa propre maison, Terre de la résultante saturée (propriétaire, 2026-11-27 : Paris – Marseille, Populus en M4 → Albus)
@@ -440,11 +441,13 @@
     var BL = { pole: bloqueurs(L, P), front: bloqueurs(L, F), miroir: bloqueurs(L, Mi) }, e11 = K.niveaux(L.theme.resultantes[11])[2] === 2;
     var bp0 = bonnes(P).concat(chez.filter(function (h) { return bonnes(P).indexOf(h) < 0; })), bf0 = bonnes(F), bm0 = bonnes(Mi);
     var niv = function (a, f, m, m11) { return a.length && f.length ? 'assure' : a.length || f.length || m11 ? 'marque' : m.length ? 'possible' : 'non'; };
-    var bp = BL.pole.length ? [] : bp0, bf = BL.front.length ? [] : bf0, bm = BL.miroir.length ? [] : bm0, m11 = ((b[11] === P && !BL.pole.length) || (b[11] === F && !BL.front.length)) && e11;
+    var tout = BL.pole.length > 0, bp = tout ? [] : bp0, bf = tout || BL.front.length ? [] : bf0, bm = tout || BL.miroir.length ? [] : bm0,
+      m11 = !tout && (b[11] === P || (b[11] === F && !BL.front.length)) && e11;
     var niveau0 = niv(bp0, bf0, bm0, (b[11] === P || b[11] === F) && e11), niveau = niv(bp, bf, bm, m11);
-    // bloque : les figures marquantes dont le blocage a fait baisser le niveau (sinon null)
-    var perdus = niveau === niveau0 ? [] : [['pôle', P, BL.pole, bp0.concat(b[11] === P && e11 ? [11] : [])], ['front direct', F, BL.front, bf0.concat(b[11] === F && e11 ? [11] : [])], ['miroir', Mi, BL.miroir, bm0]]
-      .filter(function (x) { return x[2].length && x[3].length; }).map(function (x) { return { role: x[0], figure: x[1], par: x[2], positions: x[3] }; });
+    // bloque : ce que le blocage a retiré quand il a fait baisser le niveau (sinon null) ; pôle bloqué = tout le pôle
+    var p11 = (b[11] === P || b[11] === F) && e11 ? [11] : [], perdus = niveau === niveau0 ? [] : tout ? [{ role: 'pôle', figure: P, par: BL.pole, positions: bp0.concat(bf0, p11, bm0), tout: true }]
+      : [['front direct', F, BL.front, bf0.concat(b[11] === F && e11 ? [11] : [])], ['miroir', Mi, BL.miroir, bm0]].filter(function (x) { return x[2].length && x[3].length; })
+        .map(function (x) { return { role: x[0], figure: x[1], par: x[2], positions: x[3] }; });
     var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm : []).filter(function (h, i, t) { return t.indexOf(h) === i; }).sort(function (x, y) { return x - y; });
     return { marque: niveau !== 'non', niveau: niveau, niveauSansBlocage: niveau0, bloque: perdus.length ? perdus : null, bloqueurs: BL, maisons: maisons, positions: { pole: bp, front: bf, miroir: bm, m11: m11 }, avantage: bp.length + bf.length, figures: [P, F, Mi], obs: MARQUE_POLE_OBS[niveau] }; }
   // ESTIMATION DES BUTS (2026-11-27, à la demande du propriétaire) : arrêts × nœud double M11 (Eau × Eau). M11 est plein quand la résultante de M11 a l'Eau
@@ -467,10 +470,13 @@
   //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
   function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
-    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 18 fois sur 21 quand la règle de marquage disait le contraire (126 matchs, 2026-11-27) ; le perdant garde sa règle.
+    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 25 fois sur 29 quand la règle de marquage disait le contraire (126 matchs, 2026-11-27) ; le perdant garde sa règle.
     if (V.boucles && V.boucles.domaine && (d === '1' || d === '2')) { var wq = d === '1' ? 'R1' : 'R7'; if (!m[wq].marque) { m[wq].marque = true; m[wq].impose = 'imposé par la victoire (boucles différentes)'; } }
+    // AUCUN PÔLE NE MARQUE ET UNE VICTOIRE EST ANNONCÉE (2026-11-27) : la partie 1 commande, le vainqueur marque (imposé) — sans cela le verdict se contredit
+    // (une victoire sans but). 147 matchs : 6 cas, le vainqueur annoncé a marqué les 6 fois et gagné 5 fois.
+    else if ((d === '1' || d === '2') && !m.R1.marque && !m.R7.marque) { var wq2 = d === '1' ? 'R1' : 'R7'; m[wq2].marque = true; m[wq2].impose = 'imposé par la victoire (aucun pôle ne marque selon la règle)'; }
     var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
-    // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; seule exception : le vainqueur des boucles différentes marque (imposé, ci-dessus).
+    // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; deux exceptions : le vainqueur des boucles différentes marque, et le vainqueur annoncé quand aucun pôle ne marque (imposés, ci-dessus).
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
     if (d === 'N' && n === 0) { v = 0; aj = 'égalité sans pôle qui marque : 0-0'; } // cohérence : une égalité où personne ne marque ne peut être que 0-0
     else if (v < n) { v = n; aj = n + ' équipes marquent'; }
@@ -500,9 +506,9 @@
     else if (!Q1 && !Q7) {
       // LES DEUX PÔLES BLOQUÉS (2026-11-27, en cours d'étude ; suite du blocage unique) : hors boucles différentes le marquage commande ; quand aucun pôle ne marque
       // et que les deux figures des pôles sont bloquées, aucun ne prend le dessus : égalité (thème de repos Populus : les deux pôles bloqués par Cauda reproduite en M13).
-      // 147 matchs : 2 cas, 2 nuls (Tijuana – Pumas 1-1, Lorient – Rennes 1-1) ; sans les deux blocages, R1 garde l'avantage (Lazio – Lecce 3-0, Augsburg – Mainz 3-1).
+      // 147 matchs : 3 cas, 2 nuls (Tijuana – Pumas 1-1, Lorient – Rennes 1-1 ; Hull City – Brighton 2-0).
       var b1 = blocages(L, 'R1'), b7 = blocages(L, 'R7');
-      if (b1.length && b7.length) V.decision = { resultat: 'N', type: 'bloques', raison: 'les deux pôles bloqués (R1 en M' + b1.join(', M') + ', R7 en M' + b7.join(', M') + ') et aucun ne marque : égalité (en cours d\'étude : 2 nuls sur 2, tous deux 1-1) · indice : ' + VC.texte };
+      if (b1.length && b7.length) V.decision = { resultat: 'N', type: 'bloques', raison: 'les deux pôles bloqués (R1 en M' + b1.join(', M') + ', R7 en M' + b7.join(', M') + ') et aucun ne marque : égalité (en cours d\'étude : 2 nuls sur 3) · indice : ' + VC.texte };
       else V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage'; }
     // ÉGALITÉ n-n (propriétaire, 2026-11-27 ; en cours d'étude, protocole des 15 essais) : les deux pôles au même niveau de marquage, aucun pôle bloqué, et
     // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 10 cas, 4 nuls (40 % ; 21 % en tout ; 11 cas et 5 nuls avant le blocage unique du 2026-11-27).

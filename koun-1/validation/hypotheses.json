@@ -3076,6 +3076,14 @@
    "corrections": "(1) une seule définition (bloqueurs) : antagoniste posé en base avec ses points actifs (M16 toujours) ou reproduit par Populus dans sa maison ; (2) blocage figure par figure : pôle par f − 3, front direct par f + 1, miroir par f + 5 ; (3) arrêts sur M1–M16 ; (4) hors boucles différentes, aucun pôle ne marque et les deux pôles bloqués → égalité (2 nuls sur 2). Essayé et non retenu : arme et défense des boucles lues par le blocage strict (47 justes contre 62) : la présence est gardée.",
    "resultats": "147 matchs. Marquage : 145/252 justes avant comme après (test 28/42 → 27/42) ; niveaux : assuré 8/14, marque 105/133, possible 14/20, ne marque pas 67/85 ont marqué. Décision (126) : 62 justes, 31 faux, égalités 11 (5 nuls) → 60 justes, 33 faux, égalités 12 (6 nuls) ; test (21) : 9/5, égalités 3 (1) → 9/6, égalités 2 (1). Buts : erreur 1,46 → 1,47 (test 1,47 → 1,52) ; arrêts × M11 sans le match jugé 1,526 → 1,514. Rouge : 2 signes 8/12 → 9/13, 0 signe 4/30 → 4/28 ; penalty inchangé. Contradictions restantes (audit_logique) : 6 thèmes où R1 gagne sans qu'aucun pôle ne marque et sans que les deux soient bloqués (cas ouvert).",
    "outil": "outils/chaine_attaque.js ; vérifications : verifier_affichage (352/352), verifier_tout (65 536 thèmes), surveiller, constantes"
+  },
+  {
+   "id": "CHAINE-ATTAQUE-LECTURE-2026-11-27",
+   "statut": "INTÉGRÉ ; remplace la lecture figure par figure de CHAINE-ATTAQUE-FAILLES-2026-11-27",
+   "origine": "propriétaire : « si c'est bien compris cela doit forcément améliorer certains résultats »",
+   "lecture": "« M1 attaque avec M5 » : M1 est celui qui attaque, M5 son moyen. Pôle bloqué → il n'attaque plus, même avec son front direct (ne marque pas) ; front direct bloqué → le pôle marque encore par lui-même ; miroir bloqué → il ne compte plus. Et quand aucun pôle ne marque alors qu'une victoire est annoncée, le vainqueur marque (partie 1 au-dessus de la partie 3).",
+   "resultats": "147 matchs, bons verdicts (victoire juste ou nul annoncé juste) : avant la chaîne 77 (126 : 67, 26/11 : 10) ; figure par figure 76 ; cette lecture 79 (68 et 11). Deux marquent 62/126 → 63 (test 11/21 → 12). Rouge à 2 signes 8/12 → 9/13. Nuls annoncés justes 6 → 7 sur 14 → 15. Contradictions entre parties du verdict (audit_logique, 263 thèmes) : 11 → 0. Moins bien : erreur des buts 1,46 → 1,48 (test 1,47 → 1,52) ; marquage pôle par pôle 145/252 → 138/252, et « ne marque pas » se trompe 82 fois sur 108 (le pôle a marqué). Autres lectures essayées : boucles par les fronts directs (v + 1, a + 1) 44 justes contre 47 ; boucles par le blocage strict 47 contre 62 : non retenues.",
+   "outil": "outils/chaine_attaque.js ; vérifications : verifier_affichage 352/352, verifier_tout 65 536 thèmes, audit_logique 0 contradiction, surveiller, constantes"
   }
  ],
  "lectures": [
