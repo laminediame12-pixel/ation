@@ -581,10 +581,12 @@
   //   qui y produit Caput ou Cauda), R7 bloqué, R1 bloqué (antagoniste posé en base qui garde ses points actifs). 0 signe 4/35, 1 signe 9/30, 2 ou plus 8/12.
   //   Camp : un pôle bloqué reçoit le rouge, sauf si son bloqueur est posé dans les Filles (M5–M8) → l'adversaire ; sinon, avec le dragon, le pôle de même
   //   front que la figure martiale ; sinon R7. 19 rouges sur 21.
-  // PENALTY — deux signes : un arrêt avec des fronts de R1 et R7 non alliés ; la figure d'un pôle est celle de la sentence M16. 0 signe 10/47, 1 signe 22/50,
-  //   2 signes 6/11. Camp : le pôle dont la figure est en M16 ; sinon le pôle dont le front attaque l'autre ; sinon R1. 25 penalties sur 34.
+  // PENALTY — trois signes : un arrêt avec des fronts de R1 et R7 non alliés, ou le front de R1 qui attaque celui de R7 ; la figure d'un pôle est celle de la
+  //   sentence M16 ; le dragon M5-M11 (Laetitia ou Tristitia posé en base de M5 ou M11, qui y produit Caput ou Cauda : l'axe de la joie et de la tristesse,
+  //   comme l'axe martial M6-M12 l'est pour le rouge). 0 signe 2/26, 1 signe 21/53, 2 ou plus 15/29 (outils/fouille_penalty.js).
+  //   Camp : le pôle dont la figure est en M16 ; sinon le pôle dont le front attaque l'autre ; sinon R1. 25 penalties sur 34.
   var INCIDENT_OBS = { rouge: { veto: { oui: 1, sur: 31 }, 0: { oui: 4, sur: 35 }, 1: { oui: 9, sur: 30 }, 2: { oui: 8, sur: 12 }, camp: { ok: 19, sur: 21 } },
-    penalty: { 0: { oui: 10, sur: 47 }, 1: { oui: 22, sur: 50 }, 2: { oui: 6, sur: 11 }, camp: { ok: 25, sur: 34 } } };
+    penalty: { 0: { oui: 2, sur: 26 }, 1: { oui: 21, sur: 53 }, 2: { oui: 15, sur: 29 }, camp: { ok: 25, sur: 34 } } };
   function incidentVerdict(L) { var b = L.theme.bases, f1 = (L.R1.figure - 1) % 4, f7 = (L.R7.figure - 1) % 4, AT = { 0: 3, 1: 0, 3: 2, 2: 1 };
     var rel = f1 === f7 ? 'meme' : AT[f1] === f7 ? 'R1' : AT[f7] === f1 ? 'R7' : 'allies';
     // rouge
@@ -597,12 +599,13 @@
     if (!campR) { campR = 'R7'; pourquoiR = 'défaut'; }
     // penalty
     var A = arrets(L), e1 = b[16] === L.R1.figure, e7 = b[16] === L.R7.figure, s16 = e1 && e7 ? 'les deux' : e1 ? 'R1' : e7 ? 'R7' : null;
-    var sigA = A.nombre > 0 && rel !== 'allies', sp = (sigA ? 1 : 0) + (s16 ? 1 : 0), niveauP = sp === 2 ? 'probable' : sp === 1 ? 'possible' : 'faible';
+    var joie = [5, 11].filter(function (h) { return b[h] === 2 || b[h] === 8; }), arretSeul = A.nombre > 0 && rel !== 'allies', sigA = arretSeul || rel === 'R1';
+    var sp = (sigA ? 1 : 0) + (s16 ? 1 : 0) + (joie.length ? 1 : 0), np = Math.min(sp, 2), niveauP = np === 2 ? 'probable' : np === 1 ? 'possible' : 'faible';
     var campP = s16 === 'R1' || s16 === 'R7' ? s16 : rel === 'R1' || rel === 'R7' ? rel : 'R1', pourquoiP = s16 === 'R1' || s16 === 'R7' ? 'sentence' : rel === 'R1' || rel === 'R7' ? 'attaque' : 'défaut';
     var niveau = niveauR === 'probable' || niveauP === 'probable' ? 'probable' : niveauR === 'possible' || niveauP === 'possible' ? 'possible' : 'aucun';
     return { niveau: niveau, pole: null, arrets: A.maisons, fronts: rel,
       rouge: { niveau: niveauR, signes: sr, dragon: dragon, bloques: bl, veto: nr === 'veto', camp: campR, pourquoi: pourquoiR, obs: INCIDENT_OBS.rouge[nr], obsCamp: INCIDENT_OBS.rouge.camp },
-      penalty: { niveau: niveauP, signes: sp, arret: sigA, sentence: s16, camp: campP, pourquoi: pourquoiP, obs: INCIDENT_OBS.penalty[sp], obsCamp: INCIDENT_OBS.penalty.camp } }; }
+      penalty: { niveau: niveauP, signes: sp, arret: sigA, arretSeul: arretSeul, attaqueR1: rel === 'R1', sentence: s16, joie: joie, camp: campP, pourquoi: pourquoiP, obs: INCIDENT_OBS.penalty[np], obsCamp: INCIDENT_OBS.penalty.camp } }; }
   // INCIDENT : détecteur à six paramètres (signaux post hoc, ajustés sur 7 matchs étiquetés : 5 avec penalty ou rouge, 2 sans ; ce n'est PAS une règle de verdict).
   // Chaque paramètre vaut 1 quand il est actif ; score de 0 à 6 : 3 ou plus = probable, 2 = possible, 0 ou 1 = pas d'indice.
   //  P1 un arrêt (antagoniste ancré en base) relie les fronts directs de R1 et de R7 ; P2 la résultante de M12 est Via, Aquisitio, Caput, Puer ou Fortuna Major ;

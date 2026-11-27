@@ -66,6 +66,6 @@ Elle cède : au moins autant de buts que d'équipes qui marquent.
 - Camp : le pôle bloqué reçoit le rouge, **sauf si son bloqueur est posé dans les Filles (M5–M8)** → l'adversaire ; sinon, avec le dragon, le pôle de même front que la figure martiale ; sinon R7. Juste 19 fois sur 21.
 
 **Penalty**
-- Deux signes : **un arrêt avec des fronts de R1 et R7 non alliés** ; **la figure d'un pôle est celle de la sentence M16**.
-  0 signe : peu probable (10/47) · 1 signe : possible (22/50) · 2 signes : probable (6/11).
+- Trois signes : **un arrêt avec des fronts de R1 et R7 non alliés, ou le front de R1 qui attaque celui de R7** ; **la figure d'un pôle est celle de la sentence M16** ; **le dragon M5-M11** (Laetitia ou Tristitia posé en base de M5 ou M11, qui y produit Caput ou Cauda — l'axe de la joie et de la tristesse, comme M6-M12 l'axe martial du rouge).
+  0 signe : peu probable (2/26) · 1 signe : possible (21/53) · 2 signes ou plus : probable (15/29).
 - Camp : le pôle dont la figure est en M16 ; sinon le pôle dont le front attaque l'autre ; sinon R1. Juste 25 fois sur 34.

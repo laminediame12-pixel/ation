@@ -3012,6 +3012,12 @@
    "statut": "intégrée à la demande du propriétaire ; en cours d'étude (règles tirées des 108 matchs étiquetés, sans lot de validation séparé)",
    "enonce": "Rouge : veto si le front de R7 attaque celui de R1 ; sinon signes dragon en M6/M12 (Rubeus ou Puer posé en base de M6/M12, produit Caput ou Cauda), R7 bloqué, R1 bloqué ; camp : pôle bloqué, ou l'adversaire si le bloqueur est dans les Filles M5–M8 ; sinon pôle de même front que la figure martiale ; sinon R7. Penalty : signes arrêt avec fronts non alliés, figure d'un pôle en sentence M16 ; camp : figure en M16, sinon front qui attaque, sinon R1.",
    "resultats": "Rouge : veto 1/31, 0 signe 4/35, 1 signe 9/30, 2 ou plus 8/12 ; camp 19/21. Penalty : 0 signe 10/47, 1 signe 22/50, 2 signes 6/11 (signe présent 28/61 contre 10/47, p 0,005, stable dans les deux moitiés) ; camp 25/34. Outils : rouges_un_par_un.js, rouge_fausses_alertes.js, camp_du_rouge.js, penaltys_un_par_un.js, mesure_incidents.js. Prédictions figées sur le lot du 27 au 30 : validation/predictions-dragon-27-novembre.json."
+  },
+  {
+   "id": "PENALTY-AXES-DU-DRAGON-2026-11-27",
+   "statut": "intégrée à la demande du propriétaire ; en cours d'étude (composition choisie sur les 108 matchs eux-mêmes)",
+   "enonce": "Algèbre : chaque figure produit Caput et Cauda sur une paire Carcer de maisons (M1-M7, M2-M8, M3-M13, M4-M14, M5-M11, M6-M12, M9-M15, M10-M16). L'axe martial M6-M12 (Rubeus/Puer) porte le rouge ; l'axe M5-M11 (Laetitia/Tristitia) porte le penalty. Penalty : signes [arrêt avec fronts non alliés, ou front de R1 qui attaque] ; [figure d'un pôle en M16] ; [dragon M5-M11].",
+   "resultats": "108 matchs : 0 signe 2/26, 1 signe 21/53, 2 signes 12/26, 3 signes 3/3 ; au moins un signe 36/82 contre 2/26 (aucun tirage au hasard sur 3000 ne fait aussi bien, stable dans les deux moitiés). Axe M5-M11 seul : 13/25 contre 30 %. Conflits Carcer (même figure dans les deux maisons d'une paire) : sans effet (16/46). Outil : outils/fouille_penalty.js."
   }
  ],
  "lectures": [
