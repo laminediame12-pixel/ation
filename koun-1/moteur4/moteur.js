@@ -348,7 +348,7 @@
       return { maisons: hs, saturees: hs.filter(function (h) { return K.niveaux(rz(h))[3] === 2; }) }; }
     var a = un(L.R1), b = un(L.R7); return { R1: a, R7: b, ecart: a.saturees.length - b.saturees.length }; }
   // VERDICT DE VICTOIRE (2026-11-22) : Terre des nœuds diagonaux du front de chaque pôle, lue avec les nœuds de coordination, puis H-REPOS.
-  // Ordre : 1) Terre et coordonnées désignent le même pôle : victoire ; 2) H-REPOS ; 3) Terre seule : avantage, nul possible ; 4) coordonnées seules : avantage, nul possible ;
+  // Catégories (lecture) : 1) Terre et coordonnées désignent le même pôle ; 2) H-REPOS ; 3) Terre seule ; 4) coordonnées seules. Depuis le 24/11, seule la catégorie 1 (et M1-M10) appelle la victoire ; 2 à 4 sont des indices.
   // 5) Terre et coordonnées opposées : pas d'appel ; 6) rien : pas d'appel, nul possible. Résultats observés dans VERDICT_STATS (justes, faux, nuls, appels).
   var VERDICT_STATS = { accord: { ok: 15, ko: 1, nul: 4, n: 20 }, repos: { ok: 7, ko: 3, nul: 3, n: 13 }, terre: { ok: 7, ko: 3, nul: 1, n: 11 }, coord: { ok: 6, ko: 2, nul: 0, n: 8 }, oppose: { n: 11 }, rien: { n: 17 } };
   function categorieVerdict(L) { var Q = marquage(L), C = coordonnees(L), R = repos(L), G = diagonales(L), t = Math.sign(G.ecart), c = Math.sign(C.ecart), rp = R.gagnant === 'R1' ? 1 : R.gagnant === 'R7' ? -1 : 0;
@@ -470,6 +470,13 @@
   var BUTS_OBS = { AE: { sur: 41, buts: 177, plus25: 33, plus35: 27 }, A: { sur: 35, buts: 118, plus25: 21, plus35: 18 }, E: { sur: 30, buts: 93, plus25: 16, plus35: 10 }, rien: { sur: 20, buts: 46, plus25: 8, plus35: 4 } };
   function butsEstimes(L) { var A = arrets(L), e = K.niveaux(L.theme.resultantes[11])[2] === 2, k = A.nombre ? (e ? 'AE' : 'A') : (e ? 'E' : 'rien'), o = BUTS_OBS[k];
     return { arrets: A, m11Plein: e, cas: k, attendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
+  // SCORE PRÉVU (audit du 2026-11-27, à la demande du propriétaire : enlever ce qui ne suit pas la logique). Toutes les lignes de marquage en découlent,
+  // pour qu'elles ne se contredisent plus (avant : « Victoire R1 » avec « R1 ne marque pas » dans 40 % des thèmes, des buts sans pôle marquant dans 44 %).
+  // Construction : décision du moteur + buts attendus (arrêts × M11). Nul → k-k avec k = arrondi(buts / 2), au moins 1. Victoire → total = arrondi(buts),
+  // le vainqueur prend la moitié haute. Mesure (126 matchs) : « le pôle marque » juste 119/160 et 69/92 à l'aveugle (règle des figures marquantes : 68 et 38).
+  function scorePrevu(L) { var V = verdict(L), E = butsEstimes(L).attendus, d = V.decision.resultat, a, b;
+    if (d === 'N') { a = b = Math.max(1, Math.round(E / 2)); } else { var t = Math.max(1, Math.round(E)), w = Math.ceil((t + 1) / 2), l = Math.max(0, t - w); a = d === '1' ? w : l; b = d === '1' ? l : w; }
+    return { R1: a, R7: b, texte: a + '-' + b }; }
   // NUL PAR CONVERGENCE (H-NUL-CONVERGENCE-V3, méthode du propriétaire, 2026-11-25) : le nul n'est jamais dit par un seul signe.
   // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
   // équilibre des deux parties +1 ; Terre de M1, M2, M3 identique +1 ; Terre de M14 saturée +1 ; diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) +1.
@@ -620,7 +627,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { scorePrevu: scorePrevu, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

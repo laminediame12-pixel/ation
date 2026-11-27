@@ -2969,6 +2969,13 @@
    "statut": "EN COURS D’ÉTUDE ; figée sur le lot du 24 au 30 (validation/predictions-nul-m5-cauda-24-30-novembre.json)",
    "enonce": "Motif commun aux thèmes 2-6-2-12 et 2-13-6-16 posés dans la matrice : M5 = Cauda Draconis (la fille M5 porte le Feu des mères : Feu ouvert en M1, M2, M3, saturé en M4), résultante de M5 = Tristitia (équilibre en suspens). Autres motifs communs : M1 = Laetitia, donc R1 en M2 et R7 en M8, résultante de M8 dans le noyau Terre (Populus ou Tristitia).",
    "resultats": "M5 = Cauda : 5 nuls sur 7 (aveugle 3 sur 3 : Bologna–Udinese 1-1, Lorient–Rennes 1-1, Atalanta–Inter 4-4 ; corpus 2/4). R1 en M2 : 6 nuls sur 13 (aveugle 1/6) ; R1 en M2 et résultante de M8 dans le noyau : 5 sur 7. Résultante de la maison de R7 dans le noyau : 10/41 (pas d’effet). Cinq lectures essayées sur ces deux thèmes : à confirmer."
+  },
+  {
+   "id": "AUDIT-LOGIQUE-2026-11-27",
+   "statut": "appliqué à la demande du propriétaire (« enlève ce qui ne suit pas la logique »)",
+   "enonce": "Audit de la page sur 263 thèmes (outils/audit_logique.js) : contradictions entre lignes affichées.",
+   "resultats": "Avant : Victoire R1 avec « R1 ne marque pas » 104 fois (40 %), buts annoncés sans pôle marquant 117 (44 %), « Deux marquent : Oui » avec un pôle qui ne marque pas 115 (44 %), mi-temps désignant une équipe qui ne marque pas 92 et 86, Nul avec un seul pôle marquant 34, Victoire R7 sans que R7 marque 12. Correction : un score prévu (décision + buts attendus) d’où découlent R1 / R7 marque, Deux marquent et les désignations de mi-temps ; la règle des figures marquantes reste affichée comme indice (en étude). Après : 0 contradiction. Mesure sur 126 matchs : « le pôle marque » 119/160 et 69/92 à l’aveugle (avant 68 et 38) ; « Deux marquent » 49/80 et 25/46 (avant 42 et 27).",
+   "outils": "outils/audit_logique.js, outils/verifier_affichage.js"
   }
  ],
  "lectures": [
