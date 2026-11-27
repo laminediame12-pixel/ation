@@ -1,5 +1,5 @@
 {
- "note": "Penalties et cartons rouges (temps réglementaire) des matchs joués du 19 au 25 novembre 2026, cherchés sur le web le 2026-11-27 (ESPN, Sky Sports, Sofascore, Flashscore, bein, sites des clubs, VAVEL…). « Non » = aucune source ne rapporte d'incident et au moins une décrit le match (cartons, faits de jeu). Penalty manqué compté comme penalty. Tirs au but exclus. Matchs introuvables ou contradictoires laissés de côté : Kilmarnock–Aberdeen, FC Dallas–Portland, Bologna–Udinese, Motherwell–Rangers, Bodø/Glimt–LASK (penalty incertain).",
+ "note": "Penalties et cartons rouges (temps réglementaire) des matchs joués du 19 au 25 novembre 2026, cherchés sur le web le 2026-11-27 (ESPN, Sky Sports, Sofascore, Flashscore, bein, sites des clubs, VAVEL…). « Non » = aucune source ne rapporte d'incident et au moins une décrit le match (cartons, faits de jeu). Penalty manqué compté comme penalty. Tirs au but exclus. Matchs introuvables ou contradictoires laissés de côté : Kilmarnock–Aberdeen, FC Dallas–Portland, Bologna–Udinese, Motherwell–Rangers, Bodø/Glimt–LASK (penalty incertain), Al Fateh–Al Riyadh et Al Faisaly–Al Diriyah (aucun détail). Ajout du 27 : San Jose–Houston, Lyon–Lillestrøm, Union Saint-Gilloise–Lech.",
  "matchs": [
   ["Sporting – Manchester United", "R1 et R7", "R7"],
   ["Atlético – Viking", "incertain", "R7"],
@@ -61,6 +61,9 @@
   ["Leverkusen–Paderborn", "Non", "Non"],
   ["Mönchengladbach–Dortmund", "Non", "Non"],
   ["Elversberg–Fribourg", "Non", "Non"],
-  ["Seattle–Salt Lake", "R1", "Non"]
+  ["Seattle–Salt Lake", "R1", "Non"],
+  ["San Jose – Houston", "Non", "R7"],
+  ["Lyon – Lillestrøm", "Non (annulé par la VAR)", "Non (annulé par la VAR)"],
+  ["Union Saint-Gilloise – Lech Poznań", "R1 (manqué)", "Non"]
  ]
 }
