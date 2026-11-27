@@ -2825,14 +2825,14 @@
   },
   {
    "id": "H-INCIDENT-CARCER-OPPOSITIONS-6",
-   "statut": "testée : pas une règle absolue, léger surplus d’incidents ; en observation",
+   "statut": "EN COURS D’ÉTUDE (étude du propriétaire, non rejetée) — testée : pas une règle absolue, léger surplus d’incidents ; en observation",
    "enonce": "Oppositions du propriétaire à 6 maisons (M1–M7, M2–M8, M3–M9, M4–M10, M5–M11, M6–M12) : chaque opposition dont la somme donne Carcer provoque un penalty ou un rouge.",
    "resultats": "47 matchs à incident connu : avec au moins une opposition Carcer, pénalité 6 fois sur 19 (32 %) ; sans, 6 sur 28 (21 %). Avant : 3/9 contre 4/12 ; 20-23 novembre : 3/10 contre 2/16. 13 des 19 thèmes à opposition Carcer n’ont eu ni penalty ni rouge.",
    "outil": "outils/incident_carcer_6.js"
   },
   {
    "id": "H-INCIDENT-CARCER-POLES",
-   "statut": "fouille : aucun lien trouvé",
+   "statut": "EN COURS D’ÉTUDE (étude du propriétaire, non rejetée) — fouille : aucun lien trouvé",
    "enonce": "Carcer lié aux pôles R1 / R7 → penalty ou rouge, et pour quel pôle (8 lectures par pôle, 4 lectures du match).",
    "resultats": "47 matchs à incident connu (12 avec incident ; R1 concerné 8 fois, R7 8 fois). Par pôle : de 0 % à 25 % contre 15 % à 18 % sans ; meilleure lecture atteinte avec des incidents mélangés dans 71 % des cas. Match : R1 + R7 = Carcer 0 incident sur 4 ; Carcer en résultante d’une maison de pôle 0/5 ; au moins une opposition à 6 maisons qui donne Carcer 6/26 contre 6/21.",
    "outil": "outils/incident_carcer_poles.js"
@@ -2906,14 +2906,14 @@
   },
   {
    "id": "H-MARQUAGE-NOEUDS",
-   "statut": "testée, rien de net ; règle exacte à préciser par le propriétaire",
+   "statut": "EN COURS D’ÉTUDE (étude du propriétaire, non rejetée) — testée, rien de net ; règle exacte à préciser par le propriétaire",
    "enonce": "Une figure marque quand elle sature les niveaux du nœud de sa maison (exemple Juventus–Venezia 4-0 : R1 Populus en M9, nœud Feu×Eau).",
    "resultats": "234 pôles. Figure du front saturant le nœud de sa maison : marque 76 % / 75 % (corpus / aveugle) contre 84 % / 80 % sans. Dans les canaux Terre seulement : 78 % / 79 % contre 78 % / 73 %. Résultante saturant le nœud : 78 % / 71 % contre 77 % / 93 %. Le pôle lui-même : 73 % / 86 % contre 80 % / 72 %. Juventus : Conjunctio (front de R7) en M13 sature aussi son nœud Feu×Terre, alors que R7 n’a pas marqué.",
    "outil": "outils/marquage_noeuds.js"
   },
   {
    "id": "H-DOUBLE-CONCORDANCE-ET-RUBEUS-M6",
-   "statut": "testées, non confirmées",
+   "statut": "EN COURS D’ÉTUDE (étude du propriétaire, non rejetée) — testées, non confirmées",
    "enonce": "(1) Double concordance : M1, M6, M11, M16 portent en base le niveau actif de leur propre élément ; un pôle dont le nœud de maison touche ces niveaux marque. (2) Rubeus en M6 cause toujours une pénalité.",
    "resultats": "(1) Les deux niveaux du nœud du pôle concordants : marque 78 % / 80 % (corpus / aveugle) contre 78 % / 74 % ; au moins un : 77 % / 79 % contre 80 % / 65 %. Nombre de concordances du thème → buts : 0 → 3,00, 1 → 2,96, 2 → 3,80, 3 → 3,33, 4 → 4,22 (9 matchs). (2) Rubeus en M6 dans 4 matchs à incident connu : 1 incident (Troyes–Le Havre) ; Westerlo–Charleroi étiqueté sans incident. Juventus : Conjunctio en M13 est bien du front de R7 (front C, comme Aquisitio) ; selon la règle R7 aurait dû marquer, il n’a pas marqué.",
    "outil": "outils/double_concordance.js"
@@ -2939,14 +2939,14 @@
   },
   {
    "id": "H-MAISONS-STRATEGIQUES",
-   "statut": "vérifiée en partie (table exacte dans validation/MAISONS-STRATEGIQUES.txt)",
+   "statut": "EN COURS D’ÉTUDE (étude du propriétaire, non rejetée) — vérifiée en partie (table exacte dans validation/MAISONS-STRATEGIQUES.txt)",
    "enonce": "Une figure g bloque l’énergie de la figure qu’elle antagonise (g + 3), dans la maison de celle-ci (M g+3) ; elle est forte chez elle (M g). Maisons stratégiques : avantage = chez elle ; nuisance = arrêt dans la maison g + 3.",
    "resultats": "126 matchs, 252 pôles. Figure chez elle : gagne 22, nul 7, perd 12 (65 % des matchs décidés contre 47 %), marque 2,34 contre 1,60, encaisse 1,44 contre 1,78 ; aveugle gagne 5/9 contre 29/83. Sa propre figure en arrêt : gagne 10, perd 15 (40 %), marque 1,32, encaisse 2,21 — bloquer coûte à celui qui bloque (comme H-ARRETS-COTE). Une figure de son front en arrêt dans le front adverse : 7/7, rien. Subir un arrêt dans son front : 56 % de victoires, pas de tort.",
    "outil": "outils/maisons_strategiques.js"
   },
   {
    "id": "H-MARQUAGE-ACTIVATION",
-   "statut": "testée, non intégrée : contredit Juventus–Venezia et Atlético–Viking",
+   "statut": "EN COURS D’ÉTUDE (étude du propriétaire, non rejetée) — testée, non intégrée : contredit Juventus–Venezia et Atlético–Viking",
    "enonce": "Une figure en maison h active les niveaux où ses points actifs rencontrent ceux de la maison (1 + 1 = 2) ; l’action se concrétise en canal Terre ou si la Terre de la résultante est saturée (Caput en M12 : Eau et Terre ; Caput en M6 : Eau, non concrétisé ; Albus en M6 : concrétisé).",
    "resultats": "252 pôles : marquant 78 % / 76 % (corpus / aveugle) contre non marquant 81 % / 73 % : pas de séparation. Juventus : R7 (Aquisitio chez elle en M15, canal, active Air et Terre, Terre de la résultante saturée) deviendrait marquant alors qu’il n’a pas marqué. Atlético : R7 (Laetitia en M2 active le Feu, Terre de la résultante saturée) deviendrait marquant alors que Viking n’a pas marqué. La règle actuelle (canal Terre, Terre de la résultante ouverte) juge juste ces deux cas. Table complète : validation/TABLE-ACTIVATION-MARQUAGE.txt.",
    "outil": "outils/marquage_activation.js"
