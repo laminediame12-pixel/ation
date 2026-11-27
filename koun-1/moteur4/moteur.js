@@ -420,7 +420,7 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs) : avec figure marquante, marque 68 fois sur 88 ; sans, il a quand même marqué 126 fois sur 164.
-  var MARQUE_POLE_OBS = { assure: { oui: 13, sur: 17 }, marque: { oui: 85, sur: 109 }, possible: { oui: 8, sur: 10 }, non: { oui: 88, sur: 116 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_POLE_OBS = { assure: { oui: 15, sur: 21 }, marque: { oui: 96, sur: 122 }, possible: { oui: 10, sur: 12 }, non: { oui: 73, sur: 97 } }; // outils/mesure_marquage.js, 126 matchs
   // PUISSANCE DE MARQUAGE (2026-11-27, règles du propriétaire). Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
   //   dans un canal Terre (M4, M8, M12, M13, M14, M15 : la boucle Terre de chaque front y passe) : la figure réagit — au moins un 1 de la figure rencontre
   //   un 1 de la maison (1 + 1 = 2), sur n'importe lequel de ses 4 niveaux ; la Terre de la résultante n'est pas exigée ;
@@ -481,7 +481,7 @@
     if (Q1 !== Q7) { var w = Q1 ? '1' : '2'; V.decision = { resultat: w, raison: 'seul ' + (Q1 ? 'R1' : 'R7') + ' marque selon la règle de marquage' + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
     else if (!Q1) V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage';
     // ÉGALITÉ n-n (propriétaire, 2026-11-27 ; en cours d'étude, protocole des 15 essais) : les deux pôles au même niveau de marquage, aucun pôle bloqué, et
-    // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 9 cas, 4 nuls (44 % ; 21 % en tout).
+    // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 11 cas, 5 nuls (45 % ; 21 % en tout).
     var EG = egalite(L); V.egalite = EG;
     if (EG.oui) V.decision = { resultat: 'N', raison: 'égalité n-n (en cours d\'étude) : ' + EG.raison + ' · indice : ' + VC.texte };
     if (Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
@@ -491,9 +491,8 @@
   function blocages(L, p) { var A = mod(L[p].figure - 3), b = L.theme.bases, r = [];
     if (A !== 16)
     for (var h = 1; h <= 16; h++) if (b[h] === A && K.niveaux(A).every(function (v, l) { return v !== 1 || K.niveaux(h)[l] === 2; })) r.push(h);
-    // l'inverse (propriétaire, 2026-11-27) : la figure du pôle posée en base dans la maison de son antagoniste (M f − 3) est bloquée aussi
-    var f = L[p].figure, ha = mod(f - 3); if (b[ha] === f && r.indexOf(ha) < 0) r.push(ha); return r; }
-  var EGALITE_OBS = { cas: 9, nuls: 4 };
+    return r; } // le blocage reste à la figure de base (propriétaire, 2026-11-27) : la maison ne bloque pas
+  var EGALITE_OBS = { cas: 11, nuls: 5 };
   function egalite(L) { var b = L.theme.bases, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B1 = blocages(L, 'R1'), B7 = blocages(L, 'R7');
     var boucle = function (f) { var z = (f - 1) % 4; return [z + 1, z + 5, z + 9, z + 13].filter(function (h) { return b[h] === 16; }); }, pb = { R1: boucle(L.R1.figure), R7: boucle(L.R7.figure) };
     var ident = P1.niveau === P7.niveau && !P1.bloque === !P7.bloque, libre = !B1.length && !B7.length, pop = pb.R1.length > 0 || pb.R7.length > 0, oui = ident && libre && pop;
