@@ -77,3 +77,6 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
   (maison z + 9, miroir). Un pôle touche M11 quand sa figure est l'une de ces deux branches (figures 5 à 12).
 - Le pôle touche M11 : marque 85 % (corpus) et 77 % (aveugle) contre 70 % et 72 %. Avec son canal Eau saturé : 91 % sur le corpus mais 67 % à l'aveugle.
   Nœud M11 de la croix de son front plein : 77 % / 64 % contre 79 % / 79 %. Touche M11 et nœud plein : 92 % / 69 % contre 76 % / 76 %.
+- Correction du propriétaire : à Juventus, Albus, front direct de Populus (R1), loge en M11 (plein) — R1 y marque, R7 non. Sur 252 pôles : pôle ou front
+  direct logé en M11 plein → marque 78 % (corpus) et 78 % (aveugle) contre 78 % et 75 % ; logé en M11 sans condition : 76 % / 81 % contre 79 % / 74 % ;
+  étendu aux quatre nœuds doubles : 72 % / 72 % contre 82 % / 76 %.

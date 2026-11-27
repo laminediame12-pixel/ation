@@ -19,3 +19,13 @@ console.log(D.length + ' matchs, ' + 2 * D.length + ' pôles ; un pôle marque d
 for (const [k, f] of Object.entries(LECT)) { console.log(k); for (const lot of ['corpus', 'aveugle']) { let a = 0, n = 0, a0 = 0, n0 = 0; D.filter(d => d.lot === lot).forEach(d => ['R1', 'R7'].forEach((p, i) => { const v = f(d.L, p), m = d.sc[i] > 0; if (v) { n++; if (m) a++; } else { n0++; if (m) a0++; } }));
   console.log('    ' + lot.padEnd(8) + ' oui : marque ' + a + '/' + n + ' (' + pc(a, n) + ') · non : marque ' + a0 + '/' + n0 + ' (' + pc(a0, n0) + ')'); } }
 ['Juventus – Venezia', 'Atlético – Viking', 'Sporting – Manchester United', 'PSG – Roma'].forEach(nm => { const d = D.find(x => x.nom === nm); if (!d) return; console.log('\n' + nm + ' ' + d.sc.join('-') + ' : ' + ['R1', 'R7'].map(p => p + ' ' + K.nom(d.L[p].figure) + (touche(d.L, p) ? ' touche M11, canal Eau ' + (canal(d.L, p) ? 'saturé' : 'ouvert') : ' ne touche pas M11') + ', nœud M11 de sa croix ' + (noeud(d.L, p) ? 'plein' : 'vide')).join(' · ')); });
+// Correction du propriétaire : à Juventus, Albus — front direct de Populus (R1) — est posé en M11. Critère : la figure du pôle ou son front direct (f + 4)
+// est posée en base dans M11 ; M11 plein = Eau saturée dans la résultante (le point Eau de la figure posée rencontre celui de Conjunctio).
+const mod = n => ((n - 1) % 16 + 16) % 16 + 1, loge = (L, p, h) => [L[p].figure, mod(L[p].figure + 4)].includes(L.theme.bases[h]);
+const plein = (L, h, l) => K.niveaux(h < 16 ? L.theme.resultantes[h] : L.theme.bases[16])[l] === 2;
+const L2 = { 'le pôle ou son front direct loge en M11': (L, p) => loge(L, p, 11), '… et M11 est plein (Eau²)': (L, p) => loge(L, p, 11) && plein(L, 11, 2),
+  'même lecture sur les quatre nœuds doubles (M1, M6, M11, M16), nœud plein': (L, p) => [[1, 0], [6, 1], [11, 2], [16, 3]].some(([h, l]) => loge(L, p, h) && plein(L, h, l)) };
+console.log('\n--- Le pôle ou son front direct logé dans le nœud ---');
+for (const [k, f] of Object.entries(L2)) { console.log(k); for (const lot of ['corpus', 'aveugle']) { let a = 0, n = 0, a0 = 0, n0 = 0; D.filter(d => d.lot === lot).forEach(d => ['R1', 'R7'].forEach((p, i) => { const v = f(d.L, p), m = d.sc[i] > 0; if (v) { n++; if (m) a++; } else { n0++; if (m) a0++; } }));
+  console.log('    ' + lot.padEnd(8) + ' oui : marque ' + a + '/' + n + ' (' + pc(a, n) + ') · non : marque ' + a0 + '/' + n0 + ' (' + pc(a0, n0) + ')'); } }
+{ const d = D.find(x => x.nom === 'Juventus – Venezia'); console.log('\nJuventus : M11 = ' + K.nom(d.L.theme.bases[11]) + ', M11 ' + (plein(d.L, 11, 2) ? 'plein' : 'vide') + ' · R1 ' + (L2['… et M11 est plein (Eau²)'](d.L, 'R1') ? 'marque par M11' : 'non') + ' · R7 ' + (L2['… et M11 est plein (Eau²)'](d.L, 'R7') ? 'marque par M11' : 'non')); }
