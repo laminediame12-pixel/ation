@@ -2943,6 +2943,13 @@
    "enonce": "Une figure g bloque l’énergie de la figure qu’elle antagonise (g + 3), dans la maison de celle-ci (M g+3) ; elle est forte chez elle (M g). Maisons stratégiques : avantage = chez elle ; nuisance = arrêt dans la maison g + 3.",
    "resultats": "126 matchs, 252 pôles. Figure chez elle : gagne 22, nul 7, perd 12 (65 % des matchs décidés contre 47 %), marque 2,34 contre 1,60, encaisse 1,44 contre 1,78 ; aveugle gagne 5/9 contre 29/83. Sa propre figure en arrêt : gagne 10, perd 15 (40 %), marque 1,32, encaisse 2,21 — bloquer coûte à celui qui bloque (comme H-ARRETS-COTE). Une figure de son front en arrêt dans le front adverse : 7/7, rien. Subir un arrêt dans son front : 56 % de victoires, pas de tort.",
    "outil": "outils/maisons_strategiques.js"
+  },
+  {
+   "id": "H-MARQUAGE-ACTIVATION",
+   "statut": "testée, non intégrée : contredit Juventus–Venezia et Atlético–Viking",
+   "enonce": "Une figure en maison h active les niveaux où ses points actifs rencontrent ceux de la maison (1 + 1 = 2) ; l’action se concrétise en canal Terre ou si la Terre de la résultante est saturée (Caput en M12 : Eau et Terre ; Caput en M6 : Eau, non concrétisé ; Albus en M6 : concrétisé).",
+   "resultats": "252 pôles : marquant 78 % / 76 % (corpus / aveugle) contre non marquant 81 % / 73 % : pas de séparation. Juventus : R7 (Aquisitio chez elle en M15, canal, active Air et Terre, Terre de la résultante saturée) deviendrait marquant alors qu’il n’a pas marqué. Atlético : R7 (Laetitia en M2 active le Feu, Terre de la résultante saturée) deviendrait marquant alors que Viking n’a pas marqué. La règle actuelle (canal Terre, Terre de la résultante ouverte) juge juste ces deux cas. Table complète : validation/TABLE-ACTIVATION-MARQUAGE.txt.",
+   "outil": "outils/marquage_activation.js"
   }
  ],
  "lectures": [
