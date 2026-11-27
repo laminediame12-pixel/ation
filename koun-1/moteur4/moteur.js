@@ -420,18 +420,18 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs) : avec figure marquante, marque 68 fois sur 88 ; sans, il a quand même marqué 126 fois sur 164.
-  var MARQUE_POLE_OBS = { assure: { oui: 25, sur: 34 }, marque: { oui: 122, sur: 159 }, possible: { oui: 12, sur: 16 }, non: { oui: 35, sur: 43 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_POLE_OBS = { assure: { oui: 19, sur: 28 }, marque: { oui: 119, sur: 154 }, possible: { oui: 14, sur: 18 }, non: { oui: 42, sur: 52 } }; // outils/mesure_marquage.js, 126 matchs
   // PUISSANCE DE MARQUAGE (2026-11-27, règles du propriétaire). Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
   //   dans un canal Terre (M4, M8, M12, M13, M14, M15 : la boucle Terre de chaque front y passe) : la figure réagit — au moins un 1 de la figure rencontre
   //   un 1 de la maison (1 + 1 = 2), sur n'importe lequel de ses 4 niveaux ; la Terre de la résultante n'est pas exigée ;
   //   Populus en base d'un canal Terre (2 + 2 neutre, aucune réaction) : seulement si la Terre de la résultante est saturée (M4 → Albus, M13 → Cauda) ;
-  //   le pôle dans sa propre maison : Terre de la résultante saturée.
+  //   le pôle dans sa propre maison : Terre de la résultante saturée, sauf s'il y est chez lui (résultante Populus, neutre comme M16).
   //   marque avec assurance : le pôle ET son front direct en bonne position ; marque : l'un des deux, ou l'un des deux en M11 plein (Eau saturée) ;
   //   marque possible : seul le miroir ; ne marque pas : aucun des trois. En suspens : but annulé ou bloqué par l'antagoniste.
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
     var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 ? K.niveaux(L.theme.resultantes[h])[3] === 2 : [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })); }); };
     // le pôle dans sa propre maison, Terre de la résultante saturée (propriétaire, 2026-11-27 : Paris – Marseille, Populus en M4 → Albus)
-    var chez = K.niveaux(L.theme.resultantes[c.maison])[3] === 2 ? [c.maison] : [];
+    var rc = L.theme.resultantes[c.maison], chez = K.niveaux(rc)[3] === 2 && rc !== 16 ? [c.maison] : []; // chez lui (résultante Populus) : neutre, ne compte pas (Atlético – Viking)
     var bp = bonnes(P).concat(chez.filter(function (h) { return bonnes(P).indexOf(h) < 0; })), bf = bonnes(F), bm = bonnes(Mi), m11 = (b[11] === P || b[11] === F) && K.niveaux(L.theme.resultantes[11])[2] === 2;
     var niveau = bp.length && bf.length ? 'assure' : bp.length || bf.length || m11 ? 'marque' : bm.length ? 'possible' : 'non';
     var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm : []).sort(function (x, y) { return x - y; });

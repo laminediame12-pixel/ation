@@ -22,7 +22,7 @@ Ce qu'elle impose : Oui → les deux pôles marquent ; Non → le perdant ne mar
 Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
 - en base dans un **canal Terre** (M4, M8, M12, M13, M14, M15) et elle **réagit** : un 1 de la figure rencontre un 1 de la maison (1 + 1 = 2), sur l'un de ses 4 niveaux ;
 - **Populus** en base d'un canal Terre (2 + 2 neutre) : seulement si la Terre de la résultante est saturée (M4, M13) ;
-- le **pôle dans sa propre maison** avec la Terre de la résultante saturée.
+- le **pôle dans sa propre maison** avec la Terre de la résultante saturée, **sauf s'il y est chez lui** (résultante Populus : neutre, ne compte pas).
 
 Verdict :
 - **Marque (assuré)** : le pôle et son front direct en bonne position.
