@@ -28,3 +28,13 @@ console.log('\nrègles du camp (rouges à un seul camp : ' + P.length + ')'); fo
 // piste : niveau Terre du bloqueur
 console.log('\nun seul pôle bloqué — le bloqueur bloque-t-il la Terre ?');
 P.forEach(x => { const b1 = x.i1.B.length > 0, b7 = x.i7.B.length > 0; if (b1 === b7) return; const i = b1 ? x.i1 : x.i7; console.log('  ' + x.d.nom.padEnd(34) + 'bloqué ' + i.p + ' (' + i.niv + ', M' + i.B.join(',M') + ')'.padEnd(10) + ' → rouge pour ' + x.rec + (x.rec === i.p ? ' (le bloqué)' : ' (l\'adversaire)')); });
+// règle hiérarchique du camp
+const FILLES = [5, 6, 7, 8];
+const camp = x => { const v = []; for (const i of [x.i1, x.i7]) if (i.B.length) { const adv = i.p === 'R1' ? 'R7' : 'R1'; v.push(i.B.some(h => FILLES.includes(h)) ? adv : i.p); }
+  if (v.length) { const c1 = v.filter(c => c === 'R1').length, c7 = v.length - c1; if (c1 !== c7) return [c1 > c7 ? 'R1' : 'R7', 'blocage']; }
+  if (x.drag.length) { const m1 = x.i1.rel.includes('même'), m7 = x.i7.rel.includes('même'); if (m1 !== m7) return [m1 ? 'R1' : 'R7', 'dragon (même front que la figure martiale)']; }
+  return ['R7', 'par défaut (R7)']; };
+console.log('\nrègle du camp : 1) pôle bloqué → lui, sauf bloqueur dans les Filles (M5–M8) → l\'adversaire ; 2) sinon dragon → le pôle de même front que la figure martiale ; 3) sinon R7');
+let ok = 0; const parV = {}; P.forEach(x => { const [c, v] = camp(x), j = c === x.rec; ok += j; parV[v] = parV[v] || [0, 0]; parV[v][0] += j; parV[v][1]++; console.log('  ' + (j ? '✓' : '✗') + ' ' + x.d.nom.padEnd(34) + 'prévu ' + c + ' (' + v + ') · reçu ' + x.rec); });
+console.log('  total ' + ok + '/' + P.length + ' · ' + Object.entries(parV).map(([k, [a, n]]) => k + ' ' + a + '/' + n).join(' · '));
+// contrôle : la règle des Filles testée sur les rouges où un pôle est bloqué, comparée à « toujours R7 »
