@@ -1,7 +1,7 @@
 # Conditions de chaque partie du verdict (état du moteur au 2026-11-27)
 
 Ordre de priorité : 1 Vainqueur → 2 Deux marquent → 3 R1 / R7 marque → 4 Volume de buts → 5 Mi-temps. Les incidents sont à part.
-La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes : rien ne l'impose. Si un seul pôle marque, c'est lui qui gagne.
+La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes, avec une seule exception : dans les boucles différentes, le vainqueur marque. En même boucle, si un seul pôle marque, c'est lui qui gagne.
 
 ## 1. Vainqueur (`verdict` → `decision`)
 Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seule l'égalité n-n (d) peut donner un nul.
@@ -12,7 +12,12 @@ Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seule l'égal
 
 **b. Sinon → victoire de R1** (avantage du domicile).
 **d. Égalité n-n (en cours d'étude)** : les deux pôles au même niveau de marquage, **aucun pôle bloqué** (blocage : l'antagoniste f − 3 du pôle posé en base, M1 à M16, garde ses points actifs dans la résultante — chacun de ses 1 tombe sur un 2 de la maison ; en M16, filtre final, c'est toujours le cas), et **Populus en base dans la boucle de front d'un pôle** (maisons f, f + 4, f + 8, f + 12) → chaque équipe peut marquer n buts. 126 matchs : 11 cas, 5 nuls.
-**c. Le marquage commande** : si un seul pôle marque selon la partie 3, la victoire lui revient, quel que soit l'appel.
+**c. Boucles différentes** (R1 et R7 l'un en A/C, l'autre en B/D : le front de l'un attaque l'autre ; règle du propriétaire, en cours d'étude) — prioritaire sur a, b et c' :
+- l'**arme** de l'attaquant = l'antagoniste de l'attaqué (figure du front de l'attaquant) ; la **défense** de l'attaqué = l'antagoniste de l'attaquant (figure de la boucle de son binôme, front de son protecteur f − 6) ;
+- défense posée dans les **Filles (M5–M8)** → l'attaqué gagne (12 justes, 3 nuls, 3 faux sur 87) ; sinon arme ou défense posée → l'attaquant gagne (arme seule 15/5/9 ; les deux, défense hors Filles 9/8/5 ; défense seule hors Filles 4/2/0) ; ni arme ni défense → R7 (7/4/1).
+- Le vainqueur désigné marque (imposé) : il a marqué 21 fois sur 25 quand la règle de marquage disait le contraire.
+
+**c'. Même boucle — le marquage commande** : si un seul pôle marque selon la partie 3, la victoire lui revient, quel que soit l'appel.
 **Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 
 ## 2. Deux marquent (`hierarchie` → `deux`)
@@ -32,7 +37,7 @@ Verdict :
 - **Ne marque pas** : aucun des trois.
 - **Ne marque pas (bloqué par l'antagoniste)** : l'antagoniste f − 3 du pôle posé en base (M1–M16) garde ses points actifs dans la résultante (en M16 toujours). Seule la figure de base bloque ; la maison ne bloque pas.
 - **Ne marque pas (bloqué)** : Populus en base produit l'antagoniste (f − 3) du pôle **et** celui de son front direct (Paris – Marseille : Albus en M4 contre Rubeus, Tristitia en M8 contre Conjunctio). En cours d'étude.
-- En suspens : but annulé ou bloqué par l'antagoniste. Elle ne cède jamais.
+- En suspens : but annulé ou bloqué par l'antagoniste. Elle ne cède qu'au vainqueur des boucles différentes, qui marque.
 
 ## 4. Volume de buts (`butsEstimes`)
 Arrêt = l'antagoniste d'une maison (h − 3) posé en base dans cette maison (M1 à M15). M11 plein = Eau saturée dans la résultante de M11.

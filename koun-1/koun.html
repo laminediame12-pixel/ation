@@ -635,9 +635,11 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   //   4. Volume de buts (arrêts × M11) → au moins autant de buts que d'équipes qui marquent ; 0 si aucune ne marque.
   //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
   function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
-    var deuxPropre = P1.marque && P7.marque, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent chacun selon la règle de marquage' : (P1.marque ? 'R7' : P7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
-    // aucune partie n'impose plus le marquage : R1 / R7 marque = la règle de marquage, sur tous les thèmes.
+    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 21 fois sur 25 quand la règle de marquage disait le contraire ; le perdant garde sa règle.
+    if (V.boucles && V.boucles.domaine && (d === '1' || d === '2')) { var wq = d === '1' ? 'R1' : 'R7'; if (!m[wq].marque) { m[wq].marque = true; m[wq].impose = 'imposé par la victoire (boucles différentes)'; } }
+    var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
+    // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; seule exception : le vainqueur des boucles différentes marque (imposé, ci-dessus).
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
     if (v < n) { v = n; aj = n + ' équipes marquent'; }
     // mi-temps : ne désignent que les pôles qui marquent ; pas de but en 1re mi-temps si aucun pôle ne marque (calculé ici, la page ne fait qu'afficher).
@@ -650,10 +652,20 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     // la victoire appelée (accord Terre + coordination, ou M1-M10) ; sinon victoire de R1 (domicile). Le score de convergence de victoire reste un indice.
     var VC = victoireConvergence(L); V.victoireConvergence = VC;
     V.decision = V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison + ' · indice : ' + VC.texte } : { resultat: '1', raison: 'aucun vainqueur appelé : avantage du domicile (R1) · indice : ' + VC.texte };
-    // Le marquage commande (2026-11-27, propriétaire) : quand un seul pôle marque selon la règle de marquage, c'est lui qui gagne, sur tous les thèmes.
-    var Q1 = marquePole(L, 'R1').marque, Q7 = marquePole(L, 'R7').marque;
-    if (Q1 !== Q7) { var w = Q1 ? '1' : '2'; V.decision = { resultat: w, raison: 'seul ' + (Q1 ? 'R1' : 'R7') + ' marque selon la règle de marquage' + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
-    else if (!Q1) V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage';
+    // BOUCLES DIFFÉRENTES (règle du propriétaire, 2026-11-27, en cours d'étude) : R1 et R7 dans des boucles différentes (A/C contre B/D) = le front de l'un
+    // attaque l'autre. L'arme de l'attaquant (antagoniste de l'attaqué) est dans son front ; la défense de l'attaqué (antagoniste de l'attaquant) est dans la
+    // boucle de son binôme (front de son protecteur). Défense posée dans les Filles (M5–M8) → l'attaqué gagne ; sinon, arme ou défense posée → l'attaquant ;
+    // ni arme ni défense posée → R7. Elle commande la victoire dans son domaine (prioritaire sur le marquage qui commande : 8 justes contre 4 sur 18 conflits).
+    var BD = boucles(L), Q1 = marquePole(L, 'R1').marque, Q7 = marquePole(L, 'R7').marque; V.boucles = BD;
+    if (BD.domaine) { var Nm = K.nom, mh = function (l) { return 'M' + l.join(', M'); }, FRL = 'ABCD', o = BD.obs;
+      var txt = BD.cas === 'filles' ? 'la défense de ' + BD.attaque + ' (' + Nm(BD.defense) + ', antagoniste de ' + BD.attaquant + ', boucle de son binôme) est posée dans les Filles (' + mh(BD.maisonsDefense.filter(function (h) { return h >= 5 && h <= 8; })) + ')'
+        : BD.cas === 'arme' ? 'l\'arme de ' + BD.attaquant + ' (' + Nm(BD.arme) + ', antagoniste de ' + BD.attaque + ') est posée (' + mh(BD.maisonsArme) + '), sans défense'
+        : BD.cas === 'deux' ? 'arme (' + Nm(BD.arme) + ' en ' + mh(BD.maisonsArme) + ') et défense (' + Nm(BD.defense) + ' en ' + mh(BD.maisonsDefense) + ') posées, défense hors des Filles'
+        : BD.cas === 'defense' ? 'défense (' + Nm(BD.defense) + ' en ' + mh(BD.maisonsDefense) + ') posée hors des Filles, sans arme' : 'ni arme ni défense posée';
+      V.decision = { resultat: BD.gagnant === 'R1' ? '1' : '2', raison: 'boucles différentes : ' + BD.attaquant + ' (' + Nm(L[BD.attaquant].figure) + ', front ' + FRL[(L[BD.attaquant].figure - 1) % 4] + ') attaque ' + BD.attaque + ' (' + Nm(L[BD.attaque].figure) + ', front ' + FRL[(L[BD.attaque].figure - 1) % 4] + ') — ' + txt + ' → victoire de ' + BD.gagnant + ' (' + o.juste + ' justes, ' + o.nul + ' nuls, ' + o.faux + ' faux sur 87 matchs dans ce cas ; en cours d\'étude) · indice : ' + VC.texte }; }
+    // Même boucle — le marquage commande (2026-11-27, propriétaire) : quand un seul pôle marque selon la règle de marquage, c'est lui qui gagne.
+    else if (Q1 !== Q7) { var w = Q1 ? '1' : '2'; V.decision = { resultat: w, raison: 'seul ' + (Q1 ? 'R1' : 'R7') + ' marque selon la règle de marquage' + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
+    else if (!Q1 && !Q7) V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage';
     // ÉGALITÉ n-n (propriétaire, 2026-11-27 ; en cours d'étude, protocole des 15 essais) : les deux pôles au même niveau de marquage, aucun pôle bloqué, et
     // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 11 cas, 5 nuls (45 % ; 21 % en tout).
     var EG = egalite(L); V.egalite = EG;
@@ -672,6 +684,13 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var ident = P1.niveau === P7.niveau && !P1.bloque === !P7.bloque, libre = !B1.length && !B7.length, pop = pb.R1.length > 0 || pb.R7.length > 0, oui = ident && libre && pop;
     return { oui: oui, identiques: ident, blocages: { R1: B1, R7: B7 }, populusBoucle: pb, obs: EGALITE_OBS,
       raison: 'pôles au même niveau de marquage (' + P1.niveau + ')' + (libre ? ', aucun pôle bloqué' : ', pôle bloqué par son antagoniste en M' + B1.concat(B7).join(', M')) + (pop ? ', Populus dans la boucle de ' + (pb.R1.length ? 'R1 (M' + pb.R1.join(', M') + ')' : '') + (pb.R1.length && pb.R7.length ? ' et ' : '') + (pb.R7.length ? 'R7 (M' + pb.R7.join(', M') + ')' : '') : ', pas de Populus dans les boucles des pôles') }; }
+  var BOUCLES_OBS = { filles: { juste: 12, nul: 3, faux: 3 }, arme: { juste: 15, nul: 5, faux: 9 }, deux: { juste: 9, nul: 8, faux: 5 }, defense: { juste: 4, nul: 2, faux: 0 }, personne: { juste: 7, nul: 4, faux: 1 } };
+  function boucles(L) { var b = L.theme.bases, f1 = (L.R1.figure - 1) % 4, f7 = (L.R7.figure - 1) % 4, AT = { 0: 3, 1: 0, 3: 2, 2: 1 }, att = AT[f1] === f7 ? 'R1' : AT[f7] === f1 ? 'R7' : null;
+    if (!att) return { domaine: false };
+    var vic = att === 'R1' ? 'R7' : 'R1', pos = function (g) { var l = []; for (var h = 1; h <= 16; h++) if (b[h] === g) l.push(h); return l; };
+    var arme = mod(L[vic].figure - 3), defense = mod(L[att].figure - 3), ha = pos(arme), hd = pos(defense), filles = hd.filter(function (h) { return h >= 5 && h <= 8; });
+    var cas = filles.length ? 'filles' : !ha.length && !hd.length ? 'personne' : ha.length && hd.length ? 'deux' : ha.length ? 'arme' : 'defense';
+    return { domaine: true, attaquant: att, attaque: vic, arme: arme, maisonsArme: ha, defense: defense, maisonsDefense: hd, cas: cas, gagnant: cas === 'filles' ? vic : cas === 'personne' ? 'R7' : att, obs: BOUCLES_OBS[cas] }; }
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
       st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux sur ' + (S.ok + S.ko) + ' appels tranchés' : '',
@@ -812,7 +831,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { egalite: egalite, blocages: blocages, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { boucles: boucles, egalite: egalite, blocages: blocages, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

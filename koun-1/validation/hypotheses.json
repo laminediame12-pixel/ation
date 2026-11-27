@@ -3030,6 +3030,12 @@
    "statut": "appliquée au binôme des pôles (analyse des pôles, activation) ; le binôme de M1 du critère FI-5 n'est pas changé (question posée au propriétaire)",
    "enonce": "Le binôme d'un pôle est son protecteur (f − 6) : il bloque l'antagoniste du pôle (f − 3). Exemple du propriétaire : Populus en M11 reproduit Conjunctio, qui bloque Puella (antagoniste de Puer) et protège Puer. Le front du binôme est le même que celui de l'ancien binôme (f ± 2).",
    "resultats": "Victoire par blocage réel (antagoniste présent sans protecteur présent ; présence = posé intact, reproduit par Populus ou en résultante) : aucune variante ne fait gagner R7 au-delà du hasard (au mieux 8/15). Avec le binôme = protecteur pour M1, le critère FI-5 deviendrait faux pour 166 des 229 thèmes de l'archive. Outil : outils/fouille_victoire_protection.js."
+  },
+  {
+   "id": "VICTOIRE-BOUCLES-DIFFERENTES-2026-11-27",
+   "statut": "intégrée à la demande du propriétaire ; en cours d'étude (précisions des Filles et de « personne ne bloque » tirées des 87 matchs du domaine, sans lot de validation)",
+   "enonce": "R1 et R7 dans des boucles différentes (A/C contre B/D) : le front de l'un attaque l'autre. L'attaquant (lui et ses fronts) qui bloque l'attaqué gagne ; la boucle du binôme de l'attaqué qui bloque l'attaquant fait gagner l'attaqué (l'attaquant n'a pas la force de le détruire ni de le bloquer). Précision des données : la défense ne fait gagner l'attaqué que posée dans les Filles (M5–M8) ; ni arme ni défense posée → R7. Le vainqueur marque (imposé).",
+   "resultats": "87 matchs du domaine : 47 justes (47/65 décidés), contre 34 pour « R1 toujours » et 31 pour l'ancienne décision. Décision du moteur après intégration : 67/126 (avant 56, R1 toujours 59) ; 26 novembre 10/21 (avant 7, R1 toujours 9). Conflits avec « un seul pôle marque » : règle juste 8 fois contre 4 sur 18. Vainqueur imposé marquant : 21/25. Audit : contradictions 11 (toutes en même boucle, aucun pôle ne marque) au lieu de 22. Outil : outils/victoire_attaque_binome.js."
   }
  ],
  "lectures": [
