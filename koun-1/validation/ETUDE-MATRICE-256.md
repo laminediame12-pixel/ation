@@ -51,3 +51,12 @@ Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (n
 - Terre des figures au repos dans chaque boucle : A 1 1 | 2 2 ; B 2 2 | 1 1 ; C 1 2 | 2 1 ; D 2 1 | 1 2. Les deux paires reliées par le canal Terre
   (f, f + 4) et (f + 8, f + 12) sont toujours l'inverse l'une de l'autre (loi du miroir). Au repos, le canal Terre est **lié** dans les fronts A et B
   (même Terre des deux côtés) et **en arrêt** dans les fronts C et D (Terres opposées).
+
+## Nœuds où deux canaux identiques se croisent : M1 (Feu²), M6 (Air²), M11 (Eau²) — outils/noeuds_doubles.js
+- **Structure** : un seul niveau décide du nœud ; il est plein ou vide, jamais « mixte » (son poids est double : un niveau compte pour les deux canaux).
+  Dans la matrice, chacun est plein pour 8 figures sur 16 (celles qui ont le même niveau que la figure de la maison).
+- Lien avec la « double concordance » du propriétaire : M1 plein ⇔ Feu actif (1) en base de M1 ; M11 plein ⇔ Eau active en base de M11 (les maisons
+  Puer et Conjunctio ont ce niveau à 1). En M6, la maison Amissio a l'Air à 2 : M6 plein ⇔ Air saturé en base, pas actif.
+- **Sur 126 matchs** : M11 (Eau²) plein → 3,80 buts contre 2,98 vide, même sens à l'aveugle (3,40 contre 2,90). M1 et M6 : pas d'effet (3,32 / 3,60 ; 3,43 / 3,47).
+  Nombre de nœuds doubles pleins : 0 → 2,80 buts, 1 → 3,42, 2 → 3,53, 3 → 3,57. Pôle posé sur un nœud double plein : 10 victoires, 11 défaites ;
+  sur un nœud vide : 12 victoires, 6 défaites (petits effectifs).
