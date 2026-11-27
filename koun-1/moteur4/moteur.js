@@ -1,6 +1,6 @@
 /* koun — moteur 4 : le noyau, lu. Aucun verdict.
    Repose sur moteur3/noyau.js (structure exacte, démontrée sur les 65 536 thèmes). Le moteur lit : thème, résultantes, pôles, mode, présences,
-   équilibre des deux parties (équation vérifiée), validation FI-5. Il ne prédit rien : aucune règle de victoire ou de nul n'est démontrée
+   équilibre des deux parties (équation vérifiée), validation FI-5. Il ne prédit rien : aucune règle de victoire n'est démontrée
    (voir moteur4/MOTEUR4.md). Une règle n'entre ici que prouvée. */
 (function (root) {
   'use strict';
@@ -19,7 +19,7 @@
     return { theme: T, R1: R1, R7: R7, mode: mode, chezElle: chezElle, base: base, resu: resu, lien: K.additionner(R1.figure, R7.figure) };
   }
 
-  // Équilibre des deux parties (équation établie sur les 65 536 thèmes,) : nul permis seulement si écart base + écart résultante = 0.
+  // Équilibre des deux parties (équation établie sur les 65 536 thèmes,) : écart base + écart résultante = 0.
   function equilibre(L) {
     var X = [1, 2, 3, 4].map(function (h) { return [0, 1, 2, 3].map(function (l) { return pts(L.base(h))[l] === 1 ? 1 : 0; }); });
     var A = [X[0][0] ^ X[1][0], X[2][1] ^ X[3][1], X[0][2] ^ X[1][2] ^ X[2][2] ^ X[3][2], X[0][3] ^ X[1][3] ^ X[2][3] ^ X[3][0] ^ X[3][1] ^ X[3][2]];
@@ -263,7 +263,7 @@
     return { R1: a, R7: b, binomeEauEquilibre: eq };
   }
 
-  // Les deux témoins (M13 et M14) : leurs figures en base et en résultante, leurs niveaux saturés, la somme des niveaux saturés de leurs deux bases (hypothèse H-TEMOINS : 6 = nul).
+  // Les deux témoins (M13 et M14) : leurs figures en base et en résultante, leurs niveaux saturés, la somme des niveaux saturés de leurs deux bases.
   function temoins(L) {
     var sat = function (f) { return K.niveaux(f).filter(function (v) { return v === 2; }).length; }, b = L.theme.bases;
     var base = [b[13], b[14]], res = [L.resu(13), L.resu(14)];
@@ -349,8 +349,8 @@
     var a = un(L.R1), b = un(L.R7); return { R1: a, R7: b, ecart: a.saturees.length - b.saturees.length }; }
   // VERDICT DE VICTOIRE (2026-11-22) : Terre des nœuds diagonaux du front de chaque pôle, lue avec les nœuds de coordination, puis H-REPOS.
   // Catégories (lecture) : 1) Terre et coordonnées désignent le même pôle ; 2) H-REPOS ; 3) Terre seule ; 4) coordonnées seules. Depuis le 24/11, seule la catégorie 1 (et M1-M10) appelle la victoire ; 2 à 4 sont des indices.
-  // 5) Terre et coordonnées opposées : pas d'appel ; 6) rien : pas d'appel, nul possible. Résultats observés dans VERDICT_STATS (justes, faux, nuls, appels).
-  var VERDICT_STATS = { accord: { ok: 15, ko: 1, nul: 4, n: 20 }, repos: { ok: 7, ko: 3, nul: 3, n: 13 }, terre: { ok: 7, ko: 3, nul: 1, n: 11 }, coord: { ok: 6, ko: 2, nul: 0, n: 8 }, oppose: { n: 11 }, rien: { n: 17 } };
+  // 5) Terre et coordonnées opposées : pas d'appel ; 6) rien : pas d'appel. Résultats observés dans VERDICT_STATS (justes, faux, appels).
+  var VERDICT_STATS = { accord: { ok: 15, ko: 1, n: 20 }, repos: { ok: 7, ko: 3, n: 13 }, terre: { ok: 7, ko: 3, n: 11 }, coord: { ok: 6, ko: 2, n: 8 }, oppose: { n: 11 }, rien: { n: 17 } };
   function categorieVerdict(L) { var Q = marquage(L), C = coordonnees(L), R = repos(L), G = diagonales(L), t = Math.sign(G.ecart), c = Math.sign(C.ecart), rp = R.gagnant === 'R1' ? 1 : R.gagnant === 'R7' ? -1 : 0;
     if (t && t === c) return { cat: 'accord', v: t, Q: Q, C: C, G: G };
     if (rp) return { cat: 'repos', v: rp, Q: Q, C: C, G: G };
@@ -358,50 +358,12 @@
     if (c && !t) return { cat: 'coord', v: c, Q: Q, C: C, G: G };
     if (t && c) return { cat: 'oppose', v: 0, Q: Q, C: C, G: G };
     return { cat: 'rien', v: 0, Q: Q, C: C, G: G }; }
-  // FIGURE DU DÉSÉQUILIBRE (règle du propriétaire, 2026-11-22) : la somme des deux pôles R1+R7 (lien). Rubeus = équilibre trop faible, nul quasi impossible.
-  // Observé avant intégration : 6 matchs avec Rubeus, 0 nul (5-0, 2-1, 5-0, 1-4, 3-1, 0-1) ; au taux général de nuls (18 %), 0 sur 6 arrive par hasard 3 fois sur 10. En observation (H-DESEQ-RUBEUS).
-  var DESEQ_OBS = { nuls: 0, sur: 6 };
-  function desequilibre(L) { var f = L.lien; return { figure: f, nom: K.nom(f), rubeus: K.nom(f) === 'Rubeus', obs: DESEQ_OBS }; }
-  // TÉMOINS ET JUGE (2026-11-22, H-TEMOINS-JUGE, en observation) : S13 = M13+M5 et S14 = M14+M6 (chaque témoin plus sa maison opposée ; exact : S13+S14 = M15+M11),
-  // comparées au juge M15. M15 antagoniste de S13 (le juge attaque) ou S14 dans le front de M15 : nul peu probable. S13 antagoniste de M15 (la somme attaque le juge) : nul fréquent.
-  var TJ_OBS = { attaque: { nuls: 0, sur: 8 }, front: { nuls: 1, sur: 19 }, union: { nuls: 1, sur: 26 }, conteste: { nuls: 3, sur: 6 } };
-  function temoinsJuge(L) { var b = L.theme.bases, j = b[15], s13 = K.additionner(b[13], b[5]), s14 = K.additionner(b[14], b[6]), fr = function (f) { return (f - 1) % 4; };
-    var attaque = mod(j - 3) === s13, front = fr(s14) === fr(j), conteste = mod(s13 - 3) === j;
-    return { juge: j, s13: s13, s14: s14, attaque: attaque, front: front, conteste: conteste, nulPeuProbable: attaque || front, obs: TJ_OBS }; }
-  // ORDRE DE NUMÉROTATION (remarque du propriétaire, 2026-11-22, H-ORDRE-R1M2, en observation) : R1 et R7 suivent l'ordre des maisons (R1 en h, R7 en h+6).
-  // R1 en M2 (M1 = Laetitia), donc R7 en M8 : le thème est décalé d'un pas, et M2 + M9 = M1 exactement. Observé : 5 nuls sur 7 ; les 2 autres matchs sont
-  // des victoires larges de R1 (5-0, 5-1), R7 n'y gagne jamais. La meilleure maison de R1 pour le nul n'est atteinte par hasard que dans 0,5 % des mélanges.
-  // Priorité : Rubeus d'abord (le seul R1 en M2 avec Rubeus a fini 5-0).
-  var ORDRE_OBS = { m2: { nuls: 5, sur: 7 } };
-  function ordre(L) { return { maisonR1: L.R1.maison, maisonR7: L.R7.maison, nulFrequent: L.R1.maison === 2, obs: ORDRE_OBS.m2 }; }
-  // MOULIN 3-5-14-12 (2026-11-22, H-MOULIN-SANS-NUL, intégré à la demande du propriétaire, en observation) : la somme des bases de M3, M5, M14, M12 (= M3 + M6, exact)
-  // posée en base dans le front d'un seul des deux pôles : sur 80 matchs, 21 cas, aucun nul. Dans le verdict, il ne joue que quand aucune autre règle n'a trié le nul
-  // (ni Rubeus, ni R1 en M2, ni témoins face au juge) ; il passe avant la règle M3–M9.
-  var MOULIN_OBS = { nuls: 0, sur: 21 };
-  function moulin(L) { var b = L.theme.bases, f = [3, 5, 14, 12].map(function (h) { return b[h]; }).reduce(K.additionner),
-      dans = function (c) { var z = (c.figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { return b[z + 1 + 4 * i] === f; }); }, a = dans(L.R1), e = dans(L.R7);
-    return { figure: f, dansR1: a, dansR7: e, actif: a !== e, pole: a !== e ? (a ? 'R1' : 'R7') : null, obs: MOULIN_OBS }; }
-  // NUL M3–M9 (2026-11-22, H-NUL-M3-M9, intégré à la demande du propriétaire, en observation) : Eau de M3 (toujours égale à l'Eau de M7, point de la diagonale des
-  // mères) et Terre de M9 (saturée ⇔ M1 et M2 ont la même Terre) toutes deux saturées. Sur 80 matchs : 10 nuls sur 26 contre 5 sur 54. Dans le verdict, il ne joue que
-  // quand aucune autre règle ne trie le nul (ni Rubeus, ni R1 en M2, ni témoins face au juge) : il fait alors passer « nul possible » à « nul fréquent ».
-  var NUL_M3M9_OBS = { nuls: 10, sur: 26 };
-  function nulM3M9(L) { var b = L.theme.bases, e3 = K.niveaux(b[3])[2] === 2, t9 = K.niveaux(b[9])[3] === 2; return { eauM3: e3, terreM9: t9, actif: e3 && t9, obs: NUL_M3M9_OBS }; }
   // RELAIS M1–M10 (2026-11-22, H-M1-M10, intégré à la demande du propriétaire, en observation) : M1 (Puer) et M10 (Carcer) sont les seuls nœuds diagonaux
   // dont la maison inverse la Terre ; la résultante de M1 + Puer donne la maison de R1 (exact). Quand le verdict n'a pas d'appel et que les deux liaisons Terre
   // M1–M5 et M10–M14 (parité : 2+2 et 1+1 liées, 1+2 arrêt) sont en arrêt, R1 prend l'avantage. Il ne s'ajoute jamais à un appel existant.
-  var M1M10_STATS = { ok: 9, ko: 3, nul: 3, n: 15 };
+  var M1M10_STATS = { ok: 9, ko: 3, n: 15 };
   function m1m10(L) { var T = L.theme, lien = function (x, y) { return K.niveaux(K.additionner(T.resultantes[x], T.resultantes[y]))[3] === 2; }, a = lien(1, 5), b = lien(10, 14);
     return { m1m5: a, m10m14: b, deuxArrets: !a && !b, stats: M1M10_STATS }; }
-  // NUL (2026-11-22, H-NUL-PARITE-M5M6, seule règle du nul dans le verdict, à la demande du propriétaire ; remplace Rubeus, R1 en M2, témoins face au juge,
-  // moulin 3-5-14-12 et M3–M9, qui restent des pistes enregistrées). Le nul n'est possible que si le Feu de M9 (M1 + M2) et l'Eau de M11 (nœud Eau × Eau) diffèrent.
-  // Exact : c'est la parité de Feu M1 + Feu M2 + Feu M3 + Air M3 (= Feu, Air, Eau de M5 et Eau de M6). Sur 80 matchs : différents, 15 nuls sur 38 ; égaux, 0 nul sur 42.
-  // Seule parité, sur les 65 535 possibles, qui enferme les 15 nuls dans au plus 45 matchs ; une aussi serrée sort par hasard environ 7 fois sur 100 : en observation.
-  var NUL_PARITE_OBS = { differents: { nuls: 15, sur: 38 }, egaux: { nuls: 0, sur: 42 } };
-  // Second étage (2026-11-22, H-NUL-M14, intégré à la demande du propriétaire, en observation) : quand le nul reste possible, la Terre de M14 (somme du côté M1)
-  // le sépare : saturée → nul fréquent ; ouverte → nul peu probable.
-  var NUL_M14_OBS = { saturee: { nuls: 13, sur: 22 }, ouverte: { nuls: 2, sur: 16 } };
-  function nulParite(L) { var b = L.theme.bases, f9 = K.niveaux(b[9])[0], e11 = K.niveaux(b[11])[2];
-    return { feuM9: f9, eauM11: e11, egaux: f9 === e11, terreM14: K.niveaux(b[14])[3], obs: NUL_PARITE_OBS }; }
   // NOYAU TERRE (règle du propriétaire, Koun-35, 2026-11-25 ; affichage seulement, ne décide pas) : noyau Albus, Tristitia, Fortuna Major, Populus ; mobile Amissio, Carcer, Puella.
   function noyauTerre(L) {
     var NOYAU={4:1,8:1,12:1,16:1}, MOBILE={6:1,10:1,14:1};
@@ -472,8 +434,8 @@
     return { arrets: A, m11Plein: e, cas: k, attendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
   // HIÉRARCHIE DU VERDICT (2026-11-27, à la demande du propriétaire ; remplace le score prévu). Chaque partie applique SES conditions et ne cède que si
   // elle contredit une partie plus haute :
-  //   1. Vainqueur / Nul (décision du moteur) → le vainqueur marque ; en cas de nul, les deux marquent ou aucun.
-  //   2. Deux marquent (R1 et R7 ont une figure marquante, ou M11 plein) → si oui, chaque pôle marque ; si non et nul : 0-0 ; si non et victoire : le perdant ne marque pas.
+  //   1. Vainqueur (décision du moteur) → le vainqueur marque.
+  //   2. Deux marquent (R1 et R7 ont une figure marquante, ou M11 plein) → si oui, chaque pôle marque ; si non : le perdant ne marque pas.
   //   3. R1 / R7 marque (règle des figures marquantes) → seulement là où 1 et 2 laissent le choix.
   //   4. Volume de buts (arrêts × M11) → au moins autant de buts que d'équipes qui marquent ; 0 si aucune ne marque.
   //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
@@ -483,60 +445,30 @@
     var force = function (p, v, why) { if (m[p].marque !== v) { m[p].marque = v; m[p].impose = why; } };
     if (d === '1') force('R1', true, 'imposé par la victoire de R1'); if (d === '2') force('R7', true, 'imposé par la victoire de R7');
     if (deux.oui) { force('R1', true, 'imposé par « deux marquent »'); force('R7', true, 'imposé par « deux marquent »'); }
-    else if (d === 'N') { force('R1', false, 'imposé par le nul sans « deux marquent » (0-0)'); force('R7', false, 'imposé par le nul sans « deux marquent » (0-0)'); }
     else if (d === '1') force('R7', false, 'imposé par la victoire de R1 sans « deux marquent »');
     else force('R1', false, 'imposé par la victoire de R7 sans « deux marquent »');
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
     if (n === 0 && v > 0) { v = 0; aj = 'aucune équipe ne marque'; } else if (v < n) { v = n; aj = n + ' équipes marquent'; }
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B } }; }
-  // NUL PAR CONVERGENCE (H-NUL-CONVERGENCE-V3, méthode du propriétaire, 2026-11-25) : le nul n'est jamais dit par un seul signe.
-  // Score = signes pour − signes contre : noyau Terre en équilibre +1 / mobile −1 ; triplet mobile entre R1 et R7 (distance ou somme Amissio, Carcer, Puella) −1 ;
-  // équilibre des deux parties +1 ; Terre de M1, M2, M3 identique +1 ; Terre de M14 saturée +1 ; diagonales des nœuds peu concrétisées (moins de 4 Terre saturées sur 8) +1.
-  // 106 matchs : score ≤ 0 → 1 nul sur 18 ; +1 → 2/29 ; +2 → 4/26 ; +3 → 10/25 ; +4 → 4/7 ; +5 → 1/1. Lecture : ≥ +3 nul fréquent, ≤ 0 nul écarté, sinon possible.
-  var NUL_CONV_OBS = { ecarte: { nul: 1, sur: 14 }, possible: { nul: 4, sur: 53 }, frequent: { nul: 17, sur: 39 } };   // recalculé après la correction « figure chez elle = Populus »
-  function nulConvergence(L) { var T = L.theme, b = T.bases, NOY = [4, 8, 12, 16], MOB = [6, 10, 14], n = 0, m = 0, h, sig = [];
-    // une figure chez elle compte comme Populus (elle est saturée), comme dans noyauTerre
-    for (h = 1; h <= 16; h++) [b[h] === h ? 16 : b[h], L.resu(h)].forEach(function (f) { if (NOY.indexOf(f) >= 0) n++; if (MOB.indexOf(f) >= 0) m++; });
-    var te = function (x) { return K.niveaux(b[x])[3]; }, d = ((L.R7.figure - L.R1.figure) % 16 + 16) % 16;
-    sig.push({ n: 'noyau Terre ' + (m > n ? 'mobile' : 'en équilibre') + ' (' + n + ' noyau, ' + m + ' mobiles)', v: m > n ? -1 : 1 });
-    if (MOB.indexOf(d) >= 0 || MOB.indexOf(L.lien) >= 0) sig.push({ n: 'triplet mobile entre R1 et R7', v: -1 });
-    if (equilibre(L).equilibre) sig.push({ n: 'équilibre des deux parties', v: 1 });
-    if (te(1) === te(2) && te(2) === te(3)) sig.push({ n: 'Terre de M1, M2, M3 identique', v: 1 });
-    if (te(14) === 2) sig.push({ n: 'Terre de M14 saturée (témoin des filles)', v: 1 });
-    // 7e signe (2026-11-26, étude des attaques de fronts du propriétaire : A→D, B→A, D→C, C→B) : le front de R7 attaque celui de R1 → pour le nul
-    // (117 matchs : 11 nuls sur 30 ; aveugle 5 sur 11 ; convergence 0,355 → 0,391)
-    var FA = { 0: 3, 1: 0, 3: 2, 2: 1 }; if (FA[(L.R7.figure - 1) % 4] === (L.R1.figure - 1) % 4) sig.push({ n: 'le front de R7 attaque celui de R1', v: 1 });
-    if ([1, 6, 11, 16, 4, 7, 10, 13].filter(function (x) { return K.niveaux(x < 16 ? T.resultantes[x] : b[16])[3] === 2; }).length < 4) sig.push({ n: 'diagonales des nœuds peu concrétisées', v: 1 });
-    var s = sig.reduce(function (a, x) { return a + x.v; }, 0), niv = s >= 3 ? 'frequent' : s <= 0 ? 'ecarte' : 'possible', o = NUL_CONV_OBS[niv];
-    return { score: s, niveau: niv, libelle: niv === 'frequent' ? 'nul fréquent' : niv === 'ecarte' ? 'nul écarté' : 'nul possible', signes: sig, obs: o,
-      texte: 'score ' + (s > 0 ? '+' : '') + s + ' (' + sig.map(function (x) { return x.n + ' ' + (x.v > 0 ? '+1' : '−1'); }).join(', ') + ') ; ' + o.nul + ' nuls sur ' + o.sur + ' matchs à ce niveau (H-NUL-CONVERGENCE-V3, en observation)' }; }
-  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), P = nulParite(L), NT = noyauTerre(L); V.noyauTerre = NT; V.nulConvergence = nulConvergence(L);
-    // DÉCISION FINALE (toujours Victoire ou Nul, décidée par le moteur). La version « convergence de victoire » (piste 1, 64/106 sur les matchs connus)
-    // a été RETIRÉE le 2026-11-25 : à l'aveugle (37 matchs) elle fait 18 justes contre 20 pour celle-ci. Règle : nul fréquent → Nul ; sinon la victoire
-    // appelée (accord Terre + coordination, ou M1-M10) ; sinon victoire de R1 (domicile). Le score de convergence de victoire reste affiché comme indice.
+  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), NT = noyauTerre(L); V.noyauTerre = NT; V.m1m10 = Z;
+    if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux sur ' + (sz.ok + sz.ko) + ' appels tranchés'; V.raison = 'liaisons Terre M1–M5 et M10–M14 en arrêt : avantage R1'; }
+    // DÉCISION FINALE (toujours une victoire ; tout ce qui concernait le nul a été supprimé du système le 2026-11-27, à la demande du propriétaire) :
+    // la victoire appelée (accord Terre + coordination, ou M1-M10) ; sinon victoire de R1 (domicile). Le score de convergence de victoire reste un indice.
     var VC = victoireConvergence(L); V.victoireConvergence = VC;
-    V.decision = V.nulConvergence.niveau === 'frequent' ? { resultat: 'N', raison: 'les signes du nul convergent (' + V.nulConvergence.texte + ')' + (V.v ? ' ; ils l\'emportent sur la victoire appelée pour ' + (V.v === '1' ? 'R1' : 'R7') : '') }
-      : V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison + ' · indice : ' + VC.texte } : { resultat: '1', raison: 'aucun vainqueur appelé et nul non fréquent : avantage du domicile (R1) · indice : ' + VC.texte };
-    // VICTOIRE NETTE (piste 4, 2026-11-25, outils/ecart_match.js) : victoire désignée avec |score de victoire| ≥ 2 et au moins un arrêt dans le thème.
-    // 106 matchs : 21 cas, vainqueur juste 19 fois, aucun nul, écart de deux buts ou plus 16 fois (aveugle : 3 vainqueurs justes sur 3).
-    if (V.decision.resultat !== 'N' && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ' : sur 21 cas, vainqueur juste 19 fois, aucun nul, deux buts d\'écart ou plus 16 fois) · ' + V.decision.raison; }
-    V.m1m10 = Z; V.nulParite = P;
-    if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.nulPossible = true; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux, ' + sz.nul + ' nuls sur ' + sz.n + ' appels'; V.raison = 'R1 : sans appel des nœuds, les liaisons Terre M1–M5 et M10–M14 sont toutes deux en arrêt (M1 et M10 inversent la Terre ; la résultante de M1 fixe la maison de R1) · ' + V.raison; }
-    // Nul : la règle Feu de M9 / Eau de M11 (+ Terre de M14) a été RÉFUTÉE à l'aveugle le 2026-11-23 (3 nuls sur 10 matchs annoncés « quasi impossible ») et retirée
-    // du verdict ; elle reste une lecture (nulParite). Le verdict ne trie plus le nul.
-    V.nulExclu = false; V.nulPeuProbable = false; V.nulFrequent = false; V.nulPossible = true;
+    V.decision = V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison + ' · indice : ' + VC.texte } : { resultat: '1', raison: 'aucun vainqueur appelé : avantage du domicile (R1) · indice : ' + VC.texte };
+    if (Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }
   function verdictBrut(L) {
     var K0 = categorieVerdict(L), S = VERDICT_STATS[K0.cat], Q = K0.Q, C = K0.C, cote = K0.v > 0 ? 'R1' : 'R7', v = K0.v ? (K0.v > 0 ? '1' : '2') : null,
-      st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux, ' + S.nul + ' nuls sur ' + S.n + ' appels' : '',
+      st = S.ok !== undefined ? S.ok + ' justes, ' + S.ko + ' faux sur ' + (S.ok + S.ko) + ' appels tranchés' : '',
       G = K0.G, terre = 'Terre des nœuds diagonaux : R1 ' + G.R1.saturees.length + '/2 (M' + G.R1.maisons.join(', M') + '), R7 ' + G.R7.saturees.length + '/2 (M' + G.R7.maisons.join(', M') + ')', noeuds = 'nœuds de coordination : écart ' + C.ecart;
     if (K0.cat === 'accord') return { v: v, force: 'confirmee', regle: 'H-DIAGONALES-TERRE et H-COORD-VICTOIRE', statut: st, raison: cote + ' : sa Terre et ses nœuds de coordination l\'emportent (' + terre + ' ; ' + noeuds + ')' };
-    // Resserrement (2026-11-24, revue sur 106 matchs, à la demande du propriétaire) : seules l'accord Terre + coordination (18 justes, 1 faux, 7 nuls ;
+    // Resserrement (2026-11-24, revue sur 106 matchs, à la demande du propriétaire) : seules l'accord Terre + coordination (18 justes, 1 faux ;
     // aveugle 3/0) et H-M1-M10 (dans verdict) appellent. H-REPOS (7/6, aveugle 0/3), la Terre seule (aveugle 5/4) et la coordination seule (8/4, au niveau
     // de « R1 gagne toujours ») ne décident plus : elles restent affichées comme indices.
-    if (K0.cat === 'repos' || K0.cat === 'terre' || K0.cat === 'coord') return { v: null, force: null, nulPossible: true, regle: null, statut: null, indice: { cat: K0.cat, cote: cote, regle: K0.cat === 'repos' ? 'H-REPOS' : K0.cat === 'terre' ? 'H-DIAGONALES-TERRE' : 'H-COORD-VICTOIRE', statut: st }, raison: 'pas d\'appel : seul indice, ' + (K0.cat === 'repos' ? 'H-REPOS (' + cote + ' a ses deux fronts au repos)' : K0.cat === 'terre' ? 'la Terre des nœuds diagonaux (' + terre + ')' : 'les nœuds de coordination (' + noeuds + ')') + ' désigne ' + cote + ', sans l\'accord des deux forces ; à l\'aveugle cet indice seul ne fait pas mieux que le hasard' };
-    if (K0.cat === 'oppose') return { v: null, force: null, nulPossible: false, regle: null, statut: null, raison: 'forces opposées : la Terre des nœuds diagonaux et les nœuds de coordination désignent des pôles différents (' + terre + ' ; ' + noeuds + ')' };
-    return { v: null, force: null, nulPossible: true, regle: null, statut: null, raison: 'aucune force ne se dégage : Terre des nœuds diagonaux et nœuds de coordination à égalité, H-REPOS muet (' + terre + ')' };
+    if (K0.cat === 'repos' || K0.cat === 'terre' || K0.cat === 'coord') return { v: null, force: null, regle: null, statut: null, indice: { cat: K0.cat, cote: cote, regle: K0.cat === 'repos' ? 'H-REPOS' : K0.cat === 'terre' ? 'H-DIAGONALES-TERRE' : 'H-COORD-VICTOIRE', statut: st }, raison: 'pas d\'appel : seul indice, ' + (K0.cat === 'repos' ? 'H-REPOS (' + cote + ' a ses deux fronts au repos)' : K0.cat === 'terre' ? 'la Terre des nœuds diagonaux (' + terre + ')' : 'les nœuds de coordination (' + noeuds + ')') + ' désigne ' + cote + ', sans l\'accord des deux forces ; à l\'aveugle cet indice seul ne fait pas mieux que le hasard' };
+    if (K0.cat === 'oppose') return { v: null, force: null, regle: null, statut: null, raison: 'forces opposées : la Terre des nœuds diagonaux et les nœuds de coordination désignent des pôles différents (' + terre + ' ; ' + noeuds + ')' };
+    return { v: null, force: null, regle: null, statut: null, raison: 'aucune force ne se dégage : Terre des nœuds diagonaux et nœuds de coordination à égalité, H-REPOS muet (' + terre + ')' };
   }
   // Lecture comparée : chaque indicateur désigne le pôle favorisé (+1 : R1, −1 : R7, 0 : égal).
   // 1-3 : plus de saturation cumulée dans son front, son front binôme, son binôme ; 4 : moins dans son antagoniste ;
@@ -639,7 +571,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, nulConvergence: nulConvergence, incidentVerdict: incidentVerdict, arrets: arrets, nulParite: nulParite, moulin: moulin, nulM3M9: nulM3M9, defense: defense, m1m10: m1m10, diagonales: diagonales, ordre: ordre, pariteIncident: pariteIncident, temoinsJuge: temoinsJuge, desequilibre: desequilibre, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);

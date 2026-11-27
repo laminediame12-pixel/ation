@@ -2982,6 +2982,11 @@
    "statut": "appliquée à la demande du propriétaire ; remplace le score prévu ; prédictions figées validation/predictions-hierarchie-24-30-novembre.json",
    "enonce": "Chaque partie applique ses conditions et ne cède que si elle contredit une partie plus haute : vainqueur / nul > deux marquent (pôles marquants ou M11) > R1 / R7 (figures marquantes) > volume de buts (arrêts × M11) > mi-temps ; incidents indépendants.",
    "resultats": "Audit sur 263 thèmes : 0 contradiction. Mesure sur 126 matchs : R1 / R7 marque 100/160 et 61/92 à l’aveugle (règle seule 68 et 38 ; score prévu 119 et 69) ; deux marquent 42/80 et 27/46 (sa propre règle) ; écart moyen sur les buts 1,85 et 1,46 (avant 1,65 et 1,31 : les 0-0 imposés par « nul sans deux marquent » coûtent)."
+  },
+  {
+   "id": "SUPPRESSION-DU-NUL-2026-11-27",
+   "statut": "supprimé du système à la demande du propriétaire (pas désactivé)",
+   "enonce": "Tout ce qui concernait le nul est retiré du moteur et de la page : déséquilibre, témoins/juge, ordre, moulin, nul M3-M9, parité/M14, convergence du nul, nulPossible, branche 0-0 de la hiérarchie. La décision est toujours une victoire : appelée (accord ou M1-M10), sinon R1."
   }
  ],
  "lectures": [
