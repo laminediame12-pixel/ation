@@ -1,5 +1,5 @@
 {
- "note": "Penalties et cartons rouges (temps réglementaire) des matchs joués du 19 au 25 novembre 2026, cherchés sur le web le 2026-11-27 (ESPN, Sky Sports, Sofascore, Flashscore, bein, sites des clubs, VAVEL…). « Non » = aucune source ne rapporte d'incident et au moins une décrit le match (cartons, faits de jeu). Penalty manqué compté comme penalty. Tirs au but exclus. Matchs introuvables ou contradictoires laissés de côté : Kilmarnock–Aberdeen, FC Dallas–Portland, Bologna–Udinese, Motherwell–Rangers, Bodø/Glimt–LASK (penalty incertain), Al Fateh–Al Riyadh et Al Faisaly–Al Diriyah (aucun détail). Ajout du 27 : San Jose–Houston, Lyon–Lillestrøm, Union Saint-Gilloise–Lech.",
+ "note": "Penalties et cartons rouges (temps réglementaire) des matchs joués du 19 au 25 novembre 2026, cherchés sur le web le 2026-11-27 (ESPN, Sky Sports, Sofascore, Flashscore, bein, sites des clubs, VAVEL…). « Non » = aucune source ne rapporte d'incident et au moins une décrit le match (cartons, faits de jeu). Penalty manqué compté comme penalty. Tirs au but exclus. Matchs introuvables ou contradictoires laissés de côté : Kilmarnock–Aberdeen, FC Dallas–Portland, Bologna–Udinese, Motherwell–Rangers, Bodø/Glimt–LASK (penalty incertain), Al Fateh–Al Riyadh et Al Faisaly–Al Diriyah (aucun détail). Ajout du 27 : San Jose–Houston, Lyon–Lillestrøm, Union Saint-Gilloise–Lech, puis les 20 matchs du test à l'aveugle du rouge (validation/predictions-rouge-27-novembre.json, prédictions figées avant recherche).",
  "matchs": [
   ["Sporting – Manchester United", "R1 et R7", "R7"],
   ["Atlético – Viking", "incertain", "R7"],
@@ -64,6 +64,26 @@
   ["Seattle–Salt Lake", "R1", "Non"],
   ["San Jose – Houston", "Non", "R7"],
   ["Lyon – Lillestrøm", "Non (annulé par la VAR)", "Non (annulé par la VAR)"],
-  ["Union Saint-Gilloise – Lech Poznań", "R1 (manqué)", "Non"]
+  ["Union Saint-Gilloise – Lech Poznań", "R1 (manqué)", "Non"],
+  ["Burnley – Blackburn", "R7", "Non"],
+  ["Como – AEK", "R1 (manqué)", "Non"],
+  ["St. Louis – LAFC", "R7", "Non"],
+  ["Abha – Al Shabab", "Non", "R7"],
+  ["Beşiktaş – Hapoel Beer-Sheva", "R1 (manqué)", "Non"],
+  ["Celta Vigo – Bournemouth", "Non", "R7"],
+  ["Crystal Palace – Real Sociedad", "R1 (2, un manqué)", "R7"],
+  ["Dinamo Zagreb – Leverkusen", "Non", "Non"],
+  ["Ferencváros – Celje", "Non", "Non"],
+  ["Hoffenheim – Sturm Graz", "Non", "Non"],
+  ["Juventus – Omonia", "Non", "Non"],
+  ["Marseille – Levski Sofia", "R1 (2, un manqué)", "Non"],
+  ["NEC Nimègue – Rennes", "R1", "Non"],
+  ["OFI Crète – Anderlecht", "R1", "Non"],
+  ["Olympiacos – AC Milan", "Non", "Non"],
+  ["Salzbourg – Ararat-Armenia", "R1 (manqué)", "Non"],
+  ["Sparta Prague – AZ Alkmaar", "Non", "Non"],
+  ["Sunderland – Jagiellonia", "Non", "Non"],
+  ["Torreense – Celtic", "Non", "Non"],
+  ["Viktoria Plzeň – Benfica", "Non", "Non"]
  ]
 }
