@@ -11,7 +11,10 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   // décision : boucles différentes → la règle du propriétaire (sauf égalité) ; même boucle → un seul pôle marque, il gagne
   if (BD.domaine) { if (H.decision !== 'N' && w !== BD.gagnant) e('boucles différentes : la décision n\'est pas celle de la règle', s); if (w && !H[w].marque) e('boucles différentes : le vainqueur ne marque pas', s); }
   else if (p1 !== p7 && H.decision !== (p1 ? '1' : '2')) e('même boucle : un seul pôle marque mais il ne gagne pas', s);
-  if (H.decision === 'N' && !V.egalite.oui) e('égalité annoncée sans la condition d\'égalité', s);
+  if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques') e('égalité annoncée sans la condition d\'égalité', s);
+  // égalité « pôles bloqués » (2026-11-27) : hors boucles différentes, aucun pôle ne marque et les deux pôles sont bloqués
+  if (V.decision.type === 'bloques' && (BD.domaine || p1 || p7 || !M.blocages(L, 'R1').length || !M.blocages(L, 'R7').length)) e('égalité « pôles bloqués » sans sa condition', s);
+  if (!BD.domaine && !p1 && !p7 && M.blocages(L, 'R1').length && M.blocages(L, 'R7').length && H.decision !== 'N') e('les deux pôles bloqués sans marquer, mais pas d\'égalité', s);
   if (H.decision === 'N' && p1 !== p7) e('égalité alors qu\'un seul pôle marque', s);
   if (H.deux.oui !== (H.R1.marque && H.R7.marque)) e('« deux marquent » différent du marquage final', s);
   if (H.mt1.marqueurs.concat(H.mt2.marqueurs).some(p => !H[p].marque)) e('mi-temps : but pour un pôle qui ne marque pas', s);
