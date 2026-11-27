@@ -96,3 +96,32 @@ for (const [nom, hs, k] of [['axe rouge M6/M12', [6, 12], 'rouge'], ['axe penalt
   const qui = d => ['R1', 'R7'].filter(p => d.D[p][mes].some(h => hs.includes(h))), A = I.filter(d => qui(d).length), B = I.filter(d => !qui(d).length);
   let soi = 0, autre = 0; A.forEach(d => { const v = d[k], P = qui(d); if (!oui(v) || /R1 et R7|les deux/.test(v) || P.length !== 1) return; if (v.includes(P[0])) soi++; else autre++; });
   console.log('  ' + nom.padEnd(19) + (mes === 'changesRepos' ? 'repos   ' : 'contexte') + ' : un déplacement change ce nœud → ' + (k === 'rouge' ? 'rouge ' : 'penalty ') + taux(A, k).padEnd(14) + ' sinon ' + taux(B, k).padEnd(14) + ' camp : contre le pôle déplacé ' + soi + ', contre l\'autre ' + autre); }
+
+// T. Les deux témoins qui donnent M15 (demande du propriétaire, 2026-11-27) : M13 (fusion des mères) et M14 (fusion des filles) ; juge M15 = M13 + M14.
+// Même mesure que pour les pôles : effet de la base de M13 (gauche du front A) et de M14 (gauche du front B) sur les nœuds pleins de leur front, en contexte.
+// Lectures fixées avant la mesure : T1 nul selon l'écart des témoins |effet M13 − effet M14| ; T2 nul quand les deux écarts (pôles et témoins) sont nuls,
+// et pente de leur somme ; T3 victoire : le témoin au plus grand effet désigne son côté (M13 → R1, M14 → R7) ; T4 incidents : un témoin change M6/M12 ou M5/M11.
+function effet(m, h) { const L = M.lire(m), k = fr(h), Cr = carte({ theme: L.theme, resu: L.resu }), Cz = carte({ theme: { bases: L.theme.bases.map((x, i) => i === h ? 16 : x) }, resu: i => i === h ? (h === 16 ? 16 : h) : L.resu(i) });
+  return { e: Cr.F[k].pleins - Cz.F[k].pleins, chg: Cr.F[k].noeuds.filter(n => Cz.o[k + ':' + n.maison] !== n.etat).map(n => n.maison) }; }
+[...TOUS, ...I].forEach(d => { d.T = { m13: effet(d.m, 13), m14: effet(d.m, 14) }; });
+const gapT = d => Math.min(3, Math.abs(d.T.m13.e - d.T.m14.e)), somme = d => Math.min(4, gap(d) + gapT(d));
+const parCle = (S, cle, n, lab) => { const U = [...Array(n)].map(() => [0, 0]); S.forEach(d => { const u = U[cle(d)]; u[1]++; if (!res(d)) u[0]++; }); return U.map((u, k) => (k === n - 1 ? lab : k) + ' : ' + u[0] + '/' + u[1] + ' (' + pc(u[0], u[1]) + ')').join(' · '); };
+const exT = TOUS.find(d => /Nice.Lorient/.test(d.nom)) || TOUS[0], b13 = M.lire(exT.m).theme.bases[13], b14 = M.lire(exT.m).theme.bases[14];
+console.log('\nT · les deux témoins qui donnent M15 (M13 gauche du front A, M14 gauche du front B ; M15 = M13 + M14)');
+console.log('  exemple ' + exT.nom + ' : M13 ' + N(b13) + ' effet ' + exT.T.m13.e + ' (nœuds ' + (exT.T.m13.chg.map(h => 'M' + h).join(' ') || 'aucun') + ') · M14 ' + N(b14) + ' effet ' + exT.T.m14.e + ' (nœuds ' + (exT.T.m14.chg.map(h => 'M' + h).join(' ') || 'aucun') + ') · juge M15 ' + N(M.lire(exT.m).theme.bases[15]));
+console.log('  T1 nul selon l\'écart des témoins   : tous ' + parCle(TOUS, gapT, 4, '3+'));
+console.log('     développement ' + parCle(DEV, gapT, 4, '3+') + '   | test ' + parCle(TEST, gapT, 4, '3+'));
+const deux0 = TOUS.filter(d => gap(d) === 0 && gapT(d) === 0), unSeul = TOUS.filter(d => (gap(d) === 0) !== (gapT(d) === 0)), aucun = TOUS.filter(d => gap(d) > 0 && gapT(d) > 0);
+const nl = S => S.filter(d => !res(d)).length + '/' + S.length + ' (' + pc(S.filter(d => !res(d)).length, S.length) + ')';
+console.log('  T2 écarts des pôles et des témoins tous deux à 0 : nuls ' + nl(deux0) + ' · un seul à 0 : ' + nl(unSeul) + ' · aucun : ' + nl(aucun));
+console.log('     somme des deux écarts : ' + parCle(TOUS, somme, 5, '4+'));
+console.log('     développement ' + parCle(DEV, somme, 5, '4+') + '   | test ' + parCle(TEST, somme, 5, '4+'));
+{ const N0 = TOUS.map(d => !res(d)), G = TOUS.map(gapT), S = TOUS.map(somme), sg = (A, nul) => A.reduce((s, x, i) => s + (nul[i] ? x : 0), 0), oT = sg(G, N0), oS = sg(S, N0); let cT = 0, cS = 0;
+  for (let t = 0; t < 5000; t++) { const s = N0.slice().sort(() => Math.random() - 0.5); if (sg(G, s) <= oT) cT++; if (sg(S, s) <= oS) cS++; }
+  console.log('  hasard : pente des témoins seuls atteinte dans ' + (100 * cT / 5000).toFixed(1) + ' % des mélanges ; pente de la somme dans ' + (100 * cS / 5000).toFixed(1) + ' %'); }
+const vT = d => Math.sign(d.T.m13.e - d.T.m14.e);
+console.log('  T3 le témoin au plus grand effet désigne son côté : dév. ' + txt(juge(DEV, vT)) + '   | test ' + txt(juge(TEST, vT)));
+for (const [nom, hs, k] of [['axe rouge M6/M12', [6, 12], 'rouge'], ['axe penalty M5/M11', [5, 11], 'pen']]) {
+  const qui = d => ['m13', 'm14'].filter(t => d.T[t].chg.some(h => hs.includes(h))), A = I.filter(d => qui(d).length), B = I.filter(d => !qui(d).length);
+  let soi = 0, autre = 0; A.forEach(d => { const v = d[k], P = qui(d); if (!oui(v) || /R1 et R7|les deux/.test(v) || P.length !== 1) return; if (v.includes(P[0] === 'm13' ? 'R1' : 'R7')) soi++; else autre++; });
+  console.log('  T4 ' + nom.padEnd(19) + ': un témoin change ce nœud → ' + taux(A, k).padEnd(14) + ' sinon ' + taux(B, k).padEnd(14) + ' camp : côté du témoin ' + soi + ', l\'autre ' + autre); }
