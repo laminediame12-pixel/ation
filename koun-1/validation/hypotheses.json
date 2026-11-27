@@ -3024,6 +3024,12 @@
    "statut": "intégrée à la demande du propriétaire ; en cours d'étude",
    "enonce": "Les huit paires de figures (g, g+Carcer) ont leurs maisons de repos en paire Carcer et agissent deux à deux sur les maisons de l'autre paire : Puer/Rubeus ↔ Amissio/Fortuna Major (rouge), Laetitia/Tristitia ↔ Via/Conjunctio (penalty), Albus/Puella ↔ Fortuna Minor/Aquisitio, Caput/Cauda ↔ Carcer/Populus. Albus/Puella sur leur axe du dragon M9-M15 : match calme (veto du rouge). 4e mère intacte (base de M4 à Eau saturée, sans réaction avec Albus) : signe du penalty.",
    "resultats": "108 matchs : dragon M9-M15 par Albus/Puella rouge 1/18 (6 % contre 23 %), stable dans les deux moitiés ; veto élargi 2/40. 4e mère intacte penalty 19/40 (48 %) contre 18/68 ; Fortuna Minor/Aquisitio en 4e mère 7/11 penalty, 0/11 rouge. Échelle penalty à quatre signes : 0 → 2/21, 1–2 → 24/69, 3+ → 12/18. Pôle Albus ou Puella : penalty 3/20 (non intégré, n'améliore pas l'échelle). Outil : outils/fouille_albus_puella.js."
+  },
+  {
+   "id": "BINOME-PROTECTEUR-2026-11-27",
+   "statut": "appliquée au binôme des pôles (analyse des pôles, activation) ; le binôme de M1 du critère FI-5 n'est pas changé (question posée au propriétaire)",
+   "enonce": "Le binôme d'un pôle est son protecteur (f − 6) : il bloque l'antagoniste du pôle (f − 3). Exemple du propriétaire : Populus en M11 reproduit Conjunctio, qui bloque Puella (antagoniste de Puer) et protège Puer. Le front du binôme est le même que celui de l'ancien binôme (f ± 2).",
+   "resultats": "Victoire par blocage réel (antagoniste présent sans protecteur présent ; présence = posé intact, reproduit par Populus ou en résultante) : aucune variante ne fait gagner R7 au-delà du hasard (au mieux 8/15). Avec le binôme = protecteur pour M1, le critère FI-5 deviendrait faux pour 166 des 229 thèmes de l'archive. Outil : outils/fouille_victoire_protection.js."
   }
  ],
  "lectures": [

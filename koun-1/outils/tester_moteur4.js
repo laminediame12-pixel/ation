@@ -27,7 +27,7 @@ for (let q = 0; q < 65536; q++) {
   const res = h => h === 16 ? T.bases[16] : T.resultantes[h];
   const stats = (f, niv) => { let sat = 0, propres = 0; for (let h = 1; h <= 16; h++) if (T.bases[h] === f || (h < 16 && T.resultantes[h] === f)) { const lv = N.niveaux(res(h)); sat += lv.filter(v => v === 2).length; if (lv[niv] === 2) propres++; } return [sat, propres]; };
   const ind = p => { const z = (p - 1) % 4, col = zz => [1, 2, 3, 4].map(i => zz + 4 * (i - 1) + 1), grp = zz => col(zz).reduce((a, f) => { const s = stats(f, zz); return [a[0] + s[0], a[1] + s[1]]; }, [0, 0]);
-    const g1 = grp(z), g2 = grp((z + 2) % 4), b = (p - 1) % 4 < 2 ? p + 2 : p - 2; return { f: g1[0], bf: g2[0], bin: stats(b, (b - 1) % 4)[0], ant: stats(m16(p - 3), (m16(p - 3) - 1) % 4)[0], propres: g1[1] + g2[1] }; };
+    const g1 = grp(z), g2 = grp((z + 2) % 4), b = m16(p - 6) /* binôme d'un pôle = protecteur f − 6 (2026-11-27) */; return { f: g1[0], bf: g2[0], bin: stats(b, (b - 1) % 4)[0], ant: stats(m16(p - 3), (m16(p - 3) - 1) % 4)[0], propres: g1[1] + g2[1] }; };
   const a = ind(P0.R1.figure), e = ind(P0.R7.figure), v = [sg(a.f - e.f), sg(a.bf - e.bf), sg(a.bin - e.bin), sg(e.ant - a.ant), sg(a.propres - e.propres)];
   if (JSON.stringify(v) !== JSON.stringify(P.indicateurs)) mal++;
   const net = v.every(x => x > 0) ? 'R1' : v.every(x => x < 0) ? 'R7' : null; if (net !== P.net) mal++; if (net === 'R1') netR1++; if (net === 'R7') netR7++;
@@ -44,7 +44,7 @@ Object.keys(att).forEach(k => { const lu = Object.keys(dist[k]).map(Number).sort
 let malA = 0;
 for (let q = 0; q < 65536; q++) { const m = [q & 15, (q >> 4) & 15, (q >> 8) & 15, (q >> 12) & 15].map(x => x + 1), T = N.construire(m), P0 = N.poles(T), A = K4.activation(K4.lire(m));
   const cp = f => { const z = (f - 1) % 4, lv = N.niveaux(f); return [0, 1, 2, 3].filter(i => lv[i] === 2 && (i === z || i === [1, 0, 3, 2][z])).length; };
-  const sc = p => [cp(p), cp(p) + cp(N.miroir(p)) + cp((p - 1) % 4 < 2 ? p + 2 : p - 2) + cp(m16(p - 3))];
+  const sc = p => [cp(p), cp(p) + cp(N.miroir(p)) + cp(m16(p - 6)) + cp(m16(p - 3))];
   const a = sc(P0.R1.figure), e = sc(P0.R7.figure);
   if (A.R1.score1 !== a[0] || A.R1.score4 !== a[1] || A.R7.score1 !== e[0] || A.R7.score4 !== e[1]) malA++; }
 if (malA) add('niveaux d\'activation');

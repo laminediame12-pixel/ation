@@ -234,9 +234,11 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       return g;
     }
     var colonne = function (zz) { return [1, 2, 3, 4].map(function (i) { return zz + 4 * (i - 1) + 1; }); };
-    var binome = (p - 1) % 4 < 2 ? p + 2 : p - 2;
+    // binôme d'un pôle = son protecteur f − 6 (propriétaire, 2026-11-27 : « Populus en M11 permet à Conjunctio de bloquer Puella et de protéger Puer ») ;
+    // il bloque l'antagoniste du pôle. Son front est le même que celui de l'ancien binôme (f ± 2), donc le « front binôme » ne change pas.
+    var binome = mod(p - 6);
     return { figure: p, maison: c.maison, front: c.front, saturationMaison: nsat(L.resu(c.maison)),
-      front_: groupe('Front ' + K.front(p), colonne(z)), frontBinome: groupe('Front binôme ' + K.front(p + 2), colonne((z + 2) % 4)), binome: groupe('Binôme', [binome]), antagoniste: groupe('Antagoniste', [mod(p - 3)]) };
+      front_: groupe('Front ' + K.front(p), colonne(z)), frontBinome: groupe('Front binôme ' + K.front(p + 2), colonne((z + 2) % 4)), binome: groupe('Binôme (protecteur)', [binome]), antagoniste: groupe('Antagoniste', [mod(p - 3)]) };
   }
 
   // Les 15 nœuds : intersections des canaux dans la croix de chaque front. Nœud (niveau horizontal i, niveau vertical j) = maison 4j + i + 1 (M16 n'a pas de nœud : coin de la Terre).
@@ -323,7 +325,7 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   function activation(L) {
     function compte(f) { var z = (f - 1) % 4, lv = K.niveaux(f), n = []; lv.forEach(function (v, i) { if (v === 2 && (i === z || i === COMPAT[z])) n.push(LETTRES[i]); }); return { figure: f, niveaux: lv.map(function (v, i) { return v === 2 ? LETTRES[i] : '.'; }).join(''), canal: LETTRES[z], compatible: LETTRES[COMPAT[z]], coincide: n.join(''), n: n.length }; }
     function pole(c) {
-      var p = c.figure, parts = [['pôle', p], ['miroir', K.miroir(p)], ['binôme', (p - 1) % 4 < 2 ? p + 2 : p - 2], ['antagoniste', mod(p - 3)]].map(function (x) { var r = compte(x[1]); r.role = x[0]; return r; });
+      var p = c.figure, parts = [['pôle', p], ['miroir', K.miroir(p)], ['binôme (protecteur)', mod(p - 6)], ['antagoniste', mod(p - 3)]].map(function (x) { var r = compte(x[1]); r.role = x[0]; return r; });
       return { parts: parts, score1: parts[0].n, score4: parts.reduce(function (a, x) { return a + x.n; }, 0) };
     }
     var a = pole(L.R1), e = pole(L.R7);
