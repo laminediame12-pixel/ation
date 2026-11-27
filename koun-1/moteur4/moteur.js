@@ -443,8 +443,13 @@
   // saturée (⇔ Eau active en base de M11). 126 matchs : arrêt et M11 plein 4,32 buts (41 matchs) ; arrêt, M11 vide 3,37 (35) ; sans arrêt, M11 plein 3,10 (30) ;
   // ni l'un ni l'autre 2,30 (20). Remplace l'estimation par les arrêts seuls (erreur moyenne à l'aveugle 1,31 contre 1,33).
   var BUTS_OBS = { AE: { sur: 41, buts: 177, plus25: 33, plus35: 27 }, A: { sur: 35, buts: 118, plus25: 21, plus35: 18 }, E: { sur: 30, buts: 93, plus25: 16, plus35: 10 }, rien: { sur: 20, buts: 46, plus25: 8, plus35: 4 } };
+  // POPULUS ET FIGURES CHEZ ELLES (propriétaire, 2026-11-27) : avec Populus en base, les figures posées dans leur maison de repos (M1–M15) font monter les buts ;
+  // sans Populus, ils sont déjà nombreux. Écart moyen à la valeur arrêts × M11 sur 126 matchs : avec Populus et 0 chez elle −0,34 (26 matchs), 1 −0,12 (30),
+  // 2 et plus +0,61 (13) ; sans Populus +0,08 (57). Erreur moyenne, chaque match jugé sans lui-même : 1,536 (arrêts × M11 seuls : 1,526).
+  var POP_CHEZ_OBS = { P0: { ecart: -0.34, sur: 26 }, P1: { ecart: -0.12, sur: 30 }, P2: { ecart: 0.61, sur: 13 }, S: { ecart: 0.08, sur: 57 } };
   function butsEstimes(L) { var A = arrets(L), e = K.niveaux(L.theme.resultantes[11])[2] === 2, k = A.nombre ? (e ? 'AE' : 'A') : (e ? 'E' : 'rien'), o = BUTS_OBS[k];
-    return { arrets: A, m11Plein: e, cas: k, attendus: Math.round(10 * o.buts / o.sur) / 10, plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
+    var b = L.theme.bases, chez = []; for (var h = 1; h <= 15; h++) if (b[h] === h) chez.push(h); var pop = b.slice(1).indexOf(16) >= 0, kp = pop ? 'P' + Math.min(chez.length, 2) : 'S', pc = POP_CHEZ_OBS[kp];
+    return { arrets: A, m11Plein: e, cas: k, populus: pop, chezElles: chez, casPopulus: kp, ecartPopulus: pc.ecart, base: Math.round(10 * o.buts / o.sur) / 10, attendus: Math.max(0, Math.round(10 * (o.buts / o.sur + pc.ecart)) / 10), plus25: o.plus25 / o.sur, plus35: o.plus35 / o.sur, obs: o }; }
   // HIÉRARCHIE DU VERDICT (2026-11-27, à la demande du propriétaire ; remplace le score prévu). Chaque partie applique SES conditions et ne cède que si
   // elle contredit une partie plus haute :
   //   1. Vainqueur (décision du moteur) → le vainqueur marque.

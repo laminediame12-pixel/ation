@@ -40,6 +40,13 @@ Arrêt = l'antagoniste d'une maison (h − 3) posé en base dans cette maison (M
 | oui | vide | 3,4 |
 | non | plein | 3,1 |
 | non | vide | 2,3 |
+Puis **Populus et figures chez elles** (figure posée en base dans sa propre maison, M1–M15), ajouté à la valeur :
+| Thème | Écart |
+|---|---|
+| Populus en base, 0 figure chez elle | −0,3 |
+| Populus en base, 1 figure chez elle | −0,1 |
+| Populus en base, 2 figures ou plus chez elles | +0,6 |
+| Sans Populus | +0,1 |
 Elle cède : au moins autant de buts que d'équipes qui marquent.
 
 ## 5. Mi-temps
