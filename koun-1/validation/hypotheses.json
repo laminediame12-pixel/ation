@@ -2987,6 +2987,12 @@
    "id": "SUPPRESSION-DU-NUL-2026-11-27",
    "statut": "supprimé du système à la demande du propriétaire (pas désactivé)",
    "enonce": "Tout ce qui concernait le nul est retiré du moteur et de la page : déséquilibre, témoins/juge, ordre, moulin, nul M3-M9, parité/M14, convergence du nul, nulPossible, branche 0-0 de la hiérarchie. La décision est toujours une victoire : appelée (accord ou M1-M10), sinon R1."
+  },
+  {
+   "id": "PUISSANCE-MARQUAGE-2026-11-27",
+   "statut": "appliquée à la demande du propriétaire ; remplace la règle précédente ; en cours d'étude",
+   "enonce": "Bonne position : base en M4, M8, M12, M13, M14 ou M15, un 1 de la figure rencontre un 1 de la maison (Populus toujours), Terre de la résultante saturée. Assuré : pôle et front direct (f + 4) en bonne position. Marque : l'un des deux, ou l'un des deux en M11 plein. Possible : seul le miroir (f + 8). Ne marque pas : aucun des trois. En suspens : but annulé par l'antagoniste.",
+   "resultats": "126 matchs, 252 pôles : assuré 8/10 ont marqué, marque 84/115, possible 11/18, ne marque pas 91/109 (outils/mesure_marquage.js)."
   }
  ],
  "lectures": [

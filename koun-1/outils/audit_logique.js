@@ -7,7 +7,7 @@ lire('validation/scores-reels.json').forEach(x => T.add(x.themes.join('-'))); ['
 (async () => { const b = await chromium.launch(), p = await b.newPage(); const c = {}, ex = {}, n = T.size; const k = (nom, t) => { c[nom] = (c[nom] || 0) + 1; ex[nom] = ex[nom] || t; };
   for (const t of T) { await p.goto('file://' + path.join(R, 'koun.html') + '?theme=' + t + '&e1=EQ1&e2=EQ2');
     const v = await p.evaluate(() => { const g = i => (document.getElementById(i) || {}).textContent || ''; return { vic: g('vVt').trim(), m1: g('vM1t').trim(), m7: g('vM7t').trim(), deux: g('vBt').trim(), buts: g('vTt').trim(), mt1: g('vRt').trim(), mt2: g('v2t').trim() }; });
-    const m1 = v.m1 === 'Marque', m7 = v.m7 === 'Marque', buts = parseFloat((v.buts.match(/[\d,]+/) || ['0'])[0].replace(',', '.'));
+    const m1 = /^Marque/.test(v.m1), m7 = /^Marque/.test(v.m7), buts = parseFloat((v.buts.match(/[\d,]+/) || ['0'])[0].replace(',', '.'));
     if (v.vic === 'Victoire EQ1' && !m1) k('Victoire R1 alors que R1 « ne marque pas »', t);
     if (v.vic === 'Victoire EQ2' && !m7) k('Victoire R7 alors que R7 « ne marque pas »', t);
     if (v.vic === 'Nul' && m1 !== m7) k('Nul alors qu\'un seul pôle marque', t);
