@@ -456,10 +456,13 @@
   // les figures marquantes d'un pôle sont lui-même et son front direct (f + 4 : Puer → Via, Aquisitio → Caput), quand elles sont posées dans une maison
   // des canaux Terre (M4, M8, M12, M13, M14, M15) où elles sont saturées — par un point 1 de la base devenu 2, ou d'elles-mêmes si c'est Populus (saturation
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
-  // Observé (117 matchs, outils/marquage_front_direct.js) : avec figure marquante, marque 49 fois sur 63 ; sans, il a quand même marqué 132 fois sur 171.
-  var MARQUE_POLE_OBS = { oui: { oui: 49, sur: 63 }, non: { oui: 132, sur: 171 } };
+  // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
+  // Observé (126 matchs) : avec figure marquante, marque 68 fois sur 88 ; sans, il a quand même marqué 126 fois sur 164.
+  var MARQUE_POLE_OBS = { oui: { oui: 68, sur: 88 }, non: { oui: 126, sur: 164 } };
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], figs = [c.figure, mod(c.figure + 4)], imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
     var m = [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return figs.indexOf(b[h]) >= 0 && (b[h] === 16 || [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })) && K.niveaux(L.theme.resultantes[h])[3] !== 2; });
+    // ajout du 2026-11-27 (propriétaire, Juventus : Albus, front direct de Populus, en M11) : le pôle ou son front direct logé en M11 (Eau × Eau) plein
+    if (figs.indexOf(b[11]) >= 0 && K.niveaux(L.theme.resultantes[11])[2] === 2 && m.indexOf(11) < 0) m.push(11);
     return { marque: m.length > 0, maisons: m, figures: figs, obs: m.length ? MARQUE_POLE_OBS.oui : MARQUE_POLE_OBS.non }; }
   // ESTIMATION DES BUTS (2026-11-27, à la demande du propriétaire) : arrêts × nœud double M11 (Eau × Eau). M11 est plein quand la résultante de M11 a l'Eau
   // saturée (⇔ Eau active en base de M11). 126 matchs : arrêt et M11 plein 4,32 buts (41 matchs) ; arrêt, M11 vide 3,37 (35) ; sans arrêt, M11 plein 3,10 (30) ;
