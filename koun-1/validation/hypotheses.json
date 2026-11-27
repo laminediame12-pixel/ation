@@ -2950,6 +2950,12 @@
    "enonce": "Une figure en maison h active les niveaux où ses points actifs rencontrent ceux de la maison (1 + 1 = 2) ; l’action se concrétise en canal Terre ou si la Terre de la résultante est saturée (Caput en M12 : Eau et Terre ; Caput en M6 : Eau, non concrétisé ; Albus en M6 : concrétisé).",
    "resultats": "252 pôles : marquant 78 % / 76 % (corpus / aveugle) contre non marquant 81 % / 73 % : pas de séparation. Juventus : R7 (Aquisitio chez elle en M15, canal, active Air et Terre, Terre de la résultante saturée) deviendrait marquant alors qu’il n’a pas marqué. Atlético : R7 (Laetitia en M2 active le Feu, Terre de la résultante saturée) deviendrait marquant alors que Viking n’a pas marqué. La règle actuelle (canal Terre, Terre de la résultante ouverte) juge juste ces deux cas. Table complète : validation/TABLE-ACTIVATION-MARQUAGE.txt.",
    "outil": "outils/marquage_activation.js"
+  },
+  {
+   "id": "H-BUTS-ARRETS-M11",
+   "statut": "INTÉGRÉE à la demande du propriétaire (2026-11-27) : remplace l’estimation par les arrêts seuls dans la ligne « Buts au total » ; prédictions figées validation/predictions-buts-24-30-novembre.json",
+   "resultats": "126 matchs : arrêt et M11 plein 4,32 buts (41) ; arrêt et M11 vide 3,37 (35) ; sans arrêt et M11 plein 3,10 (30) ; ni l’un ni l’autre 2,30 (20). Erreur moyenne (un match de côté) : aveugle 1,31 contre 1,33 pour les arrêts seuls ; corpus 1,65 contre 1,61.",
+   "outil": "outils/noeuds_doubles.js"
   }
  ],
  "lectures": [
