@@ -623,13 +623,9 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
   function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
     var deuxPropre = P1.marque && P7.marque, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent chacun selon la règle de marquage' : (P1.marque ? 'R7' : P7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
-    var force = function (p, v, why) { if (m[p].marque !== v) { m[p].marque = v; m[p].impose = why; } };
-    if (d === '1') force('R1', true, 'imposé par la victoire de R1'); if (d === '2') force('R7', true, 'imposé par la victoire de R7');
-    if (deux.oui) { force('R1', true, 'imposé par « deux marquent »'); force('R7', true, 'imposé par « deux marquent »'); }
-    else if (d === '1') force('R7', false, 'imposé par la victoire de R1 sans « deux marquent »');
-    else force('R1', false, 'imposé par la victoire de R7 sans « deux marquent »');
+    // aucune partie n'impose plus le marquage : R1 / R7 marque = la règle de marquage, sur tous les thèmes.
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
-    if (n === 0 && v > 0) { v = 0; aj = 'aucune équipe ne marque'; } else if (v < n) { v = n; aj = n + ' équipes marquent'; }
+    if (v < n) { v = n; aj = n + ' équipes marquent'; }
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B } }; }
   function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), NT = noyauTerre(L); V.noyauTerre = NT; V.m1m10 = Z;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux sur ' + (sz.ok + sz.ko) + ' appels tranchés'; V.raison = 'liaisons Terre M1–M5 et M10–M14 en arrêt : avantage R1'; }
@@ -637,6 +633,10 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     // la victoire appelée (accord Terre + coordination, ou M1-M10) ; sinon victoire de R1 (domicile). Le score de convergence de victoire reste un indice.
     var VC = victoireConvergence(L); V.victoireConvergence = VC;
     V.decision = V.v ? { resultat: V.v, raison: (V.regle || '') + ' : ' + V.raison + ' · indice : ' + VC.texte } : { resultat: '1', raison: 'aucun vainqueur appelé : avantage du domicile (R1) · indice : ' + VC.texte };
+    // Le marquage commande (2026-11-27, propriétaire) : quand un seul pôle marque selon la règle de marquage, c'est lui qui gagne, sur tous les thèmes.
+    var Q1 = marquePole(L, 'R1').marque, Q7 = marquePole(L, 'R7').marque;
+    if (Q1 !== Q7) { var w = Q1 ? '1' : '2'; V.decision = { resultat: w, raison: 'seul ' + (Q1 ? 'R1' : 'R7') + ' marque selon la règle de marquage' + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
+    else if (!Q1) V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage';
     if (Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }
   function verdictBrut(L) {

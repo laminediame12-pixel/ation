@@ -1,7 +1,7 @@
 # Conditions de chaque partie du verdict (état du moteur au 2026-11-27)
 
 Ordre de priorité : 1 Vainqueur → 2 Deux marquent → 3 R1 / R7 marque → 4 Volume de buts → 5 Mi-temps. Les incidents sont à part.
-Une partie applique ses conditions et ne cède que si elle contredit une partie plus haute ; la page dit alors « imposé par… ».
+La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes : rien ne l'impose. Si un seul pôle marque, c'est lui qui gagne.
 
 ## 1. Vainqueur (`verdict` → `decision`)
 Le système ne prédit plus le nul : tout ce qui le concernait a été supprimé le 2026-11-27. La décision est toujours une victoire.
@@ -11,6 +11,7 @@ Le système ne prédit plus le nul : tout ce qui le concernait a été supprimé
 - **M1-M10** (seulement si l'accord n'appelle pas) : les liaisons Terre M1–M5 et M10–M14 (somme des résultantes) sont toutes deux en arrêt (Terre impaire) → victoire de R1.
 
 **b. Sinon → victoire de R1** (avantage du domicile).
+**c. Le marquage commande** : si un seul pôle marque selon la partie 3, la victoire lui revient, quel que soit l'appel.
 **Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 
 ## 2. Deux marquent (`hierarchie` → `deux`)
@@ -24,7 +25,7 @@ Bonne position : figure posée en base en **M4, M8, M12, M13, M14 ou M15**, un 1
 - **Marque possible** : seul le miroir (f + 8) en bonne position.
 - **Ne marque pas** : ni le pôle, ni son front direct, ni son miroir en bonne position.
 - En suspens : but annulé ou bloqué par l'antagoniste.
-Elle cède si la victoire ou « deux marquent » impose le contraire.
+Elle ne cède jamais.
 
 ## 4. Volume de buts (`butsEstimes`)
 Arrêt = l'antagoniste d'une maison (h − 3) posé en base dans cette maison (M1 à M15). M11 plein = Eau saturée dans la résultante de M11.
@@ -34,7 +35,7 @@ Arrêt = l'antagoniste d'une maison (h − 3) posé en base dans cette maison (M
 | oui | vide | 3,4 |
 | non | plein | 3,1 |
 | non | vide | 2,3 |
-Elle cède : au moins autant de buts que d'équipes qui marquent ; 0 si aucune ne marque.
+Elle cède : au moins autant de buts que d'équipes qui marquent.
 
 ## 5. Mi-temps
 - **1re mi-temps (`rythme`)** : figure = somme des bases de **M1, M5, M12, M15**. But attendu si la figure est **rapide** (Feu et Air saturés, hors Populus)
