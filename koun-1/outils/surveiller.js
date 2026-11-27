@@ -9,6 +9,7 @@ ok('noyau : lois et déduction', lancer('tester_noyau.js'));
 ok('moteur 4 : lecture, équilibre, FI-5, pôles, faits, activation', lancer('tester_moteur4.js'));
 ok('moteur 4 : indices (marquage, incident, chaîne) sur les 65 536 thèmes', lancer('tester_indices.js'));
 ok('moteur 4 : chiffres écrits dans le moteur à jour avec le corpus', lancer('constantes.js'));
+ok('moteur 4 : chaque condition s\'applique aux 65 536 thèmes', lancer('verifier_tout.js'));
 ok('invariants de la structure', lancer('invariants.js'));
 ok('cartographie : fichier à jour et vérifications', lancer('cartographie.js', ['--verifier']));
 
