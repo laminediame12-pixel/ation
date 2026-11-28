@@ -1,0 +1,36 @@
+// Cycles de 4 de la chaîne des vérifications : ce qui distingue les nuls (2026-11-28). Usage : node outils/cycles4_verification.js
+const R=require('path').join(__dirname,'..'),fs=require('fs'),M=require(R+'/moteur4/moteur.js'),K=require(R+'/moteur3/noyau.js'),N=K.nom,mod=n=>((n-1)%16+16)%16+1;
+const lire=f=>JSON.parse(fs.readFileSync(R+'/'+f,'utf8'));const dev=new Map(),aj=(t,s,nom,lot)=>{const k=t.join('-');if(!dev.has(k))dev.set(k,{m:t,sc:s,nom,lot});};
+lire('validation/scores-reels.json').forEach(x=>aj(x.themes,x.score,x.match,'dév.'));lire('validation/themes-18.json').forEach(x=>aj(x.themes,x.score.split('-').map(Number),x.match||'?','dév.'));
+aj(lire('validation/lot-2.json')[0].themes[0],lire('validation/lot-2.json')[0].score.split('-').map(Number),'lot 2','dév.');
+['validation/resultats-aveugles-2026-11-23.json','validation/resultats-aveugles-2026-11-25.json','validation/resultats-2026-11-25.json'].forEach(f=>lire(f).matchs.forEach(x=>aj(x.theme,x.score,x.match,'dév.')));
+lire('validation/resultats-2026-11-26.json').matchs.forEach(x=>aj(x.theme,x.score,x.match,'26/11'));lire('validation/resultats-2026-11-27.json').matchs.forEach(x=>aj(x.theme,x.score,x.match,'27/11'));
+const T=m=>{const b=K.construire(m).bases;return [b[1],b[4],b[7],b[10]];};
+const chaine=m=>{const s=[m];let x=m;for(let k=0;k<10;k++){x=T(x);s.push(x);}return s;};
+const vd=m=>M.verdict(M.lire(m),true).decision.resultat;
+const D=[...dev.values()].map(d=>{const s=chaine(d.m),c=s.slice(6,10);const long=c[0].join()===s[7].join()?1:c[0].join()===s[8].join()?2:4;return {...d,s,c,long,r:d.sc[0]>d.sc[1]?'R1':d.sc[0]<d.sc[1]?'R7':'N'};}).filter(d=>d.long===4);
+D.forEach(d=>{d.vm=vd(d.m);d.vc=d.c.map(vd);d.vV=vd(d.s[1]);const b=K.construire(d.m).bases,bV=K.construire(d.s[1]).bases;d.com=[];for(let h=2;h<=16;h++)if(b[h]===bV[h])d.com.push(h);
+ const L=M.lire(d.m),LV=M.lire(d.s[1]);d.libres=!M.bloqueurs(LV,L.R1.figure,LV.theme.bases[L.R1.figure]===L.R1.figure?L.R1.figure:undefined).length&&!M.bloqueurs(LV,L.R7.figure,LV.theme.bases[L.R7.figure]===L.R7.figure?L.R7.figure:undefined).length;
+ d.n1=d.vc.filter(v=>v==='1').length;d.n7=d.vc.filter(v=>v==='2').length;d.nN=d.vc.filter(v=>v==='N').length;d.ys=d.c.map(x=>x[2]);});
+const pc=(a,n)=>n?Math.round(100*a/n)+'%':'—';
+const tab=(lab,key)=>{const G={};D.forEach(d=>{const k=key(d);G[k]=G[k]||{n:0,nul:0,l:{}};G[k].n++;if(d.r==='N')G[k].nul++;const q=G[k].l[d.lot]=G[k].l[d.lot]||[0,0];q[1]++;if(d.r==='N')q[0]++;});console.log(lab);Object.keys(G).sort((p,q)=>G[q].n-G[p].n).forEach(k=>console.log('   '+String(k).padEnd(56)+(G[k].nul+'/'+G[k].n).padStart(6)+' '+pc(G[k].nul,G[k].n).padStart(4)+' · '+Object.entries(G[k].l).map(([l,v])=>l+' '+v[0]+'/'+v[1]).join(' · ')));};
+console.log(D.length+' matchs en cycle de 4 · nuls '+D.filter(d=>d.r==='N').length);
+const ex=D[0];console.log('exemple de cycle : '+ex.c.map(x=>x.join('-')).join(' → ')+' → …');
+tab('combien des 4 thèmes du cycle désignent le vainqueur du principal',d=>d.vm==='N'?'principal en égalité':String(d.vc.filter(v=>v===d.vm).length));
+tab('composition des verdicts du cycle',d=>d.n1+' R1, '+d.n7+' R7, '+d.nN+' égalité');
+tab('le principal et sa vérification',d=>d.vm==='N'?'principal en égalité':d.vV===d.vm?'la vérification confirme':d.vV==='N'?'la vérification annonce l\'égalité':'la vérification désigne l\'autre');
+tab('pôles principaux libres dans la vérification',d=>d.libres?'libres':'au moins un bloqué');
+tab('3es mères du cycle (forme)',d=>[...new Set(d.ys)].map(N).sort().join(' / '));
+console.log('maisons communes au principal et à sa vérification (nuls si commune · sinon) :');
+for(let h=2;h<=16;h++){const S=D.filter(d=>d.com.includes(h)),U=D.filter(d=>!d.com.includes(h));if(S.length<3)continue;console.log('   M'+String(h).padEnd(3)+(S.filter(d=>d.r==='N').length+'/'+S.length).padStart(6)+' '+pc(S.filter(d=>d.r==='N').length,S.length).padStart(4)+'   sinon '+(U.filter(d=>d.r==='N').length+'/'+U.length));}
+D.forEach(d=>{const h1=d.m[0],h7=mod(h1+6),b=K.construire(d.m).bases;d.f1=d.c.map(x=>K.construire(x).bases[h1]);d.f7=d.c.map(x=>K.construire(x).bases[h7]);d.k1=d.f1.filter(f=>f===b[h1]).length;d.k7=d.f7.filter(f=>f===b[h7]).length;
+ d.pas=d.s.findIndex(x=>d.c.some(y=>y.join()===x.join()));});
+tab('figures des pôles du principal retrouvées dans le cycle (R1 · R7)',d=>(d.k1>0?'R1 oui':'R1 non')+' · '+(d.k7>0?'R7 oui':'R7 non'));
+tab('pas avant d\'entrer dans le cycle',d=>d.pas);
+tab('le cycle désigne autant R1 que R7',d=>d.n1===d.n7?'autant':'non');
+const T4=(lab,f)=>{const S=D.filter(f),n=S.filter(d=>d.r==='N').length,j=S.filter(d=>d.vm!=='N'&&(d.vm==='1'?'R1':'R7')===d.r).length;console.log('   '+lab.padEnd(70)+(n+'/'+S.length).padStart(6)+' '+pc(n,S.length).padStart(4)+' · '+['dév.','26/11','27/11'].map(l=>{const U=S.filter(d=>d.lot===l);return l+' '+U.filter(d=>d.r==='N').length+'/'+U.length;}).join(' · ')+' · victoires justes perdues '+j);};
+console.log('combinaisons :');
+const absents=d=>d.k1===0&&d.k7===0;
+T4('les deux figures des pôles absentes du cycle',absents);T4('  … et 2 pas avant le cycle',d=>absents(d)&&d.pas===2);T4('  … et pôles principaux libres dans la vérification',d=>absents(d)&&d.libres);
+T4('  … et le cycle désigne 2 fois le vainqueur du principal',d=>absents(d)&&d.vm!=='N'&&d.vc.filter(v=>v===d.vm).length===2);
+D.filter(absents).forEach(d=>console.log('      '+(d.nom||'').slice(0,30).padEnd(30)+d.sc.join('-').padEnd(5)+' principal '+d.vm+' · cycle '+d.vc.join('')+' · pas '+d.pas+' · libres '+(d.libres?'oui':'non')));

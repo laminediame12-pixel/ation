@@ -3180,6 +3180,14 @@
    "regle": "Cycle de 2 : aucun des deux thèmes du cycle ne désigne le vainqueur annoncé + M7 ou M14 commune → égalité.",
    "resultats": "Égalités de la vérification : 11 nuls sur 13 (85 %) contre 14/21. Bons verdicts 105 → 104 (dév. 81 → 80) : on gagne en précision, on perd un verdict. Toutes égalités annoncées : 19 nuls sur 29.",
    "outil": "moteur4/moteur.js (verdict)"
+  },
+  {
+   "id": "CYCLES-DE-4-NUL-2026-11-28",
+   "statut": "étudié, non intégré (aucune règle solide)",
+   "origine": "propriétaire : « fouille maintenant les cycles de 4 pour le nul »",
+   "structure": "Les 3es mères d'un cycle de 4 alternent Conjunctio / Fortuna Major ou Cauda / Puella (cycle de 2 : Laetitia, Puer ou Aquisitio ; point fixe : Populus).",
+   "constat": "86 matchs en cycle de 4, 15 nuls (17 %, le plus bas des trois fins de chaîne). Sans effet : nombre de thèmes du cycle qui désignent le vainqueur (0 à 4 : 8 à 23 %), composition des verdicts (2 R1 et 2 R7 : 4 nuls sur 19), confirmation par la vérification (15 % et 14 %), paire des 3es mères. Meilleure lecture : les figures des deux pôles du principal ne reviennent jamais dans le cycle et le thème y entre en 2 pas → 6 nuls sur 10 (dév. 4/7, 26/11 1/2, 27/11 1/1), choisie après une dizaine d'essais : trop faible pour être intégrée.",
+   "outil": "outils/cycles4_verification.js ; outils/cycles2_verification.js"
   }
  ],
  "lectures": [
