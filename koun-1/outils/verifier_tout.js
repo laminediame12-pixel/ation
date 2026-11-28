@@ -13,7 +13,7 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   else if (p1 !== p7 && V.decision.type !== 'verification' && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
   if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques' && V.decision.type !== 'verification') e('égalité annoncée sans la condition d\'égalité', s);
   // égalité « vérification » (2026-11-28) : le thème de vérification ne confirme pas le vainqueur et la figure de M7 ou de M14 est commune aux deux thèmes
-  { const X = V.verification, pfOk = X && X.cycle === 1 && X.pointFixe[1] !== 8 && L.theme.bases[16] !== 16, cond = X && X.avant !== 'N' && (pfOk || (X.cycle === 2 && X.communes.length && X.decision !== X.avant));
+  { const X = V.verification, pfOk = X && X.cycle === 1 && X.pointFixe[1] !== 8 && L.theme.bases[16] !== 16, cond = X && X.avant !== 'N' && (pfOk || (X.cycle === 2 && X.communes.length && X.cycle2 && X.cycle2[0] !== X.avant && X.cycle2[1] !== X.avant));
     if (V.decision.type === 'verification' && !cond) e('égalité « vérification » sans sa condition', s);
     if (cond && V.decision.resultat !== 'N') e('condition de l\'égalité « vérification » remplie, mais pas d\'égalité', s); }
   // égalité « pôles bloqués » (2026-11-27) : hors boucles différentes, aucun pôle ne marque et les deux pôles sont bloqués

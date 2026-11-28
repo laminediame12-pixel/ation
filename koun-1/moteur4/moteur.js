@@ -529,7 +529,7 @@
     // en cours d'étude). Mères : les figures de M1, M4, M7, M10. La vérification d'une vérification… : la chaîne garde la première mère (donc les maisons des pôles)
     // et finit toujours sur un point fixe (thème qui est sa propre vérification : mères a, x, Populus, x), un cycle de 2 ou un cycle de 4 thèmes. Nuls selon la
     // longueur du cycle, 160 matchs : point fixe 6/9, cycle de 2 16/65, cycle de 4 15/86. Égalité : point fixe ; ou cycle de 2, vérification qui ne confirme
-    // pas le vainqueur annoncé et figure de M7 ou de M14 commune aux deux thèmes (dans un cycle de 4 : 1 nul sur 4, écarté). 25 cas, 15 nuls ; 102 bons verdicts sur 160.
+    // le vainqueur annoncé (aucun des deux thèmes du cycle ne le désigne) et figure de M7 ou de M14 commune au thème et à sa vérification.
     if (!sansVerification && (V.decision.resultat === '1' || V.decision.resultat === '2')) {
       var TV = K.construire([1, 4, 7, 10].map(function (h) { return L.theme.bases[h]; })), LV = lire(TV.meres), dV = verdict(LV, true).decision.resultat,
         communes = [7, 14].filter(function (h) { return TV.bases[h] === L.theme.bases[h]; });
@@ -537,10 +537,15 @@
       // Point fixe : sauf si la figure répétée du point fixe (mères 2 et 4) est Tristitia — l'équilibre reste en suspens — ou si Populus est en M16 du thème
       // principal — M16 modifie l'équilibre (propriétaire). Les 3 points fixes manqués (Allemagne – Pays-Bas 5-0, Atlético – Dortmund 3-4, Middlesbrough –
       // Bristol City 2-0) ont l'un ou l'autre ; aucun des 6 nuls (2026-11-28, affiné sur ces 9 cas ; sur les 160 matchs, Populus en M16 : 2 nuls sur 11, R1 gagne 7 fois).
-      var cycle = k - (vu[x.join('-')] - 1), pf = cycle === 1 && x[1] !== 8 && L.theme.bases[16] !== 16, mm = cycle === 2 && dV !== V.decision.resultat && communes.length > 0; // un point fixe écarté (Tristitia, Populus en M16) ne revient pas par l'autre voie
-      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: cycle === 1 ? x.slice() : null, pointFixeRetenu: pf };
+      var cycle = k - (vu[x.join('-')] - 1), pf = cycle === 1 && x[1] !== 8 && L.theme.bases[16] !== 16; // un point fixe écarté (Tristitia, Populus en M16) ne revient pas par l'autre voie
+      // CYCLE DE 2 (2026-11-28, demande du propriétaire « fouille les cycles de 2 ») : les deux thèmes du cycle ne diffèrent que par l'échange des mères 2 et 4.
+      // Aucun des deux ne désigne le vainqueur annoncé, et la figure de M7 ou de M14 est commune au principal et à sa vérification → égalité (65 matchs en cycle de 2 :
+      // 6 nuls sur 8 ; avec la seule vérification qui ne confirme pas : 9 sur 16 ; quand le cycle confirme le vainqueur : 2 nuls sur 22).
+      var c2 = cycle === 2 ? [x, (function (y) { var by = K.construire(y).bases; return [by[1], by[4], by[7], by[10]]; })(x)].map(function (y) { return verdict(lire(y), true).decision.resultat; }) : null,
+        mm = cycle === 2 && c2[0] !== V.decision.resultat && c2[1] !== V.decision.resultat && communes.length > 0;
+      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: cycle === 1 ? x.slice() : null, pointFixeRetenu: pf, cycle2: c2 };
       if (pf || mm) V.decision = { resultat: 'N', type: 'verification', raison: (pf ? 'la chaîne des vérifications s\'arrête sur un thème qui est sa propre vérification (point fixe ' + x.join('-') + ') : plus rien ne bouge'
-          : 'la chaîne des vérifications oscille entre deux thèmes, la vérification (' + TV.meres.join('-') + ') ne confirme pas ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (elle ' + (dV === 'N' ? 'annonce une égalité' : 'désigne ' + (dV === '1' ? 'R1' : 'R7')) + ') et la figure de M' + communes.join(' et de M') + ' est la même dans les deux thèmes')
+          : 'la chaîne des vérifications oscille entre deux thèmes, et aucun des deux ne désigne ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (ils donnent ' + c2.map(function (v) { return v === 'N' ? 'égalité' : v === '1' ? 'R1' : 'R7'; }).join(' et ') + ') ; la figure de M' + communes.join(' et de M') + ' est la même dans le thème et sa vérification')
           + ' : égalité (en cours d\'étude ; 15 nuls sur 25 dans ces cas) · indice : ' + VC.texte }; }
     if ((V.decision.resultat === '1' || V.decision.resultat === '2') && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { /* une égalité n'est jamais une « victoire nette » */ V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }

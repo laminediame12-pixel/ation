@@ -3170,6 +3170,16 @@
    "statut": "INTÉGRÉ",
    "ajustement": "La seconde voie (vérification qui ne confirme pas + M7/M14 commune) est réservée au cycle de 2 : un point fixe écarté (Tristitia, Populus en M16) ne revient plus par elle (Middlesbrough – Bristol City 2-0 y revenait).",
    "resultats": "Égalités décidées par la vérification : 21, dont 14 nuls (67 %). Bons verdicts 104 → 105 sur 160 (dév. 81, 26/11 13, 27/11 11)."
+  },
+  {
+   "id": "CYCLES-DE-2-NUL-2026-11-28",
+   "statut": "INTÉGRÉ (remplace la voie « la vérification ne confirme pas » du cycle de 2)",
+   "origine": "propriétaire : « fouille maintenant les cycles de 2 pour le nul »",
+   "structure": "Les deux thèmes d'un cycle de 2 ne diffèrent que par l'échange des mères 2 et 4 (a, x, y, z ↔ a, z, y, x) ; dans les 65 matchs, la 3e mère y est Laetitia, Puer ou Aquisitio (Populus aux points fixes).",
+   "constat": "65 matchs en cycle de 2, 16 nuls. Sans effet : verdicts des deux thèmes du cycle entre eux (24, 27, 23 %), relation entre x et z, figure y, échange des figures des pôles. Avec effet : le cycle confirme le vainqueur du principal 2 nuls sur 22 ; il ne le désigne jamais 8 sur 16 ; plus M7 ou M14 commune au thème et à sa vérification 6 sur 8 (dév. 4/6, 26/11 1/1, 27/11 1/1).",
+   "regle": "Cycle de 2 : aucun des deux thèmes du cycle ne désigne le vainqueur annoncé + M7 ou M14 commune → égalité.",
+   "resultats": "Égalités de la vérification : 11 nuls sur 13 (85 %) contre 14/21. Bons verdicts 105 → 104 (dév. 81 → 80) : on gagne en précision, on perd un verdict. Toutes égalités annoncées : 19 nuls sur 29.",
+   "outil": "moteur4/moteur.js (verdict)"
   }
  ],
  "lectures": [
