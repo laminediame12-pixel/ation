@@ -3282,6 +3282,13 @@
    "origine": "propriétaire : « chaque camp (A, B, C, D) a des attaquants (les fronts) et des défenseurs (binômes) ; les fronts marquent avec les niveaux d'activation (un point + un point = deux points saturés ; saturation de la Terre → buts, sinon une maison de Terre) ; le binôme bloque les attaquants de l'adversaire en bloquant ses canaux ; blocage total par Populus en base (la figure de repos de la maison bloque son adversaire) ; Populus en résultante transmet le flux »",
    "correspondance": "Le moteur fait déjà : blocage par l'antagoniste (g − 3) intact ou reproduit par Populus, sur les seuls nœuds du bloqueur (canaux) ; le protecteur g − 6 (binôme) bloque l'antagoniste ; Populus en résultante (figure chez elle) non bloquable ; marquage par réaction 1 + 1 dans les maisons des canaux Terre, pour le pôle, son front direct et son miroir. Écarts essayés : saturation de la Terre dans n'importe quelle maison ; tout le front (f + 12).",
    "mesure": "outils/duel_fronts.js, 322 pôles (76 % ont marqué). Marquage juste : règle du moteur 206, avec les deux écarts 220 — mais « tout le monde marque » ferait 245 : les pôles annoncés « ne marque pas » marquent quand même 7 fois sur 10. Force d'attaque (positions qui marquent, non bloquées) : nulle 70 % ont marqué, 1 → 76 %, 2 ou plus → 78 %. Le pôle le plus fort gagne 52 fois sur 117 (44 % ; un pôle au hasard 38 %, verdict principal 69 %). Figure du pôle bloquée par un Populus : 8 sur 15 ont marqué (53 %) — le seul effet net, sur peu de cas."
+  },
+  {
+   "id": "THEME-M16-M15-M14-M13-2026-11-28",
+   "statut": "faits de structure vérifiés ; sur les matchs joués, rien de plus que le thème normal (en cours d'étude)",
+   "origine": "propriétaire : « M16, M15, M14, M13 comme 4 mères, développé pour le comparer avec le thème normal, pour voir les interactions des deux »",
+   "structure": "outils/theme_temoins.js, 65 536 thèmes : M1–M4 du dérivé = M16, M15, M14, M13 du normal (construction) ; toujours M9 du dérivé = M1 du normal, M10 = M15, M13 = M16 ; les autres maisons du dérivé ne sont pas des sommes de maisons du normal (le passage croise les niveaux) ; la somme maison par maison des deux est toujours un thème ; la chaîne (dérivé du dérivé…) finit toujours, en 4 pas au plus, sur l'un de deux points fixes : Populus, Populus, Populus, Populus (32 768 thèmes) ou Puella, Populus, Puella, Puella (32 768).",
+   "mesure": "161 matchs : verdict du dérivé juste 63 fois (39 % ; le normal 110) ; quand le normal annonce une victoire, le vainqueur gagne 69 % si le dérivé l'annonce aussi, 74 % s'il annonce l'autre pôle, 64 % s'il annonce une égalité — pas de confirmation ; point fixe Populus : 24 % de nuls, Puella : 22 %."
   }
  ],
  "lectures": [
