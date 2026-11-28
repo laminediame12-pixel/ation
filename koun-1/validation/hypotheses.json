@@ -3117,6 +3117,15 @@
    "regle": "Seul R1 marque → R1 gagne, sauf par M11 plein → R7 gagne ; seul R7 marque → R1 garde l'avantage du domicile. Et le vainqueur annoncé marque toujours (partie 1 de la hiérarchie).",
    "resultats": "31 cas : 21 justes, 5 nuls, 5 faux. Bons verdicts : 126 matchs 70 → 75 ; 26/11 9 → 12 ; 27/11 (jamais vus) 6 → 8 ; total 85 → 95 sur 160. Marquage final 216 → 230/320 ; deux marquent 77 → 83/160. Chaque part essayée seule : M11 → 92/160 (27/11 inchangé), R7 → 91/160 (26/11 +2, 27/11 +2).",
    "outil": "comparaison faite sur une copie du moteur ; vérifications verifier_tout (65 536 thèmes), audit_logique (0 contradiction), verifier_affichage"
+  },
+  {
+   "id": "THEME-DE-VERIFICATION-2026-11-28",
+   "statut": "étude en cours (première étape : grands écarts)",
+   "origine": "propriétaire : « pour chaque thème, développe son axe angulaire en thème de 16 figures ; ce thème de vérification permet de voir les zones d'ombre du thème principal ; commence par les scores larges »",
+   "construction": "mères du thème de vérification = figures de M1, M4, M7, M10 du thème principal",
+   "grands_ecarts": "37 matchs à 3 buts d'écart ou plus sur 160. Verdict de la vérification juste 24/37 (65 %), autant que le thème principal (65 %). Les deux pôles principaux ne sont jamais bloqués tous les deux dans la vérification (0/37) ; un seul l'est dans 18/37, aussi souvent le vainqueur (27 %) que le perdant (22 %).",
+   "nuls": "Aucun pôle principal bloqué dans la vérification : 25 nuls sur 86 (29 %) contre 11 sur 71 (15 %) quand un seul l'est — dév. 18/68 contre 8/55, 26/11 4/11 contre 1/10, 27/11 3/7 contre 2/6. Aucun des deux pôles principaux posé en base dans la vérification : 5 nuls sur 10. Vérification en même front : 10 nuls sur 31.",
+   "outil": "outils/theme_verification.js"
   }
  ],
  "lectures": [
