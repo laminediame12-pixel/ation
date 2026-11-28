@@ -23,7 +23,6 @@ On cherche sur 126 matchs, puis on juge sur les 34 matchs du 26 et du 27 novembr
 |---|---|---|---|
 | M1+M7+M15+M16 (figure de M7) | but attendu → pas de nul | nuls 5/59, sinon 22/67 | nuls 2/14, sinon 8/20 (hasard : 11 %) |
 | M1+M5+M12+M15 | but attendu → rarement 0 ou 1 but dans le match | 4/65, sinon 18/61 | 4/18, sinon 5/16 (hasard : 42 %) |
-| M2+M5+M8 | pôle désigné → il marque moins souvent | 70/106, autres 124/146 | 17/24, autres 33/44 |
 
 Sans but attendu de M1+M7+M15+M16, il y a eu 30 nuls sur 87 matchs (34 %, contre 23 % en tout).
 
@@ -37,6 +36,7 @@ Sans but attendu de M1+M7+M15+M16, il y a eu 30 nuls sur 87 matchs (34 %, contre
 | M1+M2+M11+M14 | but attendu → carton rouge | 18/55, sinon 1/31 | 1/12, sinon 3/20 |
 | M4+M5 | pôle désigné seul → il perd | 32/57, autres 67/195 | 2/14, autres 22/54 |
 | M5+M7+M15 | la figure est le protecteur du pôle → il marque | 21/21 | 5/8 |
+| M2+M5+M8 | pôle désigné → il marque moins souvent | 70/106, autres 124/146 | 17/24, autres 33/44 : écart minime ; elle peut contredire M3+M7+M11 pour le même pôle |
 
 ## D. Règles « jamais » : vraies sur les 126 matchs, sans valeur
 
@@ -48,6 +48,10 @@ Ces événements sont rares : la seule fréquence les tient aussi souvent. Sur l
 | M2+M3+M5 | la figure désigne R1 seul → jamais de penalty | 17/17 | 6/7 | 4,6 |
 | M5+M8+M16 | la figure est en base → jamais 0-0 | 89/89 | 21/23 | 20,3 |
 | M3+M9+M12 | la figure est fixe → jamais nul | 19/19 | 5/5 | 3,5 |
+
+Dans la page, « Maisons de calcul : somme des figures » a une rangée « Combinaisons de la liste et leur implication » avec M1+M5+M12+M15, M4+M5+M13+M15, M3+M7+M11 et M1+M7+M15+M16. La lecture et l'implication y sont calculées par le moteur (KOUN4.lectureCombinaison).
+- Les deux combinaisons de mi-temps suivent les lignes de mi-temps du verdict : seuls les pôles qui marquent y sont désignés (0 écart sur les 65 536 thèmes).
+- Les pistes hors verdict gardent leur annonce et disent en rouge quand le verdict dit autre chose (« le verdict, lui, ne fait pas marquer R1 »).
 
 ## Ce que cela implique
 

@@ -320,6 +320,45 @@
   function secondeMiTemps(L) { var T = L.theme, f = [4, 5, 13, 15].map(function (h) { return T.bases[h]; }).reduce(K.additionner), pro = mod(f - 6),
       marqueurs = ['R1', 'R7'].filter(function (p) { var z = (L[p].figure - 1) % 4; return [0, 1, 2, 3].some(function (i) { var h = z + 4 * i + 1; return T.bases[h] === f || T.bases[h] === pro; }); });
     return { figure: f, protecteur: pro, marqueurs: marqueurs, obs: { designees: { oui: 14, sur: 19 }, autres: { oui: 14, sur: 41 } } }; }
+  // COMBINAISONS ET IMPLICATIONS (2026-11-28, liste demandée par le propriétaire : validation/COMBINAISONS-IMPLICATIONS.md, outils/combinaisons_inevitables.js).
+  // Une combinaison se lit comme celle de la première mi-temps : but attendu (figure-somme rapide ou attaquée, binôme lié : même règle que rythme) et pôles désignés
+  // (le front de leur figure porte en base la figure-somme ou son protecteur : même règle que secondeMiTemps). Les combinaisons de la liste donnent une implication.
+  // « exacte » : la lecture dépend des maisons elles-mêmes (attaque de l'intérieur), seule cette écriture compte ; sinon toute écriture équivalente convient.
+  // Chiffres : 126 matchs, puis 34 matchs jamais vus (26 et 27 novembre). M2+M5+M8 (désigné → marque moins souvent) n'y est pas : écart minime sur les jamais vus,
+  // et elle peut annoncer le contraire de M3+M7+M11 pour le même pôle.
+  var COMBI_LISTE = [
+    { maisons: [1, 5, 12, 15], nom: 'Buts premier mi-temps (Buts-H-T-1)', lecture: 'attendu', exacte: true, verdict: true, oui: 'but en 1re mi-temps', non: 'pas de but attendu en 1re mi-temps', statut: 'retenue (ligne de 1re mi-temps du verdict)',
+      obs: 'but en 1re mi-temps 21 fois sur 22 quand il est attendu, 3 sur 9 sinon ; 1re des 1820 combinaisons de 4 maisons ; pas encore jugée sur des mi-temps jamais vues. Aussi : 0 ou 1 but dans le match 4 fois sur 65 quand il est attendu, 18 sur 61 sinon (jamais vus 4 sur 18, sinon 5 sur 16 : non confirmé)' },
+    { maisons: [4, 5, 13, 15], nom: 'Buts 2e mi-temps', lecture: 'designe', verdict: true, oui: 'marque en 2e mi-temps', non: 'aucun pôle désigné pour la 2e mi-temps', statut: 'retenue (ligne de 2e mi-temps du verdict)',
+      obs: 'le pôle désigné marque en 2e mi-temps 15 fois sur 20, les autres 14 sur 42 ; 6e des 1820 combinaisons de 4 maisons ; pas encore jugée sur des mi-temps jamais vues' },
+    { maisons: [3, 7, 11], nom: 'Marque', lecture: 'designeSeul', oui: 'marque', non: 'aucun pôle désigné seul, pas d\'annonce', statut: 'retenue, hors verdict (figée sur les matchs du 28 au 30 novembre)',
+      obs: 'le pôle désigné seul marque 58 fois sur 63, puis 14 sur 15 sur les matchs jamais vus (autres pôles 136 sur 189, puis 36 sur 53)' },
+    { maisons: [1, 7, 15, 16], nom: 'Pas de nul', lecture: 'attendu', exacte: true, oui: 'pas de nul', non: 'nul possible', statut: 'faible, hors verdict',
+      obs: 'nul 5 fois sur 59 quand le but est attendu, 22 sur 67 sinon ; jamais vus 2 sur 14, sinon 8 sur 20' }];
+  function lectureCombinaison(L, maisons) { var T = L.theme, b = T.bases, tri = function (l) { return l.slice().sort(function (x, y) { return x - y; }); }, hs = tri(maisons),
+      f = hs.map(function (h) { return b[h]; }).reduce(K.additionner), n = K.niveaux(f), ant = mod(f - 3), pro = mod(f - 6),
+      enBase = function (g) { var r = []; for (var h = 1; h <= 16; h++) if (b[h] === g) r.push(h); return r; }, dedans = function (h) { return hs.indexOf(h) >= 0; },
+      ba = enBase(ant), bp = enBase(pro), bloquee = ba.length > 0 && bp.some(function (h) { return !dedans(h); }) && !ba.some(dedans),
+      rapide = n[0] === 2 && n[1] === 2 && f !== 16, attaquee = ba.length > 0 && !bloquee, bi = K.binome(f),
+      biLie = enBase(bi).length > 0 || enBase(mod(bi - 3)).length > 0 || enBase(mod(bi - 6)).length > 0, des = {};
+    ['R1', 'R7'].forEach(function (p) { var z = (L[p].figure - 1) % 4, r = []; for (var i = 0; i < 4; i++) { var h = z + 4 * i + 1; if (b[h] === f || b[h] === pro) r.push(h); } des[p] = r; });
+    var seul = des.R1.length && !des.R7.length ? 'R1' : des.R7.length && !des.R1.length ? 'R7' : null, mini = equivalences(hs).minimale.join('-'), item = null;
+    COMBI_LISTE.forEach(function (c) { if (c.exacte ? tri(c.maisons).join('-') === hs.join('-') : equivalences(c.maisons).minimale.join('-') === mini) item = c; });
+    var r = { maisons: hs, figure: f, antagoniste: ant, protecteur: pro, antagonisteEnBase: ba, protecteurEnBase: bp, rapide: rapide, attaquee: attaquee, bloquee: bloquee, binome: bi, binomeLie: biLie,
+      attendu: (rapide || attaquee) && biLie, designes: des, designeSeul: seul, liste: item ? { maisons: item.maisons.slice(), nom: item.nom, statut: item.statut, obs: item.obs } : null, implication: null };
+    // L'implication suit la hiérarchie du verdict : les combinaisons de mi-temps (verdict: true) ne désignent que des pôles qui marquent et n'annoncent pas de but si
+    // aucun pôle ne marque, comme les lignes de mi-temps ; les pistes hors verdict gardent leur annonce et signalent quand le verdict dit autre chose.
+    if (item) { var H = hierarchie(L), mq = function (p) { return H[p].marque; }, notes = [];
+      if (item.lecture === 'attendu') { var oui = r.attendu && (!item.verdict || mq('R1') || mq('R7'));
+        if (r.attendu && !oui) notes.push('but attendu, mais aucun pôle ne marque dans le verdict : pas de but annoncé');
+        if (!item.verdict && oui && item.oui === 'pas de nul' && H.decision === 'N') notes.push('le verdict, lui, annonce une égalité');
+        r.implication = oui ? item.oui : r.attendu ? 'pas de but annoncé' : item.non; }
+      else { var brut = item.lecture === 'designe' ? ['R1', 'R7'].filter(function (p) { return des[p].length; }) : seul ? [seul] : [], poles = item.verdict ? brut.filter(mq) : brut;
+        brut.forEach(function (p) { if (!mq(p)) notes.push(item.verdict ? p + ' désigné, mais le verdict ne le fait pas marquer : pas d\'annonce' : 'le verdict, lui, ne fait pas marquer ' + p); });
+        r.implication = poles.length ? poles.join(' et ') + ' : ' + item.oui : item.non; }
+      r.notes = notes; }
+    return r; }
+  function combinaisonsListe() { return COMBI_LISTE.map(function (c) { return { maisons: c.maisons.slice(), nom: c.nom, statut: c.statut }; }); }
   // COMBINAISONS DE MAISONS (exact) : la somme des bases d'un ensemble de maisons est une fonction linéaire (XOR) des 16 bits du thème. Les 16 maisons n'ont que 8 maisons
   // indépendantes (M1 à M8) : il n'existe que 256 fonctions de somme distinctes (255 non nulles), chacune égale à une somme de maisons parmi M1..M8. equivalences(maisons) donne
   // la forme sur M1..M8, la plus courte écriture et le nombre de combinaisons qui lui sont équivalentes (256).
@@ -733,7 +772,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { boucles: boucles, egalite: egalite, blocages: blocages, bloqueurs: bloqueurs, zoneBlocage: zoneBlocage, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { lectureCombinaison: lectureCombinaison, combinaisonsListe: combinaisonsListe, boucles: boucles, egalite: egalite, blocages: blocages, bloqueurs: bloqueurs, zoneBlocage: zoneBlocage, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
