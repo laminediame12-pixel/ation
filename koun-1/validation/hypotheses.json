@@ -3255,7 +3255,7 @@
   },
   {
    "id": "CYCLES-VERIFICATION-VAINQUEUR-2026-11-28",
-   "statut": "fouille sur les matchs joués (en cours d'étude, non intégrée)",
+   "statut": "intégrée au qualificatif « victoire confirmée (vérification) » (propriétaire : « renforce-le ») ; la décision ne change pas",
    "origine": "propriétaire : « cycle de 2 ou 4 — fouille encore là-dessus »",
    "mesure": "outils/cycles_fouille.js : 161 matchs (point fixe 9, cycle de 2 66, cycle de 4 86). Victoires annoncées : 132, le vainqueur annoncé gagne 91 (69 %). 20 lectures du cycle (verdicts de ses thèmes, marquage des pôles, figure du vainqueur, thème d'entrée, nombre de pas avant le cycle) ; la plus forte, le hasard l'égale dans 15 tirages sur 200 (7,5 %).",
    "piste": "Aucun thème du cycle n'annonce le perdant (ils annoncent le vainqueur ou une égalité) : le vainqueur annoncé gagne 38 fois sur 45 (84 %), ne perd pas 41 fois (jamais vus 7/8) ; cycle de 2 : 25/29 (jamais vus 6/6), cycle de 4 : 13/16. Sinon : 53 sur 87 (61 %) ; hasard 0,004 pour cette comparaison seule (0,04 pour les 23 cas qui prolongent la confirmation). Elle prolonge la victoire confirmée affichée (cycle de 2, les deux thèmes d'accord : 19/22) : 23 cas de plus, 19 gagnés. Tous les thèmes du cycle d'accord : 29/35 ; le vainqueur marque dans tous : 44/57.",

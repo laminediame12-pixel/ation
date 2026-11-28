@@ -532,8 +532,8 @@
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B }, mt1: Y, mt2: S }; }
   // Indice contre les boucles (2026-11-28) : 161 matchs, cas où l'indice est à −2 ou moins contre le vainqueur des boucles (mis à jour par la mesure ci-dessous).
   var INDICE_CONTRE_BOUCLES_OBS = { autre: 7, nul: 2, boucles: 1 };
-  // Victoire confirmée par la vérification (2026-11-28) : matchs joués, vainqueur annoncé quand les deux thèmes du cycle de 2 l'annoncent aussi.
-  var VERIF_CONFIRME_OBS = { gagne: 19, sur: 22, nePerdPas: 21 };
+  // Victoire confirmée par la vérification (2026-11-28, renforcée) : matchs joués, vainqueur annoncé quand aucun thème du cycle (2 ou 4) n'annonce le perdant.
+  var VERIF_CONFIRME_OBS = { gagne: 38, sur: 45, nePerdPas: 41 };
   // THÈME DE VÉRIFICATION ET THÈME SOMME (propriétaire, 2026-11-28) : c'est le moteur qui les calcule, la page ne fait qu'afficher.
   // Vérification : mères = figures de M1, M4, M7, M10. Somme : le principal et sa vérification additionnés maison par maison, qui forment eux-mêmes un thème
   // (vérifié sur les 65 536) : mères M1+M1 = Populus, M2+M4, M3+M7, M4+M10 (= M3) ; R1 y est toujours en M16 et R7 en M6. La page, en vue « thème somme »,
@@ -590,9 +590,10 @@
       // CYCLE DE 2 (2026-11-28, demande du propriétaire « fouille les cycles de 2 ») : les deux thèmes du cycle ne diffèrent que par l'échange des mères 2 et 4.
       // Aucun des deux ne désigne le vainqueur annoncé, et la figure de M7 ou de M14 est commune au principal et à sa vérification → égalité (65 matchs en cycle de 2 :
       // 6 nuls sur 8 ; avec la seule vérification qui ne confirme pas : 9 sur 16 ; quand le cycle confirme le vainqueur : 2 nuls sur 22).
-      var c2 = cycle === 2 ? [x, (function (y) { var by = K.construire(y).bases; return [by[1], by[4], by[7], by[10]]; })(x)].map(function (y) { return verdict(lire(y), true).decision.resultat; }) : null,
+      var cyc = [x]; for (var ci = 1; ci < cycle; ci++) cyc.push((function (y) { var by = K.construire(y).bases; return [by[1], by[4], by[7], by[10]]; })(cyc[ci - 1]));
+      var dC = cycle > 1 ? cyc.map(function (y) { return verdict(lire(y), true).decision.resultat; }) : null, c2 = cycle === 2 ? dC : null,
         mm = cycle === 2 && c2[0] !== V.decision.resultat && c2[1] !== V.decision.resultat && communes.length > 0;
-      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: cycle === 1 ? x.slice() : null, pointFixeRetenu: pf, cycle2: c2 };
+      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: cycle === 1 ? x.slice() : null, pointFixeRetenu: pf, cycle2: c2, verdictsCycle: dC };
       if (pf || mm) V.decision = { resultat: 'N', type: 'verification', raison: (pf ? 'la chaîne des vérifications s\'arrête sur un thème qui est sa propre vérification (point fixe ' + x.join('-') + ') : plus rien ne bouge'
           : 'la chaîne des vérifications oscille entre deux thèmes, et aucun des deux ne désigne ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (ils donnent ' + c2.map(function (v) { return v === 'N' ? 'égalité' : v === '1' ? 'R1' : 'R7'; }).join(' et ') + ') ; la figure de M' + communes.join(' et de M') + ' est la même dans le thème et sa vérification')
           + ' : égalité (en cours d\'étude ; 11 nuls sur 13 dans ces cas, 161 matchs) · indice : ' + VC.texte }; }
@@ -602,11 +603,12 @@
     if (!sansVerification && BD.domaine && V.decision.resultat === (BD.gagnant === 'R1' ? '1' : '2')) { var sB = (BD.gagnant === 'R1' ? 1 : -1) * VC.score, oB = INDICE_CONTRE_BOUCLES_OBS;
       if (sB <= -2) { var vB = BD.gagnant === 'R1' ? '2' : '1'; V.decision = { resultat: vB, contreBoucles: true, raison: 'l\'indice de victoire va contre la règle des boucles (score ' + (VC.score > 0 ? '+' : '') + VC.score + ') : victoire de ' + (vB === '1' ? 'R1' : 'R7') + ' (en cours d\'étude : ' + oB.autre + ' victoires de l\'autre pôle, ' + oB.nul + ' nuls, ' + oB.boucles + ' du vainqueur des boucles sur ' + (oB.autre + oB.nul + oB.boucles) + ' cas) · règle des boucles : ' + V.decision.raison }; } }
     if ((V.decision.resultat === '1' || V.decision.resultat === '2') && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { /* une égalité n'est jamais une « victoire nette » */ V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
-    // VICTOIRE CONFIRMÉE PAR LA VÉRIFICATION (2026-11-28, propriétaire « vas-y » ; en cours d'étude). C'est l'autre côté de l'égalité du cycle de 2 : la chaîne des
-    // vérifications oscille entre deux thèmes et tous deux annoncent le vainqueur → victoire confirmée. Qualificatif seulement, la décision ne change pas. Matchs joués :
-    // le vainqueur annoncé a gagné 19 fois sur 22 et n'a perdu qu'une fois (jamais vus 5/5) ; autres victoires annoncées 72 sur 110.
-    if (!sansVerification && V.verification && V.verification.cycle === 2 && (V.decision.resultat === '1' || V.decision.resultat === '2') && V.verification.cycle2.every(function (r) { return r === V.decision.resultat; })) {
-      var oC = VERIF_CONFIRME_OBS; V.decision.confirmee = { texte: 'victoire confirmée par la vérification : la chaîne des vérifications oscille entre deux thèmes, et tous deux annoncent ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (en cours d\'étude : ' + oC.gagne + ' victoires sur ' + oC.sur + ' dans ce cas, ' + oC.nePerdPas + ' sans défaite)' }; }
+    // VICTOIRE CONFIRMÉE PAR LA VÉRIFICATION (2026-11-28, propriétaire « vas-y », puis « renforce-le » ; en cours d'étude). La chaîne des vérifications finit sur un
+    // cycle de 2 ou de 4 thèmes, et aucun d'eux n'annonce le perdant (ils annoncent le vainqueur ou une égalité) → victoire confirmée. Qualificatif seulement, la
+    // décision ne change pas. Matchs joués : le vainqueur annoncé a gagné 38 fois sur 45 et n'a perdu que 4 fois (jamais vus 7/8 ; cycle de 2 25/29, cycle de 4 13/16) ;
+    // autres victoires annoncées 53 sur 87. Première forme (cycle de 2, les deux thèmes annoncent le vainqueur) : 19 sur 22.
+    if (!sansVerification && V.verification && (V.verification.cycle === 2 || V.verification.cycle === 4) && (V.decision.resultat === '1' || V.decision.resultat === '2') && V.verification.verdictsCycle.indexOf(V.decision.resultat === '1' ? '2' : '1') < 0) {
+      var oC = VERIF_CONFIRME_OBS, gC = V.verification.verdictsCycle.filter(function (r) { return r === V.decision.resultat; }).length; V.decision.confirmee = { cycle: V.verification.cycle, pour: gC, texte: 'victoire confirmée par la vérification : la chaîne des vérifications tourne sur ' + V.verification.cycle + ' thèmes, aucun n\'annonce ' + (V.decision.resultat === '1' ? 'R7' : 'R1') + ' (' + gC + ' annoncent ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ', ' + (V.verification.cycle - gC) + ' une égalité) — en cours d\'étude : ' + oC.gagne + ' victoires sur ' + oC.sur + ' dans ce cas, ' + oC.nePerdPas + ' sans défaite' }; }
     return V; }
   // BLOCAGE — une seule définition pour tout le moteur (2026-11-27, chaîne du propriétaire : la figure k attaque k + 3, « M(h+1) attaque M(h+4) », sur les 16 maisons).
   // La figure g est bloquée par son antagoniste A = g − 3 quand A est présent intact :

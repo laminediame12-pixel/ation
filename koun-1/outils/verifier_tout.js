@@ -13,8 +13,8 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
     if (V.decision.contreBoucles && ((BD.gagnant === 'R1' ? 1 : -1) * M.victoireConvergence(L).score > -2 || w === BD.gagnant)) e('indice contre les boucles sans indice à −2 contre le vainqueur des boucles', s); if (w && !H[w].marque) e('boucles différentes : le vainqueur ne marque pas', s); }
   else if (p1 !== p7 && V.decision.type !== 'verification' && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
   if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques' && V.decision.type !== 'verification') e('égalité annoncée sans la condition d\'égalité', s);
-  // victoire confirmée (2026-11-28) : exactement quand la chaîne des vérifications est en cycle de 2 et que ses deux thèmes annoncent le vainqueur
-  { const cf = !!(V.verification && V.verification.cycle === 2 && V.decision.resultat !== 'N' && V.verification.cycle2.every(r => r === V.decision.resultat)); if (cf !== !!V.decision.confirmee) e('victoire confirmée hors de sa condition', s); }
+  // victoire confirmée (2026-11-28, renforcée) : exactement quand la chaîne des vérifications est en cycle de 2 ou de 4 et qu'aucun thème du cycle n'annonce le perdant
+  { const cf = !!(V.verification && (V.verification.cycle === 2 || V.verification.cycle === 4) && V.decision.resultat !== 'N' && !V.verification.verdictsCycle.includes(V.decision.resultat === '1' ? '2' : '1')); if (cf !== !!V.decision.confirmee) e('victoire confirmée hors de sa condition', s); }
   // égalité « vérification » (2026-11-28) : le thème de vérification ne confirme pas le vainqueur et la figure de M7 ou de M14 est commune aux deux thèmes
   { const X = V.verification, pfOk = X && X.cycle === 1 && X.pointFixe[1] !== 8 && L.theme.bases[16] !== 16, cond = X && X.avant !== 'N' && (pfOk || (X.cycle === 2 && X.communes.length && X.cycle2 && X.cycle2[0] !== X.avant && X.cycle2[1] !== X.avant));
     if (V.decision.type === 'verification' && !cond) e('égalité « vérification » sans sa condition', s);
