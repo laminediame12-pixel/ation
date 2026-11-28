@@ -3135,6 +3135,16 @@
    "maisons_des_poles": "Figure que la vérification pose dans la maison d'un pôle principal : son miroir (f + 8) dans 35 % des grands écarts, 21 % des petites victoires, 1 nul avec buts sur 31 ; une figure de l'autre boucle dans 71 % des nuls avec buts contre 43 à 47 % des victoires.",
    "piste": "Pôles principaux libres dans la vérification, aucune maison de pôle qui porte son miroir, une qui porte une figure de l'autre boucle : 15 nuls sur 32 (47 %) — dév. 11/24, 26/11 2/4, 27/11 2/4 ; ensemble 37/160 (23 %). Choisie en regardant ces mêmes 160 matchs : à juger sur les matchs à venir.",
    "outil": "outils/theme_verification.js [grands|petites|nuls]"
+  },
+  {
+   "id": "EGALITE-PAR-LA-VERIFICATION-2026-11-28",
+   "statut": "INTÉGRÉE au verdict, en cours d'étude",
+   "origine": "propriétaire : « tu t'apprêtes à ignorer la recherche sur le nul » — recherche poursuivie sur les 160 matchs (« ce qu'on a suffit »)",
+   "constats": "Verdict du principal et de la vérification : même vainqueur → 10 nuls sur 71 (14 %) ; vainqueurs opposés → 17/64 (27 %) ; l'un annonce une égalité → 10/25 (40 %). Même figure en base dans les deux thèmes : M7 12 nuls sur 33, M14 9/29, M4 3/6, M10 3/4 (M1 toujours commune).",
+   "regle": "La vérification ne confirme pas le vainqueur annoncé et la figure de M7 ou de M14 est la même dans les deux thèmes → égalité.",
+   "resultats": "23 cas, 12 nuls (52 %). Bons verdicts 95 → 101 sur 160 : 126 matchs 75 → 77, 26/11 12 → 13, 27/11 8 → 11. Deux marquent 83 → 86. Variante avec en plus les deux pôles principaux libres dans la vérification : 16 cas, 9 nuls, même gain (+6) — la plus simple est gardée. Choisie sur ces matchs : environ 25 lectures essayées.",
+   "correction": "La « victoire nette » ne peut plus qualifier une égalité (faille trouvée en passant).",
+   "outil": "moteur4/moteur.js (verdict) ; outils/theme_verification.js"
   }
  ],
  "lectures": [

@@ -10,12 +10,15 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   for (const [p, q] of [['R1', p1], ['R7', p7]]) { const ok = H[p].marque === q ? !H[p].impose : (p === w && H[p].marque && !q && /imposé par la victoire/.test(H[p].impose || '')); if (!ok) e('marquage remplacé hors de l\'exception des boucles différentes', s); }
   // décision : boucles différentes → la règle du propriétaire (sauf égalité) ; même boucle → un seul pôle marque, il gagne
   if (BD.domaine) { if (H.decision !== 'N' && w !== BD.gagnant) e('boucles différentes : la décision n\'est pas celle de la règle', s); if (w && !H[w].marque) e('boucles différentes : le vainqueur ne marque pas', s); }
-  else if (p1 !== p7 && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
-  if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques') e('égalité annoncée sans la condition d\'égalité', s);
+  else if (p1 !== p7 && V.decision.type !== 'verification' && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
+  if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques' && V.decision.type !== 'verification') e('égalité annoncée sans la condition d\'égalité', s);
+  // égalité « vérification » (2026-11-28) : le thème de vérification ne confirme pas le vainqueur et la figure de M7 ou de M14 est commune aux deux thèmes
+  if (V.decision.type === 'verification' && !(V.verification && V.verification.communes.length && V.verification.decision !== V.verification.avant && V.verification.avant !== 'N')) e('égalité « vérification » sans sa condition', s);
+  if (V.verification && V.verification.avant !== 'N' && V.verification.communes.length && V.verification.decision !== V.verification.avant && V.decision.resultat !== 'N') e('vérification qui ne confirme pas, figure commune en M7/M14, mais pas d\'égalité', s);
   // égalité « pôles bloqués » (2026-11-27) : hors boucles différentes, aucun pôle ne marque et les deux pôles sont bloqués
   if (V.decision.type === 'bloques' && (BD.domaine || p1 || p7 || !M.blocages(L, 'R1').length || !M.blocages(L, 'R7').length)) e('égalité « pôles bloqués » sans sa condition', s);
   if (!BD.domaine && !p1 && !p7 && M.blocages(L, 'R1').length && M.blocages(L, 'R7').length && H.decision !== 'N') e('les deux pôles bloqués sans marquer, mais pas d\'égalité', s);
-  if (H.decision === 'N' && p1 !== p7) e('égalité alors qu\'un seul pôle marque', s);
+  if (H.decision === 'N' && p1 !== p7 && V.decision.type !== 'verification') e('égalité alors qu\'un seul pôle marque', s);
   if (H.deux.oui !== (H.R1.marque && H.R7.marque)) e('« deux marquent » différent du marquage final', s);
   if (H.mt1.marqueurs.concat(H.mt2.marqueurs).some(p => !H[p].marque)) e('mi-temps : but pour un pôle qui ne marque pas', s);
   if (H.buts.valeur < (p1 ? 1 : 0) + (p7 ? 1 : 0)) e('buts < pôles qui marquent', s); }

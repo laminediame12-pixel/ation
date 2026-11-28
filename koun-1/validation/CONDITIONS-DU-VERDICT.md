@@ -7,7 +7,7 @@ Ordre de priorité : 1 Vainqueur → 2 Deux marquent → 3 R1 / R7 marque → 4 
 La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes, avec une seule exception où la partie 1 commande : le vainqueur annoncé marque toujours (imposé quand sa règle dit le contraire ; 126 matchs : 30 vainqueurs imposés, 25 ont marqué). En même boucle, si un seul pôle marque, c'est lui qui gagne.
 
 ## 1. Vainqueur (`verdict` → `decision`)
-Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seules l'égalité n-n (d) et l'égalité des pôles bloqués (c'') peuvent donner un nul.
+Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seules l'égalité n-n (d), l'égalité des pôles bloqués (c'') et l'égalité par le thème de vérification (e) peuvent donner un nul.
 **a. Victoire appelée** (une seule des deux voies) :
 - **Accord** : dans le front de chaque pôle, ses deux nœuds diagonaux (A : M13, M1 · B : M10, M6 · C : M7, M11 · D : M4, M16) ; on compte ceux dont la résultante a la Terre saturée.
   Le pôle qui en a le plus est désigné **et** les nœuds de coordination (base M1 + base M7, résultante de M9, base M2 + base M8, lus dans le front de chaque pôle) désignent le même pôle → victoire de ce pôle.
@@ -23,7 +23,8 @@ Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seules l'éga
 
 **c'. Même boucle — le marquage commande (corrigée le 2026-11-28)** : si un seul pôle marque selon la partie 3 : **seul R1 marque → R1 gagne**, sauf s'il marque **par M11 plein → R7 gagne** (le seul marqueur par M11 a perdu 7 fois sur 7) ; **seul R7 marque → R1 garde l'avantage du domicile** (R1 a gagné 10 fois sur 15, 2 nuls). Avant la correction : 11 justes, 5 nuls, 15 faux ; après : 21 justes, 5 nuls, 5 faux. Bons verdicts : 126 matchs 70 → 75, 26/11 9 → 12, 27/11 6 → 8.
 **c''. Les deux pôles bloqués (en cours d'étude)** : hors boucles différentes, aucun pôle ne marque et les deux figures des pôles sont bloquées → égalité (147 matchs : 1 cas, 1 nul — Tijuana – Pumas 1-1 ; 3 cas et 2 nuls avec le blocage partout).
-**Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
+**e. Égalité par le thème de vérification (propriétaire, 2026-11-28 ; en cours d'étude)** : le thème de vérification a pour mères les figures de M1, M4, M7, M10 du thème principal (l'axe angulaire développé en 16 figures ; il montre les zones d'ombre du principal). Quand il **ne confirme pas le vainqueur annoncé** (il désigne l'autre pôle, ou une égalité) **et que la figure de M7 ou de M14 est la même dans les deux thèmes** → égalité. 160 matchs : 23 cas, 12 nuls ; bons verdicts 95 → 101 (126 matchs 75 → 77, 26/11 12 → 13, 27/11 8 → 11). Exemples : Lyon – Lillestrøm 0-0, Leganés – Sabadell 0-0. Quand la vérification confirme le vainqueur : 10 nuls sur 71.
+**Qualificatif « victoire nette »** (jamais sur une égalité) : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 
 ## 2. Deux marquent (`hierarchie` → `deux`)
 **Oui** seulement si R1 **et** R7 marquent selon la règle de marquage (partie 3). Sinon Non.

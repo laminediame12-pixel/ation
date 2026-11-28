@@ -491,7 +491,7 @@
     var Y = rythme(L), S = secondeMiTemps(L), mq = function (p) { return m[p].marque; };
     Y.marqueurs = Y.marqueurs.filter(mq); if (!n) Y.butAttendu = false; S.marqueurs = S.marqueurs.filter(mq);
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B }, mt1: Y, mt2: S }; }
-  function verdict(L) { var V = verdictBrut(L), Z = m1m10(L), NT = noyauTerre(L); V.noyauTerre = NT; V.m1m10 = Z;
+  function verdict(L, sansVerification) { var V = verdictBrut(L), Z = m1m10(L), NT = noyauTerre(L); V.noyauTerre = NT; V.m1m10 = Z;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux sur ' + (sz.ok + sz.ko) + ' appels tranchés'; V.raison = 'liaisons Terre M1–M5 et M10–M14 en arrêt : avantage R1'; }
     // DÉCISION FINALE (toujours une victoire ; tout ce qui concernait le nul a été supprimé du système le 2026-11-27, à la demande du propriétaire) :
     // la victoire appelée (accord Terre + coordination, ou M1-M10) ; sinon victoire de R1 (domicile). Le score de convergence de victoire reste un indice.
@@ -525,7 +525,15 @@
     // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 11 cas, 5 nuls (45 % ; 21 % en tout ; mesure du 2026-11-28, blocage par les nœuds).
     var EG = egalite(L); V.egalite = EG;
     if (EG.oui) V.decision = { resultat: 'N', type: 'n-n', raison: 'égalité n-n (en cours d\'étude) : ' + EG.raison + ' · indice : ' + VC.texte };
-    if (Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
+    // THÈME DE VÉRIFICATION (propriétaire, 2026-11-28 : « l'axe angulaire développé en thème de 16 figures montre les zones d'ombre du thème principal » ;
+    // en cours d'étude). Mères : les figures de M1, M4, M7, M10. Quand il ne confirme pas le vainqueur annoncé (il désigne l'autre pôle, ou une égalité) et que la
+    // figure de M7 ou de M14 reste la même dans les deux thèmes → égalité. 160 matchs : 23 cas, 12 nuls ; bons verdicts +6 (126 matchs +2, 26/11 +1, 27/11 +3).
+    if (!sansVerification && (V.decision.resultat === '1' || V.decision.resultat === '2')) {
+      var TV = K.construire([1, 4, 7, 10].map(function (h) { return L.theme.bases[h]; })), LV = lire(TV.meres), dV = verdict(LV, true).decision.resultat,
+        communes = [7, 14].filter(function (h) { return TV.bases[h] === L.theme.bases[h]; });
+      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat };
+      if (dV !== V.decision.resultat && communes.length) V.decision = { resultat: 'N', type: 'verification', raison: 'le thème de vérification (' + TV.meres.join('-') + ') ne confirme pas ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (il ' + (dV === 'N' ? 'annonce une égalité' : 'désigne ' + (dV === '1' ? 'R1' : 'R7')) + ') et la figure de M' + communes.join(' et de M') + ' est la même dans les deux thèmes : égalité (en cours d\'étude ; 12 nuls sur 23) · indice : ' + VC.texte }; }
+    if ((V.decision.resultat === '1' || V.decision.resultat === '2') && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { /* une égalité n'est jamais une « victoire nette » */ V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }
   // BLOCAGE — une seule définition pour tout le moteur (2026-11-27, chaîne du propriétaire : la figure k attaque k + 3, « M(h+1) attaque M(h+4) », sur les 16 maisons).
   // La figure g est bloquée par son antagoniste A = g − 3 quand A est présent intact :
