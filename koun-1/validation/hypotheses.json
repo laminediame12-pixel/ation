@@ -3126,6 +3126,15 @@
    "grands_ecarts": "37 matchs à 3 buts d'écart ou plus sur 160. Verdict de la vérification juste 24/37 (65 %), autant que le thème principal (65 %). Les deux pôles principaux ne sont jamais bloqués tous les deux dans la vérification (0/37) ; un seul l'est dans 18/37, aussi souvent le vainqueur (27 %) que le perdant (22 %).",
    "nuls": "Aucun pôle principal bloqué dans la vérification : 25 nuls sur 86 (29 %) contre 11 sur 71 (15 %) quand un seul l'est — dév. 18/68 contre 8/55, 26/11 4/11 contre 1/10, 27/11 3/7 contre 2/6. Aucun des deux pôles principaux posé en base dans la vérification : 5 nuls sur 10. Vérification en même front : 10 nuls sur 31.",
    "outil": "outils/theme_verification.js"
+  },
+  {
+   "id": "THEME-DE-VERIFICATION-PETITES-VICTOIRES-NULS-2026-11-28",
+   "statut": "étude en cours ; piste du nul à confirmer sur les matchs à venir",
+   "origine": "propriétaire : « continue avec les petites victoires puis les nuls »",
+   "gradients": "Grands écarts → petites victoires → nuls avec buts → 0-0 : vérification en même front 14 → 19 → 26 → 33 % ; pôles de la vérification de même figure 3 → 8 → 13 → 17 % ; égalité n-n remplie dans la vérification 0 → 8 → 6 → 17 %.",
+   "maisons_des_poles": "Figure que la vérification pose dans la maison d'un pôle principal : son miroir (f + 8) dans 35 % des grands écarts, 21 % des petites victoires, 1 nul avec buts sur 31 ; une figure de l'autre boucle dans 71 % des nuls avec buts contre 43 à 47 % des victoires.",
+   "piste": "Pôles principaux libres dans la vérification, aucune maison de pôle qui porte son miroir, une qui porte une figure de l'autre boucle : 15 nuls sur 32 (47 %) — dév. 11/24, 26/11 2/4, 27/11 2/4 ; ensemble 37/160 (23 %). Choisie en regardant ces mêmes 160 matchs : à juger sur les matchs à venir.",
+   "outil": "outils/theme_verification.js [grands|petites|nuls]"
   }
  ],
  "lectures": [
