@@ -651,11 +651,11 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
     // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 14 fois sur 17 quand la règle de marquage disait le contraire (126 matchs, 2026-11-28) ; le perdant garde sa règle.
     if (V.boucles && V.boucles.domaine && (d === '1' || d === '2')) { var wq = d === '1' ? 'R1' : 'R7'; if (!m[wq].marque) { m[wq].marque = true; m[wq].impose = 'imposé par la victoire (boucles différentes)'; } }
-    // AUCUN PÔLE NE MARQUE ET UNE VICTOIRE EST ANNONCÉE (2026-11-27) : la partie 1 commande, le vainqueur marque (imposé) — sans cela le verdict se contredit
-    // (une victoire sans but). 147 matchs : 1 cas depuis le blocage par les nœuds (2026-11-28), le vainqueur annoncé a marqué et gagné (5 cas, 5 et 4, avant).
-    else if ((d === '1' || d === '2') && !m.R1.marque && !m.R7.marque) { var wq2 = d === '1' ? 'R1' : 'R7'; m[wq2].marque = true; m[wq2].impose = 'imposé par la victoire (aucun pôle ne marque selon la règle)'; }
+    // LE VAINQUEUR MARQUE (partie 1 de la hiérarchie, 2026-11-28 ; avant : seulement quand aucun pôle ne marquait) : une victoire annoncée impose le but du vainqueur
+    // quand sa propre règle de marquage dit le contraire — sans cela le verdict se contredit (une victoire sans but). 126 matchs : 30 vainqueurs imposés, 25 ont marqué.
+    else if ((d === '1' || d === '2') && !m[d === '1' ? 'R1' : 'R7'].marque) { var wq2 = d === '1' ? 'R1' : 'R7'; m[wq2].marque = true; m[wq2].impose = 'imposé par la victoire'; }
     var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
-    // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; deux exceptions : le vainqueur des boucles différentes marque, et le vainqueur annoncé quand aucun pôle ne marque (imposés, ci-dessus).
+    // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; seule exception : le vainqueur annoncé marque toujours (imposé, ci-dessus).
     var n = (m.R1.marque ? 1 : 0) + (m.R7.marque ? 1 : 0), v = B.attendus, aj = null;
     if (d === 'N' && n === 0) { v = 0; aj = 'égalité sans pôle qui marque : 0-0'; } // cohérence : une égalité où personne ne marque ne peut être que 0-0
     else if (v < n) { v = n; aj = n + ' équipes marquent'; }
@@ -680,8 +680,12 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
         : BD.cas === 'deux' ? 'arme (' + Nm(BD.arme) + ' en ' + mh(BD.maisonsArme) + ') et défense (' + Nm(BD.defense) + ' en ' + mh(BD.maisonsDefense) + ') posées, défense hors des Filles'
         : BD.cas === 'defense' ? 'défense (' + Nm(BD.defense) + ' en ' + mh(BD.maisonsDefense) + ') posée hors des Filles, sans arme' : 'ni arme ni défense posée';
       V.decision = { resultat: BD.gagnant === 'R1' ? '1' : '2', raison: 'boucles différentes : ' + BD.attaquant + ' (' + Nm(L[BD.attaquant].figure) + ', front ' + FRL[(L[BD.attaquant].figure - 1) % 4] + ') attaque ' + BD.attaque + ' (' + Nm(L[BD.attaque].figure) + ', front ' + FRL[(L[BD.attaque].figure - 1) % 4] + ') — ' + txt + ' → victoire de ' + BD.gagnant + ' (' + o.juste + ' justes, ' + o.nul + ' nuls, ' + o.faux + ' faux sur 87 matchs dans ce cas ; en cours d\'étude) · indice : ' + VC.texte }; }
-    // Même boucle — le marquage commande (2026-11-27, propriétaire) : quand un seul pôle marque selon la règle de marquage, c'est lui qui gagne.
-    else if (Q1 !== Q7) { var w = Q1 ? '1' : '2'; V.decision = { resultat: w, raison: 'seul ' + (Q1 ? 'R1' : 'R7') + ' marque selon la règle de marquage' + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
+    // Même boucle — le marquage commande (2026-11-27, propriétaire), CORRIGÉE le 2026-11-28 (la règle « un seul pôle marque, il gagne » faisait 11 justes, 15 faux
+    // sur 160 matchs) : seul R1 marque → R1 gagne, sauf s'il marque par M11 plein → R7 gagne (le marqueur par M11 a perdu 7 fois sur 7 ; dans 5 de ces matchs les deux
+    // ont marqué) ; seul R7 marque → R1 garde l'avantage du domicile (R1 a gagné 10 fois sur 15, 2 nuls). 31 cas : 21 justes, 5 nuls, 5 faux. Bons verdicts : 126 matchs
+    // 70 → 75, 26/11 9 → 12, 27/11 6 → 8 (deux lots jamais vus).
+    else if (Q1 !== Q7) { var parM11 = Q1 && marquePole(L, 'R1').positions.m11, w = Q1 && !parM11 ? '1' : Q1 ? '2' : '1';
+      V.decision = { resultat: w, raison: (Q1 ? (parM11 ? 'seul R1 marque, par M11 plein : R7 gagne (le seul marqueur par M11 a perdu 7 fois sur 7)' : 'seul R1 marque selon la règle de marquage : R1 gagne') : 'seul R7 marque, mais R1 garde l\'avantage du domicile (R1 a gagné 10 fois sur 15 dans ce cas)') + (w !== (V.v || '1') ? ' (l\'appel « ' + (V.regle || 'avantage du domicile') + ' » désignait ' + ((V.v || '1') === '1' ? 'R1' : 'R7') + ')' : '') + ' · indice : ' + VC.texte }; }
     else if (!Q1 && !Q7) {
       // LES DEUX PÔLES BLOQUÉS (2026-11-27, en cours d'étude ; suite du blocage unique) : hors boucles différentes le marquage commande ; quand aucun pôle ne marque
       // et que les deux figures des pôles sont bloquées, aucun ne prend le dessus : égalité (thème de repos Populus : les deux pôles bloqués par Cauda reproduite en M13).

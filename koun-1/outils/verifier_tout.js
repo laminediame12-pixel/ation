@@ -1,5 +1,5 @@
 // Vérifie que chaque condition intégrée s'applique à TOUS les thèmes (les 65 536 combinaisons de mères), sans exception (boucles différentes : règle du propriétaire) :
-//   aucun plantage ; R1 / R7 marque = la règle de marquage (imposé seulement au vainqueur des boucles différentes, et au vainqueur annoncé quand aucun pôle ne marque) ; un seul pôle marque → il gagne ; deux marquent = les deux pôles marquent ;
+//   aucun plantage ; R1 / R7 marque = la règle de marquage (le vainqueur annoncé marque toujours, imposé si sa règle dit le contraire) ; un seul pôle marque → R1 gagne, sauf R1 seul par M11 plein → R7 ; deux marquent = les deux pôles marquent ;
 //   mi-temps : seulement des pôles qui marquent ; buts ≥ nombre de pôles qui marquent. Usage : node outils/verifier_tout.js
 const M = require('../moteur4/moteur.js'), err = {}, e = (k, t) => { err[k] = err[k] || { n: 0, ex: t }; err[k].n++; }; let n = 0;
 for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <= 16; c++) for (let d = 1; d <= 16; d++) { const t = [a, b, c, d], s = t.join('-'); n++;
@@ -7,10 +7,10 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   const p1 = M.marquePole(L, 'R1').marque, p7 = M.marquePole(L, 'R7').marque;
   const BD = M.boucles(L), V = M.verdict(L), w = H.decision === '1' ? 'R1' : H.decision === '2' ? 'R7' : null;
   // marquage : la règle partout ; seule exception, le vainqueur des boucles différentes marque (imposé)
-  for (const [p, q] of [['R1', p1], ['R7', p7]]) { const ok = H[p].marque === q ? !H[p].impose : (p === w && H[p].marque && !q && (BD.domaine ? /boucles différentes/.test(H[p].impose || '') : !p1 && !p7 && /aucun pôle ne marque/.test(H[p].impose || ''))); if (!ok) e('marquage remplacé hors de l\'exception des boucles différentes', s); }
+  for (const [p, q] of [['R1', p1], ['R7', p7]]) { const ok = H[p].marque === q ? !H[p].impose : (p === w && H[p].marque && !q && /imposé par la victoire/.test(H[p].impose || '')); if (!ok) e('marquage remplacé hors de l\'exception des boucles différentes', s); }
   // décision : boucles différentes → la règle du propriétaire (sauf égalité) ; même boucle → un seul pôle marque, il gagne
   if (BD.domaine) { if (H.decision !== 'N' && w !== BD.gagnant) e('boucles différentes : la décision n\'est pas celle de la règle', s); if (w && !H[w].marque) e('boucles différentes : le vainqueur ne marque pas', s); }
-  else if (p1 !== p7 && H.decision !== (p1 ? '1' : '2')) e('même boucle : un seul pôle marque mais il ne gagne pas', s);
+  else if (p1 !== p7 && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
   if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques') e('égalité annoncée sans la condition d\'égalité', s);
   // égalité « pôles bloqués » (2026-11-27) : hors boucles différentes, aucun pôle ne marque et les deux pôles sont bloqués
   if (V.decision.type === 'bloques' && (BD.domaine || p1 || p7 || !M.blocages(L, 'R1').length || !M.blocages(L, 'R7').length)) e('égalité « pôles bloqués » sans sa condition', s);
