@@ -706,8 +706,11 @@ h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mu);margin:0 0 14px;font-size:1
       var TV = K.construire([1, 4, 7, 10].map(function (h) { return L.theme.bases[h]; })), LV = lire(TV.meres), dV = verdict(LV, true).decision.resultat,
         communes = [7, 14].filter(function (h) { return TV.bases[h] === L.theme.bases[h]; });
       var vu = {}, x = L.theme.meres, k = 0; while (!vu[x.join('-')]) { vu[x.join('-')] = k + 1; var bx = K.construire(x).bases; x = [bx[1], bx[4], bx[7], bx[10]]; k++; }
-      var cycle = k - (vu[x.join('-')] - 1), pf = cycle === 1, mm = cycle <= 2 && dV !== V.decision.resultat && communes.length > 0;
-      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: pf ? x.slice() : null };
+      // Point fixe : sauf si la figure répétée du point fixe (mères 2 et 4) est Tristitia — l'équilibre reste en suspens — ou si Populus est en M16 du thème
+      // principal — M16 modifie l'équilibre (propriétaire). Les 3 points fixes manqués (Allemagne – Pays-Bas 5-0, Atlético – Dortmund 3-4, Middlesbrough –
+      // Bristol City 2-0) ont l'un ou l'autre ; aucun des 6 nuls (2026-11-28, affiné sur ces 9 cas ; sur les 160 matchs, Populus en M16 : 2 nuls sur 11, R1 gagne 7 fois).
+      var cycle = k - (vu[x.join('-')] - 1), pf = cycle === 1 && x[1] !== 8 && L.theme.bases[16] !== 16, mm = cycle <= 2 && dV !== V.decision.resultat && communes.length > 0;
+      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: cycle === 1 ? x.slice() : null, pointFixeRetenu: pf };
       if (pf || mm) V.decision = { resultat: 'N', type: 'verification', raison: (pf ? 'la chaîne des vérifications s\'arrête sur un thème qui est sa propre vérification (point fixe ' + x.join('-') + ') : plus rien ne bouge'
           : 'la chaîne des vérifications oscille entre deux thèmes, la vérification (' + TV.meres.join('-') + ') ne confirme pas ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (elle ' + (dV === 'N' ? 'annonce une égalité' : 'désigne ' + (dV === '1' ? 'R1' : 'R7')) + ') et la figure de M' + communes.join(' et de M') + ' est la même dans les deux thèmes')
           + ' : égalité (en cours d\'étude ; 15 nuls sur 25 dans ces cas) · indice : ' + VC.texte }; }

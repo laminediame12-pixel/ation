@@ -3155,6 +3155,15 @@
    "regle": "Point fixe → égalité ; cycle de 2 au plus + vérification qui ne confirme pas + M7 ou M14 commune → égalité.",
    "resultats": "25 cas, 15 nuls (60 %) contre 12/23 pour la règle M7/M14 seule. Bons verdicts 101 → 102 sur 160 (dév. 77 → 78) ; deux marquent 86 → 83. Pas encore une règle solide : 10 des 25 matchs ne sont pas nuls.",
    "outil": "moteur4/moteur.js (verdict) ; analyse : chaîne des vérifications sur les 160 matchs"
+  },
+  {
+   "id": "POINTS-FIXES-MANQUES-2026-11-28",
+   "statut": "INTÉGRÉ (exceptions au point fixe), affiné sur 9 cas",
+   "origine": "propriétaire : « fouille les points fixes manqués pour trouver la différence »",
+   "differences": "Points fixes manqués : Allemagne – Pays-Bas 5-0 (point fixe 9-8-16-8, x = Tristitia, Populus en M16 du principal), Atlético – Dortmund 3-4 (15-8-16-8, x = Tristitia), Middlesbrough – Bristol City 2-0 (16-9-16-9, Populus en M16 du principal ; R1 = Populus en M16). Les 6 nuls : x = Fortuna Minor (avec a = Laetitia), Laetitia ou Puer, et M16 du principal Laetitia, Puer, Rubeus, Cauda, Tristitia ou Via. Autre lecture : dans le thème du point fixe, un seul pôle marque dans les 6 nuls ; les deux (Allemagne) ou aucun (Atlético) dans 2 des 3 manqués.",
+   "regle": "Point fixe → égalité, sauf x = Tristitia ou Populus en M16 du thème principal.",
+   "resultats": "Point fixe retenu : 6 nuls sur 6 (par construction). Règle de la chaîne : 22 cas, 15 nuls (68 %). Bons verdicts 102 → 104 sur 160 (dév. 78 → 80). Sur les 160 matchs, Populus en M16 : 2 nuls sur 11, R1 gagne 7 fois.",
+   "outil": "moteur4/moteur.js (verdict)"
   }
  ],
  "lectures": [
