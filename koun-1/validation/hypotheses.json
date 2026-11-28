@@ -3101,6 +3101,13 @@
    "regle": "Bloqueur en maison h : nœuds dont h porte une liaison dans la croix de son front, aux niveaux à 1 point de la résultante de h (Terre déviée exclue). Pôle paralysé si sa maison en fait partie ; sinon seules ses positions touchées tombent.",
    "resultats": "147 matchs. Pôles en bonne position arrêtés : 7/12 ont marqué contre 145/188 libres (blocage partout : 43/58 contre 109/142). Bons verdicts 79 (126 : 70, 26/11 : 9 ; la veille 69 et 10). Marquage 140 → 160/252 (test 28 → 30/42). Deux marquent 65 → 59/126 (test 12 → 11). Buts 1,48 → 1,46. Variantes : avec la Terre déviée 157/252 et 10/15 bloqués qui marquent ; « pôle bloqué » local aussi pour le rouge et l'égalité : 75 bons verdicts, camp du rouge 14/21 — non retenues.",
    "outil": "outils/chaine_attaque.js"
+  },
+  {
+   "id": "EXPERIENCE-POLES-M1-M7-2026-11-28",
+   "statut": "expérience, non intégrée",
+   "origine": "propriétaire : « orienter les pôles R1 et R7 dans les maisons fixes M1 et M7 : la figure en M1 et en M7 seront les pôles du duel »",
+   "resultats": "Toutes les règles du verdict gardées, seuls les pôles changent. Bons verdicts : 126 matchs 70 → 49 ; 26/11 9/21 → 6/21 ; 27/11 (jamais vus) 6/13 → 3/13 (« R1 gagne toujours » 59, 9, 6). Règle des boucles : 49 justes, 19 faux → 30 justes, 37 faux. Marquage 172 → 164/252 (26/11 30 → 26 ; 27/11 14 → 18). Deux marquent 59 → 62/126 (27/11 7 → 9). À noter aussi : avec les pôles actuels, « même boucle, un seul pôle marque, il gagne » fait 11 justes, 15 faux sur 160 matchs.",
+   "outil": "outils/experience_poles_m1_m7.js"
   }
  ],
  "lectures": [
