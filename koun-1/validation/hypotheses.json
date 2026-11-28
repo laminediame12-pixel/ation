@@ -3164,6 +3164,12 @@
    "regle": "Point fixe → égalité, sauf x = Tristitia ou Populus en M16 du thème principal.",
    "resultats": "Point fixe retenu : 6 nuls sur 6 (par construction). Règle de la chaîne : 22 cas, 15 nuls (68 %). Bons verdicts 102 → 104 sur 160 (dév. 78 → 80). Sur les 160 matchs, Populus en M16 : 2 nuls sur 11, R1 gagne 7 fois.",
    "outil": "moteur4/moteur.js (verdict)"
+  },
+  {
+   "id": "POINTS-FIXES-MANQUES-AJUSTEMENT-2026-11-28",
+   "statut": "INTÉGRÉ",
+   "ajustement": "La seconde voie (vérification qui ne confirme pas + M7/M14 commune) est réservée au cycle de 2 : un point fixe écarté (Tristitia, Populus en M16) ne revient plus par elle (Middlesbrough – Bristol City 2-0 y revenait).",
+   "resultats": "Égalités décidées par la vérification : 21, dont 14 nuls (67 %). Bons verdicts 104 → 105 sur 160 (dév. 81, 26/11 13, 27/11 11)."
   }
  ],
  "lectures": [
