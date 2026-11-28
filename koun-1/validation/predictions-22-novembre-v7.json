@@ -1,0 +1,2881 @@
+{
+ "gele_le": "2026-11-22",
+ "moteur": "4.1.0-noyau-indices",
+ "source": "themes-20-24-novembre (fichier du propriétaire)",
+ "note": "prédictions inscrites avant les scores ; à juger quand les résultats seront connus",
+ "matchs": [
+  {
+   "i": 0,
+   "date": "2026-11-20",
+   "competition": "Bundesliga",
+   "match": "Bayern – Cologne",
+   "theme": [
+    2,
+    6,
+    2,
+    12
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 1,
+   "date": "2026-11-20",
+   "competition": "Ligue 1",
+   "match": "Troyes – Le Havre",
+   "theme": [
+    16,
+    1,
+    8,
+    14
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 1,
+   "deuxMarquent": false,
+   "butsAttendus": 3.7,
+   "incident": "probable",
+   "incidentScore": 5,
+   "rouge": "R7",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": "quasi impossible",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 2,
+   "date": "2026-11-20",
+   "competition": "Liga",
+   "match": "Athletic – Espanyol",
+   "theme": [
+    8,
+    7,
+    8,
+    14
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "quasi impossible",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 3,
+   "date": "2026-11-20",
+   "competition": "Belgique",
+   "match": "Cercle Bruges – Westerlo",
+   "theme": [
+    9,
+    10,
+    5,
+    1
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 4,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Manchester City – Fulham",
+   "theme": [
+    2,
+    14,
+    2,
+    16
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.2,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "R1",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": "fréquent",
+   "marqueParite": [],
+   "doubleChance": "1X",
+   "incidentSur": "R7"
+  },
+  {
+   "i": 5,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Bournemouth – Nottingham Forest",
+   "theme": [
+    3,
+    11,
+    13,
+    1
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 3.8,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 6,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Aston Villa – Sunderland",
+   "theme": [
+    2,
+    16,
+    9,
+    16
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 4.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": "fréquent",
+   "marqueParite": [],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 7,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Chelsea – Leeds",
+   "theme": [
+    3,
+    10,
+    10,
+    12
+   ],
+   "victoire": "R7",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 2.7,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 8,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Coventry – Crystal Palace",
+   "theme": [
+    3,
+    15,
+    10,
+    4
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 9,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Tottenham – Ipswich",
+   "theme": [
+    10,
+    14,
+    4,
+    13
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 4,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 10,
+   "date": "2026-11-21",
+   "competition": "Premier League",
+   "match": "Newcastle – Arsenal",
+   "theme": [
+    11,
+    16,
+    15,
+    15
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 1,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.2,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 11,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Millwall – QPR",
+   "theme": [
+    10,
+    11,
+    6,
+    4
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3.2,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 12,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Southampton – Derby",
+   "theme": [
+    11,
+    16,
+    4,
+    13
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "R1",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 13,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Stoke – Birmingham",
+   "theme": [
+    14,
+    12,
+    3,
+    16
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 4.3,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 14,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Middlesbrough – Bristol City",
+   "theme": [
+    16,
+    2,
+    15,
+    10
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 15,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "West Ham – Preston",
+   "theme": [
+    4,
+    13,
+    9,
+    10
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "R7",
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 16,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Lincoln – Wrexham",
+   "theme": [
+    1,
+    13,
+    15,
+    4
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 2,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 17,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Sheffield United – Watford",
+   "theme": [
+    1,
+    9,
+    4,
+    15
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 18,
+   "date": "2026-11-21",
+   "competition": "Championship",
+   "match": "Bolton – Portsmouth",
+   "theme": [
+    7,
+    2,
+    8,
+    5
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 4.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "lente",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 19,
+   "date": "2026-11-21",
+   "competition": "Écosse",
+   "match": "Celtic – St Mirren",
+   "theme": [
+    15,
+    8,
+    4,
+    15
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 2,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 4.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 20,
+   "date": "2026-11-21",
+   "competition": "Écosse",
+   "match": "Dundee – Hearts",
+   "theme": [
+    16,
+    7,
+    12,
+    8
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 2,
+   "nR7": 4,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "probable",
+   "incidentScore": 4,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 21,
+   "date": "2026-11-21",
+   "competition": "Écosse",
+   "match": "Falkirk – St Johnstone",
+   "theme": [
+    1,
+    1,
+    11,
+    13
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 4,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 22,
+   "date": "2026-11-21",
+   "competition": "Écosse",
+   "match": "Hibernian – Dundee United",
+   "theme": [
+    11,
+    1,
+    2,
+    16
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.7,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "R7",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 23,
+   "date": "2026-11-21",
+   "competition": "Écosse",
+   "match": "Kilmarnock – Aberdeen",
+   "theme": [
+    4,
+    10,
+    7,
+    9
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 0,
+   "deuxMarquent": true,
+   "butsAttendus": 2.6,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": "quasi impossible",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 24,
+   "date": "2026-11-21",
+   "competition": "Écosse",
+   "match": "Motherwell – Rangers",
+   "theme": [
+    6,
+    12,
+    11,
+    12
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 25,
+   "date": "2026-11-21",
+   "competition": "Liga",
+   "match": "Alavés – Deportivo",
+   "theme": [
+    12,
+    4,
+    16,
+    12
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 1,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 2.6,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 26,
+   "date": "2026-11-21",
+   "competition": "Liga",
+   "match": "Rayo Vallecano – Valencia",
+   "theme": [
+    11,
+    4,
+    1,
+    13
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 27,
+   "date": "2026-11-21",
+   "competition": "Liga",
+   "match": "Sevilla – Betis",
+   "theme": [
+    5,
+    13,
+    11,
+    11
+   ],
+   "victoire": "R7",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 28,
+   "date": "2026-11-21",
+   "competition": "Liga",
+   "match": "Real Madrid – Celta",
+   "theme": [
+    1,
+    2,
+    13,
+    5
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 1,
+   "deuxMarquent": false,
+   "butsAttendus": 3.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "R7",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 29,
+   "date": "2026-11-21",
+   "competition": "Ligue 1",
+   "match": "Nice – PSG",
+   "theme": [
+    10,
+    1,
+    7,
+    13
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 30,
+   "date": "2026-11-21",
+   "competition": "Ligue 1",
+   "match": "Lille – Lyon",
+   "theme": [
+    9,
+    5,
+    12,
+    10
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 2,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 31,
+   "date": "2026-11-21",
+   "competition": "Ligue 1",
+   "match": "Lens – Toulouse",
+   "theme": [
+    12,
+    8,
+    10,
+    16
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 4,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 32,
+   "date": "2026-11-21",
+   "competition": "Ligue 1",
+   "match": "Monaco – Auxerre",
+   "theme": [
+    3,
+    8,
+    10,
+    4
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 33,
+   "date": "2026-11-21",
+   "competition": "Ligue 1",
+   "match": "Strasbourg – Brest",
+   "theme": [
+    3,
+    1,
+    15,
+    1
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 4,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 2.7,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 34,
+   "date": "2026-11-21",
+   "competition": "Serie A",
+   "match": "Lazio – Lecce",
+   "theme": [
+    10,
+    7,
+    7,
+    13
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 35,
+   "date": "2026-11-21",
+   "competition": "Serie A",
+   "match": "Parma – Roma",
+   "theme": [
+    11,
+    10,
+    2,
+    9
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 2.7,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 36,
+   "date": "2026-11-21",
+   "competition": "Serie A",
+   "match": "Napoli – Torino",
+   "theme": [
+    5,
+    10,
+    11,
+    11
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 0,
+   "deuxMarquent": true,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 37,
+   "date": "2026-11-21",
+   "competition": "Bundesliga",
+   "match": "Leverkusen – Paderborn",
+   "theme": [
+    4,
+    16,
+    11,
+    13
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 38,
+   "date": "2026-11-21",
+   "competition": "Bundesliga",
+   "match": "Eintracht Francfort – Hoffenheim",
+   "theme": [
+    3,
+    6,
+    9,
+    1
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 39,
+   "date": "2026-11-21",
+   "competition": "Bundesliga",
+   "match": "Union Berlin – Leipzig",
+   "theme": [
+    4,
+    6,
+    8,
+    2
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 4,
+   "nR7": 4,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 40,
+   "date": "2026-11-21",
+   "competition": "Bundesliga",
+   "match": "Mönchengladbach – Dortmund",
+   "theme": [
+    16,
+    1,
+    6,
+    14
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 1,
+   "deuxMarquent": false,
+   "butsAttendus": 3.2,
+   "incident": "probable",
+   "incidentScore": 4,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 41,
+   "date": "2026-11-21",
+   "competition": "Bundesliga",
+   "match": "Elversberg – Fribourg",
+   "theme": [
+    1,
+    7,
+    5,
+    13
+   ],
+   "victoire": "R1",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 42,
+   "date": "2026-11-21",
+   "competition": "Bundesliga",
+   "match": "Schalke – Stuttgart",
+   "theme": [
+    3,
+    16,
+    2,
+    1
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 43,
+   "date": "2026-11-21",
+   "competition": "Belgique",
+   "match": "Zulte Waregem – Royal Antwerp",
+   "theme": [
+    2,
+    13,
+    9,
+    16
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 44,
+   "date": "2026-11-21",
+   "competition": "Belgique",
+   "match": "Charleroi – Sint-Truiden",
+   "theme": [
+    3,
+    7,
+    10,
+    5
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 1,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 45,
+   "date": "2026-11-21",
+   "competition": "Belgique",
+   "match": "Genk – La Louvière",
+   "theme": [
+    13,
+    10,
+    14,
+    13
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 46,
+   "date": "2026-11-21",
+   "competition": "MLS",
+   "match": "New England – Philadelphie",
+   "theme": [
+    13,
+    7,
+    13,
+    4
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.3,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "R1",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 47,
+   "date": "2026-11-21",
+   "competition": "MLS",
+   "match": "FC Dallas – Portland",
+   "theme": [
+    1,
+    12,
+    13,
+    12
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 48,
+   "date": "2026-11-22",
+   "competition": "Premier League",
+   "match": "Hull City – Brighton",
+   "theme": [
+    12,
+    12,
+    2,
+    11
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 49,
+   "date": "2026-11-22",
+   "competition": "Premier League",
+   "match": "Liverpool – Manchester United",
+   "theme": [
+    1,
+    3,
+    4,
+    12
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 50,
+   "date": "2026-11-22",
+   "competition": "Championship",
+   "match": "Burnley – Blackburn",
+   "theme": [
+    4,
+    16,
+    15,
+    9
+   ],
+   "victoire": "R7",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 51,
+   "date": "2026-11-22",
+   "competition": "Liga",
+   "match": "Barcelona – Villarreal",
+   "theme": [
+    4,
+    15,
+    15,
+    8
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 52,
+   "date": "2026-11-22",
+   "competition": "Liga",
+   "match": "Racing – Real Sociedad",
+   "theme": [
+    11,
+    16,
+    12,
+    9
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 2,
+   "nR7": 4,
+   "deuxMarquent": true,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 53,
+   "date": "2026-11-22",
+   "competition": "Liga",
+   "match": "Osasuna – Málaga",
+   "theme": [
+    10,
+    10,
+    9,
+    5
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 1,
+   "deuxMarquent": false,
+   "butsAttendus": 3.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 54,
+   "date": "2026-11-22",
+   "competition": "Liga",
+   "match": "Getafe – Atlético",
+   "theme": [
+    2,
+    13,
+    3,
+    4
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "R1",
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 55,
+   "date": "2026-11-22",
+   "competition": "Ligue 1",
+   "match": "Paris FC – Angers",
+   "theme": [
+    4,
+    2,
+    15,
+    8
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 2,
+   "nR7": 4,
+   "deuxMarquent": false,
+   "butsAttendus": 4.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 56,
+   "date": "2026-11-22",
+   "competition": "Ligue 1",
+   "match": "Lorient – Rennes",
+   "theme": [
+    5,
+    10,
+    9,
+    11
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 0,
+   "deuxMarquent": true,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 57,
+   "date": "2026-11-22",
+   "competition": "Ligue 1",
+   "match": "Marseille – Le Mans",
+   "theme": [
+    2,
+    12,
+    14,
+    15
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "lente",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": "quasi impossible",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 58,
+   "date": "2026-11-22",
+   "competition": "Serie A",
+   "match": "Bologna – Udinese",
+   "theme": [
+    5,
+    13,
+    3,
+    7
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 59,
+   "date": "2026-11-22",
+   "competition": "Serie A",
+   "match": "Sassuolo – Genoa",
+   "theme": [
+    3,
+    15,
+    7,
+    11
+   ],
+   "victoire": "R7",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 0,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.2,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 60,
+   "date": "2026-11-22",
+   "competition": "Serie A",
+   "match": "Juventus – Venezia",
+   "theme": [
+    9,
+    9,
+    2,
+    13
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 61,
+   "date": "2026-11-22",
+   "competition": "Serie A",
+   "match": "AC Milan – Frosinone",
+   "theme": [
+    2,
+    12,
+    6,
+    7
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 1,
+   "deuxMarquent": false,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": "côté non déterminé",
+   "rythme": "lente",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 62,
+   "date": "2026-11-22",
+   "competition": "Serie A",
+   "match": "Atalanta – Inter",
+   "theme": [
+    9,
+    13,
+    13,
+    7
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.2,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 63,
+   "date": "2026-11-22",
+   "competition": "Bundesliga",
+   "match": "Augsburg – Mainz",
+   "theme": [
+    2,
+    2,
+    5,
+    9
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 2,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "R7",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 64,
+   "date": "2026-11-22",
+   "competition": "Bundesliga",
+   "match": "Werder Brême – Hambourg",
+   "theme": [
+    6,
+    5,
+    15,
+    8
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 3,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 65,
+   "date": "2026-11-22",
+   "competition": "MLS",
+   "match": "Chicago – Charlotte",
+   "theme": [
+    4,
+    10,
+    11,
+    3
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 2.1,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 66,
+   "date": "2026-11-23",
+   "competition": "Liga",
+   "match": "Levante – Elche",
+   "theme": [
+    13,
+    9,
+    11,
+    12
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 67,
+   "date": "2026-11-23",
+   "competition": "Premier League",
+   "match": "Brentford – Everton",
+   "theme": [
+    12,
+    11,
+    3,
+    3
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 1,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": "peu probable",
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 68,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Bodø/Glimt – LASK",
+   "theme": [
+    2,
+    8,
+    9,
+    4
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3.2,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": "1X",
+   "incidentSur": null
+  },
+  {
+   "i": 69,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Galatasaray – Aston Villa",
+   "theme": [
+    9,
+    15,
+    5,
+    9
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 1,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 3,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 70,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Arsenal – Dortmund",
+   "theme": [
+    12,
+    5,
+    16,
+    12
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 71,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Como – AEK",
+   "theme": [
+    5,
+    13,
+    11,
+    11
+   ],
+   "victoire": "R7",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "forte",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 72,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Feyenoord – Porto",
+   "theme": [
+    5,
+    8,
+    13,
+    6
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 2,
+   "deuxMarquent": false,
+   "butsAttendus": 3.7,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": "R7"
+  },
+  {
+   "i": 73,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Manchester City – Napoli",
+   "theme": [
+    3,
+    8,
+    6,
+    1
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.3,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "R7",
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 74,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Leipzig – Lens",
+   "theme": [
+    5,
+    12,
+    14,
+    11
+   ],
+   "victoire": "R7",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 0,
+   "rouge": null,
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 75,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Real Madrid – PSV",
+   "theme": [
+    14,
+    14,
+    8,
+    2
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 3,
+   "deuxMarquent": true,
+   "butsAttendus": 3.8,
+   "incident": "probable",
+   "incidentScore": 3,
+   "rouge": "R1",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 76,
+   "date": "2026-11-24",
+   "competition": "Ligue des champions",
+   "match": "Slovan Bratislava – Betis",
+   "theme": [
+    13,
+    12,
+    13,
+    4
+   ],
+   "victoire": "R1",
+   "force": "confirmee",
+   "regle": "H-DIAGONALES-TERRE et H-COORD-VICTOIRE",
+   "nR1": 3,
+   "nR7": 0,
+   "deuxMarquent": true,
+   "butsAttendus": 3.7,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "intermédiaire",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "faible",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": "R1"
+  },
+  {
+   "i": 77,
+   "date": "2026-11-20",
+   "competition": "MLS",
+   "match": "Orlando – Cincinnati",
+   "theme": [
+    5,
+    3,
+    16,
+    11
+   ],
+   "victoire": "R7",
+   "force": "repos",
+   "regle": "H-REPOS",
+   "nR1": 0,
+   "nR7": 0,
+   "deuxMarquent": true,
+   "butsAttendus": 2.6,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R7"
+   ],
+   "nul": "peu probable",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 78,
+   "date": "2026-11-20",
+   "competition": "MLS",
+   "match": "Seattle – Real Salt Lake",
+   "theme": [
+    12,
+    8,
+    10,
+    3
+   ],
+   "victoire": "R1",
+   "force": "avantage",
+   "regle": "H-M1-M10",
+   "nR1": 2,
+   "nR7": 2,
+   "deuxMarquent": true,
+   "butsAttendus": 3.3,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": "fréquent",
+   "marqueParite": [
+    "R1"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 79,
+   "date": "2026-11-21",
+   "competition": "MLS",
+   "match": "Inter Miami – Columbus",
+   "theme": [
+    6,
+    15,
+    12,
+    8
+   ],
+   "victoire": null,
+   "force": null,
+   "regle": null,
+   "nR1": 3,
+   "nR7": 0,
+   "deuxMarquent": false,
+   "butsAttendus": 2.7,
+   "incident": "aucun",
+   "incidentScore": 1,
+   "rouge": null,
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R1",
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1",
+    "R7"
+   ],
+   "nul": null,
+   "marqueParite": [],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 80,
+   "date": "2026-11-24",
+   "competition": "MLS",
+   "match": "St. Louis – LAFC",
+   "theme": [
+    6,
+    1,
+    11,
+    12
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-COORD-VICTOIRE",
+   "nR1": 1,
+   "nR7": 1,
+   "deuxMarquent": true,
+   "butsAttendus": 2.1,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": null,
+   "rythme": "lente",
+   "butPremiereMT": false,
+   "marqueursPremiereMT": [],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [
+    "R1"
+   ],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  },
+  {
+   "i": 81,
+   "date": "2026-11-25",
+   "competition": "MLS",
+   "match": "San Jose – Houston",
+   "theme": [
+    14,
+    9,
+    11,
+    5
+   ],
+   "victoire": "R7",
+   "force": "avantage",
+   "regle": "H-DIAGONALES-TERRE",
+   "nR1": 2,
+   "nR7": 3,
+   "deuxMarquent": false,
+   "butsAttendus": 3.8,
+   "incident": "possible",
+   "incidentScore": 2,
+   "rouge": "côté non déterminé",
+   "rythme": "rapide",
+   "butPremiereMT": true,
+   "marqueursPremiereMT": [
+    "R7"
+   ],
+   "puissance": "moyenne",
+   "marqueursSecondeMT": [],
+   "nul": null,
+   "marqueParite": [
+    "R1",
+    "R7"
+   ],
+   "doubleChance": null,
+   "incidentSur": null
+  }
+ ]
+}

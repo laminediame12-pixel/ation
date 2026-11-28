@@ -1,0 +1,90 @@
+{
+ "fige_le": "2026-11-27",
+ "regle": "M5 = Cauda Draconis (Feu ouvert en M1, M2, M3, saturé en M4 ; résultante de M5 Tristitia, équilibre en suspens) : nul",
+ "matchs": [
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Sparta Prague – AZ Alkmaar",
+   "theme": "1-9-5-12",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Leeds – Coventry",
+   "theme": "2-2-5-16",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Lincoln City – Wolverhampton",
+   "theme": "6-6-6-4",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "PSG – Lorient",
+   "theme": "9-13-6-7",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Le Mans – Lille",
+   "theme": "6-6-9-8",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Real Sociedad – Séville",
+   "theme": "6-14-9-12",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Espanyol – Getafe",
+   "theme": "5-1-2-11",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Inter – Genoa",
+   "theme": "13-13-5-3",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Saint-Trond – Genk",
+   "theme": "1-6-6-3",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Portugal",
+   "match": "Gil Vicente – Estoril",
+   "theme": "14-6-14-4",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "match": "Al Fateh – Al Riyadh",
+   "theme": "13-1-2-3",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Real Salt Lake – Vancouver",
+   "theme": "6-9-2-8",
+   "appel": "nul (M5 = Cauda Draconis, résultante Tristitia)"
+  }
+ ]
+}

@@ -1,0 +1,1035 @@
+{
+ "fige_le": "2026-11-27",
+ "regle": "deux marquent : R1 et R7 ont une figure marquante, ou M11 (Eau²) plein",
+ "matchs": [
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Beşiktaş – Hapoel Beer-Sheva",
+   "theme": "10-14-12-16",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Celta Vigo – Bournemouth",
+   "theme": "7-1-4-7",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Dinamo Zagreb – Leverkusen",
+   "theme": "3-10-13-12",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Marseille – Levski Sofia",
+   "theme": "16-3-6-2",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Olympiacos – AC Milan",
+   "theme": "7-11-6-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Viktoria Plzeň – Benfica",
+   "theme": "12-6-15-10",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Salzbourg – Ararat-Armenia",
+   "theme": "11-11-12-9",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Union Saint-Gilloise – Lech Poznań",
+   "theme": "14-7-4-16",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Hoffenheim – Sturm Graz",
+   "theme": "5-10-4-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Crystal Palace – Real Sociedad",
+   "theme": "9-12-13-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Ferencváros – Celje",
+   "theme": "12-9-5-5",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Juventus – Omonia",
+   "theme": "1-2-4-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Lyon – Lillestrøm",
+   "theme": "12-5-16-13",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "NEC Nimègue – Rennes",
+   "theme": "8-9-9-5",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "OFI Crète – Anderlecht",
+   "theme": "11-11-15-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Sparta Prague – AZ Alkmaar",
+   "theme": "1-9-5-12",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Sunderland – Jagiellonia",
+   "theme": "1-13-3-16",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Europa League",
+   "match": "Torreense – Celtic",
+   "theme": "14-3-14-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Premier League",
+   "match": "Nottingham Forest – Chelsea",
+   "theme": "4-6-2-2",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Leeds – Coventry",
+   "theme": "2-2-5-16",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Manchester United – Brentford",
+   "theme": "3-2-10-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Ipswich – Aston Villa",
+   "theme": "5-12-1-16",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Everton – Liverpool",
+   "theme": "1-12-13-16",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Brighton – Newcastle",
+   "theme": "8-16-10-12",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Crystal Palace – Hull City",
+   "theme": "13-6-16-3",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Fulham – Bournemouth",
+   "theme": "2-3-9-4",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Sunderland – Tottenham",
+   "theme": "16-4-10-10",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Arsenal – Manchester City",
+   "theme": "7-6-6-15",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Championship",
+   "match": "Southampton – Middlesbrough",
+   "theme": "12-9-8-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Lincoln City – Wolverhampton",
+   "theme": "6-6-6-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Preston – Norwich",
+   "theme": "1-11-16-15",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Blackburn – Charlton",
+   "theme": "3-8-10-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Derby County – Watford",
+   "theme": "9-2-6-10",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Millwall – Burnley",
+   "theme": "9-8-3-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "West Ham – Stoke City",
+   "theme": "12-16-16-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Wrexham – Portsmouth",
+   "theme": "15-8-7-9",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "West Bromwich – Bristol City",
+   "theme": "8-7-2-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "QPR – Sheffield United",
+   "theme": "5-8-2-9",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Birmingham – Bolton",
+   "theme": "15-1-5-8",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Swansea – Cardiff",
+   "theme": "8-10-11-6",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Ligue 1",
+   "match": "Brest – Paris FC",
+   "theme": "2-15-3-9",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Angers – Lens",
+   "theme": "2-16-13-2",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "PSG – Lorient",
+   "theme": "9-13-6-7",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Le Mans – Lille",
+   "theme": "6-6-9-8",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Le Havre – Strasbourg",
+   "theme": "4-12-4-6",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Nice – Troyes",
+   "theme": "7-2-5-5",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Auxerre – Marseille",
+   "theme": "15-7-12-13",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Toulouse – Rennes",
+   "theme": "8-2-5-2",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Lyon – Monaco",
+   "theme": "5-3-4-5",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Liga",
+   "match": "Levante – Racing Santander",
+   "theme": "9-1-13-1",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Betis – Rayo Vallecano",
+   "theme": "9-7-11-15",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Málaga – Athletic",
+   "theme": "9-12-3-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Elche – Atlético",
+   "theme": "2-16-14-7",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Real Madrid – Alavés",
+   "theme": "3-13-7-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Valencia – Osasuna",
+   "theme": "3-9-7-12",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Deportivo – Barcelona",
+   "theme": "9-1-11-11",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Celta Vigo – Villarreal",
+   "theme": "9-4-1-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Real Sociedad – Séville",
+   "theme": "6-14-9-12",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Espanyol – Getafe",
+   "theme": "5-1-2-11",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Liga 2",
+   "match": "Leganés – Sabadell",
+   "theme": "8-7-16-2",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Almería – Sporting Gijón",
+   "theme": "8-6-16-2",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Cádiz – Córdoba",
+   "theme": "1-16-5-3",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Albacete – Tenerife",
+   "theme": "13-7-2-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Ceuta – Granada",
+   "theme": "13-4-14-13",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eibar – Burgos",
+   "theme": "4-16-6-6",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Mallorca – Castellón",
+   "theme": "12-16-10-16",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Las Palmas – Andorra",
+   "theme": "15-14-11-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eldense – Girona",
+   "theme": "10-7-3-7",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Valladolid – Real Sociedad B",
+   "theme": "9-3-7-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga 2",
+   "match": "Oviedo – Celta Fortuna",
+   "theme": "1-9-5-13",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Serie A",
+   "match": "Venezia – Bologna",
+   "theme": "13-7-6-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Frosinone – Parma",
+   "theme": "1-12-10-13",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Torino – Lazio",
+   "theme": "3-11-10-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Inter – Genoa",
+   "theme": "13-13-5-3",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Udinese – Fiorentina",
+   "theme": "16-2-4-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Sassuolo – Napoli",
+   "theme": "10-4-13-7",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Roma – Monza",
+   "theme": "3-9-7-16",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Como – Juventus",
+   "theme": "2-16-14-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Serie A",
+   "match": "Lecce – Atalanta",
+   "theme": "14-4-8-2",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Serie A",
+   "match": "Cagliari – AC Milan",
+   "theme": "14-16-2-16",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Bundesliga",
+   "match": "Werder Brême – Mönchengladbach",
+   "theme": "10-10-6-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Mainz – Union Berlin",
+   "theme": "13-10-1-2",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Hambourg – Bayern",
+   "theme": "4-15-8-8",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Cologne – Elversberg",
+   "theme": "12-14-13-3",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Paderborn – Schalke 04",
+   "theme": "6-5-12-8",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Stuttgart – Eintracht Francfort",
+   "theme": "11-10-1-15",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Fribourg – RB Leipzig",
+   "theme": "1-10-12-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Hoffenheim – Augsburg",
+   "theme": "11-9-15-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Dortmund – Leverkusen",
+   "theme": "6-4-10-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Belgique",
+   "match": "OH Louvain – Courtrai",
+   "theme": "15-3-15-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Westerlo – La Louvière",
+   "theme": "3-6-2-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Lommel – Zulte Waregem",
+   "theme": "3-3-10-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Charleroi – Beveren",
+   "theme": "5-8-13-12",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Cercle Bruges – Malines",
+   "theme": "7-11-10-5",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Saint-Trond – Genk",
+   "theme": "1-6-6-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Royal Antwerp – Anderlecht",
+   "theme": "12-5-1-10",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Standard – Club Bruges",
+   "theme": "3-4-1-12",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Union Saint-Gilloise – La Gantoise",
+   "theme": "14-13-3-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Pays-Bas",
+   "match": "Groningue – Willem II",
+   "theme": "15-16-8-9",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "Excelsior – Telstar",
+   "theme": "15-16-9-4",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "PSV – Go Ahead Eagles",
+   "theme": "1-7-4-12",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "Cambuur – Sparta Rotterdam",
+   "theme": "14-14-7-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "ADO La Haye – Utrecht",
+   "theme": "6-3-5-13",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "Fortuna Sittard – Heerenveen",
+   "theme": "3-6-8-5",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "Feyenoord – Ajax",
+   "theme": "16-5-6-10",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "NEC Nimègue – Twente",
+   "theme": "2-11-13-7",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "PEC Zwolle – AZ Alkmaar",
+   "theme": "13-8-14-15",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Portugal",
+   "match": "Marítimo – Nacional",
+   "theme": "1-1-6-1",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Moreirense – Santa Clara",
+   "theme": "9-10-11-15",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Arouca – Rio Ave",
+   "theme": "8-12-8-14",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Académico Viseu – Alverca",
+   "theme": "2-16-12-15",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Vitória Guimarães – Estrela Amadora",
+   "theme": "3-1-8-15",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Portugal",
+   "match": "Gil Vicente – Estoril",
+   "theme": "14-6-14-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Portugal",
+   "match": "FC Porto – Sporting",
+   "theme": "4-5-16-8",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Portugal",
+   "match": "Benfica – Famalicão",
+   "theme": "9-9-14-9",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Portugal",
+   "match": "Casa Pia – Braga",
+   "theme": "13-8-15-10",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Iraklis – Panetolikos",
+   "theme": "10-11-10-6",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Volos – Asteras Tripolis",
+   "theme": "6-8-11-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Kifisia – Kalamata",
+   "theme": "11-8-15-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Sabah – Barcelona",
+   "theme": "10-3-3-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Slavia Prague – Villarreal",
+   "theme": "13-7-12-5",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Atlético – Viking",
+   "theme": "12-2-10-16",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Club Bruges – Liverpool",
+   "theme": "3-4-7-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Inter – Stuttgart",
+   "theme": "9-10-12-9",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Shakhtar Donetsk – Fenerbahçe",
+   "theme": "1-15-11-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Lille – Bayern",
+   "theme": "3-15-10-6",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "PSG – Roma",
+   "theme": "9-10-4-1",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "Ligue des champions",
+   "match": "Sporting – Manchester United",
+   "theme": "9-5-13-2",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "match": "Al Fateh – Al Riyadh",
+   "theme": "13-1-2-3",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "match": "Abha – Al Shabab",
+   "theme": "16-7-6-14",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-26",
+   "championnat": "Arabie saoudite",
+   "match": "Al Faisaly – Al Diriyah",
+   "theme": "1-8-3-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Arabie saoudite",
+   "match": "Al Kholood – Al Khaleej",
+   "theme": "5-16-12-11",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Arabie saoudite",
+   "match": "Al Qadsiah – Al Fayha",
+   "theme": "11-15-10-13",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-27",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ittihad – NEOM",
+   "theme": "5-4-1-16",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Hazem – Al Nassr",
+   "theme": "3-10-9-13",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ettifaq – Al Hilal",
+   "theme": "12-7-15-5",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ahli – Al Taawoun",
+   "theme": "2-12-15-4",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "MLS",
+   "match": "St. Louis – LAFC",
+   "theme": "6-1-11-12",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "MLS",
+   "match": "San Jose – Houston",
+   "theme": "14-9-11-5",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Columbus – Inter Miami",
+   "theme": "14-7-13-13",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Real Salt Lake – Vancouver",
+   "theme": "6-9-2-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Charlotte – Chicago",
+   "theme": "2-1-4-10",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Houston – San Jose",
+   "theme": "13-16-14-13",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Philadelphie – New England",
+   "theme": "3-9-15-8",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "FC Cincinnati – Nashville",
+   "theme": "14-4-11-11",
+   "deux_marquent": "Oui"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "MLS",
+   "match": "LAFC – St. Louis",
+   "theme": "4-13-9-8",
+   "deux_marquent": "Non"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "MLS",
+   "match": "Portland – FC Dallas",
+   "theme": "5-8-4-11",
+   "deux_marquent": "Non"
+  }
+ ]
+}

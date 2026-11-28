@@ -1,0 +1,239 @@
+{
+ "note": "Scores et incidents des matchs du 27/11/2026 de l'archive (lot du 24 au 30, thèmes tirés avant les matchs). Cherchés sur le web le 2026-11-28 : Sky Sports, ESPN, VAVEL, COPE, Goal, Sporza, NOS, sites des clubs, A Bola, Arab News, 365Scores. Penalty et rouge : temps réglementaire ; « Non » = aucune source ne rapporte d'incident alors qu'au moins une décrit le match ; null = sources insuffisantes. R1 = équipe à domicile. Ces matchs n'ont servi à régler aucune règle : ils jugent le moteur à l'aveugle.",
+ "matchs": [
+  {
+   "match": "Nottingham Forest – Chelsea",
+   "date": "2026-11-27",
+   "championnat": "Premier League",
+   "theme": [
+    4,
+    6,
+    2,
+    2
+   ],
+   "score": [
+    3,
+    2
+   ],
+   "penalty": "R1",
+   "rouge": "Non",
+   "source": "penalty de Gibbs-White (51e) après une faute de Fofana sur Delap ; aucun rouge (Sky Sports, VAVEL, ESPN)"
+  },
+  {
+   "match": "Southampton – Middlesbrough",
+   "date": "2026-11-27",
+   "championnat": "Championship",
+   "theme": [
+    12,
+    9,
+    8,
+    11
+   ],
+   "score": [
+    2,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "match tendu : 10 jaunes et 2 pour les staffs, aucun rouge ; « pénalité » de quatre points au classement, pas de penalty (Sky Sports, site du club)"
+  },
+  {
+   "match": "Brest – Paris FC",
+   "date": "2026-11-27",
+   "championnat": "Ligue 1",
+   "theme": [
+    2,
+    15,
+    3,
+    9
+   ],
+   "score": [
+    1,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "but de Zogbé (21e) ; seulement des jaunes, Koleosho et Tousart (Ouest-France, Eurosport)"
+  },
+  {
+   "match": "Levante – Racing Santander",
+   "date": "2026-11-27",
+   "championnat": "Liga",
+   "theme": [
+    9,
+    1,
+    13,
+    1
+   ],
+   "score": [
+    1,
+    3
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "4 jaunes, aucun rouge ni penalty (COPE, VAVEL, ESPN)"
+  },
+  {
+   "match": "Leganés – Sabadell",
+   "date": "2026-11-27",
+   "championnat": "Liga 2",
+   "theme": [
+    8,
+    7,
+    16,
+    2
+   ],
+   "score": [
+    0,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "but de Millán annulé pour hors-jeu ; aucun incident rapporté (COPE, Teleprensa)"
+  },
+  {
+   "match": "Venezia – Bologna",
+   "date": "2026-11-27",
+   "championnat": "Serie A",
+   "theme": [
+    13,
+    7,
+    6,
+    3
+   ],
+   "score": [
+    0,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "« Espulsi : nessuno », but de Halhal annulé par la VAR (Goal, Sky, Virgilio)"
+  },
+  {
+   "match": "Werder Brême – Mönchengladbach",
+   "date": "2026-11-27",
+   "championnat": "Bundesliga",
+   "theme": [
+    10,
+    10,
+    6,
+    14
+   ],
+   "score": [
+    3,
+    3
+   ],
+   "penalty": "R7",
+   "rouge": "Non",
+   "source": "penalty de Diks (27e) après une main ; un second penalty évoqué par une seule source, non confirmé ; aucun rouge (werder.de, Sky, Sportschau)"
+  },
+  {
+   "match": "OH Louvain – Courtrai",
+   "date": "2026-11-27",
+   "championnat": "Belgique",
+   "theme": [
+    15,
+    3,
+    15,
+    14
+   ],
+   "score": [
+    2,
+    2
+   ],
+   "penalty": "R7",
+   "rouge": "Non",
+   "source": "penalty de Koyalipou (54e) ; aucun rouge trouvé (Sporza, Voetbalkrant)"
+  },
+  {
+   "match": "Groningue – Willem II",
+   "date": "2026-11-27",
+   "championnat": "Pays-Bas",
+   "theme": [
+    15,
+    16,
+    8,
+    9
+   ],
+   "score": [
+    1,
+    1
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "but de Prins annulé pour hors-jeu ; aucun incident rapporté (NOS, Voetbalzone)"
+  },
+  {
+   "match": "Marítimo – Nacional",
+   "date": "2026-11-27",
+   "championnat": "Portugal",
+   "theme": [
+    1,
+    1,
+    6,
+    1
+   ],
+   "score": [
+    1,
+    2
+   ],
+   "penalty": "Non",
+   "rouge": "R1",
+   "source": "Romain Correia (Marítimo) expulsé, second jaune ; buteurs différents selon les sources (DNoticias, A Bola, VAVEL)"
+  },
+  {
+   "match": "Al Kholood – Al Khaleej",
+   "date": "2026-11-27",
+   "championnat": "Arabie saoudite",
+   "theme": [
+    5,
+    16,
+    12,
+    11
+   ],
+   "score": [
+    2,
+    1
+   ],
+   "penalty": "R7",
+   "rouge": "Non",
+   "source": "penalty de Joshua King (7e) ; 0 rouge des deux côtés (ESPN, 365Scores) ; 365Scores affiche aussi 0-1, contredit par les autres sources"
+  },
+  {
+   "match": "Al Qadsiah – Al Fayha",
+   "date": "2026-11-27",
+   "championnat": "Arabie saoudite",
+   "theme": [
+    11,
+    15,
+    10,
+    13
+   ],
+   "score": [
+    2,
+    0
+   ],
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "buts d'Al-Ammar (71e) et Abu Al-Shamat (88e) ; aucun incident rapporté (Arab News)"
+  },
+  {
+   "match": "Al Ittihad – NEOM",
+   "date": "2026-11-27",
+   "championnat": "Arabie saoudite",
+   "theme": [
+    5,
+    4,
+    1,
+    16
+   ],
+   "score": [
+    1,
+    0
+   ],
+   "penalty": null,
+   "rouge": null,
+   "source": "but d'En-Nesyri (75e) validé par la VAR ; aucune source sur les cartons ni les penalties"
+  }
+ ]
+}

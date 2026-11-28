@@ -1,0 +1,236 @@
+{
+ "note": "Piste du propriétaire « le vainqueur possède des blocages dans le thème somme », figée le 2026-11-28 avant de consulter tout résultat (matchs restants du 28 au 30 novembre). Victoire annoncée par le thème principal ; figure du vainqueur annoncé bloquée dans le thème somme, celle du perdant libre → victoire renforcée. 161 matchs : 22 victoires sur 27 (jamais vus 5/6), contre 69 sur 105 sinon. outils/somme_fouille.js, outils/figer_somme_blocage.js.",
+ "matchs": [
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "QPR – Sheffield United",
+   "theme": "5-8-2-9",
+   "theme_somme": "16-1-16-2",
+   "vainqueur_annonce": "Sheffield United",
+   "blocage": "Albus bloquée par Puer reproduit par Populus en M1",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "PSG – Lorient",
+   "theme": "9-13-6-7",
+   "theme_somme": "16-6-9-6",
+   "vainqueur_annonce": "PSG",
+   "blocage": "Albus bloquée par Puer reproduit par Populus en M1",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Auxerre – Marseille",
+   "theme": "15-7-12-13",
+   "theme_somme": "16-6-16-12",
+   "vainqueur_annonce": "Auxerre",
+   "blocage": "Carcer bloquée par Rubeus intact en M12",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Lyon – Monaco",
+   "theme": "5-3-4-5",
+   "theme_somme": "16-2-1-4",
+   "vainqueur_annonce": "Monaco",
+   "blocage": "Rubeus bloquée par Albus intact en M8",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Betis – Rayo Vallecano",
+   "theme": "9-7-11-15",
+   "theme_somme": "16-8-7-11",
+   "vainqueur_annonce": "Betis",
+   "blocage": "Laetitia bloquée par Aquisitio en M16",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Valencia – Osasuna",
+   "theme": "3-9-7-12",
+   "theme_somme": "16-5-1-7",
+   "vainqueur_annonce": "Osasuna",
+   "blocage": "Puella bloquée par Conjunctio intact en M8",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Real Sociedad – Séville",
+   "theme": "6-14-9-12",
+   "theme_somme": "16-2-8-9",
+   "vainqueur_annonce": "Real Sociedad",
+   "blocage": "Albus bloquée par Puer reproduit par Populus en M1",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Mallorca – Castellón",
+   "theme": "12-16-10-16",
+   "theme_somme": "16-16-8-10",
+   "vainqueur_annonce": "Mallorca",
+   "blocage": "Albus bloquée par Puer reproduit par Populus en M1",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eldense – Girona",
+   "theme": "10-7-3-7",
+   "theme_somme": "16-16-15-3",
+   "vainqueur_annonce": "Eldense",
+   "blocage": "Fortuna Major bloquée par Fortuna Minor reproduit par Populus en M9",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Torino – Lazio",
+   "theme": "3-11-10-14",
+   "theme_somme": "16-1-7-10",
+   "vainqueur_annonce": "Torino",
+   "blocage": "Carcer bloquée par Rubeus reproduit par Populus en M7",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Udinese – Fiorentina",
+   "theme": "16-2-4-14",
+   "theme_somme": "16-12-8-4",
+   "vainqueur_annonce": "Fiorentina",
+   "blocage": "Populus bloquée par Cauda Draconis reproduit par Populus en M13",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Serie A",
+   "match": "Lecce – Atalanta",
+   "theme": "14-4-8-2",
+   "theme_somme": "16-6-1-8",
+   "vainqueur_annonce": "Atalanta",
+   "blocage": "Laetitia bloquée par Aquisitio en M16",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Serie A",
+   "match": "Cagliari – AC Milan",
+   "theme": "14-16-2-16",
+   "theme_somme": "16-16-16-2",
+   "vainqueur_annonce": "Cagliari",
+   "blocage": "Amissio bloquée par Caput reproduit par Populus en M3",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Hoffenheim – Augsburg",
+   "theme": "11-9-15-8",
+   "theme_somme": "16-1-1-15",
+   "vainqueur_annonce": "Augsburg",
+   "blocage": "Conjunctio bloquée par Tristitia intact en M11",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Union Saint-Gilloise – La Gantoise",
+   "theme": "14-13-3-3",
+   "theme_somme": "16-10-2-3",
+   "vainqueur_annonce": "Union Saint-Gilloise",
+   "blocage": "Via bloquée par Laetitia intact en M3",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "Cambuur – Sparta Rotterdam",
+   "theme": "14-14-7-1",
+   "theme_somme": "16-11-2-7",
+   "vainqueur_annonce": "Cambuur",
+   "blocage": "Via bloquée par Laetitia intact en M3",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "ADO La Haye – Utrecht",
+   "theme": "6-3-5-13",
+   "theme_somme": "16-10-16-5",
+   "vainqueur_annonce": "Utrecht",
+   "blocage": "Carcer bloquée par Rubeus intact en M12",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Kifisia – Kalamata",
+   "theme": "11-8-15-8",
+   "theme_somme": "16-16-1-15",
+   "vainqueur_annonce": "Kalamata",
+   "blocage": "Conjunctio bloquée par Tristitia intact en M11",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Hazem – Al Nassr",
+   "theme": "3-10-9-13",
+   "theme_somme": "16-3-15-9",
+   "vainqueur_annonce": "Al Hazem",
+   "blocage": "Fortuna Minor bloquée par Amissio intact en M15, Amissio en M16",
+   "par_populus": false,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ettifaq – Al Hilal",
+   "theme": "12-7-15-5",
+   "theme_somme": "16-14-9-15",
+   "vainqueur_annonce": "Al Ettifaq",
+   "blocage": "Albus bloquée par Puer reproduit par Populus en M1",
+   "par_populus": true,
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Philadelphie – New England",
+   "theme": "3-9-15-8",
+   "theme_somme": "16-1-1-15",
+   "vainqueur_annonce": "Philadelphie",
+   "blocage": "Aquisitio bloquée par Fortuna Major en M16",
+   "par_populus": false,
+   "resultat": null
+  }
+ ]
+}

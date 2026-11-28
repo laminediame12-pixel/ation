@@ -1,0 +1,34 @@
+{
+ "fige_le": "2026-11-25",
+ "regle": "Terre saturée en M1, M2, M3 et M14 : nul",
+ "matchs": [
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Arsenal – Manchester City",
+   "theme": "7-6-6-15",
+   "appel": "nul (H-NUL-TERRE-M1M2M3-M14)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Derby County – Watford",
+   "theme": "9-2-6-10",
+   "appel": "nul (H-NUL-TERRE-M1M2M3-M14)"
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Betis – Rayo Vallecano",
+   "theme": "9-7-11-15",
+   "appel": "nul (H-NUL-TERRE-M1M2M3-M14)"
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eibar – Burgos",
+   "theme": "4-16-6-6",
+   "appel": "nul (H-NUL-TERRE-M1M2M3-M14)"
+  }
+ ]
+}

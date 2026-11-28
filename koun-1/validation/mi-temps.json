@@ -1,0 +1,85 @@
+[
+ {
+  "themes": [
+   6,
+   15,
+   12,
+   8
+  ],
+  "match": "Inter Miami–Columbus",
+  "date": "2026-11-21",
+  "competition": "MLS",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "provisoire": true,
+  "buts": {
+   "R1": [],
+   "R7": [
+    "9'"
+   ]
+  },
+  "prediction_avant": "but en 1re mi-temps des deux équipes (H-MT-MECANISME, figure Fortuna Major rapide) ; Columbus « bloqué » ; victoire : avantage Columbus, nul possible",
+  "note": "match en cours au moment de la saisie : but de Columbus à la 9e ; mi-temps à confirmer"
+ },
+ {
+  "themes": [
+   3,
+   8,
+   10,
+   4
+  ],
+  "match": "Monaco–Auxerre",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "buts": {
+   "R1": [],
+   "R7": [
+    "29' Faivre"
+   ]
+  },
+  "note": "mi-temps trouvée sur le web (ESPN) ; score final non trouvé"
+ },
+ {
+  "themes": [
+   4,
+   15,
+   15,
+   8
+  ],
+  "match": "Barcelona–Villarreal",
+  "date": "2026-11-22",
+  "competition": "LaLiga",
+  "provisoire": true,
+  "premiers_buts": "R7 (Villarreal) marque les deux premiers buts",
+  "penalty": "R1 (Barcelona), manqué",
+  "note": "mi-temps donnée par le propriétaire (0-2) ; Villarreal marque les deux buts, Barcelone manque un penalty ; score final à compléter",
+  "mi_temps": [
+   0,
+   2
+  ]
+ },
+ {
+  "themes": [
+   9,
+   12,
+   3,
+   1
+  ],
+  "match": "Málaga – Athletic",
+  "date": "2026-11-28",
+  "competition": "Liga",
+  "mi_temps": [
+   1,
+   4
+  ],
+  "provisoire": false,
+  "score_final": null,
+  "note": "fourni par le propriétaire le 2026-11-28 : « Málaga, première mi-temps, il est mené 4-1 » ; mi-temps définitive, score final pas encore connu. Le moteur annonçait la victoire de Málaga (seul R7 marque, mais R1 garde l'avantage du domicile), non confirmée (cycle de 4 dont un thème annonce Athletic) ; Athletic marque (assuré), but d'Athletic en 1re mi-temps, ≈ 4,3 buts."
+ }
+]

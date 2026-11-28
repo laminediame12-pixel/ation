@@ -1,0 +1,159 @@
+{
+ "note": "Prédictions figées le 2026-11-27 AVANT de chercher les incidents de ces matchs (déjà joués, incidents inconnus de nous). Règle testée : rouge — le front de R7 attaque celui de R1 → pas de rouge ; sinon pôle bloqué → rouge probable ; sinon sans indice. Penalty : arrêt → possible.",
+ "matchs": [
+  {
+   "date": "2026-11-22",
+   "match": "Burnley – Blackburn",
+   "theme": "4-16-15-9",
+   "rouge": "pas de rouge (le front de R7 attaque celui de R1)",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-24",
+   "match": "Como – AEK",
+   "theme": "5-13-11-11",
+   "rouge": "rouge probable (pôle bloqué)",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-24",
+   "match": "St. Louis – LAFC",
+   "theme": "6-1-11-12",
+   "rouge": "sans indice",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Abha – Al Shabab",
+   "theme": "16-7-6-14",
+   "rouge": "sans indice",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Al Faisaly – Al Diriyah",
+   "theme": "1-8-3-4",
+   "rouge": "rouge probable (pôle bloqué)",
+   "penalty": "penalty possible (2 arrêts)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Al Fateh – Al Riyadh",
+   "theme": "13-1-2-3",
+   "rouge": "pas de rouge (le front de R7 attaque celui de R1)",
+   "penalty": "penalty possible (2 arrêts)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Beşiktaş – Hapoel Beer-Sheva",
+   "theme": "10-14-12-16",
+   "rouge": "pas de rouge (le front de R7 attaque celui de R1)",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Celta Vigo – Bournemouth",
+   "theme": "7-1-4-7",
+   "rouge": "pas de rouge (le front de R7 attaque celui de R1)",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Crystal Palace – Real Sociedad",
+   "theme": "9-12-13-11",
+   "rouge": "rouge probable (pôle bloqué)",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Dinamo Zagreb – Leverkusen",
+   "theme": "3-10-13-12",
+   "rouge": "sans indice",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Ferencváros – Celje",
+   "theme": "12-9-5-5",
+   "rouge": "pas de rouge (le front de R7 attaque celui de R1)",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Hoffenheim – Sturm Graz",
+   "theme": "5-10-4-11",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Juventus – Omonia",
+   "theme": "1-2-4-11",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Marseille – Levski Sofia",
+   "theme": "16-3-6-2",
+   "rouge": "rouge probable (pôle bloqué)",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "NEC Nimègue – Rennes",
+   "theme": "8-9-9-5",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "OFI Crète – Anderlecht",
+   "theme": "11-11-15-1",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Olympiacos – AC Milan",
+   "theme": "7-11-6-1",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Salzbourg – Ararat-Armenia",
+   "theme": "11-11-12-9",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Sparta Prague – AZ Alkmaar",
+   "theme": "1-9-5-12",
+   "rouge": "sans indice",
+   "penalty": "sans indice"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Sunderland – Jagiellonia",
+   "theme": "1-13-3-16",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Torreense – Celtic",
+   "theme": "14-3-14-4",
+   "rouge": "sans indice",
+   "penalty": "penalty possible (1 arrêt)"
+  },
+  {
+   "date": "2026-11-26",
+   "match": "Viktoria Plzeň – Benfica",
+   "theme": "12-6-15-10",
+   "rouge": "sans indice",
+   "penalty": "sans indice"
+  }
+ ]
+}

@@ -1,0 +1,61 @@
+{
+ "note": "Sept matchs « assurés » demandés par le propriétaire, figés le 2026-11-28 à 08 h 36 UTC, avant les matchs. Action assurée : le pôle désigné seul par M3+M7+M11, que le verdict fait marquer et désigne vainqueur, marque — 41 fois sur 43 sur les 160 matchs (10 sur 10 sur les matchs jamais vus du 26 et du 27). Choisis parmi les 13 matchs restants dans ce cas : ceux où au moins trois signaux concordent. La victoire n'est pas assurée : dans ce cas le vainqueur annoncé a gagné 27 fois sur 43. Chance que les sept actions passent toutes, à 95 % chacune : environ 70 %. outils/liste_archive.js (validation/verdicts-archive.html).",
+ "matchs": [
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Leeds – Coventry",
+   "action_assuree": "Leeds marque",
+   "autres_signaux": "victoire Leeds ; but en 1re mi-temps ; pas de nul",
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Derby County – Watford",
+   "action_assuree": "Watford marque",
+   "autres_signaux": "victoire Watford ; but en 1re mi-temps ; pas de rouge ; pas de nul",
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Frosinone – Parma",
+   "action_assuree": "Frosinone marque",
+   "autres_signaux": "victoire Frosinone ; but en 1re mi-temps ; pas de nul",
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Stuttgart – Eintracht Francfort",
+   "action_assuree": "Eintracht Francfort marque",
+   "autres_signaux": "victoire Eintracht Francfort ; but en 1re mi-temps ; pas de nul",
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ettifaq – Al Hilal",
+   "action_assuree": "Al Ettifaq marque",
+   "autres_signaux": "victoire Al Ettifaq ; but en 1re mi-temps",
+   "resultat": null
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Real Salt Lake – Vancouver",
+   "action_assuree": "Real Salt Lake marque",
+   "autres_signaux": "victoire Real Salt Lake ; but en 1re mi-temps",
+   "resultat": null
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Fribourg – RB Leipzig",
+   "action_assuree": "Fribourg marque",
+   "autres_signaux": "victoire Fribourg ; but en 1re mi-temps ; pas de nul",
+   "resultat": null
+  }
+ ]
+}

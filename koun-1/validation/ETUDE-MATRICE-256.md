@@ -1,0 +1,104 @@
+# Déchiffrage de la matrice des 256 combinaisons (propriétaire, 2026-11-27), vérifié par le calcul
+
+Matrice : figure g (ligne) posée en maison h (colonne) → résultante g + h (niveau par niveau : identiques → 2, différents → 1).
+
+1. **La saturation Terre saute une maison, sauf en 6–7 et 14–15** — exact. La Terre de la résultante est saturée quand la figure et la maison ont la même Terre.
+   Or la Terre des figures-maisons suit M1 1, M2 2, M3 1, M4 2, M5 1, M6 2, **M7 2**, M8 1, M9 2, M10 1, M11 2, M12 1, M13 2, M14 1, **M15 1**, M16 2 :
+   elle alterne partout, sauf entre M6 et M7 (Amissio, Rubeus : 2, 2) et entre M14 et M15 (Puella, Aquisitio : 1, 1). Toutes les lignes ont donc le même
+   rythme décalé (ex. Puer : B·B·B··B·B·B·BB·).
+2. **Toute figure chez elle est saturée à tous les niveaux** — exact : g + g = Populus (diagonale).
+3. **En M15, 4 saturées en Terre et 4 non** — à corriger : chaque colonne, M15 comprise, a 8 figures saturées en Terre et 8 non (celles qui ont la même
+   Terre que la figure de la maison). Par front, c'est 2 et 2 : c'est peut-être ce que donne le compte de 4.
+4. **Trajectoires** — exact et général : chaque figure apparaît une seule fois par ligne et une seule fois par colonne (la matrice est un carré latin).
+   La trajectoire de la résultante X est l'ensemble des 16 cases « g en maison g + X ».
+   - **Populus** : la diagonale, chaque figure chez elle ; tous les niveaux saturés, entièrement actif.
+   - **Via** : chaque figure posée dans la maison de son opposé (tous les niveaux inversés : Puer → M4, Laetitia → M3, Caput → M2, Albus → M1, Via → M16,
+     Amissio → M15, Rubeus → M14, Tristitia → M13, Fortuna Minor → M12, Carcer → M11, Conjunctio → M10, Fortuna Major → M9, Cauda → M8, Puella → M7,
+     Aquisitio → M6, Populus → M5). Aucun niveau saturé : trajectoire inactive.
+   - Les 14 autres trajectoires sont actives sur les niveaux saturés de leur figure (ex. Cauda : Terre seule ; Tristitia : Feu, Air, Eau).
+
+## Fouille sur les matchs (126 matchs, outils/fouille_matrice.js) — étude en cours
+- **Activité totale du thème** (niveaux saturés des résultantes M1–M15) : plus elle est haute, moins il y a de buts — ≤ 26 : 3,89 buts ; ≥ 33 : 3,06 ;
+  même sens à l'aveugle (3,54 contre 2,82).
+- **Ruptures 6-7 et 14-15** : quand la Terre de la résultante est identique de part et d'autre des deux ruptures, moins de buts — 0 rupture identique :
+  3,83 ; 2 : 2,97 ; aveugle 3,47 contre 2,70.
+- **Front du pôle qui concrétise le plus la Terre** : gagne 38, perd 21, marque 2,18 contre 1,41 ; à l'aveugle 8 victoires sur 17 seulement.
+- **Maison du pôle la plus active** : gagne 42, perd 34 ; à l'aveugle 14 sur 22.
+- Cases inactives (Via) et cases pleines (Populus) : pas de lien net avec buts ou nul.
+
+## Lois exactes de la matrice (déchiffrage, 2026-11-27)
+1. **Le front d'une figure, ce sont ses niveaux Feu et Air** : A = Feu 1, Air 1 (Puer, Via, Fortuna Minor, Cauda) ; B = Feu 1, Air 2 (Laetitia, Amissio,
+   Carcer, Puella) ; C = Feu 2, Air 1 (Caput, Rubeus, Conjunctio, Aquisitio) ; D = Feu 2, Air 2 (Albus, Tristitia, Fortuna Major, Populus).
+   Eau et Terre donnent la place de la figure dans son front.
+2. **Les deux points du haut de chaque case (Feu, Air) ne dépendent que des deux fronts** : la matrice est faite de 16 blocs de 4 × 4, chacun d'un seul front
+   de résultante. Même front → résultante du front D (Feu et Air saturés) ; D est neutre (D + X = X) ; A + B = C, A + C = B, B + C = A.
+   Feu saturé ⇔ même Feu (A et B entre eux, C et D entre eux) ; Air saturé ⇔ même Air (A et C, B et D).
+3. **Les deux points du bas (Eau, Terre) ne dépendent que des places dans les fronts.**
+4. **Le miroir (h + 8) inverse la Terre** (et aucun autre niveau) — toujours, pour les 16 figures (la somme f + (f + 8) est toujours Tristitia).
+   Donc une figure n'a jamais la même Terre de résultante en M h et en M h + 8 : la moitié droite de la matrice (M9–M16) est la moitié gauche avec la Terre inversée.
+5. **Pourquoi la Terre « saute une maison » sauf en 6-7 et 14-15** : Terre des figures-maisons M1 à M8 = 1 2 1 2 1 2 2 1 ; par la loi 4, M9 à M16 = 2 1 2 1 2 1 1 2.
+   La rupture 6-7 de la première moitié est recopiée par le miroir en 14-15 : il n'y en a que deux, à 8 maisons d'écart.
+6. **Front direct (f + 4) : il inverse toujours l'Eau** (et la Terre une fois sur deux) ; le binôme (± 2), l'antagoniste (− 3) et l'orbite (+ 6) prennent
+   3 à 5 formes selon la figure : seul le miroir est une loi pure.
+7. **Attaques de fronts relues** : A + D = A (Feu et Air bloqués), B + A = C (Feu passe), D + C = C (Feu passe), C + B = A (rien ne passe en Feu/Air) :
+   c'est pourquoi l'Air ne survit jamais à une attaque.
+
+## Précision du propriétaire : le miroir inverse la Terre vers le front suivant ; la Terre relie les 4 fronts (vérifié)
+- Dans la grille des nœuds, chaque colonne est un front (A : colonne Feu, B : Air, C : Eau, D : Terre) et la **rangée Terre M13, M14, M15, M16 traverse
+  les quatre fronts** (M13 A, M14 B, M15 C, M16 D) : c'est elle qui relie les 4 fronts.
+- Dans la boucle d'un front (carte en croix : f → f + 4 → f + 8 → f + 12), le canal Terre part de f vers son front direct f + 4, et du miroir f + 8 vers f + 12 :
+  la Terre inversée par le miroir passe ainsi au front suivant (f + 12).
+- Terre des figures au repos dans chaque boucle : A 1 1 | 2 2 ; B 2 2 | 1 1 ; C 1 2 | 2 1 ; D 2 1 | 1 2. Les deux paires reliées par le canal Terre
+  (f, f + 4) et (f + 8, f + 12) sont toujours l'inverse l'une de l'autre (loi du miroir). Au repos, le canal Terre est **lié** dans les fronts A et B
+  (même Terre des deux côtés) et **en arrêt** dans les fronts C et D (Terres opposées).
+
+## Nœuds où deux canaux identiques se croisent : M1 (Feu²), M6 (Air²), M11 (Eau²) — outils/noeuds_doubles.js
+- **Structure** : un seul niveau décide du nœud ; il est plein ou vide, jamais « mixte » (son poids est double : un niveau compte pour les deux canaux).
+  Dans la matrice, chacun est plein pour 8 figures sur 16 (celles qui ont le même niveau que la figure de la maison).
+- Lien avec la « double concordance » du propriétaire : M1 plein ⇔ Feu actif (1) en base de M1 ; M11 plein ⇔ Eau active en base de M11 (les maisons
+  Puer et Conjunctio ont ce niveau à 1). En M6, la maison Amissio a l'Air à 2 : M6 plein ⇔ Air saturé en base, pas actif.
+- **Sur 126 matchs** : M11 (Eau²) plein → 3,80 buts contre 2,98 vide, même sens à l'aveugle (3,40 contre 2,90). M1 et M6 : pas d'effet (3,32 / 3,60 ; 3,43 / 3,47).
+  Nombre de nœuds doubles pleins : 0 → 2,80 buts, 1 → 3,42, 2 → 3,53, 3 → 3,57. Pôle posé sur un nœud double plein : 10 victoires, 11 défaites ;
+  sur un nœud vide : 12 victoires, 6 défaites (petits effectifs).
+
+## Nœuds doubles et marquage (outils/noeuds_doubles_marquage.js)
+- Les deux marquent (56 % en général) : M11 plein 61 % contre 49 % (aveugle 56 % contre 43 %) ; M6 plein 62 % contre 48 % (aveugle 52 % contre 48 %) ;
+  M1 plein 54 % contre 58 % ; M16 (Terre de la base) 54 % contre 57 %. Buts : M11 3,80 / 2,98 ; M1, M6, M16 sans écart.
+- Le pôle et le nœud double de son front (M1 → A, M6 → B, M11 → C, M16 → D) : plein, il marque 81 % (corpus) et 76 % (aveugle) ; vide, 75 % et 73 %.
+- Le pôle et le nœud double de la colonne de sa maison : 77 % dans les deux cas.
+
+## Précision du propriétaire : dans les 15 nœuds, le front prend les deux premiers (Feu, Air), la figure miroir prend les deux autres (Eau, Terre) — vérifié
+- Les 4 figures d'un front ont toujours le même Feu et le même Air : le front, ce sont les deux premiers niveaux (loi 1).
+- Ce qui les distingue est porté par l'Eau et la Terre : la figure et son miroir (f + 8) ne diffèrent que par la Terre ; la figure et son front direct (f + 4)
+  diffèrent par l'Eau (et la Terre une fois sur deux). Ex. Puer 1121, miroir Fortuna Minor 1122, front direct Via 1111.
+
+## M11 dans la cartographie des fronts et le marquage des pôles (outils/m11_cartographie.js)
+- Dans la croix d'un front z, le nœud M11 (Eau × Eau) croise le canal Eau de la branche droite (maison z + 5, front direct) et celui de la branche basse
+  (maison z + 9, miroir). Un pôle touche M11 quand sa figure est l'une de ces deux branches (figures 5 à 12).
+- Le pôle touche M11 : marque 85 % (corpus) et 77 % (aveugle) contre 70 % et 72 %. Avec son canal Eau saturé : 91 % sur le corpus mais 67 % à l'aveugle.
+  Nœud M11 de la croix de son front plein : 77 % / 64 % contre 79 % / 79 %. Touche M11 et nœud plein : 92 % / 69 % contre 76 % / 76 %.
+- Correction du propriétaire : à Juventus, Albus, front direct de Populus (R1), loge en M11 (plein) — R1 y marque, R7 non. Sur 252 pôles : pôle ou front
+  direct logé en M11 plein → marque 78 % (corpus) et 78 % (aveugle) contre 78 % et 75 % ; logé en M11 sans condition : 76 % / 81 % contre 79 % / 74 % ;
+  étendu aux quatre nœuds doubles : 72 % / 72 % contre 82 % / 76 %.
+
+## Revue complète de la matrice : ce qu'on n'avait pas vu (2026-11-27, vérifié par le calcul)
+1. **Symétrie** : la matrice est symétrique. Figure g en maison h = figure h en maison g (Caput en M12 = Fortuna Major en M3).
+2. **Activité des 256 cases** : 16 cases à 4 niveaux saturés (Populus), 64 à 3, 96 à 2, 64 à 1, 16 à 0 (Via).
+3. **Une figure dans les maisons de son propre front tombe toujours dans le noyau Terre**, et la place décide de la phase :
+   chez elle → **Populus** (équilibre concrétisé) ; dans la maison de son miroir (g + 8) → **toujours Tristitia** (équilibre en suspens) ;
+   dans la maison de son front direct ou de l'inverse (g ± 4) → **Albus ou Fortuna Major** (équilibre stable).
+4. **La relation des fronts décide du front de la résultante** :
+   même front → front D (noyau Terre : Albus, Tristitia, Fortuna Major, Populus) ;
+   **fronts alliés (A/C, B/D) → front B : Laetitia et le triplet mobile (Amissio, Carcer, Puella)** ;
+   relation d'attaque (A/D, B/A, D/C, C/B) → front A ou C.
+   Le « mobile » de la règle du noyau Terre naît donc des placements en front allié, l'« équilibre » des placements dans son propre front.
+5. **Arrêts** (g dans la maison g + 3) : la résultante ne prend que cinq formes — Via, Caput, Puer, Conjunctio, Cauda.
+6. **M16 ne transforme rien** (g en M16 = g), et Populus posé dans une maison reproduit la figure de cette maison.
+
+## Lecture structurelle noyau / mobile et le nul (outils/noyau_mobile_structure.js) — 126 matchs, 21 % de nuls
+- Maisons en équilibre (base du même front que la maison) ou mobiles (base en front allié) : pas de lien régulier avec le nul (11 % à 33 % sans ordre).
+  Phase structurelle équilibre 17/72 (24 %) contre mobile 10/54 (19 %).
+- **Équilibre en suspens** (base dans la maison de son miroir → Tristitia) : 2 ou plus → 10 nuls sur 36 (28 %), **aveugle 7 sur 14** ; 0 ou 1 → 17 sur 90 (19 %),
+  aveugle 5 sur 32.
+- **Équilibre concrétisé** (base chez elle → Populus) : 2 ou plus → 5 nuls sur 34 (15 %) ; 3 → 1 sur 11.
+- Mise à la place du signe « noyau Terre » de la convergence du nul : corrélation 0,356 → 0,326 (moins bien) ; non retenue.

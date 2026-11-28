@@ -1,0 +1,31 @@
+{
+ "note": "Scores trouvés sur le web le 2026-11-23 pour les matchs dont les appels étaient figés avant le coup d'envoi (predictions-20-25-novembre-v3 et hypothèses posées avant les scores). Ces matchs n'ont servi à construire aucune règle. Sources : bloooog.it, unionesarda.it, fcinter1908.it (Serie A) ; psg.fr, eurofootnews.net (Ligue 1) ; laliga.com (Liga) ; ESPN (Premier League, Écosse) ; bundesliga.com, sportschau.de (Bundesliga) ; whoscored.com, betexplorer.com, sofascore.com (Belgique) ; AP via lanacion.com.ar (MLS).",
+ "matchs": [
+  {"match": "Kilmarnock – Aberdeen", "theme": [4, 10, 7, 9], "score": [2, 4], "mi_temps": [1, 3]},
+  {"match": "Lens – Toulouse", "theme": [12, 8, 10, 16], "score": [1, 1]},
+  {"match": "Monaco – Auxerre", "theme": [3, 8, 10, 4], "score": [1, 1], "mi_temps": [0, 1]},
+  {"match": "Eintracht Francfort – Hoffenheim", "theme": [3, 6, 9, 1], "score": [1, 0], "penalty": "R1 et R7 (tous deux manqués)", "rouge": "R7"},
+  {"match": "Zulte Waregem – Royal Antwerp", "theme": [2, 13, 9, 16], "score": [2, 2]},
+  {"match": "Charleroi – Sint-Truiden", "theme": [3, 7, 10, 5], "score": [2, 2], "rouge": "R1 (2) et R7 (1)"},
+  {"match": "Genk – La Louvière", "theme": [13, 10, 14, 13], "score": [3, 0]},
+  {"match": "New England – Philadelphie", "theme": [13, 7, 13, 4], "score": [2, 0]},
+  {"match": "FC Dallas – Portland", "theme": [1, 12, 13, 12], "score": [3, 0]},
+  {"match": "Inter Miami – Columbus", "theme": [6, 15, 12, 8], "score": [0, 3]},
+  {"match": "Hull City – Brighton", "theme": [12, 12, 2, 11], "score": [2, 0]},
+  {"match": "Liverpool – Manchester United", "theme": [1, 3, 4, 12], "score": [4, 0]},
+  {"match": "Barcelona – Villarreal", "theme": [4, 15, 15, 8], "score": [3, 2], "mi_temps": [0, 2], "penalty": "R1 (manqué)"},
+  {"match": "Racing – Real Sociedad", "theme": [11, 16, 12, 9], "score": [3, 2]},
+  {"match": "Osasuna – Málaga", "theme": [10, 10, 9, 5], "score": [1, 0]},
+  {"match": "Getafe – Atlético", "theme": [2, 13, 3, 4], "score": [0, 3]},
+  {"match": "Paris FC – Angers", "theme": [4, 2, 15, 8], "score": [4, 0]},
+  {"match": "Lorient – Rennes", "theme": [5, 10, 9, 11], "score": [1, 1]},
+  {"match": "Marseille – Le Mans", "theme": [2, 12, 14, 15], "score": [2, 3]},
+  {"match": "Bologna – Udinese", "theme": [5, 13, 3, 7], "score": [1, 1]},
+  {"match": "Sassuolo – Genoa", "theme": [3, 15, 7, 11], "score": [0, 2]},
+  {"match": "Juventus – Venezia", "theme": [9, 9, 2, 13], "score": [4, 0], "mi_temps": [0, 0], "penalty": "R1"},
+  {"match": "AC Milan – Frosinone", "theme": [2, 12, 6, 7], "score": [5, 1]},
+  {"match": "Atalanta – Inter", "theme": [9, 13, 13, 7], "score": [4, 4], "penalty": "R1 et R7"},
+  {"match": "Augsburg – Mainz", "theme": [2, 2, 5, 9], "score": [3, 1], "mi_temps": [2, 0]},
+  {"match": "Werder Brême – Hambourg", "theme": [6, 5, 15, 8], "score": [4, 0], "mi_temps": [0, 0]}
+ ]
+}

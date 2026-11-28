@@ -1,0 +1,1543 @@
+[
+ {
+  "themes": [
+   8,
+   5,
+   11,
+   7
+  ],
+  "match": "8·5·11·7",
+  "score": [
+   7,
+   0
+  ],
+  "lot": "dev",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "RAS : ni penalty ni rouge (propriétaire, 2026-11-21) ; équipes et date à préciser"
+ },
+ {
+  "themes": [
+   9,
+   13,
+   2,
+   13
+  ],
+  "match": "équipes et date à préciser",
+  "score": [
+   2,
+   0
+  ],
+  "lot": "dev",
+  "but_mt1": true,
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   5,
+   14,
+   6,
+   14
+  ],
+  "match": "5·14·6·14",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "dev",
+  "but_mt1": true
+ },
+ {
+  "themes": [
+   7,
+   5,
+   9,
+   6
+  ],
+  "match": "7·5·9·6",
+  "score": [
+   4,
+   0
+  ],
+  "lot": "dev",
+  "but_mt1": true
+ },
+ {
+  "themes": [
+   13,
+   12,
+   8,
+   15
+  ],
+  "match": "13·12·8·15",
+  "score": [
+   0,
+   3
+  ],
+  "lot": "dev",
+  "but_mt1": false
+ },
+ {
+  "themes": [
+   4,
+   7,
+   5,
+   8
+  ],
+  "match": "4·7·5·8",
+  "score": [
+   1,
+   0
+  ],
+  "lot": "dev",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "RAS : ni penalty ni rouge (propriétaire, 2026-11-21) ; équipes et date à préciser"
+ },
+ {
+  "themes": [
+   4,
+   7,
+   10,
+   10
+  ],
+  "match": "Westerlo–Charleroi",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "dev",
+  "date": "2026-02-22",
+  "rouge": "Non",
+  "penalty": "Non",
+  "note": "score déjà dans le corpus (lot dev) ; équipes, date et incidents précisés par le propriétaire le 2026-11-21 : RAS, ni penalty ni rouge"
+ },
+ {
+  "themes": [
+   4,
+   1,
+   6,
+   7
+  ],
+  "match": "Los Angeles–Inter Miami",
+  "score": [
+   3,
+   0
+  ],
+  "lot": "dev",
+  "date": "2026-02-22",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   4,
+   6,
+   7,
+   16
+  ],
+  "match": "Paris–Marseille",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "dev",
+  "date": "2026-02-08",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   2,
+   9,
+   6,
+   5
+  ],
+  "match": "Nice–Lorient",
+  "score": [
+   3,
+   3
+  ],
+  "lot": "dev",
+  "fusion": [
+   "entrée en double fusionnée le 2026-11-21 (même score)",
+   "entrée en double fusionnée le 2026-11-21 (même score)"
+  ]
+ },
+ {
+  "themes": [
+   12,
+   6,
+   1,
+   9
+  ],
+  "match": "12·6·1·9",
+  "score": [
+   1,
+   2
+  ],
+  "lot": "dev",
+  "but_mt1": false
+ },
+ {
+  "themes": [
+   13,
+   7,
+   3,
+   13
+  ],
+  "match": "13·7·3·13",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "dev",
+  "but_mt1": false
+ },
+ {
+  "themes": [
+   2,
+   12,
+   15,
+   14
+  ],
+  "match": "Argentine–Costa Rica",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   11,
+   13,
+   9,
+   13
+  ],
+  "match": "Niger–Maroc",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   13,
+   4,
+   15,
+   7
+  ],
+  "match": "Rome–Chelsea",
+  "score": [
+   4,
+   3
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   9,
+   11,
+   8,
+   7
+  ],
+  "match": "Allemagne–Pays Bas",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   6,
+   3,
+   2
+  ],
+  "match": "Soudan–Sénégal",
+  "score": [
+   2,
+   4
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   3,
+   6,
+   5,
+   3
+  ],
+  "match": "France–Turquie",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   1,
+   7,
+   3,
+   4
+  ],
+  "match": "Belgique–Italie",
+  "score": [
+   4,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   15,
+   13,
+   7,
+   8
+  ],
+  "match": "Atletico Madrid–Borussia Dortmund",
+  "score": [
+   3,
+   4
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   7,
+   16,
+   3,
+   12
+  ],
+  "match": "Paris Saint-Germain–Real Madrid",
+  "score": [
+   4,
+   5
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   10,
+   3,
+   2
+  ],
+  "match": "Roma–Bayern Munich",
+  "score": [
+   3,
+   5
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   6,
+   11,
+   14,
+   11
+  ],
+  "match": "Juventus–Olympique Lyonnais",
+  "score": [
+   6,
+   4
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   1,
+   6,
+   13,
+   15
+  ],
+  "match": "Paris Saint-Germain–Bayern Munich",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   14,
+   10,
+   15
+  ],
+  "match": "Liverpool–Manchester City",
+  "score": [
+   6,
+   2
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   6,
+   8,
+   8,
+   11
+  ],
+  "match": "Al Hazem–Al Ettifaq",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "lot",
+  "date": "2026-02-27"
+ },
+ {
+  "themes": [
+   10,
+   2,
+   12,
+   3
+  ],
+  "match": "Potosí–Bolívar",
+  "score": [
+   1,
+   3
+  ],
+  "lot": "lot",
+  "date": "2026-02-23"
+ },
+ {
+  "themes": [
+   14,
+   9,
+   16,
+   9
+  ],
+  "match": "Zurich–Lucerne",
+  "date": "2026-02-14",
+  "score": [
+   1,
+   4
+  ],
+  "lot": "lot",
+  "rouge": "R7",
+  "penalty": null
+ },
+ {
+  "themes": [
+   1,
+   3,
+   15,
+   4
+  ],
+  "match": "équipes à préciser",
+  "date": "2026-11-20",
+  "score": [
+   4,
+   2
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   12,
+   8,
+   10,
+   3
+  ],
+  "match": "Seattle–Salt Lake",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot",
+  "date": "2026-11-20",
+  "heure": "03:30"
+ },
+ {
+  "themes": [
+   5,
+   1,
+   10,
+   10
+  ],
+  "match": "Austin–Minnesota",
+  "score": [
+   2,
+   2
+  ],
+  "lot": "lot",
+  "date": "2026-02-22"
+ },
+ {
+  "themes": [
+   10,
+   12,
+   12,
+   15
+  ],
+  "match": "Tijuana–Pumas",
+  "date": "2026-02-28",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   2,
+   12,
+   4,
+   4
+  ],
+  "match": "Bayern Munich–Hoffenheim",
+  "date": "2026-02-18",
+  "score": [
+   5,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   3,
+   10,
+   3,
+   1
+  ],
+  "match": "Tigres UANL–Pachuca",
+  "score": [
+   1,
+   2
+  ],
+  "lot": "lot",
+  "date": "2026-02-22"
+ },
+ {
+  "themes": [
+   12,
+   14,
+   8,
+   10
+  ],
+  "match": "Napoli–Côme",
+  "date": "2026-02-10",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   2,
+   6,
+   7,
+   9
+  ],
+  "match": "équipes et date à préciser",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "lot"
+ },
+ {
+  "themes": [
+   16,
+   1,
+   8,
+   14
+  ],
+  "match": "Troyes–Le Havre",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "incident",
+  "rouge": "R7",
+  "penalty": "R1",
+  "note": "fourni par le propriétaire le 2026-11-21 ; Troyes (R1) 3-1 Le Havre (R7), penalty R1, rouge R7 ; H-REPOS appelait R7 (faux) ; détails Sofascore fournis le 2026-11-21 : mi-temps 1-1, penalty Troyes à 90'+8, rouge Le Havre en fin de match",
+  "date": "2026-11-20",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "19' A. Mille",
+    "69' A. Mille",
+    "90'+8 R. Ripart (penalty)"
+   ],
+   "R7": [
+    "3' J. Maja"
+   ]
+  },
+  "competition": "Ligue 1 (France), journée 11, 20/11/2026 19:45"
+ },
+ {
+  "themes": [
+   5,
+   3,
+   16,
+   11
+  ],
+  "match": "Orlando City–Cincinnati",
+  "date": "2026-11-20",
+  "score": [
+   1,
+   3
+  ],
+  "lot": "incident",
+  "rouge": "Non",
+  "penalty": "R7",
+  "note": "détails Sofascore fournis le 2026-11-21 : mi-temps 1-1, penalty Cincinnati à 43', aucun carton rouge ; date corrigée (20/11 et non 22/11)",
+  "mi_temps": [
+   1,
+   1
+  ],
+  "buts": {
+   "R1": [
+    "26' M. Ojeda"
+   ],
+   "R7": [
+    "43' Evander (penalty)",
+    "50' Evander",
+    "85' S. Gidi"
+   ]
+  },
+  "competition": "MLS, playoffs, Wild Card Round, 20/11/2026 00:30"
+ },
+ {
+  "themes": [
+   1,
+   2,
+   6,
+   15
+  ],
+  "match": "équipes à préciser",
+  "score": [
+   5,
+   0
+  ],
+  "lot": "decisif",
+  "rouge": null,
+  "penalty": null,
+  "note": "5-0 fourni par le propriétaire le 2026-11-21 ; thème absent du corpus avant ce message ; incidents non précisés"
+ },
+ {
+  "themes": [
+   16,
+   7,
+   12,
+   8
+  ],
+  "match": "Dundee–Hearts",
+  "date": "2026-11-21",
+  "competition": "Écosse, Scottish Premiership, journée 14",
+  "score": [
+   0,
+   8
+  ],
+  "mi_temps": [
+   0,
+   4
+  ],
+  "lot": "incident",
+  "rouge": "R1",
+  "penalty": null,
+  "buts": {
+   "R1": [],
+   "R7": [
+    "23' S. Kerjota",
+    "79' S. S. Guendouz",
+    "81' S. Kerjota",
+    "89' S. Findlay",
+    "+4 buts (dont un contre son camp en 1re mi-temps)"
+   ]
+  },
+  "note": "capture Sofascore fournie le 2026-11-21 ; mi-temps 0-4 et rouge côté Dundee lus sur le graphique Match Momentum ; penalty non visible"
+ },
+ {
+  "themes": [
+   5,
+   10,
+   11,
+   11
+  ],
+  "match": "Napoli–Torino",
+  "date": "2026-11-21",
+  "competition": "Serie A",
+  "score": [
+   1,
+   0
+  ],
+  "mi_temps": [
+   0,
+   0
+  ],
+  "lot": "decisif",
+  "note": "score final et mi-temps fournis par le propriétaire le 2026-11-21 ; incidents non précisés ; prédictions gelées avant le score dans predictions-20-24-novembre.json ; incidents relevés le 2026-11-25 : sportflash24, virgilio : seul but McTominay 73e, un seul carton jaune (Anguissa)",
+  "penalty": "Non",
+  "rouge": "Non"
+ },
+ {
+  "themes": [
+   2,
+   6,
+   2,
+   12
+  ],
+  "match": "Bayern–Cologne",
+  "date": "2026-11-20",
+  "competition": "Bundesliga",
+  "score": [
+   1,
+   1
+  ],
+  "mi_temps": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Moore 12' (Cologne), Brown 37' (Bayern) ; mi-temps 1-1 d'après les buteurs (le propriétaire avait noté 0-1)"
+ },
+ {
+  "themes": [
+   8,
+   7,
+   8,
+   14
+  ],
+  "match": "Athletic–Espanyol",
+  "date": "2026-11-20",
+  "competition": "Liga",
+  "score": [
+   0,
+   1
+  ],
+  "mi_temps": [
+   0,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Roberto Fernández 66'"
+ },
+ {
+  "themes": [
+   9,
+   10,
+   5,
+   1
+  ],
+  "match": "Cercle Bruges–Westerlo",
+  "date": "2026-11-20",
+  "competition": "Belgique",
+  "score": [
+   1,
+   0
+  ],
+  "mi_temps": [
+   0,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Ngoura 71' ; penalty de Cercle arrêté",
+  "penalty": "R1",
+  "rouge": null
+ },
+ {
+  "themes": [
+   2,
+   14,
+   2,
+   16
+  ],
+  "match": "Manchester City–Fulham",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   1,
+   1
+  ],
+  "mi_temps": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "buts": {
+   "R1": [],
+   "R7": [
+    "16'"
+   ]
+  },
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Fotmob : seulement des jaunes (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   3,
+   11,
+   13,
+   1
+  ],
+  "match": "Bournemouth–Nottingham Forest",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   2,
+   0
+  ],
+  "mi_temps": [
+   1,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; mi-temps 1-0 (saisie en cours de match confirmée par le score final)",
+  "buts": {
+   "R1": [
+    "19'"
+   ],
+   "R7": []
+  },
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "ESPN / VAVEL : aucun penalty ni rouge (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   10,
+   11,
+   6,
+   4
+  ],
+  "match": "Millwall–QPR",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   0,
+   1
+  ],
+  "mi_temps": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Madsen 45+1' ; Millwall réduit à dix (rouge)",
+  "penalty": null,
+  "rouge": "R1"
+ },
+ {
+  "themes": [
+   3,
+   10,
+   10,
+   12
+  ],
+  "match": "Chelsea–Leeds",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   1,
+   4
+  ],
+  "mi_temps": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "penalty": "R7",
+  "rouge": "Non",
+  "source_incident": "Sky Sports / ESPN : penalty Calvert-Lewin 53', aucun rouge (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   11,
+   16,
+   4,
+   13
+  ],
+  "match": "Southampton–Derby",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   2,
+   0
+  ],
+  "mi_temps": [
+   0,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Larin 57', Mubama 90+5'"
+ },
+ {
+  "themes": [
+   3,
+   15,
+   10,
+   4
+  ],
+  "match": "Coventry–Crystal Palace",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   3,
+   2
+  ],
+  "mi_temps": [
+   2,
+   2
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; incidents relevés le 2026-11-25 : sportnewsafrica, VAVEL : jaunes Grimes et Pino, pas de rouge, penalty réclamé par Coventry non accordé",
+  "buts": {
+   "R1": [
+    "5'",
+    "30'"
+   ],
+   "R7": [
+    "13'",
+    "45'"
+   ]
+  },
+  "penalty": "Non",
+  "rouge": "Non"
+ },
+ {
+  "themes": [
+   4,
+   6,
+   8,
+   2
+  ],
+  "match": "Union Berlin–Leipzig",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   1,
+   5
+  ],
+  "mi_temps": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Aebischer pour Union avant la pause ; Leipzig 4 buts après la pause",
+  "buts": {
+   "R1": [
+    "18'"
+   ],
+   "R7": [
+    "41'"
+   ]
+  },
+  "penalty": "R7",
+  "rouge": "Non",
+  "source_incident": "Bundesliga.com : penalty Nusa 18' après VAR, aucun rouge (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   10,
+   14,
+   4,
+   13
+  ],
+  "match": "Tottenham–Ipswich",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   2,
+   0
+  ],
+  "mi_temps": [
+   1,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "buts": {
+   "R1": [
+    "15'"
+   ],
+   "R7": []
+  },
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "SNA : six jaunes, aucun rouge, aucun penalty (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   2,
+   16,
+   9,
+   16
+  ],
+  "match": "Aston Villa–Sunderland",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   0,
+   0
+  ],
+  "mi_temps": [
+   0,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "beIN / ESPN : aucun incident (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   10,
+   1,
+   7,
+   13
+  ],
+  "match": "Nice–PSG",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "score": [
+   2,
+   3
+  ],
+  "mi_temps": [
+   1,
+   2
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (ESPN, Sofascore, Sky Sports, bundesliga.com, sporza…) ; Amoura 8', Mayulu 31' (penalty PSG), Doué 32', Ferran Torres 85', Abdi 90+5'",
+  "buts": {
+   "R1": [
+    "8'"
+   ],
+   "R7": [
+    "31'",
+    "32'"
+   ]
+  },
+  "penalty": "R7",
+  "rouge": null
+ },
+ {
+  "themes": [
+   14,
+   12,
+   3,
+   16
+  ],
+  "match": "Stoke–Birmingham",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   1,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   16,
+   2,
+   15,
+   10
+  ],
+  "match": "Middlesbrough–Bristol City",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   2,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   4,
+   13,
+   9,
+   10
+  ],
+  "match": "West Ham–Preston",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; incidents relevés le 2026-11-25 : ESPN : 0 carton rouge ; comptes rendus sans penalty",
+  "penalty": "Non",
+  "rouge": "Non"
+ },
+ {
+  "themes": [
+   1,
+   13,
+   15,
+   4
+  ],
+  "match": "Lincoln–Wrexham",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   1,
+   9,
+   4,
+   15
+  ],
+  "match": "Sheffield United–Watford",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   4,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; Brereton Díaz 5' et 8' (penalty), Ayew 61', Peck en 2e mi-temps (Sky Sports, site du club) : mi-temps 2-0",
+  "mi_temps": [
+   2,
+   0
+  ]
+ },
+ {
+  "themes": [
+   7,
+   2,
+   8,
+   5
+  ],
+  "match": "Bolton–Portsmouth",
+  "date": "2026-11-21",
+  "competition": "Championship",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; 2e mi-temps 0-0 d'après le propriétaire, donc mi-temps 1-1",
+  "mi_temps": [
+   1,
+   1
+  ]
+ },
+ {
+  "themes": [
+   15,
+   8,
+   4,
+   15
+  ],
+  "match": "Celtic–St Mirren",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   4,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "penalty": "R7",
+  "rouge": "Non",
+  "source_incident": "SPFL / Sky : penalty Phillips 68' (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   1,
+   1,
+   11,
+   13
+  ],
+  "match": "Falkirk–St Johnstone",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   11,
+   1,
+   2,
+   16
+  ],
+  "match": "Hibernian–Dundee United",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   0,
+   4
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)"
+ },
+ {
+  "themes": [
+   6,
+   12,
+   11,
+   12
+  ],
+  "match": "Motherwell–Rangers",
+  "date": "2026-11-21",
+  "competition": "Écosse",
+  "score": [
+   1,
+   2
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "mi_temps": [
+   1,
+   1
+  ]
+ },
+ {
+  "themes": [
+   12,
+   4,
+   16,
+   12
+  ],
+  "match": "Alavés–Deportivo",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   3,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "LaLiga / ESPN : aucun incident mentionné (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   11,
+   4,
+   1,
+   13
+  ],
+  "match": "Rayo Vallecano–Valencia",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "LaLiga / 365Scores : aucun incident mentionné (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   5,
+   13,
+   11,
+   11
+  ],
+  "match": "Sevilla–Betis",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   1,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL) ; buteurs : Antony 50' (Betis), Kike Salas 90+1' (Sevilla) (Eurosport, ESPN)",
+  "mi_temps": [
+   0,
+   0
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "El Pespunte : penalty réclamé non accordé, aucun rouge (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   1,
+   2,
+   13,
+   5
+  ],
+  "match": "Real Madrid–Celta",
+  "date": "2026-11-21",
+  "competition": "Liga",
+  "score": [
+   2,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score final trouvé sur le web le 2026-11-21 (SPFL, CBS Sports, ESPN, LaLiga, Sofascore, VAVEL)",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "penalty": "R1",
+  "rouge": "Non",
+  "source_incident": "SI / teleprensa : penalty Mbappé manqué, aucun rouge (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   3,
+   1,
+   15,
+   1
+  ],
+  "match": "Strasbourg–Brest",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "score": [
+   0,
+   1
+  ],
+  "mi_temps": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "Edjouma 22' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Ouest-France)",
+  "penalty": "R1",
+  "rouge": "Non",
+  "source_incident": "Flashscore / Ouest-France : penalty Godo manqué 90+5 (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   9,
+   5,
+   12,
+   10
+  ],
+  "match": "Lille–Lyon",
+  "date": "2026-11-21",
+  "competition": "Ligue 1",
+  "score": [
+   0,
+   1
+  ],
+  "mi_temps": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "Bidstrup 40' ; 2e mi-temps 0-0 (propriétaire), score trouvé sur le web (Flashscore, Footeo)",
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "SNA : aucun rouge (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   11,
+   16,
+   15,
+   15
+  ],
+  "match": "Newcastle–Arsenal",
+  "date": "2026-11-21",
+  "competition": "Premier League",
+  "score": [
+   2,
+   2
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Eze 33' (Arsenal), Barnes 49', Thiaw 62', Madueke 78' (ESPN, VAVEL)",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Sky Sports / Sports Mole : aucun penalty ni rouge mentionné (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   3,
+   16,
+   2,
+   1
+  ],
+  "match": "Schalke–Stuttgart",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   0,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; 0-0 (bundesliga.com)",
+  "mi_temps": [
+   0,
+   0
+  ]
+ },
+ {
+  "themes": [
+   4,
+   16,
+   11,
+   13
+  ],
+  "match": "Leverkusen–Paderborn",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   4,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; bundesliga.com"
+ },
+ {
+  "themes": [
+   16,
+   1,
+   6,
+   14
+  ],
+  "match": "Mönchengladbach–Dortmund",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Nmecha (ESPN ; minute incertaine)"
+ },
+ {
+  "themes": [
+   1,
+   7,
+   5,
+   13
+  ],
+  "match": "Elversberg–Fribourg",
+  "date": "2026-11-21",
+  "competition": "Bundesliga",
+  "score": [
+   0,
+   1
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; bundesliga.com"
+ },
+ {
+  "themes": [
+   10,
+   7,
+   7,
+   13
+  ],
+  "match": "Lazio–Lecce",
+  "date": "2026-11-21",
+  "competition": "Serie A",
+  "score": [
+   3,
+   0
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Noslin, Frattesi (France 24) ; buteurs : Noslin 25', 68', Frattesi 90' (DAZN, Goal)",
+  "mi_temps": [
+   1,
+   0
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Goal : aucun expulsé (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   11,
+   10,
+   2,
+   9
+  ],
+  "match": "Parma–Roma",
+  "date": "2026-11-21",
+  "competition": "Serie A",
+  "score": [
+   1,
+   5
+  ],
+  "lot": "recherche-web",
+  "note": "score trouvé sur le web le 2026-11-22 ; Malen ×4, Mora (France 24) ; buteurs : Malen 39' ; Elphege 54' ; Malen 68', Mora 70-71', Malen 77', 90' (Goal, Il Messaggero, Sportmediaset)",
+  "mi_temps": [
+   0,
+   1
+  ],
+  "penalty": "Non",
+  "rouge": "Non",
+  "source_incident": "Corriere dello Sport : penalty réclamé non accordé (recherche web du 2026-11-22)"
+ },
+ {
+  "themes": [
+   8,
+   7,
+   5,
+   9
+  ],
+  "match": "Orlando City–New York Red Bulls",
+  "date": "2026-02-22",
+  "score": [
+   1,
+   2
+  ],
+  "mi_temps": [
+   0,
+   2
+  ],
+  "lot": "test-2e-MT",
+  "note": "fourni par le propriétaire le 2026-11-22 (Orlando City 1-2 New York Red Bulls, 22/02/2026) : 1re mi-temps 0-2, 2e mi-temps 1-0, final 1-2 ; lecture donnée avant le score (4-5-13-15 : les deux équipes désignées pour la 2e mi-temps ; 1re mi-temps : pas de but ; victoire : avantage R7)",
+  "competition": "MLS"
+ },
+ {
+  "themes": [
+   4,
+   16,
+   15,
+   9
+  ],
+  "match": "4·16·15·9",
+  "date": "2026-11-22",
+  "score": [
+   2,
+   2
+  ],
+  "mi_temps": [
+   1,
+   1
+  ],
+  "penalty": "R7",
+  "rouge": null,
+  "source_incident": "propriétaire, 2026-11-22",
+  "note": "test à l'aveugle de H-FIGURE-COTE (appel posé avant le score) ; équipes non précisées"
+ }
+]

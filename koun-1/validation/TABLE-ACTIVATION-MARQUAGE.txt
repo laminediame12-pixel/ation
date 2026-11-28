@@ -1,0 +1,16 @@
+1 Puer            M1 Feu+Air+Terre ✓ | M2 Feu · | M3 Air+Terre ✓ | M5 Feu+Air+Terre ✓ | M6 Feu · | M7 Air · | M8 Terre ✓ | M9 Feu+Air · | M10 Feu+Terre ✓ | M11 Air · | M12 Terre ✓ | M13 Feu+Air ✓ | M14 Feu+Terre ✓ | M15 Air+Terre ✓
+2 Laetitia        M1 Feu · | M2 Feu ✓ | M5 Feu · | M6 Feu ✓ | M9 Feu ✓ | M10 Feu · | M13 Feu ✓ | M14 Feu ✓
+3 Caput           M1 Air+Terre ✓ | M3 Air+Eau+Terre ✓ | M4 Eau ✓ | M5 Air+Eau+Terre ✓ | M6 Eau · | M7 Air · | M8 Terre ✓ | M9 Air · | M10 Terre ✓ | M11 Air+Eau · | M12 Eau+Terre ✓ | M13 Air+Eau ✓ | M14 Eau+Terre ✓ | M15 Air+Terre ✓
+4 Albus           M3 Eau · | M4 Eau ✓ | M5 Eau · | M6 Eau ✓ | M11 Eau ✓ | M12 Eau ✓ | M13 Eau ✓ | M14 Eau ✓
+5 Via             M1 Feu+Air+Terre ✓ | M2 Feu · | M3 Air+Eau+Terre ✓ | M4 Eau ✓ | M5 Feu+Air+Eau+Terre ✓ | M6 Feu+Eau · | M7 Air · | M8 Terre ✓ | M9 Feu+Air · | M10 Feu+Terre ✓ | M11 Air+Eau · | M12 Eau+Terre ✓ | M13 Feu+Air+Eau ✓ | M14 Feu+Eau+Terre ✓ | M15 Air+Terre ✓
+6 Amissio         M1 Feu · | M2 Feu ✓ | M3 Eau · | M4 Eau ✓ | M5 Feu+Eau · | M6 Feu+Eau ✓ | M9 Feu ✓ | M10 Feu · | M11 Eau ✓ | M12 Eau ✓ | M13 Feu+Eau ✓ | M14 Feu+Eau ✓
+7 Rubeus          M1 Air · | M3 Air · | M5 Air · | M7 Air ✓ | M9 Air ✓ | M11 Air ✓ | M13 Air ✓ | M15 Air ✓
+8 Tristitia       M1 Terre ✓ | M3 Terre ✓ | M5 Terre ✓ | M8 Terre ✓ | M10 Terre ✓ | M12 Terre ✓ | M14 Terre ✓ | M15 Terre ✓
+9 Fortuna Minor   M1 Feu+Air · | M2 Feu ✓ | M3 Air · | M5 Feu+Air · | M6 Feu ✓ | M7 Air ✓ | M9 Feu+Air ✓ | M10 Feu · | M11 Air ✓ | M13 Feu+Air ✓ | M14 Feu ✓ | M15 Air ✓
+10 Carcer         M1 Feu+Terre ✓ | M2 Feu · | M3 Terre ✓ | M5 Feu+Terre ✓ | M6 Feu · | M8 Terre ✓ | M9 Feu · | M10 Feu+Terre ✓ | M12 Terre ✓ | M13 Feu ✓ | M14 Feu+Terre ✓ | M15 Terre ✓
+11 Conjunctio     M1 Air · | M3 Air+Eau · | M4 Eau ✓ | M5 Air+Eau · | M6 Eau ✓ | M7 Air ✓ | M9 Air ✓ | M11 Air+Eau ✓ | M12 Eau ✓ | M13 Air+Eau ✓ | M14 Eau ✓ | M15 Air ✓
+12 Fortuna Major  M1 Terre ✓ | M3 Eau+Terre ✓ | M4 Eau ✓ | M5 Eau+Terre ✓ | M6 Eau · | M8 Terre ✓ | M10 Terre ✓ | M11 Eau · | M12 Eau+Terre ✓ | M13 Eau ✓ | M14 Eau+Terre ✓ | M15 Terre ✓
+13 Cauda Draconis M1 Feu+Air · | M2 Feu ✓ | M3 Air+Eau · | M4 Eau ✓ | M5 Feu+Air+Eau · | M6 Feu+Eau ✓ | M7 Air ✓ | M9 Feu+Air ✓ | M10 Feu · | M11 Air+Eau ✓ | M12 Eau ✓ | M13 Feu+Air+Eau ✓ | M14 Feu+Eau ✓ | M15 Air ✓
+14 Puella         M1 Feu+Terre ✓ | M2 Feu · | M3 Eau+Terre ✓ | M4 Eau ✓ | M5 Feu+Eau+Terre ✓ | M6 Feu+Eau · | M8 Terre ✓ | M9 Feu · | M10 Feu+Terre ✓ | M11 Eau · | M12 Eau+Terre ✓ | M13 Feu+Eau ✓ | M14 Feu+Eau+Terre ✓ | M15 Terre ✓
+15 Aquisitio      M1 Air+Terre ✓ | M3 Air+Terre ✓ | M5 Air+Terre ✓ | M7 Air · | M8 Terre ✓ | M9 Air · | M10 Terre ✓ | M11 Air · | M12 Terre ✓ | M13 Air ✓ | M14 Terre ✓ | M15 Air+Terre ✓
+16 Populus        M1 saturée · | M2 saturée ✓ | M3 saturée · | M4 saturée ✓ | M5 saturée · | M6 saturée ✓ | M7 saturée ✓ | M8 saturée ✓ | M9 saturée ✓ | M10 saturée · | M11 saturée ✓ | M12 saturée ✓ | M13 saturée ✓ | M14 saturée ✓ | M15 saturée ✓

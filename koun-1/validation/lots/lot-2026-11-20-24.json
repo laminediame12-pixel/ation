@@ -1,0 +1,744 @@
+{
+ "nom": "Lot du 20 au 25/11/2026 (6) : 82 matchs, thèmes valides (4 critères, figure du jour) tirés au hasard avant les matchs, sans verdict",
+ "regle": "Un lot ne sert qu'une fois. Score : équipe 1 - équipe 2 (R1 = équipe 1). Matchs de date ou d'adversaire incertains écartés. Complété le 19/11 par 5 matchs de MLS (barrage Orlando–Cincinnati et Seattle–Real Salt Lake, Inter Miami–Columbus, St. Louis–LAFC, San Jose–Houston), dates en heure de Sofascore (UTC).",
+ "matchs": [
+  {
+   "date": "2026-11-20",
+   "championnat": "Bundesliga",
+   "equipe1": "Bayern",
+   "equipe2": "Cologne",
+   "jour": "Vendredi",
+   "theme": "2-6-2-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "Ligue 1",
+   "equipe1": "Troyes",
+   "equipe2": "Le Havre",
+   "jour": "Vendredi",
+   "theme": "16-1-8-14",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "Liga",
+   "equipe1": "Athletic",
+   "equipe2": "Espanyol",
+   "jour": "Vendredi",
+   "theme": "8-7-8-14",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "Belgique",
+   "equipe1": "Cercle Bruges",
+   "equipe2": "Westerlo",
+   "jour": "Vendredi",
+   "theme": "9-10-5-1",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Manchester City",
+   "equipe2": "Fulham",
+   "jour": "Samedi",
+   "theme": "2-14-2-16",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Bournemouth",
+   "equipe2": "Nottingham Forest",
+   "jour": "Samedi",
+   "theme": "3-11-13-1",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Aston Villa",
+   "equipe2": "Sunderland",
+   "jour": "Samedi",
+   "theme": "2-16-9-16",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Chelsea",
+   "equipe2": "Leeds",
+   "jour": "Samedi",
+   "theme": "3-10-10-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Coventry",
+   "equipe2": "Crystal Palace",
+   "jour": "Samedi",
+   "theme": "3-15-10-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Tottenham",
+   "equipe2": "Ipswich",
+   "jour": "Samedi",
+   "theme": "10-14-4-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Premier League",
+   "equipe1": "Newcastle",
+   "equipe2": "Arsenal",
+   "jour": "Samedi",
+   "theme": "11-16-15-15",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Millwall",
+   "equipe2": "QPR",
+   "jour": "Samedi",
+   "theme": "10-11-6-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Southampton",
+   "equipe2": "Derby",
+   "jour": "Samedi",
+   "theme": "11-16-4-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Stoke",
+   "equipe2": "Birmingham",
+   "jour": "Samedi",
+   "theme": "14-12-3-16",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Middlesbrough",
+   "equipe2": "Bristol City",
+   "jour": "Samedi",
+   "theme": "16-2-15-10",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "West Ham",
+   "equipe2": "Preston",
+   "jour": "Samedi",
+   "theme": "4-13-9-10",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Lincoln",
+   "equipe2": "Wrexham",
+   "jour": "Samedi",
+   "theme": "1-13-15-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Sheffield United",
+   "equipe2": "Watford",
+   "jour": "Samedi",
+   "theme": "1-9-4-15",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Championship",
+   "equipe1": "Bolton",
+   "equipe2": "Portsmouth",
+   "jour": "Samedi",
+   "theme": "7-2-8-5",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Écosse",
+   "equipe1": "Celtic",
+   "equipe2": "St Mirren",
+   "jour": "Samedi",
+   "theme": "15-8-4-15",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Écosse",
+   "equipe1": "Dundee",
+   "equipe2": "Hearts",
+   "jour": "Samedi",
+   "theme": "16-7-12-8",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Écosse",
+   "equipe1": "Falkirk",
+   "equipe2": "St Johnstone",
+   "jour": "Samedi",
+   "theme": "1-1-11-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Écosse",
+   "equipe1": "Hibernian",
+   "equipe2": "Dundee United",
+   "jour": "Samedi",
+   "theme": "11-1-2-16",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Écosse",
+   "equipe1": "Kilmarnock",
+   "equipe2": "Aberdeen",
+   "jour": "Samedi",
+   "theme": "4-10-7-9",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Écosse",
+   "equipe1": "Motherwell",
+   "equipe2": "Rangers",
+   "jour": "Samedi",
+   "theme": "6-12-11-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Liga",
+   "equipe1": "Alavés",
+   "equipe2": "Deportivo",
+   "jour": "Samedi",
+   "theme": "12-4-16-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Liga",
+   "equipe1": "Rayo Vallecano",
+   "equipe2": "Valencia",
+   "jour": "Samedi",
+   "theme": "11-4-1-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Liga",
+   "equipe1": "Sevilla",
+   "equipe2": "Betis",
+   "jour": "Samedi",
+   "theme": "5-13-11-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Liga",
+   "equipe1": "Real Madrid",
+   "equipe2": "Celta",
+   "jour": "Samedi",
+   "theme": "1-2-13-5",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Ligue 1",
+   "equipe1": "Nice",
+   "equipe2": "PSG",
+   "jour": "Samedi",
+   "theme": "10-1-7-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Ligue 1",
+   "equipe1": "Lille",
+   "equipe2": "Lyon",
+   "jour": "Samedi",
+   "theme": "9-5-12-10",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Ligue 1",
+   "equipe1": "Lens",
+   "equipe2": "Toulouse",
+   "jour": "Samedi",
+   "theme": "12-8-10-16",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Ligue 1",
+   "equipe1": "Monaco",
+   "equipe2": "Auxerre",
+   "jour": "Samedi",
+   "theme": "3-8-10-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Ligue 1",
+   "equipe1": "Strasbourg",
+   "equipe2": "Brest",
+   "jour": "Samedi",
+   "theme": "3-1-15-1",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Serie A",
+   "equipe1": "Lazio",
+   "equipe2": "Lecce",
+   "jour": "Samedi",
+   "theme": "10-7-7-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Serie A",
+   "equipe1": "Parma",
+   "equipe2": "Roma",
+   "jour": "Samedi",
+   "theme": "11-10-2-9",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Serie A",
+   "equipe1": "Napoli",
+   "equipe2": "Torino",
+   "jour": "Samedi",
+   "theme": "5-10-11-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Bundesliga",
+   "equipe1": "Leverkusen",
+   "equipe2": "Paderborn",
+   "jour": "Samedi",
+   "theme": "4-16-11-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Bundesliga",
+   "equipe1": "Eintracht Francfort",
+   "equipe2": "Hoffenheim",
+   "jour": "Samedi",
+   "theme": "3-6-9-1",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Bundesliga",
+   "equipe1": "Union Berlin",
+   "equipe2": "Leipzig",
+   "jour": "Samedi",
+   "theme": "4-6-8-2",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Bundesliga",
+   "equipe1": "Mönchengladbach",
+   "equipe2": "Dortmund",
+   "jour": "Samedi",
+   "theme": "16-1-6-14",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Bundesliga",
+   "equipe1": "Elversberg",
+   "equipe2": "Fribourg",
+   "jour": "Samedi",
+   "theme": "1-7-5-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Bundesliga",
+   "equipe1": "Schalke",
+   "equipe2": "Stuttgart",
+   "jour": "Samedi",
+   "theme": "3-16-2-1",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Belgique",
+   "equipe1": "Zulte Waregem",
+   "equipe2": "Royal Antwerp",
+   "jour": "Samedi",
+   "theme": "2-13-9-16",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Belgique",
+   "equipe1": "Charleroi",
+   "equipe2": "Sint-Truiden",
+   "jour": "Samedi",
+   "theme": "3-7-10-5",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "Belgique",
+   "equipe1": "Genk",
+   "equipe2": "La Louvière",
+   "jour": "Samedi",
+   "theme": "13-10-14-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "MLS",
+   "equipe1": "New England",
+   "equipe2": "Philadelphie",
+   "jour": "Samedi",
+   "theme": "13-7-13-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "MLS",
+   "equipe1": "FC Dallas",
+   "equipe2": "Portland",
+   "jour": "Samedi",
+   "theme": "1-12-13-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Premier League",
+   "equipe1": "Hull City",
+   "equipe2": "Brighton",
+   "jour": "Dimanche",
+   "theme": "12-12-2-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Premier League",
+   "equipe1": "Liverpool",
+   "equipe2": "Manchester United",
+   "jour": "Dimanche",
+   "theme": "1-3-4-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Championship",
+   "equipe1": "Burnley",
+   "equipe2": "Blackburn",
+   "jour": "Dimanche",
+   "theme": "4-16-15-9",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Liga",
+   "equipe1": "Barcelona",
+   "equipe2": "Villarreal",
+   "jour": "Dimanche",
+   "theme": "4-15-15-8",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Liga",
+   "equipe1": "Racing",
+   "equipe2": "Real Sociedad",
+   "jour": "Dimanche",
+   "theme": "11-16-12-9",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Liga",
+   "equipe1": "Osasuna",
+   "equipe2": "Málaga",
+   "jour": "Dimanche",
+   "theme": "10-10-9-5",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Liga",
+   "equipe1": "Getafe",
+   "equipe2": "Atlético",
+   "jour": "Dimanche",
+   "theme": "2-13-3-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Ligue 1",
+   "equipe1": "Paris FC",
+   "equipe2": "Angers",
+   "jour": "Dimanche",
+   "theme": "4-2-15-8",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Ligue 1",
+   "equipe1": "Lorient",
+   "equipe2": "Rennes",
+   "jour": "Dimanche",
+   "theme": "5-10-9-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Ligue 1",
+   "equipe1": "Marseille",
+   "equipe2": "Le Mans",
+   "jour": "Dimanche",
+   "theme": "2-12-14-15",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Serie A",
+   "equipe1": "Bologna",
+   "equipe2": "Udinese",
+   "jour": "Dimanche",
+   "theme": "5-13-3-7",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Serie A",
+   "equipe1": "Sassuolo",
+   "equipe2": "Genoa",
+   "jour": "Dimanche",
+   "theme": "3-15-7-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Serie A",
+   "equipe1": "Juventus",
+   "equipe2": "Venezia",
+   "jour": "Dimanche",
+   "theme": "9-9-2-13",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Serie A",
+   "equipe1": "AC Milan",
+   "equipe2": "Frosinone",
+   "jour": "Dimanche",
+   "theme": "2-12-6-7",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Serie A",
+   "equipe1": "Atalanta",
+   "equipe2": "Inter",
+   "jour": "Dimanche",
+   "theme": "9-13-13-7",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Bundesliga",
+   "equipe1": "Augsburg",
+   "equipe2": "Mainz",
+   "jour": "Dimanche",
+   "theme": "2-2-5-9",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "Bundesliga",
+   "equipe1": "Werder Brême",
+   "equipe2": "Hambourg",
+   "jour": "Dimanche",
+   "theme": "6-5-15-8",
+   "score": null
+  },
+  {
+   "date": "2026-11-22",
+   "championnat": "MLS",
+   "equipe1": "Chicago",
+   "equipe2": "Charlotte",
+   "jour": "Dimanche",
+   "theme": "4-10-11-3",
+   "score": null
+  },
+  {
+   "date": "2026-11-23",
+   "championnat": "Liga",
+   "equipe1": "Levante",
+   "equipe2": "Elche",
+   "jour": "Lundi",
+   "theme": "13-9-11-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-23",
+   "championnat": "Premier League",
+   "equipe1": "Brentford",
+   "equipe2": "Everton",
+   "jour": "Lundi",
+   "theme": "12-11-3-3",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Bodø/Glimt",
+   "equipe2": "LASK",
+   "jour": "Mardi",
+   "theme": "2-8-9-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Galatasaray",
+   "equipe2": "Aston Villa",
+   "jour": "Mardi",
+   "theme": "9-15-5-9",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Arsenal",
+   "equipe2": "Dortmund",
+   "jour": "Mardi",
+   "theme": "12-5-16-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Como",
+   "equipe2": "AEK",
+   "jour": "Mardi",
+   "theme": "5-13-11-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Feyenoord",
+   "equipe2": "Porto",
+   "jour": "Mardi",
+   "theme": "5-8-13-6",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Manchester City",
+   "equipe2": "Napoli",
+   "jour": "Mardi",
+   "theme": "3-8-6-1",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Leipzig",
+   "equipe2": "Lens",
+   "jour": "Mardi",
+   "theme": "5-12-14-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Real Madrid",
+   "equipe2": "PSV",
+   "jour": "Mardi",
+   "theme": "14-14-8-2",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "Ligue des champions",
+   "equipe1": "Slovan Bratislava",
+   "equipe2": "Betis",
+   "jour": "Mardi",
+   "theme": "13-12-13-4",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "MLS",
+   "equipe1": "Orlando",
+   "equipe2": "Cincinnati",
+   "jour": "Vendredi",
+   "theme": "5-3-16-11",
+   "score": null
+  },
+  {
+   "date": "2026-11-20",
+   "championnat": "MLS",
+   "equipe1": "Seattle",
+   "equipe2": "Real Salt Lake",
+   "jour": "Vendredi",
+   "theme": "12-8-10-3",
+   "score": null
+  },
+  {
+   "date": "2026-11-21",
+   "championnat": "MLS",
+   "equipe1": "Inter Miami",
+   "equipe2": "Columbus",
+   "jour": "Samedi",
+   "theme": "6-15-12-8",
+   "score": null
+  },
+  {
+   "date": "2026-11-24",
+   "championnat": "MLS",
+   "equipe1": "St. Louis",
+   "equipe2": "LAFC",
+   "jour": "Mardi",
+   "theme": "6-1-11-12",
+   "score": null
+  },
+  {
+   "date": "2026-11-25",
+   "championnat": "MLS",
+   "equipe1": "San Jose",
+   "equipe2": "Houston",
+   "jour": "Mercredi",
+   "theme": "14-9-11-5",
+   "score": null
+  }
+ ]
+}

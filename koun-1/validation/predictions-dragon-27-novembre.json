@@ -1,0 +1,1182 @@
+{
+ "note": "Prédictions figées le 2026-11-27 avant les matchs (lot du 27 au 30 novembre). Signe testé : le dragon en M6/M12 (Rubeus ou Puer posé en base de M6 ou M12, qui produit Caput ou Cauda) → rouge probable ; le pôle dont le front est allié à celui de la figure martiale est épargné (0/13 dans les 108 matchs). Rappel des autres signes : front de R7 qui attaque R1 (1 rouge sur 31), pôle bloqué. Origine : piste du propriétaire (Rubeus en M6/M12), outils/fouille_dragon.js.",
+ "matchs": [
+  {
+   "date": "2026-11-27",
+   "match": "Nottingham Forest – Chelsea",
+   "theme": "4-6-2-2",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Leeds – Coventry",
+   "theme": "2-2-5-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Manchester United – Brentford",
+   "theme": "3-2-10-14",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Ipswich – Aston Villa",
+   "theme": "5-12-1-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Everton – Liverpool",
+   "theme": "1-12-13-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Brighton – Newcastle",
+   "theme": "8-16-10-12",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Crystal Palace – Hull City",
+   "theme": "13-6-16-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Fulham – Bournemouth",
+   "theme": "2-3-9-4",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Sunderland – Tottenham",
+   "theme": "16-4-10-10",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Arsenal – Manchester City",
+   "theme": "7-6-6-15",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Southampton – Middlesbrough",
+   "theme": "12-9-8-11",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Lincoln City – Wolverhampton",
+   "theme": "6-6-6-4",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Preston – Norwich",
+   "theme": "1-11-16-15",
+   "dragon": "Puer en M6 → Caput, Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Blackburn – Charlton",
+   "theme": "3-8-10-1",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Derby County – Watford",
+   "theme": "9-2-6-10",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Millwall – Burnley",
+   "theme": "9-8-3-1",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "West Ham – Stoke City",
+   "theme": "12-16-16-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Wrexham – Portsmouth",
+   "theme": "15-8-7-9",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "West Bromwich – Bristol City",
+   "theme": "8-7-2-4",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "QPR – Sheffield United",
+   "theme": "5-8-2-9",
+   "dragon": "Rubeus en M12 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Birmingham – Bolton",
+   "theme": "15-1-5-8",
+   "dragon": "Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Swansea – Cardiff",
+   "theme": "8-10-11-6",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Brest – Paris FC",
+   "theme": "2-15-3-9",
+   "dragon": "Rubeus en M12 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Angers – Lens",
+   "theme": "2-16-13-2",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "PSG – Lorient",
+   "theme": "9-13-6-7",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Le Mans – Lille",
+   "theme": "6-6-9-8",
+   "dragon": "Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Le Havre – Strasbourg",
+   "theme": "4-12-4-6",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Nice – Troyes",
+   "theme": "7-2-5-5",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Auxerre – Marseille",
+   "theme": "15-7-12-13",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Toulouse – Rennes",
+   "theme": "8-2-5-2",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Lyon – Monaco",
+   "theme": "5-3-4-5",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Levante – Racing Santander",
+   "theme": "9-1-13-1",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Betis – Rayo Vallecano",
+   "theme": "9-7-11-15",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Málaga – Athletic",
+   "theme": "9-12-3-1",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Elche – Atlético",
+   "theme": "2-16-14-7",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Real Madrid – Alavés",
+   "theme": "3-13-7-14",
+   "dragon": "Rubeus en M12 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Valencia – Osasuna",
+   "theme": "3-9-7-12",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Deportivo – Barcelona",
+   "theme": "9-1-11-11",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Celta Vigo – Villarreal",
+   "theme": "9-4-1-11",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Real Sociedad – Séville",
+   "theme": "6-14-9-12",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Espanyol – Getafe",
+   "theme": "5-1-2-11",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Leganés – Sabadell",
+   "theme": "8-7-16-2",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Almería – Sporting Gijón",
+   "theme": "8-6-16-2",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Cádiz – Córdoba",
+   "theme": "1-16-5-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Albacete – Tenerife",
+   "theme": "13-7-2-1",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Ceuta – Granada",
+   "theme": "13-4-14-13",
+   "dragon": "Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Eibar – Burgos",
+   "theme": "4-16-6-6",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Mallorca – Castellón",
+   "theme": "12-16-10-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Las Palmas – Andorra",
+   "theme": "15-14-11-8",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Eldense – Girona",
+   "theme": "10-7-3-7",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Valladolid – Real Sociedad B",
+   "theme": "9-3-7-4",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Oviedo – Celta Fortuna",
+   "theme": "1-9-5-13",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Venezia – Bologna",
+   "theme": "13-7-6-3",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R1"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Frosinone – Parma",
+   "theme": "1-12-10-13",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Torino – Lazio",
+   "theme": "3-11-10-14",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Inter – Genoa",
+   "theme": "13-13-5-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Udinese – Fiorentina",
+   "theme": "16-2-4-14",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Sassuolo – Napoli",
+   "theme": "10-4-13-7",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Roma – Monza",
+   "theme": "3-9-7-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Como – Juventus",
+   "theme": "2-16-14-1",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Lecce – Atalanta",
+   "theme": "14-4-8-2",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Cagliari – AC Milan",
+   "theme": "14-16-2-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Werder Brême – Mönchengladbach",
+   "theme": "10-10-6-14",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Mainz – Union Berlin",
+   "theme": "13-10-1-2",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Hambourg – Bayern",
+   "theme": "4-15-8-8",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Cologne – Elversberg",
+   "theme": "12-14-13-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Paderborn – Schalke 04",
+   "theme": "6-5-12-8",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Stuttgart – Eintracht Francfort",
+   "theme": "11-10-1-15",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Fribourg – RB Leipzig",
+   "theme": "1-10-12-11",
+   "dragon": "Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Hoffenheim – Augsburg",
+   "theme": "11-9-15-8",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Dortmund – Leverkusen",
+   "theme": "6-4-10-8",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "OH Louvain – Courtrai",
+   "theme": "15-3-15-14",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Westerlo – La Louvière",
+   "theme": "3-6-2-3",
+   "dragon": "Rubeus en M12 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Lommel – Zulte Waregem",
+   "theme": "3-3-10-3",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Charleroi – Beveren",
+   "theme": "5-8-13-12",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Cercle Bruges – Malines",
+   "theme": "7-11-10-5",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R1",
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Saint-Trond – Genk",
+   "theme": "1-6-6-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Royal Antwerp – Anderlecht",
+   "theme": "12-5-1-10",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Standard – Club Bruges",
+   "theme": "3-4-1-12",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Union Saint-Gilloise – La Gantoise",
+   "theme": "14-13-3-3",
+   "dragon": "Rubeus en M12 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R1"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Groningue – Willem II",
+   "theme": "15-16-8-9",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Excelsior – Telstar",
+   "theme": "15-16-9-4",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "PSV – Go Ahead Eagles",
+   "theme": "1-7-4-12",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Cambuur – Sparta Rotterdam",
+   "theme": "14-14-7-1",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "ADO La Haye – Utrecht",
+   "theme": "6-3-5-13",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Fortuna Sittard – Heerenveen",
+   "theme": "3-6-8-5",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Feyenoord – Ajax",
+   "theme": "16-5-6-10",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R1"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "NEC Nimègue – Twente",
+   "theme": "2-11-13-7",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "PEC Zwolle – AZ Alkmaar",
+   "theme": "13-8-14-15",
+   "dragon": "Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Marítimo – Nacional",
+   "theme": "1-1-6-1",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Moreirense – Santa Clara",
+   "theme": "9-10-11-15",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Arouca – Rio Ave",
+   "theme": "8-12-8-14",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Académico Viseu – Alverca",
+   "theme": "2-16-12-15",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Vitória Guimarães – Estrela Amadora",
+   "theme": "3-1-8-15",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Gil Vicente – Estoril",
+   "theme": "14-6-14-4",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "FC Porto – Sporting",
+   "theme": "4-5-16-8",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Benfica – Famalicão",
+   "theme": "9-9-14-9",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-30",
+   "match": "Casa Pia – Braga",
+   "theme": "13-8-15-10",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Iraklis – Panetolikos",
+   "theme": "10-11-10-6",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Volos – Asteras Tripolis",
+   "theme": "6-8-11-3",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Kifisia – Kalamata",
+   "theme": "11-8-15-8",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Al Kholood – Al Khaleej",
+   "theme": "5-16-12-11",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Al Qadsiah – Al Fayha",
+   "theme": "11-15-10-13",
+   "dragon": "Puer en M6 → Caput",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R7"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-27",
+   "match": "Al Ittihad – NEOM",
+   "theme": "5-4-1-16",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Al Hazem – Al Nassr",
+   "theme": "3-10-9-13",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Al Ettifaq – Al Hilal",
+   "theme": "12-7-15-5",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Al Ahli – Al Taawoun",
+   "theme": "2-12-15-4",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Columbus – Inter Miami",
+   "theme": "14-7-13-13",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Real Salt Lake – Vancouver",
+   "theme": "6-9-2-8",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": true
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Charlotte – Chicago",
+   "theme": "2-1-4-10",
+   "dragon": "Rubeus en M6 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [
+    "R1"
+   ],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Houston – San Jose",
+   "theme": "13-16-14-13",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "Philadelphie – New England",
+   "theme": "3-9-15-8",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-28",
+   "match": "FC Cincinnati – Nashville",
+   "theme": "14-4-11-11",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "LAFC – St. Louis",
+   "theme": "4-13-9-8",
+   "dragon": "Puer en M12 → Cauda Draconis",
+   "rouge_dragon": "rouge probable",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": true,
+   "pole_bloque": false
+  },
+  {
+   "date": "2026-11-29",
+   "match": "Portland – FC Dallas",
+   "theme": "5-8-4-11",
+   "dragon": null,
+   "rouge_dragon": "sans indice",
+   "camp_epargne": [],
+   "front_R7_attaque_R1": false,
+   "pole_bloque": false
+  }
+ ]
+}

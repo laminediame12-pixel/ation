@@ -1,0 +1,36 @@
+// Cycles de 2 de la chaîne des vérifications (thème → vérification, mères M1 M4 M7 M10) : ce qui distingue les nuls (2026-11-28). Usage : node outils/cycles2_verification.js
+const R=require('path').join(__dirname,'..'),fs=require('fs'),M=require(R+'/moteur4/moteur.js'),K=require(R+'/moteur3/noyau.js'),N=K.nom,mod=n=>((n-1)%16+16)%16+1;
+const lire=f=>JSON.parse(fs.readFileSync(R+'/'+f,'utf8'));const dev=new Map(),aj=(t,s,nom,lot)=>{const k=t.join('-');if(!dev.has(k))dev.set(k,{m:t,sc:s,nom,lot});};
+lire('validation/scores-reels.json').forEach(x=>aj(x.themes,x.score,x.match,'dév.'));lire('validation/themes-18.json').forEach(x=>aj(x.themes,x.score.split('-').map(Number),x.match||'?','dév.'));
+aj(lire('validation/lot-2.json')[0].themes[0],lire('validation/lot-2.json')[0].score.split('-').map(Number),'lot 2','dév.');
+['validation/resultats-aveugles-2026-11-23.json','validation/resultats-aveugles-2026-11-25.json','validation/resultats-2026-11-25.json'].forEach(f=>lire(f).matchs.forEach(x=>aj(x.theme,x.score,x.match,'dév.')));
+lire('validation/resultats-2026-11-26.json').matchs.forEach(x=>aj(x.theme,x.score,x.match,'26/11'));lire('validation/resultats-2026-11-27.json').matchs.forEach(x=>aj(x.theme,x.score,x.match,'27/11'));
+const T=m=>{const b=K.construire(m).bases;return [b[1],b[4],b[7],b[10]];};
+const chaine=m=>{const s=[m];let x=m;for(let k=0;k<6;k++){x=T(x);s.push(x);}return s;};
+const D=[...dev.values()].map(d=>{const s=chaine(d.m),A=s[5],B=s[6];const c2=s[6].join()!==s[5].join()&&s[4].join()===s[6].join();return {...d,s,A,B,c2,r:d.sc[0]>d.sc[1]?'R1':d.sc[0]<d.sc[1]?'R7':'N'};}).filter(d=>d.c2);
+const vd=m=>M.verdict(M.lire(m),true).decision.resultat,rel=(f,g)=>g===f?'même':g===mod(f+8)?'miroir':g===mod(f-3)?'antagoniste':g===mod(f+3)?'victime':g===mod(f-6)||f===mod(g-6)?'protecteur':g===mod(f+4)||f===mod(g+4)?'front direct':(g-1)%4===(f-1)%4?'même front':(g%2)===(f%2)?'même boucle':'autre boucle';
+D.forEach(d=>{const [a,x,y,z]=d.A;d.x=x;d.z=z;d.y=y;d.vA=vd(d.A);d.vB=vd(d.B);d.vm=vd(d.m);d.rxz=rel(x,z);const h1=d.m[0],h7=mod(h1+6),bA=K.construire(d.A).bases,bB=K.construire(d.B).bases;d.pA=[bA[h1],bA[h7]];d.pB=[bB[h1],bB[h7]];});
+const pc=(a,n)=>n?Math.round(100*a/n)+'%':'—';
+const tab=(lab,key)=>{const G={};D.forEach(d=>{const k=key(d);G[k]=G[k]||{n:0,nul:0,l:{}};G[k].n++;if(d.r==='N')G[k].nul++;const q=G[k].l[d.lot]=G[k].l[d.lot]||[0,0];q[1]++;if(d.r==='N')q[0]++;});console.log(lab);Object.keys(G).sort((p,q)=>G[q].n-G[p].n).forEach(k=>console.log('   '+String(k).padEnd(52)+(G[k].nul+'/'+G[k].n).padStart(6)+' '+pc(G[k].nul,G[k].n).padStart(4)+' · '+Object.entries(G[k].l).map(([l,v])=>l+' '+v[0]+'/'+v[1]).join(' · ')));};
+console.log(D.length+' matchs en cycle de 2 · nuls '+D.filter(d=>d.r==='N').length);
+tab('verdicts des deux thèmes du cycle',d=>{const s=[d.vA,d.vB].sort().join('/');return s==='1/1'||s==='2/2'?'même vainqueur':s==='1/2'?'vainqueurs opposés':'au moins une égalité';});
+tab('relation entre x et z (les mères échangées)',d=>d.rxz);
+tab('3e mère y du cycle',d=>N(d.y));
+tab('les pôles échangent leurs figures entre A et B',d=>d.pA[0]===d.pB[1]&&d.pA[1]===d.pB[0]?'échange complet':d.pA[0]===d.pB[0]&&d.pA[1]===d.pB[1]?'pôles inchangés':'autre');
+tab('pas avant le cycle',d=>{const i=d.s.findIndex((m,k)=>k>0&&(m.join()===d.A.join()||m.join()===d.B.join()));return d.s[0].join()===d.A.join()||d.s[0].join()===d.B.join()?0:i;});
+D.forEach(d=>{const b=K.construire(d.m).bases,V=d.s[1],bV=K.construire(V).bases;d.vV=vd(V);d.com=[];for(let h=2;h<=16;h++)if(b[h]===bV[h])d.com.push(h);
+ const L=M.lire(d.m),LV=M.lire(V);d.libres=!M.bloqueurs(LV,L.R1.figure,LV.theme.bases[L.R1.figure]===L.R1.figure?L.R1.figure:undefined).length&&!M.bloqueurs(LV,L.R7.figure,LV.theme.bases[L.R7.figure]===L.R7.figure?L.R7.figure:undefined).length;});
+tab('le principal et sa vérification',d=>d.vm==='N'?'principal en égalité':d.vV===d.vm?'la vérification confirme':d.vV==='N'?'la vérification annonce l\'égalité':'la vérification désigne l\'autre');
+tab('le principal et les deux thèmes du cycle',d=>d.vm==='N'?'principal en égalité':(d.vA===d.vm&&d.vB===d.vm)?'le cycle confirme':(d.vA!==d.vm&&d.vB!==d.vm)?'le cycle ne le désigne jamais':'mixte');
+console.log('maisons communes au principal et à sa vérification (nuls si commune · sinon) :');
+for(let h=2;h<=16;h++){const S=D.filter(d=>d.com.includes(h)),U=D.filter(d=>!d.com.includes(h));if(S.length<3)continue;console.log('   M'+String(h).padEnd(3)+(S.filter(d=>d.r==='N').length+'/'+S.length).padStart(6)+' '+pc(S.filter(d=>d.r==='N').length,S.length).padStart(4)+'   sinon '+(U.filter(d=>d.r==='N').length+'/'+U.length));}
+tab('pôles principaux libres dans la vérification',d=>d.libres?'libres':'au moins un bloqué');
+const jamais=d=>d.vm!=='N'&&d.vA!==d.vm&&d.vB!==d.vm, T3=(lab,f)=>{const S=D.filter(f),n=S.filter(d=>d.r==='N').length,j=S.filter(d=>d.vm!=='N'&&(d.vm==='1'?'R1':'R7')===d.r).length;console.log('   '+lab.padEnd(64)+(n+'/'+S.length).padStart(6)+' '+pc(n,S.length).padStart(4)+' · '+['dév.','26/11','27/11'].map(l=>{const U=S.filter(d=>d.lot===l);return l+' '+U.filter(d=>d.r==='N').length+'/'+U.length;}).join(' · ')+' · victoires justes du principal perdues '+j);};
+console.log('combinaisons (cycle de 2) :');
+T3('le cycle ne désigne jamais le vainqueur du principal',jamais);T3('  … et pôles principaux libres dans la vérification',d=>jamais(d)&&d.libres);
+T3('  … et M7 ou M14 commune',d=>jamais(d)&&(d.com.includes(7)||d.com.includes(14)));T3('  … et M3 ou M7 commune',d=>jamais(d)&&(d.com.includes(3)||d.com.includes(7)));
+T3('règle actuelle (la vérification ne confirme pas + M7/M14)',d=>d.vm!=='N'&&d.vV!==d.vm&&(d.com.includes(7)||d.com.includes(14)));
+T3('la vérification ne confirme pas + pôles libres',d=>d.vm!=='N'&&d.vV!==d.vm&&d.libres);
+D.filter(jamais).forEach(d=>console.log('      '+(d.nom||'').slice(0,30).padEnd(30)+d.sc.join('-').padEnd(5)+' principal '+d.vm+' · cycle '+d.vA+'/'+d.vB+' · vérif '+d.vV+' · libres '+(d.libres?'oui':'non')+' · communes M'+d.com.join(',M')));
+T3('le cycle ne désigne jamais le vainqueur + M3, M7 ou M14 commune',d=>jamais(d)&&(d.com.includes(3)||d.com.includes(7)||d.com.includes(14)));
+T3('vérification ne confirme pas + M3, M7 ou M14 commune',d=>d.vm!=='N'&&d.vV!==d.vm&&(d.com.includes(3)||d.com.includes(7)||d.com.includes(14)));
