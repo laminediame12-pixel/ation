@@ -3275,6 +3275,13 @@
    "origine": "propriétaire : « une figure au repos communique bien avec ses alliés si elle n'est pas bloquée » (Málaga – Athletic : Caput au repos en M3, front de Conjunctio, R7)",
    "lecture": "Allié au repos d'un pôle : figure de son front posée dans sa propre maison (sans la figure du pôle). Non bloquée : son antagoniste n'est présent intact nulle part (le moteur, lui, dit qu'une figure chez elle ne peut pas y être bloquée : les deux lectures sont mesurées). outils/allies_repos.js.",
    "mesure": "322 pôles. Avec au moins un allié au repos : ont marqué 67 % (46 pôles), gagné 30 % ; sans : 78 %, 40 %. Non bloqués : 70 % et 32 % contre 77 % et 39 %. Un seul pôle a un allié au repos : il gagne 10 fois sur 34 (R7 seul : 2 sur 16) ; non bloqué : 8 sur 25 (R7 seul : 0 sur 8). Jamais vus, même sens : marqué 8/13 contre 43/57. Vainqueur annoncé seul avec un allié au repos : 6/10 ; le perdant seul : le vainqueur gagne 14/18. Málaga – Athletic (1-4 à la pause, R7 avec Caput au repos) va contre cette tendance."
+  },
+  {
+   "id": "DUEL-DES-FRONTS-2026-11-28",
+   "statut": "modèle du propriétaire, comparé au moteur et mesuré sur les matchs joués (en cours d'étude, non intégré)",
+   "origine": "propriétaire : « chaque camp (A, B, C, D) a des attaquants (les fronts) et des défenseurs (binômes) ; les fronts marquent avec les niveaux d'activation (un point + un point = deux points saturés ; saturation de la Terre → buts, sinon une maison de Terre) ; le binôme bloque les attaquants de l'adversaire en bloquant ses canaux ; blocage total par Populus en base (la figure de repos de la maison bloque son adversaire) ; Populus en résultante transmet le flux »",
+   "correspondance": "Le moteur fait déjà : blocage par l'antagoniste (g − 3) intact ou reproduit par Populus, sur les seuls nœuds du bloqueur (canaux) ; le protecteur g − 6 (binôme) bloque l'antagoniste ; Populus en résultante (figure chez elle) non bloquable ; marquage par réaction 1 + 1 dans les maisons des canaux Terre, pour le pôle, son front direct et son miroir. Écarts essayés : saturation de la Terre dans n'importe quelle maison ; tout le front (f + 12).",
+   "mesure": "outils/duel_fronts.js, 322 pôles (76 % ont marqué). Marquage juste : règle du moteur 206, avec les deux écarts 220 — mais « tout le monde marque » ferait 245 : les pôles annoncés « ne marque pas » marquent quand même 7 fois sur 10. Force d'attaque (positions qui marquent, non bloquées) : nulle 70 % ont marqué, 1 → 76 %, 2 ou plus → 78 %. Le pôle le plus fort gagne 52 fois sur 117 (44 % ; un pôle au hasard 38 %, verdict principal 69 %). Figure du pôle bloquée par un Populus : 8 sur 15 ont marqué (53 %) — le seul effet net, sur peu de cas."
   }
  ],
  "lectures": [
