@@ -3239,6 +3239,13 @@
    "origine": "propriétaire : « reviens sur la vérification alors » (après la piste du thème somme) ; on ne juge que sur le passé.",
    "fouille": "outils/somme_fouille.js verification : 77 lectures du thème de vérification × 6 issues × 4 contextes ; 131 règles fortes sur les 126 premiers matchs contre 152 en moyenne au hasard (mélange par verdict principal) : rien au-dessus du hasard dans l'ensemble. Figure du vainqueur annoncé bloquée dans la vérification, perdant libre : 24 victoires sur 32 (jamais vus 7/7) ; par un Populus : 5/5.",
    "piste": "Chaîne des vérifications en cycle de 2, et les deux thèmes du cycle annoncent le vainqueur annoncé par le principal (côté « confirmation » de la règle d'égalité du cycle de 2) : il gagne 19 fois sur 22, ne perd pas 21 fois sur 22 (jamais vus 5/5) ; autres victoires annoncées 72 sur 110 (hasard 0,04). Cycle de 4 : les quatre thèmes d'accord 10/13, trois sur quatre 11/22 (pas de gradation). Tous les thèmes du cycle d'accord (2 ou 4) : 29/35."
+  },
+  {
+   "id": "DOUBLE-MEME-FRONT-POLES-2026-11-28",
+   "statut": "remarque du propriétaire, vérifiée sur les matchs joués (en cours d'étude, non intégrée)",
+   "origine": "propriétaire : « dans le double thème, aux deux pôles R1 et R7, il arrive qu'une maison regroupe deux figures du même front »",
+   "structure": "La vérification garde la première mère, donc la maison de R1, et R7 est toujours en R1 + 6 : chaque pôle a la même maison dans les deux thèmes (161/161). La page, en vue double, y montre la figure du pôle et celle de la vérification.",
+   "mesure": "outils/double_meme_front.js. Même front à la maison d'un pôle : 142 pôles sur 322 (44 %, au hasard 25 %), dont 65 même figure (Populus dans le thème somme). Marquage du pôle : même front 79 %, même figure 71 %, autre front 77 % — aucun effet. Vainqueur annoncé par le principal qui a seul ses deux figures du même front : il gagne 27 fois sur 32, ne perd pas 31 fois (126 premiers 24/27, jamais vus 3/5) ; autres victoires annoncées 64 sur 100 (hasard 0,02 pour cette lecture, plusieurs lectures essayées). Seulement 6 des 32 cas sont aussi des victoires confirmées par la vérification (hors confirmées : 21/26)."
   }
  ],
  "lectures": [
