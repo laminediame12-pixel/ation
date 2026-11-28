@@ -65,3 +65,9 @@ tv('sa figure bloquée dans le thème somme', VA.filter(x => x.bW)); tv('sa figu
 tv('… bloquée par un Populus du thème somme', VA.filter(x => x.bWpop));
 tv('sa figure bloquée, celle du perdant annoncé libre', VA.filter(x => x.bW && !x.bL)); tv('celle du perdant annoncé bloquée, la sienne libre', VA.filter(x => !x.bW && x.bL));
 tv('le thème somme pose son antagoniste', VA.filter(x => x.antW)); tv('le thème somme pose son protecteur', VA.filter(x => x.proW));
+// Forme la plus nette, sur les matchs joués seulement : figure du vainqueur annoncé bloquée par un Populus du thème somme, celle du perdant libre.
+// Le thème somme a toujours Populus en M1 (M1 + M1) : Puer y est rendu et bloque toujours Albus — un vainqueur annoncé Albus entre donc toujours dans la piste.
+const PZ = VA.filter(x => x.bWpop && !x.bL), alb = x => M.lire(x.d.m)[x.d.v === '1' ? 'R1' : 'R7'].figure === 4;
+console.log('\nFigure du vainqueur annoncé bloquée par un Populus du thème somme, perdant libre : gagne ' + PZ.filter(x => x.gagne).length + '/' + PZ.length
+  + ' · dont Albus (toujours bloqué par le Populus de M1) ' + PZ.filter(x => alb(x) && x.gagne).length + '/' + PZ.filter(alb).length + ' · hors Albus ' + PZ.filter(x => !alb(x) && x.gagne).length + '/' + PZ.filter(x => !alb(x)).length
+  + ' · autres victoires annoncées ' + VA.filter(x => !(x.bWpop && !x.bL)).filter(x => x.gagne).length + '/' + VA.filter(x => !(x.bWpop && !x.bL)).length);
