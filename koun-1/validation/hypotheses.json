@@ -3268,6 +3268,13 @@
    "origine": "propriétaire (Málaga – Athletic, mené 1-4 à la pause) : « R7 contrôle M13, M8 et M3 (Caput à sa maison de repos) tandis que R1 contrôle seulement M1 ; chaque pôle suit son front pour essayer de marquer »",
    "lecture": "Contrôle d'un pôle de figure f : maisons où son front direct (f + 4) et son miroir (f + 8) sont posés en base. Málaga – Athletic : R7 Conjunctio → Aquisitio en M13, Caput en M8 et M3 ; R1 Via → Fortuna Minor en M1 (Cauda, son miroir, n'est pas posée). outils/controle_front.js.",
    "mesure": "161 matchs, 322 pôles : marqué 75 % (0 maison), 80 % (1), 76 % (2), 73 % (3 ou plus) — pas d'effet. Le pôle qui contrôle le plus de maisons gagne 39 fois sur 119 (33 % ; un pôle au hasard 38 %). Écart d'au moins 2 maisons : celui qui en contrôle le moins gagne 30 fois sur 57, l'autre 15 (126 premiers 25/48, jamais vus 5/9) — sens inverse de la lecture, trouvé après coup. Variantes (avec la figure du pôle posée ailleurs, avec tout le front) : même conclusion. Vainqueur annoncé : il contrôle plus que le perdant 25/41, le perdant plus 40/54."
+  },
+  {
+   "id": "ALLIES-AU-REPOS-2026-11-28",
+   "statut": "règle du propriétaire, vérifiée sur les matchs joués : non confirmée, sens inverse (en cours d'étude)",
+   "origine": "propriétaire : « une figure au repos communique bien avec ses alliés si elle n'est pas bloquée » (Málaga – Athletic : Caput au repos en M3, front de Conjunctio, R7)",
+   "lecture": "Allié au repos d'un pôle : figure de son front posée dans sa propre maison (sans la figure du pôle). Non bloquée : son antagoniste n'est présent intact nulle part (le moteur, lui, dit qu'une figure chez elle ne peut pas y être bloquée : les deux lectures sont mesurées). outils/allies_repos.js.",
+   "mesure": "322 pôles. Avec au moins un allié au repos : ont marqué 67 % (46 pôles), gagné 30 % ; sans : 78 %, 40 %. Non bloqués : 70 % et 32 % contre 77 % et 39 %. Un seul pôle a un allié au repos : il gagne 10 fois sur 34 (R7 seul : 2 sur 16) ; non bloqué : 8 sur 25 (R7 seul : 0 sur 8). Jamais vus, même sens : marqué 8/13 contre 43/57. Vainqueur annoncé seul avec un allié au repos : 6/10 ; le perdant seul : le vainqueur gagne 14/18. Málaga – Athletic (1-4 à la pause, R7 avec Caput au repos) va contre cette tendance."
   }
  ],
  "lectures": [
