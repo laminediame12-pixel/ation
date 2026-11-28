@@ -39,6 +39,7 @@ Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seules l'éga
 Ce qu'elle impose : Oui → les deux pôles marquent ; Non → le perdant ne marque pas.
 
 ## 3. R1 / R7 marque (`marquePole`)
+**Duel des fronts (propriétaire, 2026-11-28)** : tout le front attaque — la quatrième figure du front (f + 12) compte comme le miroir (« marque possible » si elle seule est en bonne position). 161 matchs : marquage par la règle 206 → 219 justes sur 322 pôles, marquage affiché 236 → 239, deux marquent 86 → 89, verdicts inchangés. La saturation de la Terre hors des canaux Terre, essayée aussi, faisait perdre 6 verdicts : non retenue. **Marquage fragile** (signal, pas une règle) : la figure du pôle bloquée par un Populus (blocage total) — 8 pôles sur 15 ont marqué.
 Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
 - en base dans un **canal Terre** (M4, M8, M12, M13, M14, M15) et elle **réagit** : un 1 de la figure rencontre un 1 de la maison (1 + 1 = 2), sur l'un de ses 4 niveaux ;
 - **Populus** en base d'un canal Terre (2 + 2 neutre) : seulement si la Terre de la résultante est saturée (M4, M13) ;

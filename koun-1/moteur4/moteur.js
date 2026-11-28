@@ -461,41 +461,51 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs, mesure du 2026-11-27 après le blocage figure par figure) : dans MARQUE_POLE_OBS (outils/mesure_marquage.js).
-  var MARQUE_POLE_OBS = { assure: { oui: 17, sur: 25 }, marque: { oui: 115, sur: 147 }, possible: { oui: 13, sur: 16 }, non: { oui: 49, sur: 64 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_FRAGILE_OBS = { oui: 8, sur: 15 }; // figure du pôle bloquée par un Populus, 161 matchs (outils/duel_fronts.js)
+  var MARQUE_POLE_OBS = { assure: { oui: 17, sur: 25 }, marque: { oui: 115, sur: 147 }, possible: { oui: 26, sur: 33 }, non: { oui: 36, sur: 47 } }; // outils/mesure_marquage.js, 126 matchs (2026-11-28, tout le front)
   // PUISSANCE DE MARQUAGE (2026-11-27, règles du propriétaire). Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
   //   dans un canal Terre (M4, M8, M12, M13, M14, M15 : la boucle Terre de chaque front y passe) : la figure réagit — au moins un 1 de la figure rencontre
   //   un 1 de la maison (1 + 1 = 2), sur n'importe lequel de ses 4 niveaux ; la Terre de la résultante n'est pas exigée ;
   //   Populus en base d'un canal Terre (2 + 2 neutre, aucune réaction) : seulement si la Terre de la résultante est saturée (M4 → Albus, M13 → Cauda) ;
   //   le pôle dans sa propre maison : Terre de la résultante saturée, sauf s'il y est chez lui (résultante Populus, neutre comme M16).
   //   marque avec assurance : le pôle ET son front direct en bonne position ; marque : l'un des deux, ou l'un des deux en M11 plein (Eau saturée) ;
-  //   marque possible : seul le miroir ; ne marque pas : aucun des trois.
+  //   marque possible : seul le miroir (ou la quatrième figure du front) ; ne marque pas : aucun.
+  // DUEL DES FRONTS (propriétaire, 2026-11-28 : « chaque camp a des attaquants, les fronts, et des défenseurs, les binômes ») : tout le front attaque — la quatrième
+  //   figure (f + 12) compte comme le miroir. 161 matchs, 322 pôles : marquage par la règle 206 → 219 justes, marquage affiché 236 → 239, deux marquent 86 → 89,
+  //   verdicts inchangés (110). La saturation de la Terre hors des canaux Terre, essayée aussi, faisait perdre 6 verdicts : non retenue. outils/duel_fronts.js.
   // BLOCAGE DANS LA CHAÎNE (2026-11-27, chaîne du propriétaire : « M1 attaque avec M5 et M2 attaque M5 ») : le pôle est celui qui attaque, son front direct (f + 4) est son
   //   moyen, et chacun a son attaquant (le pôle f − 3, le front direct f + 1, le miroir f + 5 ; voir bloqueurs). Pôle bloqué : il n'attaque plus, même avec son front direct,
   //   il ne marque pas. Front direct bloqué : le pôle marque encore par lui-même. Miroir bloqué : il ne compte plus. Paris – Marseille : Rubeus bloqué (Albus intact en M1,
   //   Albus reproduit par Populus en M4) → ne marque pas. 147 matchs : 79 bons verdicts contre 77 avant la chaîne (76 en lisant le blocage figure par figure).
   //   Depuis le 2026-11-28, chaque bloqueur n'agit que sur ses nœuds (zoneBlocage) : le pôle n'est paralysé que si sa propre maison en fait partie.
   //   Une figure posée chez elle ne peut pas y être bloquée (Populus en résultante laisse passer son énergie, voir bloqueurs).
-  function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
-    var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 ? K.niveaux(L.theme.resultantes[h])[3] === 2 : [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })); }); };
+  function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), Q = mod(P + 12), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
+    var bonnes = function (f) { var r = [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 ? K.niveaux(L.theme.resultantes[h])[3] === 2 : [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })); });
+      // Essayé (duel des fronts, 2026-11-28) : la saturation de la Terre dans n'importe quelle maison. Marquage 206 → 217 juste sur 322 pôles, mais verdicts
+      // 110 → 104 sur 161 (les règles du verdict sont réglées sur ce marquage) : non retenu tant que le verdict n'est pas revu avec lui.
+      return r; };
     // le pôle dans sa propre maison, Terre de la résultante saturée (propriétaire, 2026-11-27 : Paris – Marseille, Populus en M4 → Albus)
     var rc = L.theme.resultantes[c.maison], chez = K.niveaux(rc)[3] === 2 && rc !== 16 ? [c.maison] : []; // chez lui (résultante Populus) : neutre, ne compte pas (Atlético – Viking)
-    var BL = { pole: bloqueurs(L, P, c.maison), front: bloqueurs(L, F), miroir: bloqueurs(L, Mi) }, e11 = K.niveaux(L.theme.resultantes[11])[2] === 2;
-    var bp0 = bonnes(P).concat(chez.filter(function (h) { return bonnes(P).indexOf(h) < 0; })), bf0 = bonnes(F), bm0 = bonnes(Mi);
+    var BL = { pole: bloqueurs(L, P, c.maison), front: bloqueurs(L, F), miroir: bloqueurs(L, Mi), quatrieme: bloqueurs(L, Q) }, e11 = K.niveaux(L.theme.resultantes[11])[2] === 2;
+    var bp0 = bonnes(P).concat(chez.filter(function (h) { return bonnes(P).indexOf(h) < 0; })), bf0 = bonnes(F), bm0 = bonnes(Mi), bq0 = bonnes(Q); // tout le front attaque (duel des fronts) : f + 12 compte comme le miroir
     var niv = function (a, f, m, m11) { return a.length && f.length ? 'assure' : a.length || f.length || m11 ? 'marque' : m.length ? 'possible' : 'non'; };
     // chaque bloqueur n'agit que sur ses nœuds (zoneBlocage) ; pôle atteint dans sa propre maison : il n'attaque plus, même avec son front direct
-    var ZP = zoneDe(L, BL.pole), ZF = zoneDe(L, BL.front), ZM = zoneDe(L, BL.miroir), hors = function (Z) { return function (h) { return Z.indexOf(h) < 0; }; };
+    var ZP = zoneDe(L, BL.pole), ZF = zoneDe(L, BL.front), ZM = zoneDe(L, BL.miroir), ZQ = zoneDe(L, BL.quatrieme), hors = function (Z) { return function (h) { return Z.indexOf(h) < 0; }; };
     var libre = function (pos, fig, Z) { return pos.filter(function (h) { return h === fig || (Z.indexOf(h) < 0 && ZP.indexOf(h) < 0); }); }; // une position chez elle laisse passer l'énergie
-    var tout = ZP.indexOf(c.maison) >= 0, bp = tout ? [] : bp0.filter(hors(ZP)), bf = tout ? [] : libre(bf0, F, ZF), bm = tout ? [] : libre(bm0, Mi, ZM),
+    var tout = ZP.indexOf(c.maison) >= 0, bp = tout ? [] : bp0.filter(hors(ZP)), bf = tout ? [] : libre(bf0, F, ZF), bm = tout ? [] : libre(bm0, Mi, ZM), bq = tout ? [] : libre(bq0, Q, ZQ),
       m11 = !tout && ZP.indexOf(11) < 0 && (b[11] === P || (b[11] === F && (ZF.indexOf(11) < 0 || F === 11))) && e11;
-    var niveau0 = niv(bp0, bf0, bm0, (b[11] === P || b[11] === F) && e11), niveau = niv(bp, bf, bm, m11);
+    var niveau0 = niv(bp0, bf0, bm0.concat(bq0), (b[11] === P || b[11] === F) && e11), niveau = niv(bp, bf, bm.concat(bq), m11);
     // bloque : ce que le blocage a retiré quand il a fait baisser le niveau (sinon null) ; pôle bloqué = tout le pôle
     var p11 = (b[11] === P || b[11] === F) && e11 ? [11] : [], par = function (bl, pos) { return bl.filter(function (x) { return zoneBlocage(L, x.maison).some(function (n) { return pos.indexOf(n) >= 0; }); }); };
-    var perdus = niveau === niveau0 ? [] : tout ? [{ role: 'pôle', figure: P, par: par(BL.pole, [c.maison]), positions: bp0.concat(bf0, p11, bm0), tout: true }]
+    var perdus = niveau === niveau0 ? [] : tout ? [{ role: 'pôle', figure: P, par: par(BL.pole, [c.maison]), positions: bp0.concat(bf0, p11, bm0, bq0), tout: true }]
       : [['pôle', P, BL.pole, bp0.filter(function (h) { return bp.indexOf(h) < 0; })], ['front direct', F, BL.front.concat(BL.pole), bf0.filter(function (h) { return bf.indexOf(h) < 0; }).concat(b[11] === F && e11 && !m11 ? [11] : [])],
-        ['miroir', Mi, BL.miroir.concat(BL.pole), bm0.filter(function (h) { return bm.indexOf(h) < 0; })]].filter(function (x) { return x[3].length; })
+        ['miroir', Mi, BL.miroir.concat(BL.pole), bm0.filter(function (h) { return bm.indexOf(h) < 0; })], ['quatrième figure du front', Q, BL.quatrieme.concat(BL.pole), bq0.filter(function (h) { return bq.indexOf(h) < 0; })]].filter(function (x) { return x[3].length; })
         .map(function (x) { return { role: x[0], figure: x[1], par: par(x[2], x[3]), positions: x[3] }; }).filter(function (x) { return x.par.length; });
-    var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm : []).filter(function (h, i, t) { return t.indexOf(h) === i; }).sort(function (x, y) { return x - y; });
-    return { marque: niveau !== 'non', niveau: niveau, niveauSansBlocage: niveau0, bloque: perdus.length ? perdus : null, bloqueurs: BL, zones: { pole: ZP, front: ZF, miroir: ZM }, maisons: maisons, positions: { pole: bp, front: bf, miroir: bm, m11: m11 }, avantage: bp.length + bf.length, figures: [P, F, Mi], obs: MARQUE_POLE_OBS[niveau] }; }
+    var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm.concat(bq) : []).filter(function (h, i, t) { return t.indexOf(h) === i; }).sort(function (x, y) { return x - y; });
+    // MARQUAGE FRAGILE (2026-11-28, blocage total du propriétaire : « Populus en base fait la figure de repos de la maison bloquer son adversaire ») : signal, pas une règle.
+    var popB = BL.pole.filter(function (x) { return x.type === 'populus'; }), oF = MARQUE_FRAGILE_OBS;
+    return { marque: niveau !== 'non', niveau: niveau, niveauSansBlocage: niveau0, bloque: perdus.length ? perdus : null, bloqueurs: BL, zones: { pole: ZP, front: ZF, miroir: ZM, quatrieme: ZQ }, maisons: maisons, positions: { pole: bp, front: bf, miroir: bm, quatrieme: bq, m11: m11 }, avantage: bp.length + bf.length, figures: [P, F, Mi, Q], obs: MARQUE_POLE_OBS[niveau],
+      fragile: popB.length ? { texte: 'marquage fragile : la figure du pôle est bloquée par Populus en M' + popB.map(function (x) { return x.maison; }).join(', M') + ' (blocage total) — ' + oF.oui + ' pôles sur ' + oF.sur + ' ont marqué dans ce cas' } : null }; }
   // ESTIMATION DES BUTS (2026-11-27, à la demande du propriétaire) : arrêts × nœud double M11 (Eau × Eau). M11 est plein quand la résultante de M11 a l'Eau
   // saturée (⇔ Eau active en base de M11). 126 matchs (arrêts sur les 16 maisons depuis le 2026-11-27) : arrêt et M11 plein 4,28 buts (43 matchs) ; arrêt, M11 vide 3,39 (36) ;
   // sans arrêt, M11 plein 3,07 (28) ; ni l'un ni l'autre 2,21 (19). Erreur moyenne, chaque match jugé sans lui-même : 1,514 (1,526 avec les arrêts M1–M15).
