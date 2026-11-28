@@ -3196,6 +3196,13 @@
    "lecture_1": "Le long du cycle de la chaîne des vérifications (les maisons des pôles ne changent pas, leurs figures tournent), effet du déplacement de R1 et de R7 sur les nœuds pleins à chaque pas. Repère, thème principal : écart 0 → 12 nuls sur 30 (40 %), 3 et plus → 5/44. Sur la rotation : écart des sommes 0 → 11/34 (dév. 11/29, mais 0/5 sur les matchs du 26 et du 27) ; effets égaux à tous les pas → 8/20 (0/3 sur les matchs jamais vus) ; écart moyen par pas sans pente.",
    "lecture_2": "Trajectoire +6 (panneau « Déplacement R1 / R7 ») : figure de R7 à 3 pas de celle de R1 (= R1 + 2) → 6 nuls sur 15, à 5 pas (= R1 − 2) → 1/12 ; zones (noyau Terre, mobile) et pas de la maison de R1 vers sa figure : de 0 à 40 % sans ordre. Une vingtaine de cases regardées : rien de solide.",
    "outil": "outils/rotation_deplacement.js"
+  },
+  {
+   "id": "THEME-SOMME-PRINCIPAL-VERIFICATION-2026-11-28",
+   "statut": "observation (non intégrée)",
+   "origine": "propriétaire : « additionne le thème de vérification et le thème principal pour qu'on se retrouve avec un seul thème ; prends deux ou trois thèmes nuls pour comparer »",
+   "structure": "La somme maison par maison des deux thèmes est elle-même un thème (vérifié sur les 65 536) : mères M1+M1 = Populus, M2+M4, M3+M7, M3. R1 y est donc toujours en M16 et R7 en M6 ; Populus y marque les maisons où le principal et sa vérification ont la même figure.",
+   "nuls": "Leganés – Sabadell 0-0 → 16-9-16-16 (9 maisons à Populus) ; Lyon – Lillestrøm 0-0 → 16-8-1-16 ; Groningue – Willem II 1-1 → 16-9-8-8 ; Aston Villa – Sunderland 0-0 → 16-16-9-9 (12 maisons à Populus). Point commun des trois premiers : Populus en M3 ou en M7 du principal → sur les 160 matchs, 5 nuls sur 9 (26/11 1/1, 27/11 2/2). Nombre de Populus dans la somme : 6 ou plus → 4 nuls sur 11 ; 1 → 5/41."
   }
  ],
  "lectures": [
