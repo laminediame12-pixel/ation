@@ -63,5 +63,23 @@
    0,
    2
   ]
+ },
+ {
+  "themes": [
+   9,
+   12,
+   3,
+   1
+  ],
+  "match": "Málaga – Athletic",
+  "date": "2026-11-28",
+  "competition": "Liga",
+  "mi_temps": [
+   1,
+   4
+  ],
+  "provisoire": false,
+  "score_final": null,
+  "note": "fourni par le propriétaire le 2026-11-28 : « Málaga, première mi-temps, il est mené 4-1 » ; mi-temps définitive, score final pas encore connu. Le moteur annonçait la victoire de Málaga (seul R7 marque, mais R1 garde l'avantage du domicile), non confirmée (cycle de 4 dont un thème annonce Athletic) ; Athletic marque (assuré), but d'Athletic en 1re mi-temps, ≈ 4,3 buts."
  }
 ]
