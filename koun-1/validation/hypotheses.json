@@ -3246,6 +3246,12 @@
    "origine": "propriétaire : « dans le double thème, aux deux pôles R1 et R7, il arrive qu'une maison regroupe deux figures du même front »",
    "structure": "La vérification garde la première mère, donc la maison de R1, et R7 est toujours en R1 + 6 : chaque pôle a la même maison dans les deux thèmes (161/161). La page, en vue double, y montre la figure du pôle et celle de la vérification.",
    "mesure": "outils/double_meme_front.js. Même front à la maison d'un pôle : 142 pôles sur 322 (44 %, au hasard 25 %), dont 65 même figure (Populus dans le thème somme). Marquage du pôle : même front 79 %, même figure 71 %, autre front 77 % — aucun effet. Vainqueur annoncé par le principal qui a seul ses deux figures du même front : il gagne 27 fois sur 32, ne perd pas 31 fois (126 premiers 24/27, jamais vus 3/5) ; autres victoires annoncées 64 sur 100 (hasard 0,02 pour cette lecture, plusieurs lectures essayées). Seulement 6 des 32 cas sont aussi des victoires confirmées par la vérification (hors confirmées : 21/26)."
+  },
+  {
+   "id": "FRONTS-SATURES-POPULUS-2026-11-28",
+   "statut": "demande du propriétaire, vérifiée sur les matchs joués : non confirmée (en cours d'étude)",
+   "origine": "propriétaire : « vérifie les fronts de R1 et R7 dans les thèmes principal et vérification : celui dont les fronts sont plus saturés, ou qui ne rencontre pas de blocage par l'adversaire sous Populus »",
+   "mesure": "outils/fronts_saturation.js (front d'un pôle = les quatre maisons du front de sa figure, dans chaque thème). Pôle désigné gagnant, 161 matchs (un pôle pris au hasard gagne 38 %) : fronts plus saturés, résultantes principal + vérification 55/142 (39 %), principal seul 52/118, vérification seule 40/121, bases 57/139, nœuds pleins de la carte 57/146 ; seul libre sous Populus (sa figure) 14/28, (sa figure ou son front) 13/39 ; règle combinée (plus saturé ou seul libre) 58/146 (40 %). Verdict principal : 91/132 (69 %). Avec le vainqueur annoncé : fronts plus saturés 45/64 (70 %), moins saturés 36/52 (69 %) ; libre sous Populus, le perdant bloqué 11/14."
   }
  ],
  "lectures": [
