@@ -3235,7 +3235,7 @@
   },
   {
    "id": "VERIFICATION-CONFIRME-VAINQUEUR-2026-11-28",
-   "statut": "observation sur les matchs joués (non intégrée)",
+   "statut": "intégrée comme qualificatif « victoire confirmée (vérification) », la décision ne change pas (propriétaire : « vas-y »)",
    "origine": "propriétaire : « reviens sur la vérification alors » (après la piste du thème somme) ; on ne juge que sur le passé.",
    "fouille": "outils/somme_fouille.js verification : 77 lectures du thème de vérification × 6 issues × 4 contextes ; 131 règles fortes sur les 126 premiers matchs contre 152 en moyenne au hasard (mélange par verdict principal) : rien au-dessus du hasard dans l'ensemble. Figure du vainqueur annoncé bloquée dans la vérification, perdant libre : 24 victoires sur 32 (jamais vus 7/7) ; par un Populus : 5/5.",
    "piste": "Chaîne des vérifications en cycle de 2, et les deux thèmes du cycle annoncent le vainqueur annoncé par le principal (côté « confirmation » de la règle d'égalité du cycle de 2) : il gagne 19 fois sur 22, ne perd pas 21 fois sur 22 (jamais vus 5/5) ; autres victoires annoncées 72 sur 110 (hasard 0,04). Cycle de 4 : les quatre thèmes d'accord 10/13, trois sur quatre 11/22 (pas de gradation). Tous les thèmes du cycle d'accord (2 ou 4) : 29/35."

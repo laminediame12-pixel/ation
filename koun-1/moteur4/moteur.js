@@ -532,6 +532,8 @@
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B }, mt1: Y, mt2: S }; }
   // Indice contre les boucles (2026-11-28) : 161 matchs, cas où l'indice est à −2 ou moins contre le vainqueur des boucles (mis à jour par la mesure ci-dessous).
   var INDICE_CONTRE_BOUCLES_OBS = { autre: 7, nul: 2, boucles: 1 };
+  // Victoire confirmée par la vérification (2026-11-28) : matchs joués, vainqueur annoncé quand les deux thèmes du cycle de 2 l'annoncent aussi.
+  var VERIF_CONFIRME_OBS = { gagne: 19, sur: 22, nePerdPas: 21 };
   // THÈME DE VÉRIFICATION ET THÈME SOMME (propriétaire, 2026-11-28) : c'est le moteur qui les calcule, la page ne fait qu'afficher.
   // Vérification : mères = figures de M1, M4, M7, M10. Somme : le principal et sa vérification additionnés maison par maison, qui forment eux-mêmes un thème
   // (vérifié sur les 65 536) : mères M1+M1 = Populus, M2+M4, M3+M7, M4+M10 (= M3) ; R1 y est toujours en M16 et R7 en M6. La page, en vue « thème somme »,
@@ -600,6 +602,11 @@
     if (!sansVerification && BD.domaine && V.decision.resultat === (BD.gagnant === 'R1' ? '1' : '2')) { var sB = (BD.gagnant === 'R1' ? 1 : -1) * VC.score, oB = INDICE_CONTRE_BOUCLES_OBS;
       if (sB <= -2) { var vB = BD.gagnant === 'R1' ? '2' : '1'; V.decision = { resultat: vB, contreBoucles: true, raison: 'l\'indice de victoire va contre la règle des boucles (score ' + (VC.score > 0 ? '+' : '') + VC.score + ') : victoire de ' + (vB === '1' ? 'R1' : 'R7') + ' (en cours d\'étude : ' + oB.autre + ' victoires de l\'autre pôle, ' + oB.nul + ' nuls, ' + oB.boucles + ' du vainqueur des boucles sur ' + (oB.autre + oB.nul + oB.boucles) + ' cas) · règle des boucles : ' + V.decision.raison }; } }
     if ((V.decision.resultat === '1' || V.decision.resultat === '2') && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { /* une égalité n'est jamais une « victoire nette » */ V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
+    // VICTOIRE CONFIRMÉE PAR LA VÉRIFICATION (2026-11-28, propriétaire « vas-y » ; en cours d'étude). C'est l'autre côté de l'égalité du cycle de 2 : la chaîne des
+    // vérifications oscille entre deux thèmes et tous deux annoncent le vainqueur → victoire confirmée. Qualificatif seulement, la décision ne change pas. Matchs joués :
+    // le vainqueur annoncé a gagné 19 fois sur 22 et n'a perdu qu'une fois (jamais vus 5/5) ; autres victoires annoncées 72 sur 110.
+    if (!sansVerification && V.verification && V.verification.cycle === 2 && (V.decision.resultat === '1' || V.decision.resultat === '2') && V.verification.cycle2.every(function (r) { return r === V.decision.resultat; })) {
+      var oC = VERIF_CONFIRME_OBS; V.decision.confirmee = { texte: 'victoire confirmée par la vérification : la chaîne des vérifications oscille entre deux thèmes, et tous deux annoncent ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (en cours d\'étude : ' + oC.gagne + ' victoires sur ' + oC.sur + ' dans ce cas, ' + oC.nePerdPas + ' sans défaite)' }; }
     return V; }
   // BLOCAGE — une seule définition pour tout le moteur (2026-11-27, chaîne du propriétaire : la figure k attaque k + 3, « M(h+1) attaque M(h+4) », sur les 16 maisons).
   // La figure g est bloquée par son antagoniste A = g − 3 quand A est présent intact :

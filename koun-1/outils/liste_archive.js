@@ -17,7 +17,7 @@ const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
   const L = [];
   for (const x of reste) {
     await p.goto('file://' + path.join(R, 'koun.html') + '?theme=' + x.theme + '&e1=' + encodeURIComponent(x.equipe1) + '&e2=' + encodeURIComponent(x.equipe2));
-    const aff = await p.evaluate(() => { const g = k => document.getElementById(k + 't').textContent.trim(); return { v: g('vV'), deux: g('vB'), m1: g('vM1'), m7: g('vM7'), inc: g('vI'), buts: g('vT'), mt1: g('vR'), mt2: g('v2'), eq: g('vE') }; });
+    const aff = await p.evaluate(() => { const g = k => document.getElementById(k + 't').textContent.trim(), c = document.getElementById('vVc'); return { conf: c && !c.hidden ? c.textContent.trim() : '', v: g('vV'), deux: g('vB'), m1: g('vM1'), m7: g('vM7'), inc: g('vI'), buts: g('vT'), mt1: g('vR'), mt2: g('v2'), eq: g('vE') }; });
     const T = M.lire(x.theme.split('-').map(Number)), H = M.hierarchie(T), V = M.verdict(T), I = M.incidentVerdict(T), a = M.lectureCombinaison(T, [3, 7, 11]), c = M.lectureCombinaison(T, [1, 7, 15, 16]);
     const nom = q => q === 'R1' ? x.equipe1 : x.equipe2, d = V.decision.resultat;
     const vert = { mt1: H.mt1.butAttendu, m1: a.designeSeul === 'R1' && H.R1.marque, m7: a.designeSeul === 'R7' && H.R7.marque, rouge: I.rouge.veto, nul: c.attendu && d !== 'N' };
@@ -31,7 +31,7 @@ const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
   const ligne = (lab, val, cls, note) => '<li class="' + (cls || '') + '"><span class="lab">' + esc(lab) + '</span><span class="val">' + esc(val) + (note ? ' <small>' + esc(note) + '</small>' : '') + '</span></li>';
   const carte = y => { const x = y.x, A = y.aff, inc = A.inc.split(' · '), clsV = y.d === '1' ? 'r1' : y.d === '2' ? 'r7' : 'eg';
     let h = '<article class="m"><header><span class="ch">' + esc(x.championnat) + '</span><b>' + esc(x.equipe1) + ' – ' + esc(x.equipe2) + '</b><span class="th">' + esc(x.theme) + '</span></header><ul>';
-    h += ligne('🏆 Verdict', A.v, 'v ' + clsV);
+    h += ligne('🏆 Verdict', A.v + (A.conf ? ' · ' + A.conf : ''), 'v ' + clsV, A.conf ? 'les deux thèmes du cycle de vérification l\'annoncent : 19 victoires sur 22' : '');
     h += ligne('⚽ ' + x.equipe1 + ' (R1) marque', A.m1, y.vert.m1 ? 'vert' : '', y.vert.m1 ? 'M3+M7+M11 · ' + TAUX.m3711 : '');
     h += ligne('⚽ ' + x.equipe2 + ' (R7) marque', A.m7, y.vert.m7 ? 'vert' : '', y.vert.m7 ? 'M3+M7+M11 · ' + TAUX.m3711 : '');
     h += ligne('⚽ Deux marquent', A.deux);
