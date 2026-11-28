@@ -3188,6 +3188,14 @@
    "structure": "Les 3es mères d'un cycle de 4 alternent Conjunctio / Fortuna Major ou Cauda / Puella (cycle de 2 : Laetitia, Puer ou Aquisitio ; point fixe : Populus).",
    "constat": "86 matchs en cycle de 4, 15 nuls (17 %, le plus bas des trois fins de chaîne). Sans effet : nombre de thèmes du cycle qui désignent le vainqueur (0 à 4 : 8 à 23 %), composition des verdicts (2 R1 et 2 R7 : 4 nuls sur 19), confirmation par la vérification (15 % et 14 %), paire des 3es mères. Meilleure lecture : les figures des deux pôles du principal ne reviennent jamais dans le cycle et le thème y entre en 2 pas → 6 nuls sur 10 (dév. 4/7, 26/11 1/2, 27/11 1/1), choisie après une dizaine d'essais : trop faible pour être intégrée.",
    "outil": "outils/cycles4_verification.js ; outils/cycles2_verification.js"
+  },
+  {
+   "id": "DEPLACEMENT-ROTATION-NUL-2026-11-28",
+   "statut": "étudié, non intégré (pas de signal solide)",
+   "origine": "propriétaire : « vérifiez le déplacement de figures niveau rotation »",
+   "lecture_1": "Le long du cycle de la chaîne des vérifications (les maisons des pôles ne changent pas, leurs figures tournent), effet du déplacement de R1 et de R7 sur les nœuds pleins à chaque pas. Repère, thème principal : écart 0 → 12 nuls sur 30 (40 %), 3 et plus → 5/44. Sur la rotation : écart des sommes 0 → 11/34 (dév. 11/29, mais 0/5 sur les matchs du 26 et du 27) ; effets égaux à tous les pas → 8/20 (0/3 sur les matchs jamais vus) ; écart moyen par pas sans pente.",
+   "lecture_2": "Trajectoire +6 (panneau « Déplacement R1 / R7 ») : figure de R7 à 3 pas de celle de R1 (= R1 + 2) → 6 nuls sur 15, à 5 pas (= R1 − 2) → 1/12 ; zones (noyau Terre, mobile) et pas de la maison de R1 vers sa figure : de 0 à 40 % sans ordre. Une vingtaine de cases regardées : rien de solide.",
+   "outil": "outils/rotation_deplacement.js"
   }
  ],
  "lectures": [
