@@ -1,0 +1,33 @@
+{
+ "note": "Scores et incidents des matchs du 28/11/2026 de l'archive (lot du 24 au 30, thèmes tirés avant les matchs). Fournis par le propriétaire. Penalty et rouge : null = pas encore renseigné. mi_temps : score à la pause, déduit quand les minutes des buts sont connues.",
+ "matchs": [
+  {
+   "match": "Real Salt Lake – Vancouver",
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "theme": [
+    6,
+    9,
+    2,
+    8
+   ],
+   "score": [
+    0,
+    1
+   ],
+   "mi_temps": [
+    0,
+    0
+   ],
+   "buts": {
+    "R1": [],
+    "R7": [
+     "58'"
+    ]
+   },
+   "penalty": null,
+   "rouge": null,
+   "source": "propriétaire (2026-11-28) : « Real Salt Lake vs Vancouver est déjà joué, score 0-1 à la 58e » ; seul but à la 58e, donc 0-0 à la pause. Match joué la nuit précédente, heure européenne."
+  }
+ ]
+}

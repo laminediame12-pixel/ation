@@ -8,8 +8,9 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   const BD = M.boucles(L), V = M.verdict(L), w = H.decision === '1' ? 'R1' : H.decision === '2' ? 'R7' : null;
   // marquage : la règle partout ; seule exception, le vainqueur des boucles différentes marque (imposé)
   for (const [p, q] of [['R1', p1], ['R7', p7]]) { const ok = H[p].marque === q ? !H[p].impose : (p === w && H[p].marque && !q && /imposé par la victoire/.test(H[p].impose || '')); if (!ok) e('marquage remplacé hors de l\'exception des boucles différentes', s); }
-  // décision : boucles différentes → la règle du propriétaire (sauf égalité) ; même boucle → un seul pôle marque, il gagne
-  if (BD.domaine) { if (H.decision !== 'N' && w !== BD.gagnant) e('boucles différentes : la décision n\'est pas celle de la règle', s); if (w && !H[w].marque) e('boucles différentes : le vainqueur ne marque pas', s); }
+  // décision : boucles différentes → la règle du propriétaire (sauf égalité, ou indice à −2 ou moins contre son vainqueur : l'autre pôle) ; même boucle → un seul pôle marque, il gagne
+  if (BD.domaine) { if (H.decision !== 'N' && w !== BD.gagnant && !V.decision.contreBoucles) e('boucles différentes : la décision n\'est pas celle de la règle', s);
+    if (V.decision.contreBoucles && ((BD.gagnant === 'R1' ? 1 : -1) * M.victoireConvergence(L).score > -2 || w === BD.gagnant)) e('indice contre les boucles sans indice à −2 contre le vainqueur des boucles', s); if (w && !H[w].marque) e('boucles différentes : le vainqueur ne marque pas', s); }
   else if (p1 !== p7 && V.decision.type !== 'verification' && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
   if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques' && V.decision.type !== 'verification') e('égalité annoncée sans la condition d\'égalité', s);
   // égalité « vérification » (2026-11-28) : le thème de vérification ne confirme pas le vainqueur et la figure de M7 ou de M14 est commune aux deux thèmes

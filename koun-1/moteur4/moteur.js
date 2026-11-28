@@ -328,13 +328,13 @@
   // et elle peut annoncer le contraire de M3+M7+M11 pour le même pôle.
   var COMBI_LISTE = [
     { maisons: [1, 5, 12, 15], nom: 'Buts premier mi-temps (Buts-H-T-1)', lecture: 'attendu', exacte: true, verdict: true, oui: 'but en 1re mi-temps', non: 'pas de but attendu en 1re mi-temps', statut: 'retenue (ligne de 1re mi-temps du verdict)',
-      obs: 'but en 1re mi-temps 21 fois sur 22 quand il est attendu, 3 sur 9 sinon ; 1re des 1820 combinaisons de 4 maisons ; pas encore jugée sur des mi-temps jamais vues. Aussi : 0 ou 1 but dans le match 4 fois sur 65 quand il est attendu, 18 sur 61 sinon (jamais vus 4 sur 18, sinon 5 sur 16 : non confirmé)' },
+      obs: 'but en 1re mi-temps 21 fois sur 23 quand il est attendu, 3 sur 9 sinon ; 1re des 1820 combinaisons de 4 maisons ; une seule mi-temps jamais vue, manquée (Real Salt Lake – Vancouver, 0-0 à la pause). Aussi : 0 ou 1 but dans le match 4 fois sur 65 quand il est attendu, 18 sur 61 sinon (jamais vus 5 sur 19, sinon 5 sur 16 : non confirmé)' },
     { maisons: [4, 5, 13, 15], nom: 'Buts 2e mi-temps', lecture: 'designe', verdict: true, oui: 'marque en 2e mi-temps', non: 'aucun pôle désigné pour la 2e mi-temps', statut: 'retenue (ligne de 2e mi-temps du verdict)',
-      obs: 'le pôle désigné marque en 2e mi-temps 15 fois sur 20, les autres 14 sur 42 ; 6e des 1820 combinaisons de 4 maisons ; pas encore jugée sur des mi-temps jamais vues' },
+      obs: 'le pôle désigné marque en 2e mi-temps 16 fois sur 22, les autres 14 sur 42 ; 6e des 1820 combinaisons de 4 maisons ; jamais vus : 1 sur 2 (Real Salt Lake – Vancouver)' },
     { maisons: [3, 7, 11], nom: 'Marque', lecture: 'designeSeul', oui: 'marque', non: 'aucun pôle désigné seul, pas d\'annonce', statut: 'retenue, hors verdict (figée sur les matchs du 28 au 30 novembre)',
-      obs: 'le pôle désigné seul marque 58 fois sur 63, puis 14 sur 15 sur les matchs jamais vus (autres pôles 136 sur 189, puis 36 sur 53)' },
+      obs: 'le pôle désigné seul marque 58 fois sur 63, puis 14 sur 16 sur les matchs jamais vus (autres pôles 136 sur 189, puis 37 sur 54) ; manqué : Real Salt Lake (0-1 contre Vancouver)' },
     { maisons: [1, 7, 15, 16], nom: 'Pas de nul', lecture: 'attendu', exacte: true, oui: 'pas de nul', non: 'nul possible', statut: 'faible, hors verdict',
-      obs: 'nul 5 fois sur 59 quand le but est attendu, 22 sur 67 sinon ; jamais vus 2 sur 14, sinon 8 sur 20' }];
+      obs: 'nul 5 fois sur 59 quand le but est attendu, 22 sur 67 sinon ; jamais vus 2 sur 14, sinon 8 sur 21' }];
   function lectureCombinaison(L, maisons) { var T = L.theme, b = T.bases, tri = function (l) { return l.slice().sort(function (x, y) { return x - y; }); }, hs = tri(maisons),
       f = hs.map(function (h) { return b[h]; }).reduce(K.additionner), n = K.niveaux(f), ant = mod(f - 3), pro = mod(f - 6),
       enBase = function (g) { var r = []; for (var h = 1; h <= 16; h++) if (b[h] === g) r.push(h); return r; }, dedans = function (h) { return hs.indexOf(h) >= 0; },
@@ -530,6 +530,8 @@
     var Y = rythme(L), S = secondeMiTemps(L), mq = function (p) { return m[p].marque; };
     Y.marqueurs = Y.marqueurs.filter(mq); if (!n) Y.butAttendu = false; S.marqueurs = S.marqueurs.filter(mq);
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B }, mt1: Y, mt2: S }; }
+  // Indice contre les boucles (2026-11-28) : 161 matchs, cas où l'indice est à −2 ou moins contre le vainqueur des boucles (mis à jour par la mesure ci-dessous).
+  var INDICE_CONTRE_BOUCLES_OBS = { autre: 7, nul: 2, boucles: 1 };
   function verdict(L, sansVerification) { var V = verdictBrut(L), Z = m1m10(L), NT = noyauTerre(L); V.noyauTerre = NT; V.m1m10 = Z;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux sur ' + (sz.ok + sz.ko) + ' appels tranchés'; V.raison = 'liaisons Terre M1–M5 et M10–M14 en arrêt : avantage R1'; }
     // DÉCISION FINALE (toujours une victoire ; tout ce qui concernait le nul a été supprimé du système le 2026-11-27, à la demande du propriétaire) :
@@ -585,7 +587,12 @@
       V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: cycle === 1 ? x.slice() : null, pointFixeRetenu: pf, cycle2: c2 };
       if (pf || mm) V.decision = { resultat: 'N', type: 'verification', raison: (pf ? 'la chaîne des vérifications s\'arrête sur un thème qui est sa propre vérification (point fixe ' + x.join('-') + ') : plus rien ne bouge'
           : 'la chaîne des vérifications oscille entre deux thèmes, et aucun des deux ne désigne ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (ils donnent ' + c2.map(function (v) { return v === 'N' ? 'égalité' : v === '1' ? 'R1' : 'R7'; }).join(' et ') + ') ; la figure de M' + communes.join(' et de M') + ' est la même dans le thème et sa vérification')
-          + ' : égalité (en cours d\'étude ; 15 nuls sur 25 dans ces cas) · indice : ' + VC.texte }; }
+          + ' : égalité (en cours d\'étude ; 11 nuls sur 13 dans ces cas, 161 matchs) · indice : ' + VC.texte }; }
+    // INDICE CONTRE LES BOUCLES (2026-11-28, après Real Salt Lake – Vancouver 0-1, où la règle des boucles donnait R1) : quand la victoire des boucles est restée en place
+    // et que l'indice de victoire (score de convergence) est à −2 ou moins contre elle, c'est l'autre pôle qui gagne. Appliqué en dernier, sur le verdict principal :
+    // la vérification lit le vainqueur des boucles, comme quand elle a été réglée (placé avant elle, la correction ne gagnait que 2 verdicts au lieu de 6). En cours d'étude.
+    if (!sansVerification && BD.domaine && V.decision.resultat === (BD.gagnant === 'R1' ? '1' : '2')) { var sB = (BD.gagnant === 'R1' ? 1 : -1) * VC.score, oB = INDICE_CONTRE_BOUCLES_OBS;
+      if (sB <= -2) { var vB = BD.gagnant === 'R1' ? '2' : '1'; V.decision = { resultat: vB, contreBoucles: true, raison: 'l\'indice de victoire va contre la règle des boucles (score ' + (VC.score > 0 ? '+' : '') + VC.score + ') : victoire de ' + (vB === '1' ? 'R1' : 'R7') + ' (en cours d\'étude : ' + oB.autre + ' victoires de l\'autre pôle, ' + oB.nul + ' nuls, ' + oB.boucles + ' du vainqueur des boucles sur ' + (oB.autre + oB.nul + oB.boucles) + ' cas) · règle des boucles : ' + V.decision.raison }; } }
     if ((V.decision.resultat === '1' || V.decision.resultat === '2') && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { /* une égalité n'est jamais une « victoire nette » */ V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }
   // BLOCAGE — une seule définition pour tout le moteur (2026-11-27, chaîne du propriétaire : la figure k attaque k + 3, « M(h+1) attaque M(h+4) », sur les 16 maisons).

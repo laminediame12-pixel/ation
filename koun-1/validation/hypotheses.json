@@ -3213,6 +3213,14 @@
    "piste": "M3+M7+M11 (même figure que M2+M4+M8+M16 et M3+M5+M6+M7) : le pôle dont le front (les quatre maisons du front de sa figure) porte en base cette figure ou son protecteur, l'autre pôle non, marque : 58/63 sur les 126 matchs (autres pôles 136/189), 14/15 sur les 34 jamais vus (autres 36/53), 72/78 en tout. Quand le moteur dit aussi qu'il marque : 63/67 ; quand le moteur dit qu'il ne marque pas : 9/11. Figée sur les 102 matchs du 28 au 30 novembre : 40 pôles annoncés marqueurs, dont 7 que le moteur donne non marqueurs (validation/predictions-marque-combinaison-28-30-novembre.json).",
    "autres_pistes": "M1+M7+M15+M16 (figure de M7 lue avec ces quatre maisons), but attendu → pas de nul : nuls 5/59 contre 22/67, puis 2/14 contre 8/20 sur les jamais vus (hasard 11 %). Démenties sur les jamais vus : M1+M2+M8+M9 → les deux marquent et au moins 3 buts, M6+M7+M14+M16 → penalty, M1+M2+M11+M14 → rouge, M4+M5 désigné seul → il perd. Liste complète : validation/COMBINAISONS-IMPLICATIONS.md.",
    "limites": "Piste choisie parmi 30 940 essais ; sa confirmation sur les jamais vus (14/15, quand 74 % des pôles y marquent) a environ 6 % de chances de venir du hasard. Pas de score de mi-temps trouvé pour les matchs du 26 et du 27 : les combinaisons de mi-temps n'ont pas encore de jugement hors échantillon. Les 6 échecs (Niger–Maroc, Southampton–Derby, FC Dallas–Portland, Inter Miami–Columbus, Feyenoord–Porto, Leganés–Sabadell) n'ont pas de trait commun net."
+  },
+  {
+   "id": "INDICE-CONTRE-BOUCLES-2026-11-28",
+   "statut": "intégrée au verdict (en cours d'étude)",
+   "origine": "Real Salt Lake – Vancouver 0-1 (28/11, but à la 58e, fourni par le propriétaire : « on aura à corriger encore le moteur ») : la règle des boucles donnait R1 (arme Rubeus posée en M6, sans défense) alors que l'indice de victoire était à −2 (R7 a gagné 12 fois sur 17 à −2 ou moins). C'était aussi un des 7 matchs assurés (Real Salt Lake marque) : manqué.",
+   "regle": "Domaine des boucles différentes : si la victoire des boucles reste en place après la vérification et que l'indice de victoire est à −2 ou moins contre elle, l'autre pôle gagne.",
+   "mesure": "161 matchs : 10 cas, l'autre pôle a gagné 7 fois, 2 nuls, 1 victoire du vainqueur des boucles (Mönchengladbach – Dortmund 0-1). Verdicts justes 104 → 110 (126 premiers matchs 80 → 85, jamais vus 24 → 25). Hors boucles, l'indice contre le verdict ne corrige rien (7 cas : 4 justes, 3 faux). Placée avant la vérification, la correction ne gagnait que 2 verdicts : elle est appliquée en dernier.",
+   "suite": "Les 7 matchs assurés : Real Salt Lake marque manqué ; les 6 autres ne changent pas avec la correction. Taux mis à jour avec ce match : M3+M7+M11 désigné seul → marque 72/79 ; avec le verdict qui le fait marquer 64/69 ; et gagner 41/43 ; but en 1re mi-temps (ligne du verdict) 21/23."
   }
  ],
  "lectures": [

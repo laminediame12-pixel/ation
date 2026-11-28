@@ -13,9 +13,9 @@ On cherche sur 126 matchs, puis on juge sur les 34 matchs du 26 et du 27 novembr
 
 | Combinaison | Implication | 126 matchs | Jamais vus | Pour le moteur |
 |---|---|---|---|---|
-| M1+M5+M12+M15 (≡ M1+M6+M13) | but attendu → but en 1re mi-temps | 21/22, sinon 3/9 · 1re des 1820 combinaisons de 4 maisons | aucune mi-temps trouvée | déjà dans le moteur (rythme) |
-| M4+M5+M13+M15 (≡ M4+M5+M14) | pôle désigné → il marque en 2e mi-temps | 15/20, autres 14/42 · 6e des 1820 | aucune mi-temps trouvée | déjà dans le moteur (2e mi-temps) |
-| M3+M7+M11 (≡ M2+M4+M8+M16) | pôle désigné seul → il marque | 58/63, autres 136/189 | 14/15, autres 36/53 (hasard : 4 %) | non intégrée ; figée sur les matchs du 28 au 30 (40 pôles annoncés, dont 7 que le moteur donne non marqueurs) |
+| M1+M5+M12+M15 (≡ M1+M6+M13) | but attendu → but en 1re mi-temps | 21/22, sinon 3/9 · 1re des 1820 combinaisons de 4 maisons | 0/1 (Real Salt Lake – Vancouver, 0-0 à la pause) | déjà dans le moteur (rythme) |
+| M4+M5+M13+M15 (≡ M4+M5+M14) | pôle désigné → il marque en 2e mi-temps | 15/20, autres 14/42 · 6e des 1820 | 1/2 (Real Salt Lake – Vancouver) | déjà dans le moteur (2e mi-temps) |
+| M3+M7+M11 (≡ M2+M4+M8+M16) | pôle désigné seul → il marque | 58/63, autres 136/189 | 14/15, autres 36/53 (hasard : 4 %) ; puis Real Salt Lake – Vancouver 0-1 : manqué, 14/16 | non intégrée ; figée sur les matchs du 28 au 30 (40 pôles annoncés, dont 7 que le moteur donne non marqueurs) |
 
 ## B. Pistes faibles (le sens se confirme, l'écart reste petit)
 

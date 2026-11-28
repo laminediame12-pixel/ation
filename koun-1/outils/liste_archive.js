@@ -8,10 +8,10 @@ const { chromium } = require('playwright'), fs = require('fs'), path = require('
 const lire = f => JSON.parse(fs.readFileSync(path.join(R, f), 'utf8')), AUJ = '2026-11-28', SORTIE = path.join(R, 'validation/verdicts-archive.html');
 // résultats connus (thème et date) : un match connu n'est plus « restant »
 const connus = new Set(); lire('validation/scores-reels.json').forEach(x => connus.add(x.themes.join('-') + '|' + x.date));
-['validation/resultats-2026-11-25.json', 'validation/resultats-2026-11-26.json', 'validation/resultats-2026-11-27.json'].forEach(f => lire(f).matchs.forEach(x => connus.add(x.theme.join('-') + '|' + x.date)));
+['validation/resultats-2026-11-25.json', 'validation/resultats-2026-11-26.json', 'validation/resultats-2026-11-27.json', 'validation/resultats-2026-11-28.json'].forEach(f => lire(f).matchs.forEach(x => connus.add(x.theme.join('-') + '|' + x.date)));
 const reste = lire('validation/themes-25-30-novembre.json').filter(x => x.date >= AUJ && !connus.has(x.theme + '|' + x.date));
-// taux observés des actions inévitables (160 matchs, verdict compris ; recalculés par outils/combinaisons_inevitables.js et le moteur)
-const TAUX = { mt1: '21 sur 22', m3711: '63 sur 67', rouge: '40 sur 42', nul: '60 sur 65' };
+// taux observés des actions inévitables (161 matchs au 2026-11-28, Real Salt Lake – Vancouver compris ; verdict compris ; recalculés par outils/combinaisons_inevitables.js et le moteur)
+const TAUX = { mt1: '21 sur 23', m3711: '64 sur 69', rouge: '40 sur 42', nul: '60 sur 65' };
 const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 (async () => { const b = await chromium.launch(), p = await b.newPage(), err = []; p.on('pageerror', e => err.push(e.message));
   const L = [];
