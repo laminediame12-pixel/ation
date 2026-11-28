@@ -69,3 +69,30 @@ D.forEach(d => { const L = M.lire(d.m), S = d.S, b = S.theme.bases, pops = []; f
   addPP('front de la figure du pôle (principal) bloqué par les Populus : ' + (w1 > w7 ? 'plus celui de R1' : w7 > w1 ? 'plus celui de R7' : 'autant'), d);
   addPP('nombre de Populus en base : ' + (pops.length >= 4 ? '4 ou plus' : pops.length), d); });
 Object.keys(PP).sort().forEach(k => { tab(k, PP[k]); const jv = PP[k].filter(d => d.lot === 'jamais vus'); if (jv.length) tab('   … dont jamais vus', jv); });
+// Effet des blocages du thème somme sur le thème principal (propriétaire : « calcule l'effet du blocage vis-à-vis du thème principal »).
+// Pour chaque pôle du principal (figure P, front direct P + 4, miroir P + 8, comme le marquage du moteur), on cherche si le thème somme bloque ces figures
+// (M.bloqueurs sur le thème somme : antagoniste intact posé, en M16, ou reproduit par Populus), puis si le pôle a marqué. Ensuite : le marquage du moteur
+// serait-il plus juste si un pôle bloqué par le thème somme ne marquait pas ?
+console.log('\nEffet des blocages du thème somme sur les pôles du thème principal (2 pôles par match) :');
+const O = []; D.forEach(d => { const L = M.lire(d.m), S = d.S, H = M.hierarchie(L);
+  ['R1', 'R7'].forEach((p, i) => { const P = L[p].figure, bs = g => M.bloqueurs(S, g), bP = bs(P), bF = bs(mod(P + 4)), bM = bs(mod(P + 8));
+    O.push({ d, p, marque: d.sc[i] > 0, moteur: H[p].marque, niveau: H[p].propre.niveau, impose: !!H[p].impose, bP, bF, bM, pop: bP.some(x => x.type === 'populus') }); }); });
+const tp = (lab, S) => { const n = S.length, k = S.filter(o => o.marque).length, jv = S.filter(o => o.d.lot === 'jamais vus'), kj = jv.filter(o => o.marque).length;
+  console.log('  ' + lab.padEnd(66) + String(n).padStart(4) + ' pôles · ont marqué ' + k + ' (' + (n ? Math.round(100 * k / n) : 0) + ' %)' + (jv.length ? ' · jamais vus ' + kj + '/' + jv.length : '')); };
+tp('tous les pôles', O);
+tp('figure du pôle bloquée par le thème somme', O.filter(o => o.bP.length)); tp('figure du pôle libre dans le thème somme', O.filter(o => !o.bP.length));
+tp('… bloquée par un Populus du thème somme (principal = vérification)', O.filter(o => o.pop));
+tp('front direct du pôle bloqué par le thème somme', O.filter(o => o.bF.length)); tp('miroir du pôle bloqué par le thème somme', O.filter(o => o.bM.length));
+tp('figure et front direct bloqués', O.filter(o => o.bP.length && o.bF.length)); tp('ni la figure, ni le front direct, ni le miroir bloqués', O.filter(o => !o.bP.length && !o.bF.length && !o.bM.length));
+console.log('  selon le marquage du moteur sur le thème principal :');
+tp('moteur « marque », figure bloquée par le thème somme', O.filter(o => o.moteur && o.bP.length)); tp('moteur « marque », figure libre', O.filter(o => o.moteur && !o.bP.length));
+tp('moteur « ne marque pas », figure bloquée par le thème somme', O.filter(o => !o.moteur && o.bP.length)); tp('moteur « ne marque pas », figure libre', O.filter(o => !o.moteur && !o.bP.length));
+const juste = f => O.filter(o => f(o) === o.marque).length, jv = O.filter(o => o.d.lot === 'jamais vus'), justeJ = f => jv.filter(o => f(o) === o.marque).length;
+[['marquage actuel du moteur', o => o.moteur], ['… et un pôle dont la figure est bloquée par le thème somme ne marque pas', o => o.moteur && !o.bP.length],
+ ['… sauf s\'il est imposé par la victoire', o => o.moteur && (!o.bP.length || o.impose)], ['… et un pôle dont la figure et le front direct sont bloqués ne marque pas', o => o.moteur && !(o.bP.length && o.bF.length)]]
+  .forEach(([lab, f]) => console.log('  ' + lab.padEnd(84) + ' juste ' + juste(f) + '/' + O.length + ' · jamais vus ' + justeJ(f) + '/' + jv.length));
+// Les blocages du thème somme comparés à ceux du thème principal, pour la figure de chaque pôle : confirmés, ajoutés ou levés par le thème somme.
+console.log('\nFigure du pôle bloquée dans le principal et/ou dans le thème somme :');
+const C2 = {}; O.forEach(o => { const L = M.lire(o.d.m), bp = M.bloqueurs(L, L[o.p].figure, L[o.p].maison).length > 0, bs = o.bP.length > 0;
+  const k = bp && bs ? 'bloquée dans les deux (blocage confirmé)' : bp ? 'bloquée dans le principal seulement (levé par le thème somme)' : bs ? 'bloquée dans le thème somme seulement (ajouté)' : 'libre dans les deux'; (C2[k] = C2[k] || []).push(o); });
+Object.keys(C2).sort().forEach(k => tp(k, C2[k]));
