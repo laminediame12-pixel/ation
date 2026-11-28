@@ -1,0 +1,1739 @@
+{
+ "note": "Prédictions figées le 2026-11-28 avant de consulter tout résultat (lot du 24 au 30 novembre : matchs du 28 au 30 ; certains matchs du 28 ont pu commencer). Piste du marquage par la combinaison M3+M7+M11 (même figure que M2+M4+M8+M16) : le pôle dont le front porte en base la figure-somme ou son protecteur, l'autre pôle non, est annoncé marqueur. Sur les 126 matchs : 58 sur 63 ; sur les 34 matchs du 26 et du 27 novembre, jamais vus : 14 sur 15 (les autres pôles : 72 % et 68 %). Trouvée parmi 30 940 essais (outils/combinaisons_inevitables.js) : c'est ici qu'elle se juge. moteur : marquage du moteur au moment du figeage, pour comparer. outils/figer_marque_combinaison.js.",
+ "matchs": [
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Leeds – Coventry",
+   "theme": "2-2-5-16",
+   "somme": "Tristitia",
+   "protecteur": "Laetitia",
+   "designation": {
+    "R1": "M2 Laetitia",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Manchester United – Brentford",
+   "theme": "3-2-10-14",
+   "somme": "Via",
+   "protecteur": "Aquisitio",
+   "designation": {
+    "R1": null,
+    "R7": "M9 Via"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Premier League",
+   "match": "Ipswich – Aston Villa",
+   "theme": "5-12-1-16",
+   "somme": "Tristitia",
+   "protecteur": "Laetitia",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Everton – Liverpool",
+   "theme": "1-12-13-16",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Brighton – Newcastle",
+   "theme": "8-16-10-12",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M2 Populus, M6 Populus, M10 Amissio",
+    "R7": "M2 Populus, M6 Populus, M10 Amissio"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Crystal Palace – Hull City",
+   "theme": "13-6-16-3",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Fulham – Bournemouth",
+   "theme": "2-3-9-4",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": "M3 Fortuna Minor, M7 Aquisitio, M11 Fortuna Minor, M15 Fortuna Minor",
+    "R7": "M3 Fortuna Minor, M7 Aquisitio, M11 Fortuna Minor, M15 Fortuna Minor"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Sunderland – Tottenham",
+   "theme": "16-4-10-10",
+   "somme": "Cauda Draconis",
+   "protecteur": "Rubeus",
+   "designation": {
+    "R1": "M7 Rubeus",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Premier League",
+   "match": "Arsenal – Manchester City",
+   "theme": "7-6-6-15",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": "M3 Amissio",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Lincoln City – Wolverhampton",
+   "theme": "6-6-6-4",
+   "somme": "Puella",
+   "protecteur": "Tristitia",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Preston – Norwich",
+   "theme": "1-11-16-15",
+   "somme": "Tristitia",
+   "protecteur": "Laetitia",
+   "designation": {
+    "R1": "M5 Laetitia",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Blackburn – Charlton",
+   "theme": "3-8-10-1",
+   "somme": "Puella",
+   "protecteur": "Tristitia",
+   "designation": {
+    "R1": "M2 Tristitia",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Derby County – Watford",
+   "theme": "9-2-6-10",
+   "somme": "Via",
+   "protecteur": "Aquisitio",
+   "designation": {
+    "R1": null,
+    "R7": "M16 Via"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Millwall – Burnley",
+   "theme": "9-8-3-1",
+   "somme": "Caput",
+   "protecteur": "Cauda Draconis",
+   "designation": {
+    "R1": "M13 Caput",
+    "R7": "M8 Caput"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "West Ham – Stoke City",
+   "theme": "12-16-16-3",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Wrexham – Portsmouth",
+   "theme": "15-8-7-9",
+   "somme": "Cauda Draconis",
+   "protecteur": "Rubeus",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "West Bromwich – Bristol City",
+   "theme": "8-7-2-4",
+   "somme": "Via",
+   "protecteur": "Aquisitio",
+   "designation": {
+    "R1": "M14 Via",
+    "R7": "M9 Aquisitio, M13 Via"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "QPR – Sheffield United",
+   "theme": "5-8-2-9",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Birmingham – Bolton",
+   "theme": "15-1-5-8",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Championship",
+   "match": "Swansea – Cardiff",
+   "theme": "8-10-11-6",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": null,
+    "R7": "M6 Albus"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Angers – Lens",
+   "theme": "2-16-13-2",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "PSG – Lorient",
+   "theme": "9-13-6-7",
+   "somme": "Via",
+   "protecteur": "Aquisitio",
+   "designation": {
+    "R1": "M16 Aquisitio",
+    "R7": "M14 Aquisitio"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Le Mans – Lille",
+   "theme": "6-6-9-8",
+   "somme": "Fortuna Minor",
+   "protecteur": "Caput",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Le Havre – Strasbourg",
+   "theme": "4-12-4-6",
+   "somme": "Fortuna Minor",
+   "protecteur": "Caput",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Ligue 1",
+   "match": "Nice – Troyes",
+   "theme": "7-2-5-5",
+   "somme": "Populus",
+   "protecteur": "Carcer",
+   "designation": {
+    "R1": "M12 Populus",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Auxerre – Marseille",
+   "theme": "15-7-12-13",
+   "somme": "Fortuna Minor",
+   "protecteur": "Caput",
+   "designation": {
+    "R1": null,
+    "R7": "M16 Fortuna Minor"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Toulouse – Rennes",
+   "theme": "8-2-5-2",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": "M2 Laetitia",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Ligue 1",
+   "match": "Lyon – Monaco",
+   "theme": "5-3-4-5",
+   "somme": "Carcer",
+   "protecteur": "Albus",
+   "designation": {
+    "R1": null,
+    "R7": "M3 Albus"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Betis – Rayo Vallecano",
+   "theme": "9-7-11-15",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": "M10 Fortuna Major",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Málaga – Athletic",
+   "theme": "9-12-3-1",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Elche – Atlético",
+   "theme": "2-16-14-7",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": "M8 Albus",
+    "R7": "M8 Albus"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Liga",
+   "match": "Real Madrid – Alavés",
+   "theme": "3-13-7-14",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": "M11 Puella",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Valencia – Osasuna",
+   "theme": "3-9-7-12",
+   "somme": "Caput",
+   "protecteur": "Cauda Draconis",
+   "designation": {
+    "R1": null,
+    "R7": "M6 Cauda Draconis, M10 Caput"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Deportivo – Barcelona",
+   "theme": "9-1-11-11",
+   "somme": "Conjunctio",
+   "protecteur": "Via",
+   "designation": {
+    "R1": "M4 Conjunctio",
+    "R7": "M3 Conjunctio"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga",
+   "match": "Celta Vigo – Villarreal",
+   "theme": "9-4-1-11",
+   "somme": "Carcer",
+   "protecteur": "Albus",
+   "designation": {
+    "R1": null,
+    "R7": "M8 Albus"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Real Sociedad – Séville",
+   "theme": "6-14-9-12",
+   "somme": "Puer",
+   "protecteur": "Conjunctio",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga",
+   "match": "Espanyol – Getafe",
+   "theme": "5-1-2-11",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": "M9 Albus",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Almería – Sporting Gijón",
+   "theme": "8-6-16-2",
+   "somme": "Tristitia",
+   "protecteur": "Laetitia",
+   "designation": {
+    "R1": "M10 Laetitia",
+    "R7": "M10 Laetitia"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Cádiz – Córdoba",
+   "theme": "1-16-5-3",
+   "somme": "Puer",
+   "protecteur": "Conjunctio",
+   "designation": {
+    "R1": "M1 Puer, M9 Puer",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Albacete – Tenerife",
+   "theme": "13-7-2-1",
+   "somme": "Conjunctio",
+   "protecteur": "Via",
+   "designation": {
+    "R1": "M13 Via",
+    "R7": "M14 Via"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Ceuta – Granada",
+   "theme": "13-4-14-13",
+   "somme": "Conjunctio",
+   "protecteur": "Via",
+   "designation": {
+    "R1": "M14 Via",
+    "R7": "M14 Via"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eibar – Burgos",
+   "theme": "4-16-6-6",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": null,
+    "R7": "M12 Puella"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Mallorca – Castellón",
+   "theme": "12-16-10-16",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": "M8 Amissio",
+    "R7": "M8 Amissio"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Las Palmas – Andorra",
+   "theme": "15-14-11-8",
+   "somme": "Cauda Draconis",
+   "protecteur": "Rubeus",
+   "designation": {
+    "R1": "M5 Rubeus, M9 Cauda Draconis",
+    "R7": "M11 Cauda Draconis"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Eldense – Girona",
+   "theme": "10-7-3-7",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M8 Amissio, M16 Populus",
+    "R7": "M8 Amissio, M16 Populus"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Liga 2",
+   "match": "Valladolid – Real Sociedad B",
+   "theme": "9-3-7-4",
+   "somme": "Caput",
+   "protecteur": "Cauda Draconis",
+   "designation": {
+    "R1": "M2 Caput, M6 Cauda Draconis, M14 Caput",
+    "R7": "M2 Caput, M6 Cauda Draconis, M14 Caput"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Liga 2",
+   "match": "Oviedo – Celta Fortuna",
+   "theme": "1-9-5-13",
+   "somme": "Fortuna Minor",
+   "protecteur": "Caput",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Frosinone – Parma",
+   "theme": "1-12-10-13",
+   "somme": "Cauda Draconis",
+   "protecteur": "Rubeus",
+   "designation": {
+    "R1": "M9 Cauda Draconis",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Torino – Lazio",
+   "theme": "3-11-10-14",
+   "somme": "Puella",
+   "protecteur": "Tristitia",
+   "designation": {
+    "R1": null,
+    "R7": "M4 Puella, M8 Puella"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Serie A",
+   "match": "Inter – Genoa",
+   "theme": "13-13-5-3",
+   "somme": "Tristitia",
+   "protecteur": "Laetitia",
+   "designation": {
+    "R1": "M10 Laetitia",
+    "R7": "M13 Laetitia"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Udinese – Fiorentina",
+   "theme": "16-2-4-14",
+   "somme": "Rubeus",
+   "protecteur": "Puer",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Sassuolo – Napoli",
+   "theme": "10-4-13-7",
+   "somme": "Tristitia",
+   "protecteur": "Laetitia",
+   "designation": {
+    "R1": null,
+    "R7": "M13 Tristitia"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Roma – Monza",
+   "theme": "3-9-7-16",
+   "somme": "Conjunctio",
+   "protecteur": "Via",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Serie A",
+   "match": "Como – Juventus",
+   "theme": "2-16-14-1",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": "M8 Fortuna Major",
+    "R7": "M8 Fortuna Major"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Serie A",
+   "match": "Lecce – Atalanta",
+   "theme": "14-4-8-2",
+   "somme": "Rubeus",
+   "protecteur": "Puer",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Serie A",
+   "match": "Cagliari – AC Milan",
+   "theme": "14-16-2-16",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M2 Populus, M6 Populus, M14 Amissio",
+    "R7": "M4 Populus, M12 Populus"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Mainz – Union Berlin",
+   "theme": "13-10-1-2",
+   "somme": "Populus",
+   "protecteur": "Carcer",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Hambourg – Bayern",
+   "theme": "4-15-8-8",
+   "somme": "Puer",
+   "protecteur": "Conjunctio",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Cologne – Elversberg",
+   "theme": "12-14-13-3",
+   "somme": "Rubeus",
+   "protecteur": "Puer",
+   "designation": {
+    "R1": "M8 Puer",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Paderborn – Schalke 04",
+   "theme": "6-5-12-8",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Bundesliga",
+   "match": "Stuttgart – Eintracht Francfort",
+   "theme": "11-10-1-15",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": null,
+    "R7": "M7 Laetitia"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Fribourg – RB Leipzig",
+   "theme": "1-10-12-11",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": "M5 Fortuna Minor",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Hoffenheim – Augsburg",
+   "theme": "11-9-15-8",
+   "somme": "Caput",
+   "protecteur": "Cauda Draconis",
+   "designation": {
+    "R1": "M6 Cauda Draconis",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Bundesliga",
+   "match": "Dortmund – Leverkusen",
+   "theme": "6-4-10-8",
+   "somme": "Via",
+   "protecteur": "Aquisitio",
+   "designation": {
+    "R1": "M12 Via, M16 Via",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Westerlo – La Louvière",
+   "theme": "3-6-2-3",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M2 Amissio",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Lommel – Zulte Waregem",
+   "theme": "3-3-10-3",
+   "somme": "Puella",
+   "protecteur": "Tristitia",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Charleroi – Beveren",
+   "theme": "5-8-13-12",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Belgique",
+   "match": "Cercle Bruges – Malines",
+   "theme": "7-11-10-5",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Saint-Trond – Genk",
+   "theme": "1-6-6-3",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M13 Amissio",
+    "R7": "M3 Amissio"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Royal Antwerp – Anderlecht",
+   "theme": "12-5-1-10",
+   "somme": "Populus",
+   "protecteur": "Carcer",
+   "designation": {
+    "R1": "M4 Carcer, M16 Carcer",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Standard – Club Bruges",
+   "theme": "3-4-1-12",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": null,
+    "R7": "M11 Laetitia"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Belgique",
+   "match": "Union Saint-Gilloise – La Gantoise",
+   "theme": "14-13-3-3",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": null,
+    "R7": "M15 Amissio"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "Excelsior – Telstar",
+   "theme": "15-16-9-4",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "PSV – Go Ahead Eagles",
+   "theme": "1-7-4-12",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Pays-Bas",
+   "match": "Cambuur – Sparta Rotterdam",
+   "theme": "14-14-7-1",
+   "somme": "Conjunctio",
+   "protecteur": "Via",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "ADO La Haye – Utrecht",
+   "theme": "6-3-5-13",
+   "somme": "Fortuna Minor",
+   "protecteur": "Caput",
+   "designation": {
+    "R1": "M11 Fortuna Minor",
+    "R7": "M2 Caput, M6 Caput"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "Fortuna Sittard – Heerenveen",
+   "theme": "3-6-8-5",
+   "somme": "Populus",
+   "protecteur": "Carcer",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "Feyenoord – Ajax",
+   "theme": "16-5-6-10",
+   "somme": "Via",
+   "protecteur": "Aquisitio",
+   "designation": {
+    "R1": "M9 Via",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "NEC Nimègue – Twente",
+   "theme": "2-11-13-7",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Pays-Bas",
+   "match": "PEC Zwolle – AZ Alkmaar",
+   "theme": "13-8-14-15",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Moreirense – Santa Clara",
+   "theme": "9-10-11-15",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Arouca – Rio Ave",
+   "theme": "8-12-8-14",
+   "somme": "Aquisitio",
+   "protecteur": "Fortuna Minor",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Académico Viseu – Alverca",
+   "theme": "2-16-12-15",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": "M8 Fortuna Major",
+    "R7": "M8 Fortuna Major"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Portugal",
+   "match": "Vitória Guimarães – Estrela Amadora",
+   "theme": "3-1-8-15",
+   "somme": "Populus",
+   "protecteur": "Carcer",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Portugal",
+   "match": "Gil Vicente – Estoril",
+   "theme": "14-6-14-4",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M2 Amissio, M6 Populus",
+    "R7": "M8 Amissio"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "Portugal",
+   "match": "FC Porto – Sporting",
+   "theme": "4-5-16-8",
+   "somme": "Fortuna Minor",
+   "protecteur": "Caput",
+   "designation": {
+    "R1": "M16 Caput",
+    "R7": "M16 Caput"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Portugal",
+   "match": "Benfica – Famalicão",
+   "theme": "9-9-14-9",
+   "somme": "Puella",
+   "protecteur": "Tristitia",
+   "designation": {
+    "R1": null,
+    "R7": "M3 Puella"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-30",
+   "championnat": "Portugal",
+   "match": "Casa Pia – Braga",
+   "theme": "13-8-15-10",
+   "somme": "Cauda Draconis",
+   "protecteur": "Rubeus",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Iraklis – Panetolikos",
+   "theme": "10-11-10-6",
+   "somme": "Fortuna Major",
+   "protecteur": "Amissio",
+   "designation": {
+    "R1": "M4 Amissio, M8 Amissio",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Volos – Asteras Tripolis",
+   "theme": "6-8-11-3",
+   "somme": "Conjunctio",
+   "protecteur": "Via",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "ne marque pas",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Grèce",
+   "match": "Kifisia – Kalamata",
+   "theme": "11-8-15-8",
+   "somme": "Caput",
+   "protecteur": "Cauda Draconis",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Hazem – Al Nassr",
+   "theme": "3-10-9-13",
+   "somme": "Carcer",
+   "protecteur": "Albus",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ettifaq – Al Hilal",
+   "theme": "12-7-15-5",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M16 Amissio",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "Arabie saoudite",
+   "match": "Al Ahli – Al Taawoun",
+   "theme": "2-12-15-4",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": null,
+    "R7": "M11 Amissio"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Columbus – Inter Miami",
+   "theme": "14-7-13-13",
+   "somme": "Carcer",
+   "protecteur": "Albus",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Real Salt Lake – Vancouver",
+   "theme": "6-9-2-8",
+   "somme": "Amissio",
+   "protecteur": "Populus",
+   "designation": {
+    "R1": "M11 Amissio",
+    "R7": null
+   },
+   "annonce": "R1 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Charlotte – Chicago",
+   "theme": "2-1-4-10",
+   "somme": "Carcer",
+   "protecteur": "Albus",
+   "designation": {
+    "R1": null,
+    "R7": "M3 Albus, M7 Albus, M11 Carcer"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Houston – San Jose",
+   "theme": "13-16-14-13",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": "M14 Puella",
+    "R7": "M14 Puella"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "Philadelphie – New England",
+   "theme": "3-9-15-8",
+   "somme": "Caput",
+   "protecteur": "Cauda Draconis",
+   "designation": {
+    "R1": null,
+    "R7": "M6 Cauda Draconis"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-28",
+   "championnat": "MLS",
+   "match": "FC Cincinnati – Nashville",
+   "theme": "14-4-11-11",
+   "somme": "Albus",
+   "protecteur": "Puella",
+   "designation": {
+    "R1": "M1 Puella",
+    "R7": "M11 Puella"
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "MLS",
+   "match": "LAFC – St. Louis",
+   "theme": "4-13-9-8",
+   "somme": "Populus",
+   "protecteur": "Carcer",
+   "designation": {
+    "R1": null,
+    "R7": null
+   },
+   "annonce": null,
+   "moteur": {
+    "R1": "marque",
+    "R7": "marque"
+   }
+  },
+  {
+   "date": "2026-11-29",
+   "championnat": "MLS",
+   "match": "Portland – FC Dallas",
+   "theme": "5-8-4-11",
+   "somme": "Laetitia",
+   "protecteur": "Fortuna Major",
+   "designation": {
+    "R1": null,
+    "R7": "M16 Fortuna Major"
+   },
+   "annonce": "R7 marque",
+   "moteur": {
+    "R1": "marque",
+    "R7": "ne marque pas"
+   }
+  }
+ ]
+}
