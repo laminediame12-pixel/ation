@@ -92,7 +92,7 @@ const J = vrai.out.map(r => { const Lst = (r.t === 'M' ? LM : LP)[r.ci][r.pi].te
   for (const j of Lst) { const v = a[j]; if (v >= 0) { n++; if (v === (r.toujours ? 1 : 0)) k++; } } return { ...r, tn: n, tk: k, att: n * (r.toujours ? pt : 1 - pt) }; });
 const som = (a, f) => a.reduce((s, x) => s + f(x), 0);
 console.log('\nSur les 34 matchs jamais vus : les règles tiennent ' + som(J, r => r.tk) + ' fois sur ' + som(J, r => r.tn) + ' cas ; la seule fréquence des événements en donnerait ' + som(J, r => r.att).toFixed(0));
-const nomR = r => nomC(r.ci) + ' : figure ' + (r.t === 'M' ? PM[r.pi][0] + ' → ' + (r.toujours ? '' : 'jamais ') + EVn[r.e] : 'qui ' + PP[r.pi][0] + ' → le pôle ' + (r.toujours ? '' : 'ne ') + EPn[r.e].replace(/^(\S+)/, r.toujours ? '$1' : '$1 pas'));
+const nomR = r => nomC(r.ci) + ' : figure ' + (r.t === 'M' ? PM[r.pi][0] + ' → ' + (r.toujours ? '' : 'jamais ') + EVn[r.e] : 'qui ' + PP[r.pi][0] + ' → le pôle ' + (r.toujours ? EPn[r.e] : /^a un /.test(EPn[r.e]) ? 'n\'a pas de ' + EPn[r.e].slice(5) : EPn[r.e].replace(/^(\S+)/, 'ne $1 pas')));
 console.log('\npar événement                        règles · jamais vus : tenues / cas (attendu par la seule fréquence)');
 [...EVn.map((e, z) => ['M', z, e]), ...EPn.map((e, z) => ['P', z, 'pôle : ' + e])].forEach(([t, z, lab]) => { const S = J.filter(r => r.t === t && r.e === z); if (!S.length) return;
   console.log('  ' + lab.padEnd(36) + String(S.length).padStart(4) + ' · ' + som(S, r => r.tk) + ' / ' + som(S, r => r.tn) + ' (' + som(S, r => r.att).toFixed(1) + ')'); });
@@ -143,3 +143,11 @@ let rep = 0, tot = 0; C3.slice(0, 15).forEach(r => { const o = tab(MX[r.q], r.t,
   console.log('  ' + lab3(r) + ' : ' + r.k + '/' + r.n + ' contre ' + (r.Kt - r.k) + '/' + (r.N - r.n) + ' (p = ' + r.p.toExponential(1) + ') · jamais vus ' + o.k + '/' + o.n + ' contre ' + (o.Kt - o.k) + '/' + (o.N - o.n) + (ok ? ' ✓' : ' ✗')); });
 let rep50 = 0; C3.slice(0, 100).forEach(r => { const o = tab(MX[r.q], r.t, r.e, r.prop, testI, ident), d1 = o.n ? o.k / o.n : 0, d2 = o.N - o.n ? (o.Kt - o.k) / (o.N - o.n) : 0; if ((d1 - d2) * r.sens > 0) rep50++; });
 console.log('  sens confirmé sur les jamais vus : ' + rep + ' des 15 premières, ' + rep50 + ' des 100 premières (le hasard en confirme la moitié)');
+// Liste par événement : la meilleure combinaison de chaque recherche (règle sans exception ; mécanisme de la mi-temps), son implication et son jugement.
+console.log('\nliste par événement (126 matchs · jamais vus) :');
+const vu = r => { const o = tab(MX[r.q], r.t, r.e, r.prop, testI, ident); return { o, dans: o.n ? o.k / o.n : NaN, hors: o.N - o.n ? (o.Kt - o.k) / (o.N - o.n) : NaN }; };
+[...EVn.map((e, z) => ['M', z]), ...EPn.map((e, z) => ['P', z])].forEach(([t, z]) => {
+  const s1 = J.filter(r => r.t === t && r.e === z).sort((a, b) => a.pv - b.pv)[0], s3 = C3.find(r => r.t === t && r.e === z);
+  const lab = t === 'M' ? EVn[z] : 'pôle : ' + EPn[z]; let tete = true; const col = () => { const x = (tete ? lab : '').padEnd(26); tete = false; return x; };
+  if (s1) console.log('  ' + col() + 'sans exception : ' + nomR(s1) + ' · ' + s1.n + '/' + s1.n + ' · jamais vus ' + (s1.tn ? s1.tk + '/' + s1.tn + ' (fréquence seule ' + s1.att.toFixed(1) + ')' : 'aucun cas'));
+  if (s3) { const v = vu(s3); console.log('  ' + col() + 'mécanisme : ' + lab3(s3) + ' · ' + s3.k + '/' + s3.n + ' contre ' + (s3.Kt - s3.k) + '/' + (s3.N - s3.n) + ' · jamais vus ' + (v.o.N ? v.o.k + '/' + v.o.n + ' contre ' + (v.o.Kt - v.o.k) + '/' + (v.o.N - v.o.n) + ((v.dans - v.hors) * s3.sens > 0 ? ' ✓' : ' ✗') : 'aucun cas')); } });
