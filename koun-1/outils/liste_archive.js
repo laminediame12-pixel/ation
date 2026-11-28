@@ -31,7 +31,7 @@ const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
   const ligne = (lab, val, cls, note) => '<li class="' + (cls || '') + '"><span class="lab">' + esc(lab) + '</span><span class="val">' + esc(val) + (note ? ' <small>' + esc(note) + '</small>' : '') + '</span></li>';
   const carte = y => { const x = y.x, A = y.aff, inc = A.inc.split(' · '), clsV = y.d === '1' ? 'r1' : y.d === '2' ? 'r7' : 'eg';
     let h = '<article class="m"><header><span class="ch">' + esc(x.championnat) + '</span><b>' + esc(x.equipe1) + ' – ' + esc(x.equipe2) + '</b><span class="th">' + esc(x.theme) + '</span></header><ul>';
-    h += ligne('🏆 Verdict', A.v + (A.conf ? ' · ' + A.conf : ''), 'v ' + clsV, A.conf ? 'aucun thème du cycle de vérification n\'annonce le perdant : 38 victoires sur 45' : '');
+    h += ligne('🏆 Verdict', A.v + (A.conf ? ' · ' + A.conf : ''), 'v ' + clsV, A.conf ? 'ni la vérification ni son cycle n\'annoncent le perdant : 29 victoires sur 32' : '');
     h += ligne('⚽ ' + x.equipe1 + ' (R1) marque', A.m1, y.vert.m1 ? 'vert' : '', y.vert.m1 ? 'M3+M7+M11 · ' + TAUX.m3711 : '');
     h += ligne('⚽ ' + x.equipe2 + ' (R7) marque', A.m7, y.vert.m7 ? 'vert' : '', y.vert.m7 ? 'M3+M7+M11 · ' + TAUX.m3711 : '');
     h += ligne('⚽ Deux marquent', A.deux);

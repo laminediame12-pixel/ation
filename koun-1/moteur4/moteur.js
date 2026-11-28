@@ -532,8 +532,9 @@
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B }, mt1: Y, mt2: S }; }
   // Indice contre les boucles (2026-11-28) : 161 matchs, cas où l'indice est à −2 ou moins contre le vainqueur des boucles (mis à jour par la mesure ci-dessous).
   var INDICE_CONTRE_BOUCLES_OBS = { autre: 7, nul: 2, boucles: 1 };
-  // Victoire confirmée par la vérification (2026-11-28, renforcée) : matchs joués, vainqueur annoncé quand aucun thème du cycle (2 ou 4) n'annonce le perdant.
-  var VERIF_CONFIRME_OBS = { gagne: 38, sur: 45, nePerdPas: 41 };
+  // Victoire confirmée par la vérification (2026-11-28, renforcée, puis affinée après Al Ettifaq – Al Hilal) : matchs joués, vainqueur annoncé quand ni le thème de
+  // vérification ni aucun thème du cycle (2 ou 4) n'annonce le perdant.
+  var VERIF_CONFIRME_OBS = { gagne: 29, sur: 32, nePerdPas: 30 };
   // THÈME DE VÉRIFICATION ET THÈME SOMME (propriétaire, 2026-11-28) : c'est le moteur qui les calcule, la page ne fait qu'afficher.
   // Vérification : mères = figures de M1, M4, M7, M10. Somme : le principal et sa vérification additionnés maison par maison, qui forment eux-mêmes un thème
   // (vérifié sur les 65 536) : mères M1+M1 = Populus, M2+M4, M3+M7, M4+M10 (= M3) ; R1 y est toujours en M16 et R7 en M6. La page, en vue « thème somme »,
@@ -607,8 +608,11 @@
     // cycle de 2 ou de 4 thèmes, et aucun d'eux n'annonce le perdant (ils annoncent le vainqueur ou une égalité) → victoire confirmée. Qualificatif seulement, la
     // décision ne change pas. Matchs joués : le vainqueur annoncé a gagné 38 fois sur 45 et n'a perdu que 4 fois (jamais vus 7/8 ; cycle de 2 25/29, cycle de 4 13/16) ;
     // autres victoires annoncées 53 sur 87. Première forme (cycle de 2, les deux thèmes annoncent le vainqueur) : 19 sur 22.
-    if (!sansVerification && V.verification && (V.verification.cycle === 2 || V.verification.cycle === 4) && (V.decision.resultat === '1' || V.decision.resultat === '2') && V.verification.verdictsCycle.indexOf(V.decision.resultat === '1' ? '2' : '1') < 0) {
-      var oC = VERIF_CONFIRME_OBS, gC = V.verification.verdictsCycle.filter(function (r) { return r === V.decision.resultat; }).length; V.decision.confirmee = { cycle: V.verification.cycle, pour: gC, texte: 'victoire confirmée par la vérification : la chaîne des vérifications tourne sur ' + V.verification.cycle + ' thèmes, aucun n\'annonce ' + (V.decision.resultat === '1' ? 'R7' : 'R1') + ' (' + gC + ' annoncent ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ', ' + (V.verification.cycle - gC) + ' une égalité) — en cours d\'étude : ' + oC.gagne + ' victoires sur ' + oC.sur + ' dans ce cas, ' + oC.nePerdPas + ' sans défaite' }; }
+    // AFFINÉE (2026-11-28, Al Ettifaq – Al Hilal, où le cycle annonçait Al Ettifaq mais la vérification elle-même Al Hilal) : le thème de vérification — celui qui
+    // montre les zones d'ombre du principal — ne doit pas non plus annoncer le perdant. Matchs joués : quand il l'annonce, 9 victoires sur 13 seulement ; sinon
+    // 29 sur 32 (126 premiers 26/29, jamais vus 3/3 ; cycle de 2 19/21, cycle de 4 10/11), autres victoires annoncées 62 sur 100.
+    if (!sansVerification && V.verification && (V.verification.cycle === 2 || V.verification.cycle === 4) && (V.decision.resultat === '1' || V.decision.resultat === '2') && V.verification.verdictsCycle.indexOf(V.decision.resultat === '1' ? '2' : '1') < 0 && V.verification.decision !== (V.decision.resultat === '1' ? '2' : '1')) {
+      var oC = VERIF_CONFIRME_OBS, gC = V.verification.verdictsCycle.filter(function (r) { return r === V.decision.resultat; }).length; V.decision.confirmee = { cycle: V.verification.cycle, pour: gC, texte: 'victoire confirmée par la vérification : le thème de vérification n\'annonce pas ' + (V.decision.resultat === '1' ? 'R7' : 'R1') + ', et la chaîne des vérifications tourne sur ' + V.verification.cycle + ' thèmes dont aucun ne l\'annonce (' + gC + ' annoncent ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ', ' + (V.verification.cycle - gC) + ' une égalité) — en cours d\'étude : ' + oC.gagne + ' victoires sur ' + oC.sur + ' dans ce cas, ' + oC.nePerdPas + ' sans défaite' }; }
     return V; }
   // BLOCAGE — une seule définition pour tout le moteur (2026-11-27, chaîne du propriétaire : la figure k attaque k + 3, « M(h+1) attaque M(h+4) », sur les 16 maisons).
   // La figure g est bloquée par son antagoniste A = g − 3 quand A est présent intact :
