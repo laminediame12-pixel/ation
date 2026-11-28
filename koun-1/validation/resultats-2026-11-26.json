@@ -321,9 +321,9 @@
     1,
     0
    ],
-   "penalty": null,
-   "rouge": null,
-   "note": "incidents non trouvés (aucune source ne détaille cartons et penalties)"
+   "penalty": "Non",
+   "rouge": "Non",
+   "source": "seul but de Batna (70e) ; 0 rouge des deux côtés (365Scores, ESPN), aucun penalty rapporté — complété le 2026-11-28"
   },
   {
    "match": "Abha – Al Shabab",
@@ -358,7 +358,8 @@
    ],
    "penalty": null,
    "rouge": null,
-   "note": "incidents non trouvés (aucune source ne détaille cartons et penalties)"
+   "note": "incidents non trouvés (aucune source ne détaille cartons et penalties)",
+   "source": "score confirmé (ESPN) ; aucune source sur les cartons ni les penalties (recherche du 2026-11-28)"
   }
  ]
 }
