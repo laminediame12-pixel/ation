@@ -49,3 +49,23 @@ console.log('\nFigures des pôles du thème principal, bloquées dans le thème 
 const C = {}; D.forEach(d => { const L = M.lire(d.m), S = d.S, b = S.theme.bases, bl = g => M.bloqueurs(S, g, b[g] === g ? g : undefined).length > 0, x1 = bl(L.R1.figure), x7 = bl(L.R7.figure);
   const k = x1 && !x7 ? 'seule celle de R1 bloquée' : x7 && !x1 ? 'seule celle de R7 bloquée' : x1 ? 'les deux bloquées' : 'aucune bloquée'; (C[k] = C[k] || []).push(d); });
 Object.keys(C).sort().forEach(k => tab(k, C[k]));
+// Populus en base du thème somme (propriétaire : « dans le thème somme il y a en général deux ou plus de Populus en base »). Populus posé en Mh rend la figure h,
+// qui bloque son adversaire, la figure h + 3 (règle du propriétaire). On regarde quels pôles ces blocages touchent, et de quel côté sont les Populus.
+console.log('\nPopulus en base du thème somme :');
+const nbP = {}; D.forEach(d => { const k = d.S.theme.bases.slice(1).filter(x => x === 16).length; nbP[k] = (nbP[k] || 0) + 1; });
+console.log('  nombre de Populus en base (M1 en a toujours un : M1 + M1) : ' + Object.keys(nbP).map(k => k + ' → ' + nbP[k] + ' matchs').join(', '));
+const PP = {}, addPP = (k, d) => { (PP[k] = PP[k] || []).push(d); };
+D.forEach(d => { const L = M.lire(d.m), S = d.S, b = S.theme.bases, pops = []; for (let h = 1; h <= 16; h++) if (b[h] === 16) pops.push(h);
+  const victimes = pops.map(h => mod(h + 3)), touche = g => victimes.includes(g);
+  const v1 = touche(L.R1.figure), v7 = touche(L.R7.figure);
+  addPP('Populus bloque la figure d\'un pôle du principal : ' + (v1 && !v7 ? 'seule R1' : v7 && !v1 ? 'seule R7' : v1 ? 'les deux' : 'aucune'), d);
+  const s1 = touche(S.R1.figure), s7 = touche(S.R7.figure);
+  addPP('Populus bloque la figure d\'un pôle du thème somme : ' + (s1 && !s7 ? 'seule R1' : s7 && !s1 ? 'seule R7' : s1 ? 'les deux' : 'aucune'), d);
+  const cote = g => pops.filter(h => (h - 1) % 4 === (g - 1) % 4).length, c1 = cote(L.R1.figure), c7 = cote(L.R7.figure);
+  addPP('Populus dans le front de la figure du pôle (principal) : ' + (c1 > c7 ? 'plus chez R1' : c7 > c1 ? 'plus chez R7' : 'autant'), d);
+  const camp = g => pops.filter(h => h % 2 === g % 2).length, k1 = camp(L.R1.figure), k7 = camp(L.R7.figure);
+  if ((L.R1.figure % 2) !== (L.R7.figure % 2)) addPP('Populus dans la boucle de la figure du pôle (boucles différentes) : ' + (k1 > k7 ? 'plus chez R1' : k7 > k1 ? 'plus chez R7' : 'autant'), d);
+  const fv = g => victimes.filter(v => (v - 1) % 4 === (g - 1) % 4).length, w1 = fv(L.R1.figure), w7 = fv(L.R7.figure);
+  addPP('front de la figure du pôle (principal) bloqué par les Populus : ' + (w1 > w7 ? 'plus celui de R1' : w7 > w1 ? 'plus celui de R7' : 'autant'), d);
+  addPP('nombre de Populus en base : ' + (pops.length >= 4 ? '4 ou plus' : pops.length), d); });
+Object.keys(PP).sort().forEach(k => { tab(k, PP[k]); const jv = PP[k].filter(d => d.lot === 'jamais vus'); if (jv.length) tab('   … dont jamais vus', jv); });
