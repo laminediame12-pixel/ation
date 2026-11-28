@@ -15,3 +15,16 @@ for (const [nom, b] of [['thème Populus (toutes les bases Populus)', [null, ...
 const L = M.lire([16, 16, 16, 16]), V = M.verdict(L), H = M.hierarchie(L);
 console.log('\n3. Verdict du thème Populus : ' + (V.decision.resultat === 'N' ? 'égalité' + (V.decision.type ? ' (' + V.decision.type + ')' : '') : 'victoire ' + V.decision.resultat) + ' · buts ' + H.buts.valeur + ' · R1 ' + N(L.R1.figure) + ' en M' + L.R1.maison + ' ' + H.R1.propre.niveau + ', R7 ' + N(L.R7.figure) + ' en M' + L.R7.maison + ' ' + H.R7.propre.niveau);
 console.log('   ' + V.decision.raison.split(' · indice')[0]);
+
+// 4. Précision du propriétaire sur le blocage (2026-11-28) : « Puer comme résultante en M1 bloque Albus uniquement sur les niveaux Feu et Air, en M1, M5 et M2, M6.
+//    Chaque front a ses 8 nœuds dans son camp et 8 dans l'autre camp. Mais M16 modifie l'équilibre. »
+const NV = ['Feu', 'Air', 'Eau', 'Terre'], lvl = f => K.niveaux(f);
+console.log('\n4. Blocs de la grille des nœuds (nœud = maison 4j + i + 1) et camps (boucle A/C : maisons impaires ; B/D : paires)');
+[[1, 2, 5, 6], [3, 4, 7, 8], [9, 10, 13, 14], [11, 12, 15, 16]].forEach(q => { const i = [...new Set(q.map(h => (h - 1) % 4))], j = [...new Set(q.map(h => Math.floor((h - 1) / 4)))];
+  console.log('   M' + q.join(', M') + ' : ' + i.map(x => NV[x]).join('/') + ' × ' + j.map(x => NV[x]).join('/') + ' · camp A/C M' + q.filter(h => h % 2).join(', M') + ' · camp B/D M' + q.filter(h => h % 2 === 0).join(', M')); });
+const nds = M.noeuds(M.lire([16, 16, 16, 16])).fronts[0].noeuds.map(x => x.maison);
+console.log('   cartographie : ' + nds.length + ' nœuds par front, ' + nds.filter(h => h % 2).length + ' du camp A/C et ' + nds.filter(h => h % 2 === 0).length + ' du camp B/D — M16 (Terre × Terre) n\'a pas de nœud : il rompt l\'équilibre 8/8');
+console.log('   M1, M2, M5, M6 : liaisons horizontales portées par la gauche, verticales par le haut, toutes sur Feu ou Air');
+const rang = { 0: [1, 2], 1: [5, 6], 2: [9, 10], 3: [13, 14, 15] };
+console.log('   Puer (' + lvl(1).join('') + ', haut du front A, M1) contre Albus (' + lvl(4).join('') + ', haut du front D, M4), liaisons verticales du haut :');
+for (let l = 0; l < 4; l++) console.log('     ' + NV[l].padEnd(6) + 'nœuds M' + rang[l].join(', M') + ' : Puer ' + (lvl(1)[l] === 1 ? 'actif' : 'saturé') + ', Albus ' + (lvl(4)[l] === 1 ? 'actif' : 'saturé') + (l < 2 ? '  ← bloc de M1' : l === 3 ? '  (hors du bloc de M1)' : ''));
