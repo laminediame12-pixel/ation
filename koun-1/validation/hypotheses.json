@@ -3092,6 +3092,15 @@
    "lecture": "Populus en base dans la maison h : la maison rend sa figure h, qui bloque h + 3 (déjà dans le moteur). Populus en résultante = la figure posée chez elle : là où elle est chez elle, son énergie passe — elle n'y est pas bloquée (nouveau) et ne bloque pas (inchangé). Thème saturé : 0 figure bloquée ; thème Populus : 15 bloquées, Populus libre chez lui en M16 (R1 y marque, R7 Populus en M6 est bloqué par Cauda reproduite en M13).",
    "resultats": "147 matchs. Lecture retenue — pôles chez eux que leur antagoniste bloquait : 8 changent de marquage, 6 justes. Lecture inverse (la figure chez elle bloque son adversaire) : 10 changent, 2 justes — écartée. Ensemble : bons verdicts 79 (126 : 69, 26/11 : 10 ; avant la chaîne 77) ; deux marquent 62 → 65 sur 126 (test 11 → 12) ; marquage pôle par pôle 140/252 ; rouge 2 signes 9/13, camp 19/21 ; buts 1,48.",
    "outil": "outils/chaine_attaque.js"
+  },
+  {
+   "id": "BLOCAGE-NOEUDS-DU-BLOQUEUR-2026-11-28",
+   "statut": "INTÉGRÉ au marquage ; le rouge et l'égalité gardent « pôle bloqué » = antagoniste présent intact",
+   "origine": "propriétaire : « Puer comme résultante en M1 bloque Albus uniquement les niveaux Feu et Air en M1,5 et M2,6 » ; « pour les attaques front avec ses nœuds, celui qui bloque bloque pour ses nœuds aux niveaux actifs en résultante » ; « cela dépend de la maison occupée »",
+   "verification": "M1, M2, M5, M6 = bloc Feu/Air × Feu/Air de la grille (liaisons de la gauche et du haut, toutes sur Feu ou Air). Puer (haut du front A) y est actif là où Albus (haut du front D) est saturé ; sur la Terre aussi (M13–M15), mais c'est la Terre déviée, hors du bloc. Chaque bloc de 4 a 2 maisons du camp A/C et 2 du camp B/D : 8/8 par front ; la cartographie n'a que 15 nœuds (M16 sans nœud) : 8 contre 7. Exemple joué : Middlesbrough – Bristol City 2-0, Populus en M1 donne Puer, R7 Albus en M6 paralysé, n'a pas marqué.",
+   "regle": "Bloqueur en maison h : nœuds dont h porte une liaison dans la croix de son front, aux niveaux à 1 point de la résultante de h (Terre déviée exclue). Pôle paralysé si sa maison en fait partie ; sinon seules ses positions touchées tombent.",
+   "resultats": "147 matchs. Pôles en bonne position arrêtés : 7/12 ont marqué contre 145/188 libres (blocage partout : 43/58 contre 109/142). Bons verdicts 79 (126 : 70, 26/11 : 9 ; la veille 69 et 10). Marquage 140 → 160/252 (test 28 → 30/42). Deux marquent 65 → 59/126 (test 12 → 11). Buts 1,48 → 1,46. Variantes : avec la Terre déviée 157/252 et 10/15 bloqués qui marquent ; « pôle bloqué » local aussi pour le rouge et l'égalité : 75 bons verdicts, camp du rouge 14/21 — non retenues.",
+   "outil": "outils/chaine_attaque.js"
   }
  ],
  "lectures": [

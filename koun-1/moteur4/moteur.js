@@ -422,7 +422,7 @@
   // totale ; correction du 2026-11-26 : Juventus–Venezia, R1 Populus en M8) — avec la Terre de la résultante ouverte. Sans figure marquante, il ne marque pas.
   // Troisième voie (2026-11-27) : le pôle ou son front direct logé en M11 (Eau × Eau) plein.
   // Observé (126 matchs, mesure du 2026-11-27 après le blocage figure par figure) : dans MARQUE_POLE_OBS (outils/mesure_marquage.js).
-  var MARQUE_POLE_OBS = { assure: { oui: 9, sur: 16 }, marque: { oui: 100, sur: 124 }, possible: { oui: 6, sur: 8 }, non: { oui: 79, sur: 104 } }; // outils/mesure_marquage.js, 126 matchs
+  var MARQUE_POLE_OBS = { assure: { oui: 17, sur: 25 }, marque: { oui: 115, sur: 147 }, possible: { oui: 13, sur: 16 }, non: { oui: 49, sur: 64 } }; // outils/mesure_marquage.js, 126 matchs
   // PUISSANCE DE MARQUAGE (2026-11-27, règles du propriétaire). Bonne position d'une figure (le pôle, son front direct f + 4, son miroir f + 8) :
   //   dans un canal Terre (M4, M8, M12, M13, M14, M15 : la boucle Terre de chaque front y passe) : la figure réagit — au moins un 1 de la figure rencontre
   //   un 1 de la maison (1 + 1 = 2), sur n'importe lequel de ses 4 niveaux ; la Terre de la résultante n'est pas exigée ;
@@ -434,6 +434,7 @@
   //   moyen, et chacun a son attaquant (le pôle f − 3, le front direct f + 1, le miroir f + 5 ; voir bloqueurs). Pôle bloqué : il n'attaque plus, même avec son front direct,
   //   il ne marque pas. Front direct bloqué : le pôle marque encore par lui-même. Miroir bloqué : il ne compte plus. Paris – Marseille : Rubeus bloqué (Albus intact en M1,
   //   Albus reproduit par Populus en M4) → ne marque pas. 147 matchs : 79 bons verdicts contre 77 avant la chaîne (76 en lisant le blocage figure par figure).
+  //   Depuis le 2026-11-28, chaque bloqueur n'agit que sur ses nœuds (zoneBlocage) : le pôle n'est paralysé que si sa propre maison en fait partie.
   //   Une figure posée chez elle ne peut pas y être bloquée (Populus en résultante laisse passer son énergie, voir bloqueurs).
   function marquePole(L, p) { var b = L.theme.bases, c = L[p], P = c.figure, F = mod(P + 4), Mi = mod(P + 8), imp = function (f) { return K.niveaux(f).map(function (v) { return v === 1 ? 1 : 0; }); };
     var bonnes = function (f) { return [4, 8, 12, 13, 14, 15].filter(function (h) { var rb = imp(b[h]), rh = imp(h); return b[h] === f && (f === 16 ? K.niveaux(L.theme.resultantes[h])[3] === 2 : [0, 1, 2, 3].some(function (l) { return rb[l] && rh[l]; })); }); };
@@ -442,16 +443,20 @@
     var BL = { pole: bloqueurs(L, P, c.maison), front: bloqueurs(L, F), miroir: bloqueurs(L, Mi) }, e11 = K.niveaux(L.theme.resultantes[11])[2] === 2;
     var bp0 = bonnes(P).concat(chez.filter(function (h) { return bonnes(P).indexOf(h) < 0; })), bf0 = bonnes(F), bm0 = bonnes(Mi);
     var niv = function (a, f, m, m11) { return a.length && f.length ? 'assure' : a.length || f.length || m11 ? 'marque' : m.length ? 'possible' : 'non'; };
-    var libre = function (pos, fig, bl) { return pos.filter(function (h) { return !bl.length || h === fig; }); }; // une position chez elle laisse passer l'énergie
-    var tout = BL.pole.length > 0, bp = tout ? [] : bp0, bf = tout ? [] : libre(bf0, F, BL.front), bm = tout ? [] : libre(bm0, Mi, BL.miroir),
-      m11 = !tout && (b[11] === P || (b[11] === F && (!BL.front.length || F === 11))) && e11;
+    // chaque bloqueur n'agit que sur ses nœuds (zoneBlocage) ; pôle atteint dans sa propre maison : il n'attaque plus, même avec son front direct
+    var ZP = zoneDe(L, BL.pole), ZF = zoneDe(L, BL.front), ZM = zoneDe(L, BL.miroir), hors = function (Z) { return function (h) { return Z.indexOf(h) < 0; }; };
+    var libre = function (pos, fig, Z) { return pos.filter(function (h) { return h === fig || (Z.indexOf(h) < 0 && ZP.indexOf(h) < 0); }); }; // une position chez elle laisse passer l'énergie
+    var tout = ZP.indexOf(c.maison) >= 0, bp = tout ? [] : bp0.filter(hors(ZP)), bf = tout ? [] : libre(bf0, F, ZF), bm = tout ? [] : libre(bm0, Mi, ZM),
+      m11 = !tout && ZP.indexOf(11) < 0 && (b[11] === P || (b[11] === F && (ZF.indexOf(11) < 0 || F === 11))) && e11;
     var niveau0 = niv(bp0, bf0, bm0, (b[11] === P || b[11] === F) && e11), niveau = niv(bp, bf, bm, m11);
     // bloque : ce que le blocage a retiré quand il a fait baisser le niveau (sinon null) ; pôle bloqué = tout le pôle
-    var p11 = (b[11] === P || b[11] === F) && e11 ? [11] : [], perdus = niveau === niveau0 ? [] : tout ? [{ role: 'pôle', figure: P, par: BL.pole, positions: bp0.concat(bf0, p11, bm0), tout: true }]
-      : [['front direct', F, BL.front, bf0.filter(function (h) { return bf.indexOf(h) < 0; }).concat(b[11] === F && e11 && !m11 ? [11] : [])], ['miroir', Mi, BL.miroir, bm0.filter(function (h) { return bm.indexOf(h) < 0; })]].filter(function (x) { return x[2].length && x[3].length; })
-        .map(function (x) { return { role: x[0], figure: x[1], par: x[2], positions: x[3] }; });
+    var p11 = (b[11] === P || b[11] === F) && e11 ? [11] : [], par = function (bl, pos) { return bl.filter(function (x) { return zoneBlocage(L, x.maison).some(function (n) { return pos.indexOf(n) >= 0; }); }); };
+    var perdus = niveau === niveau0 ? [] : tout ? [{ role: 'pôle', figure: P, par: par(BL.pole, [c.maison]), positions: bp0.concat(bf0, p11, bm0), tout: true }]
+      : [['pôle', P, BL.pole, bp0.filter(function (h) { return bp.indexOf(h) < 0; })], ['front direct', F, BL.front.concat(BL.pole), bf0.filter(function (h) { return bf.indexOf(h) < 0; }).concat(b[11] === F && e11 && !m11 ? [11] : [])],
+        ['miroir', Mi, BL.miroir.concat(BL.pole), bm0.filter(function (h) { return bm.indexOf(h) < 0; })]].filter(function (x) { return x[3].length; })
+        .map(function (x) { return { role: x[0], figure: x[1], par: par(x[2], x[3]), positions: x[3] }; }).filter(function (x) { return x.par.length; });
     var maisons = bp.concat(bf, m11 ? [11] : [], niveau === 'possible' ? bm : []).filter(function (h, i, t) { return t.indexOf(h) === i; }).sort(function (x, y) { return x - y; });
-    return { marque: niveau !== 'non', niveau: niveau, niveauSansBlocage: niveau0, bloque: perdus.length ? perdus : null, bloqueurs: BL, maisons: maisons, positions: { pole: bp, front: bf, miroir: bm, m11: m11 }, avantage: bp.length + bf.length, figures: [P, F, Mi], obs: MARQUE_POLE_OBS[niveau] }; }
+    return { marque: niveau !== 'non', niveau: niveau, niveauSansBlocage: niveau0, bloque: perdus.length ? perdus : null, bloqueurs: BL, zones: { pole: ZP, front: ZF, miroir: ZM }, maisons: maisons, positions: { pole: bp, front: bf, miroir: bm, m11: m11 }, avantage: bp.length + bf.length, figures: [P, F, Mi], obs: MARQUE_POLE_OBS[niveau] }; }
   // ESTIMATION DES BUTS (2026-11-27, à la demande du propriétaire) : arrêts × nœud double M11 (Eau × Eau). M11 est plein quand la résultante de M11 a l'Eau
   // saturée (⇔ Eau active en base de M11). 126 matchs (arrêts sur les 16 maisons depuis le 2026-11-27) : arrêt et M11 plein 4,28 buts (43 matchs) ; arrêt, M11 vide 3,39 (36) ;
   // sans arrêt, M11 plein 3,07 (28) ; ni l'un ni l'autre 2,21 (19). Erreur moyenne, chaque match jugé sans lui-même : 1,514 (1,526 avec les arrêts M1–M15).
@@ -472,10 +477,10 @@
   //   5. Mi-temps (1-5-12-15, H-MT) → ne désigne que des équipes qui marquent.  Les incidents ne peuvent contredire aucune partie.
   function hierarchie(L) { var V = verdict(L), d = V.decision.resultat, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B = butsEstimes(L), e = B.m11Plein;
     var m = { R1: { marque: P1.marque, propre: P1, impose: null }, R7: { marque: P7.marque, propre: P7, impose: null } };
-    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 24 fois sur 27 quand la règle de marquage disait le contraire (126 matchs, 2026-11-27) ; le perdant garde sa règle.
+    // boucles différentes : le vainqueur désigné marque (imposé) — il a marqué 14 fois sur 17 quand la règle de marquage disait le contraire (126 matchs, 2026-11-28) ; le perdant garde sa règle.
     if (V.boucles && V.boucles.domaine && (d === '1' || d === '2')) { var wq = d === '1' ? 'R1' : 'R7'; if (!m[wq].marque) { m[wq].marque = true; m[wq].impose = 'imposé par la victoire (boucles différentes)'; } }
     // AUCUN PÔLE NE MARQUE ET UNE VICTOIRE EST ANNONCÉE (2026-11-27) : la partie 1 commande, le vainqueur marque (imposé) — sans cela le verdict se contredit
-    // (une victoire sans but). 147 matchs : 5 cas, le vainqueur annoncé a marqué les 5 fois et gagné 4 fois.
+    // (une victoire sans but). 147 matchs : 1 cas depuis le blocage par les nœuds (2026-11-28), le vainqueur annoncé a marqué et gagné (5 cas, 5 et 4, avant).
     else if ((d === '1' || d === '2') && !m.R1.marque && !m.R7.marque) { var wq2 = d === '1' ? 'R1' : 'R7'; m[wq2].marque = true; m[wq2].impose = 'imposé par la victoire (aucun pôle ne marque selon la règle)'; }
     var deuxPropre = m.R1.marque && m.R7.marque, imp = m.R1.impose || m.R7.impose, deux = { oui: deuxPropre, raison: deuxPropre ? 'R1 et R7 marquent' + (imp ? ' (le vainqueur par imposition de la victoire)' : ' chacun selon la règle de marquage') : (m.R1.marque ? 'R7' : m.R7.marque ? 'R1' : 'ni R1 ni R7') + ' ne marque pas selon la règle de marquage', impose: false };
     // R1 / R7 marque = la règle de marquage, sur tous les thèmes ; deux exceptions : le vainqueur des boucles différentes marque, et le vainqueur annoncé quand aucun pôle ne marque (imposés, ci-dessus).
@@ -508,12 +513,12 @@
     else if (!Q1 && !Q7) {
       // LES DEUX PÔLES BLOQUÉS (2026-11-27, en cours d'étude ; suite du blocage unique) : hors boucles différentes le marquage commande ; quand aucun pôle ne marque
       // et que les deux figures des pôles sont bloquées, aucun ne prend le dessus : égalité (thème de repos Populus : les deux pôles bloqués par Cauda reproduite en M13).
-      // 147 matchs : 3 cas, 2 nuls (Tijuana – Pumas 1-1, Lorient – Rennes 1-1 ; Hull City – Brighton 2-0).
+      // 147 matchs : 1 cas, 1 nul (Tijuana – Pumas 1-1) depuis le blocage par les nœuds (3 cas, 2 nuls, avant).
       var b1 = blocages(L, 'R1'), b7 = blocages(L, 'R7');
-      if (b1.length && b7.length) V.decision = { resultat: 'N', type: 'bloques', raison: 'les deux pôles bloqués (R1 en M' + b1.join(', M') + ', R7 en M' + b7.join(', M') + ') et aucun ne marque : égalité (en cours d\'étude : 2 nuls sur 3) · indice : ' + VC.texte };
+      if (b1.length && b7.length) V.decision = { resultat: 'N', type: 'bloques', raison: 'les deux pôles bloqués (R1 en M' + b1.join(', M') + ', R7 en M' + b7.join(', M') + ') et aucun ne marque : égalité (en cours d\'étude : 1 nul sur 1) · indice : ' + VC.texte };
       else V.decision.raison += ' · aucun pôle ne marque selon la règle de marquage'; }
     // ÉGALITÉ n-n (propriétaire, 2026-11-27 ; en cours d'étude, protocole des 15 essais) : les deux pôles au même niveau de marquage, aucun pôle bloqué, et
-    // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 10 cas, 4 nuls (40 % ; 21 % en tout ; 11 cas et 5 nuls avant le blocage unique du 2026-11-27).
+    // Populus en base dans la boucle de front d'un pôle → chaque équipe peut marquer le même nombre n de buts. 126 matchs : 11 cas, 5 nuls (45 % ; 21 % en tout ; mesure du 2026-11-28, blocage par les nœuds).
     var EG = egalite(L); V.egalite = EG;
     if (EG.oui) V.decision = { resultat: 'N', type: 'n-n', raison: 'égalité n-n (en cours d\'étude) : ' + EG.raison + ' · indice : ' + VC.texte };
     if (Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
@@ -535,8 +540,20 @@
       else if (b[h] === 16 && h === A) r.push({ maison: h, figure: A, type: 'populus' });
     }
     return r; }
+  // NŒUDS DU BLOQUEUR (propriétaire, 2026-11-28) : « pour les attaques de front, celui qui bloque bloque pour ses nœuds, aux niveaux actifs en résultante ».
+  //   Un bloqueur posé en maison h n'agit que sur les nœuds dont h porte une liaison dans la croix de son front (cela dépend de la maison occupée : haut, droite,
+  //   bas ou gauche), aux niveaux à 1 point de la résultante de h. La Terre déviée (rangée M13–M15 du haut, colonne M4–M8–M12 de la gauche) n'est pas comptée,
+  //   comme dans l'exemple du propriétaire : Puer en résultante de M1 (haut du front A) bloque Albus sur le Feu et l'Air, en M1, M2, M5 et M6.
+  //   147 matchs : pôles en bonne position que ce blocage arrête, 7 sur 12 ont marqué, contre 145 sur 188 pour les autres (blocage partout : 43/58 contre 109/142).
+  var PORTE = (function () { var P = {}; for (var h = 1; h <= 16; h++) { var pos = Math.floor((h - 1) / 4), o = [[], [], [], []];
+      for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) { if (i === 3 && j === 3) continue; var hor, ver;
+        if (i < 3 && j < 3) { hor = [j < 2 ? 3 : 1, i]; ver = [i < 2 ? 0 : 2, j]; } else if (j === 3) { hor = [1, i]; ver = [0, 3]; } else { hor = [2, j]; ver = [3, 3]; }
+        var x = 4 * j + i + 1; if (hor[0] === pos) o[hor[1]].push(x); if (ver[0] === pos) o[ver[1]].push(x); }
+      P[h] = o; } return P; })(); // P[h][niveau] = nœuds dont la maison h porte la liaison à ce niveau (0 haut, 1 droite, 2 bas, 3 gauche ; même lecture que noeuds)
+  function zoneBlocage(L, h) { var r = K.niveaux(L.resu(h)), z = []; for (var l = 0; l < 3; l++) if (r[l] === 1) z = z.concat(PORTE[h][l]); return z; }
+  function zoneDe(L, bl) { var z = []; bl.forEach(function (x) { zoneBlocage(L, x.maison).forEach(function (n) { if (z.indexOf(n) < 0) z.push(n); }); }); return z.sort(function (a, c) { return a - c; }); }
   function blocages(L, p) { return bloqueurs(L, L[p].figure, L[p].maison).map(function (x) { return x.maison; }); }
-  var EGALITE_OBS = { cas: 10, nuls: 4 };
+  var EGALITE_OBS = { cas: 11, nuls: 5 };
   function egalite(L) { var b = L.theme.bases, P1 = marquePole(L, 'R1'), P7 = marquePole(L, 'R7'), B1 = blocages(L, 'R1'), B7 = blocages(L, 'R7');
     var boucle = function (f) { var z = (f - 1) % 4; return [z + 1, z + 5, z + 9, z + 13].filter(function (h) { return b[h] === 16; }); }, pb = { R1: boucle(L.R1.figure), R7: boucle(L.R7.figure) };
     var ident = P1.niveau === P7.niveau && !P1.bloque === !P7.bloque, libre = !B1.length && !B7.length, pop = pb.R1.length > 0 || pb.R7.length > 0, oui = ident && libre && pop;

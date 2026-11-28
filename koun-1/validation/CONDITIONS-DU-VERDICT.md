@@ -4,7 +4,7 @@ Ordre de priorité : 1 Vainqueur → 2 Deux marquent → 3 R1 / R7 marque → 4 
 
 **Chaîne d'attaque (propriétaire, 2026-11-27)** : Mh attaque avec M(h+4) et M(h+1) attaque M(h+4), sur les 16 maisons. La figure g attaque g + 3 ; elle attaque avec son front direct g + 4, qui a son propre attaquant g + 1.
 **Blocage — une seule définition pour tout le moteur (`bloqueurs`)** : la figure g est bloquée par son antagoniste g − 3 présent intact, soit **posé en base avec ses points actifs** (chacun de ses 1 tombe sur un 2 de la maison ; en M16 toujours), soit **reproduit par Populus** posé dans sa maison (Populus en M4 donne Albus, qui bloque Rubeus ; Populus en M16 bloque Caput). **Populus (propriétaire)** : « Populus en résultante laisse passer l'énergie de la figure où résulte Populus, mais aussi Populus en base bloque l'adversaire de la maison où loge Populus ». Populus en base : la maison rend sa figure, qui bloque son adversaire. Populus en résultante (la figure posée chez elle) : son énergie passe — on ne peut pas l'y bloquer, et elle ne bloque pas. Thème saturé (chaque figure chez elle) : rien n'est bloqué ; thème Populus : tout est bloqué, sauf Populus chez lui en M16. 147 matchs : pôles chez eux que leur antagoniste bloquait, 8 changent de marquage, 6 justes (lu à l'inverse, la figure chez elle qui bloque : 2 justes sur 10). Seule la figure de base bloque ; la figure de la maison ne bloque que reproduite par Populus.
-La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes, avec deux exceptions où la partie 1 commande : dans les boucles différentes, le vainqueur marque ; quand aucun pôle ne marque et qu'une victoire est annoncée, le vainqueur marque (147 matchs : 5 cas, il a marqué les 5 fois). En même boucle, si un seul pôle marque, c'est lui qui gagne.
+La règle de marquage (partie 3) s'applique telle quelle à tous les thèmes, avec deux exceptions où la partie 1 commande : dans les boucles différentes, le vainqueur marque ; quand aucun pôle ne marque et qu'une victoire est annoncée, le vainqueur marque (147 matchs : 1 cas depuis le blocage par les nœuds, il a marqué). En même boucle, si un seul pôle marque, c'est lui qui gagne.
 
 ## 1. Vainqueur (`verdict` → `decision`)
 Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seules l'égalité n-n (d) et l'égalité des pôles bloqués (c'') peuvent donner un nul.
@@ -14,15 +14,15 @@ Les anciennes règles du nul ont été supprimées le 2026-11-27 ; seules l'éga
 - **M1-M10** (seulement si l'accord n'appelle pas) : les liaisons Terre M1–M5 et M10–M14 (somme des résultantes) sont toutes deux en arrêt (Terre impaire) → victoire de R1.
 
 **b. Sinon → victoire de R1** (avantage du domicile).
-**d. Égalité n-n (en cours d'étude)** : les deux pôles au même niveau de marquage, **aucun pôle bloqué** (blocage : définition unique ci-dessus), et **Populus en base dans la boucle de front d'un pôle** (maisons f, f + 4, f + 8, f + 12) → chaque équipe peut marquer n buts. 126 matchs : 10 cas, 4 nuls (11 et 5 avant le blocage unique).
+**d. Égalité n-n (en cours d'étude)** : les deux pôles au même niveau de marquage, **aucun pôle bloqué** (blocage : définition unique ci-dessus), et **Populus en base dans la boucle de front d'un pôle** (maisons f, f + 4, f + 8, f + 12) → chaque équipe peut marquer n buts. 126 matchs : 11 cas, 5 nuls.
 **c. Boucles différentes** (R1 et R7 l'un en A/C, l'autre en B/D : le front de l'un attaque l'autre ; règle du propriétaire, en cours d'étude) — prioritaire sur a, b et c' :
 - l'**arme** de l'attaquant = l'antagoniste de l'attaqué (figure du front de l'attaquant) ; la **défense** de l'attaqué = l'antagoniste de l'attaquant (figure de la boucle de son binôme, front de son protecteur f − 6) ;
 - défense posée dans les **Filles (M5–M8)** → l'attaqué gagne (12 justes, 3 nuls, 3 faux sur 87) ; sinon arme ou défense posée → l'attaquant gagne (arme seule 15/5/9 ; les deux, défense hors Filles 9/8/5 ; défense seule hors Filles 4/2/0) ; ni arme ni défense → R7 (7/4/1).
-- Le vainqueur désigné marque (imposé) : il a marqué 24 fois sur 27 quand la règle de marquage disait le contraire.
+- Le vainqueur désigné marque (imposé) : il a marqué 14 fois sur 17 quand la règle de marquage disait le contraire.
 - Arme et défense jouent par leur **présence** en base (attaque entre fronts) : lues avec le blocage strict, la règle tombe à 47 justes contre 62 ; la présence est gardée.
 
 **c'. Même boucle — le marquage commande** : si un seul pôle marque selon la partie 3, la victoire lui revient, quel que soit l'appel.
-**c''. Les deux pôles bloqués (en cours d'étude)** : hors boucles différentes, aucun pôle ne marque et les deux figures des pôles sont bloquées → égalité (147 matchs : 3 cas, 2 nuls — Tijuana – Pumas 1-1, Lorient – Rennes 1-1 ; Hull City – Brighton 2-0 ; thème de repos Populus : les deux pôles bloqués par Cauda reproduite en M13).
+**c''. Les deux pôles bloqués (en cours d'étude)** : hors boucles différentes, aucun pôle ne marque et les deux figures des pôles sont bloquées → égalité (147 matchs : 1 cas, 1 nul — Tijuana – Pumas 1-1 ; 3 cas et 2 nuls avec le blocage partout).
 **Qualificatif « victoire nette »** : score de convergence de victoire |≥ 2| dans le sens de la décision et au moins un arrêt.
 
 ## 2. Deux marquent (`hierarchie` → `deux`)
@@ -42,7 +42,9 @@ Verdict :
 - **Ne marque pas** : aucun des trois.
 - **Blocage dans la chaîne** (« M1 attaque avec M5 et M2 attaque M5 ») : le pôle est celui qui attaque, son front direct est son moyen ; chacun a son attaquant — le pôle f − 3, le front direct f + 1, le miroir f + 5 (définition unique du blocage). **Pôle bloqué** : il n'attaque plus, même avec son front direct → ne marque pas. **Front direct bloqué** : le pôle marque encore par lui-même. **Miroir bloqué** : il ne compte plus. Paris – Marseille : Rubeus bloqué (Albus intact en M1, Albus reproduit par Populus en M4) → ne marque pas.
 - Une figure posée chez elle n'y est pas bloquée (Populus en résultante laisse passer son énergie).
-- Observé (126 matchs, 252 pôles) : assuré 9/16, marque 100/124, possible 6/8, ne marque pas 79/104 ont marqué — « ne marque pas » se trompe encore 3 fois sur 4.
+- **Nœuds du bloqueur (propriétaire, 2026-11-28)** : « pour les attaques de front, celui qui bloque bloque pour ses nœuds, aux niveaux actifs en résultante ». Un bloqueur posé en maison h n'agit que sur les nœuds dont h porte une liaison dans la croix de son front (selon qu'elle est haut, droite, bas ou gauche), aux niveaux à 1 point de la résultante de h ; la Terre déviée n'est pas comptée (exemple du propriétaire : Puer en résultante de M1 bloque Albus sur le Feu et l'Air, en M1, M2, M5, M6). Le pôle n'est paralysé (il n'attaque plus, même avec son front direct) que si sa propre maison est parmi ces nœuds ; sinon seules ses positions touchées tombent. Pôles en bonne position arrêtés ainsi : 7 sur 12 ont marqué, contre 145 sur 188 pour les autres (avec le blocage partout : 43/58 contre 109/142).
+- Pour le rouge et l'égalité, « pôle bloqué » reste la présence de l'antagoniste intact (lu par les nœuds, le camp du rouge tombe de 19 à 14 justes sur 21).
+- Observé (126 matchs, 252 pôles) : assuré 17/25, marque 115/147, possible 13/16, ne marque pas 49/64 ont marqué.
 - Elle ne cède qu'au vainqueur des boucles différentes, qui marque.
 
 ## 4. Volume de buts (`butsEstimes`)
