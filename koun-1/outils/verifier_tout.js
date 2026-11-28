@@ -13,8 +13,9 @@ for (let a = 1; a <= 16; a++) for (let b = 1; b <= 16; b++) for (let c = 1; c <=
   else if (p1 !== p7 && V.decision.type !== 'verification' && H.decision !== (p1 && !M.marquePole(L, 'R1').positions.m11 ? '1' : p1 ? '2' : '1')) e('même boucle : un seul pôle marque, la règle corrigée n\'est pas appliquée', s);
   if (H.decision === 'N' && !V.egalite.oui && V.decision.type !== 'bloques' && V.decision.type !== 'verification') e('égalité annoncée sans la condition d\'égalité', s);
   // égalité « vérification » (2026-11-28) : le thème de vérification ne confirme pas le vainqueur et la figure de M7 ou de M14 est commune aux deux thèmes
-  if (V.decision.type === 'verification' && !(V.verification && V.verification.communes.length && V.verification.decision !== V.verification.avant && V.verification.avant !== 'N')) e('égalité « vérification » sans sa condition', s);
-  if (V.verification && V.verification.avant !== 'N' && V.verification.communes.length && V.verification.decision !== V.verification.avant && V.decision.resultat !== 'N') e('vérification qui ne confirme pas, figure commune en M7/M14, mais pas d\'égalité', s);
+  { const X = V.verification, cond = X && X.avant !== 'N' && (X.cycle === 1 || (X.cycle <= 2 && X.communes.length && X.decision !== X.avant));
+    if (V.decision.type === 'verification' && !cond) e('égalité « vérification » sans sa condition', s);
+    if (cond && V.decision.resultat !== 'N') e('condition de l\'égalité « vérification » remplie, mais pas d\'égalité', s); }
   // égalité « pôles bloqués » (2026-11-27) : hors boucles différentes, aucun pôle ne marque et les deux pôles sont bloqués
   if (V.decision.type === 'bloques' && (BD.domaine || p1 || p7 || !M.blocages(L, 'R1').length || !M.blocages(L, 'R7').length)) e('égalité « pôles bloqués » sans sa condition', s);
   if (!BD.domaine && !p1 && !p7 && M.blocages(L, 'R1').length && M.blocages(L, 'R7').length && H.decision !== 'N') e('les deux pôles bloqués sans marquer, mais pas d\'égalité', s);

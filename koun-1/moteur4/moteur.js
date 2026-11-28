@@ -526,13 +526,19 @@
     var EG = egalite(L); V.egalite = EG;
     if (EG.oui) V.decision = { resultat: 'N', type: 'n-n', raison: 'égalité n-n (en cours d\'étude) : ' + EG.raison + ' · indice : ' + VC.texte };
     // THÈME DE VÉRIFICATION (propriétaire, 2026-11-28 : « l'axe angulaire développé en thème de 16 figures montre les zones d'ombre du thème principal » ;
-    // en cours d'étude). Mères : les figures de M1, M4, M7, M10. Quand il ne confirme pas le vainqueur annoncé (il désigne l'autre pôle, ou une égalité) et que la
-    // figure de M7 ou de M14 reste la même dans les deux thèmes → égalité. 160 matchs : 23 cas, 12 nuls ; bons verdicts +6 (126 matchs +2, 26/11 +1, 27/11 +3).
+    // en cours d'étude). Mères : les figures de M1, M4, M7, M10. La vérification d'une vérification… : la chaîne garde la première mère (donc les maisons des pôles)
+    // et finit toujours sur un point fixe (thème qui est sa propre vérification : mères a, x, Populus, x), un cycle de 2 ou un cycle de 4 thèmes. Nuls selon la
+    // longueur du cycle, 160 matchs : point fixe 6/9, cycle de 2 16/65, cycle de 4 15/86. Égalité : point fixe ; ou cycle de 2 au plus, vérification qui ne confirme
+    // pas le vainqueur annoncé et figure de M7 ou de M14 commune aux deux thèmes (dans un cycle de 4 : 1 nul sur 4, écarté). 25 cas, 15 nuls ; 102 bons verdicts sur 160.
     if (!sansVerification && (V.decision.resultat === '1' || V.decision.resultat === '2')) {
       var TV = K.construire([1, 4, 7, 10].map(function (h) { return L.theme.bases[h]; })), LV = lire(TV.meres), dV = verdict(LV, true).decision.resultat,
         communes = [7, 14].filter(function (h) { return TV.bases[h] === L.theme.bases[h]; });
-      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat };
-      if (dV !== V.decision.resultat && communes.length) V.decision = { resultat: 'N', type: 'verification', raison: 'le thème de vérification (' + TV.meres.join('-') + ') ne confirme pas ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (il ' + (dV === 'N' ? 'annonce une égalité' : 'désigne ' + (dV === '1' ? 'R1' : 'R7')) + ') et la figure de M' + communes.join(' et de M') + ' est la même dans les deux thèmes : égalité (en cours d\'étude ; 12 nuls sur 23) · indice : ' + VC.texte }; }
+      var vu = {}, x = L.theme.meres, k = 0; while (!vu[x.join('-')]) { vu[x.join('-')] = k + 1; var bx = K.construire(x).bases; x = [bx[1], bx[4], bx[7], bx[10]]; k++; }
+      var cycle = k - (vu[x.join('-')] - 1), pf = cycle === 1, mm = cycle <= 2 && dV !== V.decision.resultat && communes.length > 0;
+      V.verification = { meres: TV.meres, decision: dV, communes: communes, avant: V.decision.resultat, cycle: cycle, pointFixe: pf ? x.slice() : null };
+      if (pf || mm) V.decision = { resultat: 'N', type: 'verification', raison: (pf ? 'la chaîne des vérifications s\'arrête sur un thème qui est sa propre vérification (point fixe ' + x.join('-') + ') : plus rien ne bouge'
+          : 'la chaîne des vérifications oscille entre deux thèmes, la vérification (' + TV.meres.join('-') + ') ne confirme pas ' + (V.decision.resultat === '1' ? 'R1' : 'R7') + ' (elle ' + (dV === 'N' ? 'annonce une égalité' : 'désigne ' + (dV === '1' ? 'R1' : 'R7')) + ') et la figure de M' + communes.join(' et de M') + ' est la même dans les deux thèmes')
+          + ' : égalité (en cours d\'étude ; 15 nuls sur 25 dans ces cas) · indice : ' + VC.texte }; }
     if ((V.decision.resultat === '1' || V.decision.resultat === '2') && Math.abs(VC.score) >= 2 && arrets(L).nombre >= 1 && (VC.score > 0) === (V.decision.resultat === '1')) { /* une égalité n'est jamais une « victoire nette » */ V.decision.force = 'nette'; V.decision.raison = 'victoire nette (score de victoire ' + (VC.score > 0 ? '+' : '') + VC.score + ' et ' + arrets(L).nombre + ' arrêt' + (arrets(L).nombre > 1 ? 's' : '') + ') · ' + V.decision.raison; }
     return V; }
   // BLOCAGE — une seule définition pour tout le moteur (2026-11-27, chaîne du propriétaire : la figure k attaque k + 3, « M(h+1) attaque M(h+4) », sur les 16 maisons).

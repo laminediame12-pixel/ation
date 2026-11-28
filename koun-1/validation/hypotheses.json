@@ -3145,6 +3145,16 @@
    "resultats": "23 cas, 12 nuls (52 %). Bons verdicts 95 → 101 sur 160 : 126 matchs 75 → 77, 26/11 12 → 13, 27/11 8 → 11. Deux marquent 83 → 86. Variante avec en plus les deux pôles principaux libres dans la vérification : 16 cas, 9 nuls, même gain (+6) — la plus simple est gardée. Choisie sur ces matchs : environ 25 lectures essayées.",
    "correction": "La « victoire nette » ne peut plus qualifier une égalité (faille trouvée en passant).",
    "outil": "moteur4/moteur.js (verdict) ; outils/theme_verification.js"
+  },
+  {
+   "id": "CHAINE-DES-VERIFICATIONS-2026-11-28",
+   "statut": "INTÉGRÉE (remplace la règle M7/M14 seule), en cours d'étude",
+   "origine": "propriétaire : « ta règle est trop faible, il faut une règle solide »",
+   "structure": "Transformation thème → thème de vérification (mères M1, M4, M7, M10) : elle garde la première mère ; sur les 65 536 thèmes, 224 cycles, tous atteints en 3 pas au plus : 8 192 thèmes finissent sur un point fixe (mères a, x, Populus, x), 24 576 sur un cycle de 2, 32 768 sur un cycle de 4.",
+   "constat": "Nuls (160 matchs) : point fixe 6/9 (dév. 4/7, 27/11 2/2), cycle de 2 16/65, cycle de 4 15/86. Écart moyen de buts 0,89 au point fixe, 1,7 sinon. Cycle qui confirme le vainqueur du principal (tous ses thèmes) : 3 nuls sur 34 ; qui le contredit : 12/33. Points fixes manqués : Allemagne – Pays-Bas 5-0, Atlético – Dortmund 3-4, Middlesbrough – Bristol City 2-0.",
+   "regle": "Point fixe → égalité ; cycle de 2 au plus + vérification qui ne confirme pas + M7 ou M14 commune → égalité.",
+   "resultats": "25 cas, 15 nuls (60 %) contre 12/23 pour la règle M7/M14 seule. Bons verdicts 101 → 102 sur 160 (dév. 77 → 78) ; deux marquent 86 → 83. Pas encore une règle solide : 10 des 25 matchs ne sont pas nuls.",
+   "outil": "moteur4/moteur.js (verdict) ; analyse : chaîne des vérifications sur les 160 matchs"
   }
  ],
  "lectures": [
