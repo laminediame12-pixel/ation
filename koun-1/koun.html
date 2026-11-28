@@ -1076,13 +1076,11 @@ if(qs.get('jour'))jr.value=qs.get('jour');
 function fig(n,base,cl){var v=K.niveaux(n),vb=base?K.niveaux(base):null,s='<div class="pt">';v.forEach(function(x,i){var rg=vb&&x===2&&vb[i]===1?' class="'+(cl||'rg')+'"':'';s+='<i>'+(x===2?'<b'+rg+'></b><b'+rg+'></b>':'<b></b>')+'</i>'});return s+'</div>'}
 function ct(L,h,c0,sp){var p1=L.R1.maison===h,p7=L.R7.maison===h,b=L.base(h),r=L.resu(h),chez=(b===h||r===h)&&!(b===16&&h<16),ant=((b-4)%16+16)%16+1===h||((r-4)%16+16)%16+1===h;
  return '<div class="ht'+(p1?' p1':p7?' p7':'')+(chez?' ch':'')+(b===16&&h<16?' pp':'')+'" data-h="'+h+'" style="grid-column:'+c0+' / span '+sp+'"><div class="mh">M'+h+'</div>'+(p1?'<div class="tag">R1</div>':p7?'<div class="tag">R7</div>':'')+(ant?'<span class="ht-h" title="figure dans la maison de son antagoniste">💔</span>':'')+fig(b)+'<div class="rs">'+fig(r,h<16?b:null,(function(){var z=(b-1)%4,z1=(L.R1.figure-1)%4,z7=(L.R7.figure-1)%4;return z===z1&&z===z7?'rgb2':z===z1?'rg1':z===z7?'rg7':'rgj'})())+'</div></div>'}
-function pyramide(L){var g='<div class="pyr"><div class="cap" style="grid-column:1/span 8">Filles M8 ← M5 (lignes des mères)</div><div class="cap" style="grid-column:9/span 8">Mères M4 ← M1 (tirage)</div>';
+function pyramide(L){var g='<div class="pyr">';
  [8,7,6,5,4,3,2,1].forEach(function(h,i){g+=ct(L,h,1+2*i,2)});
- g+='<div class="cap" style="grid-column:1/-1">Nièces : M9 = M1+M2 · M10 = M3+M4 · M11 = M5+M6 · M12 = M7+M8</div>';
  [12,11,10,9].forEach(function(h,i){g+=ct(L,h,1+4*i,4)});
- g+='<div class="cap" style="grid-column:1/-1">Témoins : M13 = M9+M10 · M14 = M11+M12</div>';
  [14,13].forEach(function(h,i){g+=ct(L,h,1+8*i,8)});
- g+='<div class="cap" style="grid-column:1/-1">Juge : M15 = M13+M14 · Sentence : M16 = M15+M1</div>'+ct(L,15,5,8)+ct(L,16,13,4)+'</div>';return g}
+ g+=ct(L,15,5,8)+ct(L,16,13,4)+'</div>';return g}
 function placerM16(){var py=document.getElementById('py');if(!py)return;var a=py.querySelector('[data-h="15"]'),b=py.querySelector('[data-h="16"]');if(a&&b){b.style.alignSelf='start';b.style.marginTop=Math.round(a.offsetHeight/2)+'px'}}
 window.addEventListener('resize',placerM16);
 function absentes(L){var pres={};for(var h=1;h<=16;h++){pres[L.base(h)]=1;pres[L.resu(h)]=1}var COL=['#ef4444','#eab308','#3b82f6','#94a3b8'],ab=[];for(var n=1;n<=16;n++)if(!pres[n])ab.push(n);
