@@ -532,6 +532,12 @@
     return { decision: d, deux: deux, R1: m.R1, R7: m.R7, buts: { valeur: v, propre: B.attendus, ajuste: aj, detail: B }, mt1: Y, mt2: S }; }
   // Indice contre les boucles (2026-11-28) : 161 matchs, cas où l'indice est à −2 ou moins contre le vainqueur des boucles (mis à jour par la mesure ci-dessous).
   var INDICE_CONTRE_BOUCLES_OBS = { autre: 7, nul: 2, boucles: 1 };
+  // THÈME DE VÉRIFICATION ET THÈME SOMME (propriétaire, 2026-11-28) : c'est le moteur qui les calcule, la page ne fait qu'afficher.
+  // Vérification : mères = figures de M1, M4, M7, M10. Somme : le principal et sa vérification additionnés maison par maison, qui forment eux-mêmes un thème
+  // (vérifié sur les 65 536) : mères M1+M1 = Populus, M2+M4, M3+M7, M4+M10 (= M3) ; R1 y est toujours en M16 et R7 en M6. La page, en vue « thème somme »,
+  // donne au moteur les mères du thème somme : tout le verdict affiché est alors calculé sur ce thème.
+  function themeVerification(L) { var b = L.theme.bases; return { meres: [b[1], b[4], b[7], b[10]] }; }
+  function themeSomme(L) { var b = L.theme.bases, v = K.construire(themeVerification(L).meres).bases; return { meres: [1, 2, 3, 4].map(function (h) { return K.additionner(b[h], v[h]); }) }; }
   function verdict(L, sansVerification) { var V = verdictBrut(L), Z = m1m10(L), NT = noyauTerre(L); V.noyauTerre = NT; V.m1m10 = Z;
     if (V.v === null && Z.deuxArrets) { var sz = M1M10_STATS; V.v = '1'; V.force = 'avantage'; V.regle = 'H-M1-M10'; V.statut = sz.ok + ' justes, ' + sz.ko + ' faux sur ' + (sz.ok + sz.ko) + ' appels tranchés'; V.raison = 'liaisons Terre M1–M5 et M10–M14 en arrêt : avantage R1'; }
     // DÉCISION FINALE (toujours une victoire ; tout ce qui concernait le nul a été supprimé du système le 2026-11-27, à la demande du propriétaire) :
@@ -572,7 +578,7 @@
     // longueur du cycle, 160 matchs : point fixe 6/9, cycle de 2 16/65, cycle de 4 15/86. Égalité : point fixe ; ou cycle de 2, vérification qui ne confirme
     // le vainqueur annoncé (aucun des deux thèmes du cycle ne le désigne) et figure de M7 ou de M14 commune au thème et à sa vérification.
     if (!sansVerification && (V.decision.resultat === '1' || V.decision.resultat === '2')) {
-      var TV = K.construire([1, 4, 7, 10].map(function (h) { return L.theme.bases[h]; })), LV = lire(TV.meres), dV = verdict(LV, true).decision.resultat,
+      var TV = K.construire(themeVerification(L).meres), LV = lire(TV.meres), dV = verdict(LV, true).decision.resultat,
         communes = [7, 14].filter(function (h) { return TV.bases[h] === L.theme.bases[h]; });
       var vu = {}, x = L.theme.meres, k = 0; while (!vu[x.join('-')]) { vu[x.join('-')] = k + 1; var bx = K.construire(x).bases; x = [bx[1], bx[4], bx[7], bx[10]]; k++; }
       // Point fixe : sauf si la figure répétée du point fixe (mères 2 et 4) est Tristitia — l'équilibre reste en suspens — ou si Populus est en M16 du thème
@@ -779,7 +785,7 @@
   var INCIDENT_PARITE_OBS = { seul: { incident: 10, sur: 16 }, autres: { incident: 3, sur: 15 } };
   function pariteIncident(L) { var Q = marquage(L), a = Q.R1.parite.impairs === 3, b = Q.R7.parite.impairs === 3, pole = a !== b ? (a ? 'R1' : 'R7') : null;
     return { pole: pole, impairsR1: Q.R1.parite.impairs, impairsR7: Q.R7.parite.impairs, obs: pole ? INCIDENT_PARITE_OBS.seul : INCIDENT_PARITE_OBS.autres }; }
-  var API = { lectureCombinaison: lectureCombinaison, combinaisonsListe: combinaisonsListe, boucles: boucles, egalite: egalite, blocages: blocages, bloqueurs: bloqueurs, zoneBlocage: zoneBlocage, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
+  var API = { themeVerification: themeVerification, themeSomme: themeSomme, lectureCombinaison: lectureCombinaison, combinaisonsListe: combinaisonsListe, boucles: boucles, egalite: egalite, blocages: blocages, bloqueurs: bloqueurs, zoneBlocage: zoneBlocage, hierarchie: hierarchie, butsEstimes: butsEstimes, marquePole: marquePole, canauxTerre: canauxTerre, victoireConvergence: victoireConvergence, incidentVerdict: incidentVerdict, arrets: arrets, defense: defense, m1m10: m1m10, diagonales: diagonales, pariteIncident: pariteIncident, secondeMiTemps: secondeMiTemps, rythme: rythme, equivalences: equivalences, coordonnees: coordonnees, incident: incident, marquage: marquage, chaine: chaine,  repos: repos, verdict: verdict, temoins: temoins, interactions: interactions, terreSaturee: terreSaturee, paralysie: paralysie, paralysieFigure: paralysieFigure, liaisonsTerre: liaisonsTerre, multiplicite: multiplicite, connexions: connexions, activation: activation, faits: faits, noeuds: noeuds, poles: poles, version: '4.1.0-noyau-indices', lire: lire, fiabilite: fiabilite, equilibre: equilibre, analyser: function (meres, jour) { var L = lire(meres); return { lecture: L, fiabilite: fiabilite(L, jour) }; } };
   root.KOUN4 = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
